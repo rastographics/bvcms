@@ -297,10 +297,8 @@
     <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Grids\Meetings.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Grids\Members.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Grids\Prospects.cs" />
-    <Compile Include="Areas\Org\Controllers\Organization\Grids\Visitors.cs" />
+    <Compile Include="Areas\Org\Controllers\Organization\Meetings.cs" />
+    <Compile Include="Areas\Org\Controllers\Organization\OrgPeople.cs" />
     <Compile Include="Areas\Org\Controllers\Organization\OrganizationController.cs" />
     <Compile Include="Areas\Org\Controllers\Organization\Settings\Attendance.cs" />
     <Compile Include="Areas\Org\Controllers\Organization\Settings\ExtraValues.cs" />
@@ -617,7 +615,6 @@
     <Compile Include="Areas\Org\Models\Organization\AttendInfo.cs" />
     <Compile Include="Areas\Org\Models\Organization\OrgGroupsModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembersDialogModel.cs" />
-    <Compile Include="Areas\Org\Models\Organization\PrevMemberModel.cs" />
     <Compile Include="Areas\Org\Models\Organization\PersonMemberInfo.cs" />
     <Compile Include="Areas\Main\Models\Other\MassEmailer.cs" />
     <Compile Include="Areas\Finance\Models\PostBundleModel.cs" />
@@ -825,15 +822,9 @@
     <Content Include="Areas\Org\Views\Organization\Settings\QuestionsEdit.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings\Registration.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings\RegistrationEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Base.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Current.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Inactive.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Meetings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Pending.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Previous.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Prospects.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Settings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Tabs\Visitors.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\People.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Meetings.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Settings.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAttendance.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabGeneral.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabRegistration.cshtml" />
@@ -1439,7 +1430,6 @@
     <Compile Include="Areas\Org\Models\Organization\MeetingsModel.cs" />
     <Compile Include="Areas\Org\Models\Organization\OrgPeopleModel.cs" />
     <Compile Include="Areas\Org\Models\Organization\OrganizationModel.cs" />
-    <Compile Include="Areas\Org\Models\Organization\VisitorModel.cs" />
     <Compile Include="Models\PagerModel2.cs" />
     <Compile Include="Areas\Reports\Models\Other\ContactsResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AveryResult.cs" />

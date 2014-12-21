@@ -14,6 +14,7 @@ RETURN
 	SELECT 
 		tt.PeopleId
 		,Tab
+		,GroupCode
 		,p.Name
 		,p.Name2
 		,p.Age

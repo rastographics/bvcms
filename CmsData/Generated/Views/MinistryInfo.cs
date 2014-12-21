@@ -26,13 +26,13 @@ namespace CmsData.View
 		
 		private DateTime? _LastContactMadeDt;
 		
-		private int? _LastTaskAboutId;
+		private int? _TaskAboutId;
 		
-		private DateTime? _LastTaskAboutDt;
+		private DateTime? _TaskAboutDt;
 		
-		private int? _LastTaskDelegatedId;
+		private int? _TaskDelegatedId;
 		
-		private DateTime? _LastTaskDelegatedDt;
+		private DateTime? _TaskDelegatedDt;
 		
 		
 		public MinistryInfo()
@@ -126,69 +126,69 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="LastTaskAboutId", Storage="_LastTaskAboutId", DbType="int")]
-		public int? LastTaskAboutId
+		[Column(Name="TaskAboutId", Storage="_TaskAboutId", DbType="int")]
+		public int? TaskAboutId
 		{
 			get
 			{
-				return this._LastTaskAboutId;
+				return this._TaskAboutId;
 			}
 
 			set
 			{
-				if (this._LastTaskAboutId != value)
-					this._LastTaskAboutId = value;
+				if (this._TaskAboutId != value)
+					this._TaskAboutId = value;
 			}
 
 		}
 
 		
-		[Column(Name="LastTaskAboutDt", Storage="_LastTaskAboutDt", DbType="datetime")]
-		public DateTime? LastTaskAboutDt
+		[Column(Name="TaskAboutDt", Storage="_TaskAboutDt", DbType="datetime")]
+		public DateTime? TaskAboutDt
 		{
 			get
 			{
-				return this._LastTaskAboutDt;
+				return this._TaskAboutDt;
 			}
 
 			set
 			{
-				if (this._LastTaskAboutDt != value)
-					this._LastTaskAboutDt = value;
+				if (this._TaskAboutDt != value)
+					this._TaskAboutDt = value;
 			}
 
 		}
 
 		
-		[Column(Name="LastTaskDelegatedId", Storage="_LastTaskDelegatedId", DbType="int")]
-		public int? LastTaskDelegatedId
+		[Column(Name="TaskDelegatedId", Storage="_TaskDelegatedId", DbType="int")]
+		public int? TaskDelegatedId
 		{
 			get
 			{
-				return this._LastTaskDelegatedId;
+				return this._TaskDelegatedId;
 			}
 
 			set
 			{
-				if (this._LastTaskDelegatedId != value)
-					this._LastTaskDelegatedId = value;
+				if (this._TaskDelegatedId != value)
+					this._TaskDelegatedId = value;
 			}
 
 		}
 
 		
-		[Column(Name="LastTaskDelegatedDt", Storage="_LastTaskDelegatedDt", DbType="datetime")]
-		public DateTime? LastTaskDelegatedDt
+		[Column(Name="TaskDelegatedDt", Storage="_TaskDelegatedDt", DbType="datetime")]
+		public DateTime? TaskDelegatedDt
 		{
 			get
 			{
-				return this._LastTaskDelegatedDt;
+				return this._TaskDelegatedDt;
 			}
 
 			set
 			{
-				if (this._LastTaskDelegatedDt != value)
-					this._LastTaskDelegatedDt = value;
+				if (this._TaskDelegatedDt != value)
+					this._TaskDelegatedDt = value;
 			}
 
 		}

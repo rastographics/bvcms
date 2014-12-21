@@ -10,6 +10,7 @@ using System.Web;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 
 namespace UtilityExtensions
 {
@@ -51,14 +52,14 @@ namespace UtilityExtensions
                 return dt.Value.ToString("d");
             return "";
         }
-        public static string FormatDate2(this DateTime? dt)
+        public static HtmlString FormatDate2(this DateTime? dt, string prefix = null, string suffix = null)
         {
             if (dt.HasValue)
             {
                 var s = dt.Value.ToString("d");
-                return s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2);
+                return new HtmlString("{0}{1}{2}".Fmt(prefix, s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2), suffix));
             }
-            return "";
+            return new HtmlString("");
         }
         public static string FormatDate(dynamic dyndt)
         {

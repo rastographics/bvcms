@@ -373,21 +373,6 @@
     <InCurrentOrg Title="In Current Organization" Type="Bit" DataValueField="IdCode">
       Select True or False for Members of the last organization you viewed.
     </InCurrentOrg>
-    <InactiveCurrentOrg Title="Inactive in Current Organization" Type="Bit" DataValueField="IdCode">
-      Select True or False for Inactive Members of the last organization you viewed.
-    </InactiveCurrentOrg>
-    <PendingCurrentOrg Title="Pending in Current Organization" Type="Bit" DataValueField="IdCode">
-      Select True or False for Pending Members of the last organization you viewed.
-    </PendingCurrentOrg>
-    <PreviousCurrentOrg Title="Previous Member in Current Organization" Type="Bit" DataValueField="IdCode">
-      Select True or False for Previous Members of the last organization you viewed.
-    </PreviousCurrentOrg>
-    <ProspectCurrentOrg Title="Prospects in Current Organization" Type="Bit" DataValueField="IdCode">
-      Selects everyone who is a prospect in the last organization you worked with. (used internally, but you can too if it will help you)
-    </ProspectCurrentOrg>
-    <VisitedCurrentOrg Title="Has Visited Current Organization" Type="Bit" DataValueField="IdCode">
-      Specify True or False for Guests in Current Organization.
-    </VisitedCurrentOrg>
     <LeadersUnderCurrentOrg Title="Leaders under current org" Type="Bit" DataValueField="IdCode">
       Select True or False for Leaders of the last organization you viewed and any Leaders in any Child Organization under that org.
     </LeadersUnderCurrentOrg>

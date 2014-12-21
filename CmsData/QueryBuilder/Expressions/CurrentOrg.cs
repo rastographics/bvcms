@@ -39,82 +39,12 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Member, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
+                db.OrgPeople(db.CurrentOrgId0, co.GroupSelect, co.First(), co.Last(), co.SgFilter, co.ShowHidden, null, null)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
 
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
 
-            if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
-            return expr;
-        }
-        internal Expression InactiveCurrentOrg()
-        {
-            var tf = CodeIds == "1";
-            var co = db.CurrentOrg;
-            Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Inactive, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
-                    .Select(gg => gg.PeopleId)
-                    .Contains(p.PeopleId);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
-            return expr;
-        }
-        internal Expression ProspectCurrentOrg()
-        {
-            var tf = CodeIds == "1";
-            var co = db.CurrentOrg;
-            Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Prospect, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
-                    .Select(gg => gg.PeopleId)
-                    .Contains(p.PeopleId);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
-            return expr;
-        }
-        internal Expression PendingCurrentOrg()
-        {
-            var tf = CodeIds == "1";
-            var co = db.CurrentOrg;
-            Expression<Func<Person, bool>> pred = p =>
-                db.OrgMember(db.CurrentOrgId0, GroupSelectCode.Pending, co.First(), co.Last(), co.SgFilter, co.ShowHidden)
-                    .Select(gg => gg.PeopleId)
-                    .Contains(p.PeopleId);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
-            return expr;
-        }
-        internal Expression PreviousCurrentOrg()
-        {
-            var tf = CodeIds == "1";
-            Expression<Func<Person, bool>> pred = p =>
-                p.EnrollmentTransactions.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId0
-                    && m.TransactionTypeId > 3
-                    && m.MemberTypeId != MemberTypeCode.Prospect
-                    && m.TransactionStatus == false
-                    && (m.Pending ?? false) == false)
-                && !p.OrganizationMembers.Any(m =>
-                    m.OrganizationId == db.CurrentOrgId0
-                    && (m.Pending ?? false) == false);
-            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
-            if (!(op == CompareType.Equal && tf))
-                expr = Expression.Not(expr);
-            return expr;
-        }
-        internal Expression VisitedCurrentOrg()
-        {
-            var tf = CodeIds == "1";
-            var mindt = Util.Now.AddDays(-db.VisitLookbackDays).Date;
-
-            var q = db.GuestList(db.CurrentOrgId0, mindt, db.CurrentOrg.ShowHidden, null, null);
-            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
-            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
             return expr;

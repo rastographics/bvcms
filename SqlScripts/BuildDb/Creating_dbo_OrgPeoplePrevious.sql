@@ -5,6 +5,7 @@ RETURN
 (
 	SELECT etd.PeopleId
 	, 'Previous' Tab
+	, '50' GroupCode
 	, AttendancePercentage AttPct
 	, a.MeetingDate LastAttended
 	, etd.EnrollmentDate Joined

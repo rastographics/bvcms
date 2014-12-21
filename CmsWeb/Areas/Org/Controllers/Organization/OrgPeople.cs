@@ -14,13 +14,54 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult VisitorGrid(OrgPeopleModel m)
+        public ActionResult People(OrgPeopleModel m)
         {
-            DbUtil.Db.CopyPropertiesFrom(m);
-            m.GroupSelect = GroupSelectCode.Guest;
-            DbUtil.LogActivity("Viewing Visitors for {0}".Fmt(Session["ActiveOrganization"]));
-            ViewBag.orgname = Session["ActiveOrganization"] + " - Guests";
-            return PartialView("Tabs/Visitors", m);
+            DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
+            ViewBag.OrgMemberContext = true;
+            ViewBag.orgname = Session["ActiveOrganization"];
+            return PartialView(m);
+        }
+        public ActionResult DialogAdd(int id, string type)
+        {
+            ViewBag.OrgID = id;
+            return View("DialogAdd" + type);
+        }
+        public ActionResult ReGenPaylinks(int id)
+        {
+            var org = DbUtil.Db.LoadOrganizationById(id);
+            var q = from om in org.OrganizationMembers
+                    select om;
+
+            foreach (var om in q)
+            {
+                if (!om.TranId.HasValue) continue;
+                var estr = HttpUtility.UrlEncode(Util.Encrypt(om.TranId.ToString()));
+                var link = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
+                om.PayLink = link;
+            }
+            DbUtil.Db.SubmitChanges();
+            return View("Other/ReGenPaylinks", org);
+        }
+        [HttpPost, Route("AddProspect/{oid:int}/{pid:int}")]
+        public ActionResult AddProspect(int oid, int pid)
+        {
+            var org = DbUtil.Db.LoadOrganizationById(oid);
+            OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                oid, pid, MemberTypeCode.Prospect,
+                DateTime.Now, null, false);
+            DbUtil.LogActivity("Adding Prospect {0}({1})".Fmt(org.OrganizationName, pid));
+            return Content("ok");
+        }
+        [HttpPost, Route("ShowProspect/{oid:int}/{pid:int}/{show}")]
+        public ActionResult ShowProspect(int oid, int pid, string show)
+        {
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(aa => aa.OrganizationId == oid && aa.PeopleId == pid);
+            if(om == null)
+                return Content("member not found");
+            om.Hidden = show.Equal("hide");
+            DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("ShowProspect {0},{1},{2}".Fmt(oid, pid, show));
+            return Content("ok");
         }
         [HttpPost, Route("ShowVisitor/{oid:int}/{pid:int}/{ticks:long}/{show}")]
         public ActionResult ShowVisitor(int oid, int pid, long ticks, string show)
@@ -63,5 +104,6 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.LogActivity("Joining Org {0}({1})".Fmt(org.OrganizationName, pid));
             return Content("ok");
         }
+        
     }
 }

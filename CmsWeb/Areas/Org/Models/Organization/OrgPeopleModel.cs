@@ -12,8 +12,12 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class OrgPeopleModel : PagedTableModel<OrgPerson, OrgPerson>, ICurrentOrg
     {
-        private Organization org;
+        public OrgPeopleModel()
+            : base("Name", "asc")
+        {
+        }
 
+        private Organization org;
         public Organization Org
         {
             get
@@ -28,39 +32,12 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        public string GroupSelect { get; set; }
-
-        public OrgPeopleModel()
-            : base("Name", "asc")
-        {
-        }
-
-        public bool IsFiltered
-        {
-            get { return NameFilter.HasValue() || SgFilter.HasValue(); }
-        }
-        public IEnumerable<SelectListItem> SmallGroups()
-        {
-            var q = from mt in DbUtil.Db.MemberTags
-                    where mt.OrgId == Id
-                    orderby mt.Name
-                    select new SelectListItem
-                    {
-                        Text = mt.Name,
-                        Value = mt.Id.ToString()
-                    };
-            var list = q.ToList();
-            list.Insert(0, new SelectListItem { Value = "-1", Text = "(not assigned)" });
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
-            return list;
-        }
-
         public override IQueryable<OrgPerson> DefineModelList()
         {
-            var q = from p in DbUtil.Db.OrgPeople(Id, GroupSelect, 
-                        this.First(), this.Last(), SgFilter, ShowHidden, 
+            var q = from p in DbUtil.Db.OrgPeople(Id, GroupSelect,
+                        this.First(), this.Last(), SgFilter, ShowHidden,
                         Util2.CurrentTag, Util2.CurrentTagOwnerId)
-                select p;
+                    select p;
             return q;
         }
 
@@ -115,19 +92,24 @@ namespace CmsWeb.Areas.Org.Models
                             p.Name2
                             select p;
                         break;
-                    case "Last Att.":
+                    case "Last Attended":
                         q = from p in q
                             orderby p.LastAttended, p.Name2
                             select p;
                         break;
-                    case "Joined":
+                    case "Join":
                         q = from p in q
                             orderby p.Joined, p.Name2
                             select p;
                         break;
+                    case "Drop":
+                        q = from p in q
+                            orderby p.Dropped, p.Joined, p.Name2
+                            select p;
+                        break;
                     case "Tab":
                         q = from p in q
-                            orderby p.Tab, p.Name2 
+                            orderby p.Tab, p.Name2
                             select p;
                         break;
                 }
@@ -180,14 +162,19 @@ namespace CmsWeb.Areas.Org.Models
                             p.Name2 descending
                             select p;
                         break;
-                    case "Last Att.":
+                    case "Last Attended":
                         q = from p in q
                             orderby p.LastAttended descending, p.Name2 descending
                             select p;
                         break;
-                    case "Joined":
+                    case "Join":
                         q = from p in q
-                            orderby p.Joined descending, p.Name2 descending
+                            orderby p.Joined descending, p.Dropped descending, p.Name2 descending
+                            select p;
+                        break;
+                    case "Drop":
+                        q = from p in q
+                            orderby p.Dropped descending, p.Joined descending, p.Name2 descending
                             select p;
                         break;
                     case "Age":
@@ -197,7 +184,7 @@ namespace CmsWeb.Areas.Org.Models
                         break;
                     case "Tab":
                         q = from p in q
-                            orderby p.Tab descending, p.Name2 descending 
+                            orderby p.Tab descending, p.Name2 descending
                             select p;
                         break;
                 }
@@ -206,10 +193,66 @@ namespace CmsWeb.Areas.Org.Models
 
         public override IEnumerable<OrgPerson> DefineViewList(IQueryable<OrgPerson> q)
         {
+            if (ShowMinistryInfo)
+            {
+                var miq = from p in q
+                          let tab = "{0}-{1}".Fmt(p.Tab, p.PeopleId)
+                          join mi in DbUtil.Db.ViewMinistryInfos on p.PeopleId equals mi.PeopleId
+                          select new { tab, mi };
+                MinistryInfo = miq.ToDictionary(mm => mm.tab, mm => mm.mi);
+            }
             return q;
         }
 
+        public IEnumerable<SelectListItem> SmallGroups()
+        {
+            return from mt in DbUtil.Db.MemberTags
+                   where mt.OrgId == Id
+                   orderby mt.Name
+                   select new SelectListItem
+                   {
+                       Text = mt.Name,
+                       Value = mt.Id.ToString()
+                   };
+        }
+
+        public Dictionary<string, MinistryInfo> MinistryInfo;
+
+        public string GroupOptions
+        {
+            get
+            {
+                var values = new List<string>();
+                if (MultiSelect)
+                    values.Add("Multi");
+                if (ShowHidden)
+                    values.Add("Hidden");
+                if (ShowMinistryInfo)
+                    values.Add("Ministry");
+                if (values.Count == 0)
+                    values.Add("Options");
+                return string.Join(",", values);
+            }
+        }
+
+        public bool MultiSelect { get; set; }
+        public bool ShowMinistryInfo { get; set; }
+
+        public string GroupActive(string group)
+        {
+            return GroupSelect.Contains(group) ? "active" : "";
+        }
+        public bool IsFiltered
+        {
+            get { return NameFilter.HasValue() || SgFilter.HasValue(); }
+        }
+
+        public string MultiSelectActive { get { return MultiSelect ? "active" : ""; } }
+        public string ShowMinistryInfoActive { get { return ShowMinistryInfo ? "active" : ""; } }
+        public string ShowHiddenActive { get { return ShowHidden ? "active" : ""; } }
+
         public int? Id { get; set; }
+        public string GroupSelect { get; set; }
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }

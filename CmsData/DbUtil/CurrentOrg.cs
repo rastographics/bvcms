@@ -6,6 +6,7 @@ namespace CmsData
     public interface ICurrentOrg
     {
         int? Id { get; set; }
+        string GroupSelect { get; set; }
         string NameFilter { get; set; }
         string SgFilter { get; set; }
         bool ShowHidden { get; set; }
@@ -14,6 +15,7 @@ namespace CmsData
     public class CurrentOrg : ICurrentOrg
     {
         public int? Id { get; set; }
+        public string GroupSelect { get; set; }
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }
         public bool ShowHidden { get; set; }

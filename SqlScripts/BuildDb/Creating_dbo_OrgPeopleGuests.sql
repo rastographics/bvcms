@@ -5,6 +5,7 @@ RETURN
 (
 	SELECT a.PeopleId
 	, 'Guests' Tab
+	, '60' GroupCode
 	, NULL AttPct
 	, a.MeetingDate LastAttended
 	, CAST(NULL AS DATETIME) AS Joined

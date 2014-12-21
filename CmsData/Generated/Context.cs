@@ -1653,6 +1653,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.AttendCredits2> ViewAttendCredits2s
+	    {
+		    get { return this.GetTable< View.AttendCredits2>(); }
+
+	    }
+
 	    public Table< View.BundleList> ViewBundleLists
 	    {
 		    get { return this.GetTable< View.BundleList>(); }
@@ -2628,6 +2634,27 @@ namespace CmsData
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 orgid,
                 meetingdt
+                );
+		}
+
+		[Function(Name="dbo.OrgMinistryInfo", IsComposable = true)]
+		public IQueryable< View.OrgMinistryInfo > OrgMinistryInfo(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="varchar")] string grouptype,
+            [Parameter(DbType="varchar")] string first,
+            [Parameter(DbType="varchar")] string last,
+            [Parameter(DbType="varchar")] string sgfilter,
+            [Parameter(DbType="bit")] bool? showhidden
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgMinistryInfo>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                grouptype,
+                first,
+                last,
+                sgfilter,
+                showhidden
                 );
 		}
 

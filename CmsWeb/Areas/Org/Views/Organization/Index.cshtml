@@ -1,6 +1,5 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
 @{
-  //Layout = ViewExtensions2.Layout();
   Layout = "~/Views/Shared/SiteLayout2.cshtml";
   ViewBag.Title = "Organization";
   ViewBag.OrgMemberContext = true;
@@ -20,12 +19,6 @@
 }
 @Html.Hidden("refreshed", "no")
 @Html.Hidden("OrganizationId")
-@Html.Hidden("currentQid")
-@Html.Hidden("previousQid")
-@Html.Hidden("visitedQid")
-@Html.Hidden("pendingQid")
-@Html.Hidden("inactiveQid")
-@Html.Hidden("prospectsQid")
 <div class="container">
   <div class="row-fluid" id="profile-header">
     <div class="span8">
@@ -42,41 +35,17 @@
       <div id="tab-area" class="tabbable primary-tabs">
         <ul class="nav nav-tabs">
           <li class="active"><a href="#Members-tab" data-toggle="tab">People</a></li>
-@*          <li>*@
-@*            <a href="#Inactive-tab" data-toggle="tab" class="ajax">*@
-@*              <span>@(Model.Org.IsMissionTrip == true ? "Senders" : "Inactive")</span>*@
-@*            </a>*@
-@*          </li>*@
-@*          <li><a href="#Pending-tab" data-toggle="tab" class="ajax">Pending</a></li>*@
-@*          <li><a href="#Priors-tab" data-toggle="tab" class="ajax">Previous</a></li>*@
-@*          <li><a href="#Prospects-tab" data-toggle="tab" class="ajax">Prospects</a></li>*@
-@*          <li><a href="#Visitors-tab" data-toggle="tab" class="ajax">Guests</a></li>*@
           <li><a href="#Settings-tab" data-toggle="tab" class="ajax">Settings</a></li>
           <li><a href="#Meetings-tab" data-toggle="tab" class="ajax">Meetings</a></li>
         </ul>
         <div class="tab-content">
-          <div id="Members-tab" class="tab-pane active" data-link="/Organization/CurrMemberGrid">
-            @Html.Partial("Tabs/Base", Model)
-          </div>
-          <div id="Inactive-tab" class="tab-pane" data-link="/Organization/InactiveMemberGrid">
-            @Helper.HiddenId("Id", Model.Id)
-          </div>
-          <div id="Pending-tab" class="tab-pane" data-link="/Organization/PendingMemberGrid">
-            @Helper.HiddenId("Id", Model.Id)
-          </div>
-          <div id="Priors-tab" class="tab-pane" data-link="/Organization/PrevMemberGrid">
-            @Helper.HiddenId("Id", Model.Id)
-          </div>
-          <div id="Prospects-tab" class="tab-pane" data-link="/Organization/ProspectGrid">
-            @Helper.HiddenId("Id", Model.Id)
-          </div>
-          <div id="Visitors-tab" class="tab-pane" data-link="/Organization/VisitorGrid">
-            @Helper.HiddenId("Id", Model.Id)
+          <div id="Members-tab" class="tab-pane active" data-link="/Organization/People">
+            @Html.Partial("People", Model)
           </div>
           <div id="Settings-tab" class="tab-pane" data-link="/Organization/Settings/@Model.Id" 
             data-init="showHideRegTypes" data-init2="SettingFormsInit">
           </div>
-          <div id="Meetings-tab" class="tab-pane" data-link="/Organization/MeetingGrid">
+          <div id="Meetings-tab" class="tab-pane" data-link="/Organization/Meetings">
             @Helper.HiddenId("Id", Model.Id)
           </div>
         </div>

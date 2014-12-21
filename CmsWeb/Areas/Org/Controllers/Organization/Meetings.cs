@@ -13,11 +13,11 @@ namespace CmsWeb.Areas.Org.Controllers
     public partial class OrganizationController
     {
         [HttpPost]
-        public ActionResult MeetingGrid(MeetingsModel m)
+        public ActionResult Meetings(MeetingsModel m)
         {
             //var m = new MeetingsModel(id, future ?? false);
             DbUtil.LogActivity("Viewing Meetings for {0}".Fmt(Session["ActiveOrganization"]));
-            return PartialView("Tabs/Meetings", m);
+            return PartialView(m);
         }
         [HttpPost]
         public ActionResult NewMeeting(string d, string t, int AttendCredit, bool group)

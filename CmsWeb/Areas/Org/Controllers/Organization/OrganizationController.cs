@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Index(int id)
         {
             var db = DbUtil.Db;
-            db.CurrentOrg = new CurrentOrg() { Id=id };
+            db.CurrentOrg = new CurrentOrg() { Id=id, GroupSelect = GroupSelectCode.Member};
 
             var m = new OrganizationModel(id);
 
@@ -90,12 +90,6 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.oid = oid;
             var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
             ViewBag.queryid = qid;
-            ViewBag.currentQid = qid;
-            ViewBag.previousQid = DbUtil.Db.QueryPreviousCurrentOrg().QueryId;
-            ViewBag.visitedQid = DbUtil.Db.QueryVisitedCurrentOrg().QueryId;
-            ViewBag.pendingQid = DbUtil.Db.QueryPendingCurrentOrg().QueryId;
-            ViewBag.inactiveQid = DbUtil.Db.QueryInactiveCurrentOrg().QueryId;
-            ViewBag.prospectsQid = DbUtil.Db.QueryProspectCurrentOrg().QueryId;
             ViewBag.TagAction = "/Organization/TagAll/" + qid;
             ViewBag.UnTagAction = "/Organization/UnTagAll/" + qid;
             ViewBag.AddContact = "/Organization/AddContact/" + qid;
@@ -108,19 +102,11 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.membersqid = DbUtil.Db.QueryMembersUnderCurrentOrg().QueryId;
         }
 
-
-        //[AcceptVerbs(HttpVerbs.Post)]
-        //public ActionResult SmallGroups()
-        //{
-        //    var m = new OrganizationModel(Util2.CurrentOrgId, Util2.CurrentGroups, Util2.CurrentGroupsMode);
-        //    return View(m);
-        //}
-
         [HttpPost]
         public ActionResult Settings(int id)
         {
             var m = new OrganizationModel(id);
-            return PartialView("Tabs/Settings", m);
+            return PartialView(m);
         }
     }
 }

@@ -36,65 +36,112 @@ $(function () {
         }
     });
     $("#tab-area > ul.nav-tabs > li > a").on('shown', function (e) {
-        var qid = "";
         switch ($(this).text()) {
-            case "Members":
-                qid = $("#currentQid").val();
+            case "People":
                 $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.current-list").show();
-                break;
-            case "Previous":
-                qid = $("#previousQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Pending":
-                qid = $("#pendingQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();;
-                $("li.pending-list").show();
-                break;
-            case "Inactive":
-            case "Senders":
-                qid = $("#inactiveQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Prospects":
-                qid = $("#prospectsQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Guests":
-                qid = $("#visitedQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
                 break;
             case "Settings":
             case "Meetings":
                 $("#bluetoolbarstop li > a.qid").parent().addClass("hidy");
                 break;
         }
-        if (qid) {
-            $("#bluetoolbarstop a.qid").each(function () {
-                $(this).attr("href", this.href.replace(/(.*\/)([^\/?]*)(\?[^?]*)?$/mg, "$1" + qid + "$3"));
-            });
-        }
     });
 
-    $("#groupSelector button").live("click", function (event) {
-//        if (!$("#b-99").hasClass("active")) {
-//            $("#groupSelector button.active:not(#b-99)").not("#" + this.id).removeClass("active");
-//        }
+    $("#excludesg").live("click", function (ev) {
+        ev.stopPropagation();
+        $(this).toggleClass("active");
+        if ($(this).hasClass("active"))
+            $("a.selectsg .fa-minus").show();
+        else 
+            $("a.selectsg .fa-minus").hide();
+    });
+    $("a.selectsg").live("click", function (ev) {
+        var t = $(this).text();
+        var sg = $("#sgFilter").val();
+        switch(t) {
+            case "Match All":
+                sg = "All:" + sg;
+                break;
+            case "None Assigned":
+                sg = "None";
+                break;
+            default:
+                if (sg && sg !== "All:")
+                    sg = sg + ',';
+                if ($("#excludesg").hasClass("active"))
+                    t = '-' + t;
+                sg = sg + t;
+                break;
+        }
+        $("#sgFilter").val(sg);
+        $("#excludesg").removeClass("active");
+        $("a.selectsg .fa-minus").hide();
+    });
+    $("#showhide").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#ShowHidden").val($(this).hasClass("active"));
+        $.formAjaxClick($(this));
+        return false;
+    });
+    $("#ministryinfo").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#ShowMinistryInfo").val($(this).hasClass("active"));
+        $.formAjaxClick($(this));
+        return false;
+    });
+    $("#multigroup").live("click", function (event) {
+        event.preventDefault();
         var $this = $(this);
+        $this.toggleClass('active');
+        var ismulti = $this.hasClass("active");
+        $("#MultiSelect").val(ismulti);
+        if (ismulti) {
+            $("#groupSelector button.dropdown-toggle").hide();
+            $("li.orgcontext").hide();
+        }
+        else {
+            $("#groupSelector button.grp.active").removeClass("active");
+            $("#groupSelector button[value='10']").addClass("active").closest("button.dropdown-toggle").show();
+            $("#GroupSelect").val("10");
+            $("#showhide").removeClass("active");
+            $("#ShowHidden").val($("#showhide").hasClass("active"));
+        }
+        $.formAjaxClick($this);
+        return false;
+    });
+    $("#groupSelector button.grp").live("click", function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        if ($("#multigroup").hasClass("active")) {
+            $this.toggleClass('active');
+        } else {
+            $("#groupSelector button.grp.active").removeClass("active");
+            $("#groupSelector button.dropdown-toggle").hide();
+            $this.addClass("active");
+            $this.next().find("button.dropdown-toggle").show();
+            $("li.orgcontext").hide();;
+            switch($this.text()) {
+                case "Members":
+                    $("li.current-list").show();
+                    break;
+                case "Pending":
+                    $("li.pending-list").show();
+                    break;
+            }
+        }
         var $a = "";
-        if (!$this.hasClass("active"))
-            $a = $this.val();
-        $("#groupSelector button.active:not(#b-99)").not("#" + this.id).each(function () {
+        $("#groupSelector button.grp.active").each(function () {
             $a += $(this).val();
         });
+        if ($a === "") {
+            $this.toggleClass("active");
+            return false;
+        }
         $("#GroupSelect").val($a);
         $.formAjaxClick($this);
+        return false;
     });
 
     $('#deleteorg').click(function (ev) {

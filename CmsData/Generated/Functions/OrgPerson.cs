@@ -20,6 +20,8 @@ namespace CmsData.View
 		
 		private string _Tab;
 		
+		private string _GroupCode;
+		
 		private string _Name;
 		
 		private string _Name2;
@@ -112,6 +114,23 @@ namespace CmsData.View
 			{
 				if (this._Tab != value)
 					this._Tab = value;
+			}
+
+		}
+
+		
+		[Column(Name="GroupCode", Storage="_GroupCode", DbType="varchar(2) NOT NULL")]
+		public string GroupCode
+		{
+			get
+			{
+				return this._GroupCode;
+			}
+
+			set
+			{
+				if (this._GroupCode != value)
+					this._GroupCode = value;
 			}
 
 		}

@@ -4,6 +4,7 @@ RETURN
 (
 	SELECT om.PeopleId
 	, 'Inactive' Tab
+	, '20' GroupCode
 	, om.AttendPct AttPct
 	, a.MeetingDate LastAttended
 	, om.EnrollmentDate Joined

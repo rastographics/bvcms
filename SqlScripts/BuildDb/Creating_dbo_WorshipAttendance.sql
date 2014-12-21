@@ -5,16 +5,15 @@ BEGIN
 	SET ARITHABORT OFF
 	SET ANSI_WARNINGS OFF
 
-	CREATE TABLE #t (PeopleId INT, OrganizationId INT, WeekDate DATE, Attended INT)
 	DECLARE
+		@w04 DATE = DATEADD(ww, -4, GETDATE()),
 		@w12 DATE = DATEADD(ww, -12, GETDATE()),
 		@w26 DATE = DATEADD(ww, -26, GETDATE()),
 		@w52 DATE = DATEADD(ww, -52, GETDATE())
 	DECLARE @wid INT = ISNULL((SELECT Setting FROM dbo.Setting WHERE Id = 'WorshipId'), 0)
 
-	INSERT #t
-	SELECT ac.PeopleId, ac.OrganizationId, ac.WeekDate, ac.Attended
-	FROM AttendCredits ac
+	SELECT ac.* INTO #t
+	FROM AttendCredits2 ac
 	JOIN 
 	(
 		SELECT p.PeopleId, p.BibleFellowshipClassId 
@@ -25,29 +24,37 @@ BEGIN
 	WHERE ac.OrganizationId IN (tt.BibleFellowshipClassId, @wid)
 	AND WeekDate > DATEADD(ww, -52, GETDATE())
 	AND Attended IS NOT NULL
+	AND AttendanceTypeId not in (40,50,60)
 
 	SELECT 
 		 t.PeopleId
 		,p.Name
 		,p.Age
 
+		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w04 AND Attended = 1 AND OrganizationId = @wid AND PeopleId = t.PeopleId))
+		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekDate >= @w04 AND OrganizationId = @wid AND PeopleId = t.PeopleId), 0) * 100 AS Wor04
+
+		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w04 AND Attended = 1 AND OrganizationId <> @wid AND PeopleId = t.PeopleId))
+		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekDate >= @w04 AND OrganizationId <> @wid AND PeopleId = t.PeopleId), 0) * 100 AS MF04
+	
 		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w12 AND Attended = 1 AND OrganizationId = @wid AND PeopleId = t.PeopleId))
-		/ (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w12 AND OrganizationId = @wid AND PeopleId = t.PeopleId) * 100 AS Wor12
+		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekDate >= @w12 AND OrganizationId = @wid AND PeopleId = t.PeopleId), 0) * 100 AS Wor12
 
 		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w12 AND Attended = 1 AND OrganizationId <> @wid AND PeopleId = t.PeopleId))
-		/ (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w12 AND OrganizationId <> @wid AND PeopleId = t.PeopleId) * 100 AS MF12
+		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekDate >= @w12 AND OrganizationId <> @wid AND PeopleId = t.PeopleId), 0) * 100 AS MF12
 	
 		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w26 AND Attended = 1 AND OrganizationId = @wid AND PeopleId = t.PeopleId))
-		/ (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w26 AND OrganizationId = @wid AND PeopleId = t.PeopleId) * 100 AS Wor26
+		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekDate >= @w26 AND OrganizationId = @wid AND PeopleId = t.PeopleId), 0) * 100 AS Wor26
 
 		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w26 AND Attended = 1 AND OrganizationId <> @wid AND PeopleId = t.PeopleId))
-		/ (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w26 AND OrganizationId <> @wid AND PeopleId = t.PeopleId) * 100 AS MF26
+		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekDate >= @w26 AND OrganizationId <> @wid AND PeopleId = t.PeopleId), 0) * 100 AS MF26
 	
 		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w52 AND Attended = 1 AND OrganizationId = @wid AND PeopleId = t.PeopleId))
-		/ (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w52 AND OrganizationId = @wid AND PeopleId = t.PeopleId) * 100 AS Wor52
+		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekDate >= @w52 AND OrganizationId = @wid AND PeopleId = t.PeopleId), 0) * 100 AS Wor52
 
 		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w52 AND Attended = 1 AND OrganizationId <> @wid AND PeopleId = t.PeopleId))
-		/ (SELECT COUNT(*) FROM #t WHERE WeekDate >= @w52 AND OrganizationId <> @wid AND PeopleId = t.PeopleId) * 100 AS MF52
+		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekDate >= @w52 AND OrganizationId <> @wid AND PeopleId = t.PeopleId), 0) * 100 AS MF52
+
 
 		,om.AttendStr WorshipAttStr
 

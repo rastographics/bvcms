@@ -19,5 +19,20 @@ namespace CmsData.View
         {
             get { return Util.FormatBirthday( BirthYear, BirthMonth, BirthDay); }
         }
+
+        public IEnumerable<string> Phones
+        {
+            get
+            {
+                var phones = new List<string>();
+                if(CellPhone.HasValue())
+                    phones.Add(CellPhone.FmtFone("C"));
+                if(HomePhone.HasValue())
+                    phones.Add(WorkPhone.FmtFone("H"));
+                if(WorkPhone.HasValue())
+                    phones.Add(WorkPhone.FmtFone("W"));
+                return phones;
+            }
+        }
     }
 }

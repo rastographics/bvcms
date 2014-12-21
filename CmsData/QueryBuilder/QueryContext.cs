@@ -98,26 +98,6 @@ namespace CmsData
         {
             return StandardQuery("MembersUnderCurrentOrg", QueryType.MembersUnderCurrentOrg);
         }
-        public Query QueryInactiveCurrentOrg()
-        {
-            return StandardQuery("InactiveCurrentOrg", QueryType.InactiveCurrentOrg);
-        }
-        public Query QueryProspectCurrentOrg()
-        {
-            return StandardQuery("ProspectCurrentOrg", QueryType.ProspectCurrentOrg);
-        }
-        public Query QueryPendingCurrentOrg()
-        {
-            return StandardQuery("PendingCurrentOrg", QueryType.PendingCurrentOrg);
-        }
-        public Query QueryPreviousCurrentOrg()
-        {
-            return StandardQuery("PreviousCurrentOrg", QueryType.PreviousCurrentOrg);
-        }
-        public Query QueryVisitedCurrentOrg()
-        {
-            return StandardQuery("VisitedCurrentOrg", QueryType.VisitedCurrentOrg);
-        }
         public List<Query> FetchLastFiveQueries()
         {
             var q = from cc in Queries
