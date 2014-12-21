@@ -7,50 +7,57 @@
     <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
 }
 <h2>Programs</h2>
-<div class="alert alert-info alert-dismissible">
-    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-    Hours offset from Sunday 12:00 AM.
+<div class="row">
+    <div class="col-sm-9">
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            Hours offset from Sunday 12:00 AM.
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <tr>
+                    <th style="width: 300px;">Program Id</th>
+                    <th style="width: 300px;">Program Name</th>
+                    <th style="width: 300px;">Report Group</th>
+                    <th style="width: 300px;">Start</th>
+                    <th style="width: 300px;">End</th>
+                    <th style="width: 100px;">Action</th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td style="width: 300px;">@item.Id</td>
+                        <td style="width: 300px;">
+                            <a id="ProgramName.@item.Id" data-pk="ProgramName.@item.Id" class="clickEdit">@item.Name</a>
+                        </td>
+                        <td style="width: 300px;">
+                            <a id="RptGroup.@item.Id" data-pk="RptGroup.@item.Id" class="clickEdit">@item.RptGroup</a>
+                        </td>
+                        <td style="width: 300px;">
+                            <a id="StartHours.@item.Id" data-pk="StartHours.@item.Id" class="clickEdit">@item.StartHoursOffset</a>
+                        </td>
+                        <td style="width: 300px;">
+                            <a id="EndHours.@item.Id" data-pk="EndHours.@item.Id" class="clickEdit">@item.EndHoursOffset</a>
+                        </td>
+                        <td style="width: 100px;">
+                            <a id="d@(item.Id)" href="#" data-pk="d@(item.Id)" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @using (Html.BeginForm("Create", "Program"))
+                {
+                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Program</button>
+                }
+            </div>
+        </div>
+    </div>
 </div>
-<div class="table-responsive">
-    <table class="table table-striped">
-    <tr>
-        <th style="width: 300px;">Program Id</th>
-        <th style="width: 300px;">Program Name</th>
-        <th style="width: 300px;">Report Group</th>
-        <th style="width: 300px;">Start</th>
-        <th style="width: 300px;">End</th>
-        <th style="width: 100px;">Action</th>
-    </tr>
-    @foreach (var item in Model) 
-    { 
-        <tr>
-            <td style="width: 300px;">@item.Id</td>
-            <td style="width: 300px;">
-                <a id="ProgramName.@item.Id" data-pk="ProgramName.@item.Id" class="clickEdit">@item.Name</a>
-            </td>
-            <td style="width: 300px;">
-                <a id="RptGroup.@item.Id" data-pk="RptGroup.@item.Id" class="clickEdit">@item.RptGroup</a>
-            </td>
-            <td style="width: 300px;">
-                <a id="StartHours.@item.Id" data-pk="StartHours.@item.Id" class="clickEdit">@item.StartHoursOffset</a>
-            </td>
-            <td style="width: 300px;">
-                <a id="EndHours.@item.Id" data-pk="EndHours.@item.Id" class="clickEdit">@item.EndHoursOffset</a>
-            </td>
-            <td style="width: 100px;">
-                <a id="d@(item.Id)" href="#" data-pk="d@(item.Id)" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-            </td>
-        </tr>
-    }
-    </table>
-</div>
-
-@using (Html.BeginForm("Create", "Program"))
-{ 
-    <p>
-        <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Program</button>
-    </p>
-}
 @section scripts
 {
     <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>

@@ -7,44 +7,48 @@
     <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
 }
 <h2>Settings</h2>
-<div class="table-responsive">
-    <table id="settings" class="table table-striped">
-        <thead>
-            <tr>
-                <th style="width: 100px;">Setting Code</th>
-                <th style="width: 300px;">Setting Value</th>
-                <th style="width: 100px;">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td style="width: 100px;">@item.Id</td>
-                    <td style="width: 300px;">
-                        <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
-                    </td>
-                    <td style="width: 100px;">
-                        <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-<label for="Id">New Setting</label>
 <div class="row">
-    @using (Html.BeginForm("Create", "Setting"))
-    {
-        <div class="col-sm-12 form-inline">
-            <div class="input-group">
-                @Html.TextBox("Id", "", new { @class = "form-control" })
-            </div>
-            <div class="input-group">
-                <input type="submit" class="btn btn-primary" value="Create" />
+    <div class="col-sm-9">
+        <div class="table-responsive">
+            <table id="settings" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">Setting Code</th>
+                        <th style="width: 300px;">Setting Value</th>
+                        <th style="width: 100px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="width: 100px;">@item.Id</td>
+                            <td style="width: 300px;">
+                                <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
+                            </td>
+                            <td style="width: 100px;">
+                                <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @using (Html.BeginForm("Create", "Setting"))
+                {
+                    <div class="form-group">
+                        <label for="Id">New Setting</label>
+                        @Html.TextBox("Id", "", new { @class = "form-control" })
+                    </div>
+                    <input type="submit" class="btn btn-primary btn-block" value="Create" />
+                }
             </div>
         </div>
-    }
+    </div>
 </div>
 @section scripts
 {

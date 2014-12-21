@@ -7,64 +7,71 @@
     <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
 }
 <h2>Promotion Setup</h2>
-<div class="well">
-    <label for="Programs">Program</label>
-    <div class="row">
-        <div class="col-sm-3">
-            @Html.DropDownList("Programs", Model.Programs(), new { @class = "form-control" })
+<div class="row">
+    <div class="col-sm-9">
+        <div class="well">
+            <label for="Programs">Program</label>
+            <div class="row">
+                <div class="col-sm-4">
+                    @Html.DropDownList("Programs", Model.Programs(), new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 300px;">Sort</th>
+                        <th style="width: 300px;">Description</th>
+                        <th style="width: 300px;">From Division </th>
+                        <th style="width: 300px;">To Division</th>
+                        <th style="width: 100px;">Promote</th>
+                        <th style="width: 100px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Promotions())
+                    {
+                        <tr>
+                            <td style="width: 300px;">
+                                <a id="s@(item.Id)" data-pk="s@(item.Id)" class="clickEdit">@item.Sort</a>
+                            </td>
+                            <td style="width: 300px;">
+                                <a id="d@(item.Id)" data-pk="d@(item.Id)" class="clickEdit">@item.Description</a>
+                            </td>
+                            <td style="width: 300px;">
+                                <a id="f@(item.Id)" class="clickSelect" data-value="@(item.FromDivId == null ? "" : item.FromDivId.ToString())" data-pk="f@(item.Id)">@(item.FromDivId == null ? "" : item.FromDivision.Name)</a>
+                            </td>
+                            <td style="width: 300px;">
+                                <a id="t@(item.Id)" class="clickSelect" data-value="@(item.ToDivId == null ? "" : item.ToDivId.ToString())" data-pk="t@(item.Id)">@(item.ToDivId == null ? "" : item.ToDivision.Name)</a>
+                            </td>
+                            <td style="width: 100px;">
+                                @if (Model.CanPromote(item.Id))
+                                {
+                                    <a id="p@(item.Id)" href="#" class="promote btn btn-sm btn-default"><i class="fa fa-check"></i> Promote</a>
+                                }
+                            </td>
+
+                            <td style="width: 100px;">
+                                <a id="x@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @using (Html.BeginForm("Create", "Promotion"))
+                {
+                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Promotion</button>
+                }
+            </div>
         </div>
     </div>
 </div>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th style="width: 300px;">Sort</th>
-                <th style="width: 300px;">Description</th>
-                <th style="width: 300px;">From Division </th>
-                <th style="width: 300px;">To Division</th>
-                <th style="width: 100px;">Promote</th>
-                <th style="width: 100px;">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Promotions())
-            {
-                <tr>
-                    <td style="width: 300px;">
-                        <a id="s@(item.Id)" data-pk="s@(item.Id)" class="clickEdit">@item.Sort</a>
-                    </td>
-                    <td style="width: 300px;">
-                        <a id="d@(item.Id)" data-pk="d@(item.Id)" class="clickEdit">@item.Description</a>
-                    </td>
-                    <td style="width: 300px;">
-                        <a id="f@(item.Id)" class="clickSelect" data-value="@(item.FromDivId == null ? "" : item.FromDivId.ToString())" data-pk="f@(item.Id)">@(item.FromDivId == null ? "" : item.FromDivision.Name)</a>
-                    </td>
-                    <td style="width: 300px;">
-                        <a id="t@(item.Id)" class="clickSelect" data-value="@(item.ToDivId == null ? "" : item.ToDivId.ToString())" data-pk="t@(item.Id)">@(item.ToDivId == null ? "" : item.ToDivision.Name)</a>
-                    </td>
-                    <td style="width: 100px;">
-                        @if (Model.CanPromote(item.Id))
-                        {
-                            <a id="p@(item.Id)" href="#" class="promote btn btn-sm btn-default"><i class="fa fa-check"></i> Promote</a>
-                        }
-                    </td>
-
-                    <td style="width: 100px;">
-                        <a id="x@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
-@using (Html.BeginForm("Create", "Promotion"))
-{
-    <p>
-        <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Promotion</button>
-    </p>
-}
 @section scripts
 {
     <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
