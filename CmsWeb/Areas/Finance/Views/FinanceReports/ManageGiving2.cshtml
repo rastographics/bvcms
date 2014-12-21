@@ -18,42 +18,44 @@
                 </div>
             </div>
         </div>
-        <table class="table table-striped" id="funds">
-            <thead>
-                <tr>
-                    <th>Funds</th>
-                    <th style="width:100px;">
-                        <div class="pull-right">
-                            Amounts
-                        </div>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @{ var funds = CmsWeb.Models.OnlineRegPersonModel.FullFundList(); }
-                @foreach (var fund in funds)
-                {
-                    var amt = Model.FundItemValue(UtilityExtensions.Util.ToInt(fund.Value)) ?? 0;
-                    if (amt > 0)
+        <div class="table-responsive">
+            <table class="table table-striped" id="funds">
+                <thead>
+                    <tr>
+                        <th>Funds</th>
+                        <th style="width:100px;">
+                            <div class="pull-right">
+                                Amounts
+                            </div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var funds = CmsWeb.Models.OnlineRegPersonModel.FullFundList(); }
+                    @foreach (var fund in funds)
                     {
-                        <tr>
-                            <td>@fund.Text</td>
-                            <td style="width: 100px;">
-                                <div class="pull-right">
-                                    $@amt.ToString("n2")
-                                </div>
-                            </td>
-                        </tr>
+                        var amt = Model.FundItemValue(UtilityExtensions.Util.ToInt(fund.Value)) ?? 0;
+                        if (amt > 0)
+                        {
+                            <tr>
+                                <td>@fund.Text</td>
+                                <td style="width: 100px;">
+                                    <div class="pull-right">
+                                        $@amt.ToString("n2")
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                     }
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td><h4 class="pull-right">TOTAL:</h4></td>
-                    <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@Model.total.ToString("n2")</span></h2></td>
-                </tr>
-            </tfoot>
-        </table>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><h4 class="pull-right">TOTAL:</h4></td>
+                        <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@Model.total.ToString("n2")</span></h2></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
         <h4>Giving Schedule</h4>
         <strong>
             <em>
