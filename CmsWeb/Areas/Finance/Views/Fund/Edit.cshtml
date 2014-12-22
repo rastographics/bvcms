@@ -10,7 +10,7 @@
 {
     @Html.HiddenFor(m => m.FundId)
     <div class="row">
-        <div class="col-md-8 col-lg-9">
+        <div class="col-md-9">
             <div class="row">
                 <div class="col-sm-9 col-lg-8">
                     <div class="form-group">
@@ -128,13 +128,17 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 col-lg-3">
-            <div class="panel panel-default">
+        <div class="col-md-3">
+            <div class="panel panel-default affix" style="width: 22%;">
                 <div class="panel-body">
                     <button type="submit" class="btn btn-primary btn-block btn-lg">Save Fund</button>
                     <hr/>
                     <a href="/Funds" style="text-decoration: underline;">Cancel & Return</a>
                 </div>
+            </div>
+            <div class="visible-sm-block visible-xs-block">
+                <button type="submit" class="btn btn-primary btn-block">Save Fund</button>
+                <a href="/Funds" class="btn btn-default btn-block">Cancel & Return</a>
             </div>
         </div>
     </div>
