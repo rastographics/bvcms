@@ -76,26 +76,19 @@ namespace CmsWeb.Areas.Main.Models
             var From = new MailAddress(FromAddress, FromName);
             DbUtil.Db.CopySession();
 
-            var QueuedToBatch = false;
             if (!Schedule.HasValue)
             {
                 var tag = DbUtil.Db.TagById(TagId);
                 var q = tag.People(DbUtil.Db);
                 Count = q.Count();
                 if (Count >= 300)
-                {
-                    Schedule = Util.Now;
-                    QueuedToBatch = true;
-                }
+                    Schedule = Util.Now.AddSeconds(10); // some time for emailqueue to be ready to go
             }
 
             var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents);
             if (emailqueue == null)
                 return null;
-
-            if (QueuedToBatch)
-                DbUtil.LogActivity("EmailQueuedToBatch({0},{1})".Fmt(emailqueue.Id, Count));
-
+            emailqueue.NoReplacements = noDuplicates;
             emailqueue.Transactional = transactional;
             DbUtil.Db.SubmitChanges();
             return emailqueue;

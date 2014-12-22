@@ -47,6 +47,8 @@ namespace CmsData
 		
 		private bool? _CCParents;
 		
+		private bool? _NoReplacements;
+		
    		
    		private EntitySet< EmailLink> _EmailLinks;
 		
@@ -108,6 +110,9 @@ namespace CmsData
 		
 		partial void OnCCParentsChanging(bool? value);
 		partial void OnCCParentsChanged();
+		
+		partial void OnNoReplacementsChanging(bool? value);
+		partial void OnNoReplacementsChanged();
 		
     #endregion
 		public EmailQueue()
@@ -454,6 +459,28 @@ namespace CmsData
 					this._CCParents = value;
 					this.SendPropertyChanged("CCParents");
 					this.OnCCParentsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="NoReplacements", UpdateCheck=UpdateCheck.Never, Storage="_NoReplacements", DbType="bit")]
+		public bool? NoReplacements
+		{
+			get { return this._NoReplacements; }
+
+			set
+			{
+				if (this._NoReplacements != value)
+				{
+				
+                    this.OnNoReplacementsChanging(value);
+					this.SendPropertyChanging();
+					this._NoReplacements = value;
+					this.SendPropertyChanged("NoReplacements");
+					this.OnNoReplacementsChanged();
 				}
 
 			}

@@ -13,6 +13,8 @@ namespace CmsWeb.Models
 {
     public partial class OnlineRegModel
     {
+        private Regex donationtext = new Regex(@"\{donation(?<text>.*)donation\}", RegexOptions.Singleline | RegexOptions.Multiline);
+
         public void EnrollAndConfirm()
         {
             if (masterorgid.HasValue)
@@ -167,7 +169,6 @@ namespace CmsWeb.Models
             else
                 message = message.Replace("{paylink}", "You have a zero balance.");
 
-            var re = new Regex(@"\{donation(?<text>.*)donation\}", RegexOptions.Singleline | RegexOptions.Multiline);
             if (SupportMissionTrip && TotalAmount() > 0)
             {
                 var p = List[0];
@@ -273,11 +274,11 @@ namespace CmsWeb.Models
                     p.person.PrimaryZip);
                 if (!ti.TransactionId.StartsWith("Coupon"))
                     p.person.PostUnattendedContribution(DbUtil.Db, ti.Donate.Value, p.setting.DonationFundId, desc, tranid: ti.Id);
-                var ma = re.Match(message);
+                var ma = donationtext.Match(message);
                 if (ma.Success)
                 {
                     var v = ma.Groups["text"].Value;
-                    message = re.Replace(message, v);
+                    message = donationtext.Replace(message, v);
                 }
                 message = message.Replace("{donation}", ti.Donate.ToString2("N2"));
                 // send donation confirmations
@@ -285,7 +286,7 @@ namespace CmsWeb.Models
                     "${0:N2} donation received from {1}".Fmt(ti.Donate, Transaction.FullName(ti)));
             }
             else
-                message = re.Replace(message, "");
+                message = donationtext.Replace(message, "");
 
             Db.CurrentOrgId = Orgid;
             // send confirmations
@@ -434,6 +435,32 @@ AmountDue: {4:C}<br/>
                 message = message.Replace("{sessiontotal}", amtpaid.ToString("c"));
                 message = message.Replace("{participants}", details);
                 Db.CurrentOrgId = p.orgid;
+
+                if (ti.Donate > 0)
+                {
+                    var pd = List[donor.Value];
+                    ti.Fund = pd.setting.DonationFund();
+                    var desc = "{0}; {1}; {2}, {3} {4}".Fmt(
+                        pd.person.Name,
+                        pd.person.PrimaryAddress,
+                        pd.person.PrimaryCity,
+                        pd.person.PrimaryState,
+                        pd.person.PrimaryZip);
+                    if (!ti.TransactionId.StartsWith("Coupon"))
+                        pd.person.PostUnattendedContribution(DbUtil.Db, ti.Donate.Value, pd.setting.DonationFundId, desc, tranid: ti.Id);
+                    var ma = donationtext.Match(message);
+                    if (ma.Success)
+                    {
+                        var v = ma.Groups["text"].Value;
+                        message = donationtext.Replace(message, v);
+                    }
+                    message = message.Replace("{donation}", ti.Donate.ToString2("N2"));
+                    // send donation confirmations
+                    Db.Email(NotifyIds[0].FromEmail, NotifyIds, emailSubject + "-donation",
+                        "${0:N2} donation received from {1}".Fmt(ti.Donate, Transaction.FullName(ti)));
+                }
+                else
+                    message = donationtext.Replace(message, "");
 
                 // send confirmations
                 if (emailSubject != "DO NOT SEND")

@@ -463,6 +463,7 @@
     <Compile Include="Generated\Functions\SearchDivision.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Views\AppRegistration.cs" />
+    <Compile Include="Generated\Views\AttendCredits2.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />
     <Compile Include="Generated\Views\OrgsWithFee.cs" />

@@ -82,9 +82,13 @@ namespace CmsData
 
             ListAddresses = aa.DistinctEmails();
 
+            var noreplacements = emailqueueto.EmailQueue.NoReplacements ?? false;
             var texta = new List<string>(stringlist);
             for (var i = 1; i < texta.Count; i += 2)
-                texta[i] = DoReplaceCode(texta[i], p, pi, emailqueueto);
+                if (noreplacements)
+                    texta[i] = "";
+                else
+                    texta[i] = DoReplaceCode(texta[i], p, pi, emailqueueto);
 
             return string.Join("", texta);
         }
