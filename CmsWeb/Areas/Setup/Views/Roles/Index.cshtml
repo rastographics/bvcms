@@ -11,27 +11,31 @@
     <div class="col-sm-9">
         <div class="table-responsive">
             <table class="table table-striped">
-                <tr>
-                    <th>Role Id</th>
-                    <th>Role Name</th>
-                    <th>Action</th>
-                </tr>
-                @foreach (var item in Model)
-                {
+                <thead>
                     <tr>
-                        <td>@item.RoleId</td>
-                        @if (item.Hardwired == true)
-                        {
-                            <td>@item.RoleName</td>
-                            <td></td>
-                        }
-                        else
-                        {
-                            <td><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
-                            <td><a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a></td>
-                        }
+                        <th style="width: 100px;">Role Id</th>
+                        <th style="width: 300px;">Role Name</th>
+                        <th style="width: 100px;">Action</th>
                     </tr>
-                }
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td style="width: 100px;">@item.RoleId</td>
+                            @if (item.Hardwired == true)
+                            {
+                                <td style="width: 300px;">@item.RoleName</td>
+                                <td style="width: 100px;"></td>
+                            }
+                            else
+                            {
+                                <td style="width: 300px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
+                                <td style="width: 100px;"><a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a></td>
+                            }
+                        </tr>
+                    }
+                </tbody>
             </table>
         </div>
     </div>
