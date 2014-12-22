@@ -1,63 +1,102 @@
 ﻿@model IEnumerable<CmsData.Role>
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Roles";
 }
+@section head{
+    <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
+}
+<h2>Roles</h2>
+<div class="row">
+    <div class="col-sm-9">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <tr>
+                    <th>Role Id</th>
+                    <th>Role Name</th>
+                    <th>Action</th>
+                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.RoleId</td>
+                        @if (item.Hardwired == true)
+                        {
+                            <td>@item.RoleName</td>
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
+                            <td><a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a></td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @using (Html.BeginForm("Create", "Roles"))
+                {
+                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Role</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
+    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
     <script type="text/javascript">
-        $(function() {
-            $(".clickEdit").editable("/Roles/Edit/", {
-                indicator: "<img src='/images/loading.gif'>",
-                tooltip: "Click to edit...",
-                style: 'display: inline',
-                width: '200px',
-                height: 25,
-                callback: function(value) {
-                    if (value.startsWith("/")) {
-                        window.location = value;
-                    }
+        $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+
+            $(".clickEdit").editable({
+                mode: 'inline',
+                type: 'text',
+                url: "/Roles/Edit/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
                 }
             });
-            $("a.delete").click(function(ev) {
-                if (confirm("are you sure?"))
-                    $.post("/Roles/Delete/" + $(this).attr("id"), null, function(ret) {
-                        if (ret)
-                            alert(ret);
-                        else
-                            window.location = "/Roles/";
+
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/Roles/Delete/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Roles/";
+                            });
+                        }
                     });
+                });
             });
-            $(".bt").button();
         });
     </script>
 }
-<h2>Roles</h2>
-
-<table>
-    <tr>
-        <th> RoleId </th>
-        <th> RoleName </th>
-        <th></th>
-    </tr>
-@foreach (var item in Model) 
-{ 
-    <tr>
-        <td>@item.RoleId</td>
-    @if (item.Hardwired == true)
-    {
-        <td> @item.RoleName </td>
-        <td> <i>hardwired</i> </td>
-    }
-    else
-    {
-        <td> <span id='RoleName.@item.RoleName' class='clickEdit'>@item.RoleName</span> </td>
-        <td> <a id='d@(item.RoleId)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a> </td>
-    }
-    </tr>
-}
-</table>
-@using (Html.BeginForm("Create", "Roles"))
-{ 
-<p><input type="submit" class="bt" value="Create" /></p>
-} 
