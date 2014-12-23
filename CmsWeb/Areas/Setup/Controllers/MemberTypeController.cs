@@ -53,6 +53,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.ExecuteCommand("UPDATE dbo.OrganizationMembers SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
             DbUtil.Db.ExecuteCommand("UPDATE dbo.EnrollmentTransaction SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
             DbUtil.Db.ExecuteCommand("UPDATE dbo.Attend SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
+
+            TempData["SuccessMessage"] = "Member type and associated members were successfully migrated.";
             return Redirect("/MemberType/");
         }
 
@@ -100,16 +102,17 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("done");
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        
         public JsonResult AttendTypeCodes()
         {
             var q = from c in DbUtil.Db.AttendTypes
                     select new
                     {
-                        Code = c.Id.ToString(),
-                        Value = c.Description,
+                        value = c.Id.ToString(),
+                        text = c.Description,
                     };
-            return Json(q.ToDictionary(k => k.Code, v => v.Value));
+
+            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
     }
 }
