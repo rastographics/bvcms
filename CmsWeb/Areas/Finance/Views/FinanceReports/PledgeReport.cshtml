@@ -1,32 +1,34 @@
-﻿@using CmsWeb
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @model IEnumerable<CmsData.View.PledgeReport>
 @{
-    ViewBag.Title = "PledgeReport";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Pledge Report";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-
-<h2>PledgeReport</h2>
-<table class="@ViewExtensions2.GridClass" cellpadding="5">
-	<thead>
-	    <td>FundId</td>
-	    <td>FundName</td>
-		<td class="right">Pledged</td>
-		<td class="right">To Pledge</td>
-	    <td class="right">Not To a Pledge</td>
-	    <td class="right">Total To Fund</td>
-	</thead>	
-	<tbody>
-		@foreach (var r in Model)
-		{
-			<tr>
-				<td>@r.FundId</td>
-				<td>@r.FundName</td>
-        		<td class="right">@r.Plg.ToString2("N2")</td>
-        		<td class="right">@r.ToPledge.ToString2("N2")</td>
-        		<td class="right">@r.NotToPledge.ToString2("N2")</td>
-        		<td class="right">@r.ToFund.ToString2("N2")</td>
-			</tr>
-		}
-	</tbody>
-</table>
+<h2>Pledge Report</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <td>Fund Id</td>
+                <td>Fund Name</td>
+                <td class="text-right">Pledged</td>
+                <td class="text-right">To Pledge</td>
+                <td class="text-right">Not To a Pledge</td>
+                <td class="text-right">Total To Fund</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model)
+            {
+                <tr>
+                    <td>@r.FundId</td>
+                    <td>@r.FundName</td>
+                    <td class="text-right">@r.Plg.ToString2("N2")</td>
+                    <td class="text-right">@r.ToPledge.ToString2("N2")</td>
+                    <td class="text-right">@r.NotToPledge.ToString2("N2")</td>
+                    <td class="text-right">@r.ToFund.ToString2("N2")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
