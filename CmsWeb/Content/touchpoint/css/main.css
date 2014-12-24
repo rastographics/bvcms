@@ -336,9 +336,8 @@ div.report .table {
     color: #fff;
     font-size: 11px;
     border-top: 1px solid #2e343a;
-    padding-top: 20px;
+    padding-top: 23px;
     padding-left: 15px;
-    padding-right: 15px;
 }
 
 #footer a {
@@ -348,7 +347,7 @@ div.report .table {
 
 #powered-by {
     height: 30px;
-    margin-top: -5px;
+    margin-top: -8px;
 }
 
 .alert {
