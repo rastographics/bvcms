@@ -255,7 +255,7 @@ namespace CmsWeb.Controllers
             }
             catch (Exception ex)
             {
-                return Message(ex.Message);
+                return RedirectShowError(ex.Message);
             }
         }
 

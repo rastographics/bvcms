@@ -212,7 +212,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult SavePythonScript(string name, string body)
         {
-            var content = DbUtil.Content(name);
+            var content = DbUtil.Db.Content(name, "", ContentTypeCode.TypePythonScript);
             content.Body = body;
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

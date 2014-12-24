@@ -16,11 +16,6 @@
           });
         }
       });
-      $("#run").click(function (ev) {
-        $.post("/Display/SavePythonScript", { body: $("#body").val(), name: "@Model.Name" }, function () {
-          return true;
-        });
-      });
       $("textarea").tabby();
     });
   </script>
@@ -54,7 +49,7 @@
     @if (User.IsInRole("Admin"))
     {
       <input type="submit" class="bt" value="Save" /> @:&nbsp;&nbsp;
-        }
+    }
     <a id="cancel" href='/Manage/Display' class="bt">Cancel</a>
     <a id="delete" href='#'><img src="/Content/images/delete.gif" /></a> &nbsp;&nbsp;
     <a id="run" class="bt" href="/PyScript/@Model.Name" target="runscript">Run Python Script</a>
