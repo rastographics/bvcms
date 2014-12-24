@@ -485,17 +485,19 @@ namespace CmsData
         public string ContentForDate(string contentName, object date)
         {
             var dtwanted = date.ToDate();
+            if (!dtwanted.HasValue)
+                return "no date";
+            dtwanted = dtwanted.Value.Date;
             var c = DbUtil.Db.ContentOfTypeHtml(contentName);
-            var a = Regex.Split(c.Body, @"<h1>(?<dt>\d{1,2}(/|-)\d{1,2}(/|-)\d{2,4}) =+</h1>", RegexOptions.ExplicitCapture);
+            var a = Regex.Split(c.Body, @"<h1>(?<dt>\d{1,2}(/|-)\d{1,2}(/|-)\d{2,4})=+</h1>", RegexOptions.ExplicitCapture);
             var i = 0;
             for (; i < a.Length; i++)
             {
-                if (a[i].Length >= 6 && a[i].Length <= 10)
-                {
-                    var dt = a[i].ToDate();
-                    if (dt.HasValue && dt == dtwanted)
-                        return a[i + 1];
-                }
+                if (a[i].Length < 6 || a[i].Length > 10) 
+                    continue;
+                var dt = a[i].ToDate();
+                if (dt.HasValue && dt == dtwanted)
+                    return a[i + 1];
             }
             return "cannot find email content";
         }
