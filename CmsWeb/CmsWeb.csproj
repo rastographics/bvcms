@@ -726,7 +726,6 @@
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\main.css" />
     <Content Include="Content\touchpoint\css\print.css" />
-    <Content Include="Content\touchpoint\images\favicon.png" />
     <Content Include="Content\touchpoint\images\female.png" />
     <Content Include="Content\touchpoint\images\hexagon.png" />
     <Content Include="Content\touchpoint\images\logo.png" />
