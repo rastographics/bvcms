@@ -112,6 +112,24 @@ namespace CmsData
             }
         }
 
+        internal Expression RecentPeopleExtraFieldChanged()
+        {
+            var mindt = Util.Now.AddDays(-Days).Date;
+            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == TextValue);
+            if (!db.FromBatch)
+                if (sev != null && !sev.CanView)
+                    return AlwaysFalse();
+            Expression<Func<Person, bool>> pred = p => (
+                    from e in p.PeopleExtras
+                    where e.Field == Quarters
+                    where e.TransactionTime.Date >= mindt
+                    select e).Any();
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+
         internal Expression FamilyExtra()
         {
             Expression<Func<Person, bool>> pred = p =>

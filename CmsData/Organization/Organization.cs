@@ -432,6 +432,7 @@ namespace CmsData
                 return;
             var ev = GetExtraValue(field);
             ev.StrValue = value;
+            ev.TransactionTime = DateTime.Now;
         }
 
         public void AddEditExtraData(string field, string value)
@@ -440,6 +441,7 @@ namespace CmsData
                 return;
             var ev = GetExtraValue(field);
             ev.Data = value;
+            ev.TransactionTime = DateTime.Now;
         }
 
         public void AddEditExtraDate(string field, DateTime? value)
@@ -448,12 +450,14 @@ namespace CmsData
                 return;
             var ev = GetExtraValue(field);
             ev.DateValue = value;
+            ev.TransactionTime = DateTime.Now;
         }
 
         public void AddEditExtraInt(string field, int value)
         {
             var ev = GetExtraValue(field);
             ev.IntValue = value;
+            ev.TransactionTime = DateTime.Now;
         }
 
         public void AddEditExtraBool(string field, bool tf)
@@ -462,6 +466,7 @@ namespace CmsData
                 return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
+            ev.TransactionTime = DateTime.Now;
         }
 
         public void RemoveExtraValue(CMSDataContext Db, string field)
@@ -469,6 +474,7 @@ namespace CmsData
             var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev != null)
                 Db.OrganizationExtras.DeleteOnSubmit(ev);
+            ev.TransactionTime = DateTime.Now;
         }
 
         public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)

@@ -153,6 +153,7 @@ namespace CmsData
                 { QueryType.RecentNewVisitCount, RecentNewVisitCount },
                 { QueryType.RecentNonTaxDedAmount, RecentNonTaxDedAmount },
                 { QueryType.RecentNonTaxDedCount, RecentNonTaxDedCount },
+                { QueryType.RecentPeopleExtraFieldChanged, RecentPeopleExtraFieldChanged },
                 { QueryType.RecentPledgeAmount, RecentPledgeAmount },
                 { QueryType.RecentPledgeCount, RecentPledgeCount },
                 { QueryType.RecentRegistrationType, RecentRegistrationType },

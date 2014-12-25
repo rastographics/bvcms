@@ -182,7 +182,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="TransactionTime", UpdateCheck=UpdateCheck.Never, Storage="_TransactionTime", DbType="datetime NOT NULL", IsPrimaryKey=true)]
+		[Column(Name="TransactionTime", UpdateCheck=UpdateCheck.Never, Storage="_TransactionTime", DbType="datetime NOT NULL")]
 		public DateTime TransactionTime
 		{
 			get { return this._TransactionTime; }

@@ -199,6 +199,7 @@ namespace CmsData
         RecentNewVisitCount,
         RecentNonTaxDedAmount,
         RecentNonTaxDedCount,
+        RecentPeopleExtraFieldChanged,
         RecentPledgeAmount,
         RecentPledgeCount,
         RecentRegistrationType,
