@@ -573,6 +573,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.OriginId = originId;
             p.EntryPointId = EntryPointId;
             p.FixTitle();
+            if(Db.Setting("ElectronicStatementDefault", "false").Equal("true"))
+                p.ElectronicStatement = true;
             if (!testing)
                 Db.SubmitChanges();
             if (SendNotices)
