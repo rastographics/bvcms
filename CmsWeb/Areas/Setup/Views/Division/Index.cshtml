@@ -1,20 +1,48 @@
 ﻿@model CmsWeb.Models.DivisionModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Divisions";
 }
+@section head{
+    <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
+}
+<h2>Divisions</h2>
+<div class="row">
+    <div class="col-md-9">
+        <div class="well">
+            <label for="ProgramId">Filter for Program</label>
+            <div class="row">
+                <form id="progform">
+                    <div class="col-sm-12 form-inline">
+                        <div class="input-group">
+                            @Html.DropDownList("ProgramId", Model.ProgramIds(), new { @class = "form-control" })
+                        </div>
+                        <div class="input-group">
+                            <input id="refresh" type="submit" class="btn btn-default" value="Refresh" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        @Html.Partial("Results", Model)
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @using (Html.BeginForm("Create", "Division", FormMethod.Post, new { id = "createForm" }))
+                {
+                    <div class="form-group">
+                        <label for="TagProgramId">Target Program</label>
+                        @Html.DropDownList("TagProgramId", Model.ProgramIds(), new { @class= "form-control"})
+                    </div>
+                    <button id="create" type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Division</button>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Admin/Divisions.js")
+    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
+    @Fingerprint.Script("/Scripts/Touchpoint/js/admin/divisions.js")
 }
-<form id="progform">
-Filter for Program: @Html.DropDownList("ProgramId", Model.ProgramIds())
-<input id="refresh" type="submit" value="Refresh" />
-Target Program: @Html.DropDownList("TagProgramId", Model.ProgramIds())
-</form>
-<h2>Divisions</h2>
-@Html.Partial("Results", Model) 
-@using (Html.BeginForm("Create", "Division"))
-{ 
-    <p><input id="create" type="submit" value="Create" /></p>
-} 

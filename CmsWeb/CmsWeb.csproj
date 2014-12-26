@@ -929,6 +929,7 @@
     <Content Include="Scripts\touchpoint\jquery-blockUI\jquery.blockUI.js" />
     <Content Include="Scripts\touchpoint\jquery-chosen\chosen.jquery.min.js" />
     <Content Include="Scripts\touchpoint\jquery-validate\jquery.validate.min.js" />
+    <Content Include="Scripts\touchpoint\js\admin\divisions.js" />
     <Content Include="Scripts\touchpoint\js\dialog\search-users.js" />
     <Content Include="Scripts\touchpoint\js\form-ajax.js" />
     <Content Include="Scripts\touchpoint\js\main.js" />
