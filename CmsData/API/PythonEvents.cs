@@ -488,7 +488,7 @@ namespace CmsData
             if (!dtwanted.HasValue)
                 return "no date";
             dtwanted = dtwanted.Value.Date;
-            var c = DbUtil.Db.ContentOfTypeHtml(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             var a = Regex.Split(c.Body, @"<h1>(?<dt>\d{1,2}(/|-)\d{1,2}(/|-)\d{2,4})=+</h1>", RegexOptions.ExplicitCapture);
             var i = 0;
             for (; i < a.Length; i++)
@@ -504,7 +504,7 @@ namespace CmsData
 
         public string HtmlContent(string name)
         {
-            var c = DbUtil.Db.ContentOfTypeHtml(name);
+            var c = db.ContentOfTypeHtml(name);
             return c.Body;
         }
         public string Replace(string text, string pattern, string replacement)
