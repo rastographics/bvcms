@@ -1,24 +1,89 @@
 ﻿@using CmsWeb;
+@using UtilityExtensions
 @model CmsWeb.Models.SMSModel
 @{
-    ViewBag.Title = "Index";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "SMS Messages";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
+<h2>SMS Messages</h2>
+<form id="form" method="post" action="/SMS/List">
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-3">
+                <label for="start">Start Date</label>
+                <div class="input-group date">
+                    @Html.TextBox("start", Model.start.HasValue ? Model.start.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    @Html.Hidden("startIso", Model.start.HasValue ? Model.start.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <label for="end">End Date</label>
+                <div class="form-inline">
+                    <div class="input-group date">
+                        @Html.TextBox("end", Model.end.HasValue ? Model.end.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("endIso", Model.end.HasValue ? Model.end.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                    </div>
+                    <div class="input-group">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("PagerTop", Model.Pager)
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th><a href="#" class="sortable">Sent/Scheduled</a></th>
+                    <th><a href="#" class="sortable">From</a></th>
+                    <th><a href="#" class="sortable">Title</a></th>
+                    <th class="text-right"><a href="#" class="sortable">Included</a></th>
+                    <th class="text-right"><a href="#" class="sortable">Excluded</a></th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var i in Model.GetList())
+                {
+                    <tr>
+                        <td>
+                            @i.Created
+                        </td>
+                        <td>
+                            @i.Person.Name
+                        </td>
+                        <td>
+                            @i.Title
+                        </td>
+                        <td class="text-right">
+                            @i.SentSMS
+                        </td>
+                        <td class="text-right">
+                            @i.SentNone
+                        </td>
+                        <td>
+                            <a href="/SMS/Details/@i.Id" class="btn btn-default btn-sm"><i class="fa fa-search"></i> Details</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerBottom", Model.Pager)
+    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+    @Html.HiddenFor(m => m.Pager.Page)
+    @Html.HiddenFor(m => m.Pager.Sort)
+    @Html.HiddenFor(m => m.Pager.Direction)
+</form>
 @section scripts
 {
     <script type="text/javascript">
-        $(document).ready(function() {
-            $(".datepicker").jqdatepicker();
-            $(".bt").button();
-
-            $("form a.submitbutton").on("click", function(event) {
-                $("#form").submit();
-            });
-
-            $('a.sortable').on("click", function() {
+        $(document).ready(function () {
+            $('a.sortable').on("click", function () {
                 var newsort = $(this).text();
-                var sort = $("#Sort");
-                var dir = $("#Direction");
+                var sort = $("#Pager_Sort");
+                var dir = $("#Pager_Direction");
 
                 if ($(sort).val() == newsort && $(dir).val() == 'asc')
                     $(dir).val('desc');
@@ -31,73 +96,12 @@
             });
         });
 
-        $.gotoPage = function(e, pg) {
+        $.gotoPage = function (e, pg) {
             $("#form").submit();
         };
 
-        $.setPageSize = function(e) {
+        $.setPageSize = function (e) {
             $("#form").submit();
         };
     </script>
 }
-<form id="form" method="post" action="/SMS/List">
-<div class="roundbox floatleft">
-<h2>SMS Messages</h2>
-<table cellspacing="5">
-<tr>
-    <td align="right">Start Date:</td>
-    <td>@Html.DatePicker("start")</td>
-</tr>
-<tr>
-    <td align="right">End Date:</td>
-    <td>@Html.DatePicker("end")</td>
-</tr>
-<tr>
-    <td align="right" colspan="2">
-        <a href="#" class="submitbutton bt">Filter</a>
-        <a href="/Emails" class="bt">Clear</a>
-    </td>
-</tr>
-</table>
-</div>
-<div class="floatclear"></div>
-<br />
-<table class="@ViewExtensions2.GridClass" cellpadding="4">
-    <thead>
-    <tr>
-        <th align="center"><a href="#" class="sortable">Sent/Scheduled</a></th>
-        <th><a href="#" class="sortable">From</a></th>
-        <th><a href="#" class="sortable">Title</a></th>
-        <th align="center"><a href="#" class="sortable">Included</a></th>
-        <th align="center"><a href="#" class="sortable">Excluded</a></th>
-        <th>&nbsp;</th>
-    </tr>
-    </thead>
-    <tbody>
-@foreach (var i in Model.GetList())
-{
-    <tr>
-        <td align="center">
-            @i.Created
-        </td>
-        <td>
-            @i.Person.Name
-        </td>
-        <td>
-            @i.Title
-        </td>
-        <td align="center">
-            @i.SentSMS
-        </td>
-        <td align="center">
-            @i.SentNone
-        </td>
-        <td align="center">
-            <a href="/SMS/Details/@i.Id">Details</a>
-        </td>
-    </tr>
-}
-    </tbody>
-</table>
-@{Html.RenderPartial("Pager2", Model.Pager);}
-</form>
