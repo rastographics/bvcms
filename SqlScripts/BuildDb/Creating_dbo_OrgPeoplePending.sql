@@ -4,6 +4,7 @@ RETURN
 (
 	SELECT om.PeopleId
 	, 'Pending' Tab
+	, '30' GroupCode
 	, om.AttendPct AttPct
 	, a.MeetingDate LastAttended
 	, om.EnrollmentDate Joined

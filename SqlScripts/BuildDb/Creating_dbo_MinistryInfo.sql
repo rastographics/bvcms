@@ -8,10 +8,10 @@ SELECT tt.PeopleId
 	, LastContactReceivedDt = ce.ContactDate 
 	, LastContactMadeId = co.ContactId
 	, LastContactMadeDt = co.ContactDate 
-	, LastTaskAboutId = tab.Id
-	, LastTaskAboutDt = tab.CreatedOn
-	, LastTaskDelegatedId = tmi.Id
-	, LastTaskDelegatedDt = tmi.CreatedOn
+	, TaskAboutId = tab.Id
+	, TaskAboutDt = tab.CreatedOn
+	, TaskDelegatedId = tmi.Id
+	, TaskDelegatedDt = tmi.CreatedOn
 FROM
 (
 	SELECT
@@ -23,7 +23,7 @@ FROM
 	             ORDER BY ContactDate DESC, ce.ContactId DESC
 	            )
 		 , ContactorId = (SELECT TOP 1 co.ContactId
-	             FROM dbo.Contactees co
+	             FROM dbo.Contactors co
 				 JOIN dbo.Contact ON Contact.ContactId = co.ContactId
 	             WHERE PeopleId = p.PeopleId
 	             ORDER BY ContactDate DESC, co.ContactId DESC
@@ -31,11 +31,13 @@ FROM
 		, TaskAboutId = (SELECT TOP 1 t.Id
 				 FROM dbo.Task t
 				 WHERE t.WhoId = p.PeopleId
+				 AND t.StatusId <> 40 -- not completed
 				 ORDER BY t.CreatedOn DESC
 				)
 		, TaskDelegateId = (SELECT TOP 1 t.Id
 				 FROM dbo.Task t
 				 WHERE t.CoOwnerId = p.PeopleId
+				 AND t.StatusId <> 40 -- not completed
 				 ORDER BY t.CreatedOn DESC
 				)
 	FROM dbo.People p
@@ -44,7 +46,6 @@ LEFT JOIN dbo.Contact ce ON ce.ContactId = tt.ContacteeId
 LEFT JOIN dbo.Contact co ON co.ContactId = tt.ContactorId
 LEFT JOIN dbo.Task TAB ON TAB.Id = tt.TaskAboutId
 LEFT JOIN dbo.Task tmi ON tmi.Id = tt.TaskDelegateId
-
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

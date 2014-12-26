@@ -5,7 +5,6 @@ BEGIN
 	SET ARITHABORT OFF
 	SET ANSI_WARNINGS OFF
 
-	CREATE TABLE #t (PeopleId INT, OrganizationId INT, WeekDate DATE, Attended INT)
 	DECLARE
 		@w04 DATE = DATEADD(ww, -4, GETDATE()),
 		@w12 DATE = DATEADD(ww, -12, GETDATE()),
@@ -13,9 +12,8 @@ BEGIN
 		@w52 DATE = DATEADD(ww, -52, GETDATE())
 	DECLARE @wid INT = ISNULL((SELECT Setting FROM dbo.Setting WHERE Id = 'WorshipId'), 0)
 
-	INSERT #t
-	SELECT ac.PeopleId, ac.OrganizationId, ac.WeekDate, ac.Attended
-	FROM AttendCredits ac
+	SELECT ac.* INTO #t
+	FROM AttendCredits2 ac
 	JOIN 
 	(
 		SELECT p.PeopleId, p.BibleFellowshipClassId 
@@ -26,6 +24,7 @@ BEGIN
 	WHERE ac.OrganizationId IN (tt.BibleFellowshipClassId, @wid)
 	AND WeekDate > DATEADD(ww, -52, GETDATE())
 	AND Attended IS NOT NULL
+	AND AttendanceTypeId not in (40,50,60)
 
 	SELECT 
 		 t.PeopleId
