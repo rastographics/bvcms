@@ -1,12 +1,5 @@
+
 CREATE PROC [dbo].[PledgeFulfillment2] ( @fundid1 INT, @fundid2 INT )
---RETURNS 
---@t TABLE 
---(
---	[First] NVARCHAR(50) , [Last] NVARCHAR(50) , Spouse NVARCHAR(50) , MemberStatus NVARCHAR(50) 
---	, PledgeDate1 DATETIME , PledgeDate2 DATETIME , LastDate1 DATETIME , LastDate2 DATETIME , PledgeAmt1 MONEY , PledgeAmt2 MONEY 
---	, TotalGiven1 MONEY , TotalGiven2 MONEY , Balance1 MONEY , Balance2 MONEY
---	, CreditGiverId INT , SpouseId INT , FamilyId INT
---)
 AS
 BEGIN
 	SELECT 
@@ -60,7 +53,7 @@ BEGIN
 		WHERE c.FundId IN (@fundid1, @fundid2)
 		GROUP BY p.PeopleId, c.CreditGiverId, c.SpouseId, p.PreferredName, p.LastName, sp.PreferredName, ms.Description, c.FamilyId
 	) tt
-	JOIN (
+	LEFT JOIN (
 		SELECT CreditGiverId
 		,(SELECT MIN(Date) FROM #t 
 			WHERE PledgeAmount > 0 
@@ -78,7 +71,7 @@ BEGIN
 		WHERE FundId = @fundid1
 		GROUP BY CreditGiverId
 	) c1 ON c1.CreditGiverId = tt.CreditGiverId
-	JOIN (
+	LEFT JOIN (
 		SELECT CreditGiverId
 		,(SELECT MIN(Date) FROM #t 
 			WHERE PledgeAmount > 0 

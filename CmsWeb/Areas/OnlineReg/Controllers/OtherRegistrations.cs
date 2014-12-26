@@ -257,8 +257,8 @@ emailid={2}
             var pid = a[1].ToInt();
             var linktype = a.Length > 3 ? a[3].Split(',') : "".Split(',');
             int? gsid = null;
-            if (linktype[0].Equal("supportlink") && linktype.Length > 1)
-                gsid = linktype[1].ToInt();
+            if (linktype[0].Equal("supportlink"))
+                gsid = linktype.Length > 1 ? linktype[1].ToInt() : 0;
 
             var q = (from pp in DbUtil.Db.People
                      where pp.PeopleId == pid

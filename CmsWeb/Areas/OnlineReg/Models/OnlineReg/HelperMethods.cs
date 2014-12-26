@@ -236,13 +236,15 @@ namespace CmsWeb.Models
                 if (masterorgid.HasValue)
                     return masterorg.OrganizationName;
                 if (SupportMissionTrip)
+                {
                     if (GoerId.HasValue)
                     {
                         var g = DbUtil.Db.LoadPersonById(GoerId.Value);
-                        return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
+                        if(g != null)
+                            return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
                     }
-                    else
-                        return "Support: " + org.OrganizationName;
+                    return "Support: " + org.OrganizationName;
+                }
                 if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
                     return Util.PickFirst(settings[org.OrganizationId].Title, org.OrganizationName);
                 return org.OrganizationName;

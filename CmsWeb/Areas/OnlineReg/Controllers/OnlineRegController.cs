@@ -53,6 +53,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.org == null && m.masterorg == null)
                 return Message("invalid registration");
 
+            GoerSupporter goerSupporter = null; // used for mission trips
+
             if (m.masterorg != null)
             {
                 if (!OnlineRegModel.UserSelectClasses(m.masterorg).Any())
@@ -64,11 +66,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return Message("no registration allowed on this org");
                 if (m.org.IsMissionTrip == true)
                 {
-                    if (gsid.HasValue)
+                    if (gsid.HasValue) // this means that the person is a suppoter who got a support email
                     {
-                        var gs = DbUtil.Db.GoerSupporters.Single(gg => gg.Id == gsid);
-                        m.GoerId = gs.GoerId;
-                        m.GoerSupporterId = gsid;
+                        goerSupporter = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == gsid);
+                        if (goerSupporter != null)
+                        {
+                            m.GoerId = goerSupporter.GoerId; // suppoert this particular goer
+                            m.GoerSupporterId = gsid;
+                        }
+                        else
+                            m.GoerId = 0; // allow this supporter to still select a goer
                     }
                     else if (goerid.HasValue)
                     {

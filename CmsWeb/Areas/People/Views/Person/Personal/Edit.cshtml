@@ -18,7 +18,7 @@
             @Html.EditorFor(m => m.MaritalStatus)
             @Html.EditorFor(m => m.DOB, "Birthday")
             @Html.EditorFor(m => m.WeddingDate)
-            @(User.IsInRole("Access")
+            @(User.IsInRole("Membership") || User.IsInRole("Admin")
                 ? @Html.EditorFor(m => m.DeceasedDate)
                 : @Html.DisplayFor(m => m.DeceasedDate))
             @Html.EditorFor(m => m.OccupationOther, "Typeahead", new { link = "/Person2/Occupations" })
