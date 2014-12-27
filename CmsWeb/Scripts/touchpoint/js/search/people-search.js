@@ -1,7 +1,8 @@
 ﻿$(function () {
-    $(".bt").button();
     $('#name').focus();
+
     $("#searchvalues select").not("#statusflags").css("width", "100%");
+
     $("#clear").click(function (ev) {
         ev.preventDefault();
         $("input:text").val("");
@@ -9,15 +10,19 @@
         $("#gender,#marital").val(99); //.sb("refresh");
         return false;
     });
+
     $("#search").click(function (ev) {
         ev.preventDefault();
         $.getTable();
         return false;
     });
+
     $("a.bt").bind("contextmenu", function (e) {
         e.preventDefault();
     });
+
     $('#statusflags').multiselect();
+
     $("#targetpeople").click(function (ev) {
         ev.preventDefault();
         if ($('a.target[target="people"]').length == 0)
@@ -26,6 +31,7 @@
             $("a.target").removeAttr("target");
         return false;
     });
+
     $("#convert").click(function (ev) {
         ev.preventDefault();
         var f = $('#results').closest('form');
@@ -40,30 +46,33 @@
         });
         return false;
     });
+
     $.gotoPage = function(e, pg) {
         $("#Page").val(pg);
         $.getTable();
         return false;
     };
+
     $.setPageSize = function (e) {
         $('#Page').val(1);
         $("#PageSize").val($(e).val());
         return $.getTable();
     };
+
     $.getTable = function () {
         var f = $('#results').closest('form');
         var q = f.serialize();
         $.block();
         $.post($('#search').attr('href'), q, function (ret) {
             $('#results').replaceWith(ret).ready(function () {
-                $('#resultsTable > tbody > tr:even').addClass('alt');
                 $("#totalcount").text($("#totcnt").val());
                 $.unblock();
             });
         });
+
         return false;
     };
-    $('#resultsTable > tbody > tr:even').addClass('alt');
+
     $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
         ev.preventDefault();
         var newsort = $(this).text();
@@ -77,6 +86,7 @@
         $.getTable();
         return false;
     });
+
     $("form").on("keypress", 'input', function (e) {
         if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
             $('#search').click();
@@ -84,6 +94,7 @@
         }
         return true;
     });
+
     $('body').on('click', 'a.taguntag', function (ev) {
         ev.preventDefault();
         var a = $(this);
