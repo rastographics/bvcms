@@ -1,24 +1,28 @@
-﻿@using CmsWeb
-@{
-    Layout = "~/Views/Shared/Reports.cshtml";
-    ViewBag.Title = "FindDuplicates";
+﻿@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Find Duplicates";
 }
-@section scripts
-{
-    <script>
-        $(function() {
-            $(".datepicker").jqdatepicker();
-            $("a.bt").button();
-        });
-    </script>
-}
-    <h2>
-        Find Duplicates</h2>
-    <a href="/">Home</a>
-    <form action="/Duplicates/Find" method="post">
-    <table>
-        <tr> <th> Created on or after date: </th> <td> @Html.DatePicker("FromDate")</td> </tr>
-        <tr> <th> Created on or before date: </th> <td> @Html.DatePicker("ToDate")</td></tr>
-        <tr> <td colspan="2" class="center"> <input type="submit" class="bt" name="Submit" value="Run" /></td></tr>
-    </table>
-    </form>
+<h2>Find Duplicates</h2>
+<div class="well">
+    <div class="row">
+        <div class="col-sm-4 col-xs-12">
+            <form action="/Duplicates/Find" method="post">
+                <div class="form-group">
+                    <label for="FromDate">Created on or after</label>
+                    <div class="input-group date">
+                        @Html.TextBox("FromDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("FromDateIso", "", new { disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ToDate">Created on or before</label>
+                    <div class="input-group date">
+                        @Html.TextBox("ToDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("ToDateIso", "", new { disabled = "disabled" })
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Run</button>
+            </form>
+        </div>
+    </div>
+</div>

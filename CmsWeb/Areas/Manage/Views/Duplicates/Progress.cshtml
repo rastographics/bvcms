@@ -1,36 +1,12 @@
-﻿@using CmsWeb
-@model CmsData.DuplicatesRun
-<html>
-<head>
-    <title>Duplicates Finder</title>
-    @ViewExtensions2.jQuery()
-    @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/jQuery/jquery-migrate-1.1.1.js")
-    @Fingerprint.Script("/Scripts/jQuery/jquery.blockUI.js")
-    @if (Model.Running == 1)
-    {
-        <script type="text/javascript">
-            $(function () {
-                var intervalId = window.setInterval(function () {
-                    $.post('/Duplicates/Progress2', null, function (json) {
-                        $("#count").text(json.Count);
-                        $("#processed").text(json.Processed);
-                        $("#found").text(json.Found);
-                        $("#completed").text(json.Completed);
-                        $("#error").text(json.Error);
-                        if (!json.Running) {
-                            window.clearInterval(intervalId);
-                        }
-                    }, "json");
-                }, 5000);
-            });
-        </script>
-    }
-</head>
-<body>
-    <h2>Duplicates Finder</h2>
-    <a href="/">Home</a>
-    <table>
+﻿@model CmsData.DuplicatesRun
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Duplicates Finder";
+}
+<h2>Duplicates Finder</h2>
+<br/>
+<div class="table-responsive">
+    <table class="table table-striped">
         <tr>
             <td>Started </td>
             <td>@Model.Started </td>
@@ -56,5 +32,25 @@
             <td><span id="error">@Model.Error</span> </td>
         </tr>
     </table>
-</body>
-</html>
+</div>
+@section scripts{
+    @if (Model.Running == 1)
+    {
+        <script type="text/javascript">
+            $(function () {
+                var intervalId = window.setInterval(function () {
+                    $.post('/Duplicates/Progress2', null, function (json) {
+                        $("#count").text(json.Count);
+                        $("#processed").text(json.Processed);
+                        $("#found").text(json.Found);
+                        $("#completed").text(json.Completed);
+                        $("#error").text(json.Error);
+                        if (!json.Running) {
+                            window.clearInterval(intervalId);
+                        }
+                    }, "json");
+                }, 5000);
+            });
+        </script>
+    }
+}
