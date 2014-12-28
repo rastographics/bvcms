@@ -1,5 +1,17 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Manage.Controllers.DuplicatesController.DuplicateInfo>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Duplicates";
+}
+@section head{
+    <style>
+        ol li a {
+            text-decoration: underline;
+        }
+    </style>
+}
 <h2>Duplicates</h2>
+<br/>
 <ol>
 @foreach (var i in Model)
 {
