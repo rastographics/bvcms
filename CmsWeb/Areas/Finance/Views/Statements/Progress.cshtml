@@ -1,48 +1,61 @@
-﻿@using CmsWeb
-@model CmsData.ContributionsRun
-<html>
-<head>
-    <title>Contribution Statements</title>
-    @ViewExtensions2.jQuery()
-    @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/jQuery/jquery-migrate-1.1.1.js")
-    @Fingerprint.Script("/Scripts/jQuery/jquery.blockUI.js")
-</head>
-<body>
-    <h2>
-        Contribution Statements</h2>
-        <a href="/">Home</a>
-    <table>
-        <tr> <td> Started </td> <td> @Model.Started </td> </tr>
-        <tr> <td> Total Contributors </td> <td> <span id="count">@Model.Count</span> </td> </tr>
-        <tr> <td> Processed </td> <td> <span id="processed">@Model.Processed</span> </td> </tr>
-        <tr> <td> Page Set </td> <td> <span id="set">@Model.CurrSet</span> </td> </tr>
-        <tr> <td> Completed </td> <td> <span id="completed">@Model.Completed</span> </td> </tr>
-        <tr> <td></td> <td> <span id="error">@(Model.Error ?? "")</span> </td> </tr>
+﻿@model CmsData.ContributionsRun
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Contribution Statements";
+}
+<h2>Contribution Statements</h2>
+<br />
+<div class="table-responsive">
+    <table class="table table-striped">
+        <tr>
+            <td>Started</td>
+            <td>@Model.Started</td>
+        </tr>
+        <tr>
+            <td>Total Contributors</td>
+            <td><span id="count">@Model.Count</span></td>
+        </tr>
+        <tr>
+            <td>Processed</td>
+            <td><span id="processed">@Model.Processed</span></td>
+        </tr>
+        <tr>
+            <td>Page Set</td>
+            <td><span id="set">@Model.CurrSet</span></td>
+        </tr>
+        <tr>
+            <td>Completed</td>
+            <td><span id="completed">@Model.Completed</span></td>
+        </tr>
+        <tr>
+            <td>Error</td>
+            <td><span id="error">@(Model.Error ?? "")</span></td>
+        </tr>
     </table>
+</div>
+<div id="download" style="display:none">
+    Download Statements
+</div>
+@section scripts{
     @if (Model.Running == 1)
     {
-<script type="text/javascript">
-    $(function () {
-        var intervalId = window.setInterval(function () {
-            $.post('/Statements/Progress2', null, function (json) {
-                $("#count").text(json.Count);
-                $("#processed").text(json.Processed);
-                $("#completed").text(json.Completed);
-                $("#set").text(json.CurrSet);
-                $("#error").text(json.Error);
-                if (json.Completed) {
-                    $("#download").show();
-                    $("#download").html(json.html);
-                    window.clearInterval(intervalId);
-                }
-            }, "json");
-        }, 5000);
-    });
-</script>
-        <div id="download" style="display:none">Download Statements
-        </div>
+        <script type="text/javascript">
+            $(function () {
+                var intervalId = window.setInterval(function () {
+                    $.post('/Statements/Progress2', null, function (json) {
+                        $("#count").text(json.Count);
+                        $("#processed").text(json.Processed);
+                        $("#completed").text(json.Completed);
+                        $("#set").text(json.CurrSet);
+                        $("#error").text(json.Error);
+                        if (json.Completed) {
+                            $("#download").show();
+                            $("#download").html(json.html);
+                            window.clearInterval(intervalId);
+                        }
+                    }, "json");
+                }, 5000);
+            });
+        </script>
     }
-
-</body>
-</html>
+}

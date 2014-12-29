@@ -1,50 +1,49 @@
 ﻿@using CmsWeb
 @using CmsWeb.Code
 @{
-    Layout = "~/Views/Shared/Reports.cshtml";
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Contribution Statements";
     var cv = new CodeValueModel();
 }
-@section scripts
-{
-    <script>
-        $(function() {
-            $(".datepicker").jqdatepicker();
-            $("a.bt").button();
-        });
-    </script>
-}
+
 <h2>Contribution Statements</h2>
-<a href="/">Home</a>
-<form action="/Statements/Start" method="post">
-    <table>
-        <tr>
-            <th>Exclude Electronic Only: </th>
-            <td>@Html.CheckBox("ExcludeElectronic", false)</td>
-        </tr>
-        <tr>
-            <th>StartsWith: </th>
-            <td>@Html.TextBox("startswith") (lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow) </td>
-        </tr>
-        <tr>
-            <th>Sort: </th>
-            <td>@Html.TextBox("sort") (type: name or zip) </td>
-        </tr>
-        <tr>
-            <th>Start Date: </th>
-            <td>@Html.DatePicker("FromDate")</td>
-        </tr>
-        <tr>
-            <th>End Date: </th>
-            <td>@Html.DatePicker("EndDate")</td>
-        </tr>
-        <tr>
-            <th>Tag: </th>
-            <td>@Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect())</td>
-        </tr>
-        <tr>
-            <td colspan="2" class="center">
-                <input type="submit" class="bt" name="Submit" value="Run" /></td>
-        </tr>
-    </table>
-</form>
+<div class="well">
+    <div class="row">
+        <div class="col-sm-3">
+            <form action="/Statements/Start" method="post">
+                <div class="form-group">
+                    <label for="startswith">Starts With</label>
+                    @Html.TextBox("startswith", "", new { @class = "form-control", title = "lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow" })
+                </div>
+                <div class="form-group">
+                    <label for="sort">Sort</label>
+                    @Html.TextBox("sort", "", new { @class = "form-control", title = "type: name or zip" })
+                </div>
+                <div class="form-group">
+                    <label for="FromDate">Start Date</label>
+                    <div class="input-group date">
+                        @Html.TextBox("FromDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("FromDateIso", "", new { disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="EndDate">End Date</label>
+                    <div class="input-group date">
+                        @Html.TextBox("EndDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("EndDateIso", "", new { disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="TagId">Tag Id</label>
+                    @Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect(), new { @class = "form-control" })
+                </div>
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBox("ExcludeElectronic", false) Exclude electronic only?
+                    </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Run</button>
+            </form>
+        </div>
+    </div>
+</div>
