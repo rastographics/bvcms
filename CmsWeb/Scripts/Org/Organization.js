@@ -202,7 +202,6 @@ $(function () {
         }
         return false;
     });
-    //$(".datepicker").jqdatepicker();
 
     $(".CreateAndGo").click(function (ev) {
         ev.preventDefault();
@@ -275,16 +274,18 @@ $(function () {
         d.dialog("option", "title", "Repair Transactions");
         d.dialog("open");
     });
-    $('a.delmeeting').live('click', function (ev) {
-        ev.preventDefault();
-        if (confirm("delete meeting for sure?")) {
-            var d = $('#LongRunOp');
-            $('iframe', d).attr("src", this.href);
-            d.dialog("option", "title", "Delete Meeting");
-            d.dialog("open");
-        }
-        return false;
-    });
+//    $('a.delmeeting').live('click', function (ev) {
+//        ev.preventDefault();
+//        bootbox.Confirm("delete meeting for sure?", function(result) {
+//            if (result === true) {
+//                var d = $('#LongRunOp');
+//                $('iframe', d).attr("src", this.href);
+//                d.dialog("option", "title", "Delete Meeting");
+//                d.dialog("open");
+//            }
+//        });
+//        return false;
+//    });
 
     $('a.addmembers').live("click", function (e) {
         e.preventDefault();
@@ -376,6 +377,17 @@ $(function () {
             });
         };
         */
+    $.InitFunctions.datetimepicker = function (f) {
+        $(".datetimepicker").datetimepicker({
+            format: "m/d/yyyy H:ii P",
+            showMeridian: true,
+            autoclose: true,
+            todayBtn: false
+        });
+    };
+    $.InitFunctions.ReloadMeetings = function (f) {
+        $("#Meetings-tab").load("/Organization/Meetings", { id: $("input[name=Id]", "#Meetings-tab").val() });
+    }
     $.InitFunctions.showHideRegTypes = function (f) {
         $("#Fees-tab").show();
         $("#Questions-tab").show();
@@ -484,6 +496,26 @@ $(function () {
 
     $(".helptip").tooltip({ showBody: "|", blocked: true });
 
+//    $("#NewMeeting").live("click", function (ev) {
+//        ev.preventDefault();
+//        $("<div />").load(this.href, function() {
+//            var d = $(this);
+//            var f = d.find("form");
+//            f.modal("show");
+//            $(".datetime", f).datetimepicker({
+//                autoclose: true,
+//                showMeridian: true,
+//                orientation: "auto",
+//                forceParse: false,
+//                format: $.dtoptions.formatTime
+//            });
+//            f.on('hidden', function() {
+//                d.remove();
+//                f.remove();
+//            });
+//        });
+//        return false;
+//    });
     $("form.DisplayEdit a.submitbutton").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
@@ -527,6 +559,9 @@ $(function () {
         return true;
     });
 */
+    $.InitFunctions.CreateMeeting = function ($a) {
+        
+    };
     $('a.taguntag').live("click", function (ev) {
         ev.preventDefault();
         $.post('/Organization/ToggleTag/' + $(this).attr('pid'), null, function (ret) {
@@ -601,7 +636,7 @@ $(function () {
             $.post(href, null, function (ret) {
                 $("#schedules", f).append(ret).ready(function () {
                     $.renumberListItems();
-                    $.initDatePicker(f);
+                    $.InitFunctions.datetimepicker();
                 });
             });
         }
@@ -682,38 +717,6 @@ $(function () {
                 }
             });
             d.dialog('open');
-        });
-        $('#NewMeeting').live("click", function (ev) {
-            ev.preventDefault();
-            $('#grouplabel').text("Group Meeting");
-            $("tr.forMeeting").show();
-            $("tr.forRollsheet").hide();
-            var d = $("#NewMeetingDialog");
-    
-            var sch = $("#ScheduleListPrev").val();
-            if (sch) {
-                var a = sch.split(',');
-                $("#PrevMeetingDate").val(a[0]);
-                $("#NewMeetingTime").val(a[1]);
-                $("#AttendCreditList").val(a[2]);
-            }
-    
-            d.dialog("option", "buttons", {
-                "Ok": function () {
-                    var dt = $.GetPrevMeetingDateTime();
-                    if (!dt.valid)
-                        return false;
-                    var url = "?d=" + dt.date + "&t=" + dt.time +
-                    "&group=" + ($('#group').is(":checked") ? "true" : "false");
-                    $.post("/Organization/NewMeeting", { d: dt.date, t: dt.time, AttendCredit: $("#AttendCreditList").val(), group: $('#group').is(":checked") }, function (ret) {
-                        if (!ret.startsWith("error"))
-                            window.location = ret;
-                    });
-                    $(this).dialog("close");
-                }
-            });
-            d.dialog('open');
-            return false;
         });
     */
     $("#ScheduleListPrev").change(function () {
@@ -922,6 +925,38 @@ $(function () {
         $.updateTable($('#Prospects-tab a.setfilter'));
         $.updateTable($('#Visitors-tab a.setfilter'));
     }
+//    $('#NewMeeting').live("click", function (ev) {
+//        ev.preventDefault();
+//        $('#grouplabel').text("Group Meeting");
+//        $("tr.forMeeting").show();
+//        $("tr.forRollsheet").hide();
+//        var d = $("#NewMeetingDialog");
+
+//        var sch = $("#ScheduleListPrev").val();
+//        if (sch) {
+//            var a = sch.split(',');
+//            $("#PrevMeetingDate").val(a[0]);
+//            $("#NewMeetingTime").val(a[1]);
+//            $("#AttendCreditList").val(a[2]);
+//        }
+
+//        d.dialog("option", "buttons", {
+//            "Ok": function () {
+//                var dt = $.GetPrevMeetingDateTime();
+//                if (!dt.valid)
+//                    return false;
+//                var url = "?d=" + dt.date + "&t=" + dt.time +
+//                "&group=" + ($('#group').is(":checked") ? "true" : "false");
+//                $.post("/Organization/NewMeeting", { d: dt.date, t: dt.time, AttendCredit: $("#AttendCreditList").val(), group: $('#group').is(":checked") }, function (ret) {
+//                    if (!ret.startsWith("error"))
+//                        window.location = ret;
+//                });
+//                $(this).dialog("close");
+//            }
+//        });
+//        d.dialog('open');
+//        return false;
+//    });
 });
 function AddSelected() {
     $.RebindMemberGrids();

@@ -116,6 +116,12 @@ namespace UtilityExtensions
                 return d.Value.ToString(fmt);
             return "";
         }
+        public static string ToString2(this TimeSpan? ts, string fmt)
+        {
+            if (ts.HasValue)
+                return ts.Value.ToString(fmt);
+            return "";
+        }
         public static string FormatCSZ(string city, string st, string zip)
         {
             string csz = city ?? string.Empty;

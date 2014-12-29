@@ -10,11 +10,8 @@ using System.Net;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 using System.Xml;
 using CmsWeb.Areas.Search.Models;
-using CmsWeb.Models;
-using DocumentFormat.OpenXml.EMMA;
 using Elmah;
 using UtilityExtensions;
 using CmsData;
@@ -56,7 +53,11 @@ namespace CmsWeb.Areas.Search.Controllers
             ViewBag.xml = m.TopClause.ToXml();
             var sb = new StringBuilder();
             foreach (var c in m.TopClause.AllConditions)
+            {
                 sb.AppendLine(c.Key.ToString());
+                if(c.Value.FieldInfo == null)
+                    return NewQuery();
+            }
             ViewBag.ConditionList = sb.ToString();
             return View("Index", m);
         }

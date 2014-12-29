@@ -10,7 +10,7 @@
       <new2css Include="Content/bootstrap-modal/css/bootstrap-modal.css"/>
       <new2css Include="Content/css/chosen.css"/>
       <new2css Include="Content/css/bootstrap-editable.css"/>
-      <new2css Include="Content/css/datepicker.css"/>
+      <new2css Include="Content/css/bootstrap-datetimepicker.css"/>
       <new2css Include="Content/css/typeahead.js-bootstrap.css"/>
       
       <stylecss Include="Content/styles/dropdown.css"/>
@@ -26,7 +26,7 @@
       <main2 Include="Scripts/Bootstrap/bootstrap-modal.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-editable.js"/>
       <main2 Include="Scripts/Bootstrap/bootbox.js"/>
-      <main2 Include="Scripts/Bootstrap/bootstrap-datepicker.js"/>
+      <main2 Include="Scripts/Bootstrap/bootstrap-datetimepicker.js"/>
       <main2 Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2 Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2 Include="Scripts/jQuery/jquery.mousewheel.js"/>
@@ -94,7 +94,7 @@
 
       <org Include="Scripts/Org/Organization.js"/>
       <org Include="Scripts/Dialog/SearchUsers.js"/>
-      <org Include="Scripts/js/RegSetting.js"/>      
+      <org Include="Scripts/Org/RegSetting.js"/>      
       <org Include="Scripts/Org/OrgMemberDialog2.js"/>
 <!--      <org Include="Scripts/js/form-ajax.js"/>-->
 <!--      <org Include="Scripts/js/ExtraValue.js"/>-->

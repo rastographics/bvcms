@@ -7,7 +7,7 @@
   <p>
     @if (User.IsInRole("Attendance"))
     {
-      <a id="NewMeeting" href="Organization/NewMeeting" class="bt">Create New Meeting</a>
+      <a id="NewMeeting" class="btn btn-primary dialog-options" href="/Dialog/NewMeeting/@Model.Id?forMeeting=true">Create New Meeting</a>
     }
     @Html.CheckBox("Future") Show Future Meetings
   </p>
@@ -41,7 +41,7 @@
           <td>
             @if (User.IsInRole("Attendance"))
             {
-              <a href="/DeleteMeeting/@m.MeetingId" class="delmeeting"><img border="0" src="/Content/images/delete.gif" /></a>
+              <a href="/Dialog/DeleteMeeting/@m.MeetingId" class="longrunop"><img border="0" src="/Content/images/delete.gif" /></a>
             }
           </td>
         </tr>

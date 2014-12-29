@@ -365,6 +365,7 @@
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\OrgPerson.cs" />
+    <Compile Include="Extensions\DeleteMeetingRun.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />
     <Compile Include="Finance\ReturnedChecksResponse.cs" />

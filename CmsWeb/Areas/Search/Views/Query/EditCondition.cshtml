@@ -34,8 +34,16 @@
         @Html.EditorForIf(m => m.OrgName, Model.OrgNameVisible)
         @Html.EditorForIf(m => m.OrgStatus, Model.OrgStatusVisible, "DropDown", new { items = OrgSearchModel.StatusIds() })
         @Html.EditorForIf(m => m.OnlineReg, Model.OnlineRegVisible, "DropDown", new { items = OrgSearchModel.RegistrationTypeIds() })
-        @Html.EditorForIf(m => m.StartDate, Model.StartDateVisible)
-        @Html.EditorForIf(m => m.EndDate, Model.EndDateVisible)
+        @if (Model.ConditionName == "AttendedAsOf")
+        {
+          @Html.EditorForIf(m => m.StartDate, Model.StartDateVisible, "DateAndTime")
+          @Html.EditorForIf(m => m.EndDate, Model.EndDateVisible, "DateAndTime")
+        }
+        else
+        {
+          @Html.EditorForIf(m => m.StartDate, Model.StartDateVisible)
+          @Html.EditorForIf(m => m.EndDate, Model.EndDateVisible)
+        }
         @Html.EditorForIf(m => m.Quarters, Model.QuartersVisible, new { label = Model.QuartersLabel })
         @Html.EditorForIf(m => m.Days, Model.DaysVisible)
         @Html.EditorForIf(m => m.Age, Model.AgeVisible)

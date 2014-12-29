@@ -619,6 +619,8 @@ namespace CmsWeb
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
 
+            if (attributes.ContainsKey("data-rule-date") && attributes.ContainsKey("data-rule-dateandtimevalid"))
+                attributes.Remove("data-rule-date");
             var textBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
                 htmlHelper.TextBoxFor(expression, format, attributes));
 
@@ -696,6 +698,22 @@ namespace CmsWeb
                 htmlHelper.DropDownListFor(m => m.Value, selectList, optionLabel, attributes));
 
             return dropDown;
+        }
+        public static IHtmlString DisplayForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool show, string templateName, object viewdata = null, object htmlAttributes = null)
+        {
+            if (!show)
+                return null;
+            if (templateName == null)
+                return htmlHelper.DisplayFor(expression, viewdata);
+            return htmlHelper.DisplayFor(expression, templateName, viewdata);
+        }
+        public static IHtmlString DisplayForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool show, object viewdata = null)
+        {
+            return htmlHelper.DisplayForIf(expression, show, null, viewdata);
         }
         public static IHtmlString EditorForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,

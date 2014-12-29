@@ -1,12 +1,14 @@
-﻿@model CmsWeb.Controllers.DialogController.NewMeetingInfo
-<form id="new-meeting" class="dialog-options modal fade hide validate" target="_blank" method="GET">
+﻿@using System.Web.Mvc.Html
+@model CmsWeb.Controllers.DialogController.NewMeetingInfo
+
+<form class="modal dialog-options form-horizontal validate fade hide" action="/Dialog/NewMeeting" method="POST">
   <div class="modal-header">
     <a class="close" data-dismiss="modal">x</a>
-    <h3>Choose Meeting Options</h3>
+    <h3>New Meeting</h3>
   </div>
   <div class="modal-body">
     @Html.EditorFor(m => m.Schedule)
-    @Html.EditorFor(m => m.MeetingDate, "datetimepicker")
+    @Html.EditorFor(m => m.MeetingDate, "DateAndTime")
     @Html.EditorFor(m => m.AttendCredit)
     @Html.EditorFor(m => m.ByGroup)
     @Html.EditorFor(m => m.GroupFilterPrefix)
@@ -14,7 +16,8 @@
     @Html.EditorFor(m => m.UseAltNames)
   </div>
   <div class="modal-footer">
-    <a class="btn" data-dismiss="modal">Close</a>
-    <input type="submit" class="btn btn-primary" value="OK" />
+    <a href="#" class="btn btn-success" data-dismiss="modal">Close</a>
+    <input type="submit" class="btn btn-primary" value="OK"/>
+@*    <a href="#" class="btn btn-primary createmeeting">OK</a>*@
   </div>
 </form>

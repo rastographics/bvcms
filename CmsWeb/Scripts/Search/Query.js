@@ -45,9 +45,18 @@
         });
     });
     $.AdjustEditCondition = function (option) {
-        $("#editcondition .date").datepicker({
+        $("#editcondition .dateonly").datepicker({
             keyboardNavigation: true,
             orientation: "auto",
+            minView: 2,
+            autoclose: true,
+            forceParse: false
+        });
+        $("#editcondition .datetime").datetimepicker({
+            autoclose: true,
+            showMeridian: true,
+            orientation: "auto",
+            format: $.dtoptions.formatTime,
             forceParse: false
         });
         $("#editcondition select").multiselect({

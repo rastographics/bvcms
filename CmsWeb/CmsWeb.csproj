@@ -393,7 +393,6 @@
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\SpecialRegModel.cs" />
-    <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
     <Compile Include="Areas\Dialog\Controllers\RepairTransactionsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchOrgsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\TransactionHistoryController.cs" />
@@ -457,9 +456,12 @@
     <Compile Include="Areas\Search\Controllers\RegistrationSearchController.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
+    <Compile Include="Code\DateAndTimeValidAttribute.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
-    <Compile Include="Controllers\DialogController.cs" />
+    <Compile Include="Controllers\Dialog\DeleteMeeting.cs" />
+    <Compile Include="Controllers\Dialog\NewMeeting.cs" />
+    <Compile Include="Controllers\Dialog\DialogController.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
@@ -679,6 +681,10 @@
     <Content Include="Areas\Reports\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Content\css\bootstrap-datetimepicker.css" />
+    <Content Include="Content\css\bootstrap-datetimepicker.min.css">
+      <DependentUpon>bootstrap-datetimepicker.css</DependentUpon>
+    </Content>
     <Content Include="Content\css\bootstrap-editable.css" />
     <Content Include="Content\css\bootstrap-multiselect.css" />
     <Content Include="Content\css\bootstrap-multiselect.min.css">
@@ -773,6 +779,52 @@
     <Content Include="Scripts\Bootstrap\bootbox.js" />
     <Content Include="Scripts\Bootstrap\bootbox.min.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-ajax.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.js" />
+    <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.min.js">
+      <DependentUpon>bootstrap-datetimepicker.js</DependentUpon>
+    </Content>
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ar.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.bg.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ca.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.cs.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.da.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.de.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ee.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.el.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.es.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.fi.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.fr.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.he.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.hr.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.hu.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.id.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.is.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.it.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ja.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ko.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.lt.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.lv.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ms.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.nb.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.nl.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.no.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.pl.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.pt-BR.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.pt.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ro.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.rs-latin.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.rs.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ru.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.sk.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.sl.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.sv.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.sw.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.th.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.tr.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.ua.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.uk.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.zh-CN.js" />
+    <Content Include="Scripts\Bootstrap\locales\bootstrap-datetimepicker.zh-TW.js" />
     <Content Include="Scripts\Bootstrap\notify.js" />
     <Content Include="Scripts\Bootstrap\renamedatepicker.js" />
     <Content Include="Scripts\Bootstrap\bootstrap-datepicker.js" />
@@ -828,6 +880,9 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabAttendance.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabGeneral.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabRegistration.cshtml" />
+    <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.min.js.map">
+      <DependentUpon>bootstrap-datetimepicker.min.js</DependentUpon>
+    </Content>
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
@@ -874,7 +929,7 @@
     <Content Include="Scripts\OnlineReg\OnlineRegPayment2.js" />
     <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
-    <Content Include="Scripts\js\RegSetting2.js" />
+    <Content Include="Scripts\Org\RegSetting2.js" />
     <Content Include="Scripts\js\ExtraValue.js" />
     <Content Include="Scripts\js\sgmap.js" />
     <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.js" />
@@ -1606,6 +1661,12 @@
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
     <Content Include="Views\Shared\PagerHidden.cshtml" />
+    <Content Include="Views\Dialog\NewMeeting.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
+    <Content Include="Views\Dialog\DeleteMeeting.cshtml" />
+    <Content Include="Views\Dialog\DeleteMeetingProgress.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\DateAndTime.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\TimeSpan.cshtml" />
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1665,10 +1726,10 @@
     <Content Include="Scripts\Meeting\Meetings.js" />
     <Content Include="Scripts\Dialog\SearchDivisions.js" />
     <Content Include="Scripts\Finance\Funds.js" />
-    <Content Include="Scripts\js\RegSetting.js" />
+    <Content Include="Scripts\Org\RegSetting.js" />
     <Content Include="Scripts\js\markers.js" />
     <Content Include="Scripts\Meeting\meeting.js" />
-    <Content Include="Scripts\js\RegSettings.js" />
+    <Content Include="Scripts\Org\RegSettings.js" />
     <Content Include="Scripts\Dialog\SearchUsers.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment.js" />
     <Content Include="Errors\AccessDenied.htm" />

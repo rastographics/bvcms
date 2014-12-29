@@ -14,13 +14,24 @@
         });
         $.DatePickersAndChosen();
     };
-    $.DatePickersAndChosen = function () {
-        $("form.ajax .date").datepicker({
+    $.DatePickers = function() {
+        $("form .dateonly").datepicker({
             autoclose: true,
             orientation: "auto",
+            minView: 2,
             forceParse: false,
             format: $.dtoptions.format
         });
+        $("form .datetime").datetimepicker({
+            autoclose: true,
+            showMeridian: true,
+            orientation: "auto",
+            forceParse: false,
+            format: $.dtoptions.formatTime
+        });
+    };
+    $.DatePickersAndChosen = function () {
+        $.DatePickers();
         $('form.ajax select:not([plain])').chosen();
         $('form.ajax a.editable').editable();
     };
@@ -179,7 +190,90 @@
     $.validator.addMethod("unallowedcode", function (value, element, params) {
         return value !== params.code;
     }, "required, select item");
+    $.validator.addMethod("dateandtimevalid", function (value, element) {
+        var stamp = value.split(" ");
+        var validDate = !/Invalid|NaN/.test(new Date(stamp[0]).toString());
+        var validTime = /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?$/i.test(stamp[1]);
+        return this.optional(element) || (validDate && validTime);
+    }, "Please enter a valid date and time.");
 
+    $("a.dialog-options").live("click", function (ev) {
+        ev.preventDefault();
+        var $a = $(this);
+        var href = this.href;
+        if ($a.data("target"))
+            href = $a.data("target");
+        $("<div id='dialog-options' />").load(href, function () {
+            var d = $(this);
+            var f = d.find("form");
+            if ($a[0].title)
+                f.find("h3.title").text($a[0].title);
+            f.modal("show");
+            f.attr("action", $a[0].href);
+            f.on('hidden', function () {
+                d.remove();
+            });
+            $.DatePickers();
+            f.validate({
+                submitHandler: function (form) {
+                    if (form.method.toUpperCase() === 'GET')
+                        form.submit();
+                    else if(form.hasClass("ajax")) {
+                        var q = f.serialize();
+                        $.post(form.action, q, function (ret) {
+                            if (ret)
+                                $.growlUI("", ret);
+                            if ($a.data("callback")) {
+                                $.InitFunctions[$a.data("callback")]($a);
+                            }
+                        });
+                    } else
+                        form.submit();
+                    f.modal("hide");
+                },
+                highlight: function (element) {
+                    $(element).closest(".control-group").addClass("error");
+                },
+                unhighlight: function (element) {
+                    $(element).closest(".control-group").removeClass("error");
+                }
+            });
+        });
+        return false;
+    });
+
+    $("a.longrunop").live("click", function(ev) {
+        ev.preventDefault();
+        $('<form class="modal form-horizontal longrunop validate fade hide" />').load(this.href, function() {
+            var f = $(this);
+            var callback = $("#callback", f).val();
+            f.modal("show");
+            var intervalid = null;
+            f.on('hidden', function() {
+                if(intervalid)
+                    window.clearInterval(intervalid);
+                f.remove();
+                if(callback)
+                    $.InitFunctions[callback]();
+            });
+            f.on("click", "a.ajaxreloader", function(event) {
+                event.preventDefault();
+                var href = this.href;
+                $.post(href, function(ret) {
+                    f.html(ret);
+                });
+                intervalid = window.setInterval(function() {
+                    $.post(href, function(ret) {
+                        if (ret.substr(0, 100).indexOf('<!--completed-->') >= 0)
+                            window.clearInterval(intervalid);
+                        $("form.longrunop").html(ret);
+                    });
+                }, 3000);
+                return false;
+            });
+        });
+        return false;
+    });
     var $loadingcount = 0;
     $.ajaxSetup({
         beforeSend: function () {
@@ -189,11 +283,7 @@
             $loadingcount--;
             if ($loadingcount === 0)
                 $("#loading-indicator").hide();
-        },
-//        error: function () {
-//            $("#loading-indicator").hide();
-//            alert("error in ajax");
-//        },
+        }
     });
     $.SetLoadingIndicator = function () {
         $("#loading-indicator").css({

@@ -9,9 +9,9 @@
 <div class="control-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
     <div class="controls">
-        <div class="input-append date">
+        <div class="input-append date dateonly">
             @Html.TextBoxFor2(m => m, true)
-            <span class="add-on"><i class="fa fa-calendar"></i></span>@Html.Raw(help)
+            <span class="add-on"><i class="icon-th"></i></span>@Html.Raw(help)
         </div>
         @Html.ValidationMessageLabelFor(m => m)
     </div>

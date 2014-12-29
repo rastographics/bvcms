@@ -117,6 +117,10 @@ namespace UtilityExtensions
                 return "m/d/yyyy";
             }
         }
+        public static string jQueryDateFormat2WithTime
+        {
+            get { return jQueryDateFormat2 + " H:ii P"; }
+        }
         public static string jQueryNumberValidation
         {
             get

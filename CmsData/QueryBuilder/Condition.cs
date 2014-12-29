@@ -116,7 +116,8 @@ namespace CmsData
                 }
                 catch (Exception)
                 {
-                    throw new Exception("QB Field not found: " + ConditionName);
+                    //throw new Exception("QB Field not found: " + ConditionName);
+                    return null;
                 }
             }
         }

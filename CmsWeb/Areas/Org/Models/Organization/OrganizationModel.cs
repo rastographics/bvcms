@@ -47,18 +47,10 @@ namespace CmsWeb.Areas.Org.Models
             Id = id;
             DbUtil.Db.CurrentOrg.Id = id;
             GroupSelect = GroupSelectCode.Member;
-            var q = from o in DbUtil.Db.Organizations
-                    let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                    where o.OrganizationId == Id
-                    select new
-                    {
-                        sch = DbUtil.Db.GetScheduleDesc(sc.MeetingTime),
-                        sc = o.OrgSchedules
-                    };
-            var i = q.SingleOrDefault();
-            if (i == null)
-                return;
-            var u = from s in i.sc
+            var q = from sc in DbUtil.Db.OrgSchedules
+                    where sc.OrganizationId == Id
+                    select sc;
+            var u = from s in q
                     orderby s.Id
                     select new ScheduleInfo(s);
             schedules = u.ToList();
@@ -199,7 +191,8 @@ namespace CmsWeb.Areas.Org.Models
             {
                 var sc = Org.OrgSchedules.FirstOrDefault(); // SCHED
                 if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
-                    return Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
+                    return Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0)
+                        .Add(sc.SchedTime.Value.TimeOfDay);
                 return Util.Now.Date;
             }
         }

@@ -6,6 +6,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Controllers;
@@ -45,7 +46,8 @@ namespace CmsWeb.Areas.Reports.Models
             if (meetingid.HasValue)
             {
                 meeting = DbUtil.Db.Meetings.Single(mt => mt.MeetingId == meetingid);
-                RollsheetInfo.MeetingDate = meeting.MeetingDate;
+                Debug.Assert(meeting.MeetingDate != null, "meeting.MeetingDate != null");
+                RollsheetInfo.MeetingDate = meeting.MeetingDate.Value;
                 orgid = meeting.OrganizationId;
             }
 
@@ -56,11 +58,11 @@ namespace CmsWeb.Areas.Reports.Models
                 Response.Write("no data found");
                 return;
             }
-            if (!RollsheetInfo.MeetingDate.HasValue)
-            {
-                Response.Write("bad date");
-                return;
-            }
+//            if (!RollsheetInfo.MeetingDate.HasValue)
+//            {
+//                Response.Write("bad date");
+//                return;
+//            }
             Response.ContentType = "application/pdf";
             Response.AddHeader("content-disposition", "filename=foo.pdf");
 
@@ -154,7 +156,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                 if (!RollsheetInfo.ByGroup == false && !RollsheetInfo.GroupFilterPrefix.HasValue() && meeting == null)
                 {
-                    foreach ( var m in RollsheetModel.FetchVisitors(o.OrgId, RollsheetInfo.MeetingDate.Value, NoCurrentMembers: true, UseAltNames: RollsheetInfo.UseAltNames))
+                    foreach ( var m in RollsheetModel.FetchVisitors(o.OrgId, RollsheetInfo.MeetingDate, NoCurrentMembers: true, UseAltNames: RollsheetInfo.UseAltNames))
                     {
                         if(table.Rows.Count == 0)
                             StartPageSet(o);
