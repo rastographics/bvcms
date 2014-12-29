@@ -322,6 +322,10 @@ namespace CmsData
         partial void UpdateLabelFormat(LabelFormat instance);
         partial void DeleteLabelFormat(LabelFormat instance);
         
+        partial void InsertLongRunningOp(LongRunningOp instance);
+        partial void UpdateLongRunningOp(LongRunningOp instance);
+        partial void DeleteLongRunningOp(LongRunningOp instance);
+        
         partial void InsertManagedGiving(ManagedGiving instance);
         partial void UpdateManagedGiving(ManagedGiving instance);
         partial void DeleteManagedGiving(ManagedGiving instance);
@@ -1137,6 +1141,12 @@ namespace CmsData
 		public Table< LabelFormat> LabelFormats
 		{
 			get	{ return this.GetTable< LabelFormat>(); }
+
+		}
+
+		public Table< LongRunningOp> LongRunningOps
+		{
+			get	{ return this.GetTable< LongRunningOp>(); }
 
 		}
 

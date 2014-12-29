@@ -11,7 +11,7 @@ namespace CmsWeb.Controllers
 {
     public partial class DialogController
     {
-        public ActionResult DeleteMeeting(int id)
+        public ActionResult AddToOrgPrevFromTag(int id)
         {
             const string deletemeeting = "DeleteMeeting";
             if (Request.HttpMethod == "GET")

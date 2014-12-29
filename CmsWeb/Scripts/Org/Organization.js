@@ -267,25 +267,6 @@ $(function () {
             }
         });
     */
-    $('#RepairTransactions').live("click", function (e) {
-        e.preventDefault();
-        var d = $('#LongRunOp');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", "Repair Transactions");
-        d.dialog("open");
-    });
-//    $('a.delmeeting').live('click', function (ev) {
-//        ev.preventDefault();
-//        bootbox.Confirm("delete meeting for sure?", function(result) {
-//            if (result === true) {
-//                var d = $('#LongRunOp');
-//                $('iframe', d).attr("src", this.href);
-//                d.dialog("option", "title", "Delete Meeting");
-//                d.dialog("open");
-//            }
-//        });
-//        return false;
-//    });
 
     $('a.addmembers').live("click", function (e) {
         e.preventDefault();

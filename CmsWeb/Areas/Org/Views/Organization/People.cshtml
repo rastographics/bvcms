@@ -48,32 +48,32 @@
     case GroupSelectCode.Member:
     <ul class="dropdown-menu">
       <li><a href="/SearchAdd2/Dialog/org/@Model.Id" class="searchadd">Add Members</a></li>
-      <li><a href="/AddToOrgFromTag/@Model.Id" class="addfromtag" title="Add Members From Tag">Add from Tag</a></li>
+      <li><a href="/Dialog/AddToOrgFromTag/@GroupSelectCode.Member/@Model.Id" class="longrunop" title="Add Members From Tag">Add from Tag</a></li>
       <li><a id="currMembersUpdate" href="/OrgMembersDialog/@Model.Id" title="Update Members" class="memberdialog">Update Members</a></li>
     </ul>
       break;
     case GroupSelectCode.Prospect:
     <ul class="dropdown-menu">
-      <li><a href="/SearchAdd2/Dialog/prospect/@Model.Id" class="searchadd">Add Prospects</a></li>
-      <li><a href="/AddToOrgFromTag/@Model.Id?prospect=true" title="Add Prospects From Tag" class="addfromtag">Add From Tag</a></li>
+      <li><a href="/SearchAdd2/Dialog/prospects/@Model.Id" class="searchadd">Add Prospects</a></li>
+      <li><a href="/Dialog/AddToOrgFromTag/@GroupSelectCode.Prospect/@Model.Id" title="Add Prospects From Tag" class="longrunop">Add From Tag</a></li>
       <li><a href="/OrgMembersDialog/@Model.Id?prospects=true" title="Update Prospects" class="memberdialog">Update Prospects</a></li>
     </ul>
       break;
     case GroupSelectCode.Previous:
     <ul class="dropdown-menu">
-      <li><a href="/AddToOrgPrevFromTag/@Model.Id" class="addprevfromtag" title="Add Previous Members From Tag">Add From Tag</a></li>
+      <li><a href="/Dialog/AddToOrgPrevFromTag/@Model.Id" class="longrunop" title="Add Previous Members From Tag">Add From Tag</a></li>
     </ul>
       break;
     case GroupSelectCode.Inactive:
     <ul class="dropdown-menu">
       <li><a href="/SearchAdd2/Dialog/inactive/@Model.Id" class="searchadd">@(Model.Org.IsMissionTrip == true ? "Add Sender" : "Add Inactive Members")</a></li>
-      <li><a href="/OrgMembersDialog/@Model.Id?inactives=true" title="Update Inactive Members" class="memberdialog">Update Inactive</a></li>
+      <li><a href="/OrgMembersDialog/inactive/@Model.Id" title="Update Inactive Members" class="memberdialog">Update Inactive</a></li>
     </ul>
       break;
     case GroupSelectCode.Pending:
     <ul class="dropdown-menu">
       <li><a href="/SearchAdd2/Dialog/pending/@Model.Id" class="searchadd">Add Pending Members</a></li>
-      <li><a href="/AddToOrgFromTag/@Model.Id?pending=true" title="Add Pendings From Tag" class="addfromtag">Add From Tag</a></li>
+      <li><a href="/Dialog/AddToOrgFromTag/@GroupSelectCode.Pending/@Model.Id" title="Add Pendings From Tag" class="longrunop">Add From Tag</a></li>
       <li><a href="/OrgMembersDialog/@Model.Id?pendings=true" title="Update Pending Members" class="memberdialog">Update Pending</a></li>
     </ul>
       break;

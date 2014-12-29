@@ -393,7 +393,6 @@
     <Compile Include="Areas\OnlineReg\Controllers\ManageGiving.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageSubscriptions.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\SpecialRegModel.cs" />
-    <Compile Include="Areas\Dialog\Controllers\RepairTransactionsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchOrgsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\TransactionHistoryController.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
@@ -459,6 +458,10 @@
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
+    <Compile Include="Controllers\Dialog\AddToOrgPrevFromTag.cs" />
+    <Compile Include="Controllers\Dialog\AddToOrgFromTag.cs" />
+    <Compile Include="Controllers\Dialog\RepairTransactionsOrgs.cs" />
+    <Compile Include="Controllers\Dialog\RepairTransactions.cs" />
     <Compile Include="Controllers\Dialog\DeleteMeeting.cs" />
     <Compile Include="Controllers\Dialog\NewMeeting.cs" />
     <Compile Include="Controllers\Dialog\DialogController.cs" />
@@ -1664,9 +1667,11 @@
     <Content Include="Views\Dialog\NewMeeting.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Views\Dialog\DeleteMeeting.cshtml" />
-    <Content Include="Views\Dialog\DeleteMeetingProgress.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateAndTime.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\TimeSpan.cshtml" />
+    <Content Include="Views\Dialog\RepairTransactions.cshtml" />
+    <Content Include="Views\Dialog\RepairTransactionsOrgs.cshtml" />
+    <Content Include="Views\Dialog\AddToOrgFromTag.cshtml" />
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1769,10 +1774,6 @@
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml">
     </Content>
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Progress.cshtml">
-    </Content>
-    <Content Include="Areas\Dialog\Views\RepairTransactions\Progress.cshtml">
-    </Content>
-    <Content Include="Areas\Dialog\Views\DeleteMeeting\Progress.cshtml">
     </Content>
     <Content Include="Areas\Dialog\Views\AddOrganization\Index.cshtml">
     </Content>

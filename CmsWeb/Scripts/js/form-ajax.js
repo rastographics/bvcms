@@ -244,14 +244,17 @@
 
     $("a.longrunop").live("click", function(ev) {
         ev.preventDefault();
-        $('<form class="modal form-horizontal longrunop validate fade hide" />').load(this.href, function() {
+        var data = null;
+        if ($(this).data("method") === "post") {
+            data = $(this).closest("form").serialize();
+        }
+        $('<form class="modal form-horizontal longrunop validate fade hide" />').load(this.href, data, function() {
             var f = $(this);
             var callback = $("#callback", f).val();
             f.modal("show");
-            var intervalid = null;
-            f.on('hidden', function() {
-                if(intervalid)
-                    window.clearInterval(intervalid);
+            var tm = 250; // initial timeout
+            f.on('hidden', function () {
+                tm = 0;
                 f.remove();
                 if(callback)
                     $.InitFunctions[callback]();
@@ -259,21 +262,48 @@
             f.on("click", "a.ajaxreloader", function(event) {
                 event.preventDefault();
                 var href = this.href;
-                $.post(href, function(ret) {
-                    f.html(ret);
-                });
-                intervalid = window.setInterval(function() {
-                    $.post(href, function(ret) {
-                        if (ret.substr(0, 100).indexOf('<!--completed-->') >= 0)
-                            window.clearInterval(intervalid);
-                        $("form.longrunop").html(ret);
+                var data = $("#postdata", f).val();
+                var postdata = {};
+                if(data)
+                    postdata = { "postdata": data}
+                var myloop = function() {
+                    $.post(href, postdata , function (ret) {
+                        postdata = {};
+                        f.html(ret);
+                        if ($("#finished", f).val())
+                            tm = 0;
+                        if (tm > 0) {
+                            tm = 2000; // continuing timeout
+                            setTimeout(myloop, tm);
+                        }
                     });
-                }, 3000);
+                }
+                setTimeout(myloop, tm);
                 return false;
             });
         });
         return false;
     });
+var keepGoing = true;
+
+function myLoop() {
+    // ... Do something ...
+
+    if(keepGoing) {
+        setTimeout(myLoop, 1000);
+    }
+}
+
+function startLoop() {
+    keepGoing = true;
+    myLoop();
+}
+
+function stopLoop() {
+    keepGoing = false;
+}
+    $.refreshLongRunOp = function(href, intervalid) {
+    }
     var $loadingcount = 0;
     $.ajaxSetup({
         beforeSend: function () {

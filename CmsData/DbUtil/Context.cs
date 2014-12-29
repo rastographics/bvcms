@@ -904,6 +904,18 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.RepairTransactions")]
+        public int RepairTransactions([Parameter(DbType = "Int")] int? orgid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.RepairTransactionsOrgs")]
+        public int RepairTransactionsOrgs([Parameter(DbType = "Int")] int? orgid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.UpdateSchoolGrade")]
         public int UpdateSchoolGrade([Parameter(DbType = "Int")] int? pid)
         {

@@ -198,13 +198,6 @@ namespace CmsWeb.Areas.Org.Controllers
             return new EmptyResult();
         }
         [HttpPost]
-        public ActionResult RepairTransactions(OrgSearchModel m)
-        {
-            foreach (var o in m.FetchOrgs())
-                DbUtil.Db.PopulateComputedEnrollmentTransactions(o.OrganizationId);
-            return new EmptyResult();
-        }
-        [HttpPost]
         public ActionResult CreateMeeting(string id)
         {
             var n = id.ToCharArray().Count(c => c == 'M');
