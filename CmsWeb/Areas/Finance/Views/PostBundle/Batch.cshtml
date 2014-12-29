@@ -1,10 +1,38 @@
-﻿@using CmsWeb
-    <h2>Batch Load Bundle</h2>
-    
+﻿@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Batch Load Bundle";
+}
+<h2>Batch Load Bundle</h2>
 <form action="/PostBundle/BatchUpload" method="post" enctype="multipart/form-data">
-    <label>Filename: <input type="file" name="file" /></label>
-    <label>Contribution Date: </label> @Html.DatePicker("date")
-    <label> FundId:</label>@Html.TextBox("fundid")
-    <input type="submit" class="bt" value="Submit" />
-    @Html.TextArea("text", "", new { rows = "10", cols = "1000", wrap = "off", style = "width:90%" })<br />
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="form-group">
+                <label for="file">File</label>
+                <input type="file" id="file" name="file" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="date">Contribution Date</label>
+                <div class="input-group date">
+                    @Html.TextBox("date", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    @Html.Hidden("dateIso", "", new { disabled = "disabled" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <div class="form-group">
+                <label for="file">Fund Id</label>
+                <input type="number" name="fundid" id="fundid" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.TextArea("text", "", new { rows = "10", cols = "1000", wrap = "off", @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
