@@ -214,6 +214,9 @@ namespace CmsWeb.Areas.Finance.Controllers
                 .ThenByDescending(vv => vv.TotalGiven).ToList();
             var count = q.Count;
 
+            if(count == 0)
+                return Message("No Pledges to Report");
+
             var cols = DbUtil.Db.Mapping.MappingSource.GetModel(typeof(CMSDataContext))
                 .GetMetaType(typeof(CmsData.View.PledgeFulfillment)).DataMembers;
 
