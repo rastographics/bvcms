@@ -107,8 +107,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 if (pf.Type == PaymentType.Ach)
                     Payments.ValidateBankAccountInfo(ModelState, pf.Routing, pf.Account);
-                if (pf.Type == PaymentType.CreditCard)
+                else if (pf.Type == PaymentType.CreditCard)
                     Payments.ValidateCreditCardInfo(ModelState, pf);
+                else
+                    ModelState.AddModelError("Type", "Must select Bank Account or Credit Card");
 
                 if (!pf.First.HasValue())
                     ModelState.AddModelError("First", "Needs first name");
