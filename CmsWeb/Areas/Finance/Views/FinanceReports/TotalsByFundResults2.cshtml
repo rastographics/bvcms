@@ -1,45 +1,46 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
-@using CmsWeb
 @using UtilityExtensions
-<table class="@ViewExtensions2.GridClass" cellpadding="5">
-    <thead>
-        <tr style="border-bottom: 2px solid black">
-            <th> FundName </th>
-            <th> BundleType </th>
-            <th class="right"> Total </th>
-            <th class="right"> Count </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var t in Model.TotalsByFund())
-        {
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
             <tr>
-                <td>
-                    <a href="@t.BundleTotalsUrl()" target="bundles">
-                        @t.FundName (@t.FundId)
-                    </a> 
-                    @(t.QBSynced == 1 ? " (QBSynced)" : "")
-                    @(t.OnLine == 1 ? " (Online)" : "")  
-                </td>
-                <td>@t.BundleType</td>
-                <td class="right">
-                    <a href="@t.ContributionsUrl()" target="search">
-                        @t.Total.ToString2("c")
-                    </a> 
-                </td>
-                <td class="right">@t.Count.ToString2("n0")</td>
+                <th>Fund Name</th>
+                <th>Bundle Type</th>
+                <th class="text-right">Total</th>
+                <th class="text-right">Count</th>
             </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr style="border-top: 2px solid black">
-            <th colspan="2"><a href="@Model.BundleTotalsUrl()" target="bundles">Total</a></th>
-            <th class="right">
-                <a href="@Model.ContributionsUrl()" target="search">
-                    @Model.FundTotal.Total.ToString2("c")
-                </a> 
-            </th>
-            <th class="right">@Model.FundTotal.Count.ToString2("n0") </th>
-        </tr>
-    </tfoot>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var t in Model.TotalsByFund())
+            {
+                <tr>
+                    <td>
+                        <a href="@t.BundleTotalsUrl()" target="bundles">
+                            @t.FundName (@t.FundId)
+                        </a>
+                        @(t.QBSynced == 1 ? " (QBSynced)" : "")
+                        @(t.OnLine == 1 ? " (Online)" : "")
+                    </td>
+                    <td>@t.BundleType</td>
+                    <td class="text-right">
+                        <a href="@t.ContributionsUrl()" target="search">
+                            @t.Total.ToString2("c")
+                        </a>
+                    </td>
+                    <td class="text-right">@t.Count.ToString2("n0")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="totals-row">
+                <th colspan="2"><a href="@Model.BundleTotalsUrl()" target="bundles">Total</a></th>
+                <th class="text-right">
+                    <a href="@Model.ContributionsUrl()" target="search">
+                        @Model.FundTotal.Total.ToString2("c")
+                    </a>
+                </th>
+                <th class="text-right">@Model.FundTotal.Count.ToString2("n0") </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
