@@ -1,3 +1,4 @@
+@using CmsData
 @using UtilityExtensions
 @model CmsWeb.Areas.Manage.Controllers.AccountController.AccountInfo
 @{
@@ -5,6 +6,12 @@
     ViewBag.Title = "Logon to TouchPoint";
 }
 <h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Name Of Church: " + Util.Host)</h1>
+@if (DbUtil.LoginNotice().HasValue())
+{
+    <div class="col-sm-12">
+        <div class="alert alert-danger">@Html.Raw(DbUtil.LoginNotice())</div>
+    </div>
+}
 @if (ViewBag.error != null)
 {
     <div class="alert alert-danger alert-dismissible">

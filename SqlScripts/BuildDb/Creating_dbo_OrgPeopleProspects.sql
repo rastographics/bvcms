@@ -4,6 +4,7 @@ RETURN
 (
 	SELECT om.PeopleId
 	, 'Prospects' Tab
+	, '40' GroupCode
 	, om.AttendPct AttPct
 	, a.MeetingDate LastAttended
 	, om.EnrollmentDate Joined

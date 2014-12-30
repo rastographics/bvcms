@@ -102,7 +102,7 @@ namespace CmsWeb.Areas.Reports.Models
                     var cc = mc.SpecialColumns[name];
                     if (flags == null)
                         flags = db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
-                    var flag = (string) e.Attribute("flag");
+                    var flag = (string)e.Attribute("flag");
                     if (!flag.HasValue())
                         throw new Exception("missing flag on column " + cc.Column);
                     if (!flags.ContainsKey(flag))
@@ -117,15 +117,29 @@ namespace CmsWeb.Areas.Reports.Models
                 else if (name == "SmallGroup")
                 {
                     var cc = mc.SpecialColumns[name];
-                    var oid = (string) e.Attribute("orgid");
-                    if(!oid.HasValue())
+                    var oid = (string)e.Attribute("orgid");
+                    if (!oid.HasValue())
                         throw new Exception("missing orgid on column " + cc.Column);
                     var sel = cc.Select.Replace("{orgid}", oid);
                     var smallgroup = (string)e.Attribute("smallgroup");
-                    if(!smallgroup.HasValue())
+                    if (!smallgroup.HasValue())
                         throw new Exception("missing smallgroup on column " + cc.Column);
                     sel = sel.Replace("{smallgroup}", smallgroup);
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(smallgroup));
+                }
+                else if (name.StartsWith("Amount") && Regex.IsMatch(name, @"\AAmount(Tot|Paid|Due)\z"))
+                {
+                    var cc = mc.SpecialColumns[name];
+                    var oid = (string)e.Attribute("orgid");
+                    if (!oid.HasValue())
+                        throw new Exception("missing orgid on column " + cc.Column);
+
+                    if (!joins.Contains(cc.Join))
+                    {
+                        mc.Joins[cc.Join] = mc.Joins[cc.Join].Replace("{orgid}", oid);
+                        joins.Add(cc.Join);
+                    }
+                    sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, cc.Select, DblQuotes(name));
                 }
                 else if (name.StartsWith("ExtraValue") && Regex.IsMatch(name, @"\AExtraValue(Code|Date|Text|Int|Bit)\z"))
                 {
@@ -150,7 +164,9 @@ namespace CmsWeb.Areas.Reports.Models
             }
             sb.AppendLine("FROM dbo.People p");
             foreach (var j in joins)
+            {
                 sb.AppendLine(mc.Joins[j]);
+            }
             sb.AppendLine("JOIN dbo.TagPerson tp ON tp.PeopleId = p.PeopleId");
             sb.AppendLine("WHERE tp.Id = @tagId\n");
             return sb.ToString();
@@ -204,17 +220,32 @@ namespace CmsWeb.Areas.Reports.Models
                     .Attr("name", "StatusFlag")
                     .End();
             }
-            var smallgroups = from sg in db.MemberTags
-                              where sg.OrgId == orgid
-                              orderby sg.Name
-                              select sg;
-            foreach (var sg in smallgroups)
+            if (orgid.HasValue)
             {
                 w.Start("Column")
-                    .Attr("smallgroup", sg.Name)
+                    .Attr("name", "AmountTot")
                     .Attr("orgid", orgid)
-                    .Attr("name", "SmallGroup")
                     .End();
+                w.Start("Column")
+                    .Attr("name", "AmountPaid")
+                    .Attr("orgid", orgid)
+                    .End();
+                w.Start("Column")
+                    .Attr("name", "AmountDue")
+                    .Attr("orgid", orgid)
+                    .End();
+                var smallgroups = from sg in db.MemberTags
+                                  where sg.OrgId == orgid
+                                  orderby sg.Name
+                                  select sg;
+                foreach (var sg in smallgroups)
+                {
+                    w.Start("Column")
+                        .Attr("smallgroup", sg.Name)
+                        .Attr("orgid", orgid)
+                        .Attr("name", "SmallGroup")
+                        .End();
+                }
             }
             w.End();
             if (includeRoot)

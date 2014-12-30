@@ -3,7 +3,8 @@ RETURNS TABLE
 RETURN
 (
 	SELECT om.PeopleId
-	, 'Current' Tab
+	, 'Members' Tab
+	, '10' GroupCode
 	, om.AttendPct AttPct
 	, a.MeetingDate LastAttended
 	, om.EnrollmentDate Joined

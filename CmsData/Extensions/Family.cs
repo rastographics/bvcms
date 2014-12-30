@@ -216,6 +216,7 @@ namespace CmsData
                 return;
             var ev = GetExtraValue(field);
             ev.StrValue = value;
+            ev.TransactionTime = DateTime.Now;
         }
         public void AddEditExtraDate(string field, DateTime? value)
         {
@@ -223,6 +224,7 @@ namespace CmsData
 				return;
             var ev = GetExtraValue(field);
             ev.DateValue = value;
+            ev.TransactionTime = DateTime.Now;
         }
         public void AddEditExtraData(string field, string value)
         {
@@ -230,6 +232,7 @@ namespace CmsData
                 return;
             var ev = GetExtraValue(field);
 			ev.Data = value;
+            ev.TransactionTime = DateTime.Now;
         }
         public void AddToExtraData(string field, string value)
         {
@@ -240,11 +243,13 @@ namespace CmsData
 				ev.Data = value + "\n" + ev.Data;
 			else
 				ev.Data = value;
+            ev.TransactionTime = DateTime.Now;
         }
         public void AddEditExtraInt(string field, int value)
         {
             var ev = GetExtraValue(field);
             ev.IntValue = value;
+            ev.TransactionTime = DateTime.Now;
         }
         public void AddEditExtraBool(string field, bool tf)
         {
@@ -252,6 +257,7 @@ namespace CmsData
 				return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
+            ev.TransactionTime = DateTime.Now;
         }
     }
 }

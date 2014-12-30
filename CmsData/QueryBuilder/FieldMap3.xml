@@ -575,6 +575,9 @@
     <HasPeopleExtraField Title="Has Extra Value Field" Type="StringEqual">
       Enter the Field Name and a Comparison.
     </HasPeopleExtraField>
+    <RecentPeopleExtraFieldChanged Title="Recent Extra Value Changed" Type="Bit" DisplayAs="RecentPeopleExtraFieldChanged({0}, {1})" Params="Days,Quarters" QuartersLabel=" Field" DataValueField="IdCode">
+      Select number of days to lookback and enter Field name of Extra value. Shows those whom that Field has been recently updated.
+    </RecentPeopleExtraFieldChanged>
     <FamilyExtra Title="FamilyExtra Value Code" Type="CodeStr" DataSource="FamilyExtraValues">
       Select the Extra Value Code from the list
     </FamilyExtra>

@@ -6,6 +6,7 @@ using CmsData.Codes;
 using UtilityExtensions;
 using IronPython.Hosting;
 using System;
+using System.Text.RegularExpressions;
 
 namespace CmsData
 {
@@ -228,16 +229,16 @@ namespace CmsData
         public DateTime MostRecentAttendedSunday(int progid)
         {
             var q = from m in db.Meetings
-                where m.MeetingDate.Value.Date.DayOfWeek == 0
-                where m.MaxCount > 0
-                where
-                    progid == 0 || m.Organization.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
-                where m.MeetingDate < Util.Now
-                orderby m.MeetingDate descending
-                select m.MeetingDate.Value.Date;
+                    where m.MeetingDate.Value.Date.DayOfWeek == 0
+                    where m.MaxCount > 0
+                    where
+                        progid == 0 || m.Organization.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
+                    where m.MeetingDate < Util.Now
+                    orderby m.MeetingDate descending
+                    select m.MeetingDate.Value.Date;
             var dt = q.FirstOrDefault();
             if (dt == DateTime.MinValue) //Sunday Date equal/before today
-                dt = DateTime.Today.AddDays(-(int) DateTime.Today.DayOfWeek);
+                dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
             return dt;
         }
 
@@ -327,8 +328,8 @@ namespace CmsData
             c.Reset(db);
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
-                where mtlist.Contains(mt.Description)
-                select "{0},{1}".Fmt(mt.Id, mt.Code));
+                                       where mtlist.Contains(mt.Description)
+                                       select "{0},{1}".Fmt(mt.Id, mt.Code));
             var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
             clause.Program = progid;
             clause.Division = divid;
@@ -340,9 +341,9 @@ namespace CmsData
         public List<int> OrganizationIds(int progid, int divid)
         {
             var q = from o in db.Organizations
-                where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
-                where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
-                select o.OrganizationId;
+                    where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
+                    where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
+                    select o.OrganizationId;
             return q.ToList();
         }
 
@@ -474,6 +475,41 @@ namespace CmsData
         public void AddMemberToOrg(int pid, int OrgId)
         {
             AddMembersToOrg("peopleid=" + pid, OrgId);
+        }
+
+        public DateTime ParseDate(string dt)
+        {
+            var d = dt.ToDate();
+            return d ?? DateTime.MinValue;
+        }
+        public string ContentForDate(string contentName, object date)
+        {
+            var dtwanted = date.ToDate();
+            if (!dtwanted.HasValue)
+                return "no date";
+            dtwanted = dtwanted.Value.Date;
+            var c = db.ContentOfTypeHtml(contentName);
+            var a = Regex.Split(c.Body, @"<h1>(?<dt>\d{1,2}(/|-)\d{1,2}(/|-)\d{2,4})=+</h1>", RegexOptions.ExplicitCapture);
+            var i = 0;
+            for (; i < a.Length; i++)
+            {
+                if (a[i].Length < 6 || a[i].Length > 10) 
+                    continue;
+                var dt = a[i].ToDate();
+                if (dt.HasValue && dt == dtwanted)
+                    return a[i + 1];
+            }
+            return "cannot find email content";
+        }
+
+        public string HtmlContent(string name)
+        {
+            var c = db.ContentOfTypeHtml(name);
+            return c.Body;
+        }
+        public string Replace(string text, string pattern, string replacement)
+        {
+            return Regex.Replace(text, pattern, replacement);
         }
     }
 }

@@ -189,8 +189,9 @@ namespace CmsWeb.Models
 //        }
         public static EpplusResult OrgMemberListGroups()
         {
-            var Db = DbUtil.Db;
             var gids = string.Join(",", Util2.CurrentGroups);
+            if (gids == "0")
+                gids = null;
             var cmd = new SqlCommand(
                 "dbo.OrgMembers {0}, '{1}'".Fmt(Util2.CurrentOrgId, gids));
             cmd.Connection = new SqlConnection(Util.ConnectionString);

@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using CmsWeb.Code;
+using Elmah;
 using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -83,32 +84,19 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {
-                //                switch (sRenderType)
-                //                {
-                //                    case "Local":// Uses local server resources 
-                //                    case "true":
-                var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
-                var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
-                if (ii == null)
-                    content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
-                //                        break;
-                //
-                //                    case "Service": // Used to send HTML to another server for offloaded processing
-                //                        var coll = new NameValueCollection();
-                //                        coll.Add("sHTML", body.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
-                //
-                //                        var wc = new WebClient();
-                //                        var resp = wc.UploadValues(ConfigurationManager.AppSettings["CreateThumbnailService"], "POST",
-                //                            coll);
-                //
-                //                        ii = ImageData.DbUtil.Db.Images.FirstOrDefault(i => i.Id == content.ThumbID);
-                //                        if (ii != null) 
-                //                            ImageData.Image.UpdateImageFromBits(content.ThumbID, resp);
-                //                        else 
-                //                            content.ThumbID = ImageData.Image.NewImageFromBits(resp).Id;
-                //                        break;
-                //                }
-                content.DateCreated = DateTime.Now;
+                try
+                {
+                    var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
+                    var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
+                    if (ii == null)
+                        content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
+                    content.DateCreated = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+					var errorLog = ErrorLog.GetDefault(null);
+					errorLog.Log(new Error(ex));
+                }
             }
             DbUtil.Db.SubmitChanges();
 
@@ -212,7 +200,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult SavePythonScript(string name, string body)
         {
-            var content = DbUtil.Content(name);
+            var content = DbUtil.Db.Content(name, "", ContentTypeCode.TypePythonScript);
             content.Body = body;
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

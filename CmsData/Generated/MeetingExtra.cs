@@ -35,6 +35,8 @@ namespace CmsData
 		
 		private string _Type;
 		
+		private DateTime? _TransactionTime;
+		
    		
     	
 		private EntityRef< Meeting> _Meeting;
@@ -72,6 +74,9 @@ namespace CmsData
 		
 		partial void OnTypeChanging(string value);
 		partial void OnTypeChanged();
+		
+		partial void OnTransactionTimeChanging(DateTime? value);
+		partial void OnTransactionTimeChanged();
 		
     #endregion
 		public MeetingExtra()
@@ -280,6 +285,28 @@ namespace CmsData
 					this._Type = value;
 					this.SendPropertyChanged("Type");
 					this.OnTypeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="TransactionTime", UpdateCheck=UpdateCheck.Never, Storage="_TransactionTime", DbType="datetime")]
+		public DateTime? TransactionTime
+		{
+			get { return this._TransactionTime; }
+
+			set
+			{
+				if (this._TransactionTime != value)
+				{
+				
+                    this.OnTransactionTimeChanging(value);
+					this.SendPropertyChanging();
+					this._TransactionTime = value;
+					this.SendPropertyChanged("TransactionTime");
+					this.OnTransactionTimeChanged();
 				}
 
 			}

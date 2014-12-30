@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsData;
@@ -66,6 +67,18 @@ namespace CmsWeb.Areas.Finance.Controllers
             ep.AddSheet(rd, "ByAge");
 
             return new EpplusResult(ep, "DonorTotalSummary.xlsx");
+        }
+        [HttpGet, Route("~/PledgeFulfillment2/{fundid1:int}/{fundid2:int}")]
+        public EpplusResult PledgeFulfillment2(int fundid1, int fundid2)
+        {
+            var ep = new ExcelPackage();
+            var cn = new SqlConnection(Util.ConnectionString);
+            cn.Open();
+
+            var rd = cn.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, }, 
+                commandTimeout: 1200, commandType: CommandType.StoredProcedure);
+            ep.AddSheet(rd, "Pledges");
+            return new EpplusResult(ep, "PledgeFulfillment2.xlsx");
         }
 
         [HttpGet]
@@ -200,6 +213,9 @@ namespace CmsWeb.Areas.Finance.Controllers
                 .OrderByDescending(vv => vv.PledgeAmt)
                 .ThenByDescending(vv => vv.TotalGiven).ToList();
             var count = q.Count;
+
+            if(count == 0)
+                return Message("No Pledges to Report");
 
             var cols = DbUtil.Db.Mapping.MappingSource.GetModel(typeof(CMSDataContext))
                 .GetMetaType(typeof(CmsData.View.PledgeFulfillment)).DataMembers;
