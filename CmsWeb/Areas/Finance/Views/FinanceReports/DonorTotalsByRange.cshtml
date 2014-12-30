@@ -72,8 +72,11 @@
             var campusName = campus != null ? campus.Text : "";
         }
         <strong>Campus:</strong> <span id="campusName">@campusName</span><br />
-        <strong>From Date:</strong> @Model.Dt1.GetValueOrDefault().ToShortDateString()<br />
-        <strong>To Date:</strong> @Model.Dt2.GetValueOrDefault().ToShortDateString()
+        <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
+        <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
+        <strong>Non tax deductible?:</strong> <span id="nontaxDed">@Model.NonTaxDeductible</span><br />
+        <strong>Pledges?:</strong> <span id="pledge">@Model.Pledges</span><br />
+        <strong>Include unclosed bundles?:</strong> <span id="includeUnClosedBundles">@Model.IncUnclosedBundles</span>
     </div>
     <div id="results" style="margin-top: 25px;"></div>
 </div>
@@ -81,16 +84,21 @@
 {
     <script type="text/javascript">
         $(function () {
-            $("#CampusId").change(function() {
-                $('#campusName').text($("#CampusId option:selected").text());
-            });
-
             $("#run").click(function (ev) {
                 ev.preventDefault();
                 if (!$.DateValid($("#Dt1").val(), true))
                     return;
                 if (!$.DateValid($("#Dt2").val(), true))
                     return;
+
+                // set hidden print form elements
+                $('#campusName').text($("#CampusId option:selected").text());
+                $('#fromDate').text($("#Dt1").val());
+                $('#toDate').text($("#Dt2").val());
+                $('#nontaxDed').text($("#NonTaxDeductible").prop('checked'));
+                $('#pledge').text($("#Pledges").prop('checked'));
+                $('#includeUnClosedBundles').text($("#IncUnclosedBundles").prop('checked'));
+                
                 var f = $(this).closest('form');
                 var q = f.serialize();
                 $.post("/FinanceReports/DonorTotalsByRangeResults", q, function (ret) {

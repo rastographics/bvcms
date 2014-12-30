@@ -2,34 +2,38 @@
 @using UtilityExtensions
 <div class="table-responsive">
     <table class="table table-striped">
-        <tr>
-            <th>Range</th>
-            <th class="text-right">Total</th>
-            <th class="text-right">Donors</th>
-        </tr>
-        @{ var r = 0; }
-        @foreach (var t in Model.TotalsByRange())
-        {
+        <thead>
             <tr>
-                <td>
-                    @if (r == 100000)
-                    {
-                        @:> @r.ToString("n0")
-                }
-                    else
-                    {
-                        @((r + 1).ToString("n0")) @:- @t.Range.ToString("n0")
-                }
-                </td>
-                <td class="text-right">@t.Total.ToString2("c")</td>
-                <td class="text-right">@t.Count.ToString2("n0")</td>
+                <th>Range</th>
+                <th class="text-right">Total</th>
+                <th class="text-right">Donors</th>
             </tr>
-                    r = t.Range;
-        }
-        <tr class="totals-row">
-            <th>Total</th>
-            <th class="text-right">@Model.RangeTotal.Total.ToString2("c") </th>
-            <th class="text-right">@Model.RangeTotal.Count.ToString2("n0") </th>
-        </tr>
+        </thead>
+        <tbody>
+            @{ var r = 0; }
+            @foreach (var t in Model.TotalsByRange())
+            {
+                <tr>
+                    <td>
+                        @if (r == 100000)
+                        {
+                            @:> @r.ToString("n0")
+                    }
+                        else
+                        {
+                            @((r + 1).ToString("n0")) @:- @t.Range.ToString("n0")
+                    }
+                    </td>
+                    <td class="text-right">@t.Total.ToString2("c")</td>
+                    <td class="text-right">@t.Count.ToString2("n0")</td>
+                </tr>
+                        r = t.Range;
+            }
+            <tr class="totals-row">
+                <th>Total</th>
+                <th class="text-right">@Model.RangeTotal.Total.ToString2("c") </th>
+                <th class="text-right">@Model.RangeTotal.Count.ToString2("n0") </th>
+            </tr>
+        </tbody>
     </table>
 </div>
