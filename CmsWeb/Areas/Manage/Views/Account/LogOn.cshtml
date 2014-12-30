@@ -1,3 +1,4 @@
+@using CmsData
 @using UtilityExtensions
 @model CmsWeb.Areas.Manage.Controllers.AccountController.AccountInfo
 @{
@@ -24,6 +25,12 @@
         <form class="form-horizontal" action="/Logon" role="form" method="POST">
           @Html.Hidden("ReturnUrl", Model.ReturnUrl)
           <div class="form-group">
+            @if (DbUtil.LoginNotice().HasValue())
+            {
+              <div class="col-sm-12">
+                <div class="alert alert-danger">@Html.Raw(DbUtil.LoginNotice())</div>
+              </div>
+            }
             <label for="inputEmail" class="col-sm-3 control-label">
               Username or Email
             </label>

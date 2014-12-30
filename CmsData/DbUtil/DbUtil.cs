@@ -164,6 +164,21 @@ namespace CmsData
             }
             return s;
         }
+        public static string LoginNotice()
+        {
+            var hc = HttpRuntime.Cache[Db.Host + "loginnotice"] as string;
+            if (hc == null)
+            {
+                var h = Content("LoginNotice");
+                if (h != null)
+                    hc = h.Body;
+                else
+                    hc = string.Empty;
+                HttpRuntime.Cache.Insert(Db.Host + "loginnotice", hc, null,
+                     DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
+            }
+            return hc;
+        }
         public static string TopNotice()
         {
             var hc = HttpRuntime.Cache[Db.Host + "topnotice"] as string;
@@ -175,7 +190,7 @@ namespace CmsData
                 else
                     hc = string.Empty;
                 HttpRuntime.Cache.Insert(Db.Host + "topnotice", hc, null,
-                     DateTime.Now.AddMinutes(3), Cache.NoSlidingExpiration);
+                     DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
             }
             return hc;
         }
