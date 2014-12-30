@@ -110,7 +110,7 @@ namespace CmsData.Finance
             var response = createCreditCardVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to create the credit card for people id: {0}".Fmt(person.PeopleId));
+                    "Sage failed to create the credit card for people id: {0}, message: {1}".Fmt(person.PeopleId, response.Message));
 
             return response.VaultGuid;
         }
@@ -126,7 +126,7 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to update the credit card for people id: {0}".Fmt(person.PeopleId));
+                    "Sage failed to update the credit card for people id: {0}, message: {1}".Fmt(person.PeopleId, response.Message));
         }
 
         private void UpdateCreditCardVault(Guid vaultGuid, Person person, string expiration)
@@ -136,8 +136,8 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to update the credit card expiration date for people id: {0}".Fmt(
-                        person.PeopleId));
+                    "Sage failed to update the credit card expiration date for people id: {0}, message: {1}".Fmt(
+                        person.PeopleId, response.Message));
         }
 
         private Guid CreateAchVault(Person person, string accountNumber, string routingNumber)
@@ -147,7 +147,7 @@ namespace CmsData.Finance
             var response = createAchVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to create the ach account for people id: {0}".Fmt(person.PeopleId));
+                    "Sage failed to create the ach account for people id: {0}, message: {1}".Fmt(person.PeopleId, response.Message));
 
             return response.VaultGuid;
         }
@@ -159,7 +159,7 @@ namespace CmsData.Finance
             var response = updateAchVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to update the ach account for people id: {0}".Fmt(person.PeopleId));
+                    "Sage failed to update the ach account for people id: {0}, message: {1}".Fmt(person.PeopleId, response.Message));
         }
         
 		public void RemoveFromVault(int peopleId)
