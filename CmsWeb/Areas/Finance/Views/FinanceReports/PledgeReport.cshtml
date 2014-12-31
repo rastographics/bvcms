@@ -4,31 +4,33 @@
     ViewBag.Title = "Pledge Report";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>Pledge Report</h2>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Fund Id</th>
-                <th>Fund Name</th>
-                <th class="text-right">Pledged</th>
-                <th class="text-right">To Pledge</th>
-                <th class="text-right">Not To a Pledge</th>
-                <th class="text-right">Total To Fund</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var r in Model)
-            {
+<div class="report">
+    <h2>Pledge Report</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td>@r.FundId</td>
-                    <td>@r.FundName</td>
-                    <td class="text-right">@r.Plg.ToString2("N2")</td>
-                    <td class="text-right">@r.ToPledge.ToString2("N2")</td>
-                    <td class="text-right">@r.NotToPledge.ToString2("N2")</td>
-                    <td class="text-right">@r.ToFund.ToString2("N2")</td>
+                    <th>Fund Id</th>
+                    <th>Fund Name</th>
+                    <th class="text-right">Pledged</th>
+                    <th class="text-right">To Pledge</th>
+                    <th class="text-right">Not To a Pledge</th>
+                    <th class="text-right">Total To Fund</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td>@r.FundId</td>
+                        <td>@r.FundName</td>
+                        <td class="text-right">@r.Plg.ToString2("N2")</td>
+                        <td class="text-right">@r.ToPledge.ToString2("N2")</td>
+                        <td class="text-right">@r.NotToPledge.ToString2("N2")</td>
+                        <td class="text-right">@r.ToFund.ToString2("N2")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
