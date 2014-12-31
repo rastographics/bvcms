@@ -67,7 +67,7 @@
     @Html.Partial("PagerBottom", Model)
     @Html.Hidden("actag", Util2.CurrentTagName)
     @Html.Hidden("shcnt", Model.SharedCount())
-    @Html.HiddenFor(m => m.Page)
-    @Html.HiddenFor(m => m.Sort)
-    @Html.HiddenFor(m => m.Direction)
+    @Html.Hidden("Page", Model.Page)
+    @Html.Hidden("Sort", Model.Sort)
+    @Html.Hidden("Direction", Model.Direction)
 </div>

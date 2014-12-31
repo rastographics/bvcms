@@ -61,7 +61,7 @@
     </div>
     @Html.Partial("PagerBottom", Model)
     @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-    @Html.HiddenFor(m => m.Page)
-    @Html.HiddenFor(m => m.Sort)
-    @Html.HiddenFor(m => m.Direction)
+    @Html.Hidden("Page", Model.Page)
+    @Html.Hidden("Sort", Model.Page)
+    @Html.Hidden("Direction", Model.Page)
 </div>
