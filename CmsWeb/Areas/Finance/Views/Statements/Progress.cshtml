@@ -3,38 +3,39 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Contribution Statements";
 }
-<h2>Contribution Statements</h2>
-<br />
-<div class="table-responsive">
-    <table class="table table-striped">
-        <tr>
-            <td>Started</td>
-            <td>@Model.Started</td>
-        </tr>
-        <tr>
-            <td>Total Contributors</td>
-            <td><span id="count">@Model.Count</span></td>
-        </tr>
-        <tr>
-            <td>Processed</td>
-            <td><span id="processed">@Model.Processed</span></td>
-        </tr>
-        <tr>
-            <td>Page Set</td>
-            <td><span id="set">@Model.CurrSet</span></td>
-        </tr>
-        <tr>
-            <td>Completed</td>
-            <td><span id="completed">@Model.Completed</span></td>
-        </tr>
-        <tr>
-            <td>Error</td>
-            <td><span id="error">@(Model.Error ?? "")</span></td>
-        </tr>
-    </table>
-</div>
-<div id="download" style="display:none">
-    Download Statements
+<div class="report">
+    <h2>Contribution Statements</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tr>
+                <td>Started</td>
+                <td>@Model.Started</td>
+            </tr>
+            <tr>
+                <td>Total Contributors</td>
+                <td><span id="count">@Model.Count</span></td>
+            </tr>
+            <tr>
+                <td>Processed</td>
+                <td><span id="processed">@Model.Processed</span></td>
+            </tr>
+            <tr>
+                <td>Page Set</td>
+                <td><span id="set">@Model.CurrSet</span></td>
+            </tr>
+            <tr>
+                <td>Completed</td>
+                <td><span id="completed">@Model.Completed</span></td>
+            </tr>
+            <tr>
+                <td>Error</td>
+                <td><span id="error">@(Model.Error ?? "")</span></td>
+            </tr>
+        </table>
+    </div>
+    <div id="download" style="display:none">
+        Download Statements
+    </div>
 </div>
 @section scripts{
     @if (Model.Running == 1)

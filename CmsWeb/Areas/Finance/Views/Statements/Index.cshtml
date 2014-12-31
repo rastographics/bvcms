@@ -1,49 +1,64 @@
-﻿@using CmsWeb
-@using CmsWeb.Code
+﻿@using CmsWeb.Code
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Contribution Statements";
     var cv = new CodeValueModel();
 }
-
-<h2>Contribution Statements</h2>
-<div class="well">
-    <div class="row">
-        <div class="col-sm-3">
-            <form action="/Statements/Start" method="post">
-                <div class="form-group">
+<div class="report">
+    <h2>Contribution Statements</h2>
+    <br/>
+    <div class="well hidden-print" style="max-width: 850px; margin: auto;">
+        <form action="/Statements/Start" method="post">
+            <div class="row">
+                <div class="col-sm-4">
                     <label for="startswith">Starts With</label>
-                    @Html.TextBox("startswith", "", new { @class = "form-control", title = "lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow" })
+                    <div class="input-group">
+                        @Html.TextBox("startswith", "", new { @class = "form-control", title = "lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow" })
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="sort">Sort</label>
-                    @Html.TextBox("sort", "", new { @class = "form-control", title = "type: name or zip" })
-                </div>
-                <div class="form-group">
+                <div class="col-sm-4">
                     <label for="FromDate">Start Date</label>
                     <div class="input-group date">
                         @Html.TextBox("FromDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                         @Html.Hidden("FromDateIso", "", new { disabled = "disabled" })
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="col-sm-4">
                     <label for="EndDate">End Date</label>
                     <div class="input-group date">
                         @Html.TextBox("EndDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                         @Html.Hidden("EndDateIso", "", new { disabled = "disabled" })
                     </div>
                 </div>
-                <div class="form-group">
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="sort">Sort</label>
+                    <div class="input-group">
+                        @Html.TextBox("sort", "", new { @class = "form-control", title = "type: name or zip" })
+                    </div>
+                </div>
+                <div class="col-sm-4">
                     <label for="TagId">Tag Id</label>
-                    @Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect(), new { @class = "form-control" })
+                    <div class="input-group">
+                        @Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect(), new { @class = "form-control" })
+                    </div>
                 </div>
-                <div class="checkbox">
-                    <label>
-                        @Html.CheckBox("ExcludeElectronic", false) Exclude electronic only?
-                    </label>
+                <div class="col-sm-4">
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBox("ExcludeElectronic", false) Exclude electronic only?
+                        </label>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Run</button>
-            </form>
-        </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <button type="submit" class="btn btn-primary">Run</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
