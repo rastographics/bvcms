@@ -9,14 +9,17 @@
 <form id="form" method="post" action="/SMS/List">
     <div class="well">
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-4 col-md-3 col-lg-2">
                 <label for="start">Start Date</label>
-                <div class="input-group date">
-                    @Html.TextBox("start", Model.start.HasValue ? Model.start.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                    @Html.Hidden("startIso", Model.start.HasValue ? Model.start.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                <div class="form-inline">
+                    <div class="input-group date">
+                        @Html.TextBox("start", Model.start.HasValue ? Model.start.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("startIso", Model.start.HasValue ? Model.start.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                    </div>
                 </div>
+                
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-8 col-md-9 col-lg-10">
                 <label for="end">End Date</label>
                 <div class="form-inline">
                     <div class="input-group date">
