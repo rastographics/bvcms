@@ -27,7 +27,7 @@
             @RenderBody()
         </div>
         <div id="contact-footer">
-            <div class="texture" style="background: url(/Content/touchpoint/images/hexagon.png) repeat;"></div>
+            <div class="texture"></div>
             <ul class="list-inline">
                 <li>@ViewExtensions2.DbSetting("nameofchurch", "Name of Church")</li>
                 <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()">@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</a></li>
