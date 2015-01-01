@@ -43,18 +43,14 @@ body {
 .table a.btn, .table a.editable {
     text-decoration: none;
 }
+.table tbody td.action {
+    padding-left: 0;
+    width: 50px;
+}
+.table tbody td.action:first-child {
+    padding-left: inherit;
+}
 
-
-/*.table tbody a:not(.btn):not(.editable),
-.table tfoot a:not(.btn):not(.editable) {
-    border-bottom: 1px solid #cbeefa;
-    box-shadow: inset 0 -4px 0 #cbeefa;
-    text-decoration: none;
-}*/
-/*.table a.btn {
-    border-bottom: solid;
-    box-shadow: none;
-}*/
 
 #thumbnail-picture {
     float: left;
@@ -220,15 +216,6 @@ ul.pagination>li>span.separator:hover{
   background-color: transparent !important;
 }
 
-@media (max-width: 991px) {
-    .btn-vert-block .btn {
-        display: block;
-        margin-bottom: 5px;  
-    }
-    .btn-vert-block .btn:last-child {
-        margin-bottom: 0;
-    }  
-}
 
 @media (max-width: 767px) {
 	.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, 

@@ -14,7 +14,7 @@
                 <th>Data Type</th>
                 <th class="text-right">Count</th>
                 <th class="text-center">Standard</th>
-                <th>Actions</th>
+                <th colspan="2">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -40,10 +40,11 @@
                                 <a href="@e.ConvertToStandardUrl" class="btn btn-sm btn-default"><i class="fa fa-group"></i> Standardize</a>
                             }
                         </td>
-                        <td>
-                            <div class="btn-vert-block">
-                                <a class="rename btn btn-sm btn-default" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)"><i class="fa fa-pencil"></i> Rename</a> <a class="delete btn btn-sm btn-danger" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-trash"></i> Delete</a>
-                            </div>
+                        <td class="action">
+                            <a class="rename btn btn-sm btn-default" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)"><i class="fa fa-pencil"></i> Rename</a>
+                        </td>
+                        <td class="action">
+                            <a class="delete btn btn-sm btn-danger" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-trash"></i> Delete</a>
                         </td>
                     </tr>
                 }
