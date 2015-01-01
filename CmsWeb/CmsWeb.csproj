@@ -227,8 +227,6 @@
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
-    <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
-    <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreek.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgia.cs">
       <SubType>Code</SubType>
@@ -1095,8 +1093,6 @@
     <Content Include="Content\font-awesome-4.0.3\scss\_spinning.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_stacked.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_variables.scss" />
-    <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Index.cshtml" />
-    <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Progress.cshtml" />
     <Content Include="Areas\Search\Views\Query\SaveAs.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\WeeklyAttendance.cshtml" />
     <Content Include="Content\images\computer_error.ogg" />
@@ -1770,10 +1766,6 @@
     <Content Include="Areas\Manage\Views\Duplicates\Progress.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Duplicates\Find.cshtml">
-    </Content>
-    <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Progress.cshtml">
     </Content>
     <Content Include="Areas\Dialog\Views\AddOrganization\Index.cshtml">
     </Content>

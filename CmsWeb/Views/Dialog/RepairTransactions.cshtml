@@ -7,7 +7,7 @@
   @Html.HiddenIf("finished", "true", Model.Completed.HasValue)
   @Html.HiddenFor(m => m.Id)
   @Html.DisplayFor(m => m.Count, new { Label = "Number of Members" })
-  @Html.SpanIf(!Model.Started.HasValue, "Are you sure you repair Transactions?", null)
+  @Html.SpanIf(!Model.Started.HasValue, "Are you sure you want to repair Transactions?", null)
   @Html.DisplayForIf(m => m.Started, Model.Started.HasValue, "DateAndTime")
   @Html.DisplayForIf(m => m.Processed, Model.Processed > 0)
   @Html.DisplayForIf(m => m.Completed, Model.Completed.HasValue, "DateAndTime")

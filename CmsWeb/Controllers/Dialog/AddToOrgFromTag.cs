@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -6,6 +7,8 @@ using System.Linq;
 using System.Threading;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -13,37 +16,74 @@ namespace CmsWeb.Controllers
 {
     public partial class DialogController
     {
-        public class TagInfo
+        public class TagInfo : LongRunningOp
         {
+            public TagInfo()
+            {
+                
+            }
+            public TagInfo(int id, string group)
+            {
+                Id = id;
+                Group = group;
+                Tag = new CodeInfo("0", "Tag");
+            }
+            public TagInfo(LongRunningOp lop, string group)
+            {
+                lop.CopyPropertiesTo(this);
+                Group = group;
+            }
             [DisplayName("Choose A Tag")]
             public CodeInfo Tag { get; set; }
-            public string Name { get; set; }
+            public string Group { get; set; }
         }
-        [Route("~/Dialog/AddToOrgFromTag/{group:int}/{id:int}")]
-        public ActionResult AddToOrgFromTag(int group, int id)
+        [Route("~/Dialog/AddToOrgFromTag/{id:int}/{group}")]
+        public ActionResult AddToOrgFromTag(int id, string group, TagInfo model)
         {
             const string addtoorgfromtag = "addtoorgfromtag";
-            if (Request.HttpMethod == "GET")
+            if (Request.HttpMethod == "GET") // initial display
             {
     			var r = DbUtil.Db.LongRunningOps.SingleOrDefault(m => m.Id == id && m.Operation == addtoorgfromtag );
                 if (r != null) 
                     DbUtil.Db.LongRunningOps.DeleteOnSubmit(r);
                 DbUtil.Db.SubmitChanges();
-                return View(new LongRunningOp { Id = id });
+                return View(new TagInfo(id, group));
+            }
+            // If we are here, this was a POST
+            // Validate first
+            if (model.Tag != null && model.Tag.Value == "0")
+            {
+                // They did not choose a tag, show errror message
+                ModelState.AddModelError("Tag", "Must choose a tag");
+                return View(new TagInfo(id, group));
+            }
+            // let them confirm by seeing the count and the tagname
+            if (model.Count == null && model.Tag != null)
+            {
+                var tag = DbUtil.Db.TagById(model.Tag.Value.ToInt());
+                var q = tag.People(DbUtil.Db);
+                model.Count = q.Count();
+                return View(model);
             }
 			var rr = DbUtil.Db.LongRunningOps.SingleOrDefault(m => m.Id == id && m.Operation == addtoorgfromtag );
-            if (rr == null) 
+            if (rr == null && model.Tag != null) 
             {
-                // start delete process
-    			DbUtil.LogActivity("Delete meeting for {0}".Fmt(Session["ActiveOrganization"]));
-                var mm = DbUtil.Db.Meetings.Single(m => m.MeetingId == id);
-    			var runningtotals = new LongRunningOp
+                // Do the deed here
+    			DbUtil.LogActivity("Add to org from tag for {0}".Fmt(Session["ActiveOrganization"]));
+    		    var qid = DbUtil.Db.FetchLastQuery().Id;
+				var q = model.Tag.Value == "-1"
+                    ? DbUtil.Db.PeopleQuery(qid).Select(pp => pp.PeopleId)
+                    : from t in DbUtil.Db.TagPeople
+					  where t.Id == model.Tag.Value.ToInt()
+					  select t.PeopleId;
+				var pids = q.ToList();
+    			var runningtotals = new LongRunningOp()
     			{
     				Started = DateTime.Now,
-    				Count = mm.Attends.Count(a => a.AttendanceFlag || a.EffAttendFlag == true),
+    				Count = pids.Count,
     				Processed = 0,
     				Id = id,
-                    Operation = addtoorgfromtag
+                    Operation = addtoorgfromtag,
     			};
     			DbUtil.Db.LongRunningOps.InsertOnSubmit(runningtotals);
     			DbUtil.Db.SubmitChanges();
@@ -56,47 +96,43 @@ namespace CmsWeb.Controllers
                     Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                     Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 
-    				var q = from a in db.Attends
-    						where a.MeetingId == id
-    						where a.AttendanceFlag|| a.EffAttendFlag == true
-    						select a.PeopleId;
-    				var list = q.ToList();
     			    LongRunningOp r = null;
-    			    foreach (var pid in list)
+    			    foreach (var pid in pids)
     				{
     					db.Dispose();
     					db = new CMSDataContext(Util.GetConnectionString(host));
-    					Attend.RecordAttendance(db, pid, id, false);
+    				    switch (group)
+    				    {
+    				        case GroupSelectCode.Member:
+            				    OrganizationMember.InsertOrgMembers(db, id, pid, MemberTypeCode.Member, DateTime.Now, null, pending: false);
+    				            break;
+    				        case GroupSelectCode.Pending:
+            				    OrganizationMember.InsertOrgMembers(db, id, pid, MemberTypeCode.Member, DateTime.Now, null, pending: true);
+    				            break;
+    				        case GroupSelectCode.Prospect:
+            				    OrganizationMember.InsertOrgMembers(db, id, pid, MemberTypeCode.Prospect, DateTime.Now, null, pending: false);
+    				            break;
+    				        case GroupSelectCode.Inactive:
+            				    OrganizationMember.InsertOrgMembers(db, id, pid, MemberTypeCode.InActive, DateTime.Now, DateTime.Now, pending: false);
+    				            break;
+    				        case GroupSelectCode.Previous:
+            				    Organization.AddAsPreviousMember(db, id, pid, MemberTypeCode.InActive, DateTime.Now, DateTime.Now);
+    				            break;
+    				    }
     				    r = db.LongRunningOps.SingleOrDefault(m => m.Id == id && m.Operation == addtoorgfromtag);
     				    Debug.Assert(r != null, "r != null");
     				    r.Processed++;
     			        db.SubmitChanges();
+                        Thread.Sleep(1000);
     				}
-    			    r = db.LongRunningOps.SingleOrDefault(m => m.Id == id && m.Operation == addtoorgfromtag);
-				    Debug.Assert(r != null, "r != null");
-    			    r.Processed--;
-    	            db.SubmitChanges();
-    				db.ExecuteCommand(@"
-delete dbo.SubRequest 
-WHERE EXISTS(
-    SELECT NULL FROM Attend a 
-    WHERE a.AttendId = AttendId 
-    AND a.MeetingId = {0}
-)", id);
-    				db.ExecuteCommand("DELETE dbo.VolRequest where MeetingId = {0}", id);
-    				db.ExecuteCommand("delete attend where MeetingId = {0}", id);
-    				db.ExecuteCommand("delete MeetingExtra where MeetingId = {0}", id);
-    				db.ExecuteCommand("delete meetings where MeetingId = {0}", id);
-
 			        r = db.LongRunningOps.Single(m => m.Id == id && m.Operation == addtoorgfromtag);
-    				r.Processed++;
     				r.Completed = DateTime.Now;
     	            db.SubmitChanges();
     			});
             }
             // Display Progress here
             rr = DbUtil.Db.LongRunningOps.SingleOrDefault(m => m.Id == id && m.Operation == addtoorgfromtag);
-			return View(rr);
+			return View(new TagInfo(rr, group));
 		}
     }
 }

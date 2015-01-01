@@ -29,7 +29,6 @@ namespace CmsWeb.Controllers
 			var rr = DbUtil.Db.LongRunningOps.SingleOrDefault(m => m.Id == id );
             if (rr == null && postdata.HasValue())  
             {
-                // start delete process
                 var orgIds = postdata.Split(',').Select(m => m.ToInt()).ToArray();
     			var runningtotals = new LongRunningOp
     			{

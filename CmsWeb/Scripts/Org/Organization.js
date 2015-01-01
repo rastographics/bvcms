@@ -243,13 +243,13 @@ $(function () {
             }
         });
     */
-    $('a.addfromtag').live("click", function (e) {
-        e.preventDefault();
-        var d = $('#AddFromTag');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", "Add Members From Tag");
-        d.dialog("open");
-    });
+//    $('a.addfromtag').live("click", function (e) {
+//        e.preventDefault();
+//        var d = $('#AddFromTag');
+//        $('iframe', d).attr("src", this.href);
+//        d.dialog("option", "title", "Add Members From Tag");
+//        d.dialog("open");
+//    });
     /*
         $('#LongRunOp').dialog({
             bgiframe: true,
@@ -268,13 +268,13 @@ $(function () {
         });
     */
 
-    $('a.addmembers').live("click", function (e) {
-        e.preventDefault();
-        var d = $('#memberDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", "Add Members");
-        d.dialog("open");
-    });
+//    $('a.addmembers').live("click", function (e) {
+//        e.preventDefault();
+//        var d = $('#memberDialog');
+//        $('iframe', d).attr("src", this.href);
+//        d.dialog("option", "title", "Add Members");
+//        d.dialog("open");
+//    });
     $('a.memberdialog').live("click", function (e) {
         e.preventDefault();
         var title;
@@ -741,8 +741,8 @@ $(function () {
         bootbox.confirm(a.attr("confirm"), function (result) {
             if (result) {
                 $.post(a[0].href, function (ret) {
-                    if (ret == "ok")
-                        $.RebindMemberGrids();
+                    if (ret === "ok")
+                        RebindMemberGrids();
                     else
                         alert(ret);
                 });
@@ -890,7 +890,7 @@ $(function () {
         $(submitDialog).dialog("close");
     });
     */
-    $.updateTable = function (a) {
+    $.updateTable = function(a) {
         if (!a)
             return false;
         var $form = a.closest("form.ajax");
@@ -898,14 +898,9 @@ $(function () {
             $.formAjaxClick(a);
         return false;
     };
-    $.RebindMemberGrids = function () {
-        $.updateTable($("#Members-tab a.setfilter"));
-        $.updateTable($('#Inactive-tab a.setfilter'));
-        $.updateTable($('#Pending-tab a.setfilter'));
-        $.updateTable($('#Priors-tab a.setfilter'));
-        $.updateTable($('#Prospects-tab a.setfilter'));
-        $.updateTable($('#Visitors-tab a.setfilter'));
-    }
+    $.InitFunctions.ReloadPeople = function () {
+        RebindMemberGrids();
+    };
 //    $('#NewMeeting').live("click", function (ev) {
 //        ev.preventDefault();
 //        $('#grouplabel').text("Group Meeting");
@@ -939,8 +934,11 @@ $(function () {
 //        return false;
 //    });
 });
+function RebindMemberGrids() {
+    $.formAjaxClick($("a.setfilter"));
+}
 function AddSelected() {
-    $.RebindMemberGrids();
+    RebindMemberGrids();
 }
 function CloseAddDialog(from) {
     $("#memberDialog").dialog("close");

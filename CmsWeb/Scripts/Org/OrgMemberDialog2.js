@@ -12,7 +12,7 @@
             if (confirmed) {
                 $.post(href, null, function(ret) {
                     f.modal("hide");
-                    $.RebindMemberGrids();
+                    RebindMemberGrids();
                 });
             }
         });

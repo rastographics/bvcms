@@ -1,23 +1,24 @@
 ﻿@using System.Web.Mvc.Html
-@model LongRunningOp
+@model CmsWeb.Controllers.DialogController.TagInfo
 <div class="modal-header">
   <a class="close" data-dismiss="modal">x</a>
-  <h3>Add @ViewBag.Group to @ViewBag.Name From a Tag</h3>
+  <h3>Add People From a Tag/Query</h3>
 </div>
 <div class="modal-body">
   @Html.HiddenIf("finished", "true", Model.Completed.HasValue)
   @Html.HiddenFor(m => m.Id)
   @Html.Hidden("callback", "ReloadPeople")
-  @if (!Model.Started.HasValue)
+  @Html.DisplayForIf(m => m.Count, Model.Count.HasValue, new { Label="Number of People to Add"})
+  @if (!Model.Count.HasValue)
   {
-    @Html.Editor("Tag", "Dropdown", new
-    {
-      label = "Select a Tag",
-      items=(IEnumerable<SelectListItem>) (ViewBag.Tags)
-    })
+    @Html.EditorForIf(m => m.Tag, !Model.Started.HasValue)
   }
-  @Html.DisplayForIf(m => m.Count, Model.Started.HasValue, new { Label="Number of People to Add"})
-  @Html.SpanIf(!Model.Started.HasValue, "Are you sure you want to Add these?", null)
+  else
+  {
+    @Html.HiddenFor(m => m.Count)
+    @Html.EditorFor(m => m.Tag, "HiddenCodeInfo")
+    @Html.DisplayFor(m => m.Tag)
+  }
   @Html.DisplayForIf(m => m.Started, Model.Started.HasValue, "DateAndTime")
   @Html.DisplayForIf(m => m.Processed, Model.Processed > 0)
   @Html.DisplayForIf(m => m.Completed, Model.Completed.HasValue, "DateAndTime")
@@ -26,8 +27,16 @@
 <div class="modal-footer">
   @if (!Model.Started.HasValue)
   {
+    @Html.SpanIf(Model.Count.HasValue, "Are you sure you want to Add these?", null)
     <a href="#" class="btn btn-success" data-dismiss="modal">Cancel</a>
-    <a href="/Dialog/DeleteMeeting/@Model.Id" class="btn btn-primary ajaxreloader">OK</a>
+    if (!Model.Count.HasValue)
+    {
+      <a href="/Dialog/AddToOrgFromTag/@Model.Id/@Model.Group" class="btn btn-primary ajax">Select Tag</a>
+    }
+    else
+    {
+      <a href="/Dialog/AddToOrgFromTag/@Model.Id/@Model.Group" class="btn btn-primary ajaxreloader">Add People</a>
+    }
   }
   else if (Model.Completed.HasValue)
   {

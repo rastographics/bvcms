@@ -48,20 +48,20 @@
     case GroupSelectCode.Member:
     <ul class="dropdown-menu">
       <li><a href="/SearchAdd2/Dialog/org/@Model.Id" class="searchadd">Add Members</a></li>
-      <li><a href="/Dialog/AddToOrgFromTag/@GroupSelectCode.Member/@Model.Id" class="longrunop" title="Add Members From Tag">Add from Tag</a></li>
+      <li><a href="/Dialog/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Member" class="longrunop" title="Add Members From Tag">Add from Tag</a></li>
       <li><a id="currMembersUpdate" href="/OrgMembersDialog/@Model.Id" title="Update Members" class="memberdialog">Update Members</a></li>
     </ul>
       break;
     case GroupSelectCode.Prospect:
     <ul class="dropdown-menu">
       <li><a href="/SearchAdd2/Dialog/prospects/@Model.Id" class="searchadd">Add Prospects</a></li>
-      <li><a href="/Dialog/AddToOrgFromTag/@GroupSelectCode.Prospect/@Model.Id" title="Add Prospects From Tag" class="longrunop">Add From Tag</a></li>
+      <li><a href="/Dialog/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Prospect" title="Add Prospects From Tag" class="longrunop">Add From Tag</a></li>
       <li><a href="/OrgMembersDialog/@Model.Id?prospects=true" title="Update Prospects" class="memberdialog">Update Prospects</a></li>
     </ul>
       break;
     case GroupSelectCode.Previous:
     <ul class="dropdown-menu">
-      <li><a href="/Dialog/AddToOrgPrevFromTag/@Model.Id" class="longrunop" title="Add Previous Members From Tag">Add From Tag</a></li>
+      <li><a href="/Dialog/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Previous" class="longrunop" title="Add Previous Members From Tag">Add From Tag</a></li>
     </ul>
       break;
     case GroupSelectCode.Inactive:
@@ -73,7 +73,7 @@
     case GroupSelectCode.Pending:
     <ul class="dropdown-menu">
       <li><a href="/SearchAdd2/Dialog/pending/@Model.Id" class="searchadd">Add Pending Members</a></li>
-      <li><a href="/Dialog/AddToOrgFromTag/@GroupSelectCode.Pending/@Model.Id" title="Add Pendings From Tag" class="longrunop">Add From Tag</a></li>
+      <li><a href="/Dialog/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Pending" title="Add Pendings From Tag" class="longrunop">Add From Tag</a></li>
       <li><a href="/OrgMembersDialog/@Model.Id?pendings=true" title="Update Pending Members" class="memberdialog">Update Pending</a></li>
     </ul>
       break;

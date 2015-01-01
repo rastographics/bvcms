@@ -248,7 +248,7 @@
         if ($(this).data("method") === "post") {
             data = $(this).closest("form").serialize();
         }
-        $('<form class="modal form-horizontal longrunop validate fade hide" />').load(this.href, data, function() {
+        $('<form class="modal form-horizontal ajax validate fade hide" />').load(this.href, data, function() {
             var f = $(this);
             var callback = $("#callback", f).val();
             f.modal("show");
@@ -263,12 +263,12 @@
                 event.preventDefault();
                 var href = this.href;
                 var data = $("#postdata", f).val();
-                var postdata = {};
+                var postdata = f.serialize();
                 if(data)
                     postdata = { "postdata": data}
                 var myloop = function() {
                     $.post(href, postdata , function (ret) {
-                        postdata = {};
+                        postdata = f.serialize();
                         f.html(ret);
                         if ($("#finished", f).val())
                             tm = 0;
@@ -284,26 +284,6 @@
         });
         return false;
     });
-var keepGoing = true;
-
-function myLoop() {
-    // ... Do something ...
-
-    if(keepGoing) {
-        setTimeout(myLoop, 1000);
-    }
-}
-
-function startLoop() {
-    keepGoing = true;
-    myLoop();
-}
-
-function stopLoop() {
-    keepGoing = false;
-}
-    $.refreshLongRunOp = function(href, intervalid) {
-    }
     var $loadingcount = 0;
     $.ajaxSetup({
         beforeSend: function () {
