@@ -1,32 +1,30 @@
-﻿@using CmsWeb
-@using CmsWeb.Models
-@using RestSharp.Extensions
+﻿@using CmsWeb.Models
 @model UpdateFieldsModel.TitleItems
-<div class="inline align-top left-gutter well">
-    <fieldset>
-        <legend>
-            @Model.title
-            @if (Model.Instructions.HasValue())
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">@Model.title</h3>
+    </div>
+    @if (!string.IsNullOrWhiteSpace(Model.Instructions))
+    {
+        <div class="panel-body">
+            <small>@Model.Instructions</small>
+        </div>
+    }
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Code</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model.items)
             {
-            <small><br/>@Model.Instructions</small>
-            }
-        </legend>
-        <table class="@ViewExtensions2.GridClass">
-            <thead>
                 <tr>
-                    <th>Code</th>
-                    <th>Description</th>
+                    <td>@(Model.UseCode ? i.Code : i.Id.ToString())</td>
+                    <td>@i.Value</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var i in Model.items)
-                {
-                    <tr>
-                        <td>@(Model.UseCode ? i.Code : i.Id.ToString())</td>
-                        <td>@i.Value</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </fieldset>
+            }
+        </tbody>
+    </table>
 </div>
