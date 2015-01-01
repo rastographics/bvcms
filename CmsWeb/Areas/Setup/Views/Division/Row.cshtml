@@ -1,6 +1,15 @@
 ﻿@model CmsWeb.Models.DivisionInfo
 <tr>
-    <td><a href="/OrgSearch/@Model.ProgId/@Model.Id" title="@Model.ToolTip">@Model.Id</a></td>
+    <td class="text-center">
+        <a href="#" data-toggle="popover" data-trigger="focus" data-title="@Model.Name"
+           data-content="
+        <label>Orgs:</label> @Model.OrgCount<br/>
+        <label>Division Orgs:</label> @Model.DivOrgsCount<br />
+        <label>Meetings:</label> @Model.MeetingCount<br/>
+        <label>Programs:</label> @string.Join("|", Model.Programs)
+        "><i class="fa fa-info-circle"></i></a>
+    </td>
+    <td><a href="/OrgSearch/@Model.ProgId/@Model.Id">@Model.Id</a></td>
     <td>
         <span id="n@(Model.Id)" data-pk="n@(Model.Id)" class="clickEdit">@Model.Name</span>
     </td>

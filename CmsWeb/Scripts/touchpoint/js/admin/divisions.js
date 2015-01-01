@@ -1,4 +1,13 @@
 ﻿$(function () {
+
+    function intializePopovers() {
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
+        });
+    }
+
+
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                                            '<i class="fa fa-fw fa-check"></i>' +
                                        '</button>' +
@@ -108,6 +117,8 @@
     }
 
     $.initializeTable = function () {
+        intializePopovers();
+
         $(".clickEdit").editable({
             mode: 'inline',
             type: 'text',
