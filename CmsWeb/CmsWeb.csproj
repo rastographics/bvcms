@@ -933,6 +933,7 @@
     <Content Include="Scripts\touchpoint\js\admin\users.js" />
     <Content Include="Scripts\touchpoint\js\dialog\search-users.js" />
     <Content Include="Scripts\touchpoint\js\finance\totals-by-fund.js" />
+    <Content Include="Scripts\touchpoint\js\finance\transactions.js" />
     <Content Include="Scripts\touchpoint\js\form-ajax.js" />
     <Content Include="Scripts\touchpoint\js\main.js" />
     <Content Include="Scripts\touchpoint\js\search\people-search.js" />

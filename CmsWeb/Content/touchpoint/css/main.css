@@ -281,6 +281,46 @@ div.report .table {
     }
 }
 
+
+.stat-panel-container {
+    background-color: #548cc5; 
+    color: #fff; 
+    margin-top: -20px; 
+    margin-bottom: 20px;
+}
+
+.stat-panel {
+    padding: 15px; 
+    float: left; 
+    min-width: 200px;
+    text-align: right;
+    border-right: #bbbbbb solid 1px; 
+}
+
+.stat-panel span.stat-title {
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.stat-panel span.stat-symbol {
+    font-size: 20px;
+}
+
+.stat-panel span.stat-figure {
+    font-size: 30px;
+    display: block;
+}
+
+@media (max-width: 992px) {
+    .stat-panel {
+        border: 0;
+        text-align: left;
+    }
+    .stat-panel span.stat-figure {
+        font-size: 20px; 
+    }
+}
+
 #contact-footer {
     position: absolute;
     bottom: 60px;
