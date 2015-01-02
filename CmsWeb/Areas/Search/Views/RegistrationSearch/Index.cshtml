@@ -1,37 +1,134 @@
 ﻿@model CmsWeb.Areas.Search.Models.RegistrationSearchModel
 @{
     ViewBag.Title = "Registration Search";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/Search/RegistrationSearch.js")
-}
-<div class="container">
-    <form id="form-registration-search" class="ajax form-horizontal w120" data-results="#results" method="post">
-        <div id="registration-search" class="border-bottom">
-            <fieldset>
-                <legend>Registration Search</legend>
-                <div class="row-fluid">
-                    <div class="inline">
-                        @Html.EditorFor(m => m.SearchParameters.Organization)
-                        @Html.EditorFor(m => m.SearchParameters.Registrant)
-                        @Html.EditorFor(m => m.SearchParameters.count)
-                        @Html.EditorFor(m => m.SearchParameters.StartDate)
-                        @Html.EditorFor(m => m.SearchParameters.EndDate)
-                    </div>
-                    <div class="inline align-top">
-                        @Html.EditorFor(m => m.SearchParameters.Complete)
-                        @Html.EditorFor(m => m.SearchParameters.Active)
-                        @Html.EditorFor(m => m.SearchParameters.Abandoned)
+<h2>Registration Search</h2>
+<form id="form-registration-search" method="post" action="/RegistrationSearch/Clear">
+    <div class="well">
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <label for="SearchParameters_Organization">Organization</label>
+                    @Html.TextBoxFor(m => m.SearchParameters.Organization, new { @class="form-control"})
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <label for="SearchParameters_Registrant">Registrant</label>
+                    @Html.TextBoxFor(m => m.SearchParameters.Registrant, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <label for="SearchParameters_StartDate">Start Date</label>
+                    <div class="input-group date">
+                        @Html.TextBox("SearchParameters_StartDate", Model.SearchParameters.StartDate.HasValue ? Model.SearchParameters.StartDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("SearchParameters_StartDateIso", Model.SearchParameters.StartDate.HasValue ? Model.SearchParameters.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
                     </div>
                 </div>
-                <div class="row-fluid">
-                    <a class="btn margin-left submit" href="/RegistrationSearch/Clear">Clear</a>
-                    <a class="btn btn-primary ajax" href="/RegistrationSearch/Results">Search</a>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <label for="SearchParameters_EndDate">End Date</label>
+                    <div class="input-group date">
+                        @Html.TextBox("SearchParameters_EndDate", Model.SearchParameters.EndDate.HasValue ? Model.SearchParameters.EndDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        @Html.Hidden("SearchParameters_EndDateIso", Model.SearchParameters.EndDate.HasValue ? Model.SearchParameters.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                    </div>
                 </div>
-            </fieldset>
+            </div>
         </div>
-        @Html.Partial("Results", Model)
-    </form>
-</div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <label for="SearchParameters_count">Count</label>
+                    @Html.TextBoxFor(m => m.SearchParameters.count, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <label for="SearchParameters_Complete">Complete</label>
+                    @Html.DropDownListFor(m => m.SearchParameters.Complete.Value, Model.SearchParameters.Complete.Items, new { @class= "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <label for="SearchParameters_Active">Active</label>
+                    @Html.DropDownListFor(m => m.SearchParameters.Active.Value, Model.SearchParameters.Active.Items, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-6">
+                <div class="form-group">
+                    <label for="SearchParameters_Abandoned">Abandoned</label>
+                    @Html.DropDownListFor(m => m.SearchParameters.Abandoned.Value, Model.SearchParameters.Abandoned.Items, new { @class = "form-control" })   
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-4">
+                <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+            </div>
+            <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                <div class="pull-right">
+                    <button type="submit" class="btn btn-default">Clear</button> <a class="btn btn-primary" href="#" id="filter">Search</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("Results", Model)       
+</form>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            
+            $('body').on('click', '#filter', function (ev) {
+                ev.preventDefault();
+                $('#Page').val(1);
+                $.getTable();
+                return false;
+            });
+
+            $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
+                ev.preventDefault();
+                var newsort = $(this).attr('data-sortby');
+                var sort = $("#Sort");
+                var dir = $("#Direction");
+                if ($(sort).val() == newsort && $(dir).val() == 'asc')
+                    $(dir).val('desc');
+                else
+                    $(dir).val('asc');
+                $(sort).val(newsort);
+
+                $.getTable();
+                return false;
+            });
+
+            $.gotoPage = function (e, pg) {
+                $("#Page").val(pg);
+                $.getTable();
+                return false;
+            };
+
+            $.setPageSize = function (e) {
+                $('#Page').val(1);
+                $("#PageSize").val($(e).val());
+                $.getTable();
+                return false;
+            };
+
+            $.getTable = function () {
+                var f = $('#results').closest('form');
+                var q = null;
+                if (f)
+                    q = f.serialize();
+                $.block();
+                $.post("/RegistrationSearch/Results", q, function (ret) {
+                    $('#results').html(ret);
+                    $.unblock();
+                });
+                return false;
+            };
+
+        });
+    </script>
+}
