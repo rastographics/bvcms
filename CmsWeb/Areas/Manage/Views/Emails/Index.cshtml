@@ -56,6 +56,7 @@
             $.post(f.attr('action'), q, function (ret) {
                 $(f).html(ret);
                 $.unblock();
+                initializeDateElements();
             });
             return false;
         };
