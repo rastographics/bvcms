@@ -1,56 +1,67 @@
 ﻿@model CmsWeb.Areas.Finance.Models.BundlesModel
-@using CmsWeb
 @using UtilityExtensions
-<table class="@ViewExtensions2.GridClass">
-    <thead>
-        <tr><td colspan="4">Bundle Count: @Model.Count().ToString("N0")</td>
-            <td colspan="4">*<i>= includes non tax deductible items</i></td>
-        </tr>
-    	<tr><td colspan="6">@Html.Partial("Pager2", Model)
-            @Html.Hidden("totcnt", Model.Count())</td></tr>
-        <tr>
-            <th><a href="#" class="sortable">Id</a></th>
-            <th><a href="#" class="sortable">Type</a></th>
-            <th><a href="#" class="sortable">Deposited</a></th>
-            <th><a href="#" class="sortable">Posted</a></th>
-            <th><a href="#" class="sortable">Total Bundle</a></th>
-            <th><a href="#" class="sortable">Items</a></th>
-            <th></th>
-            <th><a href="#" class="sortable">Count</a></th>
-            <th><a href="#" class="sortable">Status</a></th>
-        </tr>
-    </thead>
-    <tbody>
-@if(Model.Count() == 0)
-{ 
-    	<tr><td colspan="6">No bundles yet.</td></tr>
-} 
-    @foreach (var b in Model.Bundles())
-    {
-		<tr>
-		    <td><a href="/Bundle/@b.BundleId">@b.BundleId</a></td>
-		    <td><a href="/PostBundle/FundTotals/@b.BundleId">@b.HeaderType</a></td>
-    		<td><a href="/ContributionReports/Deposit.aspx?dt=@b.DepositDate.FormatDate()">@b.DepositDate.FormatDate()</a></td>
-		    <td>@b.PostingDate.FormatDate()</td>
-		    <td class="right">@b.TotalBundle.ToString2("N2")</td>
-		    <td class="right tip" 
-		        title="Items|total tax ded:@(((b.TotalItems ?? 0) - (b.TotalNonTaxDed ?? 0)).ToString("N2"))|total non taxded:@b.TotalNonTaxDed.ToString2("N2")">
-		        <a href="/Bundle/@b.BundleId">@b.TotalItems.ToString2("N2")</a>
-		    </td>
-		    <td><small>@(b.TotalNonTaxDed > 0 ? "*" : "")</small></td>
-            <td>@b.ItemCount.ToString("n0")</td>
-        @if (b.Status == "Open")
-        {
-            <td><a href="/PostBundle/@b.BundleId" title="click to edit">@b.Status</a></td>
-        }
-        else
-        {
-            <td>@b.Status</td>   
-        }
-		</tr>
-    }
-    </tbody>
-    <tfoot>
-		<tr><td colspan="6">@Html.Partial("Pager2", Model)</td></tr>
-    </tfoot>
-</table>
+@Html.Partial("PagerTop", Model)
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 10px;"></th>
+                <th><a href="#" class="sortable">Id</a></th>
+                <th><a href="#" class="sortable">Type</a></th>
+                <th><a href="#" class="sortable">Deposited</a></th>
+                <th><a href="#" class="sortable">Posted</a></th>
+                <th class="text-right"><a href="#" class="sortable">Total Bundle</a></th>
+                <th class="text-right"><a href="#" class="sortable">Items</a></th>
+                <th class="text-center">Non Tax Deductible</th>
+                <th><a href="#" class="sortable">Count</a></th>
+                <th><a href="#" class="sortable">Status</a></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count() == 0)
+            {
+                <tr><td colspan="9">No bundles yet.</td></tr>
+            }
+            @foreach (var b in Model.Bundles())
+            {
+                <tr>
+                    <td class="text-center" style="width: 10px;">
+                        <a href="#" data-toggle="popover" data-trigger="focus" data-title="Items"
+                           data-content="
+                               <label>Total Tax Deductible:</label> $@(((b.TotalItems ?? 0) - (b.TotalNonTaxDed ?? 0)).ToString("N2"))<br/>
+                               <label>Total Non Tax Deductible:</label> $@((b.TotalNonTaxDed ?? 0).ToString("N2"))<br />
+                            "><i class="fa fa-info-circle"></i></a>
+                    </td>
+                    <td><a href="/Bundle/@b.BundleId">@b.BundleId</a></td>
+                    <td><a href="/PostBundle/FundTotals/@b.BundleId">@b.HeaderType</a></td>
+                    <td><a href="/ContributionReports/Deposit.aspx?dt=@b.DepositDate.FormatDate()">@b.DepositDate.FormatDate()</a></td>
+                    <td>@b.PostingDate.FormatDate()</td>
+                    <td class="text-right">@b.TotalBundle.ToString2("N2")</td>
+                    <td class="text-right">
+                        <a href="/Bundle/@b.BundleId">@b.TotalItems.ToString2("N2")</a>
+                    </td>
+                    <td class="text-center">
+                        @if (b.TotalNonTaxDed > 0)
+                        {
+                            <i class="fa fa-check"></i>
+                        }
+                    </td>
+                    <td>@b.ItemCount.ToString("n0")</td>
+                    @if (b.Status == "Open")
+                    {
+                        <td><a href="/PostBundle/@b.BundleId" title="Click to Edit">@b.Status</a></td>
+                    }
+                    else
+                    {
+                        <td>@b.Status</td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@Html.Partial("PagerBottom", Model)
+@Html.Hidden("totcnt", Model.Count().ToString("N0"))
+@Html.Hidden("Page", Model.Page)
+@Html.Hidden("Sort", Model.Sort)
+@Html.Hidden("Direction", Model.Direction)

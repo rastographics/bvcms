@@ -1,22 +1,63 @@
 ﻿@model CmsWeb.Areas.Finance.Models.BundlesModel
-@using CmsWeb
-@using UtilityExtensions
 @{
     ViewBag.Title = "Contribution Bundles";
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
 }
+<h2>Contribution Bundles</h2>
+<div class="row">
+    <div class="col-md-9">
+        <form id="results">
+            <strong>Bundle Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span><br/>
+            <br/>
+            @Html.Partial("Results", Model)
+        </form>
+    </div>
+    <div class="col-md-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a href="/Bundles/NewBundle" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Create New Bundle</a>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Finance/Bundles.js")
+    <script type="text/javascript">
+        $(function () {
+            function intializePopovers() {
+                $('[data-toggle="popover"]').popover({ html: true });
+                $('[data-toggle="popover"]').click(function (ev) {
+                    ev.preventDefault();
+                });
+            }
+
+            $.gotoPage = function (e, pg) {
+                $("#Page").val(pg);
+                $.getTable();
+                return false;
+            };
+
+            $.setPageSize = function (e) {
+                $('#Page').val(1);
+                $("#PageSize").val($(e).val());
+                return $.getTable();
+            };
+
+            $.getTable = function () {
+                var f = $('#results');
+                var q = f.serialize();
+                $.block();
+                $.post("/bundles/results", q, function (ret) {
+                    $('#results').html(ret).ready(function () {
+                        $('#results > table > tbody > tr:even').addClass('alt');
+                        intializePopovers();
+                        $.unblock();
+                    });
+                });
+                return false;
+            };
+            intializePopovers();
+        });
+    </script>
 }
-<table class="roundbox">
-    <tr><td nowrap="nowrap"><h2>Contribution Bundles</h2></td></tr>
-    <tr><td class="right">
-            @Helper.AnchorLink("Create New Bundle", "/Bundles/NewBundle", style: "bt blue")
-@*                new { @class="bt blue", onclick = "return confirm('Are you sure?');" } )*@
-        </td>
-    </tr>
-</table>
-<form id="results">
-@Html.Partial("Results", Model)
-</form>
