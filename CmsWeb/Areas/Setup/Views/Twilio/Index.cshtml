@@ -1,19 +1,88 @@
 ﻿@using CmsData
 @{
     ViewBag.Title = "Twilio Management";
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     
     var gl = from e in DbUtil.Db.SMSGroups
              select e;
     int count = 0;
 }
+<h2>Twilio Management</h2>
+<div class="row">
+    <div class="col-sm-9">
+        <div class="row">
+            @foreach (var item in gl)
+            {
+                var numbers = from e in DbUtil.Db.SMSNumbers
+                              where e.GroupID == item.Id
+                              select e;
+
+                var people = from e in DbUtil.Db.SMSGroupMembers
+                             where e.GroupID == item.Id
+                             select e;
+                
+                <div class="col-sm-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                           <h4 class="panel-title"><a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=GroupDialog" dialogtitle="Edit Group">@item.Name</a></h4>
+                        </div>
+                        <table class="table table-striped">
+                            <tr>
+                                <td colspan="2"><b>Description</b></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="padding-left:10px;">@item.Description<br /><br /></td>
+                            </tr>
+                            <tr>
+                                <td><b>Numbers</b></td>
+                                <td class="text-right">
+                                    <a href="#" class="btn btn-success btn-xs" dialogurl="/Twilio/Dialog/@(item.Id)?name=NumberDialog" dialogtitle="Add New Number"><i class="fa fa-plus-circle"></i> Add</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    @foreach (var number in numbers)
+                                    {
+                                        @number.Number @:(<a href="/Twilio/NumberRemove/@number.Id">Remove</a>)<br />
+                                    }
+                                    &nbsp;<br />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><b>Users</b></td>
+                                <td class="text-right">
+                                    <a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=UserDialog" dialogtitle="Add New User" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i> Add</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    @foreach (var person in people)
+                                    {
+                                        @person.User.Name @:(<a href="/Twilio/UserRemove/@person.Id">Remove</a>)<br />
+                                    }
+                                    &nbsp;<br />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <a href="#" class="btn btn-success btn-block" dialogurl="/Twilio/Dialog?name=GroupDialog" dialogtitle="Create New Group"><i class="fa fa-plus-circle"></i> Create New Group</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dialog" style="display:none"></div>
 @section scripts
 {
     <script type="text/javascript">
-        $(document).ready(function() {
-            $(".bt").button();
-
-            $("a[dialogurl]").on("click", function(e) {
+        $(document).ready(function () {
+            $("a[dialogurl]").on("click", function (e) {
                 e.preventDefault();
 
                 $("#dialog").attr("title", $(this).attr("dialogtitle"));
@@ -29,99 +98,9 @@
         }
 
         function enableClose() {
-            $("input[cancelbutton]").on("click", function(e) {
+            $("input[cancelbutton]").on("click", function (e) {
                 $("#" + $(this).attr("cancelbutton")).dialog("destroy");
             });
         }
     </script>
 }
-<br />
-<center><a href="#" dialogurl="/Twilio/Dialog?name=GroupDialog" dialogtitle="Create New Group" class="bt">New Group</a></center><br />
-<table width="100%">
-<tr>
-
-@foreach( var item in gl )
-{
-    var numbers = from e in DbUtil.Db.SMSNumbers
-                  where e.GroupID == item.Id
-                  select e;
-
-    var people = from e in DbUtil.Db.SMSGroupMembers
-                 where e.GroupID == item.Id
-                 select e;
-    
-    <td width="25%" valign="top">
-        <div style="border:1px solid black; border-radius:7px; margin:1%;">
-            <div style="border-radius:7px 7px 0 0; border-bottom:1px solid black; background-color:#E4E2D5; padding:5px;">
-                <b><a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=GroupDialog" dialogtitle="Edit Group">@item.Name</a></b>
-                <div style="float:right;">
-                    (<a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=RemoveDialog" dialogtitle="Remove Group">Remove</a>)
-                </div>
-            </div>
-            <div style="padding:5px;">
-                <table width="100%" border="0">
-                    <tr>
-                        <td colspan="2"><b>Description</b></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="padding-left:10px;">@item.Description<br /><br /></td>
-                    </tr>
-                    <tr>
-                        <td><b>Numbers</b></td>
-                        <td align="right">
-                            <a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=NumberDialog" dialogtitle="Add New Number">Add</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="padding-left:10px;">
-                            @foreach (var number in numbers)
-                            {
-                                @number.Number @:(<a href="/Twilio/NumberRemove/@number.Id">Remove</a>)<br />
-                            }
-                            &nbsp;<br />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><b>Users</b></td>
-                        <td align="right">
-                            <a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=UserDialog" dialogtitle="Add New User">Add</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" style="padding-left:10px;">
-                            @foreach (var person in people)
-                            {
-                                @person.User.Name @:(<a href="/Twilio/UserRemove/@person.Id">Remove</a>)<br />
-                            }
-                            &nbsp;<br />
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    </td>
-    count++;
-    if (count > 3)
-    {
-        count = 0;
-        @:</tr><tr>
-    }
-}
-@{
-    int iCount = gl.Count();
-    int iLeft =  iCount % 4;
-    if ( iLeft != 0)
-    {
-        for (int iX = 0; iX < (4-iLeft); iX++)
-        {
-            @:<td width="25%">&nbsp;</td>
-        }
-    }
-}
-</tr>
-</table>
-
-<!-- New Group Creation Dialog -->
-<div id="dialog" style="display:none">
-	
-</div>
