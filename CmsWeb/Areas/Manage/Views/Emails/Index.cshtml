@@ -1,47 +1,71 @@
-﻿@using CmsWeb;
-@model CmsWeb.Models.EmailsModel
+﻿@model CmsWeb.Models.EmailsModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Emails";
-}
-@section scripts
-{
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(".datepicker").jqdatepicker();
-            $('td.tip').tooltip({
-                delay: 0,
-                showURL: false,
-                showBody: "|"
-            });
-            $("form").on('click', 'a.submitbutton', function(ev) {
-                ev.preventDefault();
-                var f = $(this).closest('form');
-                var q = f.serialize();
-                $.post(f.attr('action'), q, function(ret) {
-                    $(f).html(ret).ready(function() {
-                        $(".bt").button();
-                        $(".datepicker").jqdatepicker();
-                    });
-                });
-                return false;
-            });
-            $(".bt").button();
-        });
-
-        function GotoPage(pg) {
-            var q = $('#form').formSerialize2();
-            q = q.appendQuery("Page=" + pg);
-            $.navigate("/Manage/Emails/List", q);
-        }
-
-        function SetPageSize(sz) {
-            var q = $('#form').formSerialize2();
-            q = q.appendQuery("PageSize=" + sz);
-            $.navigate("/Manage/Emails/List", q);
-        }
-    </script>
 }
 <form id="form" method="post" action="/Manage/Emails/List">
 @{Html.RenderPartial("List", Model);}
 </form>
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#from").focus();
+
+            $("form").on('click', 'a.submitbutton', function (ev) {
+                ev.preventDefault();
+                $.getTable();
+                return false;
+            });
+        });
+
+        $('body').on('click', '#Emails > thead a.sortable', function (ev) {
+            ev.preventDefault();
+            var newsort = $(this).text();
+            var sort = $("#Sort");
+            var dir = $("#Direction");
+            if ($(sort).val() == newsort && $(dir).val() == 'asc')
+                $(dir).val('desc');
+            else
+                $(dir).val('asc');
+            $(sort).val(newsort);
+
+            $.getTable();
+            return false;
+        });
+
+        $.gotoPage = function (e, pg) {
+            $("#Page").val(pg);
+            $.getTable();
+            return false;
+        };
+
+        $.setPageSize = function (e) {
+            $('#Page').val(1);
+            $("#PageSize").val($(e).val());
+            $.getTable();
+            return false;
+        };
+
+        $.getTable = function () {
+            var f = $('#form');
+            var q = null;
+            if (f)
+                q = f.serialize();
+            $.block();
+            $.post(f.attr('action'), q, function (ret) {
+                $(f).html(ret);
+                $.unblock();
+            });
+            return false;
+        };
+
+        $("form").on("keypress", 'input', function (e) {
+            if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                $('#filter').click();
+                return false;
+            }
+            return true;
+        });
+    </script>
+}
