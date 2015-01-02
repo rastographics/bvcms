@@ -289,6 +289,10 @@ div.report .table {
     margin-bottom: 20px;
 }
 
+.stat-panel-inner-container {
+    background: url(/Content/touchpoint/images/hexagon.png) repeat;
+}
+
 .stat-panel {
     padding: 15px; 
     float: left; 

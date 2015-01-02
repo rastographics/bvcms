@@ -77,15 +77,17 @@
                 </div>
             </div>
             <div class="stat-panel-container">
-                <div class="stat-panel">
-                    <span class="stat-title">MEMBERS</span>
-                    <span class="stat-figure">@Model.counts.members</span>
+                <div class="stat-panel-inner-container">
+                    <div class="stat-panel">
+                        <span class="stat-title">MEMBERS</span>
+                        <span class="stat-figure">@Model.counts.members.ToString("N0")</span>
+                    </div>
+                    <div class="stat-panel">
+                        <span class="stat-title">GUESTS</span>
+                        <span class="stat-figure">@Model.counts.guests.ToString("N0")</span>
+                    </div>
+                    <div style="clear: both;"></div>
                 </div>
-                <div class="stat-panel">
-                    <span class="stat-title">GUESTS</span>
-                    <span class="stat-figure">@Model.counts.guests</span>
-                </div>
-                <div style="clear: both;"></div>
             </div>
             @Html.Partial("PagerTop", Model.Pager)
             <div class="table-responsive">
@@ -143,7 +145,7 @@
                         {
                             <tr>
                                 <td> @t.name</td>
-                                <td>@t.count</td>
+                                <td>@t.count.ToString("N0")</td>
                             </tr>
                         }
                     </tbody>

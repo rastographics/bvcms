@@ -8,26 +8,28 @@
     @if (tt != null)
     {
         <div class="stat-panel-container">
-            <div class="stat-panel">
-                <span class="stat-title">TOTAL TRANSACTIONS</span>
-                <span class="stat-figure">@tt.Count.ToString("N0")</span>
-            </div>
-            <div class="stat-panel">
-                <span class="stat-title">TOTAL AMOUNT</span>
-                <span class="stat-figure"><span class="stat-symbol">$</span>@((tt.Amt - tt.Donate).ToString("N"))</span>
-            </div>
-            <div class="stat-panel">
-                <span class="stat-title">TOTAL AMOUNT DUE</span>
-                <span class="stat-figure"><span class="stat-symbol">$</span>@tt.Amtdue.ToString("N")</span>
-            </div>
-            @if (Model.finance)
-            {
+            <div class="stat-panel-inner-container">
                 <div class="stat-panel">
-                    <span class="stat-title">TOTAL DONATED</span>
-                    <span class="stat-figure"><span class="stat-symbol">$</span>@tt.Donate.ToString("N")</span>
+                    <span class="stat-title">TOTAL TRANSACTIONS</span>
+                    <span class="stat-figure">@tt.Count.ToString("N0")</span>
                 </div>
-            }
-            <div style="clear: both;"></div>
+                <div class="stat-panel">
+                    <span class="stat-title">TOTAL AMOUNT</span>
+                    <span class="stat-figure"><span class="stat-symbol">$</span>@((tt.Amt - tt.Donate).ToString("N"))</span>
+                </div>
+                <div class="stat-panel">
+                    <span class="stat-title">TOTAL AMOUNT DUE</span>
+                    <span class="stat-figure"><span class="stat-symbol">$</span>@tt.Amtdue.ToString("N")</span>
+                </div>
+                @if (Model.finance)
+                {
+                    <div class="stat-panel">
+                        <span class="stat-title">TOTAL DONATED</span>
+                        <span class="stat-figure"><span class="stat-symbol">$</span>@tt.Donate.ToString("N")</span>
+                    </div>
+                }
+                <div style="clear: both;"></div>
+            </div>
         </div>
     }
     @Html.Partial("PagerTop", Model.Pager)
