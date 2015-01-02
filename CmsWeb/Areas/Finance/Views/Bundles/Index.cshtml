@@ -32,6 +32,21 @@
                 });
             }
 
+            $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
+                ev.preventDefault();
+                var newsort = $(this).text();
+                var sort = $("#Sort");
+                var dir = $("#Direction");
+                if ($(sort).val() == newsort && $(dir).val() == 'asc')
+                    $(dir).val('desc');
+                else
+                    $(dir).val('asc');
+                $(sort).val(newsort);
+
+                $.getTable();
+                return false;
+            });
+
             $.gotoPage = function (e, pg) {
                 $("#Page").val(pg);
                 $.getTable();
