@@ -9,7 +9,7 @@
 }
 <h2>Twilio Management</h2>
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-md-9">
         <div class="row">
             @foreach (var item in gl)
             {
@@ -20,11 +20,11 @@
                 var people = from e in DbUtil.Db.SMSGroupMembers
                              where e.GroupID == item.Id
                              select e;
-                
-                <div class="col-sm-4">
+
+                <div class="col-sm-6 col-md-4 col-lg-4">
                     <div class="panel panel-default">
-                        <div class="panel-heading">
-                           <h4 class="panel-title"><a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=GroupDialog" dialogtitle="Edit Group">@item.Name</a></h4>
+                        <div class="panel-heading">                          
+                            <h4 class="panel-title"><a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=GroupDialog" dialogtitle="Edit Group" style="text-decoration: underline;">@item.Name</a></h4>
                         </div>
                         <table class="table table-striped">
                             <tr>
@@ -69,10 +69,10 @@
             }
         </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-md-3">
         <div class="panel panel-default">
             <div class="panel-body">
-                <a href="#" class="btn btn-success btn-block" dialogurl="/Twilio/Dialog?name=GroupDialog" dialogtitle="Create New Group"><i class="fa fa-plus-circle"></i> Create New Group</a>
+                <a href="#" class="btn btn-success btn-block" dialogurl="/Twilio/Dialog?name=GroupDialog" dialogtitle="Add New Group"><i class="fa fa-plus-circle"></i> Add New Group</a>
             </div>
         </div>
     </div>
