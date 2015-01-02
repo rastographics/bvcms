@@ -21,14 +21,18 @@
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6">
                 <div class="form-group">
-                    <label for="gtamount">Amount From $</label>
-                    @Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control" })
+                    <label for="gtamount">Amount From</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control", type = "number" })
+                    </div>
                 </div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-6">
                 <div class="form-group">
-                    <label for="ltamount">Amount To $</label>
-                    @Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control" })
+                    <label for="ltamount">Amount To</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control", type = "number" })
+                    </div>
                 </div>
             </div>
         </div>
