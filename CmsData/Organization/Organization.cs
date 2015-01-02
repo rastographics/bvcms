@@ -162,6 +162,7 @@ namespace CmsData
                 OrganizationStatusId = OrganizationStatusId,
                 CampusId = CampusId,
                 IsBibleFellowshipOrg = IsBibleFellowshipOrg,
+                UseBootstrap = true,
             };
             Db.Organizations.InsertOnSubmit(neworg);
             foreach (var div in DivOrgs)
@@ -324,6 +325,7 @@ namespace CmsData
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,
                 OrganizationStatusId = 30,
+                UseBootstrap = true,
             };
             division.Organizations.Add(o);
             Db.DivOrgs.InsertOnSubmit(new DivOrg { Division = division, Organization = o });
@@ -340,6 +342,7 @@ namespace CmsData
                 CreatedBy = Util.UserId1,
                 OrganizationStatusId = 30,
                 DivisionId = divid,
+                UseBootstrap = true,
             };
             Db.DivOrgs.InsertOnSubmit(new DivOrg { DivId = divid, Organization = o });
             Db.SubmitChanges();

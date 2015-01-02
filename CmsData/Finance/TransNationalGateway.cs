@@ -127,7 +127,7 @@ namespace CmsData.Finance
             var response = createCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to create the credit card for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to create the credit card for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
 
             return response.VaultId.ToInt();
         }
@@ -160,7 +160,7 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the credit card for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to update the credit card for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         private void UpdateCreditCardVault(Person person, PaymentInfo paymentInfo, string expiration)
@@ -187,8 +187,8 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the credit card expiration date for people id: {0}".Fmt(
-                        person.PeopleId));
+                    "TransNational failed to update the credit card expiration date for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(
+                        person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         private int CreateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
@@ -217,7 +217,7 @@ namespace CmsData.Finance
             var response = createAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to create the ach account for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to create the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
 
             return response.VaultId.ToInt();
         }
@@ -246,7 +246,7 @@ namespace CmsData.Finance
             var response = updateAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the ach account for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to update the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         private void UpdateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
@@ -278,7 +278,7 @@ namespace CmsData.Finance
             var response = updateAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the ach account for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to update the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         public void RemoveFromVault(int peopleId)
@@ -312,7 +312,7 @@ namespace CmsData.Finance
 
             var response = deleteVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
-                throw new Exception("TransNational failed to delete the vault for people id: {0}".Fmt(person.PeopleId));
+                throw new Exception("TransNational failed to delete the vault for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         public TransactionResponse VoidCreditCardTransaction(string reference)

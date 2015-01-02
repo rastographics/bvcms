@@ -80,11 +80,11 @@
                 window.location = "/Email/Timeout";
                 return;
             }
-            $("#Send").remove();
             var taskid = ret.id;
             if (taskid === 0) {
                 d.html(ret.content);
             } else {
+                $("#Send").remove();
                 var intervalid = window.setInterval(function () {
                     $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
                         if (ret.substr(0, 20).indexOf('<!--completed-->') >= 0)
