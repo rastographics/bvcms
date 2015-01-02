@@ -12,7 +12,7 @@
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-                <label for="subject">Description</label>
+                <label for="subject">Subject</label>
                 @Html.TextBox("subject", Model.subject, new { @class = "form-control" })
             </div>
         </div>
@@ -38,8 +38,24 @@
     <div class="row">
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
+                <label for="body">Body</label>
+                @Html.TextBox("body", Model.body, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6">
+            <div class="form-group">
+                <label for="senderid">Sent By Id</label>
+                @Html.TextBox("senderid", Model.senderid, new { @class = "form-control" })
+                @if (Model.senderid.HasValue)
+                {
+                    <a href="/Person2/@Model.senderid">@Model.sender</a>
+                }
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-6">
+            <div class="form-group">
                 <label for="peopleid">Recipient Id</label>
-                @Html.TextBox("peopleid", Model.peopleid, new { @class = "form-control", type = "number" })
+                @Html.TextBox("peopleid", Model.peopleid, new { @class = "form-control" })
                 @if (Model.peopleid.HasValue)
                 {
                     <a href="/Person2/@Model.peopleid">@Model.name</a>
