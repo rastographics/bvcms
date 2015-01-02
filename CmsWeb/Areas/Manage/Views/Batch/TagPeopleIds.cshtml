@@ -9,18 +9,15 @@
 </div>
 <form action="/Batch/TagUploadPeopleIds" method="post" enctype="multipart/form-data">
     <div class="row">
-        <div class="col-sm-12">
-            <div class="form-inline">
-                <div class="form-group">
-                    <label class="control-label" for="name">Tag Name:</label>
-                    <input type="text" class="form-control" id="name" name="name">
-                </div>
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" name="newtag" id="newtag"> Force new tag?
-                    </label>
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="name">Tag Name:</label>
+                <input type="text" class="form-control" id="name" name="name">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox" name="newtag" id="newtag"> Force new tag?
+                </label>
             </div>
         </div>
     </div>
@@ -30,4 +27,6 @@
             @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", @class = "form-control" })
         </div>
     </div>
+    <br/>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
