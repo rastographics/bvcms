@@ -90,6 +90,7 @@
                     return;
                 if (!$.DateValid($("#Dt2").val(), true))
                     return;
+                $.block();
 
                 // set hidden print form elements
                 $('#campusName').text($("#CampusId option:selected").text());
@@ -102,6 +103,7 @@
                 var f = $(this).closest('form');
                 var q = f.serialize();
                 $.post("/FinanceReports/DonorTotalsByRangeResults", q, function (ret) {
+                    $.unblock();
                     $("#results").html(ret);
                 });
             });

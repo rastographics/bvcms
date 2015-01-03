@@ -1,12 +1,13 @@
 ﻿$(function () {
 
     $("#run").click(function (ev) {
-	    ev.preventDefault();
+        ev.preventDefault();
 	    if (!$.DateValid($("#Dt1").val(), true))
 	        return;
 	    if (!$.DateValid($("#Dt2").val(), true))
 	        return;
 
+        $.block();
         // set hidden print form elements
 	    $('#campusName').text($("#CampusId option:selected").text());
 	    $('#fromDate').text($("#Dt1").val());
@@ -19,6 +20,7 @@
 	    var f = $(this).closest('form');
 		var q = f.serialize();
 		$.post("/FinanceReports/TotalsByFundResults", q, function (ret) {
+		    $.unblock();
 		    $("#results").html(ret);
 		});
 	});
