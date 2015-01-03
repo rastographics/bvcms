@@ -1,81 +1,87 @@
-﻿@using CmsWeb
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @model CmsWeb.Models.ContributionSearchModel
-<table id="results" class="@ViewExtensions2.GridClass">
-    <thead>
-        <tr>
-            <td>Total:</td>
-            <td class="right">@Model.Total.ToString2("c")</td>
-            <td colspan="7"></td>
-        </tr>
-        <tr>
-            <td>Count:</td>
-            <td class="right">@Model.Count.ToString2("n0")</td>
-            <td colspan="7"></td>
-        </tr>
-        <tr>
-            <td colspan="9">
-                @Html.Partial("Pager2", Model)</td>
-        </tr>
-        <tr>
-            <th><a class="sortable" href="#">Status</a> </th>
-            <th><a class="sortable" href="#">Name</a> </th>
-            <th><a class="sortable" href="#">Date</a> </th>
-            <th><a class="sortable" href="#">Amount</a> </th>
-            <th><a class="sortable" href="#">Type</a> </th>
-            <th><a class="sortable" href="#">Fund</a> </th>
-            <th>CheckNo</th>
-            <th>Notes</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var c in Model.ContributionsList())
-        {
-            var retrev = CmsData.Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId);
-            var recorded = c.StatusId == CmsData.Codes.ContributionStatusCode.Recorded;
-            <tr>
-                <td title="@c.ContributionId">
-                    @if (!recorded)
-                    {
-                        <span class="red">@c.Status</span>
-                    }
-                    else
-                    {
-                        @c.Status
-                    }
-                </td>
-                <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
-                <td>@c.ContributionDate.ToShortDateString()</td>
-                <td class="right"><a href="/Bundle/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
-                <td>
-                    @if (retrev)
-                    {
-                        <span class="red">@c.ContributionType</span>
-                    }
-                    else
-                    {
-                        @c.ContributionType
-                    }
-                </td>
-                <td>@c.Fund</td>
-                <td>@c.CheckNo</td>
-                <td>@c.Description</td>
-                <td>
-                @if (Model.SearchInfo.PeopleId.HasValue && !retrev && recorded)
+<div id="results">
+    <div class="stat-panel-container">
+        <div class="stat-panel-inner-container">
+            <div class="stat-panel">
+                <span class="stat-title">TOTAL CONTRIBUTIONS</span>
+                <span class="stat-figure">@Model.Count.ToString2("n0")</span>
+            </div>
+            <div class="stat-panel">
+                <span class="stat-title">TOTAL AMOUNT</span>
+                <span class="stat-figure"><span class="stat-symbol">$</span>@Model.Total.ToString2("n")</span>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+    @Html.Partial("PagerTop", Model)
+    <div class="table-responsive">
+        <table id="resultsTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th><a class="sortable" href="#">Status</a> </th>
+                    <th><a class="sortable" href="#">Name</a> </th>
+                    <th><a class="sortable" href="#">Date</a> </th>
+                    <th class="text-right"><a class="sortable" href="#">Amount</a> </th>
+                    <th><a class="sortable" href="#">Type</a> </th>
+                    <th><a class="sortable" href="#">Fund</a> </th>
+                    <th>Check #</th>
+                    <th>Notes</th>
+                    <th colspan="2">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model.ContributionsList())
                 {
-                    <a class="submitit" href="/Contributions/Return/@c.ContributionId">return</a>
-                    <a class="submitit" href="/Contributions/Reverse/@c.ContributionId">reverse</a>
+                    var retrev = CmsData.Codes.ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId);
+                    var recorded = c.StatusId == CmsData.Codes.ContributionStatusCode.Recorded;
+                    <tr>
+                        <td title="@c.ContributionId">
+                            @if (!recorded)
+                            {
+                                <span class="red">@c.Status</span>
+                            }
+                            else
+                            {
+                                @c.Status
+                            }
+                        </td>
+                        <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
+                        <td>@c.ContributionDate.ToShortDateString()</td>
+                        <td class="text-right"><a href="/Bundle/@c.BundleId">@c.ContributionAmount.ToString("N2")</a></td>
+                        <td>
+                            @if (retrev)
+                            {
+                                <span class="red">@c.ContributionType</span>
+                            }
+                            else
+                            {
+                                @c.ContributionType
+                            }
+                        </td>
+                        <td>@c.Fund</td>
+                        <td>@c.CheckNo</td>
+                        <td>@c.Description</td>
+                        <td class="action">
+                            @if (Model.SearchInfo.PeopleId.HasValue && !retrev && recorded)
+                            {
+                                <a class="returnit btn btn-default btn-sm" href="/Contributions/Return/@c.ContributionId">Return</a>
+                            }    
+                        </td>
+                        <td class="action">
+                            @if (Model.SearchInfo.PeopleId.HasValue && !retrev && recorded)
+                            {
+                                <a class="reverseit btn btn-default btn-sm" href="/Contributions/Reverse/@c.ContributionId">Reverse</a>
+                            }  
+                        </td>
+                    </tr>
                 }
-                </td>
-            </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="9">
-                <div>Count: @Model.Count.ToString2("n0")</div>
-                @Html.Partial("Pager2", Model)</td>
-        </tr>
-    </tfoot>
-</table>
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerBottom", Model)
+    @Html.Hidden("totcnt", Model.Count.ToString2("n0"))
+    @Html.Hidden("Page", Model.Page)
+    @Html.Hidden("Sort", Model.Sort)
+    @Html.Hidden("Direction", Model.Direction)
+</div>
