@@ -102,6 +102,30 @@ body {
   border-bottom-right-radius: 10px;
 }
 
+.nav-tabs li a {
+  margin-right: -1px;
+  color: #70757a;
+  background: #f8fafa;
+  border-color: #e5eaea;
+}
+
+.nav-tabs li.active a:after {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  height: 3px;
+  background: #0b3b6f;
+  -webkit-transition: all 0.1s ease-in-out 0s;
+  -moz-transition: all 0.1s ease-in-out 0s;
+  -ms-transition: all 0.1s ease-in-out 0s;
+  -o-transition: all 0.1s ease-in-out 0s;
+  transition: all 0.1s ease-in-out 0s;
+}
+
 .dropdown-large {
   position: static !important;
 }
