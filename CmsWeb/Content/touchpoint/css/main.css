@@ -42,6 +42,7 @@ body {
 }
 .table a.btn, .table a.editable {
     text-decoration: none;
+    cursor: pointer;
 }
 .table tbody td.action {
     padding-left: 0;
