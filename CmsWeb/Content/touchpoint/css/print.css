@@ -4,3 +4,6 @@
 a[href]:after {
     content: "";
 }
+div.table-responsive {
+    overflow-x: visible !important;
+}
