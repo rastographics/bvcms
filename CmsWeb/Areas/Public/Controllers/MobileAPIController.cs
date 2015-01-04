@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Public.Controllers
         private UserValidationResult AuthenticateUser()
         {
             var hasInvalidAuthHeaders = (string.IsNullOrEmpty(Request.Headers["Authorization"]) &&
-                                         // the below checks are only necessary for the old iOS application
+                // the below checks are only necessary for the old iOS application
                                          (string.IsNullOrEmpty(Request.Headers["username"]) ||
                                           string.IsNullOrEmpty(Request.Headers["password"])));
 
@@ -156,7 +156,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-//			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+            //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
@@ -182,7 +182,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-//			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+            //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
@@ -206,10 +206,33 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-//			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+            //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
+            br.error = 0;
+            return br;
+        }
+        [HttpPost]
+        public ActionResult OneTimeRegisterLink2(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            var dataIn = BaseMessage.createFromString(data);
+            if (dataIn.type != BaseMessage.API_TYPE_REGISTRATION_ONE_TIME_LINK)
+                return BaseMessage.createTypeErrorReturn();
+
+            var orgId = dataIn.data.ToInt();
+
+            var ot = GetOneTimeLink(orgId, result.User.PeopleId.GetValueOrDefault());
+
+            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+            DbUtil.Db.SubmitChanges();
+            //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink2 {0}, {1}".Fmt(OrgId, PeopleId));
+
+            var br = new BaseMessage();
+            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink2/" + ot.Id.ToCode();
             br.error = 0;
             return br;
         }
@@ -240,35 +263,89 @@ namespace CmsWeb.Areas.Public.Controllers
             switch (dataIn.device)
             {
                 case BaseMessage.API_DEVICE_ANDROID:
-                {
-                    var mpl = new Dictionary<int, MobilePerson>();
-
-                    MobilePerson mp;
-
-                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
                     {
-                        mp = new MobilePerson().populate(item);
-                        mpl.Add(mp.id, mp);
-                    }
+                        var mpl = new Dictionary<int, MobilePerson>();
 
-                    br.data = JsonConvert.SerializeObject(mpl);
-                    break;
-                }
+                        MobilePerson mp;
+
+                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+                        {
+                            mp = new MobilePerson().populate(item);
+                            mpl.Add(mp.id, mp);
+                        }
+
+                        br.data = JsonConvert.SerializeObject(mpl);
+                        break;
+                    }
 
                 case BaseMessage.API_DEVICE_IOS:
-                {
-                    var mp = new List<MobilePerson>();
-
-                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
                     {
-                        mp.Add(new MobilePerson().populate(item));
+                        var mp = new List<MobilePerson>();
+
+                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+                        {
+                            mp.Add(new MobilePerson().populate(item));
+                        }
+
+                        br.data = JsonConvert.SerializeObject(mp);
+                        break;
                     }
-
-                    br.data = JsonConvert.SerializeObject(mp);
-                    break;
-                }
             }
+            return br;
+        }
+        private List<MobileRegistrationCategory> GetRegistrations()
+        {
+            var categories = new List<MobileRegistrationCategory>();
+            var q = from o in DbUtil.Db.ViewAppRegistrations.ToList()
+                    select new MobileRegistration
+                    {
+                        OrgId = o.OrganizationId, 
+                        Name = o.Title ?? o.OrganizationName,
+                        UseRegisterLink2 = o.UseRegisterLink2 ?? false, 
+                        Description = o.Description,
+                        PublicSortOrder = o.PublicSortOrder
+                    };
+            foreach (var line in DbUtil.Db.Content("AppRegistrations", "\tRegistrations").SplitLines())
+            {
+                var a = line.Split('\t');
+                var prefix = a[0].TrimEnd(':');
+                var title = a[1];
+                var r = (from mm in q
+                         where mm.Category == prefix
+                         orderby mm.PublicSortOrder
+                         select mm).ToList();
+                if(r.Any())
+                    categories.Add(new MobileRegistrationCategory()
+                    {
+                        Title = title, 
+                        Registrations = r
+                    });
+            }
+            return categories;
+        }
 
+        public ActionResult Registrations()
+        {
+            return Content(JsonConvert.SerializeObject(GetRegistrations(), Formatting.Indented), "text/plain");
+        }
+        public ActionResult FetchRegistrations(string data)
+        {
+            // Authenticate first
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            // Check to see if type matches
+            var dataIn = BaseMessage.createFromString(data);
+            if (dataIn.type != BaseMessage.API_TYPE_REGISTRATIONS)
+                return BaseMessage.createTypeErrorReturn();
+
+            var br = new BaseMessage();
+
+            br.error = 0;
+            br.type = BaseMessage.API_TYPE_REGISTRATIONS;
+            //br.count = m.Count;
+
+            br.data = JsonConvert.SerializeObject(GetRegistrations());
             return br;
         }
 
@@ -575,7 +652,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 var acr = (from s in DbUtil.Db.OrgSchedules
                            where s.OrganizationId == mpa.orgID
                            where s.SchedTime.Value.TimeOfDay == mpa.datetime.TimeOfDay
-                           where s.SchedDay == (int) mpa.datetime.DayOfWeek
+                           where s.SchedDay == (int)mpa.datetime.DayOfWeek
                            select s.AttendCreditId).SingleOrDefault();
                 meeting.AttendCreditId = acr;
             }
