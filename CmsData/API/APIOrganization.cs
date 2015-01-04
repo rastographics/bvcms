@@ -451,7 +451,7 @@ namespace CmsData.API
                 var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
                 if (om == null)
                     throw new Exception("no orgmember");
-                om.Drop(Db, addToHistory: true);
+                om.Drop(Db, DateTime.Now);
                 Db.SubmitChanges();
                 return @"<DropOrgMember status=""ok"" />";
             }

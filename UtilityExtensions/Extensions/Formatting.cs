@@ -56,6 +56,8 @@ namespace UtilityExtensions
         {
             if (dt.HasValue)
             {
+                if (prefix != null)
+                    prefix = prefix + " ";
                 var s = dt.Value.ToString("d");
                 return new HtmlString("{0}{1}{2}".Fmt(prefix, s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2), suffix));
             }

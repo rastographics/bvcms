@@ -6,6 +6,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    // todo: use bootstrap
     [RouteArea("Dialog", AreaPrefix= "SearchOrgs"), Route("{action}/{id?}")]
     public class SearchOrgsController : CmsStaffController
     {

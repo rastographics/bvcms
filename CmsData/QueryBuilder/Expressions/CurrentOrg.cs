@@ -7,7 +7,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using DevDefined.OAuth.Consumer;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -39,7 +38,9 @@ namespace CmsData
             var tf = CodeIds == "1";
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
-                db.OrgPeople(db.CurrentOrgId0, co.GroupSelect, co.First(), co.Last(), co.SgFilter, co.ShowHidden, null, null)
+                db.OrgPeople(db.CurrentOrgId0, co.GroupSelect, co.First(), co.Last(), 
+                        co.SgFilter, co.ShowHidden, null, null, 
+                        co.FilterIndividuals, co.FilterTag, false, Util.UserPeopleId)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
 

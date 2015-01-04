@@ -822,7 +822,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 if (mpjo.join)
                     om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
                 else
-                    om.Drop(DbUtil.Db, addToHistory: true);
+                    om.Drop(DbUtil.Db);
             }
 
             DbUtil.Db.SubmitChanges();

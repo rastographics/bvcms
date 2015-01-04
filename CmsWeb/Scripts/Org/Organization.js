@@ -1,13 +1,4 @@
-﻿onload = function () {
-    var e = document.getElementById("refreshed");
-    if (e.value == "no")
-        e.value = "yes";
-    else {
-        e.value = "no";
-        location.reload();
-    }
-};
-$(function () {
+﻿$(function () {
     $('a[data-toggle="tab"]').on('shown', function (e) {
         e.preventDefault();
         var tab = $(e.target).attr('href').replace("#", "#tab-");
@@ -81,14 +72,43 @@ $(function () {
         ev.preventDefault();
         $(this).toggleClass("active");
         $("#ShowHidden").val($(this).hasClass("active"));
-        $.formAjaxClick($(this));
+        RebindMemberGrids();
         return false;
+    });
+    $("#filter-ind").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#FilterIndividuals").val($(this).hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
+    $("#filter-tag").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#FilterTag").val($(this).hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
+    $("#clear-filter").live("click", function (ev) {
+        ev.preventDefault();
+        $("input[name='sgFilter']").val('');
+        $("input[name='nameFilter']").val('');
+        $("#FilterTag").val(false);
+        $("#FilterIndividuals").val(false);
+        RebindMemberGrids();
     });
     $("#ministryinfo").live("click", function (ev) {
         ev.preventDefault();
         $(this).toggleClass("active");
         $("#ShowMinistryInfo").val($(this).hasClass("active"));
-        $.formAjaxClick($(this));
+        RebindMemberGrids();
+        return false;
+    });
+    $("#showaddress").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#ShowAddress").val($(this).hasClass("active"));
+        RebindMemberGrids();
         return false;
     });
     $("#multigroup").live("click", function (event) {
@@ -108,7 +128,7 @@ $(function () {
             $("#showhide").removeClass("active");
             $("#ShowHidden").val($("#showhide").hasClass("active"));
         }
-        $.formAjaxClick($this);
+        RebindMemberGrids();
         return false;
     });
     $("#groupSelector button.grp").live("click", function (event) {
@@ -140,8 +160,26 @@ $(function () {
             return false;
         }
         $("#GroupSelect").val($a);
-        $.formAjaxClick($this);
+        RebindMemberGrids();
         return false;
+    });
+    var prevChecked = null;
+    $("input.omck").live("click", function (e) {
+        var pids = null;
+        if (e.shiftKey && prevChecked) {
+            var start = $("input.omck").index(this); // the one we just checked
+            var end = $("input.omck").index(prevChecked); // the prev one checked
+            pids = $("input.omck").slice(Math.min(start, end), Math.max(start, end) + 1);
+            pids.attr('checked', prevChecked.checked); // make them all the same as the lastChecked
+        } else {
+            pids = $(this);
+            prevChecked = this;
+        }
+        var a = pids.map(function() { return $(this).val(); } ).get();
+        $.post("/Organization/ToggleCheckboxes/{0}".format($("#Id").val()), {
+            pids: a,
+            chkd: prevChecked.checked
+        });
     });
 
     $('#deleteorg').click(function (ev) {
@@ -211,77 +249,20 @@ $(function () {
             });
         return false;
     });
-    /*
-        $('#memberDialog').dialog({
-            title: 'Add Members Dialog',
-            bgiframe: true,
-            autoOpen: false,
-            zindex: 9999,
-            width: 750,
-            height: 700,
-            modal: true,
-            overlay: {
-                opacity: 0.5,
-                background: "black"
-            }, close: function () {
-                $('iframe', this).attr("src", "");
-            }
+    $('a.members-dialog').live("click", function (ev) {
+        var $a = $(this);
+        ev.preventDefault();
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            $.DatePickersAndChosen();
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+                RebindMemberGrids();
+            });
         });
-        $('#AddFromTag').dialog({
-            title: 'Add From Tag',
-            bgiframe: true,
-            autoOpen: false,
-            width: 750,
-            height: 650,
-            modal: true,
-            overlay: {
-                opacity: 0.5,
-                background: "black"
-            }, close: function () {
-                $('iframe', this).attr("src", "");
-                $.RebindMemberGrids();
-            }
-        });
-    */
-//    $('a.addfromtag').live("click", function (e) {
-//        e.preventDefault();
-//        var d = $('#AddFromTag');
-//        $('iframe', d).attr("src", this.href);
-//        d.dialog("option", "title", "Add Members From Tag");
-//        d.dialog("open");
-//    });
-    /*
-        $('#LongRunOp').dialog({
-            bgiframe: true,
-            autoOpen: false,
-            width: 600,
-            height: 400,
-            modal: true,
-            overlay: {
-                opacity: 0.5,
-                background: "black"
-            }, close: function () {
-                $('iframe', this).attr("src", "");
-                $.RebindMemberGrids();
-                $.updateTable($('#Meetings-tab form'));
-            }
-        });
-    */
-
-//    $('a.addmembers').live("click", function (e) {
-//        e.preventDefault();
-//        var d = $('#memberDialog');
-//        $('iframe', d).attr("src", this.href);
-//        d.dialog("option", "title", "Add Members");
-//        d.dialog("open");
-//    });
-    $('a.memberdialog').live("click", function (e) {
-        e.preventDefault();
-        var title;
-        var d = $('#memberDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", this.title || 'Edit Member Dialog');
-        d.dialog("open");
     });
 
     $("a.membertype").live("click", function (ev) {
@@ -293,6 +274,7 @@ $(function () {
             f.on('hidden', function () {
                 d.remove();
                 f.remove();
+                RebindMemberGrids();
             });
         });
     });
@@ -337,27 +319,6 @@ $(function () {
         });
     };
 
-    /*
-        $.initDatePicker = function (f) {
-            $("ul.edit .datepicker", f).jqdatepicker({
-                //beforeShow: function () { $('#ui-datepicker-div').maxZIndex(); }
-            });
-            $("ul.edit .timepicker", f).jqdatetimepicker({
-                stepHour: 1,
-                stepMinute: 5,
-                timeOnly: true,
-                timeFormat: "hh:mm tt",
-                controlType: "slider"
-            });
-            $("ul.edit .datetimepicker", f).jqdatetimepicker({
-                stepHour: 1,
-                stepMinute: 15,
-                timeOnly: false,
-                timeFormat: "hh:mm tt",
-                controlType: "slider"
-            });
-        };
-        */
     $.InitFunctions.datetimepicker = function (f) {
         $(".datetimepicker").datetimepicker({
             format: "m/d/yyyy H:ii P",
@@ -602,9 +563,9 @@ $(function () {
     //        return false;
     //    };
     $("#namefilter").keypress(function (e) {
-        if ((e.keyCode || e.which) == 13) {
+        if ((e.keyCode || e.which) === 13) {
             e.preventDefault();
-            $.formAjaxClick($(this));
+            RebindMemberGrids();
         }
         return true;
     });
@@ -641,12 +602,6 @@ $(function () {
         });
     };
     /*
-        $("#NewMeetingDialog").dialog({
-            autoOpen: false,
-            width: 560,
-            height: 550,
-            modal: true
-        });
         $('#RollsheetLink').live("click", function (ev) {
             ev.preventDefault();
             $('#grouplabel').text("By Group");

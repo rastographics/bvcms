@@ -4,58 +4,6 @@
   var o = Model.Org;
 }
 <div id="dialogHolder"></div>
-<div id="NewMeetingDialog" class="roundbox" style="display: none">
-  <table>
-    <tr>
-      <th colspan="2"> <h2>Choose a Schedule</h2> </th>
-    </tr>
-    <tr class="forMeeting">
-      <th>Schedule: </th>
-      <td>@Html.DropDownList("ScheduleListPrev", Model.SchedulesPrev()) </td>
-    </tr>
-    <tr class="forRollsheet">
-      <th>Schedule: </th>
-      <td>@Html.DropDownList("ScheduleListNext", Model.SchedulesNext()) </td>
-    </tr>
-    <tr>
-      <th colspan="2"> <h2>Or Please select a meeting date and time</h2> </th>
-    </tr>
-    <tr class="forMeeting">
-      <th>Meeting Date: </th>
-      <td>@Html.DatePicker("PrevMeetingDate") </td>
-    </tr>
-    <tr class="forRollsheet">
-      <th>Meeting Date: </th>
-      <td>@Html.DatePicker("NextMeetingDate") </td>
-    </tr>
-    <tr>
-      <th>Meeting Time: </th>
-      <td>@Html.TextBox("NewMeetingTime", Model.NewMeetingTime, new { title = "Time in Format hh:mm am or pm", @class = "timepicker" }) </td>
-    </tr>
-    <tr>
-      <th>Attend Credit: </th>
-      <td>@Html.DropDownList("AttendCreditList", Model.AttendCreditList()) </td>
-    </tr>
-    <tr>
-      <th id="grouplabel"></th>
-      <td>@Html.CheckBox("group") </td>
-    </tr>
-    <tr class="forRollsheet">
-      <th>Group Filter Prefix</th>
-      <td>@Html.TextBox("sgprefixrs")</td>
-    </tr>
-    <tr class="forRollsheet">
-      <th>Highlight Group</th>
-      <td>@Html.TextBox("highlightsg")</td>
-    </tr>
-    <tr class="forRollsheet">
-      <th>Use Alt Names </th>
-      <td>
-        @Html.CheckBox("altnames")
-      </td>
-    </tr>
-  </table>
-</div>
 <div id="TryRegDialog" class="roundbox" style="display: none">
   <table>
     <tr>
@@ -77,12 +25,6 @@
       </td>
     </tr>
   </table>
-</div>
-<div id="AddFromTag">
-  <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
-</div>
-<div id="LongRunOp">
-  <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
 </div>
 <div id="orgsDialog">
   <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>

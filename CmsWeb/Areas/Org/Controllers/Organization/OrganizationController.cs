@@ -1,9 +1,6 @@
-using System;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Registration;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData.Codes;
@@ -32,7 +29,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 if (m.Org.SecurityTypeId == 3)
                     return NotAllowed("You do not have access to this page", m.Org.OrganizationName);
-                else if (m.Org.OrganizationMembers.All(om => om.PeopleId != Util.UserPeopleId))
+                if (m.Org.OrganizationMembers.All(om => om.PeopleId != Util.UserPeopleId))
                     return NotAllowed("You must be a member of this organization", m.Org.OrganizationName);
             }
             else if (Util2.OrgLeadersOnly)

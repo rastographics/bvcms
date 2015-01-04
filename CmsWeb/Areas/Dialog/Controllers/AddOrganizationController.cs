@@ -5,6 +5,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    // todo: use bootstrap, dialog-options
 	[Authorize(Roles="Edit")]
     [RouteArea("Dialog", AreaPrefix = "AddOrganization")]
     public class AddOrganizationController : CmsStaffController

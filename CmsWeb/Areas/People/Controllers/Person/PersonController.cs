@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult UnTag(int id)
         {
-            Person.UnTag(id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
+            Person.UnTag(DbUtil.Db, id, Util2.CurrentTagName, Util2.CurrentTagOwnerId, DbUtil.TagTypeId_Personal);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }

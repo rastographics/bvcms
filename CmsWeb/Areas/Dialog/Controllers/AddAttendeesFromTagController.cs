@@ -9,6 +9,7 @@ using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    // todo: use bootstrap, longrunop 
 	[Authorize(Roles = "Edit")]
     [RouteArea("Dialog", AreaPrefix= "AddAttendeesFromTag"), Route("{action}/{id:int}")]
 	public class AddAttendeesFromTagController : CmsController

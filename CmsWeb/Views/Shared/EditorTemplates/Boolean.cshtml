@@ -9,6 +9,6 @@
         @Html.LabelFor(m => m, new {@class = "control-label"})
     }
     <div class="controls">
-        @Html.CheckBoxFor(m => m)
+        @Html.CheckBoxFor(m => m)<label class='help-inline'>@Html.Raw(ViewBag.help)</label>
     </div>
 </div>

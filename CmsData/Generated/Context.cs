@@ -2677,7 +2677,11 @@ namespace CmsData
             [Parameter(DbType="varchar")] string sgfilter,
             [Parameter(DbType="bit")] bool? showhidden,
             [Parameter(DbType="nvarchar")] string currtag,
-            [Parameter(DbType="int")] int? currtagowner
+            [Parameter(DbType="int")] int? currtagowner,
+            [Parameter(DbType="bit")] bool? filterchecked,
+            [Parameter(DbType="bit")] bool? filtertag,
+            [Parameter(DbType="bit")] bool? ministryinfo,
+            [Parameter(DbType="int")] int? userpeopleid
             )
 		{
 			return this.CreateMethodCallQuery< View.OrgPerson>(this, 
@@ -2689,7 +2693,11 @@ namespace CmsData
                 sgfilter,
                 showhidden,
                 currtag,
-                currtagowner
+                currtagowner,
+                filterchecked,
+                filtertag,
+                ministryinfo,
+                userpeopleid
                 );
 		}
 
@@ -4205,6 +4213,18 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrgFee", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? OrgFee(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
                 ).ReturnValue));
 		}
 

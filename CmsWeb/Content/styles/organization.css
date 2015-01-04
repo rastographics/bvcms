@@ -217,3 +217,7 @@ div.filter .btn {
     background-color: #0088cc;
     color: white;
 }
+div.filter li > a.active {
+    background-color: #0088cc;
+    color: white;
+}

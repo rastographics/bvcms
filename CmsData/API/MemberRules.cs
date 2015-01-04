@@ -28,7 +28,7 @@ namespace CmsData
                         where om.PeopleId == PeopleId
                         select om).ToList();
             foreach (var om in list)
-                om.Drop(Db, addToHistory:true);
+                om.Drop(Db, DateTime.Now);
         }
         public string errorReturn;
 
