@@ -7,6 +7,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    // todo: use bootstrap
     [RouteArea("Dialog", AreaPrefix= "TransactionHistory"), Route("{action}/{id?}")]
     public class TransactionHistoryController : CmsStaffController
     {

@@ -32,7 +32,7 @@
     };
     $.DatePickersAndChosen = function () {
         $.DatePickers();
-        $('form.ajax select:not([plain])').chosen();
+        $('form.ajax select:not([plain])').select2({dropdownAutoWidth: true});
         $('form.ajax a.editable').editable();
     };
     $("ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor").live("click", function (event) {
@@ -134,10 +134,6 @@
             $("input[name='Sort']", $form).val(a.data("sortby"));
         if (a.data("dir"))
             $("input[name='Direction']", $form).val(a.data("dir"));
-        if (a.data("clear") === 'orgfilter') {
-            $("input[name='sgFilter']", $form).val('');
-            $("input[name='nameFilter']", $form).val('');
-        }
         var $tabinit = $form.closest("div.tab-pane[data-init]");
 
         var data = $form.serialize();
@@ -200,16 +196,17 @@
     $("a.dialog-options").live("click", function (ev) {
         ev.preventDefault();
         var $a = $(this);
-        var href = this.href;
-        if ($a.data("target"))
-            href = $a.data("target");
-        $("<div id='dialog-options' />").load(href, function () {
+        // data-target is the dialog  and a.href is the report
+        // or a.href is the dialog and form.action is the report
+        var dialog = $a.data("target") || this.href; 
+        $("<div id='dialog-options' />").load(dialog, {}, function () {
             var d = $(this);
             var f = d.find("form");
             if ($a[0].title)
                 f.find("h3.title").text($a[0].title);
             f.modal("show");
-            f.attr("action", $a[0].href);
+            if (!f.attr("action"))
+                f.attr("action", $a[0].href); // a.href will be the report/export
             f.on('hidden', function () {
                 d.remove();
             });
@@ -218,17 +215,27 @@
                 submitHandler: function (form) {
                     if (form.method.toUpperCase() === 'GET')
                         form.submit();
-                    else if(form.hasClass("ajax")) {
+                    else if ($(form).hasClass("ajax")) {
                         var q = f.serialize();
-                        $.post(form.action, q, function (ret) {
+                        $.post(form.action, q, function(ret) {
                             if (ret)
                                 $.growlUI("", ret);
                             if ($a.data("callback")) {
                                 $.InitFunctions[$a.data("callback")]($a);
                             }
                         });
-                    } else
-                        form.submit();
+                    } else {
+                        if ($a.data("confirm"))
+                            bootbox.confirm($a.data("confirm"), function(ret) {
+                                if (!ret)
+                                    form.submit();
+                            });
+                        else
+                            form.submit();
+                        if ($a.data("callback")) {
+                            $.InitFunctions[$a.data("callback")]($a);
+                        }
+                    }
                     f.modal("hide");
                 },
                 highlight: function (element) {
@@ -244,10 +251,9 @@
 
     $("a.longrunop").live("click", function(ev) {
         ev.preventDefault();
-        var data = null;
-        if ($(this).data("method") === "post") {
-            data = $(this).closest("form").serialize();
-        }
+        var data = {};
+        if ($(this).data("post"))
+            data = $(this).closest("form").serializeArray();
         $('<form class="modal form-horizontal ajax validate fade hide" />').load(this.href, data, function() {
             var f = $(this);
             var callback = $("#callback", f).val();
@@ -262,10 +268,7 @@
             f.on("click", "a.ajaxreloader", function(event) {
                 event.preventDefault();
                 var href = this.href;
-                var data = $("#postdata", f).val();
-                var postdata = f.serialize();
-                if(data)
-                    postdata = { "postdata": data}
+                var postdata = f.serialize() || {};
                 var myloop = function() {
                     $.post(href, postdata , function (ret) {
                         postdata = f.serialize();
@@ -273,7 +276,9 @@
                         if ($("#finished", f).val())
                             tm = 0;
                         if (tm > 0) {
-                            tm = 2000; // continuing timeout
+                            tm += 500;
+                            if (tm > 3000)
+                                tm = 3000;
                             setTimeout(myloop, tm);
                         }
                     });

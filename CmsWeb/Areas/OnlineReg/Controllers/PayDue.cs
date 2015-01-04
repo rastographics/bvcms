@@ -135,7 +135,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
 
             var pid = ti.FirstTransactionPeopleId();
             var p0 = Db.LoadPersonById(pid);
-//todo: should we be sending to all TransactionPeople?
+// question: should we be sending to all TransactionPeople?
             if (sendmail)
             {
                 if (p0 == null)

@@ -40,7 +40,7 @@ ul.dropdown-div-admin {
 }
 
 .datepicker {
-    z-index: 2000;
+    z-index: 2000 !important;
 }
 
 thead th a, thead th a:visited {
@@ -609,7 +609,7 @@ label.error {
     }
 
 .modal textarea {
-    width: 370px;
+    width: 340px;
     height: 150px;
 }
 
@@ -1318,4 +1318,8 @@ ul.dropdown-menu li.hideAlt > a {
 #bluetoolbarstop i a.qid {
     color: #08c;
     font-style: normal;
+}
+.smallfont {
+    font-size: 75%;
+    color: gray;
 }

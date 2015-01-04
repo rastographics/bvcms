@@ -1,0 +1,21 @@
+﻿@model CmsWeb.Models.OrgMemberModel
+<form class="form form-horizontal modal fade hide ajax members-update" method="POST">
+  <div class="modal-header">
+    <h4>Drop @Model.Name from @Model.OrgName</h4>
+  </div>
+  <div class="modal-body">
+    <fieldset class="display">
+      @Html.HiddenFor(m => m.PeopleId)
+      @Html.HiddenFor(m => m.OrgId)
+      @Html.EditorFor(m => m.DropDate, new {help = "Leave Blank for Current Date/Time"})
+      @Html.EditorFor(m => m.RemoveFromEnrollmentHistory, new {help = "This will erase all history of this person's membership in " + Model.OrgName})
+    </fieldset>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="/OrgMemberDialog2/Drop" class="btn btn-danger ajax" 
+       data-confirm="Are you sure you want to drop @Model.Name from @Model.OrgName?">
+      Drop
+    </a>
+  </div>
+</form>

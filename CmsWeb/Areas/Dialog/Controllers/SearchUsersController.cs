@@ -6,6 +6,7 @@ using CmsData;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    // todo: use bootstrap
     [RouteArea("Dialog", AreaPrefix= "SearchUsers"), Route("{action=index}/{id?}")]
     public class SearchUsersController : CmsStaffController
     {

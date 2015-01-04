@@ -362,8 +362,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbUtil\CurrentOrg.cs" />
+    <Compile Include="DbUtil\ModelViewModel.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
+    <Compile Include="Extensions\LongRunningOp.cs" />
     <Compile Include="Extensions\RepairTransactionRun.cs" />
     <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />

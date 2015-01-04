@@ -372,7 +372,7 @@ namespace CmsWeb.Models
                 om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
                     OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
             else if (om != null && !Member)
-                om.Drop(DbUtil.Db, addToHistory: true);
+                om.Drop(DbUtil.Db);
             DbUtil.Db.SubmitChanges();
 
             var org = DbUtil.Db.LoadOrganizationById(OrgId);

@@ -1,72 +1,36 @@
-using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using UtilityExtensions;
 using CmsWeb.Models;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    // todo: use bootstrap
     [RouteArea("Dialog", AreaPrefix= "OrgMembersDialog"), Route("{action}")]
 	public class OrgMembersDialogController : CmsStaffController
 	{
-        [Route("~/OrgMembersDialog/{id:int}")]
-		public ActionResult Index(int id, bool? inactives, bool? pendings, bool? prospects, int? sg)
-		{
-			var m = new OrgMembersDialogModel
-			{
-				orgid = id,
-				inactives = inactives ?? false,
-				pendings = pendings ?? false,
-				Pending = pendings ?? false,
-                prospects = prospects ?? false,
-				sg = sg,
-			};
+        [Route("~/OrgMembersDialog")]
+		public ActionResult Index()
+        {
+            var co = DbUtil.Db.CurrentOrg;
+            var m = new OrgMembersUpdate();
 			return View(m);
 		}
 		[HttpPost]
-		public ActionResult Filter(OrgMembersDialogModel m)
+		public ActionResult Update(OrgMembersUpdate m)
 		{
-			return View("Rows", m);
+            m.Update();
+		    return View("Updated", m);
 		}
 		[HttpPost]
-		public ActionResult Update(OrgMembersDialogModel m)
+		public ActionResult ShowDrop(OrgMembersUpdate m)
 		{
-			var Db = DbUtil.Db;
-			var tag = Db.PopulateTemporaryTag(m.List);
-			var q = from om in m.OrgMembers()
-					where Db.TagPeople.Any(tt => tt.Id == tag.Id && tt.PeopleId == om.PeopleId)
-					select om;
-			foreach (var om in q)
-			{
-				if (m.MemberType == MemberTypeCode.Drop)
-					om.Drop(Db, addToHistory: true);
-				else
-				{
-					if (m.MemberType > 0)
-						om.MemberTypeId = m.MemberType;
-					if (m.InactiveDate.HasValue)
-						om.InactiveDate = m.InactiveDate;
-					if (m.EnrollmentDate.HasValue)
-						om.EnrollmentDate = m.EnrollmentDate;
-					om.Pending = m.Pending;
-					if (m.MemTypeOriginal)
-					{
-						var et = (from e in Db.EnrollmentTransactions
-								  where e.PeopleId == om.PeopleId
-								  where e.OrganizationId == m.orgid
-								  orderby e.TransactionDate
-								  select e).First();
-						et.MemberTypeId = om.MemberTypeId;
-					}
-				}
-				Db.SubmitChanges();
-			}
-			return View();
+            return View(m);
 		}
-		public string HelpLink(string page)
+		[HttpPost]
+		public ActionResult Drop(OrgMembersUpdate m)
 		{
-			return Util.HelpLink("SearchAdd_{0}".Fmt(page));
+            m.Drop();
+		    return View("Dropped", m);
 		}
 	}
 }

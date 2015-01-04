@@ -39,57 +39,6 @@ namespace CmsData
             set { SetSessionObj(STR_CurrentOrganization, value); }
         }
 
-        
-//        const string STR_ActiveOrganizationId = "ActiveOrganizationId";
-//        public static int? CurrentOrgId
-//        {
-//            get { return GetSessionObj(STR_ActiveOrganizationId, null).ToInt2(); }
-//            set { SetSessionObj(STR_ActiveOrganizationId, value); }
-//        }
-//        const string STR_ActiveOrgShowHidden = "ActiveOrgShowHidden";
-//        public static bool CurrentOrgShowHidden
-//        {
-//            get { return GetSessionObj(STR_ActiveOrgShowHidden, null).ToBool(); }
-//            set { SetSessionObj(STR_ActiveOrgShowHidden, value); }
-//        }
-//        const string STR_ActiveOrgNameFilter = "ActiveOrgShowHidden";
-//        public static string CurrentOrgNameFilter
-//        {
-//            get { return GetSessionObj(STR_ActiveOrgNameFilter, null).ToString(); }
-//            set { SetSessionObj(STR_ActiveOrgNameFilter, value); }
-//        }
-//        const string STR_ActiveOrgSgPrefix = "CurrentOrgSgPrefix";
-//        public static string CurrentOrgSgPrefix
-//        {
-//            get { return GetSessionObj(STR_ActiveOrgSgPrefix, null).ToString(); }
-//            set { SetSessionObj(STR_ActiveOrgSgPrefix, value); }
-//        }
-//        const string STR_ActiveGroupId = "ActiveGroup";
-//        public static int[] CurrentGroups
-//        {
-//            get { return (int[])GetSessionObj(STR_ActiveGroupId, new int[] { 0 }); }
-//            set
-//            {
-//                if (value == null)
-//                    value = new int[] { 0 };
-//                SetSessionObj(STR_ActiveGroupId, value);
-//            }
-//        }
-//        const string STR_ActiveGroupPrefix = "ActiveGroupPrefix";
-//        public static string CurrentGroupsPrefix
-//        {
-//            get { return (string)GetSessionObj(STR_ActiveGroupPrefix, null); }
-//            set { SetSessionObj(STR_ActiveGroupPrefix, value); }
-//        }
-//        const string STR_ActiveGroupMode = "ActiveGroupMode";
-//        public static int CurrentGroupsMode
-//        {
-//            get { return (int)GetSessionObj(STR_ActiveGroupMode, 0); }
-//            set { SetSessionObj(STR_ActiveGroupMode, value); }
-//        }
-
-
-
         const string STR_ActivePersonId = "ActivePersonId";
         public static int CurrentPeopleId
         {

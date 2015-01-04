@@ -204,7 +204,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ElapsedTime", UpdateCheck=UpdateCheck.Never, Storage="_ElapsedTime", DbType="varchar(30)", IsDbGenerated=true)]
+		[Column(Name="ElapsedTime", UpdateCheck=UpdateCheck.Never, Storage="_ElapsedTime", DbType="varchar(20)", IsDbGenerated=true)]
 		public string ElapsedTime
 		{
 			get { return this._ElapsedTime; }

@@ -152,6 +152,12 @@ namespace CmsData
             return this.PeopleExtras.OrderByDescending(e => e.TransactionTime)
                 .First(e => e.Field == field && e.PeopleId == pid).DateValue;
         }
+
+        public IQueryable<Person> PeopleQueryLast()
+        {
+            var qid = FetchLastQuery().Id;
+            return PeopleQuery(qid);
+        }
         public IQueryable<Person> PeopleQuery(Guid id)
         {
             if (id == null)
@@ -246,16 +252,22 @@ namespace CmsData
             var cmd = GetCommand(q2);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
-            var n = 0;
+            int n = 0, pn = 0;
             foreach (var p in cmd.Parameters)
             {
-                s = s.Replace("@p" + n, "{{{0}}}".Fmt(n));
-                n++;
-                plist.Add(p as DbParameter);
+                var pa = p as DbParameter;
+                if (pa != null && pa.Value is DBNull)
+                {
+                    s = s.Replace("@p" + n++, "NULL");
+                    continue;
+                }
+                s = s.Replace("@p" + n++, "{{{0}}}".Fmt(pn++));
+                plist.Add(pa);
             }
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
                 @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
-            ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
+            var a = plist.Select(pp => pp.Value).ToArray();
+            ExecuteCommand(s, a);
         }
         public void TagAll(IEnumerable<int> list, Tag tag)
         {

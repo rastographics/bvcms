@@ -8,7 +8,7 @@
       <new2css Include="Content/css/normalize.css"/>
       <new2css Include="Content/css/bvcms.css"/>
       <new2css Include="Content/bootstrap-modal/css/bootstrap-modal.css"/>
-      <new2css Include="Content/css/chosen.css"/>
+      <new2css Include="Content/css/select2.css"/>
       <new2css Include="Content/css/bootstrap-editable.css"/>
       <new2css Include="Content/css/bootstrap-datetimepicker.css"/>
       <new2css Include="Content/css/typeahead.js-bootstrap.css"/>
@@ -38,7 +38,7 @@
       <main2 Include="Scripts/jQuery/jquery.tooltip.js"/>
       <main2 Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
 <!--      <main2 Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
-      <main2 Include="Scripts/chosen/chosen.jquery.js"/>
+      <main2 Include="Scripts/Bootstrap/select2.js"/>
       <main2 Include="Scripts/js/Pager3.js"/>
       <main2 Include="Scripts/js/header.js"/>
       <main2 Include="Scripts/js/ExportToolBar2.js"/>

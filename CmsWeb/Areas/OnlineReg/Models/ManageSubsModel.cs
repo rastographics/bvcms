@@ -143,7 +143,7 @@ namespace CmsWeb.Models
 
             foreach (var om in drops)
             {
-                om.Drop(DbUtil.Db, addToHistory: true);
+                om.Drop(DbUtil.Db);
                 DbUtil.Db.SubmitChanges();
             }
             foreach (var id in joins)

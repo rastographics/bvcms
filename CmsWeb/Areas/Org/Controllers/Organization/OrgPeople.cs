@@ -1,13 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Registration;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
 using UtilityExtensions;
 using CmsData.Codes;
+using Dapper;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -103,6 +104,45 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.UpdateMainFellowship(oid);
             DbUtil.LogActivity("Joining Org {0}({1})".Fmt(org.OrganizationName, pid));
             return Content("ok");
+        }
+        [HttpPost, Route("ToggleCheckbox/{oid:int}/{pid:int}")]
+        public ActionResult ToggleCheckbox(int oid, int pid, bool chkd)
+        {
+            if(chkd)
+                Person.Tag(DbUtil.Db, pid, "Org-" + oid, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            else
+                Person.UnTag(DbUtil.Db, pid, "Org-" + oid, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            DbUtil.Db.SubmitChanges();
+            return new EmptyResult();
+        }
+        [HttpPost, Route("ToggleCheckboxes/{id:int}")]
+        public ActionResult ToggleCheckboxes(int id, IList<int> pids, bool chkd)
+        {
+            foreach(var pid in pids)
+                if(chkd)
+                    Person.Tag(DbUtil.Db, pid, "Org-" + id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                else
+                    Person.UnTag(DbUtil.Db, pid, "Org-" + id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            DbUtil.Db.SubmitChanges();
+            return new EmptyResult();
+        }
+        [HttpPost]
+        public ActionResult CheckAll(OrgPeopleModel m)
+        {
+            DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
+            var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
+            var q = DbUtil.Db.PeopleQuery(qid);
+            var tag = DbUtil.Db.FetchOrCreateTag("Org-" + m.Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            DbUtil.Db.TagAll2(q, tag);
+            return PartialView("People", m);
+        }
+        [HttpPost]
+        public ActionResult CheckNone(OrgPeopleModel m)
+        {
+            DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
+            var tag = DbUtil.Db.FetchOrCreateTag("Org-" + m.Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            DbUtil.Db.ExecuteCommand("delete dbo.tagperson where Id = {0}", tag.Id);
+            return PartialView("People", m);
         }
         
     }

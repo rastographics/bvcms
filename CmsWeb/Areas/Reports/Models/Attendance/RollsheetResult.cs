@@ -16,6 +16,7 @@ using CmsData;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData.Codes;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -33,7 +34,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
 
         public OrgSearchModel Model;
-        public DialogController.NewMeetingInfo RollsheetInfo;
+        public NewMeetingInfo RollsheetInfo;
         public int? meetingid, orgid;
         bool pageSetStarted;
         private bool hasRows;

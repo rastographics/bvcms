@@ -463,7 +463,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         [Route("Rollsheet")]
         [Route("Rollsheet/{meetingid:int}")]
-        public ActionResult Rollsheet(int? meetingid, string org, DialogController.NewMeetingInfo mi)
+        public ActionResult Rollsheet(int? meetingid, string org, NewMeetingInfo mi)
         {
             return new RollsheetResult
             {
@@ -473,7 +473,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
         [HttpPost]
-        public ActionResult Rollsheet(DialogController.NewMeetingInfo mi, OrgSearchModel m)
+        public ActionResult Rollsheet(NewMeetingInfo mi, OrgSearchModel m)
         {
             return new RollsheetResult
             {

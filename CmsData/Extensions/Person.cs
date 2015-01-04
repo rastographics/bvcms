@@ -838,21 +838,20 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             Db.TagPeople.DeleteOnSubmit(tp);
             return false;
         }
-        public static void Tag(CMSDataContext Db, int PeopleId, string TagName, int? OwnerId, int TagTypeId)
+        public static void Tag(CMSDataContext db, int PeopleId, string TagName, int? OwnerId, int TagTypeId)
         {
-            var tag = Db.FetchOrCreateTag(TagName, OwnerId, TagTypeId);
-            var tp = Db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == PeopleId);
-            var isperson = Db.People.Count(p => p.PeopleId == PeopleId) > 0;
+            var tag = db.FetchOrCreateTag(TagName, OwnerId, TagTypeId);
+            var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == PeopleId);
+            var isperson = db.People.Count(p => p.PeopleId == PeopleId) > 0;
             if (tp == null && isperson)
                 tag.PersonTags.Add(new TagPerson { PeopleId = PeopleId });
         }
-        public static void UnTag(int PeopleId, string TagName, int? OwnerId, int TagTypeId)
+        public static void UnTag(CMSDataContext db, int PeopleId, string TagName, int? OwnerId, int TagTypeId)
         {
-            var Db = DbUtil.Db;
-            var tag = Db.FetchOrCreateTag(TagName, OwnerId, TagTypeId);
-            var tp = Db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == PeopleId);
+            var tag = db.FetchOrCreateTag(TagName, OwnerId, TagTypeId);
+            var tp = db.TagPeople.SingleOrDefault(t => t.Id == tag.Id && t.PeopleId == PeopleId);
             if (tp != null)
-                Db.TagPeople.DeleteOnSubmit(tp);
+                db.TagPeople.DeleteOnSubmit(tp);
         }
         partial void OnNickNameChanged()
         {

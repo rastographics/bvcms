@@ -304,7 +304,7 @@ namespace CmsWeb.Models
                     tom.AddToGroup(DbUtil.Db, s);
                 if (om.OrganizationId != tom.OrganizationId)
                     tom.Moved = true;
-                om.Drop(DbUtil.Db, addToHistory: true);
+                om.Drop(DbUtil.Db);
                 DbUtil.Db.SubmitChanges();
             }
             DbUtil.Db.UpdateMainFellowship(TargetId);

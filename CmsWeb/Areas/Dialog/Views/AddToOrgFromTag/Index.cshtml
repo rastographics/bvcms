@@ -1,0 +1,33 @@
+﻿@model CmsWeb.Models.AddToOrgFromTag
+<div class="modal-header">
+  <a class="close" data-dismiss="modal">x</a>
+  <h3>Add People to @Model.GroupName From a Tag/Query</h3>
+</div>
+<div class="modal-body">
+  @Html.HiddenFor(m => m.Id)
+  @Html.HiddenFor(m => m.Group)
+  @Html.Hidden("callback", "ReloadPeople")
+  @if (Model.TagHasBeenSelected)
+  {
+    @Html.EditorFor(m => m.Tag, "HiddenCodeInfo")
+    @Html.DisplayFor(m => m.Tag)
+    @Html.DisplayFor(m => m.Count)
+    @Html.HiddenFor(m => m.Count)
+  }
+  else
+  {
+    @Html.EditorFor(m => m.Tag)
+  }
+</div>
+<div class="modal-footer">
+  @Html.SpanIf(Model.TagHasBeenSelected, "Are you sure you want to add?", null)
+  <a href="#" class="btn btn-success" data-dismiss="modal">Cancel</a>
+  @if (Model.TagHasBeenSelected)
+  {
+    <a href="/AddToOrgFromTag/Process" class="btn btn-primary ajaxreloader">Add People</a>
+  }
+  else
+  {
+    <a href="/AddToOrgFromTag/Process" class="btn btn-primary ajax">Select Tag</a>
+  }
+</div>

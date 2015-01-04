@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -253,7 +254,7 @@ namespace CmsWeb.Models
                 // get them out of the class they will be going to first
                 foreach (var pc in q)
                 {
-                    pc.Drop(DbUtil.Db, true);
+                    pc.Drop(DbUtil.Db);
                     DbUtil.Db.SubmitChanges();
                 }
                 // this is their membership where they are currently a member

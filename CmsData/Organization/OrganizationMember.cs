@@ -6,9 +6,7 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using CmsData.API;
 using CmsData.Registration;
 using UtilityExtensions;
 using System.Web;
@@ -20,26 +18,15 @@ namespace CmsData
     {
         private const string STR_MeetingsToUpdate = "MeetingsToUpdate";
 
-        public EnrollmentTransaction Drop(CMSDataContext db, bool addToHistory)
+        public EnrollmentTransaction Drop(CMSDataContext db)
         {
-            return Drop(db, Util.Now, addToHistory);
+            return Drop(db, DateTime.Now);
         }
-
-        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, bool addToHistory)
+        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate)
         {
             db.SubmitChanges();
-            //            int ntries = 2;
             while (true)
             {
-                //                try
-                //                {
-                var q = from o in db.Organizations
-                        where o.OrganizationId == OrganizationId
-                        let count = db.Attends.Count(a => a.PeopleId == PeopleId
-                                                          && a.OrganizationId == OrganizationId
-                                                          && (a.MeetingDate < DateTime.Today || a.AttendanceFlag == true))
-                        select new { count, Organization.DaysToIgnoreHistory };
-                var i = q.Single();
                 if (!EnrollmentDate.HasValue)
                     EnrollmentDate = CreatedDate;
                 var sglist = (from mt in db.OrgMemMemTags
@@ -54,8 +41,7 @@ namespace CmsData
                                     MemberTypeId = MemberTypeId,
                                     OrganizationName = Organization.OrganizationName,
                                     TransactionDate = dropdate,
-                                    TransactionTypeId = 5,
-                                    // drop
+                                    TransactionTypeId = 5, // drop
                                     CreatedBy = Util.UserId1,
                                     CreatedDate = Util.Now,
                                     Pending = Pending,
@@ -78,18 +64,6 @@ namespace CmsData
                 db.ExecuteCommand("DELETE dbo.Attend WHERE OrganizationId = {0} AND MeetingDate > {1} AND PeopleId = {2} AND ISNULL(Commitment, 1) = 1", OrganizationId, Util.Now, PeopleId);
                 db.ExecuteCommand("UPDATE dbo.GoerSenderAmounts SET InActive = 1 WHERE OrgId = {0} AND (GoerId = {1} OR SupporterId = {1})", OrganizationId, PeopleId);
                 return droptrans;
-                //                }
-                //                catch (SqlException ex)
-                //                {
-                //                    if (ex.Number == 1205)
-                //                        if (--ntries > 0)
-                //                        {
-                //                            Db.Dispose();
-                //                            System.Threading.Thread.Sleep(500);
-                //                            continue;
-                //                        }
-                //                    throw;
-                //                }
             }
         }
 
