@@ -1,12 +1,4 @@
-
-CREATE VIEW [dbo].[OrgsWithFees]
-AS
-(
-	SELECT 
-		OrganizationId
-	FROM dbo.Organizations
-WHERE dbo.OrgFee(OrganizationId) > 0
-)
+ALTER TABLE [dbo].[LongRunningOp] ADD CONSTRAINT [PK_LongRunningOp] PRIMARY KEY CLUSTERED  ([id], [operation])
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
