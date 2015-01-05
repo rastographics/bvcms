@@ -32,19 +32,18 @@ namespace CmsWeb.Models
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Tasks.Task.Run(() => DoWork(this));
+            Tasks.Task.Run(() => DoWork(host, Id));
         }
 
-        public static void DoWork(RepairTransactions model)
+        public static void DoWork(string host, int id)
         {
-			Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-			var db = new CMSDataContext(Util.GetConnectionString(model.host));
-		    var cul = db.Setting("Culture", "en-US");
-            Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
-            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
-            db.RepairTransactions(model.Id);
+			var cs = Util.GetConnectionString(host);
+            Util.Log(cs);
+			var db = new CMSDataContext(cs);
+            db.RepairTransactions(id);
+            Util.Log("done");
             // finished
-            var lop = FetchLongRunningOp(db, model.Id, Op);
+            var lop = FetchLongRunningOp(db, id, Op);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
 		}

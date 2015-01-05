@@ -419,5 +419,13 @@ namespace UtilityExtensions
 #endif
             return d;
         }
+
+        public static void Log(string s)
+        {            
+            var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+            output = output + "\\log-{0}-{1}.txt".Fmt(Util.Host, DateTime.Today.ToSortableDate());
+            var text = "{0} {1}\n".Fmt(DateTime.Now.ToSortableTime(), s);
+            File.AppendAllText(output, text);
+        }
     }
 }
