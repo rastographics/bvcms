@@ -255,9 +255,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\IPPDotNetDevKit.2.1.7.0\lib\DevDefined.OAuth.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\HtmlAgilityPack.1.4.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Intuit.Ipp.AsyncServices">
       <HintPath>..\packages\IPPDotNetDevKit.2.1.7.0\lib\Intuit.Ipp.AsyncServices.dll</HintPath>
