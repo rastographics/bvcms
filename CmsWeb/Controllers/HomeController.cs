@@ -134,6 +134,14 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
+        public ActionResult NewRollsheet(bool id)
+        {
+            DbUtil.Db.SetSetting("UseNewRollsheet", id ? "false" : "true");
+            DbUtil.Db.SubmitChanges();
+            if (Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.OriginalString);
+            return Redirect("/");
+        }
 
         public ActionResult Names(string term)
         {

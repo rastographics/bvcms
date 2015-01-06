@@ -322,6 +322,10 @@ namespace CmsData
         partial void UpdateLabelFormat(LabelFormat instance);
         partial void DeleteLabelFormat(LabelFormat instance);
         
+        partial void InsertLongRunningOp(LongRunningOp instance);
+        partial void UpdateLongRunningOp(LongRunningOp instance);
+        partial void DeleteLongRunningOp(LongRunningOp instance);
+        
         partial void InsertManagedGiving(ManagedGiving instance);
         partial void UpdateManagedGiving(ManagedGiving instance);
         partial void DeleteManagedGiving(ManagedGiving instance);
@@ -1140,6 +1144,12 @@ namespace CmsData
 
 		}
 
+		public Table< LongRunningOp> LongRunningOps
+		{
+			get	{ return this.GetTable< LongRunningOp>(); }
+
+		}
+
 		public Table< ManagedGiving> ManagedGivings
 		{
 			get	{ return this.GetTable< ManagedGiving>(); }
@@ -1629,6 +1639,12 @@ namespace CmsData
 	#endregion
 	#region Views
 		
+	    public Table< View.ActiveRegistration> ViewActiveRegistrations
+	    {
+		    get { return this.GetTable< View.ActiveRegistration>(); }
+
+	    }
+
 	    public Table< View.ActivityAll> ViewActivityAlls
 	    {
 		    get { return this.GetTable< View.ActivityAll>(); }
@@ -2667,7 +2683,11 @@ namespace CmsData
             [Parameter(DbType="varchar")] string sgfilter,
             [Parameter(DbType="bit")] bool? showhidden,
             [Parameter(DbType="nvarchar")] string currtag,
-            [Parameter(DbType="int")] int? currtagowner
+            [Parameter(DbType="int")] int? currtagowner,
+            [Parameter(DbType="bit")] bool? filterchecked,
+            [Parameter(DbType="bit")] bool? filtertag,
+            [Parameter(DbType="bit")] bool? ministryinfo,
+            [Parameter(DbType="int")] int? userpeopleid
             )
 		{
 			return this.CreateMethodCallQuery< View.OrgPerson>(this, 
@@ -2679,7 +2699,11 @@ namespace CmsData
                 sgfilter,
                 showhidden,
                 currtag,
-                currtagowner
+                currtagowner,
+                filterchecked,
+                filtertag,
+                ministryinfo,
+                userpeopleid
                 );
 		}
 
@@ -2989,6 +3013,23 @@ namespace CmsData
 			return this.CreateMethodCallQuery< View.Registration>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days
+                );
+		}
+
+		[Function(Name="dbo.RollList", IsComposable = true)]
+		public IQueryable< View.RollList > RollList(
+            [Parameter(DbType="int")] int? mid,
+            [Parameter(DbType="datetime")] DateTime? meetingdt,
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="bit")] bool? current
+            )
+		{
+			return this.CreateMethodCallQuery< View.RollList>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                mid,
+                meetingdt,
+                oid,
+                current
                 );
 		}
 
@@ -4195,6 +4236,18 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrgFee", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? OrgFee(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
                 ).ReturnValue));
 		}
 

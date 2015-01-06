@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 currmembers = CurrentMembers ?? false,
                 showall = showall == true,
                 sortbyname = sortbyname == true,
-                showlarge = showlarge ?? false
+                showlarge = showlarge ?? false,
             };
             if (m.meeting == null)
                 return RedirectShowError("no meeting");

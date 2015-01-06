@@ -5,6 +5,7 @@ using CmsWeb.Areas.Org.Models;
 using CmsData;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
+using CmsData.Codes;
 using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -20,6 +21,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             Response.NoCache();
             var m = new OrgSearchModel();
+            m.StatusId = OrgStatusCode.Active;
 
             if (div.HasValue)
             {

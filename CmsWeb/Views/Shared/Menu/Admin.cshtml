@@ -41,7 +41,7 @@
                             @AdminList2(admin, design, managetrans, edit, manageemails, true, developer)
                         </ul>
                         <ul class="span3 unstyled pull-left">
-                            @AdminList1(admin, design, managetrans, edit, manageemails, true)
+                            @AdminList1(admin, design, managetrans, edit, manageemails, true, developer)
                         </ul>
                     </div>
                 </li>
@@ -57,7 +57,7 @@
                             @AdminList2(admin, design, managetrans, edit, manageemails, finance:false, developer:developer)
                         </ul>
                         <ul class="span6 unstyled pull-left">
-                            @AdminList1(admin, design, managetrans, edit, manageemails, finance:false)
+                            @AdminList1(admin, design, managetrans, edit, manageemails, finance:false, developer:developer)
                         </ul>
                     </div>
                 </li>
@@ -65,8 +65,9 @@
         }
     </li>
 }
-@helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance)
+@helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {
+    var usenewrollsheet = Util2.UseNewRollsheet;
     @Helper.LiHeader("Setup", admin || finance || design)
     @Helper.LiAnchorLink("Lookups", "/Lookups/", admin || finance)
     @Helper.LiAnchorLink("Metro Zips", "/MetroZips/", admin)
@@ -74,6 +75,7 @@
     @Helper.LiAnchorLink("Settings", "/Settings/", admin)
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
+    @Helper.LiAnchorLink("New Rollsheet is " + (usenewrollsheet ? "ON" : "OFF"), "/Home/NewRollsheet/" + usenewrollsheet, developer)
     
     @Helper.LiHeader("Reports", admin)
     @Helper.LiAnchorLink("Registration History", "/RegistrationSearch", admin)

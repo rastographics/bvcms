@@ -276,7 +276,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
         {
-            var m = new MeetingsModel() { Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid, StatusId = OrgStatusCode.Active };
+            MeetingsModel m = new MeetingsModel() {Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid}; 
             return View(m);
         }
         [HttpPost]

@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.Org.Models
         public bool showregistered { get; set; }
         public bool sortbyname { get; set; }
         public bool showlarge { get; set; }
+        public bool usenew { get; set; }
 
         public MeetingModel(int id)
         {
@@ -41,11 +42,16 @@ namespace CmsWeb.Areas.Org.Models
 
         public IEnumerable<RollsheetModel.AttendInfo> Attends(bool sorted = false)
         {
-            return RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers);
+            return Util2.UseNewRollsheet 
+                ? RollsheetModel.RollList2(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers) 
+                : RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers);
         }
+
         public IEnumerable<RollsheetModel.AttendInfo> VisitAttends(bool sorted = false)
         {
-            var q = RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted);
+            var q = Util2.UseNewRollsheet 
+                ? RollsheetModel.RollList2(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted) 
+                : RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted);
             return q.Where(vv => !vv.Member && vv.Attended);
         }
         public string AttendCreditType()

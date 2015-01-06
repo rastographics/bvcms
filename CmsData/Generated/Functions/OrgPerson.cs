@@ -34,6 +34,8 @@ namespace CmsData.View
 		
 		private int? _BirthYear;
 		
+		private bool? _IsDeceased;
+		
 		private string _Address;
 		
 		private string _Address2;
@@ -60,6 +62,8 @@ namespace CmsData.View
 		
 		private bool? _HasTag;
 		
+		private bool? _IsChecked;
+		
 		private decimal? _AttPct;
 		
 		private DateTime? _LastAttended;
@@ -77,6 +81,22 @@ namespace CmsData.View
 		private bool? _Hidden;
 		
 		private string _Groups;
+		
+		private DateTime? _LastContactMadeDt;
+		
+		private int? _LastContactMadeId;
+		
+		private DateTime? _LastContactReceivedDt;
+		
+		private int? _LastContactReceivedId;
+		
+		private DateTime? _TaskAboutDt;
+		
+		private int? _TaskAboutId;
+		
+		private DateTime? _TaskDelegatedDt;
+		
+		private int? _TaskDelegatedId;
 		
 		
 		public OrgPerson()
@@ -233,6 +253,23 @@ namespace CmsData.View
 			{
 				if (this._BirthYear != value)
 					this._BirthYear = value;
+			}
+
+		}
+
+		
+		[Column(Name="IsDeceased", Storage="_IsDeceased", DbType="bit")]
+		public bool? IsDeceased
+		{
+			get
+			{
+				return this._IsDeceased;
+			}
+
+			set
+			{
+				if (this._IsDeceased != value)
+					this._IsDeceased = value;
 			}
 
 		}
@@ -459,6 +496,23 @@ namespace CmsData.View
 		}
 
 		
+		[Column(Name="IsChecked", Storage="_IsChecked", DbType="bit")]
+		public bool? IsChecked
+		{
+			get
+			{
+				return this._IsChecked;
+			}
+
+			set
+			{
+				if (this._IsChecked != value)
+					this._IsChecked = value;
+			}
+
+		}
+
+		
 		[Column(Name="AttPct", Storage="_AttPct", DbType="real")]
 		public decimal? AttPct
 		{
@@ -607,6 +661,142 @@ namespace CmsData.View
 			{
 				if (this._Groups != value)
 					this._Groups = value;
+			}
+
+		}
+
+		
+		[Column(Name="LastContactMadeDt", Storage="_LastContactMadeDt", DbType="datetime")]
+		public DateTime? LastContactMadeDt
+		{
+			get
+			{
+				return this._LastContactMadeDt;
+			}
+
+			set
+			{
+				if (this._LastContactMadeDt != value)
+					this._LastContactMadeDt = value;
+			}
+
+		}
+
+		
+		[Column(Name="LastContactMadeId", Storage="_LastContactMadeId", DbType="int")]
+		public int? LastContactMadeId
+		{
+			get
+			{
+				return this._LastContactMadeId;
+			}
+
+			set
+			{
+				if (this._LastContactMadeId != value)
+					this._LastContactMadeId = value;
+			}
+
+		}
+
+		
+		[Column(Name="LastContactReceivedDt", Storage="_LastContactReceivedDt", DbType="datetime")]
+		public DateTime? LastContactReceivedDt
+		{
+			get
+			{
+				return this._LastContactReceivedDt;
+			}
+
+			set
+			{
+				if (this._LastContactReceivedDt != value)
+					this._LastContactReceivedDt = value;
+			}
+
+		}
+
+		
+		[Column(Name="LastContactReceivedId", Storage="_LastContactReceivedId", DbType="int")]
+		public int? LastContactReceivedId
+		{
+			get
+			{
+				return this._LastContactReceivedId;
+			}
+
+			set
+			{
+				if (this._LastContactReceivedId != value)
+					this._LastContactReceivedId = value;
+			}
+
+		}
+
+		
+		[Column(Name="TaskAboutDt", Storage="_TaskAboutDt", DbType="datetime")]
+		public DateTime? TaskAboutDt
+		{
+			get
+			{
+				return this._TaskAboutDt;
+			}
+
+			set
+			{
+				if (this._TaskAboutDt != value)
+					this._TaskAboutDt = value;
+			}
+
+		}
+
+		
+		[Column(Name="TaskAboutId", Storage="_TaskAboutId", DbType="int")]
+		public int? TaskAboutId
+		{
+			get
+			{
+				return this._TaskAboutId;
+			}
+
+			set
+			{
+				if (this._TaskAboutId != value)
+					this._TaskAboutId = value;
+			}
+
+		}
+
+		
+		[Column(Name="TaskDelegatedDt", Storage="_TaskDelegatedDt", DbType="datetime")]
+		public DateTime? TaskDelegatedDt
+		{
+			get
+			{
+				return this._TaskDelegatedDt;
+			}
+
+			set
+			{
+				if (this._TaskDelegatedDt != value)
+					this._TaskDelegatedDt = value;
+			}
+
+		}
+
+		
+		[Column(Name="TaskDelegatedId", Storage="_TaskDelegatedId", DbType="int")]
+		public int? TaskDelegatedId
+		{
+			get
+			{
+				return this._TaskDelegatedId;
+			}
+
+			set
+			{
+				if (this._TaskDelegatedId != value)
+					this._TaskDelegatedId = value;
 			}
 
 		}

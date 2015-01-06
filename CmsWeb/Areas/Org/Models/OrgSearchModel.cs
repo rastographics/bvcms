@@ -44,7 +44,6 @@ namespace CmsWeb.Areas.Org.Models
 
         public OrgSearchModel()
         {
-            StatusId = OrgStatusCode.Active;
             Pager = new PagerModel2();
             Pager.GetCount = Count;
         }
@@ -315,15 +314,18 @@ namespace CmsWeb.Areas.Org.Models
                                 select o;
             else if (OnlineReg == RegistrationClassification.AnyOnlineRegActive96)
                 organizations = from o in organizations
-                                join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
-                                from p in j.DefaultIfEmpty()
-                                where p.PickListOrgId == null
-                                where o.RegistrationTypeId > 0
-                                where (o.RegistrationClosed ?? false) == false
-                                where (o.ClassFilled ?? false) == false
-                                where o.RegStart == null || o.RegStart < DateTime.Now
-                                where o.RegEnd == null || o.RegEnd > DateTime.Now
+                                join a in DbUtil.Db.ViewActiveRegistrations on o.OrganizationId equals a.OrganizationId
                                 select o;
+//                organizations = from o in organizations
+//                                join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
+//                                from p in j.DefaultIfEmpty()
+//                                where p.PickListOrgId == null
+//                                where o.RegistrationTypeId > 0
+//                                where (o.RegistrationClosed ?? false) == false
+//                                where (o.ClassFilled ?? false) == false
+//                                where o.RegStart == null || o.RegStart < DateTime.Now
+//                                where o.RegEnd == null || o.RegEnd > DateTime.Now
+//                                select o;
             else if (OnlineReg > 0)
                 organizations = from o in organizations
                                 where o.RegistrationTypeId == OnlineReg
@@ -767,7 +769,7 @@ namespace CmsWeb.Areas.Org.Models
                     sb.Append(RecentVisitsEmail(c, vlist));
                 }
                 DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, leader, null,
-                                "Attendance reports are ready for viewing", sb.ToString(), false);
+                                DbUtil.Db.Setting("SubjectAttendanceNotices", "Attendance reports are ready for viewing"), sb.ToString(), false);
             }
             sb2.Append("</table>\n");
             DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, DbUtil.Db.CurrentUser.Person, null,
