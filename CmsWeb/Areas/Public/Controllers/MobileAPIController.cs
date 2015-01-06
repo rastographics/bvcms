@@ -597,7 +597,9 @@ namespace CmsWeb.Areas.Public.Controllers
             var mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
             var meeting = Meeting.FetchOrCreateMeeting(DbUtil.Db, mprl.id, mprl.datetime);
-            var people = RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value);
+            var people = Util2.UseNewRollsheet
+                ? RollsheetModel.RollList2(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value)
+                : RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value);
 
             var br = new BaseMessage();
             var ma = new List<MobileAttendee>();
