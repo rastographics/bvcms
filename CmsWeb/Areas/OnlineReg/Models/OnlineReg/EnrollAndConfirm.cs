@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -86,10 +87,21 @@ namespace CmsWeb.Models
                 });
             }
 
+            if (SupportMissionTrip && GoerId == list[0].PeopleId)
+            {
+                // reload transaction because it is not in this context
+                var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == GoerId && mm.OrganizationId == Orgid);
+                if(om != null && om.TranId.HasValue)
+                    ti.OriginalId = om.TranId;
+            }
+            else
+            {
+                ti.OriginalTrans.TransactionPeople.AddRange(pids2);
+            }
+
             ti.Emails = Util.EmailAddressListToString(elist);
             ti.Participants = participants.ToString();
             ti.TransactionDate = DateTime.Now;
-            ti.OriginalTrans.TransactionPeople.AddRange(pids2);
 
             if (org.IsMissionTrip == true)
             {
@@ -100,7 +112,6 @@ namespace CmsWeb.Models
                 var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
                 paylink = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
             }
-
             var pids = pids2.Select(pp => pp.PeopleId);
 
             var details = new StringBuilder("<table>");
@@ -124,7 +135,7 @@ namespace CmsWeb.Models
                 om.RegisterEmail = p.EmailAddress;
 
                 if(om.TranId == null)
-                    om.TranId = ti.OriginalId; // review: Where TranId got wiped out
+                    om.TranId = ti.OriginalId;
 
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
                 if (grouptojoin > 0)
