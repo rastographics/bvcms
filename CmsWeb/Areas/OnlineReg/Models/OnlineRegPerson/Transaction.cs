@@ -64,15 +64,16 @@ namespace CmsWeb.Models
                     orgfee = q.First();
             }
             // just use the simple fee if nothing else has been used yet.
-            if (amt == 0 && countorgs == 0 && !setting.AskVisible("AskSuggestedFee"))
-                amt = setting.Fee ?? 0;
+            if (amt == 0 && countorgs == 0 && !setting.AskVisible("AskSuggestedFee") 
+                    && Parent.SupportMissionTrip == false) 
+                amt = setting.Fee ?? 0; // review: supporter getting total fee
             if (orgfee.HasValue)
                 if (setting.OtherFeesAddedToOrgFee)
                     amt = orgfee.Value + TotalOther(); // special price for org member
                 else
                     amt = orgfee.Value;
             else
-                amt += TotalOther();
+                amt += TotalOther(); // review: supporter getting total fee then adding in support amount
             return amt;
         }
         public decimal TotalOther()
@@ -80,6 +81,7 @@ namespace CmsWeb.Models
             decimal amt = 0;
             if (Parent.SupportMissionTrip)
             {
+                // review: This was where support amount was coming from
                 amt += MissionTripSupportGoer ?? 0;
                 amt += MissionTripSupportGeneral ?? 0;
             }

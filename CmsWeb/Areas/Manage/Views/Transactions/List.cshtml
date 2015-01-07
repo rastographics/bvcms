@@ -97,6 +97,10 @@
                 {
                     @Transaction.FullName(t)
                 }
+                @if (Model.nameid > 0 && t.People.HasValue())
+                {
+                  <br/>@Html.Raw(t.People.Replace("\n", "<br>"))
+                }
             </td>
             <td class="right" nowrap="nowrap">@(t.Payment.ToString2("N"))</td>
             <td class="right">@t.TotDue.ToString2("N")</td>

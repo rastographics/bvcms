@@ -4,6 +4,7 @@
 
 
 
+
 CREATE VIEW [dbo].[TransactionSummary]
 AS
 SELECT
@@ -17,6 +18,7 @@ SELECT
 	,(TotalAmt - TotPaid - Donation) TotDue
 	,CONVERT(MONEY, (IndPctC * TotPaid)) IndPaid
 	,CONVERT(MONEY, (IndPctC * (TotalAmt - TotPaid - Donation))) IndDue
+	,IndPctC
 	,NumPeople
 	,isdeposit
 	,iscoupon
@@ -78,6 +80,7 @@ FROM (
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 ) tt
 --WHERE (iscoupon = 1 OR isapproved = 1) --AND TotalAmt > 0
+
 
 
 

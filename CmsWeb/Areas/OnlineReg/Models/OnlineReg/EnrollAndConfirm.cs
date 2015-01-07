@@ -122,7 +122,10 @@ namespace CmsWeb.Models
 </td></tr>", i + 1, p.PrepareSummaryText(ti));
 
                 om.RegisterEmail = p.EmailAddress;
-                om.TranId = ti.OriginalId;
+
+                if(om.TranId == null)
+                    om.TranId = ti.OriginalId; // review: Where TranId got wiped out
+
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
                 if (grouptojoin > 0)
                 {

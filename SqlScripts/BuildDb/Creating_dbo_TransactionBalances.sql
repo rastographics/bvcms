@@ -1,3 +1,6 @@
+
+
+
 CREATE VIEW [dbo].[TransactionBalances]
 AS
 SELECT BalancesId
@@ -5,6 +8,7 @@ SELECT BalancesId
 		,Payment
 		,TotDue
 		,NumPeople
+		,People
 		,CanVoid
 		,CONVERT(BIT, 
 			CASE WHEN CanVoid = 1 AND (Batchtyp = 'eft' OR Batchtyp = 'bankcard')
@@ -36,6 +40,15 @@ FROM (
 			FROM dbo.TransactionPeople
 			WHERE Id = t.OriginalId) 
 			NumPeople
+		,(SELECT STUFF((
+				SELECT CHAR(10) + p.Name + '(' + CONVERT(VARCHAR, ts.IndPctC * 100) + '%)'
+				FROM dbo.TransactionSummary ts 
+				JOIN dbo.People p ON p.PeopleId = ts.PeopleId
+				WHERE ts.RegId = t.OriginalId
+				FOR XML PATH(''),TYPE
+				).value('text()[1]','nvarchar(max)'),1,1,N'' 
+				)) 
+		    People
 		, t.batchtyp
 		,CONVERT(BIT, 
 			CASE WHEN ISNULL(t.Approved,0) = 1
@@ -49,6 +62,8 @@ FROM (
 
 	FROM dbo.[Transaction] t
 ) tt
+
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

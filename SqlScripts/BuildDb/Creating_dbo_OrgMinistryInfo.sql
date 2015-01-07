@@ -23,7 +23,7 @@ RETURN
 		,mi.TaskDelegatedId
 		
 	FROM 
-	dbo.OrgPeople(@oid, @grouptype, @first,@last,@sgfilter,@showhidden, NULL, NULL) tt
+	dbo.OrgPeople(@oid, @grouptype, @first,@last,@sgfilter,@showhidden, NULL, NULL, NULL, NULL, NULL, NULL) tt
 	JOIN dbo.People p ON p.PeopleId = tt.PeopleId
 	JOIN dbo.MinistryInfo mi ON mi.PeopleId = p.PeopleId
 )

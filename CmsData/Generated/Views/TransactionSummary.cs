@@ -36,6 +36,8 @@ namespace CmsData.View
 		
 		private decimal? _IndDue;
 		
+		private double _IndPctC;
+		
 		private int? _NumPeople;
 		
 		private bool? _Isdeposit;
@@ -216,6 +218,23 @@ namespace CmsData.View
 			{
 				if (this._IndDue != value)
 					this._IndDue = value;
+			}
+
+		}
+
+		
+		[Column(Name="IndPctC", Storage="_IndPctC", DbType="float NOT NULL")]
+		public double IndPctC
+		{
+			get
+			{
+				return this._IndPctC;
+			}
+
+			set
+			{
+				if (this._IndPctC != value)
+					this._IndPctC = value;
 			}
 
 		}

@@ -118,6 +118,8 @@ namespace CmsData.View
 		
 		private int? _NumPeople;
 		
+		private string _People;
+		
 		private bool? _CanVoid;
 		
 		private bool? _CanCredit;
@@ -991,6 +993,23 @@ namespace CmsData.View
 			{
 				if (this._NumPeople != value)
 					this._NumPeople = value;
+			}
+
+		}
+
+		
+		[Column(Name="People", Storage="_People", DbType="nvarchar")]
+		public string People
+		{
+			get
+			{
+				return this._People;
+			}
+
+			set
+			{
+				if (this._People != value)
+					this._People = value;
 			}
 
 		}
