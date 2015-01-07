@@ -592,7 +592,7 @@ namespace CmsData
         public void SetOrgLeadersOnly()
         {
             var me = Util.UserPeopleId;
-            var dt = Util.Now.AddYears(-1);
+            var dt = Util.Now.AddYears(-3);
 
             var oids = GetLeaderOrgIds(Util.UserPeopleId);
             // current members of one of my orgs I lead
