@@ -1,34 +1,118 @@
-﻿@using CmsWeb
-@model CmsData.Content
+﻿@model CmsData.Content
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<h2>@Model.Title</h2>
+@using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        @Html.TextBox("title", Model.Title, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBox("fullpage") Full page?&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info"><i class="fa fa-info-circle"></i> Note:  Full page should only be clicked when you first come to the page, not after you have made any changes otherwise they will be lost.</span>
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.TextArea("body", new { @class = "form-control", rows = "26" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <input type="submit" class="btn btn-primary btn-block" value="Save" />
+                    <a id="delete" href='/Display/ContentDelete/@Model.Id' class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Delete</a>
+                    <hr/>
+                    <div class="additional-actions"><a id="cancel" href='/Display'>Cancel & Return</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("id")
+    @Html.Hidden("name")
 }
 @section scripts
 {
     @ViewExtensions2.CKEditor()
-    @Fingerprint.Script("/Scripts/js/htmlcontent.js")
-}
-@using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
-{
-    <div class="blogbody">
-        <h2 class="title">@Model.Title</h2>
-        <a href="/Display">Menu of Content</a>
-        <hr />
-        @Html.Hidden("name")
-        @Html.Hidden("id")
-        <div>
-            Title: @Html.TextBox("title")  FullPage: @Html.CheckBox("fullpage")
-            <i style="max-width:40em; display: inline-block; vertical-align: top">
-                (Note: this should only be clicked when you first come to the page, not after you have made any changes otherwise they will be lost)
-            </i>
-        </div>
-        <div>
-            @Html.TextArea("body", new { @class = "editor", rows = "26", style = "width:90%" })
-    </div>
-    <br />
-    <input type="submit" class="bt" value="Save" />
-    &nbsp;&nbsp;
-    <a id="cancel" href='/Display' class="bt">Cancel</a>
-    <a id="delete" href='/Display/ContentDelete/@Model.Id' class="bt red">Delete</a>
-</div>
+    <script type="text/javascript">
+        
+        function getParameterByName(name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+        $(function () {
+
+            $("#delete").click(function (ev) {
+                ev.preventDefault();
+                var href = this.href;
+
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post(href, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Manage/Display/";
+                            });
+                        }
+                    });
+                });
+            });
+
+            var fullPage = getParameterByName("fullPage") === 'true';
+            if (fullPage) {
+                $("#fullpage").prop("checked", true); 
+            }
+
+            CKEDITOR.replace('body', {
+                height: 400,
+                allowedContent: true,
+                fullPage: fullPage,
+                customConfig: "/scripts/js/ckeditorconfig.js"
+            });
+                
+            $("#fullpage").change(function () {
+                var checked = this.checked;
+                swal({
+                    title: "Reload page?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-warning",
+                    confirmButtonText: "Yes!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    if (checked)
+                        window.location.href = window.location.pathname + '?fullPage=true';
+                    else
+                        window.location.href = window.location.pathname;
+                });
+
+            });
+        });
+    </script>
 }

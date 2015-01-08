@@ -1,65 +1,98 @@
-﻿@using CmsWeb
-@model CmsData.Content
+﻿@model CmsData.Content
 @{
-  Layout = ViewExtensions2.Layout();
+  Layout = ViewExtensions2.TouchPointLayout();
 }
-@section scripts
-{
-  <script type="text/javascript">
-    $(function () {
-      $(".bt").button();
-      $("#delete").click(function (ev) {
-        ev.preventDefault();
-        if (confirm("Are you sure you want to delete this entry?")) {
-          $.post("/Display/ContentDelete", { id: "@Model.Id" }, function () {
-            window.location = "/Manage/Display/";
-          });
-        }
-      });
-      $("#run").click(function (ev) {
-        ev.preventDefault();
-        var url = this.href + "/" + $('#parameter').val();
-        var target = this.target;
-        window.open(url, target);
-      });
-      $("textarea").tabby();
-    });
-  </script>
-}
-@section head
-{
-  <style>
-    textarea {
-      font-family: Courier New;
-    }
-
-    #results {
-      margin-top: 2em;
-    }
-  </style>
-}
+<h2>@Model.Name</h2>
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
-  <div class="blogbody">
-    <h2 class="title">@Model.Name</h2>
-    <a href="/Display">Menu of Content</a>
-    <hr />
+    <div class="row">
+        <div class="col-md-9">
+           <div class="form-group">
+                <nav class="navbar navbar-inverse" style="margin-bottom: 0;">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <span class="navbar-brand"><i class="fa fa-cogs"></i></span>
+                        </div>
+                        <div class="navbar-form navbar-left" style="margin:0; padding:0;">
+                            <div class="form-group">
+                                <input id="parameter" type="text" class="form-control" placeholder="Parameter" />
+                            </div>
+                            <a id="run" href="/RunScript/@Model.Name" class="btn btn-default navbar-btn" target="runscript"><i class="fa fa-play"></i> Run Script</a>
+                        </div>
+                    </div>
+                </nav>
+                <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Body</div>
+                @Html.HiddenFor(m => m.Body)
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <input type="submit" id="save" class="btn btn-primary btn-block" value="Save" />
+                    }
+                    <a id="delete" href='/Display/ContentDelete/@Model.Id' class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Delete</a>
+                    <hr />
+                    <div class="additional-actions"><a id="cancel" href='/Manage/Display'>Cancel & Return</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
     @Html.Hidden("stayaftersave", "true")
     @Html.Hidden("id")
     @Html.Hidden("name")
     @Html.Hidden("title")
-    <div>
-      <textarea id="body" name="body" cols="80" rows="40" wrap='off' spellcheck="false" style="width:99%">@Html.Raw(@Model.Body)</textarea>
-    </div>
-    <br />
-    @if (User.IsInRole("Admin"))
-    {
-      <input type="submit" class="bt" value="Save" /> @:&nbsp;&nbsp;
-        }
-    <a id="cancel" href='/Manage/Display' class="bt">Cancel</a>
-    <a id="delete" href='#'><img src="/Content/images/delete.gif" /></a> &nbsp;&nbsp;
-    <a id="run" href="/RunScript/@Model.Name" class="bt" target="runscript">Run Sql Script</a>
-    Parameter: <input id="parameter" type="text" />
-  </div>
-  <div id="results"></div>
+}
+@section scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            var editor = ace.edit("editor");
+            editor.setShowPrintMargin(false);
+            editor.getSession().setMode("ace/mode/sql");
+
+            $("#save").click(function (ev) {
+                ev.preventDefault();
+                $("#body").val(editor.getValue());
+                $("form").submit();
+            });
+
+            $("#delete").click(function (ev) {
+                ev.preventDefault();
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Manage/Display/";
+                            });
+                        }
+                    });
+                });
+            });
+
+            $("#run").click(function (ev) {
+                ev.preventDefault();
+                var url = this.href + "/" + $('#parameter').val();
+                var target = this.target;
+                window.open(url, target);
+            });
+        });
+</script>
 }
