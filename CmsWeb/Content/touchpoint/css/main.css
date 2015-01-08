@@ -52,6 +52,12 @@ body {
     padding-left: inherit;
 }
 
+div.additional-actions {
+    font-size: .85em; 
+}
+div.additional-actions a {
+    text-decoration: underline;
+}
 
 #thumbnail-picture {
     float: left;
