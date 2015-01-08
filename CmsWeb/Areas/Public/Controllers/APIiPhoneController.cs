@@ -72,6 +72,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
             DbUtil.LogActivity("iphone RollList {0} {1:g}".Fmt(id, datetime));
             var meeting = Meeting.FetchOrCreateMeeting(DbUtil.Db, id, datetime);
+            System.Threading.Thread.Sleep(1000); // give meeting time to populate
             return new RollListResult(meeting);
         }
         [HttpPost]
