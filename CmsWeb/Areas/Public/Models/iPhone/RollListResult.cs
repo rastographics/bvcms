@@ -45,7 +45,11 @@ namespace CmsWeb.Models.iPhone
 				if(NewPeopleId.HasValue)
 					w.WriteAttributeString("NewPeopleId", NewPeopleId.ToString());
 
-                foreach (var p in RollsheetModel.RollList(MeetingId, OrgId, MeetingDate))
+                var q = Util2.UseNewRollsheet
+                    ? RollsheetModel.RollList2(MeetingId, OrgId, MeetingDate)
+                    : RollsheetModel.RollList(MeetingId, OrgId, MeetingDate);
+
+                foreach (var p in q)
                 {
                     w.WriteStartElement("Person");
                     w.WriteAttributeString("Id", p.PeopleId.ToString());

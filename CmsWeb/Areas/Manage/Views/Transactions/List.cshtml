@@ -1,4 +1,4 @@
-﻿@using CmsData
+﻿﻿@using CmsData
 @using UtilityExtensions;
 @model CmsWeb.Models.TransactionsModel
 @{
@@ -66,7 +66,7 @@
                     }
                     <tr style="@(t.Id != t.OriginalId ? "font-style: italic;" : "")">
                         <td class="text-center">
-                            <a href="#" data-toggle="popover" data-trigger="focus" 
+                            <a href="#" data-toggle="popover" data-trigger="focus"
                                data-content="
                                <label>Transation Id:</label> @t.TransactionId<br/>
                                <label>Approval Code:</label> @(t.ApprovalCode ?? "na")<br />
@@ -83,7 +83,7 @@
                             "><i class="fa fa-info-circle"></i></a>
                         </td>
                         <td title="Click to filter">
-                            <a href="#" class="filtertransaction" originalid="@t.OriginalId">@t.Id</a> 
+                            <a href="#" class="filtertransaction" originalid="@t.OriginalId">@t.Id</a>
                         </td>
                         <td>@t.TransactionId</td>
                         <td class="text-center">
@@ -113,6 +113,10 @@
                             else
                             {
                                 @Transaction.FullName(t)
+                            }
+                            @if (Model.nameid > 0 && t.People.HasValue())
+                            {
+                                <br />@Html.Raw(t.People.Replace("\n", "<br>"))
                             }
                         </td>
                         <td>

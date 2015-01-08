@@ -16,7 +16,7 @@ namespace CmsWeb.MobileAPI
 
 		public string data = "";
 
-		public override void ExecuteResult(ControllerContext context)
+	    public override void ExecuteResult(ControllerContext context)
 		{
 			context.HttpContext.Response.ContentType = "application/json";
 			context.HttpContext.Response.Output.Write(JsonConvert.SerializeObject(this));
@@ -96,6 +96,7 @@ namespace CmsWeb.MobileAPI
 
 		// 40000's - Registration = 41000's - Read / 42000's Write
 		public const int API_TYPE_REGISTRATION_ONE_TIME_LINK = 41001;
+	    public const int API_TYPE_REGISTRATIONS = 41002;
 
 		// 80000's - Giving = 81000's - Read / 82000's Write
 		// Media Read

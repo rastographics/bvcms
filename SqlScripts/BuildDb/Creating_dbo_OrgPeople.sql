@@ -7,6 +7,10 @@ CREATE FUNCTION [dbo].[OrgPeople](
 	,@showhidden BIT
 	,@currtag NVARCHAR(300)
 	,@currtagowner INT
+	,@filterchecked BIT
+	,@filtertag BIT
+	,@ministryinfo BIT
+	,@userpeopleid INT
 ) RETURNS TABLE
 AS
 RETURN
@@ -21,6 +25,7 @@ RETURN
 		,p.BirthDay
 		,p.BirthMonth
 		,p.BirthYear
+		,p.IsDeceased
 		,p.PrimaryAddress [Address]
 		,p.PrimaryAddress2 Address2
 		,p.PrimaryCity City
@@ -34,6 +39,7 @@ RETURN
 		,bfclass.LeaderId
 		,bfclass.LeaderName
 		,CAST(CASE WHEN tp.Id IS NULL THEN 0 ELSE 1 END AS BIT) HasTag
+		,CAST(CASE WHEN otp.Id IS NULL THEN 0 ELSE 1 END AS BIT) IsChecked
 		,AttPct
 		,LastAttended
 		,Joined
@@ -43,6 +49,14 @@ RETURN
 		,MemberType
 		,CAST(Hidden AS BIT) Hidden
 		,Groups
+		,mi.LastContactMadeDt
+		,mi.LastContactMadeId
+		,mi.LastContactReceivedDt
+		,mi.LastContactReceivedId
+		,mi.TaskAboutDt
+		,mi.TaskAboutId
+		,mi.TaskDelegatedDt
+		,mi.TaskDelegatedId
 		
 	FROM 
 	(
@@ -58,9 +72,14 @@ RETURN
 	LEFT JOIN dbo.Organizations bfclass ON bfclass.OrganizationId = p.BibleFellowshipClassId
 	LEFT JOIN Tag t ON t.Name = @currtag AND t.PeopleId = @currtagowner
 	LEFT JOIN dbo.TagPerson tp ON tp.Id = t.Id AND tp.PeopleId = p.PeopleId
+	LEFT JOIN Tag ot ON ot.Name = 'Org-'+CONVERT(VARCHAR, @oid) AND ot.PeopleId = @userpeopleid AND ot.TypeId = 10 -- OrgMembersTag
+	LEFT JOIN dbo.TagPerson otp ON otp.Id = ot.Id AND otp.PeopleId = p.PeopleId
+	LEFT JOIN dbo.MinistryInfo mi ON @ministryinfo = 1 AND mi.PeopleId = p.PeopleId
 
 	WHERE (ISNULL(LEN(@first), 0) = 0 OR (p.FirstName LIKE (@first + '%') OR p.NickName LIKE (@first + '%')))
 	AND (ISNULL(LEN(@last), 0) = 0 OR p.LastName LIKE (@last + '%') OR p.PeopleId = TRY_CONVERT(INT, @last))
+	AND (ISNULL(@filterchecked, 0) = 0 OR otp.Id IS NOT NULL)
+	AND (ISNULL(@filtertag, 0) = 0 OR tp.Id IS NOT NULL)
 	AND 
 	( 
 		(ISNULL(LEN(@sgfilter), 0) > 0 AND @sgfilter NOT LIKE 'ALL:%' AND @sgfilter <> 'NONE'

@@ -60,6 +60,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
         public ActionResult ProcessPayment(PaymentForm pf)
         {
+            Response.NoCache();
 #if DEBUG
 #else
 			if (Session["FormId"] != null)

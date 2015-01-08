@@ -9,13 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
 using CmsData;
-using System.Data.Linq;
-using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using CmsData.Codes;
-using CmsWeb.Models;
-using System.Web;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -326,7 +320,32 @@ namespace CmsWeb.Areas.Reports.Models
 				rollsheet = rollsheet.OrderBy(pp => pp.Name);
 			return rollsheet;
 		}
-		public class AttendInfo
+
+	    public static IEnumerable<AttendInfo> RollList2(int? MeetingId, int OrgId, DateTime MeetingDate,
+	        bool SortByName = false, bool CurrentMembers = false)
+	    {
+	        var q = from p in DbUtil.Db.RollList(MeetingId, MeetingDate, OrgId, CurrentMembers)
+                    orderby p.Section, p.Last, p.FamilyId, p.First
+    	            select new AttendInfo()
+    	            {
+                        PeopleId = p.PeopleId.Value,
+                        Name = p.Name,
+                        Email = p.Email,
+                        Attended = p.Attended ?? false,
+                        AttendCommitmentId = p.CommitmentId,
+    					Commitment = AttendCommitmentCode.Lookup(p.CommitmentId ?? 99),
+                        Member = p.Section == 1,
+                        CurrMemberType = p.CurrMemberType,
+                        MemberType = p.MemberType,
+                        AttendType = p.AttendType,
+                        OtherAttend = p.OtherAttends
+    	            };
+	        if (SortByName)
+	            q = q.OrderBy(pp => pp.Name);
+	        return q;
+	    }
+
+	    public class AttendInfo
 		{
 			public int PeopleId { get; set; }
 			public string Name { get; set; }

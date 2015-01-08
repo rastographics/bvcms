@@ -88,7 +88,7 @@ namespace CmsWeb.Models
         public string Phone { get; set; }
         public int? TranId { get; set; }
 
-        public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null)
+        public Transaction CreateTransaction(CMSDataContext Db, decimal? amount = null, OnlineRegModel m = null)
         {
             if (!amount.HasValue)
                 amount = AmtToPay;

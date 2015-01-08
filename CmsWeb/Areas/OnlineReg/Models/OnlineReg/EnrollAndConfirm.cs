@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -86,10 +87,21 @@ namespace CmsWeb.Models
                 });
             }
 
+            if (SupportMissionTrip && GoerId == list[0].PeopleId)
+            {
+                // reload transaction because it is not in this context
+                var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == GoerId && mm.OrganizationId == Orgid);
+                if(om != null && om.TranId.HasValue)
+                    ti.OriginalId = om.TranId;
+            }
+            else
+            {
+                ti.OriginalTrans.TransactionPeople.AddRange(pids2);
+            }
+
             ti.Emails = Util.EmailAddressListToString(elist);
             ti.Participants = participants.ToString();
             ti.TransactionDate = DateTime.Now;
-            ti.OriginalTrans.TransactionPeople.AddRange(pids2);
 
             if (org.IsMissionTrip == true)
             {
@@ -100,7 +112,6 @@ namespace CmsWeb.Models
                 var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
                 paylink = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
             }
-
             var pids = pids2.Select(pp => pp.PeopleId);
 
             var details = new StringBuilder("<table>");
@@ -122,7 +133,10 @@ namespace CmsWeb.Models
 </td></tr>", i + 1, p.PrepareSummaryText(ti));
 
                 om.RegisterEmail = p.EmailAddress;
-                om.TranId = ti.OriginalId;
+
+                if(om.TranId == null)
+                    om.TranId = ti.OriginalId;
+
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
                 if (grouptojoin > 0)
                 {
@@ -174,18 +188,19 @@ namespace CmsWeb.Models
                 var p = List[0];
                 ti.Fund = p.setting.DonationFund();
                 var goerid = p.Parent.GoerId ?? p.MissionTripGoerId;
-                if (goerid > 0 && p.MissionTripSupportGoer > 0)
+                if (p.MissionTripSupportGoer > 0)
                 {
-                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                        new GoerSenderAmount
-                        {
-                            Amount = p.MissionTripSupportGoer.Value,
-                            GoerId = goerid,
-                            Created = DateTime.Now,
-                            OrgId = p.orgid.Value,
-                            SupporterId = p.PeopleId.Value,
-                            NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
-                        });
+                    var gsa = new GoerSenderAmount
+                    {
+                        Amount = p.MissionTripSupportGoer.Value,
+                        Created = DateTime.Now,
+                        OrgId = p.orgid.Value,
+                        SupporterId = p.PeopleId.Value,
+                        NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
+                    };
+                    if(goerid > 0)
+                        gsa.GoerId = goerid;
+                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(gsa);
                     if (p.Parent.GoerSupporterId.HasValue)
                     {
                         var gs = DbUtil.Db.GoerSupporters.Single(gg => gg.Id == p.Parent.GoerSupporterId);
@@ -198,7 +213,7 @@ namespace CmsWeb.Models
                             p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
                             "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid), tranid: ti.Id);
                         // send notices
-                        if (!p.MissionTripNoNoticeToGoer)
+                        if (goerid > 0 && !p.MissionTripNoNoticeToGoer)
                         {
                             var goer = DbUtil.Db.LoadPersonById(goerid.Value);
                             Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",

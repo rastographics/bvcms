@@ -5,6 +5,7 @@ using CmsWeb.Areas.Org.Models;
 using CmsData;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
+using CmsData.Codes;
 using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -20,6 +21,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             Response.NoCache();
             var m = new OrgSearchModel();
+            m.StatusId = OrgStatusCode.Active;
 
             if (div.HasValue)
             {
@@ -129,8 +131,18 @@ namespace CmsWeb.Areas.Org.Controllers
                 case "be":
                     org.BirthDayEnd = value.ToDate();
                     break;
+                case "rs":
+                    org.RegStart = value.ToDate();
+                    break;
+                case "re":
+                    org.RegEnd = value.ToDate();
+                    break;
                 case "ck":
                     org.CanSelfCheckin = value == "yes";
+                    break;
+                case "reg2":
+                    org.UseRegisterLink2 = value == "yes";
+                    c.Content = org.UseRegisterLink2 == true ? "Family" : "Individual";
                     break;
                 case "so":
                     org.PublicSortOrder = value.HasValue() ? value : null;

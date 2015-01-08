@@ -15,6 +15,7 @@ namespace CmsWeb.Models
     {
         public string description { get; set; }
         public string name { get; set; }
+        public int nameid;
         public string Submit { get; set; }
         public decimal? gtamount { get; set; }
         public decimal? ltamount { get; set; }
@@ -93,7 +94,7 @@ namespace CmsWeb.Models
             string first, last;
             Util.NameSplit(name, out first, out last);
             var hasfirst = first.HasValue();
-            var nameid = name.ToInt();
+            nameid = name.ToInt();
             _transactions
                = from t in DbUtil.Db.ViewTransactionLists
                  let donate = t.Donate ?? 0

@@ -236,5 +236,12 @@ namespace CmsData
                 return DbUtil.Db.UserPreference("TargetLinkPeople", "true").ToBool();
             }
         }
+        public static bool UseNewRollsheet
+        {
+            get
+            {
+                return DbUtil.Db.Setting("UseNewRollsheet", "true").ToBool();
+            }
+        }
     }
 }
