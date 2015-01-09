@@ -953,9 +953,9 @@ namespace BPCSharp
                 }
                 else if (this.paymentType == "CREDIT")
                 {
-                    addPostParam("CC_NUM", this.paymentAccount);
-                    addPostParam("CC_EXPIRES", this.cardExpire);
-                    addPostParam("CVCVV2", this.cvv2);
+                    addPostParam("CC_NUM", this.paymentAccount,true);
+                    addPostParam("CC_EXPIRES", this.cardExpire,true);
+                    addPostParam("CVCVV2", this.cvv2,true);
                 }
                 else
                 {
@@ -1013,9 +1013,9 @@ namespace BPCSharp
             return getStatus();
         }
 
-        private void addPostParam(string key, string value, bool ifNotBlank = false)
+        private void addPostParam(string key, string value, bool doNotAddBlankValue = false)
         {
-            if (!ifNotBlank)
+            if (!doNotAddBlankValue)
                 this.postData[key] = value;
             else
                 if (!String.IsNullOrWhiteSpace(value))

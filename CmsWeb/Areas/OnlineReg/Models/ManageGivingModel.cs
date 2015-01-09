@@ -227,6 +227,10 @@ namespace CmsWeb.Models
                     clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
                     clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
                     break;
+                case "bluepay":
+                    clearCreditCardDetails = !String.IsNullOrEmpty(pi.BluePayCardVaultId);
+                    //TODO: Handle bank account too.
+                    break;
             }
 
             if (clearBankDetails)

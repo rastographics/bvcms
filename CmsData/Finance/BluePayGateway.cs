@@ -64,43 +64,36 @@ namespace CmsData.Finance
 
             var gateway = createGateway();
 
-            //TODO: Handle bank accounts too (not just credit cards)
-            gateway.setupCCTransaction(peopleId, cardNumber, expires, description, null, cardCode, email, first, last, addr, city, state, zip, phone);
 
-            if (paymentInfo.TbnCardVaultId == null)
-                gateway.auth("0.00");
-            else //send MasterId if available (this will allow for updating payment profile without changing cardnum)
-                gateway.auth("0.00", paymentInfo.TbnCardVaultId.Value.ToString());
-
-            gateway.Process();
-            var response = getResponse(gateway);
-
-            if (!response.Approved)
-                throw new Exception(
-                    "Payment Provider failed to update the credit card info for people id: {0}, message: {1}".Fmt(
-                        person.PeopleId, response.Message));
-            
-            
-            int tranId;
-            if(int.TryParse(response.TransactionId, out tranId))
+            if (type == PaymentType.CreditCard)
             {
-                // use TbnCardVaultId for now to save TransactionID as Token for future vault payments
-                paymentInfo.TbnCardVaultId  = tranId;
-            }
-            else
-                throw new Exception("Vault failed to save for {0}. Invalid transaction ID: {1}".Fmt(peopleId, response.TransactionId));
-            
-            
-            //TODO: Handle bank accounts too (not just credit cards)
-         if (type == PaymentType.CreditCard)
-            {
+                gateway.setupCCTransaction(peopleId, cardNumber, expires, description, null, cardCode, email, first, last, addr, city, state, zip, phone);
+
+                if (String.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
+                    gateway.auth("0.00");
+                else //send MasterId if available (this will allow for updating payment profile without changing cardnum)
+                    gateway.auth("0.00", paymentInfo.BluePayCardVaultId);
+
+                gateway.Process();
+                var response = getResponse(gateway);
+
+                if (!response.Approved)
+                    throw new Exception(
+                        "BluePay failed to save the credit card info for people id: {0}, message: {1}; transactionID: {2}".Fmt(
+                            person.PeopleId, response.Message, response.TransactionId));
+
+                //save for future
+                paymentInfo.BluePayCardVaultId = response.TransactionId;
+
                 paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
                 paymentInfo.Ccv = cardCode;
                 paymentInfo.Expires = expires;
             }
+            //TODO: Handle bank accounts too (not just credit cards)
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
-
+            
+            
             if (giving)
                 paymentInfo.PreferredGivingType = type;
             else
@@ -116,15 +109,15 @@ namespace CmsData.Finance
             if (paymentInfo == null)
                 return;
 
-            if (paymentInfo.TbnCardVaultId.HasValue)
+            if (!String.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
             {
                 // clear out local record and save changes.
                 //there is nothing to do on BluePay server since vault is really only a previous transaction ID.
-                paymentInfo.TbnCardVaultId = null;
+                paymentInfo.BluePayCardVaultId = null;
                 paymentInfo.MaskedCard = null;
                 paymentInfo.MaskedAccount = null;
                 paymentInfo.Ccv = null;
-                paymentInfo.Expires = null; //TODO: on the other gateways, this does not get cleared...
+                paymentInfo.Expires = null; //TODO: FYI, on the other gateways, Expires does not get cleared...
                 db.SubmitChanges();
             }
         }
@@ -205,14 +198,14 @@ namespace CmsData.Finance
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
-            if (paymentInfo == null || !paymentInfo.TbnCardVaultId.HasValue)
+            if (paymentInfo == null || !String.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
                 return new TransactionResponse
                 {
                     Approved = false,
                     Message = "missing payment info",
                 };
-            
-            var masterId = paymentInfo.TbnCardVaultId.ToString();
+
+            var masterId = paymentInfo.BluePayCardVaultId;
 
             var gateway = createGateway();
             gateway.setupVaultTransaction(description, tranid);
@@ -241,14 +234,14 @@ namespace CmsData.Finance
 
             //TODO: Handle checking accounts too
            if (type == PaymentType.CreditCard)
-               masterId = paymentInfo.TbnCardVaultId.ToString();
+               masterId = paymentInfo.BluePayCardVaultId;
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
 
             var gateway = createGateway();
             gateway.setupVaultTransaction(description, tranid);
 
-            gateway.auth(amt.ToString("F2"), masterId);
+            gateway.sale(amt.ToString("F2"), masterId);
 
             gateway.Process();
             return getResponse(gateway);
