@@ -1150,6 +1150,26 @@ namespace CmsData
             FromActiveRecords = false;
             return n;
         }
+        public int ActiveRecords2()
+        {
+            const string name = "ActiveRecords2";
+            var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "david");
+            Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
+            cc.Reset(this);
+            cc.SetComparisonType(CompareType.AnyTrue);
+            var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.Greater, "1");
+            clause.Days = 365;
+            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+            clause.Days = 365;
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            qb = cc.JustLoadedQuery;
+            cc.Description = name;
+            cc.Save(this, owner: "david");
+            FromActiveRecords = true;
+            var n = PeopleQuery(cc.Id).Count();
+            FromActiveRecords = false;
+            return n;
+        }
         public int ActiveRecords0(DateTime dt)
         {
             Condition cc = ScratchPadCondition();

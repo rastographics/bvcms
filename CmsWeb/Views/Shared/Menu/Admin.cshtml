@@ -67,7 +67,6 @@
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {
-    var usenewrollsheet = Util2.UseNewRollsheet;
     @Helper.LiHeader("Setup", admin || finance || design)
     @Helper.LiAnchorLink("Lookups", "/Lookups/", admin || finance)
     @Helper.LiAnchorLink("Metro Zips", "/MetroZips/", admin)
@@ -75,7 +74,9 @@
     @Helper.LiAnchorLink("Settings", "/Settings/", admin)
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
-    @Helper.LiAnchorLink("New Rollsheet is " + (usenewrollsheet ? "ON" : "OFF"), "/Home/NewRollsheet/" + usenewrollsheet, developer)
+  
+    var usenewfeature = Util2.UseNewFeature;
+    @Helper.LiAnchorLink("New Feature is " + (usenewfeature ? "ON" : "OFF"), "/Home/UseNewFeature/" + usenewfeature, developer)
     
     @Helper.LiHeader("Reports", admin)
     @Helper.LiAnchorLink("Registration History", "/RegistrationSearch", admin)
