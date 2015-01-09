@@ -67,6 +67,8 @@ namespace CmsData
 		
 		private int? _AuNetCustPayBankId;
 		
+		private string _BluePayCardVaultId;
+		
    		
     	
 		private EntityRef< Person> _Person;
@@ -152,6 +154,9 @@ namespace CmsData
 		
 		partial void OnAuNetCustPayBankIdChanging(int? value);
 		partial void OnAuNetCustPayBankIdChanged();
+		
+		partial void OnBluePayCardVaultIdChanging(string value);
+		partial void OnBluePayCardVaultIdChanged();
 		
     #endregion
 		public PaymentInfo()
@@ -712,6 +717,28 @@ namespace CmsData
 					this._AuNetCustPayBankId = value;
 					this.SendPropertyChanged("AuNetCustPayBankId");
 					this.OnAuNetCustPayBankIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="BluePayCardVaultId", UpdateCheck=UpdateCheck.Never, Storage="_BluePayCardVaultId", DbType="nvarchar(50)")]
+		public string BluePayCardVaultId
+		{
+			get { return this._BluePayCardVaultId; }
+
+			set
+			{
+				if (this._BluePayCardVaultId != value)
+				{
+				
+                    this.OnBluePayCardVaultIdChanging(value);
+					this.SendPropertyChanging();
+					this._BluePayCardVaultId = value;
+					this.SendPropertyChanged("BluePayCardVaultId");
+					this.OnBluePayCardVaultIdChanged();
 				}
 
 			}
