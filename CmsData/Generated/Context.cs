@@ -1639,6 +1639,12 @@ namespace CmsData
 	#endregion
 	#region Views
 		
+	    public Table< View.ActiveRegistration> ViewActiveRegistrations
+	    {
+		    get { return this.GetTable< View.ActiveRegistration>(); }
+
+	    }
+
 	    public Table< View.ActivityAll> ViewActivityAlls
 	    {
 		    get { return this.GetTable< View.ActivityAll>(); }
@@ -3007,6 +3013,23 @@ namespace CmsData
 			return this.CreateMethodCallQuery< View.Registration>(this, 
 			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 days
+                );
+		}
+
+		[Function(Name="dbo.RollList", IsComposable = true)]
+		public IQueryable< View.RollList > RollList(
+            [Parameter(DbType="int")] int? mid,
+            [Parameter(DbType="datetime")] DateTime? meetingdt,
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="bit")] bool? current
+            )
+		{
+			return this.CreateMethodCallQuery< View.RollList>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                mid,
+                meetingdt,
+                oid,
+                current
                 );
 		}
 

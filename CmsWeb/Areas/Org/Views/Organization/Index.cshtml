@@ -41,8 +41,7 @@
           <div id="Members-tab" class="tab-pane active" data-link="/Organization/People">
             @Html.Partial("People", Model)
           </div>
-          <div id="Settings-tab" class="tab-pane" data-link="/Organization/Settings/@Model.Id" 
-            data-init="showHideRegTypes" data-init2="SettingFormsInit">
+          <div id="Settings-tab" class="tab-pane" data-link="/Organization/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
           </div>
           <div id="Meetings-tab" class="tab-pane" data-link="/Organization/Meetings">
             @Helper.HiddenId("Id", Model.Id)
