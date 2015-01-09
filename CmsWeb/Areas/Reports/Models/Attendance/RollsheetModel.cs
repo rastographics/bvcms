@@ -243,6 +243,7 @@ namespace CmsWeb.Areas.Reports.Models
 								 AttendCommitmentId = cid,
 								 Commitment = CmsData.Codes.AttendCommitmentCode.Lookup(cid ?? 99),
 								 Member = true,
+                                 CurrMember = true, // for iPhone's sake
 								 CurrMemberType = p.MemberType,
 								 MemberType = pa != null ? (pa.a.MemberType != null ? pa.a.MemberType.Description : "") : "",
 								 AttendType = pa != null ? (pa.a.AttendType != null ? pa.a.AttendType.Description : "") : "",
@@ -261,6 +262,7 @@ namespace CmsWeb.Areas.Reports.Models
 							  join pattender in attends on pvisitor.PeopleId equals pattender.a.PeopleId into j
 							  from pattender in j.DefaultIfEmpty()
 							  let cid = pattender != null ? pattender.a.Commitment : null
+                              let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(cm => cm.PeopleId == pvisitor.PeopleId && cm.OrganizationId == OrgId)
 							  select new AttendInfo
 							  {
 								  PeopleId = pvisitor.PeopleId,
@@ -270,6 +272,7 @@ namespace CmsWeb.Areas.Reports.Models
 								  AttendCommitmentId = cid,
 								  Commitment = CmsData.Codes.AttendCommitmentCode.Lookup(cid ?? 99),
 								  Member = false,
+                                  CurrMember = om != null, // for iPhone's sake
 								  CurrMemberType = "",
 								  MemberType = pattender != null ? (pattender.a.MemberType != null ? pattender.a.MemberType.Description : "") : "",
 								  AttendType = pattender != null ? (pattender.a.AttendType != null ? pattender.a.AttendType.Description : "") : "",
@@ -295,6 +298,7 @@ namespace CmsWeb.Areas.Reports.Models
 								AttendCommitmentId = cid,
 								Commitment = CmsData.Codes.AttendCommitmentCode.Lookup(cid ?? 99),
 								Member = false,
+                                CurrMember = false, // for iPhone's sake
 								MemberType = mt,
 								AttendType = at
 							};
@@ -310,6 +314,7 @@ namespace CmsWeb.Areas.Reports.Models
 								AttendCommitmentId = p.AttendCommitmentId,
 								Commitment = p.Commitment,
 								Member = p.Member,
+                                CurrMember = p.CurrMember,
 								CurrMemberType = p.CurrMemberType,
 								MemberType = p.MemberType,
 								AttendType = p.AttendType,
@@ -356,6 +361,7 @@ namespace CmsWeb.Areas.Reports.Models
 			public string Commitment { get; set; }
 			public bool CanAttend { get; set; }
 			public bool Member { get; set; }
+			public bool CurrMember { get; set; }
 			public string CurrMemberType { get; set; }
 			public string MemberType { get; set; }
 			public string AttendType { get; set; }
