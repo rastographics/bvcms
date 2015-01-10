@@ -228,13 +228,6 @@ namespace CmsData
             EmailQueues.InsertOnSubmit(emailqueue);
             SubmitChanges();
 
-            if (body.Contains("{tracklinks}", true))
-            {
-                body = body.Replace("{tracklinks}", "", ignoreCase: true);
-                emailqueue.Body = createClickTracking(emailqueue.Id, body);
-                SubmitChanges();
-            }
-
             if (body.Contains("http://publiclink", ignoreCase: true))
             {
                 var link = Util.URLCombine(CmsHost, "/EmailView/" + emailqueue.Id);
@@ -329,11 +322,11 @@ namespace CmsData
             fromname = !fromname.HasValue() ? emailqueue.FromAddr : emailqueue.FromName.Replace("\"", "");
             var from = Util.FirstAddress(emailqueue.FromAddr, fromname);
 
-
             try
             {
                 var p = LoadPersonById(emailqueueto.PeopleId);
-                var m = new EmailReplacements(this, emailqueue.Body, from);
+                var body = DoClickTracking(emailqueue);
+                var m = new EmailReplacements(this, body, from);
                 var text = m.DoReplacements(p, emailqueueto);
                 var aa = m.ListAddresses;
 
@@ -407,7 +400,8 @@ namespace CmsData
                 return;
             }
 
-            var m = new EmailReplacements(this, emailqueue.Body, from);
+            var body = DoClickTracking(emailqueue);
+            var m = new EmailReplacements(this, body, from);
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 
@@ -465,6 +459,17 @@ namespace CmsData
             SubmitChanges();
         }
 
+        private string DoClickTracking(EmailQueue emailqueue)
+        {
+            var body = emailqueue.Body;
+            if (body.Contains("{tracklinks}", true))
+            {
+                body = body.Replace("{tracklinks}", "", ignoreCase: true);
+                body = createClickTracking(emailqueue.Id, body);
+            }
+            return body;
+        }
+
         private void NotifySentEmails(string From, string FromName, string subject, int count, int id)
         {
             if (Setting("sendemail", "true") != "false")
@@ -484,9 +489,7 @@ namespace CmsData
             }
         }
 
-        private static string CLICK_TRACK = "https://{0}.bvcms.com/ExternalServices/ct?l={1}";
-
-        private static string createClickTracking(int emailID, string input)
+        private string createClickTracking(int emailID, string input)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(input);
@@ -511,10 +514,10 @@ namespace CmsData
                             Hash = hash,
                             Link = att.Value
                         };
-                    DbUtil.Db.EmailLinks.InsertOnSubmit(emailLink);
-                    DbUtil.Db.SubmitChanges();
+                    EmailLinks.InsertOnSubmit(emailLink);
+                    SubmitChanges();
 
-                    att.Value = CLICK_TRACK.Fmt(Util.Host, HttpUtility.UrlEncode(hash));
+                    att.Value = ServerLink("/ExternalServices/ct?l={0}".Fmt(HttpUtility.UrlEncode(hash)));
 
                     linkIndex++;
 

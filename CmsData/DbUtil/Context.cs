@@ -964,6 +964,20 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, max);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.TrackOpen")]
+        public int TrackOpen([Parameter(DbType = "UniqueIdentifier")] Guid guid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), guid);
+            return ((int)(result.ReturnValue));
+        }
+		[Function(Name="dbo.TrackClick")]
+		public int TrackClick([Parameter(DbType="VarChar(50)")] string hash, 
+            [Parameter(DbType="VarChar(500)")] ref string link)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
+			link = ((string)(result.GetParameterValue(1)));
+			return ((int)(result.ReturnValue));
+		}
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
         {
             if (orgmustexist)
