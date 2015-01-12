@@ -9,13 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using UtilityExtensions;
 using CmsData;
-using System.Data.Linq;
-using System.ComponentModel;
-using System.Collections;
-using System.Diagnostics;
 using CmsData.Codes;
-using CmsWeb.Models;
-using System.Web;
+using CmsData.ExtraValue;
+using CmsWeb.Areas.Dialog.Controllers;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -214,7 +210,7 @@ namespace CmsWeb.Areas.Reports.Models
 					  };
 			return q;
 		}
-		public static IEnumerable<AttendInfo> RollList(int? MeetingId, int OrgId, DateTime MeetingDate, bool SortByName = false, bool CurrentMembers = false)
+        public static IEnumerable<AttendInfo> RollList0(int? MeetingId, int OrgId, DateTime MeetingDate, bool SortByName = false, bool CurrentMembers = false)
 		{
 			// people who attended, members or visitors
 			var attends = (from a in DbUtil.Db.Attends
@@ -331,6 +327,41 @@ namespace CmsWeb.Areas.Reports.Models
 				rollsheet = rollsheet.OrderBy(pp => pp.Name);
 			return rollsheet;
 		}
+
+
+        public static IEnumerable<AttendInfo> RollList(int? meetingId, int orgId, DateTime meetingDate,
+            bool sortByName = false, bool currentMembers = false)
+	    {
+	        var q = from p in DbUtil.Db.RollList(meetingId, meetingDate, orgId, currentMembers)
+	            select p;
+
+            if (sortByName)
+                q = from p in q
+                    orderby p.Name
+                    select p;
+            else
+                q = from p in q
+                    orderby p.Section, p.Last, p.FamilyId, p.First
+                    select p;
+
+            return from p in q
+                   select new AttendInfo()
+                   {
+                       PeopleId = p.PeopleId.Value,
+                       Name = p.Name,
+                       Email = p.Email,
+                       Attended = p.Attended ?? false,
+                       AttendCommitmentId = p.CommitmentId,
+                       Commitment = AttendCommitmentCode.Lookup(p.CommitmentId ?? 99),
+                       Member = p.Section == 1,
+                       CurrMemberType = p.CurrMemberType,
+                       MemberType = p.MemberType,
+                       AttendType = p.AttendType,
+                       OtherAttend = p.OtherAttends,
+                       CurrMember = p.CurrMember ?? false
+                   };
+        }
+
 		public class AttendInfo
 		{
 			public int PeopleId { get; set; }
