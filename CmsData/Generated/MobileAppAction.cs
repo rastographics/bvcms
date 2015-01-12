@@ -1,0 +1,284 @@
+using System; 
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
+using System.Data;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Linq;
+using System.Linq.Expressions;
+using System.ComponentModel;
+
+namespace CmsData
+{
+	[Table(Name="dbo.MobileAppActions")]
+	public partial class MobileAppAction : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+	#region Private Fields
+		
+		private int _Id;
+		
+		private int _Type;
+		
+		private string _Title;
+		
+		private int _Option;
+		
+		private string _Data;
+		
+		private int _Order;
+		
+		private int _LoginType;
+		
+		private bool _Enabled;
+		
+   		
+    	
+	#endregion
+	
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+		
+		partial void OnIdChanging(int value);
+		partial void OnIdChanged();
+		
+		partial void OnTypeChanging(int value);
+		partial void OnTypeChanged();
+		
+		partial void OnTitleChanging(string value);
+		partial void OnTitleChanged();
+		
+		partial void OnOptionChanging(int value);
+		partial void OnOptionChanged();
+		
+		partial void OnDataChanging(string value);
+		partial void OnDataChanged();
+		
+		partial void OnOrderChanging(int value);
+		partial void OnOrderChanged();
+		
+		partial void OnLoginTypeChanging(int value);
+		partial void OnLoginTypeChanged();
+		
+		partial void OnEnabledChanging(bool value);
+		partial void OnEnabledChanged();
+		
+    #endregion
+		public MobileAppAction()
+		{
+			
+			
+			OnCreated();
+		}
+
+		
+    #region Columns
+		
+		[Column(Name="id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get { return this._Id; }
+
+			set
+			{
+				if (this._Id != value)
+				{
+				
+                    this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="type", UpdateCheck=UpdateCheck.Never, Storage="_Type", DbType="int NOT NULL")]
+		public int Type
+		{
+			get { return this._Type; }
+
+			set
+			{
+				if (this._Type != value)
+				{
+				
+                    this.OnTypeChanging(value);
+					this.SendPropertyChanging();
+					this._Type = value;
+					this.SendPropertyChanged("Type");
+					this.OnTypeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="title", UpdateCheck=UpdateCheck.Never, Storage="_Title", DbType="nvarchar(50) NOT NULL")]
+		public string Title
+		{
+			get { return this._Title; }
+
+			set
+			{
+				if (this._Title != value)
+				{
+				
+                    this.OnTitleChanging(value);
+					this.SendPropertyChanging();
+					this._Title = value;
+					this.SendPropertyChanged("Title");
+					this.OnTitleChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="option", UpdateCheck=UpdateCheck.Never, Storage="_Option", DbType="int NOT NULL")]
+		public int Option
+		{
+			get { return this._Option; }
+
+			set
+			{
+				if (this._Option != value)
+				{
+				
+                    this.OnOptionChanging(value);
+					this.SendPropertyChanging();
+					this._Option = value;
+					this.SendPropertyChanged("Option");
+					this.OnOptionChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="data", UpdateCheck=UpdateCheck.Never, Storage="_Data", DbType="nvarchar NOT NULL")]
+		public string Data
+		{
+			get { return this._Data; }
+
+			set
+			{
+				if (this._Data != value)
+				{
+				
+                    this.OnDataChanging(value);
+					this.SendPropertyChanging();
+					this._Data = value;
+					this.SendPropertyChanged("Data");
+					this.OnDataChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="order", UpdateCheck=UpdateCheck.Never, Storage="_Order", DbType="int NOT NULL")]
+		public int Order
+		{
+			get { return this._Order; }
+
+			set
+			{
+				if (this._Order != value)
+				{
+				
+                    this.OnOrderChanging(value);
+					this.SendPropertyChanging();
+					this._Order = value;
+					this.SendPropertyChanged("Order");
+					this.OnOrderChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="loginType", UpdateCheck=UpdateCheck.Never, Storage="_LoginType", DbType="int NOT NULL")]
+		public int LoginType
+		{
+			get { return this._LoginType; }
+
+			set
+			{
+				if (this._LoginType != value)
+				{
+				
+                    this.OnLoginTypeChanging(value);
+					this.SendPropertyChanging();
+					this._LoginType = value;
+					this.SendPropertyChanged("LoginType");
+					this.OnLoginTypeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="enabled", UpdateCheck=UpdateCheck.Never, Storage="_Enabled", DbType="bit NOT NULL")]
+		public bool Enabled
+		{
+			get { return this._Enabled; }
+
+			set
+			{
+				if (this._Enabled != value)
+				{
+				
+                    this.OnEnabledChanging(value);
+					this.SendPropertyChanging();
+					this._Enabled = value;
+					this.SendPropertyChanged("Enabled");
+					this.OnEnabledChanged();
+				}
+
+			}
+
+		}
+
+		
+    #endregion
+        
+    #region Foreign Key Tables
+   		
+	#endregion
+	
+	#region Foreign Keys
+    	
+	#endregion
+	
+		public event PropertyChangingEventHandler PropertyChanging;
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+				this.PropertyChanging(this, emptyChangingEventArgs);
+		}
+
+		public event PropertyChangedEventHandler PropertyChanged;
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+		}
+
+   		
+	}
+
+}
+
