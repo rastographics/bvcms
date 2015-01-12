@@ -323,8 +323,11 @@ namespace CmsWeb.Areas.Public.Controllers
 						  Name = o.Title ?? o.OrganizationName,
 						  UseRegisterLink2 = o.UseRegisterLink2 ?? false,
 						  Description = o.Description,
-						  PublicSortOrder = o.PublicSortOrder
+						  PublicSortOrder = o.PublicSortOrder,
+						  RegStart = o.RegStart,
+						  RegEnd = o.RegEnd
 					  };
+
 			foreach (var line in DbUtil.Db.Content("AppRegistrations", "\tRegistrations").SplitLines())
 			{
 				var a = line.Split('\t');
@@ -341,6 +344,7 @@ namespace CmsWeb.Areas.Public.Controllers
 						Registrations = r
 					});
 			}
+
 			return categories;
 		}
 
