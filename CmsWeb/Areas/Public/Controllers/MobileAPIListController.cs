@@ -9,20 +9,8 @@ namespace CmsWeb.Areas.Public.Controllers
 {
 	public class MobileAPIListController : Controller
 	{
-        [HttpPost]
-		public ActionResult Authenticate()
-        {
-            if (AccountModel.AuthenticateMobile().IsValid) return null;
-            return BaseMessage.createErrorReturn("You are not authorized!");
-        }
-
-	    [HttpPost]
 		public ActionResult Countries()
 		{
-			// Authenticate first
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
 			var countries = from e in DbUtil.Db.Countries
 								 orderby e.Id
 								 select new MobileCountry
@@ -41,13 +29,8 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
-        [HttpPost]
 		public ActionResult States()
 		{
-			// Authenticate first
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
 			var states = from e in DbUtil.Db.StateLookups
 							 orderby e.StateCode
 							 select new MobileState
@@ -65,13 +48,8 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
-        [HttpPost]
 		public ActionResult MaritalStatuses()
 		{
-			// Authenticate first
-			var authError = Authenticate();
-			if (authError != null) return authError;
-
 			var statuses = from e in DbUtil.Db.MaritalStatuses
 								orderby e.Id
 								select new MobileMaritalStatus
@@ -90,28 +68,90 @@ namespace CmsWeb.Areas.Public.Controllers
 			return br;
 		}
 
-        [HttpPost]
-		public ActionResult GivingFunds()
+		public ActionResult HomeActions(string data)
 		{
-			// Authenticate first
-			var authError = Authenticate();
-			if (authError != null) return authError;
+			// Check to see if type matches
+			//BaseMessage dataIn = BaseMessage.createFromString(data);
+			//if (dataIn.type != BaseMessage.API_TYPE_SYSTEM_HOME_ACTIONS)
+			//				return BaseMessage.createTypeErrorReturn();
 
-			var funds = from f in DbUtil.Db.ContributionFunds
-							where f.FundStatusId == 1
-							where f.OnlineSort > 0
-							orderby f.OnlineSort
-							select new MobileFund
-							{
-								id = f.FundId,
-								name = f.FundName
-							};
+			var actions = from p in DbUtil.Db.MobileAppActions
+							  join i in DbUtil.Db.MobileAppIcons on p.Id equals i.ActionID
+							  join s in DbUtil.Db.MobileAppIconSets on i.SetID equals s.Id
+							  where p.Enabled == true
+							  where s.Active == true
+							  orderby p.Order
+							  select new MobileHomeAction
+							  {
+								  type = p.Type,
+								  title = p.Title,
+								  option = p.Option,
+								  data = p.Data,
+								  icon = i.Url,
+								  loginType = p.LoginType
+							  };
 
 			BaseMessage br = new BaseMessage();
 			br.error = 0;
-			br.type = BaseMessage.API_TYPE_SYSTEM_GIVING_FUNDS;
-			br.count = funds.Count();
-			br.data = JsonConvert.SerializeObject(funds.ToList());
+			br.type = BaseMessage.API_TYPE_SYSTEM_HOME_ACTIONS;
+			br.count = actions.Count();
+			br.data = JsonConvert.SerializeObject(actions.ToList());
+
+			return br;
+		}
+
+		public ActionResult MapInfo(string data)
+		{
+			var campuses = from p in DbUtil.Db.MobileAppBuildings
+								where p.Enabled
+								orderby p.Order
+								select new MobileCampus
+								{
+									id = p.Id,
+									name = p.Name
+								};
+
+			var campusList = campuses.ToList();
+
+			foreach (MobileCampus campus in campusList)
+			{
+				var floors = from p in DbUtil.Db.MobileAppFloors
+								 where p.Enabled
+								 where p.Campus == campus.id
+								 orderby p.Order
+								 select new MobileFloor
+								 {
+									 id = p.Id,
+									 name = p.Name,
+									 image = p.Image,
+								 };
+
+				var floorList = floors.ToList();
+
+				foreach (MobileFloor floor in floorList)
+				{
+					var rooms = from p in DbUtil.Db.MobileAppRooms
+									where p.Enabled
+									where p.Floor == floor.id
+									select new MobileRoom
+									{
+										name = p.Name,
+										room = p.Room,
+										x = p.X,
+										y = p.Y
+									};
+
+					floor.rooms = rooms.ToList();
+				}
+
+				campus.floors = floorList;
+			}
+
+			BaseMessage br = new BaseMessage();
+			br.error = 0;
+			br.type = BaseMessage.API_TYPE_MAP_INFO;
+			br.count = campusList.Count();
+			br.data = JsonConvert.SerializeObject(campusList);
 
 			return br;
 		}
