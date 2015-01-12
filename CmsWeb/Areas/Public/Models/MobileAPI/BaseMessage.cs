@@ -14,6 +14,9 @@ namespace CmsWeb.MobileAPI
 
 		public int id = 0;
 
+		public int argInt = 0;
+		public string argString = "";
+
 		public string data = "";
 
 	    public override void ExecuteResult(ControllerContext context)
@@ -24,7 +27,7 @@ namespace CmsWeb.MobileAPI
 
 		public static BaseMessage createErrorReturn(string sErrorMessage, int errorCode = 1)
 		{
-			var br = new BaseMessage();
+			BaseMessage br = new BaseMessage();
 			br.data = sErrorMessage;
 		    br.error = errorCode;
 
@@ -33,7 +36,7 @@ namespace CmsWeb.MobileAPI
 
 		public static BaseMessage createTypeErrorReturn()
 		{
-			var br = new BaseMessage();
+			BaseMessage br = new BaseMessage();
 			br.data = "ERROR: Type mis-match in API call.";
 
 			return br;
@@ -41,7 +44,7 @@ namespace CmsWeb.MobileAPI
 
 		public static BaseMessage createFromString(string sJSON)
 		{
-			var br = JsonConvert.DeserializeObject<BaseMessage>(sJSON);
+			BaseMessage br = JsonConvert.DeserializeObject<BaseMessage>(sJSON);
 			return br;
 		}
 
@@ -51,23 +54,22 @@ namespace CmsWeb.MobileAPI
 			return this;
 		}
 
-
-	    public const int API_ERROR_SUCCESS = 0;
-	    public const int API_ERROR_PIN_INVALID = 1;
-	    public const int API_ERROR_PIN_EXPIRED = 2;
-	    public const int API_ERROR_SESSION_TOKEN_EXPIRED = 3;
-	    public const int API_ERROR_SESSION_TOKEN_NOT_FOUND = 4;
-
+		// API Login Errors
+		public const int API_ERROR_NONE = 0;
+		public const int API_ERROR_PIN_INVALID = -1;
+		public const int API_ERROR_PIN_EXPIRED = -2;
+		public const int API_ERROR_SESSION_TOKEN_EXPIRED = -3;
+		public const int API_ERROR_SESSION_TOKEN_NOT_FOUND = -4;
+		public const int API_ERROR_IMPROPER_HEADER_STRUCTURE = -5;
 
 		// API Device Numbers
 		public const int API_DEVICE_UNKNOWN = 0;
 		public const int API_DEVICE_IOS = 1;
 		public const int API_DEVICE_ANDROID = 2;
 
-
 		// API Type Numbers
 		// 9000's - Handshake
-		public const int API_TYPE_LOGIN = 9001;
+		public const int API_TYPE_USER_INFO = 9001;
 
 		// 10000's - People = 11000's - Read / 12000's Write
 		// People Read
@@ -89,14 +91,19 @@ namespace CmsWeb.MobileAPI
 
 		// 30000's - Giving = 31000's - Read / 32000's Write
 		// Giving Read
-		public const int API_TYPE_GIVING = 31001;
-		public const int API_TYPE_GIVING_ONE_TIME_LINK_GIVING = 31001;
-		public const int API_TYPE_GIVING_ONE_TIME_LINK_MANAGED_GIVING = 31002;
+		public const int API_TYPE_GIVING_LINK_GIVE = 31001;
+		public const int API_TYPE_GIVING_ONE_TIME_LINK_GIVING = 31002;
+		public const int API_TYPE_GIVING_ONE_TIME_LINK_MANAGED_GIVING = 31003;
 		// Giving Write
 
 		// 40000's - Registration = 41000's - Read / 42000's Write
 		public const int API_TYPE_REGISTRATION_ONE_TIME_LINK = 41001;
 	    public const int API_TYPE_REGISTRATIONS = 41002;
+
+		// 70000's - Giving = 71000's - Read / 72000's Write
+		// Media Read
+		public const int API_TYPE_MAP_INFO = 71001;
+		// Media Write
 
 		// 80000's - Giving = 81000's - Read / 82000's Write
 		// Media Read
@@ -108,7 +115,8 @@ namespace CmsWeb.MobileAPI
 		public const int API_TYPE_SYSTEM_MARITAL_STATUSES = 91001;
 		public const int API_TYPE_SYSTEM_STATES = 91002;
 		public const int API_TYPE_SYSTEM_COUNTRIES = 91003;
-		public const int API_TYPE_SYSTEM_GIVING_FUNDS = 91004;
+		public const int API_TYPE_SYSTEM_HOME_ACTIONS = 91004;
+		public const int API_TYPE_SYSTEM_ICONS = 91005;
 		// System Write
 	}
 }
