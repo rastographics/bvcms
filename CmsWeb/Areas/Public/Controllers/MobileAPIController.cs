@@ -619,13 +619,13 @@ namespace CmsWeb.Areas.Public.Controllers
 			// Everything is in order, start the return
 			MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
-            var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime);
+			var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
+			var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime);
 
 			BaseMessage br = new BaseMessage();
 			List<MobileAttendee> ma = new List<MobileAttendee>();
 
-            br.id = meetingId;
+			br.id = meetingId;
 			br.error = 0;
 			br.type = BaseMessage.API_TYPE_ORG_ROLL_REFRESH;
 			br.count = people.Count();
@@ -845,7 +845,7 @@ namespace CmsWeb.Areas.Public.Controllers
 				om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
 			}
 
-			if( om != null && !mpjo.join )
+			if (om != null && !mpjo.join)
 			{
 				om.Drop(DbUtil.Db, addToHistory: true);
 			}
