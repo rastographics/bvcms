@@ -596,16 +596,13 @@ namespace CmsWeb.Areas.Public.Controllers
             // Everything is in order, start the return
             var mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            var meeting = Meeting.FetchOrCreateMeeting(DbUtil.Db, mprl.id, mprl.datetime);
-//            var people = Util2.UseNewRollsheet
-//                ? RollsheetModel.RollList2(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value)
-//                : RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value);
-            var people = RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value);
+            var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
+            var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime);
 
             var br = new BaseMessage();
             var ma = new List<MobileAttendee>();
 
-            br.id = meeting.MeetingId;
+            br.id = meetingId;
             br.error = 0;
             br.type = BaseMessage.API_TYPE_ORG_ROLL_REFRESH;
             br.count = people.Count();

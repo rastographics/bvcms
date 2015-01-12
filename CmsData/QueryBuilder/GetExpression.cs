@@ -65,6 +65,7 @@ namespace CmsData
                 { QueryType.HasContacts, HasContacts },
                 { QueryType.HasCurrentTag, HasCurrentTag },
                 { QueryType.HasFailedEmails, HasFailedEmails },
+                { QueryType.HasFamilyPicture, HasFamilyPicture },
                 { QueryType.HasIncompleteTask, HasIncompleteTask },
                 { QueryType.HasInvalidEmailAddress, HasInvalidEmailAddress },
                 { QueryType.HasLowerName, HasLowerName },

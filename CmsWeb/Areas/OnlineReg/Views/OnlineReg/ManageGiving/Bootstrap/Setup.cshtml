@@ -13,7 +13,7 @@
     <div>@Html.Raw(Model.Instructions)</div>
     <h4>for @Model.person.Name &lt;@Model.person.EmailAddress&gt;</h4>
     @Html.ValidationSummary()
-    <form method="post" class="form-horizontal" action="/OnlineReg/ManageGiving">
+    <form id="managegivingform" method="post" class="form-horizontal" action="/OnlineReg/ManageGiving">
         @Html.Hidden("specialedit", 0)
         @Html.Hidden("pid", Model.pid)
         @Html.Hidden("orgid", Model.orgid)
@@ -50,7 +50,7 @@
                                     <td style="width:100px;">
                                         <div class="pull-right">
                                             <input type="hidden" name="@(funame)[@n].Key" value="@i.Value" />
-                                            <input type="text" name="@(funame)[@n].Value" value="@amt.ToString2("N2")" class="form-control narrow sum" />
+                                            <input type="text" name="@(funame)[@n].Value" value="@amt.ToString2("N2")" class="form-control narrow sum money" />
                                         </div>
                                     </td>
                                 </tr>
@@ -101,7 +101,7 @@
                                             <td style="width:100px;">
                                                 <div class="pull-right">
                                                     <input type="hidden" name="@(funame)[@sn].Key" value="@i.Value" />
-                                                    <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("N2")" class="form-control narrow sum" />
+                                                    <input type="text" name="@(funame)[@sn].Value" value="@amt.ToString2("N2")" class="form-control narrow sum money" />
                                                 </div>
                                             </td>
                                         </tr>

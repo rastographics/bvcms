@@ -110,12 +110,12 @@
         if ($("#allowcc").val())
             $.ShowPaymentInfo();
     };
-    $("form.DisplayEdit").submit(function () {
-        if (!$("#submitit").val())
-            return false;
-        $("#submitit").attr("disabled", "true");
-        return true;
-    });
+//    $("form.DisplayEdit").submit(function () {
+//        if (!$("#submitit").val())
+//            return false;
+//        $("#submitit").attr("disabled", "true");
+//        return true;
+//    });
     $("form.DisplayEdit a.cancel").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
@@ -142,24 +142,26 @@
         return false;
     });
     $.InstructionsShow();
-    $.validator.setDefaults({
-        highlight: function (input) {
-            $(input).addClass("ui-state-highlight");
+    $.validator.addMethod("money", function (value, element) {
+        var ret = /^(\d+(\.\d{0,2})?)?$/.test(value);
+        return ret;
+    }, 'no $ or commas');
+    $('form.DisplayEdit,#managegivingform').validate({
+        errorClass: "alert-danger",
+        highlight: function(element, errorClass, validClass) {
+            $(element).addClass(errorClass).removeClass(validClass);
         },
-        unhighlight: function (input) {
-            $(input).removeClass("ui-state-highlight");
+        unhighlight: function(element, errorClass, validClass) {
+            $(element).removeClass(errorClass).addClass(validClass);
+        },
+        submitHandler: function(form) {
+            if (!$("#submitit").val())
+                return false;
+            $("#submitit").attr("disabled", "true");
+            form.submit();
+            return false;
         }
     });
-    $("form.DisplayEdit").validate({
-        rules: {
-            "m.donation": { number: true }
-        }
-    });
-//    $("div.personheader").live("click", function (e) {
-//        e.preventDefault();
-//        $(this).closest('div').nextAll('div').slideToggle();
-//        return false;
-    //    });
     function updateTotal() {
         var sum = 0;
         $("input.sum").each(function () {
@@ -222,7 +224,7 @@
             var fundIndexer = getFundPrefix() + 'FundItem[' + i + ']';
             var inputKey = fundIndexer + '.Key';
             var inputValue = fundIndexer + '.Value';
-            $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td><td>' + text + '</td><td><div class="pull-right"><input type="hidden" name="' + inputKey + '" value="' + id + '"><input name="' + inputValue + '" type="text" class="form-control narrow sum"/></div></td></tr>');
+            $('#special-funds > tbody:last').append('<tr id="' + id + '"><td style="width: 10px;"><a href="#" tabindex="-1" class="remove-fund"><span class="fa fa-trash-o"></span></a></td><td>' + text + '</td><td><div class="pull-right"><input type="hidden" name="' + inputKey + '" value="' + id + '"><input name="' + inputValue + '" type="text" class="form-control narrow sum money"/></div></td></tr>');
 
             setDelayedFocus($('input[name="' + inputValue + '"]'));
         }

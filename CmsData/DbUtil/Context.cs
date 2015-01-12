@@ -138,6 +138,10 @@ namespace CmsData
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);
         }
+        public Meeting LoadMeetingById(int? id)
+        {
+            return this.Meetings.SingleOrDefault(m => m.MeetingId == id);
+        }
         public Organization LoadOrganizationByName(string name)
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationName == name);
@@ -772,6 +776,43 @@ namespace CmsData
             var s = r.GetResult<RecordAttendInfo>().First();
             return s.ret;
         }
+
+//        public class RollListView
+//        {
+//            public int? Section { get; set; }
+//            public int? PeopleId { get; set; }
+//            public string Name { get; set; }
+//            public string Last { get; set; }
+//            public int? FamilyId { get; set; }
+//            public string First { get; set; }
+//            public string Email { get; set; }
+//            public bool? Attended { get; set; }
+//            public int? CommitmentId { get; set; }
+//            public string CurrMemberType { get; set; }
+//            public string MemberType { get; set; }
+//            public string AttendType { get; set; }
+//            public int? OtherAttends { get; set; }
+//            public bool? CurrMember { get; set; }
+//        }
+//
+//        [Function(Name = "dbo.RollListMeeting")]
+//        [ResultType(typeof(RollListView))]
+//        public IMultipleResults RollListMeeting(
+//            [Parameter(DbType = "Int")] int? mid
+//            , [Parameter(DbType = "DateTime")] DateTime meetingdt
+//            , [Parameter(DbType = "Int")] int oid
+//            , [Parameter(DbType = "Bit")] bool current
+//            , [Parameter(DbType = "Bit")] bool createmeeting)
+//        {
+//            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
+//                mid, meetingdt, oid, current, createmeeting);
+//            return ((IMultipleResults)(result.ReturnValue));
+//        }
+//        public IEnumerable<RollListView> RollList(int? mid ,  DateTime meetingdt ,  int oid ,  bool current ,  bool createmeeting)
+//        {
+//            var r = RollListMeeting(mid, meetingdt, oid, current, createmeeting);
+//            return r.GetResult<RollListView>();
+//        }
         public string UserPreference(string pref)
         {
             return UserPreference(pref, string.Empty);

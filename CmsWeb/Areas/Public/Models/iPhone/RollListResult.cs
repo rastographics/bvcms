@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Web.Mvc;
-using System.Xml.Linq;
-using UtilityExtensions;
-using System.Linq;
 using CmsData;
 using CmsWeb.Areas.Reports.Models;
 
@@ -12,24 +9,21 @@ namespace CmsWeb.Models.iPhone
 {
     public class RollListResult : ActionResult
     {
-        int? MeetingId;
-        int OrgId;
-        DateTime MeetingDate;
-		int? NewPeopleId;
-        public RollListResult(CmsData.Meeting meeting, int? PeopleId = null)
+        int? NewPeopleId;
+        private int MeetingId;
+        private IEnumerable<RollsheetModel.AttendInfo> people;
+
+        public RollListResult(Meeting meeting, int? PeopleId = null)
         {
             MeetingId = meeting.MeetingId;
-            OrgId = meeting.OrganizationId;
-            MeetingDate = meeting.MeetingDate.Value;
 			NewPeopleId = PeopleId;
+            if (meeting.MeetingDate != null)
+                people = RollsheetModel.RollList(MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value);
         }
         public RollListResult(int orgid, DateTime dt)
         {
-            var meeting = DbUtil.Db.Meetings.SingleOrDefault(mm => mm.MeetingDate == dt && mm.OrganizationId == orgid);
-            if (meeting != null)
-                MeetingId = meeting.MeetingId;
-            OrgId = orgid;
-            MeetingDate = dt;
+            MeetingId = DbUtil.Db.CreateMeeting(orgid, dt);
+            people = RollsheetModel.RollList(MeetingId, orgid, dt);
         }
         public override void ExecuteResult(ControllerContext context)
         {
@@ -45,13 +39,7 @@ namespace CmsWeb.Models.iPhone
 				if(NewPeopleId.HasValue)
 					w.WriteAttributeString("NewPeopleId", NewPeopleId.ToString());
 
-//                var q = Util2.UseNewRollsheet
-//                    ? RollsheetModel.RollList2(MeetingId, OrgId, MeetingDate)
-//                    : RollsheetModel.RollList(MeetingId, OrgId, MeetingDate);
-
-                var q = RollsheetModel.RollList(MeetingId, OrgId, MeetingDate);
-
-                foreach (var p in q)
+                foreach (var p in people)
                 {
                     w.WriteStartElement("Person");
                     w.WriteAttributeString("Id", p.PeopleId.ToString());

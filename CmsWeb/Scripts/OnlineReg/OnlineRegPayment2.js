@@ -125,8 +125,8 @@ $(function () {
                 summary = "Every " + everyN + " " + patternText;
             }
         }
-        if (startOn.length > 0)
-        summary += " starting on or after " + startOn;
+        if (startOn && startOn.length > 0)
+            summary += " starting on or after " + startOn;
         $("#SummaryText").text(summary);
     };
     $.ShowPaymentInfo = function (v) {

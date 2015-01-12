@@ -42,6 +42,8 @@ namespace CmsData.View
 		
 		private int? _OtherAttends;
 		
+		private bool? _CurrMember;
+		
 		
 		public RollList()
 		{
@@ -265,6 +267,23 @@ namespace CmsData.View
 			{
 				if (this._OtherAttends != value)
 					this._OtherAttends = value;
+			}
+
+		}
+
+		
+		[Column(Name="CurrMember", Storage="_CurrMember", DbType="bit")]
+		public bool? CurrMember
+		{
+			get
+			{
+				return this._CurrMember;
+			}
+
+			set
+			{
+				if (this._CurrMember != value)
+					this._CurrMember = value;
 			}
 
 		}
