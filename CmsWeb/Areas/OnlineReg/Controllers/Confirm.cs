@@ -58,6 +58,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             return View("Unknown");
         }
+
         public ActionResult ProcessPayment(PaymentForm pf)
         {
             Response.NoCache();
@@ -79,14 +80,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
             if (m != null && m.OnlineGiving())
             {
-                var prevoustransaction =
+                var previousTransaction =
                     (from t in DbUtil.Db.Transactions
                      where t.Amt == pf.AmtToPay
                      where t.OrgId == m.Orgid
                      where t.TransactionDate > DateTime.Now.AddMinutes(-60)
                      where DbUtil.Db.Contributions.Any(cc => cc.PeopleId == m.List[0].PeopleId && cc.TranId == t.Id)
                      select t).FirstOrDefault();
-                if (prevoustransaction != null)
+                if (previousTransaction != null)
                     return Message("You have already submitted a gift in this amount a short while ago. Please let us know if you saw an error and what the message said.");                    
             }
 
@@ -107,24 +108,24 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 if (pf.Type == PaymentType.Ach)
-                    Payments.ValidateBankAccountInfo(ModelState, pf.Routing, pf.Account);
+                    PaymentValidator.ValidateBankAccountInfo(ModelState, pf.Routing, pf.Account);
                 else if (pf.Type == PaymentType.CreditCard)
-                    Payments.ValidateCreditCardInfo(ModelState, pf);
+                    PaymentValidator.ValidateCreditCardInfo(ModelState, pf);
                 else
-                    ModelState.AddModelError("Type", "Must select Bank Account or Credit Card");
+                    ModelState.AddModelError("Type", "Please select Bank Account or Credit Card.");
 
                 if (!pf.First.HasValue())
-                    ModelState.AddModelError("First", "Needs first name");
+                    ModelState.AddModelError("First", "First name is required.");
                 if (!pf.Last.HasValue())
-                    ModelState.AddModelError("Last", "Needs last name");
+                    ModelState.AddModelError("Last", "Last name is required");
                 if (!pf.Address.HasValue())
-                    ModelState.AddModelError("Address", "Needs address");
+                    ModelState.AddModelError("Address", "Address is required.");
                 if (!pf.City.HasValue())
-                    ModelState.AddModelError("City", "Needs city");
+                    ModelState.AddModelError("City", "City is required");
                 if (!pf.State.HasValue())
-                    ModelState.AddModelError("State", "Needs state");
+                    ModelState.AddModelError("State", "State is required.");
                 if (!pf.Zip.HasValue())
-                    ModelState.AddModelError("Zip", "Needs zip");
+                    ModelState.AddModelError("Zip", "Zipcode is required.");
                 
                 if (!ModelState.IsValid)
                     return View("Payment/Process", pf);
@@ -145,7 +146,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                             var dollarAmt = (decimal)random.Next(100, 199) / 100;
 
                             var transactionResponse = gateway.AuthCreditCard(m.UserPeopleId ?? 0, dollarAmt, pf.CreditCard, DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                                                                             "One Time Auth", 0, pf.CCV, string.Empty, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+                                                                             "One Time Auth", 0, pf.CVV, string.Empty, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
 
                             if (!transactionResponse.Approved)
                             {
@@ -171,11 +172,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                             pf.Type,
                             pf.CreditCard,
                             DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                            pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
+                            pf.CVV,
                             pf.Routing, 
                             pf.Account,
                             pf.IsGiving.GetValueOrDefault());
-
                 }
 
                 var ti = ProcessPaymentTransaction(m, pf);
@@ -189,7 +189,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     m.TranId = ti.Id;
                     m.HistoryAdd("ProcessPayment");
-                    ed.Data = Util.Serialize<OnlineRegModel>(m);
+                    ed.Data = Util.Serialize(m);
                     ed.Completed = true;
                     DbUtil.Db.SubmitChanges();
                 }
@@ -227,6 +227,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("Payment/Process", pf);
             }
         }
+
         private Transaction ProcessPaymentTransaction(OnlineRegModel m, PaymentForm pf)
         {
             Transaction ti = null;
@@ -268,7 +269,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     tinfo = gw.PayWithCreditCard(pid ?? 0, pf.AmtToPay ?? 0, pf.CreditCard,
                         DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
                         pf.Description, ti.Id,
-                        pf.CCV, pf.Email, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+                        pf.CVV, pf.Email, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
             }
 
             ti.TransactionId = tinfo.TransactionId;

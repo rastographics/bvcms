@@ -138,12 +138,12 @@
           </tr>
           <tr class="Card">
             <td>
-              Card Code<br />
-              <a id="findidclick" href="#"><span style="font-size: 65%">How to find your card code</span></a>
+              CVV<br />
+              <a id="findidclick" href="#"><span style="font-size: 65%">How to find your CVV</span></a>
             </td>
             <td>
-              @Html.TextBox("CCV", Model.MaskedCCV, Model.Autocomplete())
-              <div>@Html.ValidationMessage("CCV")</div>
+              @Html.TextBox("CVV", Model.CVV, Model.Autocomplete())
+              <div>@Html.ValidationMessage("CVV")</div>
             </td>
           </tr>
         }

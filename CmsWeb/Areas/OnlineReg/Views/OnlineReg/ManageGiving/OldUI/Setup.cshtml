@@ -86,8 +86,8 @@
               <div class="Card paymentinfo">
                 <p>
                   <label>Credit Card Number</label>
-                  @Html.TextBox("Cardnumber", null, Model.Autocomplete)
-                  <div>@Html.ValidationMessage("Cardnumber")</div>
+                  @Html.TextBox("CreditCard", null, Model.Autocomplete)
+                  <div>@Html.ValidationMessage("CreditCard")</div>
                 </p>
                 <p>
                   <label>Expires</label>
@@ -95,10 +95,10 @@
                   <div>@Html.ValidationMessage("Expires")</div>
                 </p>
                 <p>
-                  <label>Card Code</label>
-                  @Html.TextBox("Cardcode", null, Model.Autocomplete)
-                  <div>@Html.ValidationMessage("Cardcode")</div>
-                  <div><a id="findidclick" href="#"><span style="font-size: 65%">How to find your card code</span></a></div>
+                  <label>CVV</label>
+                  @Html.TextBox("CVV", null, Model.Autocomplete)
+                  <div>@Html.ValidationMessage("CVV")</div>
+                  <div><a id="findidclick" href="#"><span style="font-size: 65%">How to find your CVV</span></a></div>
                 </p>
               </div>
             }

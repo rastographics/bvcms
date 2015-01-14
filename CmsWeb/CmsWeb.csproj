@@ -658,7 +658,7 @@
     <Compile Include="Code\LabelMetaData.cs" />
     <Compile Include="Code\ModelViewMetadataProvider.cs" />
     <Compile Include="Code\ModelViewModel.cs" />
-    <Compile Include="Code\Payments.cs" />
+    <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
     <Content Include="App_Readme\Elmah.txt" />

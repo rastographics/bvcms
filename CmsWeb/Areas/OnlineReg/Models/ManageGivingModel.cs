@@ -36,13 +36,13 @@ namespace CmsWeb.Models
 
         public string Period { get; set; }
         public string Type { get; set; }
-        public string Cardnumber { get; set; }
+        public string CreditCard { get; set; }
         public DateTime? NextDate { get; set; }
 
         [DisplayName("Expires (MMYY)")]
         public string Expires { get; set; }
 
-        public string Cardcode { get; set; }
+        public string CVV { get; set; }
         public string Routing { get; set; }
         public string Account { get; set; }
         public bool testing { get; set; }
@@ -177,10 +177,9 @@ namespace CmsWeb.Models
                 pi = new PaymentInfo();
             else
             {
-                Cardnumber = pi.MaskedCard;
+                CreditCard = pi.MaskedCard;
                 Account = pi.MaskedAccount;
                 Expires = pi.Expires;
-                Cardcode = Util.Mask(new StringBuilder(pi.Ccv), 0);
                 Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
                 NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
                 Type = pi.PreferredGivingType;
@@ -237,8 +236,8 @@ namespace CmsWeb.Models
 
             if (clearCreditCardDetails)
             {
-                Cardnumber = string.Empty;
-                Cardcode = string.Empty;
+                CreditCard = string.Empty;
+                CVV = string.Empty;
                 Expires = string.Empty;
             }
         }
@@ -308,17 +307,16 @@ namespace CmsWeb.Models
             }
 
             if (Type == PaymentType.CreditCard)
-                Payments.ValidateCreditCardInfo(modelState,
+                PaymentValidator.ValidateCreditCardInfo(modelState,
                     new PaymentForm
                     {
-                        CreditCard = Cardnumber,
+                        CreditCard = CreditCard,
                         Expires = Expires,
-                        CCV =
-                            Cardcode,
+                        CVV = CVV,
                         SavePayInfo = true
                     });
             else if (Type == PaymentType.Ach)
-                Payments.ValidateBankAccountInfo(modelState, Routing, Account);
+                PaymentValidator.ValidateBankAccountInfo(modelState, Routing, Account);
             else
                 modelState.AddModelError("Type", "Must select Bank Account or Credit Card");
 
@@ -369,14 +367,6 @@ namespace CmsWeb.Models
             var chosenFunds = FundItemsChosen().ToList();
             if (chosenFunds.Sum(f => f.amt) > 0)
             {
-                if (Cardcode.HasValue() && Cardcode.Contains("X"))
-                {
-                    var payinfo = person.PaymentInfo();
-                    if (payinfo == null)
-                        throw new Exception("X not allowed in CVV");
-                    Cardcode = payinfo.Ccv;
-                }
-
                 var pi = person.PaymentInfo();
                 if (pi == null)
                 {
@@ -398,16 +388,16 @@ namespace CmsWeb.Models
                     var dollarAmt = (decimal)random.Next(100, 199) / 100;
 
                     TransactionResponse transactionResponse;
-                    if (Cardnumber.StartsWith("X"))
+                    if (CreditCard.StartsWith("X"))
                     {
                         // store payment method in the gateway vault first before doing the auth.
-                        gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
+                        gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
                         vaultSaved = true;
                         transactionResponse = gateway.AuthCreditCardVault(pid, dollarAmt, "Recurring Giving Auth", 0);
                     }
                     else
-                        transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, Cardnumber, Expires,
-                                                                     "Recurring Giving Auth", 0, Cardcode, string.Empty,
+                        transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
+                                                                     "Recurring Giving Auth", 0, CVV, string.Empty,
                                                                      FirstName, LastName, Address, City, State, Zip, Phone);
 
                     if (!transactionResponse.Approved)
@@ -419,7 +409,7 @@ namespace CmsWeb.Models
 
                 // store payment method in the gateway vault if not already saved.
                 if (!vaultSaved)
-                    gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
+                    gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
 
                 // save all the managed giving data.
                 var mg = person.ManagedGiving();

@@ -91,6 +91,7 @@
       <onlineregister Include="Scripts/jQuery/jquery.blockUI.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
+      <onlineregister Include="Scripts/js/extensions.js"/>
 
       <org Include="Scripts/jQuery/jquery-ui-timepicker-addon.js"/>
       <org Include="Scripts/Org/Organization.js"/>

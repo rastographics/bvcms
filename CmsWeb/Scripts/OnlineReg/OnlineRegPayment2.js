@@ -184,6 +184,14 @@ $(function () {
     $("body").on("change", 'input[name=StartWhen]', function () {
         $.SetSummaryText();
     });
+
+    if ($('#CreditCard').val().startsWith('X')) {
+        $('#CVV').parents('.form-group').hide();
+    }
+
+    $('#CreditCard').change(function() {
+        $('#CVV').parents('.form-group').show();
+    });
     
     if ($("#allowcc").val()) {
         $.ShowPaymentInfo($("input[name=Type]:checked").val());
