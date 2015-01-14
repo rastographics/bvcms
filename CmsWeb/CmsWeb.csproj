@@ -297,7 +297,11 @@
     <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileHomeAction.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRegistration.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>

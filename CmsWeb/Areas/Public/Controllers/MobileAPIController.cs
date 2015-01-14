@@ -208,7 +208,7 @@ namespace CmsWeb.Areas.Public.Controllers
 			//			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink2 {0}, {1}".Fmt(OrgId, PeopleId));
 
 			var br = new BaseMessage();
-			br.data = Util.CmsHost2 + "OnlineReg/RegisterLink2/" + ot.Id.ToCode();
+			br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/{0}?showfamily=true".Fmt(ot.Id.ToCode());
 			br.error = 0;
 			return br;
 		}

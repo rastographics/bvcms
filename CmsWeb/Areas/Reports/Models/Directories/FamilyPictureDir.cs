@@ -263,14 +263,14 @@ namespace CmsWeb.Areas.Reports.Models
                             : string.Join("~", p.Family.People
                                 .Where(cc => cc.PositionInFamilyId == 30)
                                 .Select(cc =>
-                                    (cc.LastName == familyname
+                                    "{0}|{1}|{2}|{3}".Fmt((cc.LastName == familyname
                                         ? cc.PreferredName
-                                        : cc.Name)
-                                    + "|" + cc.Age + "|" + cc.BirthMonth + "|" + cc.BirthDay
+                                        : cc.Name), cc.Age, cc.BirthMonth, cc.BirthDay)
                                 )),
                         ImageId = p.Family.Picture.LargeId,
                     };
-            return q.Take(10000).ToList();
+            var list = q.Take(10000).ToList();
+            return list;
         }
 
         public class FamilyInfo

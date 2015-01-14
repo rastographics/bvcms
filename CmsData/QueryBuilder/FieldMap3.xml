@@ -119,7 +119,7 @@
     <RelatedFamilyMembers Type="Integer">
       Select all persons in related families given a single family id.
     </RelatedFamilyMembers>
-    <HasFamilyPicture Title="Has Family Picrture" Type="Bit" DataValueField="IdCode">
+    <HasFamilyPicture Title="Has Family Picture" Type="Bit" DataValueField="IdCode">
       Select True or False for families with Family Picture.
     </HasFamilyPicture>
   </Family>
