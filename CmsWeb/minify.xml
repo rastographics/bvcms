@@ -21,6 +21,7 @@
       <stylecss Include="Content/styles/jquery.tooltip.css"/>
 <!--      <stylecss Include="Content/styles/Support.css"/>-->
 
+      <main2 Include="Scripts/js/extensions.js"/>
       <main2 Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-modal.js"/>
@@ -49,6 +50,7 @@
       <main2 Include="Scripts/js/ExtraValue.js"/>
       <main2 Include="Scripts/Search/SearchAdd.js"/>
 
+      <main2c Include="Scripts/js/extensions.js"/>
       <main2c Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-modal.js"/>
@@ -83,6 +85,7 @@
       <main2c Include="Scripts/Search/SearchAdd.js"/>
 <!--      <main2c Include="Scripts/js/Support.js"/>-->
 
+      <onlineregister Include="Scripts/js/extensions.js"/>
       <onlineregister Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.validate.js"/>
       <onlineregister Include="Scripts/jQuery/globalize/globalize.js"/>
@@ -91,7 +94,6 @@
       <onlineregister Include="Scripts/jQuery/jquery.blockUI.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
-      <onlineregister Include="Scripts/js/extensions.js"/>
 
       <org Include="Scripts/jQuery/jquery-ui-timepicker-addon.js"/>
       <org Include="Scripts/Org/Organization.js"/>
