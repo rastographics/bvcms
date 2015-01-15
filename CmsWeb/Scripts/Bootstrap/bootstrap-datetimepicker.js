@@ -502,8 +502,9 @@
 
 			top = top - containerOffset.top;
 			left = left - containerOffset.left;
-			
-			top = top + document.body.scrollTop
+
+            // bwl:  commented out the line below per issue logged with this datetimepicker on google chrome.
+		    //top = top + document.body.scrollTop;
 
 			this.picker.css({
 				top:    top,
