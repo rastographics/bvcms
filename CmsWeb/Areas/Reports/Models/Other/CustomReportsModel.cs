@@ -4,35 +4,44 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
 using System.Xml.Linq;
 using CmsData;
 using CmsData.API;
+using CmsData.ExtraValue;
 using CmsData.View;
 using CmsWeb.Models;
 using Dapper;
-using DocumentFormat.OpenXml.Math;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class CustomReportsModel
     {
-        private CustomColumnsModel mc;
-        private int? orgid;
-        public CustomReportsModel()
+        private readonly CMSDataContext _db;
+        private readonly CustomColumnsModel mc;
+        private readonly int? orgid;
+
+        private string CustomReportContent
         {
+            get { return _db.ContentText("CustomReports", ""); }
+        }
+
+        public CustomReportsModel(CMSDataContext db)
+        {
+            _db = db;
             mc = new CustomColumnsModel();
         }
-        public CustomReportsModel(int? orgid)
-            : this()
+
+        public CustomReportsModel(CMSDataContext db, int? orgid)
+            : this(db)
         {
             this.orgid = orgid;
         }
-        public IEnumerable<string> ReportList(CMSDataContext db)
+
+        public IEnumerable<string> ReportList()
         {
             var list = new List<string>();
-            var body = db.ContentText("CustomReports", "");
+            var body = CustomReportContent;
             if (body.HasValue())
             {
                 var xdoc = XDocument.Parse(body);
@@ -45,48 +54,44 @@ namespace CmsWeb.Areas.Reports.Models
                         where r != null
                         where r != "AllColumns"
                         select r;
-                foreach (var r in q)
-                    if (!list.Contains(r))
-                        list.Add(r);
+
+                foreach (var r in q.Where(r => !list.Contains(r)))
+                    list.Add(r);
             }
             list.Add("AllColumns");
             return list;
         }
 
-        public EpplusResult Result(CMSDataContext db, Guid id, string report)
+        public EpplusResult Result(Guid id, string report)
         {
-            var cs = db.CurrentUser.InRole("Finance")
+            var cs = _db.CurrentUser.InRole("Finance")
                 ? Util.ConnectionString
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
-            var sql = Sql(db, id, report);
+            var sql = Sql(id, report);
             return cn.ExecuteReader(sql).ToExcel(report + ".xlsx");
         }
-        public string Sql(CMSDataContext db, Guid id, string report)
+
+        public string Sql(Guid id, string report)
         {
-            var body = db.ContentText("CustomReports", "");
-            if (report == "AllColumns")
-            {
-                var settings = new XmlWriterSettings { Indent = true, Encoding = new System.Text.UTF8Encoding(false) };
-                var sb2 = new StringBuilder();
-                using (var w = XmlWriter.Create(sb2, settings))
-                {
-                    StandardColumns(db, w, includeRoot: true);
-                    w.Flush();
-                }
-                body = sb2.ToString();
-            }
-            else if (!body.HasValue())
+            var body = CustomReportContent;
+            if (string.IsNullOrEmpty(body))
                 throw new Exception("missing CustomReports");
-            var xdoc = XDocument.Parse(body);
+
+            var xdoc = report == "AllColumns"
+                ? StandardColumns(includeRoot: true)
+                : XDocument.Parse(body);
+
             if (xdoc.Root == null)
                 throw new Exception("missing xml root");
+
             var r = (from e in xdoc.Root.Elements("Report")
                      where (string)e.Attribute("name") == report || report == "AllColumns"
                      select e).SingleOrDefault();
             if (r == null)
                 throw new Exception("no report");
-            var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+
+            var tag = _db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
             var sb = new StringBuilder("DECLARE @tagId INT = {0}\nSELECT\n".Fmt(tag.Id));
 
             Dictionary<string, StatusFlagList> flags = null;
@@ -101,7 +106,7 @@ namespace CmsWeb.Areas.Reports.Models
                 {
                     var cc = mc.SpecialColumns[name];
                     if (flags == null)
-                        flags = db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
+                        flags = _db.ViewStatusFlagLists.Where(ff => ff.RoleName == null).ToDictionary(ff => ff.Flag, ff => ff);
                     var flag = (string)e.Attribute("flag");
                     if (!flag.HasValue())
                         throw new Exception("missing flag on column " + cc.Column);
@@ -172,84 +177,102 @@ namespace CmsWeb.Areas.Reports.Models
             return sb.ToString();
         }
 
-        public static string DblQuotes(string s)
+        private static string DblQuotes(string s)
         {
             return s.Replace("'", "''");
         }
-        public void StandardColumns(CMSDataContext db, XmlWriter writer, bool includeRoot = true)
+
+        public XDocument StandardColumns(bool includeRoot = true)
         {
-            var w = new APIWriter(writer);
-            if (includeRoot)
-                w.Start("CustomReports");
-            w.Start("Report").Attr("name", "YourReportNameGoesHere");
-            if (orgid.HasValue)
-                w.Attr("showOnOrgId", orgid);
-            foreach (var c in mc.Columns.Values)
-                w.Start("Column").Attr("name", c.Column).End();
+            var doc = new XDocument();
+            using (var writer = doc.CreateWriter())
+            {
+                var w = new APIWriter(writer);
+                if (includeRoot)
+                    w.Start("CustomReports");
+                w.Start("Report").Attr("name", "YourReportNameGoesHere");
+                if (orgid.HasValue)
+                    w.Attr("showOnOrgId", orgid);
+                foreach (var c in mc.Columns.Values)
+                    w.Start("Column").Attr("name", c.Column).End();
 
-            var protectedevs = from value in CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People")
-                               where value.VisibilityRoles.HasValue()
-                               select value.Name;
-            var standards = (from value in CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People")
-                             select value.Name).ToList();
+                var protectedevs = from value in Views.GetStandardExtraValues(_db, "People")
+                                   where value.VisibilityRoles.HasValue()
+                                   select value.Name;
 
-            var extravalues = from ev in db.PeopleExtras
-                              where !protectedevs.Contains(ev.Field)
-                              group ev by new { ev.Field, ev.Type } into g
-                              orderby g.Key.Field
-                              select g.Key;
-            foreach (var ev in extravalues)
-            {
-                if (!Regex.IsMatch(ev.Type, @"Code|Date|Text|Int|Bit"))
-                    continue;
-                w.Start("Column");
-                w.Attr("field", ev.Field).Attr("name", "ExtraValue" + ev.Type);
-                if (!standards.Contains(ev.Field))
-                    w.Attr("disabled", "true");
-                w.End();
-            }
-            var statusflags = from f in db.ViewStatusFlagLists
-                              where f.RoleName == null
-                              orderby f.Name
-                              select f;
-            foreach (var f in statusflags)
-            {
-                w.Start("Column")
-                    .Attr("description", f.Name)
-                    .Attr("flag", f.Flag)
-                    .Attr("name", "StatusFlag")
-                    .End();
-            }
-            if (orgid.HasValue)
-            {
-                w.Start("Column")
-                    .Attr("name", "AmountTot")
-                    .Attr("orgid", orgid)
-                    .End();
-                w.Start("Column")
-                    .Attr("name", "AmountPaid")
-                    .Attr("orgid", orgid)
-                    .End();
-                w.Start("Column")
-                    .Attr("name", "AmountDue")
-                    .Attr("orgid", orgid)
-                    .End();
-                var smallgroups = from sg in db.MemberTags
-                                  where sg.OrgId == orgid
-                                  orderby sg.Name
-                                  select sg;
-                foreach (var sg in smallgroups)
+                var standards = (from value in Views.GetStandardExtraValues(_db, "People")
+                                 select value.Name).ToList();
+
+                var extravalues = from ev in _db.PeopleExtras
+                                  where !protectedevs.Contains(ev.Field)
+                                  group ev by new {ev.Field, ev.Type} into g
+                                  orderby g.Key.Field
+                                  select g.Key;
+
+                foreach (var ev in extravalues)
+                {
+                    if (!Regex.IsMatch(ev.Type, @"Code|Date|Text|Int|Bit"))
+                        continue;
+                    w.Start("Column");
+                    w.Attr("field", ev.Field).Attr("name", "ExtraValue" + ev.Type);
+                    if (!standards.Contains(ev.Field))
+                        w.Attr("disabled", "true");
+                    w.End();
+                }
+                var statusflags = from f in _db.ViewStatusFlagLists
+                                  where f.RoleName == null
+                                  orderby f.Name
+                                  select f;
+                foreach (var f in statusflags)
                 {
                     w.Start("Column")
-                        .Attr("smallgroup", sg.Name)
-                        .Attr("orgid", orgid)
-                        .Attr("name", "SmallGroup")
+                        .Attr("description", f.Name)
+                        .Attr("flag", f.Flag)
+                        .Attr("name", "StatusFlag")
                         .End();
                 }
-            }
-            w.End();
-            if (includeRoot)
+                if (orgid.HasValue)
+                {
+                    w.Start("Column")
+                        .Attr("name", "AmountTot")
+                        .Attr("orgid", orgid)
+                        .End();
+                    w.Start("Column")
+                        .Attr("name", "AmountPaid")
+                        .Attr("orgid", orgid)
+                        .End();
+                    w.Start("Column")
+                        .Attr("name", "AmountDue")
+                        .Attr("orgid", orgid)
+                        .End();
+                    var smallgroups = from sg in _db.MemberTags
+                                      where sg.OrgId == orgid
+                                      orderby sg.Name
+                                      select sg;
+                    foreach (var sg in smallgroups)
+                    {
+                        w.Start("Column")
+                            .Attr("smallgroup", sg.Name)
+                            .Attr("orgid", orgid)
+                            .Attr("name", "SmallGroup")
+                            .End();
+                    }
+                }
                 w.End();
+                if (includeRoot)
+                    w.End();
+            }
+            return doc;
+        }
+
+        public void DeleteReport(string reportName)
+        {
+            var body = CustomReportContent;
+            if (string.IsNullOrEmpty(body))
+                throw new Exception("missing CustomReports");
+            var xdoc = XDocument.Parse(CustomReportContent);
+            xdoc.Descendants("Reports").Single(r => r.Name == reportName).Remove();
+            var x = 0;
         }
     }
 }

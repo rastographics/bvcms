@@ -3,7 +3,7 @@
   var qid = ViewBag.queryid;
   var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
   var oid = ViewBag.oid;
-  var custom = (new CustomReportsModel(oid)).ReportList(DbUtil.Db).ToList();
+  var custom = (new CustomReportsModel(DbUtil.Db, oid)).ReportList().ToList();
 }
 <ul class="dropdown-menu dropdown-div-reports">
   <li>
@@ -84,35 +84,60 @@
         <li class="hideAlt2"><a href="/Reports/FamilyPictureDirectory/@qid" class="qid">Family Picture Directory</a></li>
 
       </ul>
-      <ul class="span4 unstyled">
-        <li class="header"> Address Labels </li>
-        <li><a href='/Reports/AveryAddress/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Address (pdf)</a></li>
-        <li><a href='/Reports/AveryAddressWord/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Avery Addr (word)</a></li>
-        <li><a target="_blank" href="/Reports/EmployerAddress/@qid" class="qid">Employer</a></li>
-        <li><a href='/Reports/RollLabels/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Continous Roll Labels</a></li>
+        <ul class="span4 unstyled">
+            <li class="header"> Address Labels </li>
+            <li><a href='/Reports/AveryAddress/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Address (pdf)</a></li>
+            <li><a href='/Reports/AveryAddressWord/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Avery Addr (word)</a></li>
+            <li><a target="_blank" href="/Reports/EmployerAddress/@qid" class="qid">Employer</a></li>
+            <li><a href='/Reports/RollLabels/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Continous Roll Labels</a></li>
 
-        <li class="header">Other Labels </li>
-        <li><a target="_blank" href='/Reports/BarCodeLabels/@qid' class="qid">Barcode / Name</a></li>
-        <li><a target="_blank" href='/Reports/NameLabels/@qid' class="qid">Name</a></li>
-        <li><a target="_blank" href='/Reports/Avery/@qid' class="qid">Name (with Phone Number)</a></li>
+            <li class="header">Other Labels </li>
+            <li><a target="_blank" href='/Reports/BarCodeLabels/@qid' class="qid">Barcode / Name</a></li>
+            <li><a target="_blank" href='/Reports/NameLabels/@qid' class="qid">Name</a></li>
+            <li><a target="_blank" href='/Reports/Avery/@qid' class="qid">Name (with Phone Number)</a></li>
 
-        @if (((bool?)ViewBag.OrganizationContext) == true)
-        {
-          <li class="header current-list pending-list orgcontext">Org Attendance</li>
-          <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank">Recent Absents Report</a></li>
-          <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank">Recent Attendance Report</a></li>
-          <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid">Attendance Percentages</a></li>
-        }
-        @if (custom.Count > 0)
-        {
-          <li class="header">Custom Reports</li>
-          foreach (var r in custom)
-          {
-            <li><a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a></li>
-            <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
-          }
-        }
-      </ul>
+            @if (((bool?)ViewBag.OrganizationContext) == true)
+            {
+                <li class="header current-list pending-list orgcontext">Org Attendance</li>
+                <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank">Recent Absents Report</a></li>
+                <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank">Recent Attendance Report</a></li>
+                <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid">Attendance Percentages</a></li>
+            }
+            @if (custom.Count > 0)
+            {
+                <li class="header">Custom Reports</li>
+                foreach (var r in custom)
+                {
+                    <li>
+                        <div class="toolbar-custom-reports">
+                            <a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a>
+                            @if (r != "AllColumns") {
+                            <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="icon-edit"></i></a>
+                            <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="icon-trash"></i></a>
+                            }
+                        </div>
+                    </li>
+                    <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+                }
+                <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new { Area = "Reports" }, null)</li>
+            }
+        </ul>
     </div>
   </li>
 </ul>
+
+
+<style>
+    .toolbar-custom-reports {
+        padding: 3px 20px;
+    }
+        .toolbar-custom-reports a {
+            display: inline;
+        }
+</style>
+
+<script type="text/javascript">
+    $('.toolbar-custom-reports a[data-action="delete"]').click(function () {
+        alert('wooo!!!');
+    });
+</script>

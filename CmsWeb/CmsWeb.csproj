@@ -393,6 +393,7 @@
     <Compile Include="Areas\Finance\Models\ContributionSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\BundleModel.cs" />
     <Compile Include="Areas\Org\Controllers\MemberDirectoryController.cs" />
+    <Compile Include="Areas\Reports\ViewModels\CustomReportViewModel.cs" />
     <Compile Include="Areas\Search\Controllers\PeopleSearchController.cs" />
     <Compile Include="Areas\Main\Controllers\SMSController.cs" />
     <Compile Include="Areas\Main\Controllers\VolunteeringController.cs" />
@@ -811,6 +812,7 @@
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.cultures.js" />
     <Content Include="Scripts\jQuery\globalize\globalize.js" />
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
+    <None Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js" />
