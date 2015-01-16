@@ -514,5 +514,11 @@ namespace CmsData.API
         public bool NonTaxDed { get; set; }
         public int? FamilyId { get; set; }
         public string MemberStatus { get; set; }
+        public DateTime? JoinDate { get; set; }
+        public string Address { get; set; }
+        public string Address2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
     }
 }

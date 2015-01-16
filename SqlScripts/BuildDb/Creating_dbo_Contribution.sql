@@ -18,7 +18,8 @@ CREATE TABLE [dbo].[Contribution]
 [ExtraDataId] [int] NULL,
 [CheckNo] [nvarchar] (20) NULL,
 [QBSyncID] [int] NULL,
-[TranId] [int] NULL
+[TranId] [int] NULL,
+[Source] [int] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

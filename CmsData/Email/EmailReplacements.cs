@@ -142,7 +142,7 @@ namespace CmsData
                     break;
 
                 case "{barcode}":
-                    return string.Format("<img src='{0}' />", Util.URLCombine(db.CmsHost, "/Track/Barcode/" + p.PeopleId));
+                    return string.Format("<img src='{0}' />", db.ServerLink("/Track/Barcode/" + p.PeopleId));
 
                 case "{campus}":
                     return p.CampusId != null ? p.Campu.Description : "No Campus Specified";
@@ -165,11 +165,11 @@ namespace CmsData
                     break;
 
                 case "{cmshost}":
-                    return db.CmsHost.TrimEnd('/');
+                    return db.ServerLink();
 
                 case "{emailhref}":
                     if(emailqueueto != null)
-                        return Util.URLCombine(db.CmsHost, "/EmailView/" + emailqueueto.Id);
+                        return db.ServerLink("/EmailView/" + emailqueueto.Id);
                     break;
 
                 case "{first}":
@@ -240,7 +240,7 @@ namespace CmsData
 
                 case "{track}":
                     if (emailqueueto != null)
-                        return emailqueueto.Guid.HasValue ? "<img src=\"{0}\" />".Fmt(Util.URLCombine(db.CmsHost, "/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())) : "";
+                        return emailqueueto.Guid.HasValue ? "<img src=\"{0}\" />".Fmt(db.ServerLink("/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())) : "";
                     break;
 
                 case "{unsubscribe}":
@@ -374,7 +374,7 @@ namespace CmsData
             {
                 user.ResetPasswordCode = Guid.NewGuid();
                 user.ResetPasswordExpires = DateTime.Now.AddHours(db.Setting("ResetPasswordExpiresHours", "24").ToInt());
-                string link = Util.URLCombine(db.CmsHost, "/Account/SetPassword/" + user.ResetPasswordCode.ToString());
+                string link = db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
                 db.SubmitChanges();
                 return @"<a href=""{0}"">Set password for {1}</a>".Fmt(link, user.Username);
             }
@@ -385,7 +385,7 @@ namespace CmsData
                 };
             db.OneTimeLinks.InsertOnSubmit(ot);
             db.SubmitChanges();
-            string url = Util.URLCombine(db.CmsHost, "/Account/CreateAccount/{0}".Fmt(ot.Id.ToCode()));
+            string url = db.ServerLink("/Account/CreateAccount/{0}".Fmt(ot.Id.ToCode()));
             return @"<a href=""{0}"">Create Account</a>".Fmt(url);
         }
 
@@ -477,7 +477,7 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = Util.URLCombine(db.CmsHost, "/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
+            string url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
             if (showfamily)
                 url += "?showfamily=true";
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
@@ -536,7 +536,7 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = Util.URLCombine(db.CmsHost, "/OnlineReg/RsvpLinkSg/{0}?confirm={1}&message={2}"
+            string url = db.ServerLink("/OnlineReg/RsvpLinkSg/{0}?confirm={1}&message={2}"
                                                       .Fmt(ot.Id.ToCode(), confirm, HttpUtility.UrlEncode(msg)));
 
             var href = d["href"];
@@ -576,7 +576,7 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = Util.URLCombine(db.CmsHost, "/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
+            string url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
@@ -646,14 +646,14 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = Util.URLCombine(db.CmsHost, "/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
+            string url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
         private string UnSubscribeLink(EmailQueueTo emailqueueto)
         {
             var qs = "OptOut/UnSubscribe/?enc=" + Util.EncryptForUrl("{0}|{1}".Fmt(emailqueueto.PeopleId, from.Address));
-            var url = Util.URLCombine(db.CmsHost, qs);
+            var url = db.ServerLink(qs);
             return @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
         }
 
@@ -684,7 +684,7 @@ namespace CmsData
                 list.Add(qs, ot);
             }
 
-            var url = Util.URLCombine(db.CmsHost, "/OnlineReg/VolRequestResponse/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
+            var url = db.ServerLink("/OnlineReg/VolRequestResponse/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
@@ -715,7 +715,7 @@ namespace CmsData
                 list.Add(qs, ot);
             }
 
-            var url = Util.URLCombine(db.CmsHost, "/OnlineReg/ClaimVolSub/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
+            var url = db.ServerLink("/OnlineReg/ClaimVolSub/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
@@ -763,7 +763,7 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = Util.URLCombine(db.CmsHost, "/OnlineReg/VoteLinkSg/{0}?confirm={1}&message={2}"
+            string url = db.ServerLink("/OnlineReg/VoteLinkSg/{0}?confirm={1}&message={2}"
                                                       .Fmt(ot.Id.ToCode(), confirm, HttpUtility.UrlEncode(msg)));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
@@ -830,7 +830,7 @@ namespace CmsData
                 };
             db.OneTimeLinks.InsertOnSubmit(ot);
             db.SubmitChanges();
-            string url = Util.URLCombine(db.CmsHost, "/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
+            string url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
             if (showfamily)
                 url += "?showfamily=true";
             return url;

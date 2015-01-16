@@ -21,14 +21,6 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
-        //        public string CmsHost
-        //        {
-        //            get
-        //            {
-        //                var h = ConfigurationManager.AppSettings["cmshost"];
-        //                return h.Replace("{church}", Host, ignoreCase: true);
-        //            }
-        //        }
         public void Email(string from, Person p, string subject, string body)
         {
             Email(from, p, null, subject, body, false);
@@ -230,7 +222,7 @@ namespace CmsData
 
             if (body.Contains("http://publiclink", ignoreCase: true))
             {
-                var link = Util.URLCombine(CmsHost, "/EmailView/" + emailqueue.Id);
+                var link = ServerLink("/EmailView/" + emailqueue.Id);
                 var re = new Regex("http://publiclink", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 emailqueue.Body = re.Replace(body, link);
             }
@@ -476,15 +468,14 @@ namespace CmsData
             {
                 var from = new MailAddress(From, FromName);
                 string subj = "sent emails: " + subject;
-                var uri = new Uri(new Uri(CmsHost), "/Emails/Details/" + id);
-                string body = @"<a href=""{0}"">{1} emails sent</a>".Fmt(uri, count);
+                var link = ServerLink("/Emails/Details/" + id);
+                string body = @"<a href=""{0}"">{1} emails sent</a>".Fmt(link, count);
                 var sysFromEmail = Util.SysFromEmail;
 
                 Util.SendMsg(sysFromEmail, CmsHost, from,
                     subj, body, Util.ToMailAddressList(from), id, null);
-                var host = uri.Host;
                 Util.SendMsg(sysFromEmail, CmsHost, from,
-                    host + " " + subj, body,
+                    Host + " " + subj, body,
                     Util.SendErrorsTo(), id, null);
             }
         }

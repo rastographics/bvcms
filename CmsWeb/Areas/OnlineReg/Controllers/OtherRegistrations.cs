@@ -275,7 +275,9 @@ emailid={2}
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
                 return Message("sorry, registration has been closed");
 
-            var url = string.IsNullOrWhiteSpace(source) ? "/OnlineReg/{0}?registertag={1}".Fmt(oid, id) : "/OnlineReg/{0}?registertag={1}&source={2}".Fmt(oid, id, source);
+            var url = string.IsNullOrWhiteSpace(source) 
+                ? "/OnlineReg/{0}?registertag={1}".Fmt(oid, id) 
+                : "/OnlineReg/{0}?registertag={1}&source={2}".Fmt(oid, id, source);
             if (gsid.HasValue)
                 url += "&gsid=" + gsid;
             if (showfamily == true)

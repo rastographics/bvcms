@@ -36,6 +36,8 @@ namespace CmsData.View
 		
 		private string _MemberStatus;
 		
+		private DateTime? _JoinDate;
+		
 		
 		public GetTotalContributions3()
 		{
@@ -60,7 +62,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="HeadName", Storage="_HeadName", DbType="varchar(140)")]
+		[Column(Name="HeadName", Storage="_HeadName", DbType="nvarchar(140)")]
 		public string HeadName
 		{
 			get
@@ -77,7 +79,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="SpouseName", Storage="_SpouseName", DbType="varchar(140)")]
+		[Column(Name="SpouseName", Storage="_SpouseName", DbType="nvarchar(140)")]
 		public string SpouseName
 		{
 			get
@@ -162,7 +164,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="FundName", Storage="_FundName", DbType="varchar(256) NOT NULL")]
+		[Column(Name="FundName", Storage="_FundName", DbType="nvarchar(256) NOT NULL")]
 		public string FundName
 		{
 			get
@@ -179,7 +181,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="MainFellowship", Storage="_MainFellowship", DbType="varchar(100)")]
+		[Column(Name="MainFellowship", Storage="_MainFellowship", DbType="nvarchar(100)")]
 		public string MainFellowship
 		{
 			get
@@ -196,7 +198,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="MemberStatus", Storage="_MemberStatus", DbType="varchar(50)")]
+		[Column(Name="MemberStatus", Storage="_MemberStatus", DbType="nvarchar(50)")]
 		public string MemberStatus
 		{
 			get
@@ -208,6 +210,23 @@ namespace CmsData.View
 			{
 				if (this._MemberStatus != value)
 					this._MemberStatus = value;
+			}
+
+		}
+
+		
+		[Column(Name="JoinDate", Storage="_JoinDate", DbType="datetime")]
+		public DateTime? JoinDate
+		{
+			get
+			{
+				return this._JoinDate;
+			}
+
+			set
+			{
+				if (this._JoinDate != value)
+					this._JoinDate = value;
 			}
 
 		}

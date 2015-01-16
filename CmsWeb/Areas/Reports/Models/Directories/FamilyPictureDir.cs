@@ -11,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using CmsData;
-using DocumentFormat.OpenXml.Bibliography;
 using Novacode;
 using UtilityExtensions;
 using Formatting = Novacode.Formatting;

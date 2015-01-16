@@ -316,25 +316,9 @@ namespace UtilityExtensions
                 return null;
             if (originalUrl.IndexOf("://") != -1)
                 return originalUrl;
-            if (originalUrl.StartsWith("~"))
-                return VirtualPathUtility.ToAbsolute(originalUrl);
-            return originalUrl;
-        }
-
-        public static string ResolveServerUrl(string serverUrl, bool forceHttps)
-        {
-            if (serverUrl.IndexOf("://") > -1)
-                return serverUrl;
-            var newUrl = ResolveUrl(serverUrl);
-            var originalUri = HttpContext.Current.Request.Url;
-            newUrl = (forceHttps ? "https" : Scheme()) +
-                     "://" + originalUri.Authority + newUrl;
-            return newUrl;
-        }
-
-        public static string ResolveServerUrl(string serverUrl)
-        {
-            return ResolveServerUrl(serverUrl, false);
+            return originalUrl.StartsWith("~") 
+                ? VirtualPathUtility.ToAbsolute(originalUrl) 
+                : originalUrl;
         }
 
         public static string Scheme()

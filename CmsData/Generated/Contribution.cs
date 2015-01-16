@@ -55,6 +55,8 @@ namespace CmsData
 		
 		private int? _TranId;
 		
+		private int? _Source;
+		
    		
    		private EntitySet< BundleDetail> _BundleDetails;
 		
@@ -132,6 +134,9 @@ namespace CmsData
 		
 		partial void OnTranIdChanging(int? value);
 		partial void OnTranIdChanged();
+		
+		partial void OnSourceChanging(int? value);
+		partial void OnSourceChanged();
 		
     #endregion
 		public Contribution()
@@ -582,6 +587,28 @@ namespace CmsData
 					this._TranId = value;
 					this.SendPropertyChanged("TranId");
 					this.OnTranIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Source", UpdateCheck=UpdateCheck.Never, Storage="_Source", DbType="int")]
+		public int? Source
+		{
+			get { return this._Source; }
+
+			set
+			{
+				if (this._Source != value)
+				{
+				
+                    this.OnSourceChanging(value);
+					this.SendPropertyChanging();
+					this._Source = value;
+					this.SendPropertyChanged("Source");
+					this.OnSourceChanged();
 				}
 
 			}

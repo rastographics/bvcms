@@ -105,12 +105,12 @@ namespace CmsWeb.Models
 
             if (org.IsMissionTrip == true)
             {
-                paylink = Util.ResolveServerUrl("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
+                paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
             }
             else
             {
                 var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
-                paylink = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
+                paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
             }
             var pids = pids2.Select(pp => pp.PeopleId);
 

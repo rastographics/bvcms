@@ -33,21 +33,23 @@ namespace CmsData
             {
                 if (cmshost.HasValue())
                     return cmshost;
-                return cmshost = ServerLink();
+                if (HttpContext.Current != null)
+                {
+                    var Request = HttpContext.Current.Request;
+                    return Util.URLCombine(Util.Scheme() + "://" + Request.Url.Authority, "");
+                }
+                var defaulthost = Setting("DefaultHost", "");
+                if(!defaulthost.HasValue())
+                    defaulthost = Util.URLCombine(ConfigurationManager.AppSettings["cmshost"], "");
+                if(defaulthost.HasValue())
+                    return defaulthost.Replace("{church}", Host, ignoreCase: true);
+                throw (new Exception("No URL for Server in CmsHost"));
             }
-            set { cmshost = value; }
+//            set { cmshost = value; }
         }
         public string ServerLink(string path = "")
         {
-            if (HttpContext.Current != null)
-            {
-                var Request = HttpContext.Current.Request;
-                return Util.URLCombine(Util.Scheme() + "://" + Request.Url.Authority, path);
-            }
-            var h = ConfigurationManager.AppSettings["cmshost"] + path;
-            if(h.HasValue())
-                return h.Replace("{church}", Host, ignoreCase: true);
-            throw (new Exception("No URL for Server in ServerLink"));
+            return Util.URLCombine(CmsHost, path);
         }
 
         public void CopySession()
