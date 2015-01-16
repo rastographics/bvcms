@@ -658,7 +658,7 @@
     <Compile Include="Code\LabelMetaData.cs" />
     <Compile Include="Code\ModelViewMetadataProvider.cs" />
     <Compile Include="Code\ModelViewModel.cs" />
-    <Compile Include="Code\Payments.cs" />
+    <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
     <Content Include="App_Readme\Elmah.txt" />
@@ -2504,28 +2504,8 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
-  <!--<UsingTask TaskName="Microsoft.Web.Mvc.Build.CreateAreaManifest" AssemblyName="Microsoft.Web.Mvc.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
-  <UsingTask TaskName="Microsoft.Web.Mvc.Build.CopyAreaManifests" AssemblyName="Microsoft.Web.Mvc.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
-  <Target Name="AfterBuild" DependsOnTargets="AfterBuildCompiler">
-    <PropertyGroup>
-      <AreasManifestDir>$(ProjectDir)\..\Manifests</AreasManifestDir>
-    </PropertyGroup>
-    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Parent" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
-    <CopyAreaManifests ManifestPath="$(AreasManifestDir)" CrossCopy="false" RenameViews="true" />
-  </Target>-->
-  <!--<Target Name="AfterBuild" Condition="'$(Configuration)'=='Release'">
-    <RemoveDir Directories="$(IntermediateOutputPath)" />
-    <RemoveDir Directories="obj\Debug\" />
-  </Target>
-  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
-    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
-  </Target>
-  <Target Name="AfterClean">
-    <RemoveDir Directories="obj\bvcms2" />
-    <RemoveDir Directories="obj\Debug" />
-  </Target>-->
   <Import Project="minify.xml" />
-  <Target Name="AfterBuild" Condition="'$(Configuration)'!='Debug'">
+  <Target Name="BeforeBuild" Condition="'$(Configuration)'!='Debug'">
     <CallTarget Targets="Minify" />
   </Target>
   <ProjectExtensions>

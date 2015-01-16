@@ -285,13 +285,3 @@
         }
     });
 });
-
-function setElementName(elems, name) {
-  if ($.browser.msie === true){
-    $(elems).each(function() {
-      this.mergeAttributes(document.createElement("<input name='" + name + "'/>"), false);
-    });
-  } else {
-    $(elems).attr('name', name);
-  }
-}

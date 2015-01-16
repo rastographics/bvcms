@@ -1,4 +1,4 @@
-/*
+(function(){if(!String.prototype.startsWith){Object.defineProperty(String.prototype,"startsWith",{enumerable:false,configurable:false,writable:false,value:function(b,a){a=a||0;return this.lastIndexOf(b,a)===a}})}})();/*
  * jQuery Migrate - v1.1.1 - 2013-02-16
  * https://github.com/jquery/jquery-migrate
  * Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors; Licensed MIT

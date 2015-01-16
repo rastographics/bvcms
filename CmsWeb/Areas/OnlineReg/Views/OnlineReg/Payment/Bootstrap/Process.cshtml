@@ -95,7 +95,7 @@
                 <div class="Card">
                     @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff })
                     @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-                    @Html.EditorFor(m => m.CCV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+                    @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
                 </div>
             }
             @if (Model.NoEChecksAllowed == false)
