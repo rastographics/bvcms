@@ -90,6 +90,7 @@ namespace CmsData
         HasMyTag,
         HasManagedGiving,
         HasMemberDocs,
+        HasOpenedEmail,
         HasOptoutsForEmail,
         HasParents,
         HasPeopleExtraField,

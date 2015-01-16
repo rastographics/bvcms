@@ -693,6 +693,9 @@
     <HasOptoutsForEmail Title="Has Email Optouts for address" Type="StringEqual" DisplayAs="HasOptoutsForEmail({0:d})" Params="EndDate">
       Enter email address (leave value blank for any optout address) and pick an end date for those who opted out before that date (or leave date blank).
     </HasOptoutsForEmail>
+    <HasOpenedEmail Title="Opened Email" Type="IntegerEqual" DisplayAs="HasOpenedEmail">
+      Enter Email ID number.
+    </HasOpenedEmail>
     <PeopleId Type="Integer">
       For internal use, but you can enter a People ID number.
     </PeopleId>

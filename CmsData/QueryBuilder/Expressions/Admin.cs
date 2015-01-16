@@ -138,5 +138,15 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression HasOpenedEmail()
+        {
+            var id = TextValue.ToInt();
+            Expression<Func<Person, bool>> pred = p =>
+                p.EmailResponses.Any(e => e.EmailQueueId == id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

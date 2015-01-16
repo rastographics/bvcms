@@ -73,6 +73,7 @@ namespace CmsData
                 { QueryType.HasMemberDocs, HasMemberDocs },
                 { QueryType.HasMyTag, HasMyTag },
                 { QueryType.HasOptoutsForEmail, HasEmailOptout },
+                { QueryType.HasOpenedEmail, HasOpenedEmail },
                 { QueryType.HasParents, HasParents },
                 { QueryType.HasPeopleExtraField, HasPeopleExtraField },
                 { QueryType.HasFamilyExtraField, HasFamilyExtraField },
