@@ -96,6 +96,19 @@
         }
         return false;
     });
+    $("body").on("click", 'a.setpar', function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        var f = a.closest('form');
+        var q = f.serialize();
+        var parid = prompt("ParentId", "");
+        q += "&parid=" + parid;
+        $.post(a.attr("href"), q, function(ret) {
+            $("#Transactions").html(ret);
+            $.preptable();
+        });
+        return false;
+    });
     $("body").on("click", 'a.adjust', function (ev) {
         ev.preventDefault();
         var a = $(this);

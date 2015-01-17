@@ -97,7 +97,7 @@
                 {
                     @Transaction.FullName(t)
                 }
-                @if (Model.nameid > 0 && t.People.HasValue())
+                @if (t.People.HasValue())
                 {
                   <br/>@Html.Raw(t.People.Replace("\n", "<br>"))
                 }
@@ -117,6 +117,10 @@
                 else if (t.Voided == true)
                 {
                     <text>voided</text>
+                }
+                @if (User.IsInRole("Developer"))
+                {
+                 <a class="setpar" href="/Transactions/SetParent/@t.Id/">setpar</a> 
                 }
             </td>
             <td>
