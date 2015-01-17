@@ -365,7 +365,7 @@ namespace CmsData.API
                     join c in qc on p.FundId equals c.FundId into items
                     from c in items.DefaultIfEmpty()
                     where (p.Total ?? 0) > (c == null ? 0 : c.Total ?? 0) || showPledgeIfMet
-                    orderby p.Fund descending
+                    orderby p.FundId descending
                     select new PledgeSummaryInfo
                     {
                         Fund = p.Fund,
