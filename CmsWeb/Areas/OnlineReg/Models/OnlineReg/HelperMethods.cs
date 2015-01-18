@@ -114,6 +114,8 @@ namespace CmsWeb.Models
 
         public bool NotAvailable()
         {
+            if (SupportMissionTrip)
+                return false;
             var dt = DateTime.Now;
             var dt1 = DateTime.Parse("1/1/1900");
             var dt2 = DateTime.Parse("1/1/2200");
