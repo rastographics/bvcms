@@ -696,6 +696,9 @@
     <HasOpenedEmail Title="Opened Email" Type="IntegerEqual" DisplayAs="HasOpenedEmail">
       Enter Email ID number.
     </HasOpenedEmail>
+    <HasSpamBlock Title="Has Spam Block" Type="Bit" DisplayAs="HasSpamBlock">
+      Has Reported as Spam
+    </HasSpamBlock>
     <PeopleId Type="Integer">
       For internal use, but you can enter a People ID number.
     </PeopleId>

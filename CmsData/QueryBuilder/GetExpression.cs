@@ -79,6 +79,7 @@ namespace CmsData
                 { QueryType.HasFamilyExtraField, HasFamilyExtraField },
                 { QueryType.HasPicture, HasPicture },
                 { QueryType.HasRelatedFamily, HasRelatedFamily },
+                { QueryType.HasSpamBlock, HasSpamBlock },
                 { QueryType.HasTaskWithName, HasTaskWithName },
                 { QueryType.HaveVolunteerApplications, HasVolunteerApplications },
                 { QueryType.HeadOrSpouseWithEmail, HeadOrSpouseWithEmail },

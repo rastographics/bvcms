@@ -96,6 +96,7 @@ namespace CmsData
         HasPeopleExtraField,
         HasPicture,
         HasRelatedFamily,
+        HasSpamBlock,
         HasTaskWithName,
         HaveVolunteerApplications,
         HeadOrSpouseWithEmail,
