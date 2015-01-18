@@ -37,8 +37,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _userName = db.Setting("TNBUsername", "");
-                _password = db.Setting("TNBPassword", "");
+                _userName = db.GetSetting("TNBUsername", "");
+                _password = db.GetSetting("TNBPassword", "");
 
                 if (string.IsNullOrWhiteSpace(_userName))
                     throw new Exception("TNBUsername setting not found, which is required for TransNational.");

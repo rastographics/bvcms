@@ -69,6 +69,13 @@ namespace CmsData
                 Host = Util.Host;
             }
         }
+        public string GetSetting(string name, string defaultvalue)
+        {
+            var setting = Settings.SingleOrDefault(ss => ss.Id == name);
+            if (setting == null)
+                return defaultvalue;
+            return setting.SettingX ?? defaultvalue ?? string.Empty;
+        }
         public string Setting(string name, string defaultvalue)
         {
 			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;

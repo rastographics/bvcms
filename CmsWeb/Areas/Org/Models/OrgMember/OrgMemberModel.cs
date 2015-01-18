@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Org.Models
         private OrganizationMember om;
         public CmsData.Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
+
         public bool IsMissionTrip;
         public CmsData.View.TransactionSummary TransactionSummary;
 

@@ -39,8 +39,8 @@ namespace CmsData.Finance
 			}
 			else
 			{
-				_id = db.Setting("M_ID", "");
-				_key = db.Setting("M_KEY", "");
+				_id = db.GetSetting("M_ID", "");
+				_key = db.GetSetting("M_KEY", "");
 
                 if (string.IsNullOrWhiteSpace(_id))
                     throw new Exception("M_ID setting not found, which is required for Sage.");
