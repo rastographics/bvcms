@@ -72,6 +72,8 @@ namespace CmsData.View
 		
 		private string _MailingAddress;
 		
+		private string _CoupleName;
+		
 		
 		public Contributor()
 		{
@@ -550,6 +552,23 @@ namespace CmsData.View
 			{
 				if (this._MailingAddress != value)
 					this._MailingAddress = value;
+			}
+
+		}
+
+		
+		[Column(Name="CoupleName", Storage="_CoupleName", DbType="nvarchar")]
+		public string CoupleName
+		{
+			get
+			{
+				return this._CoupleName;
+			}
+
+			set
+			{
+				if (this._CoupleName != value)
+					this._CoupleName = value;
 			}
 
 		}

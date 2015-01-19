@@ -188,8 +188,8 @@ namespace CmsData.API
                              : (p.SpouseId == null
                                  ? p.Name
                                  : (p.HohFlag == 1
-                                     ? p.Name + " and " + p.SpouseName
-                                     : p.SpouseName + " and " + p.Name))
+                                     ? p.CoupleName ?? (p.Name + " and " + p.SpouseName)
+                                     : p.CoupleName ?? (p.SpouseName + " and " + p.Name)))
                      select new ContributorInfo
                      {
                          Name = name,
@@ -221,7 +221,7 @@ namespace CmsData.API
                              ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
                              : (p.SpouseId == null
                                  ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
-                                 : (p.HohFlag == 1
+                                 : p.CoupleName ?? (p.HohFlag == 1
                                      ? ((p.Title != null && p.Title != "")
                                          ? p.Title + " and Mrs. " + p.Name
                                          : "Mr. and Mrs. " + p.Name)
