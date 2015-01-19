@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Results(SearchOrgsModel m)
         {
             m.cklist = Session["orgPickList"] as List<int>;
-            return View(m);
+            return View("Index", m);
         }
         [HttpPost]
         public ActionResult SaveOrgIds(int id, string oids)

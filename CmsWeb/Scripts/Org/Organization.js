@@ -278,6 +278,49 @@
             });
         });
     });
+
+    $("#orgpicklist").live("click", function (ev) {
+        ev.preventDefault();
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            $.initializeSelectOrgsDialog(f);
+            
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+                //RebindMemberGrids();
+            });
+        });
+    });
+
+    $.initializeSelectOrgsDialog = function(f) {
+        $("#select-orgs #UpdateSelected").click(function (ev) {
+            ev.preventDefault();
+            var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
+                return $(this).val();
+            }).get().join(',');
+            
+            UpdateSelectedOrgs(list, f);
+            return false;
+        });
+        $.SaveOrgIds = function (ev) {
+            var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
+                return $(this).val();
+            }).get().join(',');
+            $.post("/SearchOrgs/SaveOrgIds/" + $("#select-orgs #id").val(), { oids: list });
+        };
+        $('body').on('change', '#select-orgs input:checkbox', $.SaveOrgIds);
+    };
+
+    function UpdateSelectedOrgs(list, f) {
+        $.post("/Organization/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
+            $("#orgpickdiv").html(ret);
+            f.modal("hide");
+        });
+    }
+
     $("#divisionlist").live("click", function (ev) {
         ev.preventDefault();
         var a = $(this);
@@ -319,22 +362,19 @@
         });
     };
     $.InitFunctions.timepicker = function (f) {
-        $(".timepicker").timepicker({ 'step': 5 });
-        //var endDate = new Date();
-        //endDate.setDate(endDate.getDate() + 1);
+        //$(".timepicker").timepicker({ 'step': 5 });
+        $(".timepicker").datetimepicker({
+            format: "H:ii P",
+            showMeridian: true,
+            autoclose: true,
+            todayBtn: false,
+            pickerPosition: "bottom-left",
+            startView: 1,
+            minView: 0,
+            maxView: 1
+        });
 
-        //$(".timepicker").datetimepicker({
-        //    format: "H:ii P",
-        //    showMeridian: true,
-        //    autoclose: true,
-        //    todayBtn: false,
-        //    pickerPosition: "bottom-left",
-        //    startView: 1,
-        //    minView: 0,
-        //    maxView: 1,
-        //    startDate: new Date(),
-        //    endDate: endDate
-        //});
+        $(".datetimepicker-hours table thead, .datetimepicker-minutes table thead").attr('style', 'display:block; overflow:hidden; height:0;');
     };
     $.InitFunctions.datepicker = function (f) {
         $(".datepicker").datepicker();
@@ -777,6 +817,9 @@
         });
     
     */
+
+   
+
     $.extraEditable = function () {
         $('.editarea').editable('/Organization/EditExtra/', {
             type: 'textarea',
@@ -920,10 +963,4 @@ function CloseAddDialog(from) {
     $("#memberDialog").dialog("close");
 }
 function UpdateSelectedUsers(topid) {
-}
-function UpdateSelectedOrgs(list) {
-    $.post("/Organization/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
-        $("#orgpickdiv").html(ret);
-        $("#orgsDialog").dialog("close");
-    });
 }
