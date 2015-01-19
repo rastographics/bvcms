@@ -1,18 +1,22 @@
 ﻿@model CmsData.Registration.Settings
-<form class="form form-horizontal non-modal ajax span12 pad-left">
-  @FormAction()
-  <div>
-    <span class="keyword big tip" title="TargetExtraValues
-     |Small groups will actually refer to ExtraValue fields on the Person's record option
-     |This option is not normally used">
-      TargetExtraValues:
-    </span> @Html.CheckBox("TargetExtraValues", Model.TargetExtraValues)
-  </div>
-  <i class="blue">Re-order items by dragging the gray bar</i>
-  <ul class="enablesort sort edit" id="QuestionList">
-    @Html.EditorFor(m => m, "TabQuestions")
-  </ul>
-  @FormAction()
+<form class="form form-horizontal non-modal ajax span12">
+    <br/>
+    @FormAction()
+    <div>
+        <ul style="list-style: none; margin-left: 5px;">
+            <li>
+                <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Small groups will actually refer to ExtraValue fields on the Person's record option.</p><p>This option is not normally used.</p>" data-original-title="TargetExtraValues"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="TargetExtraValues" class="keyword big tip">
+                    TargetExtraValues:
+                </label>
+                @Html.CheckBox("TargetExtraValues", Model.TargetExtraValues)
+            </li>
+        </ul>
+    </div>
+    <i class="blue">Re-order items by dragging the gray bar</i>
+    <ul class="enablesort sort edit" id="QuestionList" style="list-style: none; margin-left: 5px;">
+        @Html.EditorFor(m => m, "TabQuestions")
+    </ul>
+    @FormAction()
 </form>
 
 <div id="selectquestions" style="display:none;padding-left:2em">
@@ -49,8 +53,8 @@
 
 @helper FormAction()
 {
-  <a href="/Organization/Questions/@Model.OrgId" class="btn ajax">Cancel</a>
-  <a href="#" class="AddQuestion btn ajax btn-success">Add Question Item</a>
-  <a href="/Organization/QuestionsUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
-  <div class="formerror">@Html.ValidationMessage("Form")</div>
+    <div class="pull-right">
+        <a href="/Organization/Questions/@Model.OrgId" class="btn ajax">Cancel</a> <a href="#" class="AddQuestion btn ajax btn-success">Add Question Item</a> <a href="/Organization/QuestionsUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+    </div>
+    <div class="formerror">@Html.ValidationMessage("Form")</div>
 }

@@ -1,24 +1,29 @@
 ﻿@model CmsData.Registration.Settings
-<form class="form form-horizontal non-modal ajax span12 pad-left" data-init2="updateQuestionList">
-  @FormAction()
-  <div>
-    <span class="keyword big tip" title="TargetExtraValues
-     |Small groups will actually refer to ExtraValue fields on the Person's record option
-     |This option is not normally used">
-      TargetExtraValues:
-    </span> @Model.TargetExtraValues
-  </div>
-  <ul id="QuestionList" class="noedit">
-    @Html.EditorFor(m => m, "TabQuestions")
-  </ul>
-  @FormAction()
+<form class="form form-horizontal non-modal ajax span12" data-init2="updateQuestionList">
+    <br />
+    @FormAction()
+    <div>
+        <ul class="noedit" style="list-style: none; margin-left: 5px;">
+            <li>
+                <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Small groups will actually refer to ExtraValue fields on the Person's record option.</p><p>This option is not normally used.</p>" data-original-title="TargetExtraValues"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="TargetExtraValues" class="keyword big tip">
+                    TargetExtraValues:
+                </label>@Model.TargetExtraValues
+            </li>
+        </ul>
+    </div>
+    <ul id="QuestionList" class="noedit" style="list-style: none; margin-left: 5px;">
+        @Html.EditorFor(m => m, "TabQuestions")
+    </ul>
+    @FormAction()
 </form>
 
 @helper FormAction()
 {
   if (User.IsInRole("Edit"))
   {
-    <a href="/Organization/QuestionsEdit/@Model.OrgId" class="btn edit ajax pull-right">Edit</a>
-    <div class="formerror">@Html.ValidationMessage("Form")</div>
+      <div class="pull-right">
+          <a href="/Organization/QuestionsEdit/@Model.OrgId" class="btn edit ajax">Edit</a>
+      </div>
+      <div class="formerror">@Html.ValidationMessage("Form")</div>
   }
 }
