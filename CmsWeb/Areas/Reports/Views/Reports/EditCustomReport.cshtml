@@ -10,7 +10,7 @@
 
 <form>
     <label for="report-name">Report Name</label>
-    <input type="text" name="report-name" id="report-name" />
+    <input type="text" name="report-name" id="report-name" data-bind="value: reportName" />
 
     <div data-bind="template: { name: 'custom-report-template', foreach: columns }">
     </div>
@@ -37,6 +37,8 @@
     };
 
     var viewModel = {
+        reportName: ko.observable('@Model.ReportName'),
+
         columns: ko.observableArray(ko.utils.arrayMap(data, function(x) {
             return new ObservableColumn(x.Name, x.IsSelected);
         })),

@@ -5,11 +5,36 @@ namespace CmsWeb.Areas.Reports.ViewModels
 {
     public class CustomReportViewModel
     {
-        public IEnumerable<CustomReportColumn> Columns { get; private set; }
+        private readonly List<CustomReportColumn> _columns;
+        public string ReportName { get; private set; }
 
-        public CustomReportViewModel(IEnumerable<string> columns)
+        public IEnumerable<CustomReportColumn> Columns
         {
-            Columns = columns.Select(x => new CustomReportColumn {Name = x}).ToList();
+            get { return _columns; }
+        }
+
+        public CustomReportViewModel(IEnumerable<string> standardColumns, string reportName) : this(standardColumns)
+        {
+            ReportName = reportName;
+        }
+
+        public CustomReportViewModel(IEnumerable<string> standardColumns)
+        {
+            _columns = new List<CustomReportColumn>();
+            _columns.AddRange(MapColumns(standardColumns, false));
+        }
+
+        public void SetSelectedColumns(IEnumerable<string> columns)
+        {
+            foreach (var c in _columns.Where(c => columns.Contains(c.Name)))
+            {
+                c.IsSelected = true;
+            }
+        }
+
+        private static IEnumerable<CustomReportColumn> MapColumns(IEnumerable<string> columns, bool isSelected)
+        {
+            return columns.Select(x => new CustomReportColumn {Name = x, IsSelected = isSelected}).ToList();
         }
     }
 

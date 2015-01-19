@@ -261,13 +261,24 @@ namespace CmsWeb.Areas.Reports.Models
             if (string.IsNullOrEmpty(body))
                 throw new Exception("missing CustomReports");
 
-            var xdoc = XDocument.Parse(GetCustomReportsContent());
+            var xdoc = XDocument.Parse(body);
 
             var nodeToDelete = xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
             if (nodeToDelete != null)
                 nodeToDelete.Remove();
 
             SetCustomReportsContent(xdoc.ToString());
+        }
+
+        public XElement GetReportByName(string reportName)
+        {
+            var body = GetCustomReportsContent();
+            if (string.IsNullOrEmpty(body))
+                throw new Exception("missing CustomReports");
+
+            var xdoc = XDocument.Parse(body);
+
+            return xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
         }
 
         private static string DblQuotes(string s)

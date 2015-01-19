@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -717,18 +718,31 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
+        public ActionResult CreateCustomReport(int? orgId)
+        {
+            var m = new CustomReportsModel(DbUtil.Db, orgId);
+
+            var model = new CustomReportViewModel(GetAllStandardColumns(m));
+            return View(model);
+        }
+
+        [HttpGet]
         public ActionResult EditCustomReport(int? orgId, string reportName)
         {
-//            if (!string.IsNullOrEmpty(reportName))
-                // pull report!
+            if (string.IsNullOrEmpty(reportName))
+                throw new Exception("Report name is required.");
 
             var m = new CustomReportsModel(DbUtil.Db, orgId);
-            var allColumns = m.StandardColumns(includeRoot: false);
+            var reportXml = m.GetReportByName(reportName);
 
-            var columns = from column in allColumns.Descendants("Column")
+            if (reportXml == null)
+                throw new Exception("Report not found.");
+
+            var columns = from column in reportXml.Descendants("Column")
                           select column.Attribute("name").Value;
 
-            var model = new CustomReportViewModel(columns.ToList());
+            var model = new CustomReportViewModel(GetAllStandardColumns(m), reportName);
+            model.SetSelectedColumns(columns);
             return View(model);
         }
 
@@ -742,6 +756,14 @@ namespace CmsWeb.Areas.Reports.Controllers
             m.DeleteReport(reportName);
 
             return new JsonResult {Data = "success"};
+        }
+
+        private static IEnumerable<string> GetAllStandardColumns(CustomReportsModel model)
+        {
+            var reportXml = model.StandardColumns();
+
+            return from column in reportXml.Descendants("Column")
+                   select column.Attribute("name").Value;
         }
     }
 }
