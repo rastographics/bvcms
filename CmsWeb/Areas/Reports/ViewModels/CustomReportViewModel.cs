@@ -1,32 +1,35 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace CmsWeb.Areas.Reports.ViewModels
 {
     public class CustomReportViewModel
     {
-        private readonly List<CustomReportColumn> _columns;
-        public string ReportName { get; private set; }
+        public int? OrgId { get; set; }
 
-        public IEnumerable<CustomReportColumn> Columns
-        {
-            get { return _columns; }
-        }
+        [Required]
+        public string ReportName { get; set; }
 
-        public CustomReportViewModel(IEnumerable<string> standardColumns, string reportName) : this(standardColumns)
+        public List<CustomReportColumn> Columns { get; set; }
+
+        public CustomReportViewModel() {} // for model binding purposes
+
+        public CustomReportViewModel(int? orgId, IEnumerable<string> standardColumns, string reportName) : this(orgId, standardColumns)
         {
             ReportName = reportName;
         }
 
-        public CustomReportViewModel(IEnumerable<string> standardColumns)
+        public CustomReportViewModel(int? orgId, IEnumerable<string> standardColumns)
         {
-            _columns = new List<CustomReportColumn>();
-            _columns.AddRange(MapColumns(standardColumns, false));
+            OrgId = orgId;
+            Columns = new List<CustomReportColumn>();
+            Columns.AddRange(MapColumns(standardColumns, false));
         }
 
         public void SetSelectedColumns(IEnumerable<string> columns)
         {
-            foreach (var c in _columns.Where(c => columns.Contains(c.Name)))
+            foreach (var c in Columns.Where(c => columns.Contains(c.Name)))
             {
                 c.IsSelected = true;
             }

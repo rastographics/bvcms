@@ -718,21 +718,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult CreateCustomReport(int? orgId)
-        {
-            var m = new CustomReportsModel(DbUtil.Db, orgId);
-
-            var model = new CustomReportViewModel(GetAllStandardColumns(m));
-            return View(model);
-        }
-
-        [HttpGet]
         public ActionResult EditCustomReport(int? orgId, string reportName)
         {
-            if (string.IsNullOrEmpty(reportName))
-                throw new Exception("Report name is required.");
-
             var m = new CustomReportsModel(DbUtil.Db, orgId);
+
+            if (string.IsNullOrEmpty(reportName))
+                return View(new CustomReportViewModel(orgId, GetAllStandardColumns(m)));
+
             var reportXml = m.GetReportByName(reportName);
 
             if (reportXml == null)
@@ -741,9 +733,21 @@ namespace CmsWeb.Areas.Reports.Controllers
             var columns = from column in reportXml.Descendants("Column")
                           select column.Attribute("name").Value;
 
-            var model = new CustomReportViewModel(GetAllStandardColumns(m), reportName);
+            var model = new CustomReportViewModel(orgId, GetAllStandardColumns(m), reportName);
             model.SetSelectedColumns(columns);
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditCustomReport(CustomReportViewModel viewModel)
+        {
+            if (string.IsNullOrEmpty(viewModel.ReportName))
+                ModelState.AddModelError("ReportName", "The report name is required.");
+
+            if (!ModelState.IsValid)
+                return View(viewModel);
+
+            return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
         }
 
         [HttpPost]

@@ -8,44 +8,33 @@
 
 <h2>Custom Report Builder</h2>
 
+@using (Html.BeginForm("EditCustomReport", "Reports"))
+{
+    @Html.HiddenFor(x => x.OrgId)
+    
+    @Html.LabelFor(x => x.ReportName)
+    @Html.TextBoxFor(x => x.ReportName)
+    @Html.ValidationMessageFor(x => x.ReportName)
+
+    foreach (var c in Model.Columns.Select((x,i) => new { Value = x, Index = i}))
+    {
+        <div class="form-group">
+            <label class="checkbox">
+                @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
+                @c.Value.Name
+                @Html.HiddenFor(x => Model.Columns[c.Index].Name)
+            </label>
+        </div>
+    }
+
+    <input type="submit" class="btn" value="Save Report" />
+}
+
 <form>
-    <label for="report-name">Report Name</label>
-    <input type="text" name="report-name" id="report-name" data-bind="value: reportName" />
-
-    <div data-bind="template: { name: 'custom-report-template', foreach: columns }">
-    </div>
-
-    <input type="button" class="btn" data-bind="click: save" value="Save Report" />
 </form>
 
 <script type="text/html" id="custom-report-template">
-<div class="form-group">
-    <label class="checkbox">
-        <input type="checkbox" data-bind="checked: IsSelected" />
-        <!--ko text: Name--><!--/ko-->
-    </label>
-</div>
 </script>
 
-<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout/3.1.0/knockout-min.js"></script>
 <script>
-    var data = @Html.Raw(JsonConvert.SerializeObject(Model.Columns));
-
-    var ObservableColumn = function(name, isSelected) {
-        this.Name = ko.observable(name);
-        this.IsSelected = ko.observable(isSelected);
-    };
-
-    var viewModel = {
-        reportName: ko.observable('@Model.ReportName'),
-
-        columns: ko.observableArray(ko.utils.arrayMap(data, function(x) {
-            return new ObservableColumn(x.Name, x.IsSelected);
-        })),
-
-        save: function() {
-            console.log('wooooo!!!!');
-        }
-    };
-    ko.applyBindings(viewModel);
 </script>
