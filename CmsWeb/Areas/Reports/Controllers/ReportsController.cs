@@ -735,8 +735,8 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public JsonResult DeleteCustomReport(int? orgId, string reportName)
         {
-            if (!string.IsNullOrEmpty(reportName))
-                return new JsonResult {Data = new {Message = "Report name is required."}};
+            if (string.IsNullOrEmpty(reportName))
+                return new JsonResult {Data = "Report name is required."};
 
             var m = new CustomReportsModel(DbUtil.Db, orgId);
             m.DeleteReport(reportName);

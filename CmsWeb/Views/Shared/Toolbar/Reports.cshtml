@@ -137,7 +137,21 @@
 </style>
 
 <script type="text/javascript">
-    $('.toolbar-custom-reports a[data-action="delete"]').click(function () {
-        alert('wooo!!!');
+    $('.toolbar-custom-reports a[data-action="delete"]').click(function (e) {
+        e.preventDefault();
+
+        // TODO: put confirm dialog here to let them know it is gone
+
+        var $reportNode = $(this).parent();
+        var reportToDelete = $reportNode.text().trim();
+        $.post('@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports"})', { reportName: reportToDelete }).done(function (data) {
+            if (data === 'success') {
+                $reportNode.remove();
+            }
+            else {
+                // TODO: use a better alert thing here
+                alert("Couldn't delete");
+            }
+        });
     });
 </script>

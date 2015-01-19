@@ -21,11 +21,6 @@ namespace CmsWeb.Areas.Reports.Models
         private readonly CustomColumnsModel mc;
         private readonly int? orgid;
 
-        private string CustomReportContent
-        {
-            get { return _db.ContentText("CustomReports", ""); }
-        }
-
         public CustomReportsModel(CMSDataContext db)
         {
             _db = db;
@@ -41,7 +36,7 @@ namespace CmsWeb.Areas.Reports.Models
         public IEnumerable<string> ReportList()
         {
             var list = new List<string>();
-            var body = CustomReportContent;
+            var body = GetCustomReportsContent();
             if (body.HasValue())
             {
                 var xdoc = XDocument.Parse(body);
@@ -74,7 +69,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public string Sql(Guid id, string report)
         {
-            var body = CustomReportContent;
+            var body = GetCustomReportsContent();
             if (string.IsNullOrEmpty(body))
                 throw new Exception("missing CustomReports");
 
@@ -177,11 +172,6 @@ namespace CmsWeb.Areas.Reports.Models
             return sb.ToString();
         }
 
-        private static string DblQuotes(string s)
-        {
-            return s.Replace("'", "''");
-        }
-
         public XDocument StandardColumns(bool includeRoot = true)
         {
             var doc = new XDocument();
@@ -267,12 +257,38 @@ namespace CmsWeb.Areas.Reports.Models
 
         public void DeleteReport(string reportName)
         {
-            var body = CustomReportContent;
+            var body = GetCustomReportsContent();
             if (string.IsNullOrEmpty(body))
                 throw new Exception("missing CustomReports");
-            var xdoc = XDocument.Parse(CustomReportContent);
-            xdoc.Descendants("Reports").Single(r => r.Name == reportName).Remove();
-            var x = 0;
+
+            var xdoc = XDocument.Parse(GetCustomReportsContent());
+
+            var nodeToDelete = xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
+            if (nodeToDelete != null)
+                nodeToDelete.Remove();
+
+            SetCustomReportsContent(xdoc.ToString());
+        }
+
+        private static string DblQuotes(string s)
+        {
+            return s.Replace("'", "''");
+        }
+
+        private string GetCustomReportsContent()
+        {
+            return _db.ContentText("CustomReports", "");
+        }
+
+        private void SetCustomReportsContent(string customReportsXml)
+        {
+            var content = _db.Content("CustomReports");
+            if (content == null)
+                return;
+
+            content.Body = customReportsXml;
+
+            _db.SubmitChanges();
         }
     }
 }
