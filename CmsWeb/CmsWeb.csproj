@@ -809,6 +809,7 @@
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-ZW.js" />
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.cultures.js" />
     <Content Include="Scripts\jQuery\globalize\globalize.js" />
+    <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js" />

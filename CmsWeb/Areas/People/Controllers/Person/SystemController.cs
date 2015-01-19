@@ -106,5 +106,11 @@ namespace CmsWeb.Areas.People.Controllers
             var m = new DuplicatesModel(id);
             return View("System/Duplicates", m);
         }
+        [HttpPost]
+        public ActionResult MergeHistory(int id)
+        {
+            var q = DbUtil.Db.MergeHistories.Where(ii => ii.ToId == id);
+            return View("System/MergeHistory", q);
+        }
     }
 }

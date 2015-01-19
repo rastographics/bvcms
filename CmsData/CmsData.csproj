@@ -464,6 +464,7 @@
     <Compile Include="Generated\Functions\RollList.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
+    <Compile Include="Generated\MergeHistory.cs" />
     <Compile Include="Generated\MobileAppAction.cs" />
     <Compile Include="Generated\MobileAppActionType.cs" />
     <Compile Include="Generated\MobileAppAudioType.cs" />
