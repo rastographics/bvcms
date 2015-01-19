@@ -2,58 +2,38 @@
 @using CmsWeb.Areas.Org.Models
 @using UtilityExtensions
 <li>
-    <span class="keyword big tip" title="Registration Type
-        |JoinOrganization: for a single organization registration
-        |AttendMeeting: NOT WORKING YET
-        |UserSelectsOrganization: good for a single registration for multiple orgs (classes)
-        |ComputeOrganizationByAge: good for recreation leagues. Uses Birthday and Gender
-        |ManageSubscriptions: allows to select multiple organizations
-        |OnlineGiving: creates contribution records
-        |OnlinePledge: allows making pledges and checking on pledge status, increasing pledge too.">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="<p>JoinOrganization: for a single organization registration</p><p>AttendMeeting: NOT WORKING YET</p><p>UserSelectsOrganization: good for a single registration for multiple orgs (classes)</p><p>ComputeOrganizationByAge: good for recreation leagues. Uses Birthday and Gender</p><p>ManageSubscriptions: allows to select multiple organizations</p><p>OnlineGiving: creates contribution records</p><p>OnlinePledge: allows making pledges and checking on pledge status, increasing pledge too.</p>" data-original-title="Registration Type"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_RegistrationTypeId" class="keyword big tip">
         Registration Type:
-    </span>
+    </label>
     <span>@Html.DropDownList("org.RegistrationTypeId", OrganizationModel.RegistrationTypes())</span>
 </li>
 <li>
-    <span class="keyword big tip" title="Registration Title
-        |Leave blank to use the name of the organization">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Leave blank to use the name of the organization." data-original-title="Registration Title"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Title" class="keyword big tip">
         Registration Title:
-    </span> @Html.TextBox("Title", Model.Title ?? Model.org.OrganizationName)
+    </label> @Html.TextBox("Title", Model.Title ?? Model.org.OrganizationName)
 </li>
 <li>
-    <span class="keyword big tip" title="Class Filled
-        |You should use this when you want your organization
-        |to display the 'sorry' message
-        |it will also remove an organization
-        |from the available org dropdown">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="You should use this when you want your organization to display the 'sorry' message it will also remove an organization from the available org dropdown." data-original-title="Class Filled"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_ClassFilled" class="keyword big tip">
         Class Filled:
-    </span>
+    </label>
     <span>@Html.CheckBox("org.ClassFilled")</span>
 </li>
 <li>
-    <span class="keyword big tip" title="Registration Closed
-        |You should use this when you need to manually end your registration.
-        |This is the preferred way
-        |instead of changing the Registration Type">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="<p>You should use this when you need to manually end your registration.</p><p>This is the preferred way instead of changing the Registration Type.</p>" data-original-title="Registration Closed"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_RegistrationClosed" class="keyword big tip">
         Registration Closed:
-    </span>
+    </label>
     <span>@Html.CheckBox("org.RegistrationClosed")</span>
-
 </li>
 <li>
-    <span class="keyword big tip" title="Registration Start (Central time)
-        |Your registration will become available on this date
-        |Note, this is Central Time Zone">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Your registration will become available on this date.</p><p>Note, this is Central Time Zone.</p>" data-original-title="Registration Start (Central time)"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_RegStart" class="keyword big tip">
         Registration Start (Central time):
-    </span>
+    </label>
     <span>@Html.TextBox("org.RegStart", Model.org.RegStart.ToString2("g"), new { @class = "datetimepicker" })</span>
 </li>
 <li>
-    <span class="keyword big tip" title="Registration End 
-        |Your registration will become unavailable on this date
-        |Note, this is Central Time Zone">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Your registration will become unavailable on this date.</p><p>Note, this is Central Time Zone.</p>" data-original-title="Registration End"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_RedEnd" class="keyword big tip">
         Registration End (Central time):
-    </span>
+    </label>
     <span>@Html.TextBox("org.RegEnd", Model.org.RegEnd.ToString2("g"), new { @class = "datetimepicker" })</span>
 </li>
 @{
@@ -61,7 +41,7 @@
     if (masterinfo.Id > 0)
     {
         <li>
-            <span class="text big">MasterOrg:</span>
+            <label class="text big">MasterOrg:</label>
             <a href="/Organization/@masterinfo.Id" target="otherorg">@masterinfo.Name</a>
         </li>
     }
@@ -69,38 +49,30 @@
 @if (Model.org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization)
 {
     <li>
-        <span class="text big tip" title="Organization Pick List
-        |This is used on the master organization
-        |and will become the dropdown for 'User Chooses Organization'">
+        <span style="cursor: pointer;" data-toggle="popover" data-content="This is used on the master organization and will become the dropdown for 'User Chooses Organization'." data-original-title="Organization Pick List"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
             Organization Pick List:
-        </span>
+        </label>
         <div id="orgpickdiv" class="block border">
             @Html.Partial("Other/OrgPickList2", Model)
         </div>
     </li>
 }
 <li>
-    <span class="keyword big tip" title="Max Limit
-        |This will cause the class to go into a 'class filled' state
-        |when the number of members reaches this point.">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="This will cause the class to go into a 'class filled' state when the number of members reaches this point." data-original-title="Max Limit"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_Limit" class="keyword big tip">
         Max Limit:
-    </span>
+    </label>
     <span>@Html.TextBox("org.Limit")</span>
 </li>
 <li>
-    <span class="keyword big tip" title="Validate Orgs
-        |A registrant must be in one of these organizations before registering.
-        |Use a comma separated list of OrgIds">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="<p>A registrant must be in one of these organizations before registering.</p><p>Use a comma separated list of OrgIds.</p>" data-original-title="Validate Orgs"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="ValidateOrgs" class="keyword big tip">
         ValidateOrgs:
-    </span> @Html.TextBox("ValidateOrgs", string.Join(",", Model.ValidateOrgs))
+    </label> @Html.TextBox("ValidateOrgs", string.Join(",", Model.ValidateOrgs))
 </li>
 <li>
-    <div class="text big tip" title="AgeGroups
-        |This will put registrant in a small group based on their age,
-        |with an optional age-based fee">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="This will put registrant in a small group based on their age, with an optional age-based fee." data-original-title="AgeGroups"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
         AgeGroups:
-    </div>
-    <ul id="AgeGroups" class="sort">
+    </label>
+    <ul id="AgeGroups" class="sort" style="list-style: none;">
         @foreach (var i in Model.AgeGroups)
         {
             @Html.EditorFor(m => i)
@@ -109,86 +81,83 @@
     <div class="newitem"><a href="/Organization/NewAgeGroup"><img src="/Content/images/plus1.png" /> Add Item</a></div>
 </li>
 <li>
-    <span class="keyword big tip" title="AllowOnlyOne
-        |Does not offer the 'Add other Registrations' option">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Does not offer the 'Add other Registrations' option." data-original-title="AllowOnlyOne"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="AllowOnlyOne" class="keyword big tip">
         AllowOnlyOne:
-    </span> @Html.CheckBox("AllowOnlyOne", Model.AllowOnlyOne)
+    </label> @Html.CheckBox("AllowOnlyOne", Model.AllowOnlyOne)
 </li>
 <li>
-    <span class="keyword big tip" title="AddAsProspect
-        |Add Registrant as a Prospect">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Add Registrant as a Prospect." data-original-title="AddAsProspect"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="AddAsProspect" class="keyword big tip">
         AddAsProspect:
-    </span> @Html.CheckBox("AddAsProspect", Model.AddAsProspect)
+    </label> @Html.CheckBox("AddAsProspect", Model.AddAsProspect)
 </li>
 <li>
-  <span class="keyword big tip" title="AllowReRegister
-        |Allows a person to be a member of Organization and register again.">
-    AllowReRegister:
-  </span> @Html.CheckBox("AllowReRegister", Model.AllowReRegister)
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Allows a person to be a member of Organization and register again." data-original-title="AllowReRegister"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="AllowReRegister" class="keyword big tip">
+        AllowReRegister:
+    </label> @Html.CheckBox("AllowReRegister", Model.AllowReRegister)
 </li>
 <li>
-    <span class="keyword big tip" title="AllowSaveProgress
-        |Allows a person to leave the registration and come back to finish later">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Allows a person to leave the registration and come back to finish later." data-original-title="AllowSaveProgress"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="AllowSaveProgress" class="keyword big tip">
         AllowSaveProgress:
-    </span> @Html.CheckBox("AllowSaveProgress", Model.AllowSaveProgress)
+    </label> @Html.CheckBox("AllowSaveProgress", Model.AllowSaveProgress)
 </li>
 <li>
-    <span class="keyword big tip" title="GroupToJoin
-        |Joins registrant to another organization at the same time">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Joins registrant to another organization at the same time." data-original-title="GroupToJoin"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="GroupToJoin" class="keyword big tip">
         GroupToJoin:
-    </span> @Html.TextBox("GroupToJoin", Model.GroupToJoin)
+    </label> @Html.TextBox("GroupToJoin", Model.GroupToJoin)
 </li>
 <li><i>These relax requirements when checked, (good for when you need only a name and email address)</i></li>
-<li> <span class="keyword big">NoReqBirthYear:</span> @Html.CheckBox("NoReqBirthYear", Model.NoReqBirthYear) </li>
-<li> <span class="keyword big">NotReqDOB:</span> @Html.CheckBox("NotReqDOB", Model.NotReqDOB) </li>
-<li> <span class="keyword big">NotReqAddr:</span> @Html.CheckBox("NotReqAddr", Model.NotReqAddr) </li>
-<li> <span class="keyword big">NotReqZip:</span> @Html.CheckBox("NotReqZip", Model.NotReqZip) </li>
-<li> <span class="keyword big">NotReqPhone:</span> @Html.CheckBox("NotReqPhone", Model.NotReqPhone) </li>
-<li> <span class="keyword big">NotReqGender:</span> @Html.CheckBox("NotReqGender", Model.NotReqGender) </li>
-<li> <span class="keyword big">NotReqMarital:</span> @Html.CheckBox("NotReqMarital", Model.NotReqMarital) </li>
+<li style="margin-left: 20px;">
+   <label for="NoReqBirthYear" class="keyword big">NoReqBirthYear:</label> @Html.CheckBox("NoReqBirthYear", Model.NoReqBirthYear) 
+</li>
+<li style="margin-left: 20px;">
+    <label for="NotReqDOB" class="keyword big">NotReqDOB:</label> @Html.CheckBox("NotReqDOB", Model.NotReqDOB)
+</li>
+<li style="margin-left: 20px;">
+    <label for="NotReqAddr" class="keyword big">NotReqAddr:</label> @Html.CheckBox("NotReqAddr", Model.NotReqAddr)
+</li>
+<li style="margin-left: 20px;">
+    <label for="NotReqZip" class="keyword big">NotReqZip:</label> @Html.CheckBox("NotReqZip", Model.NotReqZip)
+</li>
+<li style="margin-left: 20px;">
+    <label for="NotReqPhone" class="keyword big">NotReqPhone:</label> @Html.CheckBox("NotReqPhone", Model.NotReqPhone)
+</li>
+<li style="margin-left: 20px;">
+    <label for="NotReqGender" class="keyword big">NotReqGender:</label> @Html.CheckBox("NotReqGender", Model.NotReqGender)
+</li>
+<li style="margin-left: 20px;">
+    <label for="NotReqMarital" class="keyword big">NotReqMarital:</label> @Html.CheckBox("NotReqMarital", Model.NotReqMarital)
+</li>
 <li>
-    <span class="keyword big tip" title="Shell
-        |Enter the name of the HTML shell for this registration
-        |(stored in Special Content)">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Enter the name of the HTML shell for this registration (stored in Special Content)." data-original-title="Shell"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Shell" class="keyword big tip">
         Shell:
-    </span> @Html.TextBox("Shell", Model.Shell)
+    </label> @Html.TextBox("Shell", Model.Shell)
 </li>
 <li>
-    <span class="keyword big tip" title="Bootstrap Shell
-        |Enter the name of the HTML shell for this registration
-        |(stored in Special Content)">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Enter the name of the HTML shell for this registration (stored in Special Content)." data-original-title="Bootstrap Shell"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="ShellBs" class="keyword big tip">
         Bootstrap Shell:
-    </span> @Html.TextBox("ShellBs", Model.ShellBs)
+    </label> @Html.TextBox("ShellBs", Model.ShellBs)
 </li>
 <li>
-    <span class="keyword big tip" title="UseBootstrap
-        |Use Bootstrap shell">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="Use Bootstrap shell." data-original-title="UseBootstrap"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_UseBootstrap" class="keyword big tip">
         UseBootstrap:
-    </span> @Html.CheckBox("org.UseBootstrap", Model.org.UseBootstrap)
+    </label> @Html.CheckBox("org.UseBootstrap", Model.org.UseBootstrap)
 </li>
 <li>
-    <span class="keyword big tip" title="Special Script
-        |Enter the name of the HTML/Script file for this registration
-        |Only works with the Special Script type of registration
-        |(stored in Special Content)">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Enter the name of the HTML/Script file for this registration.</p><p>Only works with the Special Script type of registration (stored in Special Content).</p>" data-original-title="Special Script"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="SpecialScript" class="keyword big tip">
         Special Script:
-    </span> @Html.TextBox("SpecialScript", Model.SpecialScript)
+    </label> @Html.TextBox("SpecialScript", Model.SpecialScript)
 </li>
 <li>
-    <span class="keyword big tip" title="MemberOnly
-        |You must be a member of the church to register">
+    <span style="cursor: pointer;" data-toggle="popover" data-content="You must be a member of the church to register." data-original-title="MemberOnly"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="MemberOnly" class="keyword big tip">
         MemberOnly:
-    </span> @Html.CheckBox("MemberOnly", Model.MemberOnly)
+    </label> @Html.CheckBox("MemberOnly", Model.MemberOnly)
 </li>
 @if (User.IsInRole("Admin"))
 {
     <li>
-        <span class="keyword big tip"
-              title="OnRegister Script Name
-        |This is the name of a script in Special Content
-        |that will be run when someone registers.">
+        <span style="cursor: pointer;" data-toggle="popover" data-content="This is the name of a script in Special Content that will be run when someone registers." data-original-title="OnRegister Script Name"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_AddToSmallGroupScript" class="keyword big tip">
             OnRegister Script Name:
-        </span>
+        </label>
         @Html.TextBox("org.AddToSmallGroupScript")
     </li>
 }

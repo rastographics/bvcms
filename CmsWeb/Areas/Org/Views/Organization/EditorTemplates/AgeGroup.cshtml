@@ -3,13 +3,14 @@
     @using (var ci = Html.BeginCollectionItem("AgeGroups"))
     {
       <li>@Html.Raw(ci.hiddenindex)
-        <ul>
-          <li>
-          <div class="sgfee">Range:</div> @Html.TextBoxFor(m => m.StartAge, new { @class = "short" })
-          - @Html.TextBoxFor(m => m.EndAge, new { @class = "short" })
-          <a class="del" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></li>
-          <li><div class="sgfee">SmallGroup:</div> @Html.TextBoxFor(m => m.SmallGroup) </li>
-          <li><div class="sgfee">Fee:</div> @Html.TextBoxFor(m => m.Fee) </li>
-        </ul>
+          <ul style="list-style: none;">
+              <li>
+                  <div class="sgfee">Range:</div> @Html.TextBoxFor(m => m.StartAge, new { @class = "short" })
+                  - @Html.TextBoxFor(m => m.EndAge, new { @class = "short" })
+                  <a class="del" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a>
+              </li>
+              <li><div class="sgfee">SmallGroup:</div> @Html.TextBoxFor(m => m.SmallGroup) </li>
+              <li><div class="sgfee">Fee:</div> @Html.TextBoxFor(m => m.Fee) </li>
+          </ul>
       </li>
     }

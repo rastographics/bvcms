@@ -1,4 +1,21 @@
 ﻿$(function () {
+
+    function initializePopovers() {
+        $('[data-toggle="popover"]').popover({html: true, placement: 'bottom'});
+
+        $('body').on('click', function (e) {
+            $('[data-toggle="popover"]').each(function () {
+                //the 'is' for buttons that trigger popups
+                //the 'has' for icons within a button that triggers a popup
+                if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                    $(this).popover('hide');
+                }
+            });            
+        });
+    }
+
+    initializePopovers();
+
     CKEDITOR.replace('editor', {
         height: 200,
         customConfig: '/scripts/js/ckeditorconfig.js'
@@ -12,12 +29,13 @@
         $.post(a.attr("href"), null, function (ret) {
             a.parent().prev().append(ret);
             a.parent().prev().find(".tip").tooltip({ opacity: 0, showBody: "|" });
-            $.initDatePicker(f);
+            //$.initDatePicker(f);
         });
     });
 
     $.InitFunctions.SettingFormsInit = function (f) {
         $(".tip", f).tooltip({ opacity: 0, showBody: "|" });
+        initializePopovers();
         //$("ul.enablesort.sort, ul.enablesort ul.sort", f).sortable();
         $("ul.noedit input", f).attr("disabled", "disabled");
         $("ul.noedit select", f).attr("disabled", "disabled");

@@ -946,6 +946,7 @@
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jQuery\jquery-ui.effects.min.js" />
     <Content Include="Scripts\jQuery\jquery.smoothscroll.js" />
+    <Content Include="Scripts\jQuery\jquery.timepicker.min.js" />
     <Content Include="Scripts\jQuery\jquery.ui.accordion.js" />
     <Content Include="Scripts\jQuery\jquery.ui.touch-punch.js" />
     <Content Include="Scripts\jQuery\jquery.ui.touch-punch.min.js" />

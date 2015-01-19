@@ -1,41 +1,31 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
     <li>
-        <span class="keyword big tip"
-        title="Location
-        |Typically something short like a room number, 
-        |not enough room for an address">
-        Location:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Typically something short like a room number, not enough room for an address." data-original-title="Location"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_Location" class="keyword big tip">
+        Location:</label>
         @Html.TextBox("Org.Location")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Pending Location
-        |Used for promotion, setup classes that will be moved
-        |see wiki re annual class promotion">
-        Pending Location:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Used for promotion, setup classes that will be moved see wiki re annual class promotion." data-original-title="Pending Location"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_PendingLoc" class="keyword big tip">
+            Pending Location:
+        </label>
         @Html.TextBox("Org.PendingLoc")
     </li>
     <li>
-        <div class="keyword big block tip"
-        title="Description
-        |A longer text description of the organization,
-        |typically displayed in a flyer or on a website.">
-        Description</div>
+        <span style="cursor: pointer; vertical-align: top;" data-toggle="popover" data-content="A longer text description of the organization, typically displayed in a flyer or on a website." data-original-title="Description"><i class="fa fa-info-circle" style="vertical-align: top; margin-top: 5px;"></i></span>&nbsp;&nbsp;<label for="Org_Description" class="keyword big block tip" style="vertical-align: top;">
+            Description:
+        </label>
         @Html.TextArea("Org.Description", new { rows = "6", cols = "40" })
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Entry Point
-        |When a new person visits a meeting for this organization,
-        |they will be coded with this to indicate their first entrance to the church">
-        Entry Point:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="When a new person visits a meeting for this organization, they will be coded with this to indicate their first entrance to the church." data-original-title="Entry Point"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_EntryPointId" class="keyword big tip">
+            Entry Point:
+        </label>
         @Html.DropDownList("Org.EntryPointId", Model.EntryPointList())
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Publish Directory
-        |This makes available an accessible directory for any member of this organization.">
-        Publish Directory:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="This makes available an accessible directory for any member of this organization." data-original-title="Publish Directory"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_PublishDirectory" class="keyword big tip">
+            Publish Directory:
+        </label>
         @Html.DropDownList("Org.PublishDirectory", 
             new SelectListItem[]
                 {
@@ -45,60 +35,44 @@
                 })
     </li>
     <li>
-        <span class="keyword big tip"
-              title="Grade
-        |Used during promotion to assign a grade to a student who joins this class
-        |Must be a integer number, not a range, DO NOT USE something like 7-10
-        |Only effective for graded classes.
-        |This facility keeps you from having to maintain grades once a year">
-        Grade:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Used during promotion to assign a grade to a student who joins this class.</p><p>Used during promotion to assign a grade to a student who joins this class.</p><p>Must be a integer number, not a range, DO NOT USE something like 7-10 Only effective for graded classes.</p><p>This facility keeps you from having to maintain grades once a year.</p>" data-original-title="Grade"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_GradeAgeStart" class="keyword big tip">
+            Grade:
+        </label>
         @Html.TextBox("Org.GradeAgeStart")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Gender
-        |For the 'Compute Org by Birthday/Gender' Registration Type.
-        |Commonly used for recreation sports leagues
-        |where each league is a Division (in BVCMS vernacular)
-        |and each division within the league is an Organization.">
-        Gender:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>For the 'Compute Org by Birthday/Gender' Registration Type.</p><p>Commonly used for recreation sports leagues where each league is a Division (in BVCMS vernacular) and each division within the league is an Organization.</p>" data-original-title="Gender"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_GenderId" class=" keyword big tip">
+            Gender:
+        </label>
         @Html.DropDownList("Org.GenderId", Model.GenderList())
     </li>
     <li>
-        <span class="keyword big tip"
-              title="Phone Number
-            |Used to display a number to call in a confirmation email with {phone}
-            |If you doing a registration with more than one org, 
-            |allows you to specify a different # for each org
-            |and have only one confirmation #">
-            Phone Number:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Used to display a number to call in a confirmation email with {phone}.</p><p>If you doing a registration with more than one org, allows you to specify a different # for each org and have only one confirmation #.</p>" data-original-title="Phone Number"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_PhoneNumber" class="keyword big tip">
+            Phone Number:
+        </label>
         @Html.TextBox("Org.PhoneNumber")
     </li>
     <li>
-        <span class="keyword big tip"
-              title="Recreation Team
-            |User to designate an orginazation as a recreation team">
-            Recreation Team:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="User to designate an orginazation as a recreation team." data-original-title="Recreation Team"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_IsRecreationTeam" class="keyword big tip">
+            Recreation Team:
+        </label>
         @Html.CheckBox("Org.IsRecreationTeam")
     </li>
     <li>
-        <span class="keyword big tip" title="Mission Trip
-        |Allows others to donate on a member's behalf'">
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Allows others to donate on a member's behalf." data-original-title="Mission Trip"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_IsMissionTrip" class="keyword big tip">
             Mission Trip:
-        </span> @Html.CheckBox("Org.IsMissionTrip")
+        </label> @Html.CheckBox("Org.IsMissionTrip")
     </li>
-    <li><span class="keyword big tip" title="NoCreditCards
-        |Disallow Credit Cards on this org">
-            No Credit Cards:</span> @Html.CheckBox("Org.NoCreditCards")
+    <li><span style="cursor: pointer;" data-toggle="popover" data-content="Disallow Credit Cards on this org." data-original-title="No Credit Cards"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_NoCreditCards" class="keyword big tip">
+          No Credit Cards:
+        </label> @Html.CheckBox("Org.NoCreditCards")
     </li>
 @if(User.IsInRole("Admin"))
 {
     <li>
-        <span class="keyword big tip"
-			  title="Security Role
-        |This organization will be visible to only users in this role.
-        |WARNING, if no one has this role, you will never be able to get back here.">
-        Security Role:</span>
+    <span style="cursor: pointer;" data-toggle="popover" data-content="<p>This organization will be visible to only users in this role.</p><p>WARNING, if no one has this role, you will never be able to get back here.</p>" data-original-title="Security Role"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Org_LimitToRole" class="keyword big tip">
+            Security Role:
+        </label>
         @Html.TextBox("Org.LimitToRole")
     </li>
 }

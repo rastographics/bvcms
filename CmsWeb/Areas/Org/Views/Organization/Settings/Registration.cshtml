@@ -1,16 +1,19 @@
 ﻿@model CmsData.Registration.Settings
-<form class="form form-horizontal non-modal ajax span12 pad-left" data-init="datetimepicker">
-  @FormAction()
-  <ul class="noedit">
-    @Html.EditorFor(m => m, "TabRegistration")
-  </ul>
-  @FormAction()
+<form class="form form-horizontal non-modal ajax span12" data-init="datetimepicker">
+    <br/>
+    @FormAction()
+    <ul class="noedit" style="list-style: none; margin-left: 5px;">
+        @Html.EditorFor(m => m, "TabRegistration")
+    </ul>
+    @FormAction()
 </form>
 @helper FormAction()
 {
   if (User.IsInRole("Edit"))
   {
-    <a href="/Organization/RegistrationEdit/@Model.OrgId" class="btn edit ajax pull-right">Edit</a>
-    <div class="formerror">@Html.ValidationMessage("Form")</div>
+      <div class="pull-right">
+          <a href="/Organization/RegistrationEdit/@Model.OrgId" class="btn edit ajax">Edit</a>
+      </div>
+      <div class="formerror">@Html.ValidationMessage("Form")</div>
   }
 }

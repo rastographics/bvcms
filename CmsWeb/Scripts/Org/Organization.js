@@ -318,13 +318,34 @@
             $(this).css("z-index", zmax);
         });
     };
+    $.InitFunctions.timepicker = function (f) {
+        $(".timepicker").timepicker({ 'step': 5 });
+        //var endDate = new Date();
+        //endDate.setDate(endDate.getDate() + 1);
 
+        //$(".timepicker").datetimepicker({
+        //    format: "H:ii P",
+        //    showMeridian: true,
+        //    autoclose: true,
+        //    todayBtn: false,
+        //    pickerPosition: "bottom-left",
+        //    startView: 1,
+        //    minView: 0,
+        //    maxView: 1,
+        //    startDate: new Date(),
+        //    endDate: endDate
+        //});
+    };
+    $.InitFunctions.datepicker = function (f) {
+        $(".datepicker").datepicker();
+    };
     $.InitFunctions.datetimepicker = function (f) {
         $(".datetimepicker").datetimepicker({
             format: "m/d/yyyy H:ii P",
             showMeridian: true,
             autoclose: true,
-            todayBtn: false
+            todayBtn: false,
+            pickerPosition: "bottom-left"
         });
     };
     $.InitFunctions.ReloadMeetings = function (f) {
@@ -578,7 +599,7 @@
             $.post(href, null, function (ret) {
                 $("#schedules", f).append(ret).ready(function () {
                     $.renumberListItems();
-                    $.InitFunctions.datetimepicker();
+                    $.InitFunctions.timepicker();
                 });
             });
         }

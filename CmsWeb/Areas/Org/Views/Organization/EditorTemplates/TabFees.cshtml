@@ -2,89 +2,70 @@
 @using CmsData
 @using CmsWeb
 @using UtilityExtensions
-  <li><span class="keyword big tip" title="Fee
-    |The base fee for the registration.">
-    Fee:</span> @Html.TextBox("Fee", Model.Fee)
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="The base fee for the registration." data-original-title="Fee"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Fee" class="keyword big tip">
+    Fee:</label> @Html.TextBox("Fee", Model.Fee)
   </li>
-  <li><span class="keyword big tip"
-    title="Deposit
-    |Allows the registrant to pay in full or pay a deposit.
-    |If paying a deposit, they get a link to continue to pay on this account.
-    |Must add {paylink} to the confirmation.
-    |They can make as many additional payments as they want until paid in full.
-    |Like an installment payment.">
-    Deposit:</span> @Html.TextBox("Deposit", Model.Deposit)
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="<p>Allows the registrant to pay in full or pay a deposit.</p><p>If paying a deposit, they get a link to continue to pay on this account.</p><p>Must add {paylink} to the confirmation.</p><p>They can make as many additional payments as they want until paid in full.</p><p>Like an installment payment.</p>" data-original-title="Deposit"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Deposit" class="keyword big tip">
+    Deposit:
+</label> @Html.TextBox("Deposit", Model.Deposit)
   </li>
-  <li><span class="keyword big tip" title="IncludeOtherFeesWithDeposit
-    |Indicate whether the Other Fees (Questions tab)
-    |Are paid with the deposit.">
-    Other Fees Required With Deposit:</span> @Html.CheckBox("IncludeOtherFeesWithDeposit", Model.IncludeOtherFeesWithDeposit)
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="Indicate whether the Other Fees (Questions tab) are paid with the deposit." data-original-title="IncludeOtherFeesWithDeposit"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="IncludeOtherFeesWithDeposit" class="keyword big tip">
+    Other Fees Required With Deposit:
+</label> @Html.CheckBox("IncludeOtherFeesWithDeposit", Model.IncludeOtherFeesWithDeposit)
   </li>
-  <li><span class="keyword big tip" title="ExtraFee
-    |A late registration fee.">
-    ExtraFee:</span> @Html.TextBox("ExtraFee", Model.ExtraFee)
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="A late registration fee." data-original-title="ExtraFee"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="ExtraFee" class="keyword big tip">
+    ExtraFee:
+</label> @Html.TextBox("ExtraFee", Model.ExtraFee)
   </li>
-  <li><span class="keyword big tip" title="LastDayBeforeExtra
-    |The date, after which, the extra fee goes into effect.
-    |Good for when you want to discourage last minute registrations.">
-    LastDayBeforeExtra:</span> @Html.DatePicker("org.LastDayBeforeExtra")
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="<p>The date, after which, the extra fee goes into effect.</p><p>Good for when you want to discourage last minute registrations.</p>" data-original-title="LastDayBeforeExtra"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_LastDayBeforeExtra" class="keyword big tip">
+    LastDayBeforeExtra:
+</label> @Html.TextBox("org.LastDayBeforeExtra", Model.org.LastDayBeforeExtra.ToString2("g"), new { @class = "datepicker" })
   </li>
-  <li> <span class="keyword big tip" title="MaximumFee
-    |The maximum fee for all registrants.
-    |Good for family maximum fee.
-    |Does not include shirt fees and other extra fees.">
-    MaximumFee:</span> @Html.TextBox("MaximumFee", Model.MaximumFee)
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="<p>The maximum fee for all registrants.</p><p>Good for family maximum fee.</p><p>Does not include shirt fees and other extra fees.</p>" data-original-title="MaximumFee"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="MaximumFee" class="keyword big tip">
+    MaximumFee:
+</label> @Html.TextBox("MaximumFee", Model.MaximumFee)
   </li>
-<li><span class="keyword big tip" title="ApplyMaxToOtherFees
-    |Indicate whether the maximum applies to other fees too, 
-    |or just to main fee.">
-    Apply Max to Other Fees:</span> @Html.CheckBox("ApplyMaxToOtherFees", Model.ApplyMaxToOtherFees)
+<li><span style="cursor: pointer;" data-toggle="popover" data-content="Indicate whether the maximum applies to other fees too, or just to main fee." data-original-title="ApplyMaxToOtherFees"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="ApplyMaxToOtherFees" class="keyword big tip">
+    Apply Max to Other Fees:
+</label> @Html.CheckBox("ApplyMaxToOtherFees", Model.ApplyMaxToOtherFees)
   </li>
-  <li><span class="keyword big tip" title="AskDonation
-    |Indicate whether you want to ask for an extra donation.
-    |Creates a contribution record for that amount too.">
-    AskDonation:</span> @Html.CheckBox("AskDonation", Model.AskDonation)
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="<p>Indicate whether you want to ask for an extra donation.</p><p>Creates a contribution record for that amount too.</p>" data-original-title="AskDonation"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="AskDonation" class="keyword big tip">
+    AskDonation:
+</label> @Html.CheckBox("AskDonation", Model.AskDonation)
   </li>
-  <li><span class="keyword big tip" title="DonationFundId
-    |Used to specify the Fund for a special donation.
-    |Also used to specify the Pledge Fund for Online Pledges">
-    DonationFundId:</span> @Html.TextBox("DonationFundId", Model.DonationFundId)
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="<p>Used to specify the Fund for a special donation.</p><p>Also used to specify the Pledge Fund for Online Pledges.</p>" data-original-title="DonationFundId"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="DonationFundId" class="keyword big tip">
+    DonationFundId:
+</label> @Html.TextBox("DonationFundId", Model.DonationFundId)
   </li>
-  <li><span class="keyword big tip" title="DonationLabel
-    |HTML used to describe the 'featured' donation">
-    DonationLabel:</span> 
+  <li><span style="cursor: pointer;" data-toggle="popover" data-content="HTML used to describe the 'featured' donation." data-original-title="DonationLabel"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="DonationLabel" class="keyword big tip">
+    DonationLabel:
+</label> 
     @Html.EditorFor(m => m.DonationLabel, "Html")
   </li>
-<li><div class="text big tip" title="OrgFees
-    |This will give registrants a special fee
-    |if they are members of a particular organization.
-    |Note that this fee overrides all other fees 
-    |and will not appear until the payment page.
-    |If it is zero, the payment page will be skipped.">
-    OrgFees:</div>
-      <ul id="OrgFees" class="sort">
-	      @{ var listname = Html.NameFor2(m => m.OrgFees.list); }
-          @foreach(var item in Model.OrgFees.list)
-          {
-              item.Name = listname;
-              @Html.EditorFor(m => item)
-          }
-      </ul>
+<li><span style="cursor: pointer;" data-toggle="popover" data-content="<p>This will give registrants a special fee if they are members of a particular organization.</p><p>Note that this fee overrides all other fees and will not appear until the payment page.</p><p>If it is zero, the payment page will be skipped.</p>" data-original-title="OrgFees"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
+    OrgFees:</label>
+    <ul id="OrgFees" class="sort" style="list-style: none;">
+        @{ var listname = Html.NameFor2(m => m.OrgFees.list); }
+        @foreach (var item in Model.OrgFees.list)
+        {
+            item.Name = listname;
+            @Html.EditorFor(m => item)
+        }
+    </ul>
     <div class="newitem"><a href="/Organization/NewOrgFee/@listname"><img src="/Content/images/plus1.png" /> Add Item</a></div>
   </li>
-<li><span class="keyword big tip" title="OtherFeesAddedToOrgFee
-    |Indicate whether the special fees for orgs includes 
-    |Other Fees on the Questions tab.">
-        Other Fees are Additional:</span> @Html.CheckBox("OtherFeesAddedToOrgFee", Model.OtherFeesAddedToOrgFee)
+<li><span style="cursor: pointer;" data-toggle="popover" data-content="Indicate whether the special fees for orgs includes other Fees on the Questions tab." data-original-title="OtherFeesAddedToOrgFee"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="OtherFeesAddedToOrgFee" class="keyword big tip">
+    Other Fees are Additional:
+</label> @Html.CheckBox("OtherFeesAddedToOrgFee", Model.OtherFeesAddedToOrgFee)
 </li>
-<li><span class="keyword big tip" title="Accounting Code
-    |Used to add a (1234) to the end of the OrgName passed to the payment processor">
-    AccountingCode:</span> @Html.TextBox("AccountingCode", Model.AccountingCode)
+<li><span style="cursor: pointer;" data-toggle="popover" data-content="Used to add a (1234) to the end of the OrgName passed to the payment processor." data-original-title="Accounting Code"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="AccountingCode" class="keyword big tip">
+    AccountingCode:
+</label> @Html.TextBox("AccountingCode", Model.AccountingCode)
 </li>
 @if (ViewExtensions2.DbSetting("ShowExtraValueFeeName", "false").ToBool())
 {
-    <li><span class="keyword big tip" title="ExtraValueFeeName
-    |The fee will be taken from this Extra Value field">
-            ExtraValueFeeName:</span> @Html.TextBox("ExtraValueFeeName", Model.ExtraValueFeeName)
+    <li><span style="cursor: pointer;" data-toggle="popover" data-content="The fee will be taken from this Extra Value field." data-original-title="ExtraValueFeeName"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="ExtraValueFeeName" class="keyword big tip">
+    ExtraValueFeeName:
+</label> @Html.TextBox("ExtraValueFeeName", Model.ExtraValueFeeName)
     </li>
 }

@@ -7,14 +7,14 @@
 @section head
 {
   @Fingerprint.Css("/Content/styles/organization.css")
-  @Fingerprint.Css("/Content/css/bootstrap-datetimepicker.css")
+  @Fingerprint.Css("/Content/styles/jquery.timepicker.css")
 }
 @section scripts
 {
   @ViewExtensions2.CKEditor()
   @Fingerprint.Script("/Scripts/bundle.org.js")
   @Fingerprint.Script("/Scripts/Bootstrap/orgOrgMemberDialog2.js")
-  @Fingerprint.Script("/Scripts/Bootstrap/bootstrap-datetimepicker.min.js")
+  @Fingerprint.Script("/Scripts/jQuery/jquery.timepicker.min.js")
 }
 @Html.Hidden("refreshed", "no")
 @Html.Hidden("OrganizationId")

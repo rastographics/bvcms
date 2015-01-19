@@ -1,14 +1,17 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
-<form class="form form-horizontal non-modal ajax span12 pad-left">
-  @FormAction()
-  <ul class="enablesort edit">
-    @Html.EditorFor(m => m, "TabAttendance")
-  </ul>
-  @FormAction()
+<form class="form form-horizontal non-modal ajax span12">
+    <br/>
+    @FormAction()
+    <ul class="enablesort edit" style="list-style: none; margin-left: 5px;">
+        @Html.EditorFor(m => m, "TabAttendance")
+    </ul>
+    @FormAction()
 </form>
 @helper FormAction()
 {
-  <a href="/Organization/Attendance/@Model.Id" class="btn ajax">Cancel</a>
-  <a href="/Organization/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
-  <div class="formerror">@Html.ValidationMessage("Form")</div>
+    <div class="pull-right">
+        <a href="/Organization/Attendance/@Model.Id" class="btn ajax">Cancel</a>
+        <a href="/Organization/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
+    </div>
+    <div class="formerror">@Html.ValidationMessage("Form")</div>
 }

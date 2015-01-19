@@ -1,16 +1,19 @@
 ﻿@model CmsData.Registration.Settings
-<form class="form form-horizontal non-modal ajax span12 pad-left">
-  @FormAction()
-  <p><i>Drag the grey bars up/down arrow to reorder items.</i></p>
-  <ul class="enablesort edit">
-    @Html.EditorFor(m => m, "TabFees")
-  </ul>
-  @FormAction()
+<form class="form form-horizontal non-modal ajax span12">
+    <br/>
+    @FormAction()
+    <p><i>Drag the grey bars up/down arrow to reorder items.</i></p>
+    <ul class="enablesort edit" style="list-style: none; margin-left: 5px;">
+        @Html.EditorFor(m => m, "TabFees")
+    </ul>
+    @FormAction()
 </form>
 
 @helper FormAction()
 {
-  <a href="/Organization/Fees/@Model.OrgId" class="btn ajax">Cancel</a>
-  <a href="/Organization/FeesUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
-  <div class="formerror">@Html.ValidationMessage("Form")</div>
+    <div class="pull-right">
+        <a href="/Organization/Fees/@Model.OrgId" class="btn ajax">Cancel</a>
+        <a href="/Organization/FeesUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+    </div>
+    <div class="formerror">@Html.ValidationMessage("Form")</div>
 }

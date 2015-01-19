@@ -1,22 +1,15 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
 @using CmsWeb
+@using UtilityExtensions
     <li>
-        <span class="keyword big tip"
-              title="Does not meet weekly
-        | Check this if the org does not meet weekly.
-        | Leave unchecked for weekly meetings">
-        Does NOT meet weekly:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Check this if the org does not meet weekly.</p><p>Leave unchecked for weekly meetings.</p>" data-original-title="Does Not Meet Weekly"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_NotWeekly" class="keyword big tip">
+            Does NOT meet weekly:
+        </label>
         @Html.CheckBox("org.NotWeekly")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Schedule
-        |This is where you indicate the weekly schedule.
-        |You can have mutiple schedules.
-        |The top one is the default that shows up on lists.
-        |Schedules can be 'Every Meeting' for 100% credit
-        |Or they can be 'One a Week' for 100% credit">
-        Schedule:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>This is where you indicate the weekly schedule.</p><p>You can have mutiple schedules.</p><p>The top one is the default that shows up on lists.</p><p>Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for 100% credit.</p>" data-original-title="Schedule"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
+        Schedule:</label>
         <div id="schedulehead">
             <span style="margin-left:22px;width: 55px" >Day</span> 
             <span style="width: 68px">Time</span> 
@@ -31,119 +24,88 @@
         <div><a id="addsch" href="/Organization/NewSchedule"><img src="/Content/images/plus1.png" /> Add Schedule</a></div>
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Allow Attendance Overlap
-        |This allows persons to attend two differnt orgs that start at the same time.
-        |e.g. a meeting that spans several hours vs another that is one hour">
-        Allow Attendance Overlap:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>This allows persons to attend two differnt orgs that start at the same time.</p><p>e.g. a meeting that spans several hours vs another that is one hour.</p>" data-original-title="Allow Attendance Overlap"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_AllowAttendOverlap" class="keyword big tip">
+            Allow Attendance Overlap:
+        </label>
         @Html.CheckBox("org.AllowAttendOverlap")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Allow Self Check-In
-        |Causes this meeting to show up on the Touchscreen Checkin.">
-        Allow Self Check-In:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Causes this meeting to show up on the Touchscreen Checkin." data-original-title="Allow Self Check-In"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_CanSelfCheckin" class="keyword big tip">
+            Allow Self Check-In:
+        </label>
         @Html.CheckBox("org.CanSelfCheckin")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Suspend Check-in
-        |Causes this meeting to show up only when the magic button is pressed.">
-        Suspend Check-In:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Causes this meeting to show up only when the magic button is pressed." data-original-title="Suspend Check-in"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_SuspendCheckin" class="keyword big tip">
+            Suspend Check-In:
+        </label>
         @Html.CheckBox("org.SuspendCheckin")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Allow Non-Campus Check-In
-        |See documentation">
-        Allow Non-Campus Check-In:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="See documentation." data-original-title="Allow Non-Campus Check-In"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_AllowNonCampusCheckin" class="keyword big tip">
+            Allow Non-Campus Check-In:
+        </label>
         @Html.CheckBox("org.AllowNonCampusCheckin")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Offsite Trip
-        |This causes any absents during the period of an offsite trip start and end dates
-        |to not be counted negatively for attendance purposes.">
-        Offsite Trip:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="This causes any absents during the period of an offsite trip start and end dates to not be counted negatively for attendance purposes." data-original-title="Offsite Trip"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_Offsite" class="keyword big tip">
+            Offsite Trip:
+        </label>
         @Html.CheckBox("org.Offsite")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="No security label required
-        |Used for when children are old enough 
-        |to not need a security label to be picked up.">
-        No security label required:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Used for when children are old enough to not need a security label to be picked up." data-original-title="No Security Label Required"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_NoSecurityLabel" class="keyword big tip">
+            No security label required:
+        </label>
         @Html.CheckBox("org.NoSecurityLabel")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Number of CheckIn Labels
-        |Default is 1, use 0 if no labels needed.">
-        Number of CheckIn Labels:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Default is 1, use 0 if no labels needed." data-original-title="Number of CheckIn Labels"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_NumCheckInLabels" class="keyword big tip">
+            Number of CheckIn Labels:
+        </label>
         @Html.TextBox("org.NumCheckInLabels")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Number of Worker CheckIn Labels
-        |Allows workers to get 1 or 0 labels when checking in.">
-        Number of Worker CheckIn Labels:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Allows workers to get 1 or 0 labels when checking in." data-original-title="Number of Worker CheckIn Labels"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_NumWorkerCheckInLabels" class="keyword big tip">
+            Number of Worker CheckIn Labels:
+        </label>
         @Html.TextBox("org.NumWorkerCheckInLabels")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="First Meeting Date
-        |Causes people who visited prior to this date
-        |to drop off the recent visitor list.
-        |For when visitors promote to the next grade.
-        |Also used to display the meeting dates 
-        |on 'User Chooses Class' type registrations">
-        First Meeting Date:</span>
-        @Html.DatePicker("org.FirstMeetingDate")
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Causes people who visited prior to this date to drop off the recent visitor list.</p><p>For when visitors promote to the next grade.</p><p>Also used to display the meeting dates on 'User Chooses Class' type registrations.</p>" data-original-title="First Meeting Date"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_FirstMeetingDate" class="keyword big tip">
+            First Meeting Date:
+        </label>
+        @Html.TextBox("org.FirstMeetingDate", Model.Org.FirstMeetingDate.ToString2("g"), new { @class = "datepicker" })
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Last Meeting Date
-        |Used to display the meeting dates 
-        |on 'User Chooses Class' type registrations">
-        Last Meeting Date:</span>
-        @Html.DatePicker("org.LastMeetingDate")
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Used to display the meeting dates on 'User Chooses Class' type registrations." data-original-title="Last Meeting Date"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_LastMeetingDate" class="keyword big tip">
+            Last Meeting Date:
+        </label>
+        @Html.TextBox("org.LastMeetingDate", Model.Org.LastMeetingDate.ToString2("g"), new { @class = "datepicker" })
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Rollsheet Guest Weeks
-        |Default is 3.
-        |Guests will drop off the rollsheet or checkin screen
-        |if they haven't visited in this number of weeks.
-        |Some teachers prefer them to show up for a long time.">
-        Rollsheet Guest Weeks:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Default is 3.</p><p>Guests will drop off the rollsheet or checkin screen if they haven't visited in this number of weeks.</p><p>Some teachers prefer them to show up for a long time.</p>" data-original-title="Rollsheet Guest Weeks"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_RollSheetVisitorWks" class="keyword big tip">
+            Rollsheet Guest Weeks:
+        </label>
         @Html.TextBox("org.RollSheetVisitorWks")
     </li>
     <li>
-        <span class="keyword big tip"
-              title="Consecutive Absents Threshold
-        |Default is 2.
-        |Number of consequtive absents that causes person to show on Recent Absents report
-        ">
-        Consecutive Absents Threshold:</span>
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Default is 2.</p><p>Number of consequtive absents that causes person to show on Recent Absents report.</p>" data-original-title="Consecutive Absents Threshold"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_ConsecutiveAbsentsThreshold" class="keyword big tip">
+            Consecutive Absents Threshold:
+        </label>
         @Html.TextBox("org.ConsecutiveAbsentsThreshold")
     </li>
     <li>
-        <span class="keyword big tip"
-        title="Start Birthday
-        |Used on Touchscreen Checkin for when a guest needs to choose a class.
-        |Also used to prevent someone joining an organization during registration 
-        |if they are outside the birthday range">
-        Start Birthday:</span>
-        @Html.DatePicker("org.BirthDayStart")
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Used on Touchscreen Checkin for when a guest needs to choose a class.</p><p>Also used to prevent someone joining an organization during registration if they are outside the birthday range.</p>" data-original-title="Start Birthday"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_BirthDayStart" class="keyword big tip">
+            Start Birthday:
+        </label>
+        @Html.TextBox("org.BirthDayStart", Model.Org.BirthDayStart.ToString2("g"), new { @class = "datepicker" })
     </li>
     <li>
-        <span class="keyword big tip"
-        title="End Birthday
-        |Used on Touchscreen Checkin for when a guest needs to choose a class.
-        |Also used to prevent someone joining an organization during registration 
-        |if they are outside the birthday range">
-        End Birthday:</span>
-        @Html.DatePicker("org.BirthDayEnd")
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Used on Touchscreen Checkin for when a guest needs to choose a class.</p><p>Also used to prevent someone joining an organization during registration if they are outside the birthday range.</p>" data-original-title="End Birthday"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_BirthDayEnd" class="keyword big tip">
+            End Birthday:
+        </label>
+        @Html.TextBox("org.BirthDayEnd", Model.Org.BirthDayEnd.ToString2("g"), new { @class = "datepicker" })
     </li>
 
 
