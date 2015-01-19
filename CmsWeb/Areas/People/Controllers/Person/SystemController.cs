@@ -109,7 +109,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult MergeHistory(int id)
         {
-            var q = DbUtil.Db.MergeHistories.Where(ii => ii.ToId == id);
+            var q = DbUtil.Db.MergeHistories.Where(ii => ii.ToId == id).OrderBy(ii => ii.Dt);
             return View("System/MergeHistory", q);
         }
     }

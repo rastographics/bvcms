@@ -194,10 +194,22 @@ namespace CmsData
                 et.PeopleId = targetid;
             TrySubmit(db, "EnrollmentTransactions");
 
-            foreach (var tp in this.TransactionPeople)
-                tp.PeopleId = targetid;
+            var tplist = TransactionPeople.ToList();
+            if (tplist.Any())
+            {
+                db.TransactionPeople.DeleteAllOnSubmit(TransactionPeople);
+                TrySubmit(db, "Delete TransactionPeople");
 
-            TrySubmit(db, "TransactionPeople");
+                foreach (var tp in tplist)
+                    db.TransactionPeople.InsertOnSubmit(new TransactionPerson
+                    {
+                        OrgId = tp.OrgId, 
+                        Amt = tp.Amt, 
+                        Id = tp.Id, 
+                        PeopleId = targetid
+                    });
+                TrySubmit(db, "Add TransactionPeople");
+            }
 
             var q = from a in db.Attends
                     where a.PeopleId == this.PeopleId
