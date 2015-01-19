@@ -4,6 +4,7 @@ CREATE TABLE [dbo].[PaymentInfo]
 [AuNetCustId] [int] NULL,
 [AuNetCustPayId] [int] NULL,
 [SageBankGuid] [uniqueidentifier] NULL,
+[ccv] [nvarchar] (5) NULL,
 [SageCardGuid] [uniqueidentifier] NULL,
 [MaskedAccount] [nvarchar] (30) NULL,
 [MaskedCard] [nvarchar] (30) NULL,
