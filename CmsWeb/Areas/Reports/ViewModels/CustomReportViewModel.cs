@@ -15,6 +15,8 @@ namespace CmsWeb.Areas.Reports.ViewModels
 
         public List<CustomReportColumn> Columns { get; set; }
 
+        public bool RestrictToThisOrg { get; set; }
+
         public CustomReportViewModel() {} // for model binding purposes
 
         public CustomReportViewModel(int? orgId, IEnumerable<CustomReportColumn> standardColumns, string reportName) : this(orgId, standardColumns)

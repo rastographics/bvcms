@@ -14,20 +14,28 @@
         <fieldset>
             <legend>Name and Customize Your Report</legend>
 
-            <div class="form-group">
+            <div>
                 @Html.HiddenFor(x => x.OrgId)
                 @Html.HiddenFor(x => x.OriginalReportName)
 
                 @Html.LabelFor(x => x.ReportName)
-                @Html.TextBoxFor(x => x.ReportName, new { placeholder = "Name Your Custom Report" })
+                @Html.TextBoxFor(x => x.ReportName, new {placeholder = "Name Your Custom Report"})
                 @Html.ValidationMessageFor(x => x.ReportName)
+
+                <label class="checkbox">
+                    Restrict this report to this org
+                    @Html.CheckBoxFor(x => x.RestrictToThisOrg)
+                    (@Model.OrgId)
+                </label>
             </div>
 
-            <div class="form-group">
+            <br/>
+
+            <div>
                 <span class="help-block">Choose which columns you want in your report</span>
                 @foreach (var c in Model.Columns.Select((x, i) => new { Value = x, Index = i }))
                 {
-                    <div class="form-group">
+                    <div>
                         <label class="checkbox">
                             @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
                             @(c.Value.Description ?? c.Value.Name)

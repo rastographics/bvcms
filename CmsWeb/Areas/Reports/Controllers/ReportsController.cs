@@ -742,6 +742,12 @@ namespace CmsWeb.Areas.Reports.Controllers
             var columns = MapXmlToCustomReportColumn(reportXml);
 
             var model = new CustomReportViewModel(orgId, GetAllStandardColumns(m), reportName);
+
+            var showOnOrgIdValue = reportXml.AttributeOrNull("showOnOrgId");
+            int showOnOrgId;
+            if (!string.IsNullOrEmpty(showOnOrgIdValue) && int.TryParse(showOnOrgIdValue, out showOnOrgId))
+                model.RestrictToThisOrg = showOnOrgId == orgId;
+
             model.SetSelectedColumns(columns);
 
             if (originalReportViewModel != null)
@@ -763,12 +769,10 @@ namespace CmsWeb.Areas.Reports.Controllers
                 TempData[TempDataCustomReportKey] = viewModel;
                 return RedirectToAction("EditCustomReport", new { reportName = viewModel.OriginalReportName, orgId = viewModel.OrgId });
             }
-            else
-            {
-                var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
-                m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName, viewModel.Columns.Where(c => c.IsSelected));
-                return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
-            }
+
+            var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
+            m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName, viewModel.Columns.Where(c => c.IsSelected), viewModel.RestrictToThisOrg);
+            return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
         }
 
         [HttpPost]

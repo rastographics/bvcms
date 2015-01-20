@@ -273,7 +273,7 @@ namespace CmsWeb.Areas.Reports.Models
             return xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
         }
 
-        public void SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns)
+        public void SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns, bool restrictToThisOrg)
         {
             var xdoc = GetCustomReportXml();
 
@@ -284,12 +284,19 @@ namespace CmsWeb.Areas.Reports.Models
             if (nodeToChange != null)
             {
                 nodeToChange.RemoveNodes();
+                nodeToChange.RemoveAttributes();
+
                 nodeToChange.Add(newColumns);
-                nodeToChange.Attribute("name").Value = newReportName;
+                nodeToChange.Add(new XAttribute("name", newReportName));
+
+                if (restrictToThisOrg)
+                    nodeToChange.Add(new XAttribute("showOnOrgId", orgid.Value));
             }
             else
             {
                 var reportElement = new XElement("Report", newColumns, new XAttribute("name", newReportName));
+                if (restrictToThisOrg)
+                    reportElement.Add(new XAttribute("showOnOrgId", orgid.Value));
                 xdoc.Root.Add(reportElement);
             }
 
