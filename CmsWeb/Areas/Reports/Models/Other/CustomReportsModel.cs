@@ -289,8 +289,7 @@ namespace CmsWeb.Areas.Reports.Models
             }
             else
             {
-                var reportElement = new XElement("Report", newColumns);
-                reportElement.Attribute("name").Value = newReportName;
+                var reportElement = new XElement("Report", newColumns, new XAttribute("name", newReportName));
                 xdoc.Root.Add(reportElement);
             }
 
