@@ -11,6 +11,7 @@
 @using (Html.BeginForm("EditCustomReport", "Reports"))
 {
     @Html.HiddenFor(x => x.OrgId)
+    @Html.HiddenFor(x => x.OriginalReportName)
     
     @Html.LabelFor(x => x.ReportName)
     @Html.TextBoxFor(x => x.ReportName)

@@ -8,6 +8,8 @@ namespace CmsWeb.Areas.Reports.ViewModels
     {
         public int? OrgId { get; set; }
 
+        public string OriginalReportName { get; set; }
+
         [Required]
         public string ReportName { get; set; }
 
@@ -18,6 +20,7 @@ namespace CmsWeb.Areas.Reports.ViewModels
         public CustomReportViewModel(int? orgId, IEnumerable<string> standardColumns, string reportName) : this(orgId, standardColumns)
         {
             ReportName = reportName;
+            OriginalReportName = reportName;
         }
 
         public CustomReportViewModel(int? orgId, IEnumerable<string> standardColumns)

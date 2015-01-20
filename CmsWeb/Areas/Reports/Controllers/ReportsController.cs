@@ -720,6 +720,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult EditCustomReport(int? orgId, string reportName)
         {
+            CustomReportViewModel originalReportViewModel = null;
+            if (TempData[TempDataModelStateKey] != null)
+            {
+                ModelState.Merge((ModelStateDictionary) TempData[TempDataModelStateKey]);
+                originalReportViewModel = TempData[TempDataCustomReportKey] as CustomReportViewModel;
+            }
+
             var m = new CustomReportsModel(DbUtil.Db, orgId);
 
             if (string.IsNullOrEmpty(reportName))
@@ -735,6 +742,10 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             var model = new CustomReportViewModel(orgId, GetAllStandardColumns(m), reportName);
             model.SetSelectedColumns(columns);
+
+            if (originalReportViewModel != null)
+                model.ReportName = originalReportViewModel.ReportName;
+
             return View(model);
         }
 
@@ -745,9 +756,17 @@ namespace CmsWeb.Areas.Reports.Controllers
                 ModelState.AddModelError("ReportName", "The report name is required.");
 
             if (!ModelState.IsValid)
-                return View(viewModel);
-
-            return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
+            {
+                TempData[TempDataModelStateKey] = ModelState;
+                TempData[TempDataCustomReportKey] = viewModel;
+                return RedirectToAction("EditCustomReport", new { reportName = viewModel.OriginalReportName, orgId = viewModel.OrgId });
+            }
+            else
+            {
+                var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
+                m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName, viewModel.Columns.Where(c => c.IsSelected).Select(c => c.Name));
+                return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
+            }
         }
 
         [HttpPost]
@@ -769,5 +788,8 @@ namespace CmsWeb.Areas.Reports.Controllers
             return from column in reportXml.Descendants("Column")
                    select column.Attribute("name").Value;
         }
+
+        private const string TempDataModelStateKey = "ModelState";
+        private const string TempDataCustomReportKey = "InvalidCustomReportViewModel";
     }
 }

@@ -9,6 +9,7 @@ using CmsData;
 using CmsData.API;
 using CmsData.ExtraValue;
 using CmsData.View;
+using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Models;
 using Dapper;
 using UtilityExtensions;
@@ -257,11 +258,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public void DeleteReport(string reportName)
         {
-            var body = GetCustomReportsContent();
-            if (string.IsNullOrEmpty(body))
-                throw new Exception("missing CustomReports");
-
-            var xdoc = XDocument.Parse(body);
+            var xdoc = GetCustomReportXml();
 
             var nodeToDelete = xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
             if (nodeToDelete != null)
@@ -272,13 +269,42 @@ namespace CmsWeb.Areas.Reports.Models
 
         public XElement GetReportByName(string reportName)
         {
+            var xdoc = GetCustomReportXml();
+            return xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
+        }
+
+        public void SaveReport(string originalReportName, string newReportName, IEnumerable<string> selectedColumns)
+        {
+            var xdoc = GetCustomReportXml();
+
+            var newColumns = from elem in StandardColumns(includeRoot: false).Descendants("Column")
+                             where selectedColumns.Contains(elem.Attribute("name").Value)
+                             select elem;
+
+            var nodeToChange = xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == originalReportName);
+            if (nodeToChange != null)
+            {
+                nodeToChange.RemoveNodes();
+                nodeToChange.Add(newColumns);
+                nodeToChange.Attribute("name").Value = newReportName;
+            }
+            else
+            {
+                var reportElement = new XElement("Report", newColumns);
+                reportElement.Attribute("name").Value = newReportName;
+                xdoc.Root.Add(reportElement);
+            }
+
+            SetCustomReportsContent(xdoc.ToString());
+        }
+
+        private XDocument GetCustomReportXml()
+        {
             var body = GetCustomReportsContent();
             if (string.IsNullOrEmpty(body))
                 throw new Exception("missing CustomReports");
 
-            var xdoc = XDocument.Parse(body);
-
-            return xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
+            return XDocument.Parse(body);
         }
 
         private static string DblQuotes(string s)
