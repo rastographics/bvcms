@@ -1,44 +1,46 @@
-﻿@using Newtonsoft.Json
-@model CmsWeb.Areas.Reports.ViewModels.CustomReportViewModel
+﻿@model CmsWeb.Areas.Reports.ViewModels.CustomReportViewModel
 
 @{
     // TODO: it would be really nice to use a _ViewStart.cshtml file instead of specifying this everywhere
-    Layout = ViewExtensions2.Layout();
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.Title = "Custom Report Builder";
 }
 
-<h2>Custom Report Builder</h2>
+<div class="container">
+    <h2>Custom Report Builder</h2>
 
-@using (Html.BeginForm("EditCustomReport", "Reports"))
-{
-    @Html.HiddenFor(x => x.OrgId)
-    @Html.HiddenFor(x => x.OriginalReportName)
-    
-    @Html.LabelFor(x => x.ReportName)
-    @Html.TextBoxFor(x => x.ReportName)
-    @Html.ValidationMessageFor(x => x.ReportName)
-
-    foreach (var c in Model.Columns.Select((x,i) => new { Value = x, Index = i}))
+    @using (Html.BeginForm("EditCustomReport", "Reports"))
     {
-        <div class="form-group">
-            <label class="checkbox">
-                @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
-                @(c.Value.Description ?? c.Value.Name)
-                @Html.HiddenFor(x => Model.Columns[c.Index].Name)
-                @Html.HiddenFor(x => Model.Columns[c.Index].OrgId)
-                @Html.HiddenFor(x => Model.Columns[c.Index].Flag)
-                @Html.HiddenFor(x => Model.Columns[c.Index].Description)
-            </label>
-        </div>
+        <fieldset>
+            <legend>Name and Customize Your Report</legend>
+
+            <div class="form-group">
+                @Html.HiddenFor(x => x.OrgId)
+                @Html.HiddenFor(x => x.OriginalReportName)
+
+                @Html.LabelFor(x => x.ReportName)
+                @Html.TextBoxFor(x => x.ReportName, new { placeholder = "Name Your Custom Report" })
+                @Html.ValidationMessageFor(x => x.ReportName)
+            </div>
+
+            <div class="form-group">
+                <span class="help-block">Choose which columns you want in your report</span>
+                @foreach (var c in Model.Columns.Select((x, i) => new { Value = x, Index = i }))
+                {
+                    <div class="form-group">
+                        <label class="checkbox">
+                            @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
+                            @(c.Value.Description ?? c.Value.Name)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].Name)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].OrgId)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].Flag)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].Description)
+                        </label>
+                    </div>
+                }
+            </div>
+        </fieldset>
+
+        <input type="submit" class="btn btn-primary" value="Save Report" />
     }
-
-    <input type="submit" class="btn" value="Save Report" />
-}
-
-<form>
-</form>
-
-<script type="text/html" id="custom-report-template">
-</script>
-
-<script>
-</script>
+</div>
