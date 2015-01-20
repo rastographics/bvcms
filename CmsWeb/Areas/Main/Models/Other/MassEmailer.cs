@@ -35,6 +35,15 @@ namespace CmsWeb.Areas.Main.Models
         public MassEmailer()
         {
         }
+
+        public MassEmailer(int tagid, string host, string subject, bool? parents = false)
+        {
+            wantParents = parents ?? false;
+            var tag = DbUtil.Db.TagById(tagid);
+            TagId = tag.Id;
+            Count = tag.People(DbUtil.Db).Count();
+            
+        }
         public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null, bool? nodups = null)
         {
             wantParents = parents ?? false;

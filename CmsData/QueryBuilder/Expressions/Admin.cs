@@ -138,5 +138,35 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression HasOpenedEmail()
+        {
+            var id = TextValue.ToInt();
+            Expression<Func<Person, bool>> pred = p =>
+                p.EmailResponses.Any(e => e.EmailQueueId == id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression HasSpamBlock()
+        {
+//                if ((eventx != "bounce" || type != "blocked") && eventx != "dropped")
+//                    return false;
+//                if (eventx == "dropped" && !reason.Contains("spam", ignoreCase: true))
+//                    return false;
+            var id = TextValue.ToInt();
+//            return from e in DbUtil.Db.EmailQueueToFails
+//                   where PeopleId == e.PeopleId
+//                   select e;
+            Expression<Func<Person, bool>> pred = p =>
+                db.EmailQueueToFails.Any(e => e.PeopleId == p.PeopleId &&
+                ((e.EventX == "bounce" && (e.EventX == e.Bouncetype ? "" : e.Bouncetype) == "blocked") || e.EventX == "dropped") && (e.EventX != "dropped" || e.Reason.Contains("spam"))
+                )
+                ;
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

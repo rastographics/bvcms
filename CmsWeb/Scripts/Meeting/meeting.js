@@ -259,9 +259,9 @@
         var tb = $("#wandtarget");
         var text = tb.val();
         tb.val("");
-        if (text.substring(2, 0) == "M.") {
+        if (text.substring(2, 0) === "M.") {
             $.post("/Meeting/CreateMeeting/", { id: text }, function (ret) {
-                if (ret.substring(5, 0) == "error")
+                if (ret.substring(5, 0) === "error")
                     alert(ret);
                 else
                     window.location = ret;

@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.Manage.Models
         LockedOut = 9,
         UserNotApproved = 10,
         CannotImpersonateFinanceUser = 11,
-        UserNotInRole = 12
+		  UserNotInRole = 12,
+		  ImproperHeaderStructure = 13
     }
 }

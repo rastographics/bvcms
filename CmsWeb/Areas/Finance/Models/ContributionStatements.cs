@@ -83,6 +83,24 @@ namespace CmsWeb.Areas.Finance.Models.Report
             {
                 if (set > 0 && pageEvents.FamilySet[ci.PeopleId] != set)
                     continue;
+
+                var contributions = APIContribution.contributions(Db, ci, FromDate, toDate).ToList();
+                var pledges = APIContribution.pledges(Db, ci, toDate).ToList();
+                var giftsinkind = APIContribution.GiftsInKind(Db, ci, FromDate, toDate).ToList();
+                var nontaxitems = Db.Setting("DisplayNonTaxOnStatement", "false").ToBool()
+                    ? APIContribution.NonTaxItems(Db, ci, FromDate, toDate).ToList()
+                    : new List<ContributionInfo>();
+
+                if ((contributions.Count + pledges.Count + giftsinkind.Count + nontaxitems.Count) == 0)
+                {
+                    runningtotals.Processed += 1;
+                    runningtotals.CurrSet = set;
+                    Db.SubmitChanges();
+                    if (set == 0)
+                        pageEvents.FamilySet[ci.PeopleId] = 0;
+                    continue;
+                }
+
                 doc.NewPage();
                 if (prevfid != ci.FamilyId)
                 {
@@ -100,8 +118,8 @@ h2 { font-size: 11px; font-weight:normal; margin-top: 0; }
 p { font-size: 11px; }
 </style>
 ";
-
                 //----Church Name
+
                 var t1 = new PdfPTable(1);
                 t1.TotalWidth = 72f * 5f;
                 t1.DefaultCell.Border = Rectangle.NO_BORDER;
@@ -132,8 +150,8 @@ p { font-size: 11px; }
                 a.DefaultCell.Indent = 25f;
                 a.DefaultCell.Border = Rectangle.NO_BORDER;
                 a.AddCell(new Phrase(ci.Name, font));
-                foreach(var line in ci.MailingAddress.SplitLines())
-    			    a.AddCell(new Phrase(line, font));
+                foreach (var line in ci.MailingAddress.SplitLines())
+                    a.AddCell(new Phrase(line, font));
                 cell = new PdfPCell(a) { Border = Rectangle.NO_BORDER };
                 //cell.FixedHeight = 72f * 1.0625f;
                 ae.AddCell(cell);
@@ -142,8 +160,8 @@ p { font-size: 11px; }
                 cell.AddElement(ae);
                 t1a.AddCell(ae);
 
-
                 //-----Notice
+
                 var t2 = new PdfPTable(1);
                 t2.TotalWidth = 72f * 3f;
                 t2.DefaultCell.Border = Rectangle.NO_BORDER;
@@ -158,9 +176,9 @@ p { font-size: 11px; }
                         cell.AddElement(e);
                 t2.AddCell(cell);
 
-
                 // POSITIONING OF ADDRESSES
                 //----Header
+
                 var yp = doc.BottomMargin +
                     Db.Setting("StatementRetAddrPos", "10.125").ToFloat() * 72f;
                 t1.WriteSelectedRows(0, -1,
@@ -173,8 +191,8 @@ p { font-size: 11px; }
                 yp = doc.BottomMargin + 10.125f * 72f;
                 t2.WriteSelectedRows(0, -1, doc.LeftMargin + 72f * 4.4f, yp, dc);
 
-
                 //----Contributions
+
                 doc.Add(new Paragraph(" "));
                 doc.Add(new Paragraph(" ") { SpacingBefore = 72f * 2.125f });
 
@@ -207,7 +225,7 @@ p { font-size: 11px; }
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
 
                 var total = 0m;
-                foreach (var c in APIContribution.contributions(Db, ci, FromDate, toDate))
+                foreach (var c in contributions)
                 {
                     t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
                     t.AddCell(new Phrase(c.Fund, font));
@@ -229,9 +247,8 @@ p { font-size: 11px; }
 
                 ct.AddElement(t);
 
-
                 //------Pledges
-                var pledges = APIContribution.pledges(Db, ci, toDate).ToList();
+
                 if (pledges.Count > 0)
                 {
                     t = new PdfPTable(new float[] { 16f, 12f, 12f });
@@ -273,7 +290,7 @@ p { font-size: 11px; }
                 }
 
                 //------Gifts In Kind
-                var giftsinkind = APIContribution.GiftsInKind(Db, ci, FromDate, toDate).ToList();
+
                 if (giftsinkind.Count > 0)
                 {
                     t = new PdfPTable(new float[] { 12f, 18f, 20f });
@@ -309,59 +326,9 @@ p { font-size: 11px; }
                     }
                     ct.AddElement(t);
                 }
-//                var stockitems = APIContribution.StockGifts(Db, ci, FromDate, toDate).ToList();
-//                if (stockitems.Count > 0)
-//                {
-//                    //------Stock
-//                    if (stockitems.Count > 0)
-//                    {
-//                        t = new PdfPTable(new float[] {10f, 24f, 10f});
-//                        t.WidthPercentage = 100;
-//                        t.DefaultCell.Border = Rectangle.NO_BORDER;
-//                        t.HeaderRows = 2;
-//
-//                        cell = new PdfPCell(t.DefaultCell);
-//                        cell.Colspan = 3;
-//                        cell.Phrase = new Phrase("\n\nStock Gifts\n", boldfont);
-//                        t.AddCell(cell);
-//
-//                        t.DefaultCell.Border = Rectangle.BOTTOM_BORDER;
-//                        t.AddCell(new Phrase("Date", boldfont));
-//                        t.AddCell(new Phrase("Description", boldfont));
-//                        cell = new PdfPCell(t.DefaultCell);
-//                        cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-//                        cell.Phrase = new Phrase("Amount", boldfont);
-//                        t.AddCell(cell);
-//
-//                        t.DefaultCell.Border = Rectangle.NO_BORDER;
-//
-//                        var ntotal = 0m;
-//                        foreach (var c in stockitems)
-//                        {
-//                            t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
-//                            t.AddCell(new Phrase("{0}\n{1}".Fmt(c.Fund, c.Description), font));
-//                            cell = new PdfPCell(t.DefaultCell);
-//                            cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-//                            cell.Phrase = new Phrase(c.ContributionAmount.ToString("N2"), font);
-//                            t.AddCell(cell);
-//                            ntotal += (c.ContributionAmount);
-//                        }
-//                        t.DefaultCell.Border = Rectangle.TOP_BORDER;
-//                        cell = new PdfPCell(t.DefaultCell);
-//                        cell.Colspan = 2;
-//                        cell.Phrase = new Phrase("Total Stock Gifts for period", boldfont);
-//                        t.AddCell(cell);
-//                        cell = new PdfPCell(t.DefaultCell);
-//                        cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-//                        cell.Phrase = new Phrase(ntotal.ToString("N2"), font);
-//                        t.AddCell(cell);
-//
-//                        ct.AddElement(t);
-//                    }
-//                }
-
 
                 //-----Summary
+
                 t = new PdfPTable(new float[] { 29f, 9f });
                 t.WidthPercentage = 100;
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
@@ -396,57 +363,53 @@ p { font-size: 11px; }
                 t.AddCell(cell);
                 ct.AddElement(t);
 
-                if (Db.Setting("DisplayNonTaxOnStatement", "false").ToBool())
+                //------NonTax
+
+                if (nontaxitems.Count > 0)
                 {
-                    //------NonTax
-                    var nontaxitems = APIContribution.NonTaxItems(Db, ci, FromDate, toDate).ToList();
-                    if (nontaxitems.Count > 0)
+                    t = new PdfPTable(new float[] { 10f, 24f, 10f });
+                    t.WidthPercentage = 100;
+                    t.DefaultCell.Border = Rectangle.NO_BORDER;
+                    t.HeaderRows = 2;
+
+                    cell = new PdfPCell(t.DefaultCell);
+                    cell.Colspan = 3;
+                    cell.Phrase = new Phrase("\n\nNon Tax-Deductible Items\n", boldfont);
+                    t.AddCell(cell);
+
+                    t.DefaultCell.Border = Rectangle.BOTTOM_BORDER;
+                    t.AddCell(new Phrase("Date", boldfont));
+                    t.AddCell(new Phrase("Description", boldfont));
+                    cell = new PdfPCell(t.DefaultCell);
+                    cell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    cell.Phrase = new Phrase("Amount", boldfont);
+                    t.AddCell(cell);
+
+                    t.DefaultCell.Border = Rectangle.NO_BORDER;
+
+                    var ntotal = 0m;
+                    foreach (var c in nontaxitems)
                     {
-                        t = new PdfPTable(new float[] {10f, 24f, 10f});
-                        t.WidthPercentage = 100;
-                        t.DefaultCell.Border = Rectangle.NO_BORDER;
-                        t.HeaderRows = 2;
-
-                        cell = new PdfPCell(t.DefaultCell);
-                        cell.Colspan = 3;
-                        cell.Phrase = new Phrase("\n\nNon Tax-Deductible Items\n", boldfont);
-                        t.AddCell(cell);
-
-                        t.DefaultCell.Border = Rectangle.BOTTOM_BORDER;
-                        t.AddCell(new Phrase("Date", boldfont));
-                        t.AddCell(new Phrase("Description", boldfont));
+                        t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
+                        t.AddCell(new Phrase(c.Fund, font));
                         cell = new PdfPCell(t.DefaultCell);
                         cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                        cell.Phrase = new Phrase("Amount", boldfont);
+                        cell.Phrase = new Phrase(c.ContributionAmount.ToString("N2"), font);
                         t.AddCell(cell);
-
-                        t.DefaultCell.Border = Rectangle.NO_BORDER;
-
-                        var ntotal = 0m;
-                        foreach (var c in nontaxitems)
-                        {
-                            t.AddCell(new Phrase(c.ContributionDate.ToShortDateString(), font));
-                            t.AddCell(new Phrase(c.Fund, font));
-                            cell = new PdfPCell(t.DefaultCell);
-                            cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                            cell.Phrase = new Phrase(c.ContributionAmount.ToString("N2"), font);
-                            t.AddCell(cell);
-                            ntotal += (c.ContributionAmount);
-                        }
-                        t.DefaultCell.Border = Rectangle.TOP_BORDER;
-                        cell = new PdfPCell(t.DefaultCell);
-                        cell.Colspan = 2;
-                        cell.Phrase = new Phrase("Total Non Tax-Deductible Items for period", boldfont);
-                        t.AddCell(cell);
-                        cell = new PdfPCell(t.DefaultCell);
-                        cell.HorizontalAlignment = Element.ALIGN_RIGHT;
-                        cell.Phrase = new Phrase(ntotal.ToString("N2"), font);
-                        t.AddCell(cell);
-
-                        ct.AddElement(t);
+                        ntotal += (c.ContributionAmount);
                     }
-                }
+                    t.DefaultCell.Border = Rectangle.TOP_BORDER;
+                    cell = new PdfPCell(t.DefaultCell);
+                    cell.Colspan = 2;
+                    cell.Phrase = new Phrase("Total Non Tax-Deductible Items for period", boldfont);
+                    t.AddCell(cell);
+                    cell = new PdfPCell(t.DefaultCell);
+                    cell.HorizontalAlignment = Element.ALIGN_RIGHT;
+                    cell.Phrase = new Phrase(ntotal.ToString("N2"), font);
+                    t.AddCell(cell);
 
+                    ct.AddElement(t);
+                }
 
                 var col = 0;
                 var status = 0;

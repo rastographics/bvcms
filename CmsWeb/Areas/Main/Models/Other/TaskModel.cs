@@ -387,11 +387,11 @@ namespace CmsWeb.Models
         }
         private static string TaskLink(string text, int id)
         {
-            return "<a href='{0}{1}'>{2}</a>".Fmt(DbUtil.Db.CmsHost, TaskLink0(id), text);
+            return "<a href='{0}'>{1}</a>".Fmt(DbUtil.Db.ServerLink(TaskLink0(id)), text);
         }
         private static string PeopleLink(string text, int? id)
         {
-            return "<a href='{0}/Person2/{1}'>{2}</a>".Fmt(DbUtil.Db.CmsHost, id, text);
+            return "<a href='{0}'>{1}</a>".Fmt(DbUtil.Db.ServerLink("/Person2/" + id), text);
         }
 
         public static void ChangeTask(StringBuilder sb, Task task, string field, object value)

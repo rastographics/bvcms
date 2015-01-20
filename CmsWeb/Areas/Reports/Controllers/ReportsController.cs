@@ -168,6 +168,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
+        public ActionResult FamilyPictureDirectory(Guid id)
+        {
+            var s = DbUtil.Db.ContentText("CompactDirectoryParameters2", Resource1.CompactDirectoryParameters2);
+            return new FamilyPictureDir(id);
+        }
+
+        [HttpGet]
         public ActionResult Contacts(Guid? id, bool? sortAddress, string orgname)
         {
             if (!id.HasValue)

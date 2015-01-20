@@ -413,7 +413,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ContentResult UploadImage(int id)
         {
-            if (!Authenticate(role: null))
+            if (!AccountModel.AuthenticateMobile().IsValid)
                 return Content("not authorized");
             //		    if (!User.IsInRole("Edit") && !User.IsInRole("Checkin"))
             //				return Content("not authorized");

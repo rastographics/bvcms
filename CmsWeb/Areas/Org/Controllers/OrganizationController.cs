@@ -835,7 +835,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 if (!om.TranId.HasValue) continue;
                 var estr = HttpUtility.UrlEncode(Util.Encrypt(om.TranId.ToString()));
-                var link = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
+                var link = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
                 om.PayLink = link;
             }
             DbUtil.Db.SubmitChanges();

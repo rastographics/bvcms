@@ -5,47 +5,50 @@ using UtilityExtensions;
 
 namespace CmsWeb.Code
 {
-    public class Payments
+    public class PaymentValidator
     {
-        public static void ValidateCreditCardInfo(ModelStateDictionary ModelState, PaymentForm pf)
+        public static void ValidateCreditCardInfo(ModelStateDictionary modelState, PaymentForm pf)
         {
             if (pf.SavePayInfo && pf.CreditCard.HasValue() && pf.CreditCard.StartsWith("X"))
                 return;
+
             if (!ValidateCard(pf.CreditCard, pf.SavePayInfo))
             {
-                ModelState.AddModelError("CreditCard", "invalid card number");
-                ModelState.AddModelError("Cardnumber", "invalid card number");
+                modelState.AddModelError("CreditCard", "The card number is invalid.");
             }
             if (!pf.Expires.HasValue())
             {
-                ModelState.AddModelError("Expires", "need expiration date");
+                modelState.AddModelError("Expires", "The expiration date is required.");
                 return;
             }
 
             var exp = DbUtil.NormalizeExpires(pf.Expires);
             if (exp == null)
-                ModelState.AddModelError("Expires", "invalid expiration date (MMYY)");
-            if (!pf.CCV.HasValue())
+                modelState.AddModelError("Expires", "The expiration date format is invalid (MMYY).");
+
+            if (!pf.CVV.HasValue())
             {
-                ModelState.AddModelError("CCV", "need Cardcode");
+                modelState.AddModelError("CVV", "The CVV is required.");
                 return;
             }
-            var ccvlen = pf.CCV.GetDigits().Length;
-            if (ccvlen < 3 || ccvlen > 4)
-                ModelState.AddModelError("CCV", "invalid Cardcode");
+
+            var cvvlen = pf.CVV.GetDigits().Length;
+            if (cvvlen < 3 || cvvlen > 4)
+                modelState.AddModelError("CVV", "The CVV must be a 3 or 4 digit number.");
         }
-        public static void ValidateBankAccountInfo(ModelStateDictionary ModelState, string Routing, string Account)
+
+        public static void ValidateBankAccountInfo(ModelStateDictionary modelState, string routing, string account)
         {
-            if (!checkABA(Routing))
-                ModelState.AddModelError("Routing", "invalid routing number");
-            if (!Account.HasValue())
-                ModelState.AddModelError("Account", "need account number");
-            else if (!Account.StartsWith("X") && Account.Length <= 4)
-                ModelState.AddModelError("Account", "please enter entire account number with any leading zeros");
+            if (!CheckABA(routing))
+                modelState.AddModelError("Routing", "The routing number is invalid.");
+
+            if (!account.HasValue())
+                modelState.AddModelError("Account", "The account number is invalid.");
+            else if (!account.StartsWith("X") && account.Length <= 4)
+                modelState.AddModelError("Account", "Please enter entire account number with any leading zeros.");
         }
 
-
-        private static bool checkABA(string s)
+        private static bool CheckABA(string s)
         {
             if (!s.HasValue())
                 return false;
@@ -73,8 +76,8 @@ namespace CmsWeb.Code
             if (s.StartsWith("X") && savedCard)
                 return true;
             var number = new int[16];
-            int len = 0;
-            for (int i = 0; i < s.Length; i++)
+            var len = 0;
+            for (var i = 0; i < s.Length; i++)
             {
                 if (char.IsDigit(s, i))
                 {
@@ -112,11 +115,11 @@ namespace CmsWeb.Code
                         return false;
                     break;
             }
-            int sum = 0;
-            for (int i = len - 1; i >= 0; i--)
+            var sum = 0;
+            for (var i = len - 1; i >= 0; i--)
                 if (i % 2 == len % 2)
                 {
-                    int n = number[i] * 2;
+                    var n = number[i] * 2;
                     sum += (n / 10) + (n % 10);
                 }
                 else

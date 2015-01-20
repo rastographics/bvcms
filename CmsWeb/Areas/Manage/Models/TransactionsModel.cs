@@ -487,7 +487,7 @@ namespace CmsWeb.Models
         {
             public GoerSenderAmount gs { get; set; }
             public string Name { get; set; }
-            public int PeopleId { get; set; }
+            public int? PeopleId { get; set; }
         }
         public IQueryable<SupporterInfo> Supporters()
         {

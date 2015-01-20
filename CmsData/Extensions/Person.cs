@@ -194,16 +194,22 @@ namespace CmsData
                 et.PeopleId = targetid;
             TrySubmit(db, "EnrollmentTransactions");
 
-            var listtp = TransactionPeople.Select(t => new TransactionPerson
-                {
-                    PeopleId = targetid,
-                    Amt = t.Amt,
-                    Id = t.Id,
-                    OrgId = t.OrgId,
-                }).ToList();
-            db.TransactionPeople.InsertAllOnSubmit(listtp);
-            db.TransactionPeople.DeleteAllOnSubmit(TransactionPeople);
-            TrySubmit(db, "TransactionPeopleDeleteInsert");
+            var tplist = TransactionPeople.ToList();
+            if (tplist.Any())
+            {
+                db.TransactionPeople.DeleteAllOnSubmit(TransactionPeople);
+                TrySubmit(db, "Delete TransactionPeople");
+
+                foreach (var tp in tplist)
+                    db.TransactionPeople.InsertOnSubmit(new TransactionPerson
+                    {
+                        OrgId = tp.OrgId, 
+                        Amt = tp.Amt, 
+                        Id = tp.Id, 
+                        PeopleId = targetid
+                    });
+                TrySubmit(db, "Add TransactionPeople");
+            }
 
             var q = from a in db.Attends
                     where a.PeopleId == this.PeopleId
@@ -378,7 +384,6 @@ namespace CmsData
                             {
                                 Address = i.Address,
                                 AuNetCustId = i.AuNetCustId,
-                                Ccv = i.Ccv,
                                 AuNetCustPayId = i.AuNetCustPayId,
                                 City = i.City,
                                 Expires = i.Expires,

@@ -134,9 +134,9 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
-        public ActionResult NewRollsheet(bool id)
+        public ActionResult UseNewFeature(bool id)
         {
-            DbUtil.Db.SetSetting("UseNewRollsheet", id ? "false" : "true");
+            Util2.UseNewFeature = id;
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);

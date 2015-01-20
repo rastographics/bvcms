@@ -102,6 +102,7 @@ namespace CmsWeb.Models
                         c.SpouseName,
                         MainFellowship = mainFellowship,
                         MemberStatus = p.MemberStatus.Description,
+                        p.JoinDate,
                         Amount = c.Amount ?? 0m,
                         Pledge = c.PledgeAmount ?? 0m,
                         c.CheckNo,
@@ -128,6 +129,7 @@ namespace CmsWeb.Models
                          Spouse = r.SpouseName ?? "",
                          MainFellowship = r.MainFellowship ?? "",
                          MemberStatus = r.MemberStatus ?? "",
+                         r.JoinDate,
                      };
             return q2.ToDataTable();
         }
@@ -147,6 +149,7 @@ namespace CmsWeb.Models
                          r.FundId,
                          r.MainFellowship,
                          r.MemberStatus,
+                         r.JoinDate,
                      };
             return q2.ToDataTable();
         }

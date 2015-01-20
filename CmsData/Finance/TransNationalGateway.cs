@@ -37,8 +37,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _userName = db.Setting("TNBUsername", "");
-                _password = db.Setting("TNBPassword", "");
+                _userName = db.GetSetting("TNBUsername", "");
+                _password = db.GetSetting("TNBPassword", "");
 
                 if (string.IsNullOrWhiteSpace(_userName))
                     throw new Exception("TNBUsername setting not found, which is required for TransNational.");
@@ -73,7 +73,6 @@ namespace CmsData.Finance
                 }
 
                 paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Ccv = cardCode; // TODO: shouldn't need to store this
                 paymentInfo.Expires = expires;
             }
             else if (type == PaymentType.Ach)
@@ -299,7 +298,6 @@ namespace CmsData.Finance
             paymentInfo.TbnBankVaultId = null;
             paymentInfo.MaskedCard = null;
             paymentInfo.MaskedAccount = null;
-            paymentInfo.Ccv = null;
             db.SubmitChanges();
         }
 

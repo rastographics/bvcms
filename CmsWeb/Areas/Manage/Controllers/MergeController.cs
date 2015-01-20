@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -28,7 +29,19 @@ namespace CmsWeb.Areas.Manage.Controllers
         [ValidateInput(false)]
         public ActionResult Run(string submit, bool? Delete, MergeModel m)
         {
-			if (submit.StartsWith("Merge Fields"))
+            var mh = new MergeHistory
+            {
+                FromId = m.pi[0].PeopleId,
+                ToId = m.pi[1].PeopleId,
+                FromName = m.pi[0].person.Name,
+                ToName = m.pi[1].person.Name,
+                WhoId = Util.UserPeopleId,
+                WhoName = Util.UserFullName,
+                Action = submit + (Delete == true ? " + Delete" : ""),
+                Dt = DateTime.Now,
+            };
+            DbUtil.Db.MergeHistories.InsertOnSubmit(mh);
+            if (submit.StartsWith("Merge Fields"))
 			{
 				DbUtil.LogActivity("Merging Fields from {0} to {1}".Fmt(m.pi[0].PeopleId, m.pi[1].PeopleId));
 				m.Update();

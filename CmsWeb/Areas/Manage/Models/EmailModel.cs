@@ -76,12 +76,12 @@ namespace CmsWeb.Models
         {
             var q = from t in DbUtil.Db.EmailQueueTos
                     let opened = t.Person.EmailResponses.Any(er => er.EmailQueueId == t.Id)
-                    //let fail = t.EmailQueueToFails.FirstOrDefault()
+                    let fail = DbUtil.Db.EmailQueueToFails.FirstOrDefault(ff => ff.Id == t.Id && ff.PeopleId == t.PeopleId)
                     where t.Id == id
                     where filter == "All"
                     || (opened == true && filter == "Opened")
                     || (opened == false && filter == "Not Opened")
-                    //|| (fail != null && filter == "Failed")
+                    || (filter == "Failed" && fail != null)
                     select t;
 
             var roles = DbUtil.Db.CurrentRoles();

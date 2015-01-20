@@ -31,8 +31,6 @@ namespace CmsWeb.Models
                 if (!om.IsInGroup("Goer"))
                     om.MemberTypeId = MemberTypeCode.InActive;
                 om.AddToGroup(DbUtil.Db, "Sender");
-                if (MissionTripPray || TotalAmount() > 0)
-                    om.AddToGroup(DbUtil.Db, "Pray");
                 return om;
             }
             if (RecordFamilyAttendance())

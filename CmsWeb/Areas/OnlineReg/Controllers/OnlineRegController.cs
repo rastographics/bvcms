@@ -17,7 +17,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     [RouteArea("OnlineReg", AreaPrefix = "OnlineReg"), Route("{action}/{id?}")]
     public partial class OnlineRegController : CmsController
     {
-        
         [HttpGet]
         [Route("~/OnlineReg/{id:int}")]
         [Route("~/OnlineReg/Index/{id:int}")]

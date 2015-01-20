@@ -20,7 +20,8 @@ RETURNS @table TABLE
 	CurrMemberType NVARCHAR(100), 
 	MemberType NVARCHAR(100), 
 	AttendType NVARCHAR(100),
-	OtherAttends INT
+	OtherAttends INT,
+	CurrMember BIT
 )
 AS
 BEGIN
@@ -88,12 +89,14 @@ BEGIN
 		   ,mt.Description MemberType
 		   ,at.Description Attendtype
 		   ,a.OtherAttends
+		   ,CASE WHEN om.PeopleId IS NULL THEN 0 ELSE 1 END
 	FROM @members m
 	LEFT JOIN @attends a ON a.PeopleId = m.PeopleId
 	JOIN dbo.People p ON p.PeopleId = m.PeopleId
 	LEFT JOIN lookup.MemberType cmt ON cmt.Id = m.membertype
 	LEFT JOIN lookup.MemberType mt ON mt.Id = a.membertype
 	LEFT JOIN lookup.AttendType at ON at.Id = a.attendtype
+	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @oid
 	WHERE (@current = 1 OR @meetingdt > m.joindt OR (a.PeopleId IS NOT NULL AND attendtype NOT IN (40,50,60,110)))
 
 	-- recent visitors who have not become members as of the meeting date
@@ -111,11 +114,13 @@ BEGIN
 		   ,mt.Description MemberType
 		   ,at.Description Attendtype
 	       ,a.OtherAttends
+		   ,CASE WHEN om.PeopleId IS NULL THEN 0 ELSE 1 END
 	FROM @visitors v
 	LEFT JOIN @attends a ON a.PeopleId = v.PeopleId
 	JOIN dbo.People p ON p.PeopleId = v.PeopleId
 	LEFT JOIN lookup.MemberType mt ON mt.Id = a.membertype
 	LEFT JOIN lookup.AttendType at ON at.Id = a.attendtype
+	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @oid
 	WHERE NOT EXISTS(SELECT NULL FROM @members m WHERE m.PeopleId = v.PeopleId)
     
 	-- now catch the odd ducks who slipped through the cracks, (should not be any if all is well)
@@ -133,11 +138,13 @@ BEGIN
 		   ,mt.Description MemberType
 		   ,at.Description Attendtype
 	       ,a.OtherAttends
+		   ,CASE WHEN om.PeopleId IS NULL THEN 0 ELSE 1 END
 	FROM @attends a
 	LEFT JOIN @table t ON t.PeopleId = a.PeopleId 
 	JOIN dbo.People p ON p.PeopleId = a.PeopleId
 	LEFT JOIN lookup.MemberType mt ON mt.Id = a.membertype
 	LEFT JOIN lookup.AttendType at ON at.Id = a.attendtype
+	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @oid
 	WHERE t.PeopleId IS NULL
 
 	RETURN

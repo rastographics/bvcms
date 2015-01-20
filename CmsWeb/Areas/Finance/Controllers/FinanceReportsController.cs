@@ -127,6 +127,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var fd = DateTime.Parse("1/1/1900");
             var td = DateTime.Parse("1/1/2099");
             var q = from r in DbUtil.Db.PledgeReport(fd, td, 0)
+                    orderby r.FundId descending 
                     select r;
             return View(q);
         }

@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Org.Models
         private OrganizationMember om;
         public CmsData.Organization Organization;
         public List<OrgMemMemTag> OrgMemMemTags;
+
         public bool IsMissionTrip;
         public CmsData.View.TransactionSummary TransactionSummary;
 
@@ -97,6 +98,8 @@ namespace CmsWeb.Areas.Org.Models
 
         public int? Grade { get; set; }
 
+        public int? TranId { get; set; }
+
         public int? Tickets { get; set; }
 
         [DisplayName("Total Amount")]
@@ -147,6 +150,19 @@ namespace CmsWeb.Areas.Org.Models
         public string PayLink
         {
             get { return om.PayLink2(DbUtil.Db); }
+        }
+        public string SupportLink
+        {
+            get { return DbUtil.Db.ServerLink("/OnlineReg/{0}?GoerID={1}".Fmt(om.OrganizationId, om.PeopleId)); }
+        }
+//        public string EmailSupportLink
+//        {
+//            get { return DbUtil.Db.ServerLink("/SupportLink/{0}?GoerID={1}".Fmt(om.OrganizationId, om.PeopleId)); }
+//        }
+
+        public bool IsGoer
+        {
+            get { return IsMissionTrip && om.IsInGroup("Goer"); }
         }
     }
 }
