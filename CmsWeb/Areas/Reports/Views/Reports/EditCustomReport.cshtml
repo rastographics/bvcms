@@ -33,7 +33,7 @@
 
             <div>
                 <span class="help-block">Choose which columns you want in your report</span>
-                @foreach (var c in Model.Columns.Select((x, i) => new { Value = x, Index = i }))
+                @foreach (var c in Model.Columns.Select((x, i) => new {Value = x, Index = i}))
                 {
                     <div>
                         <label class="checkbox">
@@ -49,6 +49,6 @@
             </div>
         </fieldset>
 
-        <input type="submit" class="btn btn-primary" value="Save Report" />
+        <input type="submit" class="btn btn-primary" value="Save Report"/>
     }
 </div>
