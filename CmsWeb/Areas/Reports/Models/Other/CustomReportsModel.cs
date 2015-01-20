@@ -273,13 +273,12 @@ namespace CmsWeb.Areas.Reports.Models
             return xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
         }
 
-        public void SaveReport(string originalReportName, string newReportName, IEnumerable<string> selectedColumns)
+        public void SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns)
         {
             var xdoc = GetCustomReportXml();
 
-            var newColumns = from elem in StandardColumns(includeRoot: false).Descendants("Column")
-                             where selectedColumns.Contains(elem.Attribute("name").Value)
-                             select elem;
+            var newColumns = from column in selectedColumns
+                             select new XElement("Column", MapCustomReportToAttributes(column));
 
             var nodeToChange = xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == originalReportName);
             if (nodeToChange != null)
@@ -326,6 +325,20 @@ namespace CmsWeb.Areas.Reports.Models
             content.Body = customReportsXml;
 
             _db.SubmitChanges();
+        }
+
+        private static IEnumerable<XAttribute> MapCustomReportToAttributes(CustomReportColumn column)
+        {
+            if (!string.IsNullOrEmpty(column.Description))
+                yield return new XAttribute("description", column.Description);
+
+            if (!string.IsNullOrEmpty(column.Flag))
+                yield return new XAttribute("flag", column.Flag);
+
+            yield return new XAttribute("name", column.Name);
+
+            if (!string.IsNullOrEmpty(column.OrgId))
+                yield return new XAttribute("orgid", column.OrgId);
         }
     }
 }

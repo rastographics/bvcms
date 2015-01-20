@@ -22,8 +22,11 @@
         <div class="form-group">
             <label class="checkbox">
                 @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
-                @c.Value.Name
+                @(c.Value.Description ?? c.Value.Name)
                 @Html.HiddenFor(x => Model.Columns[c.Index].Name)
+                @Html.HiddenFor(x => Model.Columns[c.Index].OrgId)
+                @Html.HiddenFor(x => Model.Columns[c.Index].Flag)
+                @Html.HiddenFor(x => Model.Columns[c.Index].Description)
             </label>
         </div>
     }

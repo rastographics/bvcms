@@ -17,30 +17,34 @@ namespace CmsWeb.Areas.Reports.ViewModels
 
         public CustomReportViewModel() {} // for model binding purposes
 
-        public CustomReportViewModel(int? orgId, IEnumerable<string> standardColumns, string reportName) : this(orgId, standardColumns)
+        public CustomReportViewModel(int? orgId, IEnumerable<CustomReportColumn> standardColumns, string reportName) : this(orgId, standardColumns)
         {
             ReportName = reportName;
             OriginalReportName = reportName;
         }
 
-        public CustomReportViewModel(int? orgId, IEnumerable<string> standardColumns)
+        public CustomReportViewModel(int? orgId, IEnumerable<CustomReportColumn> standardColumns)
         {
             OrgId = orgId;
             Columns = new List<CustomReportColumn>();
-            Columns.AddRange(MapColumns(standardColumns, false));
+            Columns.AddRange(standardColumns);
         }
 
-        public void SetSelectedColumns(IEnumerable<string> columns)
+        public void SetSelectedColumns(IEnumerable<CustomReportColumn> columns)
         {
-            foreach (var c in Columns.Where(c => columns.Contains(c.Name)))
+            foreach (var column in Columns)
             {
-                c.IsSelected = true;
+                if (column.IsStatusFlag)
+                {
+                    if (columns.Select(c => c.Description).Contains(column.Description))
+                        column.IsSelected = true;
+                }
+                else
+                {
+                    if (columns.Select(c => c.Name).Contains(column.Name))
+                        column.IsSelected = true;
+                }
             }
-        }
-
-        private static IEnumerable<CustomReportColumn> MapColumns(IEnumerable<string> columns, bool isSelected)
-        {
-            return columns.Select(x => new CustomReportColumn {Name = x, IsSelected = isSelected}).ToList();
         }
     }
 
@@ -48,5 +52,10 @@ namespace CmsWeb.Areas.Reports.ViewModels
     {
         public string Name { get; set; }
         public bool IsSelected { get; set; }
+        public string Description { get; set; }
+        public string Flag { get; set; }
+        public string OrgId { get; set; }
+
+        public bool IsStatusFlag { get { return !string.IsNullOrEmpty(Flag); } }
     }
 }

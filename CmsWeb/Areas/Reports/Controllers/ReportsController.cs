@@ -19,6 +19,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using UtilityExtensions;
+using UtilityExtensions.Extensions;
 using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
 using MeetingsModel = CmsWeb.Areas.Reports.Models.MeetingsModel;
 
@@ -718,6 +719,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public ActionResult EditCustomReport(int? orgId, string reportName)
         {
             CustomReportViewModel originalReportViewModel = null;
@@ -737,8 +739,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (reportXml == null)
                 throw new Exception("Report not found.");
 
-            var columns = from column in reportXml.Descendants("Column")
-                          select column.Attribute("name").Value;
+            var columns = MapXmlToCustomReportColumn(reportXml);
 
             var model = new CustomReportViewModel(orgId, GetAllStandardColumns(m), reportName);
             model.SetSelectedColumns(columns);
@@ -750,6 +751,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public ActionResult EditCustomReport(CustomReportViewModel viewModel)
         {
             if (string.IsNullOrEmpty(viewModel.ReportName))
@@ -764,12 +766,13 @@ namespace CmsWeb.Areas.Reports.Controllers
             else
             {
                 var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
-                m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName, viewModel.Columns.Where(c => c.IsSelected).Select(c => c.Name));
+                m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName, viewModel.Columns.Where(c => c.IsSelected));
                 return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
             }
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public JsonResult DeleteCustomReport(int? orgId, string reportName)
         {
             if (string.IsNullOrEmpty(reportName))
@@ -781,12 +784,22 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new JsonResult {Data = "success"};
         }
 
-        private static IEnumerable<string> GetAllStandardColumns(CustomReportsModel model)
+        private static IEnumerable<CustomReportColumn> GetAllStandardColumns(CustomReportsModel model)
         {
             var reportXml = model.StandardColumns();
+            return MapXmlToCustomReportColumn(reportXml);
+        }
 
+        private static IEnumerable<CustomReportColumn> MapXmlToCustomReportColumn(XContainer reportXml)
+        {
             return from column in reportXml.Descendants("Column")
-                   select column.Attribute("name").Value;
+                   select new CustomReportColumn
+                   {
+                       Name = column.AttributeOrNull("name"),
+                       Description = column.AttributeOrNull("description"),
+                       Flag = column.AttributeOrNull("flag"),
+                       OrgId = column.AttributeOrNull("orgid")
+                   };
         }
 
         private const string TempDataModelStateKey = "ModelState";
