@@ -742,6 +742,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var columns = MapXmlToCustomReportColumn(reportXml);
 
             var model = new CustomReportViewModel(orgId, GetAllStandardColumns(m), reportName);
+            model.QueryId = DbUtil.Db.QueryInCurrentOrg().QueryId;
 
             var showOnOrgIdValue = reportXml.AttributeOrNull("showOnOrgId");
             int showOnOrgId;
@@ -755,6 +756,9 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             var alreadySaved = TempData[TempDataSuccessfulSaved] as bool?;
             model.CustomReportSuccessfullySaved = alreadySaved.GetValueOrDefault();
+
+            var runReport = TempData[TempDataRunReportAfterSaving] as bool?;
+            model.RunReportOnLoad = runReport.GetValueOrDefault();
 
             return View(model);
         }
@@ -777,6 +781,9 @@ namespace CmsWeb.Areas.Reports.Controllers
             m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName, viewModel.Columns.Where(c => c.IsSelected), viewModel.RestrictToThisOrg);
 
             TempData[TempDataSuccessfulSaved] = true;
+
+            if (!string.IsNullOrEmpty(Request.Form["run-report"]))
+                TempData[TempDataRunReportAfterSaving] = true;
 
             return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
         }
@@ -818,5 +825,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         private const string TempDataModelStateKey = "ModelState";
         private const string TempDataCustomReportKey = "InvalidCustomReportViewModel";
         private const string TempDataSuccessfulSaved = "CustomReportSuccessfullySaved";
+        private const string TempDataRunReportAfterSaving = "TempDataRunReportAfterSaving";
     }
 }

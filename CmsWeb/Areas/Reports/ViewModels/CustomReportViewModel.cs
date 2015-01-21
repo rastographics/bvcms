@@ -8,6 +8,9 @@ namespace CmsWeb.Areas.Reports.ViewModels
     [Serializable]
     public class CustomReportViewModel
     {
+        public bool CustomReportSuccessfullySaved { get; set; }
+        public bool RunReportOnLoad { get; set; }
+
         public int? OrgId { get; set; }
 
         public string OriginalReportName { get; set; }
@@ -18,7 +21,7 @@ namespace CmsWeb.Areas.Reports.ViewModels
         public List<CustomReportColumn> Columns { get; set; }
 
         public bool RestrictToThisOrg { get; set; }
-        public bool CustomReportSuccessfullySaved { get; set; }
+        public Guid QueryId { get; set; }
 
         public CustomReportViewModel() {} // for model binding purposes
 

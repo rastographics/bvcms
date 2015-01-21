@@ -16,7 +16,7 @@
         </div>
     }
 
-    @using (Html.BeginForm("EditCustomReport", "Reports"))
+    @using (Html.BeginForm("EditCustomReport", "Reports", FormMethod.Post, new {id = "edit-custom-report-form"}))
     {
         <fieldset>
             <legend>Name and Customize Your Report</legend>
@@ -26,7 +26,7 @@
                 @Html.HiddenFor(x => x.OriginalReportName)
 
                 @Html.LabelFor(x => x.ReportName)
-                @Html.TextBoxFor(x => x.ReportName, new { placeholder = "Name Your Custom Report" })
+                @Html.TextBoxFor(x => x.ReportName, new {placeholder = "Name Your Custom Report"})
                 @Html.ValidationMessageFor(x => x.ReportName)
 
                 <label class="checkbox">
@@ -36,11 +36,11 @@
                 </label>
             </div>
 
-            <br />
+            <br/>
 
             <div>
                 <span class="help-block">Choose which columns you want in your report</span>
-                @foreach (var c in Model.Columns.Select((x, i) => new { Value = x, Index = i }))
+                @foreach (var c in Model.Columns.Select((x, i) => new {Value = x, Index = i}))
                 {
                     <div>
                         <label class="checkbox">
@@ -71,6 +71,19 @@
             </div>
         </fieldset>
 
-        <input type="submit" class="btn btn-primary" value="Save Report" />
+        <input type="submit" name="save-report" class="btn btn-primary" value="Save Report"/>
+        <input type="submit" id="run-report" name="run-report" class="btn" value="Run Report"/>
     }
+
+    <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = Model.ReportName})">Run Report</a>
 </div>
+
+<script>
+    $('#run-report').click(function (e) {
+        e.preventDefault();
+        var $form = $('#edit-custom-report-form');
+        $.post($form.attr('action'), $form.serialize()).then(function () {
+            window.location = $('#run-report-link').attr('href');
+        });
+    });
+</script>
