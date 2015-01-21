@@ -164,7 +164,7 @@
     $('.toolbar-custom-reports a[data-action="delete"]').click(function(e) {
         e.preventDefault();
 
-        var $reportNode = $(this).parent();
+        var $reportNode = $(this).parent().parent();
         var reportToDelete = $reportNode.text().trim();
 
         bootbox.confirm('Are you sure you want to delete this report? (' + reportToDelete + ')', function(result) {
