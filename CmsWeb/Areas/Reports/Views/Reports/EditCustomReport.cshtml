@@ -12,7 +12,7 @@
     @if (Model.CustomReportSuccessfullySaved)
     {
         <div class="alert alert-success">
-            Your report was successfully saved!
+            Your report was successfully saved! Return to your <a href="@(Url.Action("Index", "Organization", new {Area = "Org", id = Model.OrgId}))">organization</a>.
         </div>
     }
 
