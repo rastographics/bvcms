@@ -70,13 +70,18 @@ namespace CmsWeb.Areas.Reports.Models
 
         public string Sql(Guid id, string report)
         {
-            var body = GetCustomReportsContent();
-            if (string.IsNullOrEmpty(body))
-                throw new Exception("missing CustomReports");
-
-            var xdoc = report == "AllColumns"
-                ? StandardColumns(includeRoot: true)
-                : XDocument.Parse(body);
+            XDocument xdoc;
+            if (report == "AllColumns")
+            {
+                xdoc = StandardColumns(includeRoot: true);
+            }
+            else
+            {
+                var body = GetCustomReportsContent();
+                if (string.IsNullOrEmpty(body))
+                    throw new Exception("missing CustomReports");
+                xdoc = XDocument.Parse(body);
+            }
 
             if (xdoc.Root == null)
                 throw new Exception("missing xml root");
