@@ -113,11 +113,13 @@
                         {
                             <li>
                                 <div class="toolbar-custom-reports">
-                                    <a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a>
+                                    <a class="run-custom-report" target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a>
                                     @if (r != "AllColumns")
                                     {
-                                        <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="icon-edit"></i></a>
-                                        <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="icon-trash"></i></a>
+                                        <span>
+                                            <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="icon-edit"></i></a>
+                                            <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="icon-trash"></i></a>
+                                        </span>
                                     }
                                 </div>
                             </li>
@@ -145,8 +147,16 @@
         padding: 3px 20px;
     }
 
-        .toolbar-custom-reports a {
-            display: inline;
+        .toolbar-custom-reports > .run-custom-report {
+            display: inline-block;
+            white-space: nowrap;
+            width: 80%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .toolbar-custom-reports span {
+            float: right;
         }
 </style>
 
