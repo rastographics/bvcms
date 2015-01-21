@@ -72,6 +72,7 @@ namespace CmsWeb.Areas.Reports.ViewModels
         }
     }
 
+    [Serializable]
     public class CustomReportColumn
     {
         public string Name { get; set; }
