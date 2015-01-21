@@ -735,7 +735,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return View(new CustomReportViewModel(orgId, GetAllStandardColumns(m)));
 
             var reportXml = m.GetReportByName(reportName);
-
             if (reportXml == null)
                 throw new Exception("Report not found.");
 
@@ -743,6 +742,9 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             var model = new CustomReportViewModel(orgId, GetAllStandardColumns(m), reportName);
             model.QueryId = DbUtil.Db.QueryInCurrentOrg().QueryId;
+            if (model.OrgId.HasValue)
+                model.OrgName =
+                    DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == model.OrgId.Value).OrganizationName;
 
             var showOnOrgIdValue = reportXml.AttributeOrNull("showOnOrgId");
             int showOnOrgId;

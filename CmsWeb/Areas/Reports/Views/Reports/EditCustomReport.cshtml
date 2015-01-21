@@ -29,11 +29,14 @@
                 @Html.TextBoxFor(x => x.ReportName, new {placeholder = "Name Your Custom Report"})
                 @Html.ValidationMessageFor(x => x.ReportName)
 
-                <label class="checkbox">
-                    Restrict this report to this org
-                    @Html.CheckBoxFor(x => x.RestrictToThisOrg)
-                    (@Model.OrgId)
-                </label>
+                @if (Model.OrgId.HasValue)
+                {
+                    <label class="checkbox">
+                        Restrict this report to this org
+                        @Html.CheckBoxFor(x => x.RestrictToThisOrg)
+                        <span class="text-info">(@Model.OrgName)</span>
+                    </label>
+                }
             </div>
 
             <br/>

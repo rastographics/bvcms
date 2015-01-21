@@ -22,6 +22,7 @@ namespace CmsWeb.Areas.Reports.ViewModels
 
         public bool RestrictToThisOrg { get; set; }
         public Guid QueryId { get; set; }
+        public string OrgName { get; set; }
 
         public CustomReportViewModel() {} // for model binding purposes
 
