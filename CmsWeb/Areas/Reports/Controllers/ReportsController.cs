@@ -802,7 +802,10 @@ namespace CmsWeb.Areas.Reports.Controllers
                        Name = column.AttributeOrNull("name"),
                        Description = column.AttributeOrNull("description"),
                        Flag = column.AttributeOrNull("flag"),
-                       OrgId = column.AttributeOrNull("orgid")
+                       OrgId = column.AttributeOrNull("orgid"),
+                       SmallGroup = column.AttributeOrNull("smallgroup"),
+                       Field = column.AttributeOrNull("field"),
+                       IsDisabled = column.AttributeOrNull("disabled").ToBool(),
                    };
         }
 

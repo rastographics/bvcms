@@ -312,7 +312,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var body = GetCustomReportsContent();
             if (string.IsNullOrEmpty(body))
-                throw new Exception("missing CustomReports");
+                body = "<CustomReports>\n</CustomReports>";
 
             return XDocument.Parse(body);
         }
@@ -340,11 +340,22 @@ namespace CmsWeb.Areas.Reports.Models
 
         private static IEnumerable<XAttribute> MapCustomReportToAttributes(CustomReportColumn column)
         {
-            if (!string.IsNullOrEmpty(column.Description))
+            if (column.IsStatusFlag)
+            {
                 yield return new XAttribute("description", column.Description);
-
-            if (!string.IsNullOrEmpty(column.Flag))
                 yield return new XAttribute("flag", column.Flag);
+            }
+
+            if (column.IsExtraValue)
+            {
+                yield return new XAttribute("field", column.Field);
+                yield return new XAttribute("disabled", column.IsDisabled);
+            }
+
+            if (column.IsSmallGroup)
+            {
+                yield return new XAttribute("smallgroup", column.SmallGroup);
+            }
 
             yield return new XAttribute("name", column.Name);
 

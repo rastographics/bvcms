@@ -38,11 +38,14 @@
                     <div>
                         <label class="checkbox">
                             @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
-                            @(c.Value.Description ?? c.Value.Name)
+                            @(c.Value.Description ?? c.Value.SmallGroup ?? c.Value.Field ?? c.Value.Name)
                             @Html.HiddenFor(x => Model.Columns[c.Index].Name)
                             @Html.HiddenFor(x => Model.Columns[c.Index].OrgId)
                             @Html.HiddenFor(x => Model.Columns[c.Index].Flag)
                             @Html.HiddenFor(x => Model.Columns[c.Index].Description)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].Field)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].IsDisabled)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].SmallGroup)
                         </label>
                     </div>
                 }
