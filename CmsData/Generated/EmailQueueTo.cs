@@ -37,6 +37,22 @@ namespace CmsData
 		
 		private int? _Parent2;
 		
+		private bool? _Bounced;
+		
+		private bool? _SpamReport;
+		
+		private bool? _Blocked;
+		
+		private bool? _Expired;
+		
+		private bool? _SpamContent;
+		
+		private bool? _Invalid;
+		
+		private bool? _BouncedAddress;
+		
+		private bool? _SpamReporting;
+		
    		
     	
 		private EntityRef< EmailQueue> _EmailQueue;
@@ -79,6 +95,30 @@ namespace CmsData
 		
 		partial void OnParent2Changing(int? value);
 		partial void OnParent2Changed();
+		
+		partial void OnBouncedChanging(bool? value);
+		partial void OnBouncedChanged();
+		
+		partial void OnSpamReportChanging(bool? value);
+		partial void OnSpamReportChanged();
+		
+		partial void OnBlockedChanging(bool? value);
+		partial void OnBlockedChanged();
+		
+		partial void OnExpiredChanging(bool? value);
+		partial void OnExpiredChanged();
+		
+		partial void OnSpamContentChanging(bool? value);
+		partial void OnSpamContentChanged();
+		
+		partial void OnInvalidChanging(bool? value);
+		partial void OnInvalidChanged();
+		
+		partial void OnBouncedAddressChanging(bool? value);
+		partial void OnBouncedAddressChanged();
+		
+		partial void OnSpamReportingChanging(bool? value);
+		partial void OnSpamReportingChanged();
 		
     #endregion
 		public EmailQueueTo()
@@ -314,6 +354,182 @@ namespace CmsData
 					this._Parent2 = value;
 					this.SendPropertyChanged("Parent2");
 					this.OnParent2Changed();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Bounced", UpdateCheck=UpdateCheck.Never, Storage="_Bounced", DbType="bit")]
+		public bool? Bounced
+		{
+			get { return this._Bounced; }
+
+			set
+			{
+				if (this._Bounced != value)
+				{
+				
+                    this.OnBouncedChanging(value);
+					this.SendPropertyChanging();
+					this._Bounced = value;
+					this.SendPropertyChanged("Bounced");
+					this.OnBouncedChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SpamReport", UpdateCheck=UpdateCheck.Never, Storage="_SpamReport", DbType="bit")]
+		public bool? SpamReport
+		{
+			get { return this._SpamReport; }
+
+			set
+			{
+				if (this._SpamReport != value)
+				{
+				
+                    this.OnSpamReportChanging(value);
+					this.SendPropertyChanging();
+					this._SpamReport = value;
+					this.SendPropertyChanged("SpamReport");
+					this.OnSpamReportChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Blocked", UpdateCheck=UpdateCheck.Never, Storage="_Blocked", DbType="bit")]
+		public bool? Blocked
+		{
+			get { return this._Blocked; }
+
+			set
+			{
+				if (this._Blocked != value)
+				{
+				
+                    this.OnBlockedChanging(value);
+					this.SendPropertyChanging();
+					this._Blocked = value;
+					this.SendPropertyChanged("Blocked");
+					this.OnBlockedChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Expired", UpdateCheck=UpdateCheck.Never, Storage="_Expired", DbType="bit")]
+		public bool? Expired
+		{
+			get { return this._Expired; }
+
+			set
+			{
+				if (this._Expired != value)
+				{
+				
+                    this.OnExpiredChanging(value);
+					this.SendPropertyChanging();
+					this._Expired = value;
+					this.SendPropertyChanged("Expired");
+					this.OnExpiredChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SpamContent", UpdateCheck=UpdateCheck.Never, Storage="_SpamContent", DbType="bit")]
+		public bool? SpamContent
+		{
+			get { return this._SpamContent; }
+
+			set
+			{
+				if (this._SpamContent != value)
+				{
+				
+                    this.OnSpamContentChanging(value);
+					this.SendPropertyChanging();
+					this._SpamContent = value;
+					this.SendPropertyChanged("SpamContent");
+					this.OnSpamContentChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Invalid", UpdateCheck=UpdateCheck.Never, Storage="_Invalid", DbType="bit")]
+		public bool? Invalid
+		{
+			get { return this._Invalid; }
+
+			set
+			{
+				if (this._Invalid != value)
+				{
+				
+                    this.OnInvalidChanging(value);
+					this.SendPropertyChanging();
+					this._Invalid = value;
+					this.SendPropertyChanged("Invalid");
+					this.OnInvalidChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="BouncedAddress", UpdateCheck=UpdateCheck.Never, Storage="_BouncedAddress", DbType="bit")]
+		public bool? BouncedAddress
+		{
+			get { return this._BouncedAddress; }
+
+			set
+			{
+				if (this._BouncedAddress != value)
+				{
+				
+                    this.OnBouncedAddressChanging(value);
+					this.SendPropertyChanging();
+					this._BouncedAddress = value;
+					this.SendPropertyChanged("BouncedAddress");
+					this.OnBouncedAddressChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SpamReporting", UpdateCheck=UpdateCheck.Never, Storage="_SpamReporting", DbType="bit")]
+		public bool? SpamReporting
+		{
+			get { return this._SpamReporting; }
+
+			set
+			{
+				if (this._SpamReporting != value)
+				{
+				
+                    this.OnSpamReportingChanging(value);
+					this.SendPropertyChanging();
+					this._SpamReporting = value;
+					this.SendPropertyChanged("SpamReporting");
+					this.OnSpamReportingChanged();
 				}
 
 			}
