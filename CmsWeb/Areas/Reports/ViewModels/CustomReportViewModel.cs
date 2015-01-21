@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
 namespace CmsWeb.Areas.Reports.ViewModels
 {
+    [Serializable]
     public class CustomReportViewModel
     {
         public int? OrgId { get; set; }
