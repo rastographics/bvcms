@@ -88,11 +88,24 @@
 </style>
 
 <script>
-    $('#run-report').click(function (e) {
-        e.preventDefault();
-        var $form = $('#edit-custom-report-form');
-        $.post($form.attr('action'), $form.serialize()).then(function () {
-            window.location = $('#run-report-link').attr('href');
+    (function() {
+        var lastChecked = null;
+        $('#run-report').click(function (e) {
+            e.preventDefault();
+            var $form = $('#edit-custom-report-form');
+            $.post($form.attr('action'), $form.serialize()).then(function () {
+                window.location = $('#run-report-link').attr('href');
+            });
         });
-    });
+
+        $(document).on('click', '.custom-columns label', function (e) {
+            if (e.shiftKey && lastChecked !== null) {
+                var start = $('.custom-columns label').index(this);
+                var end = $('.custom-columns label').index(lastChecked);
+                $('.custom-columns input[type="checkbox"]').slice(Math.min(start, end), Math.max(start, end) + 1).attr('checked', $('input[type="checkbox"]', lastChecked).attr('checked'));
+            }
+
+            lastChecked = this;
+        });
+    })();
 </script>
