@@ -38,7 +38,7 @@
 
             <br/>
 
-            <div>
+            <div class="custom-columns">
                 <span class="help-block">Choose which columns you want in your report</span>
                 @foreach (var c in Model.Columns.Select((x, i) => new {Value = x, Index = i}))
                 {
@@ -77,6 +77,12 @@
 
     <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = Model.ReportName})">Run Report</a>
 </div>
+
+<style>
+    .custom-columns label:hover {
+        background-color: #f5f5f5;
+    }
+</style>
 
 <script>
     $('#run-report').click(function (e) {
