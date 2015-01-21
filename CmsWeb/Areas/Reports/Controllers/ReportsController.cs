@@ -753,6 +753,9 @@ namespace CmsWeb.Areas.Reports.Controllers
             if (originalReportViewModel != null)
                 model.ReportName = originalReportViewModel.ReportName;
 
+            var alreadySaved = TempData[TempDataSuccessfulSaved] as bool?;
+            model.CustomReportSuccessfullySaved = alreadySaved.GetValueOrDefault();
+
             return View(model);
         }
 
@@ -772,6 +775,9 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
             m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName, viewModel.Columns.Where(c => c.IsSelected), viewModel.RestrictToThisOrg);
+
+            TempData[TempDataSuccessfulSaved] = true;
+
             return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
         }
 
@@ -811,5 +817,6 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         private const string TempDataModelStateKey = "ModelState";
         private const string TempDataCustomReportKey = "InvalidCustomReportViewModel";
+        private const string TempDataSuccessfulSaved = "CustomReportSuccessfullySaved";
     }
 }

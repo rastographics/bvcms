@@ -9,6 +9,13 @@
 <div class="container">
     <h2>Custom Report Builder</h2>
 
+    @if (Model.CustomReportSuccessfullySaved)
+    {
+        <div class="alert alert-success">
+            Your report was successfully saved!
+        </div>
+    }
+
     @using (Html.BeginForm("EditCustomReport", "Reports"))
     {
         <fieldset>

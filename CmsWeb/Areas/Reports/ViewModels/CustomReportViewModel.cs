@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.Reports.ViewModels
         public List<CustomReportColumn> Columns { get; set; }
 
         public bool RestrictToThisOrg { get; set; }
+        public bool CustomReportSuccessfullySaved { get; set; }
 
         public CustomReportViewModel() {} // for model binding purposes
 
