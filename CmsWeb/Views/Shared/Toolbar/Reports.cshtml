@@ -117,8 +117,8 @@
                                     @if (r != "AllColumns")
                                     {
                                         <span>
-                                            <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="icon-edit"></i></a>
-                                            <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="icon-trash"></i></a>
+                                            <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-pencil"></i></a>
+                                            <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-trash-o"></i></a>
                                         </span>
                                     }
                                 </div>

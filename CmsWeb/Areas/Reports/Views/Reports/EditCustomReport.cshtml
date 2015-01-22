@@ -75,10 +75,10 @@
         </fieldset>
 
         <input type="submit" name="save-report" class="btn btn-primary" value="Save Report"/>
-        <input type="submit" id="run-report" name="run-report" class="btn" value="Run Report"/>
+        <button type="submit" id="run-report" name="run-report" class="btn"><i class="fa fa-cloud-download"></i> Export Report</button>
     }
 
-    <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = Model.ReportName})">Run Report</a>
+    <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = Model.ReportName})">Export Report</a>
 </div>
 
 <style>
