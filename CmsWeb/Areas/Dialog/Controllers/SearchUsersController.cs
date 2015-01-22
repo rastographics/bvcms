@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Results(SearchUsersModel m)
         {
-            return View(m);
+            return View("Index", m);
         }
         [HttpPost]
         public ActionResult MoveToTop(SearchUsersModel m)
