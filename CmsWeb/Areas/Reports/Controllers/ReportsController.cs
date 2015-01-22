@@ -719,7 +719,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Design")]
         public ActionResult EditCustomReport(int? orgId, string reportName)
         {
             CustomReportViewModel originalReportViewModel = null;
@@ -766,7 +766,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Design")]
         public ActionResult EditCustomReport(CustomReportViewModel viewModel)
         {
             if (string.IsNullOrEmpty(viewModel.ReportName))
@@ -791,7 +791,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Design")]
         public JsonResult DeleteCustomReport(int? orgId, string reportName)
         {
             if (string.IsNullOrEmpty(reportName))

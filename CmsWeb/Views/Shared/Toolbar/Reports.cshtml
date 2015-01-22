@@ -4,7 +4,7 @@
     var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
     var oid = ViewBag.oid;
     var custom = (new CustomReportsModel(DbUtil.Db, oid)).ReportList().ToList();
-    var isAdmin = User.IsInRole("Admin");
+    var isAdmin = User.IsInRole("Admin") || User.IsInRole("Design");
 }
 <ul class="dropdown-menu dropdown-div-reports">
     <li>
