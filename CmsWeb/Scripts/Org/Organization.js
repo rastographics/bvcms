@@ -412,8 +412,8 @@
         $("#Questions-tab").show();
         $("#Messages-tab").show();
 
-        $("#QuestionList li").show();
-        $(".yes6").hide();
+        $("#QuestionList").show();
+        $("#TimeSlotsList").hide();
         switch ($("#org_RegistrationTypeId").val()) {
             case "0":
                 $("#Fees-tab").hide();
@@ -421,8 +421,8 @@
                 $("#Messages-tab").hide();
                 break;
             case "6":
-                $("#QuestionList > li").hide();
-                $(".yes6").show();
+                $("#QuestionList").hide();
+                $("#TimeSlotsList").show();
                 break;
         }
     };
@@ -473,13 +473,13 @@
         return false;
     });
 
-    //$("ul.enablesort a.del").live("click", function (ev) {
-    //    ev.preventDefault();
-    //    if (!$(this).attr("href"))
-    //        return false;
-    //    $(this).parent().parent().parent().remove();
-    //    return false;
-    //});
+    $("ul.enablesort a.del").live("click", function (ev) {
+        ev.preventDefault();
+        if (!$(this).attr("href"))
+            return false;
+        $(this).parent().parent().parent().remove();
+        return false;
+    });
 
     //$("ul.enablesort a.delt").live("click", function (ev) {
     //    ev.preventDefault();
@@ -1026,12 +1026,16 @@
                 var liLast = $(ul).children('li.movable').last();
                 $(liToMove).clone(true, true).insertAfter(liLast);
                 break;
-            case 'delete':
+            case 'delconfirm':
                if (!$(a).attr("href"))
                     return false;
                 if (!confirm("are you sure?")) {
                     return false;
                 }
+                break;
+            case 'delete':
+                if (!$(a).attr("href"))
+                    return false;
                 break;
         }
 
@@ -1070,7 +1074,11 @@
             moveItem($(this), 'bottom', e);
         });
 
-        $('body a.delt').off().on('click', function (e) {
+        $('body a.delconfirm').off().on('click', function (e) {
+            moveItem($(this), 'delconfirm', e);
+        });
+
+        $('body a.delete').off().on('click', function (e) {
             moveItem($(this), 'delete', e);
         });
     };

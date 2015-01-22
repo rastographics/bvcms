@@ -14,6 +14,9 @@
     <ul id="QuestionList" class="noedit" style="list-style: none; margin-left: 5px;">
         @Html.EditorFor(m => m, "TabQuestions")
     </ul>
+    <ul id="TimeSlotsList" class="noedit" style="list-style: none; margin-left: 5px;">
+        @Html.EditorFor(m => m.TimeSlots)
+    </ul>
     @FormAction()
 </form>
 
