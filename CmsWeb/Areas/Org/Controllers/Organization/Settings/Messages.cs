@@ -94,7 +94,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             ViewBag.OrgId = id;
             ViewBag.field = field;
-            var view = ViewExtensions2.RenderPartialViewToString2(this, "NotifyList2", notifyids);
+            var view = ViewExtensions2.RenderPartialViewToString2(this, "Other/NotifyList2", notifyids);
             return Content(view);
             //return View("NotifyList2", notifyids);
         }
