@@ -109,6 +109,10 @@ namespace CmsData
 		
 		private string _PaymentType;
 		
+		private string _Address2;
+		
+		private string _Country;
+		
    		
    		private EntitySet< OrganizationMember> _OrganizationMembers;
 		
@@ -265,6 +269,12 @@ namespace CmsData
 		
 		partial void OnPaymentTypeChanging(string value);
 		partial void OnPaymentTypeChanged();
+		
+		partial void OnAddress2Changing(string value);
+		partial void OnAddress2Changed();
+		
+		partial void OnCountryChanging(string value);
+		partial void OnCountryChanged();
 		
     #endregion
 		public Transaction()
@@ -1298,6 +1308,50 @@ namespace CmsData
 					this._PaymentType = value;
 					this.SendPropertyChanged("PaymentType");
 					this.OnPaymentTypeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Address2", UpdateCheck=UpdateCheck.Never, Storage="_Address2", DbType="nvarchar(50)")]
+		public string Address2
+		{
+			get { return this._Address2; }
+
+			set
+			{
+				if (this._Address2 != value)
+				{
+				
+                    this.OnAddress2Changing(value);
+					this.SendPropertyChanging();
+					this._Address2 = value;
+					this.SendPropertyChanged("Address2");
+					this.OnAddress2Changed();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Country", UpdateCheck=UpdateCheck.Never, Storage="_Country", DbType="nvarchar(50)")]
+		public string Country
+		{
+			get { return this._Country; }
+
+			set
+			{
+				if (this._Country != value)
+				{
+				
+                    this.OnCountryChanging(value);
+					this.SendPropertyChanging();
+					this._Country = value;
+					this.SendPropertyChanged("Country");
+					this.OnCountryChanged();
 				}
 
 			}

@@ -81,9 +81,11 @@ namespace CmsWeb.Models
 
         public string Email { get; set; }
         public string Address { get; set; }
+        public string Address2 { get; set; }
         public string City { get; set; }
         public string State { get; set; }
         public string Zip { get; set; }
+        public string Country { get; set; }
         public string Phone { get; set; }
         public int? TranId { get; set; }
 
@@ -111,8 +113,10 @@ namespace CmsWeb.Models
                          Url = URL,
                          TransactionGateway = OnlineRegModel.GetTransactionGateway(),
                          Address = Address.Truncate(50),
+                         Address2 = Address2.Truncate(50),
                          City = City,
                          State = State,
+                         Country = Country,
                          Zip = Zip,
                          DatumId = DatumId,
                          Phone = Phone.Truncate(20),
@@ -172,8 +176,10 @@ namespace CmsWeb.Models
 
                          Phone = ti.Phone,
                          Address = ti.Address,
+                         Address2 = ti.Address2,
                          City = ti.City,
                          State = ti.State,
+                         Country = ti.Country,
                          Zip = ti.Zip,
                          testing = ti.Testing ?? false,
                          TranId = ti.Id,
@@ -229,8 +235,10 @@ namespace CmsWeb.Models
                 testing = m.testing ?? false,
                 Terms = m.Terms,
                 Address = r.Address,
+                Address2 = r.Address2,
                 City = r.City,
                 State = r.State,
+                Country = r.Country,
                 Zip = r.Zip,
                 Phone = r.Phone,
 #if DEBUG2

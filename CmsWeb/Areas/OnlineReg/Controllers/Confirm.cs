@@ -124,6 +124,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ModelState.AddModelError("City", "City is required");
                 if (!pf.State.HasValue())
                     ModelState.AddModelError("State", "State is required.");
+                if (!pf.Country.HasValue())
+                    ModelState.AddModelError("Country", "Country is required.");
                 if (!pf.Zip.HasValue())
                     ModelState.AddModelError("Zip", "Zipcode is required.");
                 
@@ -145,8 +147,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                             var random = new Random();
                             var dollarAmt = (decimal)random.Next(100, 199) / 100;
 
-                            var transactionResponse = gateway.AuthCreditCard(m.UserPeopleId ?? 0, dollarAmt, pf.CreditCard, DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                                                                             "One Time Auth", 0, pf.CVV, string.Empty, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+                            var transactionResponse = gateway.AuthCreditCard(m.UserPeopleId ?? 0, dollarAmt,
+                                pf.CreditCard, DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
+                                "One Time Auth", 0, pf.CVV, string.Empty, pf.First, pf.Last, pf.Address, pf.Address2,
+                                pf.City, pf.State, pf.Country, pf.Zip, pf.Phone);
 
                             if (!transactionResponse.Approved)
                             {
@@ -166,7 +170,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                         pi = new PaymentInfo();
                         person.PaymentInfos.Add(pi);
                     }
-                    pi.SetBillingAddress(pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+                    pi.SetBillingAddress(pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.Address2, pf.City, pf.State, pf.Country, pf.Zip, pf.Phone);
 
                     gateway.StoreInVault(m.UserPeopleId ?? 0,
                             pf.Type,
@@ -263,13 +267,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 if (pf.Type == PaymentType.Ach)
                     tinfo = gw.PayWithCheck(pid ?? 0, pf.AmtToPay ?? 0, pf.Routing, pf.Account, pf.Description, ti.Id,
-                        pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip,
+                        pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.Address2, pf.City,
+                        pf.State, pf.Country, pf.Zip,
                         pf.Phone);
                 else
                     tinfo = gw.PayWithCreditCard(pid ?? 0, pf.AmtToPay ?? 0, pf.CreditCard,
                         DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                        pf.Description, ti.Id,
-                        pf.CVV, pf.Email, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+                        pf.Description, ti.Id, pf.CVV, pf.Email, pf.First, pf.Last, pf.Address, pf.Address2, pf.City,
+                        pf.State, pf.Country, pf.Zip, pf.Phone);
             }
 
             ti.TransactionId = tinfo.TransactionId;

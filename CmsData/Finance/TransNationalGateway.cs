@@ -11,6 +11,7 @@ using CmsData.Finance.TransNational.Transaction.Auth;
 using CmsData.Finance.TransNational.Transaction.Sale;
 using CmsData.Finance.TransNational.Transaction.Void;
 using CmsData.Finance.TransNational.Vault;
+using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsData.Finance
@@ -362,8 +363,8 @@ namespace CmsData.Finance
         }
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
-            int tranid, string cardcode, string email, string first, string last, string addr, string city, string state,
-            string zip, string phone)
+            int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
+            string country, string zip, string phone)
         {
             var creditCardAuthRequest = new CreditCardAuthRequest(
                 _userName,
@@ -378,8 +379,10 @@ namespace CmsData.Finance
                         FirstName = first,
                         LastName = last,
                         Address1 = addr,
+                        Address2 = addr2,
                         City = city,
                         State = state,
+                        Country = country,
                         Zip = zip,
                         Email = email,
                         Phone = phone
@@ -403,7 +406,7 @@ namespace CmsData.Finance
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires,
             string description, int tranid, string cardcode, string email, string first, string last, string addr,
-            string city, string state, string zip, string phone)
+            string addr2, string city, string state, string country, string zip, string phone)
         {
             var creditCardSaleRequest = new CreditCardSaleRequest(
                 _userName,
@@ -418,8 +421,10 @@ namespace CmsData.Finance
                         FirstName = first,
                         LastName = last,
                         Address1 = addr,
+                        Address2 = addr2,
                         City = city,
                         State = state,
+                        Country = country,
                         Zip = zip,
                         Email = email,
                         Phone = phone
@@ -443,7 +448,7 @@ namespace CmsData.Finance
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct,
             string description, int tranid, string email, string first, string middle, string last, string suffix,
-            string addr, string city, string state, string zip, string phone)
+            string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var achSaleRequest = new AchSaleRequest(
                 _userName,
@@ -458,8 +463,10 @@ namespace CmsData.Finance
                         FirstName = first,
                         LastName = last,
                         Address1 = addr,
+                        Address2 = addr2,
                         City = city,
                         State = state,
+                        Country = country,
                         Zip = zip,
                         Email = email,
                         Phone = phone
