@@ -528,7 +528,7 @@ namespace CmsData
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
             if (ev != null)
-                return ev.StrValue ?? "";
+                return ev.Data ?? "";
             return "";
         }
         public DateTime ExtraValueDate(object pid, string name)
