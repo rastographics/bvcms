@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.Manage.Models
 					orderby om.Person.Name2
 					select new VolunteerInfo
 					{
-						Name = om.Person.Name,
+						Name = om.Person.Name2,
 						commits = commits,
 						PeopleId = om.PeopleId,
 						OrgId = om.OrganizationId

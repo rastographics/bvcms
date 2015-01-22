@@ -108,6 +108,8 @@ namespace CmsData.API
 			[XmlElementAttribute(IsNullable = true)]
 			public string LastName { get; set; }
 			[XmlElementAttribute(IsNullable = true)]
+			public string Name { get; set; }
+			[XmlElementAttribute(IsNullable = true)]
 			public string SuffixCode { get; set; }
 			[XmlElementAttribute(IsNullable = true)]
 			public string AltName { get; set; }
@@ -190,6 +192,7 @@ namespace CmsData.API
 						FirstName = p.FirstName,
 						MiddleName = p.MiddleName,
 						LastName = p.LastName,
+                        Name = p.Name,
 						SuffixCode = p.SuffixCode,
 						AltName = p.AltName,
 						MaidenName = p.MaidenName,

@@ -7,6 +7,7 @@ using UtilityExtensions;
 using IronPython.Hosting;
 using System;
 using System.Text.RegularExpressions;
+using CmsData.API;
 
 namespace CmsData
 {
@@ -346,6 +347,11 @@ namespace CmsData
                     select o.OrganizationId;
             return q.ToList();
         }
+        public List<int> PeopleIds(object savedQuery)
+        {
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            return list;
+        }
 
         public void AddExtraValueCode(object savedQuery, string name, string text)
         {
@@ -510,6 +516,47 @@ namespace CmsData
         public string Replace(string text, string pattern, string replacement)
         {
             return Regex.Replace(text, pattern, replacement);
+        }
+        public int ExtraValueInt(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.IntValue ?? 0;
+            return 0;
+        }
+        public string ExtraValueText(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.Data ?? "";
+            return "";
+        }
+        public DateTime ExtraValueDate(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.DateValue ?? DateTime.MinValue;
+            return DateTime.MinValue;
+        }
+        public string ExtraValue(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.StrValue ?? "";
+            return "";
+        }
+        public bool ExtraValueBit(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.BitValue ?? false;
+            return false;
+        }
+        public APIPerson.Person GetPerson(object pid)
+        {
+            var api = new APIPerson(db);
+            var p = api.GetPersonData(pid.ToInt());
+            return p;
         }
     }
 }

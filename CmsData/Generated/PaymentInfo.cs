@@ -25,8 +25,6 @@ namespace CmsData
 		
 		private Guid? _SageBankGuid;
 		
-		private string _Ccv;
-		
 		private Guid? _SageCardGuid;
 		
 		private string _MaskedAccount;
@@ -91,9 +89,6 @@ namespace CmsData
 		
 		partial void OnSageBankGuidChanging(Guid? value);
 		partial void OnSageBankGuidChanged();
-		
-		partial void OnCcvChanging(string value);
-		partial void OnCcvChanged();
 		
 		partial void OnSageCardGuidChanging(Guid? value);
 		partial void OnSageCardGuidChanged();
@@ -255,28 +250,6 @@ namespace CmsData
 					this._SageBankGuid = value;
 					this.SendPropertyChanged("SageBankGuid");
 					this.OnSageBankGuidChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="ccv", UpdateCheck=UpdateCheck.Never, Storage="_Ccv", DbType="nvarchar(5)")]
-		public string Ccv
-		{
-			get { return this._Ccv; }
-
-			set
-			{
-				if (this._Ccv != value)
-				{
-				
-                    this.OnCcvChanging(value);
-					this.SendPropertyChanging();
-					this._Ccv = value;
-					this.SendPropertyChanged("Ccv");
-					this.OnCcvChanged();
 				}
 
 			}

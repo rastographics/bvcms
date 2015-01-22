@@ -1019,6 +1019,12 @@ namespace CmsData
 			link = ((string)(result.GetParameterValue(1)));
 			return ((int)(result.ReturnValue));
 		}
+        [Function(Name = "dbo.SpamReporterRemove")]
+        public int SpamReporterRemove([Parameter(DbType = "VARCHAR(100)")] string email)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), email);
+            return ((int)(result.ReturnValue));
+        }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
         {
             if (orgmustexist)

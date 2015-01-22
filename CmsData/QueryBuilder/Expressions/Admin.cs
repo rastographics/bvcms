@@ -141,28 +141,47 @@ namespace CmsData
         internal Expression HasOpenedEmail()
         {
             var id = TextValue.ToInt();
-            Expression<Func<Person, bool>> pred = p =>
-                p.EmailResponses.Any(e => e.EmailQueueId == id);
+            Expression<Func<Person, bool>> pred = null;
+            switch (op)
+            {
+                case CompareType.Equal:
+                    pred = p =>
+                        (from pp in p.EmailQueueTos
+                         where pp.Id == id
+                         let r = p.EmailResponses.SingleOrDefault(e => e.EmailQueueId == id)
+                         where r != null
+                         select pp.PeopleId
+                        ).Any();
+                    break;
+                case CompareType.NotEqual:
+                    pred = p =>
+                        (from pp in p.EmailQueueTos
+                         where pp.Id == id
+                         let r = p.EmailResponses.SingleOrDefault(e => e.EmailQueueId == id)
+                         where r == null
+                         select pp.PeopleId
+                        ).Any();
+                    break;
+                default:
+                    return AlwaysFalse();
+            }
             Expression expr = Expression.Invoke(pred, parm);
-            if (op == CompareType.NotEqual)
-                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression HasSpamBlock()
         {
-//                if ((eventx != "bounce" || type != "blocked") && eventx != "dropped")
-//                    return false;
-//                if (eventx == "dropped" && !reason.Contains("spam", ignoreCase: true))
-//                    return false;
-            var id = TextValue.ToInt();
-//            return from e in DbUtil.Db.EmailQueueToFails
-//                   where PeopleId == e.PeopleId
-//                   select e;
             Expression<Func<Person, bool>> pred = p =>
-                db.EmailQueueToFails.Any(e => e.PeopleId == p.PeopleId &&
-                ((e.EventX == "bounce" && (e.EventX == e.Bouncetype ? "" : e.Bouncetype) == "blocked") || e.EventX == "dropped") && (e.EventX != "dropped" || e.Reason.Contains("spam"))
-                )
-                ;
+                (from pp in db.People
+                 where pp.PeopleId == p.PeopleId
+                 let reported = (from ee in pp.PeopleExtras
+                                 where ee.Field == "SpamReport" || ee.Field == "SpamReportingDropped"
+                                 select ee.DateValue).Max()
+                 let removed = (from ee in pp.PeopleExtras
+                                where ee.Field == "SpamReporterRemoved"
+                                select ee.DateValue).SingleOrDefault()
+                 where reported != null && (removed == null || removed < reported)
+                 select pp.PeopleId
+                ).Any();
             Expression expr = Expression.Invoke(pred, parm);
             if (op == CompareType.NotEqual)
                 expr = Expression.Not(expr);

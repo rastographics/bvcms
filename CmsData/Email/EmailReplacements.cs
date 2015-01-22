@@ -18,6 +18,9 @@ namespace CmsData
         private const string RegisterTagRe = "(?:<|&lt;)registertag[^>]*(?:>|&gt;).+?(?:<|&lt;)/registertag(?:>|&gt;)";
         private readonly Regex registerTagRe = new Regex(RegisterTagRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
+        private const string RegisterHrefRe = "href=\"https{0,1}://registerlink2{0,1}/\\d+\"";
+        private readonly Regex registerHrefRe = new Regex(RegisterHrefRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
         private const string RsvpLinkRe = "<a[^>]*?href=\"https{0,1}://(?:rsvplink|regretslink)/{0,1}\"[^>]*>.*?</a>";
         private readonly Regex rsvpLinkRe = new Regex(RsvpLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
@@ -47,7 +50,10 @@ namespace CmsData
             this.from = from;
             if (text == null)
                 text = "(no content)";
-            string pattern = @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8})".Fmt(RegisterLinkRe, RegisterTagRe, RsvpLinkRe, SendLinkRe, SupportLinkRe, VolReqLinkRe, VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
+            string pattern = @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9})".Fmt(
+                RegisterLinkRe, RegisterTagRe, RsvpLinkRe,RegisterHrefRe,
+                SendLinkRe, SupportLinkRe, VolReqLinkRe, 
+                VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
 
@@ -260,6 +266,9 @@ namespace CmsData
 
                     if (registerLinkRe.IsMatch(code))
                         return RegisterLink(code, emailqueueto);
+
+                    if (registerHrefRe.IsMatch(code))
+                        return RegisterLinkHref(code, emailqueueto);
 
                     if (registerTagRe.IsMatch(code))
                         return RegisterTag(code, emailqueueto);
@@ -480,7 +489,42 @@ namespace CmsData
             string url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
             if (showfamily)
                 url += "?showfamily=true";
+            if(d.ContainsKey("style"))
+                return @"<a href=""{0}"" style=""{1}"">{2}</a>".Fmt(url, d["style"], inside);
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+        }
+        
+        private const string registerHrefReId = "href=\"https{0,1}://registerlink2{0,1}/(?<id>\\d+)\"";
+        readonly Regex RegisterHrefReId = new Regex(registerHrefReId, RegexOptions.Singleline);
+        private string RegisterLinkHref(string code, EmailQueueTo emailqueueto)
+        {
+            var list = new Dictionary<string, OneTimeLink>();
+
+            var match = RegisterHrefReId.Match(code);
+            if (!match.Success)
+                return code;
+            var id = match.Groups["id"].Value.ToInt();
+
+            var showfamily = code.Contains("registerlink2", ignoreCase: true);
+            string qs = "{0},{1},{2}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id);
+            OneTimeLink ot;
+            if (list.ContainsKey(qs))
+                ot = list[qs];
+            else
+            {
+                ot = new OneTimeLink
+                    {
+                        Id = Guid.NewGuid(),
+                        Querystring = qs
+                    };
+                db.OneTimeLinks.InsertOnSubmit(ot);
+                db.SubmitChanges();
+                list.Add(qs, ot);
+            }
+            string url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
+            if (showfamily)
+                url += "?showfamily=true";
+            return "href=\"{0}\"".Fmt(url);
         }
 
         private string RegisterTag(string code, EmailQueueTo emailqueueto)
