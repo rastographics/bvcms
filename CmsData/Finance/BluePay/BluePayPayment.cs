@@ -2,8 +2,8 @@
  * Bluepay C#.NET Sample code.
  *
  * Developed by Joel Tosi, Chris Jansen, and Justin Slingerland of Bluepay.
- *
- * Updated: 2013-11-20
+ * Modified by Joel Szwarga rastographics@gmail.com
+ * Updated: 2015-01-20
  *
  * This code is Free.  You may use it, modify it and redistribute it.
  * If you do make modifications that are useful, Bluepay would love it if you donated
@@ -27,8 +27,6 @@ using System.Security.Cryptography.X509Certificates;
 using System.Collections;
 using System.Collections.Specialized;
 using CsvHelper;
-using System.IO;
-using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 

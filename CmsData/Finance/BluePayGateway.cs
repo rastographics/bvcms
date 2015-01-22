@@ -36,9 +36,7 @@ namespace CmsData.Finance
           
         }
         //BluePay stores payment methods by simply using a past transaction's ID as a token. 
-        //We will do an Auth for $0, and save the resulting TransactionID as a Token in the payment profile.
-        //For now, we will use the TbnCardVaultId field, to avoid changing the DB schema.
-        //(Future solution should involve creating a way to add new payment gateways without changing db schema)
+        //We will do an Auth for $0, and save the resulting TransactionID as a Token in the payment profile BluePayCardVaultId.
         public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode,
             string routing, string account, bool giving)
         {
@@ -71,7 +69,7 @@ namespace CmsData.Finance
 
                 if (String.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
                     gateway.auth("0.00");
-                else //send MasterId if available (this will allow for updating payment profile without changing cardnum)
+                else //send MasterId if available (this will allow for updating payment profile without re-entering card number)
                     gateway.auth("0.00", paymentInfo.BluePayCardVaultId);
 
                 gateway.Process();
@@ -86,7 +84,6 @@ namespace CmsData.Finance
                 paymentInfo.BluePayCardVaultId = response.TransactionId;
 
                 paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Ccv = cardCode;
                 paymentInfo.Expires = expires;
             }
             //TODO: Handle bank accounts too (not just credit cards)
@@ -116,8 +113,7 @@ namespace CmsData.Finance
                 paymentInfo.BluePayCardVaultId = null;
                 paymentInfo.MaskedCard = null;
                 paymentInfo.MaskedAccount = null;
-                paymentInfo.Ccv = null;
-                paymentInfo.Expires = null; //TODO: FYI, on the other gateways, Expires does not get cleared...
+                paymentInfo.Expires = null; //TODO: FYI, on the other gateways, Expires does not get cleared?
                 db.SubmitChanges();
             }
         }
