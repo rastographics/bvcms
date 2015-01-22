@@ -265,7 +265,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var xdoc = GetCustomReportXml();
 
-            var nodeToDelete = xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
+            var nodeToDelete = FindReportOnDocument(xdoc, reportName);
             if (nodeToDelete != null)
                 nodeToDelete.Remove();
 
@@ -275,30 +275,36 @@ namespace CmsWeb.Areas.Reports.Models
         public XElement GetReportByName(string reportName)
         {
             var xdoc = GetCustomReportXml();
-            return xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
+            return FindReportOnDocument(xdoc, reportName);
         }
 
-        public void SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns, bool restrictToThisOrg)
+        public SaveReportStatus SaveReport(string originalReportName, string newReportName, IEnumerable<CustomReportColumn> selectedColumns, bool restrictToThisOrg)
         {
             var xdoc = GetCustomReportXml();
 
             var newColumns = from column in selectedColumns
                              select new XElement("Column", MapCustomReportToAttributes(column));
 
-            var nodeToChange = xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == originalReportName);
-            if (nodeToChange != null)
+            if (!string.IsNullOrEmpty(originalReportName))
             {
-                nodeToChange.RemoveNodes();
-                nodeToChange.RemoveAttributes();
+                var nodeToChange = FindReportOnDocument(xdoc, originalReportName);
+                if (nodeToChange != null)
+                {
+                    nodeToChange.RemoveNodes();
+                    nodeToChange.RemoveAttributes();
 
-                nodeToChange.Add(newColumns);
-                nodeToChange.Add(new XAttribute("name", newReportName));
+                    nodeToChange.Add(newColumns);
+                    nodeToChange.Add(new XAttribute("name", newReportName));
 
-                if (restrictToThisOrg)
-                    nodeToChange.Add(new XAttribute("showOnOrgId", orgid.Value));
+                    if (restrictToThisOrg)
+                        nodeToChange.Add(new XAttribute("showOnOrgId", orgid.Value));
+                }
             }
             else
             {
+                if (FindReportOnDocument(xdoc, newReportName) != null)
+                    return SaveReportStatus.ReportAlreadyExists;
+
                 var reportElement = new XElement("Report", newColumns, new XAttribute("name", newReportName));
                 if (restrictToThisOrg)
                     reportElement.Add(new XAttribute("showOnOrgId", orgid.Value));
@@ -306,6 +312,8 @@ namespace CmsWeb.Areas.Reports.Models
             }
 
             SetCustomReportsContent(xdoc.ToString());
+
+            return SaveReportStatus.Success;
         }
 
         private XDocument GetCustomReportXml()
@@ -361,6 +369,17 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (!string.IsNullOrEmpty(column.OrgId))
                 yield return new XAttribute("orgid", column.OrgId);
+        }
+
+        private static XElement FindReportOnDocument(XContainer xdoc, string reportName)
+        {
+            return xdoc.Descendants("Report").SingleOrDefault(r => r.Attribute("name").Value == reportName);
+        }
+
+        public enum SaveReportStatus
+        {
+            Success,
+            ReportAlreadyExists
         }
     }
 }

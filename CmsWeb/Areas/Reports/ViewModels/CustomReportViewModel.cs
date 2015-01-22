@@ -9,7 +9,6 @@ namespace CmsWeb.Areas.Reports.ViewModels
     public class CustomReportViewModel
     {
         public bool CustomReportSuccessfullySaved { get; set; }
-        public bool RunReportOnLoad { get; set; }
 
         public int? OrgId { get; set; }
 
@@ -26,15 +25,18 @@ namespace CmsWeb.Areas.Reports.ViewModels
 
         public CustomReportViewModel() {} // for model binding purposes
 
-        public CustomReportViewModel(int? orgId, IEnumerable<CustomReportColumn> standardColumns, string reportName) : this(orgId, standardColumns)
+        public CustomReportViewModel(int? orgId, Guid queryId, string orgName, IEnumerable<CustomReportColumn> standardColumns, string reportName) 
+            : this(orgId, queryId, orgName, standardColumns)
         {
             ReportName = reportName;
             OriginalReportName = reportName;
         }
 
-        public CustomReportViewModel(int? orgId, IEnumerable<CustomReportColumn> standardColumns)
+        public CustomReportViewModel(int? orgId, Guid queryId, string orgName, IEnumerable<CustomReportColumn> standardColumns)
         {
             OrgId = orgId;
+            QueryId = queryId;
+            OrgName = orgName;
             Columns = new List<CustomReportColumn>();
             Columns.AddRange(standardColumns);
         }

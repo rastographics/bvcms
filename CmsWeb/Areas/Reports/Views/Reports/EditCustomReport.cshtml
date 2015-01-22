@@ -9,6 +9,13 @@
 <div class="container">
     <h2>Custom Report Builder</h2>
 
+    @if (ViewData.ModelState.Keys.Any(k=> ViewData.ModelState[k].Errors.Any())) { 
+        <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            @Html.ValidationSummary(false, "Errors: ")
+        </div>
+    }
+
     @if (Model.CustomReportSuccessfullySaved)
     {
         <div class="alert alert-success">
@@ -78,12 +85,16 @@
         <button type="submit" id="run-report" name="run-report" class="btn"><i class="fa fa-cloud-download"></i> Export Report</button>
     }
 
-    <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = Model.ReportName})">Export Report</a>
+    <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = "___"})">Export Report</a>
 </div>
 
 <style>
     .custom-columns label:hover {
         background-color: #f5f5f5;
+    }
+
+    .field-validation-error {
+        color: #b94a48;
     }
 </style>
 
@@ -94,7 +105,9 @@
             e.preventDefault();
             var $form = $('#edit-custom-report-form');
             $.post($form.attr('action'), $form.serialize()).then(function () {
-                window.location = $('#run-report-link').attr('href');
+                $('#OriginalReportName').val($('#ReportName').val());
+                var runLink = $('#run-report-link').attr('href').replace('___', encodeURIComponent($('#ReportName').val()));
+                window.location = runLink;
             });
         });
 

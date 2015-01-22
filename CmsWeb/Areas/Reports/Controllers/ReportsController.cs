@@ -731,20 +731,25 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             var m = new CustomReportsModel(DbUtil.Db, orgId);
 
+            var queryId = DbUtil.Db.QueryInCurrentOrg().QueryId;
+            var orgName = (orgId.HasValue)
+                ? DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgId.Value).OrganizationName
+                : null;
+
+            CustomReportViewModel model;
             if (string.IsNullOrEmpty(reportName))
-                return View(new CustomReportViewModel(orgId, GetAllStandardColumns(m)));
+            {
+                model = new CustomReportViewModel(orgId, queryId, orgName, GetAllStandardColumns(m));
+                return View(model);
+            }
+
+            model = new CustomReportViewModel(orgId, queryId, orgName, GetAllStandardColumns(m), reportName);
 
             var reportXml = m.GetReportByName(reportName);
             if (reportXml == null)
                 throw new Exception("Report not found.");
 
             var columns = MapXmlToCustomReportColumn(reportXml);
-
-            var model = new CustomReportViewModel(orgId, GetAllStandardColumns(m), reportName);
-            model.QueryId = DbUtil.Db.QueryInCurrentOrg().QueryId;
-            if (model.OrgId.HasValue)
-                model.OrgName =
-                    DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == model.OrgId.Value).OrganizationName;
 
             var showOnOrgIdValue = reportXml.AttributeOrNull("showOnOrgId");
             int showOnOrgId;
@@ -759,9 +764,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             var alreadySaved = TempData[TempDataSuccessfulSaved] as bool?;
             model.CustomReportSuccessfullySaved = alreadySaved.GetValueOrDefault();
 
-            var runReport = TempData[TempDataRunReportAfterSaving] as bool?;
-            model.RunReportOnLoad = runReport.GetValueOrDefault();
-
             return View(model);
         }
 
@@ -769,8 +771,27 @@ namespace CmsWeb.Areas.Reports.Controllers
         [Authorize(Roles = "Admin, Design")]
         public ActionResult EditCustomReport(CustomReportViewModel viewModel)
         {
-            if (string.IsNullOrEmpty(viewModel.ReportName))
-                ModelState.AddModelError("ReportName", "The report name is required.");
+            if (!viewModel.Columns.Any(c => c.IsSelected))
+                ModelState.AddModelError("Columns", "At least one column must be selected.");
+
+            if (ModelState.IsValid)
+            {
+                viewModel.ReportName = viewModel.ReportName.Trim();
+
+                var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
+                var result = m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName,
+                    viewModel.Columns.Where(c => c.IsSelected), viewModel.RestrictToThisOrg);
+
+                switch (result)
+                {
+                    case CustomReportsModel.SaveReportStatus.ReportAlreadyExists:
+                        ModelState.AddModelError("ReportName", "A report by this name already exists.");
+                        break;
+                    default:
+                        TempData[TempDataSuccessfulSaved] = true;
+                        break;
+                }
+            }
 
             if (!ModelState.IsValid)
             {
@@ -778,14 +799,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                 TempData[TempDataCustomReportKey] = viewModel;
                 return RedirectToAction("EditCustomReport", new { reportName = viewModel.OriginalReportName, orgId = viewModel.OrgId });
             }
-
-            var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
-            m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName, viewModel.Columns.Where(c => c.IsSelected), viewModel.RestrictToThisOrg);
-
-            TempData[TempDataSuccessfulSaved] = true;
-
-            if (!string.IsNullOrEmpty(Request.Form["run-report"]))
-                TempData[TempDataRunReportAfterSaving] = true;
 
             return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
         }
@@ -827,6 +840,5 @@ namespace CmsWeb.Areas.Reports.Controllers
         private const string TempDataModelStateKey = "ModelState";
         private const string TempDataCustomReportKey = "InvalidCustomReportViewModel";
         private const string TempDataSuccessfulSaved = "CustomReportSuccessfullySaved";
-        private const string TempDataRunReportAfterSaving = "TempDataRunReportAfterSaving";
     }
 }
