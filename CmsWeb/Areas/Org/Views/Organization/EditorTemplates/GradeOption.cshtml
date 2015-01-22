@@ -2,10 +2,9 @@
 @using CmsWeb
     @using (var ci = Html.BeginCollectionItem(Model.Name))
     {
-      <li class="move">@Html.Raw(ci.hiddenindex)
+      <li class="movable move">@Html.Raw(ci.hiddenindex)
         <ul>
-          <li><div class="sgfee">Description:</div>@Html.TextBoxFor(m => m.Description, new { @class = "long" })
-          <a class="del" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></li>
+          <li><div class="sgfee">Description:</div>@Html.TextBoxFor(m => m.Description, new { @class = "long" }) @Html.Partial("EditorTemplates/QuestionsMenu")</li>
           <li><div class="sgfee">Code:</div>@Html.TextBoxFor(m => m.Code, new { @class = "short" }) </li>
         </ul>
       </li>

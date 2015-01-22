@@ -3,16 +3,16 @@
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
 	var listname = Html.NameFor2(m => m.list);
-	<li class="type-@Model.Type">@Html.Raw(ci.hiddenindex)
+	<li class="movable type-@Model.Type">@Html.Raw(ci.hiddenindex)
 		@Html.HiddenFor(m => m.Type)
-		<div class="text big tip" title="AskGradeOptions
-        |This allows you to specify the grade being registered for">
+        <span style="cursor: pointer;" data-toggle="popover" data-content="This allows you to specify the grade being registered for." data-original-title="AskGradeOptions"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
 		    AskGradeOptions:
-					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></div>
+            @Html.Partial("EditorTemplates/QuestionsMenu")                                                                                                                                                                                                                          
+        </label>
 		<ul id="GradeOptions">
 			<li><span class="keyword2">Label:</span>
 				@Html.TextBoxFor(m => Model.Label, new {@class = "long"})
-				<ul id="GradeOptions" class="sort">
+				<ul id="GradeOptions" class="movable-list sort">
 					@foreach(var item in Model.list)
 					{
 					    item.Name = listname;

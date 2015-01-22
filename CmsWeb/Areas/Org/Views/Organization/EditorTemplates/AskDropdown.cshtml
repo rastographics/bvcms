@@ -3,20 +3,16 @@
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
 	var listname = Html.NameFor2(m => m.list);
-	<li class="type-@Model.Type">@Html.Raw(ci.hiddenindex)
+	<li class="movable type-@Model.Type">@Html.Raw(ci.hiddenindex)
         @Html.HiddenFor(m => m.Type)
-		<span class="keyword big tip" title="Dropdown
-    |This will be presented as a dropdown selection
-    |Enters them in a smallgroup within the organization.
-    |Optional Fee for the selection
-    |Optional Limit which limits the number of people allowed for a selection
-    |Optional DateTime which registers them in a meeting">
+        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>This will be presented as a dropdown selection.</p><p>Enters them in a smallgroup within the organization.</p><p>Optional Fee for the selection.</p><p>Optional Limit which limits the number of people allowed for a selection.</p><p>Optional DateTime which registers them in a meeting.</p>" data-original-title="Dropdown"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
 			Dropdown:
-					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></span>
+            @Html.Partial("EditorTemplates/QuestionsMenu") 
+        </label>
 		<ul>
 			<li><span class="keyword2">Label:</span> 
 				@Html.TextBoxFor(m => m.Label, new { @class = "long" })
-				<ul class="sort">
+				<ul class="movable-list sort">
 					@foreach(var item in Model.list)
 					{
 						item.Name = listname;

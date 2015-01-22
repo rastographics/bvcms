@@ -3,30 +3,26 @@
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
     var listname = Html.NameFor2(m => m.list);
-	<li class="type-@Model.Type">@Html.Raw(ci.hiddenindex)
+	<li class="movable type-@Model.Type">@Html.Raw(ci.hiddenindex)
 		@Html.HiddenFor(m => m.Type)
-		<span class="keyword big tip" title="AskSize
-    |Display a dropdown of sizes.">
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Display a dropdown of sizes." data-original-title="AskSize"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
 			AskSize
-					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></span>
+                @Html.Partial("EditorTemplates/QuestionsMenu")                                                                                                                                                                                
+            </label>
 		<ul>
 			<li>
-				<span class="keyword2 tip" title="Label:
-        |Shirt Sizes (or something like that).">Label:</span> @Html.TextBoxFor(m => m.Label, new {@class = "long"})
+                <span style="cursor: pointer;" data-toggle="popover" data-content="Shirt Sizes (or something like that)." data-original-title="Label"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword tip">Label:</label> @Html.TextBoxFor(m => m.Label, new {@class = "long"})
 			</li>
 			<li>
-				<span class="keyword4 tip" title="AllowLastYearShirt
-        |Adds an extra item to the sizes to indicate they will use last year's.">AllowLastYear:</span> @Html.CheckBoxFor(m => m.AllowLastYear)
+                <span style="cursor: pointer;" data-toggle="popover" data-content="Adds an extra item to the sizes to indicate they will use last year's." data-original-title="AllowLastYearShirt"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword tip">AllowLastYear:</label> @Html.CheckBoxFor(m => m.AllowLastYear)
 			</li>
 			<li>
-				<span class="keyword2 tip" title="Fee
-        |Allows you to charge a fee.">Fee:</span> @Html.TextBoxFor(m => m.Fee)
+                <span style="cursor: pointer;" data-toggle="popover" data-content="Allows you to charge a fee." data-original-title="Fee"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword tip">Fee:</label> @Html.TextBoxFor(m => m.Fee)
 			</li>
 			<li>
-				<div class="text tip" title="ShirtSizes
-        |Allows you to customize the sizes offered.">
-					Sizes:</div>
-				<ul id="Sizes" class="sort">
+                <span style="cursor: pointer;" data-toggle="popover" data-content="Allows you to customize the sizes offered." data-original-title="ShirtSizes"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword tip">
+					Sizes:</label>
+				<ul id="Sizes" class="movable-list sort">
 					@foreach (var item in Model.list)
 					{
 						item.Name = listname;

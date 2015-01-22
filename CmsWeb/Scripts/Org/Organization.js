@@ -290,7 +290,6 @@
             f.on('hidden', function () {
                 d.remove();
                 f.remove();
-                //RebindMemberGrids();
             });
         });
     });
@@ -361,6 +360,23 @@
             $(this).css("z-index", zmax);
         });
     };
+
+    $.InitFunctions.popovers = function(f) {
+        $('[data-toggle="popover"]').popover({ html: true, placement: 'bottom' });
+
+        $('body').on('click', function (e) {
+            $('[data-toggle="popover"]').each(function () {
+                //the 'is' for buttons that trigger popups
+                //the 'has' for icons within a button that triggers a popup
+                if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                    $(this).popover('hide');
+                }
+            });
+        });
+    };
+
+    $.InitFunctions.popovers();
+
     $.InitFunctions.timepicker = function (f) {
         //$(".timepicker").timepicker({ 'step': 5 });
         $(".timepicker").datetimepicker({
@@ -447,34 +463,34 @@
     $('#selectquestions a').live("click", function (ev) {
         ev.preventDefault();
         $.post('/Organization/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
-            $('#selectquestions').dialog("close");
+            $('#addQuestions').modal('hide');
             $('html, body').animate({ scrollTop: $("body").height() }, 800);
             var newli = $("#QuestionList").append(ret);
-            $("#QuestionList > li:last").effect("highlight", {}, 3000);
-            $(".tip", newli).tooltip({ opacity: 0, showBody: "|" });
-            $.updateQuestionList();
+            $.InitFunctions.updateQuestionList();
+            $.InitFunctions.popovers();
+            $.InitFunctions.movequestions();
         });
         return false;
     });
 
-    $("ul.enablesort a.del").live("click", function (ev) {
-        ev.preventDefault();
-        if (!$(this).attr("href"))
-            return false;
-        $(this).parent().parent().parent().remove();
-        return false;
-    });
+    //$("ul.enablesort a.del").live("click", function (ev) {
+    //    ev.preventDefault();
+    //    if (!$(this).attr("href"))
+    //        return false;
+    //    $(this).parent().parent().parent().remove();
+    //    return false;
+    //});
 
-    $("ul.enablesort a.delt").live("click", function (ev) {
-        ev.preventDefault();
-        if (!$(this).attr("href"))
-            return false;
-        if (confirm("are you sure?")) {
-            $(this).parent().parent().remove();
-            $.InitFunctions.updateQuestionList();
-        }
-        return false;
-    });
+    //$("ul.enablesort a.delt").live("click", function (ev) {
+    //    ev.preventDefault();
+    //    if (!$(this).attr("href"))
+    //        return false;
+    //    if (confirm("are you sure?")) {
+    //        $(this).parent().parent().parent().parent().parent().remove();
+    //        $.InitFunctions.updateQuestionList();
+    //    }
+    //    return false;
+    //});
 
     $.exceptions = [
         "AskDropdown",
@@ -493,7 +509,7 @@
             if ($.inArray(type, $.exceptions) >= 0 || $("li.type-" + type).length == 0)
                 $(this).html("<a href='#' type='" + type + "'>" + text + "</a>");
             else
-                $(this).html("<span>" + text + "</span>");
+                $(this).html("<span style='text-decoration: line-through;'>" + text + "</span>");
         });
     };
 
@@ -920,6 +936,147 @@
     $.InitFunctions.ReloadPeople = function () {
         RebindMemberGrids();
     };
+
+    $("body").on("click", 'ul.enablesort div.newitem > a', function (ev) {
+        if (!$(this).attr("href"))
+            return false;
+        ev.preventDefault();
+        var a = $(this);
+        var f = a.closest("form");
+        $.post(a.attr("href"), null, function (ret) {
+            a.parent().prev().append(ret);
+            $.InitFunctions.movequestions();
+        });
+    });
+
+    function clearCuttingBoard() {
+        $('ul.movable-list').each(function () {
+            $(this).children('li.movable').each(function () {
+                $(this).removeClass('cutting');
+            });
+        });
+    }
+
+    function initializeCutPaste() {
+        $('ul.movable-list').each(function () {
+            if ($(this).children('li.movable').length <= 1) {
+                $(this).children('li.movable').find('li a.cut').addClass('disabled');
+            }
+            $(this).children('li.movable').find('li a.paste').addClass('disabled');
+        });
+    }
+
+    function enablePaste(ul) {
+        $(ul).children('li.movable').each(function () {
+            $(this).find('li a.paste').first().removeClass('disabled');
+        });
+    }
+
+    function enableDisableMoveUpward() {
+        $('ul.movable-list').each(function () {
+            $(this).children('li.movable').find('li a.movetop').removeClass('disabled');
+            $(this).children('li.movable').find('li a.moveup').removeClass('disabled');
+            $(this).children('li.movable').first().find('li a.movetop').addClass('disabled');
+            $(this).children('li.movable').first().find('li a.moveup').addClass('disabled');
+        });
+    }
+
+    function enableDisableMoveDownward() {
+        $('ul.movable-list').each(function () {
+            $(this).children('li.movable').find('li a.movebottom').removeClass('disabled');
+            $(this).children('li.movable').find('li a.movedown').removeClass('disabled');
+            $(this).children('li.movable').last().find('li a.movebottom').addClass('disabled');
+            $(this).children('li.movable').last().find('li a.movedown').addClass('disabled');
+        });
+    }
+
+    function moveItem(a, action, e) {
+        e.preventDefault();
+        if ($(a).hasClass('disabled')) {
+            return false;
+        }
+        var ul = $(a).closest('ul.movable-list');
+        var liToMove = $(a).closest('li.movable');
+
+        switch (action) {
+            case 'top':
+                var liFirst = $(ul).children('li.movable').first();
+                $(liToMove).clone(true, true).insertBefore(liFirst);
+                break;
+            case 'up':
+                var liPrev = liToMove.prev('li.movable');
+                $(liToMove).clone(true, true).insertBefore(liPrev);
+                break;
+            case 'cut':
+                clearCuttingBoard();
+                $(liToMove).addClass('cutting');
+                enablePaste(ul);
+                return false;
+                break;
+            case 'paste':
+                var li = $(a).closest('li.movable');
+                liToMove = $(ul).children('li.cutting').first();
+                $(liToMove).clone(true, true).insertAfter(li);
+                break;
+            case 'down':
+                var liNext = liToMove.next('li.movable');
+                $(liToMove).clone(true, true).insertAfter(liNext);
+                break;
+            case 'bottom':
+                var liLast = $(ul).children('li.movable').last();
+                $(liToMove).clone(true, true).insertAfter(liLast);
+                break;
+            case 'delete':
+               if (!$(a).attr("href"))
+                    return false;
+                if (!confirm("are you sure?")) {
+                    return false;
+                }
+                break;
+        }
+
+        $(liToMove).remove();
+        $.InitFunctions.updateQuestionList();
+        $.InitFunctions.movequestions();
+    }
+
+    $.InitFunctions.movequestions = function () {
+        clearCuttingBoard();
+        initializeCutPaste();
+        enableDisableMoveUpward();
+        enableDisableMoveDownward();
+
+        $('body a.movetop').off().on('click', function(e) {
+            moveItem($(this), 'top', e);
+        });
+
+        $('body a.moveup').off().on('click', function (e) {
+            moveItem($(this), 'up', e);
+        });
+
+        $('body a.cut').off().on('click', function (e) {
+            moveItem($(this), 'cut', e);
+        });
+
+        $('body a.paste').off().on('click', function (e) {
+            moveItem($(this), 'paste', e);
+        });
+
+        $('body a.movedown').off().on('click', function (e) {
+            moveItem($(this), 'down', e);
+        });
+
+        $('body a.movebottom').off().on('click', function (e) {
+            moveItem($(this), 'bottom', e);
+        });
+
+        $('body a.delt').off().on('click', function (e) {
+            moveItem($(this), 'delete', e);
+        });
+    };
+
+    $.InitFunctions.movequestions();
+
 //    $('#NewMeeting').live("click", function (ev) {
 //        ev.preventDefault();
 //        $('#grouplabel').text("Group Meeting");

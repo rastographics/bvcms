@@ -2,11 +2,11 @@
 @using CmsWeb
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-	<li class="type-@Model.Type">@Html.Raw(ci.hiddenindex)
+	<li class="movable type-@Model.Type">@Html.Raw(ci.hiddenindex)
 		@Html.HiddenFor(m => m.Type)
-		<span class="keyword big tip" title="AskParents
-    |Displays two text boxes asking for mother and/or father's names.">
+        <span style="cursor: pointer;" data-toggle="popover" data-content="Displays two text boxes asking for mother and/or father's names." data-original-title="AskParents"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
 			AskParents
-					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></span>
+            @Html.Partial("EditorTemplates/QuestionsMenu") 
+        </label>
 	</li>
 }

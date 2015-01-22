@@ -917,6 +917,7 @@
     <Content Include="Areas\Dialog\Views\OrgMembersDialog\ShowDrop.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Dropped.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\ShowDrop.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\QuestionsMenu.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\Chosen\chosen.proto.js" />
     <Content Include="Scripts\Chosen\chosen.proto.min.js" />

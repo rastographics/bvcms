@@ -1,16 +1,13 @@
 ﻿@model CmsData.Registration.TimeSlots
 @using CmsWeb
-<li class="yes6"><span class="keyword big tip" title="Lock Commitment Days
-    |This will cause the volunteers commitment to be locked in
-    |for a number of days in the future and require them to ask for a sub">
-						 Lock Commitment Days:</span>
+<li class="yes6"><span style="cursor: pointer;" data-toggle="popover" data-content="This will cause the volunteers commitment to be locked in for a number of days in the future and require them to ask for a sub." data-original-title="Lock Commitment Days"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
+						 Lock Commitment Days:</label>
 		<span> @Html.TextBox("TimeSlotLockDays", Model.TimeSlotLockDays)</span>
 </li>
     @{ var listname = Html.NameFor2(m => m.list); } 
 <li class="yes6">
-    <div class="text big tip" title="TimeSlots
-    |These allow you to specify a series of Day / Times for registration.">
-        TimeSlots:</div>
+    <span style="cursor: pointer;" data-toggle="popover" data-content="These allow you to specify a series of Day / Times for registration." data-original-title="TimeSlots"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="text big tip">
+        TimeSlots:</label>
     <ul id="TimeSlots" class="sort">
         @foreach (var item in Model.list.OrderBy(cc => cc.Id))
         {
