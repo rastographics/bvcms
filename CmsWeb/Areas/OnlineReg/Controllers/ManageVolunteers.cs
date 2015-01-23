@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("VolRequestResponse/{ans}/{guid}")]
 		public ActionResult RequestResponse(string ans, string guid)
 		{
+            // todo: needs landing page
 			try
 			{
 				var vs = new VolunteerRequestModel(guid);
@@ -72,6 +73,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("ClaimVolSub/{ans}/{guid}")]
 		public ActionResult ClaimVolSub(string ans, string guid)
 		{
+            // todo: needs landing page
 			try
 			{
 				var vs = new VolSubModel(guid);

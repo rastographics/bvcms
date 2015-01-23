@@ -12,6 +12,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         public ActionResult VoteLinkSg(string id, string message, bool? confirm)
         {
+            // todo: needs landing page
             if (!id.HasValue())
                 return Message("bad link");
 
@@ -158,6 +159,7 @@ emailid={2}
 
         public ActionResult RsvpLinkSg(string id, string message, bool? confirm, bool regrets = false)
         {
+            // todo: needs landing page
             if (!id.HasValue())
                 return Message("bad link");
 
@@ -234,6 +236,7 @@ emailid={2}
         [ValidateInput(false)]
         public ActionResult RegisterLink(string id, bool? showfamily, string source)
         {
+            // todo: needs landing page
             if (!id.HasValue())
                 return Message("bad link");
             if (!Request.Browser.Cookies)
@@ -288,6 +291,7 @@ emailid={2}
 
         public ActionResult SendLink(string id)
         {
+            // todo: needs landing page
             if (!id.HasValue())
                 return Message("bad link");
 
