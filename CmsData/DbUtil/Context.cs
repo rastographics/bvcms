@@ -201,6 +201,7 @@ namespace CmsData
             var q = People.Where(c.Predicate(this));
             if (c.ParentsOf)
                 q = PersonQueryParents(q);
+            return q;
         }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
