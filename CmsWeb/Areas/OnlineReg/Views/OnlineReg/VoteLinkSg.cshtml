@@ -1,0 +1,20 @@
+﻿@{
+    ViewBag.Title = "Response Confirmation";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
+}
+<br/>
+<div class="regform">
+    @using (Html.BeginForm("VoteLinkSg", "OnlineReg", FormMethod.Post))
+    {
+        <input type="hidden" id="id" name="id" value="@ViewBag.Id" />
+        <input type="hidden" id="message" name="message" value="@ViewBag.Message" />
+        <input type="hidden" id="confirm" name="confirm" value="@ViewBag.Confirm" />
+        <div class="alert alert-warning">
+            <h4>Confirm Response</h4>
+            <p>Please click the confirmation button below to confirm your reponse.</p>
+            <p>
+                <button type="submit" class="btn btn-warning">Confirm</button>
+            </p>
+        </div>
+    }
+</div>

@@ -12,7 +12,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         public ActionResult VoteLinkSg(string id, string message, bool? confirm)
         {
-            // todo: needs landing page
+            ViewBag.Id = id;
+            ViewBag.Message = message;
+            ViewBag.Confirm = confirm.GetValueOrDefault().ToString();
+            return View();
+        }
+        
+        [HttpPost]
+        public ActionResult VoteLinkSg(string id, string message, bool? confirm, FormCollection formCollection)
+        {
             if (!id.HasValue())
                 return Message("bad link");
 
@@ -159,7 +167,16 @@ emailid={2}
 
         public ActionResult RsvpLinkSg(string id, string message, bool? confirm, bool regrets = false)
         {
-            // todo: needs landing page
+            ViewBag.Id = id;
+            ViewBag.Message = message;
+            ViewBag.Confirm = confirm.GetValueOrDefault().ToString();
+            ViewBag.Regrets = regrets.ToString();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult RsvpLinkSg(string id, string message, bool? confirm, FormCollection formCollection, bool regrets = false)
+        {
             if (!id.HasValue())
                 return Message("bad link");
 
@@ -236,7 +253,6 @@ emailid={2}
         [ValidateInput(false)]
         public ActionResult RegisterLink(string id, bool? showfamily, string source)
         {
-            // todo: needs landing page
             if (!id.HasValue())
                 return Message("bad link");
             if (!Request.Browser.Cookies)
@@ -287,11 +303,18 @@ emailid={2}
                 url += "&showfamily=true";
             return Redirect(url);
         }
-        [ValidateInput(false)]
 
+        [ValidateInput(false)]
         public ActionResult SendLink(string id)
         {
-            // todo: needs landing page
+            ViewBag.Id = id;
+            return View();
+        }
+        
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult SendLink(string id, FormCollection formCollection)
+        {
             if (!id.HasValue())
                 return Message("bad link");
 
