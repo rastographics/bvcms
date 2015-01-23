@@ -180,11 +180,18 @@ namespace CmsData
         {
             if (name.AllDigits())
                 name = "peopleid=" + name;
-            const string pattern = @"\Apeopleid=([\d,]*)\z";
-            if (Regex.IsMatch(name, pattern))
+            if (name.StartsWith("peopleid", StringComparison.OrdinalIgnoreCase))
             {
-                var pids = Regex.Match(name, pattern, RegexOptions.IgnoreCase).Groups[1].Value.Split(',').Select(tt => tt.ToInt());
-                return People.Where(pp => pids.Contains(pp.PeopleId));
+                var pids = new List<int>();
+                var re = new Regex(@"(\d+)");
+                var m = re.Match(name);
+                while (m.Success)
+                {
+                    pids.Add(m.Value.ToInt());
+                    m = m.NextMatch();
+                }
+                if (pids.Count > 0)
+                    return People.Where(pp => pids.Contains(pp.PeopleId));
             }
 
             var qB = Queries.FirstOrDefault(cc => cc.Name == name);
@@ -194,7 +201,6 @@ namespace CmsData
             var q = People.Where(c.Predicate(this));
             if (c.ParentsOf)
                 q = PersonQueryParents(q);
-            return q;
         }
         public IQueryable<Person> PersonQueryParents(IQueryable<Person> q)
         {
@@ -777,42 +783,42 @@ namespace CmsData
             return s.ret;
         }
 
-//        public class RollListView
-//        {
-//            public int? Section { get; set; }
-//            public int? PeopleId { get; set; }
-//            public string Name { get; set; }
-//            public string Last { get; set; }
-//            public int? FamilyId { get; set; }
-//            public string First { get; set; }
-//            public string Email { get; set; }
-//            public bool? Attended { get; set; }
-//            public int? CommitmentId { get; set; }
-//            public string CurrMemberType { get; set; }
-//            public string MemberType { get; set; }
-//            public string AttendType { get; set; }
-//            public int? OtherAttends { get; set; }
-//            public bool? CurrMember { get; set; }
-//        }
-//
-//        [Function(Name = "dbo.RollListMeeting")]
-//        [ResultType(typeof(RollListView))]
-//        public IMultipleResults RollListMeeting(
-//            [Parameter(DbType = "Int")] int? mid
-//            , [Parameter(DbType = "DateTime")] DateTime meetingdt
-//            , [Parameter(DbType = "Int")] int oid
-//            , [Parameter(DbType = "Bit")] bool current
-//            , [Parameter(DbType = "Bit")] bool createmeeting)
-//        {
-//            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
-//                mid, meetingdt, oid, current, createmeeting);
-//            return ((IMultipleResults)(result.ReturnValue));
-//        }
-//        public IEnumerable<RollListView> RollList(int? mid ,  DateTime meetingdt ,  int oid ,  bool current ,  bool createmeeting)
-//        {
-//            var r = RollListMeeting(mid, meetingdt, oid, current, createmeeting);
-//            return r.GetResult<RollListView>();
-//        }
+        //        public class RollListView
+        //        {
+        //            public int? Section { get; set; }
+        //            public int? PeopleId { get; set; }
+        //            public string Name { get; set; }
+        //            public string Last { get; set; }
+        //            public int? FamilyId { get; set; }
+        //            public string First { get; set; }
+        //            public string Email { get; set; }
+        //            public bool? Attended { get; set; }
+        //            public int? CommitmentId { get; set; }
+        //            public string CurrMemberType { get; set; }
+        //            public string MemberType { get; set; }
+        //            public string AttendType { get; set; }
+        //            public int? OtherAttends { get; set; }
+        //            public bool? CurrMember { get; set; }
+        //        }
+        //
+        //        [Function(Name = "dbo.RollListMeeting")]
+        //        [ResultType(typeof(RollListView))]
+        //        public IMultipleResults RollListMeeting(
+        //            [Parameter(DbType = "Int")] int? mid
+        //            , [Parameter(DbType = "DateTime")] DateTime meetingdt
+        //            , [Parameter(DbType = "Int")] int oid
+        //            , [Parameter(DbType = "Bit")] bool current
+        //            , [Parameter(DbType = "Bit")] bool createmeeting)
+        //        {
+        //            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
+        //                mid, meetingdt, oid, current, createmeeting);
+        //            return ((IMultipleResults)(result.ReturnValue));
+        //        }
+        //        public IEnumerable<RollListView> RollList(int? mid ,  DateTime meetingdt ,  int oid ,  bool current ,  bool createmeeting)
+        //        {
+        //            var r = RollListMeeting(mid, meetingdt, oid, current, createmeeting);
+        //            return r.GetResult<RollListView>();
+        //        }
         public string UserPreference(string pref)
         {
             return UserPreference(pref, string.Empty);
@@ -1011,14 +1017,14 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), guid);
             return ((int)(result.ReturnValue));
         }
-		[Function(Name="dbo.TrackClick")]
-		public int TrackClick([Parameter(DbType="VarChar(50)")] string hash, 
-            [Parameter(DbType="VarChar(500)")] ref string link)
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
-			link = ((string)(result.GetParameterValue(1)));
-			return ((int)(result.ReturnValue));
-		}
+        [Function(Name = "dbo.TrackClick")]
+        public int TrackClick([Parameter(DbType = "VarChar(50)")] string hash,
+            [Parameter(DbType = "VarChar(500)")] ref string link)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
+            link = ((string)(result.GetParameterValue(1)));
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.SpamReporterRemove")]
         public int SpamReporterRemove([Parameter(DbType = "VARCHAR(100)")] string email)
         {
@@ -1078,17 +1084,17 @@ namespace CmsData
         public Content ContentOfTypeHtml(string name)
         {
             var content = (from c in Contents
-                where c.Name == name
-                where c.TypeID == ContentTypeCode.TypeHtml 
-                select c).FirstOrDefault();
+                           where c.Name == name
+                           where c.TypeID == ContentTypeCode.TypeHtml
+                           select c).FirstOrDefault();
             return content;
         }
         public string ContentOfTypePythonScript(string name)
         {
             var content = (from c in Contents
-                where c.Name == name
-                where c.TypeID == ContentTypeCode.TypePythonScript 
-                select c).FirstOrDefault();
+                           where c.Name == name
+                           where c.TypeID == ContentTypeCode.TypePythonScript
+                           select c).FirstOrDefault();
             if (content == null)
                 return "";
             return content.Body;
