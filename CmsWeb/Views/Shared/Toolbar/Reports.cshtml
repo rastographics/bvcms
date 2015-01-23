@@ -117,7 +117,7 @@
                                     @if (r != "AllColumns")
                                     {
                                         <span>
-                                            <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-pencil"></i></a>
+                                            <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid, queryId = qid})"><i class="fa fa-pencil"></i></a>
                                             <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-trash-o"></i></a>
                                         </span>
                                     }
@@ -125,7 +125,7 @@
                             </li>
                             <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
                         }
-                        <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new { Area = "Reports", orgId = oid }, null)</li>
+                        <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new { Area = "Reports", orgId = oid, queryId = qid }, null)</li>
                     }
                     else
                     {

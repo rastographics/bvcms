@@ -720,7 +720,7 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         [HttpGet]
         [Authorize(Roles = "Admin, Design")]
-        public ActionResult EditCustomReport(int? orgId, string reportName)
+        public ActionResult EditCustomReport(int? orgId, string reportName, Guid queryId)
         {
             CustomReportViewModel originalReportViewModel = null;
             if (TempData[TempDataModelStateKey] != null)
@@ -731,7 +731,6 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             var m = new CustomReportsModel(DbUtil.Db, orgId);
 
-            var queryId = DbUtil.Db.QueryInCurrentOrg().QueryId;
             var orgName = (orgId.HasValue)
                 ? DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgId.Value).OrganizationName
                 : null;
@@ -797,10 +796,10 @@ namespace CmsWeb.Areas.Reports.Controllers
             {
                 TempData[TempDataModelStateKey] = ModelState;
                 TempData[TempDataCustomReportKey] = viewModel;
-                return RedirectToAction("EditCustomReport", new { reportName = viewModel.OriginalReportName, orgId = viewModel.OrgId });
+                return RedirectToAction("EditCustomReport", new { reportName = viewModel.OriginalReportName, orgId = viewModel.OrgId, queryId = viewModel.QueryId });
             }
 
-            return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
+            return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId, queryId = viewModel.QueryId });
         }
 
         [HttpPost]
