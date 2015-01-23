@@ -54,7 +54,7 @@
     <td>
     @if (Model.Type == PaymentType.CreditCard)
     {
-        @:Debit/Credit Card # @UtilityExtensions.Util.MaskCC(Model.Cardnumber)<br />
+        @:Debit/Credit Card # @UtilityExtensions.Util.MaskCC(Model.CreditCard)<br />
         @:Expires @Model.Expires
     }
     else

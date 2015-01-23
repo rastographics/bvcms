@@ -464,6 +464,16 @@
     <Compile Include="Generated\Functions\RollList.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
+    <Compile Include="Generated\MergeHistory.cs" />
+    <Compile Include="Generated\MobileAppAction.cs" />
+    <Compile Include="Generated\MobileAppActionType.cs" />
+    <Compile Include="Generated\MobileAppAudioType.cs" />
+    <Compile Include="Generated\MobileAppBuilding.cs" />
+    <Compile Include="Generated\MobileAppFloor.cs" />
+    <Compile Include="Generated\MobileAppIcon.cs" />
+    <Compile Include="Generated\MobileAppIconSet.cs" />
+    <Compile Include="Generated\MobileAppRoom.cs" />
+    <Compile Include="Generated\MobileAppVideoType.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />
     <Compile Include="Generated\Views\ActiveRegistration.cs" />
     <Compile Include="Generated\Views\AppRegistration.cs" />

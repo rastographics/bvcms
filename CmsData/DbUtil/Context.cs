@@ -138,6 +138,10 @@ namespace CmsData
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);
         }
+        public Meeting LoadMeetingById(int? id)
+        {
+            return this.Meetings.SingleOrDefault(m => m.MeetingId == id);
+        }
         public Organization LoadOrganizationByName(string name)
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationName == name);
@@ -772,6 +776,43 @@ namespace CmsData
             var s = r.GetResult<RecordAttendInfo>().First();
             return s.ret;
         }
+
+//        public class RollListView
+//        {
+//            public int? Section { get; set; }
+//            public int? PeopleId { get; set; }
+//            public string Name { get; set; }
+//            public string Last { get; set; }
+//            public int? FamilyId { get; set; }
+//            public string First { get; set; }
+//            public string Email { get; set; }
+//            public bool? Attended { get; set; }
+//            public int? CommitmentId { get; set; }
+//            public string CurrMemberType { get; set; }
+//            public string MemberType { get; set; }
+//            public string AttendType { get; set; }
+//            public int? OtherAttends { get; set; }
+//            public bool? CurrMember { get; set; }
+//        }
+//
+//        [Function(Name = "dbo.RollListMeeting")]
+//        [ResultType(typeof(RollListView))]
+//        public IMultipleResults RollListMeeting(
+//            [Parameter(DbType = "Int")] int? mid
+//            , [Parameter(DbType = "DateTime")] DateTime meetingdt
+//            , [Parameter(DbType = "Int")] int oid
+//            , [Parameter(DbType = "Bit")] bool current
+//            , [Parameter(DbType = "Bit")] bool createmeeting)
+//        {
+//            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
+//                mid, meetingdt, oid, current, createmeeting);
+//            return ((IMultipleResults)(result.ReturnValue));
+//        }
+//        public IEnumerable<RollListView> RollList(int? mid ,  DateTime meetingdt ,  int oid ,  bool current ,  bool createmeeting)
+//        {
+//            var r = RollListMeeting(mid, meetingdt, oid, current, createmeeting);
+//            return r.GetResult<RollListView>();
+//        }
         public string UserPreference(string pref)
         {
             return UserPreference(pref, string.Empty);
@@ -964,6 +1005,26 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, max);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.TrackOpen")]
+        public int TrackOpen([Parameter(DbType = "UniqueIdentifier")] Guid guid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), guid);
+            return ((int)(result.ReturnValue));
+        }
+		[Function(Name="dbo.TrackClick")]
+		public int TrackClick([Parameter(DbType="VarChar(50)")] string hash, 
+            [Parameter(DbType="VarChar(500)")] ref string link)
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
+			link = ((string)(result.GetParameterValue(1)));
+			return ((int)(result.ReturnValue));
+		}
+        [Function(Name = "dbo.SpamReporterRemove")]
+        public int SpamReporterRemove([Parameter(DbType = "VARCHAR(100)")] string email)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), email);
+            return ((int)(result.ReturnValue));
+        }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
         {
             if (orgmustexist)
@@ -1145,6 +1206,26 @@ namespace CmsData
             qb = cc.JustLoadedQuery;
             cc.Description = name;
             cc.Save(this, owner: "public");
+            FromActiveRecords = true;
+            var n = PeopleQuery(cc.Id).Count();
+            FromActiveRecords = false;
+            return n;
+        }
+        public int ActiveRecords2()
+        {
+            const string name = "ActiveRecords2";
+            var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "david");
+            Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
+            cc.Reset(this);
+            cc.SetComparisonType(CompareType.AnyTrue);
+            var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.Greater, "1");
+            clause.Days = 365;
+            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+            clause.Days = 365;
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            qb = cc.JustLoadedQuery;
+            cc.Description = name;
+            cc.Save(this, owner: "david");
             FromActiveRecords = true;
             var n = PeopleQuery(cc.Id).Count();
             FromActiveRecords = false;

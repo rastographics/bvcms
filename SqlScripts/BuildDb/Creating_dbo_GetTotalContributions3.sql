@@ -12,7 +12,8 @@ RETURN
 (
 	SELECT tt.*, 
 	(SELECT TOP 1 OrganizationName from dbo.Organizations o WHERE o.OrganizationId = p.BibleFellowshipClassId) MainFellowship,
-	(SELECT TOP 1 Description FROM lookup.MemberStatus ms WHERE p.MemberStatusId = ms.Id) MemberStatus
+	(SELECT TOP 1 Description FROM lookup.MemberStatus ms WHERE p.MemberStatusId = ms.Id) MemberStatus,
+	p.JoinDate
 	FROM
 	(
 	SELECT 

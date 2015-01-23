@@ -17,6 +17,10 @@
         @Html.EditorFor(m => m.InactiveDate)
         @Html.EditorFor(m => m.EnrollmentDate)
         @Html.EditorFor(m => m.Pending)
+        @if (User.IsInRole("Developer"))
+        {
+            @Html.EditorFor(m => m.TranId)
+        }
         @if (Model.RegisterEmail.HasValue())
         {
             @Html.EditorFor(m => m.RegisterEmail)

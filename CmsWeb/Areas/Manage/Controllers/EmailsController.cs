@@ -240,6 +240,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var deletespam = ConfigurationManager.AppSettings["DeleteSpamReport"] + email;
 			var wc = new WebClient();
 			var ret = wc.DownloadString(deletespam);
+		    DbUtil.Db.SpamReporterRemove(email);
 			return Content(ret);
 		}
 

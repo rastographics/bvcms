@@ -119,6 +119,9 @@
     <RelatedFamilyMembers Type="Integer">
       Select all persons in related families given a single family id.
     </RelatedFamilyMembers>
+    <HasFamilyPicture Title="Has Family Picture" Type="Bit" DataValueField="IdCode">
+      Select True or False for families with Family Picture.
+    </HasFamilyPicture>
   </Family>
   <Address Title="Address">
     <PrimaryResCode Title="Resident Code" Type="Code" DataSource="ResidentCodes" DataValueField="IdCode">
@@ -690,6 +693,12 @@
     <HasOptoutsForEmail Title="Has Email Optouts for address" Type="StringEqual" DisplayAs="HasOptoutsForEmail({0:d})" Params="EndDate">
       Enter email address (leave value blank for any optout address) and pick an end date for those who opted out before that date (or leave date blank).
     </HasOptoutsForEmail>
+    <HasOpenedEmail Title="Opened Email" Type="IntegerEqual" DisplayAs="HasOpenedEmail">
+      Enter Email ID number.
+    </HasOpenedEmail>
+    <HasSpamBlock Title="Has Spam Block" Type="Bit" DisplayAs="HasSpamBlock">
+      Has Reported as Spam
+    </HasSpamBlock>
     <PeopleId Type="Integer">
       For internal use, but you can enter a People ID number.
     </PeopleId>

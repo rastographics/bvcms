@@ -283,6 +283,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\StewardshipTechnology.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\Vanco2.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\Vanco.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -297,7 +298,11 @@
     <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileHomeAction.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRegistration.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -310,6 +315,7 @@
     <Compile Include="Areas\Reports\Models\Avery\EmployerAddressRow.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Areas\Reports\Models\Directories\FamilyPictureDir.cs" />
     <Compile Include="Areas\Reports\Models\Directories\CompactPictureDir.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelExportModel.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExcelResult.cs" />
@@ -655,7 +661,7 @@
     <Compile Include="Code\LabelMetaData.cs" />
     <Compile Include="Code\ModelViewMetadataProvider.cs" />
     <Compile Include="Code\ModelViewModel.cs" />
-    <Compile Include="Code\Payments.cs" />
+    <Compile Include="Code\PaymentValidator.cs" />
     <Compile Include="Code\SmartBinder.cs" />
     <Compile Include="Code\Image.cs" />
     <Content Include="App_Readme\Elmah.txt" />
@@ -811,29 +817,30 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\MobileAppMenu.cshtml" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-029.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-AU.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-BZ.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-CA.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-GB.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-IE.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-IN.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-JM.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-MY.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-NZ.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-PH.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-SG.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-TT.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-US.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-ZA.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.culture.en-ZW.js" />
-    <Content Include="Scripts\globalize\cultures\globalize.cultures.js" />
-    <Content Include="Scripts\globalize\globalize.js" />
-    <Content Include="Scripts\jquery.validate.globalize.js" />
-    <Content Include="Scripts\jquery.validate.globalize.min.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-029.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-AU.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-BZ.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-CA.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-GB.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-IE.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-IN.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-JM.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-MY.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-NZ.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-PH.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-SG.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-TT.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-US.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-ZA.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-ZW.js" />
+    <Content Include="Scripts\jQuery\globalize\cultures\globalize.cultures.js" />
+    <Content Include="Scripts\jQuery\globalize\globalize.js" />
+    <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
+    <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />
+    <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js" />
+    <Content Include="Scripts\jQuery\jquery.validate.js" />
+    <Content Include="Scripts\jQuery\jquery.validate.min.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.js" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.js" />
     <Content Include="Scripts\jQuery\jquery-ui.effects.min.js" />
@@ -861,7 +868,6 @@
     <Content Include="Scripts\js\ExtraValue.js" />
     <Content Include="Scripts\js\sgmap.js" />
     <Content Include="Scripts\jQuery\jquery.gmap-1.1.0.js" />
-    <Content Include="Scripts\jQuery\jquery.validate.js" />
     <Content Include="Scripts\jQuery\FixedColumns.js" />
     <Content Include="Scripts\jQuery\FixedHeader.js" />
     <Content Include="Scripts\jQuery\jquery.dataTables.js" />
@@ -1173,7 +1179,7 @@
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.map" />
-    <Content Include="Scripts\jquery.validate.globalize.min.js.map" />
+    <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js.map" />
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
     <Content Include="Scripts\Mobile\jquery-1.6.4.js" />
@@ -2568,6 +2574,9 @@
     <Folder Include="Areas\Setup\Views\Shared\" />
     <Folder Include="Scripts\Other\" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
@@ -2575,28 +2584,8 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
-  <!--<UsingTask TaskName="Microsoft.Web.Mvc.Build.CreateAreaManifest" AssemblyName="Microsoft.Web.Mvc.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
-  <UsingTask TaskName="Microsoft.Web.Mvc.Build.CopyAreaManifests" AssemblyName="Microsoft.Web.Mvc.Build, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
-  <Target Name="AfterBuild" DependsOnTargets="AfterBuildCompiler">
-    <PropertyGroup>
-      <AreasManifestDir>$(ProjectDir)\..\Manifests</AreasManifestDir>
-    </PropertyGroup>
-    <CreateAreaManifest AreaName="$(AssemblyName)" AreaType="Parent" AreaPath="$(ProjectDir)" ManifestPath="$(AreasManifestDir)" ContentFiles="@(Content)" />
-    <CopyAreaManifests ManifestPath="$(AreasManifestDir)" CrossCopy="false" RenameViews="true" />
-  </Target>-->
-  <!--<Target Name="AfterBuild" Condition="'$(Configuration)'=='Release'">
-    <RemoveDir Directories="$(IntermediateOutputPath)" />
-    <RemoveDir Directories="obj\Debug\" />
-  </Target>
-  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
-    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
-  </Target>
-  <Target Name="AfterClean">
-    <RemoveDir Directories="obj\bvcms2" />
-    <RemoveDir Directories="obj\Debug" />
-  </Target>-->
   <Import Project="minify.xml" />
-  <Target Name="AfterBuild" Condition="'$(Configuration)'!='Debug'">
+  <Target Name="BeforeBuild" Condition="'$(Configuration)'!='Debug'">
     <CallTarget Targets="Minify" />
   </Target>
   <ProjectExtensions>

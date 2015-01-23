@@ -1,6 +1,7 @@
 
 
 
+
 CREATE VIEW [dbo].[TransactionBalances]
 AS
 SELECT BalancesId
@@ -40,14 +41,22 @@ FROM (
 			FROM dbo.TransactionPeople
 			WHERE Id = t.OriginalId) 
 			NumPeople
-		,(SELECT STUFF((
+		,ISNULL((SELECT STUFF((
 				SELECT CHAR(10) + p.Name + '(' + CONVERT(VARCHAR, ts.IndPctC * 100) + '%)'
 				FROM dbo.TransactionSummary ts 
 				JOIN dbo.People p ON p.PeopleId = ts.PeopleId
 				WHERE ts.RegId = t.OriginalId
 				FOR XML PATH(''),TYPE
 				).value('text()[1]','nvarchar(max)'),1,1,N'' 
-				)) 
+				))
+			,(SELECT STUFF((
+				SELECT CHAR(10) + p.NAME
+				FROM dbo.TransactionPeople tp
+				JOIN dbo.People p ON p.PeopleId = tp.PeopleId
+				WHERE tp.Id = t.OriginalId
+				FOR XML PATH(''),TYPE
+				).value('text()[1]','nvarchar(max)'),1,1,N'' 
+			  ))) 
 		    People
 		, t.batchtyp
 		,CONVERT(BIT, 
@@ -62,6 +71,7 @@ FROM (
 
 	FROM dbo.[Transaction] t
 ) tt
+
 
 
 GO

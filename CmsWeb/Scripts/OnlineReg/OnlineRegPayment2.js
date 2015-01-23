@@ -125,8 +125,8 @@ $(function () {
                 summary = "Every " + everyN + " " + patternText;
             }
         }
-        if (startOn.length > 0)
-        summary += " starting on or after " + startOn;
+        if (startOn && startOn.length > 0)
+            summary += " starting on or after " + startOn;
         $("#SummaryText").text(summary);
     };
     $.ShowPaymentInfo = function (v) {
@@ -183,6 +183,14 @@ $(function () {
     });
     $("body").on("change", 'input[name=StartWhen]', function () {
         $.SetSummaryText();
+    });
+
+    if ($('#CreditCard').val().startsWith('X')) {
+        $('#CVV').parents('.form-group').hide();
+    }
+
+    $('#CreditCard').change(function() {
+        $('#CVV').parents('.form-group').show();
     });
     
     if ($("#allowcc").val()) {

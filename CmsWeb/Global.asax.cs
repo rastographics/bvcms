@@ -193,7 +193,7 @@ namespace CmsWeb
             if (ctx == null)
                 return;
 
-            var sensitiveFormKeys = new[] {"creditcard", "ccv", "cardnumber", "cardcode", "password", "account", "routing"};
+            var sensitiveFormKeys = new[] {"creditcard", "ccv", "cvv", "cardnumber", "cardcode", "password", "account", "routing"};
 
             var sensitiveFormData = ctx.Request.Form.AllKeys.Where(
                 k => sensitiveFormKeys.Contains(k.ToLower(), StringComparer.OrdinalIgnoreCase)).ToList();

@@ -79,7 +79,11 @@
                                     }
                                     @if (Model.AmountDue > 0)
                                     {
-                                        <a href="@Model.PayLink" style="margin-left: 2em;" target="_blank">PayLink</a>
+                                        <a href="@Model.PayLink" style="margin-left: 1em;" target="_blank">PayLink</a>
+                                    }
+                                    @if (Model.IsGoer)
+                                    {
+                                        <a href="@Model.SupportLink" style="margin-left: 1em;" target="_blank">SupportLink</a>
                                     }
                                 </p>
                             </div>

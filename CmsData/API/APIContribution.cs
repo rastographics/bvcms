@@ -188,8 +188,8 @@ namespace CmsData.API
                              : (p.SpouseId == null
                                  ? p.Name
                                  : (p.HohFlag == 1
-                                     ? p.Name + " and " + p.SpouseName
-                                     : p.SpouseName + " and " + p.Name))
+                                     ? p.CoupleName ?? (p.Name + " and " + p.SpouseName)
+                                     : p.CoupleName ?? (p.SpouseName + " and " + p.Name)))
                      select new ContributorInfo
                      {
                          Name = name,
@@ -221,7 +221,7 @@ namespace CmsData.API
                              ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
                              : (p.SpouseId == null
                                  ? (p.Title != null ? p.Title + " " + p.Name : p.Name)
-                                 : (p.HohFlag == 1
+                                 : p.CoupleName ?? (p.HohFlag == 1
                                      ? ((p.Title != null && p.Title != "")
                                          ? p.Title + " and Mrs. " + p.Name
                                          : "Mr. and Mrs. " + p.Name)
@@ -365,7 +365,7 @@ namespace CmsData.API
                     join c in qc on p.FundId equals c.FundId into items
                     from c in items.DefaultIfEmpty()
                     where (p.Total ?? 0) > (c == null ? 0 : c.Total ?? 0) || showPledgeIfMet
-                    orderby p.Fund descending
+                    orderby p.FundId descending
                     select new PledgeSummaryInfo
                     {
                         Fund = p.Fund,
@@ -465,16 +465,10 @@ namespace CmsData.API
     {
         public string Name { get; set; }
         public string MailingAddress { get; set; }
-//        public string Address1 { get; set; }
-//        public string Address2 { get; set; }
-//        public string City { get; set; }
-//        public string State { get; set; }
-//        public string Zip { get; set; }
         public int PeopleId { get; set; }
         public int? SpouseID { get; set; }
         public int FamilyId { get; set; }
         public DateTime? DeacesedDate { get; set; }
-//        public string CityStateZip { get { return UtilityExtensions.Util.FormatCSZ4(City, State, Zip); } }
         public int hohInd { get; set; }
         public int FamilyPositionId { get; set; }
         public int? Age { get; set; }
@@ -514,5 +508,11 @@ namespace CmsData.API
         public bool NonTaxDed { get; set; }
         public int? FamilyId { get; set; }
         public string MemberStatus { get; set; }
+        public DateTime? JoinDate { get; set; }
+        public string Address { get; set; }
+        public string Address2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Zip { get; set; }
     }
 }

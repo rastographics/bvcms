@@ -11,7 +11,8 @@ RETURNS TABLE
 AS
 RETURN 
 (
-	SELECT tt.*, ISNULL(o.OrganizationName, '') MainFellowship, ms.Description MemberStatus FROM
+	SELECT tt.*, ISNULL(o.OrganizationName, '') MainFellowship, ms.Description MemberStatus, p.JoinDate
+	FROM
 	(
 	SELECT 
 		CreditGiverId, 

@@ -162,7 +162,6 @@ namespace CmsWeb.Models
         public bool IsFamily { get; set; }
 
         public int? MissionTripGoerId { get; set; }
-        public bool MissionTripPray { get; set; }
         public bool MissionTripNoNoticeToGoer { get; set; }
         public decimal? MissionTripSupportGoer { get; set; }
         public decimal? MissionTripSupportGeneral { get; set; }
@@ -267,9 +266,6 @@ namespace CmsWeb.Models
                         var number = e.Attribute("number");
                         if (aname != null && number != null)
                             MenuItem[menuset].Add(aname.Value, number.Value.ToInt());
-                        break;
-                    case "MissionTripPray":
-                        MissionTripPray = e.Value.ToBool();
                         break;
                     case "MissionTripGoerId":
                         MissionTripGoerId = e.Value.ToInt();
@@ -402,10 +398,6 @@ namespace CmsWeb.Models
                                         w.Attr("number", q.Value);
                                         w.End();
                                     }
-                        break;
-                    case "MissionTripPray":
-                        if (Parent.SupportMissionTrip)
-                            w.Add(pi.Name, MissionTripPray);
                         break;
                     case "MissionTripGoerId":
                         if (Parent.SupportMissionTrip)

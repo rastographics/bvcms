@@ -60,21 +60,13 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [ValidateInput(false)]
-        public ActionResult ct(string l)
+        public ActionResult ct(string l) // Click Tracking
         {
-            var link = (from e in DbUtil.Db.EmailLinks
-                        where e.Hash == l
-                        select e).SingleOrDefault();
-
-            if (link != null)
-            {
-                link.Count += 1;
-                DbUtil.Db.SubmitChanges();
-
-                if(link.Link.HasValue())
-                    return Redirect( link.Link );
-            }
-            return Redirect( "http://www.bvcms.com" );
+            string link = null;
+            DbUtil.Db.TrackClick(l, ref link);
+            if(link.HasValue())
+                return Redirect( link );
+            return Redirect("/");
         }
     }
 }

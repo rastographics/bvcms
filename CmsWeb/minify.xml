@@ -21,6 +21,7 @@
       <stylecss Include="Content/styles/jquery.tooltip.css"/>
 <!--      <stylecss Include="Content/styles/Support.css"/>-->
 
+      <main2 Include="Scripts/js/extensions.js"/>
       <main2 Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-modal.js"/>
@@ -30,9 +31,9 @@
       <main2 Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2 Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2 Include="Scripts/jQuery/jquery.mousewheel.js"/>
-      <main2 Include="Scripts/jquery.validate.js"/>
-      <main2 Include="Scripts/globalize/globalize.js"/>
-      <main2 Include="Scripts/jquery.validate.globalize.js"/>
+      <main2 Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2 Include="Scripts/jQuery/globalize/globalize.js"/>
+      <main2 Include="Scripts/jQuery/jquery.validate.globalize.js"/>
       <main2 Include="Scripts/jQuery/jquery.sortElements.js"/>
       <main2 Include="Scripts/jQuery/jquery.textarea.js"/>
       <main2 Include="Scripts/jQuery/jquery.tooltip.js"/>
@@ -49,6 +50,7 @@
       <main2 Include="Scripts/js/ExtraValue.js"/>
       <main2 Include="Scripts/Search/SearchAdd.js"/>
 
+      <main2c Include="Scripts/js/extensions.js"/>
       <main2c Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-modalmanager.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-modal.js"/>
@@ -58,9 +60,9 @@
       <main2c Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2c Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2c Include="Scripts/jQuery/jquery.mousewheel.js"/>
-      <main2c Include="Scripts/jquery.validate.js"/>
-      <main2c Include="Scripts/globalize/globalize.js"/>
-      <main2c Include="Scripts/jquery.validate.globalize.js"/>
+      <main2c Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2c Include="Scripts/jQuery/globalize/globalize.js"/>
+      <main2c Include="Scripts/jQuery/jquery.validate.globalize.js"/>
       <main2c Include="Scripts/jQuery/jquery.sortElements.js"/>
       <main2c Include="Scripts/jQuery/jquery.textarea.js"/>
       <main2c Include="Scripts/jQuery/jquery.tooltip.js"/>
@@ -83,10 +85,11 @@
       <main2c Include="Scripts/Search/SearchAdd.js"/>
 <!--      <main2c Include="Scripts/js/Support.js"/>-->
 
+      <onlineregister Include="Scripts/js/extensions.js"/>
       <onlineregister Include="Scripts/jQuery/jquery-migrate-1.1.1.js"/>
-      <onlineregister Include="Scripts/jquery.validate.js"/>
-      <onlineregister Include="Scripts/globalize/globalize.js"/>
-      <onlineregister Include="Scripts/jquery.validate.globalize.js"/>
+      <onlineregister Include="Scripts/jQuery/jquery.validate.js"/>
+      <onlineregister Include="Scripts/jQuery/globalize/globalize.js"/>
+      <onlineregister Include="Scripts/jQuery/jquery.validate.globalize.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.idle-timer.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.blockUI.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>

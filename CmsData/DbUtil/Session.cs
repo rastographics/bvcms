@@ -236,11 +236,18 @@ namespace CmsData
                 return DbUtil.Db.UserPreference("TargetLinkPeople", "true").ToBool();
             }
         }
-        public static bool UseNewRollsheet
+        public static bool UseNewFeature
         {
             get
             {
-                return DbUtil.Db.Setting("UseNewRollsheet", "true").ToBool();
+                // this works at the database level, not as a user preference
+                // useful for turning the new feature on, then having a quik way to put it back in case something goes badly
+                return DbUtil.Db.Setting("UseNewFeature", "true").ToBool();
+            }
+            set
+            {
+                DbUtil.Db.SetSetting("UseNewFeature", value ? "false" : "true");
+                // be sure to SubmitChanges
             }
         }
     }

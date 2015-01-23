@@ -90,7 +90,8 @@ RETURN
 			(SELECT LastName FROM dbo.People WHERE PeopleId = f.HeadOfHouseholdId
 			) AS HouseName,
 			ISNULL(p.ElectronicStatement, 0) ElectronicStatement,
-			(SELECT Data FROM dbo.FamilyExtra WHERE Field = 'MailingAddress' AND FamilyId = f.FamilyId) MailingAddress
+			(SELECT Data FROM dbo.FamilyExtra WHERE Field = 'MailingAddress' AND FamilyId = f.FamilyId) MailingAddress,
+			(SELECT Data FROM dbo.FamilyExtra WHERE Field = 'CoupleName' AND FamilyId = f.FamilyId) CoupleName
 			
 	from People p
 	JOIN dbo.Families f ON p.FamilyId = f.FamilyId

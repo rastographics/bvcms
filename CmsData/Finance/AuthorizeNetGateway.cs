@@ -32,8 +32,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _login = db.Setting("x_login", "");
-                _key = db.Setting("x_tran_key", "");
+                _login = db.GetSetting("x_login", "");
+                _key = db.GetSetting("x_tran_key", "");
 
                 if (string.IsNullOrWhiteSpace(_login))
                     throw new Exception("x_login setting not found, which is required for Authorize.net.");
@@ -105,7 +105,6 @@ namespace CmsData.Finance
                 SaveCreditCardToProfile(cardNumber, cardCode, expiredDate, paymentInfo, customer);
 
                 paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Ccv = cardCode;
                 paymentInfo.Expires = expires;
             }
             else
@@ -190,7 +189,6 @@ namespace CmsData.Finance
                 paymentInfo.AuNetCustPayBankId = null;
                 paymentInfo.MaskedCard = null;
                 paymentInfo.MaskedAccount = null;
-                paymentInfo.Ccv = null;
                 db.SubmitChanges();
             }
             else

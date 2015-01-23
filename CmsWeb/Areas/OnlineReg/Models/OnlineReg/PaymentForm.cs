@@ -1,8 +1,8 @@
 using System;
 using System.Linq;
-using System.Text;
 using CmsData;
 using CmsData.Finance;
+using CmsData.Registration;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -15,8 +15,7 @@ namespace CmsWeb.Models
         public string Coupon { get; set; }
         public string CreditCard { get; set; }
         public string Expires { get; set; }
-        public string MaskedCCV { get; set; }
-        public string CCV { get; set; }
+        public string CVV { get; set; }
         public string Routing { get; set; }
         public string Account { get; set; }
 
@@ -180,14 +179,12 @@ namespace CmsWeb.Models
                          TranId = ti.Id,
 #if DEBUG2
 						 CreditCard = "4111111111111111",
-						 CCV = "123",
+						 CVV = "123",
 						 Expires = "1015",
 						 Routing = "056008849",
 						 Account = "12345678901234"
 #else
                          CreditCard = pi.MaskedCard,
-                         MaskedCCV = Util.Mask(new StringBuilder(pi.Ccv), 0),
-                         CCV = pi.Ccv,
                          Expires = pi.Expires,
                          Account = pi.MaskedAccount,
                          Routing = pi.Routing,
@@ -201,7 +198,7 @@ namespace CmsWeb.Models
 
             pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : "";
             var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
-            var setting = new CmsData.Registration.Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+            var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
             pf.UseBootstrap = setting.UseBootstrap;
             return pf;
         }
@@ -238,7 +235,7 @@ namespace CmsWeb.Models
                 Phone = r.Phone,
 #if DEBUG2
 				 CreditCard = "4111111111111111",
-				 CCV = "123",
+				 CVV = "123",
 				 Expires = "1015",
 				 Routing = "056008849",
 				 Account = "12345678901234"
@@ -247,8 +244,6 @@ namespace CmsWeb.Models
                 Account = r.payinfo.MaskedAccount,
                 Routing = r.payinfo.Routing,
                 Expires = r.payinfo.Expires,
-                MaskedCCV = Util.Mask(new StringBuilder(r.payinfo.Ccv), 0),
-                CCV = r.payinfo.Ccv,
                 SavePayInfo =
                    (r.payinfo.MaskedAccount != null && r.payinfo.MaskedAccount.StartsWith("X"))
                    || (r.payinfo.MaskedCard != null && r.payinfo.MaskedCard.StartsWith("X")),
@@ -313,7 +308,7 @@ namespace CmsWeb.Models
             if (clearCreditCardDetails)
             {
                 pf.CreditCard = string.Empty;
-                pf.CCV = string.Empty;
+                pf.CVV = string.Empty;
                 pf.Expires = string.Empty;
             }
         }

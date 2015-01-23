@@ -35,6 +35,9 @@ namespace CmsWeb.Models
             if(text.Substring(0, Math.Min(text.Length, 200)).Contains("Id,Date,Name,Donor Address,Donor City,Donor State,Donor Zip,Donor Id,Donor Email,Gross Amount,Net Amount,Fee,Number,Keyword,Status"))
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessKindred(csv, date, fundid);
+            if(!fromFile && text.Substring(0, Math.Min(text.Length, 200)).Contains("Customer ID\tMember Name\tPhone\tEmail\tTransaction Type\tProcess Date\tSettlement Date\tAmount\tReturn Date\tReturn/Fail Reason\tFund ID\tFund Name\tFund Text Message\tFrequency"))
+                using (var csv = new CsvReader(new StringReader(text), true, '\t'))
+                    return BatchProcessVanco2(csv, date, fundid);
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {

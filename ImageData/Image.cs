@@ -60,6 +60,14 @@ namespace ImageData
             ostream.Position = 0;
             return ostream;
         }
+        public Stream ResizeToStream(string instructions)
+        {
+            var settings = new ResizeSettings(instructions);
+            var ostream = new MemoryStream();
+            ImageBuilder.Current.Build(Bits, ostream, settings);
+            ostream.Position = 0;
+            return ostream;
+        }
 
         static readonly byte[] onepixelgif = { 0x47, 0x49, 0x46, 0x38, 0x39, 0x61, 0x1, 0x0, 0x1, 0x0, 0x80, 0x0, 0x0, 0xff, 0xff, 0xff, 0x0, 0x0, 0x0, 0x2c, 0x0, 0x0, 0x0, 0x0, 0x1, 0x0, 0x1, 0x0, 0x0, 0x2, 0x2, 0x44, 0x1, 0x0, 0x3b };
         public static Stream BlankImage(int w, int h)
