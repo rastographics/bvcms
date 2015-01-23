@@ -4,15 +4,14 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
-using System.Xml;
 using System.Xml.Linq;
 using CmsData;
-using CmsData.Codes;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Models;
 using Dapper;
 using MoreLinq;
@@ -20,9 +19,9 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
 using UtilityExtensions;
+using UtilityExtensions.Extensions;
 using FamilyResult = CmsWeb.Areas.Reports.Models.FamilyResult;
 using MeetingsModel = CmsWeb.Areas.Reports.Models.MeetingsModel;
-using System.Text;
 
 namespace CmsWeb.Areas.Reports.Controllers
 {
@@ -537,22 +536,22 @@ namespace CmsWeb.Areas.Reports.Controllers
 
         private ActionResult RunExtraValuesGrid(Guid id, string sort, bool alternate)
         {
-            string[] roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            XDocument xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
-            IEnumerable<string> fields = (from ff in xml.Root.Descendants("Value")
-                                          let vroles = ff.Attribute("VisibilityRoles")
-                                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
-                                          select ff.Attribute("Name").Value);
-            string nodisplaycols = string.Join("|", fields);
+            var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
+            var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
+            var fields = (from ff in xml.Root.Descendants("Value")
+                          let vroles = ff.Attribute("VisibilityRoles")
+                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
+                          select ff.Attribute("Name").Value);
+            var nodisplaycols = string.Join("|", fields);
 
-            Tag tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
+            var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
             var cmd = new SqlCommand("dbo.ExtraValues @p1, @p2, @p3");
             cmd.Parameters.AddWithValue("@p1", tag.Id);
             cmd.Parameters.AddWithValue("@p2", sort ?? "");
             cmd.Parameters.AddWithValue("@p3", nodisplaycols);
             cmd.Connection = new SqlConnection(Util.ConnectionString);
             cmd.Connection.Open();
-            SqlDataReader rdr = cmd.ExecuteReader();
+            var rdr = cmd.ExecuteReader();
             ViewBag.queryid = id;
             if (alternate)
                 return View("ExtraValuesGrid2", rdr);
@@ -563,33 +562,26 @@ namespace CmsWeb.Areas.Reports.Controllers
         [Route("Custom/{report}/{id?}")]
         public ActionResult CustomReport(Guid id, string report)
         {
-            var m = new CustomReportsModel();
-            return m.Result(DbUtil.Db, id, report);
-//            try
-//            {
-//                var m = new CustomReportsModel();
-//                return m.Result(DbUtil.Db, id, report);
-//            }
-//            catch (Exception ex)
-//            {
-//                return Message(ex.Message);
-//            }
+            var m = new CustomReportsModel(DbUtil.Db);
+            return m.Result(id, report);
         }
+
         [HttpGet]
         [Route("CustomSql/{report}/{id?}")]
         public ActionResult CustomReportSql(Guid id, string report)
         {
             try
             {
-                var m = new CustomReportsModel();
+                var m = new CustomReportsModel(DbUtil.Db);
                 return Content("<pre style='font-family:monospace'>{0}\n</pre>".Fmt(
-                    m.Sql(DbUtil.Db, id, report)));
+                    m.Sql(id, report)));
             }
             catch (Exception ex)
             {
                 return Message(ex.Message);
             }
         }
+
         [HttpGet]
         [Route("CustomColumns/{orgid?}")]
         public ActionResult CustomColumns(int? orgid)
@@ -597,20 +589,8 @@ namespace CmsWeb.Areas.Reports.Controllers
             try
             {
                 Response.ContentType = "text/plain";
-                var settings = new XmlWriterSettings
-                {
-                    Indent = true,
-                    ConformanceLevel = ConformanceLevel.Fragment,
-                    OmitXmlDeclaration = true
-                };
-                var sb = new StringBuilder();
-                using (var w = XmlWriter.Create(sb, settings))
-                {
-                    var m = new CustomReportsModel(orgid);
-                    m.StandardColumns(DbUtil.Db, w, includeRoot: false);
-                    w.Flush();
-                }
-                var s = sb.ToString();
+                var m = new CustomReportsModel(DbUtil.Db, orgid);
+                var s = m.StandardColumns(includeRoot: false).ToString();
                 foreach (var line in s.SplitLines())
                     Response.Write("  {0}\n".Fmt(line));
                 Response.Write("\n");
@@ -737,5 +717,128 @@ namespace CmsWeb.Areas.Reports.Controllers
             public string Size { get; set; }
             public int Count { get; set; }
         }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Design")]
+        public ActionResult EditCustomReport(int? orgId, string reportName)
+        {
+            CustomReportViewModel originalReportViewModel = null;
+            if (TempData[TempDataModelStateKey] != null)
+            {
+                ModelState.Merge((ModelStateDictionary) TempData[TempDataModelStateKey]);
+                originalReportViewModel = TempData[TempDataCustomReportKey] as CustomReportViewModel;
+            }
+
+            var m = new CustomReportsModel(DbUtil.Db, orgId);
+
+            var queryId = DbUtil.Db.QueryInCurrentOrg().QueryId;
+            var orgName = (orgId.HasValue)
+                ? DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == orgId.Value).OrganizationName
+                : null;
+
+            CustomReportViewModel model;
+            if (string.IsNullOrEmpty(reportName))
+            {
+                model = new CustomReportViewModel(orgId, queryId, orgName, GetAllStandardColumns(m));
+                return View(model);
+            }
+
+            model = new CustomReportViewModel(orgId, queryId, orgName, GetAllStandardColumns(m), reportName);
+
+            var reportXml = m.GetReportByName(reportName);
+            if (reportXml == null)
+                throw new Exception("Report not found.");
+
+            var columns = MapXmlToCustomReportColumn(reportXml);
+
+            var showOnOrgIdValue = reportXml.AttributeOrNull("showOnOrgId");
+            int showOnOrgId;
+            if (!string.IsNullOrEmpty(showOnOrgIdValue) && int.TryParse(showOnOrgIdValue, out showOnOrgId))
+                model.RestrictToThisOrg = showOnOrgId == orgId;
+
+            model.SetSelectedColumns(columns);
+
+            if (originalReportViewModel != null)
+                model.ReportName = originalReportViewModel.ReportName;
+
+            var alreadySaved = TempData[TempDataSuccessfulSaved] as bool?;
+            model.CustomReportSuccessfullySaved = alreadySaved.GetValueOrDefault();
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Design")]
+        public ActionResult EditCustomReport(CustomReportViewModel viewModel)
+        {
+            if (!viewModel.Columns.Any(c => c.IsSelected))
+                ModelState.AddModelError("Columns", "At least one column must be selected.");
+
+            if (ModelState.IsValid)
+            {
+                viewModel.ReportName = viewModel.ReportName.Trim();
+
+                var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
+                var result = m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName,
+                    viewModel.Columns.Where(c => c.IsSelected), viewModel.RestrictToThisOrg);
+
+                switch (result)
+                {
+                    case CustomReportsModel.SaveReportStatus.ReportAlreadyExists:
+                        ModelState.AddModelError("ReportName", "A report by this name already exists.");
+                        break;
+                    default:
+                        TempData[TempDataSuccessfulSaved] = true;
+                        break;
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                TempData[TempDataModelStateKey] = ModelState;
+                TempData[TempDataCustomReportKey] = viewModel;
+                return RedirectToAction("EditCustomReport", new { reportName = viewModel.OriginalReportName, orgId = viewModel.OrgId });
+            }
+
+            return RedirectToAction("EditCustomReport", new { reportName = viewModel.ReportName, orgId = viewModel.OrgId });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Design")]
+        public JsonResult DeleteCustomReport(int? orgId, string reportName)
+        {
+            if (string.IsNullOrEmpty(reportName))
+                return new JsonResult {Data = "Report name is required."};
+
+            var m = new CustomReportsModel(DbUtil.Db, orgId);
+            m.DeleteReport(reportName);
+
+            return new JsonResult {Data = "success"};
+        }
+
+        private static IEnumerable<CustomReportColumn> GetAllStandardColumns(CustomReportsModel model)
+        {
+            var reportXml = model.StandardColumns();
+            return MapXmlToCustomReportColumn(reportXml);
+        }
+
+        private static IEnumerable<CustomReportColumn> MapXmlToCustomReportColumn(XContainer reportXml)
+        {
+            return from column in reportXml.Descendants("Column")
+                   select new CustomReportColumn
+                   {
+                       Name = column.AttributeOrNull("name"),
+                       Description = column.AttributeOrNull("description"),
+                       Flag = column.AttributeOrNull("flag"),
+                       OrgId = column.AttributeOrNull("orgid"),
+                       SmallGroup = column.AttributeOrNull("smallgroup"),
+                       Field = column.AttributeOrNull("field"),
+                       IsDisabled = column.AttributeOrNull("disabled").ToBool(),
+                   };
+        }
+
+        private const string TempDataModelStateKey = "ModelState";
+        private const string TempDataCustomReportKey = "InvalidCustomReportViewModel";
+        private const string TempDataSuccessfulSaved = "CustomReportSuccessfullySaved";
     }
 }

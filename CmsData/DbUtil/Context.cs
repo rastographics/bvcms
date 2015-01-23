@@ -823,11 +823,11 @@ namespace CmsData
         {
             return UserPreference(pref, string.Empty);
         }
-        public string UserPreference(string pref, string def)
+        public string UserPreference(string pref, string defaultValue)
         {
             var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
             if (d != null && d.ContainsKey(pref))
-                return d[pref] ?? def;
+                return d[pref] ?? defaultValue;
             if (d == null)
             {
                 d = new Dictionary<string, string>();
@@ -842,7 +842,7 @@ namespace CmsData
                 return p.ValueX;
             }
             d[pref] = null;
-            return def;
+            return defaultValue;
         }
         public void SetUserPreference(string pref, object value)
         {
@@ -1053,7 +1053,7 @@ namespace CmsData
             var q2 = from s in q.ToList()
                      where re.Match(s).Success
                      let a = s.SplitStr(":", 2)
-                     select new string[] { a[0], a[1] };
+                     select new[] { a[0], a[1] };
             return q2;
         }
         public IEnumerable<string[]> QueryStatClauses()
@@ -1067,19 +1067,19 @@ namespace CmsData
             var q2 = from s in q.ToList()
                      where re.Match(s).Success
                      let a = s.SplitStr(":", 2)
-                     select new string[] { a[0], a[1] };
+                     select new[] { a[0], a[1] };
             return q2;
         }
         public Content Content(string name)
         {
             return Contents.FirstOrDefault(c => c.Name == name);
         }
-        public string Content(string name, string def)
+        public string Content(string name, string defaultValue)
         {
             var content = Contents.FirstOrDefault(c => c.Name == name);
             if (content != null)
                 return content.Body;
-            return def;
+            return defaultValue;
         }
         public Content ContentOfTypeHtml(string name)
         {
@@ -1099,7 +1099,7 @@ namespace CmsData
                 return "";
             return content.Body;
         }
-        public Content Content(string name, string def, int ContentTypeId)
+        public Content Content(string name, string defaultValue, int contentTypeId)
         {
             var c = Contents.FirstOrDefault(cc => cc.Name == name);
             if (c == null)
@@ -1108,26 +1108,26 @@ namespace CmsData
                         {
                             Name = name,
                             Title = name,
-                            Body = def,
-                            TypeID = ContentTypeId
+                            Body = defaultValue,
+                            TypeID = contentTypeId
                         };
                 Contents.InsertOnSubmit(c);
                 SubmitChanges();
             }
             return c;
         }
-        public string Content2(string name, string def, int ContentTypeId)
+        public string Content2(string name, string defaultValue, int contentTypeId)
         {
-            var c = Content(name, def, ContentTypeId);
+            var c = Content(name, defaultValue, contentTypeId);
             return c.Body;
         }
-        public string ContentHtml(string name, string def)
+        public string ContentHtml(string name, string defaultValue)
         {
-            return Content2(name, def, ContentTypeCode.TypeHtml);
+            return Content2(name, defaultValue, ContentTypeCode.TypeHtml);
         }
-        public string ContentText(string name, string def)
+        public string ContentText(string name, string defaultValue)
         {
-            return Content2(name, def, ContentTypeCode.TypeText);
+            return Content2(name, defaultValue, ContentTypeCode.TypeText);
         }
         public void SetNoLock()
         {
