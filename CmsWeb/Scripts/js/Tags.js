@@ -124,12 +124,12 @@
             });
         }
     });
-    $('#ShareLink').live("click", function (e) {
-        e.preventDefault();
-        var d = $('#usersDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("open");
-    });
+    //$('#ShareLink').live("click", function (e) {
+    //    e.preventDefault();
+    //    var d = $('#usersDialog');
+    //    $('iframe', d).attr("src", this.href);
+    //    d.dialog("open");
+    //});
     //    $("#tagname").keypress(function (ev) {
     //        if (ev.which != 58) //no : character
     //            return true;

@@ -54,7 +54,7 @@
       <main2c Include="Scripts/Bootstrap/bootstrap-modal.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-editable.js"/>
       <main2c Include="Scripts/Bootstrap/bootbox.js"/>
-      <main2c Include="Scripts/Bootstrap/bootstrap-datepicker.js"/>
+      <main2c Include="Scripts/Bootstrap/bootstrap-datetimepicker.js"/>
       <main2c Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2c Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2c Include="Scripts/jQuery/jquery.mousewheel.js"/>
@@ -69,6 +69,7 @@
       <main2c Include="Scripts/jQuery/jquery.multiSelect.js"/>
       <main2c Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
 <!--      <main2c Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
+      <main2c Include="Scripts/Bootstrap/select2.js"/>
       <main2c Include="Scripts/chosen/chosen.jquery.js"/>
       <main2c Include="Scripts/js/Pager.js"/>
       <main2c Include="Scripts/js/header.js"/>
