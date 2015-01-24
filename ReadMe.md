@@ -1,6 +1,6 @@
 <!--- HTML Links --->
 [GHW]: http://windows.github.com/ "GitHub for Windows"
-[DOC]: http://docs.bvcms.com "BVCMS Documentation"
+[DOC]: http://docs.touchpointsoftware.com "TouchPointSoftware User Documentation"
 [IDE]: http://www.visualstudio.com/en-us/downloads/
 [SQL]: http://msdn.microsoft.com/en-us/evalcenter/hh230763.aspx
 [WEB]: http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361
@@ -12,6 +12,8 @@ Copyright (c) 2008-2014 Bellevue Baptist Church
 Licensed under the GNU General Public License (GPL v2)
 you may not use this code except in compliance with the License.
 see LICENSE file in this repository master branch
+
+BVCMS is maintained by TouchPointSoftware, LLC.
 
 ### Install Development Tools and required libraries
 1. **[Visual Studio Express 2012][IDE]**
@@ -78,4 +80,4 @@ see LICENSE file in this repository master branch
 
 ### Using BVCMS
 
-For addition information on how to use BVCMS, please see the **[BVCMS Documentation][DOC]**.
+For addition information on how to use BVCMS, please see the **[TouchPointSoftware Documentation][DOC]**.
