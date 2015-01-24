@@ -339,11 +339,12 @@ namespace CmsData
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
-        public Tag PopulateTemporaryTag(IEnumerable<int> a)
+        public Tag PopulateTempTag(IEnumerable<int> a)
         {
             var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            TagAll(a, tag);
+            var list = string.Join(",", a);
+            PopulateTempTag(tag.Id, list);
             return tag;
         }
         public void ClearTag(Tag tag)
@@ -1030,6 +1031,12 @@ namespace CmsData
         public int SpamReporterRemove([Parameter(DbType = "VARCHAR(100)")] string email)
         {
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), email);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.PopulateTempTag")]
+        public int PopulateTempTag([Parameter(DbType = "Int")] int id, [Parameter(DbType = "VARCHAR(MAX)")] string list)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id, list);
             return ((int)(result.ReturnValue));
         }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)

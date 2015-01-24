@@ -4339,18 +4339,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.OrgFee", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? OrgFee(
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.FindResCode", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? FindResCode(
@@ -4518,6 +4506,18 @@ namespace CmsData
                 pid,
                 days,
                 fundid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrgFee", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? OrgFee(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
                 ).ReturnValue));
 		}
 
