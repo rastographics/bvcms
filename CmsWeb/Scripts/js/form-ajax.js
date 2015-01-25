@@ -59,6 +59,8 @@
                             $.InitFunctions[d.data("init")]();
                         if (d.data("init2"))
                             $.InitFunctions[d.data("init2")]();
+                        if ($form.length === 0)
+                            $form = d.find("form.ajax");
                         if ($form.data("init"))
                             $.InitFunctions[$form.data("init")]();
                         if ($form.data("init2"))

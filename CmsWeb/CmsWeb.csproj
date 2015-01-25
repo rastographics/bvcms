@@ -473,6 +473,8 @@
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
+    <Compile Include="Models\ExtraValue\ExtraInfoOrganization.cs" />
+    <Compile Include="Models\ExtraValue\ExtraInfoPeople.cs" />
     <Compile Include="Models\ExtraValue\ReportsModel.cs" />
     <Compile Include="Models\ExtraValue\Value.cs" />
     <Compile Include="Models\ExtraValue\NewExtraValueModel.cs" />

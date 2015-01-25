@@ -97,8 +97,6 @@
       <org Include="Scripts/Dialog/SearchUsers.js"/>
       <org Include="Scripts/Org/RegSetting.js"/>      
       <org Include="Scripts/Org/OrgMemberDialog2.js"/>
-<!--      <org Include="Scripts/js/form-ajax.js"/>-->
-<!--      <org Include="Scripts/js/ExtraValue.js"/>-->
 
       <query2 Include="Scripts/Bootstrap/bootstrap-multiselect.js"/>
       <query2 Include="Scripts/jQuery/jquery.scrollintoview.js"/>
