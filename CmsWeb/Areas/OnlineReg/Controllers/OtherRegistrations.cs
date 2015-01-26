@@ -253,6 +253,16 @@ emailid={2}
         [ValidateInput(false)]
         public ActionResult RegisterLink(string id, bool? showfamily, string source)
         {
+            ViewBag.Id = id;
+            ViewBag.ShowFamily = showfamily.GetValueOrDefault().ToString();
+            ViewBag.Source = source;
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult RegisterLink(string id, bool? showfamily, string source, FormCollection formCollection)
+        {
             if (!id.HasValue())
                 return Message("bad link");
             if (!Request.Browser.Cookies)
@@ -294,8 +304,8 @@ emailid={2}
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
                 return Message("sorry, registration has been closed");
 
-            var url = string.IsNullOrWhiteSpace(source) 
-                ? "/OnlineReg/{0}?registertag={1}".Fmt(oid, id) 
+            var url = string.IsNullOrWhiteSpace(source)
+                ? "/OnlineReg/{0}?registertag={1}".Fmt(oid, id)
                 : "/OnlineReg/{0}?registertag={1}&source={2}".Fmt(oid, id, source);
             if (gsid.HasValue)
                 url += "&gsid=" + gsid;

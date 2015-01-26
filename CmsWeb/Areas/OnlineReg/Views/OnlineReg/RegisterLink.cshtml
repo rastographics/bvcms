@@ -4,10 +4,11 @@
 }
 <br />
 <div class="regform">
-    @using (Html.BeginForm("ClaimVolSub", "OnlineReg", FormMethod.Post))
+    @using (Html.BeginForm("RequestResponse", "OnlineReg", FormMethod.Post))
     {
-        <input type="hidden" id="answer" name="answer" value="@ViewBag.Answer" />
-        <input type="hidden" id="guid" name="guid" value="@ViewBag.Guid" />
+        <input type="hidden" id="id" name="answer" value="@ViewBag.Id" />
+        <input type="hidden" id="showfamily" name="guid" value="@ViewBag.ShowFamily" />
+        <input type="hidden" id="source" name="guid" value="@ViewBag.Source" />
         <div class="alert alert-warning">
             <h4>Confirm Response</h4>
             <p>Please click the confirmation button below to confirm your reponse.</p>
