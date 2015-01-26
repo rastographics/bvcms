@@ -14,7 +14,7 @@ namespace CmsData
             Address2 = address2.Truncate(50);
             City = city.Truncate(50);
             State = state.Truncate(10);
-            Country = Country.Truncate(50);
+            Country = country.Truncate(50);
             Zip = zip.Truncate(15);
             Phone = phone.Truncate(25);
         }

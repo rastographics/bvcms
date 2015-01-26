@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using CmsData;
 using CmsData.Finance;
 using CmsData.Registration;
+using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -86,6 +89,17 @@ namespace CmsWeb.Models
         public string State { get; set; }
         public string Zip { get; set; }
         public string Country { get; set; }
+
+        public IEnumerable<SelectListItem> Countries
+        {
+            get
+            {
+                var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
+                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                return list;
+            }
+        }
+
         public string Phone { get; set; }
         public int? TranId { get; set; }
 

@@ -67,7 +67,7 @@
             @Html.EditorFor(m => m.Address2)
             @Html.EditorFor(m => m.City)
             @Html.EditorFor(m => m.State)
-            @Html.EditorFor(m => m.Country)
+            @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
             @Html.EditorFor(m => m.Zip)
             @Html.EditorFor(m => m.Phone)
             @Html.EditorFor(m => m.Email)

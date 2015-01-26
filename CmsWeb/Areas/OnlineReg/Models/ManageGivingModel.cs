@@ -57,6 +57,17 @@ namespace CmsWeb.Models
         public string City { get; set; }
         public string State { get; set; }
         public string Country { get; set; }
+
+        public IEnumerable<SelectListItem> Countries
+        {
+            get
+            {
+                var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
+                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                return list;
+            }
+        }
+
         public string Zip { get; set; }
         public string Phone { get; set; }
 
