@@ -253,16 +253,6 @@ emailid={2}
         [ValidateInput(false)]
         public ActionResult RegisterLink(string id, bool? showfamily, string source)
         {
-            ViewBag.Id = id;
-            ViewBag.ShowFamily = showfamily.GetValueOrDefault().ToString();
-            ViewBag.Source = source;
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateInput(false)]
-        public ActionResult RegisterLink(string id, bool? showfamily, string source, FormCollection formCollection)
-        {
             if (!id.HasValue())
                 return Message("bad link");
             if (!Request.Browser.Cookies)

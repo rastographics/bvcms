@@ -818,7 +818,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RegisterLink.cshtml" />
     <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js" />
