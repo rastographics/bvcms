@@ -1,1 +1,0 @@
-ALTER TABLE dbo.PaymentInfo ADD BluePayCardVaultId NVARCHAR(50) NULL;
