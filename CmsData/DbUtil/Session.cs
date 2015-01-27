@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using UtilityExtensions;
@@ -249,6 +250,12 @@ namespace CmsData
                 DbUtil.Db.SetSetting("UseNewFeature", value ? "false" : "true");
                 // be sure to SubmitChanges
             }
+        }
+        public static void Log2File(string file, string data)
+        {
+            string fn = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+            fn = Util.URLCombine(fn, file);
+            System.IO.File.AppendAllText(fn, data);
         }
     }
 }

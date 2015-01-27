@@ -27,13 +27,14 @@ BEGIN
 	WHERE PeopleId IN (SELECT PeopleId FROM INSERTED)
 
 	UPDATE dbo.People
-	SET HomePhone = f.HomePhone
+	SET HomePhone = dbo.GetDigits(f.HomePhone)
 	FROM dbo.People p JOIN dbo.Families f ON p.FamilyId = f.FamilyId
 	WHERE p.PeopleId IN (SELECT PeopleId FROM INSERTED)
 
 	UPDATE dbo.People
-	SET CellPhoneLU = RIGHT(CellPhone, 7),
-	CellPhoneAC = LEFT(RIGHT(REPLICATE('0',10) + CellPhone, 10), 3),
+	SET CellPhone = dbo.GetDigits(CellPhone),
+	CellPhoneLU = RIGHT(dbo.GetDigits(CellPhone), 7),
+	CellPhoneAC = LEFT(RIGHT(REPLICATE('0',10) + dbo.GetDigits(CellPhone), 10), 3),
 	PrimaryCity = dbo.PrimaryCity(PeopleId),
 	PrimaryAddress = dbo.PrimaryAddress(PeopleId),
 	PrimaryAddress2 = dbo.PrimaryAddress2(PeopleId),

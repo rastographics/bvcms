@@ -621,7 +621,7 @@ namespace CmsData
                        let d = DbUtil.NormalizeExpires(i.Expires)
                        where d != null && d.Value.AddDays(-Days) <= DateTime.Today
                        select i.PeopleId;
-            var tag = db.PopulateTemporaryTag(pids);
+            var tag = db.PopulateTempTag(pids);
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
             return expr;

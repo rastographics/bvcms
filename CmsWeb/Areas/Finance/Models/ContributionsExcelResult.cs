@@ -32,7 +32,7 @@ namespace CmsWeb.Models
             {
                 case "donorfundtotals":
     				return ExportPeople.ExcelDonorFundTotals(Dt1, Dt2, fundid, campusid, false, nontaxdeductible, IncUnclosedBundles)
-                        .ToExcel("DonorFundTotals");
+                        .ToExcel("DonorFundTotals.xlsx");
                 case "donortotals":
                     return ExportPeople.ExcelDonorTotals(Dt1, Dt2, campusid, false, nontaxdeductible, IncUnclosedBundles)
                         .ToExcel("DonorTotals.xlsx");
