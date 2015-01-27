@@ -1285,6 +1285,9 @@ namespace CmsData
 
                 case "transnational":
                     return new TransNationalGateway(this, testing);
+                //IS THIS the only place that the new paymentGateway needs to be hooked up?
+                case "bluepay":
+                    return new BluePayGateway(this, testing);
             }
 
             throw new Exception("Gateway ({0}) is not supported.".Fmt(type));
