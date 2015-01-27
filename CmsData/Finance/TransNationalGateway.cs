@@ -299,6 +299,7 @@ namespace CmsData.Finance
             paymentInfo.TbnBankVaultId = null;
             paymentInfo.MaskedCard = null;
             paymentInfo.MaskedAccount = null;
+            paymentInfo.Expires = null;
             db.SubmitChanges();
         }
 

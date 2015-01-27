@@ -175,6 +175,7 @@ namespace CmsData.Finance
             paymentInfo.SageBankGuid = null;
             paymentInfo.MaskedCard = null;
             paymentInfo.MaskedAccount = null;
+            paymentInfo.Expires = null;
             db.SubmitChanges();
 		}
 

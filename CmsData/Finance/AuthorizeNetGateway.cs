@@ -190,6 +190,7 @@ namespace CmsData.Finance
                 paymentInfo.AuNetCustPayBankId = null;
                 paymentInfo.MaskedCard = null;
                 paymentInfo.MaskedAccount = null;
+                paymentInfo.Expires = null;
                 db.SubmitChanges();
             }
             else
