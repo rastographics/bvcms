@@ -21,6 +21,10 @@
         {
             @Html.EditorFor(m => m.TranId)
         }
+        else 
+        {
+          @Html.HiddenFor(m => m.TranId)
+        }
         @if (Model.RegisterEmail.HasValue())
         {
             @Html.EditorFor(m => m.RegisterEmail)
