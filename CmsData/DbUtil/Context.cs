@@ -258,10 +258,10 @@ namespace CmsData
                 var pa = p as DbParameter;
                 if (pa != null && pa.Value is DBNull)
                 {
-                    s = s.Replace("@p" + n++, "NULL");
+                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
                     continue;
                 }
-                s = s.Replace("@p" + n++, "{{{0}}}".Fmt(pn++));
+                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
                 plist.Add(pa);
             }
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
@@ -309,12 +309,17 @@ namespace CmsData
             var cmd = GetCommand(qpids);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
-            var n = 0;
+            int n = 0, pn = 0;
             foreach (var p in cmd.Parameters)
             {
-                s = s.Replace("@p" + n, "{{{0}}}".Fmt(n));
-                n++;
-                plist.Add(p as DbParameter);
+                var pa = p as DbParameter;
+                if (pa != null && pa.Value is DBNull)
+                {
+                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
+                    continue;
+                }
+                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
+                plist.Add(pa);
             }
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
                 @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
@@ -328,13 +333,20 @@ namespace CmsData
             var cmd = GetCommand(q);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
-            var n = 0;
+            
+            int n = 0, pn = 0;
             foreach (var p in cmd.Parameters)
             {
-                s = s.Replace("@p" + n, "{{{0}}}".Fmt(n));
-                n++;
-                plist.Add(p as DbParameter);
+                var pa = p as DbParameter;
+                if (pa != null && pa.Value is DBNull)
+                {
+                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
+                    continue;
+                }
+                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
+                plist.Add(pa);
             }
+
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
                 @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
