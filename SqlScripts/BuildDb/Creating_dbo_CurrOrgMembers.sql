@@ -63,9 +63,9 @@ BEGIN
 		FOR XML PATH(''),TYPE)
 	  .value('text()[1]','nvarchar(max)'),1,2,N'')) Groups,
 	p.EmailAddress Email,
-	p.HomePhone,
-	p.CellPhone,
-	p.WorkPhone,
+	dbo.FmtPhone(p.HomePhone) HomePhone,
+	dbo.FmtPhone(p.CellPhone) CellPhone,
+	dbo.FmtPhone(p.WorkPhone) WorkPhone,
 	p.Age,
 	DATETIMEFROMPARTS(p.BirthYear, p.BirthMonth, p.BirthDay, 0, 0, 0, 0) BirthDate,
 	p.JoinDate,

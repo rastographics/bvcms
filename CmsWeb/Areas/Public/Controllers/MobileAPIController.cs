@@ -887,7 +887,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		private static BaseMessage AuthorizationError(UserValidationResult result)
 		{
-			return BaseMessage.createErrorReturn(result.ErrorMessage != null ? result.ErrorMessage : "You are not authorized!", MapStatusToError(result.Status));
+			return BaseMessage.createErrorReturn(result.ErrorMessage ?? "You are not authorized!", MapStatusToError(result.Status));
 		}
 
 		private static OneTimeLink GetOneTimeLink(int orgId, int peopleId)

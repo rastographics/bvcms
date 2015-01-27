@@ -25,17 +25,27 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("VolRequestResponse/{ans}/{guid}")]
 		public ActionResult RequestResponse(string ans, string guid)
 		{
-			try
-			{
-				var vs = new VolunteerRequestModel(guid);
-				vs.ProcessReply(ans);
-				return Content(vs.DisplayMessage);
-			}
-			catch (Exception ex)
-			{
-				return Content(ex.Message);
-			}
+            ViewBag.Answer = ans;
+            ViewBag.Guid = guid;
+            return View();
 		}
+
+        [HttpPost]
+        [Route("VolRequestResponse")]
+        [Route("VolRequestResponse/{ans}/{guid}")]
+        public ActionResult RequestResponse(string ans, string guid, FormCollection formCollection)
+        {
+            try
+            {
+                var vs = new VolunteerRequestModel(guid);
+                vs.ProcessReply(ans);
+                return Content(vs.DisplayMessage);
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
 
 		[HttpGet]
         [Route("GetVolSub/{aid:int}/{pid:int}")]
@@ -70,9 +80,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		}
 
         [Route("ClaimVolSub/{ans}/{guid}")]
-		public ActionResult ClaimVolSub(string ans, string guid)
+        public ActionResult ClaimVolSub(string ans, string guid)
+        {
+            ViewBag.Answer = ans;
+            ViewBag.Guid = guid;
+            return View();
+        }
+
+        [HttpPost]
+        [Route("ClaimVolSub/{ans}/{guid}")]
+		public ActionResult ClaimVolSub(string ans, string guid, FormCollection formCollection)
 		{
-			try
+            try
 			{
 				var vs = new VolSubModel(guid);
 				vs.ProcessReply(ans);

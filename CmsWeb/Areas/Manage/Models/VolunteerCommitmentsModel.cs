@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.Manage.Models
 							 a.MeetingId,
 							 a.MeetingDate,
 							 a.PeopleId,
-							 a.Person.Name,
+							 Name = a.Person.Name2,
 							 a.Commitment,
 						 }).ToList();
 
@@ -171,6 +171,7 @@ namespace CmsWeb.Areas.Manage.Models
 										Limit = needed.ToInt2() ?? ts.Limit ?? 0,
 										Persons = (from a in alist
 												   where a.MeetingDate == time
+                                                   orderby a.Name
 												   select new NameId 
 												   { 
 													   Name = a.Name, 

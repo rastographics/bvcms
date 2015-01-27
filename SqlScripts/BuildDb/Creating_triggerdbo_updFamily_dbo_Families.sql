@@ -14,6 +14,9 @@ BEGIN
 
 	IF UPDATE(HomePhone)
 	BEGIN
+		UPDATE dbo.Families SET HomePhone = dbo.GetDigits(HomePhone)
+		WHERE FamilyId IN (SELECT FamilyId FROM INSERTED)
+
 		UPDATE dbo.People
 		SET HomePhone = f.HomePhone
 		FROM dbo.People p

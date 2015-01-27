@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             DbUtil.Db.SubmitChanges();
 
-            if (string.Compare(content.Name, "StandardExtraValues2", ignoreCase: true) == 0)
+            if (string.Compare(content.Name, "StandardExtraValues2", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 try
                 {

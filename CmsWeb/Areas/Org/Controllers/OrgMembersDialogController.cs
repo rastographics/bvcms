@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Org.Controllers
 		public ActionResult Update(OrgMembersDialogModel m)
 		{
 			var Db = DbUtil.Db;
-			var tag = Db.PopulateTemporaryTag(m.List);
+			var tag = Db.PopulateTempTag(m.List);
 			var q = from om in m.OrgMembers()
 					where Db.TagPeople.Any(tt => tt.Id == tag.Id && tt.PeopleId == om.PeopleId)
 					select om;

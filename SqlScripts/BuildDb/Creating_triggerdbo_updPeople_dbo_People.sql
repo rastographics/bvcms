@@ -63,11 +63,27 @@ BEGIN
 		END
 
 	END
+	IF UPDATE(HomePhone)
+	BEGIN
+		UPDATE dbo.People
+		SET 
+			HomePhone = dbo.GetDigits(HomePhone)
+		WHERE PeopleId IN (SELECT PeopleId FROM inserted)
+	END
     IF UPDATE(CellPhone)
 	BEGIN
 		UPDATE dbo.People
-		SET CellPhoneLU = RIGHT(CellPhone, 7),
-			CellPhoneAC = LEFT(RIGHT(REPLICATE('0',10) + CellPhone, 10), 3)
+		SET 
+			CellPhone = dbo.GetDigits(CellPhone),
+			CellPhoneLU = RIGHT(dbo.GetDigits(CellPhone), 7),
+			CellPhoneAC = LEFT(RIGHT(REPLICATE('0',10) + dbo.GetDigits(CellPhone), 10), 3)
+		WHERE PeopleId IN (SELECT PeopleId FROM inserted)
+	END
+    IF UPDATE(WorkPhone)
+	BEGIN
+		UPDATE dbo.People
+		SET 
+			WorkPhone = dbo.GetDigits(WorkPhone)
 		WHERE PeopleId IN (SELECT PeopleId FROM inserted)
 	END
 

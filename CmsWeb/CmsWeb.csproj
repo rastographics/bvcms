@@ -86,13 +86,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test2|AnyCPU'">
     <OutputPath>bin\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'test3|AnyCPU'">
     <OutputPath>bin\</OutputPath>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <BaseIntermediateOutputPath>..\build\obj</BaseIntermediateOutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AuthorizeNet">
@@ -393,6 +393,7 @@
     <Compile Include="Areas\Finance\Models\ContributionSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\BundleModel.cs" />
     <Compile Include="Areas\Org\Controllers\MemberDirectoryController.cs" />
+    <Compile Include="Areas\Reports\ViewModels\CustomReportViewModel.cs" />
     <Compile Include="Areas\Search\Controllers\PeopleSearchController.cs" />
     <Compile Include="Areas\Main\Controllers\SMSController.cs" />
     <Compile Include="Areas\Main\Controllers\VolunteeringController.cs" />
@@ -836,6 +837,13 @@
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.cultures.js" />
     <Content Include="Scripts\jQuery\globalize\globalize.js" />
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
     <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js" />

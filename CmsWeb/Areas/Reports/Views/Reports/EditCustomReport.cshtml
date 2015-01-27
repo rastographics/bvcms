@@ -1,0 +1,124 @@
+﻿@model CmsWeb.Areas.Reports.ViewModels.CustomReportViewModel
+
+@{
+    // TODO: it would be really nice to use a _ViewStart.cshtml file instead of specifying this everywhere
+    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.Title = "Custom Report Builder";
+}
+
+<div class="container">
+    <h2>Custom Report Builder</h2>
+
+    @if (ViewData.ModelState.Keys.Any(k=> ViewData.ModelState[k].Errors.Any())) { 
+        <div class="alert alert-danger">
+            <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            @Html.ValidationSummary(false, "Errors: ")
+        </div>
+    }
+
+    @if (Model.CustomReportSuccessfullySaved)
+    {
+        <div class="alert alert-success">
+            Your report was successfully saved!
+        </div>
+    }
+
+    @using (Html.BeginForm("EditCustomReport", "Reports", FormMethod.Post, new {id = "edit-custom-report-form"}))
+    {
+        <fieldset>
+            <legend>Name and Customize Your Report</legend>
+
+            <div>
+                @Html.HiddenFor(x => x.OrgId)
+                @Html.HiddenFor(x => x.OriginalReportName)
+
+                @Html.LabelFor(x => x.ReportName)
+                @Html.TextBoxFor(x => x.ReportName, new {placeholder = "Name Your Custom Report"})
+                @Html.ValidationMessageFor(x => x.ReportName)
+
+                @if (Model.OrgId.HasValue)
+                {
+                    <label class="checkbox">
+                        Restrict this report to this org
+                        @Html.CheckBoxFor(x => x.RestrictToThisOrg)
+                        <span class="text-info">(@Model.OrgName)</span>
+                    </label>
+                }
+            </div>
+
+            <br/>
+
+            <div class="custom-columns">
+                <span class="help-block">Choose which columns you want in your report</span>
+                @foreach (var c in Model.Columns.Select((x, i) => new {Value = x, Index = i}))
+                {
+                    <div>
+                        <label class="checkbox">
+                            @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
+                            @(c.Value.Description ?? c.Value.SmallGroup ?? c.Value.Field ?? c.Value.Name)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].Name)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].OrgId)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].Flag)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].Description)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].Field)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].IsDisabled)
+                            @Html.HiddenFor(x => Model.Columns[c.Index].SmallGroup)
+                            @if (c.Value.IsExtraValue)
+                            {
+                                <span class="text-info">(Extra Value)</span>
+                            }
+                            else if (c.Value.IsSmallGroup)
+                            {
+                                <span class="text-info">(Small Group)</span>
+                            }
+                            else if (c.Value.IsStatusFlag)
+                            {
+                                <span class="text-info">(Status Flag)</span>
+                            }
+                        </label>
+                    </div>
+                }
+            </div>
+        </fieldset>
+
+        <input type="submit" name="save-report" class="btn btn-primary" value="Save Report"/>
+        <button type="submit" id="run-report" name="run-report" class="btn"><i class="fa fa-cloud-download"></i> Export Report</button>
+    }
+
+    <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = "___"})">Export Report</a>
+</div>
+
+<style>
+    .custom-columns label:hover {
+        background-color: #f5f5f5;
+    }
+
+    .field-validation-error {
+        color: #b94a48;
+    }
+</style>
+
+<script>
+    (function() {
+        var lastChecked = null;
+        $('#run-report').click(function (e) {
+            e.preventDefault();
+            var $form = $('#edit-custom-report-form');
+            $.post($form.attr('action'), $form.serialize()).then(function () {
+                $('#OriginalReportName').val($('#ReportName').val());
+                var runLink = $('#run-report-link').attr('href').replace('___', encodeURIComponent($('#ReportName').val()));
+                window.location = runLink;
+            });
+        });
+
+        $(document).on('click', '.custom-columns label', function (e) {
+            if (e.shiftKey && lastChecked !== null) {
+                var start = $('.custom-columns label').index(this);
+                var end = $('.custom-columns label').index(lastChecked);
+                $('.custom-columns input[type="checkbox"]').slice(Math.min(start, end), Math.max(start, end) + 1).attr('checked', $('input[type="checkbox"]', lastChecked).attr('checked'));
+            }
+
+            lastChecked = this;
+        });
+    })();
+</script>
