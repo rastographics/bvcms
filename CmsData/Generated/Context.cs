@@ -366,9 +366,49 @@ namespace CmsData
         partial void UpdateMemberType(MemberType instance);
         partial void DeleteMemberType(MemberType instance);
         
+        partial void InsertMergeHistory(MergeHistory instance);
+        partial void UpdateMergeHistory(MergeHistory instance);
+        partial void DeleteMergeHistory(MergeHistory instance);
+        
         partial void InsertMinistry(Ministry instance);
         partial void UpdateMinistry(Ministry instance);
         partial void DeleteMinistry(Ministry instance);
+        
+        partial void InsertMobileAppAction(MobileAppAction instance);
+        partial void UpdateMobileAppAction(MobileAppAction instance);
+        partial void DeleteMobileAppAction(MobileAppAction instance);
+        
+        partial void InsertMobileAppActionType(MobileAppActionType instance);
+        partial void UpdateMobileAppActionType(MobileAppActionType instance);
+        partial void DeleteMobileAppActionType(MobileAppActionType instance);
+        
+        partial void InsertMobileAppAudioType(MobileAppAudioType instance);
+        partial void UpdateMobileAppAudioType(MobileAppAudioType instance);
+        partial void DeleteMobileAppAudioType(MobileAppAudioType instance);
+        
+        partial void InsertMobileAppBuilding(MobileAppBuilding instance);
+        partial void UpdateMobileAppBuilding(MobileAppBuilding instance);
+        partial void DeleteMobileAppBuilding(MobileAppBuilding instance);
+        
+        partial void InsertMobileAppFloor(MobileAppFloor instance);
+        partial void UpdateMobileAppFloor(MobileAppFloor instance);
+        partial void DeleteMobileAppFloor(MobileAppFloor instance);
+        
+        partial void InsertMobileAppIcon(MobileAppIcon instance);
+        partial void UpdateMobileAppIcon(MobileAppIcon instance);
+        partial void DeleteMobileAppIcon(MobileAppIcon instance);
+        
+        partial void InsertMobileAppIconSet(MobileAppIconSet instance);
+        partial void UpdateMobileAppIconSet(MobileAppIconSet instance);
+        partial void DeleteMobileAppIconSet(MobileAppIconSet instance);
+        
+        partial void InsertMobileAppRoom(MobileAppRoom instance);
+        partial void UpdateMobileAppRoom(MobileAppRoom instance);
+        partial void DeleteMobileAppRoom(MobileAppRoom instance);
+        
+        partial void InsertMobileAppVideoType(MobileAppVideoType instance);
+        partial void UpdateMobileAppVideoType(MobileAppVideoType instance);
+        partial void DeleteMobileAppVideoType(MobileAppVideoType instance);
         
         partial void InsertNameTitle(NameTitle instance);
         partial void UpdateNameTitle(NameTitle instance);
@@ -1210,9 +1250,69 @@ namespace CmsData
 
 		}
 
+		public Table< MergeHistory> MergeHistories
+		{
+			get	{ return this.GetTable< MergeHistory>(); }
+
+		}
+
 		public Table< Ministry> Ministries
 		{
 			get	{ return this.GetTable< Ministry>(); }
+
+		}
+
+		public Table< MobileAppAction> MobileAppActions
+		{
+			get	{ return this.GetTable< MobileAppAction>(); }
+
+		}
+
+		public Table< MobileAppActionType> MobileAppActionTypes
+		{
+			get	{ return this.GetTable< MobileAppActionType>(); }
+
+		}
+
+		public Table< MobileAppAudioType> MobileAppAudioTypes
+		{
+			get	{ return this.GetTable< MobileAppAudioType>(); }
+
+		}
+
+		public Table< MobileAppBuilding> MobileAppBuildings
+		{
+			get	{ return this.GetTable< MobileAppBuilding>(); }
+
+		}
+
+		public Table< MobileAppFloor> MobileAppFloors
+		{
+			get	{ return this.GetTable< MobileAppFloor>(); }
+
+		}
+
+		public Table< MobileAppIcon> MobileAppIcons
+		{
+			get	{ return this.GetTable< MobileAppIcon>(); }
+
+		}
+
+		public Table< MobileAppIconSet> MobileAppIconSets
+		{
+			get	{ return this.GetTable< MobileAppIconSet>(); }
+
+		}
+
+		public Table< MobileAppRoom> MobileAppRooms
+		{
+			get	{ return this.GetTable< MobileAppRoom>(); }
+
+		}
+
+		public Table< MobileAppVideoType> MobileAppVideoTypes
+		{
+			get	{ return this.GetTable< MobileAppVideoType>(); }
 
 		}
 
@@ -1708,6 +1808,12 @@ namespace CmsData
 	    public Table< View.DonorProfileList> ViewDonorProfileLists
 	    {
 		    get { return this.GetTable< View.DonorProfileList>(); }
+
+	    }
+
+	    public Table< View.FailedEmail> ViewFailedEmails
+	    {
+		    get { return this.GetTable< View.FailedEmail>(); }
 
 	    }
 
@@ -4239,18 +4345,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.OrgFee", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? OrgFee(
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.FindResCode", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? FindResCode(
@@ -4418,6 +4512,18 @@ namespace CmsData
                 pid,
                 days,
                 fundid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrgFee", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? OrgFee(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
                 ).ReturnValue));
 		}
 

@@ -28,6 +28,10 @@ namespace CmsData.View
 		
 		private bool? _UseRegisterLink2;
 		
+		private DateTime? _RegStart;
+		
+		private DateTime? _RegEnd;
+		
 		
 		public AppRegistration()
 		{
@@ -132,6 +136,40 @@ namespace CmsData.View
 			{
 				if (this._UseRegisterLink2 != value)
 					this._UseRegisterLink2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="RegStart", Storage="_RegStart", DbType="datetime")]
+		public DateTime? RegStart
+		{
+			get
+			{
+				return this._RegStart;
+			}
+
+			set
+			{
+				if (this._RegStart != value)
+					this._RegStart = value;
+			}
+
+		}
+
+		
+		[Column(Name="RegEnd", Storage="_RegEnd", DbType="datetime")]
+		public DateTime? RegEnd
+		{
+			get
+			{
+				return this._RegEnd;
+			}
+
+			set
+			{
+				if (this._RegEnd != value)
+					this._RegEnd = value;
 			}
 
 		}
