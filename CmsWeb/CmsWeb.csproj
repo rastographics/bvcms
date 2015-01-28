@@ -726,30 +726,50 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
-    <Content Include="Content\touchpoint\bootstrap-datepicker\datepicker3.css" />
-    <Content Include="Content\touchpoint\bootstrap-editable\css\bootstrap-editable.css" />
-    <Content Include="Content\touchpoint\bootstrap-editable\img\clear.png" />
-    <Content Include="Content\touchpoint\bootstrap-editable\img\loading.gif" />
-    <Content Include="Content\touchpoint\bootstrap-multiselect\bootstrap-multiselect.css" />
-    <Content Include="Content\touchpoint\bootstrap-sweetalert\css\sweet-alert.css" />
-    <Content Include="Content\touchpoint\bootstrap-tabdrop\css\tabdrop.css" />
-    <Content Include="Content\touchpoint\bootstrap\css\bootstrap.min.css" />
-    <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\account.css" />
-    <Content Include="Content\touchpoint\css\main.css" />
+    <Content Include="Content\touchpoint\css\app.css" />
+    <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\print.css" />
-    <Content Include="Content\touchpoint\images\female.png" />
-    <Content Include="Content\touchpoint\images\hexagon.png" />
-    <Content Include="Content\touchpoint\images\logo.png" />
-    <Content Include="Content\touchpoint\images\logo_sm.png" />
-    <Content Include="Content\touchpoint\images\male.png" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\touchpoint\img\female.png" />
+    <Content Include="Content\touchpoint\img\hexagon.png" />
+    <Content Include="Content\touchpoint\img\logo.png" />
+    <Content Include="Content\touchpoint\img\logo_sm.png" />
+    <Content Include="Content\touchpoint\img\male.png" />
     <Content Include="Content\select2-3.5.2\select2-bootstrap.css" />
     <Content Include="Content\select2-3.5.2\select2-spinner.gif" />
     <Content Include="Content\select2-3.5.2\select2.css" />
     <Content Include="Content\select2-3.5.2\select2.png" />
     <Content Include="Content\select2-3.5.2\select2x2.png" />
-    <Content Include="Content\touchpoint\images\powered-by.png" />
+    <Content Include="Content\touchpoint\img\powered-by.png" />
+    <Content Include="Content\touchpoint\js\admin\divisions.js" />
+    <Content Include="Content\touchpoint\js\admin\users.js" />
+    <Content Include="Content\touchpoint\js\dialog\search-users.js" />
+    <Content Include="Content\touchpoint\js\finance\totals-by-fund.js" />
+    <Content Include="Content\touchpoint\js\finance\transactions.js" />
+    <Content Include="Content\touchpoint\js\form-ajax.js" />
+    <Content Include="Content\touchpoint\js\main.js" />
+    <Content Include="Content\touchpoint\js\search\people-search.js" />
+    <Content Include="Content\touchpoint\js\search\search-add.js" />
+    <Content Include="Content\touchpoint\js\tags.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-bootbox\js\bootbox.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-datepicker\css\datepicker3.css" />
+    <Content Include="Content\touchpoint\lib\bootstrap-datepicker\js\bootstrap-datepicker.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-datetimepicker\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-editable\css\bootstrap-editable.css" />
+    <Content Include="Content\touchpoint\lib\bootstrap-editable\img\clear.png" />
+    <Content Include="Content\touchpoint\lib\bootstrap-editable\img\loading.gif" />
+    <Content Include="Content\touchpoint\lib\bootstrap-editable\js\bootstrap-editable.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-multiselect\css\bootstrap-multiselect.css" />
+    <Content Include="Content\touchpoint\lib\bootstrap-multiselect\js\bootstrap-multiselect.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweet-alert.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\css\tabdrop.css" />
+    <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\bootstrap-tabdrop.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\extensions_bootstrap-tabdrop.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-typeahead\js\bootstrap3-typeahead.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-blockUI\js\jquery.blockUI.js" />
+    <Content Include="Content\touchpoint\lib\jquery-chosen\js\chosen.jquery.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-validate\js\jquery.validate.min.js" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
@@ -782,6 +802,7 @@
     <Content Include="Errors\DatabaseCreationError.aspx" />
     <Content Include="Errors\DatabaseNotInitialized.aspx" />
     <Content Include="Errors\DatabaseServerNotFound.aspx" />
+    <Content Include="gulpfile.js" />
     <Content Include="HtmlPage2.html" />
     <Content Include="minify.xml">
       <SubType>Designer</SubType>
@@ -811,9 +832,6 @@
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
     <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
-    <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="Content\touchpoint\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
@@ -844,6 +862,11 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
+    <Content Include="package.json" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js" />
@@ -938,30 +961,7 @@
     <Content Include="Scripts\Search\SavedQuery2.js" />
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-bootbox\bootbox.min.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-datepicker\bootstrap-datepicker.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-editable\bootstrap-editable.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-editable\bootstrap-editable.min.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-multiselect\bootstrap-multiselect.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-sweetalert\sweet-alert.min.js" />
     <Content Include="Scripts\select2-3.5.2\select2.min.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-tabdrop\bootstrap-tabdrop.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-tabdrop\extensions_bootstrap-tabdrop.js" />
-    <Content Include="Scripts\touchpoint\bootstrap-typeahead\bootstrap3-typeahead.min.js" />
-    <Content Include="Scripts\touchpoint\jquery-blockUI\jquery.blockUI.js" />
-    <Content Include="Scripts\touchpoint\jquery-chosen\chosen.jquery.min.js" />
-    <Content Include="Scripts\touchpoint\jquery-validate\jquery.validate.min.js" />
-    <Content Include="Scripts\touchpoint\js\admin\divisions.js" />
-    <Content Include="Scripts\touchpoint\js\admin\users.js" />
-    <Content Include="Scripts\touchpoint\js\dialog\search-users.js" />
-    <Content Include="Scripts\touchpoint\js\finance\totals-by-fund.js" />
-    <Content Include="Scripts\touchpoint\js\finance\transactions.js" />
-    <Content Include="Scripts\touchpoint\js\form-ajax.js" />
-    <Content Include="Scripts\touchpoint\js\main.js" />
-    <Content Include="Scripts\touchpoint\js\search\people-search.js" />
-    <Content Include="Scripts\touchpoint\js\search\search-add.js" />
-    <Content Include="Scripts\touchpoint\js\tags.js" />
-    <Content Include="Scripts\touchpoint\velocity\velocity.min.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
@@ -1735,7 +1735,6 @@
     <Content Include="src\less\bootstrap-sweetalert\sweet-alert-animations.less" />
     <Content Include="src\less\bootstrap-sweetalert\sweet-alert-combine.less" />
     <Content Include="src\less\bootstrap-sweetalert\sweet-alert.less" />
-    <Content Include="src\less\bootstrap-tabdrop\tabdrop.less" />
     <Content Include="src\less\print.less" />
     <Content Include="src\less\account.less" />
     <Content Include="src\less\error.less" />
@@ -2695,4 +2694,8 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -10,7 +10,7 @@
     var wrapAt = WRAP_COUNT;
 }
 @section head{
-    <link href="@Url.Content("~/Content/touchpoint/bootstrap-tabdrop/css/tabdrop.css")" rel="stylesheet">
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
 }
 <h2>Special Content</h2>
 <div>
@@ -306,8 +306,8 @@
 </div>
 @section scripts
 {
-    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-tabdrop/bootstrap-tabdrop.js")"></script>
-    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-tabdrop/extensions_bootstrap-tabdrop.js")"></script>
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
     <script type="text/javascript">
         $(function () {
             $("#special-content-tabs").tabdrop();

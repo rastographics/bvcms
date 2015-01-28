@@ -4,7 +4,7 @@
     ViewBag.Title = "Metro Zip Codes";
 }
 @section head{
-    <link href="@Url.Content("~/Content/touchpoint/bootstrap-editable/css/bootstrap-editable.css")" rel="stylesheet">
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <h2>Zip Codes</h2>
 @if (TempData["SuccessMessage"] == null || string.IsNullOrWhiteSpace(TempData["SuccessMessage"].ToString()))
@@ -72,7 +72,7 @@ else
 </div>
 @section scripts
 {
-    <script src="@Url.Content("~/Scripts/touchpoint/bootstrap-editable/bootstrap-editable.js")"></script>
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
         $(function () {
             $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +

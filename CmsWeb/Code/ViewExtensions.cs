@@ -738,10 +738,6 @@ namespace CmsWeb
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
-        public static HtmlString TouchpointBootstrap3Css()
-        {
-            return Fingerprint.Css("/Content/touchpoint/bootstrap/css/bootstrap.min.css");
-        }
         public static HtmlString FontAwesome()
         {
             return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
@@ -765,6 +761,16 @@ namespace CmsWeb
 ");
         }
 
+        public static HtmlString Moment()
+        {
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
+        }
+
+        public static HtmlString Velocity()
+        {
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.min.js\" type=\"text/javascript\"></script>\n");
+        }
+
         public static HtmlString Bootstrap()
         {
             return Fingerprint.Script("/Scripts/Bootstrap/bootstrap.js");
@@ -772,7 +778,7 @@ namespace CmsWeb
 
         public static HtmlString Bootstrap3()
         {
-            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js""></script>");
+            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js""></script>");
         }
 
         public static HtmlString LoDash()
