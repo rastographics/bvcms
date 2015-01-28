@@ -83,7 +83,7 @@ namespace CmsData
             {
                 try
                 {
-                    list = Settings.ToDictionary(c => c.Id, c => c.SettingX,
+                    list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX,
                         StringComparer.OrdinalIgnoreCase);
 					HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
@@ -105,10 +105,11 @@ namespace CmsData
         }
         public void SetSetting(string name, string value)
         {
+            name = name.Trim();
 			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
-                list = Settings.ToDictionary(c => c.Id, c => c.SettingX);
+                list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
 				HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
             }
@@ -128,7 +129,7 @@ namespace CmsData
 			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
-                list = Settings.ToDictionary(c => c.Id, c => c.SettingX);
+                list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
 				HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
             }
