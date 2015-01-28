@@ -180,7 +180,6 @@ namespace CmsWeb.Models
                 Cardnumber = pi.MaskedCard;
                 Account = pi.MaskedAccount;
                 Expires = pi.Expires;
-                Cardcode = Util.Mask(new StringBuilder(pi.Ccv), 0);
                 Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
                 NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
                 Type = pi.PreferredGivingType;
@@ -335,7 +334,6 @@ namespace CmsWeb.Models
                     var payinfo = person.PaymentInfo();
                     if (payinfo == null)
                         throw new Exception("X not allowed in CVV");
-                    Cardcode = payinfo.Ccv;
                 }
 
                 var pi = person.PaymentInfo();

@@ -378,7 +378,6 @@ namespace CmsData
                             {
                                 Address = i.Address,
                                 AuNetCustId = i.AuNetCustId,
-                                Ccv = i.Ccv,
                                 AuNetCustPayId = i.AuNetCustPayId,
                                 City = i.City,
                                 Expires = i.Expires,

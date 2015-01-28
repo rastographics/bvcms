@@ -76,7 +76,6 @@ namespace CmsData.Finance
                 }
 
                 paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Ccv = cardCode;
                 paymentInfo.Expires = expires;
             }
             else if (type == PaymentType.Ach)
@@ -180,7 +179,6 @@ namespace CmsData.Finance
             paymentInfo.SageBankGuid = null;
             paymentInfo.MaskedCard = null;
             paymentInfo.MaskedAccount = null;
-            paymentInfo.Ccv = null;
             db.SubmitChanges();
 		}
 

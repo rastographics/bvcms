@@ -186,8 +186,6 @@ namespace CmsWeb.Models
 						 Account = "12345678901234"
 #else
                          CreditCard = pi.MaskedCard,
-                         MaskedCCV = Util.Mask(new StringBuilder(pi.Ccv), 0),
-                         CCV = pi.Ccv,
                          Expires = pi.Expires,
                          Account = pi.MaskedAccount,
                          Routing = pi.Routing,
@@ -244,8 +242,6 @@ namespace CmsWeb.Models
                 Account = r.payinfo.MaskedAccount,
                 Routing = r.payinfo.Routing,
                 Expires = r.payinfo.Expires,
-                MaskedCCV = Util.Mask(new StringBuilder(r.payinfo.Ccv), 0),
-                CCV = r.payinfo.Ccv,
                 SavePayInfo =
                    (r.payinfo.MaskedAccount != null && r.payinfo.MaskedAccount.StartsWith("X"))
                    || (r.payinfo.MaskedCard != null && r.payinfo.MaskedCard.StartsWith("X")),

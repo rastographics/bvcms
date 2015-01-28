@@ -1,10 +1,10 @@
 ﻿@using System.Web.Mvc.Html
 @model CmsWeb.Models.NewMeetingInfo
 
-<form class="modal dialog-options form-horizontal validate fade hide" action="/NewMeeting/Create" method="POST">
+<form class="modal dialog-options form-horizontal validate fade hide" action="@ViewBag.Action" method="POST">
   <div class="modal-header">
     <a class="close" data-dismiss="modal">x</a>
-    <h3>New Meeting</h3>
+    <h3>Meeting Options</h3>
   </div>
   <div class="modal-body">
     @Html.EditorFor(m => m.Schedule)

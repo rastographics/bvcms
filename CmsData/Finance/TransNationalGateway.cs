@@ -73,7 +73,6 @@ namespace CmsData.Finance
                 }
 
                 paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Ccv = cardCode; // TODO: shouldn't need to store this
                 paymentInfo.Expires = expires;
             }
             else if (type == PaymentType.Ach)
@@ -293,7 +292,6 @@ namespace CmsData.Finance
             paymentInfo.TbnBankVaultId = null;
             paymentInfo.MaskedCard = null;
             paymentInfo.MaskedAccount = null;
-            paymentInfo.Ccv = null;
             db.SubmitChanges();
         }
 

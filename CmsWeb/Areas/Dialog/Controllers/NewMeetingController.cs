@@ -11,17 +11,33 @@ namespace CmsWeb.Controllers
     [RouteArea("Dialog", AreaPrefix="NewMeeting"), Route("{action}/{id?}")]
     public class NewMeetingController : CmsStaffController
     {
-        [HttpPost, Route("~/NewMeeting/{id:int}")]
-        public ActionResult Index(int id, bool forMeeting)
+        [HttpPost, Route("~/ForNewMeeting/{id:int}")]
+        public ActionResult ForNewMeeting(int id)
         {
             var oi = new OrganizationModel() { Id = id };
             var m = new NewMeetingInfo()
             {
-                MeetingDate = forMeeting ? oi.PrevMeetingDate : oi.NextMeetingDate,
-                Schedule = new CodeInfo(0, forMeeting ? oi.SchedulesPrev() : oi.SchedulesNext()),
+                MeetingDate = oi.PrevMeetingDate,
+                Schedule = new CodeInfo(0, oi.SchedulesPrev()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
             };
-            return View(m);
+            ViewBag.Action = "/NewMeeting/Create/" + id;
+            ViewBag.Method = "POST";
+            return View("Index", m);
+        }
+        [HttpPost, Route("~/ForNewRollsheet/{id:int}")]
+        public ActionResult ForNewRollsheet(int id)
+        {
+            var oi = new OrganizationModel() { Id = id };
+            var m = new NewMeetingInfo()
+            {
+                MeetingDate =  oi.NextMeetingDate,
+                Schedule = new CodeInfo(0, oi.SchedulesNext()),
+                AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
+            };
+            ViewBag.Action = "/Reports/Rollsheet/" + id;
+            ViewBag.Method = "GET";
+            return View("Index", m);
         }
         [HttpPost]
         public ActionResult Create(NewMeetingInfo model)

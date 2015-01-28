@@ -387,7 +387,6 @@
     $.InitFunctions.popovers();
 
     $.InitFunctions.timepicker = function (f) {
-        //$(".timepicker").timepicker({ 'step': 5 });
         $(".timepicker").datetimepicker({
             format: "H:ii P",
             showMeridian: true,
@@ -437,38 +436,6 @@
     };
     $("#org_RegistrationTypeId").live("change", $.InitFunctions.showHideRegTypes);
 
-    //    $("a.displayedit,a.displayedit2").live('click', function (ev) {
-    //        ev.preventDefault();
-    //        var f = $(this).closest('form');
-    //        $.post($(this).attr('href'), null, function (ret) {
-    //            $(f).html(ret).ready(function () {
-    //                //                $.initDatePicker(f);
-    //                //                $(".submitbutton,.bt", f).button();
-    //                $(".roundbox select", f).css("width", "100%");
-    //                //                $("#schedules", f).sortable({ stop: $.renumberListItems });
-    //                $("#editor", f);
-    //                $.regsettingeditclick(f);
-    //                //                $.showHideRegTypes();
-    //                $.updateQuestionList();
-    //                //                $("#selectquestions").dialog({
-    //                //                    title: "Add Question",
-    //                //                    autoOpen: false,
-    //                //                    width: 550,
-    //                //                    height: 250,
-    //                //                    modal: true
-    //                //                });
-    //                //                $('a.AddQuestion').click(function (ev) {
-    //                //                    var d = $('#selectquestions');
-    //                //                    d.dialog("open");
-    //                //                    ev.preventDefault();
-    //                //                    return false;
-    //                //                });
-    //                $(".helptip").tooltip({ showBody: "|" });
-    //            });
-    //        });
-    //        return false;
-    //    });
-    //
     $('#selectquestions a').live("click", function (ev) {
         ev.preventDefault();
         $.post('/Organization/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
@@ -489,17 +456,6 @@
         $(this).parent().parent().parent().remove();
         return false;
     });
-
-    //$("ul.enablesort a.delt").live("click", function (ev) {
-    //    ev.preventDefault();
-    //    if (!$(this).attr("href"))
-    //        return false;
-    //    if (confirm("are you sure?")) {
-    //        $(this).parent().parent().parent().parent().parent().remove();
-    //        $.InitFunctions.updateQuestionList();
-    //    }
-    //    return false;
-    //});
 
     $.exceptions = [
         "AskDropdown",
@@ -524,26 +480,6 @@
 
     $(".helptip").tooltip({ showBody: "|", blocked: true });
 
-//    $("#NewMeeting").live("click", function (ev) {
-//        ev.preventDefault();
-//        $("<div />").load(this.href, function() {
-//            var d = $(this);
-//            var f = d.find("form");
-//            f.modal("show");
-//            $(".datetime", f).datetimepicker({
-//                autoclose: true,
-//                showMeridian: true,
-//                orientation: "auto",
-//                forceParse: false,
-//                format: $.dtoptions.formatTime
-//            });
-//            f.on('hidden', function() {
-//                d.remove();
-//                f.remove();
-//            });
-//        });
-//        return false;
-//    });
     $("form.DisplayEdit a.submitbutton").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
@@ -639,15 +575,6 @@
         }
     });
 
-    //    $.getTable = function (f) {
-    //        var q = f.serialize();
-    //        $.post(f.attr('action'), q, function (ret) {
-    //            $(f).html(ret).ready(function () {
-    //                $("select.tip,input.tip").tooltip({ opacity: 0, showBody: "|" });
-    //            });
-    //        });
-    //        return false;
-    //    };
     $("#namefilter").keypress(function (e) {
         if ((e.keyCode || e.which) === 13) {
             e.preventDefault();
@@ -792,59 +719,6 @@
         return false;
     });
 
-    /*
-        $('#divisionsDialog').dialog({
-            title: 'Select Divisions Dialog',
-            bgiframe: true,
-            autoOpen: false,
-            width: 690,
-            height: 650,
-            modal: true,
-            overlay: {
-                opacity: 0.5,
-                background: "black"
-            }, close: function () {
-                $('iframe', this).remove();
-                var f = $("#orginfoform");
-                $.post("/Organization/OrgInfo/" + $("#OrganizationId").val(), null, function (ret) {
-                    $(f).html(ret).ready(function () {
-                        $(".submitbutton,.bt").button();
-                    });
-                });
-            }
-        });
-        $("#divisionlist").live("" +
-            "click", function (e) {
-            e.preventDefault();
-            $('#divisionsDialog').dialog("open");
-            var iframe = $("<iframe style='width: 100%; height: 99%; border-width: 0;'></iframe>").appendTo("#divisionsDialog");
-            iframe.attr("src", this.href);
-        });
-        $('#orgsDialog').dialog({
-            title: 'Select Orgs Dialog',
-            bgiframe: true,
-            autoOpen: false,
-            width: 690,
-            height: 650,
-            modal: true,
-            overlay: {
-                opacity: 0.5,
-                background: "black"
-            }, close: function () {
-                $('iframe', this).attr("src", "");
-            }
-        });
-        $('#orgpicklist').live("click", function (e) {
-            e.preventDefault();
-            var d = $('#orgsDialog');
-            $('iframe', d).attr("src", this.href);
-            d.dialog("open");
-        });
-    
-    */
-
-   
-
     $.extraEditable = function () {
         $('.editarea').editable('/Organization/EditExtra/', {
             type: 'textarea',
@@ -864,43 +738,6 @@
         });
     };
     $.extraEditable();
-    /*
-        $("#newvalueform").dialog({
-            autoOpen: false,
-            buttons: {
-                "Ok": function () {
-                    var ck = $("#multiline").is(':checked');
-                    var fn = $("#fieldname").val();
-                    var v = $("#fieldvalue").val();
-                    if (fn)
-                        $.post("/Organization/NewExtraValue/" + $("#OrganizationId").val(), { field: fn, value: v, multiline: ck }, function (ret) {
-                            if (ret.startsWith("error"))
-                                alert(ret);
-                            else {
-                                $("#extras > tbody").html(ret);
-                                $.extraEditable();
-                            }
-                            $("#fieldname").val("");
-                        });
-                    $(this).dialog("close");
-                }
-            }
-        });
-        $("#newextravalue").live("click", function (ev) {
-            ev.preventDefault();
-            var d = $('#newvalueform');
-            d.dialog("open");
-        });
-        $("#TryRegDialog").dialog({
-            autoOpen: false,
-            width: 500
-        });
-        $("#tryreg").live("click", function (ev) {
-            ev.preventDefault();
-            var d = $('#TryRegDialog');
-            d.dialog("open");
-        });
-    */
     $("a.deleteextra").live("click", function (ev) {
         ev.preventDefault();
         if (confirm("are you sure?"))
@@ -1094,38 +931,6 @@
 
     $.InitFunctions.movequestions();
 
-//    $('#NewMeeting').live("click", function (ev) {
-//        ev.preventDefault();
-//        $('#grouplabel').text("Group Meeting");
-//        $("tr.forMeeting").show();
-//        $("tr.forRollsheet").hide();
-//        var d = $("#NewMeetingDialog");
-
-//        var sch = $("#ScheduleListPrev").val();
-//        if (sch) {
-//            var a = sch.split(',');
-//            $("#PrevMeetingDate").val(a[0]);
-//            $("#NewMeetingTime").val(a[1]);
-//            $("#AttendCreditList").val(a[2]);
-//        }
-
-//        d.dialog("option", "buttons", {
-//            "Ok": function () {
-//                var dt = $.GetPrevMeetingDateTime();
-//                if (!dt.valid)
-//                    return false;
-//                var url = "?d=" + dt.date + "&t=" + dt.time +
-//                "&group=" + ($('#group').is(":checked") ? "true" : "false");
-//                $.post("/Organization/NewMeeting", { d: dt.date, t: dt.time, AttendCredit: $("#AttendCreditList").val(), group: $('#group').is(":checked") }, function (ret) {
-//                    if (!ret.startsWith("error"))
-//                        window.location = ret;
-//                });
-//                $(this).dialog("close");
-//            }
-//        });
-//        d.dialog('open');
-//        return false;
-//    });
 });
 function RebindMemberGrids() {
     $.formAjaxClick($("a.setfilter"));

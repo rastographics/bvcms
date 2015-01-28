@@ -105,7 +105,6 @@ namespace CmsData.Finance
                 SaveCreditCardToProfile(cardNumber, cardCode, expiredDate, paymentInfo, customer);
 
                 paymentInfo.MaskedCard = Util.MaskCC(cardNumber);
-                paymentInfo.Ccv = cardCode;
                 paymentInfo.Expires = expires;
             }
             else
@@ -190,7 +189,6 @@ namespace CmsData.Finance
                 paymentInfo.AuNetCustPayBankId = null;
                 paymentInfo.MaskedCard = null;
                 paymentInfo.MaskedAccount = null;
-                paymentInfo.Ccv = null;
                 db.SubmitChanges();
             }
             else

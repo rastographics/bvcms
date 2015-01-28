@@ -5,7 +5,8 @@
         <li class="header">Reports</li>
         @if (Model.meeting.MeetingDate >= DateTime.Today)
         {
-          <li><a id="rollsheet" href="#">Rollsheet Report</a></li>
+@*          <li><a id="rollsheet" href="#">Rollsheet Report</a></li>*@
+          <li><a id="NewMeeting" class="btn btn-primary dialog-options" href="/Reports/Rollsheet?org=curr">Rollsheet Report</a></li>
         }
         <li><a href="/Reports/PastAttendee/@Model.meeting.OrganizationId" target="_blank">Recent Attendance Report</a></li>
         <li><a href="/Reports/Attendee/@Model.meeting.MeetingId" target="_blank">Attendee Report</a></li>
