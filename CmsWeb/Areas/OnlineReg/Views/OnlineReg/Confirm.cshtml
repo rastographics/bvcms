@@ -20,9 +20,10 @@
 }
 
 <div class="confirm">
-    @Html.Raw(Model.GetThankYouMessage())
-    @if (Model.UseBootstrap && OnlineRegModel.InMobileAppMode)
-    {
-        <a href="@OnlineRegModel.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
-    }
+  @Html.Raw(Model.TrackingCode)
+  @Html.Raw(Model.GetThankYouMessage())
+  @if (Model.UseBootstrap && OnlineRegModel.InMobileAppMode)
+  {
+    <a href="@OnlineRegModel.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
+  }
 </div>

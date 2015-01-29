@@ -26,65 +26,65 @@
     Online Notify Persons:</span>
         @Html.Partial("NotifyList2", Model.org.NotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "notifyids" }})
   </li>
-  <li>
-    <span class="keyword big tip" title="Instructions
+<li>
+  <span class="keyword big tip" title="Instructions
     |These are for special instructions that will show up
     |at the top of the registration in the appropriate context">
     Instructions:</span>
-      <ul>
-      <li>
-        <span class="keyword2 tip" title="Login
+  <ul>
+    <li>
+      <span class="keyword2 tip" title="Login
         |Displays instructions on the Login page">Login:</span>
-        @Html.EditorFor(m => m.InstructionLogin, "Html")
-      </li>
-      <li>
-        <span class="keyword2 tip" title="Select
+      @Html.EditorFor(m => m.InstructionLogin, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Select
         |This is displayed when you login 
         |and are selecting a family member to be registered">
         Select:</span>
-        @Html.EditorFor(m => m.InstructionSelect, "Html")
-      </li>
-      <li>
-        <span class="keyword2 tip" title="Find
+      @Html.EditorFor(m => m.InstructionSelect, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Find
         |When you are searching for a person.
         |Either when you are not logged in, or adding a guest.">
         Find:</span>
-        @Html.EditorFor(m => m.InstructionFind, "Html")
-      </li>
-      <li>
-        <span class="keyword2 tip" title="Options
+      @Html.EditorFor(m => m.InstructionFind, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Options
         |Allows you to further explain the questions, dropdowns, checkboxes etc.">
         Options:</span>
-        @Html.EditorFor(m => m.InstructionOptions, "Html")
-      </li>
-      <li>
-        <span class="keyword2 tip" title="Special
+      @Html.EditorFor(m => m.InstructionOptions, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Special
         |For Managed Giving, Manage Subscribtions etc.">
         Special:</span>
-        @Html.EditorFor(m => m.InstructionSpecial, "Html")
-      </li>
-      <li>
-        <span class="keyword2 tip" title="Submit
+      @Html.EditorFor(m => m.InstructionSpecial, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Submit
         |For when you have the choice to register another or continue the registration.">
         Submit:</span>
-        @Html.EditorFor(m => m.InstructionSubmit, "Html")
-      </li>
-      <li> 
-        <span class="keyword2 tip" title="Sorry
+      @Html.EditorFor(m => m.InstructionSubmit, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Sorry
         |For when the Max Limit is reached or a Class is filled.
         |Good for giving them a link to join a waiting list.">
         Sorry:</span>
-        @Html.EditorFor(m => m.InstructionSorry, "Html")
-      </li>
-      <li>
-        <span class="keyword2 tip" title="Thanks
+      @Html.EditorFor(m => m.InstructionSorry, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Thanks
         |This is displayed when you complete the registration
         |If left blank, the default will be used">
         Thanks:</span>
-        @Html.EditorFor(m => m.ThankYouMessage, "Html")
-      </li>
-    </ul>
-  </li>
+      @Html.EditorFor(m => m.ThankYouMessage, "Html")
+    </li>
+  </ul>
+</li>
   <li>
     <span class="keyword2 big tip" title="Terms
     |Some registrations like a camp, or sports team, or a trip
@@ -94,7 +94,7 @@
     Terms:</span>
     @Html.EditorFor(m => m.Terms, "Html")
   </li>
-<li>
+ <li>
     <div class="text big tip" title="Reminder
     |This is the email that is sent as a reminder for members of an event.">
         Reminder: </div>
@@ -141,5 +141,14 @@
         </div>
       </li>
     </ul>
+  </li>
+}
+@if(User.IsInRole("Admin") || User.IsInRole("Design"))
+{
+  <li>
+    <span class="text big tip" title="Special Tracking Code
+    |Put Special Landing page tracking code here.">
+    Tracking Code:</span>
+    @Html.EditorFor(m => m.ConfirmationTrackingCode, "TextArea")
   </li>
 }

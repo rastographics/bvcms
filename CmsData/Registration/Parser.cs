@@ -350,6 +350,7 @@ namespace CmsData.Registration
             OtherFeesAddedToOrgFee,
             ApplyMaxToOtherFees,
             IncludeOtherFeesWithDeposit,
+            ConfirmationTrackingCode,
 
 
             OtherFeesAdded,
