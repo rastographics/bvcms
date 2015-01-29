@@ -30,7 +30,7 @@ namespace UtilityExtensions
             if (From == null)
                 From = FirstAddress(senderrorsto);
             var problemDomains = (ConfigurationManager.AppSettings["ProblemDomainsForEmail"] ?? "").Split(',');
-            if (problemDomains.Any(dd => From.Host == dd || to.Any(ee => ee.Host == dd)))
+            if (problemDomains.Any(dd => From.Host.ToLower() == dd || to.Any(ee => ee.Host.ToLower() == dd)))
             {
                 if (!SysFromEmail.HasValue())
                     SysFromEmail = "mailer@bvcms.com";
