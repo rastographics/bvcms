@@ -177,6 +177,20 @@
         return false;
     });
 
+    $("body").on("click", 'a.setpar', function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        var f = $('#results').closest('form');
+        var q = f.serialize();
+        var parid = prompt("ParentId", "");
+        q += "&parid=" + parid;
+        $.post(a.attr("href"), q, function (ret) {
+            $('#results').html(ret);
+            intializePopovers();
+        });
+        return false;
+    });
+
     $("body").on("click", 'a.adjust', function (ev) {
         ev.preventDefault();
         var a = $(this);
