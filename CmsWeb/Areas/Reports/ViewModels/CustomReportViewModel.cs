@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.Reports.ViewModels
         public string OriginalReportName { get; set; }
 
         [Required]
+        [RegularExpression("^[A-Za-z0-9 ]+$", ErrorMessage = "The report name can only contain alphanumeric characters or spaces. (a-z, 0-9)")]
         public string ReportName { get; set; }
 
         public List<CustomReportColumn> Columns { get; set; }
