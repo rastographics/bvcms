@@ -144,6 +144,7 @@ namespace CmsData.Registration
 			SetUniqueIds("AskDropdown");
 			SetUniqueIds("AskExtraQuestions");
 			SetUniqueIds("AskCheckboxes");
+			SetUniqueIds("AskText");
 			SetUniqueIds("AskMenu");
 		    var sglist = new List<string>();
             AskItems.ForEach(a => sglist.AddRange(a.SmallGroups()));
