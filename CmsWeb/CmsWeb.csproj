@@ -724,6 +724,10 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\images\tps_full_logo.png" />
+    <Content Include="Content\images\tps_hosting_support.png" />
+    <Content Include="Content\images\tps_hosting_support_avail.png" />
+    <Content Include="Content\images\tps_logo.png" />
     <Content Include="Content\select2-3.5.2\select2-bootstrap.css" />
     <Content Include="Content\select2-3.5.2\select2-spinner.gif" />
     <Content Include="Content\select2-3.5.2\select2.css" />

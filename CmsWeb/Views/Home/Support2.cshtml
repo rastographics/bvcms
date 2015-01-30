@@ -115,18 +115,23 @@
 <table id="about" class="roundbox center">
     <tr>
         <td class="center">
-            <h2>
-                @if (Util.IsHosted)
-                {
-                    <text>Open Source Software,<br />Hosting and Support Provided By</text>
-                }
-                else
-                {
-                    <text>Open Source Software Provided By</text>
-                }
-            </h2>
+            <h3>Hosting & Support @(Util.IsHosted ? "provided by" : "available at")</h3>
+            <br />
+            <span class="center">
+                <a href="http://bvcms.com" target="_blank">
+                    <img src="/Content/images/tps_full_logo.png" style="height: 80px;" /><br />
+                    http://touchpointsoftware.com
+                </a>
+            </span>
             <br /><br />
-            <span class="center"><a href="http://www.bvcms.com"><img src="/Content/images/bvcms150.png" /></a></span>
+            <h6>Built with the Open Source Project</h6>
+            <br />
+            <span class="center">
+                <a href="https://github.com/bvcms/bvcms" target="_blank">
+                    <img src="/Content/images/bvcms150.png" /><br />
+                    https://github.com/bvcms/bvcms
+                </a>
+            </span>
             <br /><br />
             <div>Current Server Date: @Util.Now</div>
             <div>Build Date: @Util.BuildDate()</div>
