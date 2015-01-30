@@ -1811,6 +1811,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.FailedEmail> ViewFailedEmails
+	    {
+		    get { return this.GetTable< View.FailedEmail>(); }
+
+	    }
+
 	    public Table< View.FirstName> ViewFirstNames
 	    {
 		    get { return this.GetTable< View.FirstName>(); }
@@ -3245,236 +3251,6 @@ namespace CmsData
     #endregion
 	#region Scalar Functions
 		
-		[Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalUnitsSize(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "min", DbType="int")] int? min,
-            [Parameter(Name = "max", DbType="int")] int? max
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                min,
-                max
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.AttendItem", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? AttendItem(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "n", DbType="int")] int? n
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                n
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.ContributionChange", IsComposable = true)]
-		[return: Parameter(DbType = "float")]
-		public double? ContributionChange(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "dt1", DbType="datetime")] DateTime? dt1,
-            [Parameter(Name = "dt2", DbType="datetime")] DateTime? dt2
-            )
-		{
-			return ((double?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                dt1,
-                dt2
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DonorTotalGiftsAttrRange", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalGiftsAttrRange(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "min", DbType="int")] int? min,
-            [Parameter(Name = "max", DbType="int")] int? max
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                min,
-                max
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.LastActive", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? LastActive(
-            [Parameter(Name = "uid", DbType="int")] int? uid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                uid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.ContributionAmount2", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? ContributionAmount2(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "dt1", DbType="datetime")] DateTime? dt1,
-            [Parameter(Name = "dt2", DbType="datetime")] DateTime? dt2,
-            [Parameter(Name = "fundid", DbType="int")] int? fundid
-            )
-		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                dt1,
-                dt2,
-                fundid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DonorTotalUnitsAttrRange", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? DonorTotalUnitsAttrRange(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "min", DbType="int")] int? min,
-            [Parameter(Name = "max", DbType="int")] int? max
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                min,
-                max
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.FamilyMakeup", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string FamilyMakeup(
-            [Parameter(Name = "fid", DbType="int")] int? fid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                fid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.AddressMatch", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? AddressMatch(
-            [Parameter(Name = "var1", DbType="nvarchar")] string var1,
-            [Parameter(Name = "var2", DbType="nvarchar")] string var2
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                var1,
-                var2
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.AvgSunAttendance", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? AvgSunAttendance(
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetAttendedTodaysMeeting", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? GetAttendedTodaysMeeting(
-            [Parameter(Name = "orgid", DbType="int")] int? orgid,
-            [Parameter(Name = "thisday", DbType="int")] int? thisday,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                orgid,
-                thisday,
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.ComputePositionInFamily", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? ComputePositionInFamily(
-            [Parameter(Name = "age", DbType="int")] int? age,
-            [Parameter(Name = "married", DbType="bit")] bool? married,
-            [Parameter(Name = "fid", DbType="int")] int? fid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                age,
-                married,
-                fid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetTodaysMeetingHour", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? GetTodaysMeetingHour(
-            [Parameter(Name = "thisday", DbType="int")] int? thisday,
-            [Parameter(Name = "MeetingTime", DbType="datetime")] DateTime? MeetingTime,
-            [Parameter(Name = "SchedDay", DbType="int")] int? SchedDay
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                thisday,
-                MeetingTime,
-                SchedDay
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetTodaysMeetingId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? GetTodaysMeetingId(
-            [Parameter(Name = "orgid", DbType="int")] int? orgid,
-            [Parameter(Name = "thisday", DbType="int")] int? thisday
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                orgid,
-                thisday
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.SpouseIdJoint", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? SpouseIdJoint(
-            [Parameter(Name = "peopleid", DbType="int")] int? peopleid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                peopleid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.AttendDesc", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string AttendDesc(
-            [Parameter(Name = "id", DbType="int")] int? id
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                id
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.MemberDesc", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string MemberDesc(
@@ -3484,348 +3260,6 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 id
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.fn_diagramobjects", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? FnDiagramobjects(
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.PrimaryCountry", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string PrimaryCountry(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.WasDeaconActive2008", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? WasDeaconActive2008(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                dt
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.LastAttend", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? LastAttend(
-            [Parameter(Name = "orgid", DbType="int")] int? orgid,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                orgid,
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.LastDrop", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? LastDrop(
-            [Parameter(Name = "orgid", DbType="int")] int? orgid,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                orgid,
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.LastAttended", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? LastAttended(
-            [Parameter(Name = "orgid", DbType="int")] int? orgid,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                orgid,
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.BaptismAgeRange", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string BaptismAgeRange(
-            [Parameter(Name = "age", DbType="int")] int? age
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                age
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DaysSinceAttend", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? DaysSinceAttend(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                oid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.SundayForWeek", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? SundayForWeek(
-            [Parameter(Name = "year", DbType="int")] int? year,
-            [Parameter(Name = "week", DbType="int")] int? week
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                year,
-                week
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.ScheduleId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? ScheduleId(
-            [Parameter(Name = "day", DbType="int")] int? day,
-            [Parameter(Name = "time", DbType="datetime")] DateTime? time
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                day,
-                time
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetScheduleTime", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? GetScheduleTime(
-            [Parameter(Name = "day", DbType="int")] int? day,
-            [Parameter(Name = "time", DbType="datetime")] DateTime? time
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                day,
-                time
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.OrganizationMemberCount", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? OrganizationMemberCount(
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.PersonAttendCountOrg", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? PersonAttendCountOrg(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                oid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.PrimaryAddress2", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string PrimaryAddress2(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetEldestFamilyMember", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? GetEldestFamilyMember(
-            [Parameter(Name = "fid", DbType="int")] int? fid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                fid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.Birthday", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? Birthday(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.HeadOfHouseholdId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? HeadOfHouseholdId(
-            [Parameter(Name = "familyid", DbType="int")] int? familyid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                familyid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DOB", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string Dob(
-            [Parameter(Name = "m", DbType="int")] int? m,
-            [Parameter(Name = "d", DbType="int")] int? d,
-            [Parameter(Name = "y", DbType="int")] int? y
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                m,
-                d,
-                y
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.HeadOfHouseHoldSpouseId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? HeadOfHouseHoldSpouseId(
-            [Parameter(Name = "familyid", DbType="int")] int? familyid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                familyid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.CoupleFlag", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? CoupleFlag(
-            [Parameter(Name = "familyid", DbType="int")] int? familyid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                familyid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.NextChangeTransactionId2", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? NextChangeTransactionId2(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "tid", DbType="int")] int? tid,
-            [Parameter(Name = "typeid", DbType="int")] int? typeid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                oid,
-                tid,
-                typeid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.PrimaryCity", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string PrimaryCity(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.PrimaryZip", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string PrimaryZip(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.InSmallGroup", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string InSmallGroup(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "sg", DbType="varchar")] string sg
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                pid,
-                sg
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.BibleFellowshipClassId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? BibleFellowshipClassId(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.SpouseId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? SpouseId(
-            [Parameter(Name = "peopleid", DbType="int")] int? peopleid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                peopleid
                 ).ReturnValue));
 		}
 
@@ -3841,45 +3275,35 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.PrimaryResCode", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? PrimaryResCode(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.EntryPointId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? EntryPointId(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.Tool_VarbinaryToVarcharHex", IsComposable = true)]
+		[Function(Name="dbo.UserRoleList", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
-		public string ToolVarbinaryToVarcharHex(
-            [Parameter(Name = "VarbinaryValue", DbType="varbinary")] byte[] VarbinaryValue
+		public string UserRoleList(
+            [Parameter(Name = "uid", DbType="int")] int? uid
             )
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                VarbinaryValue
+                uid
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.PrimaryBadAddressFlag", IsComposable = true)]
+		[Function(Name="dbo.DonorTotalUnits", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
-		public int? PrimaryBadAddressFlag(
+		public int? DonorTotalUnits(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "attr", DbType="int")] int? attr
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                attr
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DaysSinceContact", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? DaysSinceContact(
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
@@ -3903,336 +3327,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.NextTranChangeDate", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? NextTranChangeDate(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "tdt", DbType="datetime")] DateTime? tdt,
-            [Parameter(Name = "typeid", DbType="int")] int? typeid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                oid,
-                tdt,
-                typeid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.AllRegexMatchs", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string AllRegexMatchs(
-            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
-            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                subject,
-                pattern
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.NextChangeTransactionId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? NextChangeTransactionId(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "tid", DbType="int")] int? tid,
-            [Parameter(Name = "typeid", DbType="int")] int? typeid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                oid,
-                tid,
-                typeid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.IsValidEmail", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? IsValidEmail(
-            [Parameter(Name = "addr", DbType="nvarchar")] string addr
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                addr
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.PrimaryAddress", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string PrimaryAddress(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.LastNameCount", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? LastNameCount(
-            [Parameter(Name = "last", DbType="nvarchar")] string last
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                last
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.PrimaryState", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string PrimaryState(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.HomePhone", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string HomePhone(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.MemberStatusDescription", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string MemberStatusDescription(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.OrganizationLeaderId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? OrganizationLeaderId(
-            [Parameter(Name = "orgid", DbType="int")] int? orgid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                orgid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.UserName", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string UserName(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.EnrollmentTransactionId", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? EnrollmentTransactionId(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "tdt", DbType="datetime")] DateTime? tdt,
-            [Parameter(Name = "ttid", DbType="int")] int? ttid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                oid,
-                tdt,
-                ttid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.NextBirthday", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? NextBirthday(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetPeopleIdFromIndividualNumber", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? GetPeopleIdFromIndividualNumber(
-            [Parameter(Name = "indnum", DbType="int")] int? indnum
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                indnum
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.OrganizationLeaderName", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string OrganizationLeaderName(
-            [Parameter(Name = "orgid", DbType="int")] int? orgid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                orgid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.UserPeopleIdFromEmail", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? UserPeopleIdFromEmail(
-            [Parameter(Name = "email", DbType="nvarchar")] string email
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                email
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.SmallGroupLeader", IsComposable = true)]
-		[return: Parameter(DbType = "varchar")]
-		public string SmallGroupLeader(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DayAndTime", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string DayAndTime(
-            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                dt
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DollarRange", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? DollarRange(
-            [Parameter(Name = "amt", DbType="decimal")] decimal? amt
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                amt
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.FirstMondayOfMonth", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? FirstMondayOfMonth(
-            [Parameter(Name = "inputDate", DbType="datetime")] DateTime? inputDate
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                inputDate
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.StartsLower", IsComposable = true)]
-		[return: Parameter(DbType = "bit")]
-		public bool? StartsLower(
-            [Parameter(Name = "s", DbType="nvarchar")] string s
-            )
-		{
-			return ((bool?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                s
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.LastContact", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? LastContact(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DaysSinceContact", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? DaysSinceContact(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DaysBetween12Attend", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? DaysBetween12Attend(
-            [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "progid", DbType="int")] int? progid,
-            [Parameter(Name = "divid", DbType="int")] int? divid,
-            [Parameter(Name = "orgid", DbType="int")] int? orgid,
-            [Parameter(Name = "lookback", DbType="int")] int? lookback
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                progid,
-                divid,
-                orgid,
-                lookback
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.UserRoleList", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string UserRoleList(
-            [Parameter(Name = "uid", DbType="int")] int? uid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                uid
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.LastMemberTypeInTrans", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? LastMemberTypeInTrans(
@@ -4244,6 +3338,20 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalGifts", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalGifts(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "attr", DbType="int")] int? attr
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                attr
                 ).ReturnValue));
 		}
 
@@ -4273,6 +3381,32 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.DonorTotalMean", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalMean(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "attr", DbType="int")] int? attr
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                attr
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.FirstMeetingDateLastLear", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string FirstMeetingDateLastLear(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.LastIdInTrans", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? LastIdInTrans(
@@ -4287,167 +3421,19 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.ComputeAge", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? ComputeAge(
-            [Parameter(Name = "m", DbType="int")] int? m,
-            [Parameter(Name = "d", DbType="int")] int? d,
-            [Parameter(Name = "y", DbType="int")] int? y
+		[Function(Name="dbo.DonorTotalMedian", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalMedian(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "attr", DbType="int")] int? attr,
+            [Parameter(Name = "threshold", DbType="money")] decimal? threshold
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                m,
-                d,
-                y
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetWeekDayNameOfDate", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string GetWeekDayNameOfDate(
-            [Parameter(Name = "DateX", DbType="datetime")] DateTime? DateX
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                DateX
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetScheduleDesc", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string GetScheduleDesc(
-            [Parameter(Name = "meetingtime", DbType="datetime")] DateTime? meetingtime
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                meetingtime
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.NextAnniversary", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? NextAnniversary(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.FindResCode", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? FindResCode(
-            [Parameter(Name = "zipcode", DbType="nvarchar")] string zipcode,
-            [Parameter(Name = "country", DbType="nvarchar")] string country
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                zipcode,
-                country
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.SchoolGrade", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? SchoolGrade(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.WidowedDate", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? WidowedDate(
-            [Parameter(Name = "peopleid", DbType="int")] int? peopleid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                peopleid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.FirstActivity", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? FirstActivity(
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetPeopleIdFromACS", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? GetPeopleIdFromACS(
-            [Parameter(Name = "famnum", DbType="int")] int? famnum,
-            [Parameter(Name = "indnum", DbType="int")] int? indnum
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                famnum,
-                indnum
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.SundayForDate", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? SundayForDate(
-            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                dt
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.UEmail", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string UEmail(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.DecToBase", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string DecToBase(
-            [Parameter(Name = "val", DbType="bigint")] long? val,
-            [Parameter(Name = "baseX", DbType="int")] int? baseX
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                val,
-                baseX
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.FirstMeetingDateLastLear", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string FirstMeetingDateLastLear(
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid
+                t,
+                attr,
+                threshold
                 ).ReturnValue));
 		}
 
@@ -4467,16 +3453,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.GetSecurityCode", IsComposable = true)]
-		[return: Parameter(DbType = "char")]
-		public string GetSecurityCode(
-            )
-		{
-			return ((string)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.PledgeCount", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? PledgeCount(
@@ -4490,6 +3466,22 @@ namespace CmsData
                 pid,
                 days,
                 fundid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalGiftsSize", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalGiftsSize(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "min", DbType="int")] int? min,
+            [Parameter(Name = "max", DbType="int")] int? max
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                min,
+                max
                 ).ReturnValue));
 		}
 
@@ -4521,28 +3513,122 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.FmtPhone", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string FmtPhone(
-            [Parameter(Name = "PhoneNumber", DbType="nvarchar")] string PhoneNumber
+		[Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalUnitsSize(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "min", DbType="int")] int? min,
+            [Parameter(Name = "max", DbType="int")] int? max
             )
 		{
-			return ((string)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                PhoneNumber
+                t,
+                min,
+                max
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.IsSmallGroupLeaderOnly", IsComposable = true)]
+		[Function(Name="dbo.EnrollmentTransactionId", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
-		public int? IsSmallGroupLeaderOnly(
+		public int? EnrollmentTransactionId(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
             [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid
+            [Parameter(Name = "tdt", DbType="datetime")] DateTime? tdt,
+            [Parameter(Name = "ttid", DbType="int")] int? ttid
             )
 		{
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
                 oid,
+                tdt,
+                ttid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.NextTranChangeDate", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? NextTranChangeDate(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "tdt", DbType="datetime")] DateTime? tdt,
+            [Parameter(Name = "typeid", DbType="int")] int? typeid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                oid,
+                tdt,
+                typeid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalGiftsAttrRange", IsComposable = true)]
+		[return: Parameter(DbType = "money")]
+		public decimal? DonorTotalGiftsAttrRange(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "min", DbType="int")] int? min,
+            [Parameter(Name = "max", DbType="int")] int? max
+            )
+		{
+			return ((decimal?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                min,
+                max
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OneHeadOfHouseholdIsMember", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? OneHeadOfHouseholdIsMember(
+            [Parameter(Name = "fid", DbType="int")] int? fid
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DonorTotalUnitsAttrRange", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? DonorTotalUnitsAttrRange(
+            [Parameter(Name = "t", DbType="table type")] string t,
+            [Parameter(Name = "min", DbType="int")] int? min,
+            [Parameter(Name = "max", DbType="int")] int? max
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                t,
+                min,
+                max
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.MemberStatusDescription", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string MemberStatusDescription(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.UserName", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string UserName(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
 		}
@@ -4563,41 +3649,85 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.LastChanged", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? LastChanged(
+		[Function(Name="dbo.InSmallGroup", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string InSmallGroup(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
             [Parameter(Name = "pid", DbType="int")] int? pid,
-            [Parameter(Name = "field", DbType="nvarchar")] string field
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                pid,
-                field
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetDigits", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string GetDigits(
-            [Parameter(Name = "Str", DbType="nvarchar")] string Str
+            [Parameter(Name = "sg", DbType="varchar")] string sg
             )
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                Str
+                oid,
+                pid,
+                sg
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.ParentNamesAndCells", IsComposable = true)]
+		[Function(Name="dbo.FamilyMakeup", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string FamilyMakeup(
+            [Parameter(Name = "fid", DbType="int")] int? fid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.HomePhone", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
-		public string ParentNamesAndCells(
+		public string HomePhone(
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ComputePositionInFamily", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? ComputePositionInFamily(
+            [Parameter(Name = "age", DbType="int")] int? age,
+            [Parameter(Name = "married", DbType="bit")] bool? married,
+            [Parameter(Name = "fid", DbType="int")] int? fid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                age,
+                married,
+                fid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetPeopleIdFromACS", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetPeopleIdFromACS(
+            [Parameter(Name = "famnum", DbType="int")] int? famnum,
+            [Parameter(Name = "indnum", DbType="int")] int? indnum
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                famnum,
+                indnum
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SundayForDate", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? SundayForDate(
+            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                dt
                 ).ReturnValue));
 		}
 
@@ -4613,29 +3743,155 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.TotalPaid", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? TotalPaid(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                pid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.StatusFlag", IsComposable = true)]
+		[Function(Name="dbo.PrimaryZip", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
-		public string StatusFlag(
+		public string PrimaryZip(
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.PrimaryState", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string PrimaryState(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.LastChanged", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? LastChanged(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "field", DbType="nvarchar")] string field
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                field
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.PrimaryResCode", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? PrimaryResCode(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.PrimaryCity", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string PrimaryCity(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.PrimaryBadAddressFlag", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? PrimaryBadAddressFlag(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.PrimaryAddress2", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string PrimaryAddress2(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.PrimaryAddress", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string PrimaryAddress(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.FmtPhone", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string FmtPhone(
+            [Parameter(Name = "PhoneNumber", DbType="nvarchar")] string PhoneNumber
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                PhoneNumber
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ParentNamesAndCells", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string ParentNamesAndCells(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.NextChangeTransactionId2", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? NextChangeTransactionId2(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "tid", DbType="int")] int? tid,
+            [Parameter(Name = "typeid", DbType="int")] int? typeid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                oid,
+                tid,
+                typeid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.CoupleFlag", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? CoupleFlag(
+            [Parameter(Name = "familyid", DbType="int")] int? familyid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                familyid
                 ).ReturnValue));
 		}
 
@@ -4651,45 +3907,347 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DonorTotalUnits", IsComposable = true)]
+		[Function(Name="dbo.NextChangeTransactionId", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
-		public int? DonorTotalUnits(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "attr", DbType="int")] int? attr
+		public int? NextChangeTransactionId(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "tid", DbType="int")] int? tid,
+            [Parameter(Name = "typeid", DbType="int")] int? typeid
             )
 		{
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                attr
+                pid,
+                oid,
+                tid,
+                typeid
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DonorTotalGifts", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalGifts(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "attr", DbType="int")] int? attr
+		[Function(Name="dbo.GetPeopleIdFromIndividualNumber", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetPeopleIdFromIndividualNumber(
+            [Parameter(Name = "indnum", DbType="int")] int? indnum
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                attr
+                indnum
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DonorTotalMean", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalMean(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "attr", DbType="int")] int? attr
+		[Function(Name="dbo.AddressMatch", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? AddressMatch(
+            [Parameter(Name = "var1", DbType="nvarchar")] string var1,
+            [Parameter(Name = "var2", DbType="nvarchar")] string var2
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                attr
+                var1,
+                var2
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.UserPeopleIdFromEmail", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? UserPeopleIdFromEmail(
+            [Parameter(Name = "email", DbType="nvarchar")] string email
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                email
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.Birthday", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? Birthday(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DecToBase", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string DecToBase(
+            [Parameter(Name = "val", DbType="bigint")] long? val,
+            [Parameter(Name = "baseX", DbType="int")] int? baseX
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                val,
+                baseX
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetEldestFamilyMember", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetEldestFamilyMember(
+            [Parameter(Name = "fid", DbType="int")] int? fid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                fid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.FirstActivity", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? FirstActivity(
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.HeadOfHouseholdId", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? HeadOfHouseholdId(
+            [Parameter(Name = "familyid", DbType="int")] int? familyid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                familyid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SpouseIdJoint", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? SpouseIdJoint(
+            [Parameter(Name = "peopleid", DbType="int")] int? peopleid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                peopleid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetTodaysMeetingId", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetTodaysMeetingId(
+            [Parameter(Name = "orgid", DbType="int")] int? orgid,
+            [Parameter(Name = "thisday", DbType="int")] int? thisday
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid,
+                thisday
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.UEmail", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string UEmail(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetAttendedTodaysMeeting", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? GetAttendedTodaysMeeting(
+            [Parameter(Name = "orgid", DbType="int")] int? orgid,
+            [Parameter(Name = "thisday", DbType="int")] int? thisday,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid,
+                thisday,
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.LastContact", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? LastContact(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetSecurityCode", IsComposable = true)]
+		[return: Parameter(DbType = "char")]
+		public string GetSecurityCode(
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SpouseId", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? SpouseId(
+            [Parameter(Name = "peopleid", DbType="int")] int? peopleid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                peopleid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.HeadOfHouseHoldSpouseId", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? HeadOfHouseHoldSpouseId(
+            [Parameter(Name = "familyid", DbType="int")] int? familyid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                familyid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.StatusFlag", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string StatusFlag(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DaysBetween12Attend", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? DaysBetween12Attend(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "progid", DbType="int")] int? progid,
+            [Parameter(Name = "divid", DbType="int")] int? divid,
+            [Parameter(Name = "orgid", DbType="int")] int? orgid,
+            [Parameter(Name = "lookback", DbType="int")] int? lookback
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                progid,
+                divid,
+                orgid,
+                lookback
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetDigits", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string GetDigits(
+            [Parameter(Name = "Str", DbType="nvarchar")] string Str
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                Str
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetTodaysMeetingHour", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? GetTodaysMeetingHour(
+            [Parameter(Name = "thisday", DbType="int")] int? thisday,
+            [Parameter(Name = "MeetingTime", DbType="datetime")] DateTime? MeetingTime,
+            [Parameter(Name = "SchedDay", DbType="int")] int? SchedDay
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                thisday,
+                MeetingTime,
+                SchedDay
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.PersonAttendCountOrg", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? PersonAttendCountOrg(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                oid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.LastAttended", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? LastAttended(
+            [Parameter(Name = "orgid", DbType="int")] int? orgid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid,
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.LastAttend", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? LastAttend(
+            [Parameter(Name = "orgid", DbType="int")] int? orgid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid,
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DaysSinceAttend", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? DaysSinceAttend(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                oid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.AttendDesc", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string AttendDesc(
+            [Parameter(Name = "id", DbType="int")] int? id
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                id
                 ).ReturnValue));
 		}
 
@@ -4702,6 +4260,106 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 s
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SmallGroupLeader", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string SmallGroupLeader(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.PrimaryCountry", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string PrimaryCountry(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.UName", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string UName(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.UName2", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string UName2(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.WidowedDate", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? WidowedDate(
+            [Parameter(Name = "peopleid", DbType="int")] int? peopleid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                peopleid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.WasDeaconActive2008", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? WasDeaconActive2008(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                dt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetWeekDayNameOfDate", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string GetWeekDayNameOfDate(
+            [Parameter(Name = "DateX", DbType="datetime")] DateTime? DateX
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                DateX
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetScheduleDesc", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string GetScheduleDesc(
+            [Parameter(Name = "meetingtime", DbType="datetime")] DateTime? meetingtime
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                meetingtime
                 ).ReturnValue));
 		}
 
@@ -4721,19 +4379,169 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DonorTotalMedian", IsComposable = true)]
-		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalMedian(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "attr", DbType="int")] int? attr,
-            [Parameter(Name = "threshold", DbType="money")] decimal? threshold
+		[Function(Name="dbo.NextAnniversary", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? NextAnniversary(
+            [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((decimal?)(this.ExecuteMethodCall(this, 
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                attr,
-                threshold
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ScheduleId", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? ScheduleId(
+            [Parameter(Name = "day", DbType="int")] int? day,
+            [Parameter(Name = "time", DbType="datetime")] DateTime? time
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                day,
+                time
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.IsSmallGroupLeaderOnly", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? IsSmallGroupLeaderOnly(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.AttendItem", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? AttendItem(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "n", DbType="int")] int? n
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                n
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.NextBirthday", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? NextBirthday(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SchoolGrade", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? SchoolGrade(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetScheduleTime", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? GetScheduleTime(
+            [Parameter(Name = "day", DbType="int")] int? day,
+            [Parameter(Name = "time", DbType="datetime")] DateTime? time
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                day,
+                time
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrganizationMemberCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrganizationMemberCount(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.AllRegexMatchs", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string AllRegexMatchs(
+            [Parameter(Name = "subject", DbType="nvarchar")] string subject,
+            [Parameter(Name = "pattern", DbType="nvarchar")] string pattern
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                subject,
+                pattern
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrganizationLeaderName", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string OrganizationLeaderName(
+            [Parameter(Name = "orgid", DbType="int")] int? orgid
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.BaptismAgeRange", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string BaptismAgeRange(
+            [Parameter(Name = "age", DbType="int")] int? age
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                age
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrganizationLeaderId", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrganizationLeaderId(
+            [Parameter(Name = "orgid", DbType="int")] int? orgid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.IsValidEmail", IsComposable = true)]
+		[return: Parameter(DbType = "bit")]
+		public bool? IsValidEmail(
+            [Parameter(Name = "addr", DbType="nvarchar")] string addr
+            )
+		{
+			return ((bool?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                addr
                 ).ReturnValue));
 		}
 
@@ -4753,72 +4561,249 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.UName2", IsComposable = true)]
+		[Function(Name="dbo.Tool_VarbinaryToVarcharHex", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
-		public string UName2(
-            [Parameter(Name = "pid", DbType="int")] int? pid
+		public string ToolVarbinaryToVarcharHex(
+            [Parameter(Name = "VarbinaryValue", DbType="varbinary")] byte[] VarbinaryValue
             )
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                VarbinaryValue
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.AvgSunAttendance", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? AvgSunAttendance(
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.TotalPaid", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? TotalPaid(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ComputeAge", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? ComputeAge(
+            [Parameter(Name = "m", DbType="int")] int? m,
+            [Parameter(Name = "d", DbType="int")] int? d,
+            [Parameter(Name = "y", DbType="int")] int? y
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                m,
+                d,
+                y
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.LastActive", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? LastActive(
+            [Parameter(Name = "uid", DbType="int")] int? uid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                uid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DollarRange", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? DollarRange(
+            [Parameter(Name = "amt", DbType="decimal")] decimal? amt
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                amt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DayAndTime", IsComposable = true)]
+		[return: Parameter(DbType = "nvarchar")]
+		public string DayAndTime(
+            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                dt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.BibleFellowshipClassId", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? BibleFellowshipClassId(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.OneHeadOfHouseholdIsMember", IsComposable = true)]
+		[Function(Name="dbo.FirstMondayOfMonth", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? FirstMondayOfMonth(
+            [Parameter(Name = "inputDate", DbType="datetime")] DateTime? inputDate
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                inputDate
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.LastNameCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? LastNameCount(
+            [Parameter(Name = "last", DbType="nvarchar")] string last
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                last
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.LastDrop", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? LastDrop(
+            [Parameter(Name = "orgid", DbType="int")] int? orgid,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgid,
+                pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SundayForWeek", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? SundayForWeek(
+            [Parameter(Name = "year", DbType="int")] int? year,
+            [Parameter(Name = "week", DbType="int")] int? week
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                year,
+                week
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.StartsLower", IsComposable = true)]
 		[return: Parameter(DbType = "bit")]
-		public bool? OneHeadOfHouseholdIsMember(
-            [Parameter(Name = "fid", DbType="int")] int? fid
+		public bool? StartsLower(
+            [Parameter(Name = "s", DbType="nvarchar")] string s
             )
 		{
 			return ((bool?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                fid
+                s
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.UName", IsComposable = true)]
-		[return: Parameter(DbType = "nvarchar")]
-		public string UName(
-            [Parameter(Name = "pid", DbType="int")] int? pid
+		[Function(Name="dbo.DOB", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string Dob(
+            [Parameter(Name = "m", DbType="int")] int? m,
+            [Parameter(Name = "d", DbType="int")] int? d,
+            [Parameter(Name = "y", DbType="int")] int? y
             )
 		{
 			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                m,
+                d,
+                y
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ContributionChange", IsComposable = true)]
+		[return: Parameter(DbType = "float")]
+		public double? ContributionChange(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "dt1", DbType="datetime")] DateTime? dt1,
+            [Parameter(Name = "dt2", DbType="datetime")] DateTime? dt2
+            )
+		{
+			return ((double?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                pid,
+                dt1,
+                dt2
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.EntryPointId", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? EntryPointId(
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.DonorTotalGiftsSize", IsComposable = true)]
+		[Function(Name="dbo.ContributionAmount2", IsComposable = true)]
 		[return: Parameter(DbType = "money")]
-		public decimal? DonorTotalGiftsSize(
-            [Parameter(Name = "t", DbType="table type")] string t,
-            [Parameter(Name = "min", DbType="int")] int? min,
-            [Parameter(Name = "max", DbType="int")] int? max
+		public decimal? ContributionAmount2(
+            [Parameter(Name = "pid", DbType="int")] int? pid,
+            [Parameter(Name = "dt1", DbType="datetime")] DateTime? dt1,
+            [Parameter(Name = "dt2", DbType="datetime")] DateTime? dt2,
+            [Parameter(Name = "fundid", DbType="int")] int? fundid
             )
 		{
 			return ((decimal?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                t,
-                min,
-                max
+                pid,
+                dt1,
+                dt2,
+                fundid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.FindResCode", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? FindResCode(
+            [Parameter(Name = "zipcode", DbType="nvarchar")] string zipcode,
+            [Parameter(Name = "country", DbType="nvarchar")] string country
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                zipcode,
+                country
                 ).ReturnValue));
 		}
 
     #endregion
 	#region Stored Procedures
 		
-		[Function(Name="dbo.NextSecurityCode")]
-		public ISingleResult< SecurityCode> NextSecurityCode(
-            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
-            )
-		{
-			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                dt
-			);
-			return ((ISingleResult< SecurityCode>)(result.ReturnValue));
-		}
-
 		[Function(Name="dbo.TopPledgers")]
 		public ISingleResult< TopGiver> TopPledgers(
             [Parameter(Name = "top", DbType="int")] int? top,
@@ -4832,6 +4817,17 @@ namespace CmsData
                 edate
 			);
 			return ((ISingleResult< TopGiver>)(result.ReturnValue));
+		}
+
+		[Function(Name="dbo.NextSecurityCode")]
+		public ISingleResult< SecurityCode> NextSecurityCode(
+            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
+            )
+		{
+			IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                dt
+			);
+			return ((ISingleResult< SecurityCode>)(result.ReturnValue));
 		}
 
 		[Function(Name="dbo.TopGivers")]

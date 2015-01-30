@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Text;
-using UtilityExtensions;
-using UtilityExtensions.Extensions;
 using BPCSharp;
+using UtilityExtensions;
 
 namespace CmsData.Finance
 {
@@ -24,16 +21,16 @@ namespace CmsData.Finance
         {
             this.db = db;
             IsLive = !(testing || db.Setting("GatewayTesting", "false").ToLower() == "true");
-           
+
             _login = db.Setting("bluepay_accountId", "");
             _key = db.Setting("bluepay_secretKey", "");
 
             if (string.IsNullOrWhiteSpace(_login))
                 throw new Exception("bluepay_accountId setting not found, which is required for BluePay.");
-                        
+
             if (string.IsNullOrWhiteSpace(_key))
                 throw new Exception("bluepay_secretKey setting not found, which is required for BluePay.");
-          
+
         }
         //BluePay stores payment methods by simply using a past transaction's ID as a token. 
         //We will do an Auth for $0, and save the resulting TransactionID as a Token in the payment profile BluePayCardVaultId.
@@ -48,26 +45,23 @@ namespace CmsData.Finance
                 person.PaymentInfos.Add(paymentInfo);
             }
 
-            string first, last, addr, city, state, zip, phone, email, description;
-            first = paymentInfo.FirstName ?? person.FirstName;
-            last = paymentInfo.LastName ?? person.LastName;
-            addr = paymentInfo.Address ?? person.PrimaryAddress;
-            city = paymentInfo.City ?? person.PrimaryCity;
-            state = paymentInfo.State ?? person.PrimaryState;
-            zip = paymentInfo.Zip ?? person.PrimaryZip;
-            phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone;
-            email = person.EmailAddress;
-            description = "Storing payment info in BluePay vault.";
-            
+            var first = paymentInfo.FirstName ?? person.FirstName;
+            var last = paymentInfo.LastName ?? person.LastName;
+            var addr = paymentInfo.Address ?? person.PrimaryAddress;
+            var city = paymentInfo.City ?? person.PrimaryCity;
+            var state = paymentInfo.State ?? person.PrimaryState;
+            var zip = paymentInfo.Zip ?? person.PrimaryZip;
+            var phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone;
+            var email = person.EmailAddress;
+            const string description = "Storing payment info in BluePay vault.";
 
             var gateway = createGateway();
-
 
             if (type == PaymentType.CreditCard)
             {
                 gateway.setupCCTransaction(peopleId, cardNumber, expires, description, null, cardCode, email, first, last, addr, city, state, zip, phone);
 
-                if (String.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
+                if (string.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
                     gateway.auth("0.00");
                 else //send MasterId if available (this will allow for updating payment profile without re-entering card number)
                     gateway.auth("0.00", paymentInfo.BluePayCardVaultId);
@@ -89,8 +83,8 @@ namespace CmsData.Finance
             //TODO: Handle bank accounts too (not just credit cards)
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
-            
-            
+
+
             if (giving)
                 paymentInfo.PreferredGivingType = type;
             else
@@ -106,14 +100,14 @@ namespace CmsData.Finance
             if (paymentInfo == null)
                 return;
 
-            if (!String.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
+            if (!string.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
             {
                 // clear out local record and save changes.
                 //there is nothing to do on BluePay server since vault is really only a previous transaction ID.
                 paymentInfo.BluePayCardVaultId = null;
                 paymentInfo.MaskedCard = null;
                 paymentInfo.MaskedAccount = null;
-                paymentInfo.Expires = null; //TODO: FYI, on the other gateways, Expires does not get cleared?
+                paymentInfo.Expires = null;
                 db.SubmitChanges();
             }
         }
@@ -139,7 +133,7 @@ namespace CmsData.Finance
         public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
         {
             var gateway = createGateway();
-            gateway.refund(reference,amt.ToString("F2"));
+            gateway.refund(reference, amt.ToString("F2"));
             gateway.Process();
 
             return getResponse(gateway);
@@ -155,31 +149,31 @@ namespace CmsData.Finance
         }
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
-            int tranid, string cardcode, string email, string first, string last, string addr, string city, string state,
-            string zip, string phone)
+            int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
+            string country, string zip, string phone)
         {
             var gateway = createGateway();
             gateway.setupCCTransaction(peopleId, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, city, state, zip, phone);
-            
+
             gateway.auth(amt.ToString("F2"));
-            
+
             gateway.Process();
             return getResponse(gateway);
         }
 
-        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
+        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var gateway = createGateway();
             gateway.setupCCTransaction(peopleId, cardnumber, expires, description, tranid, cardcode, email, first, last, addr, city, state, zip, phone);
 
             gateway.sale(amt.ToString("F2"));
-            
+
             gateway.Process();
 
             return getResponse(gateway);
         }
 
-        public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone)
+        public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var gateway = createGateway();
             gateway.setupACHTransaction(peopleId, routing, acct, description, tranid, email, first, last, addr, city, state, zip, phone);
@@ -194,7 +188,7 @@ namespace CmsData.Finance
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
-            if (paymentInfo == null || !String.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
+            if (paymentInfo == null || !string.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
                 return new TransactionResponse
                 {
                     Approved = false,
@@ -206,14 +200,14 @@ namespace CmsData.Finance
             var gateway = createGateway();
             gateway.setupVaultTransaction(description, tranid);
 
-            gateway.auth(amt.ToString("F2"),masterId);
+            gateway.auth(amt.ToString("F2"), masterId);
 
             gateway.Process();
             return getResponse(gateway);
         }
-        
-        
-        
+
+
+
         //As long as the transaction was within the last 3 years, we can send the transaction ID as a parameter to use all the same info that was used in that transaction.
         //Any info that needs to be overrided (invoiceID, amount, description, etc.) can be done by simply including it with the TransactionID
         public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
@@ -229,8 +223,8 @@ namespace CmsData.Finance
             string masterId;
 
             //TODO: Handle checking accounts too
-           if (type == PaymentType.CreditCard)
-               masterId = paymentInfo.BluePayCardVaultId;
+            if (type == PaymentType.CreditCard)
+                masterId = paymentInfo.BluePayCardVaultId;
             else
                 throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
 
@@ -254,25 +248,25 @@ namespace CmsData.Finance
             var report = new BluePayReport(gateway.getBatchListResponse());
 
             foreach (var transaction in report.GetTransactionList())
+            {
+                var batchTransaction = new BatchTransaction
                 {
-                    var batchTransaction = new BatchTransaction
-                    {
-                        TransactionId = transaction.invoice_id.ToInt(),
-                        Reference = transaction.id,
-                        BatchReference = transaction.settlement_id,
-                        TransactionType = GetTransactionType(transaction.trans_type),
-                        BatchType = GetBatchType(transaction.payment_type),
-                        Name = "{0} {1}".Fmt(transaction.name1, transaction.name2),
-                        Amount = transaction.amount,
-                        Approved = IsApproved(transaction.status),
-                        Message = transaction.message,
-                        TransactionDate = transaction.issue_date,
-                        SettledDate = transaction.settle_date,
-                        LastDigits = transaction.payment_account.Last(4)
-                    };
-                    batchTransactions.Add(batchTransaction);
-                }
-            
+                    TransactionId = transaction.invoice_id.ToInt(),
+                    Reference = transaction.id,
+                    BatchReference = transaction.settlement_id,
+                    TransactionType = GetTransactionType(transaction.trans_type),
+                    BatchType = GetBatchType(transaction.payment_type),
+                    Name = "{0} {1}".Fmt(transaction.name1, transaction.name2),
+                    Amount = transaction.amount,
+                    Approved = IsApproved(transaction.status),
+                    Message = transaction.message,
+                    TransactionDate = transaction.issue_date,
+                    SettledDate = transaction.settle_date,
+                    LastDigits = transaction.payment_account.Last(4)
+                };
+                batchTransactions.Add(batchTransaction);
+            }
+
 
             return new BatchResponse(batchTransactions);
         }
@@ -296,11 +290,12 @@ namespace CmsData.Finance
             switch (transactionStatus)
             {
                 case "REFUND":
-                     return TransactionType.Refund;
-                case "SALE": case "CAPTURE":
-                     return TransactionType.Charge;
+                    return TransactionType.Refund;
+                case "SALE":
+                case "CAPTURE":
+                    return TransactionType.Charge;
                 case "CREDIT":
-                     return TransactionType.Credit;
+                    return TransactionType.Credit;
                 default:
                     return TransactionType.Unknown;
 
@@ -337,13 +332,13 @@ namespace CmsData.Finance
             get { return false; }
         }
 
-        
+
         private BluePayPayment createGateway()
         {
-           return new BluePayPayment(_login, _key, ServiceMode);
+            return new BluePayPayment(_login, _key, ServiceMode);
         }
 
-        private  TransactionResponse getResponse(BluePayPayment gateway)
+        private TransactionResponse getResponse(BluePayPayment gateway)
         {
             return new TransactionResponse
             {
