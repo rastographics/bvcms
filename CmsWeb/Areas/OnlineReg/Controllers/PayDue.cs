@@ -14,8 +14,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         // reached by the paylink in the confirmation email
         // which is produced in EnrollAndConfirm
+        [HttpGet]
         public ActionResult PayAmtDue(string q)
         {
+            Response.NoCache();
+
             if (!q.HasValue())
                 return Message("unknown");
             var id = Util.Decrypt(q).ToInt2();
@@ -69,11 +72,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             return View("PayAmtDue/ServiceU", pm);
         }
-        public void ConfirmDuePaidTransaction(Transaction ti, string TransactionID, bool sendmail)
+
+        private static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
         {
             var Db = DbUtil.Db;
             var org = Db.LoadOrganizationById(ti.OrgId);
-            ti.TransactionId = TransactionID;
+            ti.TransactionId = transactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
                 ti.TransactionId += "(testing)";
 
@@ -174,6 +178,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View("PayAmtDue/Confirm", ti);
         }
 
+        [HttpGet]
         public ActionResult PayDueTest(string q)
         {
             if (!q.HasValue())

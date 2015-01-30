@@ -570,6 +570,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             TempData["onlineregmodel"] = Util.Serialize<OnlineRegModel>(m);
             return Redirect("/OnlineReg/CompleteRegistration");
         }
+
         [HttpGet]
         public ActionResult CompleteRegistration()
         {
@@ -644,6 +645,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ModelState.Clear();
             return View("Payment/Process", pf);
         }
+
         [HttpPost]
         public JsonResult CityState(string id)
         {
