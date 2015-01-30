@@ -793,6 +793,8 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\MobileAppMenu.cshtml" />
+    <Content Include="Scripts\jQuery\additional-methods.js" />
+    <Content Include="Scripts\jQuery\additional-methods.min.js" />
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-AU.js" />
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-BZ.js" />
