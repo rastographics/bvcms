@@ -98,25 +98,27 @@ $(function () {
     });
 
     function hideOrShowCvv() {
-        if ($('#CreditCard').val().startsWith('X')) {
-            if ($('#CVV').parents('p').length) {
-                $('#CVV').parents('p').hide();
-                $('#findidclick').parent('div').hide();
+        if ($('#CreditCard').length) {
+            if ($('#CreditCard').val().startsWith('X')) {
+                if ($('#CVV').parents('p').length) {
+                    $('#CVV').parents('p').hide();
+                    $('#findidclick').parent('div').hide();
+                }
+                else {
+                    $('#CVV').parents('tr').hide();
+                }
             }
-            else {
-                $('#CVV').parents('tr').hide();
-            }
-        }
 
-        $('#CreditCard').change(function() {
-            if ($('#CVV').parents('p').length) {
-                $('#CVV').parents('p').show();
-                $('#findidclick').parent('div').show();
-            }
-            else {
-                $('#CVV').parents('tr').show();
-            }
-        });
+            $('#CreditCard').change(function() {
+                if ($('#CVV').parents('p').length) {
+                    $('#CVV').parents('p').show();
+                    $('#findidclick').parent('div').show();
+                }
+                else {
+                    $('#CVV').parents('tr').show();
+                }
+            });
+        }
     }
 
     $.ShowPaymentInfo = function (v) {
