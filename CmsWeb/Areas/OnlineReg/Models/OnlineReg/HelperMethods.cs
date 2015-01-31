@@ -471,8 +471,8 @@ namespace CmsWeb.Models
             {
                 if (!usebootstrap.HasValue)
                     usebootstrap = org != null
-                        ? org.UseBootstrap ?? false
-                        : masterorg != null && (masterorg.UseBootstrap ?? false);
+                        ? org.UseBootstrap ?? true
+                        : masterorg != null && (masterorg.UseBootstrap ?? true);
                 return usebootstrap.Value;
             }
         }

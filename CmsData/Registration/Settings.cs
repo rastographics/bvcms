@@ -57,7 +57,7 @@ namespace CmsData.Registration
 
         public bool UseBootstrap
         {
-            get { return org != null && (org.UseBootstrap ?? false); }
+            get { return org != null && (org.UseBootstrap ?? true); }
         }
 
         public string DonationFund()

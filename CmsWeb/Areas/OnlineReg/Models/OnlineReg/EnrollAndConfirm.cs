@@ -9,6 +9,7 @@ using CmsData.Codes;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace CmsWeb.Models
 {
@@ -170,7 +171,7 @@ namespace CmsWeb.Models
             var message = Util.PickFirst(EmailMessage, "no message");
 
             message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p0, DivisionName, org.OrganizationName, Location, message);
-            subject = subject.Replace("{org}", org.OrganizationName);
+            subject = subject.Replace("{org}", Header);
 
             message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
                 .Replace("{tickets}", List[0].ntickets.ToString())
