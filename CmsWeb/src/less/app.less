@@ -22,10 +22,14 @@ body {
 }
 
 @media (max-width: 767px) {
-    .collapsing, .in { background-color: #46494d;}
+    .collapsing, .in { background-color: #21252b;}
+    /*.collapsing, .in { background-color: #46494d;}*/
+    /*.collapsing, ul li { background-color: #21252b;}*/
+    
     .collapsing ul li a, .in ul li a {color: #c6ccd0 !important;}
-    .collapsing ul li.open a {color:  #eca91f !important;}
-    .collapsing ul li a:hover, .in ul li a:hover {color: #eca91f !important;}
+    .collapsing ul li.open a.dropdown-toggle, .in ul li.open a.dropdown-toggle {color:  #eca91f !important; background-color: #262b31 !important;}
+    .collapsing ul li.dropdown-header, .in ul li.dropdown-header {color:  #fff !important;}
+    .collapsing ul li a:hover, .in ul li a:hover {color: #eca91f !important; background-color: #262b31 !important;}
 }
 
 #tag-menu-header {
