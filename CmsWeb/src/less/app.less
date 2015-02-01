@@ -6,11 +6,13 @@ html {
   position: relative;
   min-height: 100%;
 }
+
 body {
   /* Margin bottom by footer height */
   margin-bottom: 90px;
   padding-top: 60px;
 }
+
 #main {
   padding-bottom: 25px;
 }
@@ -22,14 +24,31 @@ body {
 }
 
 @media (max-width: 767px) {
-    .collapsing, .in { background-color: #21252b;}
-    /*.collapsing, .in { background-color: #46494d;}*/
-    /*.collapsing, ul li { background-color: #21252b;}*/
-    
-    .collapsing ul li a, .in ul li a {color: #c6ccd0 !important;}
-    .collapsing ul li.open a.dropdown-toggle, .in ul li.open a.dropdown-toggle {color:  #eca91f !important; background-color: #262b31 !important;}
-    .collapsing ul li.dropdown-header, .in ul li.dropdown-header {color:  #fff !important;}
-    .collapsing ul li a:hover, .in ul li a:hover {color: #eca91f !important; background-color: #262b31 !important;}
+    .collapsing, .in {
+        background-color: #21252b !important;
+    }
+       
+    .collapsing ul li a, .in ul li a {
+        color: #c6ccd0 !important; 
+        background-color: #21252b !important;
+    }
+
+    .collapsing ul li.open a.dropdown-toggle, 
+    .in ul li.open a.dropdown-toggle {
+        color:  #eca91f !important; 
+        background-color: #262b31 !important;
+    }
+
+    .collapsing ul li.dropdown-header, 
+    .in ul li.dropdown-header {
+        color:  #fff !important;
+    }
+
+    .collapsing ul li a:hover, 
+    .in ul li a:hover {
+        color: #eca91f !important; 
+        background-color: #262b31 !important;
+    }
 }
 
 #tag-menu-header {
@@ -43,6 +62,7 @@ body {
   padding-right: 10px;
   height: 50px;
 }
+
 @media (max-width: 360px) {
 	.logo {
 	    height: 45px !important;
@@ -250,9 +270,6 @@ div.additional-actions a {
   max-width: 829px;
 }
 
-
-
-
 ul.pagination{
   display: inline;
 }
@@ -266,7 +283,6 @@ ul.pagination>li>span.separator{
 ul.pagination>li>span.separator:hover{
   background-color: transparent !important;
 }
-
 
 @media (max-width: 767px) {
 	.col-xs-1, .col-sm-1, .col-md-1, .col-lg-1, 
@@ -312,7 +328,6 @@ tr.totals-row {
     font-size: 1.5em;
 }
 
-
 div.report h1, div.report h2, div.report h3 {
     text-align: center;
 }
@@ -331,7 +346,6 @@ div.report .table {
         max-width: 100% !important;
     }
 }
-
 
 .stat-panel-container {
     background-color: @global-brand-info; 
