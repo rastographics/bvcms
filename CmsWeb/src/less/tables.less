@@ -1,0 +1,53 @@
+.table tbody a,
+.table tfoot a {
+    text-decoration: underline;
+}
+
+.table a.btn, .table a.editable {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.table tbody td.action {
+    padding-left: 0;
+    width: 50px;
+}
+
+.table tbody td.action:first-child {
+    padding-left: inherit;
+}
+
+div.additional-actions {
+    font-size: .85em; 
+}
+
+div.additional-actions a {
+    text-decoration: underline;
+}
+
+.table-responsive {
+    border: 0 !important;
+}
+
+tr.totals-row {
+    font-size: 1.5em;
+}
+
+div.report h1, div.report h2, div.report h3 {
+    text-align: center;
+}
+
+div.report .table {
+    width: inherit;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 768px) {
+    div.report .table {
+        width: 100% !important;
+    }
+    div.report .well {
+        max-width: 100% !important;
+    }
+}

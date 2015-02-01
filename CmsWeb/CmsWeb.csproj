@@ -1738,6 +1738,15 @@
     <Content Include="src\less\print.less" />
     <Content Include="src\less\account.less" />
     <Content Include="src\less\error.less" />
+    <Content Include="src\less\main.less" />
+    <Content Include="src\less\navbar.less" />
+    <Content Include="src\less\tables.less" />
+    <Content Include="src\less\search-box.less" />
+    <Content Include="src\less\blue-toolbar.less" />
+    <Content Include="src\less\bootstrap-overrides.less" />
+    <Content Include="src\less\dropdown-large.less" />
+    <Content Include="src\less\stats-panel.less" />
+    <Content Include="src\less\footers.less" />
     <None Include="Web.bvcms.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

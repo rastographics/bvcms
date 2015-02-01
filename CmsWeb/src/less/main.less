@@ -1,0 +1,29 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 90px;
+  padding-top: 60px;
+}
+
+#main {
+  padding-bottom: 25px;
+}
+
+@media (min-width: 1400px) {
+ .container-fluid {
+    width: 1400px !important;
+ }
+}
+
+.device-xss {
+    display: none !important;
+}
+
+@media (max-width: 400px) {
+    .device-xss {
+        display: block !important;
+    }
+}
