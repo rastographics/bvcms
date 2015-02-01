@@ -20,6 +20,7 @@
 }
 
 <div class="confirm">
+  @Html.Raw(Model.TrackingCode)
     @Html.Raw(Model.GetThankYouMessage())
     @if (Model.UseBootstrap && OnlineRegModel.InMobileAppMode)
     {
