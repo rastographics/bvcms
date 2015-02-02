@@ -13,7 +13,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
-using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -22,6 +21,9 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegPersonModel : IXmlSerializable
     {
+        public bool IsValidForContinue { get; set; }
+        public bool IsValidForNew { get; set; }
+
         public bool InMobileAppMode { get { return OnlineRegModel.InMobileAppMode; } }
         public int? orgid { get; set; }
         public int? masterorgid { get; set; }
@@ -539,9 +541,9 @@ namespace CmsWeb.Models
         }
         public string NotFoundText;
         public string CancelText = "Cancel this person";
-        private int count;
+        internal int count;
 
-        private Person _Person;
+        private Person _person;
         private string phone;
         private string homephone;
 
@@ -549,10 +551,10 @@ namespace CmsWeb.Models
         {
             get
             {
-                if (_Person == null)
+                if (_person == null)
                     if (PeopleId.HasValue)
                     {
-                        _Person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                        _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
                         count = 1;
                     }
                     else
@@ -562,11 +564,11 @@ namespace CmsWeb.Models
                         var list = DbUtil.Db.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
                         count = list.Count;
                         if (count == 1)
-                            _Person = DbUtil.Db.LoadPersonById(list[0].PeopleId.Value);
-                        if (_Person != null)
-                            PeopleId = _Person.PeopleId;
+                            _person = DbUtil.Db.LoadPersonById(list[0].PeopleId.Value);
+                        if (_person != null)
+                            PeopleId = _person.PeopleId;
                     }
-                return _Person;
+                return _person;
             }
         }
         public void AddPerson(Person p, int entrypoint)
@@ -587,7 +589,7 @@ namespace CmsWeb.Models
                 f = p.Family;
 
             var position = DbUtil.Db.ComputePositionInFamily(age, false, f.FamilyId) ?? 10;
-            _Person = Person.Add(f, position,
+            _person = Person.Add(f, position,
                 null, FirstName.Trim(), null, LastName.Trim(), DateOfBirth, married == 20, gender ?? 0,
                     OriginCode.Enrollment, entrypoint);
             person.EmailAddress = EmailAddress.Trim();

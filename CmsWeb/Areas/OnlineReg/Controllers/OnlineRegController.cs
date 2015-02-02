@@ -138,7 +138,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (showfamily != true)
                 {
                     p = m.LoadExistingPerson(pid, 0);
-                    p.ValidateModelForFind(ModelState, m, 0);
+                    OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, 0);
                     p.LoggedIn = true;
                     if (m.masterorg == null)
                     {
@@ -236,7 +236,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Register(Util.UserPeopleId.Value, m);
 
             if (m.UserSelectsOrganization())
-                m.List[0].ValidateModelForFind(ModelState, m, 0);
+                OnlineRegPersonModelValidator.ValidateModelForFind(m.List[0], ModelState, m, 0);
+
             m.List[0].LoggedIn = true;
             m.HistoryAdd("login");
             return FlowList(m, "Login");
@@ -270,7 +271,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.List[index].classid.HasValue)
                 m.classid = m.List[index].classid;
             var p = m.LoadExistingPerson(id, index);
-            p.ValidateModelForFind(ModelState, m, id, selectfromfamily: true);
+            OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, id, selectFromFamily: true);
             if (!ModelState.IsValid)
                 return FlowList(m, "Register");
             m.List[index] = p;
@@ -321,7 +322,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("ShowMoreInfo id=" + id);
             DbUtil.Db.SetNoLock();
             var p = m.List[id];
-            p.ValidateModelForFind(ModelState, m, id);
+            OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, id);
             if (p.org != null && p.Found == true)
             {
                 p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
@@ -389,7 +390,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 p.orgid = p.classid;
             }
             p.PeopleId = null;
-            p.ValidateModelForFind(ModelState, m, id);
+            OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, id);
             if (p.Found == true && m.org != null)
             {
                 var setting = settings[m.org.OrganizationId];
@@ -442,7 +443,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ModelState.Clear();
             m.HistoryAdd("SubmitNew id=" + id);
             var p = m.List[id];
-            p.ValidateModelForNew(ModelState, id);
+            OnlineRegPersonModelValidator.ValidateModelForNew(p, ModelState, id);
 
             if (ModelState.IsValid)
             {
@@ -506,7 +507,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("SubmitOtherInfo id=" + id);
             if (m.List.Count <= id)
                 return Content("<p style='color:red'>error: cannot find person on submit other info</p>");
-            m.List[id].ValidateModelForOther(ModelState, id);
+            OnlineRegPersonModelValidator.ValidateModelForOther(m.List[id], ModelState, id);
             return FlowList(m, "SubmitOtherInfo");
         }
         [HttpPost]
