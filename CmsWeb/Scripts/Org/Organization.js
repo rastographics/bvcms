@@ -366,7 +366,8 @@ $(function () {
         "AskExtraQuestions",
         "AskHeader",
         "AskInstruction",
-        "AskMenu"
+        "AskMenu",
+        "AskText"
     ];
     $.updateQuestionList = function () {
         $("#selectquestions li").each(function () {

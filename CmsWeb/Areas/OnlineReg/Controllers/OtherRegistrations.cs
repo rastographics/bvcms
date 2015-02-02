@@ -83,7 +83,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
             }
             omb.AddToGroup(DbUtil.Db, smallgroup);
-            omb.AddToGroup(DbUtil.Db, "emailid:" + emailid);
             ot.Used = true;
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Votelink: {0}".Fmt(q.org.OrganizationName));
@@ -225,7 +224,6 @@ emailid={2}
                                               q.meeting.OrganizationId, pid, MemberTypeCode.Member, DateTime.Now, null, false);
             if (smallgroup.HasValue())
                 omb.AddToGroup(DbUtil.Db, smallgroup);
-            omb.AddToGroup(DbUtil.Db, "emailid:" + emailid);
 
 
             ot.Used = true;

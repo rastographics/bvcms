@@ -293,9 +293,6 @@
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
-    <Compile Include="Areas\Manage\Models\ApiSessionModel.cs" />
-    <Compile Include="Areas\Manage\Models\ApiSessionResult.cs" />
-    <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
@@ -736,6 +733,10 @@
     <Content Include="Content\touchpoint\img\logo.png" />
     <Content Include="Content\touchpoint\img\logo_sm.png" />
     <Content Include="Content\touchpoint\img\male.png" />
+    <Content Include="Content\images\tps_full_logo.png" />
+    <Content Include="Content\images\tps_hosting_support.png" />
+    <Content Include="Content\images\tps_hosting_support_avail.png" />
+    <Content Include="Content\images\tps_logo.png" />
     <Content Include="Content\select2-3.5.2\select2-bootstrap.css" />
     <Content Include="Content\select2-3.5.2\select2-spinner.gif" />
     <Content Include="Content\select2-3.5.2\select2.css" />
@@ -836,6 +837,8 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\MobileAppMenu.cshtml" />
+    <Content Include="Scripts\jQuery\additional-methods.js" />
+    <Content Include="Scripts\jQuery\additional-methods.min.js" />
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-029.js" />
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-AU.js" />
     <Content Include="Scripts\jQuery\globalize\cultures\globalize.culture.en-BZ.js" />

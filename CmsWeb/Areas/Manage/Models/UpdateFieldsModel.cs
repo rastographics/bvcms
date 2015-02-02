@@ -47,7 +47,8 @@ namespace CmsWeb.Models
                 "Join Type",
                 "Marital Status",
                 "Member Status",
-                "New Member Status",
+                "New Member Class",
+                "New Member Class Date",
                 "Occupation",
                 "ReceiveSMS",
                 "School",
@@ -246,6 +247,9 @@ namespace CmsWeb.Models
                         break;
                     case "Title":
                         p.TitleCode = NewValue;
+                        break;
+                    case "New Member Class Date":
+                        p.NewMemberClassDate = NewValue.ToDate();
                         break;
                 }
                 if (!model.IsValid)

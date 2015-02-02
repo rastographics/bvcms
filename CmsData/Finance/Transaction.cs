@@ -67,7 +67,8 @@ namespace CmsData
             if (usebootstrap.HasValue)
                 return usebootstrap.Value;
             var org = db.LoadOrganizationById(OrgId);
-            return (usebootstrap = org.UseBootstrap) ?? false;
+            usebootstrap = org.UseBootstrap ?? true;
+            return usebootstrap.Value;
         }
         private int? timeOut;
         public int TimeOut

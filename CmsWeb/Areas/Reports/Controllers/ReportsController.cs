@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using CmsData;
@@ -775,7 +776,7 @@ namespace CmsWeb.Areas.Reports.Controllers
 
             if (ModelState.IsValid)
             {
-                viewModel.ReportName = viewModel.ReportName.Trim();
+                viewModel.ReportName = SecurityElement.Escape(viewModel.ReportName.Trim());
 
                 var m = new CustomReportsModel(DbUtil.Db, viewModel.OrgId);
                 var result = m.SaveReport(viewModel.OriginalReportName, viewModel.ReportName,

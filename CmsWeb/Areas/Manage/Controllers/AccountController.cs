@@ -379,11 +379,5 @@ CKEditorFuncNum, baseurl + fn, error));
                 ModelState.AddModelError("form", "The new password and confirmation password do not match.");
             return ModelState.IsValid;
         }
-        private bool ValidateLogOn(string userName, string password)
-        {
-            if (!MembershipService.ValidateUser(userName, password))
-                ModelState.AddModelError("login", "Username or password not recognized.");
-            return ModelState.IsValid;
-        }
     }
 }

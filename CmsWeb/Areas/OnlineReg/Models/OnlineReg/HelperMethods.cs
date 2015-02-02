@@ -386,6 +386,20 @@ namespace CmsWeb.Models
                 return "";
             }
         }
+        public string TrackingCode
+        {
+            get
+            {
+                var trackcode = DbUtil.Db.ContentText("OnlineRegTrackCode", "");
+                if (masterorgid.HasValue)
+                    if (settings.ContainsKey(masterorgid.Value))
+                        return Util.PickFirst(settings[masterorgid.Value].ConfirmationTrackingCode, trackcode);
+                if (Orgid.HasValue)
+                    if (settings.ContainsKey(Orgid.Value))
+                        return Util.PickFirst(settings[org.OrganizationId].ConfirmationTrackingCode, trackcode);
+                return "";
+            }
+        }
 
         public OnlineRegPersonModel LoadExistingPerson(int id, int index)
         {
@@ -457,8 +471,8 @@ namespace CmsWeb.Models
             {
                 if (!usebootstrap.HasValue)
                     usebootstrap = org != null
-                        ? org.UseBootstrap ?? false
-                        : masterorg != null && (masterorg.UseBootstrap ?? false);
+                        ? org.UseBootstrap ?? true
+                        : masterorg != null && (masterorg.UseBootstrap ?? true);
                 return usebootstrap.Value;
             }
         }

@@ -185,13 +185,15 @@ $(function () {
         $.SetSummaryText();
     });
 
-    if ($('#CreditCard').val().startsWith('X')) {
-        $('#CVV').parents('.form-group').hide();
-    }
+    if ($('#CreditCard').length) {
+        if ($('#CreditCard').val().startsWith('X')) {
+            $('#CVV').parents('.form-group').hide();
+        }
 
-    $('#CreditCard').change(function() {
-        $('#CVV').parents('.form-group').show();
-    });
+        $('#CreditCard').change(function() {
+            $('#CVV').parents('.form-group').show();
+        });
+    }
     
     if ($("#allowcc").val()) {
         $.ShowPaymentInfo($("input[name=Type]:checked").val());

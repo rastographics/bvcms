@@ -35,6 +35,7 @@ namespace CmsData.Registration
 		public string SenderSubject { get; set; }
 		public string SenderBody { get; set; }
 		public string Terms { get; set; }
+		public string ConfirmationTrackingCode { get; set; }
 
 		public bool MemberOnly { get; set; }
 		public bool AskDonation { get; set; }
@@ -56,7 +57,7 @@ namespace CmsData.Registration
 
         public bool UseBootstrap
         {
-            get { return org != null && (org.UseBootstrap ?? false); }
+            get { return org != null && (org.UseBootstrap ?? true); }
         }
 
         public string DonationFund()
@@ -143,6 +144,7 @@ namespace CmsData.Registration
 			SetUniqueIds("AskDropdown");
 			SetUniqueIds("AskExtraQuestions");
 			SetUniqueIds("AskCheckboxes");
+			SetUniqueIds("AskText");
 			SetUniqueIds("AskMenu");
 		    var sglist = new List<string>();
             AskItems.ForEach(a => sglist.AddRange(a.SmallGroups()));
@@ -295,6 +297,9 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.Confirmation:
 					ParseConfirmation(parser);
 					break;
+				case Parser.RegKeywords.ConfirmationTrackingCode:
+                    ParseTrackingCode(parser);
+					break;
 				case Parser.RegKeywords.Reminder:
 					ParseReminder(parser);
 					break;
@@ -418,6 +423,27 @@ namespace CmsData.Registration
 						break;
 					case Parser.RegKeywords.Body:
 						Terms = parser.GetString();
+						break;
+					default:
+						throw parser.GetException("unexpected line");
+				}
+			}
+		}
+		private void ParseTrackingCode(Parser parser)
+		{
+			ConfirmationTrackingCode = parser.GetString();
+			if (ConfirmationTrackingCode.HasValue() || parser.curr.indent == 0)
+				return;
+			var startindent = parser.curr.indent;
+			while (parser.curr.indent == startindent)
+			{
+				switch (parser.curr.kw)
+				{
+					case Parser.RegKeywords.Html:
+						parser.lineno++;
+						break;
+					case Parser.RegKeywords.Body:
+						ConfirmationTrackingCode = parser.GetString();
 						break;
 					default:
 						throw parser.GetException("unexpected line");
@@ -646,6 +672,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee);
 			AddInstructions(sb);
 			AddTerms(sb);
+			AddTrackCode(sb);
 
 			AddValueCk(0, sb, "Title", Title);
 			AddValueCk(0, sb, "ValidateOrgs", ValidateOrgs);
@@ -758,6 +785,10 @@ namespace CmsData.Registration
 		private void AddTerms(StringBuilder sb)
 		{
 			AddSingleOrMultiLine(0, sb, "Terms", Terms);
+		}
+		private void AddTrackCode(StringBuilder sb)
+		{
+			AddSingleOrMultiLine(0, sb, "ConfirmationTrackingCode", ConfirmationTrackingCode);
 		}
 		public static void AddValueCk(int n, StringBuilder sb, string label, int? value)
 		{

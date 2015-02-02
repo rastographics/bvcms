@@ -53,8 +53,21 @@ namespace CmsWeb.Models
         public string LastName { get; set; }
         public string Suffix { get; set; }
         public string Address { get; set; }
+        public string Address2 { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        public string Country { get; set; }
+
+        public IEnumerable<SelectListItem> Countries
+        {
+            get
+            {
+                var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
+                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                return list;
+            }
+        }
+
         public string Zip { get; set; }
         public string Phone { get; set; }
 
@@ -197,8 +210,10 @@ namespace CmsWeb.Models
             LastName = pi.LastName ?? person.LastName;
             Suffix = pi.Suffix ?? person.SuffixCode;
             Address = pi.Address ?? person.PrimaryAddress;
+            Address2 = pi.Address2 ?? person.PrimaryAddress2;
             City = pi.City ?? person.PrimaryCity;
             State = pi.State ?? person.PrimaryState;
+            Country = pi.Country ?? person.PrimaryCountry;
             Zip = pi.Zip ?? person.PrimaryZip;
             Phone = pi.Phone ?? person.HomePhone ?? person.CellPhone;
 
@@ -363,6 +378,8 @@ namespace CmsWeb.Models
                 modelState.AddModelError("City", "Needs city");
             if (!State.HasValue())
                 modelState.AddModelError("State", "Needs state");
+            if (!Country.HasValue())
+                modelState.AddModelError("Country", "Needs country");
             if (!Zip.HasValue())
                 modelState.AddModelError("Zip", "Needs zip");
             if (!Phone.HasValue())
@@ -382,7 +399,7 @@ namespace CmsWeb.Models
                     pi = new PaymentInfo();
                     person.PaymentInfos.Add(pi);
                 }
-                pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, City, State, Zip, Phone);
+                pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, Address2, City, State, Country, Zip, Phone);
 
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
@@ -406,8 +423,8 @@ namespace CmsWeb.Models
                     }
                     else
                         transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
-                                                                     "Recurring Giving Auth", 0, CVV, string.Empty,
-                                                                     FirstName, LastName, Address, City, State, Zip, Phone);
+                            "Recurring Giving Auth", 0, CVV, string.Empty,
+                            FirstName, LastName, Address, Address2, City, State, Country, Zip, Phone);
 
                     if (!transactionResponse.Approved)
                         throw new Exception(transactionResponse.Message);

@@ -16,20 +16,18 @@
  * 
  *
  */
-using System;
-using System.Text;
-using System.Security.Cryptography;
-using System.Net;
-using System.IO;
-using System.Web;
-using System.Text.RegularExpressions;
-using System.Security.Cryptography.X509Certificates;
-using System.Collections;
-using System.Collections.Specialized;
-using CsvHelper;
-using System.Collections.Generic;
-using System.Linq;
 
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
+using CsvHelper;
 
 namespace BPCSharp
 {
@@ -37,7 +35,7 @@ namespace BPCSharp
     ///Transaction Object
     /// </summary>
     /// 
-    public class Transaction
+    internal class Transaction
     {
 
         public string invoice_id;
@@ -67,22 +65,23 @@ namespace BPCSharp
     ///BluePay Reporting Object
     /// </summary>
     /// 
-    public class BluePayReport
+    internal class BluePayReport
     {
         public IEnumerable<Transaction> Transactions { get; private set; }
         private string _csvResponse;
-         public BluePayReport(string csvResponse)
+        public BluePayReport(string csvResponse)
         {
             _csvResponse = csvResponse;
         }
 
-         public IEnumerable<Transaction> GetTransactionList() {
+        public IEnumerable<Transaction> GetTransactionList()
+        {
 
-             var stream = new MemoryStream(Encoding.UTF8.GetBytes(_csvResponse ?? ""));
-             var reader = new StreamReader(stream);
-             var csv = new CsvReader(reader);
-             return csv.GetRecords<Transaction>().ToList();
-         }
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(_csvResponse ?? ""));
+            var reader = new StreamReader(stream);
+            var csv = new CsvReader(reader);
+            return csv.GetRecords<Transaction>().ToList();
+        }
 
     }
 
@@ -90,7 +89,7 @@ namespace BPCSharp
     /// <summary>
     /// This is the BluePayPayment object.
     /// </summary>
-    public class BluePayPayment
+    internal class BluePayPayment
     {
         // required for every transaction
         public string accountID = "";
@@ -202,10 +201,10 @@ namespace BPCSharp
             this.setCustomerInformation(first, last, addr, "", city, state, zip, peopleId);
             this.setPhone(phone);
             this.setEmail(email);
-            if(tranid.HasValue)
+            if (tranid.HasValue)
                 this.setInvoiceID(tranid.GetValueOrDefault().ToString());
             this.setMemo(description);
-        
+
         }
 
         /// <summary>
@@ -215,13 +214,13 @@ namespace BPCSharp
         public void setupACHTransaction(int peopleId, string routing, string account, string description, int? tranid, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
             this.setACHInformation(routing, account, "C", "WEB");
-            this.setCustomerInformation(first, last, addr, "",city, state, zip,peopleId);
+            this.setCustomerInformation(first, last, addr, "", city, state, zip, peopleId);
             this.setPhone(phone);
             this.setEmail(email);
             if (tranid.HasValue)
                 this.setInvoiceID(tranid.GetValueOrDefault().ToString());
             this.setMemo(description);
-           
+
 
         }
 
@@ -252,7 +251,7 @@ namespace BPCSharp
             this.state = state;
             this.zip = zip;
             //No field for PeopleID in BluePay so save it in Custom1 field
-            if(peopleId.HasValue)
+            if (peopleId.HasValue)
                 this.setCustomID1(peopleId.Value.ToString());
         }
 
@@ -267,7 +266,7 @@ namespace BPCSharp
         /// <param name="state"></param>
         /// <param name="zip"></param>
         /// <param name="country"></param>
-        public void setCustomerInformation(string name1, string name2, string addr1, string addr2, string city, string state, string zip, string country,int? peopleId)
+        public void setCustomerInformation(string name1, string name2, string addr1, string addr2, string city, string state, string zip, string country, int? peopleId)
         {
             setCustomerInformation(name1, name2, addr1, addr2, city, state, zip, peopleId);
             this.country = country;
@@ -290,7 +289,7 @@ namespace BPCSharp
                 this.cvv2 = cvv2;
 
             this.cardExpire = cardExpire;
-            
+
         }
 
         /// <summary>
@@ -480,7 +479,7 @@ namespace BPCSharp
             this.queryBySettlement = "1";
             this.reportStartDate = reportStart.ToString("yyyy-MM-dd");
             this.reportEndDate = reportEnd.ToString("yyyy-MM-dd");
-            this.queryByHierarchy = subaccountsSearched ? "1":"0";
+            this.queryByHierarchy = subaccountsSearched ? "1" : "0";
             this.doNotEscape = doNotEscape ? "1" : "0";
             this.excludeErrors = excludeErrors ? "1" : "0";
         }
@@ -865,12 +864,12 @@ namespace BPCSharp
             return sOutput.ToString();
         }
 
-     
+
 
         public string Process()
         {
             postData.Clear();
-            
+
             if (this.queryByHierarchy != "")
             {
                 calcReportTPS();
@@ -937,9 +936,9 @@ namespace BPCSharp
                 addPostParam("AMOUNT_TAX", this.amountTax);
                 addPostParam("AMOUNT_FOOD", this.amountFood);
                 addPostParam("AMOUNT_MISC", this.amountMisc);
-                addPostParam("REMOTE_IP",System.Net.Dns.GetHostEntry("").AddressList[0].ToString());
+                addPostParam("REMOTE_IP", Dns.GetHostEntry("").AddressList[0].ToString());
                 addPostParam("RESPONSEVERSION", "3");
-               
+
                 if (this.swipeData != "")
                 {
                     Match matchTrack1And2 = track1And2.Match(this.swipeData);
@@ -951,9 +950,9 @@ namespace BPCSharp
                 }
                 else if (this.paymentType == "CREDIT")
                 {
-                    addPostParam("CC_NUM", this.paymentAccount,true);
-                    addPostParam("CC_EXPIRES", this.cardExpire,true);
-                    addPostParam("CVCVV2", this.cvv2,true);
+                    addPostParam("CC_NUM", this.paymentAccount, true);
+                    addPostParam("CC_EXPIRES", this.cardExpire, true);
+                    addPostParam("CVCVV2", this.cvv2, true);
                 }
                 else
                 {
@@ -1036,7 +1035,7 @@ namespace BPCSharp
         public string responseParams(HttpWebResponse httpResponse)
         {
             Stream receiveStream = httpResponse.GetResponseStream();
-            Encoding encode = System.Text.Encoding.GetEncoding("utf-8");
+            Encoding encode = Encoding.GetEncoding("utf-8");
             // Pipes the stream to a higher level stream reader with the required encoding format. 
             StreamReader readStream = new StreamReader(receiveStream, encode);
             Char[] read = new Char[512];
@@ -1316,6 +1315,6 @@ namespace BPCSharp
             return response;
         }
 
-       
+
     }
 }

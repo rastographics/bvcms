@@ -32,6 +32,7 @@
       <main2 Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2 Include="Scripts/jQuery/jquery.mousewheel.js"/>
       <main2 Include="Scripts/jQuery/jquery.validate.js"/>
+      <main2 Include="Scripts/jQuery/additional-methods.js"/>
       <main2 Include="Scripts/jQuery/globalize/globalize.js"/>
       <main2 Include="Scripts/jQuery/jquery.validate.globalize.js"/>
       <main2 Include="Scripts/jQuery/jquery.sortElements.js"/>
