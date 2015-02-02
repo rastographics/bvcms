@@ -395,7 +395,26 @@ namespace CmsWeb.Areas.Reports.Controllers
                 sgprefix = sgprefix,
                 dt = dt2,
                 altnames = altnames,
-                Model = m
+                OrgSearchModel = m
+            };
+        }
+        [HttpPost, Route("RallyRollsheetForOrg/{orgid:int}")]
+        public ActionResult RallyRollsheetForOrg(int orgid, NewMeetingInfo mi)
+        {
+            return new RallyRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+        }
+        [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
+        public ActionResult RallyRollsheetForMeeting(int meetingid)
+        {
+            return new RallyRollsheetResult { meetingid = meetingid };
+        }
+        [HttpPost]
+        public ActionResult RallyRollsheets(NewMeetingInfo mi, OrgSearchModel m)
+        {
+            return new RallyRollsheetResult
+            {
+                OrgSearchModel = m,
+                NewMeetingInfo = mi
             };
         }
 

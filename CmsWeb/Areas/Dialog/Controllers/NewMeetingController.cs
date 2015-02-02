@@ -38,6 +38,20 @@ namespace CmsWeb.Controllers
             ViewBag.Method = "POST";
             return View("MeetingInfo", m);
         }
+        [HttpPost, Route("ForNewRallyRollsheet/{orgid:int}")]
+        public ActionResult ForNewRallyRollsheet(int orgid)
+        {
+            var oi = new OrganizationModel() { Id = orgid };
+            var m = new NewMeetingInfo()
+            {
+                MeetingDate =  oi.NextMeetingDate,
+                Schedule = new CodeInfo(0, oi.SchedulesNext()),
+                AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
+            };
+            ViewBag.Action = "/Reports/RallyRollsheetForOrg/" + orgid;
+            ViewBag.Method = "POST";
+            return View("MeetingInfo", m);
+        }
         [HttpPost, Route("ForNewRollsheets/{schedule:int}")]
         public ActionResult ForNewRollsheets(int schedule)
         {
@@ -46,6 +60,17 @@ namespace CmsWeb.Controllers
                 MeetingDate =  OrgSearchModel.DefaultMeetingDate(schedule),
                 Schedule = null,
                 AttendCredit = null
+            };
+            return View("MeetingInfo", m);
+        }
+        [HttpPost, Route("ForNewRallyRollsheets/{schedule:int}")]
+        public ActionResult ForNewRallyRollsheets(int schedule)
+        {
+            var m = new NewMeetingInfo()
+            {
+                MeetingDate =  OrgSearchModel.DefaultMeetingDate(schedule),
+                Schedule = null,
+                AttendCredit = null,
             };
             return View("MeetingInfo", m);
         }

@@ -126,10 +126,9 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else if (OrgSearchModel != null)
                 {
-                    var Groups = o.Groups;
                     var q = from om in DbUtil.Db.OrganizationMembers
                         where om.OrganizationId == o.OrgId
-                        join m in DbUtil.Db.OrgPeople(o.OrgId, Groups) on om.PeopleId equals m.PeopleId
+                        join m in DbUtil.Db.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
                         where om.EnrollmentDate <= Util.Now
                         orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
                         let p = om.Person
@@ -157,10 +156,11 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else if(co.GroupSelect == GroupSelectCode.Member)
                 {
+                    var Groups = NewMeetingInfo.ByGroup == true ? o.Groups : co.SgFilter;
                     var q = from om in DbUtil.Db.OrganizationMembers
                         where om.OrganizationId == orgid
                         join m in DbUtil.Db.OrgPeople(orgid, co.GroupSelect,
-                            co.First(), co.Last(), co.SgFilter, co.ShowHidden,
+                            co.First(), co.Last(), Groups, co.ShowHidden,
                             co.FilterIndividuals, co.FilterTag) on om.PeopleId equals m.PeopleId
                         where om.EnrollmentDate <= Util.Now
                         orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2

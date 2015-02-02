@@ -64,8 +64,9 @@
         @if ((bool?)ViewBag.OrganizationContext == true)
         {
           <li class="header">Org Members Reports</li>
-          <li><a href='/Reports/RollsheetForOrg' class="dialog-options" data-target="/Dialog/ForNewRollsheet/@oid" title="Rollsheet Report">Rollsheet Report</a></li>
-          <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>
+          <li><a href='/Reports/RollsheetForOrg' class="dialog-options" data-target="/Dialog/ForNewRollsheet/@oid">Rollsheet</a></li>
+          <li><a href='/Reports/RallyRollsheetForOrg' class="dialog-options" data-target="/Dialog/ForNewRallyRollsheet/@oid">Rally Rollsheet</a></li>
+@*          <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>*@
           <li><a href='/Reports/Roster1/@qid?oid=@oid' target="report">Roster Report</a></li>
           <li><a href='/Reports/Roster/@qid?oid=@oid' target="report">Extended Roster</a></li>
           <li><a href='/Reports/Registration/@qid?oid=@oid' target="_blank">Registration Report</a></li>

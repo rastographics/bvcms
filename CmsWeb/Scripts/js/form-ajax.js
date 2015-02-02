@@ -214,6 +214,7 @@
                 f.attr("action", $a[0].href); // a.href will be the report/export
             f.on('hidden', function () {
                 d.remove();
+                f.remove();
             });
             $.DatePickers();
             f.validate({

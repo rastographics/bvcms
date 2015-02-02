@@ -14,6 +14,7 @@ using CmsData;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData.Codes;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -30,9 +31,10 @@ namespace CmsWeb.Areas.Reports.Models
 			public string VisitorType { get; set; }
 		}
 
-        public OrgSearchModel Model;
+        public OrgSearchModel OrgSearchModel;
+        public NewMeetingInfo NewMeetingInfo;
 		public int? meetingid, orgid;
-		public int[] groups;
+		public string groups;
 		public bool? bygroup;
 		public bool? altnames;
 		public string sgprefix, highlightsg;
@@ -104,18 +106,16 @@ namespace CmsWeb.Areas.Reports.Models
 				}
 				else
 				{
-					var Groups = o.Groups;
-					if (Groups == null)
-						Groups = new int[] { 0 };
-					var q = from om in DbUtil.Db.OrganizationMembers
-							where om.OrganizationId == o.OrgId
-							let gc = om.OrgMemMemTags.Count(mt => Groups.Contains(mt.MemberTagId))
-							where gc == Groups.Length || Groups[0] <= 0
-							where !Groups.Contains(-1) || (Groups.Contains(-1) && om.OrgMemMemTags.Count() == 0)
-							where (om.Pending ?? false) == false
-							where om.MemberTypeId != MemberTypeCode.InActive
-							where om.EnrollmentDate <= Util.Now
-							select om.Person;
+				    var Groups = NewMeetingInfo.ByGroup == true ? o.Groups : "";
+				    var q = from om in DbUtil.Db.OrganizationMembers
+				        where om.OrganizationId == orgid
+				        join m in DbUtil.Db.OrgPeople(orgid, Groups) on om.PeopleId equals m.PeopleId
+				        where om.EnrollmentDate <= Util.Now
+				        orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
+				        let p = om.Person
+				        let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
+				        select om.Person;
+
 					q = from p in q
 						from fm in DbUtil.Db.People.Where(ff => ff.FamilyId == p.FamilyId)
 						where (fm.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
@@ -229,12 +229,12 @@ namespace CmsWeb.Areas.Reports.Models
 			public string Name { get; set; }
 			public string Teacher { get; set; }
 			public string Location { get; set; }
-			public int[] Groups { get; set; }
+			public string Groups { get; set; }
 		}
 		private IEnumerable<OrgInfo> ReportList()
 		{
             var roles = DbUtil.Db.CurrentRoles();
-            var q = from o in Model.FetchOrgs()
+            var q = from o in OrgSearchModel.FetchOrgs()
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where o.OrganizationId == orgid || (orgid ?? 0) == 0
                     orderby o.Division.Name, o.OrganizationName
@@ -252,7 +252,7 @@ namespace CmsWeb.Areas.Reports.Models
 		private IEnumerable<OrgInfo> ReportList2()
 		{
             var roles = DbUtil.Db.CurrentRoles();
-            var q = from o in Model.FetchOrgs()
+            var q = from o in OrgSearchModel.FetchOrgs()
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     from sg in o.MemberTags
                     where (sgprefix ?? "") == "" || sg.Name.StartsWith(sgprefix)
@@ -264,7 +264,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Name = sg.Name,
                         Teacher = "",
                         Location = o.Location,
-                        Groups = new int[] { sg.Id }
+                        Groups = sg.Name
                     };
             return q;
 		}
