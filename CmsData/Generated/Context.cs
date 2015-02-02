@@ -7,6 +7,8 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -2780,6 +2782,24 @@ namespace CmsData
                 );
 		}
 
+	    public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
+	    {
+	        return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
+	    }
+	    public IQueryable<View.OrgPerson> OrgPeople(
+             int? oid,
+             string grouptype,
+             string first,
+             string last,
+             string sgfilter,
+             bool showhidden,
+             bool filterchecked,
+             bool filtertag
+	        )
+	    {
+	        return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden, null, null, filterchecked,
+	            filtertag, null, Util.UserPeopleId);
+	    }
 		[Function(Name="dbo.OrgPeople", IsComposable = true)]
 		public IQueryable< View.OrgPerson > OrgPeople(
             [Parameter(DbType="int")] int? oid,

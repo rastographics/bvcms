@@ -10,7 +10,7 @@ using UtilityExtensions;
 namespace CmsWeb.Controllers
 {
     [RouteArea("Dialog", AreaPrefix="Dialog"), Route("{action}/{id?}")]
-    public class DialogController : Controller
+    public partial class DialogController : Controller
     {
         public class Options
         {

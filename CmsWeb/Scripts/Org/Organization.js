@@ -84,6 +84,12 @@
         RebindMemberGrids();
         return false;
     });
+    $("a.setfilter").live("click", function (ev) {
+        ev.preventDefault();
+        $("#FilterIndividuals").val(!$("#filter-ind").hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
     $("#filter-ind").live("click", function (ev) {
         ev.preventDefault();
         $(this).toggleClass("active");

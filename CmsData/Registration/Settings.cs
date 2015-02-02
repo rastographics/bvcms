@@ -35,6 +35,7 @@ namespace CmsData.Registration
 		public string SenderSubject { get; set; }
 		public string SenderBody { get; set; }
 		public string Terms { get; set; }
+		public string ConfirmationTrackingCode { get; set; }
 
 		public bool MemberOnly { get; set; }
 		public bool AskDonation { get; set; }

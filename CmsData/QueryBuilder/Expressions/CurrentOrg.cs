@@ -39,8 +39,7 @@ namespace CmsData
             var co = db.CurrentOrg;
             Expression<Func<Person, bool>> pred = p =>
                 db.OrgPeople(db.CurrentOrgId0, co.GroupSelect, co.First(), co.Last(), 
-                        co.SgFilter, co.ShowHidden, null, null, 
-                        co.FilterIndividuals, co.FilterTag, false, Util.UserPeopleId)
+                        co.SgFilter, co.ShowHidden, co.FilterIndividuals, co.FilterTag)
                     .Select(gg => gg.PeopleId)
                     .Contains(p.PeopleId);
 

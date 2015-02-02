@@ -195,12 +195,15 @@
         return this.optional(element) || (validDate && validTime);
     }, "Please enter a valid date and time.");
 
-    $("a.dialog-options").live("click", function (ev) {
+    $("a.dialog-options").live("click", function(ev) {
         ev.preventDefault();
         var $a = $(this);
         // data-target is the dialog  and a.href is the report
         // or a.href is the dialog and form.action is the report
-        var dialog = $a.data("target") || this.href; 
+        var dialog = $a.data("target") || this.href;
+        $.dialogOptions(dialog, $a);
+    });
+    $.dialogOptions = function(dialog, $a) {
         $("<div id='dialog-options' />").load(dialog, {}, function () {
             var d = $(this);
             var f = d.find("form");
@@ -235,7 +238,8 @@
                         else
                             form.submit();
                         if ($a.data("callback")) {
-                            $.InitFunctions[$a.data("callback")]($a);
+                            var q = f.serialize();
+                            $.InitFunctions[$a.data("callback")]($a, q);
                         }
                     }
                     f.modal("hide");
@@ -249,7 +253,7 @@
             });
         });
         return false;
-    });
+    };
 
     $("a.longrunop").live("click", function(ev) {
         ev.preventDefault();

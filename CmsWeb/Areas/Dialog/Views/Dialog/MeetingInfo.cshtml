@@ -7,9 +7,9 @@
     <h3>Meeting Options</h3>
   </div>
   <div class="modal-body">
-    @Html.EditorFor(m => m.Schedule)
+    @Html.EditorForIf(m => m.Schedule, Model.Schedule != null)
     @Html.EditorFor(m => m.MeetingDate, "DateAndTime")
-    @Html.EditorFor(m => m.AttendCredit)
+    @Html.EditorForIf(m => m.AttendCredit, Model.AttendCredit != null)
     @Html.EditorFor(m => m.ByGroup)
     @Html.EditorFor(m => m.GroupFilterPrefix)
     @Html.EditorFor(m => m.HighlightGroup)

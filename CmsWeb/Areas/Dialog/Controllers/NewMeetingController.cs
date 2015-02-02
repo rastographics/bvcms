@@ -8,42 +8,52 @@ using UtilityExtensions;
 
 namespace CmsWeb.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="NewMeeting"), Route("{action}/{id?}")]
-    public class NewMeetingController : CmsStaffController
+    public partial class DialogController
     {
-        [HttpPost, Route("~/ForNewMeeting/{id:int}")]
-        public ActionResult ForNewMeeting(int id)
+        [HttpPost, Route("ForNewMeeting/{orgid:int}")]
+        public ActionResult ForNewMeeting(int orgid)
         {
-            var oi = new OrganizationModel() { Id = id };
+            var oi = new OrganizationModel() { Id = orgid };
             var m = new NewMeetingInfo()
             {
                 MeetingDate = oi.PrevMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesPrev()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
             };
-            ViewBag.Action = "/NewMeeting/Create/" + id;
+            ViewBag.Action = "/NewMeeting/Create/" + orgid;
             ViewBag.Method = "POST";
-            return View("Index", m);
+            return View("MeetingInfo", m);
         }
-        [HttpPost, Route("~/ForNewRollsheet/{id:int}")]
-        public ActionResult ForNewRollsheet(int id)
+        [HttpPost, Route("ForNewRollsheet/{orgid:int}")]
+        public ActionResult ForNewRollsheet(int orgid)
         {
-            var oi = new OrganizationModel() { Id = id };
+            var oi = new OrganizationModel() { Id = orgid };
             var m = new NewMeetingInfo()
             {
                 MeetingDate =  oi.NextMeetingDate,
                 Schedule = new CodeInfo(0, oi.SchedulesNext()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
             };
-            ViewBag.Action = "/Reports/Rollsheet/" + id;
-            ViewBag.Method = "GET";
-            return View("Index", m);
+            ViewBag.Action = "/Reports/RollsheetForOrg/" + orgid;
+            ViewBag.Method = "POST";
+            return View("MeetingInfo", m);
+        }
+        [HttpPost, Route("ForNewRollsheets/{schedule:int}")]
+        public ActionResult ForNewRollsheets(int schedule)
+        {
+            var m = new NewMeetingInfo()
+            {
+                MeetingDate =  OrgSearchModel.DefaultMeetingDate(schedule),
+                Schedule = null,
+                AttendCredit = null
+            };
+            return View("MeetingInfo", m);
         }
         [HttpPost]
         public ActionResult Create(NewMeetingInfo model)
         {
             if (!ModelState.IsValid)
-                return View("Index", model);
+                return View("MeetingInfo", model);
             var organization = DbUtil.Db.LoadOrganizationById(Util2.CurrentOrganization.Id);
             if (organization == null)
                 return Content("error: no org");

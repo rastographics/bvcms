@@ -460,25 +460,23 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [HttpGet]
-        [Route("Rollsheet")]
-        [Route("Rollsheet/{meetingid:int}")]
-        public ActionResult Rollsheet(int? meetingid, string org, NewMeetingInfo mi)
+        [HttpPost, Route("RollsheetForOrg/{orgid:int}")]
+        public ActionResult RollsheetForOrg(int orgid, NewMeetingInfo mi)
         {
-            return new RollsheetResult
-            {
-                orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null,
-                meetingid = meetingid,
-                RollsheetInfo = mi
-            };
+            return new RollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+        }
+        [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
+        public ActionResult RollsheetForMeeting(int meetingid)
+        {
+            return new RollsheetResult { meetingid = meetingid };
         }
         [HttpPost]
-        public ActionResult Rollsheet(NewMeetingInfo mi, OrgSearchModel m)
+        public ActionResult Rollsheets(NewMeetingInfo mi, OrgSearchModel m)
         {
             return new RollsheetResult
             {
-                Model = m,
-                RollsheetInfo = mi
+                OrgSearchModel = m,
+                NewMeetingInfo = mi
             };
         }
 

@@ -1689,7 +1689,7 @@
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
     <Content Include="Views\Shared\PagerHidden.cshtml" />
-    <Content Include="Areas\Dialog\Views\NewMeeting\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\Dialog\MeetingInfo.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Index.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateAndTime.cshtml" />
