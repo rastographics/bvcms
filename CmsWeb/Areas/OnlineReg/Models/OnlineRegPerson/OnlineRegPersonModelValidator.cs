@@ -96,19 +96,19 @@ Please call the church to resolve this before we can complete your information."
                         {
 #if DEBUG
 #else
-                            if (person.person.Users.Count() > 0)
+                            if (model.person.Users.Count() > 0)
                             {
-                                ModelState.AddModelError(foundname, "You already have an account");
-                                person.IsValidForContinue = false;
+                                modelState.AddModelError(foundname, "You already have an account");
+                                model.IsValidForContinue = false;
                             }
-                            if (!Util.ValidEmail(person.person.EmailAddress))
+                            if (!Util.ValidEmail(model.person.EmailAddress))
                             {
-                                ModelState.AddModelError(foundname, "You must have a valid email address on record");
-                                NotFoundText = @"We have found your record but we do not have a valid email for you.<br/>
+                                modelState.AddModelError(foundname, "You must have a valid email address on record");
+                                model.NotFoundText = @"We have found your record but we do not have a valid email for you.<br/>
 For your protection, we cannot continue to create an account.<br />
 We can't use the one you enter online here since we can't be sure this is you.<br />
 Please call the church to resolve this before we can complete your account.<br />";
-                                person.IsValidForContinue = false;
+                                model.IsValidForContinue = false;
                             }
 #endif
                         }
