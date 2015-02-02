@@ -91,10 +91,6 @@ namespace UtilityExtensions
                 var smtp = Util.Smtp();
                 smtp.Send(msg);
             }
-            catch (Exception ex)
-            {
-                throw;
-            }
             finally
             {
                 htmlView.Dispose();
