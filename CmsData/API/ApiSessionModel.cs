@@ -1,10 +1,9 @@
 ﻿using System;
-using CmsData;
 using System.Linq;
 
-namespace CmsWeb.Areas.Manage.Models
+namespace CmsData.API
 {
-    internal static class ApiSessionModel
+    public static class ApiSessionModel
     {
         public static ApiSessionResult DetermineApiSessionStatus(Guid sessionToken)
         {
@@ -55,6 +54,16 @@ namespace CmsWeb.Areas.Manage.Models
 
             apiSession.LastAccessedDate = DateTime.Now;
             DbUtil.Db.SubmitChanges();
+        }
+
+        public static void DeleteSession(CMSDataContext db, User user)
+        {
+            var apiSession = user.ApiSessions.SingleOrDefault();
+            if (apiSession == null)
+                return;
+
+            db.ApiSessions.DeleteOnSubmit(apiSession);
+            db.SubmitChanges();
         }
     }
 }

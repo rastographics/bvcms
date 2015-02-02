@@ -1,4 +1,4 @@
-﻿namespace CmsWeb.Areas.Manage.Models
+﻿namespace CmsData.API
 {
     public enum ApiSessionStatus
     {

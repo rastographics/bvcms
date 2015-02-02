@@ -293,9 +293,6 @@
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
-    <Compile Include="Areas\Manage\Models\ApiSessionModel.cs" />
-    <Compile Include="Areas\Manage\Models\ApiSessionResult.cs" />
-    <Compile Include="Areas\Manage\Models\ApiSessionStatus.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />

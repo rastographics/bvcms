@@ -1,6 +1,4 @@
-using CmsData;
-
-namespace CmsWeb.Areas.Manage.Models
+namespace CmsData.API
 {
     public class ApiSessionResult
     {

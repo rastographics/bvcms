@@ -364,6 +364,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\ApiSessionModel.cs" />
+    <Compile Include="API\ApiSessionResult.cs" />
+    <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />

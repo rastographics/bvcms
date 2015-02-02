@@ -11,6 +11,7 @@ using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
 using CmsData;
+using CmsData.API;
 using CmsWeb.Areas.Manage.Models;
 using UtilityExtensions;
 
