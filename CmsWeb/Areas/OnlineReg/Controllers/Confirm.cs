@@ -77,18 +77,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (ed != null)
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
 
-            if (m == null)
-                return View("Payment/Process", pf);
-
-            var peopleId = m.UserPeopleId ?? 0;
+            var peopleId = 0;
+            if (m != null)
+                peopleId = m.UserPeopleId ?? 0;
 
 #if DEBUG
 #else
-            if (m.History.Contains("ProcessPayment"))
+            if (m != null && m.History.Contains("ProcessPayment"))
 					return Content("Already submitted");
 #endif
 
-            if (m.OnlineGiving())
+            if (m != null && m.OnlineGiving())
             {
                 var previousTransaction =
                     (from t in DbUtil.Db.Transactions
@@ -122,7 +121,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (!ModelState.IsValid)
                     return View("Payment/Process", pf);
 
-                if (pf.IsLoggedIn.GetValueOrDefault() && pf.SavePayInfo)
+                if (m != null && pf.IsLoggedIn.GetValueOrDefault() && pf.SavePayInfo)
                 {
                     var gateway = DbUtil.Db.Gateway(m.testing ?? false);
                     // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
@@ -142,11 +141,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View("Payment/Process", pf);
                 }
 
-                m.TranId = ti.Id;
-                m.HistoryAdd("ProcessPayment");
-                ed.Data = Util.Serialize(m);
-                ed.Completed = true;
-                DbUtil.Db.SubmitChanges();
+                if (m != null)
+                {
+                    m.TranId = ti.Id;
+                    m.HistoryAdd("ProcessPayment");
+                    ed.Data = Util.Serialize(m);
+                    ed.Completed = true;
+                    DbUtil.Db.SubmitChanges();
+                }
                 Session["FormId"] = pf.FormId;
 
                 if (pf.DatumId > 0)
@@ -251,18 +253,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private Transaction ProcessPaymentTransaction(OnlineRegModel m, PaymentForm pf)
         {
-            var ti = m.Transaction != null
+            var ti = (m != null && m.Transaction != null)
                 ? PaymentForm.CreateTransaction(DbUtil.Db, m.Transaction, pf.AmtToPay)
                 : pf.CreateTransaction(DbUtil.Db);
 
+            int? pid = null;
+            if (m != null)
+            {
             m.ParseSettings();
             var terms = Util.PickFirst(m.Terms, "");
             if (terms.HasValue())
                 ViewData["Terms"] = terms;
 
-            var pid = m.UserPeopleId;
+                pid = m.UserPeopleId;
             if (m.TranId == null)
                 m.TranId = ti.Id;
+            }
 
             if (!pid.HasValue)
             {
@@ -293,7 +299,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!ti.Approved.GetValueOrDefault())
             {
                 ti.Amtdue += ti.Amt;
-                if (m.OnlineGiving())
+                if (m != null && m.OnlineGiving())
                     ti.Amtdue = 0;
             }
 
