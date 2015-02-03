@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using OfficeOpenXml;
 using System.Linq;
 using CmsData;
+using CmsData.Codes;
 using OfficeOpenXml.Style;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
 
@@ -14,6 +15,9 @@ namespace CmsWeb.Models
     {
         public static EpplusResult Export()
         {
+            if (DbUtil.Db.CurrentOrg.GroupSelect != GroupSelectCode.Member)
+                return new EpplusResult("EmptyResult.xlsx");
+
             var co = DbUtil.Db.CurrentOrg;
             var filter = DbUtil.Db.OrgPeople(co.Id, co.First(), co.Last(), co.SgFilter, co.FilterIndividuals,
                 co.FilterTag).Select(pp => pp.PeopleId).ToList();

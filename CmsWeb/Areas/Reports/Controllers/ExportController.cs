@@ -140,8 +140,6 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "FamilyMembers":
                     return ExportPeople.FetchExcelListFamilyMembers(id);
                 case "OrgMembers":
-                    if (DbUtil.Db.CurrentOrg.GroupSelect != GroupSelectCode.Member)
-                        return Content("must select the member tab only");
                     return OrgsMembersExcelModel.Export();
                 case "Groups":
                     return ExportInvolvements.OrgMemberListGroups();
