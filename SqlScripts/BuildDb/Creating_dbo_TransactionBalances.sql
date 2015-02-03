@@ -2,6 +2,7 @@
 
 
 
+
 CREATE VIEW [dbo].[TransactionBalances]
 AS
 SELECT BalancesId
@@ -71,6 +72,7 @@ FROM (
 
 	FROM dbo.[Transaction] t
 ) tt
+
 
 
 
