@@ -239,18 +239,19 @@
         return false;
     });
     $('div.dialog').dialog({ autoOpen: false });
-    $("#rollsheets").live("click", function () {
+    $("a.rollsheets").live("click", function () {
         $.dialogOptions("/Dialog/ForNewRollsheets/" + $('#ScheduleId').val(), $(this));
     });
     $.InitFunctions.Rollsheets = function(a, q) {
         hideDropdowns();
-        if ($('#rallymode').is(":checked"))
-            $("#orgsearchform").attr("action", "/Reports/RallyRollsheet?" + q);
-        else
-            $("#orgsearchform").attr("action", "/Reports/Rollsheets?" + q);
-//        $("#orgsearchform").attr("target","_blank");
+        $("#orgsearchform").attr("action", "/Reports/Rollsheets?" + q);
         $("#orgsearchform").submit();
-//        $("#orgsearchform").removeAttr("target");
+        return false;
+    }
+    $.InitFunctions.RallyRollsheets = function(a, q) {
+        hideDropdowns();
+        $("#orgsearchform").attr("action", "/Reports/RallyRollsheets?" + q);
+        $("#orgsearchform").submit();
         return false;
     }
     $('#newmeetings').click(function (ev) {

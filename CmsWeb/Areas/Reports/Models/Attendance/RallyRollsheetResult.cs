@@ -34,11 +34,6 @@ namespace CmsWeb.Areas.Reports.Models
         public OrgSearchModel OrgSearchModel;
         public NewMeetingInfo NewMeetingInfo;
 		public int? meetingid, orgid;
-		public string groups;
-		public bool? bygroup;
-		public bool? altnames;
-		public string sgprefix, highlightsg;
-		public DateTime? dt;
 
 		public override void ExecuteResult(ControllerContext context)
 		{
@@ -48,20 +43,25 @@ namespace CmsWeb.Areas.Reports.Models
 			if (meetingid.HasValue)
 			{
 				meeting = DbUtil.Db.Meetings.Single(mt => mt.MeetingId == meetingid);
-				dt = meeting.MeetingDate;
-				orgid = meeting.OrganizationId;
+			    if (meeting != null && meeting.MeetingDate.HasValue)
+			    {
+    				NewMeetingInfo.MeetingDate = meeting.MeetingDate.Value;
+    				orgid = meeting.OrganizationId;
+			    }
+			    else
+			    {
+    				Response.Write("no meeting found");
+    				return;
+			    }
 			}
 
-		    var list1 = bygroup == true ? ReportList2() : ReportList();
+            if(OrgSearchModel == null)
+                OrgSearchModel = new OrgSearchModel();
+		    var list1 = NewMeetingInfo.ByGroup == true ? ReportList2() : ReportList();
 
 			if (!list1.Any())
 			{
 				Response.Write("no data found");
-				return;
-			}
-			if (!dt.HasValue)
-			{
-				Response.Write("bad date");
 				return;
 			}
 			Response.ContentType = "application/pdf";
@@ -108,8 +108,8 @@ namespace CmsWeb.Areas.Reports.Models
 				{
 				    var Groups = NewMeetingInfo.ByGroup == true ? o.Groups : "";
 				    var q = from om in DbUtil.Db.OrganizationMembers
-				        where om.OrganizationId == orgid
-				        join m in DbUtil.Db.OrgPeople(orgid, Groups) on om.PeopleId equals m.PeopleId
+				        where om.OrganizationId == o.OrgId
+				        join m in DbUtil.Db.OrgPeople(o.OrgId, Groups) on om.PeopleId equals m.PeopleId
 				        where om.EnrollmentDate <= Util.Now
 				        orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
 				        let p = om.Person
@@ -175,8 +175,8 @@ namespace CmsWeb.Areas.Reports.Models
 			t.DefaultCell.Border = PdfPCell.NO_BORDER;
 			pageEvents.StartPageSet(
 									"{0}: {1}, {2} ({3})".Fmt(o.Division, o.Name, o.Location, o.Teacher),
-									"{0:f} ({1})".Fmt(dt, o.OrgId),
-									"M.{0}.{1:MMddyyHHmm}".Fmt(o.OrgId, dt));
+									"{0:f} ({1})".Fmt(NewMeetingInfo.MeetingDate, o.OrgId),
+									"M.{0}.{1:MMddyyHHmm}".Fmt(o.OrgId, NewMeetingInfo.MeetingDate));
 			return t;
 		}
 		private void AddFirstRow(Font font)
@@ -231,7 +231,7 @@ namespace CmsWeb.Areas.Reports.Models
 			public string Location { get; set; }
 			public string Groups { get; set; }
 		}
-		private IEnumerable<OrgInfo> ReportList()
+		private List<OrgInfo> ReportList()
 		{
             var roles = DbUtil.Db.CurrentRoles();
             var q = from o in OrgSearchModel.FetchOrgs()
@@ -245,17 +245,17 @@ namespace CmsWeb.Areas.Reports.Models
                         Name = o.OrganizationName,
                         Teacher = o.LeaderName,
                         Location = o.Location,
-                        Groups = groups
+                        Groups = NewMeetingInfo.GroupFilterPrefix
                     };
-            return q;
+            return q.ToList();
 		}
-		private IEnumerable<OrgInfo> ReportList2()
+		private List<OrgInfo> ReportList2()
 		{
             var roles = DbUtil.Db.CurrentRoles();
             var q = from o in OrgSearchModel.FetchOrgs()
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     from sg in o.MemberTags
-                    where (sgprefix ?? "") == "" || sg.Name.StartsWith(sgprefix)
+                    where (NewMeetingInfo.GroupFilterPrefix ?? "") == "" || sg.Name.StartsWith(NewMeetingInfo.GroupFilterPrefix)
                     where o.OrganizationId == orgid || (orgid ?? 0) == 0
                     select new OrgInfo
                     {
@@ -266,7 +266,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Location = o.Location,
                         Groups = sg.Name
                     };
-            return q;
+            return q.ToList();
 		}
 		class CellEvent : IPdfPCellEvent
 		{

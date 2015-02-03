@@ -7,8 +7,6 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
-using CmsData.Codes;
-using UtilityExtensions;
 
 namespace CmsData
 {
@@ -2324,6 +2322,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.CurrOrgMembers2", IsComposable = true)]
+		public IQueryable< View.CurrOrgMembers2 > CurrOrgMembers2(
+            [Parameter(DbType="varchar")] string orgs,
+            [Parameter(DbType="varchar")] string pids
+            )
+		{
+			return this.CreateMethodCallQuery< View.CurrOrgMembers2>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                orgs,
+                pids
+                );
+		}
+
 		[Function(Name="dbo.FindPerson", IsComposable = true)]
 		public IQueryable< View.FindPerson > FindPerson(
             [Parameter(DbType="nvarchar")] string first,
@@ -2782,24 +2793,6 @@ namespace CmsData
                 );
 		}
 
-	    public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
-	    {
-	        return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
-	    }
-	    public IQueryable<View.OrgPerson> OrgPeople(
-             int? oid,
-             string grouptype,
-             string first,
-             string last,
-             string sgfilter,
-             bool showhidden,
-             bool filterchecked,
-             bool filtertag
-	        )
-	    {
-	        return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden, null, null, filterchecked,
-	            filtertag, null, Util.UserPeopleId);
-	    }
 		[Function(Name="dbo.OrgPeople", IsComposable = true)]
 		public IQueryable< View.OrgPerson > OrgPeople(
             [Parameter(DbType="int")] int? oid,

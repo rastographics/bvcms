@@ -49,6 +49,8 @@ namespace CmsData
 		
 		private bool? _NoReplacements;
 		
+		private int? _SendFromOrgId;
+		
    		
    		private EntitySet< EmailLink> _EmailLinks;
 		
@@ -113,6 +115,9 @@ namespace CmsData
 		
 		partial void OnNoReplacementsChanging(bool? value);
 		partial void OnNoReplacementsChanged();
+		
+		partial void OnSendFromOrgIdChanging(int? value);
+		partial void OnSendFromOrgIdChanged();
 		
     #endregion
 		public EmailQueue()
@@ -481,6 +486,28 @@ namespace CmsData
 					this._NoReplacements = value;
 					this.SendPropertyChanged("NoReplacements");
 					this.OnNoReplacementsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SendFromOrgId", UpdateCheck=UpdateCheck.Never, Storage="_SendFromOrgId", DbType="int")]
+		public int? SendFromOrgId
+		{
+			get { return this._SendFromOrgId; }
+
+			set
+			{
+				if (this._SendFromOrgId != value)
+				{
+				
+                    this.OnSendFromOrgIdChanging(value);
+					this.SendPropertyChanging();
+					this._SendFromOrgId = value;
+					this.SendPropertyChanged("SendFromOrgId");
+					this.OnSendFromOrgIdChanged();
 				}
 
 			}

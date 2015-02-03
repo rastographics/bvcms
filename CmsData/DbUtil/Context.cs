@@ -994,6 +994,36 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, max);
             return ((int)(result.ReturnValue));
         }
+        public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
+	    {
+	        return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
+	    }
+	    public IQueryable<View.OrgPerson> OrgPeople(
+             int? oid,
+             string first,
+             string last,
+             string sgfilter,
+             bool filterchecked,
+             bool filtertag
+	        )
+	    {
+	        return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false, null, null, filterchecked,
+	            filtertag, null, Util.UserPeopleId);
+	    }
+	    public IQueryable<View.OrgPerson> OrgPeople(
+             int? oid,
+             string grouptype,
+             string first,
+             string last,
+             string sgfilter,
+             bool showhidden,
+             bool filterchecked,
+             bool filtertag
+	        )
+	    {
+	        return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden, null, null, filterchecked,
+	            filtertag, null, Util.UserPeopleId);
+	    }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
         {
             if (orgmustexist)

@@ -28,9 +28,9 @@
         @if (((bool?)ViewBag.OrganizationContext) == true)
         {
           <li class="header current-list pending-list orgcontext">Org Members Export</li>
-          <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' title="Includes Org Member info" class="qid">Member Export</a></li>
-          <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' title="Includes Org Member and Small Group columns" class="qid">Groups Export</a></li>
-          <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge" class="qid">Promotion Export</a></li>
+          <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' title="Includes Org Member info">Member Export</a></li>
+          <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' title="Includes Org Member and Small Group columns">Groups Export</a></li>
+          <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
         }
 
         <li class="header">Other Exports</li>
@@ -64,9 +64,8 @@
         @if ((bool?)ViewBag.OrganizationContext == true)
         {
           <li class="header">Org Members Reports</li>
-          <li><a href='/Reports/RollsheetForOrg' class="dialog-options" data-target="/Dialog/ForNewRollsheet/@oid">Rollsheet</a></li>
+          <li><a href='/Reports/RollsheetForOrg' class="dialog-options qid" data-target="/Dialog/ForNewRollsheet/@oid">Rollsheet</a></li>
           <li><a href='/Reports/RallyRollsheetForOrg' class="dialog-options" data-target="/Dialog/ForNewRallyRollsheet/@oid">Rally Rollsheet</a></li>
-@*          <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report">Rally Rollsheet</a></li>*@
           <li><a href='/Reports/Roster1/@qid?oid=@oid' target="report">Roster Report</a></li>
           <li><a href='/Reports/Roster/@qid?oid=@oid' target="report">Extended Roster</a></li>
           <li><a href='/Reports/Registration/@qid?oid=@oid' target="_blank">Registration Report</a></li>

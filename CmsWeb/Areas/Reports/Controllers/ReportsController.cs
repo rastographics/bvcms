@@ -382,28 +382,12 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new QueryStatsResult();
         }
 
-        public ActionResult RallyRollsheet(string org, string dt, int? meetingid, int? bygroup, string sgprefix,
-            bool? altnames, string highlight, OrgSearchModel m)
-        {
-            DateTime? dt2 = dt.ToDate();
-
-            return new RallyRollsheetResult
-            {
-                orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null,
-                meetingid = meetingid,
-                bygroup = bygroup.HasValue,
-                sgprefix = sgprefix,
-                dt = dt2,
-                altnames = altnames,
-                OrgSearchModel = m
-            };
-        }
         [HttpPost, Route("RallyRollsheetForOrg/{orgid:int}")]
         public ActionResult RallyRollsheetForOrg(int orgid, NewMeetingInfo mi)
         {
             return new RallyRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
         }
-        [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
+        [HttpGet, Route("RallyRollsheetForMeeting/{meetingid:int}")]
         public ActionResult RallyRollsheetForMeeting(int meetingid)
         {
             return new RallyRollsheetResult { meetingid = meetingid };
@@ -482,7 +466,11 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost, Route("RollsheetForOrg/{orgid:int}")]
         public ActionResult RollsheetForOrg(int orgid, NewMeetingInfo mi)
         {
-            return new RollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+            return new RollsheetResult
+            {
+                orgid = orgid, 
+                NewMeetingInfo = mi,
+            };
         }
         [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
         public ActionResult RollsheetForMeeting(int meetingid)

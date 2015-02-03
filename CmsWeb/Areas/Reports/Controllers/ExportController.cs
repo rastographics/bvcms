@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Models;
@@ -139,7 +140,9 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "FamilyMembers":
                     return ExportPeople.FetchExcelListFamilyMembers(id);
                 case "OrgMembers":
-                    return OrgsMembersExcelModel.Export(DbUtil.Db.CurrentOrg.Id ?? 0);
+                    if (DbUtil.Db.CurrentOrg.GroupSelect != GroupSelectCode.Member)
+                        return Content("must select the member tab only");
+                    return OrgsMembersExcelModel.Export();
                 case "Groups":
                     return ExportInvolvements.OrgMemberListGroups();
             }
