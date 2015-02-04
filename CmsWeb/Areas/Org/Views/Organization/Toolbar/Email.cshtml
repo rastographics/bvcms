@@ -11,7 +11,8 @@
 }
 <ul class="dropdown-menu toolbar-email pull-left">
   <li class="header">Email</li>
-  <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
+  <li><a href='/Email/@ViewBag.queryid' class="qid">Filtered List</a></li>
+  <li><a href='/Email/@ViewBag.queryid?orgid=@oid' class="qid">All Current Members</a></li>
   <li><a href='/Email/@ViewBag.queryid?parents=true' class="qid">Parents</a></li>
   <li><a href='/Email/@ViewBag.queryid?ccparents=true' class="qid"> Child with Parents CC'd</a></li>
   <li>

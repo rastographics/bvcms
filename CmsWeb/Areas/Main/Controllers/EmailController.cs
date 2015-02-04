@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Main.Controllers
 	{
 		[ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups)
+		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid)
 		{
 			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
 			if (!body.HasValue())
@@ -27,7 +27,11 @@ namespace CmsWeb.Areas.Main.Controllers
 			if (!subj.HasValue() && templateID != 0 && DbUtil.Db.Setting("UseEmailTemplates", "false") == "true")
 			{
 				if (templateID == null)
-					return View("SelectTemplate", new EmailTemplatesModel() { wantparents = parents ?? false, queryid = id });
+					return View("SelectTemplate", new EmailTemplatesModel()
+					{
+					    wantparents = parents ?? false, 
+                        queryid = id,
+					});
 				else
 				{
 					DbUtil.LogActivity("Emailing people");
