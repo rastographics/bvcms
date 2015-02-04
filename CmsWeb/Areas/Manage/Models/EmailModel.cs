@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using DocumentFormat.OpenXml.Office2010.PowerPoint;
 using iTextSharp.xmp.options;
 using UtilityExtensions;
 
@@ -45,6 +46,23 @@ namespace CmsWeb.Models
                 return true;
             return false;
         }
+
+        public string SendFromOrgName { get; set; }
+        public bool SendFromOrg
+        {
+            get
+            {
+                var sendfromorg = queue.SendFromOrgId.HasValue && !GetEmailTos().Any();
+                if (sendfromorg)
+                {
+                    var i = from o in DbUtil.Db.Organizations
+                            where o.OrganizationId == queue.SendFromOrgId
+                            select o.OrganizationName;
+                    SendFromOrgName = i.Single();
+                }
+                return sendfromorg;
+            }
+        }
         public IEnumerable<RecipientInfo> Recipients()
         {
             var q = GetEmailTos();
@@ -72,7 +90,7 @@ namespace CmsWeb.Models
 
             return q2;
         }
-        public IQueryable<EmailQueueTo> GetEmailTos()
+        public IEnumerable<EmailQueueTo> GetEmailTos()
         {
             var q = from t in DbUtil.Db.EmailQueueTos
                     let opened = t.Person.EmailResponses.Any(er => er.EmailQueueId == t.Id)
