@@ -33,13 +33,22 @@
         </div>
         <div data-role="content">
             @{var inAttendanceRole = User.IsInRole("Attendance");}
-            @foreach (var a in Model.Attends(true))
+            @foreach (var a in Model.Attends(true, "iPadAttendanceHighlight"))
             {
             <div class="@(inAttendanceRole ? "ckline" : "na") @a.Name[0]">
                 <input type="checkbox" id="a.@a.PeopleId" @(a.Attended ? "checked=checked" : "") />
                 <label for="a.@a.PeopleId">
                 <div class="ui-grid-a">
-                	<div class="ui-block-a">@a.Name</div>
+                  <div class="ui-block-a">
+                    @if (a.Highlight)
+                    {
+                    <span style="color: green">@a.Name</span>
+                    }
+                    else
+                    {
+                    @a.Name
+                    }
+                  </div>
                 	<div class="ui-block-b">@a.Email</div>
                 </div>
                 </label>
