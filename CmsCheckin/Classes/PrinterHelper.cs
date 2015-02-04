@@ -22,8 +22,7 @@ namespace CmsCheckin.Classes
 
 		private static int iPageHeight, iPageWidth, iPagePixelsX, iPagePixelsY;
 
-		private static string sPrinter;
-		private static List<LabelPage> lPageList;
+	    private static List<LabelPage> lPageList;
 
 		private static Dictionary<string, string> dLabelFormats = new Dictionary<string, string>();
 

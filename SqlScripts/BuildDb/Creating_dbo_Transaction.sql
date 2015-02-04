@@ -45,7 +45,9 @@ CREATE TABLE [dbo].[Transaction]
 [AdjustFee] [bit] NULL,
 [LastFourCC] [nvarchar] (4) NULL,
 [LastFourACH] [nvarchar] (4) NULL,
-[PaymentType] [nvarchar] (1) NULL
+[PaymentType] [nvarchar] (1) NULL,
+[Address2] [nvarchar] (50) NULL,
+[Country] [nvarchar] (50) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

@@ -1442,7 +1442,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\Transaction.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\NotReqFields.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\OtherInfo.cs" />
-    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\Validate.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\OnlineRegPersonModelValidator.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\FamilyMembers.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\HelperMethods.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\Transaction.cs" />

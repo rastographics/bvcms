@@ -5,6 +5,7 @@
 
 
 
+
 CREATE VIEW [dbo].[TransactionSummary]
 AS
 SELECT
@@ -80,6 +81,7 @@ FROM (
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 ) tt
 --WHERE (iscoupon = 1 OR isapproved = 1) --AND TotalAmt > 0
+
 
 
 

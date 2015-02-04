@@ -110,7 +110,6 @@ namespace CmsWeb.Areas.Reports.Models
             }
             using (var ms = new MemoryStream())
             {
-                var col = 0;
                 var row = 0;
                 var tt = dd.InsertTable(q.Count, 1);
                 //var border = new Border(BorderStyle.Tcbs_single, BorderSize.one, 4, System.Drawing.Color.Black);

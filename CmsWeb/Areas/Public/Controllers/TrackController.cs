@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return new FileContentResult(b, "image/gif");
 
             try { DbUtil.Db.TrackOpen(g.Value); }
-            catch (Exception ex) { }
+            catch (Exception) { }
 
             return new FileContentResult(b, "image/gif");
         }
