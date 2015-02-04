@@ -31,6 +31,7 @@
 </div>
 <script type="text/javascript">
     $(function () {
+
         function displayResults(rawResults) {
             var results = $.parseJSON(rawResults);
             var list = '<ul class="nav nav-pills nav-stacked">';
@@ -67,6 +68,10 @@
 
         $('#search-box').on('shown.bs.modal', function () {
             $('.search-box-input').focus();
+
+            //Mousetrap.bind('down', function () {
+            //    $('.search-box-input').next().focus();
+            //});
 
             // call prefetch
             prefetch();

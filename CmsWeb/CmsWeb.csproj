@@ -771,6 +771,7 @@
     <Content Include="Content\touchpoint\lib\jquery-blockUI\js\jquery.blockUI.js" />
     <Content Include="Content\touchpoint\lib\jquery-chosen\js\chosen.jquery.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-validate\js\jquery.validate.min.js" />
+    <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
