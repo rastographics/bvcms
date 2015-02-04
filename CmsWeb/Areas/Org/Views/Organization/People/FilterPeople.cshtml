@@ -12,24 +12,24 @@
         <button class="btn dropdown-toggle" data-toggle="dropdown">
           <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu">
-          <li>
-            <a href="#" id="excludesg">Exclude</a>
-          </li>
-          <li>
-            <a href="#" class="selectsg">Match All</a>
-          </li>
-          <li>
-            <a href="#" class="selectsg">None Assigned</a>
-          </li>
+          <ul class="dropdown-menu" style="height: 200px; overflow: auto;">
+              <li>
+                  <a href="#" id="excludesg">Exclude</a>
+              </li>
+              <li>
+                  <a href="#" class="selectsg">Match All</a>
+              </li>
+              <li>
+                  <a href="#" class="selectsg">None Assigned</a>
+              </li>
 
-          @foreach (var sg in Model.SmallGroups())
-          {
-            <li>
-              <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>@sg.Text</a>
-            </li>
-          }
-        </ul>
+              @foreach (var sg in Model.SmallGroups())
+              {
+                  <li>
+                      <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>@sg.Text</a>
+                  </li>
+              }
+          </ul>
       </div>
     </div>
     <div class="input-append">
@@ -42,7 +42,7 @@
       </a>
       <div class="btn-group">
         <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-        <ul class="dropdown-menu" style="height: 200px; overflow: auto;">
+        <ul class="dropdown-menu">
           <li><a href="#" id="filter-ind" class="@Model.FilterIndActive">Filter Checked Individuals</a></li>
           <li><a href="#" id="filter-tag" class="@Model.FilterTagActive">Filter by Active Tag</a></li>
           <li><a href="/Organization/CheckAll" id="check-all" class="ajax">Check All</a></li>
