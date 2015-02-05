@@ -15,7 +15,7 @@
 <h2>Special Content</h2>
 <div>
     <ul class="nav nav-tabs" id="special-content-tabs">
-        <li class="active"><a href="#htmlContent" aria-controls="htmlContent" data-toggle="tab"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;Html Content</a></li>
+        <li class="active"><a href="#tab_htmlContent" aria-controls="htmlContent" data-toggle="tab"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;Html Content</a></li>
         <li><a href="#textContent" aria-controls="textContent" data-toggle="tab"><i class="fa fa-file-text"></i>&nbsp;&nbsp;Text Content</a></li>
         <li><a href="#emailTemplates" aria-controls="emailTemplates" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email Templates</a></li>
         <li><a href="#savedDrafts" aria-controls="savedDrafts" data-toggle="tab"><i class="fa fa-clipboard"></i>&nbsp;&nbsp;Saved Drafts</a></li>
@@ -311,6 +311,17 @@
     <script type="text/javascript">
         $(function () {
             $("#special-content-tabs").tabdrop();
+
+            var hash = document.location.hash;
+            var prefix = "tab_";
+            if (hash) {
+                $('.nav-tabs a[href=' + hash.replace(prefix, "") + ']').tab('show');
+            }
+
+            // Change hash for page-reload
+            $('.nav-tabs a').on('shown.bs.tab', function (e) {
+                window.location.hash = e.target.hash.replace("#", "#" + prefix);
+            });
 
             $("a[newtype]").click(function (ev) {
                 ev.preventDefault();

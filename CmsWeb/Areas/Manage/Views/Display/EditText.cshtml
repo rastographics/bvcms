@@ -44,7 +44,7 @@
                     <input type="submit" id="save" class="btn btn-primary btn-block" value="Save" />
                     <a id="delete" href='/Display/ContentDelete/@Model.Id' class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Delete</a>
                     <hr />
-                    <div class="additional-actions"><a id="cancel" href='/Manage/Display'>Cancel & Return</a></div>
+                    <div class="additional-actions"><a id="cancel" href='/Manage/Display/#tab_textContent'>Cancel & Return</a></div>
                 </div>
             </div>
         </div>
@@ -102,7 +102,7 @@
                                 type: "success"
                             },
                             function () {
-                                window.location = "/Manage/Display/";
+                                window.location = "/Manage/Display/#tab_textContent";
                             });
                         }
                     });

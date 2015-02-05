@@ -15,6 +15,7 @@ using System.Web.UI.HtmlControls;
 using System.Windows.Forms;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Main.Models;
 using Dapper;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -116,7 +117,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (stayaftersave == "true")
                 return RedirectEdit(content);
 
-            return RedirectToAction("Index");
+            var url = GetIndexTabUrl(content);
+            return Redirect(url);
         }
 
         public ActionResult ContentDelete(int id)
@@ -124,7 +126,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             var content = DbUtil.ContentFromID(id);
             DbUtil.Db.Contents.DeleteOnSubmit(content);
             DbUtil.Db.SubmitChanges();
-            return RedirectToAction("Index", "Display");
+            var url = GetIndexTabUrl(content);
+            return Redirect(url);
         }
 
         public ActionResult ContentDeleteDrafts(string[] draftID)
@@ -345,6 +348,35 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return null;
         }
+
+        private string GetIndexTabUrl(Content content)
+        {
+            var url = Url.Action("Index");
+            switch (content.TypeID)
+            {
+                case ContentTypeCode.TypeHtml:
+                    url += "#tab_htmlContent";
+                    break;
+                case ContentTypeCode.TypeText:
+                    url += "#tab_textContent";
+                    break;
+                case ContentTypeCode.TypeSqlScript:
+                    url += "#tab_sqlScripts";
+                    break;
+                case ContentTypeCode.TypePythonScript:
+                    url += "#tab_pythonScripts";
+                    break;
+                case ContentTypeCode.TypeEmailTemplate:
+                    url += "#tab_emailTemplates";
+                    break;
+                case ContentTypeCode.TypeSavedDraft:
+                    url += "#tab_savedDrafts";
+                    break;
+            }
+
+            return url;
+        }
+
     }
     public class GridResult : ActionResult
     {
