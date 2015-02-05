@@ -10,26 +10,26 @@ gulp.task('default', function() {
 });
 
 gulp.task('less', function() {
-    gulp.src('src/less/app.less')
+    gulp.src('content/touchpoint/src/less/app.less')
         .pipe(less())
         .pipe(minify())
         .pipe(gulp.dest(cssOutput));
-    gulp.src('src/less/account.less')
+    gulp.src('content/touchpoint/src/less/account.less')
         .pipe(less())
         .pipe(minify())
         .pipe(gulp.dest(cssOutput));
-    gulp.src('src/less/error.less')
+    gulp.src('content/touchpoint/src/less/error.less')
         .pipe(less())
         .pipe(minify())
         .pipe(gulp.dest(cssOutput));
-    gulp.src('src/less/print.less')
+    gulp.src('content/touchpoint/src/less/print.less')
         .pipe(less())
         .pipe(minify())
         .pipe(gulp.dest(cssOutput));
 });
 
 gulp.task('less-sourcemaps', function() {
-    gulp.src('src/less/app.less')
+    gulp.src('content/touchpoint/src/less/app.less')
         .pipe(sourcemaps.init())
         .pipe(less())
         .pipe(minify())
