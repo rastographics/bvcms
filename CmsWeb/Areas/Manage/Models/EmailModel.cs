@@ -68,16 +68,16 @@ namespace CmsWeb.Models
             var q = GetEmailTos();
             var q2 = queue.CCParents == true
                 ? from e in q.OrderBy(ee => ee.Person.Name2).Skip(Pager.StartRow).Take(Pager.PageSize)
-                  let p1 = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == e.Parent1).Name
-                  let p2 = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == e.Parent2).Name
+                  let p1 = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == e.Parent1)
+                  let p2 = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == e.Parent2)
                   select new RecipientInfo
                   {
                       peopleid = e.PeopleId,
                       name = e.Person.Name,
                       address = e.Person.EmailAddress,
                       nopens = e.Person.EmailResponses.Count(er => er.EmailQueueId == e.Id),
-                      parent1name = p1,
-                      parent2name = p2,
+                      parent1name = p1 != null ? p1.Name : string.Empty,
+                      parent2name = p2 != null ? p2.Name : string.Empty,
                   }
                 : from e in q.OrderBy(ee => ee.Person.Name2).Skip(Pager.StartRow).Take(Pager.PageSize)
                   select new RecipientInfo
