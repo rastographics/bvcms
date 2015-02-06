@@ -32,11 +32,15 @@ namespace CmsWeb.Models
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Tasks.Task.Run(() => DoWork(host, Id));
+
+            Util.Log("host1 " + host);
+            var h = host;
+            Tasks.Task.Run(() => DoWork(h, Id));
         }
 
         public static void DoWork(string host, int id)
         {
+            Util.Log("host2 " + host);
 			var cs = Util.GetConnectionString(host);
             Util.Log(cs);
 			var db = new CMSDataContext(cs);

@@ -71,13 +71,15 @@ namespace CmsWeb.Models
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Tasks.Task.Run(() => DoWork(this));
+            Util.Log("host1 " + host);
+            Tasks.Task.Run(() => DoWork(host, this));
         }
 
-        private static void DoWork(AddToOrgFromTag model)
+        private static void DoWork(string host, AddToOrgFromTag model)
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-            var db = new CMSDataContext(Util.GetConnectionString(model.host));
+            Util.Log("host2 " + host);
+            var db = new CMSDataContext(Util.GetConnectionString(host));
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
