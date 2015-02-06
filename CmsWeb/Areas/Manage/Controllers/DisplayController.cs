@@ -25,6 +25,7 @@ using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Web;
 using CmsWeb.Code;
 using Elmah;
 using Encoder = System.Drawing.Imaging.Encoder;
@@ -49,9 +50,11 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(content);
         }
 
-        public ActionResult ContentEdit(int id)
+        public ActionResult ContentEdit(int? id)
         {
-            var content = DbUtil.ContentFromID(id);
+            if (!id.HasValue)
+                throw new HttpException(404, "No ID found.");
+            var content = DbUtil.ContentFromID(id.Value);
             return RedirectEdit(content);
         }
 
