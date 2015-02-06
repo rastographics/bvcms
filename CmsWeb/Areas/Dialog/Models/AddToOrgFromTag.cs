@@ -112,6 +112,7 @@ namespace CmsWeb.Models
                 //Thread.Sleep(1000);
             }
             // finished
+            db = new CMSDataContext(Util.GetConnectionString(model.host));
             lop = FetchLongRunningOp(db, model.Id, Op);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();

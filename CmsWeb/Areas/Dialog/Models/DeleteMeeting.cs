@@ -63,6 +63,7 @@ namespace CmsWeb.Models
                 lop.Processed++;
                 db.SubmitChanges();
             }
+            db = new CMSDataContext(Util.GetConnectionString(model.host));
             db.ExecuteCommand(@"
 DELETE dbo.SubRequest 
 WHERE EXISTS(
