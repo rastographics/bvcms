@@ -32,6 +32,8 @@
     @Html.Partial("Footer")
     @Html.Partial("Dialogs")
     @RenderSection("PopupsPlaceholder", required: false)
-    <img src="/Content/img/ajax-loader.gif" id="loading-indicator" style="display: none" />
+    <div id="loading-indicator">
+        <img src="/Content/img/ajax-loader.gif" />
+    </div>
 </body>
 </html>
