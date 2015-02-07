@@ -12,7 +12,7 @@
         ? Html.Label(ViewBag.label as string, new { @class = labelclasses })
         : Html.LabelFor(m => m, new { @class = labelclasses }))
     <div class="col-sm-9">
-        @Html.TextBoxFor2(m => m, true, "{0:N2}", d)
+        @Html.TextBoxFor2(m => m, true, "{0:f2}", d)
         @if (ViewBag.help != null)
         {
             <p class="help-block">@ViewBag.help</p>

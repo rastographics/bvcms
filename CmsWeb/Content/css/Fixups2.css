@@ -82,7 +82,7 @@ input.tt-hint {
 
 #navGlobal {
     background: #fff; /* backup color in case the next one is not supported */
-    background: rgba(255, 255, 255, 0.7); /* the 0.7 is the opacity component */
+    background: rgba(255, 255, 255, 0.9); /* the 0.9 is the opacity component */
 }
 
     #navGlobal .form-search {
