@@ -305,15 +305,19 @@
             $loadingcount--;
             if ($loadingcount === 0)
                 $("#loading-indicator").hide();
+        },
+        error: function () {
+            $("#loading-indicator").hide();
         }
     });
     $.SetLoadingIndicator = function () {
-        $("#loading-indicator").css({
-            'position': 'absolute',
-            'left': $(window).width() / 2,
-            'top': $(window).height() / 2,
-            'z-index': 2000
-        }).show();
+        $("#loading-indicator").show()
+            .find("img").css({
+                'position': 'absolute',
+                'left': $(window).width() / 2,
+                'top': $(window).height() / 2,
+                'z-index': 2001
+            });
         $loadingcount++;
     };
     if (!$.InitFunctions)
