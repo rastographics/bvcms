@@ -33,19 +33,13 @@ namespace CmsWeb.Models
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
 
-            Util.Log("host1 " + host);
-            var h = host;
-            Tasks.Task.Run(() => DoWork(h, Id));
+            Tasks.Task.Run(() => DoWork(host, Id));
         }
 
         public static void DoWork(string host, int id)
         {
-            Util.Log("host2 " + host);
-			var cs = Util.GetConnectionString(host);
-            Util.Log(cs);
-			var db = new CMSDataContext(cs);
+            var db = new CMSDataContext(Util.GetConnectionString(host));
             db.RepairTransactions(id);
-            Util.Log("done");
             // finished
             var lop = FetchLongRunningOp(db, id, Op);
             lop.Completed = DateTime.Now;

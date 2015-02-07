@@ -48,6 +48,7 @@ namespace CmsWeb.Models
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
             var db = new CMSDataContext(Util.GetConnectionString(model.host));
+            db.Host = model.host;
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -63,7 +64,6 @@ namespace CmsWeb.Models
                 lop.Processed++;
                 db.SubmitChanges();
             }
-            db = new CMSDataContext(Util.GetConnectionString(model.host));
             db.ExecuteCommand(@"
 DELETE dbo.SubRequest 
 WHERE EXISTS(

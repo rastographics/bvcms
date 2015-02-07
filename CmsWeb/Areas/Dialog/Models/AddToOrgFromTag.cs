@@ -71,15 +71,14 @@ namespace CmsWeb.Models
             };
             db.LongRunningOps.InsertOnSubmit(lop);
             db.SubmitChanges();
-            Util.Log("host1 " + host);
-            Tasks.Task.Run(() => DoWork(host, this));
+            Tasks.Task.Run(() => DoWork(this));
         }
 
-        private static void DoWork(string host, AddToOrgFromTag model)
+        private static void DoWork(AddToOrgFromTag model)
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-            Util.Log("host2 " + host);
-            var db = new CMSDataContext(Util.GetConnectionString(host));
+            var db = new CMSDataContext(Util.GetConnectionString(model.host));
+            db.Host = model.host;
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -114,7 +113,6 @@ namespace CmsWeb.Models
                 //Thread.Sleep(1000);
             }
             // finished
-            db = new CMSDataContext(Util.GetConnectionString(model.host));
             lop = FetchLongRunningOp(db, model.Id, Op);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();

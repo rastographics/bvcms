@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using IronPython.Modules;
@@ -130,6 +131,13 @@ namespace CmsData
             var setting = Settings.SingleOrDefault(c => c.Id == name);
             if (setting != null)
                 Settings.DeleteOnSubmit(setting);
+        }
+        public void Log(string s)
+        {            
+            var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+            output = output + "\\log-{0}-{1}.txt".Fmt(Host, DateTime.Today.ToSortableDate());
+            var text = "{0} {1}\r\n".Fmt(DateTime.Now.ToSortableTime(), s);
+            File.AppendAllText(output, text);
         }
     }
 }

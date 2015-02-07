@@ -15,6 +15,7 @@ namespace CmsWeb.Models
     {
         public string description { get; set; }
         public string name { get; set; }
+        public int nameid;
         public string Submit { get; set; }
         public decimal? gtamount { get; set; }
         public decimal? ltamount { get; set; }
@@ -93,7 +94,7 @@ namespace CmsWeb.Models
             string first, last;
             Util.NameSplit(name, out first, out last);
             var hasfirst = first.HasValue();
-            var nameid = name.ToInt();
+            nameid = name.ToInt();
             _transactions
                = from t in DbUtil.Db.ViewTransactionLists
                  let donate = t.Donate ?? 0
@@ -245,7 +246,7 @@ namespace CmsWeb.Models
                 // next let's get all the approved matching transactions from our transaction table by transaction id (reference).
                 var approvedMatchingTransactions = from transaction in DbUtil.Db.Transactions
                                                    where unMatchedKeyedByReference.Keys.Contains(transaction.TransactionId)
-                                                   where transaction.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard)
+                                                   where (transaction.PaymentType == null || transaction.PaymentType == (batchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard))
                                                    where transaction.Approved == true
                                                    select transaction;
 
@@ -486,7 +487,7 @@ namespace CmsWeb.Models
         {
             public GoerSenderAmount gs { get; set; }
             public string Name { get; set; }
-            public int PeopleId { get; set; }
+            public int? PeopleId { get; set; }
         }
         public IQueryable<SupporterInfo> Supporters()
         {

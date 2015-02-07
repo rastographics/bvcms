@@ -57,13 +57,13 @@
     });
     $("a.selectsg").live("click", function (ev) {
         var t = $(this).text();
-        var sg = $("#sgFilter").val();
+        var sg = $("#").val();
         switch(t) {
             case "Match All":
                 sg = "All:" + sg;
                 break;
             case "None Assigned":
-                sg = "None";
+                sg = "None"
                 break;
             default:
                 if (sg && sg !== "All:")

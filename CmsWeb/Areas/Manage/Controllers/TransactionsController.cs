@@ -79,6 +79,18 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Developer")]
+        public ActionResult SetParent(int id, int parid, TransactionsModel m)
+        {
+            var t = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
+            if (t == null)
+                return Content("notran");
+            t.OriginalId = parid;
+            DbUtil.Db.SubmitChanges();
+            return View("List", m);
+        }
+
+        [HttpPost]
         [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult CreditVoid(int id, string type, decimal? amt, TransactionsModel m)
         {

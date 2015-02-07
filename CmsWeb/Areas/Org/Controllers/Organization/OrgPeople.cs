@@ -17,6 +17,15 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult People(OrgPeopleModel m)
         {
+            if (m.FilterIndividuals)
+                if (m.NameFilter.HasValue())
+                    m.FilterIndividuals = false;
+                else
+                {
+                    var tag = DbUtil.Db.FetchOrCreateTag("Org-" + m.Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+                    if (!tag.PersonTags.Any())
+                        m.FilterIndividuals = false;
+                }
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"];
@@ -57,7 +66,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult ShowProspect(int oid, int pid, string show)
         {
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(aa => aa.OrganizationId == oid && aa.PeopleId == pid);
-            if(om == null)
+            if (om == null)
                 return Content("member not found");
             om.Hidden = show.Equal("hide");
             DbUtil.Db.SubmitChanges();
@@ -67,9 +76,9 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost, Route("ShowVisitor/{oid:int}/{pid:int}/{ticks:long}/{show}")]
         public ActionResult ShowVisitor(int oid, int pid, long ticks, string show)
         {
-			var dt = new DateTime(ticks); // ticks here is meeting time
+            var dt = new DateTime(ticks); // ticks here is meeting time
             var attend = DbUtil.Db.Attends.SingleOrDefault(aa => aa.PeopleId == pid && aa.OrganizationId == oid && aa.MeetingDate == dt);
-            if(attend == null)
+            if (attend == null)
                 return Content("attendance not found");
             attend.NoShow = show.Equal("hide");
             DbUtil.Db.SubmitChanges();
@@ -108,7 +117,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost, Route("ToggleCheckbox/{oid:int}/{pid:int}")]
         public ActionResult ToggleCheckbox(int oid, int pid, bool chkd)
         {
-            if(chkd)
+            if (chkd)
                 Person.Tag(DbUtil.Db, pid, "Org-" + oid, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
             else
                 Person.UnTag(DbUtil.Db, pid, "Org-" + oid, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
@@ -118,8 +127,8 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost, Route("ToggleCheckboxes/{id:int}")]
         public ActionResult ToggleCheckboxes(int id, IList<int> pids, bool chkd)
         {
-            foreach(var pid in pids)
-                if(chkd)
+            foreach (var pid in pids)
+                if (chkd)
                     Person.Tag(DbUtil.Db, pid, "Org-" + id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
                 else
                     Person.UnTag(DbUtil.Db, pid, "Org-" + id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
@@ -144,6 +153,6 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.ExecuteCommand("delete dbo.tagperson where Id = {0}", tag.Id);
             return PartialView("People", m);
         }
-        
+
     }
 }
