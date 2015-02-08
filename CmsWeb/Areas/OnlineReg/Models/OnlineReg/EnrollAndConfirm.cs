@@ -9,7 +9,6 @@ using CmsData.Codes;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
-using DocumentFormat.OpenXml.EMMA;
 
 namespace CmsWeb.Models
 {
@@ -115,7 +114,6 @@ namespace CmsWeb.Models
             }
             var pids = pids2.Select(pp => pp.PeopleId);
 
-            var details = new StringBuilder("<table>");
             for (var i = 0; i < List.Count; i++)
             {
                 var p = List[i];
@@ -127,12 +125,6 @@ namespace CmsWeb.Models
                 var others = string.Join(",", q.ToArray());
 
                 var om = p.Enroll(ti, paylink, testing, others);
-                details.AppendFormat(@"
-<tr><td colspan='2'><hr/></td></tr>
-<tr><th valign='top'>{0}</th><td>
-{1}
-</td></tr>", i + 1, p.PrepareSummaryText(ti));
-
                 om.RegisterEmail = p.EmailAddress;
 
                 if(om.TranId == null)
@@ -153,8 +145,30 @@ namespace CmsWeb.Models
                 if (p.IsCreateAccount())
                     p.CreateAccount();
             }
-            details.Append("\n</table>\n");
             Db.SubmitChanges();
+
+            var details = new StringBuilder("<table cellpadding='4'>");
+            if (ti.Amt > 0)
+                details.AppendFormat(@"
+<tr><td colspan='2'>
+    <table cellpadding='4'>
+        <tr><td>Total Paid</td><td>Total Due</td></tr>
+        <tr><td align='right'>{0:c}</td><td align='right'>{1:c}</td></tr>
+    </table>
+    </td>
+</tr>
+", amtpaid, amtdue);
+
+            for (var i = 0; i < List.Count; i++)
+            {
+                var p = List[i];
+                details.AppendFormat(@"
+<tr><td colspan='2'><hr/></td></tr>
+<tr><th valign='top'>{0}</th><td>
+{1}
+</td></tr>", i + 1, p.PrepareSummaryText(ti));
+            }
+            details.Append("\n</table>\n");
 
             var DivisionName = org.DivisionName;
 
@@ -312,17 +326,21 @@ namespace CmsWeb.Models
 
             Db.SubmitChanges();
             // notify the staff
+            var n = 0;
             foreach (var p in List)
             {
+                var tt = pids2.Single(vv => vv.PeopleId == p.PeopleId);
                 Db.Email(Util.PickFirst(p.person.FromEmail, NotifyIds[0].FromEmail), NotifyIds, Header,
-                    @"{6}{0} has registered for {1}<br/>
-Feepaid for this registrant: {2:C}<br/>
+                    @"{7}{0} has registered for {1}<br/>
+Total Fee for this registrant: {2:C}<br/>
 Total Fee for this registration: {3:C}<br/>
-AmountDue: {4:C}<br/>
-<pre>{5}</pre>".Fmt(p.person.Name,
+Total Fee paid today: {4:C}<br/>
+AmountDue: {5:C}<br/>
+<pre>{6}</pre>".Fmt(p.person.Name,
                         Header,
-                        amtpaid,
+                        p.TotalAmount(),
                         TotalAmount(),
+                        amtpaid,
                         amtdue, // Amount Due
                         p.PrepareSummaryText(ti),
                         usedAdmins ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>

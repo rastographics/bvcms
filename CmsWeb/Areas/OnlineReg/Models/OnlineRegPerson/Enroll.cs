@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsData.Registration;
-using DocumentFormat.OpenXml.Vml;
 using UtilityExtensions;
 using System.Text;
 using CmsData.Codes;
+using CmsWeb.Areas.Org.Models;
 
 namespace CmsWeb.Models
 {
@@ -319,9 +319,32 @@ namespace CmsWeb.Models
             var om = GetOrgMember();
             var sb = new StringBuilder();
             sb.Append("<table>");
-            sb.AppendFormat("<tr><td>Org:</td><td>{0}</td></tr>\n", org.OrganizationName);
+            sb.AppendFormat("<tr><td width='50%'>Org:</td><td width='50%'>{0}</td></tr>\n", org.OrganizationName);
             sb.AppendFormat("<tr><td>First:</td><td>{0}</td></tr>\n", person.PreferredName);
             sb.AppendFormat("<tr><td>Last:</td><td>{0}</td></tr>\n", person.LastName);
+
+            if (ti.Amt > 0 && om != null)
+            {
+                var omemb = new OrgMemberModel(om.OrganizationId, om.PeopleId);
+                sb.AppendFormat(@"
+<tr><td colspan='2'> 
+<table cellpadding=4>
+    <tr>
+        <td>Registrant Fee</td>
+        <td>Amount Paid</td>
+        <td>Amount Due</td>
+    </tr>
+    <tr>
+        <td align='right'>{0}</td>
+        <td align='right'>{1}</td>
+        <td align='right'>{2}</td>
+    </tr>
+</table>
+</td></tr>
+",             omemb.TransactionSummary.IndAmt.ToString2("c"),
+               omemb.AmountPaidTransactions.ToString2("c"),
+               omemb.AmountDue.ToString2("c"));
+            }
 
             if (Parent.SupportMissionTrip)
             {
