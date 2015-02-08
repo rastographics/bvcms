@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			if (!body.HasValue())
 				body = TempData["body"] as string;
 
-			if (!subj.HasValue() && templateID != 0 && DbUtil.Db.Setting("UseEmailTemplates", "false") == "true")
+			if (!subj.HasValue() && templateID != 0)
 			{
 				if (templateID == null)
 					return View("SelectTemplate", new EmailTemplatesModel()

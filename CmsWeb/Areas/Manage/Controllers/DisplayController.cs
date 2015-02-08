@@ -89,8 +89,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;
 
-            string sRenderType = DbUtil.Db.Setting("RenderEmailTemplate", "none");
-
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {
                 try

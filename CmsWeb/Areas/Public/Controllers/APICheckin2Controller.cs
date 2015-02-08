@@ -28,15 +28,7 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.SetNoLock();
             DbUtil.LogActivity("checkin " + id);
 
-            List<CheckinMatch> matches;
-
-            if (CheckInModel.UseOldCheckin())
-            {
-                var m = new CheckInModel();
-                matches = m.MatchOld(id);
-            }
-            else
-                matches = DbUtil.Db.CheckinMatch(id).ToList();
+            var matches = DbUtil.Db.CheckinMatch(id).ToList();
 
             if (!matches.Any())
                 return new FamilyResult(0, campus, thisday, 0, false); // not found
