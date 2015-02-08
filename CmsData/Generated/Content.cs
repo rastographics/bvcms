@@ -45,6 +45,8 @@ namespace CmsData
 		
 		private int? _UseTimes;
 		
+		private bool? _Snippet;
+		
    		
    		private EntitySet< ContentKeyWord> _ContentKeyWords;
 		
@@ -97,6 +99,9 @@ namespace CmsData
 		
 		partial void OnUseTimesChanging(int? value);
 		partial void OnUseTimesChanged();
+		
+		partial void OnSnippetChanging(bool? value);
+		partial void OnSnippetChanged();
 		
     #endregion
 		public Content()
@@ -412,6 +417,28 @@ namespace CmsData
 					this._UseTimes = value;
 					this.SendPropertyChanged("UseTimes");
 					this.OnUseTimesChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Snippet", UpdateCheck=UpdateCheck.Never, Storage="_Snippet", DbType="bit")]
+		public bool? Snippet
+		{
+			get { return this._Snippet; }
+
+			set
+			{
+				if (this._Snippet != value)
+				{
+				
+                    this.OnSnippetChanging(value);
+					this.SendPropertyChanging();
+					this._Snippet = value;
+					this.SendPropertyChanged("Snippet");
+					this.OnSnippetChanged();
 				}
 
 			}
