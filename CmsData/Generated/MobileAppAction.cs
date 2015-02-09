@@ -33,6 +33,8 @@ namespace CmsData
 		
 		private bool _Enabled;
 		
+		private string _Roles;
+		
    		
     	
 	#endregion
@@ -65,6 +67,9 @@ namespace CmsData
 		
 		partial void OnEnabledChanging(bool value);
 		partial void OnEnabledChanged();
+		
+		partial void OnRolesChanging(string value);
+		partial void OnRolesChanged();
 		
     #endregion
 		public MobileAppAction()
@@ -246,6 +251,28 @@ namespace CmsData
 					this._Enabled = value;
 					this.SendPropertyChanged("Enabled");
 					this.OnEnabledChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="roles", UpdateCheck=UpdateCheck.Never, Storage="_Roles", DbType="nvarchar NOT NULL")]
+		public string Roles
+		{
+			get { return this._Roles; }
+
+			set
+			{
+				if (this._Roles != value)
+				{
+				
+                    this.OnRolesChanging(value);
+					this.SendPropertyChanging();
+					this._Roles = value;
+					this.SendPropertyChanged("Roles");
+					this.OnRolesChanged();
 				}
 
 			}

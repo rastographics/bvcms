@@ -9,7 +9,7 @@ namespace CmsWeb.Areas.Public.Controllers
 {
 	public class MobileAPIListController : Controller
 	{
-		public ActionResult Countries()
+		public ActionResult Countries(string data)
 		{
 			var countries = from e in DbUtil.Db.Countries
 								 orderby e.Id
@@ -22,14 +22,13 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			BaseMessage br = new BaseMessage();
 			br.error = 0;
-			br.type = BaseMessage.API_TYPE_SYSTEM_COUNTRIES;
 			br.count = countries.Count();
 			br.data = JsonConvert.SerializeObject(countries.ToList());
 
 			return br;
 		}
 
-		public ActionResult States()
+		public ActionResult States(string data)
 		{
 			var states = from e in DbUtil.Db.StateLookups
 							 orderby e.StateCode
@@ -41,14 +40,13 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			BaseMessage br = new BaseMessage();
 			br.error = 0;
-			br.type = BaseMessage.API_TYPE_SYSTEM_STATES;
 			br.count = states.Count();
 			br.data = JsonConvert.SerializeObject(states.ToList());
 
 			return br;
 		}
 
-		public ActionResult MaritalStatuses()
+		public ActionResult MaritalStatuses(string data)
 		{
 			var statuses = from e in DbUtil.Db.MaritalStatuses
 								orderby e.Id
@@ -61,7 +59,6 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			BaseMessage br = new BaseMessage();
 			br.error = 0;
-			br.type = BaseMessage.API_TYPE_SYSTEM_MARITAL_STATUSES;
 			br.count = statuses.Count();
 			br.data = JsonConvert.SerializeObject(statuses.ToList());
 
@@ -70,11 +67,6 @@ namespace CmsWeb.Areas.Public.Controllers
 
 		public ActionResult HomeActions(string data)
 		{
-			// Check to see if type matches
-			//BaseMessage dataIn = BaseMessage.createFromString(data);
-			//if (dataIn.type != BaseMessage.API_TYPE_SYSTEM_HOME_ACTIONS)
-			//				return BaseMessage.createTypeErrorReturn();
-
 			var actions = from p in DbUtil.Db.MobileAppActions
 							  join i in DbUtil.Db.MobileAppIcons on p.Id equals i.ActionID
 							  join s in DbUtil.Db.MobileAppIconSets on i.SetID equals s.Id
@@ -88,12 +80,12 @@ namespace CmsWeb.Areas.Public.Controllers
 								  option = p.Option,
 								  data = p.Data,
 								  icon = i.Url,
-								  loginType = p.LoginType
+								  loginType = p.LoginType,
+								  roles = p.Roles
 							  };
 
 			BaseMessage br = new BaseMessage();
 			br.error = 0;
-			br.type = BaseMessage.API_TYPE_SYSTEM_HOME_ACTIONS;
 			br.count = actions.Count();
 			br.data = JsonConvert.SerializeObject(actions.ToList());
 
@@ -133,6 +125,7 @@ namespace CmsWeb.Areas.Public.Controllers
 					var rooms = from p in DbUtil.Db.MobileAppRooms
 									where p.Enabled
 									where p.Floor == floor.id
+									orderby p.Room
 									select new MobileRoom
 									{
 										name = p.Name,
@@ -149,7 +142,6 @@ namespace CmsWeb.Areas.Public.Controllers
 
 			BaseMessage br = new BaseMessage();
 			br.error = 0;
-			br.type = BaseMessage.API_TYPE_MAP_INFO;
 			br.count = campusList.Count();
 			br.data = JsonConvert.SerializeObject(campusList);
 
