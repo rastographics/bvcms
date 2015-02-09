@@ -326,7 +326,8 @@ namespace CmsWeb.Models
             if (ti.Amt > 0 && om != null)
             {
                 var omemb = new OrgMemberModel(om.OrganizationId, om.PeopleId);
-                sb.AppendFormat(@"
+                if(omemb.TransactionSummary != null)
+                    sb.AppendFormat(@"
 <tr><td colspan='2'> 
 <table cellpadding=4>
     <tr>
@@ -341,9 +342,9 @@ namespace CmsWeb.Models
     </tr>
 </table>
 </td></tr>
-",             omemb.TransactionSummary.IndAmt.ToString2("c"),
-               omemb.AmountPaidTransactions.ToString2("c"),
-               omemb.AmountDue.ToString2("c"));
+    ",             omemb.TransactionSummary.IndAmt.ToString2("c"),
+                   omemb.AmountPaidTransactions.ToString2("c"),
+                   omemb.AmountDue.ToString2("c"));
             }
 
             if (Parent.SupportMissionTrip)
