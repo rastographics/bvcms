@@ -1720,7 +1720,7 @@ INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (26, N'Dele
 SET IDENTITY_INSERT [dbo].[Roles] OFF
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminCoupon', N'itsasecret')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminMail', N'david@bvcms.com')
-INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogAppUrl', N'http://blog.bvcms.com')
+INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogAppUrl', N'http://blog.touchpointsoftware.com')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogFeedUrl', N'http://feeds.feedburner.com/BvcmsBlog')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'ChangePasswordDays', N'360')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'CheckRemoteAccessRole', N'false ')

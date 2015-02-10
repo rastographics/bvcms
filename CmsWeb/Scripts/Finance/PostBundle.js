@@ -234,7 +234,7 @@
                 });
                 return (value);
             }, {
-                indicator: "<img src='/images/loading.gif'>",
+                indicator: "<img src='/Content/images/loading.gif'>",
                 tooltip: "Click to edit...",
                 style: 'display: inline',
                 width: '4em',

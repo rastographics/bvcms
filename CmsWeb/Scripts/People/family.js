@@ -8,7 +8,7 @@
         style: 'display: inline'
     });
     $(".clickEdit").editable("/Family/EditRelation/", {
-        indicator: "<img src='/images/loading.gif'>",
+        indicator: "<img src='/Content/images/loading.gif'>",
         tooltip: "Click to edit...",
         style: 'display: inline',
         width: '400px',
@@ -131,7 +131,7 @@
             tooltip: 'Click to edit...'
         });
         $(".clickEdit", table).editable("/Family/EditExtra/", {
-            indicator: "<img src='/images/loading.gif'>",
+            indicator: "<img src='/Content/images/loading.gif'>",
             tooltip: "Click to edit...",
             style: 'display: inline',
             width: '300px',
