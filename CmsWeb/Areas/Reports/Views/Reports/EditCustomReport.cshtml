@@ -133,11 +133,11 @@
             }
         });
 
-        $(document).on('click', '.custom-columns label', function (e) {
+        $('input[type="checkbox"]').click(function (e) {
             if (e.shiftKey && lastChecked !== null) {
-                var start = $('.custom-columns label').index(this);
-                var end = $('.custom-columns label').index(lastChecked);
-                $('.custom-columns input[type="checkbox"]').slice(Math.min(start, end), Math.max(start, end) + 1).attr('checked', $('input[type="checkbox"]', lastChecked).attr('checked'));
+                var start = $('input[type="checkbox"]').index(this);
+                var end = $('input[type="checkbox"]').index(lastChecked);
+                $('input[type="checkbox"]').slice(Math.min(start, end), Math.max(start, end) + 1).attr('checked', lastChecked.checked);
             }
 
             lastChecked = this;

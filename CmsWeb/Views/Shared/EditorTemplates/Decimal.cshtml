@@ -4,7 +4,7 @@
         ? Html.Label(ViewBag.label as string, new {@class = "control-label"}) 
         : Html.LabelFor(m => m, new {@class = "control-label"}))
     <div class="controls">
-        @Html.TextBoxFor2(m => m, true, "{0:N2}")<span class="help-inline">@Html.Raw(ViewData["help"])</span>
+        @Html.TextBoxFor2(m => m, true, "{0:f2}")<span class="help-inline">@Html.Raw(ViewData["help"])</span>
         @Html.ValidationMessageLabelFor(m => m)
     </div>
 </div>

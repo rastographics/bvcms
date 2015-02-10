@@ -111,6 +111,13 @@ namespace CmsData
             return string.Join("", texta);
         }
 
+        private class OrgInfo
+        {
+            public string Name { get; set; }
+            public string Count { get; set; }
+        }
+        private Dictionary<int,OrgInfo> orgcount = new Dictionary<int, OrgInfo>();
+
         private class PayInfo
         {
             public string PayLink { get; set; }
@@ -207,13 +214,10 @@ namespace CmsData
 
                 case "{orgname}":
                 case "{org}":
-                    return
-                        db.Organizations.Where(oo => oo.OrganizationId == db.CurrentOrgId)
-                            .Select(oo => oo.OrganizationName).SingleOrDefault();
+                    return GetOrgInfo(emailqueueto).Name;
 
                 case "{orgmembercount}":
-                    return
-                        db.OrganizationMembers.Count(om => om.OrganizationId == db.CurrentOrgId).ToString();
+                    return GetOrgInfo(emailqueueto).Count;
 
                 case "{paylink}":
                     if (pi != null && pi.PayLink.HasValue())
@@ -307,6 +311,29 @@ namespace CmsData
             }
 
             return code;
+        }
+
+        private OrgInfo GetOrgInfo(EmailQueueTo emailqueueto)
+        {
+            OrgInfo oi = null;
+            if (emailqueueto != null && emailqueueto.OrgId.HasValue)
+            {
+                if (!orgcount.ContainsKey(emailqueueto.OrgId.Value))
+                {
+                    var q = from i in db.Organizations
+                        where i.OrganizationId == emailqueueto.OrgId.Value
+                        select new OrgInfo()
+                        {
+                            Name = i.OrganizationName,
+                            Count = i.OrganizationMembers.Count().ToString()
+                        };
+                    oi = q.SingleOrDefault();
+                    orgcount.Add(emailqueueto.OrgId.Value, oi);
+                }
+                else
+                    oi = orgcount[emailqueueto.OrgId.Value];
+            }
+            return oi ?? new OrgInfo();
         }
 
         const string AddSmallGroupRe = @"\{addsmallgroup:\[(?<group>[^\]]*)\]\}";

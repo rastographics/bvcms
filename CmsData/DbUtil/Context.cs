@@ -1033,6 +1033,12 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), email);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.DropOrgMember")]
+        public int DropOrgMember([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.PopulateTempTag")]
         public int PopulateTempTag([Parameter(DbType = "Int")] int id, [Parameter(DbType = "VARCHAR(MAX)")] string list)
         {

@@ -9,19 +9,17 @@
             });
         }
     });
-    var fullPage = getParameterByName("fullPage") === 'true';
-    if (fullPage)
-        $("#fullpage").prop("checked", true);
     CKEDITOR.replace('body', {
         height: 400,
         allowedContent: true,
-        fullPage: fullPage,
+        autoParagraph: false,
+        fullPage: !$("#snippet").prop("checked"),
         customConfig: "/scripts/js/ckeditorconfig.js"
     });
-    $("#fullpage").change(function () {
+    $("#snippet").change(function () {
         if (confirm("reload page?")) {
             if (this.checked)
-                window.location.href = window.location.pathname + '?fullPage=true';
+                window.location.href = window.location.pathname + '?snippet=true';
             else
                 window.location.href = window.location.pathname;
         }

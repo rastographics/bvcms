@@ -103,8 +103,6 @@ namespace CmsWeb.Code
 		}
 		public static IEnumerable<Field> GetExtraValues()
 		{
-			if (DbUtil.Db.Setting("UseStandardExtraValues", "false") != "true")
-				return new List<Field>();
 			var xml = DbUtil.FamilyExtraValues();
 			var sr = new StringReader(xml);
 			var fields = (new XmlSerializer(typeof(Fields)).Deserialize(sr) as Fields).fields;

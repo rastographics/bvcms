@@ -13,7 +13,8 @@ CREATE TABLE [dbo].[Content]
 [CreatedBy] [nvarchar] (50) NULL,
 [Archived] [datetime] NULL,
 [ArchivedFromId] [int] NULL,
-[UseTimes] [int] NULL
+[UseTimes] [int] NULL,
+[Snippet] [bit] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

@@ -29,7 +29,18 @@
 <tr><td>QueuedBy</td><td>@Model.queue.QueuedBy</td></tr>
 <tr><td>FromName</td><td>@Model.queue.FromName</td></tr>
 <tr><td>FromAddr</td><td>@Model.queue.FromAddr</td></tr>
-<tr><td>Count</td><td>@Model.GetEmailTos().Count()</tr>
+  <tr>
+    <td>Count</td>
+    <td>
+      @if (Model.SendFromOrg)
+      {
+        <text>Emails will be sent from Current Members of @Model.SendFromOrgName</text>
+      }
+      else
+      {
+        @Model.GetEmailTos().Count()
+      }
+  </tr>
 <tr><td>Opens</td>
     <td>@Model.queue.EmailResponses.Count()
         @Html.DropDownList("filter", new SelectList( new string[] 

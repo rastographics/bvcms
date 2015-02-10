@@ -26,6 +26,7 @@ using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Web;
 using CmsWeb.Code;
 using Elmah;
 using Encoder = System.Drawing.Imaging.Encoder;
@@ -50,9 +51,16 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(content);
         }
 
-        public ActionResult ContentEdit(int id)
+        public ActionResult ContentEdit(int? id, bool? snippet)
         {
-            var content = DbUtil.ContentFromID(id);
+            if (!id.HasValue)
+                throw new HttpException(404, "No ID found.");
+            var content = DbUtil.ContentFromID(id.Value);
+            if (snippet == true)
+            {
+                content.Snippet = true;
+                DbUtil.Db.SubmitChanges();
+            }
             return RedirectEdit(content);
         }
 
@@ -73,15 +81,14 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult ContentUpdate(int id, string name, string title, string body, int? roleid, string stayaftersave = null)
+        public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string stayaftersave = null)
         {
             var content = DbUtil.ContentFromID(id);
             content.Name = name;
             content.Title = title;
             content.Body = body;
             content.RoleID = roleid ?? 0;
-
-            string sRenderType = DbUtil.Db.Setting("RenderEmailTemplate", "none");
+            content.Snippet = snippet;
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {

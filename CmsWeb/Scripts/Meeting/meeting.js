@@ -64,7 +64,7 @@
         }
     });
     $(".clickEdit").editable("/Meeting/Edit/", {
-        indicator: "<img src='/images/loading.gif'>",
+        indicator: "<img src='/Content/images/loading.gif'>",
         tooltip: "Click to edit...",
         style: 'display: inline',
         width: '300px',
@@ -287,7 +287,7 @@
             tooltip: 'Click to edit...'
         });
         $(".editline").editable("/Meeting/EditExtra/", {
-            indicator: "<img src='/images/loading.gif'>",
+            indicator: "<img src='/Content/images/loading.gif'>",
             tooltip: "Click to edit...",
             style: 'display: inline',
             width: 200,

@@ -47,6 +47,7 @@
   @Html.Hidden("wantParents", Model.wantParents)
   @Html.Hidden("ccparents", Model.CcParents)
   @Html.Hidden("roleid", c.RoleID)
+  @Html.Hidden("orgid", Model.OrgId)
   @Html.Hidden("noDuplicates", Model.noDuplicates)
   <input type="hidden" name="saveid" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : c.Id )" />
   <input type="hidden" id="body" name="body" />

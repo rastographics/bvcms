@@ -361,6 +361,39 @@ namespace CmsWeb.Areas.Reports.Models
                        CurrMember = p.CurrMember ?? false
                    };
         }
+        public static IEnumerable<AttendInfo> RollListHighlight(int? meetingId, int orgId, DateTime meetingDate,
+            bool sortByName = false, bool currentMembers = false, string highlight = null)
+	    {
+	        var q = from p in DbUtil.Db.RollListHighlight(meetingId, meetingDate, orgId, currentMembers, highlight)
+	            select p;
+
+            if (sortByName)
+                q = from p in q
+                    orderby p.Name
+                    select p;
+            else
+                q = from p in q
+                    orderby p.Section, p.Last, p.FamilyId, p.First
+                    select p;
+
+            return from p in q
+                   select new AttendInfo()
+                   {
+                       PeopleId = p.PeopleId.Value,
+                       Name = p.Name,
+                       Email = p.Email,
+                       Attended = p.Attended ?? false,
+                       AttendCommitmentId = p.CommitmentId,
+                       Commitment = AttendCommitmentCode.Lookup(p.CommitmentId ?? 99),
+                       Member = p.Section == 1,
+                       CurrMemberType = p.CurrMemberType,
+                       MemberType = p.MemberType,
+                       AttendType = p.AttendType,
+                       OtherAttend = p.OtherAttends,
+                       CurrMember = p.CurrMember ?? false,
+                       Highlight = p.Highlight ?? false,
+                   };
+        }
 
 		public class AttendInfo
 		{
@@ -378,6 +411,7 @@ namespace CmsWeb.Areas.Reports.Models
 			public string MemberType { get; set; }
 			public string AttendType { get; set; }
 			public int? OtherAttend { get; set; }
+            public bool Highlight { get; set; }
 		}
 	}
 }

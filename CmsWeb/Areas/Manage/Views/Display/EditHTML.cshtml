@@ -27,7 +27,7 @@
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                                @Html.CheckBox("fullpage") Full page?&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info"><i class="fa fa-info-circle"></i> Note:  Full page should only be clicked when you first come to the page, not after you have made any changes otherwise they will be lost.</span>
+                                @Html.CheckBox("snippet", Model.Snippet) Snippet?&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info"><i class="fa fa-info-circle"></i> Note:  Snippet should only be clicked when you first come to the page, not after you have made any changes otherwise they will be lost.</span>
                             </label>
                         </div>
                     </div>
@@ -90,19 +90,15 @@
                 });
             });
 
-            var fullPage = getParameterByName("fullPage") === 'true';
-            if (fullPage) {
-                $("#fullpage").prop("checked", true); 
-            }
-
             CKEDITOR.replace('body', {
                 height: 400,
                 allowedContent: true,
-                fullPage: fullPage,
+                autoParagraph: false,
+                fullPage: !$("#snippet").prop("checked"),
                 customConfig: "/scripts/js/ckeditorconfig.js"
             });
                 
-            $("#fullpage").change(function () {
+            $("#snippet").change(function () {
                 var checked = this.checked;
                 swal({
                     title: "Reload page?",
@@ -114,7 +110,7 @@
                 },
                 function () {
                     if (checked)
-                        window.location.href = window.location.pathname + '?fullPage=true';
+                        window.location.href = window.location.pathname + '?snippet=true';
                     else
                         window.location.href = window.location.pathname;
                 });

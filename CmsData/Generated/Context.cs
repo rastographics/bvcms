@@ -3152,6 +3152,25 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.RollListHighlight", IsComposable = true)]
+		public IQueryable< View.RollListHighlight > RollListHighlight(
+            [Parameter(DbType="int")] int? mid,
+            [Parameter(DbType="datetime")] DateTime? meetingdt,
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="bit")] bool? current,
+            [Parameter(DbType="varchar")] string highlight
+            )
+		{
+			return this.CreateMethodCallQuery< View.RollListHighlight>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                mid,
+                meetingdt,
+                oid,
+                current,
+                highlight
+                );
+		}
+
 		[Function(Name="dbo.SearchDivisions", IsComposable = true)]
 		public IQueryable< View.SearchDivision > SearchDivisions(
             [Parameter(DbType="int")] int? oid,

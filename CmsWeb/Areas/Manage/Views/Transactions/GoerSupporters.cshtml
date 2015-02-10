@@ -15,8 +15,10 @@
                 <tr>
                     <th>Date</th>
                     <th>Supporter</th>
+                    <th>Goer</th>
                     <th class="text-right">Amount</th>
                     <th>Notice</th>
+                    <th>Trip</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,9 +26,11 @@
                 {
                     <tr>
                         <td>@ss.gs.Created.FormatDate()</td>
-                        <td><a href="/Person2/@ss.PeopleId">@ss.Name</a></td>
+                        <td><a href="/Person2/@ss.SupporterId">@ss.SupporterName</a></td>
+                        <td><a href="/Person2/@ss.GoerId">@ss.GoerName</a></td>
                         <td class="text-right">@ss.gs.Amount.ToString2("N2")</td>
                         <td>@(ss.gs.NoNoticeToGoer == true ? "no notice" : "sent")</td>
+                        <td>@ss.TripName</td>
                     </tr>
                 }
             </tbody>
@@ -42,15 +46,23 @@
             <thead>
                 <tr>
                     <th>Date</th>
+                    <th>Supporter</th>
+                    <th>Goer</th>
                     <th class="text-right">Amount</th>
+                    <th>Notice</th>
+                    <th>Trip</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var gg in qss)
                 {
                     <tr>
-                        <td>@gg.Created.FormatDate()</td>
-                        <td class="text-right">@gg.Amount.ToString2("N2")</td>
+                        <td>@gg.gs.Created.FormatDate()</td>
+                        <td><a href="/Person2/@gg.SupporterId">@gg.SupporterName</a></td>
+                        <td><a href="/Person2/@gg.GoerId">@gg.GoerName</a></td>
+                        <td class="text-right">@gg.gs.Amount.ToString2("N2")</td>
+                        <td>@(gg.gs.NoNoticeToGoer == true ? "no notice" : "sent")</td>
+                        <td>@gg.TripName</td>
                     </tr>
                 }
             </tbody>
@@ -66,9 +78,11 @@
             <thead>
                 <tr>
                     <th>Date</th>
+                    <th>Supporter</th>
                     <th>Goer</th>
                     <th class="text-right">Amount</th>
                     <th>Notice</th>
+                    <th>Trip</th>
                 </tr>
             </thead>
             <tbody>
@@ -76,9 +90,11 @@
                 {
                     <tr>
                         <td>@gg.gs.Created.FormatDate()</td>
-                        <td><a href="/Person2/@gg.PeopleId">@gg.Name</a></td>
+                        <td><a href="/Person2/@gg.SupporterId">@gg.SupporterName</a></td>
+                        <td><a href="/Person2/@gg.GoerId">@gg.GoerName</a></td>
                         <td class="text-right">@gg.gs.Amount.ToString2("N2")</td>
                         <td>@(gg.gs.NoNoticeToGoer == true ? "no notice" : "sent")</td>
+                        <td>@gg.TripName</td>
                     </tr>
                 }
             </tbody>

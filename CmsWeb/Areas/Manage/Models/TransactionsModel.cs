@@ -486,31 +486,50 @@ namespace CmsWeb.Models
         public class SupporterInfo
         {
             public GoerSenderAmount gs { get; set; }
-            public string Name { get; set; }
-            public int? PeopleId { get; set; }
+            public string GoerName { get; set; }
+            public string SupporterName { get; set; }
+            public int? GoerId { get; set; }
+            public int? SupporterId { get; set; }
+            public string TripName { get; set; }
         }
         public IQueryable<SupporterInfo> Supporters()
         {
             return from gs in DbUtil.Db.GoerSenderAmounts
                    where gs.GoerId == GoerId
                    where gs.SupporterId != gs.GoerId
-                   let p = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
+                   let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
+                   let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
                    select new SupporterInfo()
                    {
                        gs = gs,
-                       Name = p.Name,
-                       PeopleId = p.PeopleId
+                       SupporterName = sp.Name,
+                       SupporterId = sp.PeopleId,
+                       GoerName = gp.Name,
+                       GoerId = gp.PeopleId,
+                       TripName = o.OrganizationName
                    };
         }
 
-        public IQueryable<GoerSenderAmount> SelfSupports()
+        public IQueryable<SupporterInfo> SelfSupports()
         {
             return from gs in DbUtil.Db.GoerSenderAmounts
                    where gs.GoerId == GoerId
                    where gs.SupporterId == gs.GoerId
+                   let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
+                   let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
-                   select gs;
+                   select new SupporterInfo()
+                   {
+                       gs = gs,
+                       SupporterName = sp.Name,
+                       SupporterId = sp.PeopleId,
+                       GoerName = gp.Name,
+                       GoerId = gp.PeopleId,
+                       TripName = o.OrganizationName
+                   };
         }
 
         public IQueryable<SupporterInfo> SupportOthers()
@@ -518,13 +537,18 @@ namespace CmsWeb.Models
             return from gs in DbUtil.Db.GoerSenderAmounts
                    where gs.SupporterId == SenderId
                    where gs.SupporterId != gs.GoerId
-                   let p = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
+                   let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
                    select new SupporterInfo()
                    {
                        gs = gs,
-                       PeopleId = p.PeopleId,
-                       Name = p.Name
+                       SupporterName = sp.Name,
+                       SupporterId = sp.PeopleId,
+                       GoerName = gp.Name,
+                       GoerId = gp.PeopleId,
+                       TripName = o.OrganizationName
                    };
         }
 

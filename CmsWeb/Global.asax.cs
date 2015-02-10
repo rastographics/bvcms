@@ -198,7 +198,7 @@ namespace CmsWeb
             var sensitiveFormData = ctx.Request.Form.AllKeys.Where(
                 k => sensitiveFormKeys.Contains(k.ToLower(), StringComparer.OrdinalIgnoreCase)).ToList();
 
-            if (!sensitiveFormData.Any())
+            if (!sensitiveFormData.Any() || Util.IsDebug())
                 return;
 
             var error = new Error(e.Exception, ctx);

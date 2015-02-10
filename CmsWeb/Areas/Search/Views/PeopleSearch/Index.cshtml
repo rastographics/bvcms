@@ -66,17 +66,14 @@
                             @Html.DropDownList("marital", Model.MaritalCodes(), new { @class = "form-control" })
                         </div>
                     </div>
-                    @if (ViewExtensions2.DbSetting("UseStatusFlags", "false").ToBool())
-                    {
-                        <div class="col-lg-4 col-md-5 col-sm-6">
+                    <div class="col-lg-4 col-md-5 col-sm-6">
+                        <div class="form-group">
+                            <label for="statusflags">Status Flags</label>
                             <div class="form-group">
-                                <label for="statusflags">Status Flags</label>
-                                <div class="form-group">
-                                    @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
-                                </div>
+                                @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
                             </div>
                         </div>
-                    }
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-4">

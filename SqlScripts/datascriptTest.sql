@@ -152,12 +152,12 @@ INSERT INTO [dbo].[BackgroundCheckMVRCodes] ([ID], [Code], [Description], [State
 INSERT INTO [dbo].[BackgroundCheckMVRCodes] ([ID], [Code], [Description], [StateAbbr]) VALUES (60, N'WY', N'Wyoming', N'WY')
 SET IDENTITY_INSERT [dbo].[BackgroundCheckMVRCodes] OFF
 SET IDENTITY_INSERT [dbo].[Content] ON
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (1, N'Header', N'Header', N'<h1>
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (1, N'Header', N'Header', N'<h1>
 	Fake People</h1>
 <h2>
 	<em>Where nothing is real</em></h2>
-', '2009-04-17 20:42:09.213', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (2, N'ShellDefault', N'Defalt Online Reg Shell', N'<html> 
+', '2009-04-17 20:42:09.213', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (2, N'ShellDefault', N'Defalt Online Reg Shell', N'<html> 
 <head> 
 <title>Online Registration</title> 
 <!--FORM CSS-->
@@ -167,8 +167,8 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
     <h2>Registration Form</h2> 
 <!--FORM END-->
 </body> 
-</html>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (3, N'ShellIFrame', N'Plain Online Reg Shell for iFrame use', N'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+</html>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (3, N'ShellIFrame', N'Plain Online Reg Shell for iFrame use', N'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
 <html> 
 <head> 
 <title>Online Registration</title> 
@@ -242,24 +242,24 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <!--FORM END-->
  
 </body> 
-</html>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (4, N'StatementHeader', N'Contribution Statement Header', N'<h1>Sample Church</h1>
-<h2>105 Highway 151 | Ventura, TN 34773 | 615.232.3432</h2>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (5, N'StatementNotice', N'Contribution Statement Notice', N'<p>
+</html>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (4, N'StatementHeader', N'Contribution Statement Header', N'<h1>Sample Church</h1>
+<h2>105 Highway 151 | Ventura, TN 34773 | 615.232.3432</h2>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (5, N'StatementNotice', N'Contribution Statement Notice', N'<p>
 	<i>NOTE: No goods or services were provided to you by the church in connection with any contribution; any value received consisted entirely of intangible religious benefits.&nbsp;</i></p>
 <p>
 	&nbsp;</p>
 <p>
 	<i>Thank you for your faithfulness in the giving of your time, talents, and resources. Together we can share the love of Jesus with our city </i></p>
-', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (6, N'TermsOfUse', N'Terms Of Use', N'
+', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (6, N'TermsOfUse', N'Terms Of Use', N'
 <div style="width: 300px">
 <p><span style="font-size: medium">Access to this site is given by special pemission only.</span></p>
 <p>This web site has a starter database.</p>
 <p>The source code is licensed under the GPL (see <a href="http://bvcms.codeplex.com/license">license</a>)</p>
 </div>
-', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (7, N'Welcome', N'Welcome new user', N'<p>
+', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (7, N'Welcome', N'Welcome new user', N'<p>
 	Once you have successfully logged in, you can change your&nbsp;<span>password&nbsp;(we encourage you to do so).</span></p>
 <p>
 	To change your password on CMS:</p>
@@ -285,8 +285,8 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 	<i><font color="#000080">BVCMS Team</font></i></div>
 <div>
 	<i><font color="#000080"><a href="mailto:helpdesk@bellevue.org">s</a>upport@bvcms.com</font></i></div>
-', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (8, N'Volunteer-VBS.view', N'VBS Volunteers', N'<p>
+', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (8, N'Volunteer-VBS.view', N'VBS Volunteers', N'<p>
 	You must be a church member and at least 18 years of age in order to register on-line. If you are under the age of 18, you may get a Youth Volunteer Card at any Events Registration Center.&nbsp;</p>
 <p>
 	Expand the outline below and select the area(s) in which you would like to serve by clicking the check boxes and then click &quot;Submit&quot; when you are done. You will receive an email confirmation when you register. If you need to give us additional information or preferences, please hit Reply to that email and give us that information.</p>
@@ -345,12 +345,12 @@ below">Expand All</a></div>
 		</ul>
 	</li>
 </ul>
-', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (9, N'Volunteer-VBS.xml', N'VBS Volunteers Config', N'<pre>
+', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (9, N'Volunteer-VBS.xml', N'VBS Volunteers Config', N'<pre>
   <org name="VBS" orgid="31">
   </org></pre>
-', '2013-09-09 23:32:15.190', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (10, N'VolunteerVBS', N'VBS Volunteer Confirmation', N'<p>
+', '2013-09-09 23:32:15.190', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (10, N'VolunteerVBS', N'VBS Volunteer Confirmation', N'<p>
 	{first}</p>
 <p>
 	Thank you for volunteering to work in VBS this year. Someone will be getting back with you in the next few days regarding exactly where you will be serving. If you need to give us additional information or preferences, please hit Reply to this email and give us that information.</p>
@@ -366,8 +366,8 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 	Children&#39;s Ministry</p>
 <p>
 	&nbsp;</p>
-', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (11, N''MemberProfileAutomation'', N''MemberProfileAutomation'', N'' 
+', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (11, N''MemberProfileAutomation'', N''MemberProfileAutomation'', N'' 
 # this is an IronPython script for MembershipAutomation in BVCMS
 # the variable p has been passed in and is the person that we are saving Member Profile information for
 
@@ -447,7 +447,7 @@ def CheckDecisionStatus(p):
     elif p.DecisionTypeId == DecisionCode.ProfessionNotForMembership:
         p.MemberStatusId = MemberStatusCode.NotMember
         if p.NewMemberClassStatusId != NewMemberClassStatusCode.Attended:
-            NewMemberClassStatusId = New'', ''2013-09-09 23:32:15.190'', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL)')
+            NewMemberClassStatusId = New'', ''2013-09-09 23:32:15.190'', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)')
 EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''MemberClassStatusCode.NotSpecified
         if p.BaptismStatusId != BaptismStatusCode.Completed:
             p.BaptismTypeId = BaptismTypeCode.NonMember
@@ -555,7 +555,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''eturn = "need a NewMemberClass date"
                 om.Drop(True) # drops and records drop in history
 '',NULL,NULL) WHERE [Id]=11
 ')
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (12, N'GivingReceipt', N'Giving Receipt', N'<div style="margin:10px;max-width: 600px">
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (12, N'GivingReceipt', N'Giving Receipt', N'<div style="margin:10px;max-width: 600px">
 	<table cellpadding="0" cellspacing="5" style="width: 100%; font-family:Arial; font-size: 13px; line-height: 15px;">
 		<tbody>
 			<tr>
@@ -643,11 +643,11 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 		</div>
 	</div>
 </div>
-', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (13, N'FeaturedDonation', N'1', N'<p>
+', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (13, N'FeaturedDonation', N'1', N'<p>
 	Please consider donating to whatever here.</p>
-', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (58, N'VitalStats', N'Vital Stats Iron Python Script', N'import System
+', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (58, N'VitalStats', N'Vital Stats Iron Python Script', N'import System
 import System.Text
 from System import *
 from System.Text import *
@@ -684,8 +684,8 @@ class VitalStats(object):
             m.ContributionTotals(53*7*2, 53*7+7, 0) / 52)
         sb.AppendLine(''</table>'')
         return sb.ToString()
-', '2013-09-09 23:32:15.190', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (59, N'NewUserEmail', N'NewUserEmail', N'Hi {name},
+', '2013-09-09 23:32:15.190', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (59, N'NewUserEmail', N'NewUserEmail', N'Hi {name},
 <p>You have a new account on our Church Management System which you can access at the following link:<br />
 <a href="{cmshost}">{cmshost}</a></p>
 <table>
@@ -694,8 +694,8 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 </table>
 <p>Please visit <a href="{cmshost}/Display/Page/Welcome">this welcome page</a> for more information</p>
 <p>Thanks,<br />
-The bvCMS Team</p>', '2011-10-18 20:10:48.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (60, N'ExistingAccountConfirmation', N'ExistingAccountConfirmation', N'Hi {name},
+The bvCMS Team</p>', '2011-10-18 20:10:48.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (60, N'ExistingAccountConfirmation', N'ExistingAccountConfirmation', N'Hi {name},
 <p>We noticed you already have an account in our church database.</p>
 <p>You can login at <a href="{host}">{host}</a>. 
 And if you can''t remember your password or username, click the forgot password link when you get there. 
@@ -703,8 +703,8 @@ Note: you will need to know your username for this to work. If you do not know y
 This will send you a link you can use to reset your password.</p>
 <p>You can use your account to help us maintain your correct address, email and phone numbers.
 Just login to <a href="{host}">{host}</a> and you will be taken to your record where you can make corrections if needed.</p>
-<p>Thank You</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (61, N'CreateAccountRegistration', N'CreateAccountRegistration', N'Hi {name},
+<p>Thank You</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (61, N'CreateAccountRegistration', N'CreateAccountRegistration', N'Hi {name},
 <p>We have created an account you for in our church database.</p>
 <p>This will make it easier for you to do online registrations.
 Just use this account next time you register online.</p>
@@ -716,8 +716,8 @@ Just login to {host} and you will be taken to your record where you can make cor
 <tr><td>Username:</td><td><strong><span style="font-family: courier new, courier, monospace">{username}</span></strong></td></tr>
 <tr><td>Password:</td><td><strong><span style="font-family: courier new, courier, monospace">{password}</span></strong></td></tr>
 </table></blockquote>
-<p>Thank You</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (62, N'CreateAccountConfirmation', N'CreateAccountConfirmation', N'Hi {name},
+<p>Thank You</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (62, N'CreateAccountConfirmation', N'CreateAccountConfirmation', N'Hi {name},
 <p>We have created an account you for in our church database.</p>
 <p>This will make it easier for you to do online registrations.
 Just use this account next time you register online.</p>
@@ -729,14 +729,14 @@ Just login to {host} and you will be taken to your record where you can make cor
 <tr><td>Username:</td><td><strong><span style="font-family: courier new, courier, monospace">{username}</span></strong></td></tr>
 <tr><td>Password:</td><td><strong><span style="font-family: courier new, courier, monospace">{password}</span></strong></td></tr>
 </table></blockquote>
-<p>Thank You</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (63, N'OneTimeConfirmation', N'OneTimeConfirmation', N'Hi {name},
+<p>Thank You</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (63, N'OneTimeConfirmation', N'OneTimeConfirmation', N'Hi {name},
 <p>Here is your <a href="{url}">link</a> to manage your subscriptions. 
-(note: it will only work once for security reasons)</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (64, N'OneTimeConfirmationPledge', N'OneTimeConfirmationPledge', N'Hi {name},
+(note: it will only work once for security reasons)</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (64, N'OneTimeConfirmationPledge', N'OneTimeConfirmationPledge', N'Hi {name},
 <p>Here is your <a href="{url}">link</a> to manage your pledge. 
-(note: it will only work once for security reasons)</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (65, N'DiffEmailMessage', N'DiffEmailMessage', N'<html>
+(note: it will only work once for security reasons)</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (65, N'DiffEmailMessage', N'DiffEmailMessage', N'<html>
 	<head>
 		<title></title>
 	</head>
@@ -747,8 +747,8 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 			You registered for {org} using a different email address than the one we have on record. It is important that you call the church <strong>{phone}</strong> to update our records so that you will receive future important notices regarding this registration.</p>
 	</body>
 </html>
-', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (66, N'NoEmailMessage', N'NoEmailMessage', N'<html>
+', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (66, N'NoEmailMessage', N'NoEmailMessage', N'<html>
 	<head>
 		<title></title>
 	</head>
@@ -759,8 +759,8 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 			You registered for {org}, and we found your record, but there was no email address on your existing record in our database. If you would like for us to update your record with this email address or another, Please contact the church at <strong>{phone}</strong> to let us know. It is important that we have your email address so that you will receive future important notices regarding this registration. But we won&#39;t add that to your record without your permission. Thank you</p>
 	</body>
 </html>
-', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (67, N'StandardExtraValues.xml', N'StandardExtraValues.xml', N'<Fields>
+', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (67, N'StandardExtraValues.xml', N'StandardExtraValues.xml', N'<Fields>
 	<Field name="InterviewStatus" location="MemberProfile" type="Code">
 		<Codes>
 			<string>NotScheduled</string>
@@ -802,13 +802,13 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 		</Codes>
 	</Field>
 </Fields>
-', '2012-02-29 21:47:04.720', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (68, N'Empty Template', N'Empty Template', N'<html>
+', '2012-02-29 21:47:04.720', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (68, N'Empty Template', N'Empty Template', N'<html>
 <body>
 <div bvedit style="max-width:600px;">Click here to edit content</div>
 </body>
-</html>', '2012-06-14 19:18:11.000', 1, 2, 0, 0, 0, NULL, NULL, NULL, NULL)
-EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (69, N''Basic Newsletter Template'', N''Basic Newsletter Template'', N''<html>
+</html>', '2012-06-14 19:18:11.000', 1, 2, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (69, N''Basic Newsletter Template'', N''Basic Newsletter Template'', N''<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         
@@ -973,7 +973,7 @@ EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated]
 				height:auto;
 			}
 			.rightColumnContent{
-				backgrou'', ''2013-09-09 23:32:15.190'', NULL, 2, 4, 18, 0, NULL, NULL, NULL, NULL)')
+				backgrou'', ''2013-09-09 23:32:15.190'', NULL, 2, 4, 18, 0, NULL, NULL, NULL, NULL, NULL)')
 EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
 			}
 			.rightColumnContent div{
@@ -1246,7 +1246,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''                         <tr>
 </html>
 '',NULL,NULL) WHERE [Id]=69
 ')
-EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (70, N''Basic Template'', N''Basic Template With Header'', N''<html>
+EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (70, N''Basic Template'', N''Basic Template With Header'', N''<html>
 	<head>
 		<title></title>
 		<style type="text/css">
@@ -1418,7 +1418,7 @@ body{margin:0; padding:0;}
 											<table border="0" cellpadding="10" cellspacing="0" width="100%">
 												<tbody>
 													<tr>
-														<td val'', ''2013-09-09 23:32:15.190'', NULL, 2, 5, 0, 0, NULL, NULL, NULL, NULL)')
+														<td val'', ''2013-09-09 23:32:15.190'', NULL, 2, 5, 0, 0, NULL, NULL, NULL, NULL, NULL)')
 UPDATE [dbo].[Content] SET [Body].WRITE(N'ign="top">
 															<div bvedit="">
 																Use this area to offer a short teaser of your email&#39;&#39;s content. Text here will show in the preview area of some email clients.</div>
@@ -1510,23 +1510,23 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N'ign="top">
 	</body>
 </html>
 ',NULL,NULL) WHERE [Id]=70
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (71, N'ForgotPasswordReset2', N'ForgotPasswordReset2', N'<p>Someone recently requested a new password for {email}.
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (71, N'ForgotPasswordReset2', N'ForgotPasswordReset2', N'<p>Someone recently requested a new password for {email}.
 To set your password, click your username below:</p>
 <blockquote>{resetlink}</blockquote>
 <p>If this is a mistake, please disregard this message, your password will not be changed.</p>
 <p>Thanks,<br />
 The BVCMS Team</p>
-', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (72, N'ForgotPasswordBadEmail', N'ForgotPasswordBadEmail', N'<p>Someone recently requested a new password for this email address {email}.  
+', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (72, N'ForgotPasswordBadEmail', N'ForgotPasswordBadEmail', N'<p>Someone recently requested a new password for this email address {email}.  
 However, we could not find an account associated with this email address.
 You may try a different email address, or contact the church.</p>
 <p>If this is a mistake, please disregard this message, your password will not be changed.</p>
 <p>Thanks,<br />
 The BVCMS Team</p>
-', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (73, N'NoGivingSetupMessage', N'NoGivingSetupMessage', N'
-        <p class="alert alert-block alert-info">Sorry, it appears that your church has not set up online giving through BVCMS.</p>', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes]) VALUES (74, N'CustomReports', N'CustomReports', N'', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL)
+', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (73, N'NoGivingSetupMessage', N'NoGivingSetupMessage', N'
+        <p class="alert alert-block alert-info">Sorry, it appears that your church has not set up online giving through BVCMS.</p>', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (74, N'CustomReports', N'CustomReports', N'', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Content] OFF
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (1, 1, '2010-10-30 15:36:12.533', N'General Tithe', N'General Tithe', 1, 1, 0, NULL, N'0', N'0', N'0', N'0', N'0', N'0', NULL, NULL, 0, 0)
 SET IDENTITY_INSERT [dbo].[ContributionsRun] ON
@@ -1720,7 +1720,7 @@ INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (26, N'Dele
 SET IDENTITY_INSERT [dbo].[Roles] OFF
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminCoupon', N'itsasecret')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminMail', N'david@bvcms.com')
-INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogAppUrl', N'http://blog.bvcms.com')
+INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogAppUrl', N'http://blog.touchpointsoftware.com')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogFeedUrl', N'http://feeds.feedburner.com/BvcmsBlog')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'ChangePasswordDays', N'360')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'CheckRemoteAccessRole', N'false ')
@@ -3910,7 +3910,7 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 11)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (4, 19)
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2014-10-20 12:11:18.420', NULL, '2014-08-22 21:17:16.130', '2009-05-05 22:46:43.890', 0, '2012-09-11 15:37:25.863', 1, '2014-10-20 12:10:19.993', 0, NULL, NULL, NULL, 1, N'testdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, NULL)
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2014-12-14 20:57:36.837', '2014-12-14 20:57:01.720', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2013-09-20 22:43:43.037', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2015-02-07 09:18:37.583', '2015-02-07 09:17:59.170', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2013-09-20 22:43:43.037', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'2352354235', NULL, NULL, 1, '2011-09-01 15:29:59.107', NULL, '2010-10-30 15:29:49.930', '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:49.860', 0, '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, NULL)
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (4, 1, N'admin2', N'', N'2ev9RjUrswMiUt1C1bpsMhLkBa8=', NULL, NULL, 1, '2014-08-22 21:15:14.507', NULL, '2014-08-22 21:15:14.507', '2014-08-22 21:15:14.507', 0, '2014-08-22 21:15:14.507', 0, '2014-08-22 21:15:14.507', 0, '2014-08-22 21:15:14.507', NULL, NULL, 0, NULL, NULL, N'The Admin', N'Admin, The', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF

@@ -67,10 +67,7 @@
           <tr>
             <td class="top nowrap" colspan="2">
               Public View @Html.CheckBox("PublicView")
-              @if (User.IsInRole("Developer"))
-              {
-                <a class="ViewReport btn mini btn-info" href="ConvertToSearch">Convert to Search</a>
-              }
+              <a class="ViewReport btn mini btn-info" href="ConvertToSearch">Convert to Search</a>
             </td>
             <td class="right" colspan="2">
               @if (User.IsInRole("OrgTagger"))

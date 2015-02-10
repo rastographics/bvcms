@@ -212,17 +212,11 @@ namespace CmsData
             }
 
             var q = from a in db.Attends
+                    where a.AttendanceFlag == true
                     where a.PeopleId == this.PeopleId
-                    let oa = db.Attends.SingleOrDefault(a2 => a2.MeetingId == a.MeetingId && a2.PeopleId == targetid)
-                    where oa == null
                     select a;
-            var list = q.ToList();
-            foreach (var a in list)
-            {
-                a.PeopleId = targetid;
-                db.SubmitChanges();
-                TrySubmit(db, "Attends (meetingid:{0})".Fmt(a.MeetingId));
-            }
+            foreach (var a in q)
+                Attend.RecordAttendance(db, targetid, a.MeetingId, true);
             db.AttendUpdateN(targetid, 10);
 
             foreach (var c in this.Contributions)
