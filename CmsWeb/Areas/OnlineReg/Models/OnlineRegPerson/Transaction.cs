@@ -90,6 +90,8 @@ namespace CmsWeb.Models
                     switch (ask.Type)
                     {
                         case "AskMenu":
+                            while(MenuItem.Count - 1 < ask.UniqueId)
+                                MenuItem.Add(new Dictionary<string, int?>());
                             amt += ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]).Sum(m => m.number * m.amt);
                             break;
                         case "AskDropdown":
