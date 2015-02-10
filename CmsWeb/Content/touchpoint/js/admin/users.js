@@ -2,7 +2,8 @@
     $("#clear").click(function (ev) {
         ev.preventDefault();
         $("input:text").val("");
-        $("#Role").val(-1);
+        $('#Role').multiselect('deselectAll', false);
+        $('#Role').multiselect('updateButtonText');
         return false;
     });
 

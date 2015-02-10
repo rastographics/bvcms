@@ -6,13 +6,14 @@
         <table id="resultsTable" class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th><a href="#" class="sortable">User</a></th>
+                    <th>User Id</th>
+                    <th><a href="#" class="sortable">Username</a></th>
+                    <th>People Id</th>
                     <th><a href="#" class="sortable">Name</a></th>
                     <th class="text-center"><a href="#" class="sortable">Online</a></th>
                     <th><a href="#" class="sortable">Email</a></th>
                     <th><a href="#" class="sortable">Activity</a></th>
-                    <th style="width: 600px;">Roles</th>
+                    <th style="width: 500px;">Roles</th>
                 </tr>
             </thead>
             <tbody>
@@ -24,7 +25,8 @@
                 {
                     <tr>
                         <td>@u.userid</td>
-                        <td class="tip">@u.username</td>
+                        <td>@u.username</td>
+                        <td>@u.peopleid</td>
                         <td>@Helper.AnchorLink(@u.name, "/Person2/" + u.peopleid) </td>
                         <td class="text-center">
                             @if (u.online)
@@ -34,7 +36,7 @@
                         </td>
                         <td>@u.email</td>
                         <td>@u.activity.FormatDateTm()</td>
-                        <td style="width: 600px;"><i>@u.roles</i></td>
+                        <td style="width: 500px;"><i>@u.roles</i></td>
                     </tr>
                 }
             </tbody>
