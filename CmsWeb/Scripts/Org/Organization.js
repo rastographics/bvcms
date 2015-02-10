@@ -747,7 +747,7 @@ $(function () {
             tooltip: 'Click to edit...'
         });
         $(".editline").editable("/Organization/EditExtra/", {
-            indicator: "<img src='/images/loading.gif'>",
+            indicator: "<img src='/Content/images/loading.gif'>",
             tooltip: "Click to edit...",
             style: 'display: inline',
             width: 200,
