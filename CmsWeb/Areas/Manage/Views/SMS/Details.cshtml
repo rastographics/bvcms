@@ -1,6 +1,7 @@
 ﻿@using CmsData
 @{
     ViewBag.Title = "SMS Message Details";
+    ViewBag.PageHeader = "SMS Message Details";
     Layout = ViewExtensions2.TouchPointLayout();
     int ListID = ViewBag.ListID;
     
@@ -8,50 +9,52 @@
              where e.Id == ListID
              select e).Single();
 }
-<h2>SMS Message Details</h2>
-<blockquote>@l.Message</blockquote>
 <div class="row">
     <div class="col-sm-9">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Person</th>
-                        <th>Number</th>
-                        <th class="text-center">Sent</th>
-                        <th class="text-center">Number</th>
-                        <th class="text-center">Opt-In</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var i in l.SMSItems.OrderBy(e => e.Person.Name).OrderByDescending(e => e.Sent))
-                    {
-                        <tr>
-                            <td>
-                                @i.Person.Name
-                            </td>
-                            <td>
-                                @i.Number
-                            </td>
-                            <td class="text-center">
-                                <span class="label  @( i.Sent ? "label-success" : "label-danger")">@( i.Sent ? "Yes" : "No")</span>
-                            </td>
-                            <td class="text-center">
-                                <span class="label  @( i.NoNumber ? "label-danger" : "label-success")">@( i.NoNumber ? "No" : "Yes")</span>
-                            </td>
-                            <td class="text-center">
-                                <span class="label  @( i.NoOptIn ? "label-danger" : "label-success")">@( i.NoOptIn ? "No" : "Yes")</span>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <a href="/SMS/List" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/SMS/List" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <blockquote>@l.Message</blockquote>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Person</th>
+                                <th>Number</th>
+                                <th class="text-center">Sent</th>
+                                <th class="text-center">Number</th>
+                                <th class="text-center">Opt-In</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in l.SMSItems.OrderBy(e => e.Person.Name).OrderByDescending(e => e.Sent))
+                            {
+                                <tr>
+                                    <td>
+                                        @i.Person.Name
+                                    </td>
+                                    <td>
+                                        @i.Number
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="label  @( i.Sent ? "label-success" : "label-danger")">@( i.Sent ? "Yes" : "No")</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="label  @( i.NoNumber ? "label-danger" : "label-success")">@( i.NoNumber ? "No" : "Yes")</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="label  @( i.NoOptIn ? "label-danger" : "label-success")">@( i.NoOptIn ? "No" : "Yes")</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <a href="/SMS/List" class="btn btn-default visible-xs-block btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
             </div>
         </div>
     </div>

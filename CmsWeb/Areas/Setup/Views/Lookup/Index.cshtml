@@ -2,11 +2,11 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Lookups";
+    ViewBag.PageHeader = @ViewData["description"];
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
-<h2>@ViewData["description"]</h2>
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible">
@@ -20,55 +20,74 @@
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             Click to edit the Code or Name. The items that cannot be deleted are expected to be there by the system. The description for those can be edited as long as the meaning is the same.
         </div>
-        <div class="table-responsive">
-            <table class="table table-striped table-responsive">
-                <tr>
-                    <th style="width: 100px;">Id</th>
-                    <th style="width: 300px;">Code</th>
-                    <th style="width: 300px;">Description</th>
-                    <th style="width: 100px;">Action</th>
-                </tr>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td style="width: 100px;">@item.Id</td>
-                        <td style="width: 300px;">
-                            @if (item.Hardwired.GetValueOrDefault())
-                            {
-                                @item.Code
-                            }
-                            else
-                            {
-                                <a href="#" id="c@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="c@(item.Id).@ViewData["type"]">@item.Code</a>
-                            }
-                        </td>
-                        <td style="width: 300px;">
-                            <a href="#" id="t@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="t@(item.Id).@ViewData["type"]">@item.Description</a>
-                        </td>
-                        <td style="width: 100px;">
-                            @if (!item.Hardwired.GetValueOrDefault())
-                            {
-                                <a id='d@(item.Id)' href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                            }
-                        </td>
-                    </tr>
-                }
-            </table>
-        </div>
+        <div class="box  box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add @ViewData["description"]</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table class="table table-striped table-responsive">
+                        <tr>
+                            <th style="width: 100px;">Id</th>
+                            <th style="width: 300px;">Code</th>
+                            <th style="width: 300px;">Description</th>
+                            <th style="width: 100px;">Action</th>
+                        </tr>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width: 100px;">@item.Id</td>
+                                <td style="width: 300px;">
+                                    @if (item.Hardwired.GetValueOrDefault())
+                                    {
+                                        @item.Code
+                                    }
+                                    else
+                                    {
+                                        <a href="#" id="c@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="c@(item.Id).@ViewData["type"]">@item.Code</a>
+                                    }
+                                </td>
+                                <td style="width: 300px;">
+                                    <a href="#" id="t@(item.Id).@ViewData["type"]" class="clickEdit" data-pk="t@(item.Id).@ViewData["type"]">@item.Description</a>
+                                </td>
+                                <td style="width: 100px;">
+                                    @if (!item.Hardwired.GetValueOrDefault())
+                                    {
+                                        <a id='d@(item.Id)' href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add @ViewData["description"]</a>
+            </div>
+        </div>       
     </div>
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                @using (Html.BeginForm("Create", "Lookup"))
-                {
-                    @Html.Hidden("type", ViewData["type"])
+</div>
+<div class="modal fade" id="new-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Create", "Lookup"))
+            {
+                @Html.Hidden("type", ViewData["type"])
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add @ViewData["description"]</h4>
+                </div>
+                <div class="modal-body">
                     <div class="form-group">
                         <label for="id">New Id</label>
                         <input type="number" id="id" name="id" class="form-control" />
                     </div>
-                    <input type="submit" class="btn btn-primary btn-block" value="Create" />
-                }
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -123,6 +142,16 @@
                         }
                     });
                 });
+            });
+
+            $("a.create-new").click(function (ev) {
+                ev.preventDefault();
+                $('#new-modal').modal();
+                return false;
+            });
+
+            $('#new-modal').on('shown.bs.modal', function () {
+                $("#id").val('').focus();
             });
         });
     </script>

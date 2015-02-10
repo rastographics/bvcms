@@ -2,38 +2,39 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Duplicates Finder";
+    ViewBag.ReportPageHeader = "Duplicates Finder";
 }
-<div class="report">
-    <h2>Duplicates Finder</h2>
-    <br />
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <tr>
-                <td>Started</td>
-                <td>@Model.Started</td>
-            </tr>
-            <tr>
-                <td>Total Records </td>
-                <td><span id="count">@Model.Count</span></td>
-            </tr>
-            <tr>
-                <td>Processed</td>
-                <td><span id="processed">@Model.Processed</span></td>
-            </tr>
-            <tr>
-                <td>Found</td>
-                <td><span id="found">@Model.Found</span></td>
-            </tr>
-            <tr>
-                <td>Completed</td>
-                <td><span id="completed">@Model.Completed</span></td>
-            </tr>
-            <tr>
-                <td>Error</td>
-                <td><span id="error">@Model.Error</span></td>
-            </tr>
-        </table>
-    </div>  
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <tr>
+                    <td>Started</td>
+                    <td>@Model.Started</td>
+                </tr>
+                <tr>
+                    <td>Total Records </td>
+                    <td><span id="count">@Model.Count</span></td>
+                </tr>
+                <tr>
+                    <td>Processed</td>
+                    <td><span id="processed">@Model.Processed</span></td>
+                </tr>
+                <tr>
+                    <td>Found</td>
+                    <td><span id="found">@Model.Found</span></td>
+                </tr>
+                <tr>
+                    <td>Completed</td>
+                    <td><span id="completed">@Model.Completed</span></td>
+                </tr>
+                <tr>
+                    <td>Error</td>
+                    <td><span id="error">@Model.Error</span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
 </div>
 @section scripts{
     @if (Model.Running == 1)

@@ -1,34 +1,38 @@
 ﻿@model System.Data.IDataReader
 @{
     ViewBag.Title = "Test Script";
+    ViewBag.PageHeader = ViewBag.Name;
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>@ViewBag.Name</h2>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                @for (var i = 0; i < Model.FieldCount; i++)
-                {
-                    <th>@Model.GetName(i)</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @{
-                var count = 0;
-            }
-            @while (Model.Read())
-            {
-                <tr>
-                    @for (var i = 0; i < Model.FieldCount; i++)
-                    {
-                        <td>@Model[i].ToString()</td>
-                        count ++;
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        @for (var i = 0; i < Model.FieldCount; i++)
+                        {
+                            <th>@Model.GetName(i)</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var count = 0;
                     }
-                </tr>
-            }
-        </tbody>
-    </table>
-    <strong>Total Count</strong> <span class="badge">@count.ToString("N0")</span>
+                    @while (Model.Read())
+                    {
+                        <tr>
+                            @for (var i = 0; i < Model.FieldCount; i++)
+                            {
+                                <td>@Model[i].ToString()</td>
+                                count++;
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <strong>Total Count</strong> <span class="badge">@count.ToString("N0")</span>
+        </div>
+    </div>
 </div>

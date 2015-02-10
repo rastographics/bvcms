@@ -1,32 +1,36 @@
 ﻿@{
     ViewBag.Title = "Tag People Ids";
+    ViewBag.PageHeader = "Tag People Ids";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>Tag People Ids</h2>
 <div class="alert alert-info alert-dismissible">
     <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
     One row per people id.
 </div>
-<form action="/Batch/TagUploadPeopleIds" method="post" enctype="multipart/form-data">
-    <div class="row">
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label for="name">Tag Name:</label>
-                <input type="text" class="form-control" id="name" name="name">
+<div class="box box-responsive">
+    <div class="box-content">
+        <form action="/Batch/TagUploadPeopleIds" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="name">Tag Name:</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox" name="newtag" id="newtag"> Force new tag?
+                        </label>
+                    </div>
+                </div>
             </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox" name="newtag" id="newtag"> Force new tag?
-                </label>
+            <div class="row">
+                <div class="col-sm-12">
+                    <br />
+                    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", @class = "form-control" })
+                </div>
             </div>
-        </div>
+            <br />
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <br/>
-            @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", @class = "form-control" })
-        </div>
-    </div>
-    <br/>
-    <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+</div>

@@ -1,50 +1,56 @@
 ﻿@model CmsData.Content
 @{
+    ViewBag.Title = "Edit Text Content";
+    ViewBag.PageHeader = Model.Name;
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>@Model.Name</h2>
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
     <div class="row">
         <div class="col-md-9">
-            <div class="form-group">
-                <nav class="navbar navbar-inverse hidden-xs" style="margin-bottom: 0;">
-                    <div class="container-fluid">
-                        <div class="navbar-header">
-                            <span class="navbar-brand"><i class="fa fa-cogs"></i></span>
-                        </div>
-                        <div class="navbar-form navbar-left hidden-xs" style="padding:0;">
-                            <div class="btn-group" data-toggle="buttons">
-                                <label class="btn btn-default">
-                                    <input type="radio" name="editor-mode" id="text" value="text" autocomplete="off">Text
-                                </label>
-                                <label class="btn btn-default">
-                                    <input type="radio" name="editor-mode" id="html" value="html" autocomplete="off">Html
-                                </label>
-                                <label class="btn btn-default">
-                                    <input type="radio" name="editor-mode" id="xml" value="xml" autocomplete="off">Xml
-                                </label>
-                                <label class="btn btn-default">
-                                    <input type="radio" name="editor-mode" id="sql" value="sql" autocomplete="off">Sql
-                                </label>
-                                <label class="btn btn-default">
-                                    <input type="radio" name="editor-mode" id="python" value="python" autocomplete="off">Python
-                                </label>
-                            </div>
-                        </div>
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a href="/Display/#tab_textContent" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <a href="#" class="btn btn-primary save">Save Content</a>
                     </div>
-                </nav>
-                <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Body</div>
-                @Html.HiddenFor(m => m.Body)
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <input type="submit" id="save" class="btn btn-primary btn-block" value="Save" />
-                    <a id="delete" href='/Display/ContentDelete/@Model.Id' class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Delete</a>
-                    <hr />
-                    <div class="additional-actions"><a id="cancel" href='/Manage/Display/#tab_textContent'>Cancel & Return</a></div>
+                </div>
+                <div class="box-content">
+                    <div class="form-group">
+                        <nav class="navbar navbar-inverse hidden-xs" style="margin-bottom: 0;">
+                            <div class="container-fluid">
+                                <div class="navbar-header">
+                                    <span class="navbar-brand"><i class="fa fa-cogs"></i></span>
+                                </div>
+                                <div class="navbar-form navbar-left hidden-xs" style="padding:0;">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="text" value="text" autocomplete="off">Text
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="html" value="html" autocomplete="off">Html
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="xml" value="xml" autocomplete="off">Xml
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="sql" value="sql" autocomplete="off">Sql
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="python" value="python" autocomplete="off">Python
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                        <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Body</div>
+                        @Html.HiddenFor(m => m.Body)
+                    </div>
+                    <div class="visible-xs-block">
+                        <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger btn-block delete"><i class="fa fa-trash"></i> Delete</a>
+                        <a href="#" class="btn btn-primary btn-block save">Save Content</a>
+                        <hr />
+                        <a href="/Display/#tab_textContent" class="btn btn-default btn-block">Cancel</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -76,13 +82,13 @@
                 editor.getSession().setMode("ace/mode/" + mode);
             });
 
-            $("#save").click(function(ev) {
+            $("a.save").click(function(ev) {
                 ev.preventDefault();
                 $("#body").val(editor.getValue());
                 $("form").submit();
             });
 
-            $("#delete").click(function (ev) {
+            $("a.delete").click(function (ev) {
                 ev.preventDefault();
                 swal({
                     title: "Are you sure?",

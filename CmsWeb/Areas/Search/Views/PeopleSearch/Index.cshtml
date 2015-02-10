@@ -4,102 +4,106 @@
 @model PeopleSearchModel
 @{
 	ViewBag.Title = "People Search";
+    ViewBag.PageHeader = "People Search";
     Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head 
 {
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-multiselect/css/bootstrap-multiselect.css")
 }
-<h2>People Search</h2>
-<form method="post" action="/PeopleSearch">
-    <div class="well">
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="name">Name / ID#</label>
-                    @Html.TextBox("name", Model.m.name, new { title = "Search names using starting letters of First<space>Last or just Last or First<space> for first name match only", @class = "form-control" })
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="communication">Email / Phone</label>
-                    @Html.TextBox("communication", Model.m.communication, new { title = "Any part of any phone or email", @class = "form-control" })
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="address">Address</label>
-                    @Html.TextBox("address", Model.m.address, new { title = "Any part of the address, city or zip", @class = "form-control" })
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="birthdate">Date of Birth</label>
-                    @Html.TextBox("birthdate", Model.m.birthdate, new { title = "YYYY or MM or MM/DD or MM/DD/YY", placeholder = "mm/dd/yy", @class = "form-control" })
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-2 col-md-3 col-sm-4">
-                <div class="form-group">
-                    <label for="campus">Campus</label>
-                    @Html.DropDownList("campus", Model.Campuses(), new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-4">
-                <div class="form-group">
-                    <label for="memberstatus">Member</label>
-                    @Html.DropDownList("memberstatus", Model.MemberStatusCodes(), new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-4">
-                <div class="form-group">
-                    <label for="gender">Gender</label>
-                    @Html.DropDownList("gender", Model.GenderCodes(), new { @class = "form-control" })
-                </div>
-            </div>
-            <div class="col-lg-2 col-md-3 col-sm-4">
-                <div class="form-group">
-                    <label for="marital">Married</label>
-                    @Html.DropDownList("marital", Model.MaritalCodes(), new { @class = "form-control" })
-                </div>
-            </div>
-            @if (ViewExtensions2.DbSetting("UseStatusFlags", "false").ToBool())
-            {
-                <div class="col-lg-4 col-md-5 col-sm-6">
-                    <div class="form-group">
-                        <label for="statusflags">Status Flags</label>
+<div class="box box-responsive">
+    <div class="box-content">
+        <form method="post" action="/PeopleSearch">
+            <div class="well">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
+                            <label for="name">Name / ID#</label>
+                            @Html.TextBox("name", Model.m.name, new { title = "Search names using starting letters of First<space>Last or just Last or First<space> for first name match only", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="communication">Email / Phone</label>
+                            @Html.TextBox("communication", Model.m.communication, new { title = "Any part of any phone or email", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            @Html.TextBox("address", Model.m.address, new { title = "Any part of the address, city or zip", @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="birthdate">Date of Birth</label>
+                            @Html.TextBox("birthdate", Model.m.birthdate, new { title = "YYYY or MM or MM/DD or MM/DD/YY", placeholder = "mm/dd/yy", @class = "form-control" })
                         </div>
                     </div>
                 </div>
-            }
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-4">
-                <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
-            </div>
-            <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
-                <div class="pull-right">
-                    <a id="clear" href="#" class="btn btn-default">Clear</a>
-                    <div class="btn-group">
-                        <a href="/PeopleSearch/Results" id="search" class="btn btn-primary">Search</a>
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a id="convert" href="/PeopleSearch/ConvertToQuery">Convert to Search Builder</a></li>
-                        </ul>
+                <div class="row">
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="campus">Campus</label>
+                            @Html.DropDownList("campus", Model.Campuses(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="memberstatus">Member</label>
+                            @Html.DropDownList("memberstatus", Model.MemberStatusCodes(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            @Html.DropDownList("gender", Model.GenderCodes(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="marital">Married</label>
+                            @Html.DropDownList("marital", Model.MaritalCodes(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    @if (ViewExtensions2.DbSetting("UseStatusFlags", "false").ToBool())
+                    {
+                        <div class="col-lg-4 col-md-5 col-sm-6">
+                            <div class="form-group">
+                                <label for="statusflags">Status Flags</label>
+                                <div class="form-group">
+                                    @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new { multiple = "multiple", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+                    </div>
+                    <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                        <div class="pull-right">
+                            <a id="clear" href="#" class="btn btn-default">Clear</a>
+                            <div class="btn-group">
+                                <a href="/PeopleSearch/Results" id="search" class="btn btn-primary">Search</a>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a id="convert" href="/PeopleSearch/ConvertToQuery">Convert to Search Builder</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            @Html.Partial("Results", Model)
+        </form>
+        <p> <a id="targetpeople" href="#">toggle link target</a> </p>
     </div>
-    @Html.Partial("Results", Model)
-</form>
-<p> <a id="targetpeople" href="#">toggle link target</a> </p>
+</div>
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")

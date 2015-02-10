@@ -1,9 +1,11 @@
 ﻿@using CmsWeb
 @{
     ViewBag.Title = "Vital Stats";
+    ViewBag.ReportPageHeader = "Vital Stats";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<div class="report">
-    <h2>Vital Stats</h2>
-    @Html.Raw((string)ViewData["table"])
+<div class="report box box-responsive">
+    <div class="box-content">
+        @Html.Raw((string)ViewData["table"])
+    </div>
 </div>

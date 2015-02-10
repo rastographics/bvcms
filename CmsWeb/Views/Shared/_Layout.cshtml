@@ -20,6 +20,22 @@
 </head>
     <body>
         @Html.Partial("NavBar")
+        @if (!string.IsNullOrWhiteSpace(ViewBag.PageHeader))
+        {
+            <div id="page-header">
+                <div class="container-fluid">
+                    <h2>@ViewBag.PageHeader</h2>
+                </div>
+            </div>
+        }
+        @if (!string.IsNullOrWhiteSpace(ViewBag.ReportPageHeader))
+        {
+            <div id="page-header" class="text-center">
+                <div class="container-fluid">
+                    <h2>@ViewBag.ReportPageHeader</h2>
+                </div>
+            </div>
+        }
         <div class="container-fluid" id="main">
             @RenderBody()
         </div>

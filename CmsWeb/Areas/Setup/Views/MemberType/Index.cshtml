@@ -2,112 +2,131 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Member Type";
+    ViewBag.PageHeader = "Member Types";
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
-<h2>Member Types</h2>
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <strong>Success!</strong> @TempData["SuccessMessage"]
-    </div>
-}
-<div class="alert alert-warning">
-    <h4>Member Type Migration</h4>
-    <p>
-        The following allows you to globally change one member type for all organization members having that type, to another existing member type.<br />
-        There is no <strong>undo</strong>, so please be careful.
-    </p>
-    <p>
-        @using (Html.BeginForm("Move", "MemberType", FormMethod.Post, new { @class = "form-inline" }))
-        {
-            <div class="form-group">
-                <label class="sr-only" for="fromid">Source Member Type</label>
-                <select id="fromid" name="fromid" class="form-control">
-                    <option value="">--Source Member Type--</option>
-                    @foreach (var item in Model)
-                    {
-                        <option value="@item.Id">@item.Description</option>
-                    }
-                </select> to
-            </div>
-            <div class="form-group">
-                <label class="sr-only" for="toid">Destination Member Type</label>
-                <select id="toid" name="toid" class="form-control">
-                    <option value="">--Destination Member Type--</option>
-                    @foreach (var item in Model)
-                    {
-                        <option value="@item.Id">@item.Description</option>
-                    }
-                </select>
-            </div>
-            <button id="movemt" type="submit" class="btn btn-warning">Move Member Type</button>
-        }
-    </p>
-</div>
 <div class="row">
     <div class="col-sm-9">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <strong>Success!</strong> @TempData["SuccessMessage"]
+            </div>
+        }
+        <div class="alert alert-warning">
+            <h4>Member Type Migration</h4>
+            <p>
+                The following allows you to globally change one member type for all organization members having that type, to another existing member type.<br />
+                There is no <strong>undo</strong>, so please be careful.
+            </p>
+            <p>
+                @using (Html.BeginForm("Move", "MemberType", FormMethod.Post, new { @class = "form-inline" }))
+                {
+                    <div class="form-group">
+                        <label class="sr-only" for="fromid">Source Member Type</label>
+                        <select id="fromid" name="fromid" class="form-control">
+                            <option value="">--Source Member Type--</option>
+                            @foreach (var item in Model)
+                            {
+                                <option value="@item.Id">@item.Description</option>
+                            }
+                        </select> to
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="toid">Destination Member Type</label>
+                        <select id="toid" name="toid" class="form-control">
+                            <option value="">--Destination Member Type--</option>
+                            @foreach (var item in Model)
+                            {
+                                <option value="@item.Id">@item.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <button id="movemt" type="submit" class="btn btn-warning">Move Member Type</button>
+                }
+            </p>
+        </div>
         <div class="alert alert-info alert-dismissible">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             Click to edit the Code or Name. The items that cannot be deleted are expected to be there by the system. The description for those can be edited as long as the meaning is the same.
         </div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th style="width: 75px;">Id</th>
-                    <th style="width: 270px;">Code</th>
-                    <th style="width: 300px;">Description</th>
-                    <th style="width: 200px;">Attendance Type</th>
-                    <th style="width: 100px;">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td style="width: 75px;">@item.Id</td>
-                        <td style="width: 270px;">
-                            @if (item.Hardwired == true)
-                            {
-                                @item.Code
-                            }
-                            else
-                            {
-                                <a id="c@(item.Id)" class="clickEdit" data-pk="c@(item.Id)">@item.Code</a>
-                            }
-                        </td>
-                        <td style="width: 300px;">
-                            <a id="v@(item.Id)" class="clickEdit" data-pk="v@(item.Id)">@item.Description</a>
-                        </td>
-                        <td style="width: 200px;">
-                            <a id="a@(item.Id)" class="clickSelect" data-value="@(item.AttendTypeId == null ? "" : item.AttendTypeId.ToString())" data-pk="a@(item.Id)">@(item.AttendTypeId == null ? "" : item.AttendType)</a>
-                        </td>
-                        <td style="width: 100px;">
-                            @if (!item.Hardwired.GetValueOrDefault())
-                            {
-                                <a id="d@(item.Id)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
-                            }
-                        </td>
-                    </tr>
-                }
-            </tbody>
-            
-        </table>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Member Type</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 75px;">Id</th>
+                            <th style="width: 270px;">Code</th>
+                            <th style="width: 300px;">Description</th>
+                            <th style="width: 200px;">Attendance Type</th>
+                            <th style="width: 100px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width: 75px;">@item.Id</td>
+                                <td style="width: 270px;">
+                                    @if (item.Hardwired == true)
+                                    {
+                                        @item.Code
+                                    }
+                                    else
+                                    {
+                                        <a id="c@(item.Id)" class="clickEdit" data-pk="c@(item.Id)">@item.Code</a>
+                                    }
+                                </td>
+                                <td style="width: 300px;">
+                                    <a id="v@(item.Id)" class="clickEdit" data-pk="v@(item.Id)">@item.Description</a>
+                                </td>
+                                <td style="width: 200px;">
+                                    <a id="a@(item.Id)" class="clickSelect" data-value="@(item.AttendTypeId == null ? "" : item.AttendTypeId.ToString())" data-pk="a@(item.Id)">@(item.AttendTypeId == null ? "" : item.AttendType)</a>
+                                </td>
+                                <td style="width: 100px;">
+                                    @if (!item.Hardwired.GetValueOrDefault())
+                                    {
+                                        <a id="d@(item.Id)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+                <a href="#" class="btn btn-success create-new visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> Add Member Type</a>
+            </div>
+        </div>
     </div>
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                @using (Html.BeginForm("Create", "MemberType"))
-                {
+</div>
+<div class="modal fade" id="new-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Create", "MemberType"))
+            {
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add Member Type</h4>
+                </div>
+                <div class="modal-body">
                     <div class="form-group">
                         <label for="id">New Member Type Id</label>
                         <input type="number" id="id" name="id" class="form-control" />
                     </div>
-                    <input type="submit" class="btn btn-primary btn-block" value="Create" />
-                }
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -190,6 +209,16 @@
                 function () {
                     f.submit();
                 });
+            });
+
+            $("a.create-new").click(function (ev) {
+                ev.preventDefault();
+                $('#new-modal').modal();
+                return false;
+            });
+
+            $('#new-modal').on('shown.bs.modal', function () {
+                $("#id").val('').focus();
             });
         });
     </script>

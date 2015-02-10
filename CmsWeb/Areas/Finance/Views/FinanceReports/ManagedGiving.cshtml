@@ -3,48 +3,52 @@
 
 @{
     ViewBag.Title = "Managed Giving";
+    ViewBag.PageHeader = "Managed Giving";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>Managed Giving</h2>
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <td>Name</td>
-                <td>Started</td>
-                <td>Next Date</td>
-                <td>Repeats</td>
-                <td>Every</td>
-                <td>Period</td>
-                <td>Day 1</td>
-                <td>Day 2</td>
-                <td>Action</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var rg in Model)
-            {
-                <tr>
-                    <td><a href="/FinanceReports/ManageGiving2/@rg.PeopleId">@rg.Person.Name</a></td>
-                    <td>@rg.StartWhen.FormatDate()</td>
-                    <td>@rg.NextDate.FormatDate()</td>
-                    <td>@(rg.SemiEvery == "S" ? "Twice a Month" : rg.Period == "W" ? "Weekly" : "Monthly")</td>
-                    <td>@rg.EveryN</td>
-                    <td>
-                        @if (rg.SemiEvery == "E")
-                        {
-                            @(rg.Period == "W" ? "Week" : "Month")@(rg.EveryN > 1 ? "s" : "")
-                        }
-                    </td>
-                    <td>@(rg.SemiEvery == "S" ? rg.Day1.ToString() : "")</td>
-                    <td>@(rg.SemiEvery == "S" ? rg.Day2.ToString() : "")</td>
-                    <td>
-                        <a class="delete btn btn-sm btn-danger" href="/Vault/DeleteVaultData/@rg.PeopleId"><i class="fa fa-trash"></i> Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Started</th>
+                        <th>Next Date</th>
+                        <th>Repeats</th>
+                        <th>Every</th>
+                        <th>Period</th>
+                        <th>Day 1</th>
+                        <th>Day 2</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rg in Model)
+                    {
+                        <tr>
+                            <td><a href="/FinanceReports/ManageGiving2/@rg.PeopleId">@rg.Person.Name</a></td>
+                            <td>@rg.StartWhen.FormatDate()</td>
+                            <td>@rg.NextDate.FormatDate()</td>
+                            <td>@(rg.SemiEvery == "S" ? "Twice a Month" : rg.Period == "W" ? "Weekly" : "Monthly")</td>
+                            <td>@rg.EveryN</td>
+                            <td>
+                                @if (rg.SemiEvery == "E")
+                                {
+                                    @(rg.Period == "W" ? "Week" : "Month")@(rg.EveryN > 1 ? "s" : "")
+                                }
+                            </td>
+                            <td>@(rg.SemiEvery == "S" ? rg.Day1.ToString() : "")</td>
+                            <td>@(rg.SemiEvery == "S" ? rg.Day2.ToString() : "")</td>
+                            <td>
+                                <a class="delete btn btn-sm btn-danger" href="/Vault/DeleteVaultData/@rg.PeopleId"><i class="fa fa-trash"></i> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 @section scripts
 {

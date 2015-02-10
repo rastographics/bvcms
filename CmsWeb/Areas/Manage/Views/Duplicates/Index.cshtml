@@ -2,6 +2,7 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Duplicates";
+    ViewBag.PageHeader = "Duplicates";
 }
 @section head{
     <style>
@@ -10,12 +11,14 @@
         }
     </style>
 }
-<h2>Duplicates</h2>
-<br/>
-<ol>
-@foreach (var i in Model)
-{
-    // Id1 and Id2 are swapped now so that the newer record will be merged to the older record by default
-    <li><a href="/Merge/@i.d.Id2/@i.d.Id1" target="merge">@i.name (@i.d.Id2, @i.d.Id1)</a> @(i.notdup?"not a duplicate":"")</li>    
-}
-</ol>
+<div class="box box-responsive">
+    <div class="box-content">
+        <ol>
+            @foreach (var i in Model)
+            {
+                // Id1 and Id2 are swapped now so that the newer record will be merged to the older record by default
+                <li><a href="/Merge/@i.d.Id2/@i.d.Id1" target="merge">@i.name (@i.d.Id2, @i.d.Id1)</a> @(i.notdup ? "not a duplicate" : "")</li>
+            }
+        </ol>
+    </div>
+</div>

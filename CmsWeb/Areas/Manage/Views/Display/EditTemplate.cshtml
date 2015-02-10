@@ -1,45 +1,51 @@
 ﻿@using CmsWeb.Models
 @model CmsData.Content
 @{
-  Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Edit Template";
+    ViewBag.PageHeader = "Edit Template";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>@Model.Name</h2>
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
     <div class="row">
         <div class="col-md-9">
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="name">Name</label>
-                        @Html.TextBox("name", Model.Name, new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        @Html.TextBox("title", Model.Title, new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <label for="role">Role</label>
-                        @Html.DropDownList("roleid", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a href="/Display/#tab_savedDrafts" class="btn btn-default">Cancel</a> <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <input type="submit" class="btn btn-primary" value="Save Template" />
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                @Html.TextArea("body", new { @class = "form-control", rows = "26" })
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <input type="submit" class="btn btn-primary btn-block" value="Save" />
-                    <a id="delete" href='#' class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Delete</a>
-                    <hr />
-                    <div class="additional-actions"><a id="cancel" href='/Display/#tab_savedDrafts'>Cancel & Return</a></div>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                @Html.TextBox("name", Model.Name, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                @Html.TextBox("title", Model.Title, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label for="role">Role</label>
+                                @Html.DropDownList("roleid", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.TextArea("body", new { @class = "form-control", rows = "26" })
+                    </div>
+                    <div class="visible-xs-block">
+                        <input type="submit" class="btn btn-primary btn-block" value="Save Template" />
+                        <a href='#' class="btn btn-danger btn-block delete"><i class="fa fa-trash"></i> Delete</a>
+                        <hr />
+                        <a href="/Display/#tab_savedDrafts" class="btn btn-default btn-block">Cancel</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    @Html.Hidden("id")
+    @Html.Hidden("id");
 }
 @section scripts
 {
@@ -48,7 +54,7 @@
 
         $(function () {
 
-            $("#delete").click(function (ev) {
+            $("a.delete").click(function (ev) {
                 ev.preventDefault();
 
                 swal({

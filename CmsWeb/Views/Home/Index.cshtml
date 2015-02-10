@@ -6,13 +6,13 @@
 @section head
 {
     <style>
-        #home {
-            padding-top: 10px;
-        }
-         ul.list-group {
-             max-height: 215px;
-             overflow-y: scroll;
+         #home {
+             padding-top: 10px;
          }
+        ul.list-group {
+            max-height: 215px;
+            overflow-y: auto;
+        }
 
         @@media (max-width: 767px) {
             ul.list-group {
@@ -35,9 +35,9 @@
 }
 <div id="home" class="row">
     <div class="col-sm-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><a href="Tags?tag=TrackBirthdays">Birthdays</a></h3>
+        <div class="box">
+            <div class="box-title">
+                <h5><a href="Tags?tag=TrackBirthdays">Birthdays</a></h5>
             </div>
             @{
                 var birthdays = Model.Birthdays().ToList();
@@ -53,12 +53,12 @@
             }
             else
             {
-                <div class="panel-body"></div>
+                <div class="box-content"></div>
             }
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><a href="@Model.UserUrl">My Involvement</a></h3>
+        <div class="box">
+            <div class="box-title">
+                <h5><a href="@Model.UserUrl">My Involvement</a></h5>
             </div>
             @{
                 var involvements = Model.MyInvolvements().ToList();
@@ -80,12 +80,12 @@
             }
             else
             {
-                <div class="panel-body"></div>
+                <div class="box-content"></div>
             }
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><a href="/Query">My Searches</a></h3>
+        <div class="box">
+            <div class="box-title">
+                <h5><a href="/Query">My Searches</a></h5>
             </div>
             @{
                 var searches = Model.MyQueries().ToList();
@@ -101,14 +101,14 @@
             }
             else
             {
-                <div class="panel-body"></div>
+                <div class="box-content"></div>
             }
         </div>
     </div>
     <div class="col-sm-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><a href="@Model.BlogAppUrl">TouchPoint News</a></h3>
+        <div class="box">
+            <div class="box-title">
+                <h5><a href="@Model.BlogAppUrl">TouchPoint News</a></h5>
             </div>
             @{
                 var touchPointNews = Model.BVCMSNews().ToList();
@@ -125,19 +125,19 @@
                                 <span class="label label-danger">New</span>
                             }
                             <a href="@article.Url" target="news">@article.Title</a>
-                            
+
                         </li>
                     }
                 </ul>
             }
             else
             {
-                <div class="panel-body"></div>
+                <div class="box-content"></div>
             }
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><a href="@Model.ChurchBlogUrl">Church News</a></h3>
+        <div class="box">
+            <div class="box-title">
+                <h5><a href="@Model.ChurchBlogUrl">Church News</a></h5>
             </div>
             @{
                 var churchNews = Model.ChurchNews().ToList();
@@ -160,14 +160,14 @@
             }
             else
             {
-                <div class="panel-body"></div>
+                <div class="box-content"></div>
             }
         </div>
     </div>
     <div class="col-sm-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><a href="/Tags">My Tags</a></h3>
+        <div class="box">
+            <div class="box-title">
+                <h5><a href="/Tags">My Tags</a></h5>
             </div>
             @{
                 var tags = Model.Tags().ToList();
@@ -183,12 +183,12 @@
             }
             else
             {
-                <div class="panel-body"></div>
+                <div class="box-content"></div>
             }
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><a href="/Task/List">My Tasks</a></h3>
+        <div class="box">
+            <div class="box-title">
+                <h5><a href="/Task/List">My Tasks</a></h5>
             </div>
             @{
                 var tasks = Model.Tasks().ToList();
@@ -204,7 +204,7 @@
             }
             else
             {
-                <div class="panel-body"></div>
+                <div class="box-content"></div>
             }
         </div>
     </div>

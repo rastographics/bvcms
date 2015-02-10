@@ -2,63 +2,64 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Contribution Statements";
+    ViewBag.ReportPageHeader = "Contribution Statements";
     var cv = new CodeValueModel();
 }
-<div class="report">
-    <h2>Contribution Statements</h2>
-    <br/>
-    <div class="well" style="max-width: 850px; margin: auto;">
-        <form action="/Statements/Start" method="post">
-            <div class="row">
-                <div class="col-sm-4">
-                    <label for="startswith">Starts With</label>
-                    <div class="input-group">
-                        @Html.TextBox("startswith", "", new { @class = "form-control", title = "lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow" })
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="well" style="max-width: 850px; margin: auto;">
+            <form action="/Statements/Start" method="post">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="startswith">Starts With</label>
+                        <div class="input-group">
+                            @Html.TextBox("startswith", "", new { @class = "form-control", title = "lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow" })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="FromDate">Start Date</label>
+                        <div class="input-group date">
+                            @Html.TextBox("FromDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                            @Html.Hidden("FromDateIso", "", new { disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="EndDate">End Date</label>
+                        <div class="input-group date">
+                            @Html.TextBox("EndDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                            @Html.Hidden("EndDateIso", "", new { disabled = "disabled" })
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <label for="FromDate">Start Date</label>
-                    <div class="input-group date">
-                        @Html.TextBox("FromDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                        @Html.Hidden("FromDateIso", "", new { disabled = "disabled" })
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="sort">Sort</label>
+                        <div class="input-group">
+                            @Html.TextBox("sort", "", new { @class = "form-control", title = "type: name or zip" })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="TagId">Tag Id</label>
+                        <div class="input-group">
+                            @Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBox("ExcludeElectronic", false) Exclude electronic only?
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <label for="EndDate">End Date</label>
-                    <div class="input-group date">
-                        @Html.TextBox("EndDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                        @Html.Hidden("EndDateIso", "", new { disabled = "disabled" })
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-primary">Run</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <label for="sort">Sort</label>
-                    <div class="input-group">
-                        @Html.TextBox("sort", "", new { @class = "form-control", title = "type: name or zip" })
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <label for="TagId">Tag Id</label>
-                    <div class="input-group">
-                        @Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect(), new { @class = "form-control" })
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBox("ExcludeElectronic", false) Exclude electronic only?
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <button type="submit" class="btn btn-primary">Run</button>
-                    </div>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 </div>

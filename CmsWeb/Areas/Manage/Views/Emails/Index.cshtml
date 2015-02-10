@@ -2,10 +2,15 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Emails";
+    ViewBag.PageHeader = "Emails";
 }
-<form id="form" method="post" action="/Manage/Emails/List">
-@{Html.RenderPartial("List", Model);}
-</form>
+<div class="box box-responsive">
+    <div class="box-content">
+        <form id="form" method="post" action="/Manage/Emails/List">
+            @{Html.RenderPartial("List", Model);}
+        </form>
+    </div>
+</div>
 @section scripts
 {
     <script type="text/javascript">

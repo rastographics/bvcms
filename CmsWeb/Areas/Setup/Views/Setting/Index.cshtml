@@ -2,52 +2,72 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Settings";
+    ViewBag.PageHeader = "Settings";
 }
 @section head{
     <meta name="format-detection" content="telephone=no" />
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
-<h2>Settings</h2>
 <div class="row">
     <div class="col-sm-9">
-        <div class="table-responsive">
-            <table id="settings" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th style="width: 100px;">Setting Code</th>
-                        <th style="width: 300px;">Setting Value</th>
-                        <th style="width: 100px;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td style="width: 100px;">@item.Id</td>
-                            <td style="width: 300px;">
-                                <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
-                            </td>
-                            <td style="width: 100px;">
-                                <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Setting</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table id="settings" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">Setting Code</th>
+                                <th style="width: 300px;">Setting Value</th>
+                                <th style="width: 100px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td style="width: 100px;">@item.Id</td>
+                                    <td style="width: 300px;">
+                                        <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
+                                    </td>
+                                    <td style="width: 100px;">
+                                        <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add Setting</a>
+            </div>
         </div>
     </div>
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                @using (Html.BeginForm("Create", "Setting"))
-                {
+</div>
+<div class="modal fade" id="new-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            @using (Html.BeginForm("Create", "Setting"))
+            {
+                @Html.Hidden("type", ViewData["type"])
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add Setting</h4>
+                </div>
+                <div class="modal-body">
                     <div class="form-group">
-                        <label for="Id">New Setting</label>
+                        <label for="Id">Setting Code</label>
                         @Html.TextBox("Id", "", new { @class = "form-control" })
                     </div>
-                    <input type="submit" class="btn btn-primary btn-block" value="Create" />
-                }
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            }
         </div>
     </div>
 </div>
@@ -95,6 +115,16 @@
                         }
                     });
                 });
+            });
+
+            $("a.create-new").click(function (ev) {
+                ev.preventDefault();
+                $('#new-modal').modal();
+                return false;
+            });
+
+            $('#new-modal').on('shown.bs.modal', function () {
+                $("#Id").val('').focus();
             });
         });
     </script>

@@ -2,50 +2,58 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Roles";
+    ViewBag.PageHeader = "Roles";
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
-<h2>Roles</h2>
 <div class="row">
     <div class="col-sm-9">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th style="width: 100px;">Role Id</th>
-                        <th style="width: 300px;">Role Name</th>
-                        <th style="width: 100px;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    @using (Html.BeginForm("Create", "Roles"))
                     {
-                        <tr>
-                            <td style="width: 100px;">@item.RoleId</td>
-                            @if (item.Hardwired == true)
-                            {
-                                <td style="width: 300px;">@item.RoleName</td>
-                                <td style="width: 100px;"></td>
-                            }
-                            else
-                            {
-                                <td style="width: 300px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
-                                <td style="width: 100px;"><a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a></td>
-                            }
-                        </tr>
+                        <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Role</button>
                     }
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                @using (Html.BeginForm("Create", "Roles"))
-                {
-                    <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Role</button>
-                }
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">Role Id</th>
+                                <th style="width: 300px;">Role Name</th>
+                                <th style="width: 100px;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td style="width: 100px;">@item.RoleId</td>
+                                    @if (item.Hardwired == true)
+                                    {
+                                        <td style="width: 300px;">@item.RoleName</td>
+                                        <td style="width: 100px;"></td>
+                                    }
+                                    else
+                                    {
+                                        <td style="width: 300px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
+                                        <td style="width: 100px;"><a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a></td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="visible-xs-block">
+                    @using (Html.BeginForm("Create", "Roles"))
+                    {
+                        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Role</button>
+                    }
+                </div>
             </div>
         </div>
     </div>

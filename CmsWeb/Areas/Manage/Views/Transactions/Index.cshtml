@@ -1,120 +1,125 @@
 ﻿@model CmsWeb.Models.TransactionsModel
 @{
-  Layout = ViewExtensions2.TouchPointLayout();
-  ViewBag.Title = "Transactions";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Transactions";
+    ViewBag.PageHeader = "Transactions";
 }
-<h2>Transactions</h2>
-<form id="form" method="post" action="/Transactions/List">
-    <div class="well">
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="name">Id / Name</label>
-                    @Html.TextBox("name", Model.name, new { @class = "form-control" })
+<div class="box box-responsive">
+    <div class="box-content">
+        <form id="form" method="post" action="/Transactions/List">
+            <div class="well">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="name">Id / Name</label>
+                            @Html.TextBox("name", Model.name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            @Html.TextBox("description", Model.description, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="gtamount">Amount From</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control", type = "number" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="ltamount">Amount To</label>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control", type = "number" })
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    @Html.TextBox("description", Model.description, new { @class = "form-control" })
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="startdt">Date From</label>
+                            <div class="input-group date">
+                                @Html.TextBox("startdt", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("startdtIso", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="enddt">Date To</label>
+                            <div class="input-group date">
+                                @Html.TextBox("enddt", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("enddtIso", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBox("usebatchdates") Use batch dates?
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBox("nocoupons") No coupons?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBox("apprtransactions") Approved transactions only?
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBox("testtransactions") Test transactions only?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="gtamount">Amount From</label>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control", type = "number" })
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+
+                    </div>
+                    <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                        <div class="pull-right">
+                            <a id="clear" href="/Transactions" class="btn btn-default">Clear</a>
+                            <div class="btn-group">
+                                <a href="#" id="filter" class="btn btn-primary">Filter</a>
+                                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a href="/Transactions/Report" class="report">Reconcile Report</a></li>
+                                    <li><a href="/Transactions/ReportByDescription" class="report">Totals by Description</a></li>
+                                    <li><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></li>
+                                    <li class="divider"></li>
+                                    <li><a id="export" href="#"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Export</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="ltamount">Amount To</label>
-                    <div class="input-group">
-                        <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control", type = "number" })
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="startdt">Date From</label>
-                    <div class="input-group date">
-                        @Html.TextBox("startdt", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                        @Html.Hidden("startdtIso", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="enddt">Date To</label>
-                    <div class="input-group date">
-                        @Html.TextBox("enddt", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                        @Html.Hidden("enddtIso", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBox("usebatchdates") Use batch dates?
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBox("nocoupons") No coupons?
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBox("apprtransactions") Approved transactions only?
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBox("testtransactions") Test transactions only?
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-4">
-                
-            </div>
-            <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
-                <div class="pull-right">
-                    <a id="clear" href="/Transactions" class="btn btn-default">Clear</a>
-                    <div class="btn-group">
-                        <a href="#" id="filter" class="btn btn-primary">Filter</a>
-                        <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                            <span class="caret"></span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a href="/Transactions/Report" class="report">Reconcile Report</a></li>
-                            <li><a href="/Transactions/ReportByDescription" class="report">Totals by Description</a></li>
-                            <li><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></li>
-                            <li class="divider"></li>
-                            <li><a id="export" href="#"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Export</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+            @Html.Partial("List", Model)
+        </form>
+        @if (Model.GoerId > 0 || Model.SenderId > 0)
+        {
+            @Html.Partial("GoerSupporters", Model)
+        }
     </div>
-    @Html.Partial("List", Model)
-</form>
-@if (Model.GoerId > 0 || Model.SenderId > 0)
-{
-    @Html.Partial("GoerSupporters", Model)
-}
+</div>
+
 <div class="modal fade" id="adjust-modal">
     <div class="modal-dialog">
         <div class="modal-content">

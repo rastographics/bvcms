@@ -1,0 +1,128 @@
+@import "variables.less";
+.box {
+    clear: both;
+    margin-bottom: 25px;
+    margin-top: 0;
+    padding: 0;
+    border: 1px solid #ddd;
+}
+
+.box-primary {
+    border: 1px solid @panel-primary-border;
+}
+
+.box:after, .box:before {
+    display: table;
+}
+
+.box>.list-group {
+    margin-bottom: 0;
+}
+
+.box>.list-group .list-group-item {
+    border-width: 1px 0;
+    border-radius: 0;
+}
+
+.box>.list-group:last-child .list-group-item:last-child {
+    border-bottom: 0;
+}
+
+.box-title,
+.box-title-btn {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #ffffff;
+    border-color: #e7eaec;
+    border-style: solid solid none;
+    border-width: 4px 0px 0;
+    color: inherit;
+    margin-bottom: 0;
+    padding: 14px 20px 7px;
+    height: 48px;
+}
+
+.box-primary .box-title,
+.box-primary .box-title-btn {
+    border-color: @panel-primary-border;
+}
+
+.box-title-btn {
+    padding: 16px 15px 7px;
+    height: 55px;
+}
+
+.box-content {
+    background-color: #fff;
+    color: inherit;
+    padding: 15px 20px 20px 20px;
+    border-color: #e7eaec;
+    border-style: solid solid none;
+    border-width: 1px 0px;
+    clear: both;
+}
+
+.box-title h5,
+.box-title-btn h5 {
+    font-weight: 400;
+    display: inline-block;
+    font-size: 16px;
+    margin: 0 0 7px;
+    padding: 0;
+    text-overflow: ellipsis;
+    float: left;
+}
+
+.box-title a {
+    color: inherit;
+}
+
+.box-title .label,
+.box-title-btn .label {
+    float: left;
+    margin-left: 4px;
+}
+
+.box-tools {
+    display: inline-block;
+    float: right;
+    margin-top: 0;
+    position: relative;
+    padding: 0;
+}
+
+.box-tools .btn {
+    margin-top: -8px;
+}
+
+@media (max-width: 768px) {
+    .box-title, 
+    .box-title-btn {
+        background-color: #f5f5f5 !important;
+        border: 0 !important;
+        height: 45px !important;
+    }
+
+    .box-primary .box-title,
+    .box-primary .box-title-btn {
+        background-color: @panel-primary-border !important;
+        color: #fff !important;
+    }
+
+    .box-responsive {
+        margin: 0 !important;
+        border: 0 !important;
+    }
+
+    .box-responsive .box-title,
+    .box-responsive .box-title-btn {
+        display: none !important;
+    }
+
+    .box-responsive .box-content {
+        padding: 0 !important;
+        border: 0 !important;
+    }
+}

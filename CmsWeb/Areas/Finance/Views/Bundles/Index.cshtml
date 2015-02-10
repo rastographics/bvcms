@@ -1,19 +1,23 @@
 ﻿@model CmsWeb.Areas.Finance.Models.BundlesModel
 @{
     ViewBag.Title = "Contribution Bundles";
+    ViewBag.PageHeader = "Contribution Bundles";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>Contribution Bundles</h2>
 <div class="row">
     <div class="col-md-9">
-        <form id="results">
-            @Html.Partial("Results", Model)
-        </form>
-    </div>
-    <div class="col-md-3">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                <a href="/Bundles/NewBundle" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Create New Bundle</a>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/Bundles/NewBundle" class="btn btn-success"><i class="fa fa-plus-circle"></i> Create New Bundle</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <form id="results">
+                    @Html.Partial("Results", Model)
+                </form>
+                <br/>
+                <a href="/Bundles/NewBundle" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> Create New Bundle</a>
             </div>
         </div>
     </div>

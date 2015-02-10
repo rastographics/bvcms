@@ -4,102 +4,105 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Totals By Fund";
+    ViewBag.ReportPageHeader = "Totals By Fund";
     var qbh = new QuickBooksHelper();
 }
-<div class="report">
-    <h2>Totals By Fund</h2>
-    <div class="well hidden-print" style="max-width: 850px; margin: auto;">
-        <form id="totals">
-            <div class="row">
-                <div class="col-sm-4">
-                    <label for="CampusId">Campus</label>
-                    <div class="input-group">
-                        @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="well hidden-print" style="max-width: 850px; margin: auto;">
+            <form id="totals">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="CampusId">Campus</label>
+                        <div class="input-group">
+                            @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="Dt1">From Date</label>
+                        <div class="input-group date">
+                            @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                            @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="Dt2">To Date</label>
+                        <div class="input-group date">
+                            @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                            @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <label for="Dt1">From Date</label>
-                    <div class="input-group date">
-                        @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                        @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="TaxDedNonTax">Tax Status</label>
+                        <div class="input-group">
+                            @Html.DropDownList("TaxDedNonTax", Model.TaxTypes(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="Online">Source</label>
+                        <div class="input-group">
+                            @Html.DropDownList("Online", Model.OnlineOptions(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBox("IncludeBundleType") Include bundle type?
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <div class="col-sm-4">
-                    <label for="Dt2">To Date</label>
-                    <div class="input-group date">
-                        @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                        @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-cloud-download"></i> Export <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#" id="exportdonordetails">Export Donor Details</a></li>
+                                    <li><a href="#" id="exportdonorfundtotals">Export Donor Fund Totals</a></li>
+                                    <li><a href="#" id="exportdonortotals">Export Donor Totals</a></li>
+                                    @if (qbh.hasActiveConnection())
+                                    {
+                                        <li id="export-quickbooks"><a href="#" id="toquickbooks">Export To Quickbooks</a></li>
+                                    }
+                                    <li id="gl-divider" class="divider" style="display: none;"></li>
+                                    <li id="gl-extract" style="display: none;"><a href="#" id="glextract">GL Extract</a></li>
+                                </ul>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="run">Run</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <label for="TaxDedNonTax">Tax Status</label>
-                    <div class="input-group">
-                        @Html.DropDownList("TaxDedNonTax", Model.TaxTypes(), new { @class = "form-control" })
-                    </div>
-                </div>  
-                <div class="col-sm-4">
-                    <label for="Online">Source</label>
-                    <div class="input-group">
-                        @Html.DropDownList("Online", Model.OnlineOptions(), new { @class = "form-control" })
-                    </div>
-                </div> 
-                <div class="col-sm-4">
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
-                        </label>
-                    </div>
-                    <div class="checkbox">
-                        <label>
-                            @Html.CheckBox("IncludeBundleType") Include bundle type?
-                        </label>
-                    </div>
-                </div> 
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-cloud-download"></i> Export <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#" id="exportdonordetails">Export Donor Details</a></li>
-                                <li><a href="#" id="exportdonorfundtotals">Export Donor Fund Totals</a></li>
-                                <li><a href="#" id="exportdonortotals">Export Donor Totals</a></li>
-                                @if (qbh.hasActiveConnection())
-                                {
-                                    <li id="export-quickbooks"><a href="#" id="toquickbooks">Export To Quickbooks</a></li>
-                                }
-                                <li id="gl-divider" class="divider" style="display: none;"></li>
-                                <li id="gl-extract" style="display: none;"><a href="#" id="glextract">GL Extract</a></li>
-                            </ul>
-                        </div> 
-                        <button type="submit" class="btn btn-primary" id="run">Run</button>
-                    </div>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
+        <div class="visible-print-block text-center">
+            @{
+                var campus = Model.Campuses().FirstOrDefault(c => c.Value == Model.CampusId.ToString());
+                var campusName = campus != null ? campus.Text : "";
+                var taxStatus = Model.TaxTypes().FirstOrDefault();
+                var taxStatusName = taxStatus != null ? taxStatus.Text : "";
+                var source = Model.OnlineOptions().FirstOrDefault(c => c.Value == Model.Online.ToString());
+                var sourceName = source != null ? source.Text : "";
+            }
+            <strong>Campus:</strong> <span id="campusName">@campusName</span><br />
+            <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
+            <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
+            <strong>Tax Status:</strong> <span id="taxStatus">@taxStatusName</span><br />
+            <strong>Source:</strong> <span id="sourceName">@sourceName</span><br />
+            <strong>Include unclosed bundles?:</strong> <span id="includeUnClosedBundles">@Model.IncUnclosedBundles</span><br />
+            <strong>Include bundle type:</strong> <span id="includeBundleType">@Model.IncludeBundleType</span>
+        </div>
+        <div id="results" style="margin-top: 25px;"></div>
     </div>
-    <div class="visible-print-block text-center">
-        @{
-            var campus = Model.Campuses().FirstOrDefault(c => c.Value == Model.CampusId.ToString());
-            var campusName = campus != null ? campus.Text : "";
-            var taxStatus = Model.TaxTypes().FirstOrDefault();
-            var taxStatusName = taxStatus != null ? taxStatus.Text : "";
-            var source = Model.OnlineOptions().FirstOrDefault(c => c.Value == Model.Online.ToString());
-            var sourceName = source != null ? source.Text : "";
-        }
-        <strong>Campus:</strong> <span id="campusName">@campusName</span><br />
-        <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
-        <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
-        <strong>Tax Status:</strong> <span id="taxStatus">@taxStatusName</span><br />
-        <strong>Source:</strong> <span id="sourceName">@sourceName</span><br />
-        <strong>Include unclosed bundles?:</strong> <span id="includeUnClosedBundles">@Model.IncUnclosedBundles</span><br />
-        <strong>Include bundle type:</strong> <span id="includeBundleType">@Model.IncludeBundleType</span>
-    </div>
-    <div id="results" style="margin-top: 25px;"></div>
 </div>
 <div id="results"></div>
 @section scripts

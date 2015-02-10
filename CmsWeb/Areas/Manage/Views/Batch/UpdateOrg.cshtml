@@ -2,10 +2,14 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Update Organizations";
+    ViewBag.PageHeader = "Batch Update Organizations";
 }
-<h2>Batch Update Organizations</h2>
-@using(Html.BeginForm())
-{ 
-    @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "20", cols = "1000", wrap = "off", @class="form-control" })<br />
-    <input type="submit" class="btn btn-primary" value="Submit" />
-} 
+<div class="box box-responsive">
+    <div class="box-content">
+        @using (Html.BeginForm())
+        {
+            @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "20", cols = "1000", wrap = "off", @class = "form-control" })<br />
+            <input type="submit" class="btn btn-primary" value="Submit" />
+        } 
+    </div>
+</div>

@@ -1,40 +1,49 @@
 ﻿@model CmsData.Content
 @{
-  Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Edit Sql Script";
+    ViewBag.PageHeader = Model.Name;
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>@Model.Name</h2>
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
     <div class="row">
         <div class="col-md-9">
-           <div class="form-group">
-                <nav class="navbar navbar-inverse" style="margin-bottom: 0;">
-                    <div class="container-fluid">
-                        <div class="navbar-header">
-                            <span class="navbar-brand"><i class="fa fa-cogs"></i></span>
-                        </div>
-                        <div class="navbar-form navbar-left" style="margin:0; padding:0;">
-                            <div class="form-group">
-                                <input id="parameter" type="text" class="form-control" placeholder="Parameter" />
-                            </div>
-                            <a id="run" href="/RunScript/@Model.Name" class="btn btn-default navbar-btn" target="runscript"><i class="fa fa-play"></i> Run Script</a>
-                        </div>
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a href="/Manage/Display/#tab_sqlScripts" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> 
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a href="#" class="btn btn-primary save">Save Sql Script</a>
+                        }
                     </div>
-                </nav>
-                <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Body</div>
-                @Html.HiddenFor(m => m.Body)
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <input type="submit" id="save" class="btn btn-primary btn-block" value="Save" />
-                    }
-                    <a id="delete" href='/Display/ContentDelete/@Model.Id' class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Delete</a>
-                    <hr />
-                    <div class="additional-actions"><a id="cancel" href='/Manage/Display/#tab_sqlScripts'>Cancel & Return</a></div>
+                </div>
+                <div class="box-content">
+                    <div class="form-group">
+                        <nav class="navbar navbar-inverse" style="margin-bottom: 0;">
+                            <div class="container-fluid">
+                                <div class="navbar-header">
+                                    <span class="navbar-brand"><i class="fa fa-cogs"></i></span>
+                                </div>
+                                <div class="navbar-form navbar-left" style="margin:0; padding:0;">
+                                    <div class="form-group">
+                                        <input id="parameter" type="text" class="form-control" placeholder="Parameter" />
+                                    </div>
+                                    <a id="run" href="/RunScript/@Model.Name" class="btn btn-default navbar-btn" target="runscript"><i class="fa fa-play"></i> Run Script</a>
+                                </div>
+                            </div>
+                        </nav>
+                        <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Body</div>
+                        @Html.HiddenFor(m => m.Body)
+                    </div>
+                    <div class="visible-xs-block">
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a href="#" class="btn btn-primary btn-block save">Save Sql Script</a>
+                        }
+                        <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger btn-block delete"><i class="fa fa-trash"></i>Delete</a><hr />
+                        <a href="/Manage/Display/#tab_sqlScripts" class="btn btn-default btn-block">Cancel</a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,13 +63,13 @@
             editor.setShowPrintMargin(false);
             editor.getSession().setMode("ace/mode/sql");
 
-            $("#save").click(function (ev) {
+            $("a.save").click(function (ev) {
                 ev.preventDefault();
                 $("#body").val(editor.getValue());
                 $("form").submit();
             });
 
-            $("#delete").click(function (ev) {
+            $("a.delete").click(function (ev) {
                 ev.preventDefault();
                 swal({
                     title: "Are you sure?",

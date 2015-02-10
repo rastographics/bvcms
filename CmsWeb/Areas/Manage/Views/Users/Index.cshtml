@@ -2,43 +2,47 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Users";
+    ViewBag.PageHeader = "Users";
 }
 @section head 
 {
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-multiselect/css/bootstrap-multiselect.css")
 }
-<h2>Users</h2>
-<form id="usersearch" method="post" action="/Users/Results">
-    <div class="well">
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="name">Name / Username</label>
-                    @Html.TextBox("name", Model.name, new { @class = "form-control" })
+<div class="box box-responsive">
+    <div class="box-content">
+        <form id="usersearch" method="post" action="/Users/Results">
+            <div class="well">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="name">Name / Username</label>
+                            @Html.TextBox("name", Model.name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="Role">Roles</label>
+                            <div class="form-group">
+                                @Html.DropDownList("Role", new SelectList(Model.Roles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-3 col-sm-6">
-                <div class="form-group">
-                    <label for="Role">Roles</label>
-                    <div class="form-group">
-                        @Html.DropDownList("Role", new SelectList(Model.Roles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control" })
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+                    </div>
+                    <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                        <div class="pull-right">
+                            <a id="clear" href="#" class="btn btn-default">Clear</a> <button type="submit" id="search" class="btn btn-primary">Search</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-3 col-md-3 col-sm-4">
-                <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
-            </div>
-            <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
-                <div class="pull-right">
-                    <a id="clear" href="#" class="btn btn-default">Clear</a> <button type="submit" id="search" class="btn btn-primary">Search</button>
-                </div>
-            </div>
-        </div>
+            @Html.Partial("Results", Model)
+        </form>
     </div>
-    @Html.Partial("Results", Model)
-</form>
+</div>
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")

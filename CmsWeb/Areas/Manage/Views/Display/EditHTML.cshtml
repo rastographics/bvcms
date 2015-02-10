@@ -1,38 +1,45 @@
 ﻿@model CmsData.Content
 @{
+    ViewBag.Title = "Edit Html Content";
+    ViewBag.PageHeader = Model.Title;
     Layout = ViewExtensions2.TouchPointLayout();
+    
 }
-<h2>@Model.Title</h2>
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
     <div class="row">
         <div class="col-md-9">
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        @Html.TextBox("title", Model.Title, new { @class = "form-control" })
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a href="/Display/#tab_htmlContent" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <input type="submit" class="btn btn-primary" value="Save Content" />
                     </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <div class="checkbox">
-                    <label>
-                        @Html.CheckBox("fullpage") Full page?&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info"><i class="fa fa-info-circle"></i> Note:  Full page should only be clicked when you first come to the page, not after you have made any changes otherwise they will be lost.</span>
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                @Html.TextArea("body", new { @class = "form-control", rows = "26" })
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <input type="submit" class="btn btn-primary btn-block" value="Save" />
-                    <a id="delete" href='/Display/ContentDelete/@Model.Id' class="btn btn-danger btn-block"><i class="fa fa-trash"></i> Delete</a>
-                    <hr/>
-                    <div class="additional-actions"><a id="cancel" href='/Display/#tab_htmlContent'>Cancel & Return</a></div>
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                @Html.TextBox("title", Model.Title, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                @Html.CheckBox("fullpage") Full page?&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info"><i class="fa fa-info-circle"></i> Note:  Full page should only be clicked when you first come to the page, not after you have made any changes otherwise they will be lost.</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.TextArea("body", new { @class = "form-control", rows = "26" })
+                    </div>
+                    <div class="visible-xs-block">
+                        <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger btn-block delete"><i class="fa fa-trash"></i> Delete</a>
+                        <input type="submit" class="btn btn-primary btn-block" value="Save Content" />
+                        <hr />
+                        <a href="/Display/#tab_htmlContent" class="btn btn-default btn-block">Cancel</a> 
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,7 +61,7 @@
 
         $(function () {
 
-            $("#delete").click(function (ev) {
+            $("a.delete").click(function (ev) {
                 ev.preventDefault();
                 var href = this.href;
 

@@ -4,6 +4,7 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Special Content";
+    ViewBag.PageHeader = "Special Content";
 
     var roleList = ContentModel.fetchRoles();
     const int WRAP_COUNT = 6;
@@ -12,234 +13,234 @@
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
 }
-<h2>Special Content</h2>
-<div>
-    <ul class="nav nav-tabs" id="special-content-tabs">
-        <li class="active"><a href="#tab_htmlContent" aria-controls="htmlContent" data-toggle="tab"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;Html Content</a></li>
-        <li><a href="#textContent" aria-controls="textContent" data-toggle="tab"><i class="fa fa-file-text"></i>&nbsp;&nbsp;Text Content</a></li>
-        <li><a href="#emailTemplates" aria-controls="emailTemplates" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email Templates</a></li>
-        <li><a href="#savedDrafts" aria-controls="savedDrafts" data-toggle="tab"><i class="fa fa-clipboard"></i>&nbsp;&nbsp;Saved Drafts</a></li>
-        <li><a href="#sqlScripts" aria-controls="sqlScripts" data-toggle="tab"><i class="fa fa-database"></i>&nbsp;&nbsp;Sql Scripts</a></li>
-        <li><a href="#pythonScripts" aria-controls="pythonScripts" data-toggle="tab"><i class="fa fa-code"></i>&nbsp;&nbsp;Python Scripts</a></li>
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane fade in active" id="htmlContent">
-            <br/>
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Title</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.fetchHTMLFiles())
-                                {
-                                    if (!string.IsNullOrWhiteSpace(item.Name) && !string.IsNullOrWhiteSpace(item.Title))
-                                    {
-                                        <tr>
-                                            <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
-                                            <td>@item.Title</td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <a href="#" newtype="0" newmessage="Create New Html File" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> New Html File</a>
+<div class="row">
+    <div class="col-md-9">
+        <ul class="nav nav-tabs" id="special-content-tabs">
+            <li class="active"><a href="#htmlContent" aria-controls="htmlContent" data-toggle="tab"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;Html Content</a></li>
+            <li><a href="#textContent" aria-controls="textContent" data-toggle="tab"><i class="fa fa-file-text"></i>&nbsp;&nbsp;Text Content</a></li>
+            <li><a href="#emailTemplates" aria-controls="emailTemplates" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email Templates</a></li>
+            <li><a href="#savedDrafts" aria-controls="savedDrafts" data-toggle="tab"><i class="fa fa-clipboard"></i>&nbsp;&nbsp;Saved Drafts</a></li>
+            <li><a href="#sqlScripts" aria-controls="sqlScripts" data-toggle="tab"><i class="fa fa-database"></i>&nbsp;&nbsp;Sql Scripts</a></li>
+            <li><a href="#pythonScripts" aria-controls="pythonScripts" data-toggle="tab"><i class="fa fa-code"></i>&nbsp;&nbsp;Python Scripts</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="htmlContent">
+                <div class="row hidden-xs">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" newtype="0" newmessage="Create New Html File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Html File</a>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="textContent">
-            <br />
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.fetchTextFiles())
-                                {
-                                    if (!string.IsNullOrWhiteSpace(item.Name))
-                                    {
-                                        <tr>
-                                            <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <a href="#" newtype="1" newmessage="Create New Text File" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> New Text File</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="emailTemplates">
-            <br />
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="row">
-                        @foreach (var t in Model.fetchEmailTemplates())
-                        {
-                            var ro = roleList.FirstOrDefault(r => r.RoleId == t.RoleID);
-                            <div class="col-sm-3 col-md-3 col-lg-2 text-center" style="height: 300px;">
-                                @t.Name<br />
-                                <a href="/Display/ContentEdit/@t.Id">
-                                    <div>
-                                        @if (t.ThumbID != 0)
-                                        {
-                                            <img src="/Image/@t.ThumbID" style="height: 160px; width: 110px;" />
-                                        }
-                                    </div>
-                                </a>
-                                Limited to Role:<br />
-                                <b>@(ro != null ? ro.RoleName : "missing role!")</b>
-                            </div>
-                        }
-                    </div>
-                    
-                </div>
-                <div class="col-md-3">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> New Email Template</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="tab-pane fade" id="savedDrafts">
-            <br />
-            <form id="savedDrafts" action="/Display/ContentDeleteDrafts">
                 <div class="row">
-                    <div class="col-md-9">
+                    <div class="col-sm-12">
                         <div class="table-responsive">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th style="width: 5px;"><input type="checkbox" id="draftAll" value="all" /></th>
                                         <th>Name</th>
-                                        <th>Owner</th>
-                                        <th>Role</th>
-                                        <th>Created Date</th>
+                                        <th>Title</th>
                                     </tr>
                                 </thead>
-                                @foreach (var item in Model.fetchSavedDrafts())
-                                {
-                                    <tr>
-                                        <td style="width: 5px;">
-                                            <input draft="yes" type="checkbox" name="draftID" value="@item.id" />
-                                        </td>
-                                        <td>
-                                            @Helper.AnchorLink(item.name.HasValue() ? item.name : "notnamed", "/Display/ContentEdit/" + item.id)
-                                        </td>
-                                        <td>
-                                            @item.owner
-                                        </td>
-                                        <td>
-                                            @(item.roleID == 0 ? "Everyone" : item.role)
-                                        </td>
-                                        <td>
-                                            @item.created.FormatDate()
-                                        </td>
-                                    </tr>
-                                }
+                                <tbody>
+                                    @foreach (var item in Model.fetchHTMLFiles())
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(item.Name) && !string.IsNullOrWhiteSpace(item.Title))
+                                        {
+                                            <tr>
+                                                <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
+                                                <td>@item.Title</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
                             </table>
                         </div>
+                        <a href="#" newtype="0" newmessage="Create New Html File" class="btn btn-success btn-block visible-xs-block"><i class="fa fa-plus-circle"></i> New Html File</a>
                     </div>
-                    <div class="col-md-3">
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <button type="button" class="btn btn-danger btn-block" id="draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
-                            </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="textContent">
+                <div class="row hidden-xs">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" newtype="1" newmessage="Create New Text File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Text File</a>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="tab-pane fade" id="sqlScripts">
-            <br />
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.fetchSqlScriptFiles())
-                                {
-                                    if (!string.IsNullOrWhiteSpace(item.Name))
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.fetchTextFiles())
                                     {
-                                        <tr>
-                                            <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
-                                        </tr>
+                                        if (!string.IsNullOrWhiteSpace(item.Name))
+                                        {
+                                            <tr>
+                                                <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
+                                            </tr>
+                                        }
                                     }
-                                }
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="#" newtype="1" newmessage="Create New Text File" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Text File</a>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <a href="#" newtype="4" newmessage="Create New Sql Script File" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> New Sql Script File</a>
+            </div>
+            <div class="tab-pane fade" id="emailTemplates">
+                <div class="row hidden-xs">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Email Template</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            @foreach (var t in Model.fetchEmailTemplates())
+                            {
+                                var ro = roleList.FirstOrDefault(r => r.RoleId == t.RoleID);
+                                <div class="col-sm-3 col-md-3 col-lg-2 text-center" style="height: 300px;">
+                                    @t.Name<br />
+                                    <a href="/Display/ContentEdit/@t.Id">
+                                        <div>
+                                            @if (t.ThumbID != 0)
+                                            {
+                                                <img src="/Image/@t.ThumbID" style="height: 160px; width: 110px;" />
+                                            }
+                                        </div>
+                                    </a>
+                                    Limited to Role:<br />
+                                    <b>@(ro != null ? ro.RoleName : "missing role!")</b>
+                                </div>
+                            }
+                            <a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Email Template</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="tab-pane fade" id="pythonScripts">
-            <br />
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.fetchPythonScriptFiles())
-                                {
-                                    if (!string.IsNullOrWhiteSpace(item.Name))
-                                    {
-                                        <tr>
-                                            <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
-                                        </tr>
-                                    }
-                                }
-                            </tbody>
-                        </table>
+            <div class="tab-pane fade" id="savedDrafts">
+                <div class="row hidden-xs">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-danger draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <a href="#" newtype="5" newmessage="Create New Python Script File" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> New Python Script File</a>
+                <form id="savedDrafts" action="/Display/ContentDeleteDrafts">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5px;"><input type="checkbox" id="draftAll" value="all" /></th>
+                                            <th>Name</th>
+                                            <th>Owner</th>
+                                            <th>Role</th>
+                                            <th>Created Date</th>
+                                        </tr>
+                                    </thead>
+                                    @foreach (var item in Model.fetchSavedDrafts())
+                                    {
+                                        <tr>
+                                            <td style="width: 5px;">
+                                                <input draft="yes" type="checkbox" name="draftID" value="@item.id" />
+                                            </td>
+                                            <td>
+                                                @Helper.AnchorLink(item.name.HasValue() ? item.name : "notnamed", "/Display/ContentEdit/" + item.id)
+                                            </td>
+                                            <td>
+                                                @item.owner
+                                            </td>
+                                            <td>
+                                                @(item.roleID == 0 ? "Everyone" : item.role)
+                                            </td>
+                                            <td>
+                                                @item.created.FormatDate()
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-danger visible-xs-block btn-block draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
                         </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="sqlScripts">
+                <div class="row hidden-xs">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" newtype="4" newmessage="Create New Sql Script File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Sql Script File</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.fetchSqlScriptFiles())
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(item.Name))
+                                        {
+                                            <tr>
+                                                <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="#" newtype="4" newmessage="Create New Sql Script File" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Sql Script File</a>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pythonScripts">
+                <div class="row hidden-xs">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a href="#" newtype="5" newmessage="Create New Python Script File" class="btn btn-success"><i class="fa fa-plus-circle"></i> New Python Script File</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.fetchPythonScriptFiles())
+                                    {
+                                        if (!string.IsNullOrWhiteSpace(item.Name))
+                                        {
+                                            <tr>
+                                                <td>@Helper.AnchorLink(item.Name, "/Display/ContentEdit/" + item.Id)</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="#" newtype="5" newmessage="Create New Python Script File" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Python Script File</a>
                     </div>
                 </div>
             </div>
@@ -349,7 +350,7 @@
 
             $(document).on("change", "input[draft]", null, checkChanged);
 
-            $("#draftDelete").click(function (e) {
+            $("button.draftDelete").click(function (e) {
                 swal({
                     title: "Are you sure you want to delete " + $("input[draft]:checked").length + " draft(s)?",
                     type: "warning",
@@ -374,11 +375,11 @@
 
             function checkChanged() {
                 if ($("input[draft]:checked").length > 0) {
-                    $("#draftDelete").prop("disabled", false);
-                    $("#draftDelete").text("Delete " + $("input[draft]:checked").length + " Draft(s)");
+                    $("button.draftDelete").prop("disabled", false);
+                    $("button.draftDelete").text("Delete " + $("input[draft]:checked").length + " Draft(s)");
                 } else {
-                    $("#draftDelete").prop("disabled", true);
-                    $("#draftDelete").text("Delete 0 Draft(s)");
+                    $("button.draftDelete").prop("disabled", true);
+                    $("button.draftDelete").text("Delete 0 Draft(s)");
                 }
             }
 

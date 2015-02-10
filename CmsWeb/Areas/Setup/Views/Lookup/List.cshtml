@@ -2,18 +2,17 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Lookups";
+    ViewBag.PageHeader = "Lookup Lists";
 }
-<h2>Lookup Lists</h2>
-
 @if (!User.IsInRole("Admin"))
 {
     <div class="row">
         <div class="col-sm-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Financial</h3>
+            <div class="box">
+                <div class="box-title">
+                    <h5>Financial</h5>
                 </div>
-                <div class="panel-body">
+                <div class="box-content">
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="/Funds">Funds</a></li>
                     </ul>
@@ -26,11 +25,11 @@ else
 {
     <div class="row">
         <div class="col-sm-4 col-md-4 col-lg-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">People</h3>
+            <div class="box">
+                <div class="box-title">
+                    <h5>People</h5>
                 </div>
-                <div class="panel-body">
+                <div class="box-content">
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="/Lookup/AddressType">Address Type</a></li>
                         <li><a href="/Lookup/EnvelopeOption">Envelope Option</a></li>
@@ -49,11 +48,11 @@ else
             </div>
         </div>
         <div class="col-sm-4 col-md-4 col-lg-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Organizations</h3>
+            <div class="box">
+                <div class="box-title">
+                    <h5>Organizations</h5>
                 </div>
-                <div class="panel-body">
+                <div class="box-content">
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="/Lookup/AttendCredit">Attend Credit</a></li>
                         <li><a href="/Lookup/AttendType">Attend Type</a></li>
@@ -70,11 +69,11 @@ else
             </div>
         </div>
         <div class="col-sm-4 col-md-4 col-lg-3">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Membership</h3>
+            <div class="box">
+                <div class="box-title">
+                    <h5>Membership</h5>
                 </div>
-                <div class="panel-body">
+                <div class="box-content">
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="/Lookup/BaptismStatus">Baptism Status</a></li>
                         <li><a href="/Lookup/BaptismType">Baptism Type</a></li>
@@ -87,11 +86,11 @@ else
                     </ul>
                 </div>
             </div>
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Reports</h3>
+            <div class="box">
+                <div class="box-title">
+                    <h5>Reports</h5>
                 </div>
-                <div class="panel-body">
+                <div class="box-content">
                     <ul class="nav nav-pills nav-stacked">
                         <li><a href="/Reports/CustomColumns/" target="_blank">Custom Columns</a></li>
                     </ul>
@@ -102,11 +101,11 @@ else
         <div class="col-sm-12 col-md-12 col-lg-3">
             <div class="row">
                 <div class="col-sm-4 col-md-4 col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Contact</h3>
+                    <div class="box">
+                        <div class="box-title">
+                            <h5>Contact</h5>
                         </div>
-                        <div class="panel-body">
+                        <div class="box-content">
                             <ul class="nav nav-pills nav-stacked">
                                 <li><a href="/Lookup/ContactReason">Contact Reason</a></li>
                                 <li><a href="/Lookup/ContactType">Contact Type</a></li>
@@ -116,11 +115,11 @@ else
                     </div>
                 </div>
                 <div class="col-sm-4 col-md-4 col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Contributions</h3>
+                    <div class="box">
+                        <div class="box-title">
+                            <h5>Contact</h5>
                         </div>
-                        <div class="panel-body">
+                        <div class="box-content">
                             <ul class="nav nav-pills nav-stacked">
                                 <li><a href="/Lookup/BundleHeaderTypes">Bundle Header Types</a></li>
                                 <li><a href="/Lookup/BundleStatusTypes">Bundle Status Types</a></li>
@@ -131,8 +130,6 @@ else
                     </div>
                 </div>
             </div>
-            
-            
         </div>
     </div>
 }
