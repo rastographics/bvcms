@@ -98,7 +98,7 @@ namespace CmsWeb.Models
             _transactions
                = from t in DbUtil.Db.ViewTransactionLists
                  let donate = t.Donate ?? 0
-                 where t.Amt > gtamount || gtamount == null
+                 where t.Amt >= gtamount || gtamount == null
                  where t.Amt <= ltamount || ltamount == null
                  where description == null || t.Description.Contains(description)
                  where nameid > 0 || ((t.Testing ?? false) == testtransactions)
