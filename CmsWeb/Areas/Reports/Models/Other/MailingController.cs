@@ -333,6 +333,8 @@ namespace CmsWeb.Models
                          HomePhone = p.Family.HomePhone.FmtFone(),
                          MemberStatus = p.MemberStatus.Description,
                          Employer = p.EmployerOther,
+                         MailingAddress = altaddr,
+                         CoupleName = altcouple,
                      };
             return q2.Take(maximumRows).ToDataTable().ToExcel("CouplesBoth.xlsx");
         }
@@ -384,6 +386,8 @@ namespace CmsWeb.Models
             return (from h in q
                     let spouse = DbUtil.Db.People.SingleOrDefault(sp => sp.PeopleId == h.SpouseId)
                     where h.DeceasedDate == null
+                    let altaddr = h.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == h.FamilyId && ee.Field == "MailingAddress").Data
+                    let altcouple = h.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == h.FamilyId) && ee.Field == "CoupleName" && h.SpouseId != null).Data
                     select new
                     {
                         LabelName = (h.Family.CoupleFlag == 1 ? (UseTitles ? (h.TitleCode != null ? h.TitleCode + " and Mrs. " + h.Name
@@ -402,7 +406,11 @@ namespace CmsWeb.Models
                         State = h.PrimaryState,
                         Zip = h.PrimaryZip,
                         Email = h.EmailAddress,
-                        SpouseEmail = spouse.EmailAddress
+                        SpouseEmail = spouse.EmailAddress,
+                        CellPhone = h.CellPhone.FmtFone(),
+                        SpouseCell = spouse.CellPhone.FmtFone(),
+                        MailingAddress = altaddr,
+                        CoupleName = altcouple,
                     }).Take(maximumRows).ToDataTable().ToExcel("Families.xlsx");
         }
 
