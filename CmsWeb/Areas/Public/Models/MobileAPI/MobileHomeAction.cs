@@ -13,6 +13,6 @@ namespace CmsWeb.MobileAPI
 		public string data = "";
 		public string icon = "";
 		public int loginType = 0;
-		public string loginRoles = "";
+		public string roles = "";
 	}
 }

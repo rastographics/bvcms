@@ -83,8 +83,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 #if DEBUG
 #else
-            if (m != null && m.History.Contains("ProcessPayment"))
-					return Content("Already submitted");
+            if (m != null && m.History.Any(h => h.Contains("ProcessPayment")))
+				return Content("Already submitted");
 #endif
 
             if (m != null && m.OnlineGiving())
