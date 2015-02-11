@@ -768,6 +768,7 @@
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\bootstrap-tabdrop.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\extensions_bootstrap-tabdrop.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-typeahead\js\bootstrap3-typeahead.min.js" />
+    <Content Include="Content\touchpoint\lib\ckeditor\js\ckeditorconfig.js" />
     <Content Include="Content\touchpoint\lib\jquery-blockUI\js\jquery.blockUI.js" />
     <Content Include="Content\touchpoint\lib\jquery-chosen\js\chosen.jquery.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-validate\js\jquery.validate.min.js" />
