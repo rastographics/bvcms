@@ -7,7 +7,8 @@ CREATE TABLE [dbo].[MobileAppActions]
 [data] [nvarchar] (max) NOT NULL CONSTRAINT [DF_MobileAppActions_url] DEFAULT (''),
 [order] [int] NOT NULL CONSTRAINT [DF_MobileAppActions_order] DEFAULT ((0)),
 [loginType] [int] NOT NULL CONSTRAINT [DF_MobileAppActions_loginType] DEFAULT ((0)),
-[enabled] [bit] NOT NULL CONSTRAINT [DF_MobileAppActions_enabled] DEFAULT ((1))
+[enabled] [bit] NOT NULL CONSTRAINT [DF_MobileAppActions_enabled] DEFAULT ((1)),
+[roles] [nvarchar] (max) NOT NULL CONSTRAINT [DF_MobileAppActions_roles] DEFAULT ('')
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
