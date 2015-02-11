@@ -262,7 +262,7 @@ namespace CmsWeb.Models
                         var menusetattr = e.Attribute("set");
                         if (menusetattr != null)
                             menuset = menusetattr.Value.ToInt();
-                        if (MenuItem.Count == menuset)
+                        while(MenuItem.Count-1 < menuset)
                             MenuItem.Add(new Dictionary<string, int?>());
                         var aname = e.Attribute("name");
                         var number = e.Attribute("number");

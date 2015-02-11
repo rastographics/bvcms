@@ -98,8 +98,10 @@ RETURN
 			)
 		)
 		OR (@sgfilter = 'NONE' AND LEN(ISNULL(Groups, '')) = 0)
-		OR @sgfilter IS NULL
-		OR LEN(@sgfilter) = 0
+		OR @sgfilter IS NULL -- no filter
+		OR LEN(@sgfilter) = 0 -- filter is empty
+		-- check to see if they are all exclusion small groups
+		OR NOT EXISTS(SELECT NULL FROM split(@sgfilter, ',') pf WHERE pf.value NOT LIKE '-%')
 	)
 	AND (NOT EXISTS(SELECT NULL FROM split(@sgfilter, ',') pf WHERE pf.value LIKE '-%')
 		OR (ISNULL(LEN(@sgfilter), 0) > 0 AND @sgfilter NOT LIKE 'ALL:%' AND @sgfilter <> 'NONE' 
@@ -111,6 +113,7 @@ RETURN
 		)
 	)
 )
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

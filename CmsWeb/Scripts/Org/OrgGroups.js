@@ -4,7 +4,7 @@
         $(".bt").button();
 
         $(".clickEdit").editable("/OrgGroups/UpdateScore", {
-            indicator: "<img src='/images/loading.gif'>",
+            indicator: "<img src='/Content/images/loading.gif'>",
             width: 40,
             height: 22,
             tooltip: "Click to edit...",
