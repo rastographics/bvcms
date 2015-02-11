@@ -83,8 +83,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
 #if DEBUG
 #else
-            if (m != null && m.History.Contains("ProcessPayment"))
-					return Content("Already submitted");
+            if (m != null && HasntAlreadyRegistered(m))
+				return Content("Already submitted");
 #endif
 
             if (m != null && m.OnlineGiving())
@@ -183,6 +183,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ModelState.AddModelError("form", ex.Message);
                 return View("Payment/Process", pf);
             }
+        }
+
+        private static bool HasntAlreadyRegistered(OnlineRegModel m)
+        {
+            return m.History.Any(h => h.Contains("ProcessPayment"));
         }
 
         private void ValidatePaymentForm(PaymentForm pf)
