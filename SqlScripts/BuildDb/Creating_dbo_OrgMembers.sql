@@ -65,7 +65,7 @@ JOIN
 			p.PeopleId
 	from People p
 	JOIN dbo.OrganizationMembers om ON p.PeopleId = om.PeopleId
-	JOIN dbo.OrgMember(' + CAST(@oid AS nvarchar(10)) + ', 10, NULL, NULL, ''' + @sgFilter + ''', 0) mm ON mm.PeopleId = p.PeopleId
+	JOIN dbo.OrgMember(' + CAST(@oid AS nvarchar(10)) + ', 10, NULL, NULL, ''' + ISNULL(@sgFilter,'') + ''', 0) mm ON mm.PeopleId = p.PeopleId
 	LEFT JOIN lookup.Gender g ON p.GenderId = g.Id
 	LEFT JOIN lookup.MemberStatus ms ON p.MemberStatusId = ms.Id
 	LEFT JOIN lookup.MaritalStatus mas ON p.MaritalStatusId = mas.Id

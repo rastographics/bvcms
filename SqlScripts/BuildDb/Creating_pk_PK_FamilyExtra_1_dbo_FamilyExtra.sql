@@ -1,4 +1,4 @@
-ALTER TABLE [dbo].[PeopleExtra] ADD CONSTRAINT [PK_PeopleExtra] PRIMARY KEY CLUSTERED  ([PeopleId], [TransactionTime], [Field])
+ALTER TABLE [dbo].[FamilyExtra] ADD CONSTRAINT [PK_FamilyExtra_1] PRIMARY KEY CLUSTERED  ([FamilyId], [Field])
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

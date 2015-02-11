@@ -1,3 +1,4 @@
+
 CREATE VIEW [dbo].[AppRegistrations]
 AS
 (
@@ -9,6 +10,8 @@ AS
 		,o.[Description]
 		,o.PublicSortOrder
 		,o.UseRegisterLink2
+		,o.RegStart
+		,o.RegEnd
 	FROM dbo.Organizations o
 	LEFT JOIN dbo.MasterOrgs mo ON mo.PickListOrgId = o.OrganizationId
 	WHERE mo.OrganizationId IS NULL

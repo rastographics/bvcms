@@ -1,4 +1,5 @@
 
+
 CREATE VIEW [dbo].[RegistrationList]
 AS
 
@@ -17,6 +18,8 @@ SELECT
 	,tt.abandoned
 	,tt.UserPeopleId
 	,CONVERT(BIT, CASE WHEN tt.Stamp < o.RegStart THEN 1 ELSE 0 END) expired
+	,o.RegStart
+	,o.RegEnd
 FROM 
 (
 	SELECT 
@@ -31,6 +34,7 @@ FROM
 ) tt
 LEFT JOIN dbo.Organizations o ON o.OrganizationId = tt.OrganizationId
 LEFT JOIN dbo.People pu ON pu.PeopleId = tt.UserPeopleId
+
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

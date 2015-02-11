@@ -1,3 +1,4 @@
+
 CREATE VIEW [dbo].[TransactionList]
 AS
 

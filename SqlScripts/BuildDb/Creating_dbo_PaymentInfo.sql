@@ -4,7 +4,6 @@ CREATE TABLE [dbo].[PaymentInfo]
 [AuNetCustId] [int] NULL,
 [AuNetCustPayId] [int] NULL,
 [SageBankGuid] [uniqueidentifier] NULL,
-[ccv] [nvarchar] (5) NULL,
 [SageCardGuid] [uniqueidentifier] NULL,
 [MaskedAccount] [nvarchar] (30) NULL,
 [MaskedCard] [nvarchar] (30) NULL,
@@ -24,7 +23,10 @@ CREATE TABLE [dbo].[PaymentInfo]
 [Phone] [nvarchar] (25) NULL,
 [TbnBankVaultId] [int] NULL,
 [TbnCardVaultId] [int] NULL,
-[AuNetCustPayBankId] [int] NULL
+[AuNetCustPayBankId] [int] NULL,
+[BluePayCardVaultId] [nvarchar] (50) NULL,
+[Address2] [nvarchar] (50) NULL,
+[Country] [nvarchar] (50) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

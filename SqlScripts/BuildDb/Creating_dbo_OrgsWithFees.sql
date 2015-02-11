@@ -1,14 +1,11 @@
+
 CREATE VIEW [dbo].[OrgsWithFees]
 AS
 (
-SELECT OrganizationId 
-FROM (
 	SELECT 
-		OrganizationId, 
-		CONVERT(MONEY, dbo.RegexMatch(ISNULL(RegSetting, ''), '(?<=^Fee:\s)(.*)$')) fee
+		OrganizationId
 	FROM dbo.Organizations
-) tt
-WHERE fee > 0
+WHERE dbo.OrgFee(OrganizationId) > 0
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

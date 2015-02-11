@@ -16,9 +16,9 @@ BEGIN
 	WHERE u.UserId = @uid
 	
 	delete dbo.Preferences
-	from dbo.Preferences p
-	join dbo.Users u on u.UserId = p.UserId
-	where u.UserId = @uid
+	FROM dbo.Preferences p
+	JOIN dbo.Users u ON u.UserId = p.UserId
+	WHERE u.UserId = @uid
 	
 	DELETE dbo.VolunteerForm
 	FROM dbo.VolunteerForm vf
@@ -29,6 +29,10 @@ BEGIN
 	FROM dbo.Coupons c
 	JOIN dbo.Users u ON c.UserId = u.UserId
 	WHERE u.UserId = @uid
+    
+	DELETE 
+	FROM dbo.ApiSession
+	WHERE UserId = @uid
 	
 	DELETE dbo.Users
 	WHERE UserId = @uid
