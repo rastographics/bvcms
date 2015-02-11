@@ -16,13 +16,13 @@
                                        '</button>';
 
     
-    $("#create").click(function(ev) {
+    $("button.create").click(function(ev) {
         ev.preventDefault();
         if ($("#TagProgramId").val() === "0") {
             swal("Error!", "Target program must be selected.", "error");
             return false;
         }
-        var f = $('#createForm');
+        var f = $('#progform');
         var q = f.serialize();
         $.post("/Division/Create/", q, function(ret) {
             $('#results > tbody').append(ret);
@@ -96,6 +96,10 @@
 
     $("#refresh").click(function(ev) {
         ev.preventDefault();
+        $.getTable();
+    });
+
+    $('#TagProgramId').change(function () {
         $.getTable();
     });
 

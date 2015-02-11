@@ -9,34 +9,46 @@
 }
 <div class="row">
     <div class="col-md-9">
-        <div class="well">
-            <label for="ProgramId">Filter for Program</label>
-            <div class="row">
-                <form id="progform">
-                    <div class="col-sm-12 form-inline">
-                        <div class="input-group">
-                            @Html.DropDownList("ProgramId", Model.ProgramIds(), new { @class = "form-control" })
-                        </div>
-                        <div class="input-group">
-                            <input id="refresh" type="submit" class="btn btn-default" value="Refresh" />
-                        </div>
-                    </div>
-                </form>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    @using (Html.BeginForm("Create", "Division", FormMethod.Post, new { id = "createForm" }))
+                    {
+                        <button type="submit" class="btn btn-success create"><i class="fa fa-plus-circle"></i> Add Division</button>
+                    }
+                </div>
             </div>
-        </div>
-        @Html.Partial("Results", Model)
-    </div>
-    <div class="col-md-3">
-        <div class="panel panel-default">
-            <div class="panel-body">
-                @using (Html.BeginForm("Create", "Division", FormMethod.Post, new { id = "createForm" }))
-                {
-                    <div class="form-group">
-                        <label for="TagProgramId">Target Program</label>
-                        @Html.DropDownList("TagProgramId", Model.ProgramIds(), new { @class= "form-control"})
+            <div class="box-content">
+                <div class="well">
+                    <div class="row">
+                        <form id="progform">
+                            <div class="col-sm-3">
+                                <label for="ProgramId">Filter for Program</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("ProgramId", Model.ProgramIds(), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <label for="TagProgramId">Target Program</label>
+                                <div class="form-inline">
+                                    <div class="input-group">
+                                        @Html.DropDownList("TagProgramId", Model.ProgramIds(), new { @class = "form-control" })
+                                    </div>
+                                    <div class="input-group">
+                                        <input id="refresh" type="submit" class="btn btn-default" value="Refresh" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <button id="create" type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Division</button>
-                }
+                </div>
+                @Html.Partial("Results", Model)
+                <div class="visible-xs-block">
+                    @using (Html.BeginForm("Create", "Division", FormMethod.Post, new { id = "createForm" }))
+                    {
+                        <button type="submit" class="btn btn-success btn-block create"><i class="fa fa-plus-circle"></i> Add Division</button>
+                    }
+                </div>
             </div>
         </div>
     </div>

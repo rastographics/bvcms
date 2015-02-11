@@ -81,11 +81,11 @@
                     <div class="stat-panel-container">
                         <div class="stat-panel-inner-container">
                             <div class="stat-panel">
-                                <span class="stat-title">MEMBERS</span>
+                                <span class="stat-title">MEMBER CHECK-INS</span>
                                 <span class="stat-figure">@Model.counts.members.ToString("N0")</span>
                             </div>
                             <div class="stat-panel">
-                                <span class="stat-title">GUESTS</span>
+                                <span class="stat-title">GUEST CHECK-INS</span>
                                 <span class="stat-figure">@Model.counts.guests.ToString("N0")</span>
                             </div>
                             <div style="clear: both;"></div>
@@ -147,7 +147,7 @@
                         @foreach (var t in Model.FetchActivityCount())
                         {
                             <tr>
-                                <td> @t.name</td>
+                                <td>@(t.name == "Total Guests" ? "Total" : t.name)</td>
                                 <td>@t.count.ToString("N0")</td>
                             </tr>
                         }

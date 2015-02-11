@@ -5,7 +5,9 @@
     ViewBag.PageHeader = "Manage Tags";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-@Html.Partial("Toolbar/Toolbar.touch")
+@section toolbar{
+    @Html.Partial("Toolbar/Toolbar.touch")
+}
 <div class="box box-responsive">
     <div class="box-content">
         <form id="managetags" method="post" action="/Tags">
