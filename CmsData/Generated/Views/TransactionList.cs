@@ -108,6 +108,10 @@ namespace CmsData.View
 		
 		private string _PaymentType;
 		
+		private string _Address2;
+		
+		private string _Country;
+		
 		private int _BalancesId;
 		
 		private decimal? _BegBal;
@@ -908,6 +912,40 @@ namespace CmsData.View
 			{
 				if (this._PaymentType != value)
 					this._PaymentType = value;
+			}
+
+		}
+
+		
+		[Column(Name="Address2", Storage="_Address2", DbType="nvarchar(50)")]
+		public string Address2
+		{
+			get
+			{
+				return this._Address2;
+			}
+
+			set
+			{
+				if (this._Address2 != value)
+					this._Address2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="Country", Storage="_Country", DbType="nvarchar(50)")]
+		public string Country
+		{
+			get
+			{
+				return this._Country;
+			}
+
+			set
+			{
+				if (this._Country != value)
+					this._Country = value;
 			}
 
 		}

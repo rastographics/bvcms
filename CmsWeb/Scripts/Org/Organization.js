@@ -56,6 +56,7 @@
             $("a.selectsg .fa-minus").hide();
     });
     $("a.selectsg").live("click", function (ev) {
+        ev.preventDefault();
         var t = $(this).text();
         var sg = $("#sgFilter").val();
         switch(t) {
@@ -76,6 +77,7 @@
         $("#sgFilter").val(sg);
         $("#excludesg").removeClass("active");
         $("a.selectsg .fa-minus").hide();
+        return false;
     });
     $("#showhide").live("click", function (ev) {
         ev.preventDefault();
@@ -88,6 +90,7 @@
         ev.preventDefault();
         $("#FilterIndividuals").val(!$("#filter-ind").hasClass("active"));
         RebindMemberGrids();
+        hideDropdowns();
         return false;
     });
     $("#filter-ind").live("click", function (ev) {

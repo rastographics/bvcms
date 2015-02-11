@@ -21,11 +21,8 @@ namespace CmsWeb.Areas.Org.Controllers
                 if (m.NameFilter.HasValue())
                     m.FilterIndividuals = false;
                 else
-                {
-                    var tag = DbUtil.Db.FetchOrCreateTag("Org-" + m.Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
-                    if (!tag.PersonTags.Any())
+                    if (DbUtil.Db.OrgCheckedCount(m.Id, m.GroupSelect, Util.UserPeopleId) == 0)
                         m.FilterIndividuals = false;
-                }
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"];
@@ -138,11 +135,9 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CheckAll(OrgPeopleModel m)
         {
-            DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
-            var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
-            var q = DbUtil.Db.PeopleQuery(qid);
+            var list = m.DefineModelList().Select(vv => vv.PeopleId);
             var tag = DbUtil.Db.FetchOrCreateTag("Org-" + m.Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
-            DbUtil.Db.TagAll2(q, tag);
+            DbUtil.Db.TagAll(list, tag);
             return PartialView("People", m);
         }
         [HttpPost]
