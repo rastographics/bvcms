@@ -5,12 +5,10 @@
     ViewBag.PageHeader = "Manage Tags";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-@section toolbar{
-    @Html.Partial("Toolbar/Toolbar.touch")
-}
-<div class="box box-responsive">
-    <div class="box-content">
-        <form id="managetags" method="post" action="/Tags">
+<form id="managetags" method="post" action="/Tags">
+    <div class="box box-responsive">
+        <div class="box-content">
+            @Html.Partial("Toolbar/Toolbar.touch")
             <div class="well form-horizontal">
                 <div class="form-group">
                     <label for="tag" class="col-sm-3 col-md-2 col-lg-2 control-label">Change Active Tag:</label>
@@ -42,9 +40,9 @@
                 </div>
             </div>
             @Html.Partial("Results", Model)
-        </form>
+        </div>
     </div>
-</div>
+</form>
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/js/dialog/search-users.js")
