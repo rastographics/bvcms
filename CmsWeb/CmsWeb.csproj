@@ -299,7 +299,9 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileHomeAction.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRegistration.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostHeadcount.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>
