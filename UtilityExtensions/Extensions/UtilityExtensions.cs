@@ -233,15 +233,6 @@ namespace UtilityExtensions
             return h.Fmt(page);
         }
 
-        public static string IpAddress()
-        {
-            string strIpAddress;
-            strIpAddress = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            if (strIpAddress == null)
-                strIpAddress = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-            return strIpAddress;
-        }
-
         public static void Cookie(string name, string value, int days)
         {
             if (Cookie(name) == value)
@@ -382,10 +373,12 @@ namespace UtilityExtensions
             return false;
         }
 
-        public static string GetIPAddress()
+        public static string GetIpAddress()
         {
             var context = HttpContext.Current;
-            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            if (context == null)
+                return null;
+            var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
             if (ipAddress.HasValue())
             {
                 var addresses = ipAddress.Split(',');

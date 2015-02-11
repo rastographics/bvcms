@@ -69,8 +69,8 @@ namespace CmsWeb.Models
         {
             get
             {
-                if (list.Count > 0)
-                    return list[list.Count - 1];
+                if (_list.Count > 0)
+                    return _list[_list.Count - 1];
                 return null;
             }
         }
@@ -499,7 +499,7 @@ namespace CmsWeb.Models
             {
                 Datum = new RegistrationDatum
                 {
-                    OrganizationId = masterorgid ?? orgid,
+                    OrganizationId = masterorgid ?? _orgid,
                     UserPeopleId = UserPeopleId,
                     Stamp = Util.Now
                 };
@@ -541,9 +541,9 @@ namespace CmsWeb.Models
                 return null;
             var dt30 = DateTime.Now.AddDays(-30);
             var ed = (from e in DbUtil.Db.RegistrationDatas
-                      let o = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == (masterorgid ?? orgid))
+                      let o = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == (masterorgid ?? _orgid))
                       where e.Stamp > (o.RegStart ?? dt30)
-                      where e.OrganizationId == (masterorgid ?? orgid)
+                      where e.OrganizationId == (masterorgid ?? _orgid)
                       where e.UserPeopleId == pid
                       where (e.Abandoned ?? false) == false
                       where (e.Completed ?? false) == false
