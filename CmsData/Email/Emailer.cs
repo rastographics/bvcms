@@ -61,10 +61,13 @@ namespace CmsData
             string addmailstr = null;
             if (addmail != null)
                 addmailstr = addmail.EmailAddressListToString();
+            int? orgid = null;
+            if (CurrentOrg != null)
+                orgid = CurrentOrg.Id;
             emailqueue.EmailQueueTos.Add(new EmailQueueTo
             {
                 PeopleId = p.PeopleId,
-                OrgId = CurrentOrg.Id,
+                OrgId = orgid,
                 AddEmail = addmailstr,
                 Guid = Guid.NewGuid(),
             });
@@ -270,10 +273,13 @@ namespace CmsData
 
             foreach (var pid in q2)
             {
+                int? orgid = null;
+                if (CurrentOrg != null)
+                    orgid = CurrentOrg.Id;
                 emailqueue.EmailQueueTos.Add(new EmailQueueTo
                 {
                     PeopleId = pid,
-                    OrgId = CurrentOrg.Id,
+                    OrgId = orgid,
                     Guid = Guid.NewGuid(),
                     GoerSupportId = goerSupporterId,
                 });
@@ -309,10 +315,13 @@ namespace CmsData
 
             foreach (var g in q2)
             {
+                int? orgid = null;
+                if (CurrentOrg != null)
+                    orgid = CurrentOrg.Id;
                 emailqueue.EmailQueueTos.Add(new EmailQueueTo
                 {
                     PeopleId = g.SupporterId ?? 0,
-                    OrgId = CurrentOrg.Id,
+                    OrgId = orgid,
                     Guid = Guid.NewGuid(),
                     GoerSupportId = g.Id,
                 });
