@@ -137,6 +137,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var list = m.DefineModelList().Select(vv => vv.PeopleId);
             var tag = DbUtil.Db.FetchOrCreateTag("Org-" + m.Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
+            DbUtil.Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             DbUtil.Db.TagAll(list, tag);
             return PartialView("People", m);
         }
