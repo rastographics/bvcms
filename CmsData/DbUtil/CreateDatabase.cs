@@ -25,13 +25,15 @@ namespace CmsData
                 return DatabaseExists(cn, name);
             }
         }
-        private static bool DatabaseExists(SqlConnection cn, string name)
+
+        public static bool DatabaseExists(SqlConnection cn, string name)
         {
             var cmd = new SqlCommand(
                     "SELECT CAST(CASE WHEN EXISTS(SELECT NULL FROM sys.databases WHERE name = '"
                     + name + "') THEN 1 ELSE 0 END AS BIT)", cn);
             return (bool)cmd.ExecuteScalar();
         }
+
         public enum CheckDatabaseResult
         {
             DatabaseExists,
@@ -88,53 +90,69 @@ namespace CmsData
         }
         public static string CreateDatabase()
         {
-            string fn = null;
+            var server = HttpContext.Current.Server;
+            var path = server.MapPath("/");
+            var sqlScriptsPath = path + @"..\SqlScripts\";
+            var cs = Util.GetConnectionString2("master");
+
+            var retVal = CreateDatabase(Util.Host, sqlScriptsPath, cs, Util.ConnectionStringImage,
+                Util.GetConnectionString2("ElmahDb"), Util.ConnectionString);
+
+            HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
+            HttpRuntime.Cache.Remove(Util.Host + "-CheckDatabaseResult");
+
+            return retVal;
+        }
+
+        public static string CreateDatabase(string hostName, string sqlScriptsPath, string masterConnectionString, string imageConnectionString, string elmahConnectionString, string standardConnectionString)
+        {
+            var currentFile = string.Empty;
             try
             {
-                var Server = HttpContext.Current.Server;
-                var path = Server.MapPath("/");
-                string cs = Util.GetConnectionString2("master");
-                RunScripts(cs, "create database CMS_" + Util.Host);
-                if (!DatabaseExists("CMSi_" + Util.Host))
-                {
-                    RunScripts(cs, "create database CMSi_" + Util.Host);
-                    fn = "BuildImageDatabase.sql";
-                    RunScripts(Util.ConnectionStringImage,
-                        File.ReadAllText(path + @"..\SqlScripts\" + fn));
-                }
-                if (!DatabaseExists("Elmah"))
-                {
-                    RunScripts(cs, "create database Elmah");
-                    fn = "BuildElmahDb.sql";
-                    RunScripts(Util.GetConnectionString2("Elmah"),
-                        File.ReadAllText(path + @"..\SqlScripts\" + fn));
-                }
+                RunScripts(masterConnectionString, "create database CMS_" + hostName);
 
-                using (var cn = new SqlConnection(Util.ConnectionString))
+                using (var cn = new SqlConnection(masterConnectionString))
                 {
                     cn.Open();
-                    var list = File.ReadAllLines(path + @"..\SqlScripts\allscripts.txt");
-                    foreach(var f in list)
+                    if (!DatabaseExists(cn, "CMSi_" + hostName))
                     {
-                        fn = f;
-                        var script = File.ReadAllText(path + @"..\SqlScripts\BuildDb\" + f);
+                        RunScripts(masterConnectionString, "create database CMSi_" + hostName);
+                        currentFile = "BuildImageDatabase.sql";
+                        RunScripts(imageConnectionString,
+                            File.ReadAllText(sqlScriptsPath + currentFile));
+                    }
+
+                    if (!DatabaseExists(cn, "Elmah"))
+                    {
+                        RunScripts(masterConnectionString, "create database Elmah");
+                        currentFile = "BuildElmahDb.sql";
+                        RunScripts(elmahConnectionString,
+                            File.ReadAllText(sqlScriptsPath + currentFile));
+                    }
+                }
+
+                using (var cn = new SqlConnection(standardConnectionString))
+                {
+                    cn.Open();
+                    var list = File.ReadAllLines(sqlScriptsPath + "allscripts.txt");
+                    foreach (var f in list)
+                    {
+                        currentFile = f;
+                        var script = File.ReadAllText(sqlScriptsPath + @"BuildDb\" + currentFile);
                         RunScripts(cn, script);
                     }
-                    fn = Util.Host == "testdb"
+                    currentFile = hostName == "testdb"
                         ? "datascriptTest.sql"
                         : "datascriptStarter.sql";
-                    string datascript = null;
-                    datascript = File.ReadAllText(path + @"..\SqlScripts\" + fn);
+                    var datascript = File.ReadAllText(sqlScriptsPath + currentFile);
                     RunScripts(cn, datascript);
                 }
-                HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
-                HttpRuntime.Cache.Remove(Util.Host + "-CheckDatabaseResult");
-
             }
             catch (Exception ex)
             {
-                return string.Format("error in {0}\n{1}", fn, ex.Message);
+                return string.Format("Error in {0}:\n{1}", currentFile, ex.Message);
             }
+
             return null;
         }
 
@@ -146,16 +164,21 @@ namespace CmsData
                 RunScripts(cn, script);
             }
         }
+
         private static void RunScripts(SqlConnection cn, string script)
         {
-            var cmd = new SqlCommand { Connection = cn };
-            var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline);
-            foreach (var s in scripts)
-                if (s.HasValue())
+            using (var cmd = new SqlCommand {Connection = cn})
+            {
+                var scripts = Regex.Split(script, "^GO.*$", RegexOptions.Multiline);
+                foreach (var s in scripts)
                 {
-                    cmd.CommandText = s;
-                    cmd.ExecuteNonQuery();
+                    if (s.HasValue())
+                    {
+                        cmd.CommandText = s;
+                        cmd.ExecuteNonQuery();
+                    }
                 }
+            }
         }
     }
 }
