@@ -316,16 +316,6 @@ namespace CmsWeb.Areas.Org.Models
                 organizations = from o in organizations
                                 join a in DbUtil.Db.ViewActiveRegistrations on o.OrganizationId equals a.OrganizationId
                                 select o;
-//                organizations = from o in organizations
-//                                join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
-//                                from p in j.DefaultIfEmpty()
-//                                where p.PickListOrgId == null
-//                                where o.RegistrationTypeId > 0
-//                                where (o.RegistrationClosed ?? false) == false
-//                                where (o.ClassFilled ?? false) == false
-//                                where o.RegStart == null || o.RegStart < DateTime.Now
-//                                where o.RegEnd == null || o.RegEnd > DateTime.Now
-//                                select o;
             else if (OnlineReg > 0)
                 organizations = from o in organizations
                                 where o.RegistrationTypeId == OnlineReg
