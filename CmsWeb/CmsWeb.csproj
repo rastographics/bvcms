@@ -833,6 +833,7 @@
     <Content Include="Scripts\jQuery\jquery.ui.touch-punch.js" />
     <Content Include="Scripts\jQuery\jquery.ui.touch-punch.min.js" />
     <Content Include="Scripts\js\ckeditorconfig.js" />
+    <Content Include="Scripts\js\extensions.js" />
     <Content Include="Scripts\js\headermenu1c.js" />
     <Content Include="Scripts\js\header.js" />
     <Content Include="Scripts\js\hometour.js" />
