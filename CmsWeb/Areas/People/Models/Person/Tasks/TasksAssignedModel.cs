@@ -14,6 +14,8 @@ namespace CmsWeb.Areas.People.Models
                    select t;
         }
 
+        public override string AddTask { get { return null; } }
+
         public override IEnumerable<TaskInfo> DefineViewList(IQueryable<Task> q)
         {
             return from t in q

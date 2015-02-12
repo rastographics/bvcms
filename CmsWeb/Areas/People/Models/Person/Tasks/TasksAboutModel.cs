@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using CmsData;
 using CmsWeb.Models;
 
@@ -8,16 +7,13 @@ namespace CmsWeb.Areas.People.Models
 {
     public class TasksAboutModel : TasksModel
     {
-        public TasksAboutModel()
-        {
-            AddTask = "/Person2/AddTaskAbout/" + PeopleId;
-        }
         public override IQueryable<Task> DefineModelList()
         {
             return from t in DbUtil.Db.Tasks
                    where t.WhoId == Person.PeopleId
                    select t;
         }
+        public override string AddTask { get { return "/Person2/AddTaskAbout/" + PeopleId; } }
 
         public override IEnumerable<TaskInfo> DefineViewList(IQueryable<Task> q)
         {

@@ -90,7 +90,6 @@
         ev.preventDefault();
         $("#FilterIndividuals").val(!$("#filter-ind").hasClass("active"));
         RebindMemberGrids();
-        hideDropdowns();
         return false;
     });
     $("#filter-ind").live("click", function (ev) {
