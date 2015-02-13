@@ -13,6 +13,7 @@
             <div class="modal-body">
                 <div>
                     <ul class="nav nav-tabs" id="condition-tabs">
+                        <li><a href='#all' data-toggle="tab">All</a></li>
                         @for (var i = 0; i < cats.Count; i++)
                         {
                             var c = cats[i];
@@ -20,6 +21,32 @@
                         }
                     </ul>
                     <div class="tab-content">
+                        <div class="tab-pane" id="all">
+                            <div class="row">
+                                <div class="col-xs-10 col-sm-11 col-md-12 col-lg-12">
+                                    <div class="hidden-xs">
+                                        <div class="input-group input-group-lg">
+                                            <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                                            <input type="text" class="form-control search-box-input mousetrap" placeholder="Filter">
+                                        </div>
+                                    </div>
+                                    <div class="visible-xs-block">
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                                            <input type="text" class="form-control search-box-input mousetrap" placeholder="Filter">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <ul class="nav nav-pills nav-stacked">
+                                        <li class="dropdown-header">People</li>
+                                        <li><a href="#">Stuff here!!</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                         @for (var i = 0; i < cats.Count; i++)
                         {
                             var c = cats[i];
