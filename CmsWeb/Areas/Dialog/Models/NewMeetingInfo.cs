@@ -15,5 +15,6 @@ namespace CmsWeb.Models
         public string GroupFilterPrefix { get; set; }
         public string HighlightGroup { get; set; }
         public bool UseAltNames { get; set; }
+        public int? OrganizationId { get; set; }
     }
 }

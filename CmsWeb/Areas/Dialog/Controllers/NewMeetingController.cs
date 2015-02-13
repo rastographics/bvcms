@@ -20,7 +20,7 @@ namespace CmsWeb.Controllers
                 Schedule = new CodeInfo(0, oi.SchedulesPrev()),
                 AttendCredit = new CodeInfo(0, oi.AttendCreditList()),
             };
-            ViewBag.Action = "/NewMeeting/Create/" + orgid;
+            ViewBag.Action = "/CreateNewMeeting/";
             ViewBag.Method = "POST";
             return View("MeetingInfo", m);
         }
@@ -74,8 +74,8 @@ namespace CmsWeb.Controllers
             };
             return View("MeetingInfo", m);
         }
-        [HttpPost]
-        public ActionResult Create(NewMeetingInfo model)
+        [HttpPost, Route("~/CreateNewMeeting")]
+        public ActionResult CreateNewMeeting(NewMeetingInfo model)
         {
             if (!ModelState.IsValid)
                 return View("MeetingInfo", model);
