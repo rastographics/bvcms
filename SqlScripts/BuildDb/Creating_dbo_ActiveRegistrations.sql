@@ -1,11 +1,9 @@
-
-
 CREATE VIEW [dbo].[ActiveRegistrations]
 AS
 
 	SELECT o.OrganizationId 
 	FROM dbo.Organizations o
-	LEFT JOIN dbo.MasterOrgs p ON p.OrganizationId = o.OrganizationId
+	LEFT JOIN dbo.MasterOrgs p ON p.PickListOrgId = o.OrganizationId
 	WHERE p.OrganizationId IS NULL
 	AND o.RegistrationTypeId > 0
 	AND ISNULL(o.RegistrationClosed, 0) = 0
