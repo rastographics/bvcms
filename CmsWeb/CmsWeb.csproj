@@ -753,6 +753,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\search\people-search.js" />
+    <Content Include="Content\touchpoint\js\search\query.js" />
     <Content Include="Content\touchpoint\js\search\search-add.js" />
     <Content Include="Content\touchpoint\js\tags.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-bootbox\js\bootbox.min.js" />
@@ -773,6 +774,7 @@
     <Content Include="Content\touchpoint\lib\ckeditor\js\ckeditorconfig.js" />
     <Content Include="Content\touchpoint\lib\jquery-blockUI\js\jquery.blockUI.js" />
     <Content Include="Content\touchpoint\lib\jquery-chosen\js\chosen.jquery.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
     <Content Include="Content\touchpoint\lib\jquery-validate\js\jquery.validate.min.js" />
     <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
     <Content Include="Content\xml.css" />

@@ -1,10 +1,8 @@
 ﻿@model string
-<div class="control-group @ViewBag.hide">
+<div class="form-group @ViewBag.hide">
     @(ViewBag.label != null
-        ? Html.Label(ViewBag.label as string, new {@class = "control-label"}) 
-        : Html.LabelFor(m => m, new {@class = "control-label"}))
-    <div class="controls">
-        @Html.TextBoxFor2(m => m, true, null)<label class='help-inline'>@Html.Raw(ViewBag.help)</label>
-        @Html.ValidationMessageLabelFor(m => m)
-    </div>
+        ? Html.Label(ViewBag.label as string) 
+        : Html.LabelFor(m => m))
+    @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control"})<label class='help-inline'>@Html.Raw(ViewBag.help)</label>
+    @Html.ValidationMessageLabelFor(m => m)
 </div>

@@ -1,7 +1,5 @@
 ﻿@model CmsWeb.Areas.Search.Models.QueryModel
-<div class="control-group">
-    <label class="control-label">Codes</label>
-    <div class="controls code-dropdown">
-        @Html.Partial("EditorTemplates/CodeSelect", Model)
-    </div>
+<label>Codes</label>
+<div class="form-group">
+    @Html.Partial("EditorTemplates/CodeSelect", Model)
 </div>

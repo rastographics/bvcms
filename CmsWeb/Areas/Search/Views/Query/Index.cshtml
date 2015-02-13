@@ -2,87 +2,179 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.QueryModel
 @{
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Search Builder";
-    var showtip = !DbUtil.Db.UserPreference("hide-tip-query", "false").ToBool();
+    ViewBag.PageHeader = "Search Builder";
 }
-@section head
-{
-    @Fingerprint.Css("/Content/css/bootstrap-tour.css")
-    @Fingerprint.Css("/Content/css/bootstrap-multiselect.css")
-    @Fingerprint.Css("/Content/css/search.css")
-}
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/bundle.Query2.js")
-    @if (showtip)
-    {
-        @Fingerprint.Script("/Scripts/Search/searchtour.js")
-    }
-}
+@section head {
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-multiselect/css/bootstrap-multiselect.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+    <style>
+         #conditionsList {
+            list-style: none;
+            margin-left: 0;
+            padding-left: 0;
+        }
+        #conditionsList ul.subgroups {
+            margin: 0 0 0.75em 10px;
+            padding: 0;
+            list-style: none;
+        }
+        #conditions ul.subgroups > li {
+           border-left: 2px solid #ddd;
+        }
+        #conditions ul.subgroups > li.borderleftred {
+            border-left: 2px solid red;
+        }
+        #conditionsList header {
+            background: #ddd;
+            padding: 3px 10px;
+            line-height: 24px;
+        }
+        #conditionsList header label {
+            display: inline-block;
+            font-size: 90%;
+        }
+        #conditionsList .group-actions {
+            background: #eee;
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+        #conditionsList .conditions {
+            list-style: none;
+            margin-left: 0;
+            padding-left: 2px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-right: 0;
+        }
+        #conditionsList .conditions > li {
+            padding: 3px 10px 5px 10px;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+        #conditionsList .conditions > li .dropdown > a {
+            padding: 3px 0 3px 6px;
+            text-decoration: none;
+            font-size: 14px;
+        }
 
-<div class="container">
-    <div class="row-fluid">
-        <div class="span4">
-            <fieldset>
-                <legend>Search Builder</legend>
-                <div>
-                    @Html.Hidden("SaveToDescription")
-                    <div class="cell align-top">
-                        <small class="muted">
-                            @(Model.SaveToDescription.HasValue() && Model.SaveToDescription != Model.Description
-                                ? "Copied from: " + Model.SaveToDescription
-                                : Model.SaveToDescription)
-                        </small>
-                    </div>
-                    <div class="cell pad-left">
-                        <a id="SaveAs" href="#" class="btn nowrap">Save As</a>
-                    </div>
+        .popover2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: none;
+            padding: 1px;
+            border: 1px solid #ccc;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            -moz-background-clip: padding;
+            -webkit-background-clip: padding-box;
+            -moz-border-radius: 0;
+            -webkit-border-radius: 0;
+            border-radius: 0;
+            background-color: #ffffff;
+            background-clip: padding-box;
+            -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+            white-space: normal;
+        }
+
+        .popover-title {
+            margin: 0;
+            padding: 8px 14px;
+            border-bottom: 1px solid #ebebeb;
+            -moz-background-clip: padding;
+            -webkit-background-clip: padding-box;
+            -moz-border-radius: 5px 5px 0 0;
+            -webkit-border-radius: 5px 5px 0 0;
+            border-radius: 5px 5px 0 0;
+            background-color: #f7f7f7;
+            background-clip: padding-box;
+            font-weight: normal;
+            font-size: 14px;
+            line-height: 18px;
+        }
+
+            .popover-title:empty {
+                display: none;
+            }
+
+        .popover-content {
+            padding: 9px 14px;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-md-4">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                @Html.Hidden("SaveToDescription")
+                <h5>@(Model.SaveToDescription.HasValue() && Model.SaveToDescription != Model.Description ? "Copied from: " + Model.SaveToDescription : Model.SaveToDescription)</h5>
+                <div class="box-tools">
+                    <a id="SaveAs" href="#" class="btn btn-default">Save As</a>
                 </div>
+            </div>
+            <div class="box-content">
                 <div id="conditions">
                     @Html.Partial("Conditions", Model)
                 </div>
-                <div class="pull-right">
-                    <a id="Run" href="#" class="btn btn-primary">Run</a>
-                    @Html.CheckBox("AutoRun") auto
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="pull-left">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBox("AutoRun") Auto refresh?
+                                </label>
+                            </div>
+                        </div>
+                        <div class="pull-right">
+                            <a id="Run" href="#" class="btn btn-primary">Run</a>
+                        </div>
+                    </div>
                 </div>
-            </fieldset>
-        </div>
-        <div id="results" class="span8">
+            </div>
         </div>
     </div>
+    <div class="col-md-8">
+        <div id="results"></div>
+    </div>
 </div>
-
-@section PopupsPlaceholder
+@Html.Partial("SelectCondition", Model)
+<div id="QueryConditionHelp" class='modal fade hide' data-width='700'>
+    <div class=" modal-header">
+        <a class="close" data-dismiss="modal">x</a>
+        <h4>&nbsp;</h4>
+        </div>
+    <div id="helpcontent" class="modal-body">
+        <iframe style="width:100%;height: 500px;border:none"></iframe>
+    </div>
+</div>
+<div id="OpenQueryDiv" title="Open Query" class="modalDiv" style="display: none">
+    <select id="ExistingQueries"></select>
+    <div style="text-align: right; vertical-align: bottom">
+        <input id="OpenQuery" type="button" value="Open" />
+    </div>
+</div>
+<div id="SaveQueryDiv" class="modalDiv" style="display: none">
+    <div style="text-align: left">
+        Search Description:
+        @Html.TextBox("SaveQueryDesc")
+        &nbsp;
+        <input id="IsPublic" type="checkbox" />
+        Is Public
+        <span class="footer">
+            <a id="SaveQuery" href="#">Save</a>
+        </span>
+        <br />
+    </div>
+</div>
+@section scripts
 {
-    @Html.Partial("SelectCondition", Model)
-    <div id="QueryConditionHelp" class='modal fade hide' data-width='700'>
-        <div class=" modal-header">
-    <a class="close" data-dismiss="modal">x</a>
-    <h4>&nbsp;</h4>
-</div>
-        <div id="helpcontent" class="modal-body">
-            <iframe style="width:100%;height: 500px;border:none"></iframe>
-        </div>
-    </div>
-    <div id="OpenQueryDiv" title="Open Query" class="modalDiv" style="display: none">
-        <select id="ExistingQueries"></select>
-        <div style="text-align: right; vertical-align: bottom">
-            <input id="OpenQuery" type="button" value="Open" />
-        </div>
-    </div>
-    <div id="SaveQueryDiv" class="modalDiv" style="display: none">
-        <div style="text-align: left">
-            Search Description:
-            @Html.TextBox("SaveQueryDesc")
-            &nbsp;
-            <input id="IsPublic" type="checkbox" />
-            Is Public
-            <span class="footer">
-                <a id="SaveQuery" href="#">Save</a>
-            </span>
-            <br />
-        </div>
-    </div>
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-scrollintoview/js/jquery.scrollintoview.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/js/search/query.js")   
 }
-

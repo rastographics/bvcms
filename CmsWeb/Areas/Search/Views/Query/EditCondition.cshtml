@@ -2,27 +2,29 @@
 @using CmsWeb.Areas.Org.Models
 @using CmsWeb.Areas.Search.Models
 @model QueryModel
-<fieldset id="condition-edit">
+<div id="condition-edit">
     @Html.Hidden("ConditionName")
-    <legend></legend>
-    <div class="row-fluid table not-wide" id="CategoryDiv2">
-        <div class="inline align-top">
-            <div class="control-group">
-                <label>Select a Condition</label>
-                <div class="controls">
-                    <p><a id="SelectCondition" class="btn btn-success"><span id="ConditionText">@Model.ConditionText</span></a></p>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label>Condition</label><br/>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <span id="ConditionText">@Model.ConditionText</span> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="#" id="SelectCondition"><i class="fa fa-pencil"></i> Change Condition</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <div class="inline align-top left-gutter">
-            @if (Model.ComparePanelVisible)
-            {
-                <span id="ComparePanel">
-                    @Html.EditorFor(m => m.Comparison, "DropDown", new { items = Model.Comparisons() })
-                </span>
-            }
-        </div>
-        <div class="inline align-top left-gutter">
+        @if (Model.ComparePanelVisible)
+        {
+            <div class="col-sm-4">
+                @Html.EditorFor(m => m.Comparison, "DropDown", new { items = Model.Comparisons() })
+            </div>
+        }
+        <div class="col-sm-4">
             @Html.EditorForIf(m => m, Model.CodeVisible, "CodesDropdown")
             @Html.EditorForIf(m => m.TextValue, Model.TextVisible)
             @Html.EditorForIf(m => m.NumberValue, Model.NumberVisible)
@@ -30,29 +32,35 @@
             @Html.EditorForIf(m => m.DateValue, Model.DateVisible)
         </div>
     </div>
-    <div class="row-fluid table not-wide form-horizontal">
-        @Html.EditorForIf(m => m.OrgName, Model.OrgNameVisible)
-        @Html.EditorForIf(m => m.OrgStatus, Model.OrgStatusVisible, "DropDown", new { items = OrgSearchModel.StatusIds() })
-        @Html.EditorForIf(m => m.OnlineReg, Model.OnlineRegVisible, "DropDown", new { items = OrgSearchModel.RegistrationTypeIds() })
-        @Html.EditorForIf(m => m.StartDate, Model.StartDateVisible)
-        @Html.EditorForIf(m => m.EndDate, Model.EndDateVisible)
-        @Html.EditorForIf(m => m.Quarters, Model.QuartersVisible, new { label = Model.QuartersLabel })
-        @Html.EditorForIf(m => m.Days, Model.DaysVisible)
-        @Html.EditorForIf(m => m.Age, Model.AgeVisible)
-        @Html.EditorForIf(m => m.TagValues, Model.TagsVisible, "MultiSelect", new { items = Model.TagData() })
-        @Html.EditorForIf(m => m.TagValues, Model.PmmLabelsVisible, "MultiSelect", new { items = Model.PmmLabelData() })
-        @Html.EditorForIf(m => m.Ministry, Model.MinistryVisible, "DropDown", new { items = Model.Ministries() })
-        @Html.EditorForIf(m => m.SavedQuery, Model.SavedQueryVisible, "DropDown", new { items = Model.SavedQueries() })
-        @Html.EditorForIf(m => m.Program, Model.ProgramVisible, "DropDown", new { items = Model.Programs() })
-        @Html.EditorForIf(m => m.Division, Model.DivisionVisible, "DropDown", new { items = QueryModel.Divisions(Model.Program) })
-        @Html.EditorForIf(m => m.Organization, Model.OrganizationVisible, "DropDown", new { items = QueryModel.Organizations(Model.Division) })
-        @Html.EditorForIf(m => m.OrgType, Model.OrgTypeVisible, "DropDown", new { items = Model.OrgTypes() })
-        @Html.EditorForIf(m => m.OrgType2, Model.OrgType2Visible, "DropDown", new { items = OrgSearchModel.OrgTypes() })
-        @Html.EditorForIf(m => m.Schedule, Model.ScheduleVisible, "DropDown", new { items = Model.Schedules() })
-        @Html.EditorForIf(m => m.Campus, Model.CampusVisible, "DropDown", new { items = Model.Campuses() })
+    <div class="row">
+        <div class="col-xs-12">
+            @Html.EditorForIf(m => m.OrgName, Model.OrgNameVisible)
+            @Html.EditorForIf(m => m.OrgStatus, Model.OrgStatusVisible, "DropDown", new { items = OrgSearchModel.StatusIds() })
+            @Html.EditorForIf(m => m.OnlineReg, Model.OnlineRegVisible, "DropDown", new { items = OrgSearchModel.RegistrationTypeIds() })
+            @Html.EditorForIf(m => m.StartDate, Model.StartDateVisible)
+            @Html.EditorForIf(m => m.EndDate, Model.EndDateVisible)
+            @Html.EditorForIf(m => m.Quarters, Model.QuartersVisible, new { label = Model.QuartersLabel })
+            @Html.EditorForIf(m => m.Days, Model.DaysVisible)
+            @Html.EditorForIf(m => m.Age, Model.AgeVisible)
+            @Html.EditorForIf(m => m.TagValues, Model.TagsVisible, "MultiSelect", new { items = Model.TagData() })
+            @Html.EditorForIf(m => m.TagValues, Model.PmmLabelsVisible, "MultiSelect", new { items = Model.PmmLabelData() })
+            @Html.EditorForIf(m => m.Ministry, Model.MinistryVisible, "DropDown", new { items = Model.Ministries() })
+            @Html.EditorForIf(m => m.SavedQuery, Model.SavedQueryVisible, "DropDown", new { items = Model.SavedQueries() })
+            @Html.EditorForIf(m => m.Program, Model.ProgramVisible, "DropDown", new { items = Model.Programs() })
+            @Html.EditorForIf(m => m.Division, Model.DivisionVisible, "DropDown", new { items = QueryModel.Divisions(Model.Program) })
+            @Html.EditorForIf(m => m.Organization, Model.OrganizationVisible, "DropDown", new { items = QueryModel.Organizations(Model.Division) })
+            @Html.EditorForIf(m => m.OrgType, Model.OrgTypeVisible, "DropDown", new { items = Model.OrgTypes() })
+            @Html.EditorForIf(m => m.OrgType2, Model.OrgType2Visible, "DropDown", new { items = OrgSearchModel.OrgTypes() })
+            @Html.EditorForIf(m => m.Schedule, Model.ScheduleVisible, "DropDown", new { items = Model.Schedules() })
+            @Html.EditorForIf(m => m.Campus, Model.CampusVisible, "DropDown", new { items = Model.Campuses() })
+        </div>
     </div>
-    <div style="text-align: right; margin: 1em;">
-        <a id="CancelChange" data-dismiss="modal" class="conditionButton btn">Cancel</a>
-        <a id="SaveCondition" class="conditionButton btn btn-primary">Save</a>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="text-right">
+                <a id="CancelChange" data-dismiss="modal" class="btn btn-default">Cancel</a>
+                <a id="SaveCondition" class="btn btn-primary">Save</a>
+            </div>
+        </div>
     </div>
-</fieldset>
+</div>

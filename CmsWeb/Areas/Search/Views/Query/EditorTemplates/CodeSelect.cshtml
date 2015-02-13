@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Areas.Search.Models.QueryModel
-<select id="CodeValues" name="CodeValues" @(Model.Comparison.EndsWith("OneOf")? "multiple='multiple'" : "") style="display:none">
+<select id="CodeValues" name="CodeValues" @(Model.Comparison.EndsWith("OneOf")? "multiple='multiple'" : "") style="display:none" class="form-control">
 @if (Model.Comparison.EndsWith("OneOf"))
 {
     <option value="multiselect-all">Select all</option>
