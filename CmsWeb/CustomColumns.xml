@@ -140,7 +140,7 @@
     <column name="Zip">p.primaryzip</column>
     <column name="Country">p.primarycountry</column>
     <column name="Badaddr">p.primarybadaddrflag</column>
-    <column name="ResidentcOde" join="rc">rc.description	</column>
+    <column name="ResidentCode" join="rc">rc.description	</column>
     <column name="CreatedDt">p.createddate</column>
     <column name="CreatedBy">
       (
