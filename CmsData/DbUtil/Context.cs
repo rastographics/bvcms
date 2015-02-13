@@ -288,6 +288,25 @@ namespace CmsData
                 TagPeople.DeleteOnSubmit(t);
             SubmitChanges();
         }
+        const int maxints = 1000;
+        public void UnTagAll(List<int> list, Tag tag)
+        {
+            for(var i = 0; i< list.Count; i+=maxints)
+            {
+                var s = string.Join(",", list.Skip(i).Take(maxints));
+                var cmd = "DELETE dbo.TagPerson WHERE Id = {0} AND PeopleId IN ({1})".Fmt(tag.Id, s);
+                ExecuteCommand(cmd);
+            }
+        }
+        public void TagAll(List<int> list, Tag tag)
+        {
+            for(var i = 0; i< list.Count; i+=maxints)
+            {
+                var s = string.Join(",", list.Skip(i).Take(maxints));
+                var cmd = "INSERT dbo.TagPerson (Id, PeopleId) SELECT {0}, Value FROM dbo.SplitInts('{1}')".Fmt(tag.Id, s);
+                ExecuteCommand(cmd);
+            }
+        }
         public Tag PopulateSpecialTag(Guid QueryId, int TagTypeId)
         {
             var q = PeopleQuery(QueryId);

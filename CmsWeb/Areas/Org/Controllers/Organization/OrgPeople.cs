@@ -135,18 +135,17 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult CheckAll(OrgPeopleModel m)
         {
-            var list = m.DefineModelList().Select(vv => vv.PeopleId);
-            var tag = DbUtil.Db.FetchOrCreateTag("Org-" + m.Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
-            DbUtil.Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            DbUtil.Db.TagAll(list, tag);
+            DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
+            var list = m.CurrentNotChecked();
+            DbUtil.Db.TagAll(list, m.OrgTag);
             return PartialView("People", m);
         }
         [HttpPost]
         public ActionResult CheckNone(OrgPeopleModel m)
         {
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
-            var tag = DbUtil.Db.FetchOrCreateTag("Org-" + m.Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers);
-            DbUtil.Db.ExecuteCommand("delete dbo.tagperson where Id = {0}", tag.Id);
+            var list = m.CurrentChecked();
+            DbUtil.Db.UnTagAll(list, m.OrgTag);
             return PartialView("People", m);
         }
 
