@@ -94,8 +94,16 @@
           {
             @ShowDateLink(p.LastContactReceivedDt, "/Contact2", p.LastContactReceivedId, "Contactee")
             @ShowDateLink(p.LastContactMadeDt, "/Contact2", p.LastContactMadeId, "Minister")
-            @ShowDateLink(p.TaskAboutDt, "/Task/List", p.TaskAboutId, "Needs Touch")
-            @ShowDateLink(p.TaskDelegatedDt, "/Task/List", p.TaskDelegatedId, "Has Task")
+            if (User.IsInRole("Tasks"))/* || User.IsInRole("Admin"))*/
+            {
+              @ShowDateLink(p.TaskAboutDt, "/Task/List", p.TaskAboutId, "Needs Touch")
+              @ShowDateLink(p.TaskDelegatedDt, "/Task/List", p.TaskDelegatedId, "Has Task")
+            }
+            else
+            {
+              @ShowDateLink(p.TaskAboutDt, "/Person2", p.PeopleId, "Needs Touch", "#tab-tasksabout")
+              @ShowDateLink(p.TaskDelegatedDt, "/Person2", p.PeopleId, "Has Task", "#tab-tasksassigned")
+            }
           }
         </td>
         <td>
@@ -116,7 +124,7 @@
   }
   <span class="smallfont">@DateTime.Today.Subtract(dt).TotalDays.ToInt()</span>
 }
-@helper ShowDateLink(DateTime? dt, string url, int? id, string type)
+@helper ShowDateLink(DateTime? dt, string url, int? id, string type, string extra = "")
 {
   if (dt.HasValue)
   {
@@ -124,7 +132,7 @@
     {
       <br />
     }
-    <a href="@url/@id" target="contact">@dt.FormatDate2(type)</a>
+    <a href="@url/@id@extra" target="contact">@dt.FormatDate2(type)</a>
     @DaysAgo(dt.Value)
     Model.DateShown = true;
   }
