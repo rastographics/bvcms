@@ -214,6 +214,8 @@ namespace CmsWeb.Models
                                    where pp.PositionInFamilyId == 30
                                    orderby pp.LastName == p.LastName ? 1 : 2, pp.Age descending
                                    select pp.LastName == p.LastName ? pp.PreferredName : pp.Name
+                    let altaddr = p.Family.FamilyExtras.SingleOrDefault(ee => ee.FamilyId == p.FamilyId && ee.Field == "MailingAddress").Data
+                    let altcouple = p.Family.FamilyExtras.SingleOrDefault(ee => (ee.FamilyId == p.FamilyId) && ee.Field == "CoupleName" && p.SpouseId != null).Data
                     select new
                     {
                         FamilyId = p.FamilyId,
@@ -224,6 +226,10 @@ namespace CmsWeb.Models
                         HomePhone = p.HomePhone.FmtFone(),
                         Email = p.EmailAddress,
                         SpouseEmail = spouse.EmailAddress,
+                        CellPhone = p.CellPhone.FmtFone(),
+                        SpouseCell = spouse.CellPhone.FmtFone(),
+                        MailingAddress = altaddr,
+                        CoupleName = altcouple,
                     };
             return q.ToDataTable().ToExcel("FamilyList.xlsx");
         }
