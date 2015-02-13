@@ -9,12 +9,13 @@
 
 
 <!--@Html.Raw(ViewBag.xml)-->
-<div class="box">
+<div class="box box-responsive">
     <div class="box-title">
         <h5>@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h5>
     </div>
     <div class="box-content">
         @Html.Partial("Toolbar/Toolbar.touch")
+        <h4 class="visible-xs-block">@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h4>
         @Html.Partial("PagerTop", Model.Pager)
         <div class="table-responsive">
             <table class="table table-striped" id="resultsTable">

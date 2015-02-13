@@ -142,34 +142,7 @@
     </div>
 </div>
 @Html.Partial("SelectCondition", Model)
-<div id="QueryConditionHelp" class='modal fade hide' data-width='700'>
-    <div class=" modal-header">
-        <a class="close" data-dismiss="modal">x</a>
-        <h4>&nbsp;</h4>
-        </div>
-    <div id="helpcontent" class="modal-body">
-        <iframe style="width:100%;height: 500px;border:none"></iframe>
-    </div>
-</div>
-<div id="OpenQueryDiv" title="Open Query" class="modalDiv" style="display: none">
-    <select id="ExistingQueries"></select>
-    <div style="text-align: right; vertical-align: bottom">
-        <input id="OpenQuery" type="button" value="Open" />
-    </div>
-</div>
-<div id="SaveQueryDiv" class="modalDiv" style="display: none">
-    <div style="text-align: left">
-        Search Description:
-        @Html.TextBox("SaveQueryDesc")
-        &nbsp;
-        <input id="IsPublic" type="checkbox" />
-        Is Public
-        <span class="footer">
-            <a id="SaveQuery" href="#">Save</a>
-        </span>
-        <br />
-    </div>
-</div>
+<div class="modal fade" id="empty-dialog"></div>
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")

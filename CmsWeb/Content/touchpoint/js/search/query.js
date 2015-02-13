@@ -35,17 +35,17 @@
 
     $("#SaveAs").click(function (ev) {
         ev.preventDefault();
-        var href = this.href;
         $("<div />").load("/Query/SaveAs", {
             id: $("#QueryId").val(),
             nametosaveas: $("#SaveToDescription").val()
         }, function () {
-            var d = $(this);
-            var f = d.find("form");
-            f.modal("show");
-            f.on('hidden', function () {
-                d.remove();
-                f.remove();
+            var div = $(this);
+            var dialog = div.find("#saveas-modal");
+            $('#empty-dialog').html(dialog);
+            $('#empty-dialog').modal("show");
+            dialog.on('hidden', function () {
+                div.remove();
+                dialog.remove();
             });
         });
     });
@@ -345,10 +345,6 @@
     }
     else if ($("#AutoRun").prop("checked"))
         RefreshList();
-
-    $('#AutoRun').change(function () {
-        $.post("/Query/SetAutoRun", { setting: $(this).prop("checked") });
-    });
 
     $('body').on('click', 'a.taguntag', function (ev) {
         $.block();

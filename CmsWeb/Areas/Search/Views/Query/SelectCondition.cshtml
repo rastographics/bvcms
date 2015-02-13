@@ -3,7 +3,7 @@
 @{
     var cats = Model.FieldCategories().ToList();
 }
-<div class="modal fade" id="QueryConditionSelect" data-width="900">
+<div class="modal fade" id="QueryConditionSelect">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,7 +11,6 @@
                 <h4 class="modal-title">Conditions</h4>
             </div>
             <div class="modal-body">
-                <p>Category</p>
                 <div>
                     <ul class="nav nav-tabs" id="condition-tabs">
                         @for (var i = 0; i < cats.Count; i++)
@@ -36,7 +35,7 @@
                                     {
                                         <dt class="FieldLink"><a id='@p.Name' href="#">@p.Title</a></dt>
                                         <dd>
-                                            <a class="help" href="http://docs.bvcms.com/SearchBuilder/QB-@(p.Name).html" target="help">@p.Description</a>
+                                            <a class="help" href="http://docs.touchpointsoftware.com/SearchBuilder/QB-@(p.Name).html" target="help">@p.Description</a>
                                         </dd>
                                     }
                                 </dl>

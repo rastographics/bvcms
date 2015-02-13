@@ -13,9 +13,9 @@
                     Single Email Addresses
                 </a>
             </li>
-            <li class="divider"></li>
             @if ((bool?)ViewBag.ParentOrgContext == true)
             {
+                <li class="divider"></li>
                 <li><a href='/Email/@ViewBag.leadersqid'>Leaders under this org</a></li>
                 <li><a href='/Email/@ViewBag.membersqid'>Members under this org</a></li>
             }
