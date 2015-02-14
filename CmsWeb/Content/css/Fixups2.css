@@ -1332,3 +1332,7 @@ ul.dropdown-menu li.hideAlt > a {
     position: fixed;
     z-index:2000;
 }
+fieldset.no-padding-margin {
+    padding: 0;
+    margin: 0;
+}

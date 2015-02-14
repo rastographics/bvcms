@@ -1,93 +1,70 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
 <div class="container">
-    <div class="span8">
-        <form class="form form-horizontal non-modal ajax border-bottom">
-            <fieldset>
-                <legend>
-                    <h2>
-                        @Model.Org.OrganizationName@(Model.Org.LeaderId.HasValue ? "," : "")
-                        <span style="font-size:12px">@Model.Org.LeaderName</span>
-                    </h2>
-                </legend>
-                <div class="row">
-                    <div class="span6 inline">
-                        <div class="control-group">
-                            <label class="control-label" for="Org_OrganizationName">Name:</label>
-                            <div class="controls">
-                                @Html.TextBox("Org.OrganizationName", Model.Org.OrganizationName)
-                            </div>
-                        </div>
-                    </div>
-                    <div class="span6 inline">
-                        <div class="control-group">
-                            <label class="control-label" for="Org_Location">Location:</label>
-                            <div class="controls">
-                                @Html.TextBox("Org.Location")
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="span6 inline">
-                        <div class="control-group">
-                            <label class="control-label" for="Org_CampusId">Campus:</label>
-                            <div class="controls">
-                                @Html.DropDownList("Org.CampusId", Model.CampusList())
-                            </div>
-                        </div>
-                    </div>
-                    <div class="span6 inline">
-                        <div class="control-group">
-                            <label class="control-label" for="Org_SecurityTypeId">Security Type:</label>
-                            <div class="controls">
-                                @Html.DropDownList("Org.SecurityTypeId", Model.SecurityTypeList())
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="span6 inline">
-                        <div class="control-group">
-                            <label class="control-label" for="Org_OrganizationTypeId"><span style="cursor: pointer; color:blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>An upcoming new feature for classifying your organizations.</p><p style='font-weight: normal;'>In progress, stay tuned.</p>" data-original-title="What is Organization Type?"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;Organization Type:</label>
-                            <div class="controls">
-                                @Html.DropDownList("Org.OrganizationTypeId", Model.OrganizationTypes())
-                            </div>
-                        </div>
-                    </div>
-                    <div class="span6 inline">
-                        <div class="control-group">
-                            <label class="control-label" for="Org_OrganizationStatusId">Status:</label>
-                            <div class="controls">
-                                @Html.DropDownList("Org.OrganizationStatusId", Model.OrgStatusList())
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="span6 inline">
-                        <div class="control-group">
-                            <label class="control-label" for="Org_LeaderMemberTypeId">Leader Type:</label>
-                            <div class="controls">
-                                @Html.DropDownList("Org.LeaderMemberTypeId", Model.LeaderTypeList())
-                            </div>
-                        </div>
-                    </div>
-                    <div class="span6 inline">
-                        <div class="control-group">
-                            <label class="control-label" for="Org_IsBibleFellowshipOrg">Main Fellowship:</label>
-                            <div class="controls">
-                                @Html.CheckBox("Org.IsBibleFellowshipOrg")
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="text-right">
-                        <a class="ajax btn" href="/Organization/Main/@Model.Id" data-callback="popovers">Cancel</a>
-                        <a href="/Organization/MainUpdate/@Model.Id" class="ajax btn btn-primary" data-callback="popovers">Save Changes</a>
-                    </div>
-                </div>
-            </fieldset>
-        </form>
-    </div>
+  <div class="span8">
+    <form class="form form-horizontal non-modal ajax border-bottom well well-small">
+      <fieldset class="no-padding-margin">
+        <legend>
+          @Model.Org.OrganizationName@(Model.Org.LeaderId.HasValue ? "," : "")
+          <small>@Model.Org.LeaderName</small>
+        </legend>
+        <div class="row-fluid">
+          <div class="inline display align-top">
+            <div class="control-group">
+              <label class="control-label">Name:</label>
+              <div class="controls">
+                @Html.TextBox("Org.OrganizationName", Model.Org.OrganizationName)
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Campus:</label>
+              <div class="controls">
+                @Html.DropDownList("Org.CampusId", Model.CampusList())
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Leader Type:</label>
+              <div class="controls">
+                @Html.DropDownList("Org.LeaderMemberTypeId", Model.LeaderTypeList())
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label"><span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>An upcoming new feature for classifying your organizations.</p><p style='font-weight: normal;'>In progress, stay tuned.</p>" data-original-title="What is Organization Type?"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;Organization Type:</label>
+              <div class="controls">
+                @Html.DropDownList("Org.OrganizationTypeId", Model.OrganizationTypes())
+              </div>
+            </div>
+          </div>
+          <div class="inline display align-top">
+            <div class="control-group">
+              <label class="control-label" for="Org_OrganizationName">Security Type:</label>
+              <div class="controls">
+                @Html.DropDownList("Org.SecurityTypeId", Model.SecurityTypeList())
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Status:</label>
+              <div class="controls">
+                @Html.DropDownList("Org.OrganizationStatusId", Model.OrgStatusList())
+              </div>
+            </div>
+            <div class="control-group">
+              <label class="control-label">Main Fellowship:</label>
+              <div class="controls">
+                @Html.CheckBox("Org.IsBibleFellowshipOrg")
+              </div>
+            </div>
+          </div>
+        </div>
+        @if (User.IsInRole("Edit"))
+        {
+          <div class="row-fluid">
+            <div class="text-right">
+              <a class="ajax btn" href="/Organization/Main/@Model.Id" data-callback="popovers">Cancel</a>
+              <a href="/Organization/MainUpdate/@Model.Id" class="ajax btn btn-primary" data-callback="popovers">Save Changes</a>
+            </div>
+          </div>
+        }
+      </fieldset>
+    </form>
+  </div>
 </div>
