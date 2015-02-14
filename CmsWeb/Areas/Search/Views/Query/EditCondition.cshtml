@@ -5,7 +5,7 @@
 <div id="condition-edit">
     @Html.Hidden("ConditionName")
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-12">
             <div class="form-group">
                 <label>Condition</label><br/>
                 <div class="btn-group">
@@ -20,11 +20,11 @@
         </div>
         @if (Model.ComparePanelVisible)
         {
-            <div class="col-sm-4">
+            <div class="col-sm-12">
                 @Html.EditorFor(m => m.Comparison, "DropDown", new { items = Model.Comparisons() })
             </div>
         }
-        <div class="col-sm-4">
+        <div class="col-sm-12">
             @Html.EditorForIf(m => m, Model.CodeVisible, "CodesDropdown")
             @Html.EditorForIf(m => m.TextValue, Model.TextVisible)
             @Html.EditorForIf(m => m.NumberValue, Model.NumberVisible)

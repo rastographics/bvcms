@@ -3,6 +3,13 @@
     var liedit;
     var $backdrop = $('<div class="modal-backdrop fade in hide" style="height: 100%; background-color: #fff; z-index: 1031;"></div>').appendTo('body');
 
+    $.extend($.expr[':'], {
+        'containsi': function (elem, i, match, array) {
+            return (elem.textContent || elem.innerText || '').toLowerCase()
+            .indexOf((match[3] || "").toLowerCase()) >= 0;
+        }
+    });
+
     $.postQuery = function (action, selectedid, cb) {
         if ($.isFunction(selectedid)) {
             cb = selectedid;
@@ -70,8 +77,7 @@
         $("#editcondition").css({
             "left": pos.left,
             "top": pos.top + 2,
-            "width": "auto",
-            "min-width": wid,
+            "min-width": wid + 20,
             "z-index": 1032
         });
 
@@ -316,6 +322,38 @@
     $('body').on('click', '#SelectCondition', function (ev) {
         ev.preventDefault();
         $('#QueryConditionSelect').modal("show");
+
+        $('#QueryConditionSelect').on('shown.bs.modal', function () {
+            $("input.searchConditions").focus();
+            $("input.searchConditions").keyup(function () {
+                //split the current value of searchInput
+                var data = this.value.split(" ");
+                $("thead").hide();
+                //create a jquery object of the rows
+                var jo = $("tr");
+                if (this.value == "") {
+                    $("thead").show();
+                    jo.show();
+                    return;
+                }
+                //hide all the rows
+                jo.hide();
+
+                //Recusively filter the jquery object to get results.
+                jo.filter(function (i, v) {
+                    var $t = $(this);
+                    for (var d = 0; d < data.length; ++d) {
+                        if ($t.is(":containsi('" + data[d] + "')")) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }).show();
+            }).focus(function () {
+                this.value = "";
+                $(this).unbind('focus');                
+            });
+        });
         return false;
     });
 
@@ -352,9 +390,10 @@
             if (ret.error)
                 alert(ret.error);
             else {
-                $(ev.target).removeClass('btn-default').removeClass('btn-success');
-                $(ev.target).addClass(ret.HasTag ? "btn-default" : "btn-success");
-                $(ev.target).html(ret.HasTag ? "<i class='fa fa-tag'></i> Remove" : "<i class='fa fa-tag'></i> Add");
+                var link = $(ev.target).closest('a');
+                link.removeClass('btn-default').removeClass('btn-success');
+                link.addClass(ret.HasTag ? "btn-default" : "btn-success");
+                link.html(ret.HasTag ? "<i class='fa fa-tag'></i> Remove" : "<i class='fa fa-tag'></i> Add");
             }
             $.unblock();
         });
