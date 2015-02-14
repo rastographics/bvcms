@@ -13,7 +13,9 @@
                     var f = d.find("form");
                     f.modal("show");
 
-                    $(".UpdateSelected", f).click(function (ev2) {
+
+                    $(f).off("click", ".UpdateSelected");
+                    $(f).on("click", ".UpdateSelected", function (ev2) {
                         ev2.preventDefault();
                         var topid = $("table.results tbody tr:first ", f).find("input[type=checkbox]").attr("value");
                         var topid0 = $("#topid0").val();
@@ -22,7 +24,8 @@
                         f.modal("hide");
                         return false;
                     });
-                    $("#searchname").live("keypress", function (e) {
+                    $(f).off("keypress", "#searchname");
+                    $(f).on("keypress", "#searchname", function (e) {
                         if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
                             e.preventDefault();
                             $('a.search').click();
