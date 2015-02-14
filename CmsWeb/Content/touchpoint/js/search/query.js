@@ -21,7 +21,7 @@
         $.post("/Query/" + action, q, cb);
     };
     
-    $('#conditions').on("click", 'a.edit-popover', function () {
+    $('#conditions').on("click", 'a.edit-condition', function () {
         liedit = $(this).closest("li.condition");
         $EditCondition();
         return false;
@@ -34,7 +34,7 @@
             $.HideEditCondition();
         }
         $.postQuery("EditCondition", qid, function (ret) {
-            $("#editcondition .popover-content").html(ret).ready(function () {
+            $("#editcondition .condition-modal-content").html(ret).ready(function () {
                 $.AdjustEditCondition(option);
             });
         });
@@ -99,7 +99,7 @@
         var pliedit = $("li[data-qid='" + $("#SelectedId").val() + "']");
 
         pliedit.animate({ height: oh }, 400, function () {
-            $("#editcondition .popover-content").empty();
+            $("#editcondition .condition-modal-content").empty();
         });
     };
 
@@ -121,7 +121,7 @@
     $('body').on('click', '#SaveCondition', function () {
         $.postQuery('SaveCondition', function (ret) {
             if (ret.startsWith("<fieldset"))
-                $("#editcondition .popover-content").html(ret).ready(function () {
+                $("#editcondition .condition-modal-content").html(ret).ready(function () {
                     $.InitCodeValues();
                 });
             else {
@@ -325,15 +325,18 @@
 
         $('#QueryConditionSelect').on('shown.bs.modal', function () {
             $("input.searchConditions").focus();
-            $("input.searchConditions").keyup(function () {
+
+            $("input.searchConditions").on('keyup', _.debounce(function (e) {
                 //split the current value of searchInput
                 var data = this.value.split(" ");
-                $("thead").hide();
+                $("#all-conditions thead").hide();
                 //create a jquery object of the rows
-                var jo = $("tr");
+                var jo = $("#all-conditions tr");
                 if (this.value == "") {
-                    $("thead").show();
+                    $("#all-conditions thead").show();
                     jo.show();
+                    $("#all-conditions tbody tr").css("background-color", "#f9f9f9");
+                    $("#all-conditions tbody tr:visible:odd").css("background-color", "#fff");
                     return;
                 }
                 //hide all the rows
@@ -349,9 +352,12 @@
                     }
                     return false;
                 }).show();
-            }).focus(function () {
+
+                $("#all-conditions tbody tr").css("background-color", "#f9f9f9");
+                $("#all-conditions tbody tr:visible:odd").css("background-color", "#fff");
+            }, 180)).focus(function () {
                 this.value = "";
-                $(this).unbind('focus');                
+                $(this).unbind('focus');
             });
         });
         return false;
@@ -367,7 +373,7 @@
         $("#ConditionName").val(ev.target.id);
         $.postQuery('SelectCondition', qid, function (ret) {
             $('#QueryConditionSelect').modal("hide");
-            $("#editcondition .popover-content").html(ret).ready($.AdjustEditCondition);
+            $("#editcondition .condition-modal-content").html(ret).ready($.AdjustEditCondition);
         });
         return false;
     });

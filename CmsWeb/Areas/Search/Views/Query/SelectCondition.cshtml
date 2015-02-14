@@ -42,7 +42,7 @@
                                 <div class="col-xs-12">
                                     <br/>
                                     <div style="max-height: 315px; overflow-y: scroll;">
-                                        <table class="table table-striped">
+                                        <table class="table table-striped" id="all-conditions">
                                             @foreach (var category in categories)
                                             {
                                                 <thead>
@@ -58,7 +58,7 @@
                                                             <a href="#" id="@field.Name">@field.Title</a><br />
                                                             @field.Description
                                                         </td>
-                                                        <td>
+                                                        <td class="text-right">
                                                             <a href="http://docs.touchpointsoftware.com/SearchBuilder/QB-@(field.Name).html" target="help" class="help btn btn-default"><i class="fa fa-question-circle"></i> Help Article</a>
                                                         </td>
                                                     </tr>
@@ -90,7 +90,7 @@
                                                         <a href="#" id="@field.Name">@field.Title</a><br />
                                                         @field.Description
                                                     </td>
-                                                    <td>
+                                                    <td class="text-right">
                                                         <a href="http://docs.touchpointsoftware.com/SearchBuilder/QB-@(field.Name).html" target="help" class="help btn btn-default"><i class="fa fa-question-circle"></i> Help Article</a>
                                                     </td>
                                                 </tr>

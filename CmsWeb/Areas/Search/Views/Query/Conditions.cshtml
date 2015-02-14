@@ -12,9 +12,9 @@
     @Html.Hidden("Sort")
     @Html.Hidden("Dir")
     <input id="Results_Page" name="Results_Page" type="hidden" value="1">
-    <div id="editcondition" class="popover2">
-        <h3 class="popover-title">Edit Condition</h3>
-        <div class="popover-content">
+    <div id="editcondition" class="condition-modal">
+        <h3 class="condition-modal-title">Edit Condition</h3>
+        <div class="condition-modal-content">
         </div>
     </div>
 </form>
@@ -50,7 +50,7 @@
 @helper ClauseItem(Condition clause)
 {
     <li class="condition" data-qid="@clause.Id">
-        <a href="#editcondition" class="edit edit-popover">
+        <a href="#editcondition" class="edit edit-condition">
             <span class="value">@clause</span>
         </a>
         <div class="pull-right">
@@ -67,7 +67,7 @@
         <ul class="dropdown-menu dropdown-menu-right">
             @if (!clause.IsGroup)
             {
-                <li><a href="#editCondition" class="edit-popover"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
+                <li><a href="#editCondition" class="edit-condition"><i class="fa fa-pencil fa-fw"></i> Edit</a></li>
             }
             @if (clause.CanCut)
             {
