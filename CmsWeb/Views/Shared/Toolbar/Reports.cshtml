@@ -28,8 +28,8 @@
         @if (((bool?)ViewBag.OrganizationContext) == true)
         {
           <li class="header current-list pending-list orgcontext">Org Members Export</li>
-          <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' title="Includes Org Member info">Member Export</a></li>
-          <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' title="Includes Org Member and Small Group columns">Groups Export</a></li>
+          <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' class="qid" title="Includes Org Member info">Member Export</a></li>
+          <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' class="qid" title="Includes Org Member and Small Group columns">Groups Export</a></li>
           <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
         }
 

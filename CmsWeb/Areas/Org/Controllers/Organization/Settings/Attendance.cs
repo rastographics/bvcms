@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Org.Controllers
             m.UpdateSchedules();
             DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
             DbUtil.LogActivity("Update SettingsAttendance {0}".Fmt(m.Org.OrganizationName));
-            return PartialView("Settings/AttendanceEdit", m);
+            return PartialView("Settings/Attendance", m);
         }
         [HttpPost]
         public ActionResult NewSchedule()
