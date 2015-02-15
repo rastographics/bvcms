@@ -401,7 +401,7 @@
         $.block();
         $.post('/Query/ToggleTag/' + $(this).attr('value'), function (ret) {
             if (ret.error)
-                alert(ret.error);
+                swal("Error!", ret.error, "error");
             else {
                 var link = $(ev.target).closest('a');
                 link.removeClass('btn-default').removeClass('btn-success');
@@ -461,7 +461,7 @@ function RefreshList() {
             $.unblock();
         },
         error: function (request, status, err) {
-            alert(err);
+            swal("Error!", err, "error");
             $.unblock();
         }
     });

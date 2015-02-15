@@ -32,7 +32,7 @@
         $.post(loc, q, function (ret) {
             f.modal("hide");
             if (ret.message)
-                alert(ret.message);
+                swal("Error!", ret.message, "error");
             else if (ret.from === 'Menu')
                 window.location = '/Person2/' + ret.pid;
             else
