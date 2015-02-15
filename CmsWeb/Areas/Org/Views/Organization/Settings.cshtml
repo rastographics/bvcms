@@ -27,7 +27,7 @@
     @Html.Partial("Settings/General", Model)
   </div>
   <div id="Attendance" class="tab-pane settings">
-    @Html.Partial("Settings/Attendance", Model)
+    @Html.Partial("Settings/Attendance", Model.OrgAttendance)
   </div>
   <div id="Registration" class="tab-pane settings">
     @Html.Partial("Settings/Registration", Model.RegSettings)

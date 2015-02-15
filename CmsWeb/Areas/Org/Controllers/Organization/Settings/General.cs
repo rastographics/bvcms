@@ -31,8 +31,8 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.LogActivity("Update SettingsGeneral {0}".Fmt(m.Org.OrganizationName));
             if (ModelState.IsValid)
             {
-                m.UpdateSchedules();
-                DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
+                //m.UpdateSchedules();
+                //DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
                 return View("Settings/General", m);
             }
             return PartialView("Settings/GeneralEdit", m);

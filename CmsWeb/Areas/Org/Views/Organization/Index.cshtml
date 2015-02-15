@@ -24,11 +24,11 @@
   @Fingerprint.Script("/Scripts/bundle.org.js")
 }
 @Html.Hidden("refreshed", "no")
-@Html.Hidden("OrganizationId", Model.Org.OrganizationId)
+@Html.Hidden("OrganizationId", Model.Id)
 <div class="container">
   <div class="row-fluid" id="profile-header">
     <div class="span8">
-      @Html.Partial("Settings/Main", Model)
+      @Html.Partial("Settings/Main", Model.OrgMain)
     </div>
     <div class="span4">
       @Html.Partial("Toolbar/Toolbar")

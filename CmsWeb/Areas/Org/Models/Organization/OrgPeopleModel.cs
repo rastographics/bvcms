@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -18,20 +17,7 @@ namespace CmsWeb.Areas.Org.Models
         {
         }
 
-        private Organization org;
-        public Organization Org
-        {
-            get
-            {
-                if (org == null)
-                {
-                    if (Id == null)
-                        Id = DbUtil.Db.CurrentOrgId0;
-                    org = DbUtil.Db.LoadOrganizationById(Id);
-                }
-                return org;
-            }
-        }
+        public Organization Org;
 
         public override IQueryable<OrgPerson> DefineModelList()
         {
@@ -52,7 +38,8 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        private List<int> currentList; 
+        private List<int> currentList;
+
         public List<int> CurrentList()
         {
             if (currentList != null)
@@ -268,7 +255,16 @@ namespace CmsWeb.Areas.Org.Models
         public string FilterTagActive { get { return FilterTag ? "active" : ""; } }
         public string FilterIndActive { get { return FilterIndividuals ? "active" : ""; } }
 
-        public int? Id { get; set; }
+        public int? Id
+        {
+            get { return Org.OrganizationId; }
+            set
+            {
+                if (Org != null) 
+                    return;
+                Org = DbUtil.Db.LoadOrganizationById(value);
+            }
+        }
         public string GroupSelect { get; set; }
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }

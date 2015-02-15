@@ -1,18 +1,15 @@
 ﻿@using CmsWeb.Areas.Org.Models
 @using UtilityExtensions
-@using CmsWeb
-@model CmsWeb.Areas.Org.Models.OrganizationModel
-@{ var o = Model.Org; }
+@model OrgMain
 <div class="container">
   <div class="span8">
     <form class="form form-horizontal non-modal ajax border-bottom well well-small">
       <fieldset class="no-padding-margin">
         <legend>
-          @Model.Org.OrganizationName@(Model.Org.LeaderId.HasValue ? "," : "")
-          <small>@Model.Org.LeaderName</small>
+          @Model.OrganizationName@(Model.LeaderId.HasValue ? "," : "")
+          <small>@Model.LeaderName</small>
         </legend>
         <div class="row-fluid">
-          <div>
             <div class="control-group">
               <label class="control-label"><span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>Use this link to manage the divisions this organization belongs to.</p><p style='font-weight: normal;'>A dialog box will pop up.</p>" data-original-title="Divisions"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;Divisions:</label>
               <div class="controls">
@@ -20,60 +17,20 @@
                   @Html.Partial("Other/DivisionList", OrganizationModel.Divisions(Model.Id))
                 </a>
               </div>
-            </div>
           </div>
           <div class="inline display align-top">
-            <div class="control-group">
-              <label class="control-label">Name:</label>
-              <div class="controls">
-                @o.OrganizationName
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label">Campus:</label>
-              <div class="controls">
-                @Html.CodeDesc("Org.CampusId", Model.CampusList())
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label">Leader Type:</label>
-              <div class="controls">
-                @Html.CodeDesc("Org.LeaderMemberTypeId", Model.LeaderTypeList())
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label"><span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>An upcoming new feature for classifying your organizations.</p><p style='font-weight: normal;'>In progress, stay tuned.</p>" data-original-title="What is Organization Type?"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;Organization Type:</label>
-              <div class="controls">
-                @Html.CodeDesc("Org.OrganizationTypeId", Model.OrganizationTypes())
-              </div>
-            </div>
+            @Html.DisplayFor(m => m.OrganizationName)
+            @Html.DisplayFor(m => m.Campus)
+            @Html.DisplayFor(m => m.LeaderMemberType)
+            @Html.DisplayFor(m => m.OrganizationType)
+@*            <span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>An upcoming new feature for classifying your organizations.</p><p style='font-weight: normal;'>In progress, stay tuned.</p>" data-original-title="What is Organization Type?"><i class="fa fa-info-circle"></i></span>*@
           </div>
           <div class="inline display align-top">
-            <div class="control-group">
-              <label class="control-label">Schedule:</label>
-              <div class="controls">
-                @Model.Schedule
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label" for="Org_OrganizationName">Security Type:</label>
-              <div class="controls">
-                @Html.CodeDesc("Org.SecurityTypeId", Model.SecurityTypeList())
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label">Status:</label>
-              <div class="controls">
-                @Html.CodeDesc("Org.OrganizationStatusId", Model.OrgStatusList())
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label">Main Fellowship:</label>
-              <div class="controls">
-                @Html.CheckBoxReadonly(o.IsBibleFellowshipOrg)
-              </div>
-            </div>
-            @if (o.OrgPickList.HasValue())
+            @Html.DisplayFor(m => m.Schedule)
+            @Html.DisplayFor(m => m.SecurityType)
+            @Html.DisplayFor(m => m.OrganizationStatus)
+            @Html.DisplayFor(m => m.IsBibleFellowshipOrg)
+            @if (Model.Org.OrgPickList.HasValue())
             {
               <div class="text-right">
                 <span class="label">Master Org</span>
@@ -92,5 +49,4 @@
       </fieldset>
     </form>
   </div>
-
 </div>

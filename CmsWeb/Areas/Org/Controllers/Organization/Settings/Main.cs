@@ -7,6 +7,7 @@ using CmsData.Registration;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData.Codes;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -16,23 +17,19 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Main(int id)
         {
             var m = new OrganizationModel(id);
-            return PartialView("Settings/Main", m);
+            return PartialView("Settings/Main", m.OrgMain);
         }
         [HttpPost]
         public ActionResult MainEdit(int id)
         {
             var m = new OrganizationModel(id);
-            return PartialView("Settings/MainEdit", m);
+            return PartialView("Settings/MainEdit", m.OrgMain);
         }
         [HttpPost]
-        public ActionResult MainUpdate(OrganizationModel m)
+        public ActionResult MainUpdate(OrgMain m)
         {
-            if (m.Org.CampusId == 0)
-                m.Org.CampusId = null;
-            if (m.Org.OrganizationTypeId == 0)
-                m.Org.OrganizationTypeId = null;
-            DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Update OrgMain {0}".Fmt(m.Org.OrganizationName));
+            m.Update();
+            DbUtil.LogActivity("Update OrgMain {0}".Fmt(m.OrganizationName));
             return PartialView("Settings/Main", m);
         }
 

@@ -1,58 +1,24 @@
-﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+﻿@model CmsWeb.Areas.Org.Models.OrgMain
 <div class="container">
   <div class="span8">
     <form class="form form-horizontal non-modal ajax border-bottom well well-small">
       <fieldset class="no-padding-margin">
         <legend>
-          @Model.Org.OrganizationName@(Model.Org.LeaderId.HasValue ? "," : "")
-          <small>@Model.Org.LeaderName</small>
+          @Model.OrganizationName@(Model.Org.LeaderId.HasValue ? "," : "")
+          <small>@Model.LeaderName</small>
         </legend>
         <div class="row-fluid">
           <div class="inline display align-top">
-            <div class="control-group">
-              <label class="control-label">Name:</label>
-              <div class="controls">
-                @Html.TextBox("Org.OrganizationName", Model.Org.OrganizationName)
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label">Campus:</label>
-              <div class="controls">
-                @Html.DropDownList("Org.CampusId", Model.CampusList())
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label">Leader Type:</label>
-              <div class="controls">
-                @Html.DropDownList("Org.LeaderMemberTypeId", Model.LeaderTypeList())
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label"><span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>An upcoming new feature for classifying your organizations.</p><p style='font-weight: normal;'>In progress, stay tuned.</p>" data-original-title="What is Organization Type?"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;Organization Type:</label>
-              <div class="controls">
-                @Html.DropDownList("Org.OrganizationTypeId", Model.OrganizationTypes())
-              </div>
-            </div>
+            @Html.HiddenFor(m => m.Id)
+            @Html.EditorFor(m => m.OrganizationName)
+            @Html.EditorFor(m => m.Campus)
+            @Html.EditorFor(m => m.LeaderMemberType)
+            @Html.EditorFor(m => m.OrganizationType)
           </div>
           <div class="inline display align-top">
-            <div class="control-group">
-              <label class="control-label" for="Org_OrganizationName">Security Type:</label>
-              <div class="controls">
-                @Html.DropDownList("Org.SecurityTypeId", Model.SecurityTypeList())
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label">Status:</label>
-              <div class="controls">
-                @Html.DropDownList("Org.OrganizationStatusId", Model.OrgStatusList())
-              </div>
-            </div>
-            <div class="control-group">
-              <label class="control-label">Main Fellowship:</label>
-              <div class="controls">
-                @Html.CheckBox("Org.IsBibleFellowshipOrg")
-              </div>
-            </div>
+            @Html.EditorFor(m => m.SecurityType)
+            @Html.EditorFor(m => m.OrganizationStatus)
+            @Html.EditorFor(m => m.IsBibleFellowshipOrg)
           </div>
         </div>
         @if (User.IsInRole("Edit"))

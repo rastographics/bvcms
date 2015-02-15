@@ -396,7 +396,26 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> StateList() { return GetStateList(); }
         public IEnumerable<CodeValueItem> TitleList() { return TitleCodes(); }
         public IEnumerable<CodeValueItem> LetterStatusList() { return LetterStatusCodes(); }
-
+        public IEnumerable<CodeValueItem> OrganizationStatusList() { return OrganizationStatusCodes(); }
+        public IEnumerable<CodeValueItem> SecurityTypeList() { return SecurityTypeCodes(); }
+        public IEnumerable<CodeValueItem> OrganizationTypeList() { return OrganizationTypes0(); }
+        public IEnumerable<CodeValueItem> LeaderMemberTypeList() { return MemberTypeCodes0().Select(c => new CodeValueItem { Code = c.Code, Id = c.Id, Value = c.Value }); }
+        public IEnumerable<CodeValueItem> AttendCreditList() { return AttendCredits(); }
+        public SelectList SchedDayList() { return DaysOfWeek(); }
+        public static SelectList DaysOfWeek()
+        {
+            return new SelectList(new[]
+            {
+                new {Text = "Sun", Value = "0"},
+                new {Text = "Mon", Value = "1"},
+                new {Text = "Tue", Value = "2"},
+                new {Text = "Wed", Value = "3"},
+                new {Text = "Thu", Value = "4"},
+                new {Text = "Fri", Value = "5"},
+                new {Text = "Sat", Value = "6"},
+                new {Text = "Any", Value = "10"},
+            }, "Value", "Text");
+        }
         public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
         public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
         public SelectList ContactTypeSelectList() { return ContactTypeCodes().ToSelect(); }

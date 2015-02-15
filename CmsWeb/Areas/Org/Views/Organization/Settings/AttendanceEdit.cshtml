@@ -1,17 +1,31 @@
-﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+﻿@model CmsWeb.Areas.Org.Models.OrgAttendance
 <form class="form form-horizontal non-modal ajax span12">
-    <br/>
-    @FormAction()
-    <ul class="enablesort edit" style="list-style: none; margin-left: 5px;">
-        @Html.EditorFor(m => m, "TabAttendance")
-    </ul>
-    @FormAction()
+  <br />
+  @FormAction()
+  @Html.EditorFor(m => m, "Schedules")
+  @Html.EditorFor(m => m.NotWeekly)
+  @Html.EditorFor(m => m.AllowAttendOverlap)
+  @Html.EditorFor(m => m.AllowAttendOverlap)
+  @Html.EditorFor(m => m.CanSelfCheckin)
+  @Html.EditorFor(m => m.SuspendCheckin)
+  @Html.EditorFor(m => m.AllowNonCampusCheckin)
+  @Html.EditorFor(m => m.OrgOffsite)
+  @Html.EditorFor(m => m.NoSecurityLabel)
+  @Html.EditorFor(m => m.NumCheckinLabels)
+  @Html.EditorFor(m => m.NumWorkerCheckInLabels)
+  @Html.EditorFor(m => m.FirstMeetingDate)
+  @Html.EditorFor(m => m.LastMeetingDate)
+  @Html.EditorFor(m => m.RollSheetVisitorWks)
+  @Html.EditorFor(m => m.ConsecutiveAbsentsThreshold)
+  @Html.EditorFor(m => m.BirthDayStart)
+  @Html.EditorFor(m => m.BirthDayEnd)
+  @FormAction()
 </form>
 @helper FormAction()
 {
-    <div class="pull-right">
-        <a href="/Organization/Attendance/@Model.Id" class="btn ajax">Cancel</a>
-        <a href="/Organization/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
-    </div>
-    <div class="formerror">@Html.ValidationMessage("Form")</div>
+  <div class="pull-right">
+    <a href="/Organization/Attendance/@Model.Id" class="btn ajax">Cancel</a>
+    <a href="/Organization/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
+  </div>
+  <div class="formerror">@Html.ValidationMessage("Form")</div>
 }

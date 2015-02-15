@@ -592,8 +592,7 @@
         if (href) {
             var f = $(this).closest('form');
             $.post(href, null, function (ret) {
-                $("#schedules", f).append(ret).ready(function () {
-                    $.renumberListItems();
+                $("#schedules").append(ret).ready(function () {
                     $.InitFunctions.timepicker();
                 });
             });

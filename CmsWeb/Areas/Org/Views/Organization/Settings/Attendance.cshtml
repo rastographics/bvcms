@@ -1,19 +1,33 @@
-﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+﻿@model CmsWeb.Areas.Org.Models.OrgAttendance
 <form class="form form-horizontal non-modal ajax span12" data-init="datepicker" data-init2="timepicker">
-    <br />
-    @FormAction()
-    <ul class="noedit" style="list-style: none; margin-left: 5px;">
-        @Html.EditorFor(m => m, "TabAttendance")
-    </ul>
-    @FormAction()
+  <br />
+  @FormAction()
+  @Html.DisplayFor(m => m, "Schedules")
+  @Html.DisplayFor(m => m.NotWeekly)
+  @Html.DisplayFor(m => m.AllowAttendOverlap)
+  @Html.DisplayFor(m => m.AllowAttendOverlap)
+  @Html.DisplayFor(m => m.CanSelfCheckin)
+  @Html.DisplayFor(m => m.SuspendCheckin)
+  @Html.DisplayFor(m => m.AllowNonCampusCheckin)
+  @Html.DisplayFor(m => m.OrgOffsite)
+  @Html.DisplayFor(m => m.NoSecurityLabel)
+  @Html.DisplayFor(m => m.NumCheckinLabels)
+  @Html.DisplayFor(m => m.NumWorkerCheckInLabels)
+  @Html.DisplayFor(m => m.FirstMeetingDate)
+  @Html.DisplayFor(m => m.LastMeetingDate)
+  @Html.DisplayFor(m => m.RollSheetVisitorWks)
+  @Html.DisplayFor(m => m.ConsecutiveAbsentsThreshold)
+  @Html.DisplayFor(m => m.BirthDayStart)
+  @Html.DisplayFor(m => m.BirthDayEnd)
+  @FormAction()
 </form>
 @helper FormAction()
 {
   if (User.IsInRole("Edit"))
   {
-      <div class="pull-right">
-          <a href="/Organization/AttendanceEdit/@Model.Id" class="btn edit ajax pull-right">Edit</a>
-      </div>
-      <div class="formerror">@Html.ValidationMessage("Form")</div>
+    <div class="pull-right">
+      <a href="/Organization/AttendanceEdit/@Model.Id" class="btn edit ajax pull-right">Edit</a>
+    </div>
+    <div class="formerror">@Html.ValidationMessage("Form")</div>
   }
 }

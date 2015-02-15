@@ -7,17 +7,20 @@
     
 
     $.InitFunctions.SettingFormsInit = function (f) {
-        $(".tip", f).tooltip({ opacity: 0, showBody: "|" });
+        //$(".tip", f).tooltip({ opacity: 0, showBody: "|" });
         $.InitFunctions.popovers();
-        //$("ul.enablesort.sort, ul.enablesort ul.sort", f).sortable();
-        $("ul.noedit input", f).attr("disabled", "disabled");
-        $("ul.noedit select", f).attr("disabled", "disabled");
-        $("ul.noedit a", f).not('[target="otherorg"]').removeAttr("href");
-        $("ul.noedit a", f).not('[target="otherorg"]').css("color", "grey");
-        $("ul.noedit a", f).not('[target="otherorg"]').unbind("click");
-        $('ul.edit a.notifylist').SearchUsers({
+        $(".noedit input", f).attr("disabled", "disabled");
+        $(".noedit select", f).attr("disabled", "disabled");
+        $(".noedit a", f).not('[target="otherorg"]').removeAttr("href");
+        $(".noedit a", f).not('[target="otherorg"]').css("color", "grey");
+        $(".noedit a", f).not('[target="otherorg"]').unbind("click");
+        $('.edit a.notifylist').SearchUsers({
             UpdateShared: function (topid, topid0, ele) {
-                $.post("/Organization/UpdateNotifyIds", { id: $("#OrganizationId").val(), topid: topid, field: ele.data("field") }, function (ret) {
+                $.post("/Organization/UpdateNotifyIds", {
+                    id: $("#OrganizationId").val(),
+                    topid: topid,
+                    field: ele.data("field")
+                }, function (ret) {
                     ele.html(ret);
                 });
             }

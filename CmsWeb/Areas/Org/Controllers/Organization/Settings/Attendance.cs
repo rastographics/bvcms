@@ -13,21 +13,17 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Attendance(int id)
         {
             var m = new OrganizationModel(id);
-            return PartialView("Settings/Attendance", m);
+            return PartialView("Settings/Attendance", m.OrgAttendance);
         }
         [HttpPost]
         public ActionResult AttendanceEdit(int id)
         {
             var m = new OrganizationModel(id);
-            return PartialView("Settings/AttendanceEdit", m);
+            return PartialView("Settings/AttendanceEdit", m.OrgAttendance);
         }
         [HttpPost]
-        public ActionResult AttendanceUpdate(int id)
+        public ActionResult AttendanceUpdate(OrgAttendance m)
         {
-            var m = new OrganizationModel(id);
-            m.Schedules.Clear();
-
-            UpdateModel(m);
             m.UpdateSchedules();
             DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
             DbUtil.LogActivity("Update SettingsAttendance {0}".Fmt(m.Org.OrganizationName));

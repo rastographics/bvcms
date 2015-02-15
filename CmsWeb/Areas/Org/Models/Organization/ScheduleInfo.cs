@@ -16,6 +16,8 @@ namespace CmsWeb.Models
         public ScheduleInfo(OrgSchedule sc)
         {
             this.sc = sc;
+            SchedDay = new CodeInfo(sc.SchedDay, "SchedDay");
+            AttendCredit = new CodeInfo(sc.AttendCreditId, "AttendCredit");
         }
 
         public ScheduleInfo()
@@ -29,56 +31,39 @@ namespace CmsWeb.Models
             set { sc.Id = value; }
         }
 
-        public int SchedDay
-        {
-            get { return sc.SchedDay ?? 0; }
-            set { sc.SchedDay = value; }
-        }
+        public CodeInfo SchedDay { get; set; }
+//        public int SchedDay
+//        {
+//            get { return sc.SchedDay ?? 0; }
+//            set { sc.SchedDay = value; }
+//        }
 
-        public string Time
+        public DateTime Time
         {
             get
             {
                 if (!sc.SchedTime.HasValue)
-                    return "08:00 AM";
-                return sc.SchedTime.ToString2("t");
+                    return DateTime.Today + new TimeSpan(8, 0, 0);
+                return sc.SchedTime.Value;
             }
-            set { sc.SchedTime = value.ToDate(); }
+            set { sc.SchedTime = value; }
         }
 
-        public int AttendCreditId
-        {
-            get { return sc.AttendCreditId ?? 1; }
-            set { sc.AttendCreditId = value; }
-        }
+        public CodeInfo AttendCredit { get; set; }
+//        public int AttendCreditId
+//        {
+//            get { return sc.AttendCreditId ?? 1; }
+//            set { sc.AttendCreditId = value; }
+//        }
 
-        public SelectList DaysOfWeek()
-        {
-            return new SelectList(new[]
-                {
-                    new {Text = "Sun", Value = "0"},
-                    new {Text = "Mon", Value = "1"},
-                    new {Text = "Tue", Value = "2"},
-                    new {Text = "Wed", Value = "3"},
-                    new {Text = "Thu", Value = "4"},
-                    new {Text = "Fri", Value = "5"},
-                    new {Text = "Sat", Value = "6"},
-                    new {Text = "Any", Value = "10"},
-                }, "Value", "Text", SchedDay.ToString());
-        }
 
-        public SelectList AttendCredits()
-        {
-            return new SelectList(CodeValueModel.AttendCredits(),
-                                  "Id", "Value", AttendCreditId.ToString());
-        }
 
         public string DisplayAttendCredit
         {
             get
             {
                 return (from i in CodeValueModel.AttendCredits()
-                        where i.Id == AttendCreditId
+                        where i.Id == AttendCredit.Value.ToInt()
                         select i.Value).Single();
             }
         }
@@ -87,7 +72,7 @@ namespace CmsWeb.Models
         {
             get
             {
-                return (from i in DaysOfWeek()
+                return (from i in CodeValueModel.DaysOfWeek()
                         where i.Value == SchedDay.ToString()
                         select i.Text).SingleOrDefault();
             }
@@ -108,7 +93,7 @@ namespace CmsWeb.Models
             get
             {
                 var dt = PrevMeetingTime;
-                return "{0},{1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCreditId);
+                return "{0},{1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCredit);
             }
         }
         public string ValueNext
@@ -116,7 +101,7 @@ namespace CmsWeb.Models
             get
             {
                 var dt = NextMeetingTime;
-                return "{0},{1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCreditId);
+                return "{0},{1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCredit);
             }
         }
 

@@ -1,0 +1,15 @@
+﻿@model CmsWeb.Areas.Org.Models.OrgAttendance
+
+<span style="cursor: pointer;" data-toggle="popover" data-original-title="Schedule" data-content="
+This is where you indicate the weekly schedule. You can have mutiple schedules.
+The top one is the default that shows up on lists.
+Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for 100% credit.">
+  <i class="fa fa-info-circle"></i>
+</span>&nbsp;&nbsp;
+<label class="keyword big tip">
+  Schedule:
+</label>
+@foreach (var sc in Model.Schedules.OrderBy(cc => cc.Id))
+{
+  @Html.DisplayFor(m => sc)
+}

@@ -10,27 +10,12 @@ using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
-using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Org.Models
 {
     public class OrganizationModel : OrgPeopleModel
     {
-        public List<ScheduleInfo> Schedules
-        {
-            get
-            {
-                if (schedules == null && Id != null)
-                    populate(Id.Value);
-                if (schedules == null)
-                    throw new Exception("missing schedules");
-                return schedules;
-            }
-            set { schedules = value; }
-        }
-        private List<ScheduleInfo> schedules;
 
-        public string Schedule { get; set; }
         public bool IsVolunteerLeader { get; set; }
 
         public OrganizationModel()
@@ -40,23 +25,20 @@ namespace CmsWeb.Areas.Org.Models
         {
             populate(id);
         }
+        public OrgMain OrgMain { get; set; }
+        public OrgAttendance OrgAttendance { get; set; }
 
         private void populate(int id)
         {
             Id = id;
             DbUtil.Db.CurrentOrg.Id = id;
             GroupSelect = GroupSelectCode.Member;
-            var q = from sc in DbUtil.Db.OrgSchedules
-                    where sc.OrganizationId == Id
-                    select sc;
-            var u = from s in q
-                    orderby s.Id
-                    select new ScheduleInfo(s);
-            schedules = u.ToList();
-            Schedule = schedules.Count > 0 ? schedules[0].Display : "None";
-
             IsVolunteerLeader = VolunteerLeaderInOrg(Id);
-
+            OrgAttendance = new OrgAttendance() { Org = Org };
+            OrgAttendance.CopyPropertiesFrom(Org);
+            OrgMain = new OrgMain() { Org = Org };
+            OrgMain.CopyPropertiesFrom(Org);
+            OrgMain.Schedule = OrgAttendance.Schedule;
         }
         public static bool VolunteerLeaderInOrg(int? orgid)
         {
@@ -97,32 +79,6 @@ namespace CmsWeb.Areas.Org.Models
             tg.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return tg;
         }
-        public void UpdateSchedules()
-        {
-            DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(Org.OrgSchedules);
-            Org.OrgSchedules.Clear();
-            DbUtil.Db.SubmitChanges();
-            foreach (var s in Schedules.OrderBy(ss => ss.Id))
-                Org.OrgSchedules.Add(new OrgSchedule
-                {
-                    OrganizationId = Id ?? 0,
-                    Id = s.Id,
-                    SchedDay = s.SchedDay,
-                    SchedTime = s.Time.ToDate(),
-                    AttendCreditId = s.AttendCreditId
-                });
-            DbUtil.Db.SubmitChanges();
-        }
-        public SelectList SchedulesPrev()
-        {
-            var q = new SelectList(Schedules.OrderBy(cc => cc.Id), "ValuePrev", "Display");
-            return q;
-        }
-        public SelectList SchedulesNext()
-        {
-            var q = new SelectList(Schedules.OrderBy(cc => cc.Id), "ValueNext", "Display");
-            return q;
-        }
         public static IEnumerable<SearchDivision> Divisions(int? id)
         {
             var q = from d in DbUtil.Db.SearchDivisions(id, null)
@@ -136,34 +92,13 @@ namespace CmsWeb.Areas.Org.Models
         {
             return CodeValueModel.ConvertToSelect(cv.AllCampuses0(), "Id");
         }
-        public IEnumerable<SelectListItem> OrgStatusList()
-        {
-            return CodeValueModel.ConvertToSelect(cv.OrganizationStatusCodes(), "Id");
-        }
-        public IEnumerable<SelectListItem> LeaderTypeList()
-        {
-            var items = CodeValueModel.MemberTypeCodes0().Select(c => new CodeValueItem { Code = c.Code, Id = c.Id, Value = c.Value });
-            return CodeValueModel.ConvertToSelect(items, "Id");
-        }
         public IEnumerable<SelectListItem> EntryPointList()
         {
             return CodeValueModel.ConvertToSelect(cv.EntryPoints(), "Id");
         }
-        public IEnumerable<SelectListItem> OrganizationTypes()
-        {
-            return CodeValueModel.ConvertToSelect(cv.OrganizationTypes0(), "Id");
-        }
         public IEnumerable<SelectListItem> GenderList()
         {
             return CodeValueModel.ConvertToSelect(cv.GenderCodes(), "Id");
-        }
-        public IEnumerable<SelectListItem> AttendCreditList()
-        {
-            return CodeValueModel.ConvertToSelect(CodeValueModel.AttendCredits(), "Id");
-        }
-        public IEnumerable<SelectListItem> SecurityTypeList()
-        {
-            return CodeValueModel.ConvertToSelect(cv.SecurityTypeCodes(), "Id");
         }
         public static string SpaceCamelCase(string s)
         {
@@ -173,31 +108,6 @@ namespace CmsWeb.Areas.Org.Models
         {
             var cv = new CodeValueModel();
             return CodeValueModel.ConvertToSelect(cv.RegistrationTypes(), "Id");
-        }
-        public string NewMeetingTime
-        {
-            get
-            {
-                var sc = Org.OrgSchedules.FirstOrDefault(); // SCHED
-                if (sc != null && sc.SchedTime != null)
-                    return sc.SchedTime.ToString2("t");
-                return "08:00 AM";
-            }
-        }
-        public DateTime PrevMeetingDate
-        {
-            get
-            {
-                var sc = Org.OrgSchedules.FirstOrDefault(); // SCHED
-                if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
-                    return Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0)
-                        .Add(sc.SchedTime.Value.TimeOfDay);
-                return Util.Now.Date;
-            }
-        }
-        public DateTime NextMeetingDate
-        {
-            get { return PrevMeetingDate.AddDays(7); }
         }
         private Settings _RegSettings;
 

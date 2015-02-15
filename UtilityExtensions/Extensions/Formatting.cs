@@ -104,6 +104,12 @@ namespace UtilityExtensions
                 return dt.ToString2("g");
             return def;
         }
+        public static string FormatTime(this DateTime? tm)
+        {
+            if (tm.HasValue)
+                return tm.Value.ToString("h:mm tt");
+            return "";
+        }
         public static string ToString2(this int? i, string fmt)
         {
             if (i.HasValue)
