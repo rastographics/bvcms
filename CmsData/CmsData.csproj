@@ -465,6 +465,7 @@
     <Compile Include="Generated\Functions\OrgMinistryInfo.cs" />
     <Compile Include="Generated\Functions\OrgPeopleCurrent.cs" />
     <Compile Include="Generated\Functions\OrgPeopleGuest.cs" />
+    <Compile Include="Generated\Functions\OrgPeopleId.cs" />
     <Compile Include="Generated\Functions\OrgPeopleInactive.cs" />
     <Compile Include="Generated\Functions\OrgPeoplePending.cs" />
     <Compile Include="Generated\Functions\OrgPeoplePreviou.cs" />

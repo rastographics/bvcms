@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
 using System.Linq;
-using System.Data.Linq;
 using System.Reflection;
 using System.Web;
 using System.Xml;
@@ -13,9 +10,9 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
+using CmsData.Codes;
 using CmsData.Registration;
 using UtilityExtensions;
-using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
@@ -60,13 +57,13 @@ namespace CmsWeb.Models
             }
         }
 
-        private int? orgid;
+        private int? _orgid;
         public int? Orgid
         {
-            get { return orgid; }
+            get { return _orgid; }
             set
             {
-                orgid = value;
+                _orgid = value;
                 if (value > 0)
                 {
                     CheckMasterOrg();
@@ -76,14 +73,13 @@ namespace CmsWeb.Models
         }
 
         private int? _tranId;
-
         public int? TranId
         {
             get { return _tranId; }
             set
             {
                 _tranId = value;
-                _Transaction = null;
+                _transaction = null;
             }
         }
 
@@ -96,19 +92,19 @@ namespace CmsWeb.Models
         public int? UserPeopleId { get; set; }
         public bool prospect { get; set; }
 
-        private string _Registertag;
+        private string _registerTag;
         public string registertag
         {
-            get { return _Registertag; }
-            set { _Registertag = value; }
+            get { return _registerTag; }
+            set { _registerTag = value; }
         }
 
-        private List<OnlineRegPersonModel> list = new List<OnlineRegPersonModel>();
+        private List<OnlineRegPersonModel> _list = new List<OnlineRegPersonModel>();
 
         public List<OnlineRegPersonModel> List
         {
-            get { return list; }
-            set { list = value; }
+            get { return _list; }
+            set { _list = value; }
         }
 
         [XmlIgnore]
@@ -133,11 +129,11 @@ namespace CmsWeb.Models
                 {
                     case "List":
                         foreach (var ee in e.Elements())
-                            list.Add(Util.DeSerialize<OnlineRegPersonModel>(ee.ToString()));
+                            _list.Add(Util.DeSerialize<OnlineRegPersonModel>(ee.ToString()));
                         break;
                     case "History":
                         foreach (var ee in e.Elements())
-                            history.Add(ee.Value);
+                            _history.Add(ee.Value);
                         break;
                     default:
                         Util.SetPropertyFromText(this, name, e.Value);
@@ -157,7 +153,7 @@ namespace CmsWeb.Models
                 {
                     case "List":
                         w.Start("List");
-                        foreach (var i in list)
+                        foreach (var i in _list)
                             Util.Serialize(i, writer);
                         w.End();
                         break;
@@ -215,49 +211,47 @@ namespace CmsWeb.Models
                     list[i.OrganizationId] = new Settings(i.RegSetting, DbUtil.Db, i.OrganizationId);
                 list[masterorg.OrganizationId] = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId);
             }
-            else if (orgid == null)
+            else if (_orgid == null)
                 return;
             else if (org != null)
-                list[orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, orgid.Value);
+                list[_orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, _orgid.Value);
 //            if (HttpContext.Current.Items.Contains("RegSettings"))
 //                return;
             HttpContext.Current.Items["RegSettings"] = list;
 
-            if (org != null && org.AddToSmallGroupScript.HasValue())
+            if (org == null || !org.AddToSmallGroupScript.HasValue()) return;
+
+            var script = DbUtil.Db.Content(org.AddToSmallGroupScript);
+            if (script == null || !script.Body.HasValue()) return;
+
+            try
             {
-                var script = DbUtil.Db.Content(org.AddToSmallGroupScript);
-                if (script != null && script.Body.HasValue())
-                {
-                    try
-                    {
-                        var pe = new PythonEvents(Util.Host, "RegisterEvent", script.Body);
-                        HttpContext.Current.Items["PythonEvents"] = pe;
-                    }
-                    catch (Exception ex)
-                    {
-                        org.AddToExtraData("Python.errors", ex.Message);
-                        throw;
-                    }
-                }
+                var pe = new PythonEvents(Util.Host, "RegisterEvent", script.Body);
+                HttpContext.Current.Items["PythonEvents"] = pe;
+            }
+            catch (Exception ex)
+            {
+                org.AddToExtraData("Python.errors", ex.Message);
+                throw;
             }
         }
 
-        public static Settings ParseSetting(string RegSetting, int OrgId)
+        public static Settings ParseSetting(string regSetting, int orgId)
         {
-            return new Settings(RegSetting, DbUtil.Db, OrgId);
+            return new Settings(regSetting, DbUtil.Db, orgId);
         }
 
-        private Organization _masterorg;
+        private Organization _masterOrg;
 
         public Organization masterorg
         {
             get
             {
-                if (_masterorg != null)
-                    return _masterorg;
+                if (_masterOrg != null)
+                    return _masterOrg;
                 if (masterorgid.HasValue)
-                    _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
-                return _masterorg;
+                    _masterOrg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
+                return _masterOrg;
             }
         }
 
@@ -268,55 +262,52 @@ namespace CmsWeb.Models
                  || org.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2
                  || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2))
             {
-                _masterorg = org;
+                _masterOrg = org;
                 masterorgid = Orgid;
-                orgid = null;
+                _orgid = null;
                 _org = null;
             }
         }
 
-        private CmsData.Organization _org;
-
-        public CmsData.Organization org
+        private Organization _org;
+        public Organization org
         {
             get
             {
                 if (_org == null && Orgid.HasValue)
-                    if (Orgid == Util.CreateAccountCode)
-                        _org = CreateAccountOrg();
-                    else
-                        _org = DbUtil.Db.LoadOrganizationById(Orgid.Value);
+                {
+                    _org = Orgid == Util.CreateAccountCode
+                        ? CreateAccountOrg()
+                        : DbUtil.Db.LoadOrganizationById(Orgid.Value);
+                }
                 return _org;
             }
         }
 
-        private Transaction _Transaction;
-
+        private Transaction _transaction;
         public Transaction Transaction
         {
             get
             {
-                if (_Transaction == null && TranId.HasValue)
-                    _Transaction = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
-                return _Transaction;
+                if (_transaction == null && TranId.HasValue)
+                    _transaction = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
+                return _transaction;
             }
         }
 
-        private Person _User;
-
+        private Person _user;
         public Person user
         {
             get
             {
-                if (_User == null && UserPeopleId.HasValue)
-                    _User = DbUtil.Db.LoadPersonById(UserPeopleId.Value);
-                return _User;
+                if (_user == null && UserPeopleId.HasValue)
+                    _user = DbUtil.Db.LoadPersonById(UserPeopleId.Value);
+                return _user;
             }
         }
 
-        private CmsData.Meeting _meeting;
-
-        public CmsData.Meeting meeting()
+        private Meeting _meeting;
+        public Meeting meeting()
         {
             if (_meeting == null)
             {
@@ -350,17 +341,16 @@ namespace CmsWeb.Models
                 };
         }
 
-        private List<string> history = new List<string>();
-
+        private List<string> _history = new List<string>();
         public List<string> History
         {
-            get { return history; }
-            set { history = value; }
+            get { return _history; }
+            set { _history = value; }
         }
 
         public void HistoryAdd(string s)
         {
-            History.Add("{0} {1:g}".Fmt(s, DateTime.Now));
+            History.Add("{0} {1:g} (c-ip={2})".Fmt(s, DateTime.Now, Util.GetIpAddress()));
         }
     }
 }

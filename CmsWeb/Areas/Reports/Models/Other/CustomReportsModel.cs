@@ -130,7 +130,7 @@ namespace CmsWeb.Areas.Reports.Models
                     var smallgroup = (string)e.Attribute("smallgroup");
                     if (!smallgroup.HasValue())
                         throw new Exception("missing smallgroup on column " + cc.Column);
-                    sel = sel.Replace("{smallgroup}", smallgroup);
+                    sel = sel.Replace("{smallgroup}", DblQuotes(smallgroup));
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, sel, DblQuotes(smallgroup));
                 }
                 else if (name.StartsWith("Amount") && Regex.IsMatch(name, @"\AAmount(Tot|Paid|Due)\z"))

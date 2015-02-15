@@ -87,7 +87,7 @@ namespace CmsWeb.Models
                 });
             }
 
-            if (SupportMissionTrip && GoerId == list[0].PeopleId)
+            if (SupportMissionTrip && GoerId == _list[0].PeopleId)
             {
                 // reload transaction because it is not in this context
                 var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == GoerId && mm.OrganizationId == Orgid);

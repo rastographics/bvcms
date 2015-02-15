@@ -1,4 +1,4 @@
-(function(){if(!String.prototype.startsWith){Object.defineProperty(String.prototype,"startsWith",{enumerable:false,configurable:false,writable:false,value:function(b,a){a=a||0;return this.lastIndexOf(b,a)===a}})}})();/*
+(function(){var b=Object.defineProperty&&(function(){try{Object.defineProperty({},"x",{});return true}catch(c){return false}}());var a;if(b){a=function(e,d,c){Object.defineProperty(e,d,{configurable:true,enumerable:false,writable:true,value:c})}}else{a=function(e,d,c){e[d]=c}}if(!String.prototype.startsWith){a(String.prototype,"startsWith",function(d,c){c=c||0;return this.lastIndexOf(d,c)===c})}})();/*
  * jQuery Migrate - v1.1.1 - 2013-02-16
  * https://github.com/jquery/jquery-migrate
  * Copyright 2005, 2013 jQuery Foundation, Inc. and other contributors; Licensed MIT

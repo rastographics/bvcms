@@ -2850,6 +2850,39 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.OrgPeopleIds", IsComposable = true)]
+		public IQueryable< View.OrgPeopleId > OrgPeopleIds(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="varchar")] string grouptype,
+            [Parameter(DbType="varchar")] string first,
+            [Parameter(DbType="varchar")] string last,
+            [Parameter(DbType="varchar")] string sgfilter,
+            [Parameter(DbType="bit")] bool? showhidden,
+            [Parameter(DbType="nvarchar")] string currtag,
+            [Parameter(DbType="int")] int? currtagowner,
+            [Parameter(DbType="bit")] bool? filterchecked,
+            [Parameter(DbType="bit")] bool? filtertag,
+            [Parameter(DbType="bit")] bool? ministryinfo,
+            [Parameter(DbType="int")] int? userpeopleid
+            )
+		{
+			return this.CreateMethodCallQuery< View.OrgPeopleId>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                grouptype,
+                first,
+                last,
+                sgfilter,
+                showhidden,
+                currtag,
+                currtagowner,
+                filterchecked,
+                filtertag,
+                ministryinfo,
+                userpeopleid
+                );
+		}
+
 		[Function(Name="dbo.OrgPeopleInactive", IsComposable = true)]
 		public IQueryable< View.OrgPeopleInactive > OrgPeopleInactive(
             [Parameter(DbType="int")] int? oid
@@ -4388,6 +4421,22 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 zipcode,
                 country
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.OrgCheckedCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrgCheckedCount(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "groupselect", DbType="varchar")] string groupselect,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                groupselect,
+                pid
                 ).ReturnValue));
 		}
 

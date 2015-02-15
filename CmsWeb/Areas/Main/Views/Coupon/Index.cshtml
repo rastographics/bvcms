@@ -1,46 +1,60 @@
 ﻿@using CmsWeb
 @model CmsWeb.Models.CouponModel
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "Coupon";
+  Layout = ViewExtensions2.Layout();
+  ViewBag.Title = "Coupon";
+}
+@section head
+{
+  @Fingerprint.Css("/Content/select2-3.5.2/select2.css")
 }
 @section scripts
 {
-    <script>
-        $(function() {
-            $(".bt").button();
-        });
-    </script>
+  @Fingerprint.Script("/Scripts/select2-3.5.2/select2.min.js")
+  <script>
+    $(function () {
+      $(".bt").button();
+      $("select").select2();
+    });
+  </script>
 }
-    <h2>Coupons</h2>
-    <form action="/Coupon/Create" method="post">
-        <div>
-            <fieldset>
-                <table style="empty-cells:show" cellpadding="5">
-                 <tr>
-                    <td>Registration Type</td>
-                    <td>@Html.DropDownList("regid", Model.OnlineRegs())</td>
-                </tr>
-                <tr>
-                    <td>Name</td>
-                    <td>@Html.TextBox("name")</td>
-                </tr>
-                <tr>
-                    <td>Amount</td>
-                    <td>@Html.TextBox("amount")</td>
-                </tr>
-            @if (User.IsInRole("Admin") || User.IsInRole("Coupon2"))
-            {
-                <tr>
-                    <td>Coupon Code</td>
-                    <td>@Html.TextBox("couponcode")</td>
-                </tr>
-            }
-                <tr>
-                    <td></td><td><input type="submit" class="bt" value="Create Coupon" /></td>
-                </tr>
-                </table>
-            </fieldset>
-        </div>
-        @Helper.AnchorLink("List", "/Coupon/List")
-    </form>
+<h2>Coupons</h2>
+<form action="/Coupon/Create" method="post">
+  <div>
+    <fieldset>
+      <table style="empty-cells:show" cellpadding="5">
+        <tr>
+          <td>Registration Type</td>
+          <td>
+            <select name="regid" id="regid" style="width:500px">
+              @foreach (var i in Model.OnlineRegs())
+              {
+                <option value="@i.Value">@i.Text</option>
+              }
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Name</td>
+          <td>@Html.TextBox("name")</td>
+        </tr>
+        <tr>
+          <td>Amount</td>
+          <td>@Html.TextBox("amount")</td>
+        </tr>
+        @if (User.IsInRole("Admin") || User.IsInRole("Coupon2"))
+        {
+          <tr>
+            <td>Coupon Code</td>
+            <td>@Html.TextBox("couponcode")</td>
+          </tr>
+        }
+        <tr>
+          <td></td>
+          <td><input type="submit" class="bt" value="Create Coupon" /></td>
+        </tr>
+      </table>
+    </fieldset>
+  </div>
+  @Helper.AnchorLink("List", "/Coupon/List")
+</form>
