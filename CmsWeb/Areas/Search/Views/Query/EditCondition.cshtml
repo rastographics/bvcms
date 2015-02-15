@@ -33,7 +33,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-6">
             @Html.EditorForIf(m => m.OrgName, Model.OrgNameVisible)
             @Html.EditorForIf(m => m.OrgStatus, Model.OrgStatusVisible, "DropDown", new { items = OrgSearchModel.StatusIds() })
             @Html.EditorForIf(m => m.OnlineReg, Model.OnlineRegVisible, "DropDown", new { items = OrgSearchModel.RegistrationTypeIds() })

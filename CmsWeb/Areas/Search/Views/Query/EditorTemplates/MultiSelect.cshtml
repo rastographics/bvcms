@@ -5,11 +5,13 @@
 }
 <div class="form-group">
     @Html.LabelFor(m => m)
-    <select name="@ViewData.TemplateInfo.HtmlFieldPrefix" multiple="multiple" style="display:none" class="form-control">
-        @foreach (var o in items)
+    <div class="form-group">
+        <select name="@ViewData.TemplateInfo.HtmlFieldPrefix" multiple="multiple" style="display:none" class="form-control">
+            @foreach (var o in items)
             {
-            <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+                <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
             }
-    </select>
-    @Html.ValidationMessageLabelFor(m => m)
+        </select>
+        @Html.ValidationMessageLabelFor(m => m)
+    </div>
 </div>

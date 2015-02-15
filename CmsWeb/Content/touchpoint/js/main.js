@@ -92,8 +92,7 @@ $.SortableDate = function (s) {
 };
 
 
-/* private functions */
-function initializeDateElements() {
+$.InitializeDateElements = function () {
     var extraSmallDevice = $('.device-xs').is(':visible');
     var smallDevice = $('.device-sm').is(':visible');
     if (extraSmallDevice || smallDevice) {
@@ -111,7 +110,7 @@ function initializeDateElements() {
 $(function () {
 
     // initialize any date fields.
-    initializeDateElements();
+    $.InitializeDateElements();
 
     $('#cleartag').click(function (e) {
         e.preventDefault();

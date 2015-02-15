@@ -6,6 +6,15 @@
 }
 @foreach (var o in Model.GetCodeData())
 {
-    <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+    <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>
+        @if (string.IsNullOrWhiteSpace(o.Text))
+        {
+            <span>&nbsp;</span>
+        }
+        else
+        {
+            @o.Text
+        }
+    </option>
 }
 </select>

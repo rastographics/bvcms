@@ -58,16 +58,13 @@
     });
 
     $.AdjustEditCondition = function (option) {
-        $("#editcondition .date").datepicker({
-            keyboardNavigation: true,
-            orientation: "auto",
-            forceParse: false
-        });
+        $.InitializeDateElements();
 
         $("#editcondition select").multiselect({
             includeSelectAllOption: true,
             enableFiltering: true,
-            enableCaseInsensitiveFiltering: true
+            enableCaseInsensitiveFiltering: true,
+            maxHeight: 200
         });
 
         var h = $("#editcondition").outerHeight();
@@ -291,7 +288,8 @@
             $(sel).replaceWith(ret).ready(function () {
                 $(sel).multiselect({
                     enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true
+                    enableCaseInsensitiveFiltering: true,
+                    maxHeight: 200
                 });
             });
         });
@@ -325,25 +323,23 @@
 
         $('#QueryConditionSelect').on('shown.bs.modal', function () {
             $("input.searchConditions").focus();
+            resetAllConditions();
 
             $("input.searchConditions").on('keyup', _.debounce(function (e) {
-                //split the current value of searchInput
+                //split the current value of search conditions
                 var data = this.value.split(" ");
                 $("#all-conditions thead").hide();
                 //create a jquery object of the rows
-                var jo = $("#all-conditions tr");
+                var conditions = $("#all-conditions tr");
                 if (this.value == "") {
-                    $("#all-conditions thead").show();
-                    jo.show();
-                    $("#all-conditions tbody tr").css("background-color", "#f9f9f9");
-                    $("#all-conditions tbody tr:visible:odd").css("background-color", "#fff");
+                    resetAllConditions();
                     return;
                 }
-                //hide all the rows
-                jo.hide();
+                //hide all the conditions
+                conditions.hide();
 
-                //Recusively filter the jquery object to get results.
-                jo.filter(function (i, v) {
+                //recusively filter the jquery object to get results.
+                conditions.filter(function (i, v) {
                     var $t = $(this);
                     for (var d = 0; d < data.length; ++d) {
                         if ($t.is(":containsi('" + data[d] + "')")) {
@@ -353,8 +349,7 @@
                     return false;
                 }).show();
 
-                $("#all-conditions tbody tr").css("background-color", "#f9f9f9");
-                $("#all-conditions tbody tr:visible:odd").css("background-color", "#fff");
+                restripeConditions();
             }, 180)).focus(function () {
                 this.value = "";
                 $(this).unbind('focus');
@@ -362,6 +357,18 @@
         });
         return false;
     });
+
+    function resetAllConditions() {
+        $("#all-conditions thead").show();
+        $("#all-conditions tr").show();
+        restripeConditions();
+    }
+
+    function restripeConditions()
+    {
+        $("#all-conditions tbody tr").css("background-color", "#f9f9f9");
+        $("#all-conditions tbody tr:visible:odd").css("background-color", "#fff");
+    }
 
     $('#QueryConditionSelect').on('shown.bs.modal', function () {
         $("#condition-tabs").tabdrop();
