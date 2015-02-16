@@ -69,15 +69,28 @@
 
         var h = $("#editcondition").outerHeight();
         var pos = liedit.position();
-        var wid = liedit.width();
-
-        $("#editcondition").css({
-            "left": pos.left,
-            "top": pos.top + 2,
-            "min-width": wid + 20,
-            "z-index": 1032
-        });
-
+        var wid = 0;
+        
+        var xs = $('.device-xs').is(':visible');
+        if (xs) {
+            wid = liedit.width();
+            $("#editcondition").css({
+                "position": "absolute",
+                "left": pos.left,
+                "top": pos.top + 2,
+                "width": "auto",
+                "min-width": wid + 20,
+                "z-index": 1032
+            });
+        } else {
+            $("#editcondition").css({
+                "position": "absolute",
+                "left": pos.left,
+                "top": pos.top + 2,
+                "width": 600,
+                "z-index": 1032
+            });
+        }
         $backdrop.removeClass("hide");
         liedit.animate({ height: h }, 350);
         setTimeout(function () {

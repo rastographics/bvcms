@@ -3,6 +3,7 @@
     @(ViewBag.label != null
         ? Html.Label(ViewBag.label as string) 
         : Html.LabelFor(m => m))
-    @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control"})<label class='help-inline'>@Html.Raw(ViewBag.help)</label>
+    @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control"})
+    <label class="help-block">@Html.Raw(ViewBag.help)</label>
     @Html.ValidationMessageLabelFor(m => m)
 </div>
