@@ -603,11 +603,8 @@
 
     $("a.deleteschedule").live("click", function (ev) {
         ev.preventDefault();
-        var href = $(this).attr("href");
-        if (href) {
-            $(this).parent().remove();
-            $.renumberListItems();
-        }
+        $(this).closest("div.well").remove();
+        $.renumberListItems();
     });
 
     $.renumberListItems = function () {

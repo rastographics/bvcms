@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult AttendanceUpdate(OrgAttendance m)
         {
+            m.Update();
             m.UpdateSchedules();
             DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
             DbUtil.LogActivity("Update SettingsAttendance {0}".Fmt(m.Org.OrganizationName));
