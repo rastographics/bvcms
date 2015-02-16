@@ -43,7 +43,10 @@
             <div class="texture"></div>
             <ul class="list-inline">
                 <li>@ViewExtensions2.DbSetting("nameofchurch", "Name of Church")</li>
-                <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()">@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</a></li>
+                @if (!string.IsNullOrWhiteSpace(ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()))
+                {
+                    <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()">@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</a></li>
+                }
                 <li><i class="fa fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:@DbUtil.AdminMail">@DbUtil.AdminMail</a></li>
             </ul>
         </div>
