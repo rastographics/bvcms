@@ -368,6 +368,7 @@
     <Compile Include="API\ApiSessionModel.cs" />
     <Compile Include="API\ApiSessionResult.cs" />
     <Compile Include="API\ApiSessionStatus.cs" />
+    <Compile Include="DbUtil\ModelViewModel.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
