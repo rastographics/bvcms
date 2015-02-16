@@ -1,3 +1,4 @@
+@import "variables.less";
 html {
     position: relative;
     min-height: 100%;
@@ -45,9 +46,14 @@ body {
     }
 }
 
-label.error {
+label.field-validation-valid {
+    display: block !important;
+}
+
+label.error,
+label.field-validation-error {
     font-weight: 400;
-    .text-emphasis-variant(@state-danger-text);
+    color: @global-brand-danger;
 }
 
 div.truncate {
