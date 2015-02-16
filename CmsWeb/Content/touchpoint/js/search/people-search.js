@@ -97,9 +97,14 @@
 
     $('body').on('click', 'a.taguntag', function (ev) {
         ev.preventDefault();
+        $.block();
         var a = $(this);
         $.post('/Tags/ToggleTag/' + $(this).attr('value'), null, function (ret) {
-            $(ev.target).text(ret);
+            var link = $(ev.target).closest('a');
+            link.removeClass('btn-default').removeClass('btn-success');
+            link.addClass(ret == "Remove" ? "btn-default" : "btn-success");
+            link.html(ret == "Remove" ? "<i class='fa fa-tag'></i> Remove" : "<i class='fa fa-tag'></i> Add");
+            $.unblock();
         });
         return false;
     });
