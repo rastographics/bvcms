@@ -3900,6 +3900,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.OrgCheckedCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrgCheckedCount(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "groupselect", DbType="varchar")] string groupselect,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                groupselect,
+                pid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.Age", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? Age(
@@ -4421,22 +4437,6 @@ namespace CmsData
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 zipcode,
                 country
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.OrgCheckedCount", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? OrgCheckedCount(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "groupselect", DbType="varchar")] string groupselect,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                groupselect,
-                pid
                 ).ReturnValue));
 		}
 
