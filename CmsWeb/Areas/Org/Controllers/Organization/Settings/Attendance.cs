@@ -2,6 +2,7 @@ using System;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Code;
 using UtilityExtensions;
 using CmsWeb.Models;
 
@@ -12,14 +13,21 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Attendance(int id)
         {
-            var m = new OrganizationModel(id);
-            return PartialView("Settings/Attendance", m.OrgAttendance);
+            var m = new OrgAttendance(id);
+            return PartialView("Settings/Attendance", m);
+        }
+        [HttpPost]
+        public ActionResult AttendanceHelpToggle(int id)
+        {
+            DbUtil.Db.ToggleUserPreference("ShowAttendanceHelp");
+            var m = new OrgAttendance(id);
+            return PartialView("Settings/Attendance", m);
         }
         [HttpPost]
         public ActionResult AttendanceEdit(int id)
         {
-            var m = new OrganizationModel(id);
-            return PartialView("Settings/AttendanceEdit", m.OrgAttendance);
+            var m = new OrgAttendance(id);
+            return PartialView("Settings/AttendanceEdit", m);
         }
         [HttpPost]
         public ActionResult AttendanceUpdate(OrgAttendance m)

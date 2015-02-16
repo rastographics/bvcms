@@ -142,6 +142,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\LumenWorks.Framework.IO.3.8.0\lib\net20\LumenWorks.Framework.IO.dll</HintPath>
     </Reference>
+    <Reference Include="MarkdownDeep">
+      <HintPath>..\packages\MarkdownDeep.NET.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -321,6 +324,7 @@
     <Compile Include="Areas\Org\Controllers\Other\OrgSearchController.cs" />
     <Compile Include="Areas\Org\Controllers\Other\RegSettingController.cs" />
     <Compile Include="Areas\Org\Controllers\Other\SearchDivisionsController.cs" />
+    <Compile Include="Areas\Org\Models\Organization\OrgGeneral.cs" />
     <Compile Include="Areas\Org\Models\Organization\OrgAttendance.cs" />
     <Compile Include="Areas\Org\Models\Organization\OrgMain.cs" />
     <Compile Include="Areas\Org\Models\Other\MeetingModel.cs" />
@@ -893,7 +897,6 @@
     <Content Include="Areas\Org\Views\Organization\People.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Meetings.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabGeneral.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabRegistration.cshtml" />
     <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.min.js.map">
       <DependentUpon>bootstrap-datetimepicker.min.js</DependentUpon>

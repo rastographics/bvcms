@@ -594,6 +594,7 @@
             $.post(href, null, function (ret) {
                 $("#schedules").append(ret).ready(function () {
                     $.InitFunctions.timepicker();
+                    $.renumberListItems();
                 });
             });
         }

@@ -107,8 +107,12 @@ namespace UtilityExtensions
         public static string FormatTime(this DateTime? tm)
         {
             if (tm.HasValue)
-                return tm.Value.ToString("h:mm tt");
+                return tm.Value.FormatTime();
             return "";
+        }
+        public static string FormatTime(this DateTime tm)
+        {
+            return tm.ToString("h:mm tt");
         }
         public static string ToString2(this int? i, string fmt)
         {

@@ -1,7 +1,7 @@
-﻿@using CmsWeb
+﻿@using UtilityExtensions
 @model CmsWeb.Models.ScheduleInfo
 <tr>
-  <td>@Html.DisplayFor(m => m.SchedDay)</td>
-  <td>@Html.DisplayFor(m => m.Time, "Time")</td>
-  <td>@Html.DisplayFor(m => m.AttendCredit)</td>
+  <td>@Model.SchedDay.ToString()</td>
+  <td>@Model.Time.FormatTime()</td>
+  <td>@Model.AttendCredit.ToString()</td>
 </tr>

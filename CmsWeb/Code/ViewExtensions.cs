@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Script.Serialization;
 using ExpressionHelper = System.Web.Mvc.ExpressionHelper;
+using MarkdownDeep;
 
 namespace CmsWeb
 {
@@ -808,6 +809,17 @@ namespace CmsWeb
         public static HtmlString LoDash()
         {
             return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
+        }
+
+        public static HtmlString Markdown(this HtmlHelper helper, string text)
+        {
+            var md = new Markdown();
+            string output = md.Transform(text.Trim());
+            return new HtmlString(output);
+        }
+        public static bool ShowOrgSettingsHelp(this HtmlHelper helper)
+        {
+            return DbUtil.Db.UserPreference("ShowOrgSettingsHelp", "true") == "true";
         }
 
         public static string Layout()

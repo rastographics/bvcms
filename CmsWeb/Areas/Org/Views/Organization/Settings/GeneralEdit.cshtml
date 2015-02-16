@@ -1,11 +1,22 @@
-﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
-<form class="form form-horizontal ajax">
-    <br/>
+﻿@model CmsWeb.Areas.Org.Models.OrgGeneral
+<form class="form form-horizontal ajax margin-top">
     @Html.Hidden("Id", Model.Id)
     @FormAction()
-    <ul style="list-style: none; margin-left: 5px;">
-        @Html.EditorFor(m => m, "TabGeneral")
-    </ul>
+    @Html.EditorFor(m => m.Location)
+    @Html.EditorFor(m => m.PendingLoc)
+    @Html.EditorFor(m => m.Description)
+    @Html.EditorFor(m => m.EntryPoint)
+    @Html.EditorFor(m => m.PublishDirectory)
+    @Html.EditorFor(m => m.GradeAgeStart)
+    @Html.EditorFor(m => m.Gender)
+    @Html.EditorFor(m => m.PhoneNumber)
+    @Html.EditorFor(m => m.IsRecreationTeam)
+    @Html.EditorFor(m => m.IsMissionTrip)
+    @Html.EditorFor(m => m.NoCreditCards)
+    @if (User.IsInRole("Admin"))
+    {
+      @Html.EditorFor(m => m.LimitToRole)
+    }
     @FormAction()
 </form>
 @helper FormAction()

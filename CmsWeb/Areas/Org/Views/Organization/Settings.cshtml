@@ -4,67 +4,42 @@
     <a href="#General" data-toggle="tab">General</a>
   </li>
   <li>
-    <a href="#Attendance" data-toggle="tab">Attendance</a>
+    <a href="#Attendance" data-toggle="tab" class="ajax">Attendance</a>
   </li>
   <li>
-    <a href="#Registration" data-toggle="tab">Registration</a>
+    <a href="#Registration" data-toggle="tab" class="ajax">Registration</a>
   </li>
   <li id="Fees-tab">
-    <a href="#Fees" data-toggle="tab">Fees</a>
+    <a href="#Fees" data-toggle="tab" class="ajax">Fees</a>
   </li>
   <li id="Questions-tab">
-    <a href="#Questions" data-toggle="tab">Questions</a>
+    <a href="#Questions" data-toggle="tab" class="ajax">Questions</a>
   </li>
   <li id="Messages-tab">
-    <a href="#Messages" data-toggle="tab">Messages</a>
+    <a href="#Messages" data-toggle="tab" class="ajax">Messages</a>
   </li>
   <li>
     <a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a>
   </li>
 </ul>
 <div class="tab-content">
-  <div id="General" class="tab-pane settings active">
-    @Html.Partial("Settings/General", Model)
+  <div id="General" class="tab-pane settings active" data-link="/Organization/General">
+    @Html.Partial("Settings/General", Model.OrgGeneral)
   </div>
-  <div id="Attendance" class="tab-pane settings">
-    @Html.Partial("Settings/Attendance", Model.OrgAttendance)
+  <div id="Attendance" class="tab-pane settings" data-link="/Organization/Attendance">
+    @Helper.HiddenId("Id", Model.Id)
   </div>
-  <div id="Registration" class="tab-pane settings">
-    @Html.Partial("Settings/Registration", Model.RegSettings)
+  <div id="Registration" class="tab-pane settings" data-link="/Organization/Registration">
+    @Helper.HiddenId("Id", Model.Id)
   </div>
-  <div id="Fees" class="tab-pane settings">
-    @Html.Partial("Settings/Fees", Model.RegSettings)
+  <div id="Fees" class="tab-pane settings" data-link="/Organization/Fees">
+    @Helper.HiddenId("Id", Model.Id)
   </div>
-  <div id="Questions" class="tab-pane settings">
-    @Html.Partial("Settings/Questions", Model.RegSettings)
+  <div id="Questions" class="tab-pane settings" data-link="/Organization/Questions">
+    @Helper.HiddenId("Id", Model.Id)
   </div>
-  <div id="Messages" class="tab-pane settings no0">
-    @Html.Partial("Settings/Messages", Model.RegSettings)
+  <div id="Messages" class="tab-pane settings no0" data-link="/Organization/Messages">
+    @Helper.HiddenId("Id", Model.Id)
   </div>
   <div class="tab-pane ajax" id="extravalues" data-link="/ExtraValue/Display/Organization/Standard/@Model.Id"></div>
-@*  <div id="ExtraValues" class="tab-pane settings">*@
-@*    <table id="extras" class="@ViewExtensions2.GridClass">*@
-@*      <thead>*@
-@*        <tr>*@
-@*          <td>*@
-@*            Field*@
-@*          </td>*@
-@*          <td>*@
-@*            Value*@
-@*          </td>*@
-@*          <td>*@
-@*            @if (User.IsInRole("Edit"))*@
-@*            {*@
-@*              <a id="newextravalue" href="#">*@
-@*                <img src="/Content/images/plus1.png" />*@
-@*              </a>*@
-@*            }*@
-@*          </td>*@
-@*        </tr>*@
-@*      </thead>*@
-@*      <tbody>*@
-@*        @Html.Partial("Settings/ExtrasGrid", Model.Org)*@
-@*      </tbody>*@
-@*    </table>*@
-@*  </div>*@
 </div>

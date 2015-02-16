@@ -1,8 +1,11 @@
-﻿@model CmsWeb.Areas.Org.Models.OrgAttendance
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.OrgAttendance
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp") == "true";
+}
 <form class="form form-horizontal non-modal ajax span12">
-  <br />
   @FormAction()
-  @Html.EditorFor(m => m, "Schedules")
+  @Html.EditorFor(m => m.Schedules, "Schedules")
   @Html.EditorFor(m => m.NotWeekly)
   @Html.EditorFor(m => m.AllowAttendOverlap)
   @Html.EditorFor(m => m.AllowAttendOverlap)

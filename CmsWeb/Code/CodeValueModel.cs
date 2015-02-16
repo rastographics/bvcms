@@ -67,11 +67,11 @@ namespace CmsWeb.Code
 
         public static IEnumerable<CodeValueItem> AttendCommitmentCodes()
         {
-            yield return new CodeValueItem{ Id = AttendCommitmentCode.Attending, Code = "AT", Value = "Attending" };
-            yield return new CodeValueItem{ Id = AttendCommitmentCode.FindSub, Code = "FS", Value = "Find Sub" };
-            yield return new CodeValueItem{ Id = AttendCommitmentCode.SubFound, Code = "SF", Value = "Sub Found" };
-            yield return new CodeValueItem{ Id = AttendCommitmentCode.Substitute, Code = "SB", Value = "Substitute" };
-            yield return new CodeValueItem{ Id = AttendCommitmentCode.Regrets, Code = "RG", Value = "Regrets" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.Attending, Code = "AT", Value = "Attending" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.FindSub, Code = "FS", Value = "Find Sub" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.SubFound, Code = "SF", Value = "Sub Found" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.Substitute, Code = "SB", Value = "Substitute" };
+            yield return new CodeValueItem { Id = AttendCommitmentCode.Regrets, Code = "RG", Value = "Regrets" };
         }
 
         public static IEnumerable<CodeValueItem> AttendCredits()
@@ -406,16 +406,27 @@ namespace CmsWeb.Code
         {
             return new SelectList(new[]
             {
-                new {Text = "Sun", Value = "0"},
-                new {Text = "Mon", Value = "1"},
-                new {Text = "Tue", Value = "2"},
-                new {Text = "Wed", Value = "3"},
-                new {Text = "Thu", Value = "4"},
-                new {Text = "Fri", Value = "5"},
-                new {Text = "Sat", Value = "6"},
-                new {Text = "Any", Value = "10"},
+                new {Text = "Sunday", Value = "0"},
+                new {Text = "Monday", Value = "1"},
+                new {Text = "Tueday", Value = "2"},
+                new {Text = "Wedday", Value = "3"},
+                new {Text = "Thuday", Value = "4"},
+                new {Text = "Friday", Value = "5"},
+                new {Text = "Saturday", Value = "6"},
+                new {Text = "Any Day", Value = "10"},
             }, "Value", "Text");
         }
+
+        public SelectList PublishDirectoryList()
+        {
+            return new SelectList(new[]
+            {
+                new {Value = "0", Text = "No Directory"},
+                new {Value = "1", Text = "Yes Publish Directory"},
+                new {Value = "2", Text = "Yes, Publish Family Directory"},
+            }, "Value", "Text");
+        }
+
         public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
         public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
         public SelectList ContactTypeSelectList() { return ContactTypeCodes().ToSelect(); }
@@ -765,12 +776,12 @@ namespace CmsWeb.Code
         public static IEnumerable<CodeValueItem> StatusFlags()
         {
             var sf = from ms in DbUtil.Db.ViewStatusFlagLists.ToList()
-                   where ms.RoleName == null || HttpContext.Current.User.IsInRole(ms.RoleName)
-                   select new CodeValueItem
-                   {
-                       Code = ms.Flag,
-                       Value = ms.Name
-                   };
+                     where ms.RoleName == null || HttpContext.Current.User.IsInRole(ms.RoleName)
+                     select new CodeValueItem
+                     {
+                         Code = ms.Flag,
+                         Value = ms.Name
+                     };
             return sf.OrderBy(ss => ss.Value);
         }
 

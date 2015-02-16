@@ -1,14 +1,18 @@
 ﻿@model bool
 <div class="control-group @ViewBag.hide">
-    @if (((string) ViewBag.label).HasValue())
+  @if (((string)ViewBag.label).HasValue())
+  {
+    @Html.LabelFor(m => m, ((string)ViewBag.label), new { @class = "control-label" })
+  }
+  else
+  {
+    @Html.LabelFor(m => m, new { @class = "control-label" })
+  }
+  <div class="controls">
+    @Html.CheckBoxFor(m => m)<label class='help-inline'>@Html.Raw(ViewBag.help)</label>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
     {
-        @Html.LabelFor(m => m, ((string)ViewBag.label), new {@class = "control-label"})
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
     }
-    else
-    {
-        @Html.LabelFor(m => m, new {@class = "control-label"})
-    }
-    <div class="controls">
-        @Html.CheckBoxFor(m => m)<label class='help-inline'>@Html.Raw(ViewBag.help)</label>
-    </div>
+  </div>
 </div>

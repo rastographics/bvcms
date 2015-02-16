@@ -1,19 +1,35 @@
-﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
-<form class="form form-horizontal non-modal ajax span12">
-    <br/>
-    @Html.Hidden("Id", Model.Id)
-    @FormAction()
-    <ul class="noedit" style="list-style: none; margin-left: 5px;">
-        @Html.EditorFor(m => m, "TabGeneral")
-    </ul>
-    @FormAction()
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.OrgGeneral
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowGeneralHelp") == "true";
+}
+<form class="form form-horizontal non-modal ajax span12 margin-top">
+  @Html.Hidden("Id", Model.Id)
+  @FormAction()
+  @Html.DisplayFor(m => m.Location)
+  @Html.DisplayFor(m => m.PendingLoc)
+  @Html.DisplayFor(m => m.Description)
+  @Html.DisplayFor(m => m.EntryPoint)
+  @Html.DisplayFor(m => m.PublishDirectory)
+  @Html.DisplayFor(m => m.GradeAgeStart)
+  @Html.DisplayFor(m => m.Gender)
+  @Html.DisplayFor(m => m.PhoneNumber)
+  @Html.DisplayFor(m => m.IsRecreationTeam)
+  @Html.DisplayFor(m => m.IsMissionTrip)
+  @Html.DisplayFor(m => m.NoCreditCards)
+  @if (User.IsInRole("Admin"))
+  {
+    @Html.DisplayFor(m => m.LimitToRole)
+  }
+  @FormAction()
 </form>
 @helper FormAction()
 {
-   if (User.IsInRole("Edit"))
-   {
-       <div class="pull-right">
-           <a href="/Organization/GeneralEdit" class="btn ajax pull-right">Edit</a>
-       </div>
-   }
+  <div class="pull-right">
+    <a href="/Organization/GeneralHelpToggle/@Model.Id" class="btn ajax btn-info">Toggle Help</a>
+    @if (User.IsInRole("Edit"))
+    {
+      <a href="/Organization/GeneralEdit" class="btn ajax pull-right">Edit</a>
+    }
+  </div>
 }

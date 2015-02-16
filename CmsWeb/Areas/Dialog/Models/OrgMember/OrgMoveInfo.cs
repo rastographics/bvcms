@@ -19,7 +19,7 @@ namespace CmsWeb.Models
                 if (orgSchedule == null)
                     return "{0} &bull; {1}".Fmt(Program, Division);
                 var si = new ScheduleInfo(orgSchedule);
-                return "{0} &bull; {1} &bull; {2}, {3}".Fmt(Program, Division, si.DisplayDay, si.Time);
+                return "{0} &bull; {1} &bull; {2}, {3}".Fmt(Program, Division, si.SchedDay, si.Time);
             }
         }
     }

@@ -22,33 +22,21 @@ namespace CmsWeb.Areas.Org.Models
                     Org = DbUtil.Db.LoadOrganizationById(value);
             }
         }
+
+        public OrgAttendance()
+        {
+        }
+
+        public OrgAttendance(int id)
+        {
+            Id = id;
+            this.CopyPropertiesFrom(Org);
+        }
         public void Update()
         {
             this.CopyPropertiesTo(Org);
             DbUtil.Db.SubmitChanges();
         }
-        public List<ScheduleInfo> Schedules
-        {
-            get
-            {
-                if (schedules == null && Id != 0)
-                {
-                    var q = from sc in DbUtil.Db.OrgSchedules
-                        where sc.OrganizationId == Id
-                        select sc;
-                    var u = from s in q
-                        orderby s.Id
-                        select new ScheduleInfo(s);
-                    schedules = u.ToList();
-                }
-                if (schedules == null)
-                    throw new Exception("missing schedules");
-                return schedules;
-            }
-        }
-        private List<ScheduleInfo> schedules;
-
-        public string Schedule { get { return Schedules.Count > 0 ? schedules[0].Display : "None"; }}
 
         public IEnumerable<SelectListItem> AttendCreditList()
         {
@@ -107,34 +95,59 @@ namespace CmsWeb.Areas.Org.Models
             return q;
         }
 
-        [Display(Prompt="Does NOT meet weekly", 
+        [Display(Description = @"
+This is where you indicate the weekly schedule. You can have mutiple schedules.
+The top one is the default that shows up on lists.
+Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for 100% credit.
+")]
+        public List<ScheduleInfo> Schedules
+        {
+            get
+            {
+                if (schedules == null && Id != 0)
+                {
+                    var q = from sc in DbUtil.Db.OrgSchedules
+                        where sc.OrganizationId == Id
+                        select sc;
+                    var u = from s in q
+                        orderby s.Id
+                        select new ScheduleInfo(s);
+                    schedules = u.ToList();
+                }
+                if (schedules == null)
+                    throw new Exception("missing schedules");
+                return schedules;
+            }
+        }
+        private List<ScheduleInfo> schedules;
+
+
+        [Display(Name="Does NOT meet weekly", 
             Description = @"
-Check this if the org does not meet weekly. 
-Leave unchecked for weekly meetings.
+**Check** this if the org does not meet weekly. 
+Leave **unchecked** for weekly meetings.
 ")]
         public bool NotWeekly { get; set; }
 
-        [Display(Prompt="Allow Attendance Overlap", 
+        [Display(Name="Allow Attendance Overlap", 
             Description = @"
 This allows persons to attend two different orgs that start at the same time.
 e.g. a meeting that spans several hours vs another that is one hour.
 ")]
         public bool AllowAttendOverlap { get; set; }
 
-        [Display(Prompt = "Allow Self Check-In", 
+        [Display(Name = "Allow Self Check-In", 
             Description = @"
 Causes this meeting to show up on the Touchscreen Checkin.
 ")]
         public bool CanSelfCheckin { get; set; }
 
-        [Display(Prompt="Suspend Check-In", 
-            Description = @"
+        [Display(Description = @"
 Causes this meeting to show up only when the magic button is pressed
 ")]
         public bool SuspendCheckin { get; set; }  
 
-        [Display(Prompt="Allow Non-Campus Check-In", 
-            Description = @"
+        [Display(Description = @"
 If you are using self-checkin and you have multiple campuses, 
 and you have an Organization (that is assigned a campus) 
 and you want that organization to display as available for checkin to anyone, 
@@ -147,47 +160,45 @@ they will display without this box being checked.
 ")]
         public bool AllowNonCampusCheckin { get; set; }
 
-        [Display(Prompt="Offsite Trip", 
+        [Display(Name="Offsite Trip", 
             Description = @"
 This causes any absents during the period of an offsite trip start and end dates 
 to not be counted negatively for attendance purposes.
 ")]
         public bool OrgOffsite { get; set; }
 
-        [Display(Prompt="No security label required", 
+        [Display(Name="No security label required", 
             Description = @"
 Used for when children are old enough 
 to not need a security label to be picked up.
 ")]
         public bool NoSecurityLabel { get; set; }
 
-        [Display(Prompt="Number of CheckIn Labels", 
+        [Display(Name="Number of CheckIn Labels", 
             Description = @"
 Default is 1, use 0 if no labels needed.
 ")]
         public int? NumCheckinLabels { get; set; }
 
-        [Display(Prompt="Number of Worker CheckIn Labels", 
+        [Display(Name="Number of Worker CheckIn Labels", 
             Description = @"
 Allows workers to get 1 or 0 labels when checking in.
 ")]
         public int? NumWorkerCheckInLabels { get; set; }
 
-        [Display(Prompt="First Meeting Date", 
-            Description = @"
+        [Display(Description = @"
 Causes people who visited prior to this date to drop off the recent visitor list.
 For when visitors promote to the next grade.
 Also used to display the meeting dates on 'User Chooses Class' type registrations.
 ")]
         public DateTime? FirstMeetingDate { get; set; }
 
-        [Display(Prompt="Last Meeting Date", 
-            Description = @"
+        [Display(Description = @"
 Used to display the meeting dates on 'User Chooses Class' type registrations.
 ")]
         public DateTime? LastMeetingDate { get; set; }
 
-        [Display(Prompt="Rollsheet Guest Weeks", 
+        [Display(Name="Rollsheet Guest Weeks", 
             Description = @"
 Default is 3 weeks.
 Guests will drop off the rollsheet or checkin screen if they haven't visited in this number of weeks.
@@ -195,21 +206,20 @@ Some teachers prefer them to show up for a long time.
 ")]
         public int? RollSheetVisitorWks { get; set; }
 
-        [Display(Prompt="Consecutive Absents Threshold", 
-            Description = @"
+        [Display(Description = @"
 Default is 2 weeks.
 Number of consequtive absents that causes person to show on Recent Absents report.
 ")]
         public int? ConsecutiveAbsentsThreshold { get; set; }
 
-        [Display(Prompt="Start Birthday", 
+        [Display(Name="Start Birthday", 
             Description = @"
 Used on Touchscreen Checkin for when a guest needs to choose a class.
 Also used to prevent someone joining an organization during registration if they are outside the birthday range.
 ")]
         public DateTime? BirthDayStart { get; set; }
 
-        [Display(Prompt="End Birthday", 
+        [Display(Name="End Birthday", 
             Description = @"
 Used on Touchscreen Checkin for when a guest needs to choose a class.
 Also used to prevent someone joining an organization during registration if they are outside the birthday range.

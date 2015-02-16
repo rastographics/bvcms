@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsWeb.Code;
 using UtilityExtensions;
 using CmsData;
@@ -25,19 +23,12 @@ namespace CmsWeb.Models
             sc = new OrgSchedule();
         }
 
+        [DisplayName("Schedule Number")]
         public int Id
         {
             get { return sc.Id; }
             set { sc.Id = value; }
         }
-
-        public CodeInfo SchedDay { get; set; }
-//        public int SchedDay
-//        {
-//            get { return sc.SchedDay ?? 0; }
-//            set { sc.SchedDay = value; }
-//        }
-
         public DateTime Time
         {
             get
@@ -48,35 +39,8 @@ namespace CmsWeb.Models
             }
             set { sc.SchedTime = value; }
         }
-
+        public CodeInfo SchedDay { get; set; }
         public CodeInfo AttendCredit { get; set; }
-//        public int AttendCreditId
-//        {
-//            get { return sc.AttendCreditId ?? 1; }
-//            set { sc.AttendCreditId = value; }
-//        }
-
-
-
-        public string DisplayAttendCredit
-        {
-            get
-            {
-                return (from i in CodeValueModel.AttendCredits()
-                        where i.Id == AttendCredit.Value.ToInt()
-                        select i.Value).Single();
-            }
-        }
-
-        public string DisplayDay
-        {
-            get
-            {
-                return (from i in CodeValueModel.DaysOfWeek()
-                        where i.Value == SchedDay.ToString()
-                        select i.Text).SingleOrDefault();
-            }
-        }
 
         public string Display
         {
@@ -84,7 +48,7 @@ namespace CmsWeb.Models
             {
                 if (sc == null)
                     return "None";
-                return "{0}, {1}, {2}".Fmt(DisplayDay, Time, DisplayAttendCredit);
+                return "{0}, {1}, {2}".Fmt(SchedDay, Time.FormatTime(), AttendCredit);
             }
         }
 
@@ -116,7 +80,7 @@ namespace CmsWeb.Models
                     if (dt > Util.Now.Date)
                         dt = dt.AddDays(-7);
                 }
-                return dt.Add(Time.ToDate().Value.TimeOfDay);
+                return dt.Add(Time.TimeOfDay);
             }
         }
 

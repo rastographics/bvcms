@@ -26,7 +26,17 @@ namespace CmsWeb.Areas.Org.Models
             populate(id);
         }
         public OrgMain OrgMain { get; set; }
-        public OrgAttendance OrgAttendance { get; set; }
+
+        private OrgGeneral orgGeneral;
+        public OrgGeneral OrgGeneral
+        {
+            get
+            {
+                if(orgGeneral == null && Id.HasValue)
+                    orgGeneral = new OrgGeneral(Id.Value);
+                return orgGeneral;
+            }
+        }
 
         private void populate(int id)
         {
@@ -34,11 +44,7 @@ namespace CmsWeb.Areas.Org.Models
             DbUtil.Db.CurrentOrg.Id = id;
             GroupSelect = GroupSelectCode.Member;
             IsVolunteerLeader = VolunteerLeaderInOrg(Id);
-            OrgAttendance = new OrgAttendance() { Org = Org };
-            OrgAttendance.CopyPropertiesFrom(Org);
-            OrgMain = new OrgMain() { Org = Org };
-            OrgMain.CopyPropertiesFrom(Org);
-            OrgMain.Schedule = OrgAttendance.Schedule;
+            OrgMain = new OrgMain(Org);
         }
         public static bool VolunteerLeaderInOrg(int? orgid)
         {
@@ -110,7 +116,6 @@ namespace CmsWeb.Areas.Org.Models
             return CodeValueModel.ConvertToSelect(cv.RegistrationTypes(), "Id");
         }
         private Settings _RegSettings;
-
         public Settings RegSettings
         {
             get

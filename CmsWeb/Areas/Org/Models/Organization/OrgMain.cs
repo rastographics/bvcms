@@ -1,16 +1,15 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
     public class OrgMain
     {
         public Organization Org;
-        public int Id 
+        public int Id
         {
             get { return Org != null ? Org.OrganizationId : 0; }
             set
@@ -19,7 +18,18 @@ namespace CmsWeb.Areas.Org.Models
                     Org = DbUtil.Db.LoadOrganizationById(value);
             }
         }
-        public int? LeaderId { get { return Org.LeaderId; }  }
+
+        public OrgMain(Organization org)
+        {
+            Org = org;
+            this.CopyPropertiesFrom(Org);
+        }
+
+        public OrgMain()
+        {
+
+        }
+        public int? LeaderId { get { return Org.LeaderId; } }
         public string LeaderName { get { return Org.LeaderName; } }
 
         public string OrganizationName { get; set; }
@@ -30,8 +40,20 @@ namespace CmsWeb.Areas.Org.Models
         public CodeInfo OrganizationStatus { get; set; }
         public bool? IsBibleFellowshipOrg { get; set; }
 
-        [NoUpdate]
-        public string Schedule { get; set; }
+        private string _schedule;
+        public string Schedule
+        {
+            get
+            {
+                if (_schedule.HasValue()) 
+                    return _schedule;
+                var sch = (from sc in DbUtil.Db.OrgSchedules
+                    where sc.OrganizationId == Id
+                    orderby sc.Id
+                    select sc).FirstOrDefault();
+                return _schedule = sch == null ? "None" : (new ScheduleInfo(sch)).Display;
+            }
+        }
 
         public void Update()
         {

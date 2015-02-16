@@ -840,6 +840,12 @@ namespace CmsData
             d[pref] = null;
             return def;
         }
+
+        public void ToggleUserPreference(string pref)
+        {
+            var value = UserPreference(pref);
+            SetUserPreference(pref, value == "true" ? "false" : "true");
+        }
         public void SetUserPreference(string pref, object value)
         {
             if (UserPreference(pref) == value.ToString())
