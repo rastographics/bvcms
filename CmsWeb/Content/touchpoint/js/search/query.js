@@ -117,9 +117,9 @@
 
     $('body').on('click', '#SaveCondition', function () {
         $.postQuery('SaveCondition', function (ret) {
-            if (ret.startsWith("<fieldset"))
+            if (ret.startsWith('<div id="condition-edit">'))
                 $("#editcondition .condition-modal-content").html(ret).ready(function () {
-                    $.InitCodeValues();
+                    $.AdjustEditCondition();
                 });
             else {
                 $.HideEditCondition();
@@ -134,7 +134,7 @@
         return false;
     });
 
-    $('body').on('keydown', '#editForm input', function (event) {
+    $('body').on('keydown', '#editcondition input', function (event) {
         if (event.keyCode == 13) {
             event.preventDefault();
             $('#SaveCondition').click();
