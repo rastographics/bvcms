@@ -873,6 +873,7 @@
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\touchpoint\src\less\box.less" />
     <Content Include="Content\touchpoint\src\less\search-builder.less" />
+    <None Include="Properties\PublishProfiles\test2.pubxml" />
     <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js" />
