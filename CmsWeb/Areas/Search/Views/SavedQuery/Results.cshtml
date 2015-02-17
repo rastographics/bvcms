@@ -1,28 +1,33 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryModel
 <div id="results">
-<div class="pagination pagination-mini">
-    @Html.Partial("Pager3", Model.Pager)
-</div>
-<table id="saved-query" class="table table-bordered table-condensed not-wide">
-    <thead>
-        <tr>
-            <th>@Model.Pager.SortLink("Description")</th>
-            <th>@Model.Pager.SortLink("Owner")</th>
-            <th>@Model.Pager.SortLink("Public")</th>
-            <th>@Model.Pager.SortLink("Last Run")</th>
-            <th>@Model.Pager.SortLink("Count")</th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var r in Model.ViewList())
-        {
-            Html.RenderPartial("Row", r);
-        }
-    </tbody>
-</table>
-<div class="pagination pagination-mini">
-    @Html.Partial("Pager3", Model.Pager)
-</div>
+    @Html.Partial("PagerTop", Model.Pager)
+    <div class="table-responsive">
+        <table class="table table-striped" id="resultsTable">
+            <thead>
+                <tr>
+                    <th><a href="#" class="sortable">Description</a></th>
+                    <th><a href="#" class="sortable">Owner</a></th>
+                    <th class="text-center"><a href="#" class="sortable">Public</a></th>
+                    <th><a href="#" class="sortable">Last Run</a></th>
+                    <th class="text-right"><a href="#" class="sortable">Count</a></th>
+                    <th colspan="2" style="width: 100px;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr><td colspan="7">No matching records.</td></tr>
+                }
+                @foreach (var r in Model.ViewList())
+                {
+                    Html.RenderPartial("Row", r);
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerBottom", Model.Pager)
+    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+    @Html.Hidden("Page", Model.Pager.Page)
+    @Html.Hidden("Sort", Model.Pager.Page)
+    @Html.Hidden("Direction", Model.Pager.Page)
 </div>

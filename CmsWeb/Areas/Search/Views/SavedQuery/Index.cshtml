@@ -1,39 +1,69 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryModel
 @{
-    ViewBag.Title = "SavedQuery";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.Title = "Saved Search Queries";
+    ViewBag.PageHeader = "Saved Search Queries";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form id="form-saved-query">
+                    <div class="well">
+                        <div class="row">
+                            <div class="col-lg-6 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <label for="SearchParameters_Organization">Description / Owner</label>
+                                    @Html.TextBoxFor(m => m.SearchQuery, new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(m => m.OnlyMine) Only my queries?
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(m => m.PublicOnly) Public only?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-6">
+                                <div class="form-group">
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(m => m.ScratchPadsOnly) Scratch pads only?
+                                        </label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label>
+                                            @Html.CheckBoxFor(m => m.StatusFlagsOnly) Status flags only?
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-4">
+
+                            </div>
+                            <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                                <div class="pull-right">
+                                    <a id="filter-link" href="/SavedQuery/Results" class="btn btn-primary">Filter</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.Partial("Results", Model)
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Search/savedQueryList.js")
-}
-<div class="container">
-    <form id="form-saved-query" class="ajax form-horizontal" data-results="#results">
-        <div id="saved-query-search" class="container table">
-            <fieldset>
-                <legend>Saved Search Queries</legend>
-                <div class="inline">
-                    <div>
-                        Search for part of the description<br />
-                        or the owner's username
-                    </div>
-                    @Html.TextBoxFor(m => m.SearchQuery)
-                </div>
-                <div class="inline left-gutter align-top">
-                    <div>@Html.CheckBoxFor(m => m.OnlyMine) Only Mine</div>
-                    <div>@Html.CheckBoxFor(m => m.PublicOnly) Public Only</div>
-                    <div>@Html.CheckBoxFor(m => m.ScratchPadsOnly) Scratch Pads Only</div>
-                    <div>@Html.CheckBoxFor(m => m.StatusFlagsOnly) Status Flags Only</div>
-                </div>
-                <div class="inline left-gutter"><a id="filter-link" href="/SavedQuery/Results" class="btn btn-primary ajax">Filter</a> </div>
-            </fieldset>
-        </div>
-        <div id="results">
-            @Html.Partial("Results", Model)
-        </div>
-    </form>
-</div>
-@section PopupsPlaceholder
-{
-    <form id='edit-saved-query-dialog' class='modal fade hide validate ajax form-horizontal' method='POST' data-backdrop='static'></form>
+    @Fingerprint.Script("/Content/touchpoint/js/search/saved-query-list.js")
 }
