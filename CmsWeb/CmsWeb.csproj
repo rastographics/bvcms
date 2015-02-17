@@ -802,66 +802,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
-    <Content Include="Areas\Org\Views\SearchDivisions\Index.cshtml" />
-    <Content Include="Areas\Org\Views\SearchDivisions\ModalDialog.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Dialogs.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\DialogAddMES.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\DivisionList.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\NotifyList2.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\OrgPickList2.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\ReGenPaylinks.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\SmallGroups.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Other\VolunteerCommitmentsSummary.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Attendance.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\AttendanceEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\ExtrasGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Fees.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\FeesEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\General.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\GeneralEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Main.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\MainEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Messages.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\MessagesEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Questions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\QuestionsEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Registration.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\RegistrationEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\People.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Meetings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabRegistration.cshtml" />
-    <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.min.js.map">
-      <DependentUpon>bootstrap-datetimepicker.min.js</DependentUpon>
-    </Content>
-    <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Process.cshtml" />
-    <Content Include="Areas\Dialog\Views\DeleteMeeting\Process.cshtml" />
-    <Content Include="Areas\Dialog\Views\RepairTransactions\Process.cshtml" />
-    <Content Include="Areas\Dialog\Views\RepairTransactionsOrgs\Process.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\People\Table.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\People\FilterPeople.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\People\GroupOptions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\People\GroupButtons.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\People\Hidden.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMembersDialog\Updated.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\AddFeeAdjustment.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\AddTransaction.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\AddTransactionDone.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Display.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Edit.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\MissionSupport.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\MissionSupportDone.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Move.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMembersDialog\Dropped.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMembersDialog\ShowDrop.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Dropped.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\ShowDrop.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\QuestionsMenu.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\Schedules.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\ScheduleInfo.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Schedules.cshtml" />
-    <Content Include="Scripts\Chosen\chosen.proto.js" />
-    <Content Include="Scripts\Chosen\chosen.proto.min.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-AU.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-BZ.js" />
@@ -1189,6 +1129,7 @@
     <Content Include="Areas\Org\Views\Meeting\Toolbar\Toolbar.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Toolbar\Email.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\ScheduleInfo.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
@@ -2261,8 +2202,6 @@
     <Content Include="Areas\Org\Views\OrgGroups\Form.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\OrgSearch\DivisionIds.cshtml">
-    </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\ScheduleInfo.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Meeting\Index.cshtml">
     </Content>
