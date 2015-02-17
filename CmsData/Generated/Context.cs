@@ -4500,6 +4500,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.GetCurrentOnlineBundle", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetCurrentOnlineBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                next,
+                prev
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.UEmail", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string UEmail(

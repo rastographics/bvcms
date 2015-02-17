@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -116,6 +117,7 @@ namespace CmsData
 
 		
 		[Column(Name="EmailID", UpdateCheck=UpdateCheck.Never, Storage="_EmailID", DbType="int")]
+		[IsForeignKey]
 		public int? EmailID
 		{
 			get { return this._EmailID; }
