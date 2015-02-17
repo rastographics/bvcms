@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -551,7 +550,6 @@ namespace CmsData
 
 		
 		[Column(Name="OrganizationStatusId", UpdateCheck=UpdateCheck.Never, Storage="_OrganizationStatusId", DbType="int NOT NULL")]
-		[IsForeignKey]
 		public int OrganizationStatusId
 		{
 			get { return this._OrganizationStatusId; }
@@ -577,7 +575,6 @@ namespace CmsData
 
 		
 		[Column(Name="DivisionId", UpdateCheck=UpdateCheck.Never, Storage="_DivisionId", DbType="int")]
-		[IsForeignKey]
 		public int? DivisionId
 		{
 			get { return this._DivisionId; }
@@ -867,7 +864,6 @@ namespace CmsData
 
 		
 		[Column(Name="EntryPointId", UpdateCheck=UpdateCheck.Never, Storage="_EntryPointId", DbType="int")]
-		[IsForeignKey]
 		public int? EntryPointId
 		{
 			get { return this._EntryPointId; }
@@ -893,7 +889,6 @@ namespace CmsData
 
 		
 		[Column(Name="ParentOrgId", UpdateCheck=UpdateCheck.Never, Storage="_ParentOrgId", DbType="int")]
-		[IsForeignKey]
 		public int? ParentOrgId
 		{
 			get { return this._ParentOrgId; }
@@ -1117,7 +1112,6 @@ namespace CmsData
 
 		
 		[Column(Name="CampusId", UpdateCheck=UpdateCheck.Never, Storage="_CampusId", DbType="int")]
-		[IsForeignKey]
 		public int? CampusId
 		{
 			get { return this._CampusId; }
@@ -1231,7 +1225,6 @@ namespace CmsData
 
 		
 		[Column(Name="GenderId", UpdateCheck=UpdateCheck.Never, Storage="_GenderId", DbType="int")]
-		[IsForeignKey]
 		public int? GenderId
 		{
 			get { return this._GenderId; }
@@ -1763,7 +1756,6 @@ namespace CmsData
 
 		
 		[Column(Name="OrganizationTypeId", UpdateCheck=UpdateCheck.Never, Storage="_OrganizationTypeId", DbType="int")]
-		[IsForeignKey]
 		public int? OrganizationTypeId
 		{
 			get { return this._OrganizationTypeId; }

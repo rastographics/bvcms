@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -81,7 +80,6 @@ namespace CmsData
     #region Columns
 		
 		[Column(Name="AttendId", UpdateCheck=UpdateCheck.Never, Storage="_AttendId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
 		public int AttendId
 		{
 			get { return this._AttendId; }
@@ -107,7 +105,6 @@ namespace CmsData
 
 		
 		[Column(Name="RequestorId", UpdateCheck=UpdateCheck.Never, Storage="_RequestorId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
 		public int RequestorId
 		{
 			get { return this._RequestorId; }
@@ -155,7 +152,6 @@ namespace CmsData
 
 		
 		[Column(Name="SubstituteId", UpdateCheck=UpdateCheck.Never, Storage="_SubstituteId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		[IsForeignKey]
 		public int SubstituteId
 		{
 			get { return this._SubstituteId; }

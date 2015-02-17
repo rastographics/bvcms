@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -203,7 +202,6 @@ namespace CmsData
 
 		
 		[Column(Name="OwnerId", UpdateCheck=UpdateCheck.Never, Storage="_OwnerId", DbType="int NOT NULL")]
-		[IsForeignKey]
 		public int OwnerId
 		{
 			get { return this._OwnerId; }
@@ -229,7 +227,6 @@ namespace CmsData
 
 		
 		[Column(Name="ListId", UpdateCheck=UpdateCheck.Never, Storage="_ListId", DbType="int NOT NULL")]
-		[IsForeignKey]
 		public int ListId
 		{
 			get { return this._ListId; }
@@ -255,7 +252,6 @@ namespace CmsData
 
 		
 		[Column(Name="CoOwnerId", UpdateCheck=UpdateCheck.Never, Storage="_CoOwnerId", DbType="int")]
-		[IsForeignKey]
 		public int? CoOwnerId
 		{
 			get { return this._CoOwnerId; }
@@ -281,7 +277,6 @@ namespace CmsData
 
 		
 		[Column(Name="CoListId", UpdateCheck=UpdateCheck.Never, Storage="_CoListId", DbType="int")]
-		[IsForeignKey]
 		public int? CoListId
 		{
 			get { return this._CoListId; }
@@ -307,7 +302,6 @@ namespace CmsData
 
 		
 		[Column(Name="StatusId", UpdateCheck=UpdateCheck.Never, Storage="_StatusId", DbType="int")]
-		[IsForeignKey]
 		public int? StatusId
 		{
 			get { return this._StatusId; }
@@ -355,7 +349,6 @@ namespace CmsData
 
 		
 		[Column(Name="SourceContactId", UpdateCheck=UpdateCheck.Never, Storage="_SourceContactId", DbType="int")]
-		[IsForeignKey]
 		public int? SourceContactId
 		{
 			get { return this._SourceContactId; }
@@ -381,7 +374,6 @@ namespace CmsData
 
 		
 		[Column(Name="CompletedContactId", UpdateCheck=UpdateCheck.Never, Storage="_CompletedContactId", DbType="int")]
-		[IsForeignKey]
 		public int? CompletedContactId
 		{
 			get { return this._CompletedContactId; }
@@ -539,7 +531,6 @@ namespace CmsData
 
 		
 		[Column(Name="WhoId", UpdateCheck=UpdateCheck.Never, Storage="_WhoId", DbType="int")]
-		[IsForeignKey]
 		public int? WhoId
 		{
 			get { return this._WhoId; }

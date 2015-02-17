@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
-using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -338,7 +337,6 @@ namespace CmsData
 
 		
 		[Column(Name="QueuedBy", UpdateCheck=UpdateCheck.Never, Storage="_QueuedBy", DbType="int")]
-		[IsForeignKey]
 		public int? QueuedBy
 		{
 			get { return this._QueuedBy; }
