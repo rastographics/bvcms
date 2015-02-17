@@ -818,50 +818,5 @@ namespace CmsData.Registration
 			if (value.HasValue())
 				sb.AppendFormat("{0}{1}\n", new string('\t', n), value.Trim());
 		}
-		public class OrgPickInfo
-		{
-			public int OrganizationId { get; set; }
-			public string OrganizationName { get; set; }
-		}
-		public List<OrgPickInfo> OrganizationsFromIdString(Organization org)
-		{
-			var a = org.OrgPickList.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
-			var d = new Dictionary<int, int>();
-			var n = 0;
-			foreach (var i in a)
-				d.Add(n++, i);
-			var q = (from o in Db.Organizations
-					 where a.Contains(o.OrganizationId)
-					 select new OrgPickInfo
-					 {
-						 OrganizationId = o.OrganizationId,
-						 OrganizationName = o.OrganizationName
-					 }).ToList();
-			var list = (from op in q
-						join i in d on op.OrganizationId equals i.Value into j
-						from i in j
-						orderby i.Key
-						select op).ToList();
-			return list;
-		}
-		public class MasterOrgInfo
-		{
-			public int Id { get; set; }
-			public string Name { get; set; }
-		}
-		public MasterOrgInfo MasterOrg()
-		{
-			var q = from o in Db.ViewMasterOrgs
-					where o.PickListOrgId == OrgId
-					select new MasterOrgInfo
-					{
-						Id = o.OrganizationId,
-						Name = o.OrganizationName
-					};
-			var i = q.FirstOrDefault();
-			if (i == null)
-				return new MasterOrgInfo();
-			return i;
-		}
     }
 }

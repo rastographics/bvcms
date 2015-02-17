@@ -9,19 +9,8 @@
     @Html.DisplayFor(m => m.RegistrationClosed)
     @Html.DisplayFor(m => m.RegStart)
     @Html.DisplayFor(m => m.RegEnd)
+    @Html.DisplayForIf(m => m.MasterOrg, Model.MasterOrg.Id > 0)
 
-@*
-@{
-    var masterinfo = Model.MasterOrg();
-    if (masterinfo.Id > 0)
-    {
-        <li>
-            <label class="text big">MasterOrg:</label>
-            <a href="/Organization/@masterinfo.Id" target="otherorg">@masterinfo.Name</a>
-        </li>
-    }
-}
-*@
 @*
 @if (Model.org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization)
 {

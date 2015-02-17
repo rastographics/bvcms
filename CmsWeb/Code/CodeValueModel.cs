@@ -401,6 +401,7 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> OrganizationTypeList() { return OrganizationTypes0(); }
         public IEnumerable<CodeValueItem> LeaderMemberTypeList() { return MemberTypeCodes0().Select(c => new CodeValueItem { Code = c.Code, Id = c.Id, Value = c.Value }); }
         public IEnumerable<CodeValueItem> AttendCreditList() { return AttendCredits(); }
+        public IEnumerable<CodeValueItem> RegistrationTypeList() { return RegistrationTypes(); }
         public SelectList SchedDayList() { return DaysOfWeek(); }
         public static SelectList DaysOfWeek()
         {

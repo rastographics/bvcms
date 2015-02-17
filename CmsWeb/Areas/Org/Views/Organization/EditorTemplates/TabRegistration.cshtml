@@ -2,12 +2,6 @@
 @using CmsWeb.Areas.Org.Models
 @using UtilityExtensions
 <li>
-    <span style="cursor: pointer;" data-toggle="popover" data-content="<p>JoinOrganization: for a single organization registration</p><p>AttendMeeting: NOT WORKING YET</p><p>UserSelectsOrganization: good for a single registration for multiple orgs (classes)</p><p>ComputeOrganizationByAge: good for recreation leagues. Uses Birthday and Gender</p><p>ManageSubscriptions: allows to select multiple organizations</p><p>OnlineGiving: creates contribution records</p><p>OnlinePledge: allows making pledges and checking on pledge status, increasing pledge too.</p>" data-original-title="Registration Type"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="org_RegistrationTypeId" class="keyword big tip">
-        Registration Type:
-    </label>
-    <span>@Html.DropDownList("org.RegistrationTypeId", OrganizationModel.RegistrationTypes())</span>
-</li>
-<li>
     <span style="cursor: pointer;" data-toggle="popover" data-content="Leave blank to use the name of the organization." data-original-title="Registration Title"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Title" class="keyword big tip">
         Registration Title:
     </label> @Html.TextBox("Title", Model.Title ?? Model.org.OrganizationName)
@@ -49,7 +43,9 @@
 @if (Model.org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization)
 {
     <li>
-        <span style="cursor: pointer;" data-toggle="popover" data-content="This is used on the master organization and will become the dropdown for 'User Chooses Organization'." data-original-title="Organization Pick List"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
+      <span style="cursor: pointer;" data-toggle="popover" data-content="
+      This is used on the master organization and will become the dropdown for 'User Chooses Organization'.
+      " data-original-title="Organization Pick List"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
             Organization Pick List:
         </label>
         <div id="orgpickdiv" class="block border">

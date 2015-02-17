@@ -42,9 +42,9 @@ namespace CmsWeb.Areas.Org.Models
         {
             Id = id;
             DbUtil.Db.CurrentOrg.Id = id;
+            OrgMain = new OrgMain(Org);
             GroupSelect = GroupSelectCode.Member;
             IsVolunteerLeader = VolunteerLeaderInOrg(Id);
-            OrgMain = new OrgMain(Org);
         }
         public static bool VolunteerLeaderInOrg(int? orgid)
         {
@@ -94,26 +94,21 @@ namespace CmsWeb.Areas.Org.Models
             return q;
         }
 
-        public IEnumerable<SelectListItem> CampusList()
-        {
-            return CodeValueModel.ConvertToSelect(cv.AllCampuses0(), "Id");
-        }
-        public IEnumerable<SelectListItem> EntryPointList()
-        {
-            return CodeValueModel.ConvertToSelect(cv.EntryPoints(), "Id");
-        }
-        public IEnumerable<SelectListItem> GenderList()
-        {
-            return CodeValueModel.ConvertToSelect(cv.GenderCodes(), "Id");
-        }
+//        public IEnumerable<SelectListItem> CampusList()
+//        {
+//            return CodeValueModel.ConvertToSelect(cv.AllCampuses0(), "Id");
+//        }
+//        public IEnumerable<SelectListItem> EntryPointList()
+//        {
+//            return CodeValueModel.ConvertToSelect(cv.EntryPoints(), "Id");
+//        }
+//        public IEnumerable<SelectListItem> GenderList()
+//        {
+//            return CodeValueModel.ConvertToSelect(cv.GenderCodes(), "Id");
+//        }
         public static string SpaceCamelCase(string s)
         {
             return Regex.Replace(s, "([A-Z])", " $1", RegexOptions.Compiled).Trim();
-        }
-        public static IEnumerable<SelectListItem> RegistrationTypes()
-        {
-            var cv = new CodeValueModel();
-            return CodeValueModel.ConvertToSelect(cv.RegistrationTypes(), "Id");
         }
         private Settings _RegSettings;
         public Settings RegSettings

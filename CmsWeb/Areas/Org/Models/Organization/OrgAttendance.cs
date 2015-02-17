@@ -99,7 +99,7 @@ namespace CmsWeb.Areas.Org.Models
 This is where you indicate the weekly schedule. You can have mutiple schedules.
 The top one is the default that shows up on lists.
 Schedules can be 'Every Meeting' for 100% credit or they can be 'One a Week' for 100% credit.
-")]
+"), UIHint("Schedules")]
         public List<ScheduleInfo> Schedules
         {
             get
