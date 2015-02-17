@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -74,6 +75,7 @@ namespace CmsData
 
 		
 		[Column(Name="MetroMarginalCode", UpdateCheck=UpdateCheck.Never, Storage="_MetroMarginalCode", DbType="int")]
+		[IsForeignKey]
 		public int? MetroMarginalCode
 		{
 			get { return this._MetroMarginalCode; }

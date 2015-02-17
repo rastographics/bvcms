@@ -24,6 +24,7 @@ namespace CmsWeb
 
         protected void Application_Start()
         {
+            MvcHandler.DisableMvcResponseHeader = true;
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
             ModelMetadataProviders.Current = new ModelViewMetadataProvider();
             RouteConfig.RegisterRoutes(RouteTable.Routes);

@@ -5,6 +5,7 @@
 <%
     Table tbl = Db.Service.GetSchema("#TABLE#");
 %>
+using CmsData.Infrastructure;
 
 namespace <%=Db.Service.GeneratedNamespace %>
 {
@@ -61,7 +62,8 @@ namespace <%=Db.Service.GeneratedNamespace %>
             foreach (TableColumn col in tbl.Columns)
 			{
         %>
-		[Column(Name="<%=col.ColumnName%>", UpdateCheck=UpdateCheck.Never, Storage="_<%=col.Name%>"<%=col.FullDbType%>)]
+		[Column(Name="<%=col.ColumnName%>", UpdateCheck=UpdateCheck.Never, Storage="_<%=col.Name%>"<%=col.FullDbType%>)]<% if (col.IsForeignKey) { %>
+		[IsForeignKey]<% } %>
 		public <%=col.VarType%> <%=col.Name%>
 		{
 			get { return this._<%=col.Name%>; }
@@ -69,7 +71,7 @@ namespace <%=Db.Service.GeneratedNamespace %>
 			{
 				if (this._<%=col.Name%> != value)
 				{
-				<%if(col.IsForeignKey) { %>
+				<%if (col.IsForeignKey) { %>
 					if (this._<%=col.PropertyNameOne%>.HasLoadedOrAssignedValue)
 						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				<% } %>
