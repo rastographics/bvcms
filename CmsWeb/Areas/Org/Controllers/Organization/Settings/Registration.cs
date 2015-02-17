@@ -15,30 +15,32 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Registration(int id)
         {
-            return PartialView("Settings/Registration", getRegSettings(id));
+            var m = new OrgRegistration(id);
+            return PartialView("Settings/Registration", m);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult RegistrationEdit(int id)
         {
-            return PartialView("Settings/RegistrationEdit", getRegSettings(id));
+            var m = new OrgRegistration(id);
+            return PartialView("Settings/RegistrationEdit", m);
         }
         [HttpPost]
         public ActionResult RegistrationUpdate(int id)
         {
-            var m = getRegSettings(id);
-            m.AgeGroups.Clear();
-            DbUtil.LogActivity("Update Registration {0}".Fmt(m.org.OrganizationName));
+            var m = new OrgRegistration(id);
+            //m.AgeGroups.Clear();
+            DbUtil.LogActivity("Update Registration {0}".Fmt(m.Org.OrganizationName));
             try
             {
                 UpdateModel(m);
-                if (m.org.OrgPickList.HasValue() && m.org.RegistrationTypeId == RegistrationTypeCode.JoinOrganization)
-                    m.org.OrgPickList = null;
+                if (m.Org.OrgPickList.HasValue() && m.Org.RegistrationTypeId == RegistrationTypeCode.JoinOrganization)
+                    m.Org.OrgPickList = null;
 
                 var os = new Settings(m.ToString(), DbUtil.Db, id);
-                m.org.RegSetting = os.ToString();
+                m.Org.RegSetting = os.ToString();
                 DbUtil.Db.SubmitChanges();
-                if (!m.org.NotifyIds.HasValue())
+                if (!m.Org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
                 return PartialView("Settings/Registration", m);
             }

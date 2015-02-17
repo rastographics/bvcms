@@ -327,6 +327,7 @@
     <Compile Include="Areas\Org\Models\Organization\OrgGeneral.cs" />
     <Compile Include="Areas\Org\Models\Organization\OrgAttendance.cs" />
     <Compile Include="Areas\Org\Models\Organization\OrgMain.cs" />
+    <Compile Include="Areas\Org\Models\Organization\OrgRegistration.cs" />
     <Compile Include="Areas\Org\Models\Other\MeetingModel.cs" />
     <Compile Include="Areas\Org\Models\Other\MemberDirectoryModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\MissionSupportModel.cs" />

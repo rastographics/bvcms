@@ -1,10 +1,72 @@
-﻿@model CmsData.Registration.Settings
+﻿@model CmsWeb.Areas.Org.Models.OrgRegistration
 <form class="form form-horizontal non-modal ajax span12" data-init="datetimepicker">
     <br/>
     @FormAction()
-    <ul class="noedit" style="list-style: none; margin-left: 5px;">
-        @Html.EditorFor(m => m, "TabRegistration")
+  <div>
+    @Html.DisplayFor(m => m.RegistrationType)
+    @Html.DisplayFor(m => m.Title)
+    @Html.DisplayFor(m => m.ClassFilled)
+    @Html.DisplayFor(m => m.RegistrationClosed)
+    @Html.DisplayFor(m => m.RegStart)
+    @Html.DisplayFor(m => m.RegEnd)
+
+@*
+@{
+    var masterinfo = Model.MasterOrg();
+    if (masterinfo.Id > 0)
+    {
+        <li>
+            <label class="text big">MasterOrg:</label>
+            <a href="/Organization/@masterinfo.Id" target="otherorg">@masterinfo.Name</a>
+        </li>
+    }
+}
+*@
+@*
+@if (Model.org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization)
+{
+    <li>
+      <span style="cursor: pointer;" data-toggle="popover" data-content="
+      This is used on the master organization and will become the dropdown for 'User Chooses Organization'.
+      " data-original-title="Organization Pick List"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
+            Organization Pick List:
+        </label>
+        <div id="orgpickdiv" class="block border">
+            @Html.Partial("Other/OrgPickList2", Model)
+        </div>
+    </li>
+}
+*@
+    @Html.DisplayFor(m => m.Limit)
+    @Html.DisplayFor(m => m.VaidateOrgs)
+@*
+    <ul id="AgeGroups" class="sort" style="list-style: none;">
+        @foreach (var i in Model.AgeGroups)
+        {
+            @Html.EditorFor(m => i)
+        }
     </ul>
+*@
+    @Html.DisplayFor(m => m.AllowOnlyOne)
+    @Html.DisplayFor(m => m.AddAsProspect)
+    @Html.DisplayFor(m => m.AllowReRegister)
+    @Html.DisplayFor(m => m.AllowSaveProgress)
+    @Html.DisplayFor(m => m.GroupToJoin)
+    @Html.DisplayFor(m => m.NoReqBirthYear)
+    @Html.DisplayFor(m => m.NoReqDOB)
+    @Html.DisplayFor(m => m.NoReqAddr)
+    @Html.DisplayFor(m => m.NoReqZip)
+    @Html.DisplayFor(m => m.NoReqPhone)
+    @Html.DisplayFor(m => m.NoReqGender)
+    @Html.DisplayFor(m => m.NoReqMarital)
+    @Html.DisplayFor(m => m.ShellBs)
+    @Html.DisplayFor(m => m.SpecialScript)
+    @Html.DisplayFor(m => m.MemberOnly)
+    @if (User.IsInRole("Admin"))
+    {
+      @Html.DisplayFor(m => m.AddToSmallGroupScript)
+    }
+  </div>
     @FormAction()
 </form>
 @helper FormAction()
@@ -12,7 +74,7 @@
   if (User.IsInRole("Edit"))
   {
       <div class="pull-right">
-          <a href="/Organization/RegistrationEdit/@Model.OrgId" class="btn edit ajax">Edit</a>
+          <a href="/Organization/RegistrationEdit/@Model.Id" class="btn edit ajax">Edit</a>
       </div>
       <div class="formerror">@Html.ValidationMessage("Form")</div>
   }

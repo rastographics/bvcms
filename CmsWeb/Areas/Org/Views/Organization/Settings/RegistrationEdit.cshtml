@@ -1,17 +1,77 @@
-﻿@model CmsData.Registration.Settings
+﻿@model CmsWeb.Areas.Org.Models.OrgRegistration
 <form class="form form-horizontal non-modal ajax span12">
     <br/>
     @FormAction()
-    <ul class="enablesort edit" style="list-style: none; margin-left: 5px;">
-        @Html.EditorFor(m => m, "TabRegistration")
+    @Html.EditorFor(m => m.RegistrationType)
+    @Html.EditorFor(m => m.Title)
+    @Html.EditorFor(m => m.ClassFilled)
+    @Html.EditorFor(m => m.RegistrationClosed)
+    @Html.EditorFor(m => m.RegStart)
+    @Html.EditorFor(m => m.RegEnd)
+
+@*
+@{
+    var masterinfo = Model.MasterOrg();
+    if (masterinfo.Id > 0)
+    {
+        <li>
+            <label class="text big">MasterOrg:</label>
+            <a href="/Organization/@masterinfo.Id" target="otherorg">@masterinfo.Name</a>
+        </li>
+    }
+}
+*@
+@*
+@if (Model.org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization)
+{
+    <li>
+      <span style="cursor: pointer;" data-toggle="popover" data-content="
+      This is used on the master organization and will become the dropdown for 'User Chooses Organization'.
+      " data-original-title="Organization Pick List"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
+            Organization Pick List:
+        </label>
+        <div id="orgpickdiv" class="block border">
+            @Html.Partial("Other/OrgPickList2", Model)
+        </div>
+    </li>
+}
+*@
+    @Html.EditorFor(m => m.Limit)
+    @Html.EditorFor(m => m.VaidateOrgs)
+@*
+    <ul id="AgeGroups" class="sort" style="list-style: none;">
+        @foreach (var i in Model.AgeGroups)
+        {
+            @Html.EditorFor(m => i)
+        }
     </ul>
+*@
+    @Html.EditorFor(m => m.AllowOnlyOne)
+    @Html.EditorFor(m => m.AddAsProspect)
+    @Html.EditorFor(m => m.AllowReRegister)
+    @Html.EditorFor(m => m.AllowSaveProgress)
+    @Html.EditorFor(m => m.GroupToJoin)
+    @Html.EditorFor(m => m.NoReqBirthYear)
+    @Html.EditorFor(m => m.NoReqDOB)
+    @Html.EditorFor(m => m.NoReqAddr)
+    @Html.EditorFor(m => m.NoReqZip)
+    @Html.EditorFor(m => m.NoReqPhone)
+    @Html.EditorFor(m => m.NoReqGender)
+    @Html.EditorFor(m => m.NoReqMarital)
+    @Html.EditorFor(m => m.ShellBs)
+    @Html.EditorFor(m => m.SpecialScript)
+    @Html.EditorFor(m => m.MemberOnly)
+    @if (User.IsInRole("Admin"))
+    {
+      @Html.EditorFor(m => m.AddToSmallGroupScript)
+    }
     @FormAction()
 </form>
 @helper FormAction()
 {
     <div class="pull-right">
-        <a href="/Organization/Registration/@Model.OrgId" class="btn ajax">Cancel</a>
-        <a href="/Organization/RegistrationUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+        <a href="/Organization/Registration/@Model.Id" class="btn ajax">Cancel</a>
+        <a href="/Organization/RegistrationUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
     </div>
     <div class="formerror">@Html.ValidationMessage("Form")</div>
 }
