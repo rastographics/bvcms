@@ -1331,7 +1331,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     BundleHeaderTypeId = typecode.Value,
                     BundleStatusId = BundleStatusCode.Open,
                     CreatedBy = Util.UserId1,
-                    ContributionDate = d,
+                    ContributionDate = now,
                     CreatedDate = now,
                     FundId = Db.Setting("DefaultFundId", "1").ToInt(),
                     RecordStatus = false,
