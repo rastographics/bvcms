@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using CmsWeb.Code;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
@@ -61,9 +58,9 @@ namespace CmsWeb.Areas.Org.Models
             public int OrganizationId { get; set; }
             public string OrganizationName { get; set; }
         }
-        public List<OrgPickInfo> OrganizationsFromIdString(Organization org)
+        public List<OrgPickInfo> OrganizationsFromIdString()
         {
-            var a = org.OrgPickList.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
+            var a = Org.OrgPickList.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
             var n = 0;
             var d = a.ToDictionary(i => n++);
             var q = (from o in DbUtil.Db.Organizations
@@ -118,15 +115,15 @@ Your registration will become **unavailable** on this date and time *(Central Ti
 "), UIHint("DateAndTime")]
         public DateTime? RegEnd { get; set; }
 
-        [Org, Display(Name = "Registration End", Description = @"
-This is used on the master organization and will become the dropdown for 'User Chooses Organization'.
-")]
+        [Display(Description = @"
+This is the parent Organization for a group of sub-registrations like this one
+"), UIHint("MasterOrgInfo")]
         public MasterOrgInfo MasterOrg
         {
             get
             {
-                if (_masterOrg != null) 
-                    return _masterOrg;
+                if (masterOrg != null) 
+                    return masterOrg;
 
                 var q = from o in DbUtil.Db.ViewMasterOrgs
                     where o.PickListOrgId == Id
@@ -135,15 +132,15 @@ This is used on the master organization and will become the dropdown for 'User C
                         Id = o.OrganizationId,
                         Name = o.OrganizationName
                     };
-                return _masterOrg = q.FirstOrDefault() ?? new MasterOrgInfo();
+                return masterOrg = q.FirstOrDefault() ?? new MasterOrgInfo();
             }
         }
-        private MasterOrgInfo _masterOrg;
+        private MasterOrgInfo masterOrg;
 
         [Org, Display(Name = "Organization Pick List", Description = @"
 This is used on the master organization and will become the dropdown for 'User Chooses Organization'.
 "), UIHint("OrgPickList")]
-        public string OrgPickList { get; set; }
+        public OrgRegistration PickList { get { return this; } }
 
         [Org, Display(Name = "Max Limit", Description = @"
 This will cause the class to go into a 'class filled' state when the number of members reaches this point.
@@ -177,37 +174,67 @@ Joins registrant to another organization at the same time.
 ")]
         public string GroupToJoin { get; set; }
 
-        [Reg, Display(Name = "", Description = @"
+        [Reg, Display(Description = @"
 Does not offer the 'Add other Registrations' option.
 ")]
         public bool AllowOnlyOne { get; set; }
 
 
-        [Reg, Display(Name = "", Description = @"
+        [Reg, Display(Description = @"
 Add Registrant as a Prospect.
 ")]
         public bool AddAsProspect { get; set; }
 
 
-        [Reg, Display(Name = "", Description = @"
+        [Reg, Display(Name = "Allow re-Register", Description = @"
 Allows a person to be a member of Organization and register again.
 ")]
         public bool AllowReRegister { get; set; }
 
 
-        [Reg, Display(Name = "", Description = @"
+        [Reg, Display(Description = @"
 Allows a person to leave the registration and come back to finish later.
 ")]
         public bool AllowSaveProgress { get; set; }
 
-
+        [Reg, Display(Description = @"
+Registration does not require a Birth Year, just month and day
+")]
         public bool NoReqBirthYear { get; set; }
-        public bool NoReqDOB { get; set; }
-        public bool NoReqAddr { get; set; }
-        public bool NoReqZip { get; set; }
-        public bool NoReqPhone { get; set; }
-        public bool NoReqGender { get; set; }
-        public bool NoReqMarital { get; set; }
+
+        [Reg, Display(Description = @"
+Regisration does not require a birthday
+")]
+        public bool NotReqDOB { get; set; }
+
+        [Reg, Display(Description = @"
+Regisration does not require an address
+")]
+        public bool NotReqAddr { get; set; }
+
+        [Reg, Display(Description = @"
+Regisration does not require a a zipcode
+")]
+        public bool NotReqZip { get; set; }
+
+        [Reg, Display(Description = @"
+Registration does not require any phone number
+")]
+        public bool NotReqPhone { get; set; }
+
+        [Reg, Display(Description = @"
+Registration does not reqire a gender
+")]
+        public bool NotReqGender { get; set; }
+
+        [Reg, Display(Description = @"
+Regisration does not require a Marital status
+")]
+        public bool NotReqMarital { get; set; }
+
+        [Reg, Display(Description = @"
+You must be a member of the church to register
+")]
         public bool MemberOnly { get; set; }
 
         [Reg, Display(Name = "HTML Shell", Description = @"
@@ -216,7 +243,7 @@ Enter the name of the HTML shell for this registration (stored in Special Conten
         public string ShellBs { get; set; }
 
 
-        [Reg, Display(Name = "", Description = @"
+        [Reg, Display(Description = @"
 Enter the name of the HTML/Script file for this registration.
 Only works with the Special Script type of registration (stored in Special Content).
 ")]

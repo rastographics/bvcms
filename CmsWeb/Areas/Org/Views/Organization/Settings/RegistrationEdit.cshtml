@@ -1,4 +1,8 @@
-﻿@model CmsWeb.Areas.Org.Models.OrgRegistration
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.OrgRegistration
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";
+}
 <form class="form form-horizontal non-modal ajax span12">
     <br/>
     @FormAction()
@@ -9,33 +13,6 @@
     @Html.EditorFor(m => m.RegStart)
     @Html.EditorFor(m => m.RegEnd)
 
-@*
-@{
-    var masterinfo = Model.MasterOrg();
-    if (masterinfo.Id > 0)
-    {
-        <li>
-            <label class="text big">MasterOrg:</label>
-            <a href="/Organization/@masterinfo.Id" target="otherorg">@masterinfo.Name</a>
-        </li>
-    }
-}
-*@
-@*
-@if (Model.org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization)
-{
-    <li>
-      <span style="cursor: pointer;" data-toggle="popover" data-content="
-      This is used on the master organization and will become the dropdown for 'User Chooses Organization'.
-      " data-original-title="Organization Pick List"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-            Organization Pick List:
-        </label>
-        <div id="orgpickdiv" class="block border">
-            @Html.Partial("Other/OrgPickList2", Model)
-        </div>
-    </li>
-}
-*@
     @Html.EditorFor(m => m.Limit)
     @Html.EditorFor(m => m.VaidateOrgs)
 @*
@@ -52,12 +29,12 @@
     @Html.EditorFor(m => m.AllowSaveProgress)
     @Html.EditorFor(m => m.GroupToJoin)
     @Html.EditorFor(m => m.NoReqBirthYear)
-    @Html.EditorFor(m => m.NoReqDOB)
-    @Html.EditorFor(m => m.NoReqAddr)
-    @Html.EditorFor(m => m.NoReqZip)
-    @Html.EditorFor(m => m.NoReqPhone)
-    @Html.EditorFor(m => m.NoReqGender)
-    @Html.EditorFor(m => m.NoReqMarital)
+    @Html.EditorFor(m => m.NotReqDOB)
+    @Html.EditorFor(m => m.NotReqAddr)
+    @Html.EditorFor(m => m.NotReqZip)
+    @Html.EditorFor(m => m.NotReqPhone)
+    @Html.EditorFor(m => m.NotReqGender)
+    @Html.EditorFor(m => m.NotReqMarital)
     @Html.EditorFor(m => m.ShellBs)
     @Html.EditorFor(m => m.SpecialScript)
     @Html.EditorFor(m => m.MemberOnly)

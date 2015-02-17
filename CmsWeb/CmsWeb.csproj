@@ -876,7 +876,7 @@
     <Content Include="Areas\Org\Views\Organization\Other\DialogAddMES.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Other\DivisionList.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Other\NotifyList2.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\OrgPickList.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\OrgPickList.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Other\ReGenPaylinks.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Other\SmallGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Other\VolunteerCommitmentsSummary.cshtml" />
@@ -928,7 +928,7 @@
     <Content Include="Areas\Org\Views\Organization\DisplayTemplates\Schedules.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\ScheduleInfo.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Schedules.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\MasterOrgInfo.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\MasterOrgInfo.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\Chosen\chosen.proto.js" />
     <Content Include="Scripts\Chosen\chosen.proto.min.js" />

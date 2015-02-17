@@ -19,6 +19,13 @@ namespace CmsWeb.Areas.Org.Controllers
             return PartialView("Settings/Registration", m);
         }
         [HttpPost]
+        public ActionResult RegistrationHelpToggle(int id)
+        {
+            DbUtil.Db.ToggleUserPreference("ShowRegistrationHelp");
+            var m = new OrgRegistration(id);
+            return PartialView("Settings/Registration", m);
+        }
+        [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult RegistrationEdit(int id)
         {

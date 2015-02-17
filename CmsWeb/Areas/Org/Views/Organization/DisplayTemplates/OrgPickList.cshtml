@@ -1,0 +1,16 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Org.Models.OrgRegistration
+<div class="control-group">
+  @Html.Label("Organization Pick List", new { @class = "control-label" })
+  <div class="controls">
+    <b><a id="orgpicklist" href="/Organization/OrgPickList/@Model.Id">Choose Organizations</a></b>
+    @foreach (var o in Model.OrganizationsFromIdString())
+    {
+      <div><a href="/Organization/@o.OrganizationId" target="otherorg">@o.OrganizationName</a></div>
+    }
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+  </div>
+</div>

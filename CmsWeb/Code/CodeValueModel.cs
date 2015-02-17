@@ -409,9 +409,9 @@ namespace CmsWeb.Code
             {
                 new {Text = "Sunday", Value = "0"},
                 new {Text = "Monday", Value = "1"},
-                new {Text = "Tueday", Value = "2"},
-                new {Text = "Wedday", Value = "3"},
-                new {Text = "Thuday", Value = "4"},
+                new {Text = "Tuesday", Value = "2"},
+                new {Text = "Wednesday", Value = "3"},
+                new {Text = "Thusday", Value = "4"},
                 new {Text = "Friday", Value = "5"},
                 new {Text = "Saturday", Value = "6"},
                 new {Text = "Any Day", Value = "10"},
