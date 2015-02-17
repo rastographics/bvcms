@@ -24,6 +24,7 @@ using UtilityExtensions;
 using System.Web.Routing;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Hosting;
 using System.Web.Script.Serialization;
 using ExpressionHelper = System.Web.Mvc.ExpressionHelper;
 
@@ -769,6 +770,27 @@ namespace CmsWeb
         public static HtmlString Bootstrap3()
         {
             return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js""></script>");
+        }
+
+ 
+        public static string Globalize { get { return "/Scripts/globalize.js"; } }
+        public static string GlobalizeCulture 
+        { 
+            get 
+            {
+                //Determine culture - GUI culture for preference, user selected culture as fallback
+                var currentCulture = CultureInfo.CurrentCulture;
+                var filePattern = "/Scripts/globalize/globalize.culture.{0}.js";
+                var regionalisedFileToUse = string.Format(filePattern, "en-GB"); //Default localisation to use
+ 
+                //Try to pick a more appropriate regionalisation
+                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
+                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
+ 
+                return regionalisedFileToUse;
+            } 
         }
 
         public static HtmlString LoDash()

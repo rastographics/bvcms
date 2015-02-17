@@ -102,6 +102,8 @@ namespace UtilityExtensions
                 var s = dt.ToShortDateString();
                 if (s.StartsWith("30"))
                     return @"^\d\d?[-/](0?[1-9]|1[012])[-/]\d\d(\d\d)?$";
+                if (s.StartsWith("2002"))
+                    return @"^\d\d\d\d[-/]\d\d[-/](0[1-9]|1[012])$";
                 return @"^(0?[1-9]|1[012])[-/]\d\d?[-/]\d\d(\d\d)?$";
             }
         }
@@ -114,6 +116,8 @@ namespace UtilityExtensions
                 var s = dt.ToShortDateString();
                 if (s.StartsWith("30"))
                     return "d/m/yyyy";
+                if (s.StartsWith("2002"))
+                    return "yyyy/mm/dd";
                 return "m/d/yyyy";
             }
         }
