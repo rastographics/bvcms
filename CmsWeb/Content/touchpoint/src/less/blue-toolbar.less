@@ -1,11 +1,11 @@
 @import "variables.less";
 #bluetoolbarstop{
-  border-top: 2px solid @global-brand-primary;
-  border-top: 2px solid #0b3b6f;
-  margin-top: -17px;
-  margin-bottom: 60px;
-  margin-right: -20px;
-  margin-left: -20px;
+    border-top: 2px solid @global-brand-primary;
+    border-top: 2px solid #0b3b6f;
+    margin-top: -17px;
+    margin-bottom: 60px;
+    margin-right: -20px;
+    margin-left: -20px;
 }
 
 #bluebar-menu>.btn-group:first-child .btn {
@@ -13,5 +13,20 @@
 }
 
 #bluebar-menu>.btn-group:last-child .btn {
-  border-bottom-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.toolbar-custom-reports {
+    padding: 0 20px;
+}
+
+.toolbar-custom-reports > .run-custom-report {
+    display: inline-block;
+    white-space: nowrap;
+    width: 80%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+.toolbar-custom-reports span {
+    float: right;
 }

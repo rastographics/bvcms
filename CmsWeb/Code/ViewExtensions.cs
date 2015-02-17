@@ -761,6 +761,12 @@ namespace CmsWeb
 ");
         }
 
+        public static HtmlString jQueryValidation()
+        {
+            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js""></script>
+    <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.min.js""></script>");
+        }
+
         public static HtmlString Moment()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
