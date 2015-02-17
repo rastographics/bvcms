@@ -5,19 +5,19 @@
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-lg-9">
         <div class="box box-responsive">
             <div class="box-content">
                 <form id="form-saved-query">
                     <div class="well">
                         <div class="row">
-                            <div class="col-lg-6 col-md-3 col-sm-6">
+                            <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
                                     <label for="SearchParameters_Organization">Description / Owner</label>
                                     @Html.TextBoxFor(m => m.SearchQuery, new { @class = "form-control" })
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="col-lg-3 col-md-3 col-sm-3">
                                 <div class="form-group">
                                     <div class="checkbox">
                                         <label>
@@ -31,7 +31,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3 col-md-3 col-sm-6">
+                            <div class="col-lg-3 col-md-3 col-sm-3">
                                 <div class="form-group">
                                     <div class="checkbox">
                                         <label>
@@ -47,10 +47,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-lg-3 col-md-3 col-sm-4">
-
-                            </div>
-                            <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                            <div class="col-lg-2 col-lg-offset-10 col-md-3 col-md-offset-9 col-sm-3 col-sm-offset-9">
                                 <div class="pull-right">
                                     <a id="filter-link" href="/SavedQuery/Results" class="btn btn-primary">Filter</a>
                                 </div>
