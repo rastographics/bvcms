@@ -781,7 +781,7 @@ namespace CmsWeb
                 //Determine culture - GUI culture for preference, user selected culture as fallback
                 var currentCulture = CultureInfo.CurrentCulture;
                 var filePattern = "/Scripts/globalize/globalize.culture.{0}.js";
-                var regionalisedFileToUse = string.Format(filePattern, "en-GB"); //Default localisation to use
+                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
  
                 //Try to pick a more appropriate regionalisation
                 if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
