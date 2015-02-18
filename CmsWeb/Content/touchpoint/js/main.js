@@ -111,7 +111,19 @@ $(function () {
 
     // initialize any date fields.
     $.InitializeDateElements();
+    
+    // scroll to the top the collapsed menu when selecting dropdown sub menus.
+    $('#navbar ul.navbar-nav li.dropdown').on('show.bs.dropdown', function() {
+        var xs = $('.device-xs').is(':visible');
+        if (xs) {
+            var offset = $(this).offset();
+            offset.top -= 60;
+            $('#navbar').animate({ scrollTop: offset.top });
+        }
+    });
 
+
+    // clear tags
     $('#cleartag').click(function (e) {
         e.preventDefault();
         var href = this.href;
