@@ -9,66 +9,70 @@
     int count = 0;
 }
 <div class="row">
-    <div class="col-md-9">
-        <div class="row">
-            @foreach (var item in gl)
-            {
-                var numbers = from e in DbUtil.Db.SMSNumbers
-                    where e.GroupID == item.Id
-                    select e;
+    <div class="col-sm-12">
+        <div class="panel">
+            <div class="panel-body">
+                <div class="row">
+                    @foreach (var item in gl)
+                    {
+                        var numbers = from e in DbUtil.Db.SMSNumbers
+                            where e.GroupID == item.Id
+                            select e;
 
-                var people = from e in DbUtil.Db.SMSGroupMembers
-                    where e.GroupID == item.Id
-                    select e;
+                        var people = from e in DbUtil.Db.SMSGroupMembers
+                            where e.GroupID == item.Id
+                            select e;
 
-                <div class="col-sm-6 col-md-4 col-lg-4">
-                    <div class="box">
-                        <div class="box-title">
-                            <h5><a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=GroupDialog" dialogtitle="Edit Group" style="text-decoration: underline;">@item.Name</a></h5>
+                        <div class="col-sm-6 col-md-4 col-lg-4">
+                            <div class="box">
+                                <div class="box-title">
+                                    <h5><a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=GroupDialog" dialogtitle="Edit Group" style="text-decoration: underline;">@item.Name</a></h5>
+                                </div>
+                                <table class="table table-striped">
+                                    <tr>
+                                        <td colspan="2"><b>Description</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="padding-left:10px;">@item.Description<br /><br /></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Numbers</b></td>
+                                        <td class="text-right">
+                                            <a href="#" class="btn btn-success btn-xs" dialogurl="/Twilio/Dialog/@(item.Id)?name=NumberDialog" dialogtitle="Add New Number"><i class="fa fa-plus-circle"></i> Add</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            @foreach (var number in numbers)
+                                            {
+                                                @number.Number @:(<a href="/Twilio/NumberRemove/@number.Id">Remove</a>)<br />
+                                            }
+                                            &nbsp;<br />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Users</b></td>
+                                        <td class="text-right">
+                                            <a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=UserDialog" dialogtitle="Add New User" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i> Add</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            @foreach (var person in people)
+                                            {
+                                                @person.User.Name @:(<a href="/Twilio/UserRemove/@person.Id">Remove</a>)<br />
+                                            }
+                                            &nbsp;<br />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
-                        <table class="table table-striped">
-                            <tr>
-                                <td colspan="2"><b>Description</b></td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" style="padding-left:10px;">@item.Description<br /><br /></td>
-                            </tr>
-                            <tr>
-                                <td><b>Numbers</b></td>
-                                <td class="text-right">
-                                    <a href="#" class="btn btn-success btn-xs" dialogurl="/Twilio/Dialog/@(item.Id)?name=NumberDialog" dialogtitle="Add New Number"><i class="fa fa-plus-circle"></i> Add</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    @foreach (var number in numbers)
-                                    {
-                                        @number.Number @:(<a href="/Twilio/NumberRemove/@number.Id">Remove</a>)<br />
-                                    }
-                                    &nbsp;<br />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td><b>Users</b></td>
-                                <td class="text-right">
-                                    <a href="#" dialogurl="/Twilio/Dialog/@(item.Id)?name=UserDialog" dialogtitle="Add New User" class="btn btn-success btn-xs"><i class="fa fa-plus-circle"></i> Add</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2">
-                                    @foreach (var person in people)
-                                    {
-                                        @person.User.Name @:(<a href="/Twilio/UserRemove/@person.Id">Remove</a>)<br />
-                                    }
-                                    &nbsp;<br />
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+                    }
                 </div>
-            }
+                <a href="#" class="btn btn-success" dialogurl="/Twilio/Dialog?name=GroupDialog" dialogtitle="Create New Group"><i class="fa fa-plus-circle"></i> Add New Group</a>
+            </div>
         </div>
-        <a href="#" class="btn btn-success" dialogurl="/Twilio/Dialog?name=GroupDialog" dialogtitle="Create New Group"><i class="fa fa-plus-circle"></i> Add New Group</a>
     </div>
 </div>
 <div id="dialog" style="display:none"></div>
