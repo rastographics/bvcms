@@ -23,7 +23,12 @@
     
     $('#conditions').on("click", 'a.edit-condition', function () {
         liedit = $(this).closest("li.condition");
-        $EditCondition();
+        var spanText = $(this).find('span').text();
+        if (spanText == 'Select Condition') {
+            $EditCondition({ isnew: true });
+        } else {
+            $EditCondition();
+        }
         return false;
     });
 
