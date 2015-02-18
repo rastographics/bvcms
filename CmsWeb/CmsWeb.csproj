@@ -863,11 +863,6 @@
     <Content Include="Content\touchpoint\src\less\search-builder.less" />
     <Content Include="Content\touchpoint\src\less\select2\select2-bootstrap.less" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
-    <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />
-    <Content Include="Scripts\jQuery\jquery.validate.globalize.min.js" />
-    <Content Include="Scripts\jQuery\jquery.validate.js" />
-    <Content Include="Scripts\jQuery\jquery.validate.min.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-AU.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-BZ.js" />
