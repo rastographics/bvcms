@@ -26,10 +26,10 @@
 @helper FormAction()
 {
   <div class="pull-right">
-    <a href="/Organization/GeneralHelpToggle/@Model.Id" class="btn ajax btn-info">Toggle Help</a>
+    <a href="/Organization/GeneralHelpToggle/@Model.Id" class="btn ajax">Toggle Help</a>
     @if (User.IsInRole("Edit"))
     {
-      <a href="/Organization/GeneralEdit" class="btn ajax pull-right">Edit</a>
+      <a href="/Organization/GeneralEdit" class="btn ajax btn-primary">Edit</a>
     }
   </div>
 }

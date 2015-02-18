@@ -5,6 +5,15 @@
   <label class="control-label">Age Groups</label>
   <div class="controls">
     <table class="table table-condensed not-wide">
+      <thead>
+        <tr>
+          <th>Start Age</th>
+          <th>End Age</th>
+          <th>Small Group Name</th>
+          <th>Fee</th>
+        </tr>
+      </thead>
+      <tbody>
       @foreach (var i in Model)
       {
         <tr>
@@ -14,6 +23,7 @@
           <td>@i.Fee.ToString2("c")</td>
         </tr>
       }
+      </tbody>
     </table>
     @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
     {

@@ -898,7 +898,6 @@
     <Content Include="Areas\Org\Views\Organization\People.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Meetings.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabRegistration.cshtml" />
     <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.min.js.map">
       <DependentUpon>bootstrap-datetimepicker.min.js</DependentUpon>
     </Content>

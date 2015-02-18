@@ -11,10 +11,10 @@
   @Html.DisplayFor(m => m.AllowAttendOverlap)
   @Html.DisplayFor(m => m.CanSelfCheckin)
   @Html.DisplayFor(m => m.SuspendCheckin)
-  @Html.DisplayFor(m => m.AllowNonCampusCheckin)
-  @Html.DisplayFor(m => m.OrgOffsite)
+  @Html.DisplayFor(m => m.AllowNonCampusCheckIn)
+  @Html.DisplayFor(m => m.Offsite)
   @Html.DisplayFor(m => m.NoSecurityLabel)
-  @Html.DisplayFor(m => m.NumCheckinLabels)
+  @Html.DisplayFor(m => m.NumCheckInLabels)
   @Html.DisplayFor(m => m.NumWorkerCheckInLabels)
   @Html.DisplayFor(m => m.FirstMeetingDate)
   @Html.DisplayFor(m => m.LastMeetingDate)
@@ -27,10 +27,10 @@
 @helper FormAction()
 {
   <div class="pull-right">
-    <a href="/Organization/AttendanceHelpToggle/@Model.Id" class="btn ajax btn-info">Toggle Help</a>
+    <a href="/Organization/AttendanceHelpToggle/@Model.Id" class="btn ajax">Toggle Help</a>
     @if (User.IsInRole("Edit"))
     {
-    <a href="/Organization/AttendanceEdit/@Model.Id" class="btn edit ajax pull-right">Edit</a>
+    <a href="/Organization/AttendanceEdit/@Model.Id" class="btn edit ajax btn-primary">Edit</a>
     }
   </div>
   <div class="formerror">@Html.ValidationMessage("Form")</div>

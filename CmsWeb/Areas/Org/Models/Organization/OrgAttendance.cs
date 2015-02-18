@@ -158,14 +158,14 @@ Also, if you have multiple campuses in your database
 and you do not assign a campus to Organizations used for self-checkin, 
 they will display without this box being checked.
 ")]
-        public bool AllowNonCampusCheckin { get; set; }
+        public bool AllowNonCampusCheckIn { get; set; }
 
         [Display(Name="Offsite Trip", 
             Description = @"
 This causes any absents during the period of an offsite trip start and end dates 
 to not be counted negatively for attendance purposes.
 ")]
-        public bool OrgOffsite { get; set; }
+        public bool Offsite { get; set; }
 
         [Display(Name="No security label required", 
             Description = @"
@@ -178,7 +178,7 @@ to not need a security label to be picked up.
             Description = @"
 Default is 1, use 0 if no labels needed.
 ")]
-        public int? NumCheckinLabels { get; set; }
+        public int? NumCheckInLabels { get; set; }
 
         [Display(Name="Number of Worker CheckIn Labels", 
             Description = @"
