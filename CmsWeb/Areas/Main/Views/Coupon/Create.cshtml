@@ -1,33 +1,50 @@
 ﻿@model CmsWeb.Models.CouponModel
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" >
-<body>
-    <fieldset>
-        <legend>Registration Coupon</legend>
-        <table cellpadding="5">
-        <tr>
-        <td>Registration</td>
-        <td>@Model.Registration()</td>
-        </tr>
-        <tr>
-        <td>Amount</td>
-        <td>@Model.amount.ToString("C")</td>
-        </tr>
-        <tr>
-        <td>Name</td>
-        <td>@Model.name</td>
-        </tr>
-        <tr>
-        <td>Coupon Code</td>
-        <td><span style="font-family: Courier New;font-weight:bold">@Model.couponcode</span></td>
-        </tr>
-        </table>
-    </fieldset>
-    <p>
-        @Helper.AnchorLink("Back to List", "/Coupons")
-    </p>
-
-</body>
-</html>
-
-
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Coupon";
+    ViewBag.PageHeader = "Coupon";
+}
+<div class="row">
+    <div class="col-md-8">
+        <div class="alert alert-success fade in" role="alert">
+            <h4>Registration Coupon</h4>
+            <p>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label class="text-right">Registration</label>
+                    </div>
+                    <div class="col-sm-9">
+                        @Model.Registration()
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label class="text-right">Amount</label>
+                    </div>
+                    <div class="col-sm-9">
+                        @Model.amount.ToString("C")
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label class="text-right">Name</label>
+                    </div>
+                    <div class="col-sm-9">
+                        @Model.name
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <label class="text-right">Coupon Code</label>
+                    </div>
+                    <div class="col-sm-9">
+                        <span style="font-family: Courier New;font-weight:bold">@Model.couponcode</span>
+                    </div>
+                </div>                
+            </p>
+            <p>
+                <a href="/Coupon/List" class="btn btn-success"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+            </p>
+        </div>
+    </div>
+</div>
