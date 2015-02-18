@@ -4,6 +4,7 @@ var gulp = require('gulp'),
   sourcemaps = require('gulp-sourcemaps');
 
 var cssOutput = 'content/touchpoint/css';
+var select2Output = 'content/touchpoint/lib/select2/css';
 
 gulp.task('default', function() {
   // place code here
@@ -26,6 +27,10 @@ gulp.task('less', function() {
         .pipe(less())
         .pipe(minify())
         .pipe(gulp.dest(cssOutput));
+    gulp.src('content/touchpoint/src/less/select2/select2-bootstrap.less')
+        .pipe(less())
+        .pipe(minify())
+        .pipe(gulp.dest(select2Output));
 });
 
 gulp.task('less-sourcemaps', function() {

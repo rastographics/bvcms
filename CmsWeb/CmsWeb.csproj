@@ -776,6 +776,12 @@
     <Content Include="Content\touchpoint\lib\jquery-chosen\js\chosen.jquery.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
     <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2-bootstrap.css" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2-spinner.gif" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2.css" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2.png" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2x2.png" />
+    <Content Include="Content\touchpoint\lib\select2\js\select2.min.js" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
@@ -873,6 +879,7 @@
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\touchpoint\src\less\box.less" />
     <Content Include="Content\touchpoint\src\less\search-builder.less" />
+    <Content Include="Content\touchpoint\src\less\select2\select2-bootstrap.less" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <None Include="Scripts\jQuery\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jQuery\jquery.validate.globalize.js" />

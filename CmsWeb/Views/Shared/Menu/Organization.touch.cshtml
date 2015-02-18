@@ -7,7 +7,7 @@
             <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
             @Helper.LiAnchorLink("Manage Org Members", "/OrgMembers/")
         }
-        @Helper.LiAnchorLink("Coupons", "/Coupons/", User.IsInRole("Coupon"))
+        @Helper.LiAnchorLink("Coupons", "/Coupon/List", User.IsInRole("Coupon"))
         @Helper.LiAnchorLink("Manage Promotion", "/Promotion/", User.IsInRole("Edit"))
         @{
             var recentOrgs = Util2.MostRecentOrgs;
