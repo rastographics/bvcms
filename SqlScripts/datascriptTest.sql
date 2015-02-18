@@ -1717,6 +1717,7 @@ INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (23, N'Desi
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (24, N'MissionGiving', 1)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (25, N'ManageGroups', 1)
 INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (26, N'Delete', 1)
+INSERT INTO [dbo].[Roles] ([RoleId], [RoleName], [hardwired]) VALUES (28, N'Tasks', 1)
 SET IDENTITY_INSERT [dbo].[Roles] OFF
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminCoupon', N'itsasecret')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminMail', N'david@bvcms.com')

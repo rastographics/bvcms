@@ -2654,6 +2654,25 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.HasIncompleteRegistrations", IsComposable = true)]
+		public IQueryable< View.HasIncompleteRegistration > HasIncompleteRegistrations(
+            [Parameter(DbType="int")] int? prog,
+            [Parameter(DbType="int")] int? div,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="datetime")] DateTime? begdt,
+            [Parameter(DbType="datetime")] DateTime? enddt
+            )
+		{
+			return this.CreateMethodCallQuery< View.HasIncompleteRegistration>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                prog,
+                div,
+                org,
+                begdt,
+                enddt
+                );
+		}
+
 		[Function(Name="dbo.LastMeetings", IsComposable = true)]
 		public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="int")] int? orgid,
