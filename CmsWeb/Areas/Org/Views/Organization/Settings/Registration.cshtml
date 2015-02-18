@@ -19,14 +19,7 @@
 
     @Html.DisplayFor(m => m.Limit)
     @Html.DisplayFor(m => m.VaidateOrgs)
-    @*
-      <ul id="AgeGroups" class="sort" style="list-style: none;">
-          @foreach (var i in Model.AgeGroups)
-          {
-              @Html.EditorFor(m => i)
-          }
-      </ul>
-    *@
+    @Html.DisplayFor(m => m.AgeGroups)
     @Html.DisplayFor(m => m.AllowOnlyOne)
     @Html.DisplayFor(m => m.AddAsProspect)
     @Html.DisplayFor(m => m.AllowReRegister)

@@ -33,20 +33,12 @@ namespace CmsWeb.Areas.Org.Controllers
             return PartialView("Settings/RegistrationEdit", m);
         }
         [HttpPost]
-        public ActionResult RegistrationUpdate(int id)
+        public ActionResult RegistrationUpdate(OrgRegistration m)
         {
-            var m = new OrgRegistration(id);
-            //m.AgeGroups.Clear();
             DbUtil.LogActivity("Update Registration {0}".Fmt(m.Org.OrganizationName));
             try
             {
-                UpdateModel(m);
-                if (m.Org.OrgPickList.HasValue() && m.Org.RegistrationTypeId == RegistrationTypeCode.JoinOrganization)
-                    m.Org.OrgPickList = null;
-
-                var os = new Settings(m.ToString(), DbUtil.Db, id);
-                m.Org.RegSetting = os.ToString();
-                DbUtil.Db.SubmitChanges();
+                m.Update();
                 if (!m.Org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
                 return PartialView("Settings/Registration", m);
@@ -56,6 +48,11 @@ namespace CmsWeb.Areas.Org.Controllers
                 ModelState.AddModelError("Form", ex.Message);
                 return PartialView("Settings/RegistrationEdit", m);
             }
+        }
+        [HttpPost]
+        public ActionResult NewAgeGroup()
+        {
+            return PartialView("EditorTemplates/AgeGroup", new Settings.AgeGroup());
         }
         public ActionResult OrgPickList(int id)
         {

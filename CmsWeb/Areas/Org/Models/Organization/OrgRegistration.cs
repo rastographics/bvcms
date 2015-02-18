@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Code;
 using UtilityExtensions;
@@ -38,7 +39,12 @@ namespace CmsWeb.Areas.Org.Models
         public void Update()
         {
             this.CopyPropertiesTo(Org, typeof(OrgAttribute));
+            RegSettings.AgeGroups.Clear();
+            if (Org.OrgPickList.HasValue() && Org.RegistrationTypeId == RegistrationTypeCode.JoinOrganization)
+                Org.OrgPickList = null;
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
+            var os = new Settings(RegSettings.ToString(), DbUtil.Db, Id);
+            Org.RegSetting = os.ToString();
             DbUtil.Db.SubmitChanges();
         }
 
@@ -168,6 +174,17 @@ Use a comma separated list of OrgIds.
 ")]
         public string VaidateOrgs { get; set; }
 
+
+        [Reg, Display(Description = @"
+This will put registrant in a small group based on their age,
+with an optional age-based fee
+"), UIHint("AgeGroups")]
+        public List<Settings.AgeGroup> AgeGroups
+        {
+            get { return ageGroups ?? new List<Settings.AgeGroup>(); }
+            set { ageGroups = value; }
+        }
+        private List<Settings.AgeGroup> ageGroups;
 
         [Reg, Display(Description = @"
 Joins registrant to another organization at the same time.

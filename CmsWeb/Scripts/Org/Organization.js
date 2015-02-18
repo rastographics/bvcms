@@ -783,7 +783,7 @@
         RebindMemberGrids();
     };
 
-    $("body").on("click", 'ul.enablesort div.newitem > a', function (ev) {
+    $("body").on("click", 'div.newitem > a', function (ev) {
         if (!$(this).attr("href"))
             return false;
         ev.preventDefault();

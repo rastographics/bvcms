@@ -15,14 +15,7 @@
 
     @Html.EditorFor(m => m.Limit)
     @Html.EditorFor(m => m.VaidateOrgs)
-@*
-    <ul id="AgeGroups" class="sort" style="list-style: none;">
-        @foreach (var i in Model.AgeGroups)
-        {
-            @Html.EditorFor(m => i)
-        }
-    </ul>
-*@
+    @Html.EditorFor(m => m.AgeGroups)
     @Html.EditorFor(m => m.AllowOnlyOne)
     @Html.EditorFor(m => m.AddAsProspect)
     @Html.EditorFor(m => m.AllowReRegister)

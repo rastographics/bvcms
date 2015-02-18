@@ -100,11 +100,6 @@ namespace CmsWeb.Areas.Org.Controllers
             return PartialView("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
         }
         [HttpPost]
-        public ActionResult NewAgeGroup()
-        {
-            return PartialView("EditorTemplates/AgeGroup", new Settings.AgeGroup());
-        }
-        [HttpPost]
         public ActionResult NewTimeSlot(string id)
         {
             return PartialView("EditorTemplates/TimeSlot", new TimeSlots.TimeSlot { Name = id });
