@@ -2654,6 +2654,25 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.HasIncompleteRegistrations", IsComposable = true)]
+		public IQueryable< View.HasIncompleteRegistration > HasIncompleteRegistrations(
+            [Parameter(DbType="int")] int? prog,
+            [Parameter(DbType="int")] int? div,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="datetime")] DateTime? begdt,
+            [Parameter(DbType="datetime")] DateTime? enddt
+            )
+		{
+			return this.CreateMethodCallQuery< View.HasIncompleteRegistration>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                prog,
+                div,
+                org,
+                begdt,
+                enddt
+                );
+		}
+
 		[Function(Name="dbo.LastMeetings", IsComposable = true)]
 		public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="int")] int? orgid,
@@ -4497,6 +4516,20 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetCurrentOnlineBundle", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetCurrentOnlineBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                next,
+                prev
                 ).ReturnValue));
 		}
 

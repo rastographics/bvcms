@@ -312,5 +312,16 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression RecentIncompleteRegistrations()
+        {
+            var mindt = Util.Now.AddDays(-Days).Date;
+            var q = db.HasIncompleteRegistrations(Program, Division, Organization, mindt, Util.Now);
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId ?? 0));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

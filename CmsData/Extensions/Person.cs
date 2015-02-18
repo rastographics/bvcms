@@ -1311,14 +1311,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     if(now > next)
                     	next = next.AddDays(7);
                     var prev = next.AddDays(-7);
-                    var q = from b in Db.BundleHeaders
-                            where b.BundleHeaderTypeId == typecode
-                            where b.BundleStatusId == BundleStatusCode.Open
-                            where b.ContributionDate >= prev
-                            where b.ContributionDate < next
-                            orderby b.ContributionDate descending
-                            select b;
-                    bundle = q.FirstOrDefault();
+                    var bid = Db.GetCurrentOnlineBundle(next, prev);
+                    bundle = Db.BundleHeaders.SingleOrDefault(bb => bb.BundleHeaderId == bid);
                 }
                 catch (Exception)
                 {
@@ -1327,16 +1321,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             if(!spec.HasValue())
             {
-                var q = from b in Db.BundleHeaders
-                        where b.BundleHeaderTypeId == typecode
-                        where b.BundleStatusId == BundleStatusCode.Open
-                        where b.ContributionDate >= d
-                        where b.ContributionDate < now
-                        where b.ContributionDate.Year == now.Year
-                        where b.ContributionDate.Month == now.Month
-                        orderby b.ContributionDate descending
-                        select b;
-                bundle = q.FirstOrDefault();
+                var bid = Db.GetCurrentOnlineBundle(now, d);
+                bundle = Db.BundleHeaders.SingleOrDefault(bb => bb.BundleHeaderId == bid);
             }
             if (bundle == null)
             {
@@ -1345,7 +1331,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     BundleHeaderTypeId = typecode.Value,
                     BundleStatusId = BundleStatusCode.Open,
                     CreatedBy = Util.UserId1,
-                    ContributionDate = d,
+                    ContributionDate = now,
                     CreatedDate = now,
                     FundId = Db.Setting("DefaultFundId", "1").ToInt(),
                     RecordStatus = false,

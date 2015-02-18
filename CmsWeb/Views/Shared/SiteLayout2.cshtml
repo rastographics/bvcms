@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <head>
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
@@ -10,6 +10,8 @@
     @ViewExtensions2.FixupsCss()
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap()
+    <script src="@Url.Content(ViewExtensions2.Globalize)" type="text/javascript"></script>
+    <script src="@Url.Content(ViewExtensions2.GlobalizeCulture)" type="text/javascript"></script>
     @Fingerprint.Script("/Scripts/bundle.main2.js")
     @Html.Partial("DatePickerDefaults2")
     <script>

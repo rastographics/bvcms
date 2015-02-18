@@ -1,8 +1,6 @@
 @using CmsWeb.Areas.Search.Models
 <script type="text/javascript">
   $.dtoptions = { format: '@UtilityExtensions.Util.jQueryDateFormat2', cul: '@UtilityExtensions.Util.Culture' };
-  if(Globalize && Globalize.local)
-    Globalize.locale('@UtilityExtensions.Util.Culture');
+  Globalize.culture('@UtilityExtensions.Util.Culture');
   $.ClipboardHasCondition = '1' === '@(QueryModel.ClipboardHasCondition() ? "1" : "0")';
-  
 </script>
