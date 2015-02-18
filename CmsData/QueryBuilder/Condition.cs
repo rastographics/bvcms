@@ -464,7 +464,7 @@ namespace CmsData
                 Id = Guid.NewGuid(),
                 AllConditions = AllConditions,
                 ConditionName = QueryType.Group.ToString(),
-                Comparison = CompareType.AllTrue.ToString(),
+                Comparison = CompareType.AnyTrue.ToString(),
                 Order = MaxClauseOrder() + 2
             };
             AllConditions.Add(c.Id, c);
