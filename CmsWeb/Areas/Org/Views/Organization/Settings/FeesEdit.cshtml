@@ -1,12 +1,24 @@
-﻿@model CmsData.Registration.Settings
+﻿@model CmsWeb.Areas.Org.Models.SettingsFeesModel
 <form class="form form-horizontal non-modal ajax span12">
     <br/>
     @FormAction()
-    <p><i>Drag the grey bars up/down arrow to reorder items.</i></p>
-    <ul class="enablesort edit" style="list-style: none; margin-left: 5px;">
-        @Html.EditorFor(m => m, "TabFees")
-    </ul>
+  <div>
+    @Html.DisplayFor(m => m.Fee)
+    @Html.DisplayFor(m => m.Deposit)
+    @Html.DisplayFor(m => m.IncludeOtherFeesWithDeposit)
+    @Html.DisplayFor(m => m.ExtraFee)
+    @Html.DisplayFor(m => m.LastDayBeforeExtra)
+    @Html.DisplayFor(m => m.MaximumFee)
+    @Html.DisplayFor(m => m.ApplyMaxToOtherFees)
+    @Html.DisplayFor(m => m.AskDonation)
+    @Html.DisplayFor(m => m.DonationFundId)
+    @Html.DisplayFor(m => m.DonationLabel)
+    @Html.DisplayFor(m => m.OrgFees)
+    @Html.DisplayFor(m => m.OtherFeesAddedToOrgFee)
+    @Html.DisplayFor(m => m.AccountingCode)
+    @Html.DisplayFor(m => m.ExtraValueFeeName)
     @FormAction()
+  </div>
 </form>
 
 @helper FormAction()

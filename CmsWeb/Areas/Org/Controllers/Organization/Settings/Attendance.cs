@@ -13,24 +13,24 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Attendance(int id)
         {
-            var m = new OrgAttendance(id);
+            var m = new SettingsAttendanceModel(id);
             return PartialView("Settings/Attendance", m);
         }
         [HttpPost]
         public ActionResult AttendanceHelpToggle(int id)
         {
             DbUtil.Db.ToggleUserPreference("ShowAttendanceHelp");
-            var m = new OrgAttendance(id);
+            var m = new SettingsAttendanceModel(id);
             return PartialView("Settings/Attendance", m);
         }
         [HttpPost]
         public ActionResult AttendanceEdit(int id)
         {
-            var m = new OrgAttendance(id);
+            var m = new SettingsAttendanceModel(id);
             return PartialView("Settings/AttendanceEdit", m);
         }
         [HttpPost]
-        public ActionResult AttendanceUpdate(OrgAttendance m)
+        public ActionResult AttendanceUpdate(SettingsAttendanceModel m)
         {
             m.Update();
             m.UpdateSchedules();

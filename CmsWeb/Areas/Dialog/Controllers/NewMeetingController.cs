@@ -13,7 +13,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ForNewMeeting/{orgid:int}")]
         public ActionResult ForNewMeeting(int orgid)
         {
-            var oi = new OrgAttendance() { Id = orgid };
+            var oi = new SettingsAttendanceModel() { Id = orgid };
             var m = new NewMeetingInfo()
             {
                 MeetingDate = oi.PrevMeetingDate,
@@ -27,7 +27,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ForNewRollsheet/{orgid:int}")]
         public ActionResult ForNewRollsheet(int orgid)
         {
-            var oi = new OrgAttendance() { Id = orgid };
+            var oi = new SettingsAttendanceModel() { Id = orgid };
             var m = new NewMeetingInfo()
             {
                 MeetingDate =  oi.NextMeetingDate,
@@ -41,7 +41,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ForNewRallyRollsheet/{orgid:int}")]
         public ActionResult ForNewRallyRollsheet(int orgid)
         {
-            var oi = new OrgAttendance { Id = orgid };
+            var oi = new SettingsAttendanceModel { Id = orgid };
             var m = new NewMeetingInfo()
             {
                 MeetingDate =  oi.NextMeetingDate,

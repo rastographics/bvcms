@@ -1,12 +1,9 @@
 using System;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Registration;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
-using CmsData.Codes;
+using OrgFees = CmsData.Registration.OrgFees;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -15,27 +12,31 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Fees(int id)
         {
-            return PartialView("Settings/Fees", getRegSettings(id));
+            var m = new SettingsFeesModel(id);
+            return PartialView("Settings/Fees", m);
+        }
+        [HttpPost]
+        public ActionResult FeesHelpToggle(int id)
+        {
+            DbUtil.Db.ToggleUserPreference("ShowFeesHelp");
+            var m = new SettingsFeesModel(id);
+            return PartialView("Settings/Fees", m);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult FeesEdit(int id)
         {
-            return PartialView("Settings/FeesEdit", getRegSettings(id));
+            var m = new SettingsFeesModel(id);
+            return PartialView("Settings/FeesEdit", m);
         }
         [HttpPost]
-        public ActionResult FeesUpdate(int id)
+        public ActionResult FeesUpdate(SettingsFeesModel m)
         {
-            var m = getRegSettings(id);
-            m.OrgFees.list.Clear();
+            DbUtil.LogActivity("Update Fees {0}".Fmt(m.Org.OrganizationName));
             try
             {
-                DbUtil.LogActivity("Update Fees {0}".Fmt(m.org.OrganizationName));
-                UpdateModel(m);
-                var os = new Settings(m.ToString(), DbUtil.Db, id);
-                m.org.RegSetting = os.ToString();
-                DbUtil.Db.SubmitChanges();
-                if (!m.org.NotifyIds.HasValue())
+                m.Update();
+                if (!m.Org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
                 return PartialView("Settings/Fees", m);
             }
@@ -44,6 +45,12 @@ namespace CmsWeb.Areas.Org.Controllers
                 ModelState.AddModelError("Form", ex.Message);
                 return PartialView("Settings/FeesEdit", m);
             }
+        }
+
+        [HttpPost]
+        public ActionResult NewOrgFee(string id)
+        {
+            return PartialView("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
         }
     }
 }

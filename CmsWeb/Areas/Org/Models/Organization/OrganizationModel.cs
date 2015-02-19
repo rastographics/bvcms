@@ -27,14 +27,14 @@ namespace CmsWeb.Areas.Org.Models
         }
         public OrgMain OrgMain { get; set; }
 
-        private OrgGeneral orgGeneral;
-        public OrgGeneral OrgGeneral
+        private SettingsGeneralModel settingsGeneralModel;
+        public SettingsGeneralModel SettingsGeneralModel
         {
             get
             {
-                if(orgGeneral == null && Id.HasValue)
-                    orgGeneral = new OrgGeneral(Id.Value);
-                return orgGeneral;
+                if(settingsGeneralModel == null && Id.HasValue)
+                    settingsGeneralModel = new SettingsGeneralModel(Id.Value);
+                return settingsGeneralModel;
             }
         }
 

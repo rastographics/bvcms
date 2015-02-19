@@ -24,7 +24,7 @@
 </ul>
 <div class="tab-content">
   <div id="General" class="tab-pane settings active" data-link="/Organization/General">
-    @Html.Partial("Settings/General", Model.OrgGeneral)
+    @Html.Partial("Settings/General", Model.SettingsGeneralModel)
   </div>
   <div id="Attendance" class="tab-pane settings" data-link="/Organization/Attendance">
     @Helper.HiddenId("Id", Model.Id)

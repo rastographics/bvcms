@@ -15,25 +15,25 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Registration(int id)
         {
-            var m = new OrgRegistration(id);
+            var m = new SettingsRegistrationModel(id);
             return PartialView("Settings/Registration", m);
         }
         [HttpPost]
         public ActionResult RegistrationHelpToggle(int id)
         {
             DbUtil.Db.ToggleUserPreference("ShowRegistrationHelp");
-            var m = new OrgRegistration(id);
+            var m = new SettingsRegistrationModel(id);
             return PartialView("Settings/Registration", m);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult RegistrationEdit(int id)
         {
-            var m = new OrgRegistration(id);
+            var m = new SettingsRegistrationModel(id);
             return PartialView("Settings/RegistrationEdit", m);
         }
         [HttpPost]
-        public ActionResult RegistrationUpdate(OrgRegistration m)
+        public ActionResult RegistrationUpdate(SettingsRegistrationModel m)
         {
             DbUtil.LogActivity("Update Registration {0}".Fmt(m.Org.OrganizationName));
             try

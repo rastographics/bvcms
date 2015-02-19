@@ -15,24 +15,24 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult General(int id)
         {
-            var m = new OrgGeneral(id);
+            var m = new SettingsGeneralModel(id);
             return PartialView("Settings/General", m);
         }
         [HttpPost]
         public ActionResult GeneralHelpToggle(int id)
         {
             DbUtil.Db.ToggleUserPreference("ShowGeneralHelp");
-            var m = new OrgGeneral(id);
+            var m = new SettingsGeneralModel(id);
             return PartialView("Settings/General", m);
         }
         [HttpPost]
         public ActionResult GeneralEdit(int id)
         {
-            var m = new OrgGeneral(id);
+            var m = new SettingsGeneralModel(id);
             return PartialView("Settings/GeneralEdit",  m);
         }
         [HttpPost]
-        public ActionResult GeneralUpdate(OrgGeneral m)
+        public ActionResult GeneralUpdate(SettingsGeneralModel m)
         {
             if (!m.Org.LimitToRole.HasValue())
                 m.Org.LimitToRole = null;

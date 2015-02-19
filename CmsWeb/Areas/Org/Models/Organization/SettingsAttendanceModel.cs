@@ -10,7 +10,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
-    public class OrgAttendance
+    public class SettingsAttendanceModel
     {
         public Organization Org;
         public int Id 
@@ -23,11 +23,11 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        public OrgAttendance()
+        public SettingsAttendanceModel()
         {
         }
 
-        public OrgAttendance(int id)
+        public SettingsAttendanceModel(int id)
         {
             Id = id;
             this.CopyPropertiesFrom(Org);

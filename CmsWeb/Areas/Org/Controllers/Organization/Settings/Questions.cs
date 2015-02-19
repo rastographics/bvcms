@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
-using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
-using CmsData.Codes;
+using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -93,11 +91,6 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult NewText(string id)
         {
             return PartialView("EditorTemplates/Text", new AskExtraQuestions.ExtraQuestion { Name = id });
-        }
-        [HttpPost]
-        public ActionResult NewOrgFee(string id)
-        {
-            return PartialView("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
         }
         [HttpPost]
         public ActionResult NewTimeSlot(string id)
