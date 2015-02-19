@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Org.Models
         public void Update()
         {
             this.CopyPropertiesTo(Org, typeof(OrgAttribute));
-            RegSettings.OrgFees.list.Clear();
+            RegSettings.OrgFees.Clear();
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
             var os = new Settings(RegSettings.ToString(), DbUtil.Db, Id);
             Org.RegSetting = os.ToString();
@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Org.Models
         public decimal? ExtraFee { get; set; }
 
         [Org, Display(Description = LastDayBeforeExtraDescription)]
-        public DateTime LastDayBeforeExtra { get; set; }
+        public DateTime? LastDayBeforeExtra { get; set; }
 
         [Reg, Display(Description = MaximumFeeDescription)]
         public decimal? MaximumFee { get; set; }
@@ -80,8 +80,13 @@ namespace CmsWeb.Areas.Org.Models
         [Reg, Display(Description = DonationLabelDescription)]
         public string DonationLabel { get; set; }
 
-        [Reg, Display(Description = OrgFeesDescription)]
-        public OrgFees OrgFees { get; set; }
+        [Reg, Display(Description = OrgFeesDescription), UIHint("OrgFees")]
+        public List<Settings.OrgFee> OrgFees
+        {
+            get { return orgFees ?? new List<Settings.OrgFee>(); }
+            set { orgFees = value; }
+        }
+        private List<Settings.OrgFee> orgFees;
 
         [Reg, Display(Description = OtherFeesAddedToOrgFeeDescription)]
         public bool OtherFeesAddedToOrgFee { get; set; }

@@ -42,6 +42,8 @@ namespace CmsWeb.Areas.Org.Models
         {
             Id = id;
             DbUtil.Db.CurrentOrg.Id = id;
+            if (Org == null)
+                return;
             OrgMain = new OrgMain(Org);
             GroupSelect = GroupSelectCode.Member;
             IsVolunteerLeader = VolunteerLeaderInOrg(Id);

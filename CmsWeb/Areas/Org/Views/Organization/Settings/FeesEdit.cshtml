@@ -1,22 +1,26 @@
-﻿@model CmsWeb.Areas.Org.Models.SettingsFeesModel
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.SettingsFeesModel
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowFeesHelp") == "true";
+}
 <form class="form form-horizontal non-modal ajax span12">
     <br/>
     @FormAction()
   <div>
-    @Html.DisplayFor(m => m.Fee)
-    @Html.DisplayFor(m => m.Deposit)
-    @Html.DisplayFor(m => m.IncludeOtherFeesWithDeposit)
-    @Html.DisplayFor(m => m.ExtraFee)
-    @Html.DisplayFor(m => m.LastDayBeforeExtra)
-    @Html.DisplayFor(m => m.MaximumFee)
-    @Html.DisplayFor(m => m.ApplyMaxToOtherFees)
-    @Html.DisplayFor(m => m.AskDonation)
-    @Html.DisplayFor(m => m.DonationFundId)
-    @Html.DisplayFor(m => m.DonationLabel)
-    @Html.DisplayFor(m => m.OrgFees)
-    @Html.DisplayFor(m => m.OtherFeesAddedToOrgFee)
-    @Html.DisplayFor(m => m.AccountingCode)
-    @Html.DisplayFor(m => m.ExtraValueFeeName)
+    @Html.EditorFor(m => m.Fee)
+    @Html.EditorFor(m => m.Deposit)
+    @Html.EditorFor(m => m.IncludeOtherFeesWithDeposit)
+    @Html.EditorFor(m => m.ExtraFee)
+    @Html.EditorFor(m => m.LastDayBeforeExtra)
+    @Html.EditorFor(m => m.MaximumFee)
+    @Html.EditorFor(m => m.ApplyMaxToOtherFees)
+    @Html.EditorFor(m => m.AskDonation)
+    @Html.EditorFor(m => m.DonationFundId)
+    @Html.EditorFor(m => m.DonationLabel)
+    @Html.EditorFor(m => m.OrgFees)
+    @Html.EditorFor(m => m.OtherFeesAddedToOrgFee)
+    @Html.EditorFor(m => m.AccountingCode)
+    @Html.EditorFor(m => m.ExtraValueFeeName)
     @FormAction()
   </div>
 </form>
@@ -24,8 +28,8 @@
 @helper FormAction()
 {
     <div class="pull-right">
-        <a href="/Organization/Fees/@Model.OrgId" class="btn ajax">Cancel</a>
-        <a href="/Organization/FeesUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+        <a href="/Organization/Fees/@Model.Id" class="btn ajax">Cancel</a>
+        <a href="/Organization/FeesUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
     </div>
     <div class="formerror">@Html.ValidationMessage("Form")</div>
 }

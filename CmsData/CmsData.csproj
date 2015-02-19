@@ -677,7 +677,6 @@
     <Compile Include="Registration\AskExtraQuestions.cs" />
     <Compile Include="Registration\AskGradeOptions.cs" />
     <Compile Include="Registration\AskMenu.cs" />
-    <Compile Include="Registration\OrgFees.cs" />
     <Compile Include="Registration\Parser.cs" />
     <Compile Include="Registration\AskYesNoQuestions.cs" />
     <Compile Include="Finance\SageGateway.cs" />

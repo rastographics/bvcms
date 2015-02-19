@@ -1,9 +1,9 @@
 using System;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Registration;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
-using OrgFees = CmsData.Registration.OrgFees;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult NewOrgFee(string id)
         {
-            return PartialView("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
+            return PartialView("EditorTemplates/OrgFee", new Settings.OrgFee());
         }
     }
 }

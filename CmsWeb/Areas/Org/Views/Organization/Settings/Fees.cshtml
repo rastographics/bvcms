@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Org.Models.SettingsFeesModel
 @{
-  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowFeesHelp") == "true";
 }
 <form class="form form-horizontal non-modal ajax span12" data-init="datepicker">
     <br />
@@ -34,5 +34,4 @@
     }
   </div>
   <div class="formerror">@Html.ValidationMessage("Form")</div>
-}
 }

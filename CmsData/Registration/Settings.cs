@@ -77,7 +77,7 @@ namespace CmsData.Registration
 		public string InstructionAll { get; set; }
 		public string ThankYouMessage { get; set; }
 
-		public OrgFees OrgFees { get; set; }
+		public List<OrgFee> OrgFees { get; set; }
 		public List<AgeGroup> AgeGroups { get; set; }
 		public TimeSlots TimeSlots { get; set; }
 		public List<int> LinkGroupsFromOrgs { get; set; }
@@ -117,13 +117,20 @@ namespace CmsData.Registration
 			public decimal? Fee { get; set; }
 		}
 
-		public Organization org { get; set; }
+        public class OrgFee
+        {
+            public int? OrgId { get; set; }
+            public decimal? Fee { get; set; }
+            public string Name { get; set; }
+        }
+
+        public Organization org { get; set; }
 		public int OrgId { get; set; }
 		public CMSDataContext Db { get; set; }
 
 	    public Settings()
-		{
-			OrgFees = new OrgFees();
+	    {
+	        OrgFees = new List<OrgFee>();
 			TimeSlots = new TimeSlots();
 			AgeGroups = new List<AgeGroup>();
 			LinkGroupsFromOrgs = new List<int>();
@@ -313,7 +320,7 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.OrgMemberFees:
 				case Parser.RegKeywords.OrgFees:
-					OrgFees = OrgFees.Parse(parser);
+					ParseOrgFees(parser);
 					break;
 				case Parser.RegKeywords.VoteTags:
 					ParseVoteTags(parser);
@@ -655,6 +662,32 @@ namespace CmsData.Registration
 				AgeGroups.Add(agegroup);
 			}
 		}
+		private void ParseOrgFees(Parser parser)
+		{
+			parser.lineno++;
+			if (parser.curr.indent == 0)
+				return;
+			var startindent = parser.curr.indent;
+			while (parser.curr.indent == startindent)
+			{
+				if (parser.curr.kw != Parser.RegKeywords.None)
+					throw parser.GetException("unexpected line");
+				var oid = parser.GetInt();
+				if (oid == 0)
+				{
+					parser.lineno--;
+					throw parser.GetException("invalid orgid");
+				}
+				var f = new OrgFee { OrgId = oid };
+				if (parser.curr.indent > startindent)
+				{
+					if (parser.curr.kw != Parser.RegKeywords.Fee)
+						throw parser.GetException("expected fee");
+					f.Fee = parser.GetDecimal();
+				}
+				OrgFees.Add(f);
+			}
+		}
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
@@ -667,7 +700,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit);
 			AddDonation(sb);
 			AddAgeGroups(sb);
-			OrgFees.Output(sb);
+			AddOrgFees(sb);
 			AddValueCk(0, sb, "OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee);
 			AddInstructions(sb);
 			AddTerms(sb);
@@ -727,6 +760,18 @@ namespace CmsData.Registration
 			{
 				AddValueCk(1, sb, "{0}-{1}".Fmt(i.StartAge, i.EndAge));
 				AddValueCk(2, sb, "SmallGroup", i.SmallGroup);
+				AddValueCk(2, sb, "Fee", i.Fee);
+			}
+			sb.AppendLine();
+		}
+		private void AddOrgFees(StringBuilder sb)
+		{
+			if (OrgFees.Count == 0)
+				return;
+			AddValueNoCk(0, sb, "OrgFees", "");
+			foreach (var i in OrgFees)
+			{
+				AddValueCk(1, sb, "{0}".Fmt(i.OrgId));
 				AddValueCk(2, sb, "Fee", i.Fee);
 			}
 			sb.AppendLine();

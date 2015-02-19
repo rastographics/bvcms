@@ -51,10 +51,10 @@ namespace CmsWeb.Models
                     amt = q.First();
             }
             decimal? orgfee = null;
-            if (setting.OrgFees.HasValue)
+            if (setting.OrgFees != null)
             // fee based on being in an organization
             {
-                var q = (from o in setting.OrgFees.list
+                var q = (from o in setting.OrgFees
                          where person != null
                                && person.OrganizationMembers.Any(om => om.OrganizationId == o.OrgId)
                          orderby o.Fee

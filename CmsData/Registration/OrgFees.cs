@@ -39,7 +39,7 @@ namespace CmsData.Registration
 
 		public class OrgFee
 		{
-			public int OrgId { get; set; }
+			public int? OrgId { get; set; }
 			public decimal? Fee { get; set; }
             public string Name { get; set; }
 			public void Output(StringBuilder sb)
