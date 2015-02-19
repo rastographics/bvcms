@@ -45,7 +45,7 @@
         });
     };
 
-    $("#SaveAs").click(function (ev) {
+    $("a.saveas").click(function (ev) {
         ev.preventDefault();
         $("<div />").load("/Query/SaveAs", {
             id: $("#QueryId").val(),
@@ -342,7 +342,7 @@
         $('#QueryConditionSelect').on('shown.bs.modal', function () {
             $("input.searchConditions").focus();
             resetAllConditions();
-
+            
             $("input.searchConditions").on('keyup', _.debounce(function (e) {
                 //split the current value of search conditions
                 var data = this.value.split(" ");
@@ -390,6 +390,17 @@
 
     $('#QueryConditionSelect').on('shown.bs.modal', function () {
         $("#condition-tabs").tabdrop();
+    });
+
+    $('.FieldLink').click(function () {
+        var id = $(this).find('a').attr('id');
+        var qid = liedit.data("qid");
+        $("#ConditionName").val(id);
+        $.postQuery('SelectCondition', qid, function (ret) {
+            $('#QueryConditionSelect').modal("hide");
+            $("#editcondition .condition-modal-content").html(ret).ready($.AdjustEditCondition);
+        });
+        return false;
     });
 
     $('.FieldLink a').click(function (ev) {

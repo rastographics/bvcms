@@ -4,8 +4,7 @@
     <div class="col-lg-6 col-md-6 col-sm-6 form-inline">
         @if (Model.ShowPageSize)
         {
-            <span>Show </span>
-            @Html.DropDownList("PageSize", Model.PageSizeList(), new { onchange = "$.setPageSize(this)", @class="form-control" }) <span>rows</span>
+            <span>Show </span>@Html.DropDownList("PageSize", Model.PageSizeList(), new { onchange = "$.setPageSize(this)", @class = "form-control" })<span> rows</span>
         }
     </div>
     @Html.Partial("Pagination", Model)

@@ -17,7 +17,7 @@
                 @Html.Hidden("SaveToDescription")
                 <h5>@(Model.SaveToDescription.HasValue() && Model.SaveToDescription != Model.Description ? "Copied from: " + Model.SaveToDescription : Model.SaveToDescription)</h5>
                 <div class="box-tools">
-                    <a id="SaveAs" href="#" class="btn btn-default">Save As</a>
+                    <a href="#" class="btn btn-default saveas">Save As</a>
                 </div>
             </div>
             <div class="box-content">
@@ -34,7 +34,7 @@
                             </div>
                         </div>
                         <div class="pull-right">
-                            <a id="Run" href="#" class="btn btn-primary">Run</a>
+                            <a href="#" class="btn btn-default saveas visible-xs-inline">Save As</a> <a id="Run" href="#" class="btn btn-primary">Run</a>
                         </div>
                     </div>
                 </div>
