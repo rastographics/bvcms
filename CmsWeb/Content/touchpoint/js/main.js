@@ -69,18 +69,20 @@ function animateColors() {
 String.prototype.startsWith = function (t, i) {
     return (t == this.substring(0, t.length));
 };
-$.DateValid = function (d, growl) {
+
+$.DateValid = function (d, displayError) {
     var reDate = /^(0?[1-9]|1[012])[\/-](0?[1-9]|[12][0-9]|3[01])[\/-]((19|20)?[0-9]{2})$/i;
     if ($.dateFormat.startsWith('d'))
         reDate = /^(0?[1-9]|[12][0-9]|3[01])[\/-](0?[1-9]|1[012])[\/-]((19|20)?[0-9]{2})$/i;
     var v = true;
     if (!reDate.test(d)) {
-        if (growl == true)
-            $.growlUI("error", "enter valid date");
+        if (displayError == true)
+            swal("Error!", "Enter valid date.", "error");
         v = false;
     }
     return v;
 };
+
 $.SortableDate = function (s) {
     var dt;
     if ($.dateFormat.startsWith('d'))
@@ -90,7 +92,6 @@ $.SortableDate = function (s) {
     var dt2 = dt.getFullYear() + '-' + (dt.getMonth() + 1) + '-' + dt.getDate();
     return dt2;
 };
-
 
 $.InitializeDateElements = function () {
     var extraSmallDevice = $('.device-xs').is(':visible');
