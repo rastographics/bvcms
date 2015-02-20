@@ -768,6 +768,27 @@ namespace CmsWeb
     <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.min.js""></script>");
         }
 
+        public static string jqueryGlobalize { get { return "/Content/touchpoint/lib/jquery-globalize/js/globalize.js"; } }
+
+        public static string jqueryGlobalizeCulture
+        {
+            get
+            {
+                //Determine culture - GUI culture for preference, user selected culture as fallback
+                var currentCulture = CultureInfo.CurrentCulture;
+                var filePattern = "/Content/touchpoint/lib/jquery-globalize/js/cultures/globalize.culture.{0}.js";
+                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
+
+                //Try to pick a more appropriate regionalisation
+                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
+                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
+
+                return regionalisedFileToUse;
+            }
+        }
+        
         public static HtmlString Moment()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
