@@ -1,60 +1,100 @@
-﻿$(function () {
-    $(".bt").button();
-    $("#refresh").click(function (ev) {
+﻿$(function() {
+    $("a.refresh").click(function(ev) {
         ev.preventDefault();
         $.getTable();
-        return false;
+        return true;
     });
-    $("#delete").click(function (ev) {
+
+    $("a.delete").click(function(ev) {
         ev.preventDefault();
-        if ($("#sharecount").text() > 0) {
-            $.growlUI("Error", "Shares exist, cannot delete tag", 3000, null);
+        if ($("span.sharecount").text() > 0) {
+            swal("Error!", "Shares exist, cannot delete tag.", "error");
             return false;
         }
-        if (confirm($(this).attr("confirm"))) {
-            $.post("/Tags/Delete", null, function (ret) {
-                if (ret == "error") {
-                    $.growlUI("Error", "cannot delete tag", 3000, null);
-                } else {
-                    $("#tag").replaceWith(ret);
-                    $.getTable();
-                }
+
+        swal({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            },
+            function() {
+                $.post("/Tags/Delete", null, function(ret) {
+                    if (ret == "error")
+                        swal("Error!", "Cannot delete tag.", "error");
+                    else {
+                        swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function() {
+                                $("#tag").replaceWith(ret);
+                                $.getTable();
+                            });
+                    }
+                });
             });
-        }
-        return false;
+        return true;
     });
-    $("#setshared").click(function (ev) {
+
+    $("#setshared").click(function(ev) {
         ev.preventDefault();
         var f = $('#results').closest('form');
         var q = f.serialize();
-        $.post("/Tags/SetShared", q, function (ret) {
+        $.post("/Tags/SetShared", q, function(ret) {
             $.getTable();
         });
         return false;
     });
-    $("#makenew").click(function (ev) {
+
+    $("a.makenew").click(function(ev) {
         ev.preventDefault();
-        var f = $('#results').closest('form');
+        $("#new-modal").modal();
+        return true;
+    });
+
+    $("#new-tag").click(function(ev) {
+        ev.preventDefault();
+        var f = $('#new-tag-form');
         var q = f.serialize();
-        $.post("/Tags/NewTag", q, function (ret) {
+        $.post("/Tags/NewTag", q, function(ret) {
+            $("#new-modal").modal("hide");
             $("#tag").replaceWith(ret);
             $.getTable();
             $("#tagname").val("");
         });
         return false;
     });
-    $("#rename").click(function (ev) {
+
+    $('#new-modal').on('shown.bs.modal', function() {
+        $("#tagname").val('').focus();
+    });
+
+    $("a.rename").click(function (ev) {
         ev.preventDefault();
-        var f = $('#results').closest('form');
+        $("#rename-modal").modal();
+        return true;
+    });
+
+    $("#rename-tag").click(function (ev) {
+        ev.preventDefault();
+        var f = $('#rename-tag-form');
         var q = f.serialize();
         $.post("/Tags/RenameTag", q, function (ret) {
+            $("#rename-modal").modal("hide");
             $("#tag").replaceWith(ret);
             $.getTable();
-            $("#tagname").val("");
         });
         return false;
     });
-    $("#tag").on("change", function (ev) {
+
+    $('#rename-modal').on('shown.bs.modal', function () {
+        $("#renamedTag").val($("#tag option:selected").text()).focus();
+    });
+
+    $('body').on('change', '#tag', function (ev) {
         ev.preventDefault();
         $.getTable();
         return false;
@@ -65,15 +105,18 @@
         $.getTable();
         return false;
     };
+
     $.setPageSize = function (e) {
         $('#Page').val(1);
         $("#PageSize").val($(e).val());
         return $.getTable();
     };
+
     $.getTable = function () {
         var f = $('#results').closest('form');
         var q = f.serialize();
-        $.post($('#refresh').attr('href'), q, function (ret) {
+        $.block();
+        $.post($('a.refresh').attr('href'), q, function (ret) {
             $('#results').replaceWith(ret).ready(function () {
                 var curtag = $("#actag").val();
                 $('#resultsTable > tbody > tr:even').addClass('alt');
@@ -81,12 +124,13 @@
                 $("#current-tag1").text(curtag);
                 $("#current-tag2").text(curtag);
                 $("#tagalltagname").val(curtag);
-                $("#sharecount").text($("#shcnt").val());
-                //$('.dropdown').hoverIntent(dropdownshow, dropdownhide);
+                $("span.sharecount").text($("#shcnt").val());
             });
+            $.unblock();
         });
         return false;
     };
+
     $('#resultsTable > tbody > tr:even').addClass('alt');
     $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
         ev.preventDefault();
@@ -101,63 +145,42 @@
         $.getTable();
         return false;
     });
-    $("form input").on("keypress", function (e) {
-        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
-            $('#refresh').click();
-            return false;
-        }
-        return true;
-    });
+
     $('a.taguntag').on('click', function (ev) {
         ev.preventDefault();
+        $.block();
         var a = $(this);
         $.post(a.attr('href'), null, function (ret) {
             a.text(ret);
+            var link = $(ev.target).closest('a');
+            link.removeClass('btn-default').removeClass('btn-success');
+            link.addClass(ret == "Remove" ? "btn-default" : "btn-success");
+            link.html(ret == "Remove" ? "<i class='fa fa-tag'></i> Remove" : "<i class='fa fa-tag'></i> Add");
+            $.unblock();
         });
         return false;
     });
 
-    $("#ShareLink").SearchUsers({
+    $("a.ShareLink").SearchUsers({
         UpdateShared: function () {
             $.post("/Tags/UpdateShared", null, function (ret) {
-                $("#sharecount").text(ret);
+                $("span.sharecount").text(ret);
             });
         }
     });
-    $('#ShareLink').on("click", function (e) {
+
+    $('a.ShareLink').on("click", function (e) {
         e.preventDefault();
         var d = $('#usersDialog');
         $('iframe', d).attr("src", this.href);
         d.dialog("open");
     });
-    //    $("#tagname").keypress(function (ev) {
-    //        if (ev.which != 58) //no : character
-    //            return true;
-    //        return false;
-    //    });
-//    $("#addperson").autocomplete({
-//        autoFocus: true,
-//        minLength: 3,
-//        source: function (request, response) {
-//            $.post("/Meeting/Names", request, function (ret) {
-//                response(ret.slice(0, 10));
-//            }, "json");
-//        },
-//        select: function (event, ui) {
-//            $("#wandtarget").val(ui.item.Pid);
-//            $.mark();
-//            $("#name").val('');
-//            return false;
-//        }
-//    }).data("uiAutocomplete")._renderItem = function (ul, item) {
-//        return $("<li>")
-//            .append("<a>" + item.Name + "<br>" + item.Addr + "</a>")
-//            .appendTo(ul);
-//    };
+    
 });
+
 function UpdateSelectedUsers(r) {
     $.post("/Tags/UpdateShared", null, function (ret) {
-        $("#sharecount").text(ret);
+        $("span.sharecount").text(ret);
         $("#usersDialog").dialog("close");
     });
 }

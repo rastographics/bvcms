@@ -57,7 +57,7 @@
                             <a href='/Person2/@p.BFTeacherId'>@p.BFTeacher</a>
                         </td>
                         <td>
-                            <a href="/Tags/ToggleTag/@p.PeopleId" class="taguntag" title="Add to/Remove from Active Tag" value='@p.PeopleId'>@(p.HasTag ? "Remove" : "Add")</a>
+                            <a href="/Tags/ToggleTag/@p.PeopleId" class="taguntag btn btn-sm @(p.HasTag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" value="@p.PeopleId"><i class="fa fa-tag"></i> @(p.HasTag ? "Remove" : "Add")</a>
                         </td>
                     </tr>
                 }
