@@ -7,13 +7,13 @@
       <thead>
         <tr>
           <th>Org Id</th>
-          <th>Fee</th>
+          <th class="right">Fee</th>
         </tr>
       </thead>
       <tbody>
         @foreach (var f in Model)
         {
-          <tr><td>@f.OrgId</td><td>@f.Fee.ToString2("c")</td></tr>
+          <tr><td>@f.OrgId</td><td class="right">@f.Fee.ToString2("c")</td></tr>
         }
       </tbody>
     </table>

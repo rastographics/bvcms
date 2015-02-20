@@ -4,12 +4,8 @@
   <div class="well">
     @Html.Raw(ci.hiddenindex)
     <div class="control-group">
-      <label class="control-label">Fee</label>
       <div class="controls">
-        <p>
-          <span class="large">@Model.Name</span>
-          <a href="#" class="deleteschedule pull-right btn btn-mini btn-danger">delete</a>
-        </p>
+          <a href="#" class="deleteschedule pull-right btn btn-mini btn-danger">delete</a><br/>
       </div>
     </div>
     @Html.EditorFor(m => m.OrgId)

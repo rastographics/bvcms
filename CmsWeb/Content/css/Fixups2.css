@@ -769,6 +769,14 @@ a.helplink {
     font-size: 14px;
 }
 
+.form-horizontal .w80 .control-label {
+    width: 80px;
+}
+
+.form-horizontal .w80 .controls {
+    margin-left: 100px;
+}
+
 .form-horizontal .w100 .control-label {
     width: 100px;
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UtilityExtensions;
 using System.Text;
@@ -119,9 +120,9 @@ namespace CmsData.Registration
 
         public class OrgFee
         {
+            [DisplayName("Org Id")]
             public int? OrgId { get; set; }
             public decimal? Fee { get; set; }
-            public string Name { get; set; }
         }
 
         public Organization org { get; set; }

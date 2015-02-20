@@ -3,13 +3,13 @@
 <div class="control-group">
   <label class="control-label">Org Fees</label>
   <div class="controls">
-    <div id="orgfees" class="table not-wide">
+    <div id="orgfees" class="table not-wide w80">
       @foreach(var f in Model)
       {
         @Html.EditorFor(m => f)
       }
+      <div class="newitem"><a href="/Organization/NewOrgFee"><img src="/Content/images/plus1.png" /> Add Org Fee</a></div>
     </div>
-    <div class="newitem"><a href="/Organization/NewOrgFee"><img src="/Content/images/plus1.png" /> Add Org Fee</a></div>
     @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
     {
         <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
