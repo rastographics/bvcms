@@ -1,0 +1,23 @@
+﻿@model AskDropdown
+@using CmsData.Registration
+@using RestSharp.Extensions
+<div class="table not-wide w100 padded-box">
+  <label>
+    Dropdown
+  </label>
+  @if (ViewBag.ShowHelp != false)
+  {
+    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(AskDropdown.Help)</div>
+  }
+  @Html.DisplayFor(m => m.Label)
+  @foreach (var i in Model.list)
+  {
+    <div class="well not-wide margin-left-wide">
+      @Html.DisplayFor(m => i.Description)
+      @Html.DisplayForIf(m => i.SmallGroup, i.SmallGroup != i.Description)
+      @Html.DisplayForIf(m => i.Fee, i.Fee > 0)
+      @Html.DisplayForIf(m => i.Limit, i.Limit > 0)
+      @Html.DisplayForIf(m => i.MeetingTimeString, i.MeetingTimeString.HasValue())
+    </div>
+  }
+</div>

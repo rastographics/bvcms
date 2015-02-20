@@ -1,4 +1,8 @@
-﻿@model CmsWeb.Areas.Org.Models.SettingsGeneralModel
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.SettingsGeneralModel
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowGeneralHelp") == "true";
+}
 <form class="form form-horizontal ajax margin-top">
     @Html.Hidden("Id", Model.Id)
     @FormAction()

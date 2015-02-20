@@ -1,15 +1,13 @@
-﻿@using UtilityExtensions
-@model CmsData.Registration.AskCheckboxes.CheckboxItem
-@using CmsWeb
+﻿@model CmsData.Registration.AskCheckboxes.CheckboxItem
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-	<li class="movable">@Html.Raw(ci.hiddenindex)
-		<ul>
-			<li><div class="sgfee">Description:</div> @Html.TextBoxFor(m => m.Description, new {@class = "long"}) @Html.Partial("EditorTemplates/QuestionsMenu", new ViewDataDictionary {{ "ConfirmDelete", false }})</li>
-			<li><div class="sgfee">SmallGroup:</div> @Html.TextBoxFor(m => m.SmallGroup) </li>
-			<li><div class="sgfee">Fee:</div> @Html.TextBoxFor(m => m.Fee) </li>
-			<li><div class="sgfee">Limit:</div> @Html.TextBoxFor(m => m.Limit) </li>
-		    <li><div class="sgfee">DateTime:</div> @Html.TextBoxFor(m => m.MeetingTimeString, new { @class = "datetimepicker" })</li>
-		</ul>
-	</li>
+  <div class="movable well not-wide margin-left-wide">
+    @Html.Raw(ci.hiddenindex)
+    <div>&nbsp;@Html.Partial("EditorTemplates/QuestionsMenu", new { ConfirmDelete = false })</div>
+    @Html.EditorFor(m => m.Description)
+    @Html.EditorFor(m => m.SmallGroup)
+    @Html.EditorFor(m => m.Fee)
+    @Html.EditorFor(m => m.Limit)
+    @Html.EditorFor(m => m.MeetingTimeString)
+  </div>
 }

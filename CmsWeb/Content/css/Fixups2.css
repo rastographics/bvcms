@@ -721,6 +721,9 @@ div.right {
 .margin-left {
     margin-left: 1em;
 }
+.margin-left-wide {
+    margin-left: 3em;
+}
 
 .align-top {
     vertical-align: top;
@@ -1347,4 +1350,8 @@ fieldset.no-padding-margin {
 #Settings-tab .control-label {
     font-size: 16px;
     font-weight: 200;
+}
+div.padded-box > label {
+    font-size: 16px;
+    font-weight: 400;
 }

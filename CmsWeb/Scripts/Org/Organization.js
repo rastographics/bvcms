@@ -796,43 +796,43 @@
     });
 
     function clearCuttingBoard() {
-        $('ul.movable-list').each(function () {
-            $(this).children('li.movable').each(function () {
+        $('div.movable-list').each(function () {
+            $(this).children('div.movable').each(function () {
                 $(this).removeClass('cutting');
             });
         });
     }
 
     function initializeCutPaste() {
-        $('ul.movable-list').each(function () {
-            if ($(this).children('li.movable').length <= 1) {
-                $(this).children('li.movable').find('li a.cut').addClass('disabled');
+        $('div.movable-list').each(function () {
+            if ($(this).children('div.movable').length <= 1) {
+                $(this).children('div.movable').find('div a.cut').addClass('disabled');
             }
-            $(this).children('li.movable').find('li a.paste').addClass('disabled');
+            $(this).children('div.movable').find('div a.paste').addClass('disabled');
         });
     }
 
     function enablePaste(ul) {
-        $(ul).children('li.movable').each(function () {
-            $(this).find('li a.paste').first().removeClass('disabled');
+        $(ul).children('div.movable').each(function () {
+            $(this).find('div a.paste').first().removeClass('disabled');
         });
     }
 
     function enableDisableMoveUpward() {
-        $('ul.movable-list').each(function () {
-            $(this).children('li.movable').find('li a.movetop').removeClass('disabled');
-            $(this).children('li.movable').find('li a.moveup').removeClass('disabled');
-            $(this).children('li.movable').first().find('li a.movetop').addClass('disabled');
-            $(this).children('li.movable').first().find('li a.moveup').addClass('disabled');
+        $('div.movable-list').each(function () {
+            $(this).children('div.movable').find('div a.movetop').removeClass('disabled');
+            $(this).children('div.movable').find('div a.moveup').removeClass('disabled');
+            $(this).children('div.movable').first().find('div a.movetop').addClass('disabled');
+            $(this).children('div.movable').first().find('div a.moveup').addClass('disabled');
         });
     }
 
     function enableDisableMoveDownward() {
-        $('ul.movable-list').each(function () {
-            $(this).children('li.movable').find('li a.movebottom').removeClass('disabled');
-            $(this).children('li.movable').find('li a.movedown').removeClass('disabled');
-            $(this).children('li.movable').last().find('li a.movebottom').addClass('disabled');
-            $(this).children('li.movable').last().find('li a.movedown').addClass('disabled');
+        $('div.movable-list').each(function () {
+            $(this).children('div.movable').find('div a.movebottom').removeClass('disabled');
+            $(this).children('div.movable').find('div a.movedown').removeClass('disabled');
+            $(this).children('div.movable').last().find('div a.movebottom').addClass('disabled');
+            $(this).children('div.movable').last().find('div a.movedown').addClass('disabled');
         });
     }
 
@@ -841,16 +841,16 @@
         if ($(a).hasClass('disabled')) {
             return false;
         }
-        var ul = $(a).closest('ul.movable-list');
-        var liToMove = $(a).closest('li.movable');
+        var ul = $(a).closest('div.movable-list');
+        var liToMove = $(a).closest('div.movable');
 
         switch (action) {
             case 'top':
-                var liFirst = $(ul).children('li.movable').first();
+                var liFirst = $(ul).children('div.movable').first();
                 $(liToMove).clone(true, true).insertBefore(liFirst);
                 break;
             case 'up':
-                var liPrev = liToMove.prev('li.movable');
+                var liPrev = liToMove.prev('div.movable');
                 $(liToMove).clone(true, true).insertBefore(liPrev);
                 break;
             case 'cut':
@@ -860,16 +860,16 @@
                 return false;
                 break;
             case 'paste':
-                var li = $(a).closest('li.movable');
-                liToMove = $(ul).children('li.cutting').first();
+                var li = $(a).closest('div.movable');
+                liToMove = $(ul).children('div.cutting').first();
                 $(liToMove).clone(true, true).insertAfter(li);
                 break;
             case 'down':
-                var liNext = liToMove.next('li.movable');
+                var liNext = liToMove.next('div.movable');
                 $(liToMove).clone(true, true).insertAfter(liNext);
                 break;
             case 'bottom':
-                var liLast = $(ul).children('li.movable').last();
+                var liLast = $(ul).children('div.movable').last();
                 $(liToMove).clone(true, true).insertAfter(liLast);
                 break;
             case 'delconfirm':

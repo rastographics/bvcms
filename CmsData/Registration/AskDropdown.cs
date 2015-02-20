@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,14 @@ namespace CmsData.Registration
 {
 	public class AskDropdown : Ask
 	{
+	    public const string Help = @"
+This will be presented as a dropdown selection.
+
+* **SmallGroup** Enters them in a smallgroup within the organization.
+* **Fee** (optional) for the selection.
+* **Limit** (optional) which limits the number of people allowed for a selection.
+* **DateTime** (optional) which registers them in a meeting.
+";
 		public string Label { get; set; }
 		public List<DropdownItem> list { get; set; }
 
@@ -83,6 +92,7 @@ namespace CmsData.Registration
 			[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:g}")]
 			public DateTime? MeetingTime { get; set; }
 
+            [DisplayName("DateTime")]
 		    public string MeetingTimeString
 		    {
 		        get { return MeetingTime.ToString2("g"); }

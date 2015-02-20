@@ -16,6 +16,12 @@ namespace CmsWeb.Areas.Org.Controllers
             return View("Settings/Questions", getRegSettings(id));
         }
         [HttpPost]
+        public ActionResult QuestionsHelpToggle(int id)
+        {
+            DbUtil.Db.ToggleUserPreference("ShowQuestionsHelp");
+            return PartialView("Settings/Questions", getRegSettings(id));
+        }
+        [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult QuestionsEdit(int id)
         {

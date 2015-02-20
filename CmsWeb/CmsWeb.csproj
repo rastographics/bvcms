@@ -933,6 +933,8 @@
     <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AgeGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\OrgFees.cshtml" />
     <Content Include="Areas\Org\Views\Organization\DisplayTemplates\OrgFees.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskCheckboxes.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskDropdown.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\Chosen\chosen.proto.js" />
     <Content Include="Scripts\Chosen\chosen.proto.min.js" />
@@ -2346,10 +2348,6 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Size.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Html.cshtml">
-    </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabQuestions.cshtml">
-    </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabFees.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TabMessages.cshtml">
     </Content>
