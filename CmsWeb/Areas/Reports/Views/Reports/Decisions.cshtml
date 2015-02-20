@@ -12,20 +12,20 @@
                 @using (Html.BeginForm("Decisions", "Reports", FormMethod.Get, new { id = "form" }))
                 {
                     <div class="col-sm-3">
-                        <label for="Campus">Campus</label>
+                        <label for="Campus" class="control-label">Campus</label>
                         <div class="input-group">
                             @Html.DropDownList("Campus", Model.CampusList(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="dt1">From Date</label>
+                        <label for="dt1" class="control-label">From Date</label>
                         <div class="input-group date">
                             @Html.TextBox("dt1", Model.dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                             @Html.Hidden("dt1Iso", Model.dt1.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                         </div>
                     </div>
                     <div class="col-sm-5">
-                        <label for="dt2">To Date</label>
+                        <label for="dt2" class="control-label">To Date</label>
                         <div class="form-inline">
                             <div class="input-group date">
                                 @Html.TextBox("dt2", Model.dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>

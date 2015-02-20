@@ -17,7 +17,7 @@
                         @Html.EditorFor(m => m.Name)
                         @(User.IsInRole("Admin") ? @Html.EditorFor(m => m.Owner) : @Html.HiddenFor(m => m.Owner))
                         <div class="checkbox">
-                            <label>
+                            <label class="control-label">
                                 @Html.CheckBoxFor(m => m.Ispublic) Is public?
                             </label>
                         </div>

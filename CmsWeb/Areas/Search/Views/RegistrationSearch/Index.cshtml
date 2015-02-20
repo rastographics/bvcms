@@ -11,19 +11,19 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchParameters_Organization">Organization</label>
+                            <label for="SearchParameters_Organization" class="control-label">Organization</label>
                             @Html.TextBoxFor(m => m.SearchParameters.Organization, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchParameters_Registrant">Registrant</label>
+                            <label for="SearchParameters_Registrant" class="control-label">Registrant</label>
                             @Html.TextBoxFor(m => m.SearchParameters.Registrant, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchParameters_StartDate">Start Date</label>
+                            <label for="SearchParameters_StartDate" class="control-label">Start Date</label>
                             <div class="input-group date">
                                 @Html.TextBox("SearchParameters_StartDate", Model.SearchParameters.StartDate.HasValue ? Model.SearchParameters.StartDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                 @Html.Hidden("SearchParameters_StartDateIso", Model.SearchParameters.StartDate.HasValue ? Model.SearchParameters.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -32,7 +32,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchParameters_EndDate">End Date</label>
+                            <label for="SearchParameters_EndDate" class="control-label">End Date</label>
                             <div class="input-group date">
                                 @Html.TextBox("SearchParameters_EndDate", Model.SearchParameters.EndDate.HasValue ? Model.SearchParameters.EndDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                 @Html.Hidden("SearchParameters_EndDateIso", Model.SearchParameters.EndDate.HasValue ? Model.SearchParameters.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -43,25 +43,25 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchParameters_count">Count</label>
+                            <label for="SearchParameters_count" class="control-label">Count</label>
                             @Html.TextBoxFor(m => m.SearchParameters.count, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchParameters_Complete">Complete</label>
+                            <label for="SearchParameters_Complete" class="control-label">Complete</label>
                             @Html.DropDownListFor(m => m.SearchParameters.Complete.Value, Model.SearchParameters.Complete.Items, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchParameters_Active">Active</label>
+                            <label for="SearchParameters_Active" class="control-label">Active</label>
                             @Html.DropDownListFor(m => m.SearchParameters.Active.Value, Model.SearchParameters.Active.Items, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchParameters_Abandoned">Abandoned</label>
+                            <label for="SearchParameters_Abandoned" class="control-label">Abandoned</label>
                             @Html.DropDownListFor(m => m.SearchParameters.Abandoned.Value, Model.SearchParameters.Abandoned.Items, new { @class = "form-control" })
                         </div>
                     </div>

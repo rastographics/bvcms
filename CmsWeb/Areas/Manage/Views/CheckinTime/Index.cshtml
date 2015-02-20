@@ -19,13 +19,13 @@
                         <div class="row">
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group">
-                                    <label for="namesearch">Name Search</label>
+                                    <label for="namesearch" class="control-label">Name Search</label>
                                     @Html.TextBox("namesearch", Model.namesearch, new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group">
-                                    <label for="dateStart">Start Date</label>
+                                    <label for="dateStart" class="control-label">Start Date</label>
                                     <div class="input-group date">
                                         @Html.TextBox("dateStart", Model.dateStart.HasValue ? Model.dateStart.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                         @Html.Hidden("dateStartIso", Model.dateStart.HasValue ? Model.dateStart.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -34,7 +34,7 @@
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group">
-                                    <label for="dateEnd">End Date</label>
+                                    <label for="dateEnd" class="control-label">End Date</label>
                                     <div class="input-group date">
                                         @Html.TextBox("dateEnd", Model.dateEnd.HasValue ? Model.dateEnd.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                         @Html.Hidden("dateEndIso", Model.dateEnd.HasValue ? Model.dateEnd.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -45,19 +45,19 @@
                         <div class="row">
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group">
-                                    <label for="location">Location</label>
+                                    <label for="location" class="control-label">Location</label>
                                     @Html.DropDownList("location", new SelectList(Model.Locations()), new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group">
-                                    <label for="activity">Activity</label>
+                                    <label for="activity" class="control-label">Activity</label>
                                     @Html.DropDownList("activity", new SelectList(Model.Activities()), new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-4 col-md-4 col-sm-4">
                                 <div class="form-group">
-                                    <label for="accesstype">Access Type</label>
+                                    <label for="accesstype" class="control-label">Access Type</label>
                                     <select name="accesstype" id="accesstype" class="form-control">
                                         @for (var iX = 0; iX < atd.Count(); iX++)
                                         {

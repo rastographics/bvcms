@@ -13,20 +13,20 @@
             <form id="totals">
                 <div class="row">
                     <div class="col-sm-4">
-                        <label for="CampusId">Campus</label>
+                        <label for="CampusId" class="control-label">Campus</label>
                         <div class="input-group">
                             @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="Dt1">From Date</label>
+                        <label for="Dt1" class="control-label">From Date</label>
                         <div class="input-group date">
                             @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                             @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="Dt2">To Date</label>
+                        <label for="Dt2" class="control-label">To Date</label>
                         <div class="input-group date">
                             @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                             @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
@@ -35,25 +35,25 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
-                        <label for="TaxDedNonTax">Tax Status</label>
+                        <label for="TaxDedNonTax" class="control-label">Tax Status</label>
                         <div class="input-group">
                             @Html.DropDownList("TaxDedNonTax", Model.TaxTypes(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="Online">Source</label>
+                        <label for="Online" class="control-label">Source</label>
                         <div class="input-group">
                             @Html.DropDownList("Online", Model.OnlineOptions(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-4">
                         <div class="checkbox">
-                            <label>
+                            <label class="control-label">
                                 @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
                             </label>
                         </div>
                         <div class="checkbox">
-                            <label>
+                            <label class="control-label">
                                 @Html.CheckBox("IncludeBundleType") Include bundle type?
                             </label>
                         </div>

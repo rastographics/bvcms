@@ -37,13 +37,13 @@
                             @Html.HiddenFor(x => x.OriginalReportName)
                             @Html.HiddenFor(x => x.QueryId)
                             <div class="form-group">
-                                @Html.LabelFor(x => x.ReportName)
+                                @Html.LabelFor(x => x.ReportName, new { @class = "control-label" })
                                 @Html.TextBoxFor(x => x.ReportName, true, htmlAttributes: new { placeholder = "Name Your Custom Report", @class = "form-control" })
                                 @Html.ValidationMessageFor(x => x.ReportName)
                             </div>
                             @if (Model.OrgId.HasValue)
                             {
-                                <label class="checkbox">
+                                <label class="checkbox control-label">
                                     Restrict this report to this org
                                     @Html.CheckBoxFor(x => x.RestrictToThisOrg)
                                     <span class="text-info">(@Model.OrgName)</span>

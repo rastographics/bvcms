@@ -11,19 +11,19 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="name">Id / Name</label>
+                            <label for="name" class="control-label">Id / Name</label>
                             @Html.TextBox("name", Model.name, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="description">Description</label>
+                            <label for="description" class="control-label">Description</label>
                             @Html.TextBox("description", Model.description, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="gtamount">Amount From</label>
+                            <label for="gtamount" class="control-label">Amount From</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control", type = "number" })
                             </div>
@@ -31,7 +31,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="ltamount">Amount To</label>
+                            <label for="ltamount" class="control-label">Amount To</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control", type = "number" })
                             </div>
@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="startdt">Date From</label>
+                            <label for="startdt" class="control-label">Date From</label>
                             <div class="input-group date">
                                 @Html.TextBox("startdt", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                 @Html.Hidden("startdtIso", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -50,7 +50,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="enddt">Date To</label>
+                            <label for="enddt" class="control-label">Date To</label>
                             <div class="input-group date">
                                 @Html.TextBox("enddt", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                 @Html.Hidden("enddtIso", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -60,12 +60,12 @@
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
                             <div class="checkbox">
-                                <label>
+                                <label class="control-label">
                                     @Html.CheckBox("usebatchdates") Use batch dates?
                                 </label>
                             </div>
                             <div class="checkbox">
-                                <label>
+                                <label class="control-label">
                                     @Html.CheckBox("nocoupons") No coupons?
                                 </label>
                             </div>
@@ -74,12 +74,12 @@
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
                             <div class="checkbox">
-                                <label>
+                                <label class="control-label">
                                     @Html.CheckBox("apprtransactions") Approved transactions only?
                                 </label>
                             </div>
                             <div class="checkbox">
-                                <label>
+                                <label class="control-label">
                                     @Html.CheckBox("testtransactions") Test transactions only?
                                 </label>
                             </div>
@@ -131,7 +131,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <div class="form-group">
-                            <label for="amt">Amount</label>
+                            <label for="amt" class="control-label">Amount</label>
                             <input id="amt" type="text" class="form-control" />
                         </div>
                     </div>
@@ -139,7 +139,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <label for="desc">Description</label>
+                            <label for="desc" class="control-label">Description</label>
                             <input id="desc" type="text" class="form-control" />
                         </div>
                     </div>
@@ -162,7 +162,7 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="credit-amt">Amount</label>
+                    <label for="credit-amt" class="control-label">Amount</label>
                     <input id="credit-amt" type="text" class="form-control" />
                 </div>
             </div>

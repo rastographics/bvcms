@@ -23,7 +23,7 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="regid">Registration Type</label>
+                                <label for="regid" class="control-label">Registration Type</label>
                                 <select name="regid" id="regid" class="form-control">
                                     @foreach (var i in Model.OnlineRegs())
                                     {
@@ -34,13 +34,13 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="name">Name</label>
+                                <label for="name" class="control-label">Name</label>
                                 @Html.TextBox("name", Model.name, new { @class = "form-control" })
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="amount">Amount</label>
+                                <label for="amount" class="control-label">Amount</label>
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("amount", Model.amount, new { @class = "form-control", type = "number" })
                                 </div>
@@ -50,7 +50,7 @@
                         {
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="couponcode">Coupon Code <small>(only for non-expiring coupons)</small></label>
+                                    <label for="couponcode" class="control-label">Coupon Code <small>(only for non-expiring coupons)</small></label>
                                     @Html.TextBox("couponcode", Model.couponcode, new { @class = "form-control", maxlength = "12" })
                                 </div>
                             </div>

@@ -13,19 +13,19 @@
                         <div class="row">
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
-                                    <label for="SearchQuery">Description / Owner</label>
+                                    <label for="SearchQuery" class="control-label">Description / Owner</label>
                                     @Html.TextBoxFor(m => m.SearchQuery, new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-3">
                                 <div class="form-group">
                                     <div class="checkbox">
-                                        <label>
+                                        <label class="control-label">
                                             @Html.CheckBoxFor(m => m.OnlyMine) Only my queries?
                                         </label>
                                     </div>
                                     <div class="checkbox">
-                                        <label>
+                                        <label class="control-label">
                                             @Html.CheckBoxFor(m => m.PublicOnly) Public only?
                                         </label>
                                     </div>
@@ -34,12 +34,12 @@
                             <div class="col-lg-3 col-md-3 col-sm-3">
                                 <div class="form-group">
                                     <div class="checkbox">
-                                        <label>
+                                        <label class="control-label">
                                             @Html.CheckBoxFor(m => m.ScratchPadsOnly) Scratch pads only?
                                         </label>
                                     </div>
                                     <div class="checkbox">
-                                        <label>
+                                        <label class="control-label">
                                             @Html.CheckBoxFor(m => m.StatusFlagsOnly) Status flags only?
                                         </label>
                                     </div>

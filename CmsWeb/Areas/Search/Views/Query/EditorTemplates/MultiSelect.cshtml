@@ -4,7 +4,7 @@
     var items = (ViewData["items"] as IEnumerable<SelectListItem> ?? new List<SelectListItem>()).ToList();
 }
 <div class="form-group">
-    @Html.LabelFor(m => m)
+    @Html.LabelFor(m => m, new { @class = "control-label" })
     <div class="form-group">
         <select name="@ViewData.TemplateInfo.HtmlFieldPrefix" multiple="multiple" style="display:none" class="form-control">
             @foreach (var o in items)

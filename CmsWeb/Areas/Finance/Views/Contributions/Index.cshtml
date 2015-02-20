@@ -11,7 +11,7 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchInfo_Name">Name</label>
+                            <label for="SearchInfo_Name" class="control-label">Name</label>
                             @if (Model.SearchInfo.PeopleId.HasValue)
                             {
                                 <div>
@@ -26,13 +26,13 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchInfo_Comments">Notes</label>
+                            <label for="SearchInfo_Comments" class="control-label">Notes</label>
                             @Html.TextBoxFor(vv => vv.SearchInfo.Comments, new { @class = "form-control", title = "Check # or phrase or contribution id." })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchInfo_MinAmt">Amount From</label>
+                            <label for="SearchInfo_MinAmt" class="control-label">Amount From</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBoxFor(vv => vv.SearchInfo.MinAmt, new { @class = "form-control", type = "number" })
                             </div>
@@ -40,7 +40,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <label for="SearchInfo_MaxAmt">Amount To</label>
+                            <label for="SearchInfo_MaxAmt" class="control-label">Amount To</label>
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBoxFor(vv => vv.SearchInfo.MaxAmt, new { @class = "form-control", type = "number" })
                             </div>
@@ -50,7 +50,7 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_StartDate">Start Date</label>
+                            <label for="SearchInfo_StartDate" class="control-label">Start Date</label>
                             <div class="input-group date">
                                 @Html.TextBox("SearchInfo_StartDate", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                 @Html.Hidden("SearchInfo_StartDateIso", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -59,7 +59,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_EndDate">End Date</label>
+                            <label for="SearchInfo_EndDate" class="control-label">End Date</label>
                             <div class="input-group date">
                                 @Html.TextBox("SearchInfo_EndDate", Model.SearchInfo.EndDate.HasValue ? Model.SearchInfo.EndDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                 @Html.Hidden("SearchInfo_EndDateIso", Model.SearchInfo.EndDate.HasValue ? Model.SearchInfo.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -68,56 +68,56 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_CampusId">Campus</label>
+                            <label for="SearchInfo_CampusId" class="control-label">Campus</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.CampusId, Model.Campuses(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_Type">Fund</label>
+                            <label for="SearchInfo_Type" class="control-label">Fund</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.FundId, Model.Funds(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_Online">Source</label>
+                            <label for="SearchInfo_Online" class="control-label">Source</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.Online, Model.OnlineOptions(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_Status">Status</label>
+                            <label for="SearchInfo_Status" class="control-label">Status</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.Status, Model.ContributionStatuses(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_TaxNonTax">Tax Status</label>
+                            <label for="SearchInfo_TaxNonTax" class="control-label">Tax Status</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.TaxNonTax, Model.TaxTypes(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_Year">Year</label>
+                            <label for="SearchInfo_Year" class="control-label">Year</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.Year, Model.Years(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_Type">Contribution Type</label>
+                            <label for="SearchInfo_Type" class="control-label">Contribution Type</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.Type, Model.ContributionTypes(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
-                            <label for="SearchInfo_BundleType">Bundle Type</label>
+                            <label for="SearchInfo_BundleType" class="control-label">Bundle Type</label>
                             @Html.DropDownListFor(vv => vv.SearchInfo.BundleType, Model.BundleTypes(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
                             <div class="checkbox">
-                                <label>
+                                <label class="control-label">
                                     @Html.CheckBoxFor(vv => vv.SearchInfo.IncludeUnclosedBundles) Include unclosed bundles?
                                 </label>
                             </div>

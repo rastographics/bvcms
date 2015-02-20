@@ -24,31 +24,31 @@
                         <div class="row">
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
-                                    <label for="name">Name</label>
+                                    <label for="name" class="control-label">Name</label>
                                     @Html.TextBox("name", Model.name, new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
-                                    <label for="useridfilter">User</label>
+                                    <label for="useridfilter" class="control-label">User</label>
                                     @Html.DropDownList("useridfilter", Model.Users(), new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-6 col-md-6 col-sm-6">
                                 <div class="form-group">
-                                    <label for="regidfilter">Registration Type</label>
+                                    <label for="regidfilter" class="control-label">Registration Type</label>
                                     @Html.DropDownList("regidfilter", Model.OnlineRegs(), new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
-                                    <label for="usedfilter">Status</label>
+                                    <label for="usedfilter" class="control-label">Status</label>
                                     @Html.DropDownList("usedfilter", Model.CouponStatus(), new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
-                                    <label for="SearchParameters_StartDate">Date</label>
+                                    <label for="SearchParameters_StartDate" class="control-label">Date</label>
                                     <div class="input-group date">
                                         @Html.TextBox("date", Model.date, new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                         @Html.Hidden("dateIso", Model.date, new { disabled = "disabled" })

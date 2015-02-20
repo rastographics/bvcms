@@ -19,14 +19,14 @@
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
-                                <label for="title">Title</label>
+                                <label for="title" class="control-label">Title</label>
                                 @Html.TextBox("title", Model.Title, new { @class = "form-control" })
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="checkbox">
-                            <label>
+                            <label class="control-label">
                                 @Html.CheckBox("snippet", Model.Snippet) Snippet?&nbsp;&nbsp;&nbsp;&nbsp;<span class="text-info"><i class="fa fa-info-circle"></i> Note:  Snippet should only be clicked when you first come to the page, not after you have made any changes otherwise they will be lost.</span>
                             </label>
                         </div>

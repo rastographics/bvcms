@@ -5,19 +5,19 @@
     <div class="row">
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-                <label for="from">From</label>
+                <label for="from" class="control-label">From</label>
                 @Html.TextBox("from", Model.from, new { @class = "form-control" })
             </div>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-                <label for="subject">Subject</label>
+                <label for="subject" class="control-label">Subject</label>
                 @Html.TextBox("subject", Model.subject, new { @class = "form-control" })
             </div>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-                <label for="startdt">Date From</label>
+                <label for="startdt" class="control-label">Date From</label>
                 <div class="input-group date">
                     @Html.TextBox("startdt", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                     @Html.Hidden("startdtIso", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -26,7 +26,7 @@
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-                <label for="enddt">Date To</label>
+                <label for="enddt" class="control-label">Date To</label>
                 <div class="input-group date">
                     @Html.TextBox("enddt", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                     @Html.Hidden("enddtIso", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
@@ -37,13 +37,13 @@
     <div class="row">
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-                <label for="body">Body</label>
+                <label for="body" class="control-label">Body</label>
                 @Html.TextBox("body", Model.body, new { @class = "form-control" })
             </div>
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-                <label for="senderid">Sent By Id</label>
+                <label for="senderid" class="control-label">Sent By Id</label>
                 @Html.TextBox("senderid", Model.senderid, new { @class = "form-control" })
                 @if (Model.senderid.HasValue)
                 {
@@ -53,7 +53,7 @@
         </div>
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-                <label for="peopleid">Recipient Id</label>
+                <label for="peopleid" class="control-label">Recipient Id</label>
                 @Html.TextBox("peopleid", Model.peopleid, new { @class = "form-control" })
                 @if (Model.peopleid.HasValue)
                 {
@@ -64,12 +64,12 @@
         <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
                 <div class="checkbox">
-                    <label>
+                    <label class="control-label">
                         @Html.CheckBox("transactional") Transactional?
                     </label>
                 </div>
                 <div class="checkbox">
-                    <label>
+                    <label class="control-label">
                         @Html.CheckBox("scheduled") Scheduled?
                     </label>
                 </div>

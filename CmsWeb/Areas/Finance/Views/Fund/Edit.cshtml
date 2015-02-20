@@ -21,7 +21,7 @@
                     <div class="row">
                         <div class="col-sm-9 col-lg-8">
                             <div class="form-group">
-                                <label for="FundName">Name</label>
+                                <label for="FundName" class="control-label">Name</label>
                                 @Html.TextBoxFor(m => m.FundName, new { @class = "form-control input-lg" })
                             </div>
                         </div>
@@ -29,7 +29,7 @@
                     <div class="row">
                         <div class="col-sm-9 col-lg-8">
                             <div class="form-group">
-                                <label for="FundDescription">Description</label>
+                                <label for="FundDescription" class="control-label">Description</label>
                                 @Html.TextBoxFor(m => m.FundDescription, new { @class = "form-control" })
                             </div>
                         </div>
@@ -37,7 +37,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-lg-3">
                             <div class="form-group">
-                                <label for="FundAccountCode">Account Code</label>
+                                <label for="FundAccountCode" class="control-label">Account Code</label>
                                 @Html.TextBoxFor(m => m.FundAccountCode, new { @class = "form-control" })
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-lg-3">
                             <div class="form-group">
-                                <label for="FundIncomeDept">Income Department</label>
+                                <label for="FundIncomeDept" class="control-label">Income Department</label>
                                 @Html.TextBoxFor(m => m.FundIncomeDept, new { @class = "form-control" })
                             </div>
                         </div>
@@ -53,7 +53,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-lg-3">
                             <div class="form-group">
-                                <label for="FundIncomeAccount">Income Account</label>
+                                <label for="FundIncomeAccount" class="control-label">Income Account</label>
                                 @Html.TextBoxFor(m => m.FundIncomeAccount, new { @class = "form-control" })
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-lg-3">
                             <div class="form-group">
-                                <label for="FundIncomeFund">Income Fund</label>
+                                <label for="FundIncomeFund" class="control-label">Income Fund</label>
                                 @Html.TextBoxFor(m => m.FundIncomeFund, new { @class = "form-control" })
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-lg-3">
                             <div class="form-group">
-                                <label for="FundCashDept">Cash Department</label>
+                                <label for="FundCashDept" class="control-label">Cash Department</label>
                                 @Html.TextBoxFor(m => m.FundCashDept, new { @class = "form-control" })
                             </div>
                         </div>
@@ -77,7 +77,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-lg-3">
                             <div class="form-group">
-                                <label for="FundCashAccount">Cash Account</label>
+                                <label for="FundCashAccount" class="control-label">Cash Account</label>
                                 @Html.TextBoxFor(m => m.FundCashAccount, new { @class = "form-control" })
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-lg-3">
                             <div class="form-group">
-                                <label for="FundCashFund">Cash Fund</label>
+                                <label for="FundCashFund" class="control-label">Cash Fund</label>
                                 @Html.TextBoxFor(m => m.FundCashFund, new { @class = "form-control" })
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                     <div class="row">
                         <div class="col-sm-4 col-lg-3">
                             <div class="form-group">
-                                <label for="FundStatusId">Status</label>
+                                <label for="FundStatusId" class="control-label">Status</label>
                                 @Html.DropDownList("FundStatusId", CmsWeb.Areas.Finance.Controllers.FundController.GetFundStatusList(), new { @class = "form-control" })
                             </div>
                         </div>
@@ -104,7 +104,7 @@
                         <div class="row">
                             <div class="col-sm-4 col-lg-3">
                                 <div class="form-group">
-                                    <label for="QBIncomeAccount">QB Income Account</label>
+                                    <label for="QBIncomeAccount" class="control-label">QB Income Account</label>
                                     @Html.DropDownList("QBIncomeAccount", new SelectList(list, "ID", "Name", Model.QBIncomeAccount), new { @class = "form-control" })
                                 </div>
                             </div>
@@ -112,7 +112,7 @@
                         <div class="row">
                             <div class="col-sm-4 col-lg-3">
                                 <div class="form-group">
-                                    <label for="QBAssetAccount">QB Asset Account</label>
+                                    <label for="QBAssetAccount" class="control-label">QB Asset Account</label>
                                     @Html.DropDownList("QBAssetAccount", new SelectList(list, "ID", "Name", Model.QBAssetAccount), new { @class = "form-control" })
                                 </div>
                             </div>
@@ -121,13 +121,13 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="checkbox">
-                                <label>
+                                <label class="control-label">
                                     @Html.CheckBox("FundPledgeFlag")
                                     Pledge fund?
                                 </label>
                             </div>
                             <div class="checkbox">
-                                <label>
+                                <label class="control-label">
                                     @Html.CheckBox("NonTaxDeductible")
                                     Non tax deductible?
                                 </label>

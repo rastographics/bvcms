@@ -23,13 +23,13 @@
                     <div class="row">
                         <form id="progform">
                             <div class="col-sm-3">
-                                <label for="ProgramId">Filter for Program</label>
+                                <label for="ProgramId" class="control-label">Filter for Program</label>
                                 <div class="input-group">
                                     @Html.DropDownList("ProgramId", Model.ProgramIds(), new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="col-sm-9">
-                                <label for="TagProgramId">Target Program</label>
+                                <label for="TagProgramId" class="control-label">Target Program</label>
                                 <div class="form-inline">
                                     <div class="input-group">
                                         @Html.DropDownList("TagProgramId", Model.ProgramIds(), new { @class = "form-control" })

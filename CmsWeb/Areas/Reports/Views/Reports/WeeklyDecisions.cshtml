@@ -11,13 +11,13 @@
                 @using (Html.BeginForm("WeeklyDecisions", "Reports", FormMethod.Get))
                 {
                     <div class="col-sm-5">
-                        <label for="Campus">Campus</label>
+                        <label for="Campus" class="control-label">Campus</label>
                         <div class="input-group">
                             @Html.DropDownList("Campus", Model.CampusList(), new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-7">
-                        <label for="Sunday">Sunday Date</label>
+                        <label for="Sunday" class="control-label">Sunday Date</label>
                         <div class="form-inline">
                             <div class="input-group date">
                                 @Html.TextBox("Sunday", Model.Sunday.ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>

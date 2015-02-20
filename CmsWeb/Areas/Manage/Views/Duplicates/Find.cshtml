@@ -9,14 +9,14 @@
             <div class="row">
                 <form action="/Duplicates/Find" method="post">
                     <div class="col-sm-5">
-                        <label for="FromDate">Created on or after</label>
+                        <label for="FromDate" class="control-label">Created on or after</label>
                         <div class="input-group date">
                             @Html.TextBox("FromDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                             @Html.Hidden("FromDateIso", "", new { disabled = "disabled" })
                         </div>
                     </div>
                     <div class="col-sm-7">
-                        <label for="ToDate">Created on or before</label>
+                        <label for="ToDate" class="control-label">Created on or before</label>
                         <div class="form-inline">
                             <div class="input-group date">
                                 @Html.TextBox("ToDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
