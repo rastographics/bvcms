@@ -19,9 +19,11 @@
 }
 <div class="form-group @ViewBag.height33 @ViewBag.hide">
     @Html.LabelFor(m => m, new { @class = "control-label" })
-    <div class="input-group date">
-        @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: @fmt, htmlAttributes: new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-        @Html.Hidden("{0}{1}".Fmt(Html.IdFor(m => m), "Iso"), Model.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+    <div class="controls">
+        <div class="input-group date">
+            @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: @fmt, htmlAttributes: new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+            @Html.Hidden("{0}{1}".Fmt(Html.IdFor(m => m), "Iso"), Model.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+        </div>
+        @Html.ValidationMessageLabelFor(m => m)
     </div>
-    @Html.ValidationMessageLabelFor(m => m)
 </div>

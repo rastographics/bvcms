@@ -1,7 +1,9 @@
 ﻿@model int?
 <div class="form-group @ViewBag.hide">
     @Html.LabelFor(m => m, new { @class = "control-label" })
-    @Html.TextBoxFor2(m => m, true, null, new { @class="form-control" })
-    <span class="help-block">@Html.Raw(ViewData["help"])</span>
-    @Html.ValidationMessageLabelFor(m => m)
+    <div class="controls">
+        @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control" })
+        <span class="help-block">@Html.Raw(ViewData["help"])</span>
+        @Html.ValidationMessageLabelFor(m => m)
+    </div>
 </div>
