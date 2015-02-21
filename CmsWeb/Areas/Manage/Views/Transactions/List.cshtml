@@ -51,10 +51,7 @@
                     {
                         <th class="text-right"><a href="#" class="sortable" data-sortby="Donate"><span class="hidden-xs hidden-sm hidden-md">Amount Donated</span><span class="visible-xs-inline visible-sm-inline visible-md-inline">Donate</span></a></th>
                     }
-                    @if (Model.admin)
-                    {
-                        <th colspan="3">Actions</th>
-                    }
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -144,35 +141,29 @@
                             <td class="text-right">@t.Donate.ToString2("N")</td>
                         }
                         <td class="action">
-                            <a class="adjust btn btn-default btn-sm @noadmin" href='/Transactions/Adjust/@t.Id'><i class="fa fa-pencil-square-o"></i> Adjust</a>
-                        </td>
-                        <td class="action">
-                            @if (t.CanVoid ?? true)
-                            {
-                                <a class="void btn btn-danger btn-sm @noadmin" href='/Transactions/CreditVoid/@t.Id?type=Void'><i class="fa fa-close"></i> Void</a>
-                            }
-                            else if (t.Voided == true)
-                            {
-                                <text>voided</text>
-                            }
-                            @if (User.IsInRole("Developer"))
-                            {
-                                <a class="setpar btn btn-default btn-sm" href="/Transactions/SetParent/@t.Id/">Set Parent</a>
-                            }
-                        </td>
-                        <td class="action">
-                            @if (t.CanCredit ?? true)
-                            {
-                                <a class="credit btn btn-warning btn-sm @noadmin" href='/Transactions/CreditVoid/@t.Id?type=Credit'><i class="fa fa-undo"></i> Credit</a>
-                            }
-                            else if (t.Credited == true)
-                            {
-                                <text>credited</text>
-                            }
-                            else
-                            {
-                                @(t.Amt < 0 ? "credit" : "")
-                            }
+                            <div class="btn-group btn-sm">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-pencil"></i> Edit <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <li><a class="adjust @noadmin" href='/Transactions/Adjust/@t.Id'><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Adjust Transaction</a></li>
+                                    @if (t.CanVoid.GetValueOrDefault() || t.CanCredit.GetValueOrDefault() || User.IsInRole("Developer"))
+                                    {
+                                        <li class="divider"></li>
+                                        if (t.CanVoid ?? true)
+                                        {
+                                            <li><a class="void @noadmin" href='/Transactions/CreditVoid/@t.Id?type=Void'><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Void Transaction</a></li>
+                                        }
+                                        if (t.CanCredit ?? true)
+                                        {
+                                            <li><a class="credit @noadmin" href='/Transactions/CreditVoid/@t.Id?type=Credit'><i class="fa fa-undo"></i>&nbsp;&nbsp;Credit Transaction</a></li>
+                                        }
+                                        if (User.IsInRole("Developer"))
+                                        {
+                                            <li><a class="setpar" href="/Transactions/SetParent/@t.Id/">Set Parent</a></li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
                         </td>
                     </tr>
                 }
