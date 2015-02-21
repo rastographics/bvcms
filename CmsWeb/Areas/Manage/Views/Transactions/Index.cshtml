@@ -94,17 +94,23 @@
                         <div class="pull-right">
                             <a id="clear" href="/Transactions" class="btn btn-default">Clear</a>
                             <div class="btn-group">
-                                <a href="#" id="filter" class="btn btn-primary">Filter</a>
-                                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-table"></i> Other Reports <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-right">
+                                <ul class="dropdown-menu">
                                     <li><a href="/Transactions/Report" class="report">Reconcile Report</a></li>
                                     <li><a href="/Transactions/ReportByDescription" class="report">Totals by Description</a></li>
                                     <li><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></li>
-                                    <li class="divider"></li>
-                                    <li><a id="export" href="#"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Export</a></li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <a href="#" id="filter" class="btn btn-primary">Filter</a>
+                                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Filter Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a id="export" href="#"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Export Results</a></li>
                                 </ul>
                             </div>
                         </div>
