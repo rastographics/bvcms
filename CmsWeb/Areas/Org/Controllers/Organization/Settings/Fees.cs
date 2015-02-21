@@ -13,21 +13,21 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Fees(int id)
         {
             var m = new SettingsFeesModel(id);
-            return PartialView("Settings/Fees", m);
+            return PartialView("Registration/Fees", m);
         }
         [HttpPost]
         public ActionResult FeesHelpToggle(int id)
         {
             DbUtil.Db.ToggleUserPreference("ShowFeesHelp");
             var m = new SettingsFeesModel(id);
-            return PartialView("Settings/Fees", m);
+            return PartialView("Registration/Fees", m);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult FeesEdit(int id)
         {
             var m = new SettingsFeesModel(id);
-            return PartialView("Settings/FeesEdit", m);
+            return PartialView("Registration/FeesEdit", m);
         }
         [HttpPost]
         public ActionResult FeesUpdate(SettingsFeesModel m)
@@ -38,12 +38,12 @@ namespace CmsWeb.Areas.Org.Controllers
                 m.Update();
                 if (!m.Org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return PartialView("Settings/Fees", m);
+                return PartialView("Registration/Fees", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
-                return PartialView("Settings/FeesEdit", m);
+                return PartialView("Registration/FeesEdit", m);
             }
         }
 

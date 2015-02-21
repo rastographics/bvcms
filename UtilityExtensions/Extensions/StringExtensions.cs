@@ -2,6 +2,7 @@ using System;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace UtilityExtensions
@@ -45,6 +46,12 @@ namespace UtilityExtensions
         public static string SplitUpperCaseToString(this string source)
         {
             return string.Join(" ", SplitUpperCase(source));
+        }
+        public static string SpaceCamelCase(this string name)
+        {
+            var re = new Regex(@"\B\p{Lu}\p{Ll}", RegexOptions.Compiled);
+            name = re.Replace(name, " $0");
+            return name;
         }
 
         public static string Replace(this string str, string oldValue, string newValue, bool ignoreCase = false)

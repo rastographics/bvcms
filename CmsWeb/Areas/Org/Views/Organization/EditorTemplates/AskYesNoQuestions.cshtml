@@ -1,21 +1,30 @@
-﻿@model CmsData.Registration.AskYesNoQuestions
-@using CmsWeb
+﻿@model AskYesNoQuestions
+@using CmsData.Registration
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-    var listname = Html.NameFor2(m => m.list);
-	<li class="movable type-@Model.Type">@Html.Raw(ci.hiddenindex)
-		@Html.HiddenFor(m => m.Type)
-        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>These are questions that will force a yes or no answer.</p><p>The results will be in small groups with a -Yes or -No appended to the name.</p>" data-original-title="YesNoQuestions"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-			YesNoQuestions:
-            @Html.Partial("EditorTemplates/QuestionsMenu") 
-        </label>
-		<ul id="YesNoQuestions" class="movable-list sort">
-			@foreach (var item in Model.list)
-			{
-				item.Name = listname;
-				@Html.EditorFor(m => item)
-			}
-		</ul>
-		<div class="newitem"><a href="/Organization/NewYesNoQuestion/@listname"><img src="/Content/images/plus1.png" /> Add Item</a></div>
-	</li>
+  var listname = Html.NameFor2(m => m.list);
+  <div class="movable type-@Model.Type table not-wide w100 padded grey-box">
+    @Html.Raw(ci.hiddenindex)
+    @Html.HiddenFor(m => m.Type)
+    <label class="ask-question">
+      Yes / No Questions
+      @Html.Partial("EditorTemplates/QuestionsMenu")
+    </label>
+    @if (ViewBag.ShowHelp != false)
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+    }
+    <div id="Dropdown" class="movable-list sort">
+      @foreach (var item in Model.list)
+      {
+        item.Name = listname;
+        @Html.EditorFor(m => item)
+      }
+    </div>
+    <div class="newitem">
+      <a href="/Organization/NewYesNoQuestion/@listname">
+        <img src="/Content/images/plus1.png" alt="" /> Add Item
+      </a>
+    </div>
+  </div>
 }

@@ -1,15 +1,18 @@
-﻿@model CmsData.Registration.AskSuggestedFee
-@using CmsWeb
+﻿@model AskSuggestedFee
+@using CmsData.Registration
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-	<li class="movable type-@Model.Type">@Html.Raw(ci.hiddenindex)
-		@Html.HiddenFor(m => m.Type)
-        <span style="cursor: pointer;" data-toggle="popover" data-content="Allows the final fee to be adjusted to any amount (including zero)." data-original-title="AskSuggestedFee"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-			AskSuggestedFee
-            @Html.Partial("EditorTemplates/QuestionsMenu") 
-        </label>
-		<ul>
-			<li> <span class="keyword2">Label:</span> @Html.TextBoxFor(m => m.Label, new {@class = "long"})</li>
-		</ul>
-	</li>
+  <div class="movable type-@Model.Type table not-wide w100 padded grey-box">
+    @Html.Raw(ci.hiddenindex)
+    @Html.HiddenFor(m => m.Type)
+    <label class="ask-question">
+      Optional Fee
+      @Html.Partial("EditorTemplates/QuestionsMenu")
+    </label>
+    @if (ViewBag.ShowHelp != false)
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+    }
+    @Html.EditorFor(m => m.Label)
+  </div>
 }

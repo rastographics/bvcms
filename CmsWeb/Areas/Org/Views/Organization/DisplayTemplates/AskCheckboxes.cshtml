@@ -1,13 +1,13 @@
 ﻿@model AskCheckboxes
 @using CmsData.Registration
-@using RestSharp.Extensions
-<div class="table not-wide w100 padded-box">
+@using UtilityExtensions
+<div class="table not-wide w100">
   <label>
     Checkboxes
   </label>
   @if (ViewBag.ShowHelp != false)
   {
-    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(AskCheckboxes.Help)</div>
+    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
   }
   @Html.DisplayFor(m => m.Label)
   @Html.DisplayFor(m => m.Minimum)

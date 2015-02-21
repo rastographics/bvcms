@@ -7,18 +7,6 @@
     <a href="#Attendance" data-toggle="tab" class="ajax">Attendance</a>
   </li>
   <li>
-    <a href="#Registration" data-toggle="tab" class="ajax">Registration</a>
-  </li>
-  <li id="Fees-tab">
-    <a href="#Fees" data-toggle="tab" class="ajax">Fees</a>
-  </li>
-  <li id="Questions-tab">
-    <a href="#Questions" data-toggle="tab" class="ajax">Questions</a>
-  </li>
-  <li id="Messages-tab">
-    <a href="#Messages" data-toggle="tab" class="ajax">Messages</a>
-  </li>
-  <li>
     <a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a>
   </li>
 </ul>
@@ -27,18 +15,6 @@
     @Html.Partial("Settings/General", Model.SettingsGeneralModel)
   </div>
   <div id="Attendance" class="tab-pane settings" data-link="/Organization/Attendance">
-    @Helper.HiddenId("Id", Model.Id)
-  </div>
-  <div id="Registration" class="tab-pane settings" data-link="/Organization/Registration">
-    @Helper.HiddenId("Id", Model.Id)
-  </div>
-  <div id="Fees" class="tab-pane settings" data-link="/Organization/Fees">
-    @Helper.HiddenId("Id", Model.Id)
-  </div>
-  <div id="Questions" class="tab-pane settings" data-link="/Organization/Questions">
-    @Helper.HiddenId("Id", Model.Id)
-  </div>
-  <div id="Messages" class="tab-pane settings no0" data-link="/Organization/Messages">
     @Helper.HiddenId("Id", Model.Id)
   </div>
   <div class="tab-pane ajax" id="extravalues" data-link="/ExtraValue/Display/Organization/Standard/@Model.Id"></div>

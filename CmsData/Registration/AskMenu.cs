@@ -9,6 +9,16 @@ namespace CmsData.Registration
 {
 	public class AskMenu : Ask
 	{
+	    public override string Help
+	    {
+	        get 
+            { return @"
+These will present a series of textboxes next to a label 
+allowing you to enter the number of items to purchase or select.
+You can optionally associate a fee with one or more items.
+"; 
+            }
+	    }
 		public string Label { get; set; }
 		public List<MenuItem> list { get; set; }
 

@@ -105,5 +105,11 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrganizationModel(id);
             return PartialView(m);
         }
+        [HttpPost]
+        public ActionResult Registrations(int id)
+        {
+            var m = new OrganizationModel(id);
+            return PartialView(m);
+        }
     }
 }

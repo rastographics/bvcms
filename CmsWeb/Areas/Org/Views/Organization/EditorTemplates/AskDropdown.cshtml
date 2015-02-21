@@ -3,16 +3,16 @@
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
   var listname = Html.NameFor2(m => m.list);
-  <div class="movable type-@Model.Type table not-wide w100 padded-box">
+  <div class="movable type-@Model.Type table not-wide w100 padded grey-box">
     @Html.Raw(ci.hiddenindex)
     @Html.HiddenFor(m => m.Type)
-    <label>
+    <label class="ask-question">
       Dropdown
       @Html.Partial("EditorTemplates/QuestionsMenu", new { ConfirmDelete = false })
     </label>
     @if (ViewBag.ShowHelp != false)
     {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(AskDropdown.Help)</div>
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
     }
     @Html.EditorFor(m => m.Label)
     <div id="Dropdown" class="movable-list sort">

@@ -1,9 +1,8 @@
-﻿@model AskDropdown
+﻿@model AskMenu
 @using CmsData.Registration
-@using UtilityExtensions
 <div class="table not-wide w100">
-  <label class="ask-question">
-    Dropdown
+  <label>
+    Menu Items
   </label>
   @if (ViewBag.ShowHelp != false)
   {
@@ -16,8 +15,6 @@
       @Html.DisplayFor(m => i.Description)
       @Html.DisplayForIf(m => i.SmallGroup, i.SmallGroup != i.Description)
       @Html.DisplayForIf(m => i.Fee, i.Fee > 0)
-      @Html.DisplayForIf(m => i.Limit, i.Limit > 0)
-      @Html.DisplayForIf(m => i.MeetingTimeString, i.MeetingTimeString.HasValue())
     </div>
   }
 </div>

@@ -7,6 +7,7 @@ namespace CmsData.Registration
 {
 	public class AskGradeOptions : Ask
 	{
+	    public override string Help { get { return @"This allows you to specify the grade being registered for."; } }
 		public string Label { get; set; }
 		public List<GradeOption> list { get; set; }
 

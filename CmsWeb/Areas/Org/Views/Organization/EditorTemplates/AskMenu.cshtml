@@ -1,29 +1,31 @@
-﻿@model CmsData.Registration.AskMenu
-@using CmsWeb
+﻿@model AskMenu
+@using CmsData.Registration
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-    var listname = Html.NameFor2(m => m.list);
-    <li class="movable type-@Model.Type">
-        @Html.Raw(ci.hiddenindex)
+  var listname = Html.NameFor2(m => m.list);
+  <div class="movable type-@Model.Type table not-wide w100 padded grey-box">
+    @Html.Raw(ci.hiddenindex)
     @Html.HiddenFor(m => m.Type)
-        <span style="cursor: pointer;" data-toggle="popover" data-content="<p>These will present a series of textboxes next to a label allowing you to enter the number of items to purchase or select.</p><p>You can optionally associate a fee with one or more items.</p>" data-original-title="MenuItems"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-        MenuItems:
-        @Html.Partial("EditorTemplates/QuestionsMenu") 
+    <label class="ask-question">
+      Menu Items
+      @Html.Partial("EditorTemplates/QuestionsMenu", new { ConfirmDelete = false })
     </label>
-    <ul>
-        <li>
-            <span class="keyword2">Label:</span>
-            @Html.TextBoxFor(m => m.Label, new { @class = "long" })
-            <ul id="MenuItems" class="movable sort">
-                @foreach (var item in Model.list)
-                {
-                    item.Name = listname;
-                    @Html.EditorFor(m => item)
-                }
-            </ul>
-            <div class="newitem"><a href="/Organization/NewMenuItem/@listname"><img src="/Content/images/plus1.png" alt="" /> Add Item</a></div>
-        </li>
-    </ul>
-</li>
+    @if (ViewBag.ShowHelp != false)
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+    }
+    @Html.EditorFor(m => m.Label)
+    <div class="movable-list sort">
+      @foreach (var item in Model.list)
+      {
+        item.Name = listname;
+        @Html.EditorFor(m => item)
+      }
+    </div>
+    <div class="newitem">
+      <a href="/Organization/NewMenuItem/@listname">
+        <img src="/Content/images/plus1.png" alt="" /> Add Item
+      </a>
+    </div>
+  </div>
 }
-

@@ -15,13 +15,13 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Messages(int id)
         {
-            return PartialView("Settings/Messages", getRegSettings(id));
+            return PartialView("Registration/Messages", getRegSettings(id));
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult MessagesEdit(int id)
         {
-            return PartialView("Settings/MessagesEdit", getRegSettings(id));
+            return PartialView("Registration/MessagesEdit", getRegSettings(id));
         }
         [HttpPost]
         public ActionResult MessagesUpdate(int id)
@@ -37,12 +37,12 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return PartialView("Settings/Messages", m);
+                return PartialView("Registration/Messages", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
-                return PartialView("Settings/MessagesEdit", m);
+                return PartialView("Registration/MessagesEdit", m);
             }
         }
         public ActionResult NotifyIds(int id, string field)

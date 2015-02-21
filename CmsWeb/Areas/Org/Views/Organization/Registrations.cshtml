@@ -1,0 +1,29 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+<ul class="nav nav-tabs subnav" data-tabparent="Registrations-tab">
+  <li class="active">
+    <a href="#Registration" data-toggle="tab" class="ajax">Registration</a>
+  </li>
+  <li id="Fees-tab">
+    <a href="#Fees" data-toggle="tab" class="ajax">Fees</a>
+  </li>
+  <li id="Questions-tab">
+    <a href="#Questions" data-toggle="tab" class="ajax">Questions</a>
+  </li>
+  <li id="Messages-tab">
+    <a href="#Messages" data-toggle="tab" class="ajax">Messages</a>
+  </li>
+</ul>
+<div class="tab-content">
+  <div id="Registration" class="tab-pane settings active" data-link="/Organization/Registration">
+    @Html.Partial("Registration/Registration", Model.SettingsRegistrationModel)
+  </div>
+  <div id="Fees" class="tab-pane settings" data-link="/Organization/Fees">
+    @Helper.HiddenId("Id", Model.Id)
+  </div>
+  <div id="Questions" class="tab-pane settings" data-link="/Organization/Questions">
+    @Helper.HiddenId("Id", Model.Id)
+  </div>
+  <div id="Messages" class="tab-pane settings no0" data-link="/Organization/Messages">
+    @Helper.HiddenId("Id", Model.Id)
+  </div>
+</div>

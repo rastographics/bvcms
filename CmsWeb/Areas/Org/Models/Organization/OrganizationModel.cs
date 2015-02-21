@@ -37,6 +37,16 @@ namespace CmsWeb.Areas.Org.Models
                 return settingsGeneralModel;
             }
         }
+        private SettingsRegistrationModel settingsRegistrationModel;
+        public SettingsRegistrationModel SettingsRegistrationModel
+        {
+            get
+            {
+                if(settingsRegistrationModel == null && Id.HasValue)
+                    settingsRegistrationModel = new SettingsRegistrationModel(Id.Value);
+                return settingsRegistrationModel;
+            }
+        }
 
         private void populate(int id)
         {

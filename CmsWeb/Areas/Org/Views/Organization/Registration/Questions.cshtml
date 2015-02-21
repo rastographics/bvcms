@@ -10,25 +10,7 @@
     @foreach (var ask in Model.AskItems)
     {
       ask.Name = Html.NameFor2(m => m.AskItems);
-      switch (ask.Type)
-      {
-        case "AskSMS":
-        case "AskParents":
-        case "AskGradeOptions":
-        case "AskDoctor":
-        case "AskInsurance":
-        case "AskEmContact":
-        case "AskAllergies":
-        case "AskChurch":
-        case "AskTylenolEtc":
-        case "AskCoaching":
-        case "AnswersNotRequired":
-          @Html.DisplayFor(m => ask, ask.Type)
-          break;
-        default:
-        @Html.DisplayFor(m => ask)
-          break;
-      }
+      @Html.DisplayFor(m => ask)
     }
   </div>
   @FormAction()

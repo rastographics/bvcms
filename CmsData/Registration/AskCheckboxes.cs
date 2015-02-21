@@ -10,7 +10,9 @@ namespace CmsData.Registration
 {
     public class AskCheckboxes : Ask
     {
-        public const string Help = @"
+        public override string Help
+        {
+            get { return @"
 This is a group of checkboxes where you can check more than one.
 You can specify a minumum number they must check.
 And you can specify a maximum number they can check.
@@ -21,7 +23,10 @@ For each checkbox, you can specify the following:
 * **Fee** (optional) for the selection.
 * **Limit** (optional) which limits the number of people allowed for a selection.
 * **DateTime** (optional) which registers them in a meeting.
-";
+"; 
+            }
+        }
+
         public string Label { get; set; }
         public int? Minimum { get; set; }
         public int? Maximum { get; set; }

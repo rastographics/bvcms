@@ -13,19 +13,19 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Questions(int id)
         {
-            return View("Settings/Questions", getRegSettings(id));
+            return View("Registration/Questions", getRegSettings(id));
         }
         [HttpPost]
         public ActionResult QuestionsHelpToggle(int id)
         {
             DbUtil.Db.ToggleUserPreference("ShowQuestionsHelp");
-            return PartialView("Settings/Questions", getRegSettings(id));
+            return PartialView("Registration/Questions", getRegSettings(id));
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult QuestionsEdit(int id)
         {
-            return PartialView("Settings/QuestionsEdit", getRegSettings(id));
+            return PartialView("Registration/QuestionsEdit", getRegSettings(id));
         }
         [HttpPost]
         public ActionResult QuestionsUpdate(int id)
@@ -49,13 +49,12 @@ namespace CmsWeb.Areas.Org.Controllers
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return PartialView("Settings/Questions", m);
+                return PartialView("Registration/Questions", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
                 return Content("error:" + ex.Message);
-                //return View("OnlineRegQuestionsEdit", m);
             }
         }
         [HttpPost]
@@ -107,6 +106,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult NewAsk(string id, string type)
         {
+            ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp") == "true";
             var template = "EditorTemplates/" + type;
             switch (type)
             {
@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 case "AskParents":
                 case "AskCoaching":
                 case "AskChurch":
-                    return PartialView(template, new Ask(type) { Name = id });
+                    return PartialView("EditorTemplates/Ask", new Ask(type) { Name = id });
                 case "AskCheckboxes":
                     return PartialView(template, new AskCheckboxes() { Name = id });
                 case "AskDropdown":

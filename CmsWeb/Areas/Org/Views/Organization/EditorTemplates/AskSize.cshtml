@@ -1,36 +1,33 @@
-﻿@model CmsData.Registration.AskSize
-@using CmsWeb
+﻿@model AskSize
+@using CmsData.Registration
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-    var listname = Html.NameFor2(m => m.list);
-	<li class="movable type-@Model.Type">@Html.Raw(ci.hiddenindex)
-		@Html.HiddenFor(m => m.Type)
-        <span style="cursor: pointer;" data-toggle="popover" data-content="Display a dropdown of sizes." data-original-title="AskSize"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-			AskSize
-                @Html.Partial("EditorTemplates/QuestionsMenu")                                                                                                                                                                                
-            </label>
-		<ul>
-			<li>
-                <span style="cursor: pointer;" data-toggle="popover" data-content="Shirt Sizes (or something like that)." data-original-title="Label"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword tip">Label:</label> @Html.TextBoxFor(m => m.Label, new {@class = "long"})
-			</li>
-			<li>
-                <span style="cursor: pointer;" data-toggle="popover" data-content="Adds an extra item to the sizes to indicate they will use last year's." data-original-title="AllowLastYearShirt"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword tip">AllowLastYear:</label> @Html.CheckBoxFor(m => m.AllowLastYear)
-			</li>
-			<li>
-                <span style="cursor: pointer;" data-toggle="popover" data-content="Allows you to charge a fee." data-original-title="Fee"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword tip">Fee:</label> @Html.TextBoxFor(m => m.Fee)
-			</li>
-			<li>
-                <span style="cursor: pointer;" data-toggle="popover" data-content="Allows you to customize the sizes offered." data-original-title="ShirtSizes"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword tip">
-					Sizes:</label>
-				<ul id="Sizes" class="movable-list sort">
-					@foreach (var item in Model.list)
-					{
-						item.Name = listname;
-						@Html.EditorFor(m => item)
-					}
-				</ul>
-				<div class="newitem"><a href="/Organization/NewSize/@listname"><img src="/Content/images/plus1.png" alt="" />Add Item</a></div>
-			</li>
-		</ul>
-	</li>
+  var listname = Html.NameFor2(m => m.list);
+  <div class="movable type-@Model.Type table not-wide w100 padded grey-box">
+    @Html.Raw(ci.hiddenindex)
+    @Html.HiddenFor(m => m.Type)
+    <label class="ask-question">
+      Sizes
+      @Html.Partial("EditorTemplates/QuestionsMenu", new { ConfirmDelete = false })
+    </label>
+    @if (ViewBag.ShowHelp != false)
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+    }
+    @Html.EditorFor(m => m.Label)
+    @Html.EditorFor(m => m.AllowLastYear)
+    @Html.EditorFor(m => m.Fee)
+    <div id="Checkboxes" class="movable-list sort">
+      @foreach (var item in Model.list)
+      {
+        item.Name = listname;
+        @Html.EditorFor(m => item)
+      }
+    </div>
+    <div class="newitem">
+      <a href="/Organization/NewSize/@listname">
+        <img src="/Content/images/plus1.png" alt="" /> Add Item
+      </a>
+    </div>
+  </div>
 }

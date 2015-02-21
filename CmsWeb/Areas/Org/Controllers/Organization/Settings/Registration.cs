@@ -16,21 +16,21 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Registration(int id)
         {
             var m = new SettingsRegistrationModel(id);
-            return PartialView("Settings/Registration", m);
+            return PartialView("Registration/Registration", m);
         }
         [HttpPost]
         public ActionResult RegistrationHelpToggle(int id)
         {
             DbUtil.Db.ToggleUserPreference("ShowRegistrationHelp");
             var m = new SettingsRegistrationModel(id);
-            return PartialView("Settings/Registration", m);
+            return PartialView("Registration/Registration", m);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult RegistrationEdit(int id)
         {
             var m = new SettingsRegistrationModel(id);
-            return PartialView("Settings/RegistrationEdit", m);
+            return PartialView("Registration/RegistrationEdit", m);
         }
         [HttpPost]
         public ActionResult RegistrationUpdate(SettingsRegistrationModel m)
@@ -41,12 +41,12 @@ namespace CmsWeb.Areas.Org.Controllers
                 m.Update();
                 if (!m.Org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
-                return PartialView("Settings/Registration", m);
+                return PartialView("Registration/Registration", m);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("Form", ex.Message);
-                return PartialView("Settings/RegistrationEdit", m);
+                return PartialView("Registration/RegistrationEdit", m);
             }
         }
         [HttpPost]

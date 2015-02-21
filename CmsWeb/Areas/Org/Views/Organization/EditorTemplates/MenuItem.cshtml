@@ -1,12 +1,11 @@
 ﻿@model CmsData.Registration.AskMenu.MenuItem
-@using CmsWeb
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-  <li class="movable">@Html.Raw(ci.hiddenindex)
-    <ul>
-      <li><div class="sgfee">Description:</div> @Html.TextBoxFor(m => m.Description, new { @class = "long" }) @Html.Partial("EditorTemplates/QuestionsMenu", new ViewDataDictionary { { "ConfirmDelete", false } })</li>
-      <li><div class="sgfee">SmallGroup:</div> @Html.TextBoxFor(m => m.SmallGroup) </li>
-      <li><div class="sgfee">Fee:</div> @Html.TextBoxFor(m => m.Fee) </li>
-    </ul>
-  </li>
+  <div class="movable well not-wide margin-left-wide">
+    @Html.Raw(ci.hiddenindex)
+    <div>&nbsp;@Html.Partial("EditorTemplates/QuestionsMenu", new { ConfirmDelete = false })</div>
+    @Html.EditorFor(m => m.Description)
+    @Html.EditorFor(m => m.SmallGroup)
+    @Html.EditorFor(m => m.Fee)
+  </div>
 }

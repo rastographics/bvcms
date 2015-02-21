@@ -217,8 +217,3 @@ div.filter li > a.active {
     background-color: #0088cc;
     color: white;
 }
-
-div.padded-box{
-    padding: 1em;
-    border: 1px solid grey;
-}

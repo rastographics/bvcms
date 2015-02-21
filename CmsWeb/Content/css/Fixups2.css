@@ -1351,7 +1351,20 @@ fieldset.no-padding-margin {
     font-size: 16px;
     font-weight: 200;
 }
-div.padded-box > label {
+div.table.no-margin {
+    margin: 0;
+}
+div.padded{
+    padding: 1em;
+    min-width: 20em;
+}
+label.ask-question {
     font-size: 16px;
     font-weight: 400;
+}
+div.grey-box {
+    border: 1px solid grey;
+}
+div.med-width {
+    width: 29em;
 }

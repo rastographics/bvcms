@@ -39,17 +39,20 @@
       <div id="tab-area" class="tabbable primary-tabs">
         <ul class="nav nav-tabs">
           <li class="active"><a href="#Members-tab" data-toggle="tab">People</a></li>
-          <li><a href="#Settings-tab" data-toggle="tab" class="ajax">Settings</a></li>
           <li><a href="#Meetings-tab" data-toggle="tab" class="ajax">Meetings</a></li>
+          <li><a href="#Settings-tab" data-toggle="tab" class="ajax">Settings</a></li>
+          <li><a href="#Registrations-tab" data-toggle="tab" class="ajax">Registration</a></li>
         </ul>
         <div class="tab-content">
           <div id="Members-tab" class="tab-pane active" data-link="/Organization/People">
             @Html.Partial("People", Model)
           </div>
-          <div id="Settings-tab" class="tab-pane" data-link="/Organization/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
-          </div>
           <div id="Meetings-tab" class="tab-pane" data-link="/Organization/Meetings">
             @Helper.HiddenId("Id", Model.Id)
+          </div>
+          <div id="Settings-tab" class="tab-pane" data-link="/Organization/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+          </div>
+          <div id="Registrations-tab" class="tab-pane" data-link="/Organization/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
           </div>
         </div>
       </div>

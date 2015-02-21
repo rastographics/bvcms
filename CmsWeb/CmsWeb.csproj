@@ -867,8 +867,7 @@
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text0.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\MobileAppMenu.cshtml" />
     <Content Include="Areas\Org\Views\SearchDivisions\Index.cshtml" />
@@ -884,18 +883,18 @@
     <Content Include="Areas\Org\Views\Organization\Settings\Attendance.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings\AttendanceEdit.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings\ExtrasGrid.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Fees.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\FeesEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registration\Fees.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registration\FeesEdit.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings\General.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings\GeneralEdit.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings\Main.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings\MainEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Messages.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\MessagesEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Questions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\QuestionsEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\Registration.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\Settings\RegistrationEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registration\Messages.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registration\MessagesEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registration\Questions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registration\QuestionsEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registration\Registration.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registration\RegistrationEdit.cshtml" />
     <Content Include="Areas\Org\Views\Organization\People.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Meetings.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Settings.cshtml" />
@@ -935,6 +934,32 @@
     <Content Include="Areas\Org\Views\Organization\DisplayTemplates\OrgFees.cshtml" />
     <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskCheckboxes.cshtml" />
     <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskDropdown.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\Ask.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\Registrations.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskExtraQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskGradeOptions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskGradeOptions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskHeader.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskHeader.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskInstruction.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskInstruction.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskMenu.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\MenuItem.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskMenu.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskRequest.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskRequest.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSize.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Size.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskSize.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSuggestedFee.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskSuggestedFee.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskText.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskTickets.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskTickets.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskYesNoQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\DisplayTemplates\AskYesNoQuestions.cshtml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\Chosen\chosen.proto.js" />
     <Content Include="Scripts\Chosen\chosen.proto.min.js" />
@@ -1105,8 +1130,6 @@
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
     <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AnswersNotRequired.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSMS.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RegistrationSummary.cshtml" />
     <Content Include="Areas\People\Views\Person\Giving\GivingLinks.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactorSummary.cshtml" />
@@ -1853,24 +1876,10 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolRequestReport.cshtml" />
     <Content Include="Areas\Manage\Views\Users\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Users\Results.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskRequest.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskTickets.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskYesNoQuestions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskParents.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskExtraQuestions.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSize.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskMenu.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskCheckboxes.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskGradeOptions.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\DropdownItem.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskCoaching.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskDoctor.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskInsurance.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskEmContact.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskAllergies.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskChurch.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskTylenolEtc.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskSuggestedFee.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Ask.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogType.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\Edit.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\Index.cshtml" />
@@ -1885,8 +1894,6 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\TimeSlots.cshtml" />
     <Content Include="Areas\Finance\Views\Bundles\Index.cshtml" />
     <Content Include="Areas\Finance\Views\Bundles\Results.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskHeader.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskInstruction.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Index.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Results.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Display.cshtml" />
@@ -2341,11 +2348,7 @@
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\GradeOption.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\MenuItem.cshtml">
-    </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\OrgFee.cshtml">
-    </Content>
-    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Size.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Html.cshtml">
     </Content>
