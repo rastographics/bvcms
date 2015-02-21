@@ -1,70 +1,95 @@
 ﻿@model dynamic
-<form id="choose-format" class="dialog-options modal fade hide validate" target="_blank" method="GET">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">x</a>
-        <h3>Choose Options</h3>
-    </div>
-    <div class="modal-body">
-        <input type="hidden" />
-        <div class="row-fluid">
-            <div class="span6">
-                <p><b>Addressed To</b></p>
-                <label class="radio">
-                    <input type="radio" name="format" value="Individual" title="Addressed to individuals" checked="checked" />
-                    Individual
-                </label>
-                <label class="radio">
-                    <input type="radio" name="format" value="Family" title="Addressed as a family when there are children" />
-                    Family
-                </label>
-                <label class="radio">
-                    <input type="radio" name="format" value="FamilyMembers" title="Includes entire Family as individuals" />
-                    Family Members
-                </label>
-                <label class="radio">
-                    <input type="radio" name="format" value="CouplesBoth" title="Addressed to a couple, if both are in selection" />
-                    Couples (both)
-                </label>
-                <label class="radio">
-                    <input type="radio" name="format" value="CouplesEither" title="Addressed to a couple, if one or both are in selection" />
-                    Couples (either)
-                </label>
-                <label class="radio">
-                    <input type="radio" name="format" value="ParentsOf" title="Addressed to parents or parent" />
-                    Parents of
-                </label>
-                <label class="radio">
-                    <input type="radio" name="format" value="GroupAddress" title="Addressed to names at address" />
-                    Group By Address
-                </label>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form id="choose-format" target="_blank" method="get">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Choose Options</h4>
             </div>
-            <div class="span6">
-                <p><b>Label Options</b></p>
-                <label class="checkbox">
-                    <input type="checkbox" name="titles" value="true" />
-                    Use Titles
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" name="SortZip" value="true" />
-                    Sort by Zip
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" name="UsePhone" value="true" />
-                    Include Phone
-                </label>
-                <label class="checkbox">
-                    <input type="checkbox" name="UseMailFlags" value="true" @(Model.useMailFlags == true ? "checked=checked" : "") />
-                    Use Mail Flags
-                </label>
-                <div class="control-group">
-                    <label>Skip # of labels (0 to use whole page):</label>
-                    <input name="SkipNum" data-rule-number="true" />
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p><b>Addressed To</b></p>
+                        <div class="radio">
+                            <label class="control-label">
+                                <input type="radio" name="format" value="Individual" title="Addressed to individuals" checked="checked" />
+                                Individual
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label class="control-label">
+                                <input type="radio" name="format" value="Family" title="Addressed as a family when there are children" />
+                                Family
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label class="control-label">
+                                <input type="radio" name="format" value="FamilyMembers" title="Includes entire Family as individuals" />
+                                Family Members
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label class="control-label">
+                                <input type="radio" name="format" value="CouplesBoth" title="Addressed to a couple, if both are in selection" />
+                                Couples (both)
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label class="control-label">
+                                <input type="radio" name="format" value="CouplesEither" title="Addressed to a couple, if one or both are in selection" />
+                                Couples (either)
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label class="control-label">
+                                <input type="radio" name="format" value="ParentsOf" title="Addressed to parents or parent" />
+                                Parents of
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label class="control-label">
+                                <input type="radio" name="format" value="GroupAddress" title="Addressed to names at address" />
+                                Group By Address
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <p><b>Label Options</b></p>
+                        <div class="checkbox">
+                            <label class="control-label">
+                                <input type="checkbox" name="titles" value="true" />
+                                Use Titles
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="control-label">
+                                <input type="checkbox" name="SortZip" value="true" />
+                                Sort by Zip
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="control-label">
+                                <input type="checkbox" name="UsePhone" value="true" />
+                                Include Phone
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label class="control-label">
+                                <input type="checkbox" name="UseMailFlags" value="true" @(Model.useMailFlags == true ? "checked=checked" : "") />
+                                Use Mail Flags
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label for="SkipNum">Skip # of labels (0 to use whole page)</label>
+                            <input name="SkipNum" id="SkipNum" data-rule-number="true" class="form-control" />
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <a class="btn" data-dismiss="modal">Close</a>
-            <input type="submit" class="btn btn-primary" value="OK" />
-        </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <input type="submit" class="btn btn-primary" value="OK" />
+            </div>
+        </form>
     </div>
-</form>
+</div>
