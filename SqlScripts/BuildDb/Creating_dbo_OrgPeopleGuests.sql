@@ -41,12 +41,12 @@ RETURN
 							AND PeopleId = a.PeopleId
 							ORDER BY MeetingDate DESC
 						)
-	AND NOT EXISTS(SELECT NULL FROM OrganizationMembers om
-					WHERE om.OrganizationId = @oid
-					AND om.PeopleId = a.PeopleId
-					AND ISNULL(om.Pending, 0) = 0
-					AND om.MemberTypeId != 311 -- prospect
-					)
+	AND NOT EXISTS( -- not an existing member of org (in another tab)
+		SELECT NULL 
+		FROM dbo.OrganizationMembers om
+		WHERE om.PeopleId = a.PeopleId 
+		AND om.OrganizationId = @oid
+	)
 	AND (@showhidden = 1 OR ISNULL(a.NoShow, 0) = 0)
 )
 GO
