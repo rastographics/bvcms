@@ -8,24 +8,19 @@ namespace CmsWeb.Areas.People.Models
 {
     public abstract class ContactsModel : PagedTableModel<CmsData.Contact, ContactInfo>
     {
-        public int? PeopleId { get; set; }
-        public Person Person
+        public Person Person { get; set; }
+        public int? PeopleId
         {
-            get
-            {
-                if (_person == null && PeopleId.HasValue)
-                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
-                return _person;
-            }
+            get { return Person == null ? (int?)null : Person.PeopleId; }
+            set { Person = DbUtil.Db.LoadPersonById(value ?? 0); }
         }
-        private Person _person;
 
-        public ContactsModel()
+        protected ContactsModel()
             : base("Date", "desc")
         {
         }
-        public string AddContact { get; set; }
-        public string AddContactButton { get; set; }
+        public abstract string AddContact { get; }
+        public abstract string AddContactButton { get; }
 
         public IQueryable<Contact> FilteredModelList()
         {

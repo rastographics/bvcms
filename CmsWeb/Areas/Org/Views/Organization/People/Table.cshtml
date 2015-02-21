@@ -49,7 +49,6 @@
   <tbody>
     @foreach (var p in Model.ViewList())
     {
-      Model.DateShown = false;
       <tr>
         <td>
           <input type="checkbox" class="omck" value="@p.PeopleId" @(p.IsChecked == true ? "checked=checked" : "") />
@@ -94,14 +93,16 @@
           {
             @ShowDateLink(p.LastContactReceivedDt, "/Contact2", p.LastContactReceivedId, "Contactee")
             @ShowDateLink(p.LastContactMadeDt, "/Contact2", p.LastContactMadeId, "Minister")
-@*            if (User.IsInRole("Tasks"))/* || User.IsInRole("Admin"))*/*@
-@*            {*@
-@*              @ShowDateLink(p.TaskAboutDt, "/Task/List", p.TaskAboutId, "Needs Touch")*@
-@*              @ShowDateLink(p.TaskDelegatedDt, "/Task/List", p.TaskDelegatedId, "Has Task")*@
-@*            }*@
-@*            else*@
-@*            {*@
-@*            }*@
+@*
+            if (User.IsInRole("Tasks"))/* || User.IsInRole("Admin"))*/
+            {
+              @ShowDateLink(p.TaskAboutDt, "/Task/List", p.TaskAboutId, "Needs Touch")
+              @ShowDateLink(p.TaskDelegatedDt, "/Task/List", p.TaskDelegatedId, "Has Task")
+            }
+            else
+            {
+            }
+*@
               @ShowDateLink(p.TaskAboutDt, "/Person2", p.PeopleId, "Needs Touch", "#tab-tasksabout")
               @ShowDateLink(p.TaskDelegatedDt, "/Person2", p.PeopleId, "Has Task", "#tab-tasksassigned")
           }
@@ -128,71 +129,56 @@
 {
   if (dt.HasValue)
   {
-    if (Model.DateShown)
-    {
-      <br />
-    }
-    <a href="@url/@id@extra" target="contact">@dt.FormatDate2(type)</a>
-    @DaysAgo(dt.Value)
-    Model.DateShown = true;
+    <div><a href="@url/@id@extra" target="contact">@dt.FormatDate2(type)</a>
+    @DaysAgo(dt.Value)</div>
   }
 }
 @helper ShowDateLink(DateTime? dt, string url, string type)
 {
   if (dt.HasValue)
   {
-    if (Model.DateShown)
-    {
-      <br />
-    }
-    <a href="@url" target="contact">@dt.FormatDate2(type)</a>
-    @DaysAgo(dt.Value)
-    Model.DateShown = true;
+    <div><a href="@url" target="contact">@dt.FormatDate2(type)</a>
+    @DaysAgo(dt.Value)</div>
   }
 }
 @helper ShowDate(DateTime? dt, string type)
 {
   if (dt.HasValue)
   {
-    if (Model.DateShown)
-    {
-      <br />
-    }
-    <span>@dt.FormatDate2(type)</span>
-    @DaysAgo(dt.Value)
-    Model.DateShown = true;
+    <div><span>@dt.FormatDate2(type)</span>
+    @DaysAgo(dt.Value)</div>
   }
 }
 @helper ManageGuestLinks(OrgPerson p)
 {
   if (p.GroupCode == GroupSelectCode.Guest)
   {
-    <br /><a href="/Organization/Join/@Model.Id/@p.PeopleId" class="joinlink"
+    <div><a href="/Organization/Join/@Model.Id/@p.PeopleId" class="joinlink"
              confirm="Make @p.Name a Member of this Org?">
       Join Org
-    </a>
+    </a></div>
     if (p.MemberType != "Prospect")
     {
-      <br /><a href="/Organization/AddProspect/@Model.Id/@p.PeopleId" class="joinlink"
+      <div><a href="/Organization/AddProspect/@Model.Id/@p.PeopleId" class="joinlink"
                confirm="Make @p.Name a Prospect of this Org?">
         Add as Prospect
-      </a>
+      </a></div>
     }
     if (p.LastAttended.HasValue)
     {
       if (p.Hidden == true)
       {
-        <br /><a href="/Organization/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Show" class="joinlink"
+        <div><a href="/Organization/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Show" class="joinlink"
                  confirm="Show @p.Name as a Guest for this Org?">
           Show
-        </a>
+        </a></div>
       }
       else
       {
-        <br /><a href="/Organization/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Hide" class="joinlink"
+        <div><a href="/Organization/ShowVisitor/@Model.Id/@p.PeopleId/@p.LastAttended.Value.Ticks/Hide" class="joinlink"
                  confirm="Hide @p.Name as a Guest for this Org until next visit?">
           Hide
-        </a>
+        </a></div>
       }
     }
   }
@@ -204,17 +190,17 @@
   {
     if (p.Hidden == true)
     {
-      <br /><a href="/Organization/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
+      <div><a href="/Organization/ShowProspect/@Model.Id/@p.PeopleId/Show" class="joinlink"
                confirm="Show @p.Name in Prospect List for this Org?">
         Show
-      </a>
+      </a></div>
     }
     else
     {
-      <br /><a href="/Organization/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
+      <div><a href="/Organization/ShowProspect/@Model.Id/@p.PeopleId/Hide" class="joinlink"
                confirm="Hide @p.Name on Prospect List for this Org?">
         Hide
-      </a>
+      </a></div>
     }
   }
 }
@@ -222,16 +208,16 @@
 {
   if (!(new[] {GroupSelectCode.Guest, GroupSelectCode.Previous}).Contains(p.GroupCode))
   {
-    <a class="membertype" href="/OrgMemberDialog2/Display/@Model.Id/@p.PeopleId"> @p.MemberType </a>
+    <div><a class="membertype" href="/OrgMemberDialog2/Display/@Model.Id/@p.PeopleId"> @p.MemberType </a></div>
   }
 }
 @helper ManagePrevMemberLinks(OrgPerson p)
 {
   if (p.GroupCode == GroupSelectCode.Previous)
   {
-    <a href="/TransactionHistory/@p.PeopleId/@Model.Id" target="history"> @p.MemberType </a><br/>
-    <a href="/Organization/Join/@Model.Id/@p.PeopleId" class="joinlink"
-             confirm="Re-Join @p.Name to this Org?">Re-Join Org</a>
+    <div><a href="/TransactionHistory/@p.PeopleId/@Model.Id" target="history"> @p.MemberType </a></div>
+    <div><a href="/Organization/Join/@Model.Id/@p.PeopleId" class="joinlink"
+             confirm="Re-Join @p.Name to this Org?">Re-Join Org</a></div>
   }
 }
 

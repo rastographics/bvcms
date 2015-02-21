@@ -8,11 +8,8 @@ namespace CmsWeb.Areas.People.Models
 {
     public class ContactsReceivedModel : ContactsModel
     {
-        public ContactsReceivedModel()
-        {
-            AddContact = "/Person2/AddContactReceived/" + PeopleId;
-            base.AddContactButton = "Add Contact Received By This Person";
-        }
+        public override string AddContact { get { return "/Person2/AddContactReceived/" + PeopleId; } }
+        public override string AddContactButton { get { return "Add Contact Received By This Person"; } }
 
         override public IQueryable<Contact> DefineModelList()
         {
@@ -38,5 +35,6 @@ namespace CmsWeb.Areas.People.Models
                        Contactor = contactor + othercontactors
                    };
         }
+
     }
 }

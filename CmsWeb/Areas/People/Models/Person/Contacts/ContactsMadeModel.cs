@@ -9,11 +9,9 @@ namespace CmsWeb.Areas.People.Models
 {
     public class ContactsMadeModel : ContactsModel
     {
-        public ContactsMadeModel()
-        {
-            AddContact = "/Person2/AddContactMade/" + PeopleId;
-            base.AddContactButton = "Add Contact Made By This Person";
-        }
+        public override string AddContact { get { return "/Person2/AddContactMade/" + PeopleId; } }
+        public override string AddContactButton { get { return "Add Contact Made By This Person"; } }
+
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()

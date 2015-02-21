@@ -286,7 +286,5 @@ namespace CmsWeb.Areas.Org.Models
         public bool FilterTag { get; set; }
         public bool FilterIndividuals { get; set; }
         public bool ClearFilter { get; set; }
-
-        public bool DateShown { get; set; }
     }
 }
