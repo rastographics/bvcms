@@ -845,6 +845,7 @@
     <Content Include="Scripts\js\TestScript.js" />
     <Content Include="Scripts\OnlineReg\OnlineReg2.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment2.js" />
+    <Content Include="Scripts\Org\GetVolSub.js" />
     <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />

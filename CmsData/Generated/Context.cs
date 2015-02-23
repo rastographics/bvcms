@@ -3046,6 +3046,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.PotentialSubstitutes", IsComposable = true)]
+		public IQueryable< View.PotentialSubstitute > PotentialSubstitutes(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="int")] int? mid
+            )
+		{
+			return this.CreateMethodCallQuery< View.PotentialSubstitute>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                mid
+                );
+		}
+
 		[Function(Name="dbo.RecentAbsents", IsComposable = true)]
 		public IQueryable< View.RecentAbsent > RecentAbsents(
             [Parameter(DbType="int")] int? orgid,

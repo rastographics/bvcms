@@ -11,15 +11,6 @@
             return $(a).find("td.day").attr("jday") > $(b).find("td.day").attr("jday") ? 1 : -1;
         });
     });
-    if (jQuery().transpose) {
-        $(".wrapper .item").transpose();
-    }
-    $("#SelectAll").click(function () {
-        if ($(this).attr("checked"))
-            $("input[name='pids']").attr('checked', true);
-        else
-            $("input[name='pids']").removeAttr('checked');
-    });
     $("form").submit(function () {
         $("input[name='Commit']").removeAttr("disabled");
     });
