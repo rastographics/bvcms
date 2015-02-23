@@ -278,9 +278,6 @@ namespace CmsWeb.Controllers
         {
             if (helplink.HasValue())
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
-
-            if (!SupportRequestModel.CanSupport)
-                ViewBag.NoSupport = "true";
             return View();
         }
     }

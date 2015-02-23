@@ -474,6 +474,7 @@
     <Compile Include="Generated\Functions\OrgPeopleProspect.cs" />
     <Compile Include="Generated\Functions\OrgPerson.cs" />
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
+    <Compile Include="Generated\Functions\PotentialSubstitute.cs" />
     <Compile Include="Generated\Functions\RollList.cs" />
     <Compile Include="Generated\Functions\RollListHighlight.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />

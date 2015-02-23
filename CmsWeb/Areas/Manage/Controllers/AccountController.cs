@@ -91,9 +91,6 @@ CKEditorFuncNum, baseurl + fn, error));
             if (redirect != null)
                 return Redirect(redirect);
 
-            if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
-                return Content("Site is disabled, contact {0} for help".Fmt(Util.SendErrorsTo()[0].Address));
-
             string user = AccountModel.GetValidToken(Request.QueryString["otltoken"]);
             if (user.HasValue())
             {
@@ -151,6 +148,12 @@ CKEditorFuncNum, baseurl + fn, error));
 
             if (user.MustChangePassword)
                 return Redirect("/Account/ChangePassword");
+
+            var access = DbUtil.Db.Setting("LimitAccess", "");
+            if(access.HasValue())
+                if (!user.InRole("Developer"))
+                    return Message("Site is {0}, contact {1} for help".Fmt(access, DbUtil.AdminMail));
+
             if (!m.ReturnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);

@@ -85,11 +85,11 @@ namespace CmsWeb.Areas.Search.Models
         private IEnumerable<SelectListItem> SelectedList(IEnumerable<SelectListItem> items)
         {
             if (CodeValues != null)
-                return items.Select(c => 
+                return items.Select(c =>
                     new SelectListItem
                     {
-                        Text = c.Text, 
-                        Value = c.Value, 
+                        Text = c.Text,
+                        Value = c.Value,
                         Selected = CodeValues.Contains(c.Value)
                     });
             return items;
@@ -163,17 +163,18 @@ namespace CmsWeb.Areas.Search.Models
         }
         public IEnumerable<SelectListItem> Campuses()
         {
-            if (!CampusVisible)
+            if (!CampusVisible && fieldMap.DataSource != "Campuses") 
                 return null;
+
             var q = from o in Db.Organizations
-                    where o.CampusId != null
-                    group o by o.CampusId into g
-                    orderby g.Key
-                    select new SelectListItem
-                    {
-                        Value = g.Key.ToString(),
-                        Text = g.First().Campu.Description
-                    };
+                where o.CampusId != null
+                group o by o.CampusId into g
+                orderby g.Key
+                select new SelectListItem
+                {
+                    Value = g.Key.ToString(),
+                    Text = g.First().Campu.Description
+                };
             var list = q.ToList();
             list.Insert(0, new SelectListItem { Text = "(None)", Value = "-1" });
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
