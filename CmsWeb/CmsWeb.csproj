@@ -1140,6 +1140,7 @@
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.map" />
+    <None Include="Properties\PublishProfiles\test3.pubxml" />
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
     <Content Include="Scripts\Mobile\jquery-1.6.4.js" />

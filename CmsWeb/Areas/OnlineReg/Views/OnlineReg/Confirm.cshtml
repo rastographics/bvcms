@@ -1,4 +1,5 @@
 ﻿@model OnlineRegModel
+@using CmsWeb.Controllers
 @using CmsWeb.Models
 @using UtilityExtensions
 @{
@@ -22,8 +23,8 @@
 <div class="confirm">
   @Html.Raw(Model.TrackingCode)
   @Html.Raw(Model.GetThankYouMessage())
-  @if (Model.UseBootstrap && OnlineRegModel.InMobileAppMode)
+  @if (Model.UseBootstrap && MobileAppMenuController.InMobileAppMode)
   {
-    <a href="@OnlineRegModel.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
+    <a href="@MobileAppMenuController.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
   }
 </div>

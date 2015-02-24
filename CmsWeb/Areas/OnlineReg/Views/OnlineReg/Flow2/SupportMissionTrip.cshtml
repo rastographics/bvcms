@@ -25,13 +25,20 @@
     })
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
-        @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript() && !Model.InMobileAppMode)
+        @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
         {
-            <div class="checkbox">
-                <label>
-                    @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
-                </label>
-            </div>
+            if (!Model.InMobileAppMode)
+            {
+                <div class="checkbox">
+                    <label>
+                        @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
+                    </label>
+                </div>
+            }
+            else
+            {
+                @Html.Hidden("CreatingAccount", true)
+            }
         }
         @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitOtherInfo/" + @Model.Index, "Submit", style: "btn-primary pull-right")
         @Html.DivValidationMessage("Form")
