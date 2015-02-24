@@ -61,7 +61,7 @@
             $.post(f.attr('action'), q, function (ret) {
                 $(f).html(ret);
                 $.unblock();
-                initializeDateElements();
+                $.InitializeDateElements();
             });
             return false;
         };

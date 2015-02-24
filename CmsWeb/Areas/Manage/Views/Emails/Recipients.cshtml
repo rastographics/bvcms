@@ -6,35 +6,42 @@
 }
 else
 {
-  @Html.Hidden("filter")
-  <table class="@ViewExtensions2.GridClass">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Address</th>
-        <th>Opens</th>
-        @if (Model.queue.CCParents == true)
-        {
-          <th>Parent1</th>
-          <th>Parent2</th>
-        }
-      </tr>
-    </thead>
-    <tbody>
-      @foreach (var p in Model.Recipients())
-      {
-        <tr>
-          <td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
-          <td>@p.address</td>
-          <td>@p.nopens</td>
-          @if (Model.queue.CCParents == true)
-          {
-            <td>@p.parent1name</td>
-            <td>@p.parent2name</td>
-          }
-        </tr>
-      }
-    </tbody>
-  </table>
-  @Html.Partial("Pager2", Model.Pager)
+    @Html.Hidden("filter")
+    @Html.Partial("PagerTop", Model.Pager)
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th class="text-right">Opens</th>
+                    @if (Model.queue.CCParents == true)
+                    {
+                        <th>Parent 1</th>
+                        <th>Parent 2</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Recipients())
+                {
+                    <tr>
+                        <td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
+                        <td>@p.address</td>
+                        <td class="text-right">@p.nopens</td>
+                        @if (Model.queue.CCParents == true)
+                        {
+                            <td>@p.parent1name</td>
+                            <td>@p.parent2name</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerBottom", Model.Pager)
+    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+    @Html.Hidden("Page", Model.Pager)
+    @Html.Hidden("Sort", Model.Pager)
+    @Html.Hidden("Direction", Model.Pager)
 }

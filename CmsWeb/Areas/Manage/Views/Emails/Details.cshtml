@@ -3,86 +3,234 @@
 @model CmsWeb.Models.EmailModel
 @{
     ViewBag.Title = "Details";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = Model.queue.Subject;
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section scripts
-{
-    <script type="text/javascript">
-        $(function() {
-            $("#filter").change(function() {
-                window.location = window.location.pathname + "?filter=" + $(this).val();
-            });
-            $(".bt").button();
-        });
-    </script>
-}
-@Helper.AnchorLink("Back to List", "/Emails")
 @{
     var ts = new TimeSpan(0);
     if (Model.queue.Sent.HasValue && Model.queue.Started.HasValue) {
         ts = Model.queue.Sent.Value.Subtract(Model.queue.Started.Value);
     }
     var dt = new DateTime(ts.Ticks);
+
+    var all = Model.GetCountOfAllEmails();
+    var uniqueOpens = Model.queue.EmailResponses.Select(er => er.PeopleId).Distinct().Count();
+    var opens = Model.queue.EmailResponses.Count();
+    var notOpened = Model.GetCountOfNotOpenedEmails();
+    var failed = Model.GetCountOfFailedEmails();
+    var percentage = Math.Round(((decimal)all - (decimal)failed)/(decimal)all*100);
+    
 }
-<table class="roundbox">
-<tr><td colspan="2"><h2>Details</h2></td></tr>
-<tr><td>QueuedBy</td><td>@Model.queue.QueuedBy</td></tr>
-<tr><td>FromName</td><td>@Model.queue.FromName</td></tr>
-<tr><td>FromAddr</td><td>@Model.queue.FromAddr</td></tr>
-  <tr>
-    <td>Count</td>
-    <td>
-      @if (Model.SendFromOrg)
-      {
-        <text>Emails will be sent from Current Members of @Model.SendFromOrgName</text>
-      }
-      else
-      {
-        @Model.GetEmailTos().Count()
-      }
-  </tr>
-<tr><td>Opens</td>
-    <td>@Model.queue.EmailResponses.Count()
-        @Html.DropDownList("filter", new SelectList( new string[] 
-                                       { 
-                                           "All", 
-                                           "Opened", 
-                                           "Not Opened",
-                                           "Failed"
-                                       }))
-    </td></tr>
-<tr><td>Unique Opens</td><td>@Model.queue.EmailResponses.Select(er => er.PeopleId).Distinct().Count()</td></tr>
-<tr><td>Link Tracking</td><td><a href="/Manage/Emails/Tracking/@Model.id">See Details</a></td></tr>
-<tr><td>SendWhen</td><td>@Model.queue.SendWhen.FormatDateTm()</td></tr>
-<tr><td>Sent</td><td>@Model.queue.Sent.FormatDateTm()</td></tr>
-<tr><td>Queued</td><td>@Model.queue.Queued.FormatDateTm() 
-<tr><td>Email Content</td><td><a href="/Manage/Emails/SeeHtml/@Model.id">View HTML Source</a></td></tr>
-<tr><td>Query Recipients</td><td><a href="/Manage/Emails/ConvertToSearch/@Model.id">Convert to Search</a></td></tr>
-@if (Model.CanDelete())
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+}
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <strong>Success!</strong>&nbsp;&nbsp;Email has been resent.
+            </div>
+        }
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/Emails" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            @if (Model.CanDelete())
+                            {
+                                <li><a href="/Manage/Emails/DeleteQueued/@Model.queue.Id"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
+                            }
+                            @if (Model.queue.PublicX ?? false)
+                            {
+                                <li><a href="/EmailView/@Model.id"><i class="fa fa-search"></i>&nbsp;&nbsp;View Email</a></li>
+                            }
+                            else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
+                            {
+                                <li><a href="/Manage/Emails/MakePublic/@Model.queue.Id"><i class="fa fa-unlock"></i>&nbsp;&nbsp;Make Public</a></li>
+                                if (Model.queue.Transactional == true)
+                                {
+                                    <li><a href="/Manage/Emails/Resend/@Model.queue.Id"><i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Resend</a></li>
+                                }
+                            }
+                            <li><a href="Manage/Emails/Tracking/@Model.id"><i class="fa fa-link"></i>&nbsp;&nbsp;View Link Tracking</a></li>
+                            <li><a href="/Manage/Emails/SeeHtml/@Model.id"><i class="fa fa-code"></i>&nbsp;&nbsp;View Html Source</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="well">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <strong><a href="/Person2/@Model.queue.QueuedBy" style="font-size: 1.5em;">@Model.queue.FromName</a></strong><br>
+                            <a href="mailto:@Model.queue.FromAddr">@Model.queue.FromAddr</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="pull-right" style="padding-top: 5px;">
+                                <h4>@Model.queue.Sent.FormatDateTm()</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <iframe src="/Manage/Emails/GetEmailBody/@Model.id" height="600" frameborder="0" style="width: 100%; height: 600px;"></iframe>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs" id="recipient-tabs">
+            <li class="@(Model.filter == "All" || string.IsNullOrWhiteSpace(Model.filter) ? "active" : "")"><a href="#" data-filter="All">All&nbsp;&nbsp;<span class="badge">@all</span></a></li>
+            <li class="@(Model.filter == "Opened" ? "active" : "")"><a href="#" data-filter="Opened">Opened&nbsp;&nbsp;<span class="badge">@uniqueOpens</span></a></li>
+            <li class="@(Model.filter == "Not Opened" ? "active" : "")"><a href="#" data-filter="Not Opened">Not Opened&nbsp;&nbsp;<span class="badge">@notOpened</span></a></li>
+            <li class="@(Model.filter == "Failed" ? "active" : "")"><a href="#" data-filter="Failed">Failed&nbsp;&nbsp;<span class="badge">@failed</span></a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="row hidden-xs">
+                <div class="col-sm-8">
+                    <h4>Recipients</h4>
+                </div>
+                <div class="col-sm-4">
+                    <div class="pull-right">
+                        <a href="/Manage/Emails/ConvertToSearch/@Model.id" class="btn btn-default"><i class="fa fa-search"></i> View in Search Builder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <br />
+                    <form action="/Manage/Emails/Recipients/@Model.id" method="post">
+                        @{Html.RenderPartial("Recipients", Model);}
+                    </form>
+                    <br />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-3">
+        <div class="mini-stat-panel">
+            <div class="stat-row">
+                <div class="stat-cell bg-info darker">
+                    <i class="fa fa-envelope-o bg-icon" style="font-size:60px;line-height:80px;height:80px;"></i>
+                    <span class="text-bg">Email Details</span><br>
+                    <span class="text-sm">@uniqueOpens Unique Opens</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-counters bg-info no-padding text-center">
+                    <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                        <span class="text-bg"><strong>@opens</strong></span><br>
+                        <span class="text-xs">OPENS</span>
+                    </div>
+                    <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                        <span class="text-bg"><strong>@notOpened</strong></span><br>
+                        <span class="text-xs">NOT OPENED</span>
+                    </div>
+                    <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                        <span class="text-bg"><strong>@failed</strong></span><br>
+                        <span class="text-xs">FAILED</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mini-stat-panel text-center">
+            <div class="stat-row">
+                <div class="stat-cell bg-success darker padding-sm text-xs text-semibold">
+                    <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;EMAILS SENT
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-cell bordered no-border-t no-padding-hr">
+                    <div class="pie-chart" data-percent="@percentage">
+                        <div class="pie-chart-label">@percentage%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-cell bg-success bordered no-border-t text-lg">
+                    @if (!string.IsNullOrWhiteSpace(Model.queue.SendWhen.FormatDateTm()))
+                    {
+                        <p>Scheduled<br /><strong>@Model.queue.SendWhen.FormatDateTm()</strong></p>
+                    }
+                    <p>Sent<br /><strong>@Model.queue.Sent.FormatDateTm()</strong></p>
+                    <p>Queued<br /><strong>@Model.queue.Queued.FormatDateTm()</strong></p>
+                    <p>Started<br /><strong>@Model.queue.Started.FormatDateTm()</strong></p>
+                    <p>Run-time<br /><strong>@dt.ToString("H:mm:ss")</strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="box box-primary" style="display: none;">
+            <div class="box-title">
+                <h5>Details</h5>
+            </div>
+            <div class="box-content">
+                <table>
+                    <tr>
+                        <td>Count</td>
+                        <td>
+                            @if (Model.SendFromOrg)
+                            {
+                                <text>Emails will be sent from Current Members of @Model.SendFromOrgName</text>
+                            }
+                            else
+                            {
+                                @Model.GetEmailTos().Count()
+                            }
+                    </tr>
+                    <tr>
+                        <td>Opens</td>
+                        <td>
+                            @Model.queue.EmailResponses.Count()
+                            @Html.DropDownList("filter", new SelectList(new string[]
+                            {
+                                "All",
+                                "Opened",
+                                "Not Opened",
+                                "Failed"
+                            }))
+                        </td>
+                    </tr>
+                    <tr><td>Unique Opens</td><td>@Model.queue.EmailResponses.Select(er => er.PeopleId).Distinct().Count()</td></tr>
+                    <tr><td>Link Tracking</td><td><a href="/Manage/Emails/Tracking/@Model.id">See Details</a></td></tr>
+                    <tr><td>Send When</td><td>@Model.queue.SendWhen.FormatDateTm()</td></tr>
+                    <tr><td>Sent</td><td>@Model.queue.Sent.FormatDateTm()</td></tr>
+                    <tr><td>Queued</td><td>@Model.queue.Queued.FormatDateTm()</td></tr>
+                    <tr><td>Query Recipients</td><td><a href="/Manage/Emails/ConvertToSearch/@Model.id">Convert to Search</a></td></tr>
+                    <tr><td>Started</td><td>@Model.queue.Started.FormatDateTm()</td></tr>
+                    <tr><td>RunTime</td><td>@dt.ToString("H:mm:ss")</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
 {
-    <a href="/Manage/Emails/DeleteQueued/@Model.queue.Id" class="bt">Delete</a>
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-easypiechart/js/jquery.easypiechart.min.js")
+    <script type="text/javascript">
+        $(function () {
+            $("#recipient-tabs").tabdrop();
+
+            $("#recipient-tabs a").click(function(e) {
+                e.preventDefault();
+                window.location = window.location.pathname + "?filter=" + $(this).attr("data-filter");
+            });
+
+            var easyPieChartDefaults = {
+                animate: 2000,
+                scaleColor: false,
+                lineWidth: 6,
+                lineCap: 'square',
+                size: 90,
+                trackColor: '#e5e5e5',
+                barColor: '#5cb85c'
+            }
+            $('.pie-chart').easyPieChart($.extend({}, easyPieChartDefaults));
+        });
+    </script>
 }
-    </td></tr>
-<tr><td>Started</td><td>@Model.queue.Started.FormatDateTm()</td></tr>
-<tr><td>RunTime</td><td>@dt.ToString("H:mm:ss")</td></tr>
-</table>
-@if (Model.queue.PublicX ?? false)
-{
-    <p>@Helper.AnchorLink("View Email", "/EmailView/" + Model.id)</p>
-}
-else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
-{
-    <a href="/Manage/Emails/MakePublic/@Model.queue.Id" class="bt">Make Public</a>
-    if (Model.queue.Transactional == true)
-    {
-        <a href="/Manage/Emails/Resend/@Model.queue.Id" class="bt">Resend</a>
-    }
-}
-<div class="red"><b>@TempData["message"]</b></div>
-<h2>@Html.Raw(Model.queue.Subject)</h2>
-<div style="max-width: 600px">@Html.Raw(Model.queue.Body)</div>
-<hr />
-<h2>Recipients</h2>
-<form action="/Manage/Emails/Recipients/@Model.id" method="post">
-@{Html.RenderPartial("Recipients", Model);}
-</form>

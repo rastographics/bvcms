@@ -90,16 +90,37 @@ namespace CmsWeb.Models
 
             return q2;
         }
+
         public IEnumerable<EmailQueueTo> GetEmailTos()
+        {
+            return GetEmailTos(filter);
+        }
+
+        public int GetCountOfAllEmails()
+        {
+            return GetEmailTos("All").Count();
+        }
+
+        public int GetCountOfNotOpenedEmails()
+        {
+            return GetEmailTos("Not Opened").Count();
+        }
+
+        public int GetCountOfFailedEmails()
+        {
+            return GetEmailTos("Failed").Count();
+        }
+
+        private IEnumerable<EmailQueueTo> GetEmailTos(string emailFilter)
         {
             var q = from t in DbUtil.Db.EmailQueueTos
                     let opened = t.Person.EmailResponses.Any(er => er.EmailQueueId == t.Id)
                     let fail = DbUtil.Db.EmailQueueToFails.FirstOrDefault(ff => ff.Id == t.Id && ff.PeopleId == t.PeopleId)
                     where t.Id == id
-                    where filter == "All"
-                    || (opened == true && filter == "Opened")
-                    || (opened == false && filter == "Not Opened")
-                    || (filter == "Failed" && fail != null)
+                    where emailFilter == "All"
+                    || (opened == true && emailFilter == "Opened")
+                    || (opened == false && emailFilter == "Not Opened")
+                    || (emailFilter == "Failed" && fail != null)
                     select t;
 
             var roles = DbUtil.Db.CurrentRoles();
