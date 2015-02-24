@@ -6,15 +6,16 @@
   @Html.Raw(ViewExtensions2.Bootstrap3Css())
   @RenderSection("head", false)
 </head>
-<body>
-  @Html.Raw((string)ViewBag.top)
-  <div class="container">
-    @RenderBody()
-  </div>
-  @Html.Raw((string)ViewBag.bottom)
-  @ViewExtensions2.jQuery()
-  @ViewExtensions2.Bootstrap3()
-  @RenderSection("scripts", false)
-</body>
+    <body>
+        @Html.Action("Index", "MobileAppMenu", new { area = "" })
+        @Html.Raw((string)ViewBag.top)
+        <div class="container">
+            @RenderBody()
+        </div>
+        @Html.Raw((string)ViewBag.bottom)
+        @ViewExtensions2.jQuery()
+        @ViewExtensions2.Bootstrap3()
+        @RenderSection("scripts", false)
+    </body>
 </html>
 
