@@ -1,6 +1,6 @@
 @if ((bool?)ViewBag.hasshell == true)
 {
-    @Html.Action("MobileAppMenu", "OnlineReg")
+    @Html.Action("Index", "MobileAppMenu", new { area = "" })
     @Html.Raw((string)ViewBag.top)
     @RenderSection("head", false)
     @RenderBody()
@@ -24,8 +24,8 @@ else
         @RenderSection("head", false)
     </head>
     <body>
-      @*            @Html.Action("MobileAppMenu", "OnlineReg")
-      This breaks when anybody else uses the return Message("message") *@
+      @*        @Html.Action("Index", "MobileAppMenu", new { area = "" })
+    This breaks when anybody else uses the return Message("message") *@
       @Html.Raw((string)ViewBag.top)
       <div class="container">
         @RenderBody()
