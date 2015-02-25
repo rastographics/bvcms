@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -10,6 +11,7 @@ namespace CmsWeb.MobileAPI
 {
     public class MobileRegistrationCategory
     {
+        public bool Current { get; set; }
         public string Title { get; set; }
         public List<MobileRegistration> Registrations { get; set; }
     }
