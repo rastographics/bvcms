@@ -26,11 +26,13 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var m = new EmailsModel();
 			return View(m);
 		}
+
 		public ActionResult SentBy(int? id)
 		{
 			var m = new EmailsModel { senderid = id };
 			return View("Index", m);
 		}
+
 		public ActionResult SentTo(int? id)
 		{
 			var m = new EmailsModel { peopleid = id };
@@ -55,6 +57,7 @@ namespace CmsWeb.Areas.Manage.Controllers
     			return View(m);
 			return Content("not authorized");
 		}
+
 		public ActionResult SeeHtml(int id)
 		{
 			var m = new EmailModel { id = id };
@@ -89,6 +92,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Content("not authorized");
             
         }
+
 		public ActionResult ConvertToSearch(int id)
 		{
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -142,6 +146,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			});
 			return Redirect("/Manage/Emails/Details/" + id);
 		}
+
 		public ActionResult DeleteQueued(int id)
 		{
 			var m = new EmailModel { id = id };
@@ -174,6 +179,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 		    DeleteEmail(id);
 			return Redirect("/Emails");
 		}
+
 		public ActionResult Resend(int id)
 		{
 			var email = (from e in DbUtil.Db.EmailQueues
@@ -186,6 +192,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 		    TempData["message"] = "Mail Resent";
 			return RedirectToAction("Details", new { id });
 		}
+
 		public ActionResult MakePublic(int id)
 		{
 			var email = (from e in DbUtil.Db.EmailQueues
@@ -198,6 +205,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			DbUtil.Db.SubmitChanges();
             return Redirect("/EmailView/" + id);
 		}
+
 		[HttpPost]
 		public ActionResult Recipients(int id, string filter)
 		{
@@ -216,6 +224,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return Redirect("/EmailView/" + id);
         }
+
         [Route("~/Emails/Failed/{id?}")]
 		public ActionResult Failed(int? id, string email)
 		{
@@ -242,6 +251,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 						   };
 			return View(q.Take(300));
 		}
+
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public ActionResult Unblock(string email)
@@ -251,6 +261,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var ret = wc.DownloadString(deletebounce);
 			return Content(ret);
 		}
+
 		[Authorize(Roles = "Developer")]
 		[HttpPost]
 		public ActionResult Unspam(string email)

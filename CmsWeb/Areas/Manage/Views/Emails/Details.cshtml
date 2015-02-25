@@ -42,7 +42,7 @@
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            @if (Model.CanDelete())
+                            @if (Model.CanDelete())  
                             {
                                 <li><a href="/Manage/Emails/DeleteQueued/@Model.queue.Id"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
                             }
@@ -58,7 +58,10 @@
                                     <li><a href="/Manage/Emails/Resend/@Model.queue.Id"><i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Resend</a></li>
                                 }
                             }
-                            <li><a href="Manage/Emails/Tracking/@Model.id"><i class="fa fa-link"></i>&nbsp;&nbsp;View Link Tracking</a></li>
+                            @if (Model.HasTrackLinks)
+                            {
+                                <li><a href="Manage/Emails/Tracking/@Model.id"><i class="fa fa-link"></i>&nbsp;&nbsp;View Link Tracking</a></li>
+                            }
                             <li><a href="/Manage/Emails/SeeHtml/@Model.id"><i class="fa fa-code"></i>&nbsp;&nbsp;View Html Source</a></li>
                         </ul>
                     </div>
@@ -117,17 +120,20 @@
                 <div class="stat-cell bg-info darker">
                     <i class="fa fa-envelope-o bg-icon" style="font-size:60px;line-height:80px;height:80px;"></i>
                     <span class="text-bg">Email Details</span><br>
-                    <span class="text-sm">@uniqueOpens Unique Opens</span>
+                    @if (Model.HasTracking)
+                    {
+                        <span class="text-sm">@uniqueOpens Unique Opens</span>
+                    }
                 </div>
             </div>
             <div class="stat-row">
                 <div class="stat-counters bg-info no-padding text-center">
                     <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
-                        <span class="text-bg"><strong>@opens</strong></span><br>
+                        <span class="text-bg"><strong>@(Model.HasTracking ? opens.ToString() : "N/A")</strong></span><br>
                         <span class="text-xs">OPENS</span>
                     </div>
                     <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
-                        <span class="text-bg"><strong>@notOpened</strong></span><br>
+                        <span class="text-bg"><strong>@(Model.HasTracking ? notOpened.ToString() : "N/A")</strong></span><br>
                         <span class="text-xs">NOT OPENED</span>
                     </div>
                     <div class="stat-cell col-xs-4 padding-sm no-padding-hr">

@@ -22,6 +22,17 @@ namespace CmsWeb.Models
                 return _Queue;
             }
         }
+
+        public bool HasTracking
+        {
+            get { return _Queue.Body.Contains("{track}"); }
+        }
+
+        public bool HasTrackLinks
+        {
+            get { return _Queue.Body.Contains("{tracklinks}"); }
+        }
+
         public PagerModel2 Pager { get; set; }
         int? _count;
         public int Count()
@@ -30,11 +41,13 @@ namespace CmsWeb.Models
                 _count = GetEmailTos().Count();
             return _count.Value;
         }
+
         public EmailModel()
         {
             Pager = new PagerModel2(Count);
             filter = "All";
         }
+
         public bool CanDelete()
         {
             if (HttpContext.Current.User.IsInRole("Admin"))
@@ -63,6 +76,7 @@ namespace CmsWeb.Models
                 return sendfromorg;
             }
         }
+
         public IEnumerable<RecipientInfo> Recipients()
         {
             var q = GetEmailTos();
