@@ -284,13 +284,13 @@ namespace CmsWeb.Areas.Public.Controllers
                                      RegEnd = o.RegEnd
                                  }).ToList();
 
-            var lines = DbUtil.Db.Content("AppRegistrations", "\tRegistrations").TrimEnd();
-            var re = new Regex(@"^(\S*)\s+(.+)$", RegexOptions.Multiline);
-            var line = re.Match(lines);
             var categories = new Dictionary<string, string>();
+            var lines = DbUtil.Db.Content("AppRegistrations", "\tRegistrations").TrimEnd();
+            var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            var line = re.Match(lines);
             while (line.Success)
             {
-                categories.Add(line.Groups[0].Value, line.Groups[1].Value);
+                categories.Add(line.Groups[1].Value, line.Groups[2].Value.TrimEnd());
                 line = line.NextMatch();
             }
             var list = new List<MobileRegistrationCategory>();
