@@ -13,6 +13,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData;
 using CmsData.API;
+using CmsWeb.Controllers;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -24,7 +25,7 @@ namespace CmsWeb.Models
         public bool IsValidForContinue { get; set; }
         public bool IsValidForNew { get; set; }
 
-        public bool InMobileAppMode { get { return OnlineRegModel.InMobileAppMode; } }
+        public bool InMobileAppMode { get { return MobileAppMenuController.InMobileAppMode; } }
         public int? orgid { get; set; }
         public int? masterorgid { get; set; }
         public int? divid { get; set; }

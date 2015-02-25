@@ -22,14 +22,14 @@ ViewExtensions2.jQueryUICss() +
 "))
 @RenderSection("head", false)
 </head>
-<body>
-@Html.Raw((string)ViewData["top"])
-@RenderBody()
-@Html.Raw((string)ViewData["bottom"])
-@ViewExtensions2.jQuery()
-@ViewExtensions2.jQueryUI()
-@Fingerprint.Script("/Scripts/bundle.onlineregister.js")
-@RenderSection("scripts", false)
-</body>
+    <body>
+        @Html.Raw((string)ViewData["top"])
+        @RenderBody()
+        @Html.Raw((string)ViewData["bottom"])
+        @ViewExtensions2.jQuery()
+        @ViewExtensions2.jQueryUI()
+        @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
+        @RenderSection("scripts", false)
+    </body>
 </html>
 }
