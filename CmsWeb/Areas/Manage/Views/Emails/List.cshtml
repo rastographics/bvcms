@@ -103,17 +103,17 @@
         <tbody>
             @foreach (var i in Model.Emails())
             {
-                <tr>
+                <tr class="@(!i.queue.Sent.HasValue ? i.queue.SendWhen.HasValue ? "success" : "warning" : "")">
                     <td>
                         @if (!i.queue.Sent.HasValue)
                         {
                             if (i.queue.SendWhen.HasValue)
                             {
-                                <span style="color:green" title="Scheduled">@i.queue.SendWhen.FormatDate()</span>
+                                <span title="Scheduled">@i.queue.SendWhen.FormatDate()</span>
                             }
                             else
                             {
-                                <span style="color:red" title="Queued">@i.queue.Queued.FormatDateTm()</span>
+                                <span title="Queued">@i.queue.Queued.FormatDateTm()</span>
                             }
                         }
                         else

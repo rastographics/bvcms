@@ -23,14 +23,30 @@ namespace CmsWeb.Models
             }
         }
 
+        private bool? _hasTracking;
         public bool HasTracking
         {
-            get { return _Queue.Body.Contains("{track}"); }
+            get
+            {
+                if (!_hasTracking.HasValue)
+                {
+                    _hasTracking = _Queue.Body.Contains("{track}");
+                }
+                return _hasTracking.Value;
+            }
         }
 
+        private bool? _hasTrackLinks;
         public bool HasTrackLinks
         {
-            get { return _Queue.Body.Contains("{tracklinks}"); }
+            get
+            {
+                if (!_hasTrackLinks.HasValue)
+                {
+                    _hasTrackLinks = _Queue.Body.Contains("{tracklinks}");
+                }
+                return _hasTrackLinks.Value;
+            }
         }
 
         public PagerModel2 Pager { get; set; }
@@ -110,7 +126,7 @@ namespace CmsWeb.Models
             return GetEmailTos(filter);
         }
 
-        public int GetCountOfAllEmails()
+        public int GetCountOfAllEmailTos()
         {
             return GetEmailTos("All").Count();
         }

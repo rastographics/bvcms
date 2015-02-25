@@ -1,4 +1,5 @@
 ﻿@using CmsWeb
+@using iTextSharp.text.pdf.qrcode
 @using UtilityExtensions;
 @model CmsWeb.Models.EmailModel
 @{
@@ -13,114 +14,25 @@
     }
     var dt = new DateTime(ts.Ticks);
 
-    var all = Model.GetCountOfAllEmails();
+    var all = Model.GetCountOfAllEmailTos();
     var uniqueOpens = Model.queue.EmailResponses.Select(er => er.PeopleId).Distinct().Count();
     var opens = Model.queue.EmailResponses.Count();
     var notOpened = Model.GetCountOfNotOpenedEmails();
     var failed = Model.GetCountOfFailedEmails();
-    var percentage = Math.Round(((decimal)all - (decimal)failed)/(decimal)all*100);
+    var percentage = !Model.queue.Sent.HasValue && Model.queue.SendWhen.HasValue ? 0 : Math.Round(((decimal)all - (decimal)failed) / (decimal)all * 100);
     
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
 }
 <div class="row">
-    <div class="col-md-8 col-lg-6">
-        @if (TempData["message"] != null)
-        {
-            <div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <strong>Success!</strong>&nbsp;&nbsp;Email has been resent.
-            </div>
-        }
-        <div class="box box-responsive">
-            <div class="box-title-btn">
-                <div class="box-tools">
-                    <a href="/Emails" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            Actions <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            @if (Model.CanDelete())  
-                            {
-                                <li><a href="/Manage/Emails/DeleteQueued/@Model.queue.Id"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
-                            }
-                            @if (Model.queue.PublicX ?? false)
-                            {
-                                <li><a href="/EmailView/@Model.id"><i class="fa fa-search"></i>&nbsp;&nbsp;View Email</a></li>
-                            }
-                            else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
-                            {
-                                <li><a href="/Manage/Emails/MakePublic/@Model.queue.Id"><i class="fa fa-unlock"></i>&nbsp;&nbsp;Make Public</a></li>
-                                if (Model.queue.Transactional == true)
-                                {
-                                    <li><a href="/Manage/Emails/Resend/@Model.queue.Id"><i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Resend</a></li>
-                                }
-                            }
-                            @if (Model.HasTrackLinks)
-                            {
-                                <li><a href="Manage/Emails/Tracking/@Model.id"><i class="fa fa-link"></i>&nbsp;&nbsp;View Link Tracking</a></li>
-                            }
-                            <li><a href="/Manage/Emails/SeeHtml/@Model.id"><i class="fa fa-code"></i>&nbsp;&nbsp;View Html Source</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            <div class="box-content">
-                <div class="well">
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <strong><a href="/Person2/@Model.queue.QueuedBy" style="font-size: 1.5em;">@Model.queue.FromName</a></strong><br>
-                            <a href="mailto:@Model.queue.FromAddr">@Model.queue.FromAddr</a>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="pull-right" style="padding-top: 5px;">
-                                <h4>@Model.queue.Sent.FormatDateTm()</h4>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <iframe src="/Manage/Emails/GetEmailBody/@Model.id" height="600" frameborder="0" style="width: 100%; height: 600px;"></iframe>
-                </div>
-            </div>
-        </div>
-        <ul class="nav nav-tabs" id="recipient-tabs">
-            <li class="@(Model.filter == "All" || string.IsNullOrWhiteSpace(Model.filter) ? "active" : "")"><a href="#" data-filter="All">All&nbsp;&nbsp;<span class="badge">@all</span></a></li>
-            <li class="@(Model.filter == "Opened" ? "active" : "")"><a href="#" data-filter="Opened">Opened&nbsp;&nbsp;<span class="badge">@uniqueOpens</span></a></li>
-            <li class="@(Model.filter == "Not Opened" ? "active" : "")"><a href="#" data-filter="Not Opened">Not Opened&nbsp;&nbsp;<span class="badge">@notOpened</span></a></li>
-            <li class="@(Model.filter == "Failed" ? "active" : "")"><a href="#" data-filter="Failed">Failed&nbsp;&nbsp;<span class="badge">@failed</span></a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="row hidden-xs">
-                <div class="col-sm-8">
-                    <h4>Recipients</h4>
-                </div>
-                <div class="col-sm-4">
-                    <div class="pull-right">
-                        <a href="/Manage/Emails/ConvertToSearch/@Model.id" class="btn btn-default"><i class="fa fa-search"></i> View in Search Builder</a>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <br />
-                    <form action="/Manage/Emails/Recipients/@Model.id" method="post">
-                        @{Html.RenderPartial("Recipients", Model);}
-                    </form>
-                    <br />
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4 col-lg-3">
+    <div class="col-md-4 col-lg-3 col-md-push-8 col-lg-push-6">
         <div class="mini-stat-panel">
             <div class="stat-row">
                 <div class="stat-cell bg-info darker">
                     <i class="fa fa-envelope-o bg-icon" style="font-size:60px;line-height:80px;height:80px;"></i>
                     <span class="text-bg">Email Details</span><br>
-                    @if (Model.HasTracking)
+                    @if (Model.HasTracking && Model.queue.Sent.HasValue)
                     {
                         <span class="text-sm">@uniqueOpens Unique Opens</span>
                     }
@@ -128,14 +40,27 @@
             </div>
             <div class="stat-row">
                 <div class="stat-counters bg-info no-padding text-center">
-                    <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
-                        <span class="text-bg"><strong>@(Model.HasTracking ? opens.ToString() : "N/A")</strong></span><br>
-                        <span class="text-xs">OPENS</span>
-                    </div>
-                    <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
-                        <span class="text-bg"><strong>@(Model.HasTracking ? notOpened.ToString() : "N/A")</strong></span><br>
-                        <span class="text-xs">NOT OPENED</span>
-                    </div>
+                    @if (Model.HasTracking && Model.queue.Sent.HasValue)
+                    {
+                        <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                            <span class="text-bg"><strong>@opens</strong></span><br>
+                            <span class="text-xs">OPENS</span>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                            <span class="text-bg"><strong>@all</strong></span><br>
+                            <span class="text-xs">RECIPIENTS</span>
+                        </div>
+                    }
+                    @if (Model.HasTracking && Model.queue.Sent.HasValue)
+                    {
+                        <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                            <span class="text-bg"><strong>@notOpened</strong></span><br>
+                            <span class="text-xs">NOT OPENED</span>
+                        </div>
+                    }
                     <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
                         <span class="text-bg"><strong>@failed</strong></span><br>
                         <span class="text-xs">FAILED</span>
@@ -143,13 +68,13 @@
                 </div>
             </div>
         </div>
-        <div class="mini-stat-panel text-center">
-            <div class="stat-row">
+        <div class="mini-stat-panel">
+            <div class="stat-row text-center">
                 <div class="stat-cell bg-success darker padding-sm text-xs text-semibold">
                     <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;EMAILS SENT
                 </div>
             </div>
-            <div class="stat-row">
+            <div class="stat-row text-center">
                 <div class="stat-cell bordered no-border-t no-padding-hr">
                     <div class="pie-chart" data-percent="@percentage">
                         <div class="pie-chart-label">@percentage%</div>
@@ -160,12 +85,59 @@
                 <div class="stat-cell bg-success bordered no-border-t text-lg">
                     @if (!string.IsNullOrWhiteSpace(Model.queue.SendWhen.FormatDateTm()))
                     {
-                        <p>Scheduled<br /><strong>@Model.queue.SendWhen.FormatDateTm()</strong></p>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Scheduled
+                            </div>
+                            <div class="col-sm-9 text-right">
+                                <strong>@Model.queue.SendWhen.FormatDateTm()</strong>
+                            </div>
+                        </div>
                     }
-                    <p>Sent<br /><strong>@Model.queue.Sent.FormatDateTm()</strong></p>
-                    <p>Queued<br /><strong>@Model.queue.Queued.FormatDateTm()</strong></p>
-                    <p>Started<br /><strong>@Model.queue.Started.FormatDateTm()</strong></p>
-                    <p>Run-time<br /><strong>@dt.ToString("H:mm:ss")</strong></p>
+                    @if (!string.IsNullOrWhiteSpace(Model.queue.Sent.FormatDateTm()))
+                    {
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Sent
+                            </div>
+                            <div class="col-sm-9 text-right">
+                                <strong>@Model.queue.Sent.FormatDateTm()</strong>
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.queue.Queued.FormatDateTm()))
+                    {
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Queued
+                            </div>
+                            <div class="col-sm-9 text-right">
+                                <strong>@Model.queue.Queued.FormatDateTm()</strong>
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.queue.Started.FormatDateTm()))
+                    {
+                        <div class="row">
+                            <div class="col-sm-3">
+                                Started
+                            </div>
+                            <div class="col-sm-9 text-right">
+                                <strong>@Model.queue.Started.FormatDateTm()</strong>
+                            </div>
+                        </div>
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Model.queue.Started.FormatDateTm()))
+                    {
+                        <div class="row">
+                            <div class="col-sm-4">
+                                Run-time
+                            </div>
+                            <div class="col-sm-8 text-right">
+                                <strong>@dt.ToString("H:mm:ss")</strong>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
@@ -209,6 +181,98 @@
                     <tr><td>Started</td><td>@Model.queue.Started.FormatDateTm()</td></tr>
                     <tr><td>RunTime</td><td>@dt.ToString("H:mm:ss")</td></tr>
                 </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 col-lg-6 col-md-pull-4 col-lg-pull-3">
+        @if (TempData["message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <strong>Success!</strong>&nbsp;&nbsp;Email has been resent.
+            </div>
+        }
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/Emails" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            @if (Model.CanDelete() && !Model.queue.Sent.HasValue)  
+                            {
+                                <li><a href="/Manage/Emails/DeleteQueued/@Model.queue.Id"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
+                            }
+                            @if (Model.queue.PublicX ?? false)
+                            {
+                                <li><a href="/EmailView/@Model.id"><i class="fa fa-search"></i>&nbsp;&nbsp;View Email</a></li>
+                            }
+                            else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
+                            {
+                                <li><a href="/Manage/Emails/MakePublic/@Model.queue.Id"><i class="fa fa-globe"></i>&nbsp;&nbsp;Make Public</a></li>
+                                if (Model.queue.Transactional == true)
+                                {
+                                    <li><a href="/Manage/Emails/Resend/@Model.queue.Id"><i class="fa fa-paper-plane"></i>&nbsp;&nbsp;Resend</a></li>
+                                }
+                            }
+                            @if (Model.HasTrackLinks)
+                            {
+                                <li><a href="Manage/Emails/Tracking/@Model.id"><i class="fa fa-link"></i>&nbsp;&nbsp;View Link Tracking</a></li>
+                            }
+                            <li><a href="/Manage/Emails/SeeHtml/@Model.id"><i class="fa fa-code"></i>&nbsp;&nbsp;View Html Source</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="well">
+                    <div class="row">
+                        <div class="col-sm-8">
+                            <strong><a href="/Person2/@Model.queue.QueuedBy" style="font-size: 1.5em;">@Model.queue.FromName</a></strong><br>
+                            <a href="mailto:@Model.queue.FromAddr">@Model.queue.FromAddr</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="pull-right" style="padding-top: 5px;">
+                                <h4>@Model.queue.Sent.FormatDateTm()</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <iframe src="/Manage/Emails/GetEmailBody/@Model.id" height="600" frameborder="0" style="width: 100%; height: 600px;"></iframe>
+                </div>
+            </div>
+        </div>
+        <ul class="nav nav-tabs" id="recipient-tabs">
+            <li class="@(Model.filter == "All" || string.IsNullOrWhiteSpace(Model.filter) ? "active" : "")"><a href="#" data-filter="All">All&nbsp;&nbsp;<span class="badge">@all</span></a></li>
+            @if (Model.HasTracking)
+            {
+                <li class="@(Model.filter == "Opened" ? "active" : "")"><a href="#" data-filter="Opened">Opened&nbsp;&nbsp;<span class="badge">@uniqueOpens</span></a></li>
+                <li class="@(Model.filter == "Not Opened" ? "active" : "")"><a href="#" data-filter="Not Opened">Not Opened&nbsp;&nbsp;<span class="badge">@notOpened</span></a></li>
+            }
+            <li class="@(Model.filter == "Failed" ? "active" : "")"><a href="#" data-filter="Failed">Failed&nbsp;&nbsp;<span class="badge">@failed</span></a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="row hidden-xs">
+                <div class="col-sm-8">
+                    <h4>Recipients</h4>
+                </div>
+                <div class="col-sm-4">
+                    <div class="pull-right">
+                        <a href="/Manage/Emails/ConvertToSearch/@Model.id" class="btn btn-default"><i class="fa fa-search"></i> Convert to Search Builder</a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <br />
+                    <form action="/Manage/Emails/Recipients/@Model.id" method="post">
+                        @{Html.RenderPartial("Recipients", Model);}
+                    </form>
+                    <br />
+                </div>
             </div>
         </div>
     </div>
