@@ -607,6 +607,9 @@
     <ParentsOf Title="Parents Only" Type="Bit" DataValueField="IdCode">
       Specify True or False to include only Primary Adults.
     </ParentsOf>
+    <PlusParentsOf Title="Add Primary Adults" Type="Bit" DataValueField="IdCode">
+      Specify True or False to Add Primary Adults.
+    </PlusParentsOf>
     <StatusFlag Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">
       Select Status Flags from the list (computed in nightly batch from saved searches).
     </StatusFlag>

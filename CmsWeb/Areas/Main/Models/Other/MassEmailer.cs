@@ -63,7 +63,9 @@ namespace CmsWeb.Areas.Main.Models
                 q = DbUtil.Db.PeopleQuery(id);
                 var c = DbUtil.Db.LoadQueryById2(id);
                 var cc = c.ToClause();
-                if (!cc.ParentsOf && wantParents)
+                if (cc.PlusParentsOf)
+                    q = DbUtil.Db.PersonQueryPlusParents(q);
+                else if (cc.ParentsOf)
                     q = DbUtil.Db.PersonQueryParents(q);
 
                 if (CcParents)

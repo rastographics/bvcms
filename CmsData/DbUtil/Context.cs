@@ -166,7 +166,9 @@ namespace CmsData
                 return null;
             var c = query.ToClause();
             q = People.Where(c.Predicate(this));
-            if (c.ParentsOf)
+            if (c.PlusParentsOf)
+                q = PersonQueryPlusParents(q);
+            else if (c.ParentsOf)
                 q = PersonQueryParents(q);
             return q;
         }
@@ -199,7 +201,9 @@ namespace CmsData
                 qB = MatchNothing();
             var c = qB.ToClause();
             var q = People.Where(c.Predicate(this));
-            if (c.ParentsOf)
+            if (c.PlusParentsOf)
+                q = PersonQueryPlusParents(q);
+            else if (c.ParentsOf)
                 q = PersonQueryParents(q);
             return q;
         }
@@ -223,6 +227,30 @@ namespace CmsData
                 tag.PersonTags.Add(new TagPerson { PeopleId = i.Value });
             SubmitChanges();
             return tag.People(this);
+        }
+        public IQueryable<Person> PersonQueryPlusParents(IQueryable<Person> q)
+        {
+            var tag1 = PopulateTemporaryTag(q.Select(pp => pp.PeopleId).Distinct());
+            var q2 = from p in q
+                     from m in p.Family.People
+                     where m.PositionInFamilyId == 10
+                     //					 where (m.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
+                     //					 || (m.PeopleId == p.PeopleId && p.PositionInFamilyId == 10)
+                     where m.DeceasedDate == null
+                     select m.PeopleId;
+
+            var tag2 = PopulateTemporaryTag(q2.Distinct());
+            var q3 = from p in q
+                     let ev = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "Parent" && ee.IntValue > 0)
+                     where ev != null
+                     where !q2.Any(pp => pp == ev.IntValue)
+                     select ev.IntValue;
+
+            foreach (var i in q3.Distinct())
+                tag2.PersonTags.Add(new TagPerson { PeopleId = i.Value });
+            SubmitChanges();
+            AddTag1ToTag2(tag1.Id, tag2.Id);
+            return tag2.People(this);
         }
         public IQueryable<Person> ReturnPrimaryAdults(IQueryable<Person> q)
         {
@@ -1043,6 +1071,12 @@ namespace CmsData
         public int PopulateTempTag([Parameter(DbType = "Int")] int id, [Parameter(DbType = "VARCHAR(MAX)")] string list)
         {
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id, list);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.AddTag1ToTag2")]
+        public int AddTag1ToTag2([Parameter(DbType = "Int")] int t1, [Parameter(DbType = "Int")] int t2)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), t1, t2);
             return ((int)(result.ReturnValue));
         }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
