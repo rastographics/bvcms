@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.SqlTypes;
 using System.Linq;
 
 namespace CmsData.API
@@ -29,7 +30,7 @@ namespace CmsData.API
 
             if (pin.HasValue && session.Pin.HasValue)
             {
-                if (pin.HasValue || pin.Value != session.Pin.Value)
+                if (pin.Value != session.Pin.Value)
                     return new ApiSessionResult(session.User, ApiSessionStatus.PinInvalid);
             }
 
@@ -85,6 +86,17 @@ namespace CmsData.API
 
             db.ApiSessions.DeleteOnSubmit(apiSession);
             db.SubmitChanges();
+        }
+
+        public static void ExpireSession(Guid sessionToken)
+        {
+            var session = DbUtil.Db.ApiSessions.SingleOrDefault(x => x.SessionToken == sessionToken);
+            if (session == null)
+                return;
+
+            session.LastAccessedDate = SqlDateTime.MinValue.Value;
+
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

@@ -61,7 +61,19 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid)
                 return AuthorizationError(result);
 
-            // TODO: optionally validate the API type call with different timeouts (i.e. giving might only be 2 minutes versus 30 minutes for everything else)
+            var br = new BaseMessage();
+            br.error = 0;
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult ExpireSessionToken(string data)
+        {
+            var sessionToken = Request.Headers["SessionToken"];
+            if (string.IsNullOrEmpty(sessionToken))
+                return BaseMessage.createErrorReturn("SessionToken header is required.", BaseMessage.API_ERROR_IMPROPER_HEADER_STRUCTURE);
+
+            AccountModel.ExpireSessionToken(sessionToken);
 
             var br = new BaseMessage();
             br.error = 0;

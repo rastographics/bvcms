@@ -143,6 +143,11 @@ namespace CmsWeb.Models
 			return userStatus;
 		}
 
+	    public static void ExpireSessionToken(string sessionToken)
+	    {
+	        ApiSessionModel.ExpireSession(Guid.Parse(sessionToken));
+	    }
+
 		private static UserValidationResult GetUserViaSessionToken(bool requirePin)
 		{
 			var sessionToken = HttpContext.Current.Request.Headers["SessionToken"];
