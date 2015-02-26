@@ -270,6 +270,20 @@ namespace CmsWeb.Areas.Public.Controllers
             return br;
         }
 
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult RegCategories()
+        {
+            var categories = new Dictionary<string, string>();
+            var lines = DbUtil.Db.Content("AppRegistrations", "\tRegistrations").TrimEnd();
+            var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            var line = re.Match(lines);
+            while (line.Success)
+            {
+                categories.Add(line.Groups[1].Value, line.Groups[2].Value.TrimEnd());
+                line = line.NextMatch();
+            }
+            return Json(categories);
+        }
         private List<MobileRegistrationCategory> GetRegistrations()
         {
             var registrations = (from o in DbUtil.Db.ViewAppRegistrations
