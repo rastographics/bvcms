@@ -793,6 +793,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == mpap.visitMeeting);
                 Attend.RecordAttendance(p.PeopleId, mpap.visitMeeting, true);
                 DbUtil.Db.UpdateMeetingCounters(mpap.visitMeeting);
+                p.CampusId = meeting.Organization.CampusId;
+                DbUtil.Db.SubmitChanges();
             }
 
             BaseMessage br = new BaseMessage();
