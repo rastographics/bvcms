@@ -1,3 +1,4 @@
+
 CREATE VIEW [dbo].[ActiveRegistrations]
 AS
 
@@ -8,8 +9,9 @@ AS
 	AND o.RegistrationTypeId > 0
 	AND ISNULL(o.RegistrationClosed, 0) = 0
 	AND ISNULL(o.ClassFilled, 0) = 0
-	AND (o.RegStart IS NULL OR o.RegStart < GETDATE())
+	AND (o.RegStart IS NULL OR o.RegStart <= DATEADD(DAY, 21, GETDATE()))
 	AND (o.RegEnd IS NULL OR o.RegEnd > GETDATE())
+
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

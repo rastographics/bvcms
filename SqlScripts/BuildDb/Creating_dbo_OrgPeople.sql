@@ -112,6 +112,14 @@ RETURN
 			)
 		)
 	)
+	AND (NOT(@grouptype LIKE '%50%' AND @grouptype LIKE '%60%')
+		 OR GroupCode = (SELECT MAX(GroupCode) 
+				FROM 
+				(
+				SELECT GroupCode FROM dbo.OrgPeopleGuests(@oid, @showhidden) WHERE PeopleId = p.PeopleId UNION
+				SELECT GroupCode FROM dbo.OrgPeoplePrevious(@oid) WHERE PeopleId = p.PeopleId
+				) tabt)
+	)
 )
 
 GO
