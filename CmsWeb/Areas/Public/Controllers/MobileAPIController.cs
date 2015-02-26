@@ -75,6 +75,8 @@ namespace CmsWeb.Areas.Public.Controllers
 
             AccountModel.ExpireSessionToken(sessionToken);
 
+            Session.Abandon();
+
             var br = new BaseMessage();
             br.error = 0;
             return br;
