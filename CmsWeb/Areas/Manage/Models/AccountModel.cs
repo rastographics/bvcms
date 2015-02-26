@@ -147,7 +147,7 @@ namespace CmsWeb.Models
 			if (string.IsNullOrEmpty(sessionToken))
 				return null;
 
-			var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken));
+			var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
 			switch (result.Status)
 			{
