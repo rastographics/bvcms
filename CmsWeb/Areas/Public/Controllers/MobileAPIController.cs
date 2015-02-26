@@ -93,7 +93,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid)
                 return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
 
-            AuthenticateUser();
+            AuthenticateUser(requirePin: true);
 
             MobileSettings ms = getUserInfo();
 

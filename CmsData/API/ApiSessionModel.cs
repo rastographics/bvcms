@@ -26,6 +26,13 @@ namespace CmsData.API
                 if (!pin.HasValue || pin.Value != session.Pin.Value)
                     return new ApiSessionResult(session.User, ApiSessionStatus.PinInvalid);
             }
+
+            if (pin.HasValue && session.Pin.HasValue)
+            {
+                if (pin.Value != session.Pin.Value)
+                    return new ApiSessionResult(session.User, ApiSessionStatus.PinInvalid);
+            }
+
             return new ApiSessionResult(session.User, ApiSessionStatus.Success);
         }
 
