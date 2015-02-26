@@ -127,13 +127,15 @@ namespace CmsWeb.Models
 				return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
 				//throw new ArgumentNullException("sessionToken");
 
-			var userStatus = AuthenticateMobile();
+			var userStatus = AuthenticateMobile(requirePin: true);
 
 			if (userStatus.Status == UserValidationStatus.Success
 				 || userStatus.Status == UserValidationStatus.PinExpired
 				 || userStatus.Status == UserValidationStatus.SessionTokenExpired)
 			{
-				ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2()/*, sessionToken*/);
+				var result = ApiSessionModel.ResetSessionExpiration(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+			    if (!result)
+			        return UserValidationResult.Invalid(UserValidationStatus.PinInvalid);
 
 				userStatus.Status = UserValidationStatus.Success;
 			}

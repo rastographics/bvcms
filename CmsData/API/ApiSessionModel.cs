@@ -29,7 +29,7 @@ namespace CmsData.API
 
             if (pin.HasValue && session.Pin.HasValue)
             {
-                if (pin.Value != session.Pin.Value)
+                if (pin.HasValue || pin.Value != session.Pin.Value)
                     return new ApiSessionResult(session.User, ApiSessionStatus.PinInvalid);
             }
 
@@ -59,14 +59,22 @@ namespace CmsData.API
             DbUtil.Db.SubmitChanges();
         }
 
-        public static void ResetSessionExpiration(User user, int? pin)
+        public static bool ResetSessionExpiration(User user, int? pin)
         {
             var apiSession = user.ApiSessions.SingleOrDefault();
             if (apiSession == null)
-                return;
+                return false;
+
+            if (apiSession.Pin.HasValue)
+            {
+                if (!pin.HasValue || pin.Value != apiSession.Pin.Value)
+                    return false;
+            }
 
             apiSession.LastAccessedDate = DateTime.Now;
             DbUtil.Db.SubmitChanges();
+
+            return true;
         }
 
         public static void DeleteSession(CMSDataContext db, User user)
