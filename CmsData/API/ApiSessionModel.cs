@@ -5,7 +5,7 @@ namespace CmsData.API
 {
     public static class ApiSessionModel
     {
-        public static ApiSessionResult DetermineApiSessionStatus(Guid sessionToken, int? pin)
+        public static ApiSessionResult DetermineApiSessionStatus(Guid sessionToken, bool requirePin, int? pin)
         {
             const int minutesSessionIsValid = 30;
 
@@ -21,7 +21,7 @@ namespace CmsData.API
                     : new ApiSessionResult(session.User, ApiSessionStatus.SessionTokenExpired);
             }
 
-            if (session.Pin.HasValue)
+            if (requirePin && session.Pin.HasValue)
             {
                 if (!pin.HasValue || pin.Value != session.Pin.Value)
                     return new ApiSessionResult(session.User, ApiSessionStatus.PinInvalid);
@@ -29,13 +29,14 @@ namespace CmsData.API
             return new ApiSessionResult(session.User, ApiSessionStatus.Success);
         }
 
-        public static void SaveApiSession(User user, int? pin)
+        public static void SaveApiSession(User user, bool updatePin, int? pin)
         {
             var apiSession = user.ApiSessions.SingleOrDefault();
             if (apiSession != null)
             {
                 apiSession.LastAccessedDate = DateTime.Now;
-                apiSession.Pin = pin;
+                if (updatePin)
+                    apiSession.Pin = pin;
             }
             else
             {

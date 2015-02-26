@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return Content("1");
         }
 
-        private UserValidationResult AuthenticateUser()
+        private UserValidationResult AuthenticateUser(bool requirePin = false)
         {
             // Username and password checks are only necessary for the old iOS application
             var hasInvalidAuthHeaders = (string.IsNullOrEmpty(Request.Headers["Authorization"]) && (string.IsNullOrEmpty(Request.Headers["username"]) || string.IsNullOrEmpty(Request.Headers["password"])));
@@ -33,13 +33,13 @@ namespace CmsWeb.Areas.Public.Controllers
             if (hasInvalidAuthHeaders && hasInvalidSessionTokenHeader)
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Either the Authorization or SessionToken headers are required.", null);
 
-            return AccountModel.AuthenticateMobile();
+            return AccountModel.AuthenticateMobile(requirePin: requirePin);
         }
 
         [HttpPost]
         public ActionResult Authenticate(string data)
         {
-            var result = AuthenticateUser();
+            var result = AuthenticateUser(requirePin: true);
 
             if (!result.IsValid)
                 return AuthorizationError(result);

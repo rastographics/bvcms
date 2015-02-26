@@ -74,9 +74,9 @@ namespace CmsWeb.Models
 			set { HttpContext.Current.Items[STR_UserName2] = value; }
 		}
 
-		public static UserValidationResult AuthenticateMobile(string role = null, bool checkOrgMembersOnly = false)
+		public static UserValidationResult AuthenticateMobile(string role = null, bool checkOrgMembersOnly = false, bool requirePin = false)
 		{
-			var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken();
+			var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
 
 			if (userStatus == null)
 				return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
@@ -116,7 +116,7 @@ namespace CmsWeb.Models
 				Util2.OrgLeadersOnlyChecked = true;
 			}
 
-			ApiSessionModel.SaveApiSession(userStatus.User, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+			ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
 			return userStatus;
 		}
@@ -141,13 +141,13 @@ namespace CmsWeb.Models
 			return userStatus;
 		}
 
-		private static UserValidationResult GetUserViaSessionToken()
+		private static UserValidationResult GetUserViaSessionToken(bool requirePin)
 		{
 			var sessionToken = HttpContext.Current.Request.Headers["SessionToken"];
 			if (string.IsNullOrEmpty(sessionToken))
 				return null;
 
-			var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), HttpContext.Current.Request.Headers["PIN"].ToInt2());
+			var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), requirePin, HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
 			switch (result.Status)
 			{
