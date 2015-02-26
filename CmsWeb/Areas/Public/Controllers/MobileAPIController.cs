@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (hasInvalidAuthHeaders && hasInvalidSessionTokenHeader)
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Either the Authorization or SessionToken headers are required.", null);
 
-            return AccountModel.AuthenticateMobile(requirePin: requirePin);
+            return AccountModel.AuthenticateMobile(requirePin: requirePin, checkOrgMembersOnly: true);
         }
 
         [HttpPost]
