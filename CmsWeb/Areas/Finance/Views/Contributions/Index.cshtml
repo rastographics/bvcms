@@ -86,7 +86,9 @@
                 </tr>
                 <tr>
                     <th class="right">Year:</th>
-                    <td colspan="3">@Html.DropDownListFor(vv => vv.SearchInfo.Year, Model.Years())</td>
+                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Year, Model.Years())</td>
+                    <td colspan="2">From Mobile App:
+                        @Html.CheckBoxFor(vv => vv.SearchInfo.Mobile) </td>
                 </tr>
                 <tr>
                     <td colspan="4" class="right">
