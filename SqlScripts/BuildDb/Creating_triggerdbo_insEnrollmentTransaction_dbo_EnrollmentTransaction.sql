@@ -1,8 +1,3 @@
--- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
 CREATE TRIGGER [dbo].[insEnrollmentTransaction] 
    ON  [dbo].[EnrollmentTransaction] 
    AFTER INSERT
@@ -12,15 +7,24 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-	DECLARE @Cinfo VARBINARY(128) = CONTEXT_INFO()  
-	IF @Cinfo = 0x55555  
-		RETURN  
+	DECLARE 
+		@tid INT
+		,@trandt DATETIME
+		,@typeid INT
+		,@orgid INT
+		,@pid INT
+		,@skipInsertTriggerProcessing BIT
 
-	DECLARE @tid INT, @trandt DATETIME, @typeid INT, @orgid INT, @pid INT
+	SELECT
+		@skipInsertTriggerProcessing = SkipInsertTriggerProcessing
+	FROM Inserted
+
+	IF @skipInsertTriggerProcessing = 1
+		RETURN
 
 	DECLARE cet CURSOR FORWARD_ONLY FOR
 	SELECT TransactionId, TransactionDate, TransactionTypeId, OrganizationId, PeopleId 
-	FROM inserted 
+	FROM Inserted 
 	WHERE TransactionTypeId > 2
 
 	OPEN cet

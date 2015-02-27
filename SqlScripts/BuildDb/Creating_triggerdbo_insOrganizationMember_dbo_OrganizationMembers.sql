@@ -7,8 +7,14 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-	DECLARE @Cinfo VARBINARY(128) = CONTEXT_INFO()  
-	IF @Cinfo = 0x55555  
+	DECLARE 
+		@skipInsertTriggerProcessing BIT
+
+	SELECT
+		@skipInsertTriggerProcessing = SkipInsertTriggerProcessing
+	FROM Inserted
+
+	IF @skipInsertTriggerProcessing = 1
 		RETURN  
 
 	UPDATE dbo.Organizations

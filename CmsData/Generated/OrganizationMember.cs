@@ -72,6 +72,8 @@ namespace CmsData
 		
 		private bool? _Hidden;
 		
+		private bool? _SkipInsertTriggerProcessing;
+		
    		
    		private EntitySet< OrgMemMemTag> _OrgMemMemTags;
 		
@@ -171,6 +173,9 @@ namespace CmsData
 		
 		partial void OnHiddenChanging(bool? value);
 		partial void OnHiddenChanged();
+		
+		partial void OnSkipInsertTriggerProcessingChanging(bool? value);
+		partial void OnSkipInsertTriggerProcessingChanged();
 		
     #endregion
 		public OrganizationMember()
@@ -796,6 +801,28 @@ namespace CmsData
 					this._Hidden = value;
 					this.SendPropertyChanged("Hidden");
 					this.OnHiddenChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SkipInsertTriggerProcessing", UpdateCheck=UpdateCheck.Never, Storage="_SkipInsertTriggerProcessing", DbType="bit")]
+		public bool? SkipInsertTriggerProcessing
+		{
+			get { return this._SkipInsertTriggerProcessing; }
+
+			set
+			{
+				if (this._SkipInsertTriggerProcessing != value)
+				{
+				
+                    this.OnSkipInsertTriggerProcessingChanging(value);
+					this.SendPropertyChanging();
+					this._SkipInsertTriggerProcessing = value;
+					this.SendPropertyChanged("SkipInsertTriggerProcessing");
+					this.OnSkipInsertTriggerProcessingChanged();
 				}
 
 			}
