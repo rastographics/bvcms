@@ -294,6 +294,7 @@ namespace CmsWeb.Areas.Public.Controllers
                                      UseRegisterLink2 = o.UseRegisterLink2 ?? false,
                                      Description = o.Description,
                                      PublicSortOrder = o.PublicSortOrder,
+                                     Category = o.AppCategory,
                                      RegStart = o.RegStart,
                                      RegEnd = o.RegEnd
                                  }).ToList();

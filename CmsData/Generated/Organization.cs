@@ -166,6 +166,8 @@ namespace CmsData
 		
 		private bool? _UseRegisterLink2;
 		
+		private string _AppCategory;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -434,6 +436,9 @@ namespace CmsData
 		
 		partial void OnUseRegisterLink2Changing(bool? value);
 		partial void OnUseRegisterLink2Changed();
+		
+		partial void OnAppCategoryChanging(string value);
+		partial void OnAppCategoryChanged();
 		
     #endregion
 		public Organization()
@@ -2133,6 +2138,28 @@ namespace CmsData
 					this._UseRegisterLink2 = value;
 					this.SendPropertyChanged("UseRegisterLink2");
 					this.OnUseRegisterLink2Changed();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="AppCategory", UpdateCheck=UpdateCheck.Never, Storage="_AppCategory", DbType="varchar(15)")]
+		public string AppCategory
+		{
+			get { return this._AppCategory; }
+
+			set
+			{
+				if (this._AppCategory != value)
+				{
+				
+                    this.OnAppCategoryChanging(value);
+					this.SendPropertyChanging();
+					this._AppCategory = value;
+					this.SendPropertyChanged("AppCategory");
+					this.OnAppCategoryChanged();
 				}
 
 			}

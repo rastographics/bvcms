@@ -24,25 +24,7 @@ namespace CmsWeb.MobileAPI
         public bool UseRegisterLink2 { get; set; }
         public DateTime? RegStart { get; set; }
         public DateTime? RegEnd { get; set; }
-
-        private string publicSortOrder;
-        public string PublicSortOrder
-        {
-            get { return publicSortOrder; }
-            set
-            {
-                publicSortOrder = value;
-                var a = value.SplitStr(":", 2);
-                Category = "";
-                if (a.Length > 1)
-                {
-                    Category = a[0];
-                    publicSortOrder = a[1];
-                }
-                else
-                    publicSortOrder = value;
-            }
-        }
+        public string PublicSortOrder { get; set; }
 
         private string description;
 

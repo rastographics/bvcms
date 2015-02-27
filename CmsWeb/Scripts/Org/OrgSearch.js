@@ -121,7 +121,6 @@
                     onblur: 'ignore',
                     submit: 'OK'
                 });
-/*
             } else if ($(e.target).hasClass("publicsort")) {
                 $(e.target).editable('/OrgSearch/Edit', {
                     width: 150,
@@ -130,7 +129,6 @@
                     submit: 'OK',
                     tooltip: 'click to edit...'
                 });
-*/
             }
         });
     };

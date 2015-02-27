@@ -84,6 +84,7 @@ namespace CmsWeb.Areas.Org.Models
                         RegClosed = o.RegistrationClosed ?? false,
                         RegTypeId = o.RegistrationTypeId,
                         Description = o.Description,
+                        AppCategory = o.AppCategory,
                         PublicSortOrder = o.PublicSortOrder,
                         UseRegisterLink2 = o.UseRegisterLink2,
                         ProgramName = o.Division.Program.Name,
@@ -387,9 +388,9 @@ namespace CmsWeb.Areas.Org.Models
                                 orderby o.RegistrationTypeId, o.OrganizationName
                                 select o;
                         break;
-                    case "App Order":
+                    case "Category":
                         query = from o in query
-                                orderby o.PublicSortOrder ?? "zzz", o.OrganizationName
+                                orderby o.AppCategory, o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
                         break;
                     case "Members":
@@ -481,7 +482,7 @@ namespace CmsWeb.Areas.Org.Models
                         break;
                     case "App Order":
                         query = from o in query
-                                orderby o.PublicSortOrder ?? "zzz", o.OrganizationName 
+                                orderby o.AppCategory, o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
                         break;
                     case "Members":
@@ -788,6 +789,7 @@ namespace CmsWeb.Areas.Org.Models
             public string RegStart { get; set; }
             public string RegEnd { get; set; }
             public string Description { get; set; }
+            public string AppCategory { get; set; }
             public string PublicSortOrder { get; set; }
             public bool? UseRegisterLink2 { get; set; }
             public string ProgramName { get; set; }
