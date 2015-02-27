@@ -7,6 +7,10 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
+	DECLARE @Cinfo VARBINARY(128) = CONTEXT_INFO()  
+	IF @Cinfo = 0x55555  
+		RETURN  
+
 	UPDATE dbo.Organizations
 	SET MemberCount = dbo.OrganizationMemberCount(OrganizationId)
 	WHERE OrganizationId IN 

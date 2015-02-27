@@ -12,6 +12,10 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
+	DECLARE @Cinfo VARBINARY(128) = CONTEXT_INFO()  
+	IF @Cinfo = 0x55555  
+		RETURN  
+
 	DECLARE @tid INT, @trandt DATETIME, @typeid INT, @orgid INT, @pid INT
 
 	DECLARE cet CURSOR FORWARD_ONLY FOR
