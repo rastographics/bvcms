@@ -2,28 +2,44 @@
 @using CmsWeb
 @{
     ViewBag.Title = "Tracking";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = "Tracked Links";
+    Layout = ViewExtensions2.TouchPointLayout();
     int emailID = ViewBag.emailID;
-    
     var links = from e in DbUtil.Db.EmailLinks
                 where e.EmailID == emailID
                 select e;
 }
-<a href="/Manage/Emails/Details/@emailID">Back to Details</a><br />
-<br />
-<h2>Tracked Links</h2>
-<table class="@ViewExtensions2.GridClass">
-<thead>
-<tr><th style="text-align:center">Created</th><th style="text-align:center">Count</th><th>Link</th></tr>
-</thead>
-<tbody>
-@foreach(var link in links)
-{
-    <tr>
-        <td style="text-align:center;">@link.Created.Value.ToString("g")</td>
-        <td style="text-align:center">@link.Count</td>
-        <td><a href="@link.Link">@link.Link</a></td>
-    </tr>    
-}
-</tbody>
-</table>
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/Manage/Emails/Details/@emailID" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to Details</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Link</th>
+                                <th class="text-right">Created</th>
+                                <th class="text-right">Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var link in links)
+                            {
+                                <tr>
+                                    <td><a href="@link.Link">@link.Link</a></td>
+                                    <td class="text-right">@link.Created.Value.ToString("g")</td>
+                                    <td class="text-right">@link.Count</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
