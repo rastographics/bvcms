@@ -68,6 +68,8 @@ namespace CmsData
 		
 		private string _SmallGroups;
 		
+		private bool? _SkipInsertTriggerProcessing;
+		
    		
    		private EntitySet< EnrollmentTransaction> _DescTransactions;
 		
@@ -161,6 +163,9 @@ namespace CmsData
 		
 		partial void OnSmallGroupsChanging(string value);
 		partial void OnSmallGroupsChanged();
+		
+		partial void OnSkipInsertTriggerProcessingChanging(bool? value);
+		partial void OnSkipInsertTriggerProcessingChanged();
 		
     #endregion
 		public EnrollmentTransaction()
@@ -742,6 +747,28 @@ namespace CmsData
 					this._SmallGroups = value;
 					this.SendPropertyChanged("SmallGroups");
 					this.OnSmallGroupsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SkipInsertTriggerProcessing", UpdateCheck=UpdateCheck.Never, Storage="_SkipInsertTriggerProcessing", DbType="bit")]
+		public bool? SkipInsertTriggerProcessing
+		{
+			get { return this._SkipInsertTriggerProcessing; }
+
+			set
+			{
+				if (this._SkipInsertTriggerProcessing != value)
+				{
+				
+                    this.OnSkipInsertTriggerProcessingChanging(value);
+					this.SendPropertyChanging();
+					this._SkipInsertTriggerProcessing = value;
+					this.SendPropertyChanged("SkipInsertTriggerProcessing");
+					this.OnSkipInsertTriggerProcessingChanged();
 				}
 
 			}
