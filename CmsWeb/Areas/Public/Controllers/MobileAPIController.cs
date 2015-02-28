@@ -288,12 +288,14 @@ namespace CmsWeb.Areas.Public.Controllers
         public JsonResult RegCategories()
         {
             var categories = new Dictionary<string, string>();
-            var lines = DbUtil.Db.Content("AppRegistrations", "\tRegistrations").TrimEnd();
+            var lines = DbUtil.Db.Content("AppRegistrations", "generic\tRegistrations").TrimEnd();
             var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
             var line = re.Match(lines);
             while (line.Success)
             {
-                categories.Add(line.Groups[1].Value, line.Groups[2].Value.TrimEnd());
+                var code = line.Groups[1].Value;
+                var text = line.Groups[2].Value.TrimEnd();
+                categories.Add(code, text);
                 line = line.NextMatch();
             }
             return Json(categories);
@@ -314,7 +316,7 @@ namespace CmsWeb.Areas.Public.Controllers
                                  }).ToList();
 
             var categories = new Dictionary<string, string>();
-            var lines = DbUtil.Db.Content("AppRegistrations", "\tRegistrations").TrimEnd();
+            var lines = DbUtil.Db.Content("AppRegistrations", "generic\tRegistrations").TrimEnd();
             var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
             var line = re.Match(lines);
             while (line.Success)
