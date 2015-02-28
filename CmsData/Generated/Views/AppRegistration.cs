@@ -24,6 +24,8 @@ namespace CmsData.View
 		
 		private string _Description;
 		
+		private string _AppCategory;
+		
 		private string _PublicSortOrder;
 		
 		private bool? _UseRegisterLink2;
@@ -102,6 +104,23 @@ namespace CmsData.View
 			{
 				if (this._Description != value)
 					this._Description = value;
+			}
+
+		}
+
+		
+		[Column(Name="AppCategory", Storage="_AppCategory", DbType="varchar(15)")]
+		public string AppCategory
+		{
+			get
+			{
+				return this._AppCategory;
+			}
+
+			set
+			{
+				if (this._AppCategory != value)
+					this._AppCategory = value;
 			}
 
 		}
