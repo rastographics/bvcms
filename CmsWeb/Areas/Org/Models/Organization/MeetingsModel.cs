@@ -33,33 +33,36 @@ namespace CmsWeb.Areas.Org.Models
         {
             switch (SortExpression)
             {
-                //case "Organization":
-                //    q = q.OrderBy(a => a.Meeting.Organization.OrganizationName).ThenByDescending(a => a.MeetingDate);
-                //    break;
-                //case "Organization desc":
-                //    q = q.OrderByDescending(a => a.Meeting.Organization.OrganizationName).ThenByDescending(a => a.MeetingDate);
-                //    break;
-                //case "MemberType":
-                //    q = q.OrderBy(a => a.MemberTypeId).ThenByDescending(a => a.MeetingDate);
-                //    break;
-                //case "MemberType desc":
-                //    q = q.OrderByDescending(a => a.MemberTypeId).ThenByDescending(a => a.MeetingDate);
-                //    break;
-                //case "AttendType":
-                //    q = q.OrderBy(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
-                //    break;
-                //case "AttendType desc":
-                //    q = q.OrderByDescending(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
-                //    break;
-                //case "Meeting":
-                //    q = q.OrderBy(a => a.MeetingDate);
-                //    break;
-                //case "Meeting desc":
-                //    q = q.OrderByDescending(a => a.MeetingDate);
-                //    break;
+                case "Present":
+                    q = Direction == "asc"
+                        ? q.OrderByDescending(m => m.NumPresent)
+                        : q.OrderBy(m => m.NumPresent);
+                    break;
+                case "Headcount":
+                    q = Direction == "asc"
+                        ? q.OrderBy(m => m.HeadCount).ThenBy(m => m.NumPresent)
+                        : q.OrderByDescending(m => m.HeadCount).ThenByDescending(m => m.NumPresent);
+                    break;
+                case "Guests":
+                    q = Direction == "asc"
+                        ? q.OrderByDescending(m => (m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers))
+                        : q.OrderBy(m => (m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers)).ThenBy(m => m.NumPresent);
+                    break;
+                case "Time":
+                    q = Direction == "asc"
+                        ? q.OrderBy(m => m.MeetingDate.Value.TimeOfDay).ThenBy(m => m.MeetingDate)
+                        : q.OrderByDescending(m => m.MeetingDate.Value.TimeOfDay).ThenByDescending(m => m.MeetingDate);
+                    break;
+                case "Location":
+                    q = q.OrderBy(m => m.Location ?? "zzz").ThenByDescending(m => m.MeetingDate);
+                    break;
+                case "Description":
+                    q = q.OrderBy(m => (m.Description ?? "") + "zzz").ThenByDescending(m => m.MeetingDate);
+                    break;
+                //case "Date":
                 default:
-                    q = Future 
-                        ? q.OrderBy(m => m.MeetingDate) 
+                    q = Direction == "asc" ^ Future
+                        ? q.OrderBy(m => m.MeetingDate)
                         : q.OrderByDescending(m => m.MeetingDate);
                     break;
             }
