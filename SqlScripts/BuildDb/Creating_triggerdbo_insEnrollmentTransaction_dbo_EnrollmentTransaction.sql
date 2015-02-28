@@ -1,3 +1,8 @@
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
 CREATE TRIGGER [dbo].[insEnrollmentTransaction] 
    ON  [dbo].[EnrollmentTransaction] 
    AFTER INSERT
@@ -24,7 +29,7 @@ BEGIN
 
 	DECLARE cet CURSOR FORWARD_ONLY FOR
 	SELECT TransactionId, TransactionDate, TransactionTypeId, OrganizationId, PeopleId 
-	FROM Inserted 
+	FROM inserted 
 	WHERE TransactionTypeId > 2
 
 	OPEN cet

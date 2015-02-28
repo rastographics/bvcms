@@ -15,7 +15,7 @@ BEGIN
 	FROM Inserted
 
 	IF @skipInsertTriggerProcessing = 1
-		RETURN  
+		RETURN
 
 	UPDATE dbo.Organizations
 	SET MemberCount = dbo.OrganizationMemberCount(OrganizationId)

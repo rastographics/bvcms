@@ -1,4 +1,3 @@
-
 CREATE VIEW [dbo].[AppRegistrations]
 AS
 (
@@ -8,18 +7,16 @@ AS
 			FROM dbo.Organizations rr WHERE rr.OrganizationId = o.OrganizationId),'') Title
 		,o.OrganizationName
 		,o.[Description]
+		,CASE WHEN ISNULL(o.AppCategory, '') <> '' THEN o.AppCategory ELSE 'Other' END AppCategory
 		,o.PublicSortOrder
 		,o.UseRegisterLink2
 		,o.RegStart
 		,o.RegEnd
 	FROM dbo.Organizations o
-	LEFT JOIN dbo.MasterOrgs mo ON mo.PickListOrgId = o.OrganizationId
-	WHERE mo.OrganizationId IS NULL
-	AND RegistrationTypeId > 0
-	AND ISNULL(RegistrationClosed, 0) = 0
-	AND ISNULL(ClassFilled, 0) = 0
-	AND (RegEND IS NULL OR RegEND > GETDATE())
-	AND LEN(ISNULL(PublicSortOrder, '')) > 0
+	JOIN dbo.ActiveRegistrations ON ActiveRegistrations.OrganizationId = o.OrganizationId
+	AND RegStart IS NOT NULL
+	AND RegEND > GETDATE()
+	AND o.OrganizationStatusId = 30
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
