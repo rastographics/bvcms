@@ -578,7 +578,7 @@
         }
     });
 
-    $("#namefilter").keypress(function (e) {
+    $("#nameFilter").live("keypress", function (e) {
         if ((e.keyCode || e.which) === 13) {
             e.preventDefault();
             RebindMemberGrids();
