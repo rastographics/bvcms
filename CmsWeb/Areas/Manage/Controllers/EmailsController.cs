@@ -41,9 +41,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [Route("~/Emails/Details/{id:int}")]
         [Route("~/Manage/Emails/Details/{id:int}")]
-		public ActionResult Details(int id, string filter)
+		public ActionResult Details(int id)
 		{
-			var m = new EmailModel { id = id, filter = filter ?? "All" };
+			var m = new EmailModel(id);
 		    if (m.queue == null)
 		        return Content("no email found");
 			var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 		public ActionResult SeeHtml(int id)
 		{
-			var m = new EmailModel { id = id };
+			var m = new EmailModel(id);
 		    if (m.queue == null)
 		        return Content("no email found");
 			var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
@@ -77,7 +77,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public ActionResult GetEmailBody(int id)
         {
-            var m = new EmailModel { id = id };
+            var m = new EmailModel(id);
             if (m.queue == null)
                 return Content("no email found");
             var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
@@ -149,7 +149,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
 		public ActionResult DeleteQueued(int id)
 		{
-			var m = new EmailModel { id = id };
+			var m = new EmailModel(id);
 		    if (m.queue == null)
 		        return Redirect("/Emails");
             if (m.queue.Sent.HasValue || !m.queue.SendWhen.HasValue || !m.CanDelete())
@@ -173,7 +173,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 	    [Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
 		{
-			var m = new EmailModel { id = id };
+			var m = new EmailModel(id);
             if (!m.CanDelete())
 				return Redirect("/");
 		    DeleteEmail(id);
@@ -198,7 +198,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var email = (from e in DbUtil.Db.EmailQueues
 						 where e.Id == id
 						 select e).Single();
-			var m = new EmailModel { id = id };
+			var m = new EmailModel(id);
 			if (!User.IsInRole("Admin") && m.queue.QueuedBy != Util.UserPeopleId)
 				return Redirect("/");
 			email.PublicX = true;
@@ -207,11 +207,10 @@ namespace CmsWeb.Areas.Manage.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult Recipients(int id, string filter)
+        public ActionResult Recipients(int id, FilterType filterType, int? page, int pageSize)
 		{
-			var m = new EmailModel { id = id, filter = filter };
-			UpdateModel(m.Pager);
-			return View(m);
+			var m = new EmailModel(id, filterType, page, pageSize);
+            return View(m);
 		}
 
 		public ActionResult List(EmailsModel m)

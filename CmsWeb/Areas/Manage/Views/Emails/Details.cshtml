@@ -14,11 +14,11 @@
     }
     var dt = new DateTime(ts.Ticks);
 
-    var all = Model.GetCountOfAllEmailTos();
-    var uniqueOpens = Model.queue.EmailResponses.Select(er => er.PeopleId).Distinct().Count();
+    var all = Model.CountOfAllRecipients;
+    var uniqueOpens = Model.CountOfOpenedRecipients;
     var opens = Model.queue.EmailResponses.Count();
-    var notOpened = Model.GetCountOfNotOpenedEmails();
-    var failed = Model.GetCountOfFailedEmails();
+    var notOpened = Model.CountOfNotOpenedRecipients;
+    var failed = Model.CountOfFailedRecipients;
     var percentage = !Model.queue.Sent.HasValue && Model.queue.SendWhen.HasValue ? 0 : Math.Round(((decimal)all - (decimal)failed) / (decimal)all * 100);
     
 }
@@ -71,16 +71,26 @@
         <div class="mini-stat-panel">
             <div class="stat-row text-center">
                 <div class="stat-cell bg-success darker padding-sm text-xs text-semibold">
-                    <i class="fa fa-paper-plane"></i>&nbsp;&nbsp;EMAILS SENT
+                    @if (Model.SendFromOrg)
+                    {
+                        <text>Emails will be sent from Current Members of @Model.SendFromOrgName</text>
+                    }
+                    else
+                    {
+                        <i class="fa fa-paper-plane"></i><text>&nbsp;&nbsp;EMAILS SENT</text>
+                    }
                 </div>
             </div>
-            <div class="stat-row text-center">
-                <div class="stat-cell bordered no-border-t no-padding-hr">
-                    <div class="pie-chart" data-percent="@percentage">
-                        <div class="pie-chart-label">@percentage%</div>
+            @if (!Model.SendFromOrg)
+            {
+                <div class="stat-row text-center">
+                    <div class="stat-cell bordered no-border-t no-padding-hr">
+                        <div class="pie-chart" data-percent="@percentage">
+                            <div class="pie-chart-label">@percentage%</div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
             <div class="stat-row">
                 <div class="stat-cell bg-success bordered no-border-t text-lg">
                     @if (!string.IsNullOrWhiteSpace(Model.queue.SendWhen.FormatDateTm()))
@@ -141,48 +151,6 @@
                 </div>
             </div>
         </div>
-        <div class="box box-primary" style="display: none;">
-            <div class="box-title">
-                <h5>Details</h5>
-            </div>
-            <div class="box-content">
-                <table>
-                    <tr>
-                        <td>Count</td>
-                        <td>
-                            @if (Model.SendFromOrg)
-                            {
-                                <text>Emails will be sent from Current Members of @Model.SendFromOrgName</text>
-                            }
-                            else
-                            {
-                                @Model.GetEmailTos().Count()
-                            }
-                    </tr>
-                    <tr>
-                        <td>Opens</td>
-                        <td>
-                            @Model.queue.EmailResponses.Count()
-                            @Html.DropDownList("filter", new SelectList(new string[]
-                            {
-                                "All",
-                                "Opened",
-                                "Not Opened",
-                                "Failed"
-                            }))
-                        </td>
-                    </tr>
-                    <tr><td>Unique Opens</td><td>@Model.queue.EmailResponses.Select(er => er.PeopleId).Distinct().Count()</td></tr>
-                    <tr><td>Link Tracking</td><td><a href="/Manage/Emails/Tracking/@Model.id">See Details</a></td></tr>
-                    <tr><td>Send When</td><td>@Model.queue.SendWhen.FormatDateTm()</td></tr>
-                    <tr><td>Sent</td><td>@Model.queue.Sent.FormatDateTm()</td></tr>
-                    <tr><td>Queued</td><td>@Model.queue.Queued.FormatDateTm()</td></tr>
-                    <tr><td>Query Recipients</td><td><a href="/Manage/Emails/ConvertToSearch/@Model.id">Convert to Search</a></td></tr>
-                    <tr><td>Started</td><td>@Model.queue.Started.FormatDateTm()</td></tr>
-                    <tr><td>RunTime</td><td>@dt.ToString("H:mm:ss")</td></tr>
-                </table>
-            </div>
-        </div>
     </div>
     <div class="col-md-8 col-lg-6 col-md-pull-4 col-lg-pull-3">
         @if (TempData["message"] != null)
@@ -207,7 +175,7 @@
                             }
                             @if (Model.queue.PublicX ?? false)
                             {
-                                <li><a href="/EmailView/@Model.id"><i class="fa fa-search"></i>&nbsp;&nbsp;View Email</a></li>
+                                <li><a href="/EmailView/@Model.Id"><i class="fa fa-search"></i>&nbsp;&nbsp;View Email</a></li>
                             }
                             else if (User.IsInRole("Admin") || Model.queue.QueuedBy == Util.UserPeopleId)
                             {
@@ -219,9 +187,9 @@
                             }
                             @if (Model.HasTrackLinks)
                             {
-                                <li><a href="Manage/Emails/Tracking/@Model.id"><i class="fa fa-link"></i>&nbsp;&nbsp;View Link Tracking</a></li>
+                                <li><a href="Manage/Emails/Tracking/@Model.Id"><i class="fa fa-link"></i>&nbsp;&nbsp;View Link Tracking</a></li>
                             }
-                            <li><a href="/Manage/Emails/SeeHtml/@Model.id"><i class="fa fa-code"></i>&nbsp;&nbsp;View Html Source</a></li>
+                            <li><a href="/Manage/Emails/SeeHtml/@Model.Id"><i class="fa fa-code"></i>&nbsp;&nbsp;View Html Source</a></li>
                         </ul>
                     </div>
                 </div>
@@ -241,40 +209,43 @@
                     </div>
                 </div>
                 <div>
-                    <iframe src="/Manage/Emails/GetEmailBody/@Model.id" height="600" frameborder="0" style="width: 100%; height: 600px;"></iframe>
+                    <iframe src="/Manage/Emails/GetEmailBody/@Model.Id" height="600" frameborder="0" style="width: 100%; height: 600px;"></iframe>
                 </div>
             </div>
         </div>
-        <ul class="nav nav-tabs" id="recipient-tabs">
-            <li class="@(Model.filter == "All" || string.IsNullOrWhiteSpace(Model.filter) ? "active" : "")"><a href="#" data-filter="All">All&nbsp;&nbsp;<span class="badge">@all</span></a></li>
-            @if (Model.HasTracking)
-            {
-                <li class="@(Model.filter == "Opened" ? "active" : "")"><a href="#" data-filter="Opened">Opened&nbsp;&nbsp;<span class="badge">@uniqueOpens</span></a></li>
-                <li class="@(Model.filter == "Not Opened" ? "active" : "")"><a href="#" data-filter="Not Opened">Not Opened&nbsp;&nbsp;<span class="badge">@notOpened</span></a></li>
-            }
-            <li class="@(Model.filter == "Failed" ? "active" : "")"><a href="#" data-filter="Failed">Failed&nbsp;&nbsp;<span class="badge">@failed</span></a></li>
-        </ul>
-        <div class="tab-content">
-            <div class="row hidden-xs">
-                <div class="col-sm-8">
-                    <h4>Recipients</h4>
+        @if (!Model.SendFromOrg)
+        {
+            <ul class="nav nav-tabs" id="recipient-tabs">
+                <li class="active"><a href="#" data-filter="All">All&nbsp;&nbsp;<span class="badge">@all</span></a></li>
+                @if (Model.HasTracking)
+                {
+                    <li><a href="#" data-filter="Opened">Opened&nbsp;&nbsp;<span class="badge">@uniqueOpens</span></a></li>
+                    <li><a href="#" data-filter="NotOpened">Not Opened&nbsp;&nbsp;<span class="badge">@notOpened</span></a></li>
+                }
+                <li><a href="#" data-filter="Failed">Failed&nbsp;&nbsp;<span class="badge">@failed</span></a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="row hidden-xs">
+                    <div class="col-sm-8">
+                        <h4>Recipients</h4>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="pull-right">
+                            <a href="/Manage/Emails/ConvertToSearch/@Model.Id" class="btn btn-default"><i class="fa fa-search"></i> Convert to Search Builder</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-4">
-                    <div class="pull-right">
-                        <a href="/Manage/Emails/ConvertToSearch/@Model.id" class="btn btn-default"><i class="fa fa-search"></i> Convert to Search Builder</a>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <br />
+                        <form action="/Manage/Emails/Recipients/@Model.Id" method="post">
+                            @{Html.RenderPartial("Recipients", Model);}
+                        </form>
+                        <br />
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <br />
-                    <form action="/Manage/Emails/Recipients/@Model.id" method="post">
-                        @{Html.RenderPartial("Recipients", Model);}
-                    </form>
-                    <br />
-                </div>
-            </div>
-        </div>
+        }
     </div>
 </div>
 @section scripts
@@ -288,8 +259,37 @@
 
             $("#recipient-tabs a").click(function(e) {
                 e.preventDefault();
-                window.location = window.location.pathname + "?filter=" + $(this).attr("data-filter");
+                $('#FilterType').val($(this).attr("data-filter"));
+                $(this).tab('show');
+                $.getTable();
+
+                //window.location = window.location.pathname + "?filter=" + ;
             });
+
+            $.gotoPage = function (e, pg) {
+                $("#Page").val(pg);
+                $.getTable();
+                return false;
+            };
+
+            $.setPageSize = function (e) {
+                $('#Page').val(1);
+                $("#PageSize").val($(e).val());
+                return $.getTable();
+            };
+
+            $.getTable = function () {
+                var f = $('#results').closest('form');
+                var q = f.serialize();
+                $.block();
+                $.post($(f).attr('action'), q, function (ret) {
+                    $('#results').replaceWith(ret).ready(function () {
+                        $.unblock();
+                    });
+                });
+
+                return false;
+            };
 
             var easyPieChartDefaults = {
                 animate: 2000,

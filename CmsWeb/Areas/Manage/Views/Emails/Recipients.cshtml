@@ -1,12 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Models.EmailModel
-@if (Model.SendFromOrg)
-{
-  <h3>Emails will be sent from @Model.SendFromOrgName (@Model.queue.SendFromOrgId)</h3>
-}
-else
-{
-    @Html.Hidden("filter")
+<div id="results">
+    @Html.HiddenFor(m => m.FilterType)
     @Html.Partial("PagerTop", Model.Pager)
     <div class="table-responsive">
         <table class="table table-striped">
@@ -23,7 +18,7 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var p in Model.Recipients())
+                @foreach (var p in Model.Recipients)
                 {
                     <tr>
                         <td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
@@ -44,4 +39,4 @@ else
     @Html.Hidden("Page", Model.Pager)
     @Html.Hidden("Sort", Model.Pager)
     @Html.Hidden("Direction", Model.Pager)
-}
+</div>
