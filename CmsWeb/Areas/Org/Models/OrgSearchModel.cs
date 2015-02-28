@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Org.Models
                         RegClosed = o.RegistrationClosed ?? false,
                         RegTypeId = o.RegistrationTypeId,
                         Description = o.Description,
-                        AppCategory = o.AppCategory,
+                        AppCategory = o.AppCategory ?? "Other",
                         PublicSortOrder = o.PublicSortOrder,
                         UseRegisterLink2 = o.UseRegisterLink2,
                         ProgramName = o.Division.Program.Name,
@@ -144,6 +144,8 @@ namespace CmsWeb.Areas.Org.Models
                          EntryPoint = o.EntryPoint.Description,
                          LeaderType = lt == null ? "" : lt.Description,
                          o.OrganizationStatusId,
+                         o.AppCategory,
+                         o.PublicSortOrder,
                      };
             return q2.ToDataTable().ToExcel("Organizations.xlsx");
         }
@@ -317,6 +319,15 @@ namespace CmsWeb.Areas.Org.Models
                 organizations = from o in organizations
                                 join a in DbUtil.Db.ViewActiveRegistrations on o.OrganizationId equals a.OrganizationId
                                 select o;
+            else if (OnlineReg == RegistrationClassification.AnyOnlineRegNotOnApp95)
+                organizations = from o in organizations
+                                join ac in DbUtil.Db.ViewActiveRegistrations on o.OrganizationId equals ac.OrganizationId
+                                where DbUtil.Db.ViewAppRegistrations.All(ap => ap.OrganizationId != o.OrganizationId)
+                                select o;
+            else if (OnlineReg == RegistrationClassification.AnyOnlineRegOnApp94)
+                organizations = from o in organizations
+                                join a in DbUtil.Db.ViewAppRegistrations on o.OrganizationId equals a.OrganizationId
+                                select o;
             else if (OnlineReg > 0)
                 organizations = from o in organizations
                                 where o.RegistrationTypeId == OnlineReg
@@ -390,7 +401,7 @@ namespace CmsWeb.Areas.Org.Models
                         break;
                     case "Category":
                         query = from o in query
-                                orderby o.AppCategory, o.PublicSortOrder ?? "zzz", o.OrganizationName
+                                orderby o.AppCategory ?? "zzz", o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
                         break;
                     case "Members":
@@ -480,9 +491,9 @@ namespace CmsWeb.Areas.Org.Models
                                 o.OrganizationName descending
                                 select o;
                         break;
-                    case "App Order":
+                    case "Category":
                         query = from o in query
-                                orderby o.AppCategory, o.PublicSortOrder ?? "zzz", o.OrganizationName
+                                orderby o.AppCategory ?? "zzz", o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
                         break;
                     case "Members":
@@ -655,6 +666,8 @@ namespace CmsWeb.Areas.Org.Models
             public const int AnyOnlineRegMissionTrip98 = 98;
             public const int AnyOnlineRegNonPicklist97 = 97;
             public const int AnyOnlineRegActive96 = 96;
+            public const int AnyOnlineRegNotOnApp95 = 95;
+            public const int AnyOnlineRegOnApp94 = 94;
         }
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
@@ -667,13 +680,23 @@ namespace CmsWeb.Areas.Org.Models
             var list = q.ToList();
             list.Insert(0, new SelectListItem
             {
+                Value = RegistrationClassification.AnyOnlineRegOnApp94.ToString(),
+                Text = "(any reg on app)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegNotOnApp95.ToString(),
+                Text = "(active reg not on app)",
+            });
+            list.Insert(0, new SelectListItem
+            {
                 Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
-                Text = "(any active registration)",
+                Text = "(active registration)",
             });
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
-                Text = "(any registration, no picklist)",
+                Text = "(registration, no picklist)",
             });
             list.Insert(0, new SelectListItem
             {

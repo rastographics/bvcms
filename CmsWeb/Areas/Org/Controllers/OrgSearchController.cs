@@ -148,6 +148,8 @@ namespace CmsWeb.Areas.Org.Controllers
                     org.PublicSortOrder = value.HasValue() ? value : null;
                     break;
                 case "ac":
+                    if (value == "Other")
+                        value = null;
                     org.AppCategory = value.HasValue() ? value : null;
                     break;
             }

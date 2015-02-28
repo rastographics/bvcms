@@ -285,10 +285,18 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public JsonResult RegCategories()
+        public JsonResult RegCategories(string id)
         {
+            var a = id.Split('-');
+            string val = null;
+            if (a.Length > 0)
+            {
+                var org = DbUtil.Db.LoadOrganizationById(a[1].ToInt());
+                if (org != null)
+                    val = org.AppCategory ?? "Other";
+            }
             var categories = new Dictionary<string, string>();
-            var lines = DbUtil.Db.Content("AppRegistrations", "generic\tRegistrations").TrimEnd();
+            var lines = DbUtil.Db.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
             var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
             var line = re.Match(lines);
             while (line.Success)
@@ -298,25 +306,30 @@ namespace CmsWeb.Areas.Public.Controllers
                 categories.Add(code, text);
                 line = line.NextMatch();
             }
+            if(!categories.ContainsKey("Other"))
+                categories.Add("Other", "Registrations");
+            if(val.HasValue())
+                categories.Add("selected", val);
             return Json(categories);
         }
         private List<MobileRegistrationCategory> GetRegistrations()
         {
             var registrations = (from o in DbUtil.Db.ViewAppRegistrations
+                                 let sort = o.PublicSortOrder == null || o.PublicSortOrder.Length == 0 ? "10" : o.PublicSortOrder
                                  select new MobileRegistration
                                  {
                                      OrgId = o.OrganizationId,
                                      Name = o.Title ?? o.OrganizationName,
                                      UseRegisterLink2 = o.UseRegisterLink2 ?? false,
                                      Description = o.Description,
-                                     PublicSortOrder = o.PublicSortOrder,
+                                     PublicSortOrder = sort,
                                      Category = o.AppCategory,
                                      RegStart = o.RegStart,
                                      RegEnd = o.RegEnd
                                  }).ToList();
 
             var categories = new Dictionary<string, string>();
-            var lines = DbUtil.Db.Content("AppRegistrations", "generic\tRegistrations").TrimEnd();
+            var lines = DbUtil.Db.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
             var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
             var line = re.Match(lines);
             while (line.Success)
@@ -324,6 +337,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 categories.Add(line.Groups[1].Value, line.Groups[2].Value.TrimEnd());
                 line = line.NextMatch();
             }
+            if(!categories.ContainsKey("Other"))
+                categories.Add("Other", "Registrations");
             var list = new List<MobileRegistrationCategory>();
             var dt = Util.Now;
             foreach (var cat in categories)
