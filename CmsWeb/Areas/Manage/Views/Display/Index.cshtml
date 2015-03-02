@@ -14,7 +14,7 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
 }
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-9" id="special-content">
         <ul class="nav nav-tabs" id="special-content-tabs">
             <li class="active"><a href="#htmlContent" aria-controls="htmlContent" data-toggle="tab"><i class="fa fa-file-code-o"></i>&nbsp;&nbsp;Html Content</a></li>
             <li><a href="#textContent" aria-controls="textContent" data-toggle="tab"><i class="fa fa-file-text"></i>&nbsp;&nbsp;Text Content</a></li>
@@ -108,18 +108,18 @@
                             @foreach (var t in Model.fetchEmailTemplates())
                             {
                                 var ro = roleList.FirstOrDefault(r => r.RoleId == t.RoleID);
-                                <div class="col-sm-3 col-md-3 col-lg-2 text-center" style="height: 300px;">
-                                    @t.Name<br />
-                                    <a href="/Display/ContentEdit/@t.Id">
-                                        <div>
-                                            @if (t.ThumbID != 0)
-                                            {
-                                                <img src="/Image/@t.ThumbID" style="height: 160px; width: 110px;" />
-                                            }
+                                <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;">
+                                    <div class="row">
+                                        <div class="col-xs-4">
+                                            <a href="/Display/ContentEdit/@t.Id">
+                                                <img src="/Image/@t.ThumbID" class="img-responsive img-thumbnail"/>
+                                            </a>
                                         </div>
-                                    </a>
-                                    Limited to Role:<br />
-                                    <b>@(ro != null ? ro.RoleName : "missing role!")</b>
+                                        <div class="col-xs-8">
+                                            <a href="/Display/ContentEdit/@t.Id"><strong>@t.Name</strong></a><br />
+                                            Limited to Role: @(ro != null ? ro.RoleName : "missing role!")
+                                        </div>
+                                    </div>
                                 </div>
                             }
                             <a href="#" newtypewithrole="2" newmessage="Create New Email Template" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> New Email Template</a>
@@ -313,9 +313,20 @@
         $(function () {
             $("#special-content-tabs").tabdrop();
 
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+                if ($(this).attr('href') == '#emailTemplates') {
+                    setSpecialContentCol('col-md-12');
+                } else {
+                    setSpecialContentCol('col-md-9');
+                }
+            });
+
             var hash = document.location.hash;
             var prefix = "tab_";
             if (hash) {
+                if (hash == '#tab_emailTemplates') {
+                    setSpecialContentCol('col-md-12');
+                }
                 $('.nav-tabs a[href=' + hash.replace(prefix, "") + ']').tab('show');
             }
 
@@ -323,6 +334,10 @@
             $('.nav-tabs a').on('shown.bs.tab', function (e) {
                 window.location.hash = e.target.hash.replace("#", "#" + prefix);
             });
+
+            function setSpecialContentCol(className) {
+                $('#special-content').removeClass('col-md-9').removeClass('col-md-12').addClass(className);
+            }
 
             $("a[newtype]").click(function (ev) {
                 ev.preventDefault();
@@ -376,10 +391,10 @@
             function checkChanged() {
                 if ($("input[draft]:checked").length > 0) {
                     $("button.draftDelete").prop("disabled", false);
-                    $("button.draftDelete").text("Delete " + $("input[draft]:checked").length + " Draft(s)");
+                    $("button.draftDelete").html("<i class='fa fa-trash'></i> Delete " + $("input[draft]:checked").length + " Draft(s)");
                 } else {
                     $("button.draftDelete").prop("disabled", true);
-                    $("button.draftDelete").text("Delete 0 Draft(s)");
+                    $("button.draftDelete").html("<i class='fa fa-trash'></i> Delete 0 Draft(s)");
                 }
             }
 

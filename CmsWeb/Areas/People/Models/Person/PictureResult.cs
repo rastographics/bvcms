@@ -61,7 +61,8 @@ namespace CmsWeb.Areas.People.Models
                         context.HttpContext.Response.BinaryWrite(tiny ? NoPic1() : NoPic2());
                     }
                     else
-                        NoPic(context.HttpContext);
+                        context.HttpContext.Response.ContentType = "image/png";
+                        context.HttpContext.Response.BinaryWrite(NoPic());
                 }
                 else
                 {
@@ -101,29 +102,32 @@ namespace CmsWeb.Areas.People.Models
             return u;
         }
 
-		  private static byte[] NoPic3()
-		  {
-			  var u = HttpRuntime.Cache["sgfimage"] as byte[];
-			  if (u == null)
-			  {
-				  u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/images/sgfunknown.jpg"));
-				  HttpRuntime.Cache.Insert("sgfimage", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
-			  }
-			  return u;
-		  }
+		private static byte[] NoPic3()
+		{
+			var u = HttpRuntime.Cache["sgfimage"] as byte[];
+			if (u == null)
+			{
+				u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/images/sgfunknown.jpg"));
+				HttpRuntime.Cache.Insert("sgfimage", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
+			}
+			return u;
+		}
+
+        private static byte[] NoPic()
+        {
+            var u = HttpRuntime.Cache["imagenotfound"] as byte[];
+            if (u == null)
+            {
+                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/image_not_found.png"));
+                HttpRuntime.Cache.Insert("imagenotfound", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
+            }
+            return u;
+        }
 
         public byte[] FetchResizedImage(ImageData.Image img, int w, int h, string mode = "max")
         {
             return ImageData.Image.ResizeFromBits(img.Bits, w, h, mode);
         }
-        void NoPic(HttpContextBase context)
-        {
-            var bmp = new Bitmap(200, 200, PixelFormat.Format24bppRgb);
-            var g = Graphics.FromImage(bmp);
-            g.Clear(Color.Bisque);
-            g.DrawString("No Image", new Font("Verdana", 22, FontStyle.Bold), SystemBrushes.WindowText, new PointF(2, 2));
-            context.Response.ContentType = "image/gif";
-            bmp.Save(context.Response.OutputStream, ImageFormat.Gif);
-        }
+        
     }
 }

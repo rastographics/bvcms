@@ -733,6 +733,7 @@
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\touchpoint\img\female.png" />
     <Content Include="Content\touchpoint\img\hexagon.png" />
+    <Content Include="Content\touchpoint\img\image_not_found.png" />
     <Content Include="Content\touchpoint\img\logo.png" />
     <Content Include="Content\touchpoint\img\logo_sm.png" />
     <Content Include="Content\touchpoint\img\male.png" />
