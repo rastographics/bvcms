@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.People.Models
 
         [DisplayName("Member Here")]
         public bool Member { get; set; }
-        public bool ActiveInOtherChurch { get; set; }
+        public bool ActiveInAnotherChurch { get; set; }
 
         [DisplayName("Coaching Interest")]
         public bool Coaching { get; set; }
