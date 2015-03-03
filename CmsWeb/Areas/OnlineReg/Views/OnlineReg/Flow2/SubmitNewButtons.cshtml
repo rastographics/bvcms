@@ -6,7 +6,7 @@
             {
                 if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsMissionTrip())
                 {
-                  if (Model.InMobileAppMode && !UtilityExtensions.Util.UserPeopleId.HasValue)
+                  if (Model.InMobileAppMode && !UtilityExtensions.Util.UserPeopleId.HasValue && !Model.LoggedIn)
                   {
                     @Html.Hidden("CreatingAccount", true)
                   }
