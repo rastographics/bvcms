@@ -2,6 +2,7 @@
 @model CmsWeb.Areas.Org.Models.SettingsAttendanceModel
 @{
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp") == "true";
+  ViewBag.FalseValue = "";
 }
 <form class="form form-horizontal non-modal ajax span12" data-init="datepicker" data-init2="timepicker">
   @FormAction()
