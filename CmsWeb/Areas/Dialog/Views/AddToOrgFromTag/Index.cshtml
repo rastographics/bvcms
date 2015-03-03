@@ -6,6 +6,8 @@
 <div class="modal-body">
   @Html.HiddenFor(m => m.Id)
   @Html.HiddenFor(m => m.Group)
+  @Html.HiddenFor(m => m.UserId)
+  @Html.HiddenFor(m => m.OrgName)
   @Html.Hidden("callback", "ReloadPeople")
   @if (Model.TagHasBeenSelected)
   {

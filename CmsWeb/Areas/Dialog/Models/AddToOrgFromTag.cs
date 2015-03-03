@@ -18,11 +18,19 @@ namespace CmsWeb.Models
     {
         public const string Op = "addtoorgfromtag";
 
+        public int UserId { get; set; }
+        public string OrgName { get; set; }
         public AddToOrgFromTag() { }
         public AddToOrgFromTag(int id, string group)
         {
             Id = id;
             Group = group;
+            UserId = Util.UserId;
+            if (group == GroupSelectCode.Previous)
+            {
+                var org = DbUtil.Db.LoadOrganizationById(id);
+                OrgName = org.OrganizationName;
+            }
             Tag = new CodeInfo("0", "Tag");
         }
         [DisplayName("Choose A Tag")]
@@ -103,7 +111,7 @@ namespace CmsWeb.Models
                         OrganizationMember.InsertOrgMembers(db, model.Id, pid, MemberTypeCode.InActive, DateTime.Now, DateTime.Now, pending: false);
                         break;
                     case GroupSelectCode.Previous:
-                        Organization.AddAsPreviousMember(db, model.Id, pid, MemberTypeCode.InActive, DateTime.Now, DateTime.Now);
+                        Organization.AddAsPreviousMember(db, model.Id, pid, model.OrgName, MemberTypeCode.InActive, DateTime.Now, DateTime.Now, model.UserId);
                         break;
                 }
                 lop = FetchLongRunningOp(db, model.Id, Op);
