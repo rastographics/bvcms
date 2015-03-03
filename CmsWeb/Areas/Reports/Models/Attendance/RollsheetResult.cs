@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 meeting = DbUtil.Db.Meetings.Single(mt => mt.MeetingId == meetingid);
                 Debug.Assert(meeting.MeetingDate != null, "meeting.MeetingDate != null");
-                NewMeetingInfo.MeetingDate = meeting.MeetingDate.Value;
+                NewMeetingInfo = new NewMeetingInfo {MeetingDate = meeting.MeetingDate.Value};
                 orgid = meeting.OrganizationId;
             }
 
