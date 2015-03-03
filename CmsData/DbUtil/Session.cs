@@ -101,6 +101,14 @@ namespace CmsData
                     HttpContext.Current.Session[STR_ActivePersonId] = value;
             }
         }
+        const string STR_FromMobile = "source";
+        public static string FromMobile
+        {
+            get
+            {
+                return (string)GetSessionObj(STR_FromMobile, null);
+            }
+        }
         public static int? CurrentTagOwnerId
         {
             get

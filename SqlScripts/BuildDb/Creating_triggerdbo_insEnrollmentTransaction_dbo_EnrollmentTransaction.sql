@@ -12,7 +12,20 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-	DECLARE @tid INT, @trandt DATETIME, @typeid INT, @orgid INT, @pid INT
+	DECLARE 
+		@tid INT
+		,@trandt DATETIME
+		,@typeid INT
+		,@orgid INT
+		,@pid INT
+		,@skipInsertTriggerProcessing BIT
+
+	SELECT
+		@skipInsertTriggerProcessing = SkipInsertTriggerProcessing
+	FROM Inserted
+
+	IF @skipInsertTriggerProcessing = 1
+		RETURN
 
 	DECLARE cet CURSOR FORWARD_ONLY FOR
 	SELECT TransactionId, TransactionDate, TransactionTypeId, OrganizationId, PeopleId 

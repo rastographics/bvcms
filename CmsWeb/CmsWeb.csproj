@@ -457,6 +457,7 @@
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
     <Compile Include="Framework\CmsViewEngine.cs" />
+    <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
     <Compile Include="Models\ExtraValue\ReportsModel.cs" />
@@ -866,7 +867,6 @@
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\MobileAppMenu.cshtml" />
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
@@ -930,6 +930,7 @@
     <Content Include="Scripts\js\TestScript.js" />
     <Content Include="Scripts\OnlineReg\OnlineReg2.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment2.js" />
+    <Content Include="Scripts\Org\GetVolSub.js" />
     <Content Include="Scripts\People\mydatatour.js" />
     <Content Include="Scripts\People\persontour.js" />
     <Content Include="Scripts\js\RegSetting2.js" />
@@ -1225,6 +1226,7 @@
     <Content Include="Areas\Manage\Views\Batch\UpdateStatusFlags.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2.cshtml" />
     <Content Include="Scripts\jQuery\jquery-1.10.2.min.map" />
+    <None Include="Properties\PublishProfiles\test3.pubxml" />
     <None Include="Scripts\Mobile\jquery-1.6.4-vsdoc.js" />
     <Content Include="Scripts\js\Pager3.js" />
     <Content Include="Scripts\Mobile\jquery-1.6.4.js" />
@@ -1786,6 +1788,7 @@
     <None Include="Web.bvcms.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
+    <Content Include="Views\MobileAppMenu\Index.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

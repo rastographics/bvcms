@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Data.SqlTypes;
 using System.Linq;
 
 namespace CmsData.API
 {
     public static class ApiSessionModel
     {
-        public static ApiSessionResult DetermineApiSessionStatus(Guid sessionToken)
+        public static ApiSessionResult DetermineApiSessionStatus(Guid sessionToken, bool requirePin, int? pin)
         {
             const int minutesSessionIsValid = 30;
 
@@ -21,16 +22,29 @@ namespace CmsData.API
                     : new ApiSessionResult(session.User, ApiSessionStatus.SessionTokenExpired);
             }
 
+            if (requirePin && session.Pin.HasValue)
+            {
+                if (!pin.HasValue || pin.Value != session.Pin.Value)
+                    return new ApiSessionResult(session.User, ApiSessionStatus.PinInvalid);
+            }
+
+            if (pin.HasValue && session.Pin.HasValue)
+            {
+                if (pin.Value != session.Pin.Value)
+                    return new ApiSessionResult(session.User, ApiSessionStatus.PinInvalid);
+            }
+
             return new ApiSessionResult(session.User, ApiSessionStatus.Success);
         }
 
-        public static void SaveApiSession(User user, int? pin)
+        public static void SaveApiSession(User user, bool updatePin, int? pin)
         {
             var apiSession = user.ApiSessions.SingleOrDefault();
             if (apiSession != null)
             {
                 apiSession.LastAccessedDate = DateTime.Now;
-                apiSession.Pin = pin;
+                if (updatePin)
+                    apiSession.Pin = pin;
             }
             else
             {
@@ -46,14 +60,22 @@ namespace CmsData.API
             DbUtil.Db.SubmitChanges();
         }
 
-        public static void ResetSessionExpiration(User user, int? pin)
+        public static bool ResetSessionExpiration(User user, int? pin)
         {
             var apiSession = user.ApiSessions.SingleOrDefault();
             if (apiSession == null)
-                return;
+                return false;
+
+            if (apiSession.Pin.HasValue)
+            {
+                if (!pin.HasValue || pin.Value != apiSession.Pin.Value)
+                    return false;
+            }
 
             apiSession.LastAccessedDate = DateTime.Now;
             DbUtil.Db.SubmitChanges();
+
+            return true;
         }
 
         public static void DeleteSession(CMSDataContext db, User user)
@@ -64,6 +86,17 @@ namespace CmsData.API
 
             db.ApiSessions.DeleteOnSubmit(apiSession);
             db.SubmitChanges();
+        }
+
+        public static void ExpireSession(Guid sessionToken)
+        {
+            var session = DbUtil.Db.ApiSessions.SingleOrDefault(x => x.SessionToken == sessionToken);
+            if (session == null)
+                return;
+
+            session.LastAccessedDate = SqlDateTime.MinValue.Value;
+
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

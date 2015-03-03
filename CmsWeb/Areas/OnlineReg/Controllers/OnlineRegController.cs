@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
 using CmsData.Registration;
+using CmsWeb.Controllers;
 using CmsWeb.Models;
 using Elmah;
 using UtilityExtensions;
@@ -43,7 +44,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!id.HasValue)
                 return Message("no organization");
 
-            OnlineRegModel.Source = source;
+            MobileAppMenuController.Source = source;
             var m = new OnlineRegModel()
             {
                 Orgid = id
@@ -778,11 +779,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View(m);
         }
 
-        public ActionResult MobileAppMenu()
-        {
-            ViewBag.InMobileAppMode = OnlineRegModel.InMobileAppMode;
-            ViewBag.MobileAppReturnUrl = OnlineRegModel.MobileAppReturnUrl;
-            return PartialView();
-        }
+        
     }
 }

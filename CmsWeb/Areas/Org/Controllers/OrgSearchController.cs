@@ -147,6 +147,11 @@ namespace CmsWeb.Areas.Org.Controllers
                 case "so":
                     org.PublicSortOrder = value.HasValue() ? value : null;
                     break;
+                case "ac":
+                    if (value == "Other")
+                        value = null;
+                    org.AppCategory = value.HasValue() ? value : null;
+                    break;
             }
             DbUtil.Db.SubmitChanges();
             return c;

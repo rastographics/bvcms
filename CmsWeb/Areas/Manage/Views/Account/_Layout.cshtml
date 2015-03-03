@@ -16,20 +16,23 @@
     <![endif]-->
     @RenderSection("head", false)
 </head>
-<body class="account">
-    <div class="account-header">
-        <a href="/" class="logo">
-            <div class="demo-logo"><img src="@Url.Content("~/Content/touchpoint/img/logo.png")" alt="" class="logo-img"></div>
-        </a>
-    </div>
-    @RenderBody()
-    <div id="footer" class="container-fluid hidden-print">
-        <div class="text-center">
-            &copy; @DateTime.Today.Year TouchPoint Software, LLC.
+    <body>
+        @Html.Action("Index", "MobileAppMenu", new { area = "" })
+        <div class="account">
+            <div class="account-header">
+                <a href="/" class="logo">
+                    <div class="demo-logo"><img src="@Url.Content("~/Content/touchpoint/img/logo.png")" alt="" class="logo-img"></div>
+                </a>
+            </div>
+            @RenderBody()
+            <div id="footer" class="container-fluid hidden-print">
+                <div class="text-center">
+                    &copy; @DateTime.Today.Year TouchPoint Software, LLC.
+                </div>
+            </div>
+            @ViewExtensions2.jQuery()
+            @ViewExtensions2.Bootstrap3()
+            @RenderSection("scripts", false)
         </div>
-    </div>
-    @ViewExtensions2.jQuery()
-    @ViewExtensions2.Bootstrap3()
-    @RenderSection("scripts", false)
-</body>
+    </body>
 </html>

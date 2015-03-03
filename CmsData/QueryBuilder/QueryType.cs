@@ -160,6 +160,7 @@ namespace CmsData
         OtherNewChurch,
         OtherPreviousChurch,
         ParentsOf,
+        PlusParentsOf,
         PendingCurrentOrg,
         PreviousCurrentOrg,
         PeopleExtra,

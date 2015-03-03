@@ -62,7 +62,8 @@
           <a href="#" class="sortable">RegType</a><br/>
           LinkType
         </th>
-        <th><a href="#" class="sortable">App Order</a></th>
+        <th><a href="#" class="sortable">Category</a></th>
+        <th>App Order</th>
         <th>
           <a href="#" class="sortable">FirstDate</a>
           <br /><a href="#" class="sortable">RegStart</a>
@@ -91,6 +92,16 @@
           <td>
             @o.RegType<br/>
             <span id="reg2-@o.Id" class="yesno pointer">@(o.UseRegisterLink2 ?? false ? "Family" : "Individual")</span>
+          </td>
+          <td>
+            @if (canEdit)
+            {
+              <span id="ac-@o.Id" class="publicsort pointer category">@(o.AppCategory ?? "edit")</span>
+            }
+            else
+            {
+              <span>@o.AppCategory</span>
+            }
           </td>
           <td>
             @if (canManageEvents)

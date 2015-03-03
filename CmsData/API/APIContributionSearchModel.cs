@@ -35,6 +35,7 @@ namespace CmsData.API
         public int? Year { get; set; }
         public int? FundId { get; set; }
         public bool IncludeUnclosedBundles { get; set; }
+        public bool Mobile { get; set; }
         public int Online { get; set; }
 
         internal string Campus;
@@ -156,6 +157,10 @@ namespace CmsData.API
             if (!model.IncludeUnclosedBundles)
                 contributions = from c in contributions
                                 where c.BundleDetails.Any(dd => dd.BundleHeader.BundleStatusId == BundleStatusCode.Closed)
+                                select c;
+            if (model.Mobile)
+                contributions = from c in contributions
+                                where c.Source > 0
                                 select c;
 
             switch (model.TaxNonTax)

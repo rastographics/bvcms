@@ -241,6 +241,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                         case "Location":
                             o.Location = val;
                             break;
+                        case "AppCategory":
+                            o.AppCategory = val;
+                            break;
+                        case "PublicSortOrder":
+                            o.PublicSortOrder = val;
+                            break;
                         case "Name":
                             o.OrganizationName = val;
                             break;
