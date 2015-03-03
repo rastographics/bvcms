@@ -3,8 +3,7 @@ AS
 (
 	SELECT 
 		o.OrganizationId
-		,NULLIF((SELECT dbo.RegexMatch(rr.RegSetting, '(?<=^Title:\s)(.*)$')
-			FROM dbo.Organizations rr WHERE rr.OrganizationId = o.OrganizationId),'') Title
+		,NULLIF(dbo.RegexMatch(o.RegSetting, '(?<=^Title:\s)(.*)$'), '') AS Title
 		,o.OrganizationName
 		,o.[Description]
 		,CASE WHEN ISNULL(o.AppCategory, '') <> '' THEN o.AppCategory ELSE 'Other' END AppCategory
