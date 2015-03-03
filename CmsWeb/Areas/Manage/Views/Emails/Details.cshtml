@@ -27,70 +27,75 @@
 }
 <div class="row">
     <div class="col-md-4 col-lg-3 col-md-push-8 col-lg-push-6">
-        <div class="mini-stat-panel">
-            <div class="stat-row">
-                <div class="stat-cell bg-info darker">
-                    <i class="fa fa-envelope-o bg-icon" style="font-size:60px;line-height:80px;height:80px;"></i>
-                    <span class="text-bg">Email Details</span><br>
-                    @if (Model.HasTracking && Model.queue.Sent.HasValue)
-                    {
-                        <span class="text-sm">@uniqueOpens Unique Opens</span>
-                    }
+        @if (!Model.SendFromOrg || (Model.SendFromOrg && Model.queue.Sent.HasValue))
+        {
+            <div class="mini-stat-panel">
+                <div class="stat-row">
+                    <div class="stat-cell bg-info darker">
+                        <i class="fa fa-envelope-o bg-icon" style="font-size:60px;line-height:80px;height:80px;"></i>
+                        <span class="text-bg">Email Details</span><br>
+                        @if (Model.HasTracking && Model.queue.Sent.HasValue)
+                        {
+                            <span class="text-sm">@uniqueOpens Unique Opens</span>
+                        }
+                    </div>
                 </div>
-            </div>
-            <div class="stat-row">
-                <div class="stat-counters bg-info no-padding text-center">
-                    @if (Model.HasTracking && Model.queue.Sent.HasValue)
-                    {
+                <div class="stat-row">
+                    <div class="stat-counters bg-info no-padding text-center">
+                        @if (Model.HasTracking && Model.queue.Sent.HasValue)
+                        {
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>@opens</strong></span><br>
+                                <span class="text-xs">OPENS</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>@all</strong></span><br>
+                                <span class="text-xs">RECIPIENTS</span>
+                            </div>
+                        }
+                        @if (Model.HasTracking && Model.queue.Sent.HasValue)
+                        {
+                            <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
+                                <span class="text-bg"><strong>@notOpened</strong></span><br>
+                                <span class="text-xs">NOT OPENED</span>
+                            </div>
+                        }
                         <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
-                            <span class="text-bg"><strong>@opens</strong></span><br>
-                            <span class="text-xs">OPENS</span>
+                            <span class="text-bg"><strong>@failed</strong></span><br>
+                            <span class="text-xs">FAILED</span>
                         </div>
-                    }
-                    else
-                    {
-                        <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
-                            <span class="text-bg"><strong>@all</strong></span><br>
-                            <span class="text-xs">RECIPIENTS</span>
-                        </div>
-                    }
-                    @if (Model.HasTracking && Model.queue.Sent.HasValue)
-                    {
-                        <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
-                            <span class="text-bg"><strong>@notOpened</strong></span><br>
-                            <span class="text-xs">NOT OPENED</span>
-                        </div>
-                    }
-                    <div class="stat-cell col-xs-4 padding-sm no-padding-hr">
-                        <span class="text-bg"><strong>@failed</strong></span><br>
-                        <span class="text-xs">FAILED</span>
                     </div>
                 </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="mini-stat-panel">
+                <div class="stat-row">
+                    <div class="stat-cell bg-info darker">
+                        <i class="fa fa-envelope-o bg-icon" style="font-size:60px;line-height:80px;height:80px;"></i>
+                        <span class="text-bg">Email Details</span><br>
+                        Emails will be sent from Current Members of @Model.SendFromOrgName
+                    </div>
+                </div>
+            </div>
+        }
         <div class="mini-stat-panel">
             <div class="stat-row text-center">
                 <div class="stat-cell bg-success darker padding-sm text-xs text-semibold">
-                    @if (Model.SendFromOrg)
-                    {
-                        <text>Emails will be sent from Current Members of @Model.SendFromOrgName</text>
-                    }
-                    else
-                    {
-                        <i class="fa fa-paper-plane"></i><text>&nbsp;&nbsp;EMAILS SENT</text>
-                    }
+                    <i class="fa fa-paper-plane"></i><text>&nbsp;&nbsp;EMAILS SENT</text>
                 </div>
             </div>
-            @if (!Model.SendFromOrg)
-            {
-                <div class="stat-row text-center">
-                    <div class="stat-cell bordered no-border-t no-padding-hr">
-                        <div class="pie-chart" data-percent="@percentage">
-                            <div class="pie-chart-label">@percentage%</div>
-                        </div>
+            <div class="stat-row text-center">
+                <div class="stat-cell bordered no-border-t no-padding-hr">
+                    <div class="pie-chart" data-percent="@percentage">
+                        <div class="pie-chart-label">@percentage%</div>
                     </div>
                 </div>
-            }
+            </div>
             <div class="stat-row">
                 <div class="stat-cell bg-success bordered no-border-t text-lg">
                     @if (!string.IsNullOrWhiteSpace(Model.queue.SendWhen.FormatDateTm()))
@@ -99,7 +104,7 @@
                             <div class="col-xs-3">
                                 Scheduled
                             </div>
-                            <div class="col-sx-9 text-right">
+                            <div class="col-xs-9 text-right">
                                 <strong>@Model.queue.SendWhen.FormatDateTm()</strong>
                             </div>
                         </div>
@@ -214,7 +219,7 @@
             </div>
         </div>
         <br class="visible-xs-block"/>
-        @if (!Model.SendFromOrg)
+        @if (!Model.SendFromOrg || (Model.SendFromOrg && Model.queue.Sent.HasValue))
         {
             <ul class="nav nav-tabs" id="recipient-tabs">
                 <li class="active"><a href="#" data-filter="All">All&nbsp;&nbsp;<span class="badge">@all</span></a></li>
