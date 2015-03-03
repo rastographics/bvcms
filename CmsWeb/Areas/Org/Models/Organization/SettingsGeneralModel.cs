@@ -19,6 +19,8 @@ namespace CmsWeb.Areas.Org.Models
         }
         public void Update()
         {
+            if (Gender.Value == "99")
+                Gender.Value = null;
             this.CopyPropertiesTo(Org);
             DbUtil.Db.SubmitChanges();
         }
