@@ -191,6 +191,7 @@ namespace CmsData
                     var m = Db.OrganizationMembers.SingleOrDefault(m2 => m2.PeopleId == PeopleId && m2.OrganizationId == OrganizationId);
                     if (m != null)
                     {
+                        m.Pending = pending;
                         m.MemberTypeId = MemberTypeId;
                         Db.SubmitChanges();
                         return m;
