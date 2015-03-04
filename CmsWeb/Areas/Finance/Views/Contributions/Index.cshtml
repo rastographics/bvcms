@@ -11,6 +11,7 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="All or part of full name, or people id."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="SearchInfo_Name" class="control-label">Name</label>
                             @if (Model.SearchInfo.PeopleId.HasValue)
                             {
@@ -20,14 +21,15 @@
                             }
                             else
                             {
-                                @Html.TextBoxFor(vv => vv.SearchInfo.Name, new { @class = "form-control", title = "All or part of full name, or people id." })
+                                @Html.TextBoxFor(vv => vv.SearchInfo.Name, new { @class = "form-control" })
                             }
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Notes" data-content="Check # or phrase or contribution id."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="SearchInfo_Comments" class="control-label">Notes</label>
-                            @Html.TextBoxFor(vv => vv.SearchInfo.Comments, new { @class = "form-control", title = "Check # or phrase or contribution id." })
+                            @Html.TextBoxFor(vv => vv.SearchInfo.Comments, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
@@ -50,6 +52,7 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-4">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Start Date" data-content="Use only start date to look at a single day."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="SearchInfo_StartDate" class="control-label">Start Date</label>
                             <div class="input-group date">
                                 @Html.TextBox("SearchInfo_StartDate", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
@@ -159,6 +162,13 @@
     <script type="text/javascript">
         $(function () {
 
+            function intializePopovers() {
+                $('[data-toggle="popover"]').popover({ html: true });
+                $('[data-toggle="popover"]').click(function (ev) {
+                    ev.preventDefault();
+                });
+            }
+
             $("#filter").click(function (ev) {
                 ev.preventDefault();
                 $.getTable();
@@ -198,6 +208,7 @@
                 $.block();
                 $.post('/Contributions/Results', q, function (ret) {
                     $('#results').replaceWith(ret);
+                    intializePopovers();
                     $.unblock();
                 });
             };
@@ -257,6 +268,8 @@
                 }
                 return true;
             });
+
+            intializePopovers();
         });
     </script>
 }
