@@ -25,15 +25,6 @@
 
     $('#statusflags').multiselect();
 
-    $("#targetpeople").click(function (ev) {
-        ev.preventDefault();
-        if ($('a.target[target="people"]').length == 0)
-            $("a.target").attr("target", "people");
-        else
-            $("a.target").removeAttr("target");
-        return false;
-    });
-
     $("#convert").click(function (ev) {
         ev.preventDefault();
         var f = $('#results').closest('form');
