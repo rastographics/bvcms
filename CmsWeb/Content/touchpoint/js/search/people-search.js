@@ -8,6 +8,8 @@
         $("input:text").val("");
         $("#memberstatus,#campus").val(0); //.sb("refresh");
         $("#gender,#marital").val(99); //.sb("refresh");
+        $('#statusflags').multiselect('deselectAll', false);
+        $('#statusflags').multiselect('updateButtonText');
         return false;
     });
 
