@@ -1,5 +1,12 @@
 ﻿$(function () {
 
+    function intializePopovers() {
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
+        });
+    }
+
     $("#run").click(function (ev) {
         ev.preventDefault();
 	    if (!$.DateValid($("#Dt1").val(), true))
@@ -22,6 +29,7 @@
 		$.post("/FinanceReports/TotalsByFundResults", q, function (ret) {
 		    $.unblock();
 		    $("#results").html(ret);
+		    intializePopovers();
 		});
 	});
 
@@ -80,4 +88,6 @@
 	    else
 	        $("#export-quickbooks").css("display", "inline");
 	});
+
+	intializePopovers();
 });
