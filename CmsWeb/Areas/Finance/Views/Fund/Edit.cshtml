@@ -29,6 +29,7 @@
                     <div class="row">
                         <div class="col-sm-9 col-lg-8">
                             <div class="form-group">
+                                <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Description" data-content="This is what is used on Statements and in drop-down menus. Can be the same as the Name."><i class="fa fa-info-circle"></i></a>&nbsp;
                                 <label for="FundDescription" class="control-label">Description</label>
                                 @Html.TextBoxFor(m => m.FundDescription, new { @class = "form-control" })
                             </div>
@@ -142,4 +143,15 @@
             </div>
         </div>
     </div>
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="popover"]').popover({ html: true });
+            $('[data-toggle="popover"]').click(function (ev) {
+                ev.preventDefault();
+            });
+        });
+    </script>
 }
