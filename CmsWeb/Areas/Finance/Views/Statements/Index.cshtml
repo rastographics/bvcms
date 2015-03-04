@@ -11,9 +11,10 @@
             <form action="/Statements/Start" method="post">
                 <div class="row">
                     <div class="col-sm-4">
+                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Starts With" data-content="Last Name starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow."><i class="fa fa-info-circle"></i></a>&nbsp;
                         <label for="startswith" class="control-label">Starts With</label>
                         <div class="input-group">
-                            @Html.TextBox("startswith", "", new { @class = "form-control", title = "lastname starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow" })
+                            @Html.TextBox("startswith", "", new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -33,9 +34,10 @@
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
+                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Sort" data-content="Type either name or zip."><i class="fa fa-info-circle"></i></a>&nbsp;
                         <label for="sort" class="control-label">Sort</label>
                         <div class="input-group">
-                            @Html.TextBox("sort", "", new { @class = "form-control", title = "type: name or zip" })
+                            @Html.TextBox("sort", "", new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-sm-4">
@@ -63,3 +65,14 @@
         </div>
     </div>
 </div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="popover"]').popover({ html: true });
+            $('[data-toggle="popover"]').click(function (ev) {
+                ev.preventDefault();
+            });
+        });
+    </script>
+}
