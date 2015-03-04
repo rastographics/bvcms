@@ -4,225 +4,290 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Main.Models.EmailTemplatesModel
 @{
-    ViewBag.Title = "SelectTemplate";
-    Layout = ViewExtensions2.Layout();
-    const int WRAP_COUNT = 3;
-    var wrapAt = WRAP_COUNT;
+    ViewBag.Title = "Select Template";
+    ViewBag.PageHeader = "Select Template";
+    Layout = ViewExtensions2.TouchPointLayout();
     var url = "/Email/" + Model.queryid;
-}
-@section scripts
-{
-    <script type="text/javascript">
-	     $(document).ready(function () {
-	         $("body").on("click", '[bvtemplate]', function (e) {
-	             $("#templateID").val($(this).attr("template"));
-	             $("#selectTemplate").submit();
-	         });
 
-	         $(document).on("change", "input[draft]", null, checkChanged);
+    var sdMine = new List<ContentModel.SavedDraft>();
+    var sdRole = new List<ContentModel.SavedDraft>();
+    var sdShared = new List<ContentModel.SavedDraft>();
 
-	         $("#draftDelete").click(function (e) {
-	             if (confirm("Are you sure you want to delete " + $("input[draft]:checked").length + " draft(s)?")) {
-	                 $("#savedDrafts").submit();
-	             }
-	         });
-
-	         $("#draftAll").click(function (e) {
-	             $("input[draft]").prop("checked", true);
-	             checkChanged();
-	         });
-
-	         $("#draftNone").click(function (e) {
-	             $("input[draft]").prop("checked", false);
-	             checkChanged();
-	         });
-
-	         function checkChanged() {
-	             if ($("input[draft]:checked").length > 0) {
-	                 $("#draftDelete").button( "option", "disabled", false);
-	                 $("#draftDelete").val("Delete " + $("input[draft]:checked").length + " Draft(s)");
-	             } else {
-	                 $("#draftDelete").button( "option", "disabled", true);
-	                 $("#draftDelete").val("Delete 0 Draft(s)");
-	             }
-	         }
-
-	         $(".bt").button();
-
-	         checkChanged();
-	     });
-	</script>
-}
-@section head {
-	<style type="text/css">
-		div.templateItem { width:100px; height:150px; border:1px solid black; overflow:hidden; margin:auto; }
-		div.templateItem:hover { border-color:#0000ff; }
-	</style>
-}
-<h2>Select An Email Option</h2>
-<table width="100%" cellspacing="10">
-<tr>
-	<td width="20%" class="top">
-
-		<center>
-		<b>Use Blank</b>
-		<hr />
-		<table width="100%" cellspacing="20">
-        @{
-            var empty = Model.fetchTemplateByName("Empty Template");
-            if (empty != null)
-            {
-		        <tr>
-                    <td class="center">
-				        @empty.Name<br />
-				        <div bvtemplate class="templateItem" template="@empty.Id">
-					        <img alt="portrait" border="0" width="100" height="150" src="@empty.ThumbUrl" />
-				        </div>
-			        </td>
-                </tr>
-            }
-        }
-        <tr>
-			<td class="center">
-				Blank<br />
-				<div bvtemplate class="templateItem" template="0">
-                    <img alt="portrait" border="0" width="100" height="150" src="/Image/0" />
-				</div>
-				<br />
-				<font color="blue"><b>Use this option to compose an email in the old way.</b></font>
-			</td>
-		</tr>
-		</table>
-		</center>
-
-	</td>
-	<td width="50%" class="top">
-
-	    <center>
-	        <b>Use a Template</b>
-	        <hr />
-	    </center>
-	    <form id="selectTemplate" action="@url" method="post">
-	        @Html.Hidden("templateID", "0")
-	        @Html.Hidden("parents", @Model.wantparents)
-	        @Html.Hidden("ccparents", @Model.ccparents)
-	        @Html.Hidden("nodups", @Model.nodups)
-	        @Html.Hidden("orgid", @Model.orgid)
-	    </form>
-		<table width="100%" cellspacing="20">
-		<tr>
-		@foreach (var t in Model.fetchTemplates())
-  {
-			<td width="@( 100 / WRAP_COUNT)%" class="center">
-				@t.Name<br />
-				<div bvtemplate class="templateItem" template="@t.Id">
-					<img alt="portrait" border="0" width="100" height="150" src="@t.ThumbUrl" />
-				</div>
-			</td>
-      wrapAt--;
-      if (wrapAt == 0)
-      {
-          wrapAt = WRAP_COUNT;
-				@:</tr><tr>
-			}
-  }
-		@for (var i = 0; i < wrapAt; i++)
-  {
-			<td>&nbsp;</td>
-  }
-		</tr>
-		</table>
-
-	</td>
-    @{
-        List<ContentModel.SavedDraft> sdMine = new List<ContentModel.SavedDraft>();
-        List<ContentModel.SavedDraft> sdRole = new List<ContentModel.SavedDraft>();
-        List<ContentModel.SavedDraft> sdShared = new List<ContentModel.SavedDraft>();
-
-        foreach (var t in Model.fetchDrafts())
+    foreach (var t in Model.fetchDrafts())
+    {
+        if (t.ownerID == Util.UserId)
         {
-            if (t.ownerID == Util.UserId)
-            {
-                sdMine.Add(t);
-            }
-            else if (Tag.IsInTag("SHaredDrafts", t.ownerID, Util.UserPeopleId ?? 0))
-            {
-                sdShared.Add(t);
-            }
-            else if( t.roleID != 0 )
-            {
-                sdRole.Add(t);
-            }
+            sdMine.Add(t);
+        }
+        else if (Tag.IsInTag("SHaredDrafts", t.ownerID, Util.UserPeopleId ?? 0))
+        {
+            sdShared.Add(t);
+        }
+        else if (t.roleID != 0)
+        {
+            sdRole.Add(t);
         }
     }
-	<td class="top" style="text-align:center;">
-        <b>My Drafts</b>
-        <hr />
-        @if( sdMine.Count > 0 ) {
-        <input type="button" class="bt" id="draftAll" value="Select All" /><text> &nbsp; </text>
-        <input type="button" class="bt" id="draftNone" value="Clear All" /><text> &nbsp; </text>
-        <input type="button" class="bt" id="draftDelete" value="Delete Selected" />
-        }
-        <form id="savedDrafts" action="/Email/ContentDeleteDrafts" method="post">
-        @Html.Hidden("parents", @Model.wantparents)
-        @Html.Hidden("queryid", @Model.queryid)
-		<table width="100%">
-		    @foreach (var t in sdMine)
-            {
-                <tr>
-			        <td style="padding:3px !important; text-align:left; vertical-align:top;">
-                        <input draft="yes" type="checkbox" name="draftID" value="@t.id" />
-                        <a href="#" bvtemplate template="@t.id">@t.name</a>
-                    </td>
-                    <td style="padding:3px !important; text-align:right; vertical-align:top;">
-                        @if (t.roleID != 0)
-                        {
-                            <text>Role: </text>@t.role
-                        }
-		            </td>
-	            </tr>
+}
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+}
+<div class="row">
+    <div class="col-md-12" id="templates">
+        <ul class="nav nav-tabs" id="template-tabs">
+            <li class="active"><a href="#emailTemplates" aria-controls="emailTemplates" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;&nbsp;Email Templates</a></li>
+            <li><a href="#myDrafts" aria-controls="myDrafts" data-toggle="tab"><i class="fa fa-user"></i>&nbsp;&nbsp;My Drafts</a></li>
+            <li><a href="#teamDrafts" aria-controls="emailTemplates" data-toggle="tab"><i class="fa fa-users"></i>&nbsp;&nbsp;Team Drafts</a></li>
+            <li><a href="#shared" aria-controls="shared" data-toggle="tab"><i class="fa fa-share"></i>&nbsp;&nbsp;Shared</a></li>
+        </ul>
+        <div class="tab-content">
+            <form id="selectTemplate" action="@url" method="post">
+                @Html.Hidden("templateID", "0")
+                @Html.Hidden("parents", @Model.wantparents)
+                @Html.Hidden("ccparents", @Model.ccparents)
+                @Html.Hidden("nodups", @Model.nodups)
+                @Html.Hidden("orgid", @Model.orgid)
+            </form>
+            <div class="tab-pane fade in active" id="emailTemplates">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            @{
+                                var empty = Model.fetchTemplateByName("Empty Template");
+                                if (empty != null)
+                                {
+                                    <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;" bvtemplate template="@empty.Id">
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <a href="#" class="templateItem" template="@empty.Id">
+                                                    <img src="/Image/@empty.ThumbID" class="img-responsive img-thumbnail" />
+                                                </a>
+                                            </div>
+                                            <div class="col-xs-8">
+                                                <a href="#" class="templateItem" template="@empty.Id"><strong>@empty.Name</strong></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;" bvtemplate template="0">
+                                        <div class="row">
+                                            <div class="col-xs-4">
+                                                <a href="#" class="templateItem" template="0">
+                                                    <img src="/Image/0" class="img-responsive img-thumbnail" />
+                                                </a>
+                                            </div>
+                                            <div class="col-xs-8">
+                                                <a href="#" class="templateItem" template="0"><strong>Blank</strong></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            @foreach (var t in Model.fetchTemplates())
+                            {
+                                <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;" bvtemplate template="@t.Id">
+                                    <div class="row">
+                                        <div class="col-xs-4">
+                                            <a href="#" class="templateItem" template="@t.Id">
+                                                <img src="/Image/@t.ThumbID" class="img-responsive img-thumbnail" />
+                                            </a>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <a href="#" class="templateItem" template="@t.Id"><strong>@t.Name</strong></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="myDrafts">
+                <div class="row hidden-xs">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <button type="button" class="btn btn-danger draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
+                        </div>
+                    </div>
+                </div>
+                <form id="savedDrafts" action="/Email/ContentDeleteDrafts" method="post">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 5px;"><input type="checkbox" id="draftAll" value="all" /></th>
+                                            <th>Name</th>
+                                            <th>Role</th>
+                                            <th>Created Date</th>
+                                        </tr>
+                                    </thead>
+                                    @foreach (var item in sdMine)
+                                    {
+                                        <tr>
+                                            <td style="width: 5px;">
+                                                <input draft="yes" type="checkbox" name="draftID" value="@item.id" />
+                                            </td>
+                                            <td>
+                                                <a href="#" class="templateItem" template="@item.id">@item.name</a>
+                                            </td>
+                                            <td>
+                                                @if (item.roleID != 0)
+                                                {
+                                                    @item.role
+
+                                                }
+
+                                            </td>
+                                            <td>
+                                                @item.created.FormatDate()
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-danger visible-xs-block btn-block draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane fade" id="teamDrafts">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Role</th>
+                                        <th>Created Date</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in sdRole)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="#" class="templateItem" template="@item.id">@item.name</a>
+                                        </td>
+                                        <td>
+                                            @if (item.roleID != 0)
+                                            {
+                                                @item.role
+
+                                            }
+
+                                        </td>
+                                        <td>
+                                            @item.created.FormatDate()
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-danger visible-xs-block btn-block draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="shared">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Owner</th>
+                                        <th>Created Date</th>
+                                    </tr>
+                                </thead>
+                                @foreach (var item in sdShared)
+                                {
+                                    <tr>
+                                        <td>
+                                            <a href="#" class="templateItem" template="@item.id">@item.name</a>
+                                        </td>
+                                        <td>
+                                            @item.owner
+                                        </td>
+                                        <td>
+                                            @item.created.FormatDate()
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-danger visible-xs-block btn-block draftDelete"><i class="fa fa-trash"></i> Delete Selected</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    <script type="text/javascript">
+        $(function () {
+            $("#template-tabs").tabdrop();
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                if ($(this).attr('href') == '#emailTemplates') {
+                    setSpecialContentCol('col-md-12');
+                } else {
+                    setSpecialContentCol('col-md-9');
+                }
+            });
+
+            function setSpecialContentCol(className) {
+                $('#templates').removeClass('col-md-9').removeClass('col-md-12').addClass(className);
             }
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-                <td colspan="2">
-                    <b>Team Drafts</b>
-                    <hr />                  
-                </td>
-            </tr>
-            @foreach (var t in sdRole)
-            {
-                <tr>
-			        <td style="padding:3px !important; text-align:left; vertical-align:top;">
-                        <a href="#" bvtemplate template="@t.id">@t.name</a>
-                    </td>
-                    <td style="padding:3px !important; text-align:right; vertical-align:top;">
-                        @if (t.roleID != 0)
-                        {
-                            <text>Role: </text>@t.role
-                        }
-		            </td>
-	            </tr>
+
+            $("body").on("click", 'a.templateItem', function (e) {
+                e.preventDefault();
+                $("#templateID").val($(this).attr("template"));
+                $("#selectTemplate").submit();
+            });
+
+            $(document).on("change", "input[draft]", null, checkChanged);
+
+            $("button.draftDelete").click(function (e) {
+                swal({
+                    title: "Are you sure you want to delete " + $("input[draft]:checked").length + " draft(s)?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete draft(s)!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $("#savedDrafts").submit();
+                });
+            });
+
+            $("#draftAll").change(function () {
+                if ($(this).prop("checked")) {
+                    $("input[draft]").prop("checked", true);
+                } else {
+                    $("input[draft]").prop("checked", false);
+                }
+                checkChanged();
+            });
+
+            function checkChanged() {
+                if ($("input[draft]:checked").length > 0) {
+                    $("button.draftDelete").prop("disabled", false);
+                    $("button.draftDelete").html("<i class='fa fa-trash'></i> Delete " + $("input[draft]:checked").length + " Draft(s)");
+                } else {
+                    $("button.draftDelete").prop("disabled", true);
+                    $("button.draftDelete").html("<i class='fa fa-trash'></i> Delete 0 Draft(s)");
+                }
             }
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-                <td colspan="2">
-                    <b>Shared With Me By Others</b>
-                    <hr />                  
-                </td>
-            </tr>
-            @foreach (var t in sdShared)
-            {
-                <tr>
-			        <td style="padding:3px !important; text-align:left; vertical-align:top;">
-                        <a href="#" bvtemplate template="@t.id">@t.name</a>
-                    </td>
-                    <td style="padding:3px !important; text-align:right; vertical-align:top;">
-                       By: @t.owner
-		            </td>
-	            </tr>
-            }
-        </table>
-        </form>
-	</td>
-</tr>
-</table>
+
+            checkChanged();
+        });
+    </script>
+}
