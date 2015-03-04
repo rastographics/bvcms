@@ -44,6 +44,7 @@
     {
         <script type="text/javascript">
             $(function () {
+                $.block();
                 var intervalId = window.setInterval(function () {
                     $.post('/Statements/Progress2', null, function (json) {
                         $("#count").text(json.Count);
@@ -54,6 +55,7 @@
                         if (json.Completed) {
                             $("#download").show();
                             $("#download").html(json.html);
+                            $.unblock();
                             window.clearInterval(intervalId);
                         }
                     }, "json");
