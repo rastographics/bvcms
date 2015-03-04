@@ -27,6 +27,8 @@ namespace CmsWeb
         {
             MvcHandler.DisableMvcResponseHeader = true;
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
+            ModelBinders.Binders.Add(typeof(decimal), new DecimalModelBinder());
+            ModelBinders.Binders.Add(typeof(decimal?), new DecimalModelBinder());
             ModelMetadataProviders.Current = new ModelViewMetadataProvider();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             RouteTable.Routes.RouteExistingFiles = true;
