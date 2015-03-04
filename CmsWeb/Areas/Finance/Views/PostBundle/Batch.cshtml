@@ -28,6 +28,7 @@
             <div class="row">
                 <div class="col-sm-2">
                     <div class="form-group">
+                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Fund Id" data-content="Default fund for these bundles."><i class="fa fa-info-circle"></i></a>&nbsp;
                         <label for="file" class="control-label">Fund Id</label>
                         <input type="number" name="fundid" id="fundid" class="form-control" />
                     </div>
@@ -40,3 +41,14 @@
         </form>
     </div>
 </div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="popover"]').popover({ html: true });
+            $('[data-toggle="popover"]').click(function (ev) {
+                ev.preventDefault();
+            });
+        });
+    </script>
+}
