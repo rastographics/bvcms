@@ -1,4 +1,11 @@
 ﻿$(function () {
+    function intializePopovers() {
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
+        });
+    }
+
     $('#name').focus();
 
     $("#searchvalues select").not("#statusflags").css("width", "100%");
@@ -59,6 +66,7 @@
         $.post($('#search').attr('href'), q, function (ret) {
             $('#results').replaceWith(ret).ready(function () {
                 $("#totalcount").text($("#totcnt").val());
+                intializePopovers();
                 $.unblock();
             });
         });
@@ -101,4 +109,6 @@
         });
         return false;
     });
+
+    intializePopovers();
 });

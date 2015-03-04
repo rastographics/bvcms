@@ -18,26 +18,30 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name / ID#" data-content="Search names using starting letters of First<space>Last or just Last or First<space> for first name match only."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="name" class="control-label">Name / ID#</label>
-                            @Html.TextBox("name", Model.m.name, new { title = "Search names using starting letters of First<space>Last or just Last or First<space> for first name match only", @class = "form-control" })
+                            @Html.TextBox("name", Model.m.name, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Email / Phone" data-content="Any part of any phone or email."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="communication" class="control-label">Email / Phone</label>
-                            @Html.TextBox("communication", Model.m.communication, new { title = "Any part of any phone or email", @class = "form-control" })
+                            @Html.TextBox("communication", Model.m.communication, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Address" data-content="Any part of the address, city or zip."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="address" class="control-label">Address</label>
-                            @Html.TextBox("address", Model.m.address, new { title = "Any part of the address, city or zip", @class = "form-control" })
+                            @Html.TextBox("address", Model.m.address, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date of Birth" data-content="YYYY or MM or MM/DD or MM/DD/YY"><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="birthdate" class="control-label">Date of Birth</label>
-                            @Html.TextBox("birthdate", Model.m.birthdate, new { title = "YYYY or MM or MM/DD or MM/DD/YY", placeholder = "mm/dd/yy", @class = "form-control" })
+                            @Html.TextBox("birthdate", Model.m.birthdate, new { placeholder = "mm/dd/yy", @class = "form-control" })
                         </div>
                     </div>
                 </div>
