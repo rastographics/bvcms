@@ -28,7 +28,7 @@
             {
                 <tr>
                     <td class="text-center" style="width: 10px;">
-                        <a href="#" data-toggle="popover" data-trigger="focus" data-title="Items"
+                        <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="Items"
                            data-content="
                                <label>Total Tax Deductible:</label> $@(((b.TotalItems ?? 0) - (b.TotalNonTaxDed ?? 0)).ToString("N2"))<br/>
                                <label>Total Non Tax Deductible:</label> $@((b.TotalNonTaxDed ?? 0).ToString("N2"))<br />

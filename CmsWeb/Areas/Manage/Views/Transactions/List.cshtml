@@ -64,7 +64,7 @@
                     var noadmin = Model.admin ? "" : "noadmin";
                     <tr style="@(t.Id != t.OriginalId ? "font-style: italic;" : "")" class="@(t.Voided.GetValueOrDefault() ? "danger" : t.Credited.GetValueOrDefault() ? "warning" : "")">
                         <td class="text-center">
-                            <a href="#" data-toggle="popover" data-trigger="focus"
+                            <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus"
                                data-content="
                                <label>Transation Id:</label> @t.TransactionId<br/>
                                <label>Approval Code:</label> @(t.ApprovalCode ?? "na")<br />
