@@ -57,8 +57,7 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult UpdateMetroZips()
         {
             DbUtil.Db.UpdateResCodes();
-            TempData["SuccessMessage"] = "All addresses were updated.";
-            return Redirect("/MetroZips");
+            return Content("All addresses were updated.");
         }
 
         public JsonResult ResidentCodes()

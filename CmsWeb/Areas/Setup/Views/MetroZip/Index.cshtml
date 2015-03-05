@@ -9,28 +9,21 @@
 }
 <div class="row">
     <div class="col-sm-9">
-        @if (TempData["SuccessMessage"] == null || string.IsNullOrWhiteSpace(TempData["SuccessMessage"].ToString()))
-        {
-            using (Html.BeginForm("UpdateMetroZips", "MetroZip"))
-            {
-                <div class="alert alert-info">
-                    <h4>What about existing addresses?</h4>
-                    <p>
-                        Any new addresses entered will be associated accordingly after you enter or update these zip codes. Already existing addresses can be updated with this button.
-                    </p>
-                    <p>
-                        <button type="submit" class="btn btn-info">Update All Addresses</button>
-                    </p>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="alert alert-success alert-dismissible">
-                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                <strong>Success!</strong> @TempData["SuccessMessage"]
+        <div class="alert alert-success alert-dismissible" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Success!</strong> <span id="success-message"></span>
+        </div>
+        <form id="update-metro-zips">
+            <div class="alert alert-info">
+                <h4>What about existing addresses?</h4>
+                <p>
+                    Any new addresses entered will be associated accordingly after you enter or update these zip codes. Already existing addresses can be updated with this button.
+                </p>
+                <p>
+                    <button type="submit" class="btn btn-info" id="begin-update">Update All Addresses</button>
+                </p>
             </div>
-        }
+        </form>
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
@@ -151,6 +144,19 @@
 
             $('#new-modal').on('shown.bs.modal', function () {
                 $("#zipcode").val('').focus();
+            });
+
+            $('#begin-update').click(function (ev) {
+                ev.preventDefault();
+                var f = $('#update-metro-zips');
+                var q = f.serialize();
+                $.block();
+                $.post('/MetroZips/UpdateMetroZips', q, function (ret) {
+                    $('#success-message').text(ret);
+                    $('div.alert-success').show();
+                    $.unblock();
+                });
+                return true;
             });
         });
     </script>
