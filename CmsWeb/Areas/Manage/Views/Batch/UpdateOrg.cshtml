@@ -31,9 +31,10 @@
                 $.post('/Batch/UpdateOrg', q, function (ret) {
                     $('#success-message').text(ret);
                     $('div.alert-success').show();
+                    $('#text').val('');
                     $.unblock();
                 });
-                return true;
+                return false;
             });
         });
     </script>
