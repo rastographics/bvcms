@@ -753,11 +753,11 @@ namespace CmsWeb
         }
         public static HtmlString jQueryUICss()
         {
-            return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css\" />\n");
+            return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css\" />\n");
         }
         public static HtmlString jQueryUI()
         {
-            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js""></script>
+            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>
     <script> $.fn.jqdatepicker = $.fn.datepicker; </script>
 ");
         }
