@@ -103,7 +103,7 @@ $.InitializeDateElements = function () {
             $(this).attr('type', 'date');
         });
     } else {
-        $(".input-group.date").datetimepicker({ format: 'MM/DD/YYYY' });
+        $(".input-group.date").datetimepicker({ format: 'MM/DD/YYYY', widgetPositioning : { horizontal: 'left' } });
     }
 }
 
