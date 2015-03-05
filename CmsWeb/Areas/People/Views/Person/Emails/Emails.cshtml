@@ -33,7 +33,7 @@
                         else
                         {
                             var dt = sentlabel == "Scheduled" ? i.SendWhen : i.Sent;
-                            <span title="@dt.FormatDateTm()">@dt.FormatDate()</span>
+                            @dt.FormatDate()<br/>@dt.ToString2("t")
                         }
                     </td>
                     <td>@i.From<br/>

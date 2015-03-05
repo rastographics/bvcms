@@ -205,27 +205,6 @@ namespace CmsWeb.Models
             }
         }
 
-        //public int GetCountOfAllEmailTos()
-        //{
-        //    return EmailTos.Count();
-        //}
-
-        //public int GetCountOfNotOpenedEmails()
-        //{
-        //    return EmailTos.Count(e => !e.Opened);
-        //}
-
-        //public int GetCountOfFailedEmails()
-        //{
-        //    return EmailTos.Count(e => e.Failed);
-        //}
-
-        //private IEnumerable<EmailTo> _emailTos; 
-        //public IEnumerable<EmailTo> EmailTos
-        //{
-        //    get { return _emailTos ?? (_emailTos = GetEmailTos()); }
-        //}
-
     }
 
     public class EmailTo

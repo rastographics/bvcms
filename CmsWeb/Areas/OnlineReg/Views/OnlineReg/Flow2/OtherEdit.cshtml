@@ -161,18 +161,18 @@
 
             @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount())
             {
-                if (!Model.InMobileAppMode)
-                {
-                    <div class="checkbox-inline">
-                        <label>
-                            @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
-                        </label>
-                    </div>
-                }
-                else
-                {
-                    @Html.Hidden("CreatingAccount", true)
-                }
+              if (Model.InMobileAppMode && !UtilityExtensions.Util.UserPeopleId.HasValue && !Model.LoggedIn)
+              {
+                @Html.Hidden("CreatingAccount", true)
+              }
+              else
+              {
+                <div class="checkbox-inline">
+                  <label>
+                    @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
+                  </label>
+                </div>
+              }
             }
             <div>
             @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitOtherInfo/" + @Model.Index, "Submit",

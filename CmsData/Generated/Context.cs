@@ -3119,6 +3119,27 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.RecentAttendInDaysByCountDesc", IsComposable = true)]
+		public IQueryable< View.RecentAttendInDaysByCountDesc > RecentAttendInDaysByCountDesc(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="int")] int? orgtype,
+            [Parameter(DbType="int")] int? days,
+            [Parameter(DbType="varchar")] string desc
+            )
+		{
+			return this.CreateMethodCallQuery< View.RecentAttendInDaysByCountDesc>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                progid,
+                divid,
+                org,
+                orgtype,
+                days,
+                desc
+                );
+		}
+
 		[Function(Name="dbo.RecentAttendMemberType", IsComposable = true)]
 		public IQueryable< View.RecentAttendMemberType > RecentAttendMemberType(
             [Parameter(DbType="int")] int? progid,
@@ -3932,22 +3953,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.OrgCheckedCount", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? OrgCheckedCount(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "groupselect", DbType="varchar")] string groupselect,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                groupselect,
-                pid
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.Age", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? Age(
@@ -4260,20 +4265,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.GetCurrentOnlineBundle", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? GetCurrentOnlineBundle(
-            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
-            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                next,
-                prev
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.DollarRange", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? DollarRange(
@@ -4486,6 +4477,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.OrgCheckedCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrgCheckedCount(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "groupselect", DbType="varchar")] string groupselect,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                groupselect,
+                pid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.SchoolGrade", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? SchoolGrade(
@@ -4543,6 +4550,20 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetCurrentOnlineBundle", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetCurrentOnlineBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                next,
+                prev
                 ).ReturnValue));
 		}
 

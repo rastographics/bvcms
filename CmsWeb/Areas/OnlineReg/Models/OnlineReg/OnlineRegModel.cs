@@ -12,6 +12,7 @@ using CmsData;
 using CmsData.API;
 using CmsData.Codes;
 using CmsData.Registration;
+using CmsWeb.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -21,6 +22,7 @@ namespace CmsWeb.Models
     {
         
         public bool? testing { get; set; }
+        public bool? FromMobile { get { return MobileAppMenuController.Source.HasValue(); } }
         public string URL { get; set; }
         private int? _masterorgid;
 
@@ -118,6 +120,8 @@ namespace CmsWeb.Models
                         foreach (var ee in e.Elements())
                             _history.Add(ee.Value);
                         break;
+                    case "FromMobile":
+                        break;
                     default:
                         Util.SetPropertyFromText(this, name, e.Value);
                         break;
@@ -151,6 +155,10 @@ namespace CmsWeb.Models
                     case "testing":
                         if (testing == true)
                             w.Add(pi.Name, testing);
+                        break;
+                    case "FromMobile":
+                        if (FromMobile == true)
+                            w.Add(pi.Name, MobileAppMenuController.Source);
                         break;
                     case "prospect":
                         if (prospect)

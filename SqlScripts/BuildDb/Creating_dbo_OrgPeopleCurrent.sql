@@ -32,6 +32,7 @@ RETURN
 						AND la.AttendanceFlag = 1)
 	LEFT JOIN lookup.MemberType mt ON mt.Id = om.MemberTypeId
 	WHERE om.OrganizationId = @oid
+	AND ISNULL(om.pending, 0) = 0
 	AND om.MemberTypeId NOT IN (230, 311) -- not inactive, prospect
 )
 GO

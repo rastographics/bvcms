@@ -434,7 +434,7 @@
     <AttendPct Title="Attendance %" Type="Number" DisplayAs="AttendPct({0}, {1}, {2})" Params="Program,Division,Organization">
       Enter a number for the Attendance Percentage and select Program/Division/Organization.
     </AttendPct>
-    <RecentAttendCount Title="Recent Attendance Count" Type="Integer" DisplayAs="RecentAttendCount({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType">
+    <RecentAttendCount Title="Recent Attendance Count" Type="Integer" DisplayAs="RecentAttendCount({0}, {1}, {2}, {3}, {4}, {5})" Params="Days,Quarters,Program,Division,Organization,OrgType" QuartersLabel="Meeting Desc (partial)">
       Enter a number and select Comparison for the Attendance Count, enter a number for the days to look back and select other options: Program/Division/Organization, Org Type.
     </RecentAttendCount>
     <RecentAttendCountAttCred Title="Recent Attendance Count for Schedule/AttendCredit" Type="Integer" DisplayAs="RecentAttendCountSchedule({0}, {1}, {2}, {3}, {4}, {5})" QuartersLabel="Attend Credit Id" Params="Program,Division,Organization,Days,Quarters,Schedule">
