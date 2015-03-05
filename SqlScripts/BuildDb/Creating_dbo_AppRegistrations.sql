@@ -1,3 +1,4 @@
+
 CREATE VIEW [dbo].[AppRegistrations]
 AS
 (
@@ -17,6 +18,7 @@ AS
 	AND RegEND > GETDATE()
 	AND o.OrganizationStatusId = 30
 )
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
