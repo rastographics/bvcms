@@ -107,6 +107,11 @@ $.InitializeDateElements = function () {
     }
 }
 
+// hookup initialize events when common empty dialog is shown.
+$('#empty-dialog').on('shown.bs.modal', function () {
+    $.InitializeDateElements();
+});
+
 /* dom load functions */
 $(function () {
 
