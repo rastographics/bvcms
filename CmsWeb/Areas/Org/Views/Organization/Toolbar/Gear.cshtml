@@ -7,7 +7,7 @@
   var manager = User.IsInRole("ManageGroups");
   var oid = ViewBag.oid;
   var model = (OrganizationModel)ViewBag.model;
-  var o = model.Org;
+  var o = model.org;
 }
 <ul class="dropdown-menu dropdown-div-gear">
   <li>
@@ -20,7 +20,7 @@
           <li class="hideAlt"><a href="/RegSettings/@oid">View Registration Document</a></li>
         }
         <li><a href="/OrgContent/@oid" target="_blank">Members Only Page</a></li>
-        <li><a id="tryreg" href="#TryRegDialog" data-toggle="modal">Try Registration</a> </li>
+        <li><a id="tryreg" href="#">Try Registration</a> </li>
         @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
         {
           <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar">Volunteer Calendar</a></li>
@@ -45,7 +45,7 @@
           {
             <li><a href="http://docs.bvcms.com/Organizations/DeleteOrganization.html" target="_blank">Delete Organization</a></li>
           }
-          <li><a href="/RepairTransactions/@oid" class="longrunop">Repair Transactions</a></li>
+          <li><a href="/RepairTransactions/@oid" id="RepairTransactions">Repair Transactions</a></li>
         }
         @if (User.IsInRole("ministrEspace"))
         {

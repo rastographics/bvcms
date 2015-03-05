@@ -6,7 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Organization.Models;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Models;
 using Dapper;

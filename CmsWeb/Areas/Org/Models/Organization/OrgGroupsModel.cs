@@ -104,7 +104,6 @@ namespace CmsWeb.Areas.Org.Models
                         where om.OrganizationId == orgid
                         where (om.Pending ?? false) == false
                         where om.MemberTypeId != MemberTypeCode.InActive
-                        where om.MemberTypeId != MemberTypeCode.Prospect
                         group om by om.MemberType into g
                         orderby g.Key.Description
                         select new SelectListItem
@@ -169,11 +168,6 @@ namespace CmsWeb.Areas.Org.Models
                         orderby !ck, m.Person.Name2
                         select m;
                     break;
-                case "MemberType":
-                    q = from m in q
-                        orderby m.MemberType.Description
-                        select m;
-                    break;
                 case "Groups":
                     q = from m in q
                         let ck = m.OrgMemMemTags.Any(g => g.MemberTagId == groupid.ToInt())
@@ -202,8 +196,8 @@ namespace CmsWeb.Areas.Org.Models
                          CellPhone = p.CellPhone.FmtFone(),
                          WorkPhone = p.WorkPhone.FmtFone(),
                          Email = p.EmailAddress,
-                         MemberStatus = m.MemberType.Description,
                          Age = p.Age,
+                         MemberStatus = p.MemberStatus.Description,
                          ischecked = ck,
                          Gender = p.Gender.Description,
                          Request = m.Request,
@@ -223,9 +217,6 @@ namespace CmsWeb.Areas.Org.Models
         {
             var q = from om in DbUtil.Db.OrganizationMembers
                     where om.OrganizationId == orgid
-                    where om.MemberTypeId != MemberTypeCode.Prospect
-                    where om.MemberTypeId != MemberTypeCode.InActive
-                    where (om.Pending ?? false) == false
                     where tagfilter == 0 || DbUtil.Db.TagPeople.Any(tt => tt.PeopleId == om.PeopleId && tt.Id == tagfilter)
                     //where om.OrgMemMemTags.Any(g => g.MemberTagId == sg) || (sg ?? 0) == 0
                     select om;

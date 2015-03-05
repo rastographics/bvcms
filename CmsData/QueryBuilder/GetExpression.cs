@@ -125,6 +125,8 @@ namespace CmsData
                 { QueryType.FamilyExtraDate, FamilyExtraDate },
                 { QueryType.FamilyExtraInt, FamilyExtraInt },
                 { QueryType.PeopleIds, PeopleIds },
+                { QueryType.PendingCurrentOrg, PendingCurrentOrg },
+                { QueryType.ProspectCurrentOrg, ProspectCurrentOrg },
                 { QueryType.PmmBackgroundCheckStatus, BackgroundCheckStatus },
                 { QueryType.RecActiveOtherChurch, RecActiveOtherChurch },
                 { QueryType.RecentAttendCount, RecentAttendCount },

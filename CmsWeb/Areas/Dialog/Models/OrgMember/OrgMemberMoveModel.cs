@@ -4,6 +4,7 @@ using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData.Codes;
+using CmsWeb.Areas.Org.Models;
 
 namespace CmsWeb.Models
 {

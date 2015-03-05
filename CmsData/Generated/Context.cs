@@ -2654,6 +2654,25 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.HasIncompleteRegistrations", IsComposable = true)]
+		public IQueryable< View.HasIncompleteRegistration > HasIncompleteRegistrations(
+            [Parameter(DbType="int")] int? prog,
+            [Parameter(DbType="int")] int? div,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="datetime")] DateTime? begdt,
+            [Parameter(DbType="datetime")] DateTime? enddt
+            )
+		{
+			return this.CreateMethodCallQuery< View.HasIncompleteRegistration>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                prog,
+                div,
+                org,
+                begdt,
+                enddt
+                );
+		}
+
 		[Function(Name="dbo.LastMeetings", IsComposable = true)]
 		public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="int")] int? orgid,
@@ -3027,6 +3046,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.PotentialSubstitutes", IsComposable = true)]
+		public IQueryable< View.PotentialSubstitute > PotentialSubstitutes(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="int")] int? mid
+            )
+		{
+			return this.CreateMethodCallQuery< View.PotentialSubstitute>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                mid
+                );
+		}
+
 		[Function(Name="dbo.RecentAbsents", IsComposable = true)]
 		public IQueryable< View.RecentAbsent > RecentAbsents(
             [Parameter(DbType="int")] int? orgid,
@@ -3084,6 +3116,27 @@ namespace CmsData
                 org,
                 orgtype,
                 days
+                );
+		}
+
+		[Function(Name="dbo.RecentAttendInDaysByCountDesc", IsComposable = true)]
+		public IQueryable< View.RecentAttendInDaysByCountDesc > RecentAttendInDaysByCountDesc(
+            [Parameter(DbType="int")] int? progid,
+            [Parameter(DbType="int")] int? divid,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="int")] int? orgtype,
+            [Parameter(DbType="int")] int? days,
+            [Parameter(DbType="varchar")] string desc
+            )
+		{
+			return this.CreateMethodCallQuery< View.RecentAttendInDaysByCountDesc>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                progid,
+                divid,
+                org,
+                orgtype,
+                days,
+                desc
                 );
 		}
 
@@ -4497,6 +4550,20 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetCurrentOnlineBundle", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetCurrentOnlineBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                next,
+                prev
                 ).ReturnValue));
 		}
 

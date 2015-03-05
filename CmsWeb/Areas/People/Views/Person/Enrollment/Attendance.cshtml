@@ -1,4 +1,5 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonAttendHistoryModel
+@using CmsData
 @using UtilityExtensions
 <form class="non-modal ajax margin-top left-gutter">
   @Html.Partial("PagerHidden", Model)
@@ -39,7 +40,7 @@
                         <td>
                             <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") /></td>
                         <td nowrap="nowrap"><a href="/Meeting/@a.MeetingId">@a.MeetingDate.GetWeekNumber() @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))</a></td>
-                        <td><a href="/Organization/@a.OrganizationId">@a.OrganizationName</a></td>
+                        <td><a href="@Util2.Org/@a.OrganizationId">@a.OrganizationName</a></td>
                         <td>@a.MemberType</td>
                         <td>@a.AttendType</td>
                         <td>@a.OtherAttends</td>

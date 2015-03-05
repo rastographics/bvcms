@@ -1,0 +1,25 @@
+﻿@using CmsWeb
+@model CmsData.Organization
+
+<table class="@ViewExtensions2.GridClass">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>PayLink</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var om in Model.OrganizationMembers)
+        {
+            <tr>
+                <td>
+                   @om.Person.Name 
+                </td>
+                <td>
+                   @om.PayLink 
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tr></tr>
+</table>

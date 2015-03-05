@@ -1,0 +1,13 @@
+﻿@using CmsData
+@using UtilityExtensions
+@model CmsWeb.Areas.Organization.Models.SettingsRegistrationModel.MasterOrgInfo
+<div class="control-group">
+  @Html.LabelFor(m => m, new { @class = "control-label" })
+  <div class="controls">
+    <p><a href="/Org/@Model.Id\" target="otherorg">@Model.Name</a></p>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+  </div>
+</div>

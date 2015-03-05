@@ -1,0 +1,18 @@
+﻿@model CmsData.Registration.Settings
+<form class="form form-horizontal non-modal ajax span12">
+    <br/>
+    @FormAction()
+    <p><i>Click on the boxed text to edit the HTML</i></p>
+    <ul class="enablesort edit" style="list-style: none; margin-left: 5px;">
+        @Html.EditorFor(m => m, "TabMessages")
+    </ul>
+    @FormAction()
+</form>
+@helper FormAction()
+{
+    <div class="pull-right">
+        <a href="/Org/Messages/@Model.OrgId" class="btn ajax">Cancel</a>
+        <a href="/Org/MessagesUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+    </div>
+    <div class="formerror">@Html.ValidationMessage("Form")</div>
+}

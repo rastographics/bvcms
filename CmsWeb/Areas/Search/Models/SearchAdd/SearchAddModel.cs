@@ -73,7 +73,7 @@ namespace CmsWeb.Areas.Search.Models
         public int? EntryPointId { get; set; }
         public int? CampusId { get; set; }
         public int Index { get; set; }
-        private Organization org;
+        private CmsData.Organization org;
 
         public SearchAddModel()
         {

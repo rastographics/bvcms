@@ -1,21 +1,12 @@
 ﻿@using CmsWeb
-@model CmsWeb.Models.ScheduleInfo
+@model CmsWeb.Areas.Org.Models.ScheduleInfo
 @using (var ci = Html.BeginCollectionItem("schedules")) 
 {
-  <div class="well">
-    @Html.Raw(ci.hiddenindex)
-    @Html.HiddenFor(m => m.Id, new {@class = "renumberMe"})
-    <div class="control-group">
-      <label class="control-label">Schedule Number</label>
-        <div class="controls">
-          <p>
-            <span class="large">@Model.Id</span>
-            <a href="#" class="deleteschedule pull-right btn btn-mini btn-danger">delete</a>
-          </p>
-        </div>
-    </div>
-    @Html.EditorFor(m => m.SchedDay)
-    @Html.EditorFor(m => m.Time, "Time")
-    @Html.EditorFor(m => m.AttendCredit) 
-  </div>
+<li>@Html.Raw(ci.hiddenindex)
+    @Html.HiddenFor(m => m.Id, new { @class = "renumberMe" } )
+    @Html.DropDownListFor(m => m.SchedDay, Model.DaysOfWeek())
+    @Html.TextBoxFor(m => m.Time, new {style="width:5em;", @class="timepicker"})
+    @Html.DropDownListFor(m => m.AttendCreditId, Model.AttendCredits())
+    <a href="#" class="deleteschedule"><img src="/Content/images/delete.gif" /></a>
+</li>
 }

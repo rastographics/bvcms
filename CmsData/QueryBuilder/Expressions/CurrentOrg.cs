@@ -74,5 +74,47 @@ namespace CmsData
             var right = Expression.Convert(Expression.Constant(tf), left.Type);
             return Compare(left, right);
         }
+        internal Expression ProspectCurrentOrg()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p =>
+                p.OrganizationMembers.Any(m =>
+                    m.OrganizationId == db.CurrentOrgId0
+                    && m.MemberTypeId == MemberTypeCode.Prospect);
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression PendingCurrentOrg()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p =>
+                p.OrganizationMembers.Any(m =>
+                    m.OrganizationId == db.CurrentOrgId0
+                    && (m.Pending ?? false) == true);
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression PreviousCurrentOrg()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p =>
+                p.EnrollmentTransactions.Any(m =>
+                    m.OrganizationId == db.CurrentOrgId0
+                    && m.TransactionTypeId > 3
+                    && m.MemberTypeId != MemberTypeCode.Prospect
+                    && m.TransactionStatus == false
+                    && (m.Pending ?? false) == false)
+                && !p.OrganizationMembers.Any(m =>
+                    m.OrganizationId == db.CurrentOrgId0
+                    && (m.Pending ?? false) == false);
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

@@ -1,0 +1,35 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Organization.Models.SettingsGeneralModel
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowGeneralHelp") == "true";
+}
+<form class="form form-horizontal non-modal ajax span12 margin-top">
+  @Html.Hidden("Id", Model.Id)
+  @FormAction()
+  @Html.DisplayFor(m => m.Location)
+  @Html.DisplayFor(m => m.PendingLoc)
+  @Html.DisplayFor(m => m.Description)
+  @Html.DisplayFor(m => m.EntryPoint)
+  @Html.DisplayFor(m => m.PublishDirectory)
+  @Html.DisplayFor(m => m.GradeAgeStart)
+  @Html.DisplayFor(m => m.Gender)
+  @Html.DisplayFor(m => m.PhoneNumber)
+  @Html.DisplayFor(m => m.IsRecreationTeam)
+  @Html.DisplayFor(m => m.IsMissionTrip)
+  @Html.DisplayFor(m => m.NoCreditCards)
+  @if (User.IsInRole("Admin"))
+  {
+    @Html.DisplayFor(m => m.LimitToRole)
+  }
+  @FormAction()
+</form>
+@helper FormAction()
+{
+  <div class="pull-right">
+    <a href="/Org/GeneralHelpToggle/@Model.Id" class="btn ajax">Toggle Help</a>
+    @if (User.IsInRole("Edit"))
+    {
+      <a href="/Org/GeneralEdit" class="btn ajax btn-primary">Edit</a>
+    }
+  </div>
+}

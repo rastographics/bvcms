@@ -1,0 +1,19 @@
+﻿@model CmsWeb.Areas.Organization.Models.OrgPeopleModel
+<form class="form form-horizontal non-modal ajax span12 pad-left" data-init="popovers">
+  @Html.Partial("People/Hidden", Model)
+  <div id="groupSelector" class="btn-group">
+    @Html.Partial("People/GroupButtons", Model)
+    @Html.Partial("People/GroupOptions", Model)
+  </div>
+  @Html.Partial("People/FilterPeople", Model)
+  @Html.Partial("PagerHidden", Model)
+  <div class="pagination pagination-mini">
+    Count: <strong>@Model.Count()</strong>
+    @Html.Partial("Pager3", Model)
+  </div>
+  @Html.Partial("People/Table")
+  <div class="pagination pagination-mini">
+      @Html.Partial("Pager3", Model)
+  </div>
+    <br/><br/><br/><br/>
+</form>

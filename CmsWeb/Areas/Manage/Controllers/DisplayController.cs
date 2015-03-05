@@ -241,7 +241,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     break;
             }
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Organization/" + id);
+            return Redirect(Util2.Org + "/" + id);
         }
 
         public static byte[] CaptureWebPageBytes(string body, int width, int height)

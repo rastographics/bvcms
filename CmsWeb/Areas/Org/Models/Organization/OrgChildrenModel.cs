@@ -15,8 +15,8 @@ namespace CmsWeb.Areas.Org.Models
     {
         public string namesearch { get; set; }
         public string sort { get; set; }
-        public Organization org { get; set; }
-        public Organization parentorg { get; set; }
+        public CmsData.Organization org { get; set; }
+        public CmsData.Organization parentorg { get; set; }
         public bool canedit
         {
             get { return HttpContext.Current.User.IsInRole("Edit"); }

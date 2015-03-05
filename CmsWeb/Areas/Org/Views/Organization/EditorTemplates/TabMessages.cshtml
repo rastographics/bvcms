@@ -3,93 +3,105 @@
 @using CmsData
 @using UtilityExtensions
   <li>
-      <span style="cursor: pointer;" data-toggle="popover" data-content="<p>This is the email that is sent as a confirmation of a successful registration.</p><p>Put DO NOT SEND as the Subject if you do not need a confirmation.</p>" data-original-title="Confirmation"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-    Confirmation: </label>
-      <ul style="list-style: none;">
-          <li>
-              <label for="Subject" class="keyword2">Subject:</label>
+    <div class="text big tip" title="Confirmation
+    |This is the email that is sent as a confirmation of a successful registration.
+    |Put DO NOT SEND as the Subject if you do not need a confirmation.">
+    Confirmation: </div>
+      <ul>
+          <li><span class="keyword2">Subject:</span>
               @Html.TextBox("Subject", Model.Subject, new { @class = "long" })
           </li>
           <li>
               <div class="text">
-                  <label for="Body" class="keyword2"> Body:</label>
+                  <span class="keyword2"> Body:</span>
                   @Html.EditorFor(m => m.Body, "Html")
               </div>
           </li>
       </ul>
   </li>
   <li>
-      <span style="cursor: pointer;" data-toggle="popover" data-content="<p>These are the users that will be notified when a registration occurs.</p><p>The top most user will be the 'sender' of the confirmation email.</p>" data-original-title="Online Notify Persons"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-    Online Notify Persons:</label>
-        @Html.Partial("Other/NotifyList2", Model.org.NotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "notifyids" }})
-  </li>
-  <li>
-      <span style="cursor: pointer;" data-toggle="popover" data-content="These are for special instructions that will show up at the top of the registration in the appropriate context." data-original-title="Instructions"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-    Instructions:</label>
-      <ul style="list-style: none;">
-          <li>
-              <span style="cursor: pointer;" data-toggle="popover" data-content="Displays instructions on the Login page." data-original-title="Login"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="InstructionLogin" class="keyword2 tip">Login:</label>
-              @Html.EditorFor(m => m.InstructionLogin, "Html")
-          </li>
-          <li>
-              <span style="cursor: pointer;" data-toggle="popover" data-content="This is displayed when you login and are selecting a family member to be registered." data-original-title="Select"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="InstructionSelect" class="keyword2 tip">
-                  Select:
-              </label>
-              @Html.EditorFor(m => m.InstructionSelect, "Html")
-          </li>
-          <li>
-              <span style="cursor: pointer;" data-toggle="popover" data-content="<p>When you are searching for a person.</p><p>Either when you are not logged in, or adding a guest.</p>" data-original-title="Find"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="InstructionFind" class="keyword2 tip">
-                  Find:
-              </label>
-              @Html.EditorFor(m => m.InstructionFind, "Html")
-          </li>
-          <li>
-              <span style="cursor: pointer;" data-toggle="popover" data-content="Allows you to further explain the questions, dropdowns, checkboxes etc." data-original-title="Options"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="InstructionOptions" class="keyword2 tip">
-                  Options:
-              </label>
-              @Html.EditorFor(m => m.InstructionOptions, "Html")
-          </li>
-          <li>
-              <span style="cursor: pointer;" data-toggle="popover" data-content="For Managed Giving, Manage Subscribtions etc." data-original-title="Special"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="InstructionSpecial" class="keyword2 tip">
-                  Special:
-              </label>
-              @Html.EditorFor(m => m.InstructionSpecial, "Html")
-          </li>
-          <li>
-              <span style="cursor: pointer;" data-toggle="popover" data-content="For when you have the choice to register another or continue the registration." data-original-title="Submit"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="InstructionSubmit" class="keyword2 tip">
-                  Submit:
-              </label>
-              @Html.EditorFor(m => m.InstructionSubmit, "Html")
-          </li>
-          <li>
-              <span style="cursor: pointer;" data-toggle="popover" data-content="<p>For when the Max Limit is reached or a Class is filled.</p><p>Good for giving them a link to join a waiting list.</p>" data-original-title="Sorry"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="InstructionSorry" class="keyword2 tip">
-                  Sorry:
-              </label>
-              @Html.EditorFor(m => m.InstructionSorry, "Html")
-          </li>
-          <li>
-              <span style="cursor: pointer;" data-toggle="popover" data-content="<p>This is displayed when you complete the registration.</p><p>If left blank, the default will be used.</p>" data-original-title="Thanks"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="ThankYouMessage" class="keyword2 tip">
-                  Thanks:
-              </label>
-              @Html.EditorFor(m => m.ThankYouMessage, "Html")
-          </li>
-      </ul>
-  </li>
-  <li>
-      <span style="cursor: pointer;" data-toggle="popover" data-content="<p>Some registrations like a camp, or sports team, or a trip require you to agree to terms (indemnification).</p><p>They would have to click an 'Agree to terms' checkbox to complete the registration.</p><p>You could also include a link to a PDF file in the Confirmation email.</p>" data-original-title="Terms"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label for="Terms" class="keyword2 big tip">
-    Terms:</label>
-    @Html.EditorFor(m => m.Terms, "Html")
+    <span class="text big tip" title="Online Notify Persons
+    |These are the users that will be notified when a registration occurs.
+    |The top most user will be the 'sender' of the confirmation email.">
+    Online Notify Persons:</span>
+        @Html.Partial("NotifyList2", Model.org.NotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "notifyids" }})
   </li>
 <li>
-    <span style="cursor: pointer;" data-toggle="popover" data-content="This is the email that is sent as a reminder for members of an event." data-original-title="Reminder"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-        Reminder: </label>
-    <ul style="list-style: none;">
+  <span class="keyword big tip" title="Instructions
+    |These are for special instructions that will show up
+    |at the top of the registration in the appropriate context">
+    Instructions:</span>
+  <ul>
+    <li>
+      <span class="keyword2 tip" title="Login
+        |Displays instructions on the Login page">Login:</span>
+      @Html.EditorFor(m => m.InstructionLogin, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Select
+        |This is displayed when you login 
+        |and are selecting a family member to be registered">
+        Select:</span>
+      @Html.EditorFor(m => m.InstructionSelect, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Find
+        |When you are searching for a person.
+        |Either when you are not logged in, or adding a guest.">
+        Find:</span>
+      @Html.EditorFor(m => m.InstructionFind, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Options
+        |Allows you to further explain the questions, dropdowns, checkboxes etc.">
+        Options:</span>
+      @Html.EditorFor(m => m.InstructionOptions, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Special
+        |For Managed Giving, Manage Subscribtions etc.">
+        Special:</span>
+      @Html.EditorFor(m => m.InstructionSpecial, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Submit
+        |For when you have the choice to register another or continue the registration.">
+        Submit:</span>
+      @Html.EditorFor(m => m.InstructionSubmit, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Sorry
+        |For when the Max Limit is reached or a Class is filled.
+        |Good for giving them a link to join a waiting list.">
+        Sorry:</span>
+      @Html.EditorFor(m => m.InstructionSorry, "Html")
+    </li>
+    <li>
+      <span class="keyword2 tip" title="Thanks
+        |This is displayed when you complete the registration
+        |If left blank, the default will be used">
+        Thanks:</span>
+      @Html.EditorFor(m => m.ThankYouMessage, "Html")
+    </li>
+  </ul>
+</li>
+  <li>
+    <span class="keyword2 big tip" title="Terms
+    |Some registrations like a camp, or sports team, or a trip
+    |require you to agree to terms (indemnification).
+    |They would have to click an 'Agree to terms' checkbox to complete the registration.
+    |You could also include a link to a PDF file in the Confirmation email">
+    Terms:</span>
+    @Html.EditorFor(m => m.Terms, "Html")
+  </li>
+ <li>
+    <div class="text big tip" title="Reminder
+    |This is the email that is sent as a reminder for members of an event.">
+        Reminder: </div>
+    <ul>
+        <li> <span class="keyword2">Subject:</span> @Html.TextBox("ReminderSubject", Model.ReminderSubject, new { @class = "long" }) </li>
         <li>
-            <label for="ReminderSubject" class="keyword2">Subject:</label> @Html.TextBox("ReminderSubject", Model.ReminderSubject, new { @class = "long" }) 
-        </li>
-        <li>
-            <div class="text">
-                <label for="ReminderBody" class="keyword2"> Body:</label>
+            <div class="text"><span class="keyword2"> Body:</span>
                 @Html.EditorFor(m => m.ReminderBody, "Html")
             </div>
         </li>
@@ -98,36 +110,45 @@
 @if (Model.org.IsMissionTrip == true)
 {
   <li>
-      <span style="cursor: pointer;" data-toggle="popover" data-content="<p>These are the users that will be notified when a gift occurs.</p><p>The top most user will be the 'sender' of the confirmation email.</p>" data-original-title="Notify Persons for Gift"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-    Notify Persons for Gift:</label>
-        @Html.Partial("Other/NotifyList2", Model.org.GiftNotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "giftnotifyids" }})
+    <span class="text big tip" title="Notify Persons for Gift
+    |These are the users that will be notified when a gift occurs.
+    |The top most user will be the 'sender' of the confirmation email.">
+    Notify Persons for Gift:</span>
+        @Html.Partial("NotifyList2", Model.org.GiftNotifyIds, new ViewDataDictionary(){{ "OrgId", Model.OrgId }, { "field", "giftnotifyids" }})
   </li>
   <li>
-      <span style="cursor: pointer;" data-toggle="popover" data-content="This is the email that is sent to solicit supporters." data-original-title="SupportEmail"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-    SupportEmail: </label>
-      <ul style="list-style: none;">
-          <li>
-              <label for="SupportSubject" class="keyword2">Subject:</label> @Html.TextBox("SupportSubject", Model.SupportSubject, new { @class = "long" }) 
-          </li>
-          <li>
-              <div class="text">
-                  <label for="SupportBody" class="keyword2"> Body:</label>
-                  @Html.EditorFor(m => m.SupportBody, "Html")
-              </div>
-          </li>
-      </ul>
+    <div class="text big tip" title="SupportEmail
+    |This is the email that is sent to solicit supporters.">
+    SupportEmail: </div>
+    <ul>
+      <li> <span class="keyword2">Subject:</span> @Html.TextBox("SupportSubject", Model.SupportSubject, new { @class = "long" }) </li>
+      <li>
+        <div class="text"><span class="keyword2"> Body:</span>
+        @Html.EditorFor(m => m.SupportBody, "Html")
+        </div>
+      </li>
+    </ul>
   </li>
   <li>
-      <span style="cursor: pointer;" data-toggle="popover" data-content="This is the email that is sent to notify senders." data-original-title="SenderConfirmation"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<label class="keyword big tip">
-    SenderConfirmation: </label>
-      <ul style="list-style: none;">
-          <li><label for="SenderSubject" class="keyword2">Subject:</label> @Html.TextBox("SenderSubject", Model.SenderSubject, new { @class = "long" }) </li>
-          <li>
-              <div class="text">
-                  <label for="SenderBody" class="keyword2"> Body:</label>
-                  @Html.EditorFor(m => m.SenderBody, "Html")
-              </div>
-          </li>
-      </ul>
+    <div class="text big tip" title="SenderConfirmation
+    |This is the email that is sent to notify senders.">
+    SenderConfirmation: </div>
+    <ul>
+      <li> <span class="keyword2">Subject:</span> @Html.TextBox("SenderSubject", Model.SenderSubject, new { @class = "long" }) </li>
+      <li>
+        <div class="text"><span class="keyword2"> Body:</span>
+        @Html.EditorFor(m => m.SenderBody, "Html")
+        </div>
+      </li>
+    </ul>
+  </li>
+}
+@if(User.IsInRole("Admin") || User.IsInRole("Design"))
+{
+  <li>
+    <span class="text big tip" title="Special Tracking Code
+    |Put Special Landing page tracking code here.">
+    Tracking Code:</span>
+    @Html.EditorFor(m => m.ConfirmationTrackingCode, "TextArea")
   </li>
 }

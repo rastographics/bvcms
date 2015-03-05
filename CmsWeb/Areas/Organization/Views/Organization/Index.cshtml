@@ -1,0 +1,62 @@
+﻿@model CmsWeb.Areas.Organization.Models.OrganizationModel
+@{
+  Layout = "~/Views/Shared/SiteLayout2.cshtml";
+  ViewBag.Title = "Organization";
+  ViewBag.OrgMemberContext = true;
+}
+@section head
+{
+  @Fingerprint.Css("/Content/styles/organization.css")
+  <style>
+    li.cutting {
+        border: dashed 1px #717171;
+        opacity: 0.5;
+    }
+    .disabled {
+        color: #999 !important;
+    }
+    </style>
+
+}
+@section scripts
+{
+  @ViewExtensions2.CKEditor()
+  @Fingerprint.Script("/Scripts/bundle.org.js")
+}
+@Html.Hidden("refreshed", "no")
+@Html.Hidden("OrganizationId", Model.Id)
+<div class="container">
+  <div class="row-fluid" id="profile-header">
+    <div class="span8">
+      @Html.Partial("Settings/Main", Model.OrgMain)
+    </div>
+    <div class="span4">
+      @Html.Partial("Toolbar/Toolbar")
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span12">
+      <div id="tab-area" class="tabbable primary-tabs">
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#Members-tab" data-toggle="tab">People</a></li>
+          <li><a href="#Meetings-tab" data-toggle="tab" class="ajax">Meetings</a></li>
+          <li><a href="#Settings-tab" data-toggle="tab" class="ajax">Settings</a></li>
+          <li><a href="#Registrations-tab" data-toggle="tab" class="ajax">Registration</a></li>
+        </ul>
+        <div class="tab-content">
+          <div id="Members-tab" class="tab-pane active" data-link="/Org/People">
+            @Html.Partial("People", Model)
+          </div>
+          <div id="Meetings-tab" class="tab-pane" data-link="/Org/Meetings">
+            @Helper.HiddenId("Id", Model.Id)
+          </div>
+          <div id="Settings-tab" class="tab-pane" data-link="/Org/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+          </div>
+          <div id="Registrations-tab" class="tab-pane" data-link="/Org/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+@Html.Partial("Dialogs", Model)

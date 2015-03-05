@@ -187,5 +187,25 @@ namespace CmsData
             qb.Save(DbUtil.Db);
             return qb.Id;
         }
+        public Query QueryInactiveCurrentOrg()
+        {
+            return StandardQuery("InactiveCurrentOrg", QueryType.InactiveCurrentOrg);
+        }
+        public Query QueryProspectCurrentOrg()
+        {
+            return StandardQuery("ProspectCurrentOrg", QueryType.ProspectCurrentOrg);
+        }
+        public Query QueryPendingCurrentOrg()
+        {
+            return StandardQuery("PendingCurrentOrg", QueryType.PendingCurrentOrg);
+        }
+        public Query QueryPreviousCurrentOrg()
+        {
+            return StandardQuery("PreviousCurrentOrg", QueryType.PreviousCurrentOrg);
+        }
+        public Query QueryVisitedCurrentOrg()
+        {
+            return StandardQuery("VisitedCurrentOrg", QueryType.VisitedCurrentOrg);
+        }
     }
 }

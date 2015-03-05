@@ -1,4 +1,5 @@
 ﻿@model CmsWeb.Areas.Manage.Models.VolunteerCommitmentsModel
+@using CmsData
 @using UtilityExtensions
 @{
   const string DayHourFmt = "ddd h:mm tt";
@@ -6,7 +7,7 @@
 
 @Html.Hidden("OrgId", Model.OrgId)
 @Html.Hidden("SortByWeek", Model.SortByWeek)
-<h2>Volunteer Calendar for @Helper.AnchorLink(Model.OrgName, "/Organization/" + Model.OrgId)</h2>
+<h2>Volunteer Calendar for @Helper.AnchorLink(Model.OrgName, Util2.Org + "/" + Model.OrgId)</h2>
 <table>
   <tr>
     <td class="top">
@@ -100,7 +101,7 @@
           <p>
             @if (User.IsInRole("Edit"))
                     {
-                  @Helper.AnchorLink("Email Reminders", "/Organization/Reminders/" + Model.OrgId, id: "sendreminders", style: "bt")
+                  @Helper.AnchorLink("Email Reminders", Util2.Org + "/Reminders/" + Model.OrgId, id: "sendreminders", style: "bt")
                     }
                     else
                     {

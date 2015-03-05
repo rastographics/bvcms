@@ -524,7 +524,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var roles = DbUtil.Db.CurrentRoles();
 
-            IQueryable<Organization> q = null;
+            IQueryable<CmsData.Organization> q = null;
 
             if (Util2.OrgLeadersOnly)
             {

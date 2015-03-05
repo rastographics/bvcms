@@ -1,0 +1,28 @@
+﻿@model CmsWeb.Areas.Organization.Models.OrgChildrenModel
+@using CmsWeb
+@{
+    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "OrgChildren";
+}
+@section head
+{
+<style>
+    td.wide100 * 
+    {
+        width: 98%;
+    }
+</style>
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Org/orgChildren.js")
+}
+@if (Model.canedit)
+{
+@Html.Hidden("canedit", "true")
+}
+<form id="groupsform" action="/OrgChildren/Update" method="post">
+@Html.Partial("Form", Model)
+</form>
+
+

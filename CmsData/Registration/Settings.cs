@@ -864,5 +864,24 @@ namespace CmsData.Registration
 			if (value.HasValue())
 				sb.AppendFormat("{0}{1}\n", new string('\t', n), value.Trim());
 		}
+		public class MasterOrgInfo
+		{
+			public int Id { get; set; }
+			public string Name { get; set; }
+		}
+		public MasterOrgInfo MasterOrg()
+		{
+			var q = from o in Db.ViewMasterOrgs
+					where o.PickListOrgId == OrgId
+					select new MasterOrgInfo
+					{
+						Id = o.OrganizationId,
+						Name = o.OrganizationName
+					};
+			var i = q.FirstOrDefault();
+			if (i == null)
+				return new MasterOrgInfo();
+			return i;
+		}
     }
 }

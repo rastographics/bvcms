@@ -1,0 +1,37 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Organization.Models.SettingsAttendanceModel
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp") == "true";
+  ViewBag.FalseValue = "";
+}
+<form class="form form-horizontal non-modal ajax span12" data-init="datepicker" data-init2="timepicker">
+  @FormAction()
+  @Html.DisplayFor(m => m.Schedules, "Schedules")
+  @Html.DisplayFor(m => m.NotWeekly)
+  @Html.DisplayFor(m => m.AllowAttendOverlap)
+  @Html.DisplayFor(m => m.CanSelfCheckin)
+  @Html.DisplayFor(m => m.SuspendCheckin)
+  @Html.DisplayFor(m => m.AllowNonCampusCheckIn)
+  @Html.DisplayFor(m => m.Offsite)
+  @Html.DisplayFor(m => m.NoSecurityLabel)
+  @Html.DisplayFor(m => m.NumCheckInLabels)
+  @Html.DisplayFor(m => m.NumWorkerCheckInLabels)
+  @Html.DisplayFor(m => m.FirstMeetingDate)
+  @Html.DisplayFor(m => m.LastMeetingDate)
+  @Html.DisplayFor(m => m.RollSheetVisitorWks)
+  @Html.DisplayFor(m => m.ConsecutiveAbsentsThreshold)
+  @Html.DisplayFor(m => m.BirthDayStart)
+  @Html.DisplayFor(m => m.BirthDayEnd)
+  @FormAction()
+</form>
+@helper FormAction()
+{
+  <div class="pull-right">
+    <a href="/Org/AttendanceHelpToggle/@Model.Id" class="btn ajax">Toggle Help</a>
+    @if (User.IsInRole("Edit"))
+    {
+    <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-primary">Edit</a>
+    }
+  </div>
+  <div class="formerror">@Html.ValidationMessage("Form")</div>
+}

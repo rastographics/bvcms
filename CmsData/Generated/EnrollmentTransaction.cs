@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -66,6 +67,8 @@ namespace CmsData
 		private int _Score;
 		
 		private string _SmallGroups;
+		
+		private bool? _SkipInsertTriggerProcessing;
 		
    		
    		private EntitySet< EnrollmentTransaction> _DescTransactions;
@@ -160,6 +163,9 @@ namespace CmsData
 		
 		partial void OnSmallGroupsChanging(string value);
 		partial void OnSmallGroupsChanged();
+		
+		partial void OnSkipInsertTriggerProcessingChanging(bool? value);
+		partial void OnSkipInsertTriggerProcessingChanged();
 		
     #endregion
 		public EnrollmentTransaction()
@@ -315,6 +321,7 @@ namespace CmsData
 
 		
 		[Column(Name="OrganizationId", UpdateCheck=UpdateCheck.Never, Storage="_OrganizationId", DbType="int NOT NULL")]
+		[IsForeignKey]
 		public int OrganizationId
 		{
 			get { return this._OrganizationId; }
@@ -362,6 +369,7 @@ namespace CmsData
 
 		
 		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL")]
+		[IsForeignKey]
 		public int PeopleId
 		{
 			get { return this._PeopleId; }
@@ -387,6 +395,7 @@ namespace CmsData
 
 		
 		[Column(Name="MemberTypeId", UpdateCheck=UpdateCheck.Never, Storage="_MemberTypeId", DbType="int NOT NULL")]
+		[IsForeignKey]
 		public int MemberTypeId
 		{
 			get { return this._MemberTypeId; }
@@ -478,6 +487,7 @@ namespace CmsData
 
 		
 		[Column(Name="EnrollmentTransactionId", UpdateCheck=UpdateCheck.Never, Storage="_EnrollmentTransactionId", DbType="int")]
+		[IsForeignKey]
 		public int? EnrollmentTransactionId
 		{
 			get { return this._EnrollmentTransactionId; }
@@ -737,6 +747,28 @@ namespace CmsData
 					this._SmallGroups = value;
 					this.SendPropertyChanged("SmallGroups");
 					this.OnSmallGroupsChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SkipInsertTriggerProcessing", UpdateCheck=UpdateCheck.Never, Storage="_SkipInsertTriggerProcessing", DbType="bit")]
+		public bool? SkipInsertTriggerProcessing
+		{
+			get { return this._SkipInsertTriggerProcessing; }
+
+			set
+			{
+				if (this._SkipInsertTriggerProcessing != value)
+				{
+				
+                    this.OnSkipInsertTriggerProcessingChanging(value);
+					this.SendPropertyChanging();
+					this._SkipInsertTriggerProcessing = value;
+					this.SendPropertyChanged("SkipInsertTriggerProcessing");
+					this.OnSkipInsertTriggerProcessingChanged();
 				}
 
 			}

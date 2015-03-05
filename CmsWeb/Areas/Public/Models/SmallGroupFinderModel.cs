@@ -193,9 +193,9 @@ namespace CmsWeb.Areas.Public.Models
 			return i;
 		}
 
-		public List<Organization> getGroups()
+		public List<CmsData.Organization> getGroups()
 		{
-			if (search == null) return new List<Organization>();
+			if (search == null) return new List<CmsData.Organization>();
 
 			var orgs = from o in DbUtil.Db.Organizations
 						  where o.DivOrgs.Any(ee => divList.Contains(ee.DivId))
@@ -220,7 +220,7 @@ namespace CmsWeb.Areas.Public.Models
 				}
 			}
 
-			return orgs.ToList<Organization>();
+			return orgs.ToList<CmsData.Organization>();
 		}
 
 		public string replaceAndWrite(GroupLookup gl)
@@ -300,7 +300,7 @@ namespace CmsWeb.Areas.Public.Models
 
 		public Dictionary<string, string> values = new Dictionary<string, string>();
 
-		public void populateFromOrg(Organization org)
+		public void populateFromOrg(CmsData.Organization org)
 		{
 			var leader = (from e in DbUtil.Db.People
 							  where e.PeopleId == org.LeaderId

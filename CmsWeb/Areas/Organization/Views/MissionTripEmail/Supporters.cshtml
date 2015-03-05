@@ -1,0 +1,14 @@
+﻿@model MissionTripEmailer
+@using CmsWeb.Areas.Organization.Models
+<table class="table table-condensed table-striped">
+@foreach (var r in Model.GetRecipients())
+{
+    <tr>
+        <td @(r.Active ? "" : "class=notselected") @(r.Id == ViewBag.newid ? "class=newsupporter" : "")>
+            <input id="active-@r.Id" name="Active" type="checkbox" @(r.Active ? "checked=checked" : "") disabled="disabled" value="active" />
+            <a>@r.NameOrEmail</a> @(r.SenderAmt > 0 ? string.Format(" ({0:C0})", r.SenderAmt) : "")<br />
+            <span>@r.Salutation</span>
+        </td>
+    </tr>
+}
+</table>

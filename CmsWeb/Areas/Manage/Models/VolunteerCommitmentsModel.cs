@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Organization.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models
@@ -184,8 +184,8 @@ namespace CmsWeb.Areas.Manage.Models
 			}
 			return list;
 		}
-		private Organization _org;
-		public Organization Org
+		private CmsData.Organization _org;
+		public CmsData.Organization Org
 		{
 			get
 			{

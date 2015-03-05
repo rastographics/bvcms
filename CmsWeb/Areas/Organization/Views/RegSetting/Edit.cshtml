@@ -1,0 +1,24 @@
+﻿@using UtilityExtensions
+@using CmsWeb
+@{
+    ViewBag.Title = "EditRegSetting";
+    Layout = ViewExtensions2.Layout();
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("textarea").css("height", this.scrollHeight + "px");
+            $("textarea").tabby();
+            $(".bt").button();
+        });
+    </script>
+}
+<h2>
+    Editing Registration Settings for <a href="/Org/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
+<form action="/RegSettings/Update/@ViewData["OrganizationId"]" method="post">
+<a href="/RegSettings/@ViewData["OrganizationId"]" class="bt">Cancel</a>
+<input type="submit" class="bt blue" value="Save Changes" />
+<p style="color: red">@TempData["error"]</p>
+@Html.TextArea("text", new { rows = "40", style = "width:90%", wrap="off" })
+</form>

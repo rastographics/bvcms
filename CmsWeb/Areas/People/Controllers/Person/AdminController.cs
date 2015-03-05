@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Org.Controllers;
+using CmsWeb.Areas.Organization.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers

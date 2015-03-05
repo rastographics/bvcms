@@ -1,0 +1,90 @@
+﻿@using CmsWeb
+@using CmsWeb.Areas.Organization.Controllers
+@using UtilityExtensions
+@model MeetingController.ScanTicketInfo
+<div class="@Model.CssClass()">
+    @{
+        switch (Model.error)
+        {
+            case MeetingController.ScanTicketInfo.Error.none:
+                <h1>Successfully Marked Present</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.noperson:
+            <h1>Person not found</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.notmember:
+            <h1>Not a member of this organization</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.notregistered:
+            <h1>Not registered</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.alreadymarked:
+            <h1>Already marked present</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.alreadymarkedelsewhere:
+            <h1>Already marked present elsewhere</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.noorg:
+            <h1>No Organization</h1>
+                break;
+            case MeetingController.ScanTicketInfo.Error.nomeeting:
+            <h1>No Meeting</h1>
+                break;
+        }
+    }
+    @if (Model.SwitchOrg)
+    {
+        @Html.Hidden("SwitchMeeting", Model.meeting.MeetingId)
+        @Html.Hidden("PeopleId", Model.person.PeopleId)
+    }
+    @if (Model.error != MeetingController.ScanTicketInfo.Error.none)
+    {
+        @Html.Hidden("haserror", "true")
+    }
+    @if (Model.person != null)
+    {
+        <table cellpadding="5">
+            <tr>
+                <td class="center">
+                    <input type="checkbox" pid="@Model.person.PeopleId" checked="checked" class="atck" />
+                </td>
+                <td>@Model.person.Name (@Model.person.Age)</td>
+                <td>@(Model.orgmember != null ? "Group Member" : "Group Visitor")</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">@Model.person.FullAddress</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2">@Model.person.EmailAddress</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td colspan="2"><b>@Model.message</b></td>
+            </tr>
+            @foreach (var m in Model.family ?? new List<MeetingController.FamilyMemberInfo>())
+            {
+            <tr>
+                <td class="center">
+                    <input type="checkbox" pid="@m.PeopleId" @(m.attended ? "checked=checked" : "") class="atck" />
+                </td>
+                <td class="name">@m.person.Name (@m.person.Age)</td>
+                <td>@(m.orgmember ? "Group Member" : "Group Visitor")</td>
+            </tr>
+            }
+        </table>
+        <table class="@ViewExtensions2.GridClass">
+            <tbody></tbody>
+        </table>
+    }
+    @if (Model.meeting != null)
+    {
+        @Html.Hidden("npresent", Model.meeting.NumPresent.ToString("N0"))
+        @Html.Hidden("nnew", Model.meeting.NumNewVisit.ToString("N0"))
+        @Html.Hidden("nmembers", Model.meeting.NumMembers.ToString("N0"))
+        @Html.Hidden("nrecent", Model.meeting.NumRepeatVst.ToString("N0"))
+        @Html.Hidden("nother", Model.meeting.NumOtherAttends.ToString2("N0"))
+        @Html.Hidden("nvmembers", Model.meeting.NumVstMembers.ToString("N0"))
+    }
+</div>

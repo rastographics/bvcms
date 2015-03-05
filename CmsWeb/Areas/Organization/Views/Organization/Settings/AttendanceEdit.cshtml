@@ -1,0 +1,34 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Organization.Models.SettingsAttendanceModel
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp") == "true";
+}
+<form class="form form-horizontal non-modal ajax span12">
+  @FormAction()
+  @Html.EditorFor(m => m.Schedules)
+  @Html.EditorFor(m => m.NotWeekly)
+  @Html.EditorFor(m => m.AllowAttendOverlap)
+  @Html.EditorFor(m => m.AllowAttendOverlap)
+  @Html.EditorFor(m => m.CanSelfCheckin)
+  @Html.EditorFor(m => m.SuspendCheckin)
+  @Html.EditorFor(m => m.AllowNonCampusCheckIn)
+  @Html.EditorFor(m => m.Offsite)
+  @Html.EditorFor(m => m.NoSecurityLabel)
+  @Html.EditorFor(m => m.NumCheckInLabels)
+  @Html.EditorFor(m => m.NumWorkerCheckInLabels)
+  @Html.EditorFor(m => m.FirstMeetingDate)
+  @Html.EditorFor(m => m.LastMeetingDate)
+  @Html.EditorFor(m => m.RollSheetVisitorWks)
+  @Html.EditorFor(m => m.ConsecutiveAbsentsThreshold)
+  @Html.EditorFor(m => m.BirthDayStart)
+  @Html.EditorFor(m => m.BirthDayEnd)
+  @FormAction()
+</form>
+@helper FormAction()
+{
+  <div class="pull-right">
+    <a href="/Org/Attendance/@Model.Id" class="btn ajax">Cancel</a>
+    <a href="/Org/AttendanceUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
+  </div>
+  <div class="formerror">@Html.ValidationMessage("Form")</div>
+}

@@ -71,9 +71,8 @@ namespace CmsWeb.Areas.Org.Models
         public DateTime? InactiveDate { get; set; }
         public decimal? AttendPct { get; set; }
         public DateTime? LastAttended { get; set; }
-        public bool Hidden { get; set; }
         public bool HasTag { get; set; }
-        public int FromTab { get; set; }
+        public MemberModel.GroupSelect FromTab { get; set; }
         public DateTime? Joined { get; set; }
         public DateTime? Dropped { get; set; }
         private enum PhoneType

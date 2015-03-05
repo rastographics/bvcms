@@ -1,0 +1,130 @@
+﻿@using CmsWeb
+@using RestSharp.Extensions
+@model CmsWeb.Areas.Organization.Models.OrgSearchModel
+@{
+  var canManageEvents = User.IsInRole("Admin") || User.IsInRole("ManageEvents");
+  var canEdit = User.IsInRole("Edit");
+}
+@if (canEdit)
+{
+  <script type="text/javascript">
+    $(function () {
+      $("#results").addClass("edit2");
+    });
+  </script>
+}
+<table id="results" class="@ViewExtensions2.GridClass">
+  <thead>
+    <tr>
+      <td colspan="10">
+        <div>Count: @Model.Count()</div>
+        @Html.Partial("Pager2", Model.Pager)
+      </td>
+    </tr>
+    @if (!Model.PublicView)
+    {
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th class="center" colspan="2"><a href="#" class="sortable">Members</a></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+      <tr>
+        <th><a href="#" class="sortable">ID</a></th>
+        <th class="left"><a href="#" class="sortable">Name</a></th>
+        <th class="left"><a href="#" class="sortable">Leader</a></th>
+        <th class="right"><a href="#" class="sortable">Curr</a></th>
+        <th class="right"><span class="smallfont" title="Previous / Prospect">Prev/Prsp</span></th>
+        <th class="left"><a href="#" class="sortable">Schedule</a></th>
+        <th><a href="#" class="sortable">Self CheckIn</a></th>
+        <th><a href="#" class="sortable">BDay Start</a></th>
+        <th><a href="#" class="sortable">BDay End</a></th>
+        <th><a href="#" class="sortable">TargetDiv</a></th>
+        <th><a href="#" class="sortable">MainDiv</a></th>
+      </tr>
+    }
+    else
+    {
+      <tr>
+        <th><br /><a href="#" class="sortable">ID</a></th>
+        <th><br /><a href="#" class="sortable">Name</a></th>
+        <th>
+          <a href="#" class="sortable">Filled</a><br />
+          <a href="#" class="sortable">Closed</a>
+        </th>
+        <th>
+          <a href="#" class="sortable">RegType</a><br/>
+          LinkType
+        </th>
+        <th><a href="#" class="sortable">App Order</a></th>
+        <th>
+          <a href="#" class="sortable">FirstDate</a>
+          <br /><a href="#" class="sortable">RegStart</a>
+          <br /><a href="#" class="sortable">RegEnd</a>
+        </th>
+        <th>Description</th>
+      </tr>
+    }
+  </thead>
+  <tbody>
+    @foreach (var o in Model.OrganizationList())
+    {
+      if (!Model.PublicView)
+      {
+        Html.RenderPartial("Row", o);
+      }
+      else
+      {
+        <tr>
+          <td class="tip" title="@o.ToolTip"><img src="/Content/images/group.png" /></td>
+          <td><a href="/Org/@o.Id" target="reg">@o.OrganizationName</a></td>
+          <td>
+            @o.ClassFilled<br />
+            @o.RegClosed
+          </td>
+          <td>
+            @o.RegType<br/>
+            <span id="reg2-@o.Id" class="yesno pointer">@(o.UseRegisterLink2 ?? false ? "Family" : "Individual")</span>
+          </td>
+          <td>
+            @if (canManageEvents)
+            {
+              <span id="so-@o.Id" class="publicsort pointer">@(o.PublicSortOrder ?? "edit")</span>
+            }
+            else
+            {
+              <span>@o.PublicSortOrder</span>
+            }
+          </td>
+          <td>
+            @o.FirstMeetingDate<br />
+            <span id="rs-@o.Id" class="bday pointer">@(o.RegStart.HasValue() ? o.RegStart : "edit")</span><br />
+            <span id="re-@o.Id" class="bday pointer">@(o.RegEnd.HasValue() ? o.RegEnd : "edit")</span>
+          </td>
+          <td>
+            @if (canEdit)
+            {
+              <div id="des-@o.Id" class="descr">@Html.Raw(o.Description)</div>
+              <div class="descredit pointer"><a>edit</a></div>
+            }
+            else
+            {
+              <div>@Html.Raw(o.Description)</div>
+            }
+          </td>
+        </tr>
+      }
+    }
+  </tbody>
+  <tr>
+    <td colspan="10">
+      @Html.Partial("Pager2", Model.Pager)
+    </td>
+  </tr>
+</table>

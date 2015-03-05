@@ -1,5 +1,4 @@
-﻿@using UtilityExtensions
-<ul class="dropdown-menu dropdown-div-gear onecolumn">
+﻿<ul class="dropdown-menu dropdown-div-gear onecolumn">
   <li><a id="newmeetings" href='#'>Create Meetings</a></li>
   @if (Session["OrgCopySettings"] != null)
   {
@@ -7,6 +6,6 @@
   }
   @if (User.IsInRole("Admin"))
   {
-    <li><a href="/RepairTransactionsOrgs/@Util.UserId" class="longrunop" data-post="true">Repair Transactions</a></li>
+    <li><a id="RepairTransactions" href="/OrgSearch/RepairTransactions">Repair Transactions</a></li>
   }
 </ul>

@@ -173,6 +173,8 @@ namespace CmsData
         PrimaryState,
         PrimaryZip,
         PrimaryCountry,
+        PendingCurrentOrg,
+        PreviousCurrentOrg,
         ProspectCurrentOrg,
         ReceiveSms,
         RecentAttendCount,

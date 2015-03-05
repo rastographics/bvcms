@@ -558,7 +558,7 @@ namespace CmsWeb.Models
                      orderby o.OrganizationName
                      select new SearchInfo22()
                                 {
-                                    url = "/Organization/" + o.OrganizationId,
+                                    url = Util2.Org + "/" + o.OrganizationId,
                                     line1 = o.OrganizationName,
                                     line2 = o.Division.Name,
                                 };

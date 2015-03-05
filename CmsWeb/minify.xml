@@ -93,6 +93,11 @@
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
 
+      <organization Include="Scripts/Organization/Organization.js"/>
+      <organization Include="Scripts/Dialog/SearchUsers.js"/>
+      <organization Include="Scripts/Organization/RegSetting.js"/>
+      <organization Include="Scripts/jQuery/jquery-ui-timepicker-addon.js"/>
+      
       <org Include="Scripts/Org/Organization.js"/>
       <org Include="Scripts/Dialog/SearchUsers.js"/>
       <org Include="Scripts/Org/RegSetting.js"/>      
@@ -124,6 +129,7 @@
     <JavascriptCompressorTask SourceFiles="@(main2c)" OutputFile="Scripts\bundle.main2c.js" />
     <JavascriptCompressorTask SourceFiles="@(onlineregister)" OutputFile="Scripts\bundle.onlineregister.js" />
     <JavascriptCompressorTask SourceFiles="@(org)" OutputFile="Scripts\bundle.org.js" />
+    <JavascriptCompressorTask SourceFiles="@(organization)" OutputFile="Scripts\bundle.organization.js" />
     <JavascriptCompressorTask SourceFiles="@(query2)" OutputFile="Scripts\bundle.query2.js" />
     <JavascriptCompressorTask SourceFiles="@(person)" OutputFile="Scripts\bundle.person.js" />
     <JavascriptCompressorTask SourceFiles="@(taskpage)" OutputFile="Scripts\bundle.taskpage.js" />

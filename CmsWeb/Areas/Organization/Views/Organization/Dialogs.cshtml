@@ -1,0 +1,52 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Organization.Models.OrganizationModel
+@{
+  var o = Model.Org;
+}
+<div id="dialogHolder"></div>
+<div id="TryRegDialog" class="modal hide fade" tabindex="-1">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>Try Registration</h3>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-info">
+            Copy the following URL for the public registration link.
+            If you want to see exactly what the user sees,
+            you should use the link below in a different browser.
+            Or log out first, then use the link.
+        </div>
+        <blockquote>
+            <a href="/OnlineReg/@o.OrganizationId" target="blank">@DbUtil.Db.ServerLink("/OnlineReg/" + o.OrganizationId)</a>
+        </blockquote>
+    </div>
+</div>
+<div id="orgsDialog">
+  <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
+</div>
+<div id="EditorDialog" style="display: none; position: absolute; z-index: 1005">
+  @Html.TextArea("editor", "", new { style = "height:450px;", @class = "editor", rows = "16", cols = "20" })
+    <div style="text-align: right; background-color: #FAFAFA; padding: 5px; border: #A5A5A5 solid 1px;">
+    <a id="canceledit" href="#" class="btn">Cancel</a>
+    <a id="saveedit" href="#" class="btn btn-primary">Save</a>
+  </div>
+</div>
+<table id="newvalueform" class="grid roundbox" style="display: none">
+  <tr>
+    <td colspan="2">
+      <h2>New Extra Value</h2>
+    </td>
+  </tr>
+  <tr>
+    <td>MultiLine: </td>
+    <td>@Html.CheckBox("multiline") </td>
+  </tr>
+  <tr>
+    <td>Field: </td>
+    <td>@Html.TextBox("fieldname") </td>
+  </tr>
+  <tr>
+    <td>Value: </td>
+    <td>@Html.TextBox("fieldvalue") </td>
+  </tr>
+</table>

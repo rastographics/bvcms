@@ -1,0 +1,37 @@
+﻿@using CmsWeb.Areas.Organization.Models
+@using UtilityExtensions
+@using CmsData.Classes.Twilio
+@using CmsData.Codes
+@{
+  var twilio = TwilioHelper.userSendSMS(Util.UserId);
+  var oid = ViewBag.oid;
+  var model = (OrganizationModel)ViewBag.model;
+  var o = model.Org;
+  var edit = User.IsInRole("Edit");
+}
+<ul class="dropdown-menu toolbar-email pull-left">
+  <li class="header">Email</li>
+  <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
+  <li><a href='/Email/@ViewBag.queryid?parents=true' class="qid">Parents</a></li>
+  <li><a href='/Email/@ViewBag.queryid?ccparents=true' class="qid"> Child with Parents CC'd</a></li>
+  @if ((bool?)ViewBag.ParentOrgContext == true)
+  {
+    <li><a href='/Email/@ViewBag.leadersqid'>Leaders under this org</a></li>
+    <li><a href='/Email/@ViewBag.membersqid'>Members under this org</a></li>
+  }
+  @if (edit)
+  {
+    if (o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
+    {
+      <li><a id="sendreminders" href="/Organization/Reminders/@oid">Send Volunteer Reminders</a></li>
+    }
+    else
+    {
+      <li><a id="sendreminders" href="/Org/Reminders/@oid">Send Event Reminders</a></li>
+    }
+  }
+  <li class="header">SMS</li>
+  <li>
+    <a href="@(twilio ? "/SMS/Options/" + @ViewBag.queryid : "http://docs.bvcms.com/EmailTexting/TextingTwilio.html")" class="qid">Send Text</a>
+  </li>
+</ul>

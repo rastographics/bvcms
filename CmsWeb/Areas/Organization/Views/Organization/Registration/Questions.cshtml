@@ -1,0 +1,28 @@
+﻿@using CmsData
+@model CmsData.Registration.Settings
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp") == "true";
+}
+<form class="form form-horizontal non-modal ajax span12" data-init="movequestions" data-init2="updateQuestionList">
+  <br />
+  @FormAction()
+  <div id="QuestionList" class="movable-list noedit">
+    @foreach (var ask in Model.AskItems)
+    {
+      ask.Name = Html.NameFor2(m => m.AskItems);
+      @Html.DisplayFor(m => ask)
+    }
+  </div>
+  @FormAction()
+</form>
+@helper FormAction()
+{
+  <div class="pull-right">
+    <a href="/Org/QuestionsHelpToggle/@Model.OrgId" class="btn ajax">Toggle Help</a>
+    @if (User.IsInRole("Edit"))
+    {
+      <a href="/Org/QuestionsEdit/@Model.OrgId" class="btn btn-primary edit ajax">Edit</a>
+    }
+  </div>
+  <div class="formerror">@Html.ValidationMessage("Form")</div>
+}

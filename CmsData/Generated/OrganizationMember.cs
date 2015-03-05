@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Linq;
 using System.Linq.Expressions;
 using System.ComponentModel;
+using CmsData.Infrastructure;
 
 namespace CmsData
 {
@@ -70,6 +71,8 @@ namespace CmsData
 		private int? _DatumId;
 		
 		private bool? _Hidden;
+		
+		private bool? _SkipInsertTriggerProcessing;
 		
    		
    		private EntitySet< OrgMemMemTag> _OrgMemMemTags;
@@ -171,6 +174,9 @@ namespace CmsData
 		partial void OnHiddenChanging(bool? value);
 		partial void OnHiddenChanged();
 		
+		partial void OnSkipInsertTriggerProcessingChanging(bool? value);
+		partial void OnSkipInsertTriggerProcessingChanged();
+		
     #endregion
 		public OrganizationMember()
 		{
@@ -193,6 +199,7 @@ namespace CmsData
     #region Columns
 		
 		[Column(Name="OrganizationId", UpdateCheck=UpdateCheck.Never, Storage="_OrganizationId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		[IsForeignKey]
 		public int OrganizationId
 		{
 			get { return this._OrganizationId; }
@@ -218,6 +225,7 @@ namespace CmsData
 
 		
 		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		[IsForeignKey]
 		public int PeopleId
 		{
 			get { return this._PeopleId; }
@@ -287,6 +295,7 @@ namespace CmsData
 
 		
 		[Column(Name="MemberTypeId", UpdateCheck=UpdateCheck.Never, Storage="_MemberTypeId", DbType="int NOT NULL")]
+		[IsForeignKey]
 		public int MemberTypeId
 		{
 			get { return this._MemberTypeId; }
@@ -708,6 +717,7 @@ namespace CmsData
 
 		
 		[Column(Name="TranId", UpdateCheck=UpdateCheck.Never, Storage="_TranId", DbType="int")]
+		[IsForeignKey]
 		public int? TranId
 		{
 			get { return this._TranId; }
@@ -791,6 +801,28 @@ namespace CmsData
 					this._Hidden = value;
 					this.SendPropertyChanged("Hidden");
 					this.OnHiddenChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="SkipInsertTriggerProcessing", UpdateCheck=UpdateCheck.Never, Storage="_SkipInsertTriggerProcessing", DbType="bit")]
+		public bool? SkipInsertTriggerProcessing
+		{
+			get { return this._SkipInsertTriggerProcessing; }
+
+			set
+			{
+				if (this._SkipInsertTriggerProcessing != value)
+				{
+				
+                    this.OnSkipInsertTriggerProcessingChanging(value);
+					this.SendPropertyChanging();
+					this._SkipInsertTriggerProcessing = value;
+					this.SendPropertyChanged("SkipInsertTriggerProcessing");
+					this.OnSkipInsertTriggerProcessingChanged();
 				}
 
 			}

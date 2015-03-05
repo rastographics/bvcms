@@ -1,0 +1,21 @@
+﻿@model CmsWeb.Areas.Organization.Models.OrgPeopleModel
+<div class="btn-group">
+  <button data-toggle="dropdown" class="btn dropdown-toggle btn-info">
+    @Model.GroupOptions
+    <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu">
+    <li>
+      <a id="multigroup" href="#" class="grp2 @Model.MultiSelectActive">Select Multiple</a>
+    </li>
+    <li>
+      <a id="showhide" href="#" class="grp2 @Model.ShowHiddenActive">Show Hidden</a>
+    </li>
+    <li>
+      <a id="ministryinfo" href="#" class="grp2 @Model.ShowMinistryInfoActive">Minisry Info</a>
+    </li>
+    <li>
+      <a id="showaddress" href="#" class="grp2 @Model.ShowAddressActive">Show Address</a>
+    </li>
+  </ul>
+</div>

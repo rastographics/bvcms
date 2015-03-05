@@ -1,0 +1,20 @@
+﻿@model List<CmsData.Registration.Settings.AgeGroup>
+@using CmsData
+@using CmsWeb
+@using UtilityExtensions
+<div class="control-group">
+  <label class="control-label">Age Groups</label>
+  <div class="controls">
+    <div class="table not-wide">
+      @foreach (var i in Model)
+      {
+        @Html.EditorFor(m => i)
+      }
+    </div>
+    <div class="newitem"><a href="/Org/NewAgeGroup"><img src="/Content/images/plus1.png" /> Add Item</a></div>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+        <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+  </div>
+</div>

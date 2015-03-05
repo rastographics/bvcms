@@ -1,30 +1,23 @@
-﻿@model AskText
-@using CmsData.Registration
+﻿@model CmsData.Registration.AskText
+@using CmsWeb
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
   var listname = Html.NameFor2(m => m.list);
-  <div class="movable type-@Model.Type table not-wide w100 padded grey-box">
+  <li class="type-@Model.Type">
     @Html.Raw(ci.hiddenindex)
     @Html.HiddenFor(m => m.Type)
-    <label class="ask-question">
-      Multiline Text 
-      @Html.Partial("EditorTemplates/QuestionsMenu")
-    </label>
-    @if (ViewBag.ShowHelp != false)
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
-    }
-    <div id="Dropdown" class="movable-list sort">
+    <div class="text big tip" title="Text
+    |These questions can be answered with text on multiple lines">
+      Text:
+      <a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a>
+    </div>
+    <ul id="ExtraQuestions" class="sort">
       @foreach (var item in Model.list)
       {
         item.Name = listname;
         @Html.EditorFor(m => item)
       }
-    </div>
-    <div class="newitem">
-      <a href="/Organization/NewText/@listname">
-        <img src="/Content/images/plus1.png" alt="" /> Add Item
-      </a>
-    </div>
-  </div>
+    </ul>
+    <div class="newitem"><a href="/Organization/NewText/@listname"><img src="/Content/images/plus1.png" /> Add Item</a></div>
+  </li>
 }

@@ -1,10 +1,12 @@
 ﻿@model CmsData.Registration.AskSize.Size
+@using CmsWeb
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-  <div class="movable well not-wide margin-left-wide">
-    @Html.Raw(ci.hiddenindex)
-    <div>&nbsp;@Html.Partial("EditorTemplates/QuestionsMenu", new { ConfirmDelete = false })</div>
-    @Html.EditorFor(m => m.Description)
-    @Html.EditorFor(m => m.SmallGroup)
-  </div>
+	<li>@Html.Raw(ci.hiddenindex)
+		<ul>
+			<li><div class="sgfee">Description:</div> @Html.TextBoxFor(m => m.Description, new {@class = "long"})
+				<a class="del" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></li>
+			<li><div class="sgfee">SmallGroup:</div> @Html.TextBoxFor(m => m.SmallGroup) </li>
+		</ul>
+	</li>
 }

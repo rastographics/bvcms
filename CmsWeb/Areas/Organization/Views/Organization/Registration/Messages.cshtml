@@ -1,0 +1,19 @@
+﻿@model CmsData.Registration.Settings
+<form class="form form-horizontal non-modal ajax span12">
+    <br/>
+    @FormAction()
+    <ul class="noedit" style="list-style: none; margin-left: 5px;">
+        @Html.EditorFor(m => m, "TabMessages")
+    </ul>
+    @FormAction()
+</form>
+@helper FormAction()
+{
+  if (User.IsInRole("Edit"))
+  {
+      <div class="pull-right">
+          <a href="/Org/MessagesEdit/@Model.OrgId" class="btn edit ajax">Edit</a>
+      </div>
+      <div class="formerror">@Html.ValidationMessage("Form")</div>
+  }
+}

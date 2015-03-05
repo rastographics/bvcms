@@ -1,0 +1,12 @@
+﻿@using UtilityExtensions
+<ul class="dropdown-menu dropdown-div-gear onecolumn">
+  <li><a id="newmeetings" href='#'>Create Meetings</a></li>
+  @if (Session["OrgCopySettings"] != null)
+  {
+    <li><a id="PasteSettings" href="/OrgSearch/PasteSettings">Paste Settings</a></li>
+  }
+  @if (User.IsInRole("Admin"))
+  {
+    <li><a href="/RepairTransactionsOrgs/@Util.UserId" class="longrunop" data-post="true">Repair Transactions</a></li>
+  }
+</ul>

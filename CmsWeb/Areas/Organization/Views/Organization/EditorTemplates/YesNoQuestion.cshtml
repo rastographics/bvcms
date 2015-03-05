@@ -1,0 +1,11 @@
+﻿@model CmsData.Registration.AskYesNoQuestions.YesNoQuestion
+@using CmsWeb
+@using (var ci = Html.BeginCollectionItem(Model.Name))
+{
+	<li class="movable">@Html.Raw(ci.hiddenindex)
+		<ul>
+			<li><div class="sgfee">Description:</div> @Html.TextBoxFor(m => m.Question, new {@class = "long"}) @Html.Partial("EditorTemplates/QuestionsMenu")</li>
+			<li><div class="sgfee">SmallGroup:</div> @Html.TextBoxFor(m => m.SmallGroup) </li>
+		</ul>
+	</li>
+}

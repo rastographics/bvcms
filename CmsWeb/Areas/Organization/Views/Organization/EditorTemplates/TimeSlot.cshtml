@@ -1,0 +1,13 @@
+﻿@model CmsData.Registration.TimeSlots.TimeSlot
+@using CmsWeb
+    @using (var ci = Html.BeginCollectionItem(Model.Name))
+    {
+      <li class="movable">@Html.Raw(ci.hiddenindex)
+          <ul style="list-style: none;">
+              <li><div class="sgfee">Description:</div> @Html.TextBoxFor(m => m.Description, new { @class = "long" }) @Html.Partial("EditorTemplates/QuestionsMenu", new ViewDataDictionary { { "ConfirmDelete", false } }) </li>
+              <li><div class="sgfee">Day:</div> @Html.TextBoxFor(m => m.DayOfWeek) </li>
+          <li><div class="sgfee">Time:</div> @Html.TextBoxFor(m => m.Time, "{0:t}") </li>
+              <li><div class="sgfee">Limit:</div> @Html.TextBoxFor(m => m.Limit) </li>
+          </ul>
+      </li>
+    }

@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Organization.Models;
 using CmsWeb.Controllers;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
