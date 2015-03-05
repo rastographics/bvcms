@@ -83,6 +83,8 @@
     <column name="Title">p.titlecode</column>
     <column name="Suffix">p.suffixcode</column>
     <column name="BirthDate">dbo.dob(p.birthmonth, p.birthday, p.birthyear)</column>
+    <column name="BirthMonth">p.birthmonth</column>
+    <column name="BirthDay">p.birthday</column>
     <column name="Age">p.age</column>
     <column name="Wedding">p.weddingdate</column>
     <column name="SpouseId">p.spouseid</column>
