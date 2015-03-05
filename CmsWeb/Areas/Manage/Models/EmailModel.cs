@@ -90,7 +90,7 @@ namespace CmsWeb.Models
 
             return q2;
         }
-        public IEnumerable<EmailQueueTo> GetEmailTos()
+        public IQueryable<EmailQueueTo> GetEmailTos()
         {
             var q = from t in DbUtil.Db.EmailQueueTos
                     let opened = t.Person.EmailResponses.Any(er => er.EmailQueueId == t.Id)
