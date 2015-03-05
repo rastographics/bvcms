@@ -21,8 +21,14 @@
                     <table id="settings" class="table table-striped">
                         <thead>
                             <tr>
-                                <th style="width: 100px;">Setting Code</th>
-                                <th style="width: 300px;">Setting Value</th>
+                                <th style="width: 100px;">
+                                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                    Setting Code
+                                </th>
+                                <th style="width: 300px;">
+                                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
+                                    Setting Value
+                                </th>
                                 <th style="width: 100px;">Action</th>
                             </tr>
                         </thead>
@@ -125,6 +131,11 @@
 
             $('#new-modal').on('shown.bs.modal', function () {
                 $("#Id").val('').focus();
+            });
+
+            $('[data-toggle="popover"]').popover({ html: true });
+            $('[data-toggle="popover"]').click(function (ev) {
+                ev.preventDefault();
             });
         });
     </script>
