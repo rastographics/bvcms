@@ -356,6 +356,13 @@ There is no Undo button.");
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateStatusFlags()
         {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateStatusFlags(FormCollection formCollection)
+        {
             DbUtil.Db.DeleteQueryBitTags();
             var qbits = DbUtil.Db.StatusFlags().ToList();
             foreach (var a in qbits)
@@ -366,7 +373,7 @@ There is no Undo button.");
                     continue;
                 DbUtil.Db.TagAll2(qq, t);
             }
-            return View();
+            return Content("Status flags were successfully updated.");
         }
 
         public class FindInfo

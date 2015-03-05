@@ -1,7 +1,38 @@
 ﻿@{
-    ViewBag.Title = "Status Flags Updated";
+    ViewBag.Title = "Update Status Flags";
+    ViewBag.PageHeader = "Update Status Flags";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-<div class="alert alert-success">
-    <strong>Success!</strong>&nbsp;&nbsp;Status flags were successfully updated.
-</div>
+<div class="alert alert-success alert-dismissible" style="display: none;">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <strong>Success!</strong> <span id="success-message"></span>
+</div>    
+<form id="update-status-flags">
+    <div class="alert alert-warning">
+        <h4>Status Flags</h4>
+        <p>
+            Click the begin button below to update the status flags.  This process may take a few moments to complete.
+        </p>
+        <p>
+            <button type="submit" class="btn btn-warning btn-lg" id="begin-update">Begin Update</button>
+        </p>
+    </div>
+</form>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#begin-update').click(function (ev) {
+                ev.preventDefault();
+                var f = $('#update-status-flags');
+                var q = f.serialize();
+                $.block();
+                $.post('/Batch/UpdateStatusFlags', q, function (ret) {
+                    $('#success-message').text(ret);
+                    $('div.alert-success').show();
+                    $.unblock();
+                });
+                return true;
+            });
+        });
+    </script>
+}
