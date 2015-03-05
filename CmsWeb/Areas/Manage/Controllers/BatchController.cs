@@ -138,14 +138,18 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             return Content("done");
         }
+
         [Authorize(Roles = "Admin")]
+        public ActionResult UpdateOrg()
+        {
+            ViewData["text"] = "";
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
         public ActionResult UpdateOrg(string text)
         {
-            if (Request.HttpMethod.ToUpper() == "GET")
-            {
-                ViewData["text"] = "";
-                return View();
-            } 
             var csv = new CsvReader(new StringReader(text), hasHeaders: true, delimiter: '\t');
             var cols = csv.GetFieldHeaders();
 
@@ -221,7 +225,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.FirstMeetingDate = val.ToDate();
                             break;
                         case "Gender":
-                            o.GenderId = val.Equal("Male") ? (int?) 1 : val.Equal("Female") ? (int?) 2 : null;
+                            o.GenderId = val.Equal("Male") ? (int?)1 : val.Equal("Female") ? (int?)2 : null;
                             break;
                         case "GradeAgeStart":
                             o.GradeAgeStart = val.ToInt2();
@@ -260,7 +264,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.NumWorkerCheckInLabels = val.ToInt2();
                             break;
                         case "OnLineCatalogSort":
-                            o.OnLineCatalogSort = val == "0" ? (int?) null : val.ToInt2();
+                            o.OnLineCatalogSort = val == "0" ? (int?)null : val.ToInt2();
                             break;
                         case "OrganizationStatusId":
                             o.OrganizationStatusId = val.ToInt();
@@ -272,11 +276,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.Description = val;
                             break;
                         case "RollSheetVisitorWks":
-                            o.RollSheetVisitorWks = val == "0" ? (int?) null : val.ToInt2();
+                            o.RollSheetVisitorWks = val == "0" ? (int?)null : val.ToInt2();
                             break;
 
                         default:
-                            if(name.EndsWith(".ev"))
+                            if (name.EndsWith(".ev"))
                                 if (val.HasValue())
                                 {
                                     var a = name.Substring(0, name.Length - 3);
@@ -287,7 +291,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     DbUtil.Db.SubmitChanges();
                 }
             }
-            return Redirect("/");
+            return Content("Organizations were successfully updated.");
         }
 
         [HttpGet]
