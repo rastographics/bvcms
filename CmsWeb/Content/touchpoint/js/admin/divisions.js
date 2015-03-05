@@ -25,7 +25,14 @@
         var f = $('#progform');
         var q = f.serialize();
         $.post("/Division/Create/", q, function(ret) {
-            $('#results > tbody').append(ret);
+            $('#results > tbody').prepend(ret);
+            $('body').animate({ scrollTop: 0 }, 500);
+
+            var row = $('#results tbody').children('tr:first');
+            var bgColor = $(row).css('background-color');
+            $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                $(row).animate({ backgroundColor: bgColor }, 1000);
+            });
             $.initializeTable();
         });
         return false;
