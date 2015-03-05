@@ -23,7 +23,11 @@
         <div class="box  box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
-                    <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add @ViewData["description"]</a>
+                    <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a>&nbsp;
+                    @if (ViewData["HideAdd"] == null || (bool)ViewData["HideAdd"] == false)
+                    {
+                        <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add @ViewData["description"]</a>
+                    }
                 </div>
             </div>
             <div class="box-content">
@@ -62,7 +66,11 @@
                         }
                     </table>
                 </div>
-                <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add @ViewData["description"]</a>
+                @if (ViewData["HideAdd"] == null || (bool)ViewData["HideAdd"] == false)
+                {
+                    <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add @ViewData["description"]</a>
+                }
+                <a href="/Lookups" class="btn btn-default btn-block visible-xs-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
             </div>
         </div>       
     </div>

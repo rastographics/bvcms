@@ -2,6 +2,7 @@ using System.Data.SqlClient;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
+using Org.BouncyCastle.Crypto.Engines;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -28,6 +29,20 @@ namespace CmsWeb.Areas.Setup.Controllers
             ViewData["type"] = id;
             ViewData["description"] = Regex.Replace(id, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
             var q = DbUtil.Db.ExecuteQuery<Row>("select * from lookup." + id);
+
+            // hide the add button on appropriate views.
+            switch (id)
+            {
+                case "AddressType":
+                case "EnvelopeOption":
+                case "Gender":
+                case "OrganizationStatus":
+                case "BundleStatusTypes":
+                case "ContributionStatus":
+                    ViewData["HideAdd"] = true;
+                break;
+            }
+            
             return View(q);
         }
 
