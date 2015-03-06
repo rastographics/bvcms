@@ -75,34 +75,7 @@ namespace CmsWeb.Models
                 sel.Selected = true;
             return tg.ToList();
         }
-        public IEnumerable<TitleItems> FetchTitleItems()
-        {
-            var Model = new CodeValueModel();
-            return new List<TitleItems>
-            {
-                new TitleItems { title = "Approval Codes", Instructions = "(negative to remove, 0 to remove all)", items = Model.VolunteerCodes() },
-                new TitleItems { title = "Baptism Status Codes", items = Model.BaptismStatusList() },
-                new TitleItems { title = "Baptism Type Codes", items = Model.BaptismTypeList() },
-                new TitleItems { title = "Bad Address Flag", items = BadAddressFlag(), UseCode = true },
-                new TitleItems { title = "Campus Codes", items = Model.AllCampuses() },
-                new TitleItems { title = "Contribution Statement Options", items = Model.EnvelopeOptionList() },
-                new TitleItems { title = "Electronic Statement", items = ElectronicStatement(), UseCode = true },
-                new TitleItems { title = "Decision Type Codes", items = Model.DecisionTypeList() },
-                new TitleItems { title = "Do Not Mail", items = DoNotMail(), UseCode = true },
-                new TitleItems { title = "Drop Type Codes", items = Model.DropTypeList() },
-                new TitleItems { title = "Envelope Options", items = Model.EnvelopeOptionList() },
-                new TitleItems { title = "Entry Point Codes", items = Model.EntryPoints() },
-                new TitleItems { title = "Family Position Codes", items = Model.FamilyPositionCodes() },
-                new TitleItems { title = "Gender Codes", items = Model.GenderCodes() },
-                new TitleItems { title = "Grades", items = Grades(), UseCode = true},
-                new TitleItems { title = "Join Type Codes", items = Model.JoinTypeList() },
-                new TitleItems { title = "Marital Status Codes", items = Model.MaritalStatusCodes() },
-                new TitleItems { title = "Member Status Codes", items = Model.MemberStatusCodes() },
-                new TitleItems { title = "New Member Class", items = Model.NewMemberClassStatusList() },
-                new TitleItems { title = "Receive SMS", items = ReceiveSMS(), UseCode = true},
-            };
-        }
-
+        
         public int? Count { get; set; }
 
         public IEnumerable<Person> People()
@@ -323,13 +296,6 @@ namespace CmsWeb.Models
             }
         }
 
-        public class TitleItems
-        {
-            public string title { get; set; }
-            public bool UseCode { get; set; }
-            public IEnumerable<CodeValueItem> items { get; set; }
-            public string Instructions { get; set; }
-        }
         public static List<CodeValueItem> Grades()
         {
             return new List<CodeValueItem> 

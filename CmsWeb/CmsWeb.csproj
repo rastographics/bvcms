@@ -888,6 +888,7 @@
     <Content Include="Content\touchpoint\src\less\select2\select2-bootstrap.less" />
     <Content Include="Content\touchpoint\src\less\pager.less" />
     <Content Include="Content\touchpoint\src\less\charts.less" />
+    <Content Include="Areas\Manage\Views\Batch\UpdateLookupValueSelection.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Scripts\globalize\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-AU.js" />
@@ -2087,8 +2088,6 @@
     <Content Include="Areas\Manage\Views\Batch\UpdateFields.cshtml">
     </Content>
     <Content Include="Areas\Reports\Views\Reports\AttendanceDetail.cshtml">
-    </Content>
-    <Content Include="Areas\Manage\Views\Batch\LookupTable.cshtml">
     </Content>
     <Content Include="Areas\People\Views\Person\Emails\View.cshtml">
     </Content>

@@ -4,59 +4,82 @@
     ViewBag.PageHeader = "Update Fields from a Tag / Query";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/Admin/UpdateFields.js")
-}
 @if (ViewBag.success != null)
-{
-    <div class="alert alert-warning">
-        <strong>Warning!</strong>&nbsp;&nbsp;@Model.Count records will be updated.
-    </div>
-}
-@if (Model.Count.HasValue)
 {
     <div class="alert alert-success alert-dismissible">
         <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
         <strong>Success!</strong>&nbsp;&nbsp;@ViewBag.success
     </div>
 }
-
+<div id="danger" class="alert alert-danger" style="display: none;">
+    <strong>Important!</strong>&nbsp;&nbsp;Drop All Enrollments will make all the selected people previous members of every organization in which they are enrolled. There is no undo.
+</div>
+<div id="warning" class="alert alert-warning" style="display: none;">
+    <strong>Warning!</strong>&nbsp;&nbsp;<span id="count"></span>
+</div>
 <div class="row">
     <div class="col-sm-4">
         <div class="box box-responsive">
             <div class="box-content">
                 <form id="uform" method="post" action="/Batch/UpdateFieldsRun">
                     @Html.HiddenFor(m => m.Count)
-                    <div class="form-group">
-                        <label for="Tag" class="control-label">Tag</label>
-                        @Html.DropDownListFor(m => m.Tag, Model.Tags(), new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <label for="Field" class="control-label">Field</label>
-                        @Html.DropDownListFor(m => m.Field, Model.Fields(), new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <label for="NewValue" class="control-label">New Value</label>
-                        @Html.TextBoxFor(m => m.NewValue, new { @class = "form-control" })
-                    </div>
-                    <input type="submit" class="btn btn-primary" value="Run Update" />
+                    @Html.EditorFor(m => m.Tag, "Dropdown", new { items = Model.Tags() })
+                    @Html.EditorFor(m => m.Field, "Dropdown", new { items = Model.Fields() })
+                    <div id="lookup-value-selection"></div>
+                    <a href="#" class="btn btn-primary" id="run-update">Run Update</a>
                 </form>
             </div>
         </div>
     </div>
 </div>
-<br/>
-<div class="panel">
-    <div class="panel-body">
-        <div class="row">
-            @foreach (var ti in Model.FetchTitleItems())
-            {
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    @Html.Partial("LookupTable", ti)
-                </div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $("#Tag").change(function (ev) {
+                ev.preventDefault();
+                var f = $(this).closest("form");
+                var q = f.serialize();
+                $.post("/Batch/UpdateFieldsCount/", q, function (ret) {
+                    $("#count").text(ret + " records will be updated.");
+                    $('#warning').show();
+                });
+                return false;
+            });
 
-            }
-        </div> 
-    </div>
-</div>
+            $("#Field").change(function (ev) {
+                ev.preventDefault();
+
+                if ($('#Field').val() == 'Drop All Enrollments') {
+                    $('#danger').show();
+                } else {
+                    $('#danger').hide();
+                }
+                
+                var f = $(this).closest("form");
+                var q = f.serialize();
+                $.post("/Batch/UpdateLookupValueSelection/", q, function (ret) {
+                    $('#lookup-value-selection').html(ret);
+                });
+                return false;
+            });
+
+            $('#run-update').click(function(ev) {
+                ev.preventDefault();
+                var f = $('#uform');
+
+                swal({
+                    title: "Are you sure? There is no undo.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-warning",
+                    confirmButtonText: "Yes, run update!",
+                    closeOnConfirm: true
+                },
+                function () {
+                    f.submit();
+                });
+            });
+        });
+    </script>
+}

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using System.Threading;
+using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text;
 using CmsData;
@@ -307,6 +308,95 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateLookupValueSelection(string field)
+        {
+            IEnumerable<CodeValueItem> m = null;
+            var lookups = new CodeValueModel();
+            switch (field)
+            {
+                case "Approval Codes":
+                    m = lookups.VolunteerCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Baptism Status":
+                    m = lookups.BaptismStatusList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Bad Address Flag":
+                    m = UpdateFieldsModel.BadAddressFlag();
+                    ViewBag.UseCode = true;
+                    break;
+                case "Campus":
+                    m = lookups.AllCampuses();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Contribution Statement Options":
+                    m = lookups.EnvelopeOptionList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Electronic Statement":
+                    m = UpdateFieldsModel.ElectronicStatement();
+                    ViewBag.UseCode = true;
+                    break;
+                case "Decision Type":
+                    m = lookups.DecisionTypeList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Do Not Mail":
+                    m = UpdateFieldsModel.DoNotMail();
+                    ViewBag.UseCode = true;
+                    break;
+                case "Drop Type":
+                    m = lookups.DropTypeList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Envelope Options":
+                    m = lookups.EnvelopeOptionList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Entry Point":
+                    m = lookups.EntryPoints();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Family Position":
+                    m = lookups.FamilyPositionCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Gender":
+                    m = lookups.GenderCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Grade":
+                    m = UpdateFieldsModel.Grades();
+                    ViewBag.UseCode = true;
+                    break;
+                case "Join Type":
+                    m = lookups.JoinTypeList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Marital Status":
+                    m = lookups.MaritalStatusCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Member Status":
+                    m = lookups.MemberStatusCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "New Member Class":
+                    m = lookups.NewMemberClassStatusList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "ReceiveSMS":
+                    m = UpdateFieldsModel.ReceiveSMS();
+                    ViewBag.UseCode = true;
+                    break;
+            }
+            
+            return View(m);
+        }
+
+        [HttpPost]
         public ActionResult UpdateFieldsRun(UpdateFieldsModel m)
         {
             m.Run(ModelState);
@@ -322,17 +412,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var q = m.People();
             return Content(q.Count().ToString());
         }
-        [HttpPost]
-        public ActionResult UpdateWarning(UpdateFieldsModel m)
-        {
-            if(m.Field == "Drop All Enrollments")
-                return Content(@"
-Important! Drop All Enrollments will make all the selected people previous members
-of every organization in which they are enrolled.
-There is no Undo button.");
-            return new EmptyResult();
-        }
-
+        
 //        [Authorize(Roles = "Admin")]
 //        public ActionResult UpdatePeople()
 //        {

@@ -1,0 +1,20 @@
+﻿@using CmsWeb.Code
+@model IEnumerable<CodeValueItem>
+<div class="form-group">
+    <label for="NewValue" class="control-label">New Value</label>
+    <div class="controls">
+        @if (Model != null && Model.Any())
+        {
+            <select class="form-control" id="NewValue" name="NewValue">
+                @foreach (var code in Model)
+                {
+                    <option value="@ViewBag.UseCode ? @code.Code : @code.Id">@code.Value</option>
+                }
+            </select>
+        }
+        else
+        {
+            <input type="text" class="form-control" id="NewValue" name="NewValue" />
+        }
+    </div>
+</div>
