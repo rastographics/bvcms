@@ -120,6 +120,44 @@ namespace CmsWeb.Models
 
 			return userStatus;
 		}
+		public static UserValidationResult AuthenticateMobile2(bool checkOrgMembersOnly = false, bool requirePin = false)
+		{
+			var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
+
+		    if (userStatus == null)
+		    {
+				//DbUtil.LogActivity("userStatus==null");
+				return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Could not authenticate user, Authorization or SessionToken headers likely missing.", null);
+				//throw new Exception("Could not authenticate user, Authorization or SessionToken headers likely missing.");
+		    }
+
+			if (!userStatus.IsValid)
+				return userStatus;
+
+			var user = userStatus.User;
+
+			var roleProvider = CMSRoleProvider.provider;
+
+			UserName2 = user.Username;
+			SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
+
+			if (checkOrgMembersOnly && !Util2.OrgLeadersOnlyChecked)
+			{
+				DbUtil.LogActivity("iphone leadersonly check " + user.Username);
+				if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
+				{
+					Util2.OrgLeadersOnly = true;
+					DbUtil.Db.SetOrgLeadersOnly();
+					DbUtil.LogActivity("SetOrgLeadersOnly");
+				}
+				Util2.OrgLeadersOnlyChecked = true;
+			}
+
+			ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+
+			return userStatus;
+		}
+
 
 		public static UserValidationResult ResetSessionExpiration(string sessionToken)
 		{
@@ -151,10 +189,15 @@ namespace CmsWeb.Models
 		private static UserValidationResult GetUserViaSessionToken(bool requirePin)
 		{
 			var sessionToken = HttpContext.Current.Request.Headers["SessionToken"];
-			if (string.IsNullOrEmpty(sessionToken))
+		    if (string.IsNullOrEmpty(sessionToken))
+		    {
+    			//DbUtil.LogActivity("GetUserViaSession==null");
 				return null;
+		    }
 
 			var result = ApiSessionModel.DetermineApiSessionStatus(Guid.Parse(sessionToken), requirePin, HttpContext.Current.Request.Headers["PIN"].ToInt2());
+
+			//DbUtil.LogActivity("GetUserViaSession==" + result.Status.ToString());
 
 			switch (result.Status)
 			{
@@ -195,9 +238,11 @@ namespace CmsWeb.Models
 			{
 				var creds = new NetworkCredential(username, password);
 				UserName2 = creds.UserName;
+				//DbUtil.LogActivity("GetUserViaCreds");
 				return AuthenticateLogon(creds.UserName, creds.Password, HttpContext.Current.Request.Url.OriginalString);
 			}
 
+			//DbUtil.LogActivity("GetUserViaCreds==null");
 			return null;
 		}
 

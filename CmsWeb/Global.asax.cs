@@ -37,6 +37,7 @@ namespace CmsWeb
 
         protected void Session_Start(object sender, EventArgs e)
         {
+            //DbUtil.LogActivity("Session Starting");
             if (Util.Host.StartsWith("direct"))
                 return;
             if (User.Identity.IsAuthenticated)

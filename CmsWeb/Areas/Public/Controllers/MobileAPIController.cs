@@ -31,14 +31,19 @@ namespace CmsWeb.Areas.Public.Controllers
             var hasInvalidSessionTokenHeader = string.IsNullOrEmpty(Request.Headers["SessionToken"]);
 
             if (hasInvalidAuthHeaders && hasInvalidSessionTokenHeader)
+            {
+                //DbUtil.LogActivity("authentication headers bad");
                 return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Either the Authorization or SessionToken headers are required.", null);
+            }
 
-            return AccountModel.AuthenticateMobile(requirePin: requirePin, checkOrgMembersOnly: true);
+            //DbUtil.LogActivity("calling authenticatemobile2");
+            return AccountModel.AuthenticateMobile2(requirePin: requirePin, checkOrgMembersOnly: true);
         }
 
         [HttpPost]
         public ActionResult Authenticate(string data)
         {
+            //DbUtil.LogActivity("calling authenticateuser");
             var result = AuthenticateUser(requirePin: true);
 
             if (!result.IsValid)
