@@ -71,7 +71,7 @@ namespace CmsData
         }
         public static string TaskLink(CMSDataContext Db, string text, int id)
         {
-            return "<a href='{0}{1}'>{2}</a>".Fmt(Db.CmsHost, TaskLink0(id), text);
+            return "<a href='{0}'>{1}</a>".Fmt(Db.ServerLink(TaskLink0(id)), text);
         }
     }
 }

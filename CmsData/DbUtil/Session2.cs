@@ -41,21 +41,23 @@ namespace CmsData
             {
                 if (cmshost.HasValue())
                     return cmshost;
-                return cmshost = ServerLink();
+                if (HttpContext.Current != null)
+                {
+                    var Request = HttpContext.Current.Request;
+                    return Util.URLCombine(Util.Scheme() + "://" + Request.Url.Authority, "");
+                }
+                var defaulthost = Setting("DefaultHost", "");
+                if(!defaulthost.HasValue())
+                    defaulthost = Util.URLCombine(ConfigurationManager.AppSettings["cmshost"], "");
+                if(defaulthost.HasValue())
+                    return defaulthost.Replace("{church}", Host, ignoreCase: true);
+                throw (new Exception("No URL for Server in CmsHost"));
             }
-            set { cmshost = value; }
+//            set { cmshost = value; }
         }
         public string ServerLink(string path = "")
         {
-            if (HttpContext.Current != null)
-            {
-                var Request = HttpContext.Current.Request;
-                return Util.URLCombine(Util.Scheme() + "://" + Request.Url.Authority, path);
-            }
-            var h = ConfigurationManager.AppSettings["cmshost"] + path;
-            if(h.HasValue())
-                return h.Replace("{church}", Host, ignoreCase: true);
-            throw (new Exception("No URL for Server in ServerLink"));
+            return Util.URLCombine(CmsHost, path);
         }
 
         public void CopySession()
@@ -70,6 +72,13 @@ namespace CmsData
                 Host = Util.Host;
             }
         }
+        public string GetSetting(string name, string defaultvalue)
+        {
+            var setting = Settings.SingleOrDefault(ss => ss.Id == name);
+            if (setting == null)
+                return defaultvalue;
+            return setting.SettingX ?? defaultvalue ?? string.Empty;
+        }
         public string Setting(string name, string defaultvalue)
         {
 			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
@@ -77,7 +86,7 @@ namespace CmsData
             {
                 try
                 {
-                    list = Settings.ToDictionary(c => c.Id, c => c.SettingX,
+                    list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX,
                         StringComparer.OrdinalIgnoreCase);
 					HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
@@ -99,10 +108,11 @@ namespace CmsData
         }
         public void SetSetting(string name, string value)
         {
+            name = name.Trim();
 			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
-                list = Settings.ToDictionary(c => c.Id, c => c.SettingX);
+                list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
 				HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
             }
@@ -122,7 +132,7 @@ namespace CmsData
 			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
-                list = Settings.ToDictionary(c => c.Id, c => c.SettingX);
+                list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
 				HttpRuntime.Cache.Insert(Host + "Setting", list, null,
 						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
             }

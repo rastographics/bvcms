@@ -19,7 +19,7 @@ namespace CmsWeb.Models
                          where p.DeceasedDate == null
                          select new { p.PeopleId, p.Name2, p.Age, p.Name };
             var q = from m in family
-                    join r in list on m.PeopleId equals r.PeopleId into j
+                    join r in _list on m.PeopleId equals r.PeopleId into j
                     from r in j.DefaultIfEmpty()
                     where r == null || r.IsValidForContinue == false
                     orderby m.PeopleId == user.Family.HeadOfHouseholdId ? 1 :

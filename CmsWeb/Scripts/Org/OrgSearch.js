@@ -104,7 +104,18 @@
                     width: '100px',
                     height: 25
                 });
-            } else if ($(e.target).hasClass("yesno")) {
+            } else if ($(e.target).hasClass("category")) {
+                $(e.target).editable("/OrgSearch/Edit", {
+                    //indicator: '<img src="/Content/images/loading.gif">',
+                    loadurl: "/MobileAPI/RegCategories/",
+                    placeholder: 'edit',
+                    loadtype: "POST",
+                    type: "select",
+                    submit: "OK",
+                    style: 'display: inline'
+                });
+            }
+            else if ($(e.target).hasClass("yesno")) {
                 $(e.target).editable('/OrgSearch/Edit', {
                     type: 'checkbox',
                     onblur: 'ignore',

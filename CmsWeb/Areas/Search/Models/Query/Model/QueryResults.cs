@@ -44,8 +44,11 @@ namespace CmsWeb.Areas.Search.Models
         {
             Db.SetNoLock();
             var q = Db.People.Where(TopClause.Predicate(Db));
-            if (TopClause.ParentsOf)
-                return Db.PersonQueryParents(q);
+
+            if (TopClause.PlusParentsOf)
+                q = Db.PersonQueryPlusParents(q);
+            else if (TopClause.ParentsOf)
+                q = Db.PersonQueryParents(q);
             return q;
         }
 

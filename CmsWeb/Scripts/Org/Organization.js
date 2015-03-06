@@ -136,7 +136,7 @@
         $("#MultiSelect").val(ismulti);
         if (ismulti) {
             $("#groupSelector button.dropdown-toggle").hide();
-            $("li.orgcontext").hide();
+                $("li.orgcontext").hide();
         }
         else {
             $("#groupSelector button.grp.active").removeClass("active");
@@ -162,16 +162,16 @@
             switch($this.text()) {
                 case "Members":
                     $("li.current-list").show();
-                    break;
+                break;
                 case "Pending":
                     $("li.pending-list").show();
-                    break;
-            }
+                break;
+        }
         }
         var $a = "";
         $("#groupSelector button.grp.active").each(function () {
             $a += $(this).val();
-        });
+            });
         if ($a === "") {
             $this.toggleClass("active");
             return false;
@@ -191,12 +191,12 @@
         } else {
             pids = $(this);
             prevChecked = this;
-        }
+      }
         var a = pids.map(function() { return $(this).val(); } ).get();
         $.post("/Organization/ToggleCheckboxes/{0}".format($("#Id").val()), {
             pids: a,
             chkd: prevChecked.checked
-        });
+    });
     });
 
     $('#deleteorg').click(function (ev) {
@@ -277,9 +277,9 @@
             f.on('hidden', function () {
                 d.remove();
                 f.remove();
-                RebindMemberGrids();
-            });
-        });
+            RebindMemberGrids();
+    });
+    });
     });
 
     $("a.membertype").live("click", function (ev) {
@@ -291,9 +291,9 @@
             f.on('hidden', function () {
                 d.remove();
                 f.remove();
-                RebindMemberGrids();
-            });
-        });
+            RebindMemberGrids();
+    });
+    });
     });
 
     $("#orgpicklist").live("click", function (ev) {
@@ -303,24 +303,24 @@
             var f = d.find("form");
             f.modal("show");
             $.initializeSelectOrgsDialog(f);
-            
+
             f.on('hidden', function () {
                 d.remove();
                 f.remove();
-            });
-        });
+    });
+    });
     });
 
     $.initializeSelectOrgsDialog = function(f) {
         $("#select-orgs #UpdateSelected").click(function (ev) {
-            ev.preventDefault();
+        ev.preventDefault();
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
                 return $(this).val();
             }).get().join(',');
             
             UpdateSelectedOrgs(list, f);
             return false;
-        });
+                });
         $.SaveOrgIds = function (ev) {
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
                 return $(this).val();
@@ -334,7 +334,7 @@
         $.post("/Organization/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
             $("#orgpickdiv").html(ret);
             f.modal("hide");
-        });
+            });
     }
 
     $("#divisionlist").live("click", function (ev) {
@@ -348,17 +348,17 @@
                 a.load(a.data("refresh"), {});
                 d.remove();
                 f.remove();
-            });
+    });
             f.on("change", "input:checkbox", function () {
                 $("input[name='TargetDivision']", f).val($(this).val());
                 $("input[name='Adding']", f).val($(this).is(":checked"));
                 $.formAjaxClick($(this), "/SearchDivisions/AddRemoveDiv");
-            });
+    });
             f.on("click", "a.move", function () {
                 $("input[name='TargetDivision']", f).val($(this).data("moveid"));
                 $.formAjaxClick($(this), "/SearchDivisions/MoveToTop");
-            });
-        });
+    });
+    });
     });
 
     $.maxZIndex = $.fn.maxZIndex = function (opt) {
@@ -388,7 +388,7 @@
                 if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
                     $(this).popover('hide');
                 }
-            });
+        });
         });
     };
 
@@ -471,7 +471,8 @@
         "AskExtraQuestions",
         "AskHeader",
         "AskInstruction",
-        "AskMenu"
+        "AskMenu",
+        "AskText"
     ];
     $.InitFunctions.updateQuestionList = function () {
         $("#selectquestions li").each(function () {
@@ -604,7 +605,7 @@
     $("a.deleteschedule").live("click", function (ev) {
         ev.preventDefault();
         $(this).closest("div.well").remove();
-        $.renumberListItems();
+            $.renumberListItems();
     });
 
     $.renumberListItems = function () {
@@ -615,58 +616,58 @@
         });
     };
     /*
-        $('#RollsheetLink').live("click", function (ev) {
-            ev.preventDefault();
-            $('#grouplabel').text("By Group");
-            $("tr.forMeeting").hide();
-            $("tr.forRollsheet").show();
-            var d = $("#NewMeetingDialog");
-            d.dialog("option", "buttons", {
-                "Ok": function () {
-                    var dt = $.GetNextMeetingDateTime();
-                    if (!dt.valid)
-                        return false;
-                    var args = "?org=curr&dt=" + dt.date + " " + dt.time;
-                    if ($('#altnames').is(":checked"))
-                        args += "&altnames=true";
-                    if ($('#group').is(":checked"))
-                        args += "&bygroup=1";
-                    if ($("#highlightsg").val())
-                        args += "&highlight=" + $("#highlightsg").val();
-                    if ($("#sgprefixrs").val())
-                        args += "&sgprefix=" + $("#sgprefixrs").val();
-                    window.open("/Reports/Rollsheet/" + args);
-                    $(this).dialog("close");
-                }
-            });
-            d.dialog('open');
+    $('#RollsheetLink').live("click", function (ev) {
+        ev.preventDefault();
+        $('#grouplabel').text("By Group");
+        $("tr.forMeeting").hide();
+        $("tr.forRollsheet").show();
+        var d = $("#NewMeetingDialog");
+        d.dialog("option", "buttons", {
+            "Ok": function () {
+                var dt = $.GetNextMeetingDateTime();
+                if (!dt.valid)
+                    return false;
+                var args = "?org=curr&dt=" + dt.date + " " + dt.time;
+                if ($('#altnames').is(":checked"))
+                    args += "&altnames=true";
+                if ($('#group').is(":checked"))
+                    args += "&bygroup=1";
+                if ($("#highlightsg").val())
+                    args += "&highlight=" + $("#highlightsg").val();
+                if ($("#sgprefixrs").val())
+                    args += "&sgprefix=" + $("#sgprefixrs").val();
+                window.open("/Reports/Rollsheet/" + args);
+                $(this).dialog("close");
+            }
         });
-        $('#RallyRollsheetLink').live("click", function (ev) {
-            ev.preventDefault();
-            $('#grouplabel').text("By Group");
-            $("tr.forMeeting").hide();
-            $("tr.forRollsheet").show();
-            var d = $("#NewMeetingDialog");
-            d.dialog("option", "buttons", {
-                "Ok": function () {
-                    var dt = $.GetNextMeetingDateTime();
-                    if (!dt.valid)
-                        return false;
-                    var args = "?org=curr&dt=" + dt.date + " " + dt.time;
-                    if ($('#altnames').is(":checked"))
-                        args += "&altnames=true";
-                    if ($('#group').is(":checked"))
-                        args += "&bygroup=1&sgprefix=";
-                    if ($("#highlightsg").val())
-                        args += "&highlight=" + $("#highlightsg").val();
-                    if ($("#sgprefix").val())
-                        args += "&sgprefix=" + $("#sgprefix").val();
-                    window.open("/Reports/RallyRollsheet/" + args);
-                    $(this).dialog("close");
-                }
-            });
-            d.dialog('open');
+        d.dialog('open');
+    });
+    $('#RallyRollsheetLink').live("click", function (ev) {
+        ev.preventDefault();
+        $('#grouplabel').text("By Group");
+        $("tr.forMeeting").hide();
+        $("tr.forRollsheet").show();
+        var d = $("#NewMeetingDialog");
+        d.dialog("option", "buttons", {
+            "Ok": function () {
+                var dt = $.GetNextMeetingDateTime();
+                if (!dt.valid)
+                    return false;
+                var args = "?org=curr&dt=" + dt.date + " " + dt.time;
+                if ($('#altnames').is(":checked"))
+                    args += "&altnames=true";
+                if ($('#group').is(":checked"))
+                    args += "&bygroup=1&sgprefix=";
+                if ($("#highlightsg").val())
+                    args += "&highlight=" + $("#highlightsg").val();
+                if ($("#sgprefix").val())
+                    args += "&sgprefix=" + $("#sgprefix").val();
+                window.open("/Reports/RallyRollsheet/" + args);
+                $(this).dialog("close");
+            }
         });
+        d.dialog('open');
+    });
     */
     $("#ScheduleListPrev").change(function () {
         var a = $(this).val().split(",");
@@ -710,12 +711,12 @@
             if (result) {
                 $.post(a[0].href, function (ret) {
                     if (ret === "ok")
-                        RebindMemberGrids();
-                    else
-                        alert(ret);
-                });
-            }
-        });
+                    RebindMemberGrids();
+                else
+                    alert(ret);
+            });
+        }
+    });
         return false;
     });
 
@@ -729,7 +730,7 @@
             tooltip: 'Click to edit...'
         });
         $(".editline").editable("/Organization/EditExtra/", {
-            indicator: "<img src='/images/loading.gif'>",
+            indicator: "<img src='/Content/images/loading.gif'>",
             tooltip: "Click to edit...",
             style: 'display: inline',
             width: 200,

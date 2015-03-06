@@ -27,7 +27,7 @@ namespace CmsData
         internal Expression RecentAttendCount()
         {
             var cnt = TextValue.ToInt();
-            var q = db.RecentAttendInDaysByCount(Program, Division, Organization, OrgType ?? 0, Days);
+            var q = db.RecentAttendInDaysByCountDesc(Program, Division, Organization, OrgType ?? 0, Days, Quarters);
             switch (op)
             {
                 case CompareType.Greater:

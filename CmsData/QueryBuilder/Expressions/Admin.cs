@@ -138,5 +138,54 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression HasOpenedEmail()
+        {
+            var id = TextValue.ToInt();
+            Expression<Func<Person, bool>> pred = null;
+            switch (op)
+            {
+                case CompareType.Equal:
+                    pred = p =>
+                        (from pp in p.EmailQueueTos
+                         where pp.Id == id
+                         let r = p.EmailResponses.SingleOrDefault(e => e.EmailQueueId == id)
+                         where r != null
+                         select pp.PeopleId
+                        ).Any();
+                    break;
+                case CompareType.NotEqual:
+                    pred = p =>
+                        (from pp in p.EmailQueueTos
+                         where pp.Id == id
+                         let r = p.EmailResponses.SingleOrDefault(e => e.EmailQueueId == id)
+                         where r == null
+                         select pp.PeopleId
+                        ).Any();
+                    break;
+                default:
+                    return AlwaysFalse();
+            }
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
+        internal Expression HasSpamBlock()
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                (from pp in db.People
+                 where pp.PeopleId == p.PeopleId
+                 let reported = (from ee in pp.PeopleExtras
+                                 where ee.Field == "SpamReport" || ee.Field == "SpamReportingDropped"
+                                 select ee.DateValue).Max()
+                 let removed = (from ee in pp.PeopleExtras
+                                where ee.Field == "SpamReporterRemoved"
+                                select ee.DateValue).SingleOrDefault()
+                 where reported != null && (removed == null || removed < reported)
+                 select pp.PeopleId
+                ).Any();
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

@@ -8,8 +8,10 @@ using UtilityExtensions;
 using CmsWeb.Areas.Main.Models;
 using TaskAlias = System.Threading.Tasks.Task;
 using System.Threading;
+using System.Web.Mvc;
 using Elmah;
 using CmsData.Codes;
+using CmsData.View;
 
 namespace CmsWeb.Models
 {
@@ -135,6 +137,49 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 			        };
 			return q.ToList();
 		}
+        private List<PotentialSubstitute> potentialSubs;
+
+        private List<PotentialSubstitute> PotentialSubs()
+        {
+            return potentialSubs ??
+                   (potentialSubs = (from ps in Db.PotentialSubstitutes(org.OrganizationId, meeting.MeetingId)
+                                     select ps).ToList());
+        }
+
+        public IEnumerable<PotentialSubstitute> CommittedThisMeeting()
+        {
+            return from ps in PotentialSubs()
+                   where ps.Committed != null 
+                   orderby ps.Name2
+                   select ps;
+        }
+        public IEnumerable<PotentialSubstitute> ThisSchedule()
+        {
+            return from ps in PotentialSubs()
+                   where ps.Committed == null 
+                   where ps.SameSchedule != null
+                   orderby ps.Name2
+                   select ps;
+        }
+        public IEnumerable<PotentialSubstitute> OtherVolunteers()
+        {
+            return from ps in PotentialSubs()
+                   where ps.Committed == null 
+                   where ps.SameSchedule == null
+                   orderby ps.Name2
+                   select ps;
+        }
+
+        public IEnumerable<SelectListItem> SmallGroups()
+        {
+            var list = (from t in Db.MemberTags
+                        where t.OrgId == org.OrganizationId
+                        where t.Name.StartsWith("SG:")
+                        orderby t.Name
+                        select new SelectListItem() { Text = t.Name.Substring(3), Value = ".sg-" + t.Id }).ToList();
+            list.Insert(0, new SelectListItem() { Text = "(no filter)", Value = "0" });
+            return list;
+        }
 		public void SendEmails(int? additional)
 		{
 			var tag = Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, Db.NextTagId);
@@ -182,7 +227,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 			m.FromName = person.Name;
 			m.FromAddress = person.FromEmail;
 
-			var eqid = m.CreateQueue(transactional: true);
+			var eqid = m.CreateQueue(transactional: true).Id;
 			string host = Util.Host;
 			// save these from HttpContext to set again inside thread local storage
 			var useremail = Util.UserEmail;

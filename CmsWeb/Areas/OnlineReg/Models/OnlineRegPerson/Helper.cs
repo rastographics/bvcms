@@ -57,8 +57,8 @@ namespace CmsWeb.Models
         {
             get
             {
-                if (_Person != null && _Person.BirthDate.HasValue)
-                    return GetAge(_Person.BirthDate.Value);
+                if (_person != null && _person.BirthDate.HasValue)
+                    return GetAge(_person.BirthDate.Value);
                 if (birthday.HasValue)
                     return GetAge(birthday.Value);
                 return 0;
@@ -187,23 +187,25 @@ namespace CmsWeb.Models
             return settings.Values.Any(o => o.MemberOnly);
         }
 
-        private CmsData.Organization _org;
-        public CmsData.Organization org
+        private Organization _org;
+        public Organization org
         {
             get
             {
                 if (_org == null && orgid.HasValue)
+                {
                     if (orgid == Util.CreateAccountCode)
                         _org = OnlineRegModel.CreateAccountOrg();
                     else
                         _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
+                }
                 if (_org == null && classid.HasValue)
                     _org = DbUtil.Db.LoadOrganizationById(classid.Value);
                 if (_org == null && (divid.HasValue || masterorgid.HasValue) && (Found == true || IsValidForNew))
+                {
                     if (ComputesOrganizationByAge())
-                    {
                         _org = GetAppropriateOrg();
-                    }
+                }
                 if (_org != null)
                     orgid = _org.OrganizationId;
                 return _org;
@@ -217,6 +219,7 @@ namespace CmsWeb.Models
             {
                 if (_masterorg != null)
                     return _masterorg;
+
                 if (masterorgid.HasValue)
                     _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
                 else
@@ -237,25 +240,30 @@ namespace CmsWeb.Models
 
         public string NoAppropriateOrgError;
 
-        private Organization GetAppropriateOrg()
+        internal Organization GetAppropriateOrg()
         {
             NoAppropriateOrgError = null;
-            List<Organization> list = null;
+
             var bestbirthdate = birthday;
+
             if (person != null && person.BirthDate.HasValue)
                 bestbirthdate = person.BirthDate;
+
             if (!masterorgid.HasValue)
                 return null;
+
             var cklist = masterorg.OrgPickList.Split(',').Select(o => o.ToInt()).ToList();
             var q = from o in DbUtil.Db.Organizations
                     where cklist.Contains(o.OrganizationId)
                     where gender == null || o.GenderId == gender || (o.GenderId ?? 0) == 0
                     select o;
-            list = q.ToList();
+
+            var list = q.ToList();
             var q2 = from o in list
                      where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
                      where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
                      select o;
+
             var oo = q2.FirstOrDefault();
 
             if (oo == null)
@@ -272,6 +280,7 @@ namespace CmsWeb.Models
                 NoAppropriateOrgError = "Sorry, {0} is closed".Fmt(oo.OrganizationName);
             if (NoAppropriateOrgError.HasValue())
                 oo = null;
+
             return oo;
         }
 

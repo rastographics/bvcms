@@ -2,6 +2,7 @@
 @{
     var access = User.IsInRole("Access");
     var finance = User.IsInRole("Finance");
+    var developer = User.IsInRole("Developer");
     var targetperson = Util2.TargetLinkPeople;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 }

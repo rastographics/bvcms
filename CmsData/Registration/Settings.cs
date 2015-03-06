@@ -58,7 +58,7 @@ namespace CmsData.Registration
 
         public bool UseBootstrap
         {
-            get { return org != null && (org.UseBootstrap ?? false); }
+            get { return org != null && (org.UseBootstrap ?? true); }
         }
 
         public string DonationFund()
@@ -152,6 +152,7 @@ namespace CmsData.Registration
 			SetUniqueIds("AskDropdown");
 			SetUniqueIds("AskExtraQuestions");
 			SetUniqueIds("AskCheckboxes");
+			SetUniqueIds("AskText");
 			SetUniqueIds("AskMenu");
 		    var sglist = new List<string>();
             AskItems.ForEach(a => sglist.AddRange(a.SmallGroups()));

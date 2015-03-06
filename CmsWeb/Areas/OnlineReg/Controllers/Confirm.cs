@@ -34,6 +34,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             return Json(new { confirm = "/OnlineReg/Unknown" });
         }
+
         [HttpGet]
         public ActionResult FinishLater(int id)
         {
@@ -58,35 +59,45 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             return View("Unknown");
         }
+
+        [HttpPost]
         public ActionResult ProcessPayment(PaymentForm pf)
         {
+            Response.NoCache();
+
 #if DEBUG
 #else
 			if (Session["FormId"] != null)
 				if ((Guid)Session["FormId"] == pf.FormId)
-					return Message("Already submitted");                    
+					return Message("Already submitted");
 #endif
+
             OnlineRegModel m = null;
             var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == pf.DatumId);
             if (ed != null)
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
 
+            var peopleId = 0;
+            if (m != null)
+                peopleId = m.UserPeopleId ?? 0;
+
 #if DEBUG
 #else
-            if(m != null && m.History.Contains("ProcessPayment") && !pf.PayBalance)
-					return Content("Already submitted");                    
+            if (m != null && m.History.Any(h => h.Contains("ProcessPayment")))
+				return Content("Already submitted");
 #endif
+
             if (m != null && m.OnlineGiving())
             {
-                var prevoustransaction =
+                var previousTransaction =
                     (from t in DbUtil.Db.Transactions
                      where t.Amt == pf.AmtToPay
                      where t.OrgId == m.Orgid
                      where t.TransactionDate > DateTime.Now.AddMinutes(-60)
                      where DbUtil.Db.Contributions.Any(cc => cc.PeopleId == m.List[0].PeopleId && cc.TranId == t.Id)
                      select t).FirstOrDefault();
-                if (prevoustransaction != null)
-                    return Message("You have already submitted a gift in this amount a short while ago. Please let us know if you saw an error and what the message said.");                    
+                if (previousTransaction != null)
+                    return Message("You have already submitted a gift in this amount a short while ago. Please let us know if you saw an error and what the message said.");
             }
 
             if (pf.AmtToPay < 0) pf.AmtToPay = 0;
@@ -105,72 +116,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             try
             {
-                if (pf.Type == PaymentType.Ach)
-                    Payments.ValidateBankAccountInfo(ModelState, pf.Routing, pf.Account);
-                if (pf.Type == PaymentType.CreditCard)
-                    Payments.ValidateCreditCardInfo(ModelState, pf);
+                ValidatePaymentForm(pf);
 
-                if (!pf.First.HasValue())
-                    ModelState.AddModelError("First", "Needs first name");
-                if (!pf.Last.HasValue())
-                    ModelState.AddModelError("Last", "Needs last name");
-                if (!pf.Address.HasValue())
-                    ModelState.AddModelError("Address", "Needs address");
-                if (!pf.City.HasValue())
-                    ModelState.AddModelError("City", "Needs city");
-                if (!pf.State.HasValue())
-                    ModelState.AddModelError("State", "Needs state");
-                if (!pf.Zip.HasValue())
-                    ModelState.AddModelError("Zip", "Needs zip");
-                
                 if (!ModelState.IsValid)
                     return View("Payment/Process", pf);
 
                 if (m != null && pf.IsLoggedIn.GetValueOrDefault() && pf.SavePayInfo)
                 {
+                    var gateway = DbUtil.Db.Gateway(m.testing ?? false);
                     // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
                     // otherwise we skip doing an auth just call store in vault just like normal.
-                    var gateway = DbUtil.Db.Gateway(m.testing ?? false);
-                    if (pf.Type == PaymentType.CreditCard)
-                    {
-                        if (!pf.CreditCard.StartsWith("X"))
-                        {
-                            // perform $1 auth.
-                            // need to randomize the $1 amount because some gateways will reject same auth amount
-                            // subsequent times per user.
-                            var random = new Random();
-                            var dollarAmt = (decimal)random.Next(100, 199) / 100;
+                    if (!VerifyCardWithAuth(gateway, pf, peopleId))
+                        return View("Payment/Process", pf);
 
-                            var transactionResponse = gateway.AuthCreditCard(m.UserPeopleId ?? 0, dollarAmt, pf.CreditCard, DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                                                                             "One Time Auth", 0, pf.CCV, string.Empty, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
-
-                            if (!transactionResponse.Approved)
-                            {
-                                ModelState.AddModelError("form", transactionResponse.Message);
-                                return View("Payment/Process", pf);
-                            }
-                                
-                        }                        
-                    }
-
-                    var person = DbUtil.Db.LoadPersonById(m.UserPeopleId ?? 0);
-                    var pi = person.PaymentInfo();
-                    if (pi == null)
-                    {
-                        pi = new PaymentInfo();
-                        person.PaymentInfos.Add(pi);
-                    }
-                    pi.SetBillingAddress(pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
-
-                    gateway.StoreInVault(m.UserPeopleId ?? 0,
-                            pf.Type,
-                            pf.CreditCard,
-                            DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                            pf.MaskedCCV != null && pf.MaskedCCV.StartsWith("X") ? pf.CCV : pf.MaskedCCV,
-                            pf.Routing, 
-                            pf.Account,
-                            pf.IsGiving.GetValueOrDefault());
-
+                    InitializePaymentInfo(peopleId, pf);
+                    StoreInVault(gateway, pf, peopleId);
                 }
 
                 var ti = ProcessPaymentTransaction(m, pf);
@@ -180,15 +140,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ModelState.AddModelError("form", ti.Message);
                     return View("Payment/Process", pf);
                 }
+
                 if (m != null)
                 {
                     m.TranId = ti.Id;
                     m.HistoryAdd("ProcessPayment");
-                    ed.Data = Util.Serialize<OnlineRegModel>(m);
+                    ed.Data = Util.Serialize(m);
                     ed.Completed = true;
                     DbUtil.Db.SubmitChanges();
                 }
                 Session["FormId"] = pf.FormId;
+
                 if (pf.DatumId > 0)
                 {
                     try
@@ -222,24 +184,90 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("Payment/Process", pf);
             }
         }
+
+        private void ValidatePaymentForm(PaymentForm pf)
+        {
+            switch (pf.Type)
+            {
+                case PaymentType.Ach:
+                    PaymentValidator.ValidateBankAccountInfo(ModelState, pf.Routing, pf.Account);
+                    break;
+                case PaymentType.CreditCard:
+                    PaymentValidator.ValidateCreditCardInfo(ModelState, pf);
+                    break;
+                default:
+                    ModelState.AddModelError("Type", "Please select Bank Account or Credit Card.");
+                    break;
+            }
+
+            PaymentValidator.ValidateBillingDetails(ModelState, pf);
+        }
+
+        private static void StoreInVault(IGateway gateway, PaymentForm pf, int peopleId)
+        {
+            gateway.StoreInVault(peopleId, pf.Type, pf.CreditCard,
+                DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"), pf.CVV, pf.Routing, pf.Account,
+                pf.IsGiving.GetValueOrDefault());
+        }
+
+        /// <summary>
+        /// Perform a $1 authorization... the amount is randomized because some gateways will reject identical, subsequent amounts
+        /// within a short period of time.
+        /// </summary>
+        private bool VerifyCardWithAuth(IGateway gateway, PaymentForm pf, int peopleId)
+        {
+            if (pf.Type != PaymentType.CreditCard) return true;
+
+            if (pf.CreditCard.StartsWith("X")) return true;
+
+            var random = new Random();
+            var dollarAmt = (decimal) random.Next(100, 199) / 100;
+
+            var transactionResponse = gateway.AuthCreditCard(peopleId, dollarAmt, pf.CreditCard,
+                DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"), "One Time Auth", 0, pf.CVV, string.Empty,
+                pf.First, pf.Last, pf.Address, pf.Address2, pf.City, pf.State, pf.Country, pf.Zip, pf.Phone);
+
+            if (!transactionResponse.Approved)
+            {
+                ModelState.AddModelError("form", transactionResponse.Message);
+                return false;
+            }
+
+            // if we got this far that means the auth worked so now let's do a void for that auth.
+            var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
+            return true;
+        }
+
+        private static void InitializePaymentInfo(int peopleId, PaymentForm pf)
+        {
+            var person = DbUtil.Db.LoadPersonById(peopleId);
+            var pi = person.PaymentInfo();
+            if (pi == null)
+            {
+                pi = new PaymentInfo();
+                person.PaymentInfos.Add(pi);
+            }
+            pi.SetBillingAddress(pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.Address2, pf.City,
+                pf.State, pf.Country, pf.Zip, pf.Phone);
+        }
+
         private Transaction ProcessPaymentTransaction(OnlineRegModel m, PaymentForm pf)
         {
-            Transaction ti = null;
-            if (m != null && m.Transaction != null)
-                ti = PaymentForm.CreateTransaction(DbUtil.Db, m.Transaction, pf.AmtToPay);
-            else
-                ti = pf.CreateTransaction(DbUtil.Db);
+            var ti = (m != null && m.Transaction != null)
+                ? PaymentForm.CreateTransaction(DbUtil.Db, m.Transaction, pf.AmtToPay)
+                : pf.CreateTransaction(DbUtil.Db);
 
             int? pid = null;
             if (m != null)
             {
-                m.ParseSettings();
-                var terms = Util.PickFirst(m.Terms, "");
-                if (terms.HasValue())
-                    ViewData["Terms"] = terms;
+            m.ParseSettings();
+            var terms = Util.PickFirst(m.Terms, "");
+            if (terms.HasValue())
+                ViewData["Terms"] = terms;
+
                 pid = m.UserPeopleId;
-                if (m.TranId == null)
-                    m.TranId = ti.Id;
+            if (m.TranId == null)
+                m.TranId = ti.Id;
             }
 
             if (!pid.HasValue)
@@ -248,6 +276,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (pds.Count() == 1)
                     pid = pds.Single().PeopleId.Value;
             }
+
             TransactionResponse tinfo;
             var gw = DbUtil.Db.Gateway(pf.testing);
 
@@ -255,32 +284,46 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 tinfo = gw.PayWithVault(pid ?? 0, pf.AmtToPay ?? 0, pf.Description, ti.Id, pf.Type);
             else
             {
-                if (pf.Type == PaymentType.Ach)
-                    tinfo = gw.PayWithCheck(pid ?? 0, pf.AmtToPay ?? 0, pf.Routing, pf.Account, pf.Description, ti.Id,
-                        pf.Email, pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.City, pf.State, pf.Zip,
-                        pf.Phone);
-                else
-                    tinfo = gw.PayWithCreditCard(pid ?? 0, pf.AmtToPay ?? 0, pf.CreditCard,
-                        DbUtil.NormalizeExpires(pf.Expires).ToString2("MMyy"),
-                        pf.Description, ti.Id,
-                        pf.CCV, pf.Email, pf.First, pf.Last, pf.Address, pf.City, pf.State, pf.Zip, pf.Phone);
+                tinfo = pf.Type == PaymentType.Ach
+                    ? PayWithCheck(gw, pf, pid, ti)
+                    : PayWithCreditCard(gw, pf, pid, ti);
             }
 
             ti.TransactionId = tinfo.TransactionId;
-            if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
+
+            if (ti.Testing.GetValueOrDefault() && !ti.TransactionId.Contains("(testing)"))
                 ti.TransactionId += "(testing)";
+
             ti.Approved = tinfo.Approved;
-            if (ti.Approved == false)
+
+            if (!ti.Approved.GetValueOrDefault())
             {
                 ti.Amtdue += ti.Amt;
                 if (m != null && m.OnlineGiving())
                     ti.Amtdue = 0;
             }
+
             ti.Message = tinfo.Message;
             ti.AuthCode = tinfo.AuthCode;
             ti.TransactionDate = DateTime.Now;
+
             DbUtil.Db.SubmitChanges();
             return ti;
+        }
+
+        private static TransactionResponse PayWithCreditCard(IGateway gateway, PaymentForm paymentForm, int? peopleId, Transaction transaction)
+        {
+            return gateway.PayWithCreditCard(peopleId ?? 0, paymentForm.AmtToPay ?? 0, paymentForm.CreditCard,
+                DbUtil.NormalizeExpires(paymentForm.Expires).ToString2("MMyy"), paymentForm.Description, transaction.Id,
+                paymentForm.CVV, paymentForm.Email, paymentForm.First, paymentForm.Last, paymentForm.Address, paymentForm.Address2,
+                paymentForm.City, paymentForm.State, paymentForm.Country, paymentForm.Zip, paymentForm.Phone);
+        }
+
+        private static TransactionResponse PayWithCheck(IGateway gw, PaymentForm pf, int? pid, Transaction ti)
+        {
+            return gw.PayWithCheck(pid ?? 0, pf.AmtToPay ?? 0, pf.Routing, pf.Account, pf.Description, ti.Id, pf.Email,
+                pf.First, pf.MiddleInitial, pf.Last, pf.Suffix, pf.Address, pf.Address2, pf.City, pf.State, pf.Country,
+                pf.Zip, pf.Phone);
         }
 
         public enum ConfirmEnum
@@ -288,7 +331,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Confirm,
             ConfirmAccount,
         }
-        private ConfirmEnum ConfirmTransaction(OnlineRegModel m, string TransactionID)
+
+        private ConfirmEnum ConfirmTransaction(OnlineRegModel m, string transactionId)
         {
             m.ParseSettings();
             if (m.List.Count == 0)
@@ -367,7 +411,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 sb.Append(e);
                 if (!t.TransactionId.HasValue())
                 {
-                    t.TransactionId = TransactionID;
+                    t.TransactionId = transactionId;
                     if (m.testing == true && !t.TransactionId.Contains("(testing)"))
                         t.TransactionId += "(testing)";
                 }
@@ -419,7 +463,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else if (t.TransactionGateway.ToLower() == "serviceu")
             {
-                t.TransactionId = TransactionID;
+                t.TransactionId = transactionId;
                 if (m.testing == true && !t.TransactionId.Contains("(testing)"))
                     t.TransactionId += "(testing)";
                 t.Message = "Transaction Completed";
@@ -436,7 +480,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 if (!t.TransactionId.HasValue())
                 {
-                    t.TransactionId = TransactionID;
+                    t.TransactionId = transactionId;
                     if (m.testing == true && !t.TransactionId.Contains("(testing)"))
                         t.TransactionId += "(testing)";
                 }

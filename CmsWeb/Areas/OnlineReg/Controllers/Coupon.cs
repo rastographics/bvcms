@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (c.Canceled.HasValue)
                 return Json(new { error = "coupon canceled" });
 
-            var ti = pf.CreateTransaction(DbUtil.Db, c.Amount);
+            var ti = pf.CreateTransaction(DbUtil.Db, Math.Min(c.Amount ?? 0m, pf.AmtToPay ?? 0m));
 			if (m != null) // Start this transaction in the chain
 			{
                 m.HistoryAdd("ApplyCoupon");

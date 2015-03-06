@@ -84,6 +84,12 @@ namespace CmsWeb.Areas.Search.Models
                         where (r.Completed ?? false)
                         select r;
                     break;
+                case "InProgress":
+                    q = from r in q
+                        let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == r.OrganizationId)
+                        where (r.Completed ?? false)
+                        select r;
+                    break;
             }
             switch(SearchParameters.Active.Value)
             {

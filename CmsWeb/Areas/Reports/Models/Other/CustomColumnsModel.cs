@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -16,19 +15,20 @@ namespace CmsWeb.Areas.Reports.Models
             var xdoc = XDocument.Parse(Resource1.CustomColumns);
             if (xdoc.Root == null)
                 return;
-            Joins = getJoins(xdoc.Root.Element("Joins"));
-            Columns = getColumns(xdoc.Root.Element("Columns"));
-            SpecialColumns = getColumns(xdoc.Root.Element("SpecialColumns"));
+            Joins = GetJoins(xdoc.Root.Element("Joins"));
+            Columns = GetColumns(xdoc.Root.Element("Columns"));
+            SpecialColumns = GetColumns(xdoc.Root.Element("SpecialColumns"));
         }
 
-        private Dictionary<string, string> getJoins(XElement ele)
+        private static Dictionary<string, string> GetJoins(XContainer ele)
         {
             if (ele == null)
                 return new Dictionary<string, string>();
             var ret = ele.Elements().ToDictionary(j => j.Attribute("name").Value, j => j.Value);
             return ret;
         }
-        private Dictionary<string, CustomColumn> getColumns(XElement ele)
+
+        private static Dictionary<string, CustomColumn> GetColumns(XContainer ele)
         {
             if (ele == null)
                 return new Dictionary<string, CustomColumn>();

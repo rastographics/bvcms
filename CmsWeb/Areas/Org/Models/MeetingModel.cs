@@ -42,7 +42,12 @@ namespace CmsWeb.Areas.Org.Models
 
         public IEnumerable<RollsheetModel.AttendInfo> Attends(bool sorted = false, string highlight = null)
         {
-            return RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers);
+            var rm = highlight == null 
+                ? RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers)
+                : RollsheetModel.RollListHighlight(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers, highlight);
+
+            return rm;
+//            return RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers);
 //            var rm = highlight == null 
 //                ? RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers)
 //                : RollsheetModel.RollListHighlight(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers, highlight);

@@ -8,58 +8,58 @@
 <form class="non-modal ajax" method="post">
   @Html.Partial("PagerHidden", Model)
   @Html.HiddenFor2(m => m.PeopleId)
-  <div class="pagination pagination-mini">
+    <div class="pagination pagination-mini">
     @Html.Partial("Pager3", Model)
-  </div>
-  <table class="table table-striped table-condensed">
-    <thead>
-      <tr>
+    </div>
+    <table class="table table-striped table-condensed">
+        <thead>
+            <tr>
         <th>@Model.SortLink(sentlabel)</th>
         <th>@Model.SortLink("From")</th>
-        @if (access)
-        {
+                @if (access)
+                {
           <th>@Model.SortLink("Count")</th>
-        }
+                }
         <th>@Model.SortLink("Subject")</th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach (var i in Model.ViewList())
-      {
-        <tr>
-          <td>
-            @if (!i.Sent.HasValue && !i.SendWhen.HasValue)
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model.ViewList())
             {
-              <span class="red" title="failed @i.Queued.FormatDateTm()">i.Queued.FormatDate())</span>
+                <tr>
+                    <td>
+                        @if (!i.Sent.HasValue && !i.SendWhen.HasValue)
+                        {
+                            <span class="red" title="failed @i.Queued.FormatDateTm()">i.Queued.FormatDate())</span>
+                        }
+                        else
+                        {
+                            var dt = sentlabel == "Scheduled" ? i.SendWhen : i.Sent;
+                            @dt.FormatDate()<br/>@dt.ToString2("t")
+                        }
+                    </td>
+                    <td>@i.From<br/>
+                        @i.FromAddr
+                    </td>
+                    @if (access)
+                    {
+                        <td>@i.Count</td>
+                    }
+                    <td>
+                        @if (access)
+                        {
+                            <a target="viewemail" href="/Emails/Details/@i.Id">@i.Subject</a>
+                        }
+                        else
+                        {
+                            <a target="viewemail" href="/Person2/ViewEmail/@i.Id">@i.Subject</a>
+                        }
+                    </td>
+                </tr>
             }
-            else
-            {
-              var dt = sentlabel == "Scheduled" ? i.SendWhen : i.Sent;
-              <span title="@dt.FormatDateTm()">@dt.FormatDate()</span>
-            }
-          </td>
-          <td>@i.From<br/>
-            @i.FromAddr
-          </td>
-          @if (access)
-          {
-            <td>@i.Count</td>
-          }
-          <td>
-            @if (access)
-            {
-              <a target="viewemail" href="/Emails/Details/@i.Id">@i.Subject</a>
-            }
-            else
-            {
-              <a target="viewemail" href="/Person2/ViewEmail/@i.Id">@i.Subject</a>
-            }
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
-  <div class="pagination pagination-mini">
+        </tbody>
+    </table>
+    <div class="pagination pagination-mini">
     @Html.Partial("Pager3", Model)
-  </div>
+    </div>
 </form>

@@ -42,7 +42,6 @@ namespace CmsWeb.Models
 */
             while (csv.ReadNextRecord())
             {
-                string rt, ac;
                 var a = csv[5].Split('/');
                 list.Add(new depositRecord()
                 {

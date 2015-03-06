@@ -6,11 +6,8 @@ namespace CmsWeb.MobileAPI
 	{
 		public int peopleID;
 		public int userID;
+		public string userName;
 
-		public int givingEnabled = 1;
-		public int givingAllowCC = 0;
-		public int givingOrgID = 0;
-
-		public List<MobileRole> roles;
+		public List<string> roles;
 	}
 }

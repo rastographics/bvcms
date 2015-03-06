@@ -35,6 +35,7 @@ namespace CmsData.API
         public int? Year { get; set; }
         public int? FundId { get; set; }
         public bool IncludeUnclosedBundles { get; set; }
+        public bool Mobile { get; set; }
         public int Online { get; set; }
 
         internal string Campus;
@@ -129,7 +130,13 @@ namespace CmsData.API
                              Description = c.ContributionDesc,
                              CheckNo = c.CheckNo,
                              FamilyId = c.Person.FamilyId,
-                             MemberStatus = c.Person.MemberStatus.Description
+                             MemberStatus = c.Person.MemberStatus.Description,
+                             JoinDate = c.Person.JoinDate,
+                             Address = c.Person.PrimaryAddress,
+                             Address2 = c.Person.PrimaryAddress2,
+                             City = c.Person.PrimaryCity,
+                             State = c.Person.PrimaryState,
+                             Zip = c.Person.PrimaryZip
                          };
             return q2;
         }
@@ -150,6 +157,10 @@ namespace CmsData.API
             if (!model.IncludeUnclosedBundles)
                 contributions = from c in contributions
                                 where c.BundleDetails.Any(dd => dd.BundleHeader.BundleStatusId == BundleStatusCode.Closed)
+                                select c;
+            if (model.Mobile)
+                contributions = from c in contributions
+                                where c.Source > 0
                                 select c;
 
             switch (model.TaxNonTax)

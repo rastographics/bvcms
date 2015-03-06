@@ -50,7 +50,10 @@ namespace UtilityExtensions
         }
         public static bool IsHosted
         {
-            get { return ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true"; }
+            get
+            {
+                return ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true";
+            }
         }
         public static string GetConnectionString(string host)
         {

@@ -46,7 +46,7 @@
     });
 
     $("span.editable").editable("/Volunteering/Edit/", {
-        indicator: "<img src='/images/loading.gif'>",
+        indicator: "<img src='/Content/images/loading.gif'>",
         tooltip: "Click to edit...",
         style: 'display: inline',
         width: '200px',

@@ -96,15 +96,42 @@ $(function () {
             $("#ApplyCoupon").attr("disabled", "disabled");
         }
     });
+
+    function hideOrShowCvv() {
+        if ($('#CreditCard').length) {
+            if ($('#CreditCard').val().startsWith('X')) {
+                if ($('#CVV').parents('p').length) {
+                    $('#CVV').parents('p').hide();
+                    $('#findidclick').parent('div').hide();
+                }
+                else {
+                    $('#CVV').parents('tr').hide();
+                }
+            }
+
+            $('#CreditCard').change(function() {
+                if ($('#CVV').parents('p').length) {
+                    $('#CVV').parents('p').show();
+                    $('#findidclick').parent('div').show();
+                }
+                else {
+                    $('#CVV').parents('tr').show();
+                }
+            });
+        }
+    }
+
     $.ShowPaymentInfo = function (v) {
         $(".Card").hide();
         $(".Bank").hide();
-        if (v === 'C')
+        if (v === 'C') {
             $(".Card").show();
-        else if (v === 'B')
+        } else if (v === 'B') {
             $(".Bank").show();
+        }
         $("#submitit").attr("disabled", "true");
         $.EnableSubmit();
+        hideOrShowCvv();
     };
     $.EnableSubmit = function () {
         var vv;
@@ -121,10 +148,16 @@ $(function () {
         var v = $("input[name=Type]:checked").val();
         $.ShowPaymentInfo(v);
     });
+
     if ($("#allowcc").val()) {
         var v = $("input[name=Type]:checked").val();
         $.ShowPaymentInfo(v); // initial setting
     }
+
+    if ($('#CreditCard').length) {
+        hideOrShowCvv();
+    }
+
     $.validator.setDefaults({
         highlight: function (input) {
             $(input).addClass("ui-state-highlight");

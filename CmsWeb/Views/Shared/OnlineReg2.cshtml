@@ -1,6 +1,6 @@
 @if ((bool?)ViewBag.hasshell == true)
 {
-    @Html.Action("MobileAppMenu", "OnlineReg")
+    @Html.Action("Index", "MobileAppMenu", new { area = "" })
     @Html.Raw((string)ViewBag.top)
     @RenderSection("head", false)
     @RenderBody()
@@ -23,18 +23,19 @@ else
         @ViewExtensions2.FontAwesome()
         @RenderSection("head", false)
     </head>
-    <body>
-@*    @Html.Action("MobileAppMenu", "OnlineReg")*@
-    @Html.Raw((string) ViewBag.top)
-    <div class="container">
-      @RenderBody()
-    </div>
+        <body>
+      @*        @Html.Action("Index", "MobileAppMenu", new { area = "" })
+    This breaks when anybody else uses the return Message("message") *@
+      @Html.Raw((string)ViewBag.top)
+            <div class="container">
+                @RenderBody()
+            </div>
     @Html.Raw((string) ViewBag.bottom)
-    @ViewExtensions2.jQuery()
-    @ViewExtensions2.Bootstrap3()
-    @ViewExtensions2.LoDash()
-    @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
-    @RenderSection("scripts", false)
-    </body>
+            @ViewExtensions2.jQuery()
+            @ViewExtensions2.Bootstrap3()
+            @ViewExtensions2.LoDash()
+            @Fingerprint.Script("/Scripts/bundle.onlineregister.js")
+            @RenderSection("scripts", false)
+        </body>
 </html>
 }

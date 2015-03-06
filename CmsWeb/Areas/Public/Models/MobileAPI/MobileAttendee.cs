@@ -11,7 +11,9 @@ namespace CmsWeb.MobileAPI
 		public int id = 0;
 
 		public string name = "";
+		public string memberType = "";
 
+		public bool orgMember = false;
 		public bool member = false;
 		public bool attended = false;
 
@@ -19,6 +21,8 @@ namespace CmsWeb.MobileAPI
 		{
 			id = p.PeopleId;
 			name = p.Name;
+			memberType = p.CurrMemberType;
+			orgMember = p.CurrMember;
 			member = p.Member;
 			attended = p.Attended;
 

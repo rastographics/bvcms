@@ -20,7 +20,9 @@ namespace CmsWeb.Areas.Main.Models
         public int Count { get; set; }
 
         public int TagId { get; set; }
+        public int? OrgId { get; set; }
         public bool wantParents { get; set; }
+        public bool noDuplicates { get; set; }
         public bool CcParents { get; set; }
         public string FromAddress { get; set; }
         public string FromName { get; set; }
@@ -34,49 +36,109 @@ namespace CmsWeb.Areas.Main.Models
         public MassEmailer()
         {
         }
-        public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null)
+
+        public MassEmailer(int tagid, string host, string subject, bool? parents = false)
         {
             wantParents = parents ?? false;
-            CcParents = ccparents ?? false;
-            var q = DbUtil.Db.PeopleQuery(id);
-            var c = DbUtil.Db.LoadQueryById2(id);
-            var cc = c.ToClause();
-            if (!cc.ParentsOf && wantParents)
-                q = DbUtil.Db.PersonQueryParents(q);
+            var tag = DbUtil.Db.TagById(tagid);
+            TagId = tag.Id;
+            Count = tag.People(DbUtil.Db).Count();
 
-            if(CcParents)
-                q = from p in q
-                    where (p.EmailAddress ?? "") != "" 
-                        || (p.Family.HeadOfHousehold.EmailAddress ?? "") != "" 
-                        || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
-                    where (p.SendEmailAddress1 ?? true) 
-                        || (p.SendEmailAddress2 ?? false)
-                        || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
-                        || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
-                        || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
-                        || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
-                    select p;
-            else
-                q = from p in q
+        }
+        public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null, bool? nodups = null, int? orgid = null)
+        {
+            wantParents = parents ?? false;
+            noDuplicates = nodups ?? false;
+            CcParents = ccparents ?? false;
+            OrgId = orgid;
+            IQueryable<Person> q = null;
+            if (OrgId.HasValue)
+                q = from p in DbUtil.Db.PeopleQuery(DbUtil.Db.QueryInCurrentOrg().QueryId)
                     where p.EmailAddress != null
                     where p.EmailAddress != ""
                     where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
                     select p;
-            Count = q.Count();
+            else
+            {
+                q = DbUtil.Db.PeopleQuery(id);
+                var c = DbUtil.Db.LoadQueryById2(id);
+                var cc = c.ToClause();
+
+                if (!cc.PlusParentsOf && !cc.ParentsOf && wantParents)
+                    q = DbUtil.Db.PersonQueryParents(q);
+
+                if (CcParents)
+                    q = from p in q
+                        where (p.EmailAddress ?? "") != ""
+                              || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
+                              || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
+                        where (p.SendEmailAddress1 ?? true)
+                              || (p.SendEmailAddress2 ?? false)
+                              || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
+                              || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
+                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
+                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
+                        select p;
+                else
+                    q = from p in q
+                        where p.EmailAddress != null
+                        where p.EmailAddress != ""
+                        where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                        select p;
+            }
             var tag = DbUtil.Db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
             TagId = tag.Id;
+            if (noDuplicates)
+                DbUtil.Db.NoEmailDupsInTag(TagId);
+            Count = tag.People(DbUtil.Db).Count();
         }
 
-        public int CreateQueue(bool transactional = false)
+        public EmailQueue CreateQueueForOrg()
         {
             var From = new MailAddress(FromAddress, FromName);
             DbUtil.Db.CopySession();
+
+            if (!Schedule.HasValue)
+            {
+                var tag = DbUtil.Db.TagById(TagId);
+                var q = tag.People(DbUtil.Db);
+                Count = q.Count();
+                if (Count >= 300)
+                    Schedule = Util.Now.AddSeconds(10); // some time for emailqueue to be ready to go
+            }
+
+            if (!OrgId.HasValue)
+                throw new Exception("no org to email from");
+            var emailqueue = DbUtil.Db.CreateQueueForOrg(From, Subject, Body, Schedule, OrgId.Value, PublicViewable);
+            if (emailqueue == null)
+                return null;
+            emailqueue.NoReplacements = noDuplicates;
+            DbUtil.Db.SubmitChanges();
+            return emailqueue;
+        }
+        public EmailQueue CreateQueue(bool transactional = false)
+        {
+            if(OrgId.HasValue)
+                return CreateQueueForOrg();
+            var From = new MailAddress(FromAddress, FromName);
+            DbUtil.Db.CopySession();
+
+            if (!Schedule.HasValue)
+            {
+                var tag = DbUtil.Db.TagById(TagId);
+                var q = tag.People(DbUtil.Db);
+                Count = q.Count();
+                if (Count >= 300)
+                    Schedule = Util.Now.AddSeconds(10); // some time for emailqueue to be ready to go
+            }
+
             var emailqueue = DbUtil.Db.CreateQueue(From, Subject, Body, Schedule, TagId, PublicViewable, CcParents);
             if (emailqueue == null)
-                return 0;
+                return null;
+            emailqueue.NoReplacements = noDuplicates;
             emailqueue.Transactional = transactional;
             DbUtil.Db.SubmitChanges();
-            return emailqueue.Id;
+            return emailqueue;
         }
 
         public IEnumerable<SelectListItem> EmailFroms()

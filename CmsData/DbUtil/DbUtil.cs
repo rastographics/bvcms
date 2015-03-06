@@ -190,7 +190,7 @@ namespace CmsData
                 else
                     hc = string.Empty;
                 HttpRuntime.Cache.Insert(Db.Host + "topnotice", hc, null,
-                     DateTime.Now.AddMinutes(3), Cache.NoSlidingExpiration);
+                     DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
             }
             return hc;
         }

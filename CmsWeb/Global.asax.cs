@@ -13,7 +13,9 @@ using UtilityExtensions;
 using System.IO;
 using System.Threading;
 using System.Globalization;
+using System.Linq;
 using Elmah;
+using MoreLinq;
 
 namespace CmsWeb
 {
@@ -22,6 +24,7 @@ namespace CmsWeb
 
         protected void Application_Start()
         {
+            MvcHandler.DisableMvcResponseHeader = true;
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
             ModelMetadataProviders.Current = new ModelViewMetadataProvider();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -34,6 +37,7 @@ namespace CmsWeb
 
         protected void Session_Start(object sender, EventArgs e)
         {
+            //DbUtil.LogActivity("Session Starting");
             if (Util.Host.StartsWith("direct"))
                 return;
             if (User.Identity.IsAuthenticated)
@@ -153,13 +157,16 @@ namespace CmsWeb
                 else if (httpex.Message.Contains("A potentially dangerous Request.Path value was detected from the client"))
                     e.Dismiss();
             }
+
             if (ex is FileNotFoundException || ex is HttpRequestValidationException)
                 e.Dismiss();
         }
+
         public void ErrorLog_Filtering(object sender, ExceptionFilterEventArgs e)
         {
             var ex = e.Exception.GetBaseException();
             var httpex = ex as HttpException;
+
             if (httpex != null)
             {
                 var status = httpex.GetHttpCode();
@@ -172,8 +179,31 @@ namespace CmsWeb
                         "A potentially dangerous Request.Path value was detected from the client"))
                     e.Dismiss();
             }
+
             if (ex is FileNotFoundException || ex is HttpRequestValidationException)
                 e.Dismiss();
+
+            FilterOutSensitiveFormData(e);
+        }
+
+        private static void FilterOutSensitiveFormData(ExceptionFilterEventArgs e)
+        {
+            var ctx = e.Context as HttpContext;
+            if (ctx == null)
+                return;
+
+            var sensitiveFormKeys = new[] {"creditcard", "ccv", "cvv", "cardnumber", "cardcode", "password", "account", "routing"};
+
+            var sensitiveFormData = ctx.Request.Form.AllKeys.Where(
+                k => sensitiveFormKeys.Contains(k.ToLower(), StringComparer.OrdinalIgnoreCase)).ToList();
+
+            if (!sensitiveFormData.Any() || Util.IsDebug())
+                return;
+
+            var error = new Error(e.Exception, ctx);
+            sensitiveFormData.ForEach(k => error.Form.Set(k, "*****"));
+            ErrorLog.GetDefault(ctx).Log(error);
+            e.Dismiss();
         }
     }
 }

@@ -33,9 +33,7 @@ namespace CmsWeb.Models
         {
             get
             {
-                var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-                var supporters = ConfigurationManager.AppSettings["SupportPeople"];
-                return cs != null && supporters != null;
+                return Util.IsHosted;
             }
         }
 

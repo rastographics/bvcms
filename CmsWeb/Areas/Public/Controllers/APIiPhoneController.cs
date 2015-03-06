@@ -65,13 +65,15 @@ namespace CmsWeb.Areas.Public.Controllers
             return new OrgResult(Util.UserPeopleId);
         }
         [HttpPost]
-        public ActionResult RollList( int id, DateTime datetime )
+        public ActionResult RollList(int id, DateTime datetime )
         {
 			if (!Authenticate())
                 return Content("not authorized");
 			var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
             DbUtil.LogActivity("iphone RollList {0} {1:g}".Fmt(id, datetime));
-            var meeting = Meeting.FetchOrCreateMeeting(DbUtil.Db, id, datetime);
+
+            var mid = DbUtil.Db.CreateMeeting(id, datetime);
+            var meeting = DbUtil.Db.LoadMeetingById(mid);
             return new RollListResult(meeting);
         }
         [HttpPost]
@@ -79,7 +81,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
 			if (!Authenticate())
                 return Content("not authorized");
-            DbUtil.LogActivity("iphone attend(org:{0} person:{1} {2})".Fmt(id, PeopleId, Present));
+            DbUtil.LogActivity("iphone attend(mt:{0} person:{1} {2})".Fmt(id, PeopleId, Present));
             Attend.RecordAttendance(PeopleId, id, Present);
             DbUtil.Db.UpdateMeetingCounters(id);
             return new EmptyResult();
@@ -235,40 +237,17 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
 			var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
 
-            RecordAttend2Extracted(id, PeopleId, true, datetime, u);
-            return new RollListResult(id, datetime);
+            var mid = RecordAttend2Extracted(id, PeopleId, true, datetime, u);
+            var meeting = DbUtil.Db.LoadMeetingById(mid);
+            return new RollListResult(meeting, PeopleId);
         }
-        private static void RecordAttend2Extracted(int id, int PeopleId, bool Present, DateTime dt, User u)
+        private static int RecordAttend2Extracted(int id, int PeopleId, bool Present, DateTime dt, User u)
         {
-            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == id && m.MeetingDate == dt);
-            if (meeting == null)
-            {
-                meeting = new CmsData.Meeting
-                {
-                    OrganizationId = id,
-                    MeetingDate = dt,
-                    CreatedDate = Util.Now,
-                    CreatedBy = u.UserId,
-                    GroupMeetingFlag = false,
-                };
-                DbUtil.Db.Meetings.InsertOnSubmit(meeting);
-                DbUtil.Db.SubmitChanges();
-                var acr = (from s in DbUtil.Db.OrgSchedules
-                               where s.OrganizationId == id
-                               where s.SchedTime.Value.TimeOfDay == dt.TimeOfDay
-                               where s.SchedDay == (int)dt.DayOfWeek
-                               select s.AttendCreditId).SingleOrDefault();
-				meeting.AttendCreditId = acr;
-            }
-            Attend.RecordAttendance(PeopleId, meeting.MeetingId, Present);
+            var meetingId = DbUtil.Db.CreateMeeting(id, dt);
+            Attend.RecordAttendance(PeopleId, meetingId, Present);
             DbUtil.Db.UpdateMeetingCounters(id);
-            DbUtil.LogActivity("Mobile RecAtt o:{0} p:{1} u:{2} a:{3}".Fmt(meeting.OrganizationId, PeopleId, Util.UserPeopleId, Present));
-//            var n = DbUtil.Db.Attends.Count(a => a.MeetingId == meeting.MeetingId && a.AttendanceFlag == true);
-//            if (n == 0)
-//            {
-//                DbUtil.Db.Meetings.DeleteOnSubmit(meeting);
-//                DbUtil.Db.SubmitChanges();
-//            }
+            DbUtil.LogActivity("Mobile RecAtt o:{0} p:{1} u:{2} a:{3}".Fmt(id, PeopleId, Util.UserPeopleId, Present));
+            return meetingId;
         }
 
         private static bool Authenticate(string role = null, bool checkOrgMembersOnly = false)

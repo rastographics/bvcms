@@ -25,7 +25,9 @@ using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Web;
 using CmsWeb.Code;
+using Elmah;
 using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -48,9 +50,16 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(content);
         }
 
-        public ActionResult ContentEdit(int id)
+        public ActionResult ContentEdit(int? id, bool? snippet)
         {
-            var content = DbUtil.ContentFromID(id);
+            if (!id.HasValue)
+                throw new HttpException(404, "No ID found.");
+            var content = DbUtil.ContentFromID(id.Value);
+            if (snippet == true)
+            {
+                content.Snippet = true;
+                DbUtil.Db.SubmitChanges();
+            }
             return RedirectEdit(content);
         }
 
@@ -71,48 +80,34 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [HttpPost]
-        public ActionResult ContentUpdate(int id, string name, string title, string body, int? roleid, string stayaftersave = null)
+        public ActionResult ContentUpdate(int id, string name, string title, string body, bool? snippet, int? roleid, string stayaftersave = null)
         {
             var content = DbUtil.ContentFromID(id);
             content.Name = name;
             content.Title = title;
             content.Body = body;
             content.RoleID = roleid ?? 0;
-
-            string sRenderType = DbUtil.Db.Setting("RenderEmailTemplate", "none");
+            content.Snippet = snippet;
 
             if (content.TypeID == ContentTypeCode.TypeEmailTemplate)
             {
-                //                switch (sRenderType)
-                //                {
-                //                    case "Local":// Uses local server resources 
-                //                    case "true":
-                var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
-                var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
-                if (ii == null)
-                    content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
-                //                        break;
-                //
-                //                    case "Service": // Used to send HTML to another server for offloaded processing
-                //                        var coll = new NameValueCollection();
-                //                        coll.Add("sHTML", body.Replace("\r", "").Replace("\n", "").Replace("\t", ""));
-                //
-                //                        var wc = new WebClient();
-                //                        var resp = wc.UploadValues(ConfigurationManager.AppSettings["CreateThumbnailService"], "POST",
-                //                            coll);
-                //
-                //                        ii = ImageData.DbUtil.Db.Images.FirstOrDefault(i => i.Id == content.ThumbID);
-                //                        if (ii != null) 
-                //                            ImageData.Image.UpdateImageFromBits(content.ThumbID, resp);
-                //                        else 
-                //                            content.ThumbID = ImageData.Image.NewImageFromBits(resp).Id;
-                //                        break;
-                //                }
-                content.DateCreated = DateTime.Now;
+                try
+                {
+                    var captureWebPageBytes = CaptureWebPageBytes(body, 100, 150);
+                    var ii = ImageData.Image.UpdateImageFromBits(content.ThumbID, captureWebPageBytes);
+                    if (ii == null)
+                        content.ThumbID = ImageData.Image.NewImageFromBits(captureWebPageBytes).Id;
+                    content.DateCreated = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+					var errorLog = ErrorLog.GetDefault(null);
+					errorLog.Log(new Error(ex));
+                }
             }
             DbUtil.Db.SubmitChanges();
 
-            if (string.Compare(content.Name, "StandardExtraValues2", ignoreCase: true) == 0)
+            if (string.Compare(content.Name, "StandardExtraValues2", StringComparison.OrdinalIgnoreCase) == 0)
             {
                 try
                 {
@@ -212,7 +207,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult SavePythonScript(string name, string body)
         {
-            var content = DbUtil.Content(name);
+            var content = DbUtil.Db.Content(name, "", ContentTypeCode.TypePythonScript);
             content.Body = body;
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

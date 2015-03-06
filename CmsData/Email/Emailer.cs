@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
+using System.Transactions;
 using System.Web;
 using HtmlAgilityPack;
 
@@ -21,14 +22,6 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
-        //        public string CmsHost
-        //        {
-        //            get
-        //            {
-        //                var h = ConfigurationManager.AppSettings["cmshost"];
-        //                return h.Replace("{church}", Host, ignoreCase: true);
-        //            }
-        //        }
         public void Email(string from, Person p, string subject, string body)
         {
             Email(from, p, null, subject, body, false);
@@ -132,7 +125,7 @@ namespace CmsData
                 var notifyids = (from o in Organizations
                                  where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving 
                                  select o.NotifyIds).SingleOrDefault();
-                if(notifyids.HasValue())
+                if (notifyids.HasValue())
                     return PeopleFromPidString(notifyids).ToList();
             }
             return (from u in Users
@@ -209,12 +202,41 @@ namespace CmsData
         {
             return CreateQueue(Util.UserPeopleId, From, subject, body, schedule, tagId, publicViewable, ccParents: ccParents);
         }
+        public EmailQueue CreateQueueForOrg(MailAddress from, string subject, string body, DateTime? schedule, int orgid, bool publicViewable)
+        {
+            var emailqueue = new EmailQueue
+            {
+                Queued = DateTime.Now,
+                FromAddr = from.Address,
+                FromName = from.DisplayName,
+                Subject = subject,
+                Body = body,
+                SendWhen = schedule,
+                QueuedBy = Util.UserPeopleId,
+                Transactional = false,
+                PublicX = publicViewable,
+                SendFromOrgId = orgid
+            };
+            EmailQueues.InsertOnSubmit(emailqueue);
+            SubmitChanges();
+
+            if (body.Contains("http://publiclink", ignoreCase: true))
+            {
+                var link = ServerLink("/EmailView/" + emailqueue.Id);
+                var re = new Regex("http://publiclink", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+                emailqueue.Body = re.Replace(body, link);
+            }
+            SubmitChanges();
+            return emailqueue;
+        }
         public EmailQueue CreateQueue(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, int tagId, bool publicViewable, int? goerSupporterId = null, bool? ccParents = null)
         {
             var tag = TagById(tagId);
             if (tag == null)
                 return null;
 
+            using(var tran = new TransactionScope())
+            {
             var emailqueue = new EmailQueue
             {
                 Queued = DateTime.Now,
@@ -231,17 +253,11 @@ namespace CmsData
             EmailQueues.InsertOnSubmit(emailqueue);
             SubmitChanges();
 
-            if (body.Contains("{tracklinks}", true))
-            {
-                body = body.Replace("{tracklinks}", "", ignoreCase: true);
-                emailqueue.Body = createClickTracking(emailqueue.Id, body);
-                SubmitChanges();
-            }
-
             if (body.Contains("http://publiclink", ignoreCase: true))
             {
-                var link = Util.URLCombine(CmsHost, "/EmailView/" + emailqueue.Id);
-                var re = new Regex("http://publiclink", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
+                    var link = ServerLink("/EmailView/" + emailqueue.Id);
+                    var re = new Regex("http://publiclink",
+                        RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
                 emailqueue.Body = re.Replace(body, link);
             }
 
@@ -285,7 +301,9 @@ namespace CmsData
                 });
             }
             SubmitChanges();
+                tran.Complete();
             return emailqueue;
+        }
         }
         public EmailQueue CreateQueueForSupporters(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, List<GoerSupporter> list, bool publicViewable)
         {
@@ -338,11 +356,11 @@ namespace CmsData
             fromname = !fromname.HasValue() ? emailqueue.FromAddr : emailqueue.FromName.Replace("\"", "");
             var from = Util.FirstAddress(emailqueue.FromAddr, fromname);
 
-
             try
             {
                 var p = LoadPersonById(emailqueueto.PeopleId);
-                var m = new EmailReplacements(this, emailqueue.Body, from);
+                var body = DoClickTracking(emailqueue);
+                var m = new EmailReplacements(this, body, from);
                 var text = m.DoReplacements(p, emailqueueto);
                 var aa = m.ListAddresses;
 
@@ -416,9 +434,34 @@ namespace CmsData
                 return;
             }
 
-            var m = new EmailReplacements(this, emailqueue.Body, from);
+            var body = DoClickTracking(emailqueue);
+            var m = new EmailReplacements(this, body, from);
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
+
+            if (emailqueue.SendFromOrgId.HasValue)
+            {
+                var q2 = from om in OrganizationMembers
+                         where om.OrganizationId == emailqueue.SendFromOrgId
+                         where om.MemberTypeId != MemberTypeCode.InActive
+                         where om.MemberTypeId != MemberTypeCode.Prospect
+                         where (om.Pending ?? false) == false
+                         let p = om.Person
+                         where p.EmailAddress != null
+                         where p.EmailAddress != ""
+                         where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                         select om.PeopleId;
+                foreach (var pid in q2)
+                {
+                    emailqueue.EmailQueueTos.Add(new EmailQueueTo
+                    {
+                        PeopleId = pid,
+                        OrgId = emailqueue.SendFromOrgId,
+                        Guid = Guid.NewGuid(),
+                    });
+                }
+                SubmitChanges();
+            }
 
             var q = from To in EmailQueueTos
                     where To.Id == emailqueue.Id
@@ -474,28 +517,36 @@ namespace CmsData
             SubmitChanges();
         }
 
+        private string DoClickTracking(EmailQueue emailqueue)
+        {
+            var body = emailqueue.Body;
+            if (body.Contains("{tracklinks}", true))
+            {
+                body = body.Replace("{tracklinks}", "", ignoreCase: true);
+                body = createClickTracking(emailqueue.Id, body);
+            }
+            return body;
+        }
+
         private void NotifySentEmails(string From, string FromName, string subject, int count, int id)
         {
             if (Setting("sendemail", "true") != "false")
             {
                 var from = new MailAddress(From, FromName);
                 string subj = "sent emails: " + subject;
-                var uri = new Uri(new Uri(CmsHost), "/Emails/Details/" + id);
-                string body = @"<a href=""{0}"">{1} emails sent</a>".Fmt(uri, count);
+                var link = ServerLink("/Emails/Details/" + id);
+                string body = @"<a href=""{0}"">{1} emails sent</a>".Fmt(link, count);
                 var sysFromEmail = Util.SysFromEmail;
 
                 Util.SendMsg(sysFromEmail, CmsHost, from,
                     subj, body, Util.ToMailAddressList(from), id, null);
-                var host = uri.Host;
                 Util.SendMsg(sysFromEmail, CmsHost, from,
-                    host + " " + subj, body,
+                    Host + " " + subj, body,
                     Util.SendErrorsTo(), id, null);
             }
         }
 
-        private static string CLICK_TRACK = "https://{0}.bvcms.com/ExternalServices/ct?l={1}";
-
-        private static string createClickTracking(int emailID, string input)
+        private string createClickTracking(int emailID, string input)
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(input);
@@ -520,10 +571,10 @@ namespace CmsData
                             Hash = hash,
                             Link = att.Value
                         };
-                    DbUtil.Db.EmailLinks.InsertOnSubmit(emailLink);
-                    DbUtil.Db.SubmitChanges();
+                    EmailLinks.InsertOnSubmit(emailLink);
+                    SubmitChanges();
 
-                    att.Value = CLICK_TRACK.Fmt(Util.Host, HttpUtility.UrlEncode(hash));
+                    att.Value = ServerLink("/ExternalServices/ct?l={0}".Fmt(HttpUtility.UrlEncode(hash)));
 
                     linkIndex++;
 

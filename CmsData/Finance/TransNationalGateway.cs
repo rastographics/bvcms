@@ -11,6 +11,7 @@ using CmsData.Finance.TransNational.Transaction.Auth;
 using CmsData.Finance.TransNational.Transaction.Sale;
 using CmsData.Finance.TransNational.Transaction.Void;
 using CmsData.Finance.TransNational.Vault;
+using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsData.Finance
@@ -37,8 +38,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _userName = db.Setting("TNBUsername", "");
-                _password = db.Setting("TNBPassword", "");
+                _userName = db.GetSetting("TNBUsername", "");
+                _password = db.GetSetting("TNBPassword", "");
 
                 if (string.IsNullOrWhiteSpace(_userName))
                     throw new Exception("TNBUsername setting not found, which is required for TransNational.");
@@ -108,12 +109,12 @@ namespace CmsData.Finance
                 _password,
                 new CreditCard
                 {
-                    FirstName = paymentInfo.FirstName ?? person.FirstName,
-                    LastName = paymentInfo.LastName ?? person.LastName,
                     CardNumber = cardNumber,
                     Expiration = expiration,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = paymentInfo.FirstName ?? person.FirstName,
+                        LastName = paymentInfo.LastName ?? person.LastName,
                         Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                         City = paymentInfo.City ?? person.PrimaryCity,
                         State = paymentInfo.State ?? person.PrimaryState,
@@ -126,7 +127,7 @@ namespace CmsData.Finance
             var response = createCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to create the credit card for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to create the credit card for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
 
             return response.VaultId.ToInt();
         }
@@ -141,12 +142,12 @@ namespace CmsData.Finance
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 new CreditCard
                 {
-                    FirstName = paymentInfo.FirstName ?? person.FirstName,
-                    LastName = paymentInfo.LastName ?? person.LastName,
                     CardNumber = cardNumber,
                     Expiration = expiration,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = paymentInfo.FirstName ?? person.FirstName,
+                        LastName = paymentInfo.LastName ?? person.LastName,
                         Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                         City = paymentInfo.City ?? person.PrimaryCity,
                         State = paymentInfo.State ?? person.PrimaryState,
@@ -159,7 +160,7 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the credit card for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to update the credit card for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         private void UpdateCreditCardVault(Person person, PaymentInfo paymentInfo, string expiration)
@@ -171,10 +172,10 @@ namespace CmsData.Finance
                 _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 expiration,
-                paymentInfo.FirstName ?? person.FirstName,
-                paymentInfo.LastName ?? person.LastName,
                 new BillingAddress
                 {
+                    FirstName = paymentInfo.FirstName ?? person.FirstName,
+                    LastName = paymentInfo.LastName ?? person.LastName,
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                     City = paymentInfo.City ?? person.PrimaryCity,
                     State = paymentInfo.State ?? person.PrimaryState,
@@ -186,8 +187,8 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the credit card expiration date for people id: {0}".Fmt(
-                        person.PeopleId));
+                    "TransNational failed to update the credit card expiration date for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(
+                        person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         private int CreateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
@@ -202,6 +203,8 @@ namespace CmsData.Finance
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = paymentInfo.FirstName ?? person.FirstName,
+                        LastName = paymentInfo.LastName ?? person.LastName,
                         Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                         City = paymentInfo.City ?? person.PrimaryCity,
                         State = paymentInfo.State ?? person.PrimaryState,
@@ -214,7 +217,7 @@ namespace CmsData.Finance
             var response = createAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to create the ach account for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to create the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
 
             return response.VaultId.ToInt();
         }
@@ -230,6 +233,8 @@ namespace CmsData.Finance
                 "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
                 new BillingAddress
                 {
+                    FirstName = paymentInfo.FirstName ?? person.FirstName,
+                    LastName = paymentInfo.LastName ?? person.LastName,
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                     City = paymentInfo.City ?? person.PrimaryCity,
                     State = paymentInfo.State ?? person.PrimaryState,
@@ -241,7 +246,7 @@ namespace CmsData.Finance
             var response = updateAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the ach account for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to update the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         private void UpdateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
@@ -259,6 +264,8 @@ namespace CmsData.Finance
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = paymentInfo.FirstName ?? person.FirstName,
+                        LastName = paymentInfo.LastName ?? person.LastName,
                         Address1 = paymentInfo.Address ?? person.PrimaryAddress,
                         City = paymentInfo.City ?? person.PrimaryCity,
                         State = paymentInfo.State ?? person.PrimaryState,
@@ -271,7 +278,7 @@ namespace CmsData.Finance
             var response = updateAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the ach account for people id: {0}".Fmt(person.PeopleId));
+                    "TransNational failed to update the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         public void RemoveFromVault(int peopleId)
@@ -292,6 +299,7 @@ namespace CmsData.Finance
             paymentInfo.TbnBankVaultId = null;
             paymentInfo.MaskedCard = null;
             paymentInfo.MaskedAccount = null;
+            paymentInfo.Expires = null;
             db.SubmitChanges();
         }
 
@@ -304,7 +312,7 @@ namespace CmsData.Finance
 
             var response = deleteVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
-                throw new Exception("TransNational failed to delete the vault for people id: {0}".Fmt(person.PeopleId));
+                throw new Exception("TransNational failed to delete the vault for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
         }
 
         public TransactionResponse VoidCreditCardTransaction(string reference)
@@ -356,24 +364,26 @@ namespace CmsData.Finance
         }
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
-            int tranid, string cardcode, string email, string first, string last, string addr, string city, string state,
-            string zip, string phone)
+            int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
+            string country, string zip, string phone)
         {
             var creditCardAuthRequest = new CreditCardAuthRequest(
                 _userName,
                 _password,
                 new CreditCard
                 {
-                    FirstName = first,
-                    LastName = last,
                     CardNumber = cardnumber,
                     Expiration = expires,
                     CardCode = cardcode,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = first,
+                        LastName = last,
                         Address1 = addr,
+                        Address2 = addr2,
                         City = city,
                         State = state,
+                        Country = country,
                         Zip = zip,
                         Email = email,
                         Phone = phone
@@ -397,23 +407,25 @@ namespace CmsData.Finance
 
         public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires,
             string description, int tranid, string cardcode, string email, string first, string last, string addr,
-            string city, string state, string zip, string phone)
+            string addr2, string city, string state, string country, string zip, string phone)
         {
             var creditCardSaleRequest = new CreditCardSaleRequest(
                 _userName,
                 _password,
                 new CreditCard
                 {
-                    FirstName = first,
-                    LastName = last,
                     CardNumber = cardnumber,
                     Expiration = expires,
                     CardCode = cardcode,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = first,
+                        LastName = last,
                         Address1 = addr,
+                        Address2 = addr2,
                         City = city,
                         State = state,
+                        Country = country,
                         Zip = zip,
                         Email = email,
                         Phone = phone
@@ -437,7 +449,7 @@ namespace CmsData.Finance
 
         public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct,
             string description, int tranid, string email, string first, string middle, string last, string suffix,
-            string addr, string city, string state, string zip, string phone)
+            string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var achSaleRequest = new AchSaleRequest(
                 _userName,
@@ -449,9 +461,13 @@ namespace CmsData.Finance
                     RoutingNumber = routing,
                     BillingAddress = new BillingAddress
                     {
+                        FirstName = first,
+                        LastName = last,
                         Address1 = addr,
+                        Address2 = addr2,
                         City = city,
                         State = state,
+                        Country = country,
                         Zip = zip,
                         Email = email,
                         Phone = phone

@@ -14,8 +14,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         // reached by the paylink in the confirmation email
         // which is produced in EnrollAndConfirm
+        [HttpGet]
         public ActionResult PayAmtDue(string q)
         {
+            Response.NoCache();
+
             if (!q.HasValue())
                 return Message("unknown");
             var id = Util.Decrypt(q).ToInt2();
@@ -69,11 +72,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             return View("PayAmtDue/ServiceU", pm);
         }
-        public void ConfirmDuePaidTransaction(Transaction ti, string TransactionID, bool sendmail)
+
+        private static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
         {
             var Db = DbUtil.Db;
             var org = Db.LoadOrganizationById(ti.OrgId);
-            ti.TransactionId = TransactionID;
+            ti.TransactionId = transactionId;
             if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
                 ti.TransactionId += "(testing)";
 
@@ -86,10 +90,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     var om = Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
                     if (om == null)
                         continue;
-                    DbUtil.Db.SubmitChanges();
+                    Db.SubmitChanges();
                     if (org.IsMissionTrip == true)
                     {
-                        DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                        Db.GoerSenderAmounts.InsertOnSubmit(
                             new GoerSenderAmount 
                             {
                                 Amount = ti.Amt,
@@ -98,18 +102,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                                 OrgId = org.OrganizationId,
                                 SupporterId = pi.PeopleId,
                             });
-                        var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+                        var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
                         var fund = setting.DonationFundId;
-                        p.PostUnattendedContribution(DbUtil.Db, ti.Amt ?? 0, fund, 
+                        p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund, 
                             "SupportMissionTrip: org={0}; goer={1}".Fmt(org.OrganizationId, pi.PeopleId), typecode: BundleTypeCode.Online);
                     }
                     var pay = amt;
-                    if (org.IsMissionTrip == true)
-                        Db.ExecuteCommand(@"
-INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created ) VALUES  ( {0}, {1}, {1}, {2}, {3} )",
-                             org.OrganizationId, p.PeopleId, pay, DateTime.Now);
-                    else
-                        ti.Amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
+                    if (org.IsMissionTrip != true)
+                        ti.Amtdue = PaymentForm.AmountDueTrans(Db, ti);
 
                     var sb = new StringBuilder();
                     sb.AppendFormat("{0:g} ----------\n", Util.Now);
@@ -178,6 +178,7 @@ INSERT dbo.GoerSenderAmounts ( OrgId , SupporterId , GoerId , Amount , Created )
             return View("PayAmtDue/Confirm", ti);
         }
 
+        [HttpGet]
         public ActionResult PayDueTest(string q)
         {
             if (!q.HasValue())

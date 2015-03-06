@@ -3,11 +3,12 @@
   var qid = ViewBag.queryid;
   var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
   var oid = ViewBag.oid;
-  var custom = (new CustomReportsModel(oid)).ReportList(DbUtil.Db).ToList();
+    var custom = (new CustomReportsModel(DbUtil.Db, oid)).ReportList().ToList();
+    var isAdmin = User.IsInRole("Admin") || User.IsInRole("Design");
 }
 <ul class="dropdown-menu dropdown-div-reports">
   <li>
-    @if (((bool?) ViewBag.OrganizationContext) == true)
+        @if (((bool?)ViewBag.OrganizationContext) == true)
     {
     <div class="row text-center">
       <i>The <a class="qid">blue links</a> apply to the filtered list of people, the <a>green links</a> apply to the organization.</i>
@@ -81,6 +82,7 @@
         <li><a href="/Reports/PictureDirectory/@qid" class="qid">Picture Directory</a></li>
         <li><a href="/Reports/CompactPictureDirectory/@qid" class="qid">Compact Picture Directory</a></li>
         <li class="hideAlt"><a href="/Reports/CompactPictureDirectory2/@qid" class="qid">Compact Picture Directory 2</a></li>
+                <li class="hideAlt2"><a href="/Reports/FamilyPictureDirectory/@qid" class="qid">Family Picture Directory</a></li>
 
       </ul>
       <ul class="span4 unstyled">
@@ -105,13 +107,74 @@
         @if (custom.Count > 0)
         {
           <li class="header">Custom Reports</li>
+                    if (isAdmin)
+                    {
           foreach (var r in custom)
           {
+                            <li>
+                                <div class="toolbar-custom-reports">
+                                    <a class="run-custom-report" target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a>
+                                    @if (r != "AllColumns")
+                                    {
+                                        <span>
+                                            <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid, queryId = qid})"><i class="fa fa-pencil"></i></a>
+                                            <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-trash-o"></i></a>
+                                        </span>
+                                    }
+                                </div>
+                            </li>
+                            <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+                        }
+                        <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new { Area = "Reports", orgId = oid, queryId = qid }, null)</li>
+                    }
+                    else
+                    {
+                        foreach (var r in custom)
+                        {
             <li><a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a></li>
             <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
           }
         }
+                }
       </ul>
     </div>
   </li>
 </ul>
+
+
+<style>
+    .toolbar-custom-reports {
+        padding: 0 20px;
+    }
+
+        .toolbar-custom-reports > .run-custom-report {
+            display: inline-block;
+            white-space: nowrap;
+            width: 80%;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        .toolbar-custom-reports span {
+            float: right;
+        }
+</style>
+
+<script type="text/javascript">
+    $('.toolbar-custom-reports a[data-action="delete"]').click(function(e) {
+        e.preventDefault();
+
+        var $reportNode = $(this).parent().parent();
+        var reportToDelete = $reportNode.text().trim();
+
+        bootbox.confirm('Are you sure you want to delete this report? (' + reportToDelete + ')', function(result) {
+            if (result) {
+                $.post('@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports"})', { reportName: reportToDelete }).done(function (data) {
+                    if (data === 'success') {
+                        $reportNode.remove();
+                    }
+                });
+            }
+        });
+    });
+</script>

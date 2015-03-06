@@ -1,0 +1,27 @@
+﻿@model IEnumerable<CmsData.MergeHistory>
+<form class="non-modal ajax" method="post">
+  <a href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
+  <table class="table table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>When</th>
+        <th>Who</th>
+        <th>From Person</th>
+        <th>To Person</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var c in Model)
+      {
+        <tr>
+          <td>@c.Dt.ToString("g")</td>
+          <td><a href="/Person2/@c.WhoId"></a>@c.WhoName</td>
+          <td>@c.FromName (@c.FromId)</td>
+          <td><a href="/Person2/@c.ToId"></a>@c.ToName</td>
+          <td>@c.Action</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</form>

@@ -64,17 +64,10 @@
     <tr>
         <th class="right"> Date of Birth: </th>
         <td> @Html.TextBox("birthdate", Model.m.birthdate, new { title = "YYYY or MM or MM/DD or MM/DD/YY" })</td>
-    @if (ViewExtensions2.DbSetting("UseStatusFlags", "false").ToBool())
-    {
         <th> Status Flags: </th>
         <td>
             @Html.DropDownList("statusflags", new SelectList(CodeValueModel.StatusFlags(), "Code", "Value"), new {multiple = "multiple"})
         </td>
-    }
-    else
-    {
-        <td></td><td></td>
-    }
     </tr>
     <tr>
 @*        <th class="right"> </th>

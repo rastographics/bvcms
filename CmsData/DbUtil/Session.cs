@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using UtilityExtensions;
@@ -22,22 +23,22 @@ namespace CmsData
         }
         public static void SetSessionObj(string key, object value)
         {
-            if (HttpContext.Current != null)
+                if (HttpContext.Current != null)
                 HttpContext.Current.Session[key] = value;
-        }
+            }
 
         public static string CurrentTag
         {
             get { return GetSessionObj(STR_CurrentTag, STR_DefaultTag).ToString(); }
             set { SetSessionObj(STR_CurrentTag, value); }
-        }
+            }
 
         const string STR_CurrentOrganization = "CurrentOrganization";
         public static CurrentOrg CurrentOrganization
-        {
+            {
             get { return (CurrentOrg)GetSessionObj(STR_CurrentOrganization, null); }
             set { SetSessionObj(STR_CurrentOrganization, value); }
-        }
+            }
 
         const string STR_ActiveGroupId = "ActiveGroup";
         public static int[] CurrentGroups
@@ -86,6 +87,14 @@ namespace CmsData
         {
             get { return GetSessionObj(STR_ActivePersonId, 0).ToInt(); }
             set { SetSessionObj(STR_ActivePersonId, value); }
+            }
+        const string STR_FromMobile = "source";
+        public static string FromMobile
+        {
+            get
+            {
+                return (string)GetSessionObj(STR_FromMobile, null);
+            }
         }
         public static int? CurrentTagOwnerId
         {
@@ -114,7 +123,7 @@ namespace CmsData
         {
             get { return (bool)GetSessionObj(STR_OrgMembersOnly, false); }
             set { SetSessionObj(STR_OrgMembersOnly, value); }
-        }
+            }
         public const string STR_OrgLeadersOnly = "OrgLeadersOnly";
         public static bool OrgLeadersOnly
         {
@@ -217,6 +226,26 @@ namespace CmsData
                 if (HttpContext.Current != null)
                     HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
             }
+        }
+        public static bool UseNewFeature
+        {
+            get
+            {
+                // this works at the database level, not as a user preference
+                // useful for turning the new feature on, then having a quik way to put it back in case something goes badly
+                return DbUtil.Db.Setting("UseNewFeature", "true").ToBool();
+            }
+            set
+            {
+                DbUtil.Db.SetSetting("UseNewFeature", value ? "false" : "true");
+                // be sure to SubmitChanges
+            }
+        }
+        public static void Log2File(string file, string data)
+        {
+            string fn = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+            fn = Util.URLCombine(fn, file);
+            System.IO.File.AppendAllText(fn, data);
         }
     }
 }

@@ -3,12 +3,14 @@
     <li><a href="#user" data-toggle="tab" class="ajax"><span>User Account</span></a></li>
     <li><a href="#changes" data-toggle="tab" class="ajax"><span>Changes</span></a></li>
     <li><a href="#duplicates" data-toggle="tab" class="ajax"><span>Duplicates</span></a></li>
+    <li><a href="#mergehistory" data-toggle="tab" class="ajax"><span>Merge History</span></a></li>
 </ul>
 <div class="tab-content">
-  <div class="tab-pane" id="user" data-link="/Person2/Users/@Model.PeopleId"></div>
+    <div class="tab-pane" id="user" data-link="/Person2/Users/@Model.PeopleId"></div>
   <div class="tab-pane" id="changes" data-link="/Person2/Changes">
     @Helper.HiddenId("PeopleId", Model.PeopleId)
   </div>
-  <div class="tab-pane" id="duplicates" data-link="/Person2/Duplicates/@Model.PeopleId"></div>
+    <div class="tab-pane" id="duplicates" data-link="/Person2/Duplicates/@Model.PeopleId"></div>
+    <div class="tab-pane" id="mergehistory" data-link="/Person2/MergeHistory/@Model.PeopleId"></div>
 </div>
 

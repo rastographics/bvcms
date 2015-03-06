@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -13,6 +14,8 @@ namespace CmsWeb.Models
 {
     public partial class OnlineRegModel
     {
+        private Regex donationtext = new Regex(@"\{donation(?<text>.*)donation\}", RegexOptions.Singleline | RegexOptions.Multiline);
+
         public void EnrollAndConfirm()
         {
             if (masterorgid.HasValue)
@@ -84,24 +87,33 @@ namespace CmsWeb.Models
                 });
             }
 
+            if (SupportMissionTrip && GoerId == _list[0].PeopleId)
+            {
+                // reload transaction because it is not in this context
+                var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == GoerId && mm.OrganizationId == Orgid);
+                if(om != null && om.TranId.HasValue)
+                    ti.OriginalId = om.TranId;
+            }
+            else
+            {
+                ti.OriginalTrans.TransactionPeople.AddRange(pids2);
+            }
+
             ti.Emails = Util.EmailAddressListToString(elist);
             ti.Participants = participants.ToString();
             ti.TransactionDate = DateTime.Now;
-            ti.OriginalTrans.TransactionPeople.AddRange(pids2);
 
             if (org.IsMissionTrip == true)
             {
-                paylink = Util.ResolveServerUrl("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
+                paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
             }
             else
             {
                 var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
-                paylink = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
+                paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
             }
-
             var pids = pids2.Select(pp => pp.PeopleId);
 
-            var details = new StringBuilder("<table>");
             for (var i = 0; i < List.Count; i++)
             {
                 var p = List[i];
@@ -113,14 +125,11 @@ namespace CmsWeb.Models
                 var others = string.Join(",", q.ToArray());
 
                 var om = p.Enroll(ti, paylink, testing, others);
-                details.AppendFormat(@"
-<tr><td colspan='2'><hr/></td></tr>
-<tr><th valign='top'>{0}</th><td>
-{1}
-</td></tr>", i + 1, p.PrepareSummaryText(ti));
-
                 om.RegisterEmail = p.EmailAddress;
-                om.TranId = ti.OriginalId;
+
+                if(om.TranId == null)
+                    om.TranId = ti.OriginalId;
+
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
                 if (grouptojoin > 0)
                 {
@@ -136,8 +145,30 @@ namespace CmsWeb.Models
                 if (p.IsCreateAccount())
                     p.CreateAccount();
             }
-            details.Append("\n</table>\n");
             Db.SubmitChanges();
+
+            var details = new StringBuilder("<table cellpadding='4'>");
+            if (ti.Amt > 0)
+                details.AppendFormat(@"
+<tr><td colspan='2'>
+    <table cellpadding='4'>
+        <tr><td>Total Paid</td><td>Total Due</td></tr>
+        <tr><td align='right'>{0:c}</td><td align='right'>{1:c}</td></tr>
+    </table>
+    </td>
+</tr>
+", amtpaid, amtdue);
+
+            for (var i = 0; i < List.Count; i++)
+            {
+                var p = List[i];
+                details.AppendFormat(@"
+<tr><td colspan='2'><hr/></td></tr>
+<tr><th valign='top'>{0}</th><td>
+{1}
+</td></tr>", i + 1, p.PrepareSummaryText(ti));
+            }
+            details.Append("\n</table>\n");
 
             var DivisionName = org.DivisionName;
 
@@ -154,7 +185,7 @@ namespace CmsWeb.Models
             var message = Util.PickFirst(EmailMessage, "no message");
 
             message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p0, DivisionName, org.OrganizationName, Location, message);
-            subject = subject.Replace("{org}", org.OrganizationName);
+            subject = subject.Replace("{org}", Header);
 
             message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
                 .Replace("{tickets}", List[0].ntickets.ToString())
@@ -167,24 +198,24 @@ namespace CmsWeb.Models
             else
                 message = message.Replace("{paylink}", "You have a zero balance.");
 
-            var re = new Regex(@"\{donation(?<text>.*)donation\}", RegexOptions.Singleline | RegexOptions.Multiline);
             if (SupportMissionTrip && TotalAmount() > 0)
             {
                 var p = List[0];
                 ti.Fund = p.setting.DonationFund();
                 var goerid = p.Parent.GoerId ?? p.MissionTripGoerId;
-                if (goerid > 0 && p.MissionTripSupportGoer > 0)
+                if (p.MissionTripSupportGoer > 0)
                 {
-                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                        new GoerSenderAmount
-                        {
-                            Amount = p.MissionTripSupportGoer.Value,
-                            GoerId = goerid,
-                            Created = DateTime.Now,
-                            OrgId = p.orgid.Value,
-                            SupporterId = p.PeopleId.Value,
-                            NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
-                        });
+                    var gsa = new GoerSenderAmount
+                    {
+                        Amount = p.MissionTripSupportGoer.Value,
+                        Created = DateTime.Now,
+                        OrgId = p.orgid.Value,
+                        SupporterId = p.PeopleId.Value,
+                        NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
+                    };
+                    if(goerid > 0)
+                        gsa.GoerId = goerid;
+                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(gsa);
                     if (p.Parent.GoerSupporterId.HasValue)
                     {
                         var gs = DbUtil.Db.GoerSupporters.Single(gg => gg.Id == p.Parent.GoerSupporterId);
@@ -197,7 +228,7 @@ namespace CmsWeb.Models
                             p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
                             "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid), tranid: ti.Id);
                         // send notices
-                        if (!p.MissionTripNoNoticeToGoer)
+                        if (goerid > 0 && !p.MissionTripNoNoticeToGoer)
                         {
                             var goer = DbUtil.Db.LoadPersonById(goerid.Value);
                             Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
@@ -273,11 +304,11 @@ namespace CmsWeb.Models
                     p.person.PrimaryZip);
                 if (!ti.TransactionId.StartsWith("Coupon"))
                     p.person.PostUnattendedContribution(DbUtil.Db, ti.Donate.Value, p.setting.DonationFundId, desc, tranid: ti.Id);
-                var ma = re.Match(message);
+                var ma = donationtext.Match(message);
                 if (ma.Success)
                 {
                     var v = ma.Groups["text"].Value;
-                    message = re.Replace(message, v);
+                    message = donationtext.Replace(message, v);
                 }
                 message = message.Replace("{donation}", ti.Donate.ToString2("N2"));
                 // send donation confirmations
@@ -285,7 +316,7 @@ namespace CmsWeb.Models
                     "${0:N2} donation received from {1}".Fmt(ti.Donate, Transaction.FullName(ti)));
             }
             else
-                message = re.Replace(message, "");
+                message = donationtext.Replace(message, "");
 
             Db.CurrentOrg.Id = Orgid;
             // send confirmations
@@ -295,17 +326,21 @@ namespace CmsWeb.Models
 
             Db.SubmitChanges();
             // notify the staff
+            var n = 0;
             foreach (var p in List)
             {
+                var tt = pids2.Single(vv => vv.PeopleId == p.PeopleId);
                 Db.Email(Util.PickFirst(p.person.FromEmail, NotifyIds[0].FromEmail), NotifyIds, Header,
-                    @"{6}{0} has registered for {1}<br/>
-Feepaid for this registrant: {2:C}<br/>
+                    @"{7}{0} has registered for {1}<br/>
+Total Fee for this registrant: {2:C}<br/>
 Total Fee for this registration: {3:C}<br/>
-AmountDue: {4:C}<br/>
-<pre>{5}</pre>".Fmt(p.person.Name,
+Total Fee paid today: {4:C}<br/>
+AmountDue: {5:C}<br/>
+<pre>{6}</pre>".Fmt(p.person.Name,
                         Header,
-                        amtpaid,
+                        p.TotalAmount(),
                         TotalAmount(),
+                        amtpaid,
                         amtdue, // Amount Due
                         p.PrepareSummaryText(ti),
                         usedAdmins ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
@@ -434,6 +469,32 @@ AmountDue: {4:C}<br/>
                 message = message.Replace("{sessiontotal}", amtpaid.ToString("c"));
                 message = message.Replace("{participants}", details);
                 Db.CurrentOrg.Id = p.orgid;
+
+                if (ti.Donate > 0)
+                {
+                    var pd = List[donor.Value];
+                    ti.Fund = pd.setting.DonationFund();
+                    var desc = "{0}; {1}; {2}, {3} {4}".Fmt(
+                        pd.person.Name,
+                        pd.person.PrimaryAddress,
+                        pd.person.PrimaryCity,
+                        pd.person.PrimaryState,
+                        pd.person.PrimaryZip);
+                    if (!ti.TransactionId.StartsWith("Coupon"))
+                        pd.person.PostUnattendedContribution(DbUtil.Db, ti.Donate.Value, pd.setting.DonationFundId, desc, tranid: ti.Id);
+                    var ma = donationtext.Match(message);
+                    if (ma.Success)
+                    {
+                        var v = ma.Groups["text"].Value;
+                        message = donationtext.Replace(message, v);
+                    }
+                    message = message.Replace("{donation}", ti.Donate.ToString2("N2"));
+                    // send donation confirmations
+                    Db.Email(NotifyIds[0].FromEmail, NotifyIds, emailSubject + "-donation",
+                        "${0:N2} donation received from {1}".Fmt(ti.Donate, Transaction.FullName(ti)));
+                }
+                else
+                    message = donationtext.Replace(message, "");
 
                 // send confirmations
                 if (emailSubject != "DO NOT SEND")

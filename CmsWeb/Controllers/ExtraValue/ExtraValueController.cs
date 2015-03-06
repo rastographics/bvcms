@@ -1,5 +1,6 @@
 using System.Web;
 using System.Web.Mvc;
+using CmsData;
 using CmsWeb.Models.ExtraValues;
 using UtilityExtensions;
 
@@ -19,6 +20,7 @@ namespace CmsWeb.Controllers
         {
             var m = new ExtraValueModel(pk.ToInt(), table);
             m.EditExtra(type, HttpUtility.UrlDecode(name), value);
+
             return new EmptyResult();
         }
 

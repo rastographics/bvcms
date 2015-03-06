@@ -99,7 +99,15 @@
                 }
                 @if (t.People.HasValue())
                 {
-                  <br/>@Html.Raw(t.People.Replace("\n", "<br>"))
+                  var ppl = t.People.Replace("\n", "<br>");
+                  if (User.IsInRole("Developer"))
+                  {
+                    <br/><a class="setpeople" href="/Transactions/SetPeople/@t.Id">@Html.Raw(ppl)</a>
+                  }
+                  else
+                  {
+                    <br/>@Html.Raw(ppl)
+                  }
                 }
             </td>
             <td class="right" nowrap="nowrap">@(t.Payment.ToString2("N"))</td>

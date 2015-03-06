@@ -769,7 +769,7 @@ namespace CmsWeb.Areas.Org.Models
                 var leader = DbUtil.Db.LoadPersonById(p.Key);
                 foreach (var m in meetings)
                 {
-                    string orgname = CmsData.Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
+                    string orgname = Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
                     sb.AppendFormat("<a href='{0}'>{1} - {2}</a><br/>\n", 
                         DbUtil.Db.ServerLink("/Meeting/" + m.MeetingId), 
                         orgname, m.Lastmeeting.FormatDateTm());

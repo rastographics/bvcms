@@ -64,8 +64,10 @@
             @Html.EditorFor(m => m.Last)
             @Html.EditorFor(m => m.Suffix, new { classes = "narrow" })
             @Html.EditorFor(m => m.Address)
+            @Html.EditorFor(m => m.Address2)
             @Html.EditorFor(m => m.City)
             @Html.EditorFor(m => m.State)
+            @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries })
             @Html.EditorFor(m => m.Zip)
             @Html.EditorFor(m => m.Phone)
             @Html.EditorFor(m => m.Email)
@@ -95,7 +97,7 @@
                 <div class="Card">
                     @Html.EditorFor(m => m.CreditCard, new { autocomplete = Model.AutocompleteOnOff })
                     @Html.EditorFor(m => m.Expires, new { classes = "narrow" })
-                    @Html.EditorFor(m => m.CCV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
+                    @Html.EditorFor(m => m.CVV, new { classes = "narrow", autocomplete = Model.AutocompleteOnOff })
                 </div>
             }
             @if (Model.NoEChecksAllowed == false)

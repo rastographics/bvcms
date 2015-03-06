@@ -30,7 +30,7 @@ namespace UtilityExtensions
             if (From == null)
                 From = FirstAddress(senderrorsto);
             var problemDomains = (ConfigurationManager.AppSettings["ProblemDomainsForEmail"] ?? "").Split(',');
-            if (problemDomains.Any(dd => From.Host == dd || to.Any(ee => ee.Host == dd)))
+            if (problemDomains.Any(dd => From.Host.ToLower() == dd || to.Any(ee => ee.Host.ToLower() == dd)))
             {
                 if (!SysFromEmail.HasValue())
                     SysFromEmail = "mailer@bvcms.com";
@@ -69,7 +69,7 @@ namespace UtilityExtensions
                 msg.AddAddr(msg.From);
                 msg.AddAddr(Util.FirstAddress(senderrorsto));
                 msg.Subject += "-- bad addr for {0}({1})".Fmt(CmsHost, pid);
-                BadEmailLink = "<p><a href='{0}Person2/{1}'>bad addr for</a></p>\n".Fmt(CmsHost, pid);
+                BadEmailLink = "<p><a href='{0}/Person2/{1}'>bad addr for</a></p>\n".Fmt(CmsHost, pid);
             }
 
             var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
@@ -90,10 +90,6 @@ namespace UtilityExtensions
             {
                 var smtp = Util.Smtp();
                 smtp.Send(msg);
-            }
-            catch (Exception ex)
-            {
-                throw;
             }
             finally
             {

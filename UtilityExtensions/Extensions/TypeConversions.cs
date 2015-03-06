@@ -106,6 +106,11 @@ namespace UtilityExtensions
                 return (bool)o;
             return false;
         }
+        public static int ToInt(this double d)
+        {
+            var i = Convert.ToInt32(d);
+            return i;
+        }
         public static int? ToInt2(this object o)
         {
             int? r = null;

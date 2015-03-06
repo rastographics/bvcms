@@ -1,33 +1,40 @@
-﻿@using UtilityExtensions;
-@using CmsWeb;
+﻿@using CmsData
 @model CmsWeb.Models.EmailModel
-@Html.Hidden("filter")
-<table class="@ViewExtensions2.GridClass">
-<thead>
-  <tr>
-    <th>Name</th>
-    <th>Address</th><th>Opens</th>
-    @if (Model.queue.CCParents == true)
-    {
-    <th>Parent1</th>
-    <th>Parent2</th>
-    }
-  </tr>
-</thead>
-<tbody>
-@foreach(var p in Model.Recipients())
+@if (Model.SendFromOrg)
 {
-  <tr>
-    <td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
-    <td>@p.address</td>
-    <td>@p.nopens</td>
-    @if (Model.queue.CCParents == true)
-    {
-      <td>@p.parent1name</td>
-      <td>@p.parent2name</td>
-    }
-  </tr>    
+  <h3>Emails will be sent from @Model.SendFromOrgName (@Model.queue.SendFromOrgId)</h3>
 }
-</tbody>
-</table>
-@{Html.RenderPartial("Pager2", Model.Pager);}
+else
+{
+  @Html.Hidden("filter")
+  <table class="@ViewExtensions2.GridClass">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Address</th>
+        <th>Opens</th>
+        @if (Model.queue.CCParents == true)
+        {
+          <th>Parent1</th>
+          <th>Parent2</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var p in Model.Recipients())
+      {
+        <tr>
+          <td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
+          <td>@p.address</td>
+          <td>@p.nopens</td>
+          @if (Model.queue.CCParents == true)
+          {
+            <td>@p.parent1name</td>
+            <td>@p.parent2name</td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+  @Html.Partial("Pager2", Model.Pager)
+}

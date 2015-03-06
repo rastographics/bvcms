@@ -81,8 +81,8 @@ input.tt-hint {
 }
 
 #navGlobal {
-    background: #777; /* backup color in case the next one is not supported */
-    background: rgba(50, 51, 52, 0.7); /* the 0.7 is the opacity component */
+    background: #fff; /* backup color in case the next one is not supported */
+    background: rgba(255, 255, 255, 0.9); /* the 0.9 is the opacity component */
 }
 
     #navGlobal .form-search {
@@ -344,7 +344,7 @@ form.form.form-horizontal.ajax div.form-actions {
 
 
     #navGlobal .btn {
-        color: #fff;
+        color: #333;
         -webkit-text-shadow: none;
         text-shadow: none;
     }
@@ -352,7 +352,7 @@ form.form.form-horizontal.ajax div.form-actions {
 
 
     #navGlobal .nav a.dropdown-toggle {
-        color: #fff;
+        color: #333;
     }
 
 
@@ -1074,7 +1074,7 @@ table.pad0 td {
 }
 
 #clientheader {
-    color: white;
+    color: #333;
 }
 
     #clientheader h1, #clientheader h2 {
@@ -1104,7 +1104,7 @@ table.pad0 td {
     }
 
 div.logo {
-    background-image: url(/Content/images/bvcms-logo-on-dark.png);
+    background-image: url(/Content/images/tps_logo.png);
     background-position: left center;
 }
 
@@ -1259,7 +1259,7 @@ div.logo {
 }
 
 div.growlUI {
-    background: url(/images/check48.png) no-repeat 10px 10px;
+    background: url(/Content/images/check48.png) no-repeat 10px 10px;
     top: 100px;
 }
 

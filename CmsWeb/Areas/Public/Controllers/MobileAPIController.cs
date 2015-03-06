@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
@@ -19,32 +19,42 @@ namespace CmsWeb.Areas.Public.Controllers
 {
     public class MobileAPIController : Controller
     {
-        private UserValidationResult AuthenticateUser()
+        public ActionResult Exists()
         {
-            var hasInvalidAuthHeaders = (string.IsNullOrEmpty(Request.Headers["Authorization"]) &&
-                // the below checks are only necessary for the old iOS application
-                                         (string.IsNullOrEmpty(Request.Headers["username"]) ||
-                                          string.IsNullOrEmpty(Request.Headers["password"])));
+            return Content("1");
+        }
 
+        private UserValidationResult AuthenticateUser(bool requirePin = false)
+        {
+            // Username and password checks are only necessary for the old iOS application
+            var hasInvalidAuthHeaders = (string.IsNullOrEmpty(Request.Headers["Authorization"]) && (string.IsNullOrEmpty(Request.Headers["username"]) || string.IsNullOrEmpty(Request.Headers["password"])));
             var hasInvalidSessionTokenHeader = string.IsNullOrEmpty(Request.Headers["SessionToken"]);
 
             if (hasInvalidAuthHeaders && hasInvalidSessionTokenHeader)
-                throw new HttpException(400, "Either Authorization headers or a SessionToken header are required.");
+            {
+                //DbUtil.LogActivity("authentication headers bad");
+                return UserValidationResult.Invalid(UserValidationStatus.ImproperHeaderStructure, "Either the Authorization or SessionToken headers are required.", null);
+            }
 
-            return AccountModel.AuthenticateMobile();
+            //DbUtil.LogActivity("calling authenticatemobile2");
+            return AccountModel.AuthenticateMobile2(requirePin: requirePin, checkOrgMembersOnly: true);
         }
 
         [HttpPost]
-        public ActionResult Authenticate()
+        public ActionResult Authenticate(string data)
         {
-            var result = AuthenticateUser();
+            //DbUtil.LogActivity("calling authenticateuser");
+            var result = AuthenticateUser(requirePin: true);
 
             if (!result.IsValid)
-                return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
+                return AuthorizationError(result);
+
+            MobileSettings ms = getUserInfo();
 
             var br = new BaseMessage();
             br.error = 0;
-            br.data = result.User.ApiSessions.Single().SessionToken.ToString();
+            br.data = JsonConvert.SerializeObject(ms);
+            br.token = result.User.ApiSessions.Single().SessionToken.ToString();
             return br;
         }
 
@@ -53,24 +63,36 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var result = AuthenticateUser();
 
-            var br = new BaseMessage();
             if (!result.IsValid)
-                return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
+                return AuthorizationError(result);
 
-            // TODO: optionally validate the API type call with different timeouts (i.e. giving might only be 2 minutes versus 30 minutes for everything else)
-            //var dataIn = BaseMessage.createFromString(data);
-
+            var br = new BaseMessage();
             br.error = 0;
-
             return br;
         }
 
         [HttpPost]
-        public ActionResult ResetSessionToken()
+        public ActionResult ExpireSessionToken(string data)
         {
             var sessionToken = Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
-                throw new HttpException(400, "The SessionToken header is required.");
+                return BaseMessage.createErrorReturn("SessionToken header is required.", BaseMessage.API_ERROR_IMPROPER_HEADER_STRUCTURE);
+
+            AccountModel.ExpireSessionToken(sessionToken);
+
+            Session.Abandon();
+
+            var br = new BaseMessage();
+            br.error = 0;
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult ResetSessionToken(string data)
+        {
+            var sessionToken = Request.Headers["SessionToken"];
+            if (string.IsNullOrEmpty(sessionToken))
+                return BaseMessage.createErrorReturn("SessionToken header is required.", BaseMessage.API_ERROR_IMPROPER_HEADER_STRUCTURE);
 
             var pinHeader = Request.Headers["PIN"];
             var authorizationHeader = Request.Headers["Authorization"];
@@ -82,59 +104,34 @@ namespace CmsWeb.Areas.Public.Controllers
                 Request.Headers.Remove("SessionToken");
 
                 if (string.IsNullOrEmpty(authorizationHeader))
-                    throw new HttpException(400, "Either the Authorization or PIN header is required because the session is getting reset.");
+                    return BaseMessage.createErrorReturn("Either the Authorization or PIN header is required because the session is getting reset.", BaseMessage.API_ERROR_IMPROPER_HEADER_STRUCTURE);
             }
 
             var result = AccountModel.ResetSessionExpiration(sessionToken);
-            var br = new BaseMessage();
 
             if (!result.IsValid)
                 return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
 
+            AuthenticateUser(requirePin: true);
+
+            MobileSettings ms = getUserInfo();
+
+            var br = new BaseMessage();
             br.error = 0;
+            br.data = JsonConvert.SerializeObject(ms);
             return br;
         }
 
         [HttpPost]
-        public ActionResult CheckLogin(string data)
+        public ActionResult GivingLink(string data)
         {
-            var result = AuthenticateUser();
-            if (!result.IsValid) return AuthorizationError(result);
+            var givingOrgId = DbUtil.Db.Organizations
+                 .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
+                 .Select(x => x.OrganizationId).FirstOrDefault();
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_LOGIN)
-                return BaseMessage.createTypeErrorReturn();
-
-            var givingOrg = (from e in DbUtil.Db.Organizations
-                             where e.RegistrationTypeId == 8
-                             select e).FirstOrDefault();
-
-            var roles = from r in DbUtil.Db.UserRoles
-                        where r.UserId == Util.UserId
-                        orderby r.Role.RoleName
-                        select new MobileRole
-                        {
-                            id = r.RoleId,
-                            name = r.Role.RoleName
-                        };
-
-            var ms = new MobileSettings();
-
-            ms.peopleID = Util.UserPeopleId ?? 0;
-            ms.userID = Util.UserId;
-
-            ms.givingEnabled = DbUtil.Db.Setting("EnableMobileGiving", "true") == "true" ? 1 : 0;
-            ms.givingAllowCC = DbUtil.Db.Setting("NoCreditCardGiving", "false") == "false" ? 1 : 0;
-            ms.givingOrgID = givingOrg != null ? givingOrg.OrganizationId : 0;
-            ms.roles = roles.ToList();
-
-            // Everything is in order, start the return
             var br = new BaseMessage();
+            br.data = Util.CmsHost2 + "OnlineReg/" + givingOrgId;
             br.error = 0;
-            br.id = Util.UserPeopleId ?? 0;
-            br.data = JsonConvert.SerializeObject(ms);
-
             return br;
         }
 
@@ -143,10 +140,6 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
-
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_GIVING_ONE_TIME_LINK_GIVING)
-                return BaseMessage.createTypeErrorReturn();
 
             var givingOrgId = DbUtil.Db.Organizations
                 .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
@@ -169,10 +162,6 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
-
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_GIVING_ONE_TIME_LINK_MANAGED_GIVING)
-                return BaseMessage.createTypeErrorReturn();
 
             var managedGivingOrgId = DbUtil.Db.Organizations
                 .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
@@ -197,10 +186,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid) return AuthorizationError(result);
 
             var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_REGISTRATION_ONE_TIME_LINK)
-                return BaseMessage.createTypeErrorReturn();
-
-            var orgId = dataIn.data.ToInt();
+            var orgId = dataIn.argInt;
 
             var ot = GetOneTimeLink(orgId, result.User.PeopleId.GetValueOrDefault());
 
@@ -213,6 +199,7 @@ namespace CmsWeb.Areas.Public.Controllers
             br.error = 0;
             return br;
         }
+
         [HttpPost]
         public ActionResult OneTimeRegisterLink2(string data)
         {
@@ -220,9 +207,6 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid) return AuthorizationError(result);
 
             var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_REGISTRATION_ONE_TIME_LINK)
-                return BaseMessage.createTypeErrorReturn();
-
             var orgId = dataIn.data.ToInt();
 
             var ot = GetOneTimeLink(orgId, result.User.PeopleId.GetValueOrDefault());
@@ -232,9 +216,26 @@ namespace CmsWeb.Areas.Public.Controllers
             //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink2 {0}, {1}".Fmt(OrgId, PeopleId));
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink2/" + ot.Id.ToCode();
+            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/{0}?showfamily=true".Fmt(ot.Id.ToCode());
             br.error = 0;
             return br;
+        }
+
+        private MobileSettings getUserInfo()
+        {
+            var roles = from r in DbUtil.Db.UserRoles
+                        where r.UserId == Util.UserId
+                        orderby r.Role.RoleName
+                        select r.Role.RoleName;
+
+            MobileSettings ms = new MobileSettings();
+
+            ms.peopleID = Util.UserPeopleId ?? 0;
+            ms.userID = Util.UserId;
+            ms.userName = Util.UserFullName;
+            ms.roles = roles.ToList();
+
+            return ms;
         }
 
         [HttpPost]
@@ -244,27 +245,21 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_PEOPLE_SEARCH)
-                return BaseMessage.createTypeErrorReturn();
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostSearch mps = JsonConvert.DeserializeObject<MobilePostSearch>(dataIn.data);
 
-            // Everything is in order, start the return
-            var mps = JsonConvert.DeserializeObject<MobilePostSearch>(dataIn.data);
-
-            var br = new BaseMessage();
+            BaseMessage br = new BaseMessage();
 
             var m = new SearchModel(mps.name, mps.comm, mps.addr);
 
             br.error = 0;
-            br.type = BaseMessage.API_TYPE_PEOPLE_SEARCH;
             br.count = m.Count;
 
             switch (dataIn.device)
             {
                 case BaseMessage.API_DEVICE_ANDROID:
                     {
-                        var mpl = new Dictionary<int, MobilePerson>();
+                        Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
 
                         MobilePerson mp;
 
@@ -280,7 +275,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 case BaseMessage.API_DEVICE_IOS:
                     {
-                        var mp = new List<MobilePerson>();
+                        List<MobilePerson> mp = new List<MobilePerson>();
 
                         foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
                         {
@@ -293,58 +288,103 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             return br;
         }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public JsonResult RegCategories(string id)
+        {
+            var a = id.Split('-');
+            string val = null;
+            if (a.Length > 0)
+            {
+                var org = DbUtil.Db.LoadOrganizationById(a[1].ToInt());
+                if (org != null)
+                    val = org.AppCategory ?? "Other";
+            }
+            var categories = new Dictionary<string, string>();
+            var lines = DbUtil.Db.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
+            var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            var line = re.Match(lines);
+            while (line.Success)
+            {
+                var code = line.Groups[1].Value;
+                var text = line.Groups[2].Value.TrimEnd();
+                categories.Add(code, text);
+                line = line.NextMatch();
+            }
+            if(!categories.ContainsKey("Other"))
+                categories.Add("Other", "Registrations");
+            if(val.HasValue())
+                categories.Add("selected", val);
+            return Json(categories);
+        }
         private List<MobileRegistrationCategory> GetRegistrations()
         {
-            var categories = new List<MobileRegistrationCategory>();
-            var q = from o in DbUtil.Db.ViewAppRegistrations.ToList()
+            var registrations = (from o in DbUtil.Db.ViewAppRegistrations
+                                 let sort = o.PublicSortOrder == null || o.PublicSortOrder.Length == 0 ? "10" : o.PublicSortOrder
                     select new MobileRegistration
                     {
                         OrgId = o.OrganizationId, 
                         Name = o.Title ?? o.OrganizationName,
                         UseRegisterLink2 = o.UseRegisterLink2 ?? false, 
                         Description = o.Description,
-                        PublicSortOrder = o.PublicSortOrder
-                    };
-            foreach (var line in DbUtil.Db.Content("AppRegistrations", "\tRegistrations").SplitLines())
+                                     PublicSortOrder = sort,
+                                     Category = o.AppCategory,
+                                     RegStart = o.RegStart,
+                                     RegEnd = o.RegEnd
+                                 }).ToList();
+
+            var categories = new Dictionary<string, string>();
+            var lines = DbUtil.Db.Content("AppRegistrations", "Other\tRegistrations").TrimEnd();
+            var re = new Regex(@"^(\S*)\s+(.*)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            var line = re.Match(lines);
+            while (line.Success)
             {
-                var a = line.Split('\t');
-                var prefix = a[0].TrimEnd(':');
-                var title = a[1];
-                var r = (from mm in q
-                         where mm.Category == prefix
-                         orderby mm.PublicSortOrder
+                categories.Add(line.Groups[1].Value, line.Groups[2].Value.TrimEnd());
+                line = line.NextMatch();
+            }
+            if(!categories.ContainsKey("Other"))
+                categories.Add("Other", "Registrations");
+            var list = new List<MobileRegistrationCategory>();
+            var dt = Util.Now;
+            foreach (var cat in categories)
+            {
+                var current = (from mm in registrations
+                               where mm.Category == cat.Key
+                               where mm.RegStart <= dt
+                               orderby mm.PublicSortOrder, mm.Description
+                               select mm).ToList();
+                if (current.Count > 0)
+                    list.Add(new MobileRegistrationCategory()
+            {
+                        Current = true,
+                        Title = cat.Value,
+                        Registrations = current
+                    });
+
+                var future = (from mm in registrations
+                              where mm.Category == cat.Key
+                              where mm.RegStart > dt
+                              orderby mm.PublicSortOrder, mm.Description
                          select mm).ToList();
-                if(r.Any())
-                    categories.Add(new MobileRegistrationCategory()
+                if (future.Count > 0)
+                    list.Add(new MobileRegistrationCategory()
                     {
-                        Title = title, 
-                        Registrations = r
+                        Current = false,
+                        Title = cat.Value,
+                        Registrations = future.ToList()
                     });
             }
-            return categories;
+            return list;
         }
 
-        public ActionResult Registrations()
-        {
-            return Content(JsonConvert.SerializeObject(GetRegistrations(), Formatting.Indented), "text/plain");
-        }
         public ActionResult FetchRegistrations(string data)
         {
             // Authenticate first
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_REGISTRATIONS)
-                return BaseMessage.createTypeErrorReturn();
-
             var br = new BaseMessage();
-
             br.error = 0;
-            br.type = BaseMessage.API_TYPE_REGISTRATIONS;
-            //br.count = m.Count;
-
             br.data = JsonConvert.SerializeObject(GetRegistrations());
             return br;
         }
@@ -356,15 +396,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_PERSON_REFRESH)
-                return BaseMessage.createTypeErrorReturn();
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostFetchPerson mpfs = JsonConvert.DeserializeObject<MobilePostFetchPerson>(dataIn.data);
 
-            // Everything is in order, start the return
-            var mpfs = JsonConvert.DeserializeObject<MobilePostFetchPerson>(dataIn.data);
-
-            var br = new BaseMessage();
+            BaseMessage br = new BaseMessage();
 
             var person = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == mpfs.id);
 
@@ -376,7 +411,6 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             br.error = 0;
-            br.type = BaseMessage.API_TYPE_PERSON_REFRESH;
             br.count = 1;
 
             if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
@@ -385,7 +419,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             else
             {
-                var mp = new List<MobilePerson>();
+                List<MobilePerson> mp = new List<MobilePerson>();
                 mp.Add(new MobilePerson().populate(person));
                 br.data = JsonConvert.SerializeObject(mp);
             }
@@ -400,19 +434,13 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_PERSON_IMAGE_REFRESH)
-                return BaseMessage.createTypeErrorReturn();
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostFetchImage mpfi = JsonConvert.DeserializeObject<MobilePostFetchImage>(dataIn.data);
 
-            // Everything is in order, start the return
-            var mpfi = JsonConvert.DeserializeObject<MobilePostFetchImage>(dataIn.data);
-
-            var br = new BaseMessage();
+            BaseMessage br = new BaseMessage();
             if (mpfi.id == 0) return br.setData("The ID for the person cannot be set to zero");
 
             br.data = "The picture was not found.";
-            br.type = BaseMessage.API_TYPE_PERSON_IMAGE_REFRESH;
 
             var person = DbUtil.Db.People.SingleOrDefault(pp => pp.PeopleId == mpfi.id);
 
@@ -437,6 +465,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     case 3: // 570 x 800
                         image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
                         break;
+
                 }
 
                 if (image != null)
@@ -457,15 +486,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_PERSON_IMAGE_ADD)
-                return BaseMessage.createTypeErrorReturn();
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostSaveImage mpsi = JsonConvert.DeserializeObject<MobilePostSaveImage>(dataIn.data);
 
-            // Everything is in order, start the return
-            var mpsi = JsonConvert.DeserializeObject<MobilePostSaveImage>(dataIn.data);
-
-            var br = new BaseMessage();
+            BaseMessage br = new BaseMessage();
 
             var imageBytes = Convert.FromBase64String(mpsi.image);
 
@@ -473,9 +497,16 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (person.Picture != null)
             {
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
                 ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
                 ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
                 ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId));
+
+                if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
                 ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId));
 
                 person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
@@ -514,9 +545,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
 
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_ORG_REFRESH)
-                return BaseMessage.createTypeErrorReturn();
+            BaseMessage dataIn = BaseMessage.createFromString(data);
 
             var pid = Util.UserPeopleId;
             var oids = DbUtil.Db.GetLeaderOrgIds(pid);
@@ -544,15 +573,13 @@ namespace CmsWeb.Areas.Public.Controllers
                                   && (om.MemberTypeId != MemberTypeCode.InActive)
                                   && (om.MemberType.AttendanceTypeId == AttendTypeCode.Leader)
                             )
-                         || oids.Contains(o.OrganizationId))
-                    // or a leader of a parent org
+                       || oids.Contains(o.OrganizationId)) // or a leader of a parent org
                     where o.SecurityTypeId != 3
                     select o;
             }
 
             var orgs = from o in q
-                       let sc = o.OrgSchedules.FirstOrDefault()
-                       // SCHED
+                       let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                        select new OrganizationInfo
                        {
                            id = o.OrganizationId,
@@ -561,11 +588,10 @@ namespace CmsWeb.Areas.Public.Controllers
                            day = sc.SchedDay ?? 0
                        };
 
-            var br = new BaseMessage();
-            var mo = new List<MobileOrganization>();
+            BaseMessage br = new BaseMessage();
+            List<MobileOrganization> mo = new List<MobileOrganization>();
 
             br.error = 0;
-            br.type = BaseMessage.API_TYPE_ORG_REFRESH;
             br.count = orgs.Count();
 
             foreach (var item in orgs)
@@ -589,30 +615,31 @@ namespace CmsWeb.Areas.Public.Controllers
                 return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
 
             // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_ORG_ROLL_REFRESH)
-                return BaseMessage.createTypeErrorReturn();
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            // Everything is in order, start the return
-            var mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
+            var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
+            var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime);
 
-            var meeting = Meeting.FetchOrCreateMeeting(DbUtil.Db, mprl.id, mprl.datetime);
-            var people = RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value);
+            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingId == meetingId);
 
-            var br = new BaseMessage();
-            var ma = new List<MobileAttendee>();
+            MobileRollList mrl = new MobileRollList();
+            mrl.attendees = new List<MobileAttendee>();
+            mrl.meetingID = meetingId;
+            mrl.headcountEnabled = DbUtil.Db.Setting("RegularMeetingHeadCount", "true");
+            mrl.headcount = meeting.HeadCount ?? 0;
 
-            br.id = meeting.MeetingId;
+            BaseMessage br = new BaseMessage();
+            br.id = meetingId;
             br.error = 0;
-            br.type = BaseMessage.API_TYPE_ORG_ROLL_REFRESH;
             br.count = people.Count();
 
             foreach (var person in people)
             {
-                ma.Add(new MobileAttendee().populate(person));
+                mrl.attendees.Add(new MobileAttendee().populate(person));
             }
 
-            br.data = JsonConvert.SerializeObject(ma);
+            br.data = JsonConvert.SerializeObject(mrl);
             return br;
         }
 
@@ -627,13 +654,8 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_ORG_RECORD_ATTEND)
-                return BaseMessage.createTypeErrorReturn();
-
-            // Everything is in order, start the return
-            var mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
 
@@ -662,11 +684,42 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.UpdateMeetingCounters(mpa.orgID);
             DbUtil.LogActivity("Mobile RecAtt o:{0} p:{1} u:{2} a:{3}".Fmt(meeting.OrganizationId, mpa.peopleID, Util.UserPeopleId, mpa.present));
 
-            var br = new BaseMessage();
-
+            BaseMessage br = new BaseMessage();
             br.error = 0;
             br.count = 1;
-            br.type = BaseMessage.API_TYPE_ORG_RECORD_ATTEND;
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult RecordHeadcount(string data)
+        {
+            if (DbUtil.Db.Setting("RegularMeetingHeadCount", "true") == "disabled")
+            {
+                return BaseMessage.createErrorReturn("Headcounts for meetings are disabled");
+            }
+
+            // Authenticate first
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            // Check Role
+            if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
+                return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
+
+            var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mph.orgID && m.MeetingDate == mph.datetime);
+            meeting.HeadCount = mph.headcount;
+
+            DbUtil.Db.SubmitChanges();
+
+            DbUtil.LogActivity("Mobile Headcount o:{0} m:{1} h:{2}".Fmt(meeting.OrganizationId, meeting.MeetingId, mph.headcount));
+
+            BaseMessage br = new BaseMessage();
+            br.error = 0;
+            br.count = 1;
 
             return br;
         }
@@ -682,13 +735,8 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return BaseMessage.createErrorReturn("Attendance role is required to take attendance for organizations.");
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_PERSON_ADD)
-                return BaseMessage.createTypeErrorReturn();
-
-            // Everything is in order, start the return
-            var mpap = JsonConvert.DeserializeObject<MobilePostAddPerson>(dataIn.data);
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostAddPerson mpap = JsonConvert.DeserializeObject<MobilePostAddPerson>(dataIn.data);
             mpap.clean();
 
             var p = new Person();
@@ -784,14 +832,14 @@ namespace CmsWeb.Areas.Public.Controllers
                 var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == mpap.visitMeeting);
                 Attend.RecordAttendance(p.PeopleId, mpap.visitMeeting, true);
                 DbUtil.Db.UpdateMeetingCounters(mpap.visitMeeting);
+                p.CampusId = meeting.Organization.CampusId;
+                DbUtil.Db.SubmitChanges();
             }
 
-            var br = new BaseMessage();
-
+            BaseMessage br = new BaseMessage();
             br.error = 0;
             br.id = p.PeopleId;
             br.count = 1;
-            br.type = BaseMessage.API_TYPE_PERSON_ADD;
 
             return br;
         }
@@ -807,19 +855,13 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return BaseMessage.createErrorReturn("Attendance role is required to take attendance for organizations.");
 
-            // Check to see if type matches
-            var dataIn = BaseMessage.createFromString(data);
-            if (dataIn.type != BaseMessage.API_TYPE_ORG_JOIN)
-                return BaseMessage.createTypeErrorReturn();
-
-            // Everything is in order, start the return
-            var mpjo = JsonConvert.DeserializeObject<MobilePostJoinOrg>(dataIn.data);
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            MobilePostJoinOrg mpjo = JsonConvert.DeserializeObject<MobilePostJoinOrg>(dataIn.data);
 
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == mpjo.peopleID && m.OrganizationId == mpjo.orgID);
 
-            if (om != null)
+            if (om == null && mpjo.join)
             {
-                if (mpjo.join)
                     om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
                 else
                     om.Drop(DbUtil.Db);
@@ -827,11 +869,9 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            var br = new BaseMessage();
-
+            BaseMessage br = new BaseMessage();
             br.error = 0;
             br.count = 1;
-            br.type = BaseMessage.API_TYPE_ORG_JOIN;
 
             return br;
         }
@@ -841,7 +881,7 @@ namespace CmsWeb.Areas.Public.Controllers
             switch (status)
             {
                 case UserValidationStatus.Success:
-                    return BaseMessage.API_ERROR_SUCCESS;
+                    return BaseMessage.API_ERROR_NONE;
                 case UserValidationStatus.PinExpired:
                     return BaseMessage.API_ERROR_PIN_EXPIRED;
                 case UserValidationStatus.PinInvalid:
@@ -855,7 +895,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
         private static BaseMessage AuthorizationError(UserValidationResult result)
         {
-            return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
+            return BaseMessage.createErrorReturn(result.ErrorMessage ?? "You are not authorized!", MapStatusToError(result.Status));
         }
 
         private static OneTimeLink GetOneTimeLink(int orgId, int peopleId)

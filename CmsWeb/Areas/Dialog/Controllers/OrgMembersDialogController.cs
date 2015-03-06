@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 	{
         [Route("~/OrgMembersDialog")]
 		public ActionResult Index()
-        {
+		{
             var co = DbUtil.Db.CurrentOrg;
             var m = new OrgMembersUpdate();
 			return View(m);

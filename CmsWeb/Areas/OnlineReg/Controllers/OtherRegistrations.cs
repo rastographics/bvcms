@@ -12,6 +12,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         public ActionResult VoteLinkSg(string id, string message, bool? confirm)
         {
+            ViewBag.Id = id;
+            ViewBag.Message = message;
+            ViewBag.Confirm = confirm.GetValueOrDefault().ToString();
+            return View();
+        }
+        
+        [HttpPost]
+        public ActionResult VoteLinkSg(string id, string message, bool? confirm, FormCollection formCollection)
+        {
             if (!id.HasValue())
                 return Message("bad link");
 
@@ -157,6 +166,16 @@ emailid={2}
 
         public ActionResult RsvpLinkSg(string id, string message, bool? confirm, bool regrets = false)
         {
+            ViewBag.Id = id;
+            ViewBag.Message = message;
+            ViewBag.Confirm = confirm.GetValueOrDefault().ToString();
+            ViewBag.Regrets = regrets.ToString();
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult RsvpLinkSg(string id, string message, bool? confirm, FormCollection formCollection, bool regrets = false)
+        {
             if (!id.HasValue())
                 return Message("bad link");
 
@@ -255,8 +274,8 @@ emailid={2}
             var pid = a[1].ToInt();
             var linktype = a.Length > 3 ? a[3].Split(',') : "".Split(',');
             int? gsid = null;
-            if (linktype[0].Equal("supportlink") && linktype.Length > 1)
-                gsid = linktype[1].ToInt();
+            if (linktype[0].Equal("supportlink"))
+                gsid = linktype.Length > 1 ? linktype[1].ToInt() : 0;
 
             var q = (from pp in DbUtil.Db.People
                      where pp.PeopleId == pid
@@ -273,16 +292,26 @@ emailid={2}
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
                 return Message("sorry, registration has been closed");
 
-            var url = string.IsNullOrWhiteSpace(source) ? "/OnlineReg/{0}?registertag={1}".Fmt(oid, id) : "/OnlineReg/{0}?registertag={1}&source={2}".Fmt(oid, id, source);
+            var url = string.IsNullOrWhiteSpace(source)
+                ? "/OnlineReg/{0}?registertag={1}".Fmt(oid, id)
+                : "/OnlineReg/{0}?registertag={1}&source={2}".Fmt(oid, id, source);
             if (gsid.HasValue)
                 url += "&gsid=" + gsid;
             if (showfamily == true)
                 url += "&showfamily=true";
             return Redirect(url);
         }
-        [ValidateInput(false)]
 
+        [ValidateInput(false)]
         public ActionResult SendLink(string id)
+        {
+            ViewBag.Id = id;
+            return View();
+        }
+        
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult SendLink(string id, FormCollection formCollection)
         {
             if (!id.HasValue())
                 return Message("bad link");

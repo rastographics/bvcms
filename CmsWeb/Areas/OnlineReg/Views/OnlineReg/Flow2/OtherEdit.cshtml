@@ -159,13 +159,20 @@
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9 text-right">
 
-            @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.InMobileAppMode)
+            @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount())
             {
+              if (Model.InMobileAppMode && !UtilityExtensions.Util.UserPeopleId.HasValue && !Model.LoggedIn)
+              {
+                @Html.Hidden("CreatingAccount", true)
+              }
+              else
+              {
                 <div class="checkbox-inline">
-                    <label>
-                        @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
-                    </label>
+                  <label>
+                    @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
+                  </label>
                 </div>
+              }
             }
             <div>
             @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitOtherInfo/" + @Model.Index, "Submit",

@@ -109,12 +109,13 @@ namespace CmsWeb.Areas.People.Models
                     where m.Organization.IsMissionTrip == true
                     where m.Organization.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                     where m.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                    let ts = DbUtil.Db.ViewMissionTripTotals.SingleOrDefault(tt => tt.OrganizationId == m.OrganizationId && tt.PeopleId == m.PeopleId)
                     select new GoerItem
                     {
                         Id = m.OrganizationId,
                         Trip = m.Organization.OrganizationName,
-                        Cost = m.Amount ?? 0,
-                        Paid = m.TotalPaid(DbUtil.Db),
+                        Cost = ts.TripCost ?? 0,
+                        Paid = ts.Raised ?? 0,
                     }).ToList();
         }
     }

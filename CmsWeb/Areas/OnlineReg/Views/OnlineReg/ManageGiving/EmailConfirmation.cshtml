@@ -5,12 +5,15 @@
     <td class="right">Give to Funds:</td>
     <td>
         <table class="@ViewExtensions2.GridClass" cellpadding="2">
-@{ var funds = CmsWeb.Models.OnlineRegPersonModel.FullFundList(); }
+@{
+  var funds = CmsWeb.Models.OnlineRegPersonModel.FullFundList();
+  var total = 0M;
+}
 @for (var n = 0; n < funds.Length; n++)
 {
     var i = funds[n];
     var amt = Model.FundItemValue(UtilityExtensions.Util.ToInt(i.Value)) ?? 0;
-    Model.total += amt;
+    total += amt;
     if (amt > 0)
     {
             <tr>
@@ -21,7 +24,7 @@
 }
             <tr class="alt">
                 <td>Total</td>
-                <td class="right">$@Model.total.ToString("n2")</td>
+                <td class="right">$@total.ToString("n2")</td>
             </tr>
         </table>
     </td>
@@ -45,16 +48,12 @@
         On or after @UtilityExtensions.Util.FormatDate(Model.StartWhen)
     </td>
 </tr>
-@*<tr>*@
-@*    <td class="right">Stop Payments:</td>*@
-@*    <td> After @UtilityExtensions.Util.FormatDate(Model.StopWhen) </td>*@
-@*</tr>*@
 <tr>
     <td class="right">Pay From:</td>
     <td>
     @if (Model.Type == PaymentType.CreditCard)
     {
-        @:Debit/Credit Card # @UtilityExtensions.Util.MaskCC(Model.Cardnumber)<br />
+        @:Debit/Credit Card # @UtilityExtensions.Util.MaskCC(Model.CreditCard)<br />
         @:Expires @Model.Expires
     }
     else
@@ -64,3 +63,6 @@
     </td>
 </tr>
 </table>
+@{
+  Model.total = total;
+}

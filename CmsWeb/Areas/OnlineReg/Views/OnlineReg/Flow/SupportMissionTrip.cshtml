@@ -29,16 +29,12 @@
         <td>@Html.CheckBoxFor(m => m.MissionTripNoNoticeToGoer)</td>
     </tr>
     <tr>
-        <td>Your additional gift to support other Mission trips</td>
+        <td>Your non-specific-participant gift to support this Mission trip</td>
         <td>
             @Html.TextBoxFor(m => m.MissionTripSupportGeneral)<br />
             (note: these will show as two separate contributions)
             <div>@Html.ValidationMessageFor(m => m.MissionTripSupportGeneral)</div>
     </td>
-    </tr>
-    <tr>
-        <td>I will pray for the trip</td>
-        <td>@Html.CheckBoxFor(m => m.MissionTripPray)</td>
     </tr>
 	<tr><td class="right" colspan="2">
 		    <input type="button" id="otheredit" href="/OnlineReg/SubmitOtherInfo/@index" class="submitbutton ajax" 

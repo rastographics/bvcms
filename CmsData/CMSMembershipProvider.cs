@@ -17,6 +17,7 @@ using UtilityExtensions;
 using System.Collections.Generic;
 using System.Web;
 using System.Text.RegularExpressions;
+using CmsData.API;
 
 namespace CmsData
 {
@@ -187,12 +188,13 @@ namespace CmsData
 						throw new ArgumentException("Password needs at least 1 uppercase letter");
             }
 
-            var Db = GetDb();
-            var user = Db.Users.Single(u => u.Username == username);
+            var db = GetDb();
+            var user = db.Users.Single(u => u.Username == username);
             user.Password = EncodePassword(newPwd);
             user.MustChangePassword = false;
             user.LastPasswordChangedDate = Util.Now;
-            Db.SubmitChanges();
+            ApiSessionModel.DeleteSession(db, user);
+            db.SubmitChanges();
             return true;
         }
 
@@ -471,40 +473,43 @@ namespace CmsData
             if (!EnablePasswordReset)
                 throw new NotSupportedException("Password reset is not enabled.");
 
-            var Db = GetDb();
-            var user = Db.Users.SingleOrDefault(u => u.Username == username);
+            var db = GetDb();
+            var user = db.Users.SingleOrDefault(u => u.Username == username);
             if (user == null)
                 throw new MembershipPasswordException("The supplied user name is not found.");
 
             if (answer == null && RequiresQuestionAndAnswer)
             {
-                UpdateFailureCount(Db, user, "passwordAnswer");
+                UpdateFailureCount(db, user, "passwordAnswer");
                 throw new ProviderException("Password answer required for password reset.");
             }
-            string newPassword =
-              Membership.GeneratePassword(newPasswordLength, MinRequiredNonAlphanumericCharacters);
+            var newPassword = Membership.GeneratePassword(newPasswordLength, MinRequiredNonAlphanumericCharacters);
 
             var args = new ValidatePasswordEventArgs(username, newPassword, true);
 
             OnValidatingPassword(args);
 
             if (args.Cancel)
+            {
                 if (args.FailureInformation != null)
                     throw args.FailureInformation;
                 else
                     throw new MembershipPasswordException("Reset password canceled due to password validation failure.");
+            }
 
             if (user.IsLockedOut)
                 throw new MembershipPasswordException("The supplied user is locked out.");
 
             if (RequiresQuestionAndAnswer && !CheckPassword(answer, user.PasswordAnswer))
             {
-                UpdateFailureCount(Db, user, "passwordAnswer");
+                UpdateFailureCount(db, user, "passwordAnswer");
                 throw new MembershipPasswordException("Incorrect password answer.");
             }
+
             user.Password = EncodePassword(newPassword);
             user.LastPasswordChangedDate = Util.Now;
-            Db.SubmitChanges();
+            ApiSessionModel.DeleteSession(db, user);
+            db.SubmitChanges();
             return newPassword;
         }
 

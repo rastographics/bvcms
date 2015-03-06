@@ -12,7 +12,9 @@ namespace CmsWeb.Areas.Main.Models
 	{
 	    public bool wantparents { get; set; }
 	    public bool ccparents { get; set; }
+	    public bool nodups { get; set; }
 	    public Guid queryid { get; set; }
+	    public int? orgid { get; set; }
 		public IQueryable<Content> fetchTemplates()
 		{
 			var currentRoleIds = DbUtil.Db.CurrentRoleIds();

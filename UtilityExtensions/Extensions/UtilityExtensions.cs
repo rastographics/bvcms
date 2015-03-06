@@ -233,15 +233,6 @@ namespace UtilityExtensions
             return h.Fmt(page);
         }
 
-        public static string IpAddress()
-        {
-            string strIpAddress;
-            strIpAddress = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            if (strIpAddress == null)
-                strIpAddress = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"];
-            return strIpAddress;
-        }
-
         public static void Cookie(string name, string value, int days)
         {
             if (Cookie(name) == value)
@@ -316,25 +307,9 @@ namespace UtilityExtensions
                 return null;
             if (originalUrl.IndexOf("://") != -1)
                 return originalUrl;
-            if (originalUrl.StartsWith("~"))
-                return VirtualPathUtility.ToAbsolute(originalUrl);
-            return originalUrl;
-        }
-
-        public static string ResolveServerUrl(string serverUrl, bool forceHttps)
-        {
-            if (serverUrl.IndexOf("://") > -1)
-                return serverUrl;
-            var newUrl = ResolveUrl(serverUrl);
-            var originalUri = HttpContext.Current.Request.Url;
-            newUrl = (forceHttps ? "https" : Scheme()) +
-                     "://" + originalUri.Authority + newUrl;
-            return newUrl;
-        }
-
-        public static string ResolveServerUrl(string serverUrl)
-        {
-            return ResolveServerUrl(serverUrl, false);
+            return originalUrl.StartsWith("~") 
+                ? VirtualPathUtility.ToAbsolute(originalUrl) 
+                : originalUrl;
         }
 
         public static string Scheme()
@@ -398,10 +373,12 @@ namespace UtilityExtensions
             return false;
         }
 
-        public static string GetIPAddress()
+        public static string GetIpAddress()
         {
             var context = HttpContext.Current;
-            string ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            if (context == null)
+                return null;
+            var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
             if (ipAddress.HasValue())
             {
                 var addresses = ipAddress.Split(',');

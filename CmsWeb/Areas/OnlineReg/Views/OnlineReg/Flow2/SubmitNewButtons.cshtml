@@ -4,10 +4,17 @@
         <div class="pull-right">
             @if (Model.ManageSubscriptions()) // allow submit here for manage subscriptions
             {
-                if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsMissionTrip() && !Model.InMobileAppMode)
+                if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsMissionTrip())
                 {
+                  if (Model.InMobileAppMode && !UtilityExtensions.Util.UserPeopleId.HasValue && !Model.LoggedIn)
+                  {
+                    @Html.Hidden("CreatingAccount", true)
+                  }
+                  else
+                  {
                     // only allow adults to create an account
                     <label>Create Account (optional) @Html.CheckBoxFor(m => m.CreatingAccount)</label>
+                  }
                 }
             }
             @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitNew/" + Model.Index, "Submit Information", style: "btn-primary min-width15em")

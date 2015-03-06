@@ -36,13 +36,13 @@ namespace CmsWeb.Models
 
         public string Period { get; set; }
         public string Type { get; set; }
-        public string Cardnumber { get; set; }
+        public string CreditCard { get; set; }
         public DateTime? NextDate { get; set; }
 
         [DisplayName("Expires (MMYY)")]
         public string Expires { get; set; }
 
-        public string Cardcode { get; set; }
+        public string CVV { get; set; }
         public string Routing { get; set; }
         public string Account { get; set; }
         public bool testing { get; set; }
@@ -53,8 +53,21 @@ namespace CmsWeb.Models
         public string LastName { get; set; }
         public string Suffix { get; set; }
         public string Address { get; set; }
+        public string Address2 { get; set; }
         public string City { get; set; }
         public string State { get; set; }
+        public string Country { get; set; }
+
+        public IEnumerable<SelectListItem> Countries
+        {
+            get
+            {
+                var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
+                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                return list;
+            }
+        }
+
         public string Zip { get; set; }
         public string Phone { get; set; }
 
@@ -177,7 +190,7 @@ namespace CmsWeb.Models
                 pi = new PaymentInfo();
             else
             {
-                Cardnumber = pi.MaskedCard;
+                CreditCard = pi.MaskedCard;
                 Account = pi.MaskedAccount;
                 Expires = pi.Expires;
                 Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
@@ -188,6 +201,8 @@ namespace CmsWeb.Models
                 else if (NoEChecksAllowed)
                     Type = PaymentType.CreditCard; // credit card only
                 Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
+
+                ClearMaskedNumbers(pi);
             }
 
             FirstName = pi.FirstName ?? person.FirstName;
@@ -195,12 +210,55 @@ namespace CmsWeb.Models
             LastName = pi.LastName ?? person.LastName;
             Suffix = pi.Suffix ?? person.SuffixCode;
             Address = pi.Address ?? person.PrimaryAddress;
+            Address2 = pi.Address2 ?? person.PrimaryAddress2;
             City = pi.City ?? person.PrimaryCity;
             State = pi.State ?? person.PrimaryState;
+            Country = pi.Country ?? person.PrimaryCountry;
             Zip = pi.Zip ?? person.PrimaryZip;
             Phone = pi.Phone ?? person.HomePhone ?? person.CellPhone;
 
             total = FundItem.Sum(ff => ff.Value) ?? 0;
+        }
+
+        private void ClearMaskedNumbers(PaymentInfo pi)
+        {
+            var gateway = DbUtil.Db.Setting("TransactionGateway", "");
+
+            var clearBankDetails = false;
+            var clearCreditCardDetails = false;
+
+            switch (gateway.ToLower())
+            {
+                case "sage":
+                    clearBankDetails = !pi.SageBankGuid.HasValue;
+                    clearCreditCardDetails = !pi.SageCardGuid.HasValue;
+                    break;
+                case "transnational":
+                    clearBankDetails = !pi.TbnBankVaultId.HasValue;
+                    clearCreditCardDetails = !pi.TbnCardVaultId.HasValue;
+                    break;
+                case "authorizenet":
+                    clearBankDetails = !pi.AuNetCustPayBankId.HasValue;
+                    clearCreditCardDetails = !pi.AuNetCustPayId.HasValue;
+                    break;
+                case "bluepay":
+                    clearCreditCardDetails = !String.IsNullOrEmpty(pi.BluePayCardVaultId);
+                    //TODO: Handle bank account too.
+                    break;
+            }
+
+            if (clearBankDetails)
+            {
+                Account = string.Empty;
+                Routing = string.Empty;
+            }
+
+            if (clearCreditCardDetails)
+            {
+                CreditCard = string.Empty;
+                CVV = string.Empty;
+                Expires = string.Empty;
+            }
         }
 
         public void Confirm(Controller controller)
@@ -208,7 +266,18 @@ namespace CmsWeb.Models
             var details = ViewExtensions2.RenderPartialViewToString(controller, "ManageGiving/EmailConfirmation", this);
 
             var staff = DbUtil.Db.StaffPeopleForOrg(orgid)[0];
-            var text = Setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
+
+            var contributionEmail = (from ex in DbUtil.Db.PeopleExtras
+                                     where ex.Field == "ContributionEmail"
+                                     where ex.PeopleId == person.PeopleId
+                                     select ex.Data).SingleOrDefault();
+            if (!Util.ValidEmail(contributionEmail))
+                contributionEmail = person.FromEmail;
+
+            if (!string.IsNullOrEmpty(Setting.Body))
+            {
+                var text = Setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"),
+                    ignoreCase: true);
 //            text = text.Replace("{name}", person.Name, ignoreCase: true);
             text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
             text = text.Replace("{email}", person.EmailAddress, ignoreCase: true);
@@ -218,21 +287,15 @@ namespace CmsWeb.Models
             text = text.Replace("{contactphone}", Organization.PhoneNumber.FmtFone(), ignoreCase: true);
             text = text.Replace("{details}", details, ignoreCase: true);
 
-            var contributionemail = (from ex in DbUtil.Db.PeopleExtras
-                                     where ex.Field == "ContributionEmail"
-                                     where ex.PeopleId == person.PeopleId
-                                     select ex.Data).SingleOrDefault();
-            if (!Util.ValidEmail(contributionemail))
-                contributionemail = person.FromEmail;
-
             var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(orgid));
             var mm = new EmailReplacements(DbUtil.Db, text, from);
             text = mm.DoReplacements(person);
 
             Util.SendMsg(Util.SysFromEmail, Util.Host, from, Setting.Subject, text,
-                Util.EmailAddressListFromString(contributionemail), 0, pid);
+                    Util.EmailAddressListFromString(contributionEmail), 0, pid);
+            }
 
-            Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(contributionemail),
+            Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(contributionEmail),
                 "Managed Giving",
                 "Managed giving for {0} ({1})".Fmt(person.Name, pid),
                 Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(orgid)),
@@ -268,17 +331,16 @@ namespace CmsWeb.Models
             }
 
             if (Type == PaymentType.CreditCard)
-                Payments.ValidateCreditCardInfo(modelState,
+                PaymentValidator.ValidateCreditCardInfo(modelState,
                     new PaymentForm
                     {
-                        CreditCard = Cardnumber,
+                        CreditCard = CreditCard,
                         Expires = Expires,
-                        CCV =
-                            Cardcode,
+                        CVV = CVV,
                         SavePayInfo = true
                     });
             else if (Type == PaymentType.Ach)
-                Payments.ValidateBankAccountInfo(modelState, Routing, Account);
+                PaymentValidator.ValidateBankAccountInfo(modelState, Routing, Account);
             else
                 modelState.AddModelError("Type", "Must select Bank Account or Credit Card");
 
@@ -316,6 +378,8 @@ namespace CmsWeb.Models
                 modelState.AddModelError("City", "Needs city");
             if (!State.HasValue())
                 modelState.AddModelError("State", "Needs state");
+            if (!Country.HasValue())
+                modelState.AddModelError("Country", "Needs country");
             if (!Zip.HasValue())
                 modelState.AddModelError("Zip", "Needs zip");
             if (!Phone.HasValue())
@@ -329,20 +393,13 @@ namespace CmsWeb.Models
             var chosenFunds = FundItemsChosen().ToList();
             if (chosenFunds.Sum(f => f.amt) > 0)
             {
-                if (Cardcode.HasValue() && Cardcode.Contains("X"))
-                {
-                    var payinfo = person.PaymentInfo();
-                    if (payinfo == null)
-                        throw new Exception("X not allowed in CVV");
-                }
-
                 var pi = person.PaymentInfo();
                 if (pi == null)
                 {
                     pi = new PaymentInfo();
                     person.PaymentInfos.Add(pi);
                 }
-                pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, City, State, Zip, Phone);
+                pi.SetBillingAddress(FirstName, Middle, LastName, Suffix, Address, Address2, City, State, Country, Zip, Phone);
 
                 // first need to do a $1 auth if it's a credit card and throw any errors we get back
                 // from the gateway.
@@ -357,25 +414,28 @@ namespace CmsWeb.Models
                     var dollarAmt = (decimal)random.Next(100, 199) / 100;
 
                     TransactionResponse transactionResponse;
-                    if (Cardnumber.StartsWith("X"))
+                    if (CreditCard.StartsWith("X"))
                     {
                         // store payment method in the gateway vault first before doing the auth.
-                        gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
+                        gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
                         vaultSaved = true;
                         transactionResponse = gateway.AuthCreditCardVault(pid, dollarAmt, "Recurring Giving Auth", 0);
                     }
                     else
-                        transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, Cardnumber, Expires,
-                                                                     "Recurring Giving Auth", 0, Cardcode, string.Empty,
-                                                                     FirstName, LastName, Address, City, State, Zip, Phone);
+                        transactionResponse = gateway.AuthCreditCard(pid, dollarAmt, CreditCard, Expires,
+                            "Recurring Giving Auth", 0, CVV, string.Empty,
+                            FirstName, LastName, Address, Address2, City, State, Country, Zip, Phone);
 
                     if (!transactionResponse.Approved)
                         throw new Exception(transactionResponse.Message);
+
+                    // if we got this far that means the auth worked so now let's do a void for that auth.
+                    var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
                 }
 
                 // store payment method in the gateway vault if not already saved.
                 if (!vaultSaved)
-                    gateway.StoreInVault(pid, Type, Cardnumber, Expires, Cardcode, Routing, Account, giving: true);
+                    gateway.StoreInVault(pid, Type, CreditCard, Expires, CVV, Routing, Account, giving: true);
 
                 // save all the managed giving data.
                 var mg = person.ManagedGiving();

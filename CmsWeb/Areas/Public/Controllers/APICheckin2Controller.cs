@@ -28,15 +28,7 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.SetNoLock();
             DbUtil.LogActivity("checkin " + id);
 
-            List<CheckinMatch> matches;
-
-            if (CheckInModel.UseOldCheckin())
-            {
-                var m = new CheckInModel();
-                matches = m.MatchOld(id);
-            }
-            else
-                matches = DbUtil.Db.CheckinMatch(id).ToList();
+            var matches = DbUtil.Db.CheckinMatch(id).ToList();
 
             if (!matches.Any())
                 return new FamilyResult(0, campus, thisday, 0, false); // not found
@@ -122,15 +114,6 @@ namespace CmsWeb.Areas.Public.Controllers
             var f = id > 0 
                 ? DbUtil.Db.Families.Single(fam => fam.FamilyId == id) 
                 : new CmsData.Family();
-
-//            var position = PositionInFamily.Child;
-//            if (Util.Age0(m.dob) >= 18)
-//                if (f.People.Count(per =>
-//                     per.PositionInFamilyId == PositionInFamily.PrimaryAdult)
-//                     < 2)
-//                    position = PositionInFamily.PrimaryAdult;
-//                else
-//                    position = PositionInFamily.SecondaryAdult;
 
             var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), false, id) ?? 10;
             var p = Person.Add(f, position,
@@ -248,9 +231,10 @@ namespace CmsWeb.Areas.Public.Controllers
                 var np = DbUtil.Db.GetNewPeopleManagers();
                 if(np != null)
                     DbUtil.Db.EmailRedacted(p.FromEmail, np,
-                        "Basic Person Info Changed during checkin on " + Util.Host,
-                        "{0} changed the following information for {1} ({2}):<br />\n<table>{3}</table>"
-                        .Fmt(Util.UserName, p.PreferredName, p.LastName, sb.ToString()));
+                        "Basic Person Info Changed during checkin on " + Util.Host, @"
+<p><a href=""{4}"">{0} ({5})</a> changed the following information for {1} ({2}):</p>
+<table>{3}</table>".Fmt(Util.UserName, p.PreferredName, p.LastName, sb.ToString(), 
+                            DbUtil.Db.ServerLink("/Person2/" + p.PeopleId), p.PeopleId));
             }
         }
         private void UpdateField(List<ChangeDetail> fsb, Family f, string prop, string value)
@@ -413,7 +397,7 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ContentResult UploadImage(int id)
         {
-            if (!Authenticate(role: null))
+            if (!AccountModel.AuthenticateMobile().IsValid)
                 return Content("not authorized");
             //		    if (!User.IsInRole("Edit") && !User.IsInRole("Checkin"))
             //				return Content("not authorized");

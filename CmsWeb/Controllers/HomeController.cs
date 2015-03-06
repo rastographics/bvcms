@@ -134,6 +134,14 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
+        public ActionResult UseNewFeature(bool id)
+        {
+            Util2.UseNewFeature = id;
+            DbUtil.Db.SubmitChanges();
+            if (Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.OriginalString);
+            return Redirect("/");
+        }
         public ActionResult UseNewOrg(bool id)
         {
             DbUtil.Db.SetUserPreference("UseNewOrg", id ? "false" : "true");
@@ -252,7 +260,7 @@ namespace CmsWeb.Controllers
 #if DEBUG2
                 var script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
 #else
-                var script = DbUtil.Content(name, "");
+                var script = DbUtil.Db.ContentOfTypePythonScript(name);
 #endif
                 if (!script.HasValue())
                     return Message("no script named " + name);
@@ -261,7 +269,7 @@ namespace CmsWeb.Controllers
             }
             catch (Exception ex)
             {
-                return Message(ex.Message);
+                return RedirectShowError(ex.Message);
             }
         }
 
@@ -276,9 +284,6 @@ namespace CmsWeb.Controllers
         {
             if (helplink.HasValue())
                 TempData["HelpLink"] = HttpUtility.UrlDecode(helplink);
-
-            if (!SupportRequestModel.CanSupport)
-                ViewBag.NoSupport = "true";
             return View();
         }
     }

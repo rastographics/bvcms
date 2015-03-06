@@ -30,6 +30,7 @@ namespace CmsWeb.Areas.Search.Models
             get
             {
                 var ret = new StringBuilder();
+                ret.AppendFormat("PeopleId: {0}<br>\n", PeopleId);
                 if (CellPhone.HasValue())
                     ret.AppendFormat("{0}&nbsp;&nbsp;", CellPhone.FmtFone("C "));
                 if (HomePhone.HasValue())

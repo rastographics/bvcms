@@ -4,10 +4,6 @@ namespace CmsData.Finance.TransNational.Core
 {
     internal class CreditCard
     {
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
         public string CardNumber { get; set; }
 
         public string CardCode { get; set; }
@@ -18,8 +14,6 @@ namespace CmsData.Finance.TransNational.Core
 
         internal void SetCreditCardData(NameValueCollection data)
         {
-            data["firstname"] = FirstName;
-            data["lastname"] = LastName;
             data["ccnumber"] = CardNumber;
 
             if (!string.IsNullOrEmpty(CardCode))

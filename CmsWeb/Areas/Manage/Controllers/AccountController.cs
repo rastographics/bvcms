@@ -278,6 +278,13 @@ CKEditorFuncNum, baseurl + fn, error));
         [HttpGet]
         public ActionResult SetPassword(Guid? id)
         {
+            ViewBag.Id = id;
+            return View("SetPasswordConfirm");
+        }
+        [MyRequireHttps]
+        [HttpPost]
+        public ActionResult SetPasswordConfirm(Guid? id)
+        {
             if (!id.HasValue)
                 return Content("invalid URL");
             var user = DbUtil.Db.Users.SingleOrDefault(u => u.ResetPasswordCode == id);
@@ -294,7 +301,7 @@ CKEditorFuncNum, baseurl + fn, error));
             ViewBag.RequireSpecialCharacter = MembershipService.RequireSpecialCharacter;
             ViewBag.RequireOneNumber = MembershipService.RequireOneNumber;
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
-            return View();
+            return View("SetPassword");
         }
         [MyRequireHttps]
         [HttpPost]
@@ -373,12 +380,6 @@ CKEditorFuncNum, baseurl + fn, error));
                              MembershipService.MinPasswordLength));
             if (!String.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
                 ModelState.AddModelError("form", "The new password and confirmation password do not match.");
-            return ModelState.IsValid;
-        }
-        private bool ValidateLogOn(string userName, string password)
-        {
-            if (!MembershipService.ValidateUser(userName, password))
-                ModelState.AddModelError("login", "Username or password not recognized.");
             return ModelState.IsValid;
         }
     }

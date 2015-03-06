@@ -173,22 +173,15 @@ namespace CmsData
             UserData += s;
         }
 
-        public static OrganizationMember InsertOrgMembers
-            (CMSDataContext Db,
-             int OrganizationId,
-             int PeopleId,
-             int MemberTypeId,
-             DateTime EnrollmentDate,
-             DateTime? InactiveDate, bool pending
-            )
+        public static OrganizationMember InsertOrgMembers(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, DateTime? inactiveDate, bool pending, bool skipTriggerProcessing = false)
         {
-            Db.SubmitChanges();
-            int ntries = 2;
+            db.SubmitChanges();
+            var ntries = 2;
             while (true)
             {
                 try
                 {
-                    var m = Db.OrganizationMembers.SingleOrDefault(m2 => m2.PeopleId == PeopleId && m2.OrganizationId == OrganizationId);
+                    var m = db.OrganizationMembers.SingleOrDefault(m2 => m2.PeopleId == peopleId && m2.OrganizationId == organizationId);
                     if (m != null)
                     {
                         m.Pending = pending;
@@ -196,20 +189,21 @@ namespace CmsData
                         Db.SubmitChanges();
                         return m;
                     }
-                    var org = Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == OrganizationId);
+                    var org = db.Organizations.SingleOrDefault(oo => oo.OrganizationId == organizationId);
                     if (org == null)
                         return null;
                     var name = org.OrganizationName;
 
                     var om = new OrganizationMember
                              {
-                                 OrganizationId = OrganizationId,
-                                 PeopleId = PeopleId,
-                                 MemberTypeId = MemberTypeId,
-                                 EnrollmentDate = EnrollmentDate,
-                                 InactiveDate = InactiveDate,
+                                 OrganizationId = organizationId,
+                                 PeopleId = peopleId,
+                                 MemberTypeId = memberTypeId,
+                                 EnrollmentDate = enrollmentDate,
+                                 InactiveDate = inactiveDate,
                                  CreatedDate = Util.Now,
                                  Pending = pending,
+                                 SkipInsertTriggerProcessing = skipTriggerProcessing
                              };
 
                     var et = new EnrollmentTransaction
@@ -218,19 +212,21 @@ namespace CmsData
                                  PeopleId = om.PeopleId,
                                  MemberTypeId = om.MemberTypeId,
                                  OrganizationName = name,
-                                 TransactionDate = EnrollmentDate,
-                                 EnrollmentDate = EnrollmentDate,
+                                 TransactionDate = enrollmentDate,
+                                 EnrollmentDate = enrollmentDate,
                                  TransactionTypeId = 1,
                                  // join
                                  CreatedBy = Util.UserId1,
                                  CreatedDate = Util.Now,
                                  Pending = pending,
-                                 AttendancePercentage = om.AttendPct
+                                 AttendancePercentage = om.AttendPct,
+                                 SkipInsertTriggerProcessing = skipTriggerProcessing
                              };
-                    Db.OrganizationMembers.InsertOnSubmit(om);
-                    Db.EnrollmentTransactions.InsertOnSubmit(et);
 
-                    Db.SubmitChanges();
+                    db.OrganizationMembers.InsertOnSubmit(om);
+                    db.EnrollmentTransactions.InsertOnSubmit(et);
+
+                    db.SubmitChanges();
                     return om;
                 }
                 catch (SqlException ex)

@@ -20,19 +20,25 @@
 @Html.EditorFor(m => m.MissionTripSupportGeneral,
     new
     {
-        label = "Your gift to support other Mission Trips",
+        label = "Make a gift toward this mission trip's Team Fund",
         help = "note: these will show as two separate contributions"
     })
-@Html.EditorFor(m => m.MissionTripPray, new { label = "I will pray for the trip" })
 <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
-        @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript() && !Model.InMobileAppMode)
+        @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
         {
+            if (Model.InMobileAppMode && !Util.UserPeopleId.HasValue && !Model.LoggedIn)
+          {
+            @Html.Hidden("CreatingAccount", true)
+          }
+          else
+          {
             <div class="checkbox">
-                <label>
-                    @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
-                </label>
+              <label>
+                @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
+              </label>
             </div>
+          }
         }
         @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitOtherInfo/" + @Model.Index, "Submit", style: "btn-primary pull-right")
         @Html.DivValidationMessage("Form")

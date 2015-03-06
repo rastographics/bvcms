@@ -6,6 +6,8 @@ using CmsData.Codes;
 using UtilityExtensions;
 using IronPython.Hosting;
 using System;
+using System.Text.RegularExpressions;
+using CmsData.API;
 
 namespace CmsData
 {
@@ -133,13 +135,13 @@ namespace CmsData
 
         public string CallScript(string scriptname)
         {
-            var script = db.Content(scriptname);
+            var script = db.ContentOfTypePythonScript(scriptname);
             var engine = Python.CreateEngine();
             var ms = new MemoryStream();
             var sw = new StreamWriter(ms);
             engine.Runtime.IO.SetOutput(ms, sw);
             engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script.Body);
+            var sc = engine.CreateScriptSourceFromString(script);
             var code = sc.Compile();
             var scope = engine.CreateScope();
             var pe = new PythonEvents(db.Host);
@@ -228,16 +230,16 @@ namespace CmsData
         public DateTime MostRecentAttendedSunday(int progid)
         {
             var q = from m in db.Meetings
-                where m.MeetingDate.Value.Date.DayOfWeek == 0
-                where m.MaxCount > 0
-                where
-                    progid == 0 || m.Organization.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
-                where m.MeetingDate < Util.Now
-                orderby m.MeetingDate descending
-                select m.MeetingDate.Value.Date;
+                    where m.MeetingDate.Value.Date.DayOfWeek == 0
+                    where m.MaxCount > 0
+                    where
+                        progid == 0 || m.Organization.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
+                    where m.MeetingDate < Util.Now
+                    orderby m.MeetingDate descending
+                    select m.MeetingDate.Value.Date;
             var dt = q.FirstOrDefault();
             if (dt == DateTime.MinValue) //Sunday Date equal/before today
-                dt = DateTime.Today.AddDays(-(int) DateTime.Today.DayOfWeek);
+                dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
             return dt;
         }
 
@@ -280,7 +282,7 @@ namespace CmsData
 
         public void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string contentName)
         {
-            var c = db.Content(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
             Email2(qid, queuedBy, fromAddr, fromName, c.Title, c.Body);
@@ -289,7 +291,7 @@ namespace CmsData
         public void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject,
             string contentName)
         {
-            var c = db.Content(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
             Email2(qid, queuedBy, fromAddr, fromAddr, subject, c.Body);
@@ -305,7 +307,7 @@ namespace CmsData
 
         public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
         {
-            var c = db.Content(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
             EmailContent(savedQuery, queuedBy, fromAddr, fromName, c.Title, contentName);
@@ -314,7 +316,7 @@ namespace CmsData
         public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
             string contentName)
         {
-            var c = db.Content(contentName);
+            var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
             var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedQuery);
@@ -329,8 +331,8 @@ namespace CmsData
             c.Reset(db);
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
-                where mtlist.Contains(mt.Description)
-                select "{0},{1}".Fmt(mt.Id, mt.Code));
+                                       where mtlist.Contains(mt.Description)
+                                       select "{0},{1}".Fmt(mt.Id, mt.Code));
             var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
             clause.Program = progid;
             clause.Division = divid;
@@ -342,10 +344,15 @@ namespace CmsData
         public List<int> OrganizationIds(int progid, int divid)
         {
             var q = from o in db.Organizations
-                where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
-                where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
-                select o.OrganizationId;
+                    where progid == 0 || o.DivOrgs.Any(dd => dd.Division.ProgDivs.Any(pp => pp.ProgId == progid))
+                    where divid == 0 || o.DivOrgs.Select(dd => dd.DivId).Contains(divid)
+                    select o.OrganizationId;
             return q.ToList();
+        }
+        public List<int> PeopleIds(object savedQuery)
+        {
+            var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
+            return list;
         }
 
         public void AddExtraValueCode(object savedQuery, string name, string text)
@@ -476,6 +483,82 @@ namespace CmsData
         public void AddMemberToOrg(int pid, int OrgId)
         {
             AddMembersToOrg("peopleid=" + pid, OrgId);
+        }
+
+        public DateTime ParseDate(string dt)
+        {
+            var d = dt.ToDate();
+            return d ?? DateTime.MinValue;
+        }
+        public string ContentForDate(string contentName, object date)
+        {
+            var dtwanted = date.ToDate();
+            if (!dtwanted.HasValue)
+                return "no date";
+            dtwanted = dtwanted.Value.Date;
+            var c = db.ContentOfTypeHtml(contentName);
+            var a = Regex.Split(c.Body, @"<h1>(?<dt>\d{1,2}(/|-)\d{1,2}(/|-)\d{2,4})=+</h1>", RegexOptions.ExplicitCapture);
+            var i = 0;
+            for (; i < a.Length; i++)
+            {
+                if (a[i].Length < 6 || a[i].Length > 10) 
+                    continue;
+                var dt = a[i].ToDate();
+                if (dt.HasValue && dt == dtwanted)
+                    return a[i + 1];
+            }
+            return "cannot find email content";
+        }
+
+        public string HtmlContent(string name)
+        {
+            var c = db.ContentOfTypeHtml(name);
+            return c.Body;
+        }
+        public string Replace(string text, string pattern, string replacement)
+        {
+            return Regex.Replace(text, pattern, replacement);
+        }
+        public int ExtraValueInt(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.IntValue ?? 0;
+            return 0;
+        }
+        public string ExtraValueText(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.Data ?? "";
+            return "";
+        }
+        public DateTime ExtraValueDate(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.DateValue ?? DateTime.MinValue;
+            return DateTime.MinValue;
+        }
+        public string ExtraValue(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.StrValue ?? "";
+            return "";
+        }
+        public bool ExtraValueBit(object pid, string name)
+        {
+            var ev = Person.GetExtraValue(db, pid.ToInt(), name);
+            if (ev != null)
+                return ev.BitValue ?? false;
+            return false;
+        }
+        public APIPerson.Person GetPerson(object pid)
+        {
+            var api = new APIPerson(db);
+            var p = api.GetPersonData(pid.ToInt());
+            return p;
         }
     }
 }

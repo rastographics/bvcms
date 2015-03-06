@@ -32,8 +32,8 @@ namespace CmsData.Finance
             }
             else
             {
-                _login = db.Setting("x_login", "");
-                _key = db.Setting("x_tran_key", "");
+                _login = db.GetSetting("x_login", "");
+                _key = db.GetSetting("x_tran_key", "");
 
                 if (string.IsNullOrWhiteSpace(_login))
                     throw new Exception("x_login setting not found, which is required for Authorize.net.");
@@ -61,6 +61,7 @@ namespace CmsData.Finance
                 Street = paymentInfo.Address ?? person.PrimaryAddress,
                 City = paymentInfo.City ?? person.PrimaryCity,
                 State = paymentInfo.State ?? person.PrimaryState,
+                Country = paymentInfo.Country ?? person.PrimaryCountry,  
                 Zip = paymentInfo.Zip ?? person.PrimaryZip,
                 Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
             };
@@ -189,6 +190,7 @@ namespace CmsData.Finance
                 paymentInfo.AuNetCustPayBankId = null;
                 paymentInfo.MaskedCard = null;
                 paymentInfo.MaskedAccount = null;
+                paymentInfo.Expires = null;
                 db.SubmitChanges();
             }
             else
@@ -256,13 +258,14 @@ namespace CmsData.Finance
         }
 
         public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
-            int tranid, string cardcode, string email, string first, string last, string addr, string city, string state,
-            string zip, string phone)
+            int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
+            string country, string zip, string phone)
         {
             var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: false);
 
             request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
             request.City = city; // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
+            request.Country = country;
             request.CardCode = cardcode;
             request.Phone = phone;
             request.Email = email;
@@ -279,12 +282,13 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
+        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var request = new AuthorizationRequest(cardnumber, expires, amt, description, includeCapture: true);
 
             request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
             request.City = city; // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
+            request.Country = country;
             request.CardCode = cardcode;
             request.Phone = phone;
             request.Email = email;
@@ -301,12 +305,13 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string city, string state, string zip, string phone)
+        public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
         {
             var request = new EcheckRequest(EcheckType.WEB, amt, routing, acct, BankAccountType.Checking, null, first + " " + last, null);
 
             request.AddCustomer(peopleId.ToString(), first, last, addr, state, zip);
             request.City = city;  // hopefully will be resolved with https://github.com/AuthorizeNet/sdk-dotnet/pull/41
+            request.Country = country;
             request.Phone = phone;
             request.Email = email;
             request.InvoiceNum = tranid.ToString();

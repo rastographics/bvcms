@@ -64,7 +64,8 @@ namespace CmsWeb.Models
                     orgfee = q.First();
             }
             // just use the simple fee if nothing else has been used yet.
-            if (amt == 0 && countorgs == 0 && !setting.AskVisible("AskSuggestedFee"))
+            if (amt == 0 && countorgs == 0 && !setting.AskVisible("AskSuggestedFee") 
+                    && Parent.SupportMissionTrip == false) 
                 amt = setting.Fee ?? 0;
             if (orgfee.HasValue)
                 if (setting.OtherFeesAddedToOrgFee)
@@ -89,6 +90,8 @@ namespace CmsWeb.Models
                     switch (ask.Type)
                     {
                         case "AskMenu":
+                            while(MenuItem.Count - 1 < ask.UniqueId)
+                                MenuItem.Add(new Dictionary<string, int?>());
                             amt += ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]).Sum(m => m.number * m.amt);
                             break;
                         case "AskDropdown":

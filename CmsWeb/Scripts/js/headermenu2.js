@@ -100,9 +100,11 @@ function dimOff() {
 function dimOn() {
     $("#darkLayer").show();
 }
-String.prototype.startsWith = function (t, i) {
-    return (t == this.substring(0, t.length));
-};
+if (typeof String.prototype.startsWith != 'function') {
+  String.prototype.startsWith = function (str){
+    return this.slice(0, str.length) == str;
+  };
+}
 String.prototype.appendQuery = function (q) {
     if (this && this.length > 0)
         if (this.contains("&") || this.contains("?"))

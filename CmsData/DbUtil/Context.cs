@@ -138,6 +138,10 @@ namespace CmsData
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);
         }
+        public Meeting LoadMeetingById(int? id)
+        {
+            return this.Meetings.SingleOrDefault(m => m.MeetingId == id);
+        }
         public Organization LoadOrganizationByName(string name)
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationName == name);
@@ -168,7 +172,9 @@ namespace CmsData
                 return null;
             var c = query.ToClause();
             q = People.Where(c.Predicate(this));
-            if (c.ParentsOf)
+            if (c.PlusParentsOf)
+                q = PersonQueryPlusParents(q);
+            else if (c.ParentsOf)
                 q = PersonQueryParents(q);
             return q;
         }
@@ -182,10 +188,17 @@ namespace CmsData
         {
             if (name.AllDigits())
                 name = "peopleid=" + name;
-            const string pattern = @"\Apeopleid=([\d,]*)\z";
-            if (Regex.IsMatch(name, pattern))
+            if (name.StartsWith("peopleid", StringComparison.OrdinalIgnoreCase))
             {
-                var pids = Regex.Match(name, pattern, RegexOptions.IgnoreCase).Groups[1].Value.Split(',').Select(tt => tt.ToInt());
+                var pids = new List<int>();
+                var re = new Regex(@"(\d+)");
+                var m = re.Match(name);
+                while (m.Success)
+                {
+                    pids.Add(m.Value.ToInt());
+                    m = m.NextMatch();
+                }
+                if (pids.Count > 0)
                 return People.Where(pp => pids.Contains(pp.PeopleId));
             }
 
@@ -194,7 +207,9 @@ namespace CmsData
                 qB = MatchNothing();
             var c = qB.ToClause();
             var q = People.Where(c.Predicate(this));
-            if (c.ParentsOf)
+            if (c.PlusParentsOf)
+                q = PersonQueryPlusParents(q);
+            else if (c.ParentsOf)
                 q = PersonQueryParents(q);
             return q;
         }
@@ -218,6 +233,30 @@ namespace CmsData
                 tag.PersonTags.Add(new TagPerson { PeopleId = i.Value });
             SubmitChanges();
             return tag.People(this);
+        }
+        public IQueryable<Person> PersonQueryPlusParents(IQueryable<Person> q)
+        {
+            var tag1 = PopulateTemporaryTag(q.Select(pp => pp.PeopleId).Distinct());
+            var q2 = from p in q
+                     from m in p.Family.People
+                     where m.PositionInFamilyId == 10
+                     //					 where (m.PositionInFamilyId == 10 && p.PositionInFamilyId != 10)
+                     //					 || (m.PeopleId == p.PeopleId && p.PositionInFamilyId == 10)
+                     where m.DeceasedDate == null
+                     select m.PeopleId;
+
+            var tag2 = PopulateTemporaryTag(q2.Distinct());
+            var q3 = from p in q
+                     let ev = p.PeopleExtras.SingleOrDefault(ee => ee.Field == "Parent" && ee.IntValue > 0)
+                     where ev != null
+                     where !q2.Any(pp => pp == ev.IntValue)
+                     select ev.IntValue;
+
+            foreach (var i in q3.Distinct())
+                tag2.PersonTags.Add(new TagPerson { PeopleId = i.Value });
+            SubmitChanges();
+            AddTag1ToTag2(tag1.Id, tag2.Id);
+            return tag2.People(this);
         }
         public IQueryable<Person> ReturnPrimaryAdults(IQueryable<Person> q)
         {
@@ -361,7 +400,7 @@ namespace CmsData
                 {
                     s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
                     continue;
-                }
+            }
                 s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
                 plist.Add(pa);
             }
@@ -371,11 +410,12 @@ namespace CmsData
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
             return tag;
         }
-        public Tag PopulateTemporaryTag(IEnumerable<int> a)
+        public Tag PopulateTempTag(IEnumerable<int> a)
         {
             var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
-            TagAll(a, tag);
+            var list = string.Join(",", a);
+            PopulateTempTag(tag.Id, list);
             return tag;
         }
         public void ClearTag(Tag tag)
@@ -635,7 +675,7 @@ namespace CmsData
         public void SetOrgLeadersOnly()
         {
             var me = Util.UserPeopleId;
-            var dt = Util.Now.AddYears(-1);
+            var dt = Util.Now.AddYears(-3);
 
             var oids = GetLeaderOrgIds(Util.UserPeopleId);
             // current members of one of my orgs I lead
@@ -815,15 +855,52 @@ namespace CmsData
             var s = r.GetResult<RecordAttendInfo>().First();
             return s.ret;
         }
+
+        //        public class RollListView
+        //        {
+        //            public int? Section { get; set; }
+        //            public int? PeopleId { get; set; }
+        //            public string Name { get; set; }
+        //            public string Last { get; set; }
+        //            public int? FamilyId { get; set; }
+        //            public string First { get; set; }
+        //            public string Email { get; set; }
+        //            public bool? Attended { get; set; }
+        //            public int? CommitmentId { get; set; }
+        //            public string CurrMemberType { get; set; }
+        //            public string MemberType { get; set; }
+        //            public string AttendType { get; set; }
+        //            public int? OtherAttends { get; set; }
+        //            public bool? CurrMember { get; set; }
+        //        }
+        //
+        //        [Function(Name = "dbo.RollListMeeting")]
+        //        [ResultType(typeof(RollListView))]
+        //        public IMultipleResults RollListMeeting(
+        //            [Parameter(DbType = "Int")] int? mid
+        //            , [Parameter(DbType = "DateTime")] DateTime meetingdt
+        //            , [Parameter(DbType = "Int")] int oid
+        //            , [Parameter(DbType = "Bit")] bool current
+        //            , [Parameter(DbType = "Bit")] bool createmeeting)
+        //        {
+        //            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
+        //                mid, meetingdt, oid, current, createmeeting);
+        //            return ((IMultipleResults)(result.ReturnValue));
+        //        }
+        //        public IEnumerable<RollListView> RollList(int? mid ,  DateTime meetingdt ,  int oid ,  bool current ,  bool createmeeting)
+        //        {
+        //            var r = RollListMeeting(mid, meetingdt, oid, current, createmeeting);
+        //            return r.GetResult<RollListView>();
+        //        }
         public string UserPreference(string pref)
         {
             return UserPreference(pref, string.Empty);
         }
-        public string UserPreference(string pref, string def)
+        public string UserPreference(string pref, string defaultValue)
         {
             var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
             if (d != null && d.ContainsKey(pref))
-                return d[pref] ?? def;
+                return d[pref] ?? defaultValue;
             if (d == null)
             {
                 d = new Dictionary<string, string>();
@@ -838,7 +915,7 @@ namespace CmsData
                 return p.ValueX;
             }
             d[pref] = null;
-            return def;
+            return defaultValue;
         }
 
         public void ToggleUserPreference(string pref)
@@ -1013,10 +1090,54 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), i1, i2);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.NoEmailDupsInTag")]
+        public int NoEmailDupsInTag([Parameter(DbType = "Int")] int tagid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), tagid);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.AttendUpdateN")]
         public int AttendUpdateN([Parameter(DbType = "Int")] int pid, [Parameter(DbType = "Int")] int max)
         {
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), pid, max);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.TrackOpen")]
+        public int TrackOpen([Parameter(DbType = "UniqueIdentifier")] Guid guid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), guid);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.TrackClick")]
+        public int TrackClick([Parameter(DbType = "VarChar(50)")] string hash,
+            [Parameter(DbType = "VarChar(500)")] ref string link)
+        {
+            IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
+            link = ((string)(result.GetParameterValue(1)));
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.SpamReporterRemove")]
+        public int SpamReporterRemove([Parameter(DbType = "VARCHAR(100)")] string email)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), email);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.DropOrgMember")]
+        public int DropOrgMember([Parameter(DbType = "Int")] int oid, [Parameter(DbType = "Int")] int pid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.PopulateTempTag")]
+        public int PopulateTempTag([Parameter(DbType = "Int")] int id, [Parameter(DbType = "VARCHAR(MAX)")] string list)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), id, list);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.AddTag1ToTag2")]
+        public int AddTag1ToTag2([Parameter(DbType = "Int")] int t1, [Parameter(DbType = "Int")] int t2)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), t1, t2);
             return ((int)(result.ReturnValue));
         }
         public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
@@ -1071,7 +1192,7 @@ namespace CmsData
             var q2 = from s in q.ToList()
                      where re.Match(s).Success
                      let a = s.SplitStr(":", 2)
-                     select new string[] { a[0], a[1] };
+                     select new[] { a[0], a[1] };
             return q2;
         }
         public IEnumerable<string[]> QueryStatClauses()
@@ -1085,21 +1206,39 @@ namespace CmsData
             var q2 = from s in q.ToList()
                      where re.Match(s).Success
                      let a = s.SplitStr(":", 2)
-                     select new string[] { a[0], a[1] };
+                     select new[] { a[0], a[1] };
             return q2;
         }
         public Content Content(string name)
         {
             return Contents.FirstOrDefault(c => c.Name == name);
         }
-        public string Content(string name, string def)
+        public string Content(string name, string defaultValue)
         {
             var content = Contents.FirstOrDefault(c => c.Name == name);
             if (content != null)
                 return content.Body;
-            return def;
+            return defaultValue;
         }
-        public Content Content(string name, string def, int ContentTypeId)
+        public Content ContentOfTypeHtml(string name)
+        {
+            var content = (from c in Contents
+                           where c.Name == name
+                           where c.TypeID == ContentTypeCode.TypeHtml
+                           select c).FirstOrDefault();
+            return content;
+        }
+        public string ContentOfTypePythonScript(string name)
+        {
+            var content = (from c in Contents
+                           where c.Name == name
+                           where c.TypeID == ContentTypeCode.TypePythonScript
+                           select c).FirstOrDefault();
+            if (content == null)
+                return "";
+            return content.Body;
+        }
+        public Content Content(string name, string defaultValue, int contentTypeId)
         {
             var c = Contents.FirstOrDefault(cc => cc.Name == name);
             if (c == null)
@@ -1108,26 +1247,26 @@ namespace CmsData
                         {
                             Name = name,
                             Title = name,
-                            Body = def,
-                            TypeID = ContentTypeId
+                            Body = defaultValue,
+                            TypeID = contentTypeId
                         };
                 Contents.InsertOnSubmit(c);
                 SubmitChanges();
             }
             return c;
         }
-        public string Content2(string name, string def, int ContentTypeId)
+        public string Content2(string name, string defaultValue, int contentTypeId)
         {
-            var c = Content(name, def, ContentTypeId);
+            var c = Content(name, defaultValue, contentTypeId);
             return c.Body;
         }
-        public string ContentHtml(string name, string def)
+        public string ContentHtml(string name, string defaultValue)
         {
-            return Content2(name, def, ContentTypeCode.TypeHtml);
+            return Content2(name, defaultValue, ContentTypeCode.TypeHtml);
         }
-        public string ContentText(string name, string def)
+        public string ContentText(string name, string defaultValue)
         {
-            return Content2(name, def, ContentTypeCode.TypeText);
+            return Content2(name, defaultValue, ContentTypeCode.TypeText);
         }
         public void SetNoLock()
         {
@@ -1217,6 +1356,26 @@ namespace CmsData
             FromActiveRecords = false;
             return n;
         }
+        public int ActiveRecords2()
+        {
+            const string name = "ActiveRecords2";
+            var qb = Queries.FirstOrDefault(c => c.Name == name && c.Owner == "david");
+            Condition cc = qb == null ? ScratchPadCondition() : qb.ToClause();
+            cc.Reset(this);
+            cc.SetComparisonType(CompareType.AnyTrue);
+            var clause = cc.AddNewClause(QueryType.RecentAttendCount, CompareType.Greater, "1");
+            clause.Days = 365;
+            clause = cc.AddNewClause(QueryType.RecentHasIndContributions, CompareType.Equal, "1,T");
+            clause.Days = 365;
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            qb = cc.JustLoadedQuery;
+            cc.Description = name;
+            cc.Save(this, owner: "david");
+            FromActiveRecords = true;
+            var n = PeopleQuery(cc.Id).Count();
+            FromActiveRecords = false;
+            return n;
+        }
         public int ActiveRecords0(DateTime dt)
         {
             Condition cc = ScratchPadCondition();
@@ -1257,6 +1416,9 @@ namespace CmsData
 
                 case "transnational":
                     return new TransNationalGateway(this, testing);
+                //IS THIS the only place that the new paymentGateway needs to be hooked up?
+                case "bluepay":
+                    return new BluePayGateway(this, testing);
             }
 
             throw new Exception("Gateway ({0}) is not supported.".Fmt(type));

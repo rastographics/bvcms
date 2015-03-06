@@ -18,21 +18,26 @@ namespace CmsWeb.Areas.Main.Controllers
 	{
 		[ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents)
+		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid)
 		{
 			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
 			if (!body.HasValue())
 				body = TempData["body"] as string;
 
-			if (!subj.HasValue() && templateID != 0 && DbUtil.Db.Setting("UseEmailTemplates", "false") == "true")
+			if (!subj.HasValue() && templateID != 0)
 			{
 				if (templateID == null)
-					return View("SelectTemplate", new EmailTemplatesModel() { wantparents = parents ?? false, queryid = id });
+					return View("SelectTemplate", new EmailTemplatesModel()
+					{
+					    wantparents = parents ?? false, 
+                        queryid = id,
+					});
 				else
 				{
 					DbUtil.LogActivity("Emailing people");
 
-					var m = new MassEmailer(id, parents, ccparents);
+					var m = new MassEmailer(id, parents, ccparents, nodups);
+
 					m.Host = Util.Host;
 
 					ViewBag.templateID = templateID;
@@ -44,7 +49,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			DbUtil.LogActivity("Emailing people");
 
-			var me = new MassEmailer(id, parents, ccparents);
+			var me = new MassEmailer(id, parents, ccparents, nodups);
 			me.Host = Util.Host;
 
 			if (body.HasValue())
@@ -65,14 +70,12 @@ namespace CmsWeb.Areas.Main.Controllers
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult SaveDraft(int tagId, bool wantParents, int saveid, string name, string subject, string body, int roleid)
+		public ActionResult SaveDraft(MassEmailer m, int saveid, string name, int roleid)
 		{
 			Content content = null;
 
 			if (saveid > 0)
-			{
 				content = DbUtil.ContentFromID(saveid);
-			}
             if(content == null)
 			{
 				content = new Content
@@ -85,25 +88,18 @@ namespace CmsWeb.Areas.Main.Controllers
 				content.OwnerID = Util.UserId;
 			}
 
-			content.Title = subject;
-			content.Body = body;
-
+			content.Title = m.Subject;
+			content.Body = m.Body;
 			content.DateCreated = DateTime.Now;
 
-			if (saveid == 0) DbUtil.Db.Contents.InsertOnSubmit(content);
-			DbUtil.Db.SubmitChanges();
+			if (saveid == 0) 
+                DbUtil.Db.Contents.InsertOnSubmit(content);
 
-			var m = new MassEmailer
-							{
-								TagId = tagId,
-								wantParents = wantParents,
-								Host = Util.Host,
-								Subject = subject,
-							};
+			DbUtil.Db.SubmitChanges();
 
 			System.Diagnostics.Debug.Print("Template ID: " + content.Id);
 
-			ViewBag.parents = wantParents;
+			ViewBag.parents = m.wantParents;
 			ViewBag.templateID = content.Id;
 			return View("Compose", m);
 		}
@@ -143,11 +139,12 @@ namespace CmsWeb.Areas.Main.Controllers
 			int id;
 			try
 			{
-				id = m.CreateQueue();
-				if (id == 0)
+				var eq = m.CreateQueue();
+				if (eq == null)
 					throw new Exception("No Emails to send (tag does not exist)");
-				if (m.Schedule.HasValue)
-					return Json(new { id = 0, content = "<h2>Emails Queued</h2>" });
+			    id = eq.Id;
+				if (eq.SendWhen.HasValue)
+					return Json(new { id = 0, content = "<h2>Emails Queued to be Sent</h2>" });
 			}
 			catch (Exception ex)
 			{

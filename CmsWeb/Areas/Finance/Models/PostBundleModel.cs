@@ -102,7 +102,7 @@ namespace CmsWeb.Models
                 {
                     s = c.extra ?? "";
                     if (c.eac.HasValue())
-                        s += " (" + Util.Decrypt(c.eac) + ")";
+                        s += " not associated";
                     if (s.HasValue())
                         c.Name = s;
                 }

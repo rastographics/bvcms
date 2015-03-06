@@ -119,6 +119,9 @@
     <RelatedFamilyMembers Type="Integer">
       Select all persons in related families given a single family id.
     </RelatedFamilyMembers>
+    <HasFamilyPicture Title="Has Family Picture" Type="Bit" DataValueField="IdCode">
+      Select True or False for families with Family Picture.
+    </HasFamilyPicture>
   </Family>
   <Address Title="Address">
     <PrimaryResCode Title="Resident Code" Type="Code" DataSource="ResidentCodes" DataValueField="IdCode">
@@ -336,6 +339,9 @@
     <NumberOfMemberships Title="Number of Enrollments" Type="NullInteger" DisplayAs="NumEnrollments({0}, {1}, {2}, {3})" Params="Program,Division,Organization,Schedule">
       Enter a number of Enrollments, select a Comparison and select Program/Division/Organization.
     </NumberOfMemberships>
+    <RecentIncompleteRegistrations Title="Recent Incomplete Registrations" Type="Bit" DisplayAs="RecentIncompleteReg({0}, {1}, {2}, {3})" Params="Days,Program,Division,Organization" DataValueField="IdCode">
+      Select Days to look back and Program/Division/Organization from the list and specify True or False.
+    </RecentIncompleteRegistrations>
   </CurrentEnrollments>
   <EnrollmentHistory Title="Enrollment History">
     <WasMemberAsOf Title="Was Member As Of" Type="Bit" DisplayAs="WasMemberAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
@@ -413,7 +419,7 @@
     <AttendPct Title="Attendance %" Type="Number" DisplayAs="AttendPct({0}, {1}, {2})" Params="Program,Division,Organization">
       Enter a number for the Attendance Percentage and select Program/Division/Organization.
     </AttendPct>
-    <RecentAttendCount Title="Recent Attendance Count" Type="Integer" DisplayAs="RecentAttendCount({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType">
+    <RecentAttendCount Title="Recent Attendance Count" Type="Integer" DisplayAs="RecentAttendCount({0}, {1}, {2}, {3}, {4}, {5})" Params="Days,Quarters,Program,Division,Organization,OrgType" QuartersLabel="Meeting Desc (partial)">
       Enter a number and select Comparison for the Attendance Count, enter a number for the days to look back and select other options: Program/Division/Organization, Org Type.
     </RecentAttendCount>
     <RecentAttendCountAttCred Title="Recent Attendance Count for Schedule/AttendCredit" Type="Integer" DisplayAs="RecentAttendCountSchedule({0}, {1}, {2}, {3}, {4}, {5})" QuartersLabel="Attend Credit Id" Params="Program,Division,Organization,Days,Quarters,Schedule">
@@ -531,6 +537,9 @@
     <HasManagedGiving Title="Has Managed Giving" Type="Bit" DisplayAs="HasManagedGiving({0})" DataValueField="IdCode" Params="Quarters" QuartersLabel="FundId or Blank">
       Specify True or False for those with Managed Giving.
     </HasManagedGiving>
+    <ManagedGivingCreditCard Title="Managed Giving With Credit Card" Type="Bit" DisplayAs="ManagedGivingCC({0})" DataValueField="IdCode">
+      Specify True or False for those with Managed Giving and uses CreditCard
+    </ManagedGivingCreditCard>
     <CcExpiration Title="Credit Card Expire Days" Type="Bit" DisplayAs="CCExpiration({0})" Params="Days" DataValueField="IdCode">
       Specify True or False for those with Managed Giving.
     </CcExpiration>
@@ -557,6 +566,9 @@
     <HasPeopleExtraField Title="Has Extra Value Field" Type="StringEqual">
       Enter the Field Name and a Comparison.
     </HasPeopleExtraField>
+    <RecentPeopleExtraFieldChanged Title="Recent Extra Value Changed" Type="Bit" DisplayAs="RecentPeopleExtraFieldChanged({0}, {1})" Params="Days,Quarters" QuartersLabel=" Field" DataValueField="IdCode">
+      Select number of days to lookback and enter Field name of Extra value. Shows those whom that Field has been recently updated.
+    </RecentPeopleExtraFieldChanged>
     <FamilyExtra Title="FamilyExtra Value Code" Type="CodeStr" DataSource="FamilyExtraValues">
       Select the Extra Value Code from the list
     </FamilyExtra>
@@ -580,6 +592,9 @@
     <ParentsOf Title="Parents Only" Type="Bit" DataValueField="IdCode">
       Specify True or False to include only Primary Adults.
     </ParentsOf>
+    <PlusParentsOf Title="Add Primary Adults" Type="Bit" DataValueField="IdCode">
+      Specify True or False to Add Primary Adults.
+    </PlusParentsOf>
     <StatusFlag Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">
       Select Status Flags from the list (computed in nightly batch from saved searches).
     </StatusFlag>
@@ -669,6 +684,12 @@
     <HasOptoutsForEmail Title="Has Email Optouts for address" Type="StringEqual" DisplayAs="HasOptoutsForEmail({0:d})" Params="EndDate">
       Enter email address (leave value blank for any optout address) and pick an end date for those who opted out before that date (or leave date blank).
     </HasOptoutsForEmail>
+    <HasOpenedEmail Title="Opened Email" Type="IntegerEqual" DisplayAs="HasOpenedEmail">
+      Enter Email ID number.
+    </HasOpenedEmail>
+    <HasSpamBlock Title="Has Spam Block" Type="Bit" DisplayAs="HasSpamBlock">
+      Has Reported as Spam
+    </HasSpamBlock>
     <PeopleId Type="Integer">
       For internal use, but you can enter a People ID number.
     </PeopleId>

@@ -49,8 +49,10 @@ namespace CmsWeb.Models
             public string Middle { get; set; }
             public string Suffix { get; set; }
             public string Address { get; set; }
+            public string Address2 { get; set; }
             public string City { get; set; }
             public string State { get; set; }
+            public string Country { get; set; }
             public string Zip { get; set; }
             public string Phone { get; set; }
             public PaymentInfo payinfo { get; set; }
@@ -107,16 +109,20 @@ namespace CmsWeb.Models
                 if (pp == null)
                 {
                     r.Address = p.AddressLineOne.Truncate(50);
+                    r.Address2 = p.AddressLineTwo.Truncate(50);
                     r.City = p.City;
                     r.State = p.State;
+                    r.Country = p.Country;
                     r.Zip = p.ZipCode;
                     r.Phone = p.Phone.FmtFone();
                 }
                 else
                 {
                     r.Address = r.payinfo.Address ?? pp.PrimaryAddress.Truncate(50);
+                    r.Address2 = r.payinfo.Address2 ?? pp.PrimaryAddress2.Truncate(50);
                     r.City = r.payinfo.City ?? pp.PrimaryCity;
                     r.State = r.payinfo.State ?? pp.PrimaryState;
+                    r.Country = r.payinfo.Country ?? pp.PrimaryCountry;
                     r.Zip = r.payinfo.Zip ?? pp.PrimaryZip;
                     r.Phone = Util.PickFirst(r.payinfo.Phone, pp.HomePhone, pp.CellPhone).FmtFone();
                 }

@@ -1,149 +1,175 @@
-﻿@{
-    ViewBag.Title = "Support";
-    Layout = ViewExtensions2.Layout();
-    var active = TempData["ActiveRecords"].ToInt();
-    var helplink = TempData["HelpLink"];
+﻿@using CmsWeb.Models
+@{
+  ViewBag.Title = "Support";
+  Layout = ViewExtensions2.Layout();
+  var active = TempData["ActiveRecords"].ToInt();
+  var googlehelp = @"
+    The following uses a Google Custom Search Engine.
+    Enter a word or two relating to the process you need help with and press Search Documentation.
+    The results page will have 3 tabs: All, Documentation, or TouchPoint News Blog.
+  ";
 }
 @section head
 {
-    <style>
-        #needhelp td { padding: 5px; }
-        #needhelp b { font-size: 120%; }
-        #success { background-color: lightcoral !important; }
-        #success td {color: white;font-size: 130%; }
-    </style>
+  <style>
+    #needhelp td {
+      padding: 5px;
+    }
+
+    #needhelp b {
+      font-size: 120%;
+    }
+
+    #success {
+      background-color: lightcoral !important;
+    }
+
+      #success td {
+        color: white;
+        font-size: 130%;
+      }
+  </style>
 }
 @section scripts
 {
-    @ViewExtensions2.CKEditor()
-    @Fingerprint.Script("/Scripts/js/Support2.js")
+  @ViewExtensions2.CKEditor()
+  @Fingerprint.Script("/Scripts/js/Support2.js")
 }
 <form id="requestform">
-    <table id="needhelp" class="center roundbox grid">
-      <tr> <td colspan="3"> <h2>Need help using this software?</h2> </td></tr>
-        <tr>
-            <td> <b>Step 1.</b> </td>
-            <td>
-                Read the help article
-            </td>
-            <td>
-                <span class="font18px"><a href="http://docs.bvcms.com">Documentation Home Page</a></span><br/>
-                <a href="@helplink" target="_blank" style="color:#08c;width:20em">Context Sensitive Help Article</a>
-            </td>
-        </tr>
-        <tr>
-            <td valign="top"><b>Step 2.</b></td>
-            <td valign="top">Search documentation</td>
-          <td>
-            <p style="max-width: 500px">Note that the following uses a Google Custom Search Engine, 
-            which may be a bit out of date until the documentation settles down. 
-              Usually Google is a smarter search engine, but for now it may be better to use the help pages builtin search. 
-              Just click the main Documentation Home Page link above and use the search there.</p>
-            <input type="text" id="cse-search-input-box-id" size="25" autocomplete="off" style="width:20em" /><br />
-            <input id="csearch" type="submit" class="bt green" value="Search Documentation" style="width:20em" />
-          </td>
-        </tr>
-        @if (ViewBag.NoSupport == null)
-        {
-        <tr>
-            <td><b>Step 3.</b></td>
-            <td>If you still need help ...</td>
-            <td> <input id="contactsupport" type="button" class="bt blue" value="Contact Support" style="width:20em" /> </td>
-        </tr>
-        }
-    </table>
-    <table class="center" width="800">
-        <tr>
-            <td>
-                <gcse:searchresults-only></gcse:searchresults-only>
-            </td>
-        </tr>
-    </table>
-    <table id="supportForm" class="center" style="display:none; width:700px">
-        <tr>
-            <td>
-                <div id="examples">
-                    <h3>Example of a good support request</h3>
-                    <div>
-                        <p>Hello!</p>
-                        <p>
-                            I am looking at John Doe’s record (people ID # 1015).  He is a member of the Adult
-                            Choir (Org ID # 27), but I can’t mark him present for a choir meeting several weeks
-                            ago (6/23/13 at 9:30 AM).  Can you please look into this issue for me?
-                        </p>
-                        <p>
-                            Thank you!<br />
-                            Mary Smith
-                        </p>
-                    </div>
-                    <h3>Example of a good bug report</h3>
-                    <div>
-                        <p>Hello!</p>
-                        <p>
-                            I am on John Doe’s record (people ID # 1015).  I was trying to look at his enrollments
-                            tab, but as soon as I click on “Enrollment”, I get an error message, that says
-                            “Object not set to an instance of an object”. Can you please look into this for me?<br />
-                        </p>
-                        <p>
-                            Thank you!<br />
-                            Mary Smith
-                        </p>
-                    </div>
-                </div>
-                <div style="margin-top: 1.5em;">
-                    <textarea name="body" id="body"></textarea>
-                    <br />
-                    <p>Enter comma separated e-mail addresses to copy the request.</p>
-                    <p>
-                        CC: <input type="text" id="cc" name="cc" size="60" />
-                        <select name="urgency" id="urgency">
-                            <option value="0" selected="">--Select Urgency</option>
-                            <option value="3">No Rush. This can wait until tomorrow</option>
-                            @if (DateTime.Now.TimeOfDay.TotalHours < 16.5)
-                            {
-                            <option value="2">I need an answer before the end of the day</option>
-                            }
-                            <option value="1">Urgent, I need an answer ASAP</option>
-                        </select>
-                        <input id="sendSupport" type="button" class="bt blue" value="Submit Request">
-                    </p>
-                </div>
-            </td>
-        </tr>
-    </table>
+  <table id="needhelp" class="center roundbox grid">
+    <tr> <td colspan="3"> <h2>Need help using this software?</h2> </td></tr>
+    <tr>
+      <td colspan="3">
+        <h4><a href="http://docs.touchpointsoftware.com">Documentation Home Page</a></h4>
+      </td>
+    </tr>
+    @if (Util.IsHosted)
+    {
+      <tr>
+        <td valign="top"><b>Step 1.</b></td>
+        <td valign="top">Search documentation</td>
+        <td>
+          <p style="max-width: 500px">@googlehelp</p>
+          <input type="text" id="cse-search-input-box-id" size="25" autocomplete="off" style="width: 20em" /><br />
+          <input id="csearch" type="submit" class="bt green" value="Search Documentation" style="width: 20em" />
+        </td>
+      </tr>
+      <tr>
+        <td><b>Step 2.</b></td>
+        <td>If you still need help ...</td>
+        <td> <input id="contactsupport" type="button" class="bt blue" value="Contact Support" style="width: 20em" /> </td>
+      </tr>
+    }
+    else
+    {
+      <tr>
+        <td valign="top"></td>
+        <td valign="top">Search documentation</td>
+        <td>
+          <p style="max-width: 500px">@googlehelp</p>
+          <input type="text" id="cse-search-input-box-id" size="25" autocomplete="off" style="width: 20em" /><br />
+          <input id="csearch" type="submit" class="bt green" value="Search Documentation" style="width: 20em" />
+        </td>
+      </tr>
+    }
+  </table>
+  <table class="center" width="800">
+    <tr>
+      <td>
+        <gcse:searchresults-only></gcse:searchresults-only>
+      </td>
+    </tr>
+  </table>
+  <table id="supportForm" class="center" style="display:none; width:700px">
+    <tr>
+      <td>
+        <div id="examples">
+          <h3>Example of a good support request</h3>
+          <div>
+            <p>Hello!</p>
+            <p>
+              I am looking at John Doe’s record (people ID # 1015).  He is a member of the Adult
+              Choir (Org ID # 27), but I can’t mark him present for a choir meeting several weeks
+              ago (6/23/13 at 9:30 AM).  Can you please look into this issue for me?
+            </p>
+            <p>
+              Thank you!<br />
+              Mary Smith
+            </p>
+          </div>
+          <h3>Example of a good bug report</h3>
+          <div>
+            <p>Hello!</p>
+            <p>
+              I am on John Doe’s record (people ID # 1015).  I was trying to look at his enrollments
+              tab, but as soon as I click on “Enrollment”, I get an error message, that says
+              “Object not set to an instance of an object”. Can you please look into this for me?<br />
+            </p>
+            <p>
+              Thank you!<br />
+              Mary Smith
+            </p>
+          </div>
+        </div>
+        <div style="margin-top: 1.5em;">
+          <textarea name="body" id="body"></textarea>
+          <br />
+          <p>Enter comma separated e-mail addresses to copy the request.</p>
+          <p>
+            CC: <input type="text" id="cc" name="cc" size="60" />
+            <select name="urgency" id="urgency">
+              <option value="0" selected="">--Select Urgency</option>
+              <option value="3">No Rush. This can wait until tomorrow</option>
+              @if (DateTime.Now.TimeOfDay.TotalHours < 16.5)
+              {
+                <option value="2">I need an answer before the end of the day</option>
+              }
+              <option value="1">Urgent, I need an answer ASAP</option>
+            </select>
+            <input id="sendSupport" type="button" class="bt blue" value="Submit Request">
+          </p>
+        </div>
+      </td>
+    </tr>
+  </table>
 </form>
 <table id="about" class="roundbox center">
-    <tr>
-        <td class="center">
-            <h2>
-                @if (Util.IsHosted)
-                {
-                    <text>Open Source Software,<br />Hosting and Support Provided By</text>
+  <tr>
+    <td class="center">
+      <h3>Hosting & Support @(Util.IsHosted ? "provided by" : "available at")</h3>
+      <br />
+      <span class="center">
+        <a href="http://bvcms.com" target="_blank">
+          <img src="/Content/images/tps_full_logo.png" style="height: 80px;" /><br />
+          http://touchpointsoftware.com
+        </a>
+      </span>
+      <br /><br />
+      <h6>Built with the Open Source Project</h6>
+      <br />
+      <span class="center">
+        <a href="https://github.com/bvcms/bvcms" target="_blank">
+          <img src="/Content/images/bvcms150.png" /><br />
+          https://github.com/bvcms/bvcms
+        </a>
+      </span>
+      <br /><br />
+      <div>Current Server Date: @Util.Now</div>
+      <div>Build Date: @Util.BuildDate()</div>
+      <br /><br />
+      <div>
+        @if (active > 0)
+        {
+          @:Active Records: @active.ToString("N0")
                 }
-                else
-                {
-                    <text>Open Source Software Provided By</text>
-                }
-            </h2>
-            <br /><br />
-            <span class="center"><a href="http://www.bvcms.com"><img src="/Content/images/bvcms150.png" /></a></span>
-            <br /><br />
-            <div>Current Server Date: @Util.Now</div>
-            <div>Build Date: @Util.BuildDate()</div>
-            <br /><br />
-            <div>
-                @if (active > 0)
-                {
-                    @:Active Records: @active.ToString("N0")
-                }
-                else if (User.IsInRole("Admin"))
-                {
-                    @Helper.AnchorLink("See Active Records", "javascript:$.block();window.location='/Home/ActiveRecords';")
-                }
-            </div>
-        </td>
-    </tr>
+        else if (User.IsInRole("Admin"))
+        {
+          @Helper.AnchorLink("See Active Records", "javascript:$.block();window.location='/Home/ActiveRecords';")
+        }
+      </div>
+    </td>
+  </tr>
 </table>
 <table id="success" class="roundbox center" width="500">
-    <tr><td>Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.</td></tr>
+  <tr><td>Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.</td></tr>
 </table>
