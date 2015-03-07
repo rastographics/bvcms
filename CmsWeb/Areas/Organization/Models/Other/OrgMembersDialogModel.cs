@@ -7,7 +7,7 @@ using CmsWeb.Code;
 using UtilityExtensions;
 using CmsData.Codes;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class OrgMembersDialogModel
     {

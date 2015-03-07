@@ -2,11 +2,11 @@ using System.ComponentModel.DataAnnotations;
 using CmsData;
 using CmsWeb.Code;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class SettingsGeneralModel
     {
-        public CmsData.Organization Org;
+        public Organization Org;
 
         public int Id 
         {

@@ -812,7 +812,7 @@ namespace CmsData.API
             public string Orgname { get; set; }
             public string First { get; set; }
             public string Last { get; set; }
-            private readonly CmsData.OrganizationMember om;
+            private readonly OrganizationMember om;
             private readonly Settings setting;
 
             public SummaryInfo(CMSDataContext db, OrganizationMember om)

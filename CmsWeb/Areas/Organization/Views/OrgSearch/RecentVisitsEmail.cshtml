@@ -10,7 +10,7 @@
     foreach (var p in Model)
     {
     <p>
-        <a href="@Util.ResolveServerUrl("/Person2/" + p.PeopleId)" target="person">@p.LastName, @p.PreferredName</a> <span>(Last Attend: @p.LastAttended)</span>
+        <a href="@Util.ResolveUrl("/Person2/" + p.PeopleId)" target="person">@p.LastName, @p.PreferredName</a> <span>(Last Attend: @p.LastAttended)</span>
         @if (p.HomePhone.HasValue())
         {
             <br/>

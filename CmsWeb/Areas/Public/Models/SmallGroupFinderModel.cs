@@ -193,9 +193,9 @@ namespace CmsWeb.Areas.Public.Models
 			return i;
 		}
 
-		public List<CmsData.Organization> getGroups()
+		public List<Organization> getGroups()
 		{
-			if (search == null) return new List<CmsData.Organization>();
+			if (search == null) return new List<Organization>();
 
 			var orgs = from o in DbUtil.Db.Organizations
 						  where o.DivOrgs.Any(ee => divList.Contains(ee.DivId))
@@ -300,7 +300,7 @@ namespace CmsWeb.Areas.Public.Models
 
 		public Dictionary<string, string> values = new Dictionary<string, string>();
 
-		public void populateFromOrg(CmsData.Organization org)
+		public void populateFromOrg(Organization org)
 		{
 			var leader = (from e in DbUtil.Db.People
 							  where e.PeopleId == org.LeaderId

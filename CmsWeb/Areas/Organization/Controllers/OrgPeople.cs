@@ -7,10 +7,10 @@ using CmsData;
 using CmsWeb.Code;
 using UtilityExtensions;
 using CmsData.Codes;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using Dapper;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
     public partial class OrganizationController
     {
@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Organization.Controllers
             {
                 if (!om.TranId.HasValue) continue;
                 var estr = HttpUtility.UrlEncode(Util.Encrypt(om.TranId.ToString()));
-                var link = Util.ResolveServerUrl("/OnlineReg/PayAmtDue?q=" + estr);
+                var link = Util.ResolveUrl("/OnlineReg/PayAmtDue?q=" + estr);
                 om.PayLink = link;
             }
             DbUtil.Db.SubmitChanges();

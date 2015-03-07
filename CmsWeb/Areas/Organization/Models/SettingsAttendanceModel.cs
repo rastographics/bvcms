@@ -8,11 +8,11 @@ using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class SettingsAttendanceModel
     {
-        public CmsData.Organization Org;
+        public Organization Org;
         public int Id 
         {
             get { return Org != null ? Org.OrganizationId : 0; }

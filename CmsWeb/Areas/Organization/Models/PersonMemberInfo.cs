@@ -6,7 +6,7 @@ using CmsData;
 using UtilityExtensions;
 using System.Web.Mvc;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class PersonMemberInfo
     {

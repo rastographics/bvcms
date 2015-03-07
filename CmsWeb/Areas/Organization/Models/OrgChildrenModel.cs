@@ -9,14 +9,14 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using CmsData.Codes;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class OrgChildrenModel
     {
         public string namesearch { get; set; }
         public string sort { get; set; }
-        public CmsData.Organization org { get; set; }
-        public CmsData.Organization parentorg { get; set; }
+        public Organization org { get; set; }
+        public Organization parentorg { get; set; }
         public bool canedit
         {
             get { return HttpContext.Current.User.IsInRole("Edit"); }

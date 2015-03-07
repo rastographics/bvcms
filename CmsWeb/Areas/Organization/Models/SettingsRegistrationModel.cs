@@ -8,14 +8,14 @@ using CmsData.Registration;
 using CmsWeb.Code;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class OrgAttribute : Attribute { }
     public class RegAttribute : Attribute { }
 
     public class SettingsRegistrationModel
     {
-        public CmsData.Organization Org;
+        public Organization Org;
         public int Id
         {
             get { return Org != null ? Org.OrganizationId : 0; }
@@ -64,7 +64,12 @@ namespace CmsWeb.Areas.Organization.Models
             public int OrganizationId { get; set; }
             public string OrganizationName { get; set; }
         }
+
         public List<OrgPickInfo> OrganizationsFromIdString()
+        {
+           return OrganizationsFromIdString(Org); 
+        }
+        public static List<OrgPickInfo> OrganizationsFromIdString(Organization Org)
         {
             var a = Org.OrgPickList.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
             var n = 0;

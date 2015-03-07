@@ -7,11 +7,11 @@ using UtilityExtensions;
 using System.Data.Linq;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
-    [RouteArea("Org", AreaPrefix="Meeting"), Route("{action}/{id?}")]
+    [RouteArea("Organization", AreaPrefix="Meeting"), Route("{action}/{id?}")]
     public class MeetingController : CmsStaffController
     {
         [Route("~/Meeting/{id:int}")]

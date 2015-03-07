@@ -4,11 +4,11 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData.Codes;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
     public partial class OrganizationController
     {

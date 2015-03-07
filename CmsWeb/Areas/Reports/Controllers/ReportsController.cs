@@ -6,11 +6,12 @@ using System.Linq;
 using System.Security;
 using System.Web.Mvc;
 using System.Xml.Linq;
+using Areas.Org.Dialog.Models;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Reports.ViewModels;
 using CmsWeb.Models;
@@ -603,7 +604,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult ShirtSizes(string org, OrgSearchModel m)
         {
             int? orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null;
-            IQueryable<CmsData.Organization> orgs = m.FetchOrgs();
+            IQueryable<Organization> orgs = m.FetchOrgs();
             IQueryable<ShirtSizeInfo> q = from om in DbUtil.Db.OrganizationMembers
                                           join o in orgs on om.OrganizationId equals o.OrganizationId
                                           where o.OrganizationId == orgid || (orgid ?? 0) == 0

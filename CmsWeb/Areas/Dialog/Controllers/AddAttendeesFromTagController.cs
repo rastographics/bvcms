@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    // todo: use bootstrap, longrunop 
 	[Authorize(Roles = "Edit")]
     [RouteArea("Dialog", AreaPrefix= "AddAttendeesFromTag"), Route("{action}/{id:int}")]
 	public class AddAttendeesFromTagController : CmsController

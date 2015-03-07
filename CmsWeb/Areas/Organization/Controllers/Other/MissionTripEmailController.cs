@@ -3,14 +3,14 @@ using System.Web.Mvc;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsData;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
-    [RouteArea("Org", AreaPrefix = "")]
+    [RouteArea("Organization", AreaPrefix = "")]
     public class MissionTripEmailController : Controller
     {
-        [HttpGet, Route("MissionTripEmail/{oid}/{pid}")]
+        [HttpGet, Route("MissionTripEmail2/{oid}/{pid}")]
         public ActionResult Index(int oid, int pid)
         {
             if (Util.UserPeopleId != pid && !User.IsInRole("MissionGiving"))
@@ -19,22 +19,22 @@ namespace CmsWeb.Areas.Organization.Controllers
             var m = new MissionTripEmailer {PeopleId = pid, OrgId = oid};
             return View(m);
         }
-        [HttpGet, Route("MissionTripEmail/Sent")]
+        [HttpGet, Route("MissionTripEmail2/Sent")]
         public ActionResult Sent()
         {
             return View();
         }
 
-        [HttpPost, Route("MissionTripEmail/Send")]
+        [HttpPost, Route("MissionTripEmail2/Send")]
         [ValidateInput(false)]
         public ActionResult Send(MissionTripEmailer m)
         {
             var s = m.Send();
             if (s == null)
-                return Content("/MissionTripEmail/Sent");
+                return Content("/MissionTripEmail2/Sent");
             return Content(s);
         }
-        [HttpPost, Route("MissionTripEmail/TestSend")]
+        [HttpPost, Route("MissionTripEmail2/TestSend")]
         [ValidateInput(false)]
         public ActionResult TestSend(MissionTripEmailer m)
         {
@@ -43,40 +43,40 @@ namespace CmsWeb.Areas.Organization.Controllers
         }
 
 
-        [HttpPost, Route("MissionTripEmail/Search/{id:int}")]
+        [HttpPost, Route("MissionTripEmail2/Search/{id:int}")]
         public ActionResult SupportSearch(int id, string q)
         {
             var qq = MissionTripEmailer.Search(id, q).ToArray();
             return Content(JsonConvert.SerializeObject(qq));
         }
 
-        [HttpPost, Route("MissionTripEmail/Supporters/{id:int}")]
+        [HttpPost, Route("MissionTripEmail2/Supporters/{id:int}")]
         public ActionResult Supporters(int id)
         {
             var m = new MissionTripEmailer() {PeopleId = id};
             return View(m);
         }
-        [HttpPost, Route("MissionTripEmail/SupportersEdit/{id:int}")]
+        [HttpPost, Route("MissionTripEmail2/SupportersEdit/{id:int}")]
         public ActionResult SupportersEdit(int id)
         {
             var m = new MissionTripEmailer() {PeopleId = id};
             return View(m);
         }
-        [HttpPost, Route("MissionTripEmail/SupportersUpdate")]
+        [HttpPost, Route("MissionTripEmail2/SupportersUpdate")]
         [ValidateInput(false)]
         public ActionResult SupportersUpdate(MissionTripEmailer m)
         {
             m.UpdateRecipients();
             return View("Supporters", m);
         }
-        [HttpPost, Route("MissionTripEmail/RemoveSupporter/{id:int}/{supporterid:int}")]
+        [HttpPost, Route("MissionTripEmail2/RemoveSupporter/{id:int}/{supporterid:int}")]
         public ActionResult RemoveSupporter(int id, int supporterid)
         {
             var m = new MissionTripEmailer() {PeopleId = id};
             m.RemoveSupporter(supporterid);
             return View("SupportersEdit", m);
         }
-        [HttpPost, Route("MissionTripEmail/AddSupporter/{id:int}/{supporter}")]
+        [HttpPost, Route("MissionTripEmail2/AddSupporter/{id:int}/{supporter}")]
         public ActionResult AddSupporter(int id, string supporter)
         {
             int? supporterid = null;

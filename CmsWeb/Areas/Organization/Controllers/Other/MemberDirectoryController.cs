@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Models;
+using CmsWeb.Areas.Org.Models;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
-    [RouteArea("Org", AreaPrefix="MemberDirectory"), Route("{action=index}")]
+    [RouteArea("Organization", AreaPrefix="MemberDirectory"), Route("{action=index}")]
     public class MemberDirectoryController : CmsController
     {
         [Route("~/MemberDirectory/{id:int}")]

@@ -5,12 +5,12 @@ using UtilityExtensions;
 using CmsWeb.Areas.Reports.Models;
 using System.Collections;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class MeetingModel
     {
-        public CmsData.Meeting meeting;
-        public CmsData.Organization org;
+        public Meeting meeting;
+        public Organization org;
 
         public bool showall { get; set; }
         public bool currmembers { get; set; }

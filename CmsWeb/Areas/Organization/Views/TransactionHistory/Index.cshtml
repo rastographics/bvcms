@@ -1,0 +1,48 @@
+﻿@model Areas.Org.Dialog.Models.TransactionHistoryModel
+@using CmsWeb
+@using UtilityExtensions
+@{
+    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Ministry";
+}
+@section scripts
+{
+    @Fingerprint.Script("/Scripts/Admin/TransactionHistory.js")
+}
+        <p>@Model.Name<br />
+            @Model.Org</p>
+        <table id="attends" class="@ViewExtensions2.GridClass" cellpadding="5">
+            <thead>
+                <tr>
+                    <th> </th>
+                    <th> Flag </th>
+                    <th> Wk </th>
+                    <th> Sch </th>
+                    <th> Day </th>
+                    <th> Meeting Date </th>
+                    <th> Attend Type </th>
+                    <th> Member Type </th>
+                    <th> Other Attends </th>
+                    <th> Other OrgId </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var a in Model.FetchAttends())
+                {
+                    <tr>
+                        <td>@a.Indicator </td>
+                        <td>@a.AttendanceFlag </td>
+                        <td>@a.MeetingDate.GetWeekNumber()</td>
+                        <td>@a.ScheduleType</td>
+                        <td>@a.MeetingDate.DayOfWeek.ToString().Substring(0,3)</td>
+                        <td>@a.MeetingDate.ToString("g") </td>
+                        <td>@a.AttendType </td>
+                        <td>@a.MemberType </td>
+                        <td>@a.OtherAttends </td>
+                        <td>@a.OtherOrgId </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div>&nbsp;</div>
+        @{Html.RenderPartial("History", Model.FetchHistory()); }

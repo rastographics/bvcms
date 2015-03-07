@@ -7,9 +7,9 @@ using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
-    [RouteArea("Org", AreaPrefix= "SearchDivisions"), Route("{action}/{id?}")]
+    [RouteArea("Organization", AreaPrefix= "SearchDivisions"), Route("{action}/{id?}")]
     public class SearchDivisionsController : CmsStaffController
     {
         [HttpPost, Route("~/SearchDivisions/{id:int}")]

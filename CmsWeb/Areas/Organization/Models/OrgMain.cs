@@ -4,11 +4,11 @@ using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class OrgMain
     {
-        public CmsData.Organization Org;
+        public Organization Org;
         public int Id
         {
             get { return Org != null ? Org.OrganizationId : 0; }
@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Organization.Models
             }
         }
 
-        public OrgMain(CmsData.Organization org)
+        public OrgMain(Organization org)
         {
             Org = org;
             this.CopyPropertiesFrom(Org);

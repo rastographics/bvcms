@@ -30,8 +30,8 @@ namespace CmsWeb.Models
         {
             return masterorg.OrganizationName;
         }
-        private CmsData.Organization _masterorg;
-        public CmsData.Organization masterorg
+        private Organization _masterorg;
+        public Organization masterorg
         {
             get
             {

@@ -101,6 +101,7 @@
       <organization Include="Scripts/Organization/Organization.js"/>
       <organization Include="Scripts/Dialog/SearchUsers.js"/>
       <organization Include="Scripts/Organization/RegSetting.js"/>
+      <organization Include="Scripts/Organization/OrgMemberDialog2.js"/>
       <organization Include="Scripts/jQuery/jquery-ui-timepicker-addon.js"/>
       
       <org Include="Scripts/Org/Organization.js"/>

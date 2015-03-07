@@ -4,13 +4,13 @@ using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
     [SessionExpire]
-    [RouteArea("Org", AreaPrefix="OrgSearch"), Route("{action=index}/{id?}")]
+    [RouteArea("Organization", AreaPrefix="OrgSearch"), Route("{action=index}/{id?}")]
     public class OrgSearchController : CmsStaffController
     {
         private const string STR_OrgSearch = "OrgSearch2";

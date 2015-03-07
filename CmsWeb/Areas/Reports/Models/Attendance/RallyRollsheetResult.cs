@@ -7,12 +7,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;
 using UtilityExtensions;
 using System.Web.Mvc;
+using Areas.Org.Dialog.Models;
 using CmsData.Codes;
 using CmsWeb.Models;
 

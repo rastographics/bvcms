@@ -12,7 +12,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class MemberDirectoryModel : PagerModel2
     {

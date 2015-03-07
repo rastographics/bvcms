@@ -180,7 +180,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             if (val.HasValue() && val.NotEqual("None"))
                             {
                                 var sc = o.OrgSchedules.FirstOrDefault();
-                                var scin = CmsData.Organization.ParseSchedule(val);
+                                var scin = Organization.ParseSchedule(val);
                                 if (sc != null)
                                 {
                                     sc.SchedDay = scin.SchedDay;

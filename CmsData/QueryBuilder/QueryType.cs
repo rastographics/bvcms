@@ -161,8 +161,6 @@ namespace CmsData
         OtherPreviousChurch,
         ParentsOf,
         PlusParentsOf,
-        PendingCurrentOrg,
-        PreviousCurrentOrg,
         PeopleExtra,
         PeopleExtraData,
         PeopleExtraDate,

@@ -6,7 +6,7 @@ using CmsData.Registration;
 using UtilityExtensions;
 using Settings = CmsData.Registration.Settings;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
     public partial class OrganizationController
     {

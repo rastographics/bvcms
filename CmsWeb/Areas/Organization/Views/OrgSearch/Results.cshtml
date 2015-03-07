@@ -1,6 +1,6 @@
 ﻿@using CmsWeb
 @using RestSharp.Extensions
-@model CmsWeb.Areas.Organization.Models.OrgSearchModel
+@model CmsWeb.Areas.Org.Models.OrgSearchModel
 @{
   var canManageEvents = User.IsInRole("Admin") || User.IsInRole("ManageEvents");
   var canEdit = User.IsInRole("Edit");

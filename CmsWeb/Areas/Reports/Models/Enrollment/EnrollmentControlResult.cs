@@ -5,7 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using UtilityExtensions;

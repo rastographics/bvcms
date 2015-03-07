@@ -1,0 +1,55 @@
+﻿@using CmsWeb
+@using CmsWeb.Models
+@using CmsData
+@using UtilityExtensions
+@model SearchUsersModel
+@{
+    var list = Model.PeopleList();
+}
+<table class="results @ViewExtensions2.GridClass">
+<thead>
+    <tr><td colspan="3">
+        <b>showing top @Model.maxitems of @Model.count.ToString("N0")</b>
+        <input type="hidden" id="topid" name="topid" value="@Model.topid"/>
+        </td></tr>
+	<tr>
+        <th></th>
+		<th>Name</th>
+		<th>Address</th>
+    @if (Model.ordered)
+    {
+        <th></th>
+    }
+	</tr>
+</thead>
+<tbody>
+@foreach (var p in list)
+{ 
+    <tr>
+        <td>
+    @if (Model.singlemode)
+    {
+            <a href="#" value="@p.PeopleId" class="select">select</a>
+    }
+    else
+    {
+            <input type="checkbox" @(p.HasTag ? "checked='checked'" : "") value="@p.PeopleId" />
+    }
+        </td>
+        <td>@p.Name</td>
+        <td>@p.EmailAddress</td>
+    @if (Model.ordered)
+    {
+        <th id="a@(p.PeopleId)" class="nowrap">
+        <span class="move">
+        @if (@p.PeopleId != Model.topid && p.HasTag)
+        {
+            <a href="#" class="move" value="@p.PeopleId">move to top</a>
+        }
+        </span>
+        </th>
+    }
+    </tr>
+}
+</tbody>
+</table>

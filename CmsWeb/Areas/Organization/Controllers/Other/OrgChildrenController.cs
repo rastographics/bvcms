@@ -1,10 +1,10 @@
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
-    [RouteArea("Org", AreaPrefix="OrgChildren"), Route("{action}")]
+    [RouteArea("Organization", AreaPrefix="OrgChildren"), Route("{action}")]
     public class OrgChildrenController : CmsStaffController
     {
         [Route("~/OrgChildren/{id:int}")]

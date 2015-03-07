@@ -4,7 +4,7 @@ using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class MeetingsModel : PagedTableModel<Meeting, MeetingInfo>
     {

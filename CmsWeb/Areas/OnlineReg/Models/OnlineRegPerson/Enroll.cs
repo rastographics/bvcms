@@ -6,7 +6,6 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Text;
 using CmsData.Codes;
-using CmsWeb.Areas.Org.Models;
 
 namespace CmsWeb.Models
 {

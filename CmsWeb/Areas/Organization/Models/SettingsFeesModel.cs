@@ -8,11 +8,11 @@ using CmsData.Registration;
 using CmsWeb.Code;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class SettingsFeesModel
     {
-        public CmsData.Organization Org;
+        public Organization Org;
 
         public int Id
         {

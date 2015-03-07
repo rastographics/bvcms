@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using UtilityExtensions;
 using Settings = CmsData.Registration.Settings;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class MissionTripEmailer
     {

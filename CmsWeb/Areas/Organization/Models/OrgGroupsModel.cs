@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using CmsData.Codes;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class OrgGroupsModel
     {

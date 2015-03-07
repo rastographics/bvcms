@@ -8,7 +8,7 @@ using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData.View;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class OrgPeopleModel : PagedTableModel<OrgPerson, OrgPerson>, ICurrentOrg
     {
@@ -17,8 +17,8 @@ namespace CmsWeb.Areas.Organization.Models
         {
         }
 
-        private CmsData.Organization org;
-        public CmsData.Organization Org
+        private Organization org;
+        public Organization Org
         {
             get
             {

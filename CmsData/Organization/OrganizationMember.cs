@@ -185,8 +185,8 @@ namespace CmsData
                     if (m != null)
                     {
                         m.Pending = pending;
-                        m.MemberTypeId = MemberTypeId;
-                        Db.SubmitChanges();
+                        m.MemberTypeId = memberTypeId;
+                        db.SubmitChanges();
                         return m;
                     }
                     var org = db.Organizations.SingleOrDefault(oo => oo.OrganizationId == organizationId);

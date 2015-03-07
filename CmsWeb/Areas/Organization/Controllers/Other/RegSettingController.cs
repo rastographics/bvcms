@@ -6,10 +6,10 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
     [ValidateInput(false)]
-    [RouteArea("Org", AreaPrefix="RegSettings"), Route("{action=index}/{id?}")]
+    [RouteArea("Organization", AreaPrefix="RegSettings"), Route("{action=index}/{id?}")]
     public class RegSettingController : CmsStaffController
     {
         [HttpGet, Route("~/RegSettings/{id:int}")]

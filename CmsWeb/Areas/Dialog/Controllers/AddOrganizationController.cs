@@ -5,7 +5,6 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
-    // todo: use bootstrap, dialog-options
 	[Authorize(Roles="Edit")]
     [RouteArea("Dialog", AreaPrefix = "AddOrganization")]
     public class AddOrganizationController : CmsStaffController
@@ -13,7 +12,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/AddOrganization")]
         public ActionResult Index()
         {
-			var m = new NewOrganizationModel(DbUtil.Db.CurrentOrg.Id);
+			var m = new NewOrganizationModel(Util2.CurrentOrgId);
 			m.org.OrganizationName = "";
 			m.org.Location = "";
         	return View(m);

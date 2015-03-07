@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.People.Models
                        PeopleId = a.PeopleId,
                        MeetingId = a.MeetingId,
                        OrganizationId = a.Meeting.OrganizationId,
-                       OrganizationName = CmsData.Organization
+                       OrganizationName = Organization
                           .FormatOrgName(o.OrganizationName, o.LeaderName, null),
                        AttendType = a.AttendType.Description ?? "(null)",
                        MeetingName = o.Division.Name + ": " + o.OrganizationName,

@@ -1,32 +1,41 @@
-﻿using System.Web.Mvc;
+using System.Linq;
+using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Models;
 using UtilityExtensions;
 
-namespace CmsWeb.Controllers
+namespace CmsWeb.Areas.Dialog.Controllers
 {
-    [RouteArea("Dialog", AreaPrefix="RepairTransactions"), Route("{action}/{id?}")]
-    public class RepairTransactionsController : CmsStaffController
-    {
-        [HttpPost, Route("~/RepairTransactions/{id:int}")]
+	[Authorize(Roles = "Edit")]
+    [RouteArea("Dialog", AreaPrefix= "RepairTransactions"), Route("{action}/{id}")]
+	public class RepairTransactionsController : CmsController
+	{
+        [Authorize(Roles="Admin")]
+        [Route("~/RepairTransactions/{id:int}")]
         public ActionResult Index(int id)
         {
-            var model = new RepairTransactions(id);
-            model.RemoveExistingLop(DbUtil.Db, id, RepairTransactions.Op);
-            return View(model);
-        }
-
-        [HttpPost]
-        public ActionResult Process(RepairTransactions model)
-        {
-            model.UpdateLongRunningOp(DbUtil.Db, RepairTransactions.Op);
-
-            if (!model.Started.HasValue)
-            { 
-                DbUtil.LogActivity("Add to org from tag for {0}".Fmt(Session["ActiveOrganization"]));
-                model.Process(DbUtil.Db);
-            }
-			return View(model);
+			var host = Util.Host;
+			System.Threading.Tasks.Task.Factory.StartNew(() =>
+			{
+				System.Threading.Thread.CurrentThread.Priority = System.Threading.ThreadPriority.BelowNormal;
+				var Db = new CMSDataContext(Util.GetConnectionString(host));
+	            Db.PopulateComputedEnrollmentTransactions(id);
+			});
+			return Redirect("/RepairTransactions/Progress/" + id);
 		}
-    }
+		[HttpPost]
+		public JsonResult Progress2(int id)
+		{
+			var r = DbUtil.Db.RepairTransactionsRuns.Where(mm => mm.Orgid == id).OrderByDescending(mm => mm.Id).First();
+			return Json(new { r.Count, r.Error, r.Processed, Completed = r.Completed.ToString(), r.Running });
+		}
+		[HttpGet]
+		public ActionResult Progress(int id)
+		{
+			var o = DbUtil.Db.LoadOrganizationById(id);
+			ViewBag.orgname = o.OrganizationName;
+			ViewBag.orgid = id;
+			var r = DbUtil.Db.RepairTransactionsRuns.Where(mm => mm.Orgid == id).OrderByDescending(mm => mm.Id).First();
+			return View(r);
+		}
+	}
 }

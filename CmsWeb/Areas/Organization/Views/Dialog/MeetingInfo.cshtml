@@ -1,0 +1,23 @@
+﻿@using System.Web.Mvc.Html
+@model Areas.Org.Dialog.Models.NewMeetingInfo
+
+<form class="modal dialog-options form-horizontal validate fade hide" action="@ViewBag.Action" method="POST">
+  <div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h3>Meeting Options</h3>
+  </div>
+  <div class="modal-body">
+    @Html.EditorForIf(m => m.Schedule, Model.Schedule != null)
+    @Html.EditorFor(m => m.MeetingDate, "DateAndTime")
+    @Html.EditorForIf(m => m.AttendCredit, Model.AttendCredit != null)
+    @Html.EditorFor(m => m.ByGroup)
+    @Html.EditorFor(m => m.GroupFilterPrefix)
+    @Html.EditorFor(m => m.HighlightGroup)
+    @Html.EditorFor(m => m.UseAltNames)
+    @Html.HiddenFor(m => m.OrganizationId)
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn btn-success" data-dismiss="modal">Close</a>
+    <input type="submit" class="btn btn-primary" value="OK"/>
+  </div>
+</form>

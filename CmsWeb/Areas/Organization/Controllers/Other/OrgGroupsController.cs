@@ -3,12 +3,12 @@ using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using System.IO;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using LumenWorks.Framework.IO.Csv;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
-    [RouteArea("Org", AreaPrefix="OrgGroups"), Route("{action}/{id?}")]
+    [RouteArea("Organization", AreaPrefix="OrgGroups"), Route("{action}/{id?}")]
     public class OrgGroupsController : CmsStaffController
     {
         [Route("~/OrgGroups/{id:int}")]

@@ -3,9 +3,9 @@ using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using CmsData.Codes;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
     [RouteArea("Organization", AreaPrefix = "Org"), Route("{action}/{id?}")]
     [ValidateInput(false)]

@@ -5,11 +5,15 @@
 @{
     var list = Model.OrgList();
 }
-<b>Showing top @Model.listcount of @Model.count.ToString("N0")</b>
+<b>showing top @Model.listcount of @Model.count.ToString("N0")</b>
+<ul id="results" class="sort">
 @foreach (var o in list)
-{
-    <label class="checkbox">
+{ 
+    <li>
         <input type="checkbox" @(o.IsChecked ? "checked='checked'" : "") value="@o.OrgId" />
-        @o.Division &mdash; @o.Name
-    </label>
+        <span title="Other Divisions|@o.Divisions" class="tip">@o.Division</span>
+        &mdash;
+        <span title="@o.OrgId" class="tip">@o.Name</span>
+    </li>
 }
+</ul>

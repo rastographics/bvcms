@@ -17,9 +17,9 @@ using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Organization.Controllers;
+using CmsWeb.Areas.Org.Controllers;
 
-namespace CmsWeb.Areas.Organization.Models
+namespace CmsWeb.Areas.Org.Models
 {
 
     public class OrgSearchModel
@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Organization.Models
             return d;
         }
 
-        private IQueryable<CmsData.Organization> organizations;
+        private IQueryable<Organization> organizations;
         public IEnumerable<OrganizationInfo> OrganizationList()
         {
             organizations = FetchOrgs();
@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Organization.Models
             organizations = ApplySort(organizations).Skip(Pager.StartRow).Take(Pager.PageSize);
             return OrganizationList(organizations, TagProgramId, TagDiv);
         }
-        public static IEnumerable<OrganizationInfo> OrganizationList(IQueryable<CmsData.Organization> query, int? TagProgramId, int? TagDiv)
+        public static IEnumerable<OrganizationInfo> OrganizationList(IQueryable<Organization> query, int? TagProgramId, int? TagDiv)
         {
             var q = from o in query
                     join v in DbUtil.Db.ViewPreviousMemberCounts on o.OrganizationId equals v.OrganizationId into j
@@ -178,7 +178,7 @@ namespace CmsWeb.Areas.Organization.Models
             return _count.Value;
         }
 
-        public IQueryable<CmsData.Organization> FetchOrgs()
+        public IQueryable<Organization> FetchOrgs()
         {
             var me = Util.UserPeopleId;
 
@@ -347,7 +347,7 @@ namespace CmsWeb.Areas.Organization.Models
 
             return organizations;
         }
-        public IQueryable<CmsData.Organization> ApplySort(IQueryable<CmsData.Organization> query)
+        public IQueryable<Organization> ApplySort(IQueryable<Organization> query)
         {
             var regdt = DateTime.Today.AddYears(5);
             if (Pager.Direction == "asc")
@@ -713,7 +713,7 @@ namespace CmsWeb.Areas.Organization.Models
         }
         public static DateTime DefaultMeetingDate(int scheduleid)
         {
-            var sdt = CmsData.Organization.GetDateFromScheduleId(scheduleid);
+            var sdt = Organization.GetDateFromScheduleId(scheduleid);
             if (sdt == null)
                 return DateTime.Now.Date.AddHours(8);
             var dt = Util.Now.Date;
@@ -765,7 +765,7 @@ namespace CmsWeb.Areas.Organization.Models
                 var leader = DbUtil.Db.LoadPersonById(p.Key);
                 foreach (var m in meetings)
                 {
-                    string orgname = CmsData.Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
+                    string orgname = Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
                     sb.AppendFormat("<a href='{0}/Meeting/{1}'>{2} - {3}</a><br/>\n",
                                     DbUtil.Db.CmsHost, m.MeetingId, orgname, m.Lastmeeting.FormatDateTm());
                     sb2.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2:g}</td></tr>\n",

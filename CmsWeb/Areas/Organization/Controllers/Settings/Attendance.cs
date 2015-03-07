@@ -1,12 +1,12 @@
 using System;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Organization.Models;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Code;
 using UtilityExtensions;
 using CmsWeb.Models;
 
-namespace CmsWeb.Areas.Organization.Controllers
+namespace CmsWeb.Areas.Org.Controllers
 {
     public partial class OrganizationController
     {

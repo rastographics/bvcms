@@ -418,10 +418,10 @@ Please call the church to resolve this before we can complete your registration.
                         var namecb = model.Parent.GetNameFor(mm => mm.List[i].Checkbox[ask.UniqueId]);
                         var cb = ((AskCheckboxes)ask);
                         var cbcount = cb.CheckboxItemsChosen(model.Checkbox).Count();
-                        if (cb.Max > 0 && cbcount > cb.Max)
-                            modelState.AddModelError(namecb, "Max of {0} exceeded".Fmt(cb.Max));
-                        else if (cb.Min > 0 && (model.Checkbox == null || cbcount < cb.Min))
-                            modelState.AddModelError(namecb, "Min of {0} required".Fmt(cb.Min));
+                        if (cb.Maximum > 0 && cbcount > cb.Maximum)
+                            modelState.AddModelError(namecb, "Max of {0} exceeded".Fmt(cb.Maximum));
+                        else if (cb.Minimum > 0 && (model.Checkbox == null || cbcount < cb.Minimum))
+                            modelState.AddModelError(namecb, "Min of {0} required".Fmt(cb.Minimum));
                         break;
 
                     case "AskGradeOptions":

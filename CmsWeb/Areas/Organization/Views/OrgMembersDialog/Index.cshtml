@@ -1,0 +1,87 @@
+﻿@using CmsData
+@model Areas.Org.Dialog.Models.OrgMembersUpdate
+@{
+  var managetransactions = User.IsInRole("ManageTransactions");
+  var admin = User.IsInRole("Admin");
+  var missiongiving = User.IsInRole("MissionGiving");
+}
+<form class="form form-horizontal modal fade hide ajax members-update" method="POST">
+  <div class="modal-header">
+    <h4>@Model.OrgName</h4>
+    <div class="alert alert-danger">This will update information on @Model.Count @Model.Group</div>
+  </div>
+  <div class="modal-body">
+    <div class="tabbable group">
+      <ul class="nav nav-tabs">
+        <li class="active"><a href="#memberdata" data-toggle="tab">@Model.Group Data</a></li>
+        <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" id="memberdata">
+          <a class="helplink pull-right" target="_blank" href='http://docs.bvcms.com'>help</a>
+          <fieldset class="display">
+            @Html.HiddenFor(m => m.Id)
+            @Html.EditorFor(m => m.MemberType)
+            @Html.EditorFor(m => m.EnrollmentDate)
+            @Html.EditorFor(m => m.InactiveDate)
+            @Html.EditorFor(m => m.RemoveInactiveDate)
+            @Html.EditorFor(m => m.Pending)
+          </fieldset>
+
+        </div>
+        <div class="tab-pane" id="membergroups">
+          <div class="well">
+            @{
+              var list = DbUtil.Db.MemberTags.Where(mm => mm.OrgId == Model.Id).OrderBy(t => t.Name).ToList();
+              var itemspercol = list.Count / 3;
+              var remainder = list.Count % 3;
+              itemspercol += (remainder > 0 ? 1 : 0);
+            }
+            @for (var col = 0; col < (int)Math.Ceiling((double)list.Count / itemspercol); col++)
+            {
+              <div class="inline align-top">
+                @for (var i = col * itemspercol; i < Math.Min((col + 1) * itemspercol, list.Count); i++)
+                {
+                  @SmallGroup(list[i])
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    @if (managetransactions || admin || missiongiving)
+    {
+      <div class="btn-group">
+        <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="/OrgMemberDialog/AddTransaction" class="ajax">Add Transaction</a>
+          </li>
+          <li>
+            <a href="/OrgMemberDialog/AddFeeAdjustment" class="ajax">Make Fee Adjustment</a>
+          </li>
+        </ul>
+      </div>
+    }
+    <a href="/OrgMembersDialog/ShowDrop" class="btn btn-warning ajax">
+      Drop
+    </a>
+    <a href="/OrgMembersDialog/Update" class="btn btn-danger ajax"
+       data-confirm="Are you sure you want to update @Model.Count @Model.Group?">
+      Update
+    </a>
+</div>
+</form>
+@helper SmallGroup(MemberTag mt)
+{
+  <div class="control-group">
+    <label class="control-label">@mt.Name</label>
+    <div class="controls">
+      <input href="/OrgMembersDialog/SmallGroupChecked" class="ckbox" type="checkbox" />
+    </div>
+  </div>
+}
