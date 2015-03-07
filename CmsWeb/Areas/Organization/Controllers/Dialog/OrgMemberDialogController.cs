@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.UI;
-using Areas.Org.Dialog.Models;
+using CmsWeb.Areas.Org2.Dialog.Models;
 using CmsData;
 using CmsWeb.Code;
 

@@ -1,8 +1,8 @@
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Org2.Models;
 
-namespace CmsWeb.Areas.Org.Controllers
+namespace CmsWeb.Areas.Org2.Controllers
 {
     [RouteArea("Organization", AreaPrefix="OrgChildren"), Route("{action}")]
     public class OrgChildrenController : CmsStaffController

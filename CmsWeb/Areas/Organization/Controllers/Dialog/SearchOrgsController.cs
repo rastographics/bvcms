@@ -4,7 +4,7 @@ using System.Web.Mvc;
 using CmsWeb.Models;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Dialog.Controllers
+namespace CmsWeb.Areas.Org2.Dialog.Controllers
 {
     // todo: use bootstrap
     [RouteArea("Organization", AreaPrefix= "SearchOrgs"), Route("{action}/{id?}")]

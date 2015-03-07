@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using CmsData;
 
-namespace Areas.Org.Dialog.Models
+namespace CmsWeb.Areas.Org2.Dialog.Models
 {
     public class TransactionHistoryModel
     {

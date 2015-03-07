@@ -4,7 +4,7 @@ using System.Linq;
 using CmsData;
 using CmsWeb.Models;
 
-namespace Areas.Org.Dialog.Models
+namespace CmsWeb.Areas.Org2.Dialog.Models
 {
     public class OrgMemberTransactionModel
     {

@@ -7,7 +7,7 @@ using CmsData.View;
 using CmsWeb.Code;
 using UtilityExtensions;
 
-namespace Areas.Org.Dialog.Models
+namespace CmsWeb.Areas.Org2.Dialog.Models
 {
     public class OrgMembersUpdate
     {

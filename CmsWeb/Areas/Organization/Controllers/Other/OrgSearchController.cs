@@ -4,10 +4,13 @@ using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Org2.Models;
+using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Code;
+using CmsWeb.Models;
+using MoreLinq;
 
-namespace CmsWeb.Areas.Org.Controllers
+namespace CmsWeb.Areas.Org2.Controllers
 {
     [SessionExpire]
     [RouteArea("Organization", AreaPrefix="OrgSearch"), Route("{action=index}/{id?}")]
@@ -298,6 +301,23 @@ namespace CmsWeb.Areas.Org.Controllers
             return s.StartsWith("Error") 
                 ? RedirectShowError(s) 
                 : Redirect(m.ConvertToSearch());
+        }
+        [HttpPost]
+        public ActionResult MeetingsAttendance(DateTime? dt1, DateTime? dt2, OrgSearchModel m)
+        {
+            var dt = ChurchAttendanceModel.MostRecentAttendedSunday();
+            if (!dt1.HasValue)
+                dt1 = new DateTime(dt.Year, 1, 1);
+            if (!dt2.HasValue)
+                dt2 = dt;
+            var m2 = new AttendanceDetailModel(dt1.Value, dt2, m);
+            return m2.FetchMeetings().ToDataTable().ToExcel("MeetingsExport.xlsx");
+        }
+
+        [HttpPost]
+        public ActionResult MissionTripFunding(OrgSearchModel m)
+        {
+            return MissionTripFundingModel.Result(m);
         }
         [Serializable]
         class OrgSearchInfo

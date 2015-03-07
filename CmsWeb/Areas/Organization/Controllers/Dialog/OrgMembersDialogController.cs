@@ -1,8 +1,8 @@
 using System.Web.Mvc;
-using Areas.Org.Dialog.Models;
+using CmsWeb.Areas.Org2.Dialog.Models;
 using CmsData;
 
-namespace CmsWeb.Areas.Org.Dialog.Controllers
+namespace CmsWeb.Areas.Org2.Dialog.Controllers
 {
     // todo: use bootstrap
     [RouteArea("Organization", AreaPrefix= "OrgMembersDialog"), Route("{action}")]

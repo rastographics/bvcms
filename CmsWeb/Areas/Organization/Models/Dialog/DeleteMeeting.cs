@@ -8,7 +8,7 @@ using CmsData;
 using UtilityExtensions;
 using Tasks = System.Threading.Tasks;
 
-namespace Areas.Org.Dialog.Models
+namespace CmsWeb.Areas.Org2.Dialog.Models
 {
     public class DeleteMeeting : LongRunningOp
     {

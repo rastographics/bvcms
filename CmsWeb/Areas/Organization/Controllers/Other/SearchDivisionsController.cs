@@ -7,7 +7,7 @@ using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     [RouteArea("Organization", AreaPrefix= "SearchDivisions"), Route("{action}/{id?}")]
     public class SearchDivisionsController : CmsStaffController

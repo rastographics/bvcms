@@ -1,5 +1,5 @@
 ﻿using System.Web.Mvc;
-using Areas.Org.Dialog.Models;
+using CmsWeb.Areas.Org2.Dialog.Models;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;

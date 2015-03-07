@@ -4,7 +4,7 @@ using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
 
-namespace CmsWeb.Areas.Org.Dialog.Controllers
+namespace CmsWeb.Areas.Org2.Dialog.Controllers
 {
     // todo: use bootstrap
     [RouteArea("Organization", AreaPrefix= "SearchUsers"), Route("{action=index}/{id?}")]

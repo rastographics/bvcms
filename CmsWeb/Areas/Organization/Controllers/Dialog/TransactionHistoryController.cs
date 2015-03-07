@@ -1,11 +1,11 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using Areas.Org.Dialog.Models;
+using CmsWeb.Areas.Org2.Dialog.Models;
 using CmsData;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Dialog.Controllers
+namespace CmsWeb.Areas.Org2.Dialog.Controllers
 {
     // todo: use bootstrap
     [RouteArea("Organization", AreaPrefix= "TransactionHistory"), Route("{action}/{id?}")]

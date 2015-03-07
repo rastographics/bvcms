@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Org2.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {

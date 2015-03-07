@@ -5,7 +5,7 @@ using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData.Codes;
 
-namespace Areas.Org.Dialog.Models
+namespace CmsWeb.Areas.Org2.Dialog.Models
 {
     public class OrgMemberMoveModel : PagedTableModel<Organization, OrgMoveInfo>
     {

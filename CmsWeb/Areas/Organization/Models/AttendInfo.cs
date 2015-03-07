@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class AttendInfo
     {

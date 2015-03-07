@@ -3,7 +3,7 @@ using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Dialog.Controllers
+namespace CmsWeb.Areas.Org2.Dialog.Controllers
 {
     // todo: use bootstrap, dialog-options
 	[Authorize(Roles="Edit")]

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using CmsData.Codes;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class OrgChildrenModel
     {

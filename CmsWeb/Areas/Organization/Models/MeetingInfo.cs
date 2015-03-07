@@ -1,6 +1,6 @@
 using System;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class MeetingInfo
     {

@@ -7,7 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Org2.Models;
 using CmsData;
 
 namespace CmsWeb.Areas.Reports.Models

@@ -4,11 +4,9 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Org2.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;

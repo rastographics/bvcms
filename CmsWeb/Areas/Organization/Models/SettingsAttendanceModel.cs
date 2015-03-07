@@ -8,7 +8,7 @@ using System.Linq;
 using System.Web.Mvc;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class SettingsAttendanceModel
     {

@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using CmsWeb.Code;
 
-namespace Areas.Org.Dialog.Models
+namespace CmsWeb.Areas.Org2.Dialog.Models
 {
     public class NewMeetingInfo
     {

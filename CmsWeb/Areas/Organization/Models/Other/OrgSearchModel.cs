@@ -17,9 +17,10 @@ using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Org.Controllers;
+using CmsWeb.Areas.Org2.Controllers;
+using CmsWeb.Code;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
 
     public class OrgSearchModel
@@ -267,35 +268,35 @@ namespace CmsWeb.Areas.Org.Models
                 organizations = from o in organizations
                                 where o.OrganizationTypeId == TypeId
                                 select o;
-            else if (TypeId == OrgType.NoOrgType)
+            else if (TypeId == CodeValueModel.OrgType.NoOrgType)
                 organizations = from o in organizations
                                 where o.OrganizationTypeId == null
                                 select o;
-            else if (TypeId == OrgType.MainFellowship)
+            else if (TypeId == CodeValueModel.OrgType.MainFellowship)
                 organizations = from o in organizations
                                 where o.IsBibleFellowshipOrg == true
                                 select o;
-            else if (TypeId == OrgType.NotMainFellowship)
+            else if (TypeId == CodeValueModel.OrgType.NotMainFellowship)
                 organizations = from o in organizations
                                 where (o.IsBibleFellowshipOrg ?? false) == false
                                 select o;
-            else if (TypeId == OrgType.SuspendedCheckin)
+            else if (TypeId == CodeValueModel.OrgType.SuspendedCheckin)
                 organizations = from o in organizations
                                 where (o.SuspendCheckin ?? false)
                                 select o;
-            else if (TypeId == OrgType.ParentOrg)
+            else if (TypeId == CodeValueModel.OrgType.ParentOrg)
                 organizations = from o in organizations
                                 where o.ChildOrgs.Any()
                                 select o;
-            else if (TypeId == OrgType.ChildOrg)
+            else if (TypeId == CodeValueModel.OrgType.ChildOrg)
                 organizations = from o in organizations
                                 where o.ParentOrgId != null
                                 select o;
-            else if (TypeId == OrgType.Fees)
+            else if (TypeId == CodeValueModel.OrgType.Fees)
                 organizations = from o in organizations
                                 join f in DbUtil.Db.ViewOrgsWithFees on o.OrganizationId equals f.OrganizationId
                                 select o;
-            else if (TypeId == OrgType.NoFees)
+            else if (TypeId == CodeValueModel.OrgType.NoFees)
                 organizations = from o in organizations
                                 join f in DbUtil.Db.ViewOrgsWithoutFees on o.OrganizationId equals f.OrganizationId
                                 select o;
@@ -310,22 +311,22 @@ namespace CmsWeb.Areas.Org.Models
                                 where o.CampusId == null
                                 select o;
 
-            if (OnlineReg == RegistrationClassification.AnyOnlineReg99)
+            if (OnlineReg == CodeValueModel.RegistrationClassification.AnyOnlineReg99)
                 organizations = from o in organizations
                                 where o.RegistrationTypeId > 0
                                 select o;
-            else if (OnlineReg == RegistrationClassification.AnyOnlineRegMissionTrip98)
+            else if (OnlineReg == CodeValueModel.RegistrationClassification.AnyOnlineRegMissionTrip98)
                 organizations = from o in organizations
                                 where o.RegistrationTypeId > 0 && o.IsMissionTrip == true
                                 select o;
-            else if (OnlineReg == RegistrationClassification.AnyOnlineRegNonPicklist97)
+            else if (OnlineReg == CodeValueModel.RegistrationClassification.AnyOnlineRegNonPicklist97)
                 organizations = from o in organizations
                                 join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
                                 from p in j.DefaultIfEmpty()
                                 where p.PickListOrgId == null
                                 where o.RegistrationTypeId > 0
                                 select o;
-            else if (OnlineReg == RegistrationClassification.AnyOnlineRegActive96)
+            else if (OnlineReg == CodeValueModel.RegistrationClassification.AnyOnlineRegActive96)
                 organizations = from o in organizations
                                 join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
                                 from p in j.DefaultIfEmpty()
@@ -537,18 +538,6 @@ namespace CmsWeb.Areas.Org.Models
             return query;
         }
 
-        public static IEnumerable<SelectListItem> StatusIds()
-        {
-            var q = from s in DbUtil.Db.OrganizationStatuses
-                    select new SelectListItem
-                    {
-                        Value = s.Id.ToString(),
-                        Text = s.Description
-                    };
-            var list = q.ToList();
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
-            return list;
-        }
         public IEnumerable<SelectListItem> CampusIds()
         {
             var q = from c in DbUtil.Db.Campus
@@ -634,83 +623,7 @@ namespace CmsWeb.Areas.Org.Models
             return list;
         }
 
-        public class OrgType
-        {
-            public const int NoFees = -8;
-            public const int Fees = -7;
-            public const int ChildOrg = -6;
-            public const int ParentOrg = -5;
-            public const int SuspendedCheckin = -4;
-            public const int MainFellowship = -3;
-            public const int NotMainFellowship = -2;
-            public const int NoOrgType = -1;
-        }
-        public static IEnumerable<SelectListItem> OrgTypes()
-        {
-            var q = from t in DbUtil.Db.OrganizationTypes
-                    orderby t.Code
-                    select new SelectListItem
-                    {
-                        Value = t.Id.ToString(),
-                        Text = t.Description
-                    };
-            var list = q.ToList();
-            list.Insert(0, new SelectListItem { Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Parent Org", Value = OrgType.ParentOrg.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Child Org", Value = OrgType.ChildOrg.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Orgs With Fees", Value = OrgType.Fees.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString() });
-            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
-            return list;
-        }
 
-        public class RegistrationClassification
-        {
-            public const int NotSpecified = -1;
-            public const int AnyOnlineReg99 = 99;
-            public const int AnyOnlineRegMissionTrip98 = 98;
-            public const int AnyOnlineRegNonPicklist97 = 97;
-            public const int AnyOnlineRegActive96 = 96;
-        }
-        public static IEnumerable<SelectListItem> RegistrationTypeIds()
-        {
-            var q = from o in CmsData.Codes.RegistrationTypeCode.GetCodePairs()
-                    select new SelectListItem
-                    {
-                        Value = o.Key.ToString(),
-                        Text = o.Value
-                    };
-            var list = q.ToList();
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
-                Text = "(any active registration)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
-                Text = "(any registration, no picklist)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineReg99.ToString(),
-                Text = "(any registration)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = "-1",
-                Text = "(not specified)",
-            });
-            list.Add(new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegMissionTrip98.ToString(),
-                Text = "Mission Trip",
-            });
-            return list;
-        }
         public static DateTime DefaultMeetingDate(int scheduleid)
         {
             var sdt = Organization.GetDateFromScheduleId(scheduleid);

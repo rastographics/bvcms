@@ -5,7 +5,7 @@ using CmsWeb.Code;
 using UtilityExtensions;
 using CmsData;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class ScheduleInfo
     {

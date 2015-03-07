@@ -1,5 +1,5 @@
 ﻿@using CmsData
-@model CmsWeb.Areas.Org.Models.SettingsRegistrationModel
+@model CmsWeb.Areas.Org2.Models.SettingsRegistrationModel
 @{
   var NotJoinOrg = Model.Org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization;
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";

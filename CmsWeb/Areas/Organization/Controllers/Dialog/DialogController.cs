@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Org2.Models;
 using CmsWeb.Code;
 using UtilityExtensions;
 

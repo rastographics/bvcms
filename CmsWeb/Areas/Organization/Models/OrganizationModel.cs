@@ -11,7 +11,7 @@ using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class OrganizationModel : OrgPeopleModel
     {
@@ -56,22 +56,7 @@ namespace CmsWeb.Areas.Org.Models
                 return;
             OrgMain = new OrgMain(Org);
             GroupSelect = GroupSelectCode.Member;
-            IsVolunteerLeader = VolunteerLeaderInOrg(Id);
-        }
-        public static bool VolunteerLeaderInOrg(int? orgid)
-        {
-            if (orgid == null)
-                return false;
-            var o = DbUtil.Db.LoadOrganizationById(orgid);
-            if (o == null || o.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes)
-                return false;
-            if (HttpContext.Current.User.IsInRole("Admin") ||
-                HttpContext.Current.User.IsInRole("ManageVolunteers"))
-                return true;
-            var leaderorgs = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
-            if (leaderorgs == null)
-                return false;
-            return leaderorgs.Contains(orgid.Value);
+            IsVolunteerLeader = OrganizationMember.VolunteerLeaderInOrg(DbUtil.Db, Id);
         }
 
         private CodeValueModel cv = new CodeValueModel();
@@ -87,15 +72,6 @@ namespace CmsWeb.Areas.Org.Models
                         Value = g.Id.ToString()
                     };
             return q;
-        }
-        public static IEnumerable<SelectListItem> Tags()
-        {
-            var cv = new CodeValueModel();
-            var tg = CodeValueModel.ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Id").ToList();
-            if (HttpContext.Current.User.IsInRole("Edit"))
-                tg.Insert(0, new SelectListItem { Value = "-1", Text = "(last query)" });
-            tg.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
-            return tg;
         }
         public static IEnumerable<SearchDivision> Divisions(int? id)
         {

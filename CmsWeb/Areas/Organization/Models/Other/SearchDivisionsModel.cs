@@ -10,7 +10,7 @@ using CmsData;
 using CmsData.View;
 using CmsWeb.Models;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class SearchDivisionsModel : PagedTableModel<SearchDivision, SearchDivision>
     {

@@ -16,7 +16,7 @@ using System.Data.Linq.SqlClient;
 using System.Web.UI.WebControls;
 using System.Text.RegularExpressions;
 
-namespace Areas.Org.Dialog.Models
+namespace CmsWeb.Areas.Org2.Dialog.Models
 {
     public class SearchOrgsModel
     {

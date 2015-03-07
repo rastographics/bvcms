@@ -8,7 +8,7 @@ using CmsData.Registration;
 using CmsWeb.Code;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class OrgAttribute : Attribute { }
     public class RegAttribute : Attribute { }

@@ -4,7 +4,7 @@ using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class OrgMain
     {

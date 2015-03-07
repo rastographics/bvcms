@@ -5,7 +5,7 @@ using UtilityExtensions;
 using CmsWeb.Areas.Reports.Models;
 using System.Collections;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Org2.Models
 {
     public class MeetingModel
     {

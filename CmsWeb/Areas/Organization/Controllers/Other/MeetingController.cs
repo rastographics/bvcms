@@ -7,9 +7,9 @@ using UtilityExtensions;
 using System.Data.Linq;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Org2.Models;
 
-namespace CmsWeb.Areas.Org.Controllers
+namespace CmsWeb.Areas.Org2.Controllers
 {
     [RouteArea("Organization", AreaPrefix="Meeting"), Route("{action}/{id?}")]
     public class MeetingController : CmsStaffController

@@ -6,11 +6,11 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using CmsData.Codes;
-using CmsWeb.Areas.Org.Models;
+using CmsWeb.Areas.Org2.Models;
 using CmsWeb.Code;
 using CmsWeb.Controllers;
 
-namespace CmsWeb.Areas.Org.Controllers
+namespace CmsWeb.Areas.Org2.Controllers
 {
     public partial class OrganizationController
     {
