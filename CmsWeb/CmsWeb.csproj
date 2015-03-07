@@ -567,7 +567,7 @@
     <Compile Include="Areas\Org\Controllers\OrgGroupsController.cs" />
     <Compile Include="Areas\Main\Controllers\CouponController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgMembersDialogController.cs" />
-    <Compile Include="Areas\Org\Controllers\OrgSearchController.cs" />
+    <Compile Include="Areas\Search\Controllers\OrgSearchController.cs" />
     <Compile Include="Areas\Finance\Controllers\PostBundleController.cs" />
     <Compile Include="Areas\Search\Controllers\SearchAddController.cs" />
     <Compile Include="Areas\Org\Controllers\OrganizationController.cs" />
@@ -614,7 +614,7 @@
     <Compile Include="Areas\Org\Models\Organization\PrevMemberModel.cs" />
     <Compile Include="Areas\Org\Models\Organization\PersonMemberInfo.cs" />
     <Compile Include="Areas\Main\Models\Other\MassEmailer.cs" />
-    <Compile Include="Areas\Org\Models\OrgSearchModel.cs" />
+    <Compile Include="Areas\Search\Models\OrgSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\PostBundleModel.cs" />
     <Compile Include="Areas\Main\Models\Other\CouponModel.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\SearchAddModel.cs" />
@@ -870,7 +870,7 @@
     <Content Include="Areas\Public\Views\SmallGroupFinder\Index.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogSubmit.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Address.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsEmail.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\RecentVisitsEmail.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenMeta.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenSearch.cshtml" />
@@ -1120,10 +1120,10 @@
     <Content Include="Areas\Org\Views\OrgMemberDialog\AddFeeAdjustment.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\GoerSupporters.cshtml" />
     <Content Include="Areas\People\Views\Shared\EditorTemplates\Value.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Email.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Gear.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Reports.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Toolbar.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\Toolbar\Email.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\Toolbar\Gear.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\Toolbar\Reports.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\Toolbar\Toolbar.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Toolbar\Gear.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\Toolbar\Email.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\Toolbar\Gear.cshtml" />
@@ -1777,7 +1777,7 @@
     <Content Include="Areas\Org\Views\MemberDirectory\Index.cshtml" />
     <Content Include="Areas\Org\Views\MemberDirectory\Results.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
     <Content Include="Areas\People\Views\Web.config">
@@ -1817,7 +1817,7 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Display.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\DateTimePicker.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\OrganizationStructure.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />
     <Content Include="Areas\Org\Views\Web.config">
       <SubType>Designer</SubType>
@@ -1889,9 +1889,9 @@
     </Content>
     <Content Include="Views\Home\Index.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\OrgSearch\Index.cshtml">
+    <Content Include="Areas\Search\Views\OrgSearch\Index.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\OrgSearch\Results.cshtml">
+    <Content Include="Areas\Search\Views\OrgSearch\Results.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Batch\TagPeopleIds.cshtml">
     </Content>
@@ -2205,7 +2205,7 @@
     </Content>
     <Content Include="Areas\Org\Views\OrgGroups\Form.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\OrgSearch\DivisionIds.cshtml">
+    <Content Include="Areas\Search\Views\OrgSearch\DivisionIds.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Meeting\Index.cshtml">
     </Content>
@@ -2229,7 +2229,7 @@
     </Content>
     <Content Include="Areas\Dialog\Views\SearchDivisions\Results.cshtml">
     </Content>
-    <Content Include="Areas\Org\Views\OrgSearch\Row.cshtml">
+    <Content Include="Areas\Search\Views\OrgSearch\Row.cshtml">
     </Content>
     <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml">
     </Content>

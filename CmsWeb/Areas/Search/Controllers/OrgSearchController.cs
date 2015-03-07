@@ -1,14 +1,14 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using CmsWeb.Areas.Org.Models;
 using CmsData;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
+using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
 
-namespace CmsWeb.Areas.Org.Controllers
+namespace CmsWeb.Areas.Search.Controllers
 {
     [SessionExpire]
     [RouteArea("Org", AreaPrefix="OrgSearch"), Route("{action=index}/{id?}")]
