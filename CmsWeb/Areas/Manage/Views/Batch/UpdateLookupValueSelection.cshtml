@@ -8,7 +8,7 @@
             <select class="form-control" id="NewValue" name="NewValue">
                 @foreach (var code in Model)
                 {
-                    <option value="@ViewBag.UseCode ? @code.Code : @code.Id">@code.Value</option>
+                    <option value="@(ViewBag.UseCode ? code.Code : code.Id.ToString())">@code.Value</option>
                 }
             </select>
         }
