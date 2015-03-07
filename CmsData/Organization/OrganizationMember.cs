@@ -11,6 +11,7 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Web;
 using System.Data.SqlClient;
+using CmsData.Codes;
 using CmsData.View;
 
 namespace CmsData
@@ -365,6 +366,21 @@ namespace CmsData
                 return null;
             var estr = HttpUtility.UrlEncode(Util.Encrypt(TranId.ToString()));
             return db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
+        }
+        public static bool VolunteerLeaderInOrg(CMSDataContext db, int? orgid)
+        {
+            if (orgid == null)
+                return false;
+            var o = db.LoadOrganizationById(orgid);
+            if (o == null || o.RegistrationTypeId != RegistrationTypeCode.ChooseVolunteerTimes)
+                return false;
+            if (HttpContext.Current.User.IsInRole("Admin") ||
+                HttpContext.Current.User.IsInRole("ManageVolunteers"))
+                return true;
+            var leaderorgs = db.GetLeaderOrgIds(Util.UserPeopleId);
+            if (leaderorgs == null)
+                return false;
+            return leaderorgs.Contains(orgid.Value);
         }
     }
 }

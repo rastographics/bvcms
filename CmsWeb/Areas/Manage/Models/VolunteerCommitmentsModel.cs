@@ -5,7 +5,6 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
-using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models
@@ -87,7 +86,7 @@ namespace CmsWeb.Areas.Manage.Models
 //					select ts.Datetime(Sunday);
 		    TimeSlots = Regsettings.TimeSlots.list;
 
-			IsLeader = OrganizationModel.VolunteerLeaderInOrg(id);
+			IsLeader = OrganizationMember.VolunteerLeaderInOrg(DbUtil.Db, id);
 		}
 		public class Slot
 		{
