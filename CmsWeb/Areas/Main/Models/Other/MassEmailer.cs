@@ -5,6 +5,7 @@ using System.Web;
 using System.Threading;
 using CmsData;
 using CmsWeb.Code;
+using MoreLinq;
 using UtilityExtensions;
 using System.IO;
 using System.Web.Mvc;
@@ -30,6 +31,7 @@ namespace CmsWeb.Areas.Main.Models
         public string Body { get; set; }
         public DateTime? Schedule { get; set; }
         public bool PublicViewable { get; set; }
+        public IEnumerable<string> Recipients { get; set; } 
 
         public string Host { get; set; }
 
@@ -42,7 +44,9 @@ namespace CmsWeb.Areas.Main.Models
             wantParents = parents ?? false;
             var tag = DbUtil.Db.TagById(tagid);
             TagId = tag.Id;
-            Count = tag.People(DbUtil.Db).Count();
+            var people = tag.People(DbUtil.Db);
+            Recipients = people.Select(p => p.ToString());
+            Count = people.Count();
 
         }
         public MassEmailer(Guid id, bool? parents = null, bool? ccparents = null, bool? nodups = null, int? orgid = null)
@@ -90,7 +94,10 @@ namespace CmsWeb.Areas.Main.Models
             TagId = tag.Id;
             if (noDuplicates)
                 DbUtil.Db.NoEmailDupsInTag(TagId);
-            Count = tag.People(DbUtil.Db).Count();
+
+            var people = tag.People(DbUtil.Db);
+            Recipients = people.Select(p => p.ToString());
+            Count = people.Count();
         }
 
         public EmailQueue CreateQueueForOrg()

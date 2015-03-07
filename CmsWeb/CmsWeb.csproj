@@ -752,6 +752,7 @@
     <Content Include="Content\touchpoint\js\admin\divisions.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
+    <Content Include="Content\touchpoint\js\email\compose.js" />
     <Content Include="Content\touchpoint\js\export-toolbar.js" />
     <Content Include="Content\touchpoint\js\finance\totals-by-fund.js" />
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
