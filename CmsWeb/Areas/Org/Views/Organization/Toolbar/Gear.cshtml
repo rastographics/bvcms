@@ -1,0 +1,61 @@
+﻿@using CmsData.Codes
+@using CmsWeb.Areas.Org.Models
+@{
+  var admin = User.IsInRole("Admin");
+  var edit = User.IsInRole("Edit");
+  var delete = User.IsInRole("Delete");
+  var manager = User.IsInRole("ManageGroups");
+  var oid = ViewBag.oid;
+  var model = (OrganizationModel)ViewBag.model;
+  var o = model.org;
+}
+<ul class="dropdown-menu dropdown-div-gear">
+  <li>
+    <div>
+      <ul id="ultoolbar" class="span6 unstyled pull-left">
+        <li class="header">Administrative</li>
+        @if (admin || manager)
+        {
+          <li><a href="/OrgGroups/@oid">Group Member Management</a></li>
+          <li class="hideAlt"><a href="/RegSettings/@oid">View Registration Document</a></li>
+        }
+        <li><a href="/OrgContent/@oid" target="_blank">Members Only Page</a></li>
+        <li><a id="tryreg" href="#">Try Registration</a> </li>
+        @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
+        {
+          <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar">Volunteer Calendar</a></li>
+        }
+        @if (edit)
+        {
+          <li><a href="/Organization/CopySettings/@oid">Copy Settings</a></li>
+          <li><a href="/OrgChildren/@oid">Child Organization Management</a></li>
+        }
+        @if (o.IsMissionTrip == true && User.IsInRole("MissionGiving"))
+        {
+          <li><a href="/Reports/MissionTripFunding/@oid">Mission Trip Funding</a></li>
+          <li><a href="/Reports/MissionTripSenders/@oid">Mission Trip Senders Export</a></li>
+        }
+        @if (admin)
+        {
+          if (delete)
+          {
+            <li><a id="deleteorg" href="/Organization/Delete/@oid">Delete Organization</a></li>
+          }
+          else
+          {
+            <li><a href="http://docs.bvcms.com/Organizations/DeleteOrganization.html" target="_blank">Delete Organization</a></li>
+          }
+          <li><a href="/RepairTransactions/@oid" id="RepairTransactions">Repair Transactions</a></li>
+        }
+        @if (User.IsInRole("ministrEspace"))
+        {
+          <li><a id="addMESEvent" href="#" orgid="@oid">Add ministrEspace Event</a></li>
+        }
+        <li><a href="/Reports/CustomColumns/@oid">Custom Columns</a></li>
+      </ul>
+      <ul class="unstyled pull-left span6">
+        @Html.Partial("Toolbar/GearStandard")
+      </ul>
+    </div>
+  </li>
+</ul>

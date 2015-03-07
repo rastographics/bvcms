@@ -1,0 +1,12 @@
+﻿@model CmsWeb.Areas.Org.Models.OrgSearchModel
+@foreach (var i in Model.DivisionIds())
+{
+    if (i.Value == Model.TagDiv.ToString())
+    {
+    <option selected="selected" value="@i.Value">@i.Text</option>
+    }
+    else
+    {
+    <option value="@i.Value">@i.Text</option>
+    }
+}

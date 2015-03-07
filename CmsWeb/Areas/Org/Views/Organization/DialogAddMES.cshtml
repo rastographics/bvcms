@@ -1,0 +1,27 @@
+﻿@using CmsData;
+@using CmsData.Classes.MinistrESpace
+@{
+    int orgID = ViewBag.OrgID;
+    var msh = new MinistrESpaceHelper();
+    var events = msh.getUniqueEventList();
+}
+<!DOCTYPE html>
+<html>
+<body>
+    <form action="/Organization/AddMESEvent/" method="post">
+        <input type="hidden" name="id" value="@orgID" />
+        <table>
+            <tr>
+                <td class="right top"><b>Event:</b></td>
+                <td class="top">
+                    @Html.DropDownList("mesID",  new SelectList( events, "IDName", "Name" ) )
+                </td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td colspan="2" class="center"><input class="bt" type="submit" value="Add Event" /> &nbsp;&nbsp; <input class="bt" id="closeSubmitDialog" type="button" value="Cancel" /></td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

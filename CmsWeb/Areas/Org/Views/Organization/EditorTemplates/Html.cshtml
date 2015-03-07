@@ -1,0 +1,8 @@
+﻿@model string
+@using UtilityExtensions
+@using CmsWeb
+    <div id="@(ViewData.TemplateInfo.HtmlFieldPrefix)_ro" class="block border">
+        @Html.Raw(Model)
+    </div>
+    <a href="#" class="editor" tb="@ViewData.TemplateInfo.HtmlFieldPrefix">edit</a>
+    @Html.TextAreaFor(m => m, new { @class = "html" })
