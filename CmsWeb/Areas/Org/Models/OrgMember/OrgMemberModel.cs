@@ -44,24 +44,19 @@ namespace CmsWeb.Areas.Org.Models
                     mm.Organization,
                     mm.OrgMemMemTags,
                     mm.Organization.IsMissionTrip,
-                    ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
                 }).SingleOrDefault();
             if (i == null)
                 throw new Exception("missing OrgMember at oid={0}, pid={1}".Fmt(OrgId, PeopleId));
             om = i.mm;
-            TransactionSummary = i.ts;
             this.CopyPropertiesFrom(om);
             Name = i.Name;
-
             IsMissionTrip = i.IsMissionTrip ?? false;
+
+            TransactionSummary = om.TransactionSummary(DbUtil.Db);
             if (TransactionSummary != null)
             {
-                AmountPaidTransactions = IsMissionTrip
-                    ? om.TotalPaid(DbUtil.Db)
-                    : TransactionSummary.IndPaid;
-                AmountDue = IsMissionTrip
-                    ? om.AmountDue(DbUtil.Db)
-                    : TransactionSummary.IndDue;
+                AmountPaidTransactions = om.TotalPaid(DbUtil.Db);
+                AmountDue = om.AmountDue(DbUtil.Db);
             }
 
             OrgName = i.OrganizationName;
