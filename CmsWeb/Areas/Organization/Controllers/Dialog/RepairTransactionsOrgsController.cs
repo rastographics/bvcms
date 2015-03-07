@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using CmsWeb.Areas.Org2.Dialog.Models;
 using CmsData;
-using CmsWeb.Areas.Org2.Models;
+using CmsWeb.Areas.Org2.Dialog.Models;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Controllers
 {

@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsWeb.Areas.Org2.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;
@@ -15,7 +14,7 @@ using UtilityExtensions;
 using System.Web.Mvc;
 using CmsWeb.Areas.Org2.Dialog.Models;
 using CmsData.Codes;
-using CmsWeb.Models;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {

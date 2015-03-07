@@ -5,11 +5,11 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using CmsWeb.Areas.Org2.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using UtilityExtensions;
 using System.Web.Mvc;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {

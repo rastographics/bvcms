@@ -7,8 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsWeb.Areas.Org2.Models;
 using CmsData;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {

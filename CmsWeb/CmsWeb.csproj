@@ -337,7 +337,7 @@
     <Compile Include="Areas\Organization\Controllers\Other\OrgChildrenController.cs" />
     <Compile Include="Areas\Organization\Controllers\Other\OrgGroupsController.cs" />
     <Compile Include="Areas\Organization\Controllers\Dialog\OrgMemberDialogController.cs" />
-    <Compile Include="Areas\Organization\Controllers\Other\OrgSearchController.cs" />
+    <Compile Include="Areas\Search\Controllers\OrgSearchController.cs" />
     <Compile Include="Areas\Organization\Controllers\Other\RegSettingController.cs" />
     <Compile Include="Areas\Organization\Controllers\Other\SearchDivisionsController.cs" />
     <Compile Include="Areas\Organization\Models\Dialog\OrgMember\OrgMoveInfo.cs" />
@@ -352,7 +352,7 @@
     <Compile Include="Areas\Organization\Models\Dialog\OrgMember\MissionSupportModel.cs" />
     <Compile Include="Areas\Organization\Models\Other\MissionTripEmailer.cs" />
     <Compile Include="Areas\Organization\Models\Other\OrgMembersDialogModel.cs" />
-    <Compile Include="Areas\Organization\Models\Other\OrgSearchModel.cs" />
+    <Compile Include="Areas\Search\Models\OrgSearchModel.cs" />
     <Compile Include="Areas\Organization\Models\Other\SearchDivisionsModel.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
@@ -1058,7 +1058,7 @@
     <Content Include="Areas\Public\Views\SmallGroupFinder\Index.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogSubmit.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Address.cshtml" />
-    <Content Include="Areas\Organization\Views\OrgSearch\RecentVisitsEmail.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\RecentVisitsEmail.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenMeta.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenSearch.cshtml" />
@@ -1296,10 +1296,10 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\FinishLater.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\GoerSupporters.cshtml" />
     <Content Include="Areas\People\Views\Shared\EditorTemplates\Value.cshtml" />
-    <Content Include="Areas\Organization\Views\OrgSearch\Toolbar\Email.cshtml" />
-    <Content Include="Areas\Organization\Views\OrgSearch\Toolbar\Gear.cshtml" />
-    <Content Include="Areas\Organization\Views\OrgSearch\Toolbar\Reports.cshtml" />
-    <Content Include="Areas\Organization\Views\OrgSearch\Toolbar\Toolbar.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\Toolbar\Email.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\Toolbar\Gear.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\Toolbar\Reports.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\Toolbar\Toolbar.cshtml" />
     <Content Include="Areas\Organization\Views\Organization\Toolbar\Gear.cshtml" />
     <Content Include="Areas\Organization\Views\Meeting\Toolbar\Email.cshtml" />
     <Content Include="Areas\Organization\Views\Meeting\Toolbar\Gear.cshtml" />
@@ -1960,7 +1960,7 @@
     <Content Include="Areas\Organization\Views\MemberDirectory\Index.cshtml" />
     <Content Include="Areas\Organization\Views\MemberDirectory\Results.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
-    <Content Include="Areas\Organization\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
     <Content Include="Areas\People\Views\Web.config">
@@ -1999,7 +1999,7 @@
     <Content Include="Areas\People\Views\Person\Personal\Header.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Display.cshtml" />
-    <Content Include="Areas\Organization\Views\OrgSearch\OrganizationStructure.cshtml" />
+    <Content Include="Areas\Search\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />
     <Content Include="Areas\Organization\Views\Web.config">
       <SubType>Designer</SubType>
@@ -2071,9 +2071,9 @@
     </Content>
     <Content Include="Views\Home\Index.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgSearch\Index.cshtml">
+    <Content Include="Areas\Search\Views\OrgSearch\Index.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgSearch\Results.cshtml">
+    <Content Include="Areas\Search\Views\OrgSearch\Results.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Batch\TagPeopleIds.cshtml">
     </Content>
@@ -2358,7 +2358,7 @@
     </Content>
     <Content Include="Areas\Organization\Views\OrgGroups\Form.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgSearch\DivisionIds.cshtml">
+    <Content Include="Areas\Search\Views\OrgSearch\DivisionIds.cshtml">
     </Content>
     <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\ScheduleInfo.cshtml">
     </Content>
@@ -2378,7 +2378,7 @@
     </Content>
     <Content Include="Areas\Public\Views\OrgContent\Edit.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgSearch\Row.cshtml">
+    <Content Include="Areas\Search\Views\OrgSearch\Row.cshtml">
     </Content>
     <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml">
     </Content>
@@ -2602,6 +2602,7 @@
     <Folder Include="Areas\Manage\Models\Reports\" />
     <Folder Include="Areas\OnlineReg\Models\Payments\" />
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
+    <Folder Include="Areas\Organization\Models\Reports\" />
     <Folder Include="Areas\Organization\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
     <Folder Include="Areas\Public\Views\TestMobile\" />

@@ -16,6 +16,7 @@ using UtilityExtensions;
 using System.Web.Mvc;
 using CmsWeb.Areas.Org2.Dialog.Models;
 using CmsData.Codes;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {

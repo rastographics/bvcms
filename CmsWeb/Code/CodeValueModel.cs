@@ -1115,6 +1115,8 @@ namespace CmsWeb.Code
             public const int AnyOnlineRegMissionTrip98 = 98;
             public const int AnyOnlineRegNonPicklist97 = 97;
             public const int AnyOnlineRegActive96 = 96;
+            public const int AnyOnlineRegNotOnApp95 = 95;
+            public const int AnyOnlineRegOnApp94 = 94;
         }
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
@@ -1127,13 +1129,23 @@ namespace CmsWeb.Code
             var list = q.ToList();
             list.Insert(0, new SelectListItem
             {
+                Value = RegistrationClassification.AnyOnlineRegOnApp94.ToString(),
+                Text = "(any reg on app)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegNotOnApp95.ToString(),
+                Text = "(active reg not on app)",
+            });
+            list.Insert(0, new SelectListItem
+            {
                 Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
-                Text = "(any active registration)",
+                Text = "(active registration)",
             });
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
-                Text = "(any registration, no picklist)",
+                Text = "(registration, no picklist)",
             });
             list.Insert(0, new SelectListItem
             {
