@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData.Codes;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/AddAttendeesFromTag/{id:int}")]
 		public ActionResult Index(int id)
 		{
-			ViewBag.tag = OrganizationModel.Tags();
+			ViewBag.tag = CodeValueModel.Tags();
 			ViewBag.meetingid = id;
 			return View();
 		}

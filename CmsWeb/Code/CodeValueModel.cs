@@ -10,7 +10,6 @@ using System.Web.Mvc;
 using CmsData;
 using System.Collections.Generic;
 using System.Linq;
-using DocumentFormat.OpenXml.Wordprocessing;
 using UtilityExtensions;
 using System.Data.Linq.SqlClient;
 using CmsData.Codes;
@@ -1015,6 +1014,103 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> Organizations(int SubDivId)
         {
             return top.Union(GetOrganizationList(SubDivId));
+        }
+        public static IEnumerable<SelectListItem> Tags()
+        {
+            var cv = new CodeValueModel();
+            var tg = ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Id").ToList();
+            if (HttpContext.Current.User.IsInRole("Edit"))
+                tg.Insert(0, new SelectListItem { Value = "-1", Text = "(last query)" });
+            tg.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            return tg;
+        }
+        public static IEnumerable<SelectListItem> StatusIds()
+        {
+            var q = from s in DbUtil.Db.OrganizationStatuses
+                    select new SelectListItem
+                    {
+                        Value = s.Id.ToString(),
+                        Text = s.Description
+                    };
+            var list = q.ToList();
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            return list;
+        }
+        public class OrgType
+        {
+            public const int NoFees = -8;
+            public const int Fees = -7;
+            public const int ChildOrg = -6;
+            public const int ParentOrg = -5;
+            public const int SuspendedCheckin = -4;
+            public const int MainFellowship = -3;
+            public const int NotMainFellowship = -2;
+            public const int NoOrgType = -1;
+        }
+        public static IEnumerable<SelectListItem> OrgTypes()
+        {
+            var q = from t in DbUtil.Db.OrganizationTypes
+                    orderby t.Code
+                    select new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = t.Description
+                    };
+            var list = q.ToList();
+            list.Insert(0, new SelectListItem { Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Parent Org", Value = OrgType.ParentOrg.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Child Org", Value = OrgType.ChildOrg.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs With Fees", Value = OrgType.Fees.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString() });
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
+            return list;
+        }
+        public class RegistrationClassification
+        {
+            public const int NotSpecified = -1;
+            public const int AnyOnlineReg99 = 99;
+            public const int AnyOnlineRegMissionTrip98 = 98;
+            public const int AnyOnlineRegNonPicklist97 = 97;
+            public const int AnyOnlineRegActive96 = 96;
+        }
+        public static IEnumerable<SelectListItem> RegistrationTypeIds()
+        {
+            var q = from o in CmsData.Codes.RegistrationTypeCode.GetCodePairs()
+                    select new SelectListItem
+                    {
+                        Value = o.Key.ToString(),
+                        Text = o.Value
+                    };
+            var list = q.ToList();
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
+                Text = "(any active registration)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
+                Text = "(any registration, no picklist)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineReg99.ToString(),
+                Text = "(any registration)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = "-1",
+                Text = "(not specified)",
+            });
+            list.Add(new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegMissionTrip98.ToString(),
+                Text = "Mission Trip",
+            });
+            return list;
         }
 
         public static List<SelectListItem> ConvertToSelect(object items, string valuefield)

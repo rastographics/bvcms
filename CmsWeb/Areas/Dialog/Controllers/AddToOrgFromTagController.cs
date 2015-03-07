@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using CmsData.Codes;
+using CmsWeb.Code;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/AddToOrgFromTag/{id:int}")]
 		public ActionResult Index(int id, bool pending = false, bool prospect = false)
 		{
-			ViewBag.tag = OrganizationModel.Tags();
+			ViewBag.tag = CodeValueModel.Tags();
 			var o = DbUtil.Db.LoadOrganizationById(id);
 			ViewBag.orgid = id;
 			ViewBag.pending = pending;
