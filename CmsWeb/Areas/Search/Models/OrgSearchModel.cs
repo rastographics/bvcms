@@ -10,7 +10,6 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using CmsData.View;
-using CmsWeb.Areas.Org.Controllers;
 using CmsWeb.Models;
 using MoreLinq;
 using Newtonsoft.Json;
@@ -18,8 +17,9 @@ using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Search.Controllers;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Search.Models
 {
 
     public class OrgSearchModel

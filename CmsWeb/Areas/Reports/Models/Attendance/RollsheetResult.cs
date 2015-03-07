@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using CmsWeb.Areas.Org2.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;
@@ -127,7 +126,7 @@ namespace CmsWeb.Areas.Reports.Models
                 else if (OrgSearchModel != null)
                 {
                     var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.OrganizationId == o.OrgId
+                            where om.OrganizationId == o.OrgId
                         join m in DbUtil.Db.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
                         where om.EnrollmentDate <= Util.Now
                         orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
@@ -162,20 +161,20 @@ namespace CmsWeb.Areas.Reports.Models
                         join m in DbUtil.Db.OrgPeople(orgid, co.GroupSelect,
                             co.First(), co.Last(), Groups, co.ShowHidden,
                             co.FilterIndividuals, co.FilterTag) on om.PeopleId equals m.PeopleId
-                        where om.EnrollmentDate <= Util.Now
-                        orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
-                        let p = om.Person
+                            where om.EnrollmentDate <= Util.Now
+                            orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
+                            let p = om.Person
                         let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
-                        select new
-                        {
-                            PeopleId = p.PeopleId,
-                            Name2 = ch ? p.AltName : p.Name2,
-                            BirthDate = Util.FormatBirthday(
-                                p.BirthYear,
-                                p.BirthMonth,
-                                p.BirthDay),
-                            MemberTypeCode = om.MemberType.Code,
-                            ch,
+                            select new
+                            {
+                                PeopleId = p.PeopleId,
+                                Name2 = ch ? p.AltName : p.Name2,
+                                BirthDate = Util.FormatBirthday(
+                                    p.BirthYear,
+                                    p.BirthMonth,
+                                    p.BirthDay),
+                                MemberTypeCode = om.MemberType.Code,
+                                ch,
                             highlight =
                                 om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup)
                                     ? NewMeetingInfo.HighlightGroup

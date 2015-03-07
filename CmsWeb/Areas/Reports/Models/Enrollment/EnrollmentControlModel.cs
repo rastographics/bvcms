@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using CmsData;
 using CmsWeb.Areas.Search.Models;
-using CmsWeb.Code;
 using Dapper;
 
 namespace CmsWeb.Areas.Reports.Models
