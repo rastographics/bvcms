@@ -1,0 +1,17 @@
+﻿@model IEnumerable<DateTime>
+@using UtilityExtensions;
+<blockquote>
+    <table>
+        <tr>
+            <td> Date </td>
+            <td> Time </td>
+        </tr>
+        @foreach (var dt in Model)
+        {
+            <tr>
+                <td>@dt.ToLongDateString()</td>
+                <td>@dt.ToLongTimeString()</td>
+            </tr>	
+        }
+    </table>
+</blockquote>

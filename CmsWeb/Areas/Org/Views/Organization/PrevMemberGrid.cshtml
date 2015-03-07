@@ -1,0 +1,69 @@
+﻿@using CmsWeb
+@using UtilityExtensions
+@model CmsWeb.Areas.Org.Models.PrevMemberModel
+@Html.Hidden("previous-qid", (Guid?)ViewBag.queryid)
+<p style="margin-bottom:5px">
+Count: <strong id="previous-count">@Model.Count()</strong>
+    <a class="filtergroupslink bt" href="#" title="Filter by name/group">Filter@(Model.isFiltered ? "(filtered)" : "")</a>
+
+@if(User.IsInRole("Developer"))
+{ 
+<a href="/AddToOrgPrevFromTag/@Model.OrganizationId" class="addprevfromtag bt" title="Add Previous Members From Tag">add from tag</a>
+} 
+Show Previous Prospects:@Html.CheckBox("ShowProspects")
+</p>
+<table id="MemberGrid" class="@ViewExtensions2.GridClass" cellpadding="4">
+<thead>
+<tr>
+    <th><br /><a href="#" class="sortable">Name</a></th>
+    <th><br /><a title="Sort by Organization Member Type" href="#" class="sortable">MemberType</a></th>
+    <th class="left">
+        <a title="Sort by Church Member Status" href="#" class="sortable">Church</a><br />
+        <a href="#" class="sortable">Age</a> - <a title="Sort by Birthday" href="#" class="sortable">Bday</a>
+    </th>
+    <th><br /><a href="#" class="sortable">Primary Address</a></th>
+    <th><br />Communication</th>
+    <th><br /><a href="#" class="sortable">% Att.</a></th>
+    <th><a href="#" class="sortable">Dropped</a><br />
+        <a href="#" class="sortable">Last Att.</a>
+    </th>
+    <th><br />Tag</th>
+</tr>
+</thead>
+<tbody>
+@foreach(var om in Model.PrevMembers())
+{ 
+<tr>
+    <td><img src="/Content/images/individual.gif" border="0" /> <a href="/Person2/@om.PeopleId">@om.Name</a></td>
+    <td><a href="/TransactionHistory/@om.PeopleId/@Model.OrganizationId" target="_blank">
+            @om.MemberType
+        </a></td>
+    <td>@om.MemberStatus<br />
+        @om.Age - @om.BirthDate
+    </td>
+    <td><a href="http://www.google.com/maps?q=@om.Address,@om.CityStateZip" target="_blank">
+            @om.Address</a><br />
+        @om.CityStateZip
+    </td>
+    <td>
+    @foreach (var ph in om.Phones)
+    {     
+        @ph<br />
+    }         
+        <a href="mailto:@om.Name <@om.EmailAddress>">@om.EmailAddress</a>
+    </td>
+    <td>
+        <span>@om.AttendPct.ToString2("N1")%</span>
+    </td>
+    <td class="center">
+        <span>@om.Dropped.FormatDate()</span><br />
+        <span>@om.LastAttended.FormatDate("-")</span>
+    </td>
+    <td>
+        <a pid='@om.PeopleId' title="Add to/Remove from Active Tag" class="taguntag" href="#">@(om.HasTag? "Remove" : "Add")</a>
+    </td>
+</tr>
+}
+</tbody>
+</table>
+@Html.Partial("Pager2", Model.Pager) 

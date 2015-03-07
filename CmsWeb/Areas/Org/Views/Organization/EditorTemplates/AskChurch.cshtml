@@ -1,0 +1,13 @@
+﻿@model CmsData.Registration.Ask
+@using CmsWeb
+@using (var ci = Html.BeginCollectionItem(Model.Name))
+{
+	<li class="type-@Model.Type">@Html.Raw(ci.hiddenindex)
+		@Html.HiddenFor(m => m.Type)
+		<span class="keyword big tip" title="AskChurch
+    |Ask whether they are a member here, or active in another church.
+    |Good for indicating whether they are a prospect or not.">
+			AskChurch
+					<a class="delt" href="#"><img align="top" src="/Content/images/delete.gif" title="remove this item" /></a></span>
+	</li>
+}

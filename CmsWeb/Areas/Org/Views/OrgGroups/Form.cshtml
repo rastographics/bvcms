@@ -1,0 +1,85 @@
+﻿@using CmsWeb
+@model CmsWeb.Areas.Org.Models.OrgGroupsModel
+@Html.Hidden("orgid")
+@Html.Hidden("newgid")
+@Html.Hidden("sort")
+@Html.Hidden("isRecreationTeam")
+<table id="ManageGroups" cellspacing="5" class="roundbox">
+    <tr><td colspan="3">
+        <h2><a href="/Organization/@Model.orgid">Manage Groups for @Model.OrgName</a></h2></td></tr>
+    <tr>
+        <th class="right">Change Target Group:</th>
+        <td colspan="2" class="wide100">@Html.DropDownList("groupidDD", Model.Groups(), new { @onchange = "groupid.value = this.value" })
+         <input type="hidden" name="groupid" id="groupid" value="@Model.groupid" />
+        </td>
+    </tr>
+    <tr>
+        <th class="right">New Group Name:</th>
+        <td colspan="2" class="wide100">@Html.TextBox("GroupName")</td>
+    </tr>
+    <tr>
+        <th></th>
+        <td colspan="2"><a class="groupmanager bt" href="/OrgGroups/MakeNewGroup/@Model.orgid">New Group</a>
+            <a class="groupmanager bt" href="/OrgGroups/RenameGroup/@Model.orgid">Rename Group</a>
+            <a class="groupmanager bt" href="/OrgGroups/DeleteGroup/@Model.orgid">Delete Group</a>
+            <a class="bt" href="/OrgGroups/Management/@Model.orgid">Manage</a>
+        </td>
+    </tr>
+    <tr><td colspan="2"><hr /></td></tr>
+    <tr>
+        <th class="right" class="helptip" 
+            title="Filter by Groups
+            |You can put a partial name
+            |Or you can put a comma separated list of names
+            |The comma separated list must be complete names">
+            Is in group starting with 
+            <img src="/Content/images/help_out.gif" />:</th>
+        <td class="wide100">@Html.TextBox("ingroup", "", new { @class = "filter" })</td>
+        <td></td>
+    </tr>
+    <tr>
+        <th class="right">Not in group starting with:</th>
+        <td class="wide100">@Html.TextBox("notgroup", "", new { @class = "filter" })</td>
+        <td>Active: @Html.CheckBox("notgroupactive", new { @class = "filter" })</td>
+    </tr>
+    <tr>
+        <th class="right">Is in Tag:</th>
+        <td class="wide100">@Html.DropDownList("tagfilter", Model.Tags())</td>
+        <td></td>
+    </tr>
+	<tr>
+		<th>Member Type:</th>
+		<td class="wide100">@Html.DropDownList("memtype", Model.MemberTypeCodesWithNotSpecified(), new { @class = "filter" })</td>
+        <td><a id="filter" href="#" class="bt">Filter</a></td>
+	</tr>
+
+</table>
+<input type="submit" class="bt" id="AssignSelectedToTargetGroup" value="Assign Selected to Target Group" />
+<input type="submit" class="bt" id="RemoveSelectedFromTargetGroup" value="Remove Selected from Target Group" />
+@if (Model.isRecreationTeam)
+{
+    <input type="submit" class="bt" id="scoreUploadButton" value="Upload Player Scores" />
+    <input type="submit" class="bt" id="createTeams" orgid="@Model.orgid" value="Create Teams" />
+}
+<div>
+<div><input id="SelectAll" type="checkbox" /> Select All</div>
+<table id="members" class="@ViewExtensions2.GridClass">
+    <thead>
+	<tr>
+		<th>Select</th>
+		<th class="left"><a href='#' class="sortable">Name</a></th>
+		<th class="left">Address </th>
+		<th>Gender </th>
+		<th>Age </th>
+		<th class="left"><a href='#' class="sortable">Request</a></th>
+		<th class="left" width="25%"><a href="#" class="sortable">Groups</a></th>
+        @if( Model.isRecreationTeam ) {
+            <th class="center"><a href='#' class="sortable">Score</a></th>
+        }
+	</tr>
+	</thead>
+	<tbody>
+ @Html.Partial("Rows", Model) 
+    </tbody>
+</table>
+</div>

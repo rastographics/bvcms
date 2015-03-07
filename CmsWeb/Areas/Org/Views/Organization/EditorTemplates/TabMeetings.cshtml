@@ -1,0 +1,149 @@
+﻿@model CmsWeb.Areas.Org.Models.OrganizationModel
+@using CmsWeb
+    <li>
+        <span class="keyword big tip"
+              title="Does not meet weekly
+        | Check this if the org does not meet weekly.
+        | Leave unchecked for weekly meetings">
+        Does NOT meet weekly:</span>
+        @Html.CheckBox("org.NotWeekly")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Schedule
+        |This is where you indicate the weekly schedule.
+        |You can have mutiple schedules.
+        |The top one is the default that shows up on lists.
+        |Schedules can be 'Every Meeting' for 100% credit
+        |Or they can be 'One a Week' for 100% credit">
+        Schedule:</span>
+        <div id="schedulehead">
+            <span style="margin-left:22px;width: 55px" >Day</span> 
+            <span style="width: 68px">Time</span> 
+            <span>Attendance Credit</span>
+        </div>
+        <ul id="schedules" class="sort padded">
+        @foreach (var sc in Model.schedules.OrderBy(cc => cc.Id))
+        {
+            @Html.EditorFor(m => sc)
+        }
+        </ul>
+        <div><a id="addsch" href="/Organization/NewSchedule"><img src="/Content/images/plus1.png" /> Add Schedule</a></div>
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Allow Attendance Overlap
+        |This allows persons to attend two differnt orgs that start at the same time.
+        |e.g. a meeting that spans several hours vs another that is one hour">
+        Allow Attendance Overlap:</span>
+        @Html.CheckBox("org.AllowAttendOverlap")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Allow Self Check-In
+        |Causes this meeting to show up on the Touchscreen Checkin.">
+        Allow Self Check-In:</span>
+        @Html.CheckBox("org.CanSelfCheckin")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Suspend Check-in
+        |Causes this meeting to show up only when the magic button is pressed.">
+        Suspend Check-In:</span>
+        @Html.CheckBox("org.SuspendCheckin")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Allow Non-Campus Check-In
+        |See documentation">
+        Allow Non-Campus Check-In:</span>
+        @Html.CheckBox("org.AllowNonCampusCheckin")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Offsite Trip
+        |This causes any absents during the period of an offsite trip start and end dates
+        |to not be counted negatively for attendance purposes.">
+        Offsite Trip:</span>
+        @Html.CheckBox("org.Offsite")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="No security label required
+        |Used for when children are old enough 
+        |to not need a security label to be picked up.">
+        No security label required:</span>
+        @Html.CheckBox("org.NoSecurityLabel")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Number of CheckIn Labels
+        |Default is 1, use 0 if no labels needed.">
+        Number of CheckIn Labels:</span>
+        @Html.TextBox("org.NumCheckInLabels")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Number of Worker CheckIn Labels
+        |Allows workers to get 1 or 0 labels when checking in.">
+        Number of Worker CheckIn Labels:</span>
+        @Html.TextBox("org.NumWorkerCheckInLabels")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="First Meeting Date
+        |Causes people who visited prior to this date
+        |to drop off the recent visitor list.
+        |For when visitors promote to the next grade.
+        |Also used to display the meeting dates 
+        |on 'User Chooses Class' type registrations">
+        First Meeting Date:</span>
+        @Html.DatePicker("org.FirstMeetingDate")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Last Meeting Date
+        |Used to display the meeting dates 
+        |on 'User Chooses Class' type registrations">
+        Last Meeting Date:</span>
+        @Html.DatePicker("org.LastMeetingDate")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Rollsheet Guest Weeks
+        |Default is 3.
+        |Guests will drop off the rollsheet or checkin screen
+        |if they haven't visited in this number of weeks.
+        |Some teachers prefer them to show up for a long time.">
+        Rollsheet Guest Weeks:</span>
+        @Html.TextBox("org.RollSheetVisitorWks")
+    </li>
+    <li>
+        <span class="keyword big tip"
+              title="Consecutive Absents Threshold
+        |Default is 2.
+        |Number of consequtive absents that causes person to show on Recent Absents report
+        ">
+        Consecutive Absents Threshold:</span>
+        @Html.TextBox("org.ConsecutiveAbsentsThreshold")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="Start Birthday
+        |Used on Touchscreen Checkin for when a guest needs to choose a class.
+        |Also used to prevent someone joining an organization during registration 
+        |if they are outside the birthday range">
+        Start Birthday:</span>
+        @Html.DatePicker("org.BirthDayStart")
+    </li>
+    <li>
+        <span class="keyword big tip"
+        title="End Birthday
+        |Used on Touchscreen Checkin for when a guest needs to choose a class.
+        |Also used to prevent someone joining an organization during registration 
+        |if they are outside the birthday range">
+        End Birthday:</span>
+        @Html.DatePicker("org.BirthDayEnd")
+    </li>
+
+
