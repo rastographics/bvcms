@@ -1,20 +1,54 @@
 ﻿@using CmsWeb.Code
 @model IEnumerable<CodeValueItem>
-<div class="form-group">
-    <label for="NewValue" class="control-label">New Value</label>
-    <div class="controls">
-        @if (Model != null && Model.Any())
-        {
-            <select class="form-control" id="NewValue" name="NewValue">
+@if (ViewBag.FieldName == "Grade")
+{
+    <div class="form-group">
+        <label for="NewValue" class="control-label">New Value</label>
+        <div class="controls">
+            <select class="form-control" id="GradeSelection" name="GradeSelection">
                 @foreach (var code in Model)
                 {
-                    <option value="@(ViewBag.UseCode ? code.Code : code.Id.ToString())">@code.Value</option>
+                    <option value="@code.Code">@code.Value</option>
                 }
             </select>
-        }
-        else
-        {
-            <input type="text" class="form-control" id="NewValue" name="NewValue" />
-        }
+            <input type="hidden" name="NewValue" id="NewValue" value="@Model.First().Code" />
+        </div>
     </div>
-</div>
+    <div class="form-group" style="display: none;" id="GraduationSection">
+        <label for="GraduationYear" class="control-label">Graduation Year</label>
+        <div class="controls">
+            <input type="text" class="form-control" name="GraduationYear" id="GraduationYear" />
+        </div>
+    </div>
+}
+else
+{
+    <div class="form-group">
+        <label for="NewValue" class="control-label">New Value</label>
+        <div class="controls">
+            @if (Model != null && Model.Any())
+            {
+                <select class="form-control" id="NewValue" name="NewValue">
+                    @foreach (var code in Model)
+                    {
+                        <option value="@(ViewBag.UseCode ? code.Code : code.Id.ToString())">@code.Value</option>
+                    }
+                </select>
+            }
+            else
+            {
+                if (ViewBag.FieldName == "Background Check Date" || ViewBag.FieldName == "Deceased Date" || ViewBag.FieldName == "New Member Class Date")
+                {
+                    <div class="input-group date">
+                        <input type="text" class="form-control" id="NewValue" name="NewValue" /><span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        <input type="hidden" class="form-control" id="NewValueIso" name="NewValueIso" disabled="disabled" />
+                    </div>
+                }
+                else
+                {
+                    <input type="text" class="form-control" id="NewValue" name="NewValue" />
+                }
+            }
+        </div>
+    </div>
+}

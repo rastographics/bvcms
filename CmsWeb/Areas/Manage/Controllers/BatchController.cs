@@ -323,6 +323,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                     m = lookups.BaptismStatusList();
                     ViewBag.UseCode = false;
                     break;
+                case "Baptism Type":
+                    m = lookups.BaptismTypeList();
+                    ViewBag.UseCode = false;
+                    break;
                 case "Bad Address Flag":
                     m = UpdateFieldsModel.BadAddressFlag();
                     ViewBag.UseCode = true;
@@ -331,7 +335,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     m = lookups.AllCampuses();
                     ViewBag.UseCode = false;
                     break;
-                case "Contribution Statement Options":
+                case "Statement Options":
                     m = lookups.EnvelopeOptionList();
                     ViewBag.UseCode = false;
                     break;
@@ -392,7 +396,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     ViewBag.UseCode = true;
                     break;
             }
-            
+            ViewBag.FieldName = field;
             return View(m);
         }
 

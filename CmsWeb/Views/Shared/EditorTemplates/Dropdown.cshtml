@@ -2,7 +2,7 @@
 @{
     var items = ViewBag.items as List<SelectListItem>;
 }
-<div class="control-group">
+<div class="form-group">
     @(ViewBag.label != null
         ? Html.Label(ViewBag.label as string, new {@class = "control-label" }) 
         : Html.LabelFor(m => m, new {@class = "control-label" }))

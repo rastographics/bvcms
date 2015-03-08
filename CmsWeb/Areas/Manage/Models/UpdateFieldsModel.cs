@@ -241,7 +241,7 @@ namespace CmsWeb.Models
 
         private bool DateValid()
         {
-            if (Util.DateValid(NewValue))
+            if (!Util.DateValid(NewValue))
                 modelState.AddModelError("NewValue", "Must be Date");
             return modelState.IsValid;
         }
@@ -302,7 +302,18 @@ namespace CmsWeb.Models
 				{
 					new CodeValueItem { Code = "-1", Value = "Pre K" },
 					new CodeValueItem { Code = "0", Value = "Kindergarten" },
-					new CodeValueItem { Code = "1-12", Value = "Grade" },
+					new CodeValueItem { Code = "1", Value = "1st Grade" },
+                    new CodeValueItem { Code = "2", Value = "2nd Grade" },
+                    new CodeValueItem { Code = "3", Value = "3rd Grade" },
+                    new CodeValueItem { Code = "4", Value = "4th Grade" },
+                    new CodeValueItem { Code = "5", Value = "5th Grade" },
+                    new CodeValueItem { Code = "6", Value = "6th Grade" },
+                    new CodeValueItem { Code = "7", Value = "7th Grade" },
+                    new CodeValueItem { Code = "8", Value = "8th Grade" },
+                    new CodeValueItem { Code = "9", Value = "9th Grade" },
+                    new CodeValueItem { Code = "10", Value = "10th Grade" },
+                    new CodeValueItem { Code = "11", Value = "11th Grade" },
+                    new CodeValueItem { Code = "12", Value = "12th Grade" },
 					new CodeValueItem { Code = "13", Value = "Freshman" },
 					new CodeValueItem { Code = "14", Value = "Sophmore" },
 					new CodeValueItem { Code = "15", Value = "Junior" },
