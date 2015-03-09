@@ -113,6 +113,8 @@
                     </div>
                 </div>
                 <form id="savedDrafts" action="/Email/ContentDeleteDrafts" method="post">
+                    @Html.Hidden("parents", @Model.wantparents)
+                    @Html.Hidden("queryid", @Model.queryid)
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="table-responsive">

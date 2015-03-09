@@ -15,7 +15,7 @@
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
     <style>
-        #s2id_to {
+        #s2id_Recipients {
             max-height: 60px !important;
             overflow-y: scroll !important;
         }
@@ -35,7 +35,7 @@
     </style>
 }
 <div class="row">
-    <div class="col-md-9 col-lg-7">
+    <div class="col-md-10 col-lg-8">
         <div class="alert alert-info alert-dismissible">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <strong>Please Note:</strong> Your recipient list has been saved in a tag, so you can run queries in other tabs. But you should not compose two emails simultaneously as one will overwrite the other.
@@ -64,7 +64,7 @@
                     <div class="form-group">
                         <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
                         <div class="col-sm-10">
-                            <select multiple="multiple" id="to" class="form-control">
+                            <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
                                 @foreach (var recipient in Model.Recipients)
                                 {
                                     <option value="@recipient" selected="selected">@recipient</option>
@@ -115,7 +115,7 @@
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
                             <input type="button" id="SaveDraft" class="btn btn-default" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" />
-                            <div class="btn-group">
+                            <div class="btn-group" id="send-actions">
                                 <button type="button" class="btn btn-primary" id="Send"><i class="fa fa-paper-plane"></i> Send</button>
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <span class="caret"></span>
@@ -133,7 +133,7 @@
     </div>
 </div>
 <div class="modal fade" id="draft-modal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-sm">
         <div class="modal-content">  
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -141,23 +141,18 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label for="id" class="control-label">New Id</label>
-                    <input type="number" id="id" name="id" class="form-control" />
+                    <label for="newName" class="control-label">Draft Name</label>
+                    <input type="text" id="newName" name="newName" class="form-control" />
                 </div>
             </div>
             <div class="modal-footer">
                 <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                <input type="submit" value="Submit" class="btn btn-primary" />
+                <input id="SaveDraftButton" type="submit" value="Submit" class="btn btn-primary" />
             </div>
         </div>
     </div>
 </div>
 
-
-
-<div id="progress">
-    <h2>Working...</h2>
-</div>
 <div id="popupeditor" style="display:none;position: absolute;z-index: 2005;">
     <form>
         <textarea id="htmleditor"></textarea>
@@ -167,37 +162,10 @@
         </div>
     </form>
 </div>
-<div id="askName" style="display:none">
-    <br />
-    <center>
-        <form action="javascript:void(0)" onsubmit="javascript:$('#SaveDraftButton').click()">
-            <table cellspacing="10">
-                <tr>
-                    <td class="right">Draft Name:</td>
-                    <td class="left"><input id="newName" name="newName" size="25" /></td>
-                </tr>
-                <tr>
-                    <td class="center" colspan="2">
-                        <input id="SaveDraftButton" type="button" class="bt" value="Submit" />
-                        &nbsp;&nbsp; <input type="button" class="bt" onclick="$('#askName').dialog('close')" value="Cancel" />
-                    </td>
-                </tr>
-            </table>
-        </form>
-    </center>
-    <br />
-</div>
-
 
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
-    <script type="text/javascript">
-        $(function () {
-            $('#to').select2();
-            $('#to').select2("readonly", true);
-        });
-    </script>
     @ViewExtensions2.CKEditor()
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
 }

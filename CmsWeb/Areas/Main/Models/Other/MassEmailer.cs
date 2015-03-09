@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Main.Models
             var tag = DbUtil.Db.TagById(tagid);
             TagId = tag.Id;
             var people = tag.People(DbUtil.Db);
-            Recipients = people.Select(p => p.ToString());
+            Recipients = people.Select(p => p.ToString()).ToList();
             Count = people.Count();
 
         }
@@ -96,7 +96,7 @@ namespace CmsWeb.Areas.Main.Models
                 DbUtil.Db.NoEmailDupsInTag(TagId);
 
             var people = tag.People(DbUtil.Db);
-            Recipients = people.Select(p => p.ToString());
+            Recipients = people.Select(p => p.ToString()).ToList();
             Count = people.Count();
         }
 

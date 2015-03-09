@@ -2132,13 +2132,7 @@
     </Content>
     <Content Include="Areas\Dialog\Views\OrgMembersDialog\Update.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Email\EmailQueued.cshtml">
-    </Content>
     <Content Include="Areas\Main\Views\Email\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Email\Progress.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Email\TaskProgress.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Coupon\Create.cshtml">
     </Content>

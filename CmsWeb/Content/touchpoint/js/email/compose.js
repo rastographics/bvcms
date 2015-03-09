@@ -1,4 +1,7 @@
 ﻿$(function () {
+    $('#Recipients').select2();
+    $('#Recipients').select2("readonly", true);
+
     var currentDiv = null;
     
     CKEDITOR.replace('htmleditor', {
@@ -41,12 +44,10 @@
         var h = CKEDITOR.instances['htmleditor'].getData();
         $(currentDiv).html(h);
         $('#popupeditor').hide();
-        //dimOff();
     });
 
     $("a.cancel").click(function () {
         $('#popupeditor').hide();
-        //dimOff();
     });
 
     $.hClick = function (e) {
@@ -54,55 +55,57 @@
         $.removeButtons();
         if($(this).html() !== "Click here to edit content")
             CKEDITOR.instances['htmleditor'].setData($(this).html());
-        //dimOn();
+
         $("#popupeditor").show();
     };
 
     $('div[bvedit],div.bvedit').bind('click', $.hClick).addClass("ti");
 
-    $("#progress").dialog(
-        {
-            autoOpen: false,
-            modal: true,
-            close: function () {
-                $('#progress').html("<h2>Working...</h2>");
-            }
-        });
-
     $("#askName").dialog({ autoOpen: false, modal: true, closeOnEscape: true, title: "Save Draft", resizable: false, width: 'auto' });
 
     $("#Send").click(function () {
-        var d = $("#progress");
-        d.dialog('open');
-
+        $.block();
         $('#body').val($("#tempateBody").html());
         var q = $("#SendEmail").serialize();
 
         $.post('/Email/QueueEmails', q, function (ret) {
-            if (ret === "timeout") {
-                window.location = "/Email/Timeout";
-                return;
-            }
-            var taskid = ret.id;
-            if (taskid === 0) {
-                d.html(ret.content);
+            if (ret && ret.error) {
+                $.unblock();
+                swal("Error!", ret.error, "error");
             } else {
-                $("#Send").remove();
-                var intervalid = window.setInterval(function () {
-                    $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
-                        if (ret.substr(0, 20).indexOf('<!--completed-->') >= 0)
-                            window.clearInterval(intervalid);
-                        d.html(ret);
-                    });
-                }, 3000);
+                if (ret === "timeout") {
+                    window.location = "/Email/Timeout";
+                    return;
+                }
+                var taskid = ret.id;
+                if (taskid === 0) {
+                    $.unblock();
+                    swal(ret);
+                } else {
+                    $("#send-actions").remove();
+                    var intervalid = window.setInterval(function () {
+                        $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
+                            $.unblock();
+                            if (ret && ret.error) {
+                                swal("Error!", ret.error, "error");
+                            } else {
+                                if (ret.title == 'Email has completed.') {
+                                    swal(ret.title, ret.message, "success");
+                                    window.clearInterval(intervalid);
+                                } else {
+                                    swal(ret.title, ret.message, "info");
+                                }
+                            }
+                        });
+                    }, 3000);
+                }
             }
         });
     });
 
     $("#SaveDraft").click(function () {
         if ($(this).attr("saveType") == "0") {
-            var d = $("#askName");
-            d.dialog('open');
+            $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
             $("#body").val($("#tempateBody").html());
@@ -112,6 +115,10 @@
             $("#SendEmail").attr("action", "/Email/SaveDraft");
             $("#SendEmail").submit();
         }
+    });
+
+    $('#draft-modal').on('shown.bs.modal', function () {
+        $("#newName").val('').focus();
     });
 
     $("#SaveDraftButton").click(function () {
@@ -125,8 +132,7 @@
     });
 
     $("#TestSend").click(function () {
-        var d = $("#progress");
-        d.dialog('open');
+        $.block();
 
         $.clearTemplateClass();
         $("#body").val($("#tempateBody").html());
@@ -135,11 +141,16 @@
         var q = $("#SendEmail").serialize();
 
         $.post('/Email/TestEmail', q, function (ret) {
-            if (ret == "timeout") {
-                window.location = "/Email/Timeout";
-                return;
+            $.unblock();
+            if (ret && ret.error) {
+                swal("Error!", ret.error, "error");
+            } else {
+                if (ret == "timeout") {
+                    window.location = "/Email/Timeout";
+                    return;
+                }
+                swal("Success!", ret, "success");
             }
-            d.html(ret);
         });
     });
 
