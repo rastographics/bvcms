@@ -2,7 +2,7 @@
 @{
   var qid = ViewBag.queryid;
   var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
-  var oid = DbUtil.Db.CurrentOrg.Id;
+  var oid = Util2.CurrentOrgId;
 }
 <div class="toolbar">
   <ul horizontal-offset="-70">

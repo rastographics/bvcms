@@ -1,0 +1,8 @@
+﻿@using UtilityExtensions
+@model CmsData.Registration.Settings
+<ul id="OrgFees" class="sort">
+  @foreach (var item in Model.OrgFees)
+  {
+    @Html.EditorFor(m => item)
+  }
+</ul>

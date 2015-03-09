@@ -39,71 +39,71 @@
     }
 }
 <div class="container">
-  <div class="row-fluid">
-    <div class="span9">
-      <div class="row-fluid">
-        <div class="span12" id="profile-header">
-          @Html.Partial("Personal/Header", Model)
-        </div>
-      </div>
-      <div class="row-fluid">
-        <div class="span12">
-          <div id="tab-area" class="tabbable primary-tabs">
-            <ul class="nav nav-tabs">
-              <li><a href="#" data-target="#personal" data-toggle="tab" class="active">Personal</a></li>
-              <li id="involvementstop"><a href="#enrollment"  data-toggle="tab">Involvement</a></li>
-              <li><a href="#profile" data-toggle="tab">Profile</a></li>
-              @if (User.IsInRole("Access")) 
-              {
-                <li id="ministrystop"><a href="#ministry" data-toggle="tab">Ministry</a></li> 
-              }
-              @if (!User.IsInRole("Access") && Model.Person.CanUserSeeGiving)
-              {
-                <li id="givingstop"><a href="#giving" data-toggle="tab">Giving</a></li> 
-              }
-              else if (Model.Person.CanUserSeeGiving) 
-              {
-                <li><a href="#giving" data-toggle="tab">Giving</a></li> 
-              }
-              <li><a href="#emails" data-toggle="tab">Emails</a></li>
-              @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
-              {
-                <li><a id="systemTab" href="#system" data-toggle="tab">System</a></li> 
-              }
-            </ul>
-            <div class="tab-content">
-              <div class="tab-pane active" id="personal">@Html.Partial("Personal/Display", Model.basic)</div>
-              <div class="tab-pane" id="enrollment">@Html.Partial("Enrollment/Tab", Model)</div>
-              <div class="tab-pane" id="profile">@Html.Partial("Profile/Tab", Model)</div>
-              @if (User.IsInRole("Access")) 
-              {
-                <div class="tab-pane" id="ministry">@Html.Partial("Ministry/Tab", Model)</div> 
-              }
-              @if (Model.Person.CanUserSeeGiving) 
-              {
-                <div class="tab-pane" id="giving">@Html.Partial("Giving/Tab", Model)</div> 
-              }
-              <div class="tab-pane" id="emails">@Html.Partial("Emails/Tab", Model)</div>
-              @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
-              {
-                <div class="tab-pane" id="system">@Html.Partial("System/Tab", Model)</div> 
-              }
+    <div class="row-fluid">
+        <div class="span9">
+            <div class="row-fluid">
+                <div class="span12" id="profile-header">
+                    @Html.Partial("Personal/Header", Model)
+                </div>
             </div>
-          </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div id="tab-area" class="tabbable primary-tabs">
+                        <ul class="nav nav-tabs">
+                            <li><a href="#" data-target="#personal" data-toggle="tab" class="active">Personal</a></li>
+                            <li id="involvementstop"><a href="#enrollment"  data-toggle="tab">Involvement</a></li>
+                            <li><a href="#profile" data-toggle="tab">Profile</a></li>
+                            @if (User.IsInRole("Access")) 
+                            {
+                                <li id="ministrystop"><a href="#ministry" data-toggle="tab">Ministry</a></li> 
+                            }
+                            @if (!User.IsInRole("Access") && Model.Person.CanUserSeeGiving)
+                            {
+                                <li id="givingstop"><a href="#giving" data-toggle="tab">Giving</a></li> 
+                            }
+                            else if (Model.Person.CanUserSeeGiving) 
+                            {
+                                <li><a href="#giving" data-toggle="tab">Giving</a></li> 
+                            }
+                            <li><a href="#emails" data-toggle="tab">Emails</a></li>
+                            @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
+                            {
+                                <li><a id="systemTab" href="#system" data-toggle="tab">System</a></li> 
+                            }
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="personal">@Html.Partial("Personal/Display", Model.basic)</div>
+                            <div class="tab-pane" id="enrollment">@Html.Partial("Enrollment/Tab", Model)</div>
+                            <div class="tab-pane" id="profile">@Html.Partial("Profile/Tab", Model)</div>
+                            @if (User.IsInRole("Access")) 
+                            {
+                                <div class="tab-pane" id="ministry">@Html.Partial("Ministry/Tab", Model)</div> 
+                            }
+                            @if (Model.Person.CanUserSeeGiving) 
+                            {
+                                <div class="tab-pane" id="giving">@Html.Partial("Giving/Tab", Model)</div> 
+                            }
+                            <div class="tab-pane" id="emails">@Html.Partial("Emails/Tab", Model)</div>
+                            @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
+                            {
+                                <div class="tab-pane" id="system">@Html.Partial("System/Tab", Model)</div> 
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="span3">
+            <div id="sidebar">
+                @Html.Partial("Family/Members", Model.FamilyModel)
+                @Html.Partial("Family/Related", Model.FamilyModel)
+                @if (User.IsInRole("Access"))
+                {
+                    @Html.Partial("Family/ExtraValues", Model)
+                }
+                @Html.Partial("Family/Photo", Model)
+            </div>
+        </div>
     </div>
-    <div class="span3">
-      <div id="sidebar">
-        @Html.Partial("Family/Members", Model.FamilyModel)
-        @Html.Partial("Family/Related", Model.FamilyModel)
-        @if (User.IsInRole("Access"))
-        {
-          @Html.Partial("Family/ExtraValues", Model)
-        }
-        @Html.Partial("Family/Photo", Model)
-      </div>
-    </div>
-  </div>
-  @Html.Hidden("PeopleId", Model.PeopleId)
+    @Html.Hidden("PeopleId", Model.PeopleId)
 </div>

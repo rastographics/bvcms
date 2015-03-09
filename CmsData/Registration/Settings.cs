@@ -120,17 +120,18 @@ namespace CmsData.Registration
 
         public class OrgFee
         {
+            public string Name;
             [DisplayName("Org Id")]
             public int? OrgId { get; set; }
             public decimal? Fee { get; set; }
         }
 
-        public Organization org { get; set; }
+		public Organization org { get; set; }
 		public int OrgId { get; set; }
 		public CMSDataContext Db { get; set; }
 
 	    public Settings()
-	    {
+		{
 	        OrgFees = new List<OrgFee>();
 			TimeSlots = new TimeSlots();
 			AgeGroups = new List<AgeGroup>();

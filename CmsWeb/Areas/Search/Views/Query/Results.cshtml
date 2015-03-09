@@ -27,17 +27,16 @@
                 <th>@Model.SortLink("Status")/@Model.SortLink("Age") - @Model.SortLink("DOB")</th>
                 <th>@Model.SortLink("Address")</th>
                 <th>@Model.SortLink("Communication")</th>
-              <th>
-                @if (useemployer)
-                {
+                <th>
+                    @if (useemployer)
+                    {
                   @Model.SortLink("Employer")
-                }
-                else
-                {
+                    }
+                    else
+                    {
                   @Model.SortLink("Fellowship Leader")
-                }
-              </th>
-
+                    }
+                </th>
                 <th>Tag</th>
             </tr>
         </thead>

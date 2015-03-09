@@ -27,8 +27,8 @@ namespace CmsWeb.Areas.Org.Models
 
         public OrgMemberMoveModel() : base("", "")
         {
-            Pager.pagesize = 10;
-            Pager.ShowPageSize = false;
+            pagesize = 10;
+            ShowPageSize = false;
         }
 
         public string OrgSearch { get; set; }

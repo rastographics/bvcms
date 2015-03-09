@@ -12,7 +12,6 @@ namespace CmsWeb.Areas.People.Models
     {
         public int PeopleId { get; set; }
         public bool Future { get; set; }
-
         public PersonAttendHistoryModel()
             : base("Meeting", "") 
         {

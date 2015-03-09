@@ -12,6 +12,7 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             Response.NoCache();
             var m = new RegistrationSearchModel();
+
             m.GetFromSession();
             return View(m);
         }

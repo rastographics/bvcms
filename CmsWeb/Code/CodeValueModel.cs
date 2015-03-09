@@ -416,7 +416,6 @@ namespace CmsWeb.Code
                 new {Text = "Any Day", Value = "10"},
             }, "Value", "Text");
         }
-
         public SelectList PublishDirectoryList()
         {
             return new SelectList(new[]
@@ -456,7 +455,6 @@ namespace CmsWeb.Code
 				new CodeValueItem { Value = "No" },
 			};
         }
-
         public SelectList TagList()
         {
             var tg = UserTags(Util.UserPeopleId).ToList();
@@ -776,12 +774,12 @@ namespace CmsWeb.Code
         public static IEnumerable<CodeValueItem> StatusFlags()
         {
             var sf = from ms in DbUtil.Db.ViewStatusFlagLists.ToList()
-                     where ms.RoleName == null || HttpContext.Current.User.IsInRole(ms.RoleName)
-                     select new CodeValueItem
-                     {
-                         Code = ms.Flag,
-                         Value = ms.Name
-                     };
+                   where ms.RoleName == null || HttpContext.Current.User.IsInRole(ms.RoleName)
+                   select new CodeValueItem
+                   {
+                       Code = ms.Flag,
+                       Value = ms.Name
+                   };
             return sf.OrderBy(ss => ss.Value);
         }
 

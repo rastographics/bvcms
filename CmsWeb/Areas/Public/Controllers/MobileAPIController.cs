@@ -142,8 +142,8 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid) return AuthorizationError(result);
 
             var givingOrgId = DbUtil.Db.Organizations
-                .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
-                .Select(x => x.OrganizationId).FirstOrDefault();
+                 .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
+                 .Select(x => x.OrganizationId).FirstOrDefault();
 
             var ot = GetOneTimeLink(givingOrgId, result.User.PeopleId.GetValueOrDefault());
 
@@ -164,8 +164,8 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid) return AuthorizationError(result);
 
             var managedGivingOrgId = DbUtil.Db.Organizations
-                .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
-                .Select(x => x.OrganizationId).FirstOrDefault();
+                 .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
+                 .Select(x => x.OrganizationId).FirstOrDefault();
 
             var ot = GetOneTimeLink(managedGivingOrgId, result.User.PeopleId.GetValueOrDefault());
 
@@ -321,12 +321,12 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var registrations = (from o in DbUtil.Db.ViewAppRegistrations
                                  let sort = o.PublicSortOrder == null || o.PublicSortOrder.Length == 0 ? "10" : o.PublicSortOrder
-                    select new MobileRegistration
-                    {
-                        OrgId = o.OrganizationId, 
-                        Name = o.Title ?? o.OrganizationName,
-                        UseRegisterLink2 = o.UseRegisterLink2 ?? false, 
-                        Description = o.Description,
+                                 select new MobileRegistration
+                                 {
+                                     OrgId = o.OrganizationId,
+                                     Name = o.Title ?? o.OrganizationName,
+                                     UseRegisterLink2 = o.UseRegisterLink2 ?? false,
+                                     Description = o.Description,
                                      PublicSortOrder = sort,
                                      Category = o.AppCategory,
                                      RegStart = o.RegStart,
@@ -355,7 +355,7 @@ namespace CmsWeb.Areas.Public.Controllers
                                select mm).ToList();
                 if (current.Count > 0)
                     list.Add(new MobileRegistrationCategory()
-            {
+                    {
                         Current = true,
                         Title = cat.Value,
                         Registrations = current
@@ -365,7 +365,7 @@ namespace CmsWeb.Areas.Public.Controllers
                               where mm.Category == cat.Key
                               where mm.RegStart > dt
                               orderby mm.PublicSortOrder, mm.Description
-                         select mm).ToList();
+                              select mm).ToList();
                 if (future.Count > 0)
                     list.Add(new MobileRegistrationCategory()
                     {
@@ -498,16 +498,16 @@ namespace CmsWeb.Areas.Public.Controllers
             if (person.Picture != null)
             {
                 if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
-                ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId));
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId));
 
                 if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
-                ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId));
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId));
 
                 if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
-                ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId));
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId));
 
                 if (ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId) != null)
-                ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId));
+                    ImageData.DbUtil.Db.Images.DeleteOnSubmit(ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId));
 
                 person.Picture.ThumbId = Image.NewImageFromBits(imageBytes, 50, 50).Id;
                 person.Picture.SmallId = Image.NewImageFromBits(imageBytes, 120, 120).Id;
@@ -569,10 +569,10 @@ namespace CmsWeb.Areas.Public.Controllers
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where (o.OrganizationMembers.Any(om => om.PeopleId == pid // either a leader, who is not pending / inactive
-                                  && (om.Pending ?? false) == false
-                                  && (om.MemberTypeId != MemberTypeCode.InActive)
-                                  && (om.MemberType.AttendanceTypeId == AttendTypeCode.Leader)
-                            )
+                                       && (om.Pending ?? false) == false
+                                       && (om.MemberTypeId != MemberTypeCode.InActive)
+                                       && (om.MemberType.AttendanceTypeId == AttendTypeCode.Leader)
+                               )
                        || oids.Contains(o.OrganizationId)) // or a leader of a parent org
                     where o.SecurityTypeId != 3
                     select o;

@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Org.Controllers
 			foreach (var om in q)
 			{
 				if (m.MemberType == MemberTypeCode.Drop)
-					om.Drop(Db, addToHistory: true);
+					om.Drop(Db);
 				else
 				{
 					if (m.MemberType > 0)

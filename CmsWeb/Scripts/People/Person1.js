@@ -30,27 +30,27 @@
             f.on('hidden', function() {
                 d.remove();
                 f.remove();
-            });
+                });
             f.on("click", "a.clear-address", function() {
-                $("#AddressLineOne").val("");
-                $("#AddressLineTwo").val("");
-                $("#CityName").val("");
-                $("#ZipCode").val("");
+                    $("#AddressLineOne").val("");
+                    $("#AddressLineTwo").val("");
+                    $("#CityName").val("");
+                    $("#ZipCode").val("");
                 $("#BadAddress").prop('checked', false);;
-                $("#StateCode_Value").val("");
-                $("#StateCode_Value").trigger("chosen:updated");
-                $("#ResCode_Value").val("0");
-                $("#ResCode_Value").trigger("chosen:updated");
-                $("#Country_Value").val("United States");
-                $("#FromDt").val("");
-                $("#ToDt").val("");
-            });
+                    $("#StateCode_Value").val("");
+                    $("#StateCode_Value").trigger("chosen:updated");
+                    $("#ResCode_Value").val("0");
+                    $("#ResCode_Value").trigger("chosen:updated");
+                    $("#Country_Value").val("United States");
+                    $("#FromDt").val("");
+                    $("#ToDt").val("");
+                });
             f.on("click", "a.close-saved-address", function() {
                 $.post($(this).attr("href"), {}, function(ret) {
-                    $("#profile-header").html(ret).ready(SetProfileEditable);
+                        $("#profile-header").html(ret).ready(SetProfileEditable);
+                    });
                 });
             });
-        });
     });
     $("a.personal-picture, a.family-picture").live("click", function (ev) {
         ev.preventDefault();
@@ -119,6 +119,15 @@
         ev.preventDefault();
         var $a = $(this);
         $("<div />").load(this.href, {}, function () {
+                var d = $(this);
+                var f = d.find("form");
+                f.modal("show");
+                f.on('hidden', function () {
+                    d.remove();
+                    f.remove();
+        var $a = $(this);
+        var href = this.href;
+        $("<div />").load(href, {}, function () {
                 var d = $(this);
                 var f = d.find("form");
                 f.modal("show");
@@ -301,8 +310,8 @@ function AddSelected(ret) {
             break;
     }
     $.RebindMemberGrids = function () {
-        $("#refresh-current").click();
-        $("#refresh-pending").click();
+    $("#refresh-current").click();
+    $("#refresh-pending").click();
         $("#refresh-previous").click();
     }
 }

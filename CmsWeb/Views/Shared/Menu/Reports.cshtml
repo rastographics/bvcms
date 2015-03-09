@@ -12,6 +12,9 @@
         @Helper.LiAnchorLink("Third Time Attenders", "/Home/NthTimeAttenders/3")
         <li class="space"></li>
         @Helper.LiAnchorLink("Extra Values Summary", "/ExtraValue/Summary/People")
+	@if(Util2.UseNewOrg)
+	{
         @Helper.LiAnchorLink("Extra Values Summary Orgs", "/ExtraValue/Summary/Organization")
+	}
     </ul>
 </li>

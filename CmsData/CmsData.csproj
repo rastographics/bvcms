@@ -368,15 +368,16 @@
     <Compile Include="API\ApiSessionModel.cs" />
     <Compile Include="API\ApiSessionResult.cs" />
     <Compile Include="API\ApiSessionStatus.cs" />
+    <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="DbUtil\ModelViewModel.cs" />
 	<Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
-    <Compile Include="Extensions\LongRunningOp.cs" />
-    <Compile Include="Extensions\RepairTransactionRun.cs" />
-    <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
+    <Compile Include="Extensions\LongRunningOp.cs" />
+    <Compile Include="Extensions\OrgPerson.cs" />
     <Compile Include="Extensions\PaymentInfo.cs" />
+    <Compile Include="Extensions\RepairTransactionRun.cs" />
     <Compile Include="Finance\BluePayGateway.cs" />
     <Compile Include="Finance\BluePay\BluePayPayment.cs" />
     <Compile Include="Finance\ReturnedCheck.cs" />
@@ -674,6 +675,24 @@
     <Compile Include="Finance\ManagedGiving.cs" />
     <Compile Include="DbUtil\Dynamic.cs" />
     <Compile Include="Classes\QuickBooks\QuickBooksHelper.cs" />
+    <Compile Include="Registration\Ask.cs" />
+    <Compile Include="Registration\AskText.cs" />
+    <Compile Include="Registration\AskRequest.cs" />
+    <Compile Include="Registration\AskSize.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Registration\AskTickets.cs" />
+    <Compile Include="Registration\AskSuggestedFee.cs" />
+    <Compile Include="Registration\AskHeader.cs" />
+    <Compile Include="Registration\AskInstruction.cs" />
+    <Compile Include="Registration\TimeSlots.cs" />
+    <Compile Include="Registration\AskDropdown.cs" />
+    <Compile Include="Registration\AskCheckboxes.cs" />
+    <Compile Include="Registration\AskExtraQuestions.cs" />
+    <Compile Include="Registration\AskGradeOptions.cs" />
+    <Compile Include="Registration\AskMenu.cs" />
+    <Compile Include="Registration\Parser.cs" />
+    <Compile Include="Registration\AskYesNoQuestions.cs" />
     <Compile Include="Finance\SageGateway.cs" />
     <Compile Include="Finance\TransactionResponse.cs" />
     <Compile Include="Classes\Twilio\TwilioHelper.cs" />
@@ -890,25 +909,6 @@
     <Compile Include="QueryBuilder\QueryType.cs" />
     <Compile Include="Extensions\Tag.cs" />
     <Compile Include="API\APIWriter.cs" />
-    <Compile Include="Registration\Ask.cs" />
-    <Compile Include="Registration\AskCheckboxes.cs" />
-    <Compile Include="Registration\AskDropdown.cs" />
-    <Compile Include="Registration\AskExtraQuestions.cs" />
-    <Compile Include="Registration\AskGradeOptions.cs" />
-    <Compile Include="Registration\AskHeader.cs" />
-    <Compile Include="Registration\AskInstruction.cs" />
-    <Compile Include="Registration\AskMenu.cs" />
-    <Compile Include="Registration\AskRequest.cs" />
-    <Compile Include="Registration\AskSize.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Registration\AskSuggestedFee.cs" />
-    <Compile Include="Registration\AskText.cs" />
-    <Compile Include="Registration\AskTickets.cs" />
-    <Compile Include="Registration\AskYesNoQuestions.cs" />
-    <Compile Include="Registration\Parser.cs" />
-    <Compile Include="Registration\Settings.cs" />
-    <Compile Include="Registration\TimeSlots.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

@@ -156,7 +156,7 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="openstacknet">
       <HintPath>..\packages\openstack.net.1.3.2.1\lib\net40\openstacknet.dll</HintPath>
@@ -508,6 +508,9 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\VolSubModel.cs" />
     <Compile Include="Areas\Organization\Models\Dialog\OrgMember\OrgMemberMoveModel.cs" />
     <Compile Include="Areas\Organization\Models\Dialog\OrgMember\OrgMemberModel.cs" />
+    <Compile Include="Areas\Org\Models\OrgMember\OrgMemberMoveModel.cs" />
+    <Compile Include="Areas\Org\Models\OrgMember\OrgMemberModel.cs" />
+    <Compile Include="Areas\Org\Models\OrgMember\OrgMoveInfo.cs" />
     <Compile Include="Areas\People\Controllers\AddressController.cs" />
     <Compile Include="Areas\People\Controllers\ContactController.cs" />
     <Compile Include="Areas\People\Models\Person\Emails\EmailScheduled.cs" />
@@ -1988,6 +1991,7 @@
     <Content Include="Scripts\Dialog\SearchDivisions.js" />
     <Content Include="Scripts\Finance\Funds.js" />
     <Content Include="Scripts\Organization\RegSetting.js" />
+    <Content Include="Scripts\Org\RegSetting.js" />
     <Content Include="Scripts\js\markers.js" />
     <Content Include="Scripts\Meeting\meeting.js" />
     <Content Include="Scripts\Org\RegSettings.js" />

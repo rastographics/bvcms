@@ -272,9 +272,8 @@ namespace CmsData
             Util.IsInRoleEmailTest = TestEmail;
             var queueremail = db.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).Single();
             Util.UserEmail = queueremail;
-            if(db.CurrentOrg == null)
-                db.CurrentOrg = new CurrentOrg();
-            db.CurrentOrg.Id = CurrentOrgId;
+			db.CurrentOrgId = CurrentOrgId;
+
             var emailqueue = db.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
             emailqueue.Transactional = Transactional;
             db.SendPeopleEmail(emailqueue.Id);
