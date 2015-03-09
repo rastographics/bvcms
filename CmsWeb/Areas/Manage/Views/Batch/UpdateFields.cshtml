@@ -97,7 +97,8 @@
                     var f = $('#uform');
                     console.log(f);
                     swal({
-                            title: "Are you sure? There is no undo.",
+                            title: "Are you sure?",
+                            text: $("#count").text() + " There is no undo.",
                             type: "warning",
                             showCancelButton: true,
                             confirmButtonClass: "btn-warning",
