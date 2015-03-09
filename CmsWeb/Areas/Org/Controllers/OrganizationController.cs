@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
@@ -20,7 +19,7 @@ namespace CmsWeb.Areas.Org.Controllers
 
         [Route("~/Organization/{id:int}")]
         public ActionResult Index(int id)
-        {
+        {            
             if (Util2.CurrentOrgId != id)
             {
                 Util2.CurrentGroups = null;
@@ -409,7 +408,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult OnlineRegFeesUpdate(int id)
         {
             var m = GetRegSettings(id);
-            m.OrgFees.list.Clear();
+            m.OrgFees.Clear();
             try
             {
                 DbUtil.LogActivity("Update OnlineRegFees {0}".Fmt(m.org.OrganizationName));
@@ -504,8 +503,8 @@ namespace CmsWeb.Areas.Org.Controllers
         }
         [HttpPost]
         public ActionResult NewOrgFee(string id)
-        {
-            return View("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
+        {            
+            return View("EditorTemplates/OrgFee", new Settings.OrgFee() { Name = id });
         }
         [HttpPost]
         public ActionResult NewAgeGroup()

@@ -12,14 +12,14 @@
             if (confirmed) {
                 $.post(href, null, function(ret) {
                     f.modal("hide");
-                    self.parent.RebindMemberGrids();
+                    RebindMemberGrids();
                 });
             }
         });
         return false;
     });
     $('#OrgSearch').live("keydown", function (event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode === 13) {
             event.preventDefault();
             $("#orgsearchbtn").click();
         }
@@ -32,7 +32,7 @@
             if (confirmed) {
                 $.post(href, null, function(ret) {
                     f.modal("hide");
-                    self.parent.RebindMemberGrids();
+                    $.RebindMemberGrids();
                 });
             }
         });

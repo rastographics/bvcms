@@ -9,13 +9,21 @@ namespace CmsWeb.Areas.People.Models
 {
     public class PreviousEnrollments : PagedTableModel<EnrollmentTransaction, OrgMemberInfo>
     {
-        private int PeopleId;
-        public CmsData.Person person { get; set; }
-        public PreviousEnrollments(int id)
+        public int? PeopleId { get; set; }
+        public Person Person
+        {
+            get
+            {
+                if (_person == null && PeopleId.HasValue)
+                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                return _person;
+            }
+        }
+        private Person _person;
+
+        public PreviousEnrollments()
             : base("Org Name", "asc")
         {
-            PeopleId = id;
-            person = DbUtil.Db.LoadPersonById(id);
         }
         override public IQueryable<EnrollmentTransaction> DefineModelList()
         {
@@ -50,7 +58,7 @@ namespace CmsWeb.Areas.People.Models
         }
         override public IQueryable<EnrollmentTransaction> DefineModelSort(IQueryable<EnrollmentTransaction> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Enroll Date desc":
                     return from om in q

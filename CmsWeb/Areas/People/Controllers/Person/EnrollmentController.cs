@@ -1,71 +1,62 @@
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [HttpPost, Route("EnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult EnrollGrid(int id, int? page, int? size, string sort , string dir)
+        [HttpPost]
+        public ActionResult EnrollGrid(CurrentEnrollments m)
         {
-            var m = new CurrentEnrollments(id);
-            m.Pager.Set("/Person2/EnrollGrid/" + id, page, size, sort ?? "default", dir ?? "asc");
-            DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Current", m);
         }
-        [HttpPost, Route("PrevEnrollGrid/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult PrevEnrollGrid(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult PrevEnrollGrid(PreviousEnrollments m)
         {
-            var m = new PreviousEnrollments(id);
-            m.Pager.Set("/Person2/PrevEnrollGrid/" + id, page, size, sort ?? "default", dir ?? "asc");
-            DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Previous", m);
         }
-        [HttpPost, Route("PendingEnrollGrid/{id}")]
-        public ActionResult PendingEnrollGrid(int id)
+        [HttpPost]
+        public ActionResult PendingEnrollGrid(PendingEnrollments m)
         {
-            var m = new PendingEnrollments(id);
-            DbUtil.LogActivity("Viewing Pending Enrollments for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Viewing Pending Enrollments for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Pending", m);
         }
-        [HttpPost, Route("Attendance/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult Attendance(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult Attendance(PersonAttendHistoryModel m)
         {
-            var m = new PersonAttendHistoryModel(id, future: false);
-            m.Pager.Set("/Person2/Attendance/" + id, page, size, sort, dir);
             DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
-            UpdateModel(m.Pager);
-            return View("Enrollment/Attendance", m);
-        }
-        [HttpPost, Route("AttendanceFuture/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult AttendanceFuture(int id, int? page, int? size, string sort, string dir)
-        {
-            var m = new PersonAttendHistoryModel(id, future: true);
-            m.Pager.Set("/Person2/AttendanceFuture/" + id, page, size, sort, dir);
-            DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
-            UpdateModel(m.Pager);
             return View("Enrollment/Attendance", m);
         }
         [HttpPost]
-        public ActionResult Registrations(int id)
+        public ActionResult AttendanceFuture(PersonAttendHistoryModel m)
         {
-            var m = new RegistrationsModel(id);
-            DbUtil.LogActivity("Viewing Registrations for: {0}".Fmt(m.person.Name));
+            m.Future = true;
+            DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
+            return View("Enrollment/Attendance", m);
+        }
+        [HttpPost]
+        public ActionResult Registrations(int PeopleId)
+        {
+            var m = new RegistrationsModel(PeopleId);
+            DbUtil.LogActivity("Viewing Registrations for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Registrations", m);
         }
         [HttpPost]
-        public ActionResult RegistrationsEdit(int id)
+        public ActionResult RegistrationsEdit(int PeopleId)
         {
-            var m = new RegistrationsModel(id);
+            var m = new RegistrationsModel(PeopleId);
             return View("Enrollment/RegistrationsEdit", m);
         }
         [HttpPost]
         public ActionResult RegistrationsUpdate(RegistrationsModel m)
         {
             m.UpdateModel();
-            DbUtil.LogActivity("Updating Registrations for: {0}".Fmt(m.person.Name));
+            DbUtil.LogActivity("Updating Registrations for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Registrations", m);
         }
     }

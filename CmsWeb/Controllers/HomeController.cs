@@ -142,6 +142,12 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
+        public ActionResult UseNewOrg(bool id)
+        {
+            DbUtil.Db.SetUserPreference("UseNewOrg", id ? "false" : "true");
+            DbUtil.Db.SubmitChanges();
+            return Redirect("/");
+        }
 
         public ActionResult Names(string term)
         {

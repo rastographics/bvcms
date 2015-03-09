@@ -243,9 +243,9 @@ namespace CmsWeb.Models
                     {
                         var g = DbUtil.Db.LoadPersonById(GoerId.Value);
                         if(g != null)
-                            return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
+                        return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
                     }
-                    return "Support: " + org.OrganizationName;
+                        return "Support: " + org.OrganizationName;
                 }
                 if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
                     return Util.PickFirst(settings[org.OrganizationId].Title, org.OrganizationName);
@@ -553,5 +553,25 @@ namespace CmsWeb.Models
                 ? GetRegistrationFromDatum(ed.Id)
                 : null;
         }
+#if DEBUG
+        public static void DebugCleanUp()
+        {
+            if (Util.IsLocalNetworkRequest)
+            {
+                var q = from om in DbUtil.Db.OrganizationMembers
+                    where om.OrganizationId == 89539 && om.PeopleId == 828612
+                    select om;
+                foreach (var om in q)
+                    om.Drop(DbUtil.Db, DateTime.Now);
+                //        DbUtil.Db.PurgePerson(om.PeopleId);
+                //                var dr = DbUtil.Db.People.SingleOrDefault(mm => mm.Name == "David Roll");
+                //                if (dr != null)
+                //                    foreach (var mm in dr.Family.People)
+                //                        if (mm.PeopleId != dr.PeopleId)
+                //                            DbUtil.Db.PurgePerson(mm.PeopleId);
+                DbUtil.Db.SubmitChanges();
+            }
+        }
+#endif
     }
 }

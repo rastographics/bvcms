@@ -27,7 +27,7 @@
                 <tr>
                     <td>
                         <a href="@e.QueryUrl">@e.Field</a>
-                        <a class="rename" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)">
+                        <a class="rename" data-default="@e.Field" href="@e.RenameAllUrl">
                             <i class="fa fa-pencil"></i>
                         </a>
                     </td>
@@ -44,7 +44,7 @@
                             <a href="@e.ConvertToStandardUrl" class="btn btn-mini">Convert to Standard</a>
                         }
                     </td>
-                    <td><a class="delete" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-times"></i></a></td>
+                    <td><a class="delete" href="@e.DeleteAllUrl"><i class="fa fa-times"></i></a></td>
                 </tr>
             }
             else

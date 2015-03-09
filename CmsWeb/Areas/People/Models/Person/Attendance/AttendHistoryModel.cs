@@ -10,14 +10,12 @@ namespace CmsWeb.Areas.People.Models
 {
     public class PersonAttendHistoryModel : PagedTableModel<Attend, AttendInfo>
     {
-        public readonly int PeopleId;
-        public PersonAttendHistoryModel(int id, bool future)
-            : base("Meeting", future ? "asc" : "desc")
-        {
-            PeopleId = id;
-            Future = future;
-        }
+        public int PeopleId { get; set; }
         public bool Future { get; set; }
+        public PersonAttendHistoryModel()
+            : base("Meeting", "") 
+        {
+        }
         override public IQueryable<Attend> DefineModelList()
         {
             var midnight = Util.Now.Date.AddDays(1);
@@ -45,7 +43,7 @@ namespace CmsWeb.Areas.People.Models
                        PeopleId = a.PeopleId,
                        MeetingId = a.MeetingId,
                        OrganizationId = a.Meeting.OrganizationId,
-                       OrganizationName = CmsData.Organization
+                       OrganizationName = Organization
                           .FormatOrgName(o.OrganizationName, o.LeaderName, null),
                        AttendType = a.AttendType.Description ?? "(null)",
                        MeetingName = o.Division.Name + ": " + o.OrganizationName,
@@ -57,7 +55,7 @@ namespace CmsWeb.Areas.People.Models
         }
         override public IQueryable<Attend> DefineModelSort(IQueryable<Attend> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Organization":
                     return q.OrderBy(a => a.Meeting.Organization.OrganizationName).ThenByDescending(a => a.MeetingDate);
@@ -73,11 +71,13 @@ namespace CmsWeb.Areas.People.Models
                     return q.OrderByDescending(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
                 case "Meeting":
                 default:
+                    if (!Direction.HasValue())
+                        Direction = Future ? "asc" : "desc";
                     if (Future)
-                        return Pager.Direction == "desc"
+                        return Direction == "desc"
                             ? q.OrderBy(a => a.MeetingDate) 
                             : q.OrderByDescending(a => a.MeetingDate);
-                    return Pager.Direction == "asc"
+                    return Direction == "asc"
                         ? q.OrderBy(a => a.MeetingDate)
                         : q.OrderByDescending(a => a.MeetingDate);
             }

@@ -31,7 +31,7 @@ namespace CmsWeb.Code
 
     public static class ModelViewModel
     {
-        public static void CopyPropertiesFrom(this object viewmodel, object model, string onlyfields = "", string excludefields = "")
+        public static void CopyPropertiesFrom(this object viewmodel, object model, Type type = null, string onlyfields = "", string excludefields = "")
         {
             var modelProps = model.GetType().GetProperties();
             var viewmodelProps = viewmodel.GetType().GetProperties().Where(mm => mm.CanWrite);
@@ -45,6 +45,8 @@ namespace CmsWeb.Code
                 if (excludefields.HasValue() && exclude.Contains(vm.Name))
                     continue;
                 if (vm.HasAttribute<SkipFieldOnCopyProperties>())
+                    continue;
+                if (type != null && !Attribute.IsDefined(vm, type))
                     continue;
 
                 if (typeof(IModelViewModelObject).IsAssignableFrom(vm.PropertyType))
@@ -87,7 +89,7 @@ namespace CmsWeb.Code
                     vm.SetPropertyFromText(viewmodel, (modelvalue ?? "").ToString());
             }
         }
-        public static List<ChangeDetail> CopyPropertiesTo(this object viewmodel, object model, string onlyfields = "", string excludefields = "")
+        public static List<ChangeDetail> CopyPropertiesTo(this object viewmodel, object model, Type type = null, string onlyfields = "", string excludefields = "")
         {
             var modelProps = model.GetType().GetProperties().Where(pp => pp.CanWrite).ToArray();
             var viewmodelProps = viewmodel.GetType().GetProperties().Where(pp => pp.CanWrite).ToArray();
@@ -102,6 +104,8 @@ namespace CmsWeb.Code
                 if (excludefields.HasValue() && exclude.Contains(vm.Name))
                     continue;
                 if (vm.HasAttribute<NoUpdate>())
+                    continue;
+                if (type != null && !Attribute.IsDefined(vm, type))
                     continue;
 
                 // get the viewmodel value we are going to copy

@@ -2,22 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsWeb.Models;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class ContactsReceivedModel : ContactsModel
     {
-        public ContactsReceivedModel(int id)
-            : base(id)
-        {
-            AddContact = "/Person2/AddContactReceived/" + id;
-            base.AddContactButton = "Add Contact Received By This Person";
-        }
+        public override string AddContact { get { return "/Person2/AddContactReceived/" + PeopleId; } }
+        public override string AddContactButton { get { return "Add Contact Received By This Person"; } }
 
         override public IQueryable<Contact> DefineModelList()
         {
             return from c in FilteredModelList()
-                   where c.contactees.Any(p => p.PeopleId == person.PeopleId)
+                   where c.contactees.Any(p => p.PeopleId == PeopleId)
                    select c;
         }
 
@@ -25,7 +22,7 @@ namespace CmsWeb.Areas.People.Models
         {
             return from c in q
                    let contactor = c.contactsMakers.FirstOrDefault().person.Name
-                   let contactee = person.PreferredName
+                   let contactee = Person.PreferredName
                    let othercontactees = c.contactees.Count() > 1 ? " and others" : ""
                    let othercontactors = c.contactsMakers.Count() > 1 ? " and others" : ""
                    select new ContactInfo

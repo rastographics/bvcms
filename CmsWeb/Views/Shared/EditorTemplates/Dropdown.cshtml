@@ -1,6 +1,6 @@
 ﻿@model string
 @{
-    var items = ViewBag.items as List<SelectListItem>;
+    var items = ViewBag.items as IEnumerable<SelectListItem>;
 }
 <div class="control-group">
     @(ViewBag.label != null

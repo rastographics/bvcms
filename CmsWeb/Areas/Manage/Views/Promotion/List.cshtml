@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Models.PromotionModel
 @foreach (var r in Model.FetchStudents())
 {   
@@ -10,8 +11,8 @@
     <td>@r.AttendIndicator</td>
     <td>@r.AttendPct.ToString2("N1")</td>
     <td><a href="/Person2/@r.PeopleId">@r.Name</a></td>
-    <td><a href="/Organization/@r.CurrClassId">@r.CurrClassName</a></td>
-    <td><a href="/Organization/@r.PendingClassId">@r.PendingClassName</a></td>
+    <td><a href="@Util2.Org/@r.CurrClassId">@r.CurrClassName</a></td>
+    <td><a href="@Util2.Org/@r.PendingClassId">@r.PendingClassName</a></td>
     <td>@r.Birthday</td>
 </tr>
 }

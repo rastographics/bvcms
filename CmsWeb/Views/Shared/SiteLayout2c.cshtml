@@ -21,19 +21,19 @@
     </script>
     @RenderSection("scripts", required: false)
 </head>
-    <body>
-        <div class="page-container">
-            @Html.Partial("Notices")
-            @Html.Partial("NewHeader3")
-            <div id="oldpages" class="container">
-                @RenderBody()
-            </div>
+<body>
+    <div class="page-container">
+        @Html.Partial("Notices")
+        @Html.Partial("NewHeader3")
+        <div id="oldpages" class="container">
+            @RenderBody()
         </div>
-        @Html.Partial("Footer")
-        @Html.Partial("Dialogs")
-        @RenderSection("PopupsPlaceholder", required: false)
+    </div>
+    @Html.Partial("Footer")
+    @Html.Partial("Dialogs")
+    @RenderSection("PopupsPlaceholder", required: false)
         <div id="loading-indicator">
             <img src="/Content/img/ajax-loader.gif" />
         </div>
-    </body>
+</body>
 </html>

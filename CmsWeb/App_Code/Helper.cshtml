@@ -118,3 +118,9 @@
         </div>
     </div>
 }
+@helper HiddenId(string name, int? id)
+{
+  <form class="ajax">
+    <input type="hidden" name="@name" value="@id" />
+  </form>
+}

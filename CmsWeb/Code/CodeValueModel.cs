@@ -395,6 +395,36 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> StateList() { return GetStateList(); }
         public IEnumerable<CodeValueItem> TitleList() { return TitleCodes(); }
         public IEnumerable<CodeValueItem> LetterStatusList() { return LetterStatusCodes(); }
+        public IEnumerable<CodeValueItem> OrganizationStatusList() { return OrganizationStatusCodes(); }
+        public IEnumerable<CodeValueItem> SecurityTypeList() { return SecurityTypeCodes(); }
+        public IEnumerable<CodeValueItem> OrganizationTypeList() { return OrganizationTypes0(); }
+        public IEnumerable<CodeValueItem> LeaderMemberTypeList() { return MemberTypeCodes0().Select(c => new CodeValueItem { Code = c.Code, Id = c.Id, Value = c.Value }); }
+        public IEnumerable<CodeValueItem> AttendCreditList() { return AttendCredits(); }
+        public IEnumerable<CodeValueItem> RegistrationTypeList() { return RegistrationTypes(); }
+        public SelectList SchedDayList() { return DaysOfWeek(); }
+        public static SelectList DaysOfWeek()
+        {
+            return new SelectList(new[]
+            {
+                new {Text = "Sunday", Value = "0"},
+                new {Text = "Monday", Value = "1"},
+                new {Text = "Tuesday", Value = "2"},
+                new {Text = "Wednesday", Value = "3"},
+                new {Text = "Thursday", Value = "4"},
+                new {Text = "Friday", Value = "5"},
+                new {Text = "Saturday", Value = "6"},
+                new {Text = "Any Day", Value = "10"},
+            }, "Value", "Text");
+        }
+        public SelectList PublishDirectoryList()
+        {
+            return new SelectList(new[]
+            {
+                new {Value = "0", Text = "No Directory"},
+                new {Value = "1", Text = "Yes Publish Directory"},
+                new {Value = "2", Text = "Yes, Publish Family Directory"},
+            }, "Value", "Text");
+        }
 
         public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
         public SelectList ContactReasonSelectList() { return ContactReasonCodes().ToSelect(); }
@@ -424,6 +454,14 @@ namespace CmsWeb.Code
 				new CodeValueItem { Value = "Yes" },
 				new CodeValueItem { Value = "No" },
 			};
+        }
+        public SelectList TagList()
+        {
+            var tg = UserTags(Util.UserPeopleId).ToList();
+            if (HttpContext.Current.User.IsInRole("Edit"))
+                tg.Insert(0, new CodeValueItem { Id = -1, Value = "(last query)" });
+            tg.Insert(0, new CodeValueItem { Id = 0, Value = "(not specified)" });
+            return tg.ToSelect();
         }
 
         public IEnumerable<CodeValueItem> ExtraValueTypeCodes()
@@ -1075,6 +1113,8 @@ namespace CmsWeb.Code
             public const int AnyOnlineRegMissionTrip98 = 98;
             public const int AnyOnlineRegNonPicklist97 = 97;
             public const int AnyOnlineRegActive96 = 96;
+            public const int AnyOnlineRegNotOnApp95 = 95;
+            public const int AnyOnlineRegOnApp94 = 94;
         }
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
@@ -1087,13 +1127,23 @@ namespace CmsWeb.Code
             var list = q.ToList();
             list.Insert(0, new SelectListItem
             {
+                Value = RegistrationClassification.AnyOnlineRegOnApp94.ToString(),
+                Text = "(any reg on app)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegNotOnApp95.ToString(),
+                Text = "(active reg not on app)",
+            });
+            list.Insert(0, new SelectListItem
+            {
                 Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
-                Text = "(any active registration)",
+                Text = "(active registration)",
             });
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
-                Text = "(any registration, no picklist)",
+                Text = "(registration, no picklist)",
             });
             list.Insert(0, new SelectListItem
             {

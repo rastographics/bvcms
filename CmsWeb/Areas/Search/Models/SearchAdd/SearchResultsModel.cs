@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Search.Models
         public SearchResultsModel()
             : base(null, null)
         {
-            Pager.ShowPageSize = false;
+            ShowPageSize = false;
         }
         public string HelpLink(string page)
         {

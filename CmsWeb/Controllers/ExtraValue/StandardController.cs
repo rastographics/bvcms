@@ -86,7 +86,7 @@ namespace CmsWeb.Controllers
         {
             var m = new NewExtraValueModel(0, table, "Standard");
             m.ConvertToStandard(name);
-            return Redirect("/ExtraValue/Summary");
+            return Redirect("/ExtraValue/Summary/" + table);
         }
         [HttpGet, Route("ExtraValue/ConvertInfoCard")]
         public ActionResult ConvertInfoCard()

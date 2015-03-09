@@ -22,9 +22,9 @@
 
 <div class="confirm">
   @Html.Raw(Model.TrackingCode)
-  @Html.Raw(Model.GetThankYouMessage())
+    @Html.Raw(Model.GetThankYouMessage())
   @if (Model.UseBootstrap && MobileAppMenuController.InMobileAppMode)
-  {
+    {
     <a href="@MobileAppMenuController.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
-  }
+    }
 </div>

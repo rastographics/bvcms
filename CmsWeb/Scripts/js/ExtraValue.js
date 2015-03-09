@@ -43,7 +43,7 @@
                 $("#ExtraValueType_Value").live("change", showHide);
             });
         $.InitFunctions.StandardExtraValueDialogCallback = function () {
-            if ($("#StandardExtraValueError").length == 0) {
+            if ($("#StandardExtraValueError").length === 0) {
                 $("#extravalue-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax-refresh");
                 if (a.length > 0)

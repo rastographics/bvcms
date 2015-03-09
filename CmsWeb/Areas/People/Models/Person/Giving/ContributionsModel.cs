@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Data.Linq;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
@@ -12,8 +11,21 @@ namespace CmsWeb.Areas.People.Models
 {
     public class ContributionsModel : PagedTableModel<Contribution, ContributionInfo>
     {
-        public int PeopleId { get; set; }
-        public Person person;
+        public int PeopleId
+        {
+            get { return peopleid; }
+            set
+            {
+                peopleid = value;
+                Person = DbUtil.Db.LoadPersonById(peopleid);
+                ContributionOptions = new CodeInfo(Person.ContributionOptionsId, "ContributionOptions");
+                EnvelopeOptions = new CodeInfo(Person.EnvelopeOptionsId, "EnvelopeOptions");
+                ElectronicStatement = Person.ElectronicStatement ?? false;
+            }
+        }
+        private int peopleid;
+        public Person Person;
+
         public bool ShowNames;
         public bool ShowTypes;
         [DisplayName("Electronic Only"), TrackChanges]
@@ -23,32 +35,27 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Envelope Option")]
         public CodeInfo EnvelopeOptions { get; set; }
 
-        public ContributionsModel(int id)
+        public ContributionsModel()
             : base("Date", "desc")
         {
-            PeopleId = id;
-            person = DbUtil.Db.LoadPersonById(id);
-            ContributionOptions = new CodeInfo(person.ContributionOptionsId, "ContributionOptions");
-            EnvelopeOptions = new CodeInfo(person.EnvelopeOptionsId, "EnvelopeOptions");
-            ElectronicStatement = person.ElectronicStatement ?? false;
         }
 
         public override IQueryable<Contribution> DefineModelList()
         {
             var q = from c in DbUtil.Db.Contributions
-                    where c.PeopleId == person.PeopleId
-                        || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
+                    where c.PeopleId == Person.PeopleId
+                        || (c.PeopleId == Person.SpouseId && (Person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                     where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                     where c.ContributionStatusId == ContributionStatusCode.Recorded
                     select c;
-            ShowNames = q.Any(c => c.PeopleId != person.PeopleId);
+            ShowNames = q.Any(c => c.PeopleId != Person.PeopleId);
             ShowTypes = q.Any(c => ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId));
             return q;
         }
 
         public override IQueryable<Contribution> DefineModelSort(IQueryable<Contribution> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Name":
                     return from c in q
@@ -110,7 +117,7 @@ namespace CmsWeb.Areas.People.Models
                          CheckNo = c.CheckNo,
                          Date = c.ContributionDate.Value,
                          Fund = c.ContributionFund.FundDescription,
-                         Name = c.Person.PeopleId == person.PeopleId ? c.Person.PreferredName : c.Person.Name,
+                         Name = c.Person.PeopleId == PeopleId ? c.Person.PreferredName : c.Person.Name,
                          Type = ContributionTypeCode.SpecialTypes.Contains(c.ContributionTypeId)
                               ? c.ContributionType.Description
                               : !online
@@ -122,9 +129,11 @@ namespace CmsWeb.Areas.People.Models
             return q2;
         }
 
-        public static IEnumerable<StatementInfo> Statements(int id)
+        public static IEnumerable<StatementInfo> Statements(int? id)
         {
-            var person = DbUtil.Db.LoadPersonById(id);
+            if (!id.HasValue)
+                throw new ArgumentException("Missing id");
+            var person = DbUtil.Db.LoadPersonById(id.Value);
             return from c in DbUtil.Db.Contributions2(new DateTime(1900, 1, 1), new DateTime(3000, 12, 31), 0, false, null, true)
                    where c.PeopleId == person.PeopleId
                         || (c.PeopleId == person.SpouseId && (person.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
@@ -136,8 +145,6 @@ namespace CmsWeb.Areas.People.Models
                        Amount = g.Sum(cc => cc.Amount ?? 0),
                        StartDate = new DateTime(g.Key, 1, 1),
                        EndDate = new DateTime(g.Key, 12, 31)
-                       //                       StartDate = g.Min(cc => cc.DateX.Value),
-                       //                       EndDate = g.Max(cc => cc.DateX.Value)
                    };
         }
     }

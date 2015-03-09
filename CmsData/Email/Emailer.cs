@@ -120,7 +120,7 @@ namespace CmsData
             if (Setting("SendRecurringGiftFailureNoticesToFinanceUsers", "false") == "false")
             {
                 var notifyids = (from o in Organizations
-                                 where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
+                                 where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving 
                                  select o.NotifyIds).SingleOrDefault();
                 if (notifyids.HasValue())
                     return PeopleFromPidString(notifyids).ToList();
@@ -234,70 +234,70 @@ namespace CmsData
 
             using(var tran = new TransactionScope())
             {
-                var emailqueue = new EmailQueue
-                {
-                    Queued = DateTime.Now,
-                    FromAddr = from.Address,
-                    FromName = from.DisplayName,
-                    Subject = subject,
-                    Body = body,
-                    SendWhen = schedule,
-                    QueuedBy = queuedBy,
-                    Transactional = false,
-                    PublicX = publicViewable,
-                    CCParents = ccParents
-                };
-                EmailQueues.InsertOnSubmit(emailqueue);
-                SubmitChanges();
+            var emailqueue = new EmailQueue
+            {
+                Queued = DateTime.Now,
+                FromAddr = from.Address,
+                FromName = from.DisplayName,
+                Subject = subject,
+                Body = body,
+                SendWhen = schedule,
+                QueuedBy = queuedBy,
+                Transactional = false,
+                PublicX = publicViewable,
+                CCParents = ccParents
+            };
+            EmailQueues.InsertOnSubmit(emailqueue);
+            SubmitChanges();
 
-                if (body.Contains("http://publiclink", ignoreCase: true))
-                {
+            if (body.Contains("http://publiclink", ignoreCase: true))
+            {
                     var link = ServerLink("/EmailView/" + emailqueue.Id);
                     var re = new Regex("http://publiclink",
                         RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.IgnoreCase);
-                    emailqueue.Body = re.Replace(body, link);
-                }
-
-                var q = tag.People(this);
-
-                IQueryable<int> q2 = null;
-                if (emailqueue.CCParents == true)
-                    q2 = from p in q.Distinct()
-                        where (p.EmailAddress ?? "") != ""
-                              || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
-                              || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
-                        where (p.SendEmailAddress1 ?? true)
-                              || (p.SendEmailAddress2 ?? false)
-                              || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
-                              || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
-                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
-                              || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
-                        where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
-                        orderby p.PeopleId
-                        select p.PeopleId;
-                else
-                    q2 = from p in q.Distinct()
-                        where p.EmailAddress != null
-                        where p.EmailAddress != ""
-                        where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
-                        where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
-                        orderby p.PeopleId
-                        select p.PeopleId;
-
-                foreach (var pid in q2)
-                {
-                    emailqueue.EmailQueueTos.Add(new EmailQueueTo
-                    {
-                        PeopleId = pid,
-                        OrgId = CurrentOrgId,
-                        Guid = Guid.NewGuid(),
-                        GoerSupportId = goerSupporterId,
-                    });
-                }
-                SubmitChanges();
-                tran.Complete();
-                return emailqueue;
+                emailqueue.Body = re.Replace(body, link);
             }
+
+            var q = tag.People(this);
+
+            IQueryable<int> q2 = null;
+            if (emailqueue.CCParents == true)
+                q2 = from p in q.Distinct()
+                     where (p.EmailAddress ?? "") != ""
+                         || (p.Family.HeadOfHousehold.EmailAddress ?? "") != ""
+                         || (p.Family.HeadOfHouseholdSpouse.EmailAddress ?? "") != ""
+                     where (p.SendEmailAddress1 ?? true)
+                         || (p.SendEmailAddress2 ?? false)
+                         || (p.Family.HeadOfHousehold.SendEmailAddress1 ?? false)
+                         || (p.Family.HeadOfHousehold.SendEmailAddress2 ?? false)
+                         || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress1 ?? false)
+                         || (p.Family.HeadOfHouseholdSpouse.SendEmailAddress2 ?? false)
+                     where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                     orderby p.PeopleId
+                     select p.PeopleId;
+            else
+                q2 = from p in q.Distinct()
+                     where p.EmailAddress != null
+                     where p.EmailAddress != ""
+                     where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
+                     where p.EmailOptOuts.All(oo => oo.FromEmail != emailqueue.FromAddr)
+                     orderby p.PeopleId
+                     select p.PeopleId;
+
+            foreach (var pid in q2)
+            {
+                emailqueue.EmailQueueTos.Add(new EmailQueueTo
+                {
+                    PeopleId = pid,
+                        OrgId = CurrentOrgId,
+                    Guid = Guid.NewGuid(),
+                    GoerSupportId = goerSupporterId,
+                });
+            }
+            SubmitChanges();
+                tran.Complete();
+            return emailqueue;
+        }
         }
         public EmailQueue CreateQueueForSupporters(int? queuedBy, MailAddress from, string subject, string body, DateTime? schedule, List<GoerSupporter> list, bool publicViewable)
         {

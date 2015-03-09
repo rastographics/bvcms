@@ -2,7 +2,7 @@
 <div id="results">
     <div>Count: @Model.Count().ToString("n0")</div>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
     <table class="table table-condensed table-striped">
         <thead>
@@ -34,6 +34,6 @@
         </tbody>
     </table>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
 </div>

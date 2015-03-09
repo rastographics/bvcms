@@ -51,14 +51,16 @@ namespace UtilityExtensions
                 return dt.Value.ToString("d");
             return "";
         }
-       public static string FormatDate2(this DateTime? dt)
+        public static HtmlString FormatDate2(this DateTime? dt, string prefix = null, string suffix = null)
         {
             if (dt.HasValue)
             {
+                if (prefix != null)
+                    prefix = prefix + " ";
                 var s = dt.Value.ToString("d");
-                return s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2);
+                return new HtmlString("{0}{1}{2}".Fmt(prefix, s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2), suffix));
             }
-            return "";
+            return new HtmlString("");
         }
         public static string FormatDate(dynamic dyndt)
         {
@@ -71,6 +73,10 @@ namespace UtilityExtensions
         public static string ToSortableDate(this DateTime dt)
         {
             return dt.ToString("yyyy-MM-dd");
+        }
+        public static string ToSortableTime(this DateTime dt)
+        {
+            return dt.ToString("hhmmss.ff");
         }
         public static string ToSortableDate(this DateTime? dt)
         {
@@ -97,6 +103,16 @@ namespace UtilityExtensions
                 return dt.ToString2("g");
             return def;
         }
+        public static string FormatTime(this DateTime? tm)
+        {
+            if (tm.HasValue)
+                return tm.Value.FormatTime();
+            return "";
+        }
+        public static string FormatTime(this DateTime tm)
+        {
+            return tm.ToString("h:mm tt");
+        }
         public static string ToString2(this int? i, string fmt)
         {
             if (i.HasValue)
@@ -113,6 +129,12 @@ namespace UtilityExtensions
         {
             if (d.HasValue)
                 return d.Value.ToString(fmt);
+            return "";
+        }
+        public static string ToString2(this TimeSpan? ts, string fmt)
+        {
+            if (ts.HasValue)
+                return ts.Value.ToString(fmt);
             return "";
         }
         public static string FormatCSZ(string city, string st, string zip)

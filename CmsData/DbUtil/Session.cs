@@ -21,18 +21,16 @@ namespace CmsData
             }
             return def;
         }
+        public static void SetSessionObj(string key, object value)
+        {
+                if (HttpContext.Current != null)
+                HttpContext.Current.Session[key] = value;
+            }
 
         public static string CurrentTag
         {
-            get
-            {
-                return GetSessionObj(STR_CurrentTag, STR_DefaultTag).ToString();
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_CurrentTag] = value;
-            }
+            get { return GetSessionObj(STR_CurrentTag, STR_DefaultTag).ToString(); }
+            set { SetSessionObj(STR_CurrentTag, value); }
         }
         const string STR_ActiveOrganizationId = "ActiveOrganizationId";
         public static int? CurrentOrgId
@@ -47,6 +45,14 @@ namespace CmsData
                     HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
             }
         }
+
+        const string STR_CurrentOrganization = "CurrentOrganization";
+        public static CurrentOrg CurrentOrganization
+            {
+            get { return (CurrentOrg)GetSessionObj(STR_CurrentOrganization, null); }
+            set { SetSessionObj(STR_CurrentOrganization, value); }
+            }
+
         const string STR_ActiveGroupId = "ActiveGroup";
         public static int[] CurrentGroups
         {
@@ -88,19 +94,13 @@ namespace CmsData
                     HttpContext.Current.Session[STR_ActiveGroupMode] = value;
             }
         }
+
         const string STR_ActivePersonId = "ActivePersonId";
         public static int CurrentPeopleId
         {
-            get
-            {
-                return GetSessionObj(STR_ActivePersonId, 0).ToInt();
+            get { return GetSessionObj(STR_ActivePersonId, 0).ToInt(); }
+            set { SetSessionObj(STR_ActivePersonId, value); }
             }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_ActivePersonId] = value;
-            }
-        }
         const string STR_FromMobile = "source";
         public static string FromMobile
         {
@@ -134,54 +134,26 @@ namespace CmsData
         public const string STR_OrgMembersOnly = "OrgMembersOnly";
         public static bool OrgMembersOnly
         {
-            get
-            {
-                return (bool)GetSessionObj(STR_OrgMembersOnly, false);
+            get { return (bool)GetSessionObj(STR_OrgMembersOnly, false); }
+            set { SetSessionObj(STR_OrgMembersOnly, value); }
             }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_OrgMembersOnly] = value;
-            }
-        }
         public const string STR_OrgLeadersOnly = "OrgLeadersOnly";
         public static bool OrgLeadersOnly
         {
-            get
-            {
-                return (bool)GetSessionObj(STR_OrgLeadersOnly, false);
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_OrgLeadersOnly] = value;
-            }
+            get { return (bool)GetSessionObj(STR_OrgLeadersOnly, false); }
+            set { SetSessionObj(STR_OrgLeadersOnly, value); }
         }
         public const string STR_OrgLeadersOnlyChecked = "OrgLeadersOnlyChecked";
         public static bool OrgLeadersOnlyChecked
         {
-            get
-            {
-                return (bool)GetSessionObj(STR_OrgLeadersOnlyChecked, false);
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_OrgLeadersOnlyChecked] = value;
-            }
+            get { return (bool)GetSessionObj(STR_OrgLeadersOnlyChecked, false); }
+            set { SetSessionObj(STR_OrgLeadersOnlyChecked, value); }
         }
         private const string STR_VisitLookbackDays = "VisitLookbackDays";
         public static int VisitLookbackDays
         {
-            get
-            {
-                return GetSessionObj(STR_VisitLookbackDays, 180).ToInt();
-            }
-            set
-            {
-                if (HttpContext.Current != null)
-                    HttpContext.Current.Session[STR_VisitLookbackDays] = value;
-            }
+            get { return GetSessionObj(STR_VisitLookbackDays, 180).ToInt(); }
+            set { SetSessionObj(STR_VisitLookbackDays, value); }
         }
         [Serializable]
         public class MostRecentItem
@@ -245,6 +217,33 @@ namespace CmsData
                 return DbUtil.Db.UserPreference("TargetLinkPeople", "true").ToBool();
             }
         }
+
+        public static bool UseNewOrg
+        {
+            get { return DbUtil.Db.UserPreference("UseNewOrg", "false").ToBool(); }
+        }
+        public static string Org
+        {
+            get { return UseNewOrg ? "/Org" : "/Organization"; }
+        }
+        public static string OrgMemberDialog
+        {
+            get { return UseNewOrg ? "/OrgMemberDialog" : "/OrgMemberDialog2"; }
+        }
+
+//        const string STR_ActiveOrganizationId = "ActiveOrganizationId";
+//        public static int? CurrentOrgId
+//        {
+//            get
+//            {
+//                return GetSessionObj(STR_ActiveOrganizationId, null).ToInt2();
+//            }
+//            set
+//            {
+//                if (HttpContext.Current != null)
+//                    HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
+//            }
+//        }
         public static bool UseNewFeature
         {
             get

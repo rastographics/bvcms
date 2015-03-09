@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == pid && m.OrganizationId == oid);
             if (om != null)
             {
-                om.Drop(DbUtil.Db, addToHistory: true);
+                om.Drop(DbUtil.Db);
                 DbUtil.Db.SubmitChanges();
             }
             return Content("dropped");
@@ -70,13 +70,11 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Move(int oid, int pid)
         {
             var mm = new OrgMemberMoveModel { OrgId = oid, PeopleId = pid };
-            mm.Pager.SetWithPageOnly("/OrgMemberDialog2/MoveResults", 1);
             return View(mm);
         }
         [HttpPost, Route("OrgMemberDialog2/MoveResults/{page}")]
         public ActionResult MoveResults(int page, OrgMemberMoveModel m)
         {
-            m.Pager.SetWithPageOnly("/OrgMemberDialog2/MoveResults", page);
             return View("Move", m);
         }
         [HttpPost, Route("OrgMemberDialog2/MoveSelect/{oid:int}/{pid:int}/{toid:int}")]
@@ -94,7 +92,7 @@ namespace CmsWeb.Areas.Org.Controllers
             om2.Request = om1.Request;
             om2.Amount = om1.Amount;
             om2.UserData = om1.UserData;
-            om1.Drop(DbUtil.Db, addToHistory: true);
+            om1.Drop(DbUtil.Db);
             DbUtil.Db.SubmitChanges();
             return Content("moved");
         }

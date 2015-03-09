@@ -156,6 +156,12 @@ namespace CmsData
             return this.PeopleExtras.OrderByDescending(e => e.TransactionTime)
                 .First(e => e.Field == field && e.PeopleId == pid).DateValue;
         }
+
+        public IQueryable<Person> PeopleQueryLast()
+        {
+            var qid = FetchLastQuery().Id;
+            return PeopleQuery(qid);
+        }
         public IQueryable<Person> PeopleQuery(Guid id)
         {
             if (id == null)
@@ -285,16 +291,22 @@ namespace CmsData
             var cmd = GetCommand(q2);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
-            var n = 0;
+            int n = 0, pn = 0;
             foreach (var p in cmd.Parameters)
             {
-                s = s.Replace("@p" + n, "{{{0}}}".Fmt(n));
-                n++;
-                plist.Add(p as DbParameter);
+                var pa = p as DbParameter;
+                if (pa != null && pa.Value is DBNull)
+                {
+                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
+                    continue;
+                }
+                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
+                plist.Add(pa);
             }
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
                 @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
-            ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
+            var a = plist.Select(pp => pp.Value).ToArray();
+            ExecuteCommand(s, a);
         }
         public void TagAll(IEnumerable<int> list, Tag tag)
         {
@@ -314,6 +326,25 @@ namespace CmsData
             foreach (var t in q)
                 TagPeople.DeleteOnSubmit(t);
             SubmitChanges();
+        }
+        const int maxints = 1000;
+        public void UnTagAll(List<int> list, Tag tag)
+        {
+            for(var i = 0; i< list.Count; i+=maxints)
+            {
+                var s = string.Join(",", list.Skip(i).Take(maxints));
+                var cmd = "DELETE dbo.TagPerson WHERE Id = {0} AND PeopleId IN ({1})".Fmt(tag.Id, s);
+                ExecuteCommand(cmd);
+            }
+        }
+        public void TagAll(List<int> list, Tag tag)
+        {
+            for(var i = 0; i< list.Count; i+=maxints)
+            {
+                var s = string.Join(",", list.Skip(i).Take(maxints));
+                var cmd = "INSERT dbo.TagPerson (Id, PeopleId) SELECT {0}, Value FROM dbo.SplitInts('{1}')".Fmt(tag.Id, s);
+                ExecuteCommand(cmd);
+            }
         }
         public Tag PopulateSpecialTag(Guid QueryId, int TagTypeId)
         {
@@ -336,12 +367,17 @@ namespace CmsData
             var cmd = GetCommand(qpids);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
-            var n = 0;
+            int n = 0, pn = 0;
             foreach (var p in cmd.Parameters)
             {
-                s = s.Replace("@p" + n, "{{{0}}}".Fmt(n));
-                n++;
-                plist.Add(p as DbParameter);
+                var pa = p as DbParameter;
+                if (pa != null && pa.Value is DBNull)
+                {
+                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
+                    continue;
+                }
+                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
+                plist.Add(pa);
             }
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
                 @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
@@ -355,13 +391,20 @@ namespace CmsData
             var cmd = GetCommand(q);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
-            var n = 0;
+            
+            int n = 0, pn = 0;
             foreach (var p in cmd.Parameters)
             {
-                s = s.Replace("@p" + n, "{{{0}}}".Fmt(n));
-                n++;
-                plist.Add(p as DbParameter);
+                var pa = p as DbParameter;
+                if (pa != null && pa.Value is DBNull)
+                {
+                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
+                    continue;
             }
+                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
+                plist.Add(pa);
+            }
+
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
                 @"INSERT INTO TagPerson (Id, PeopleId) $0 " + tag.Id + ",");
             ExecuteCommand(s, plist.Select(pp => pp.Value).ToArray());
@@ -874,6 +917,12 @@ namespace CmsData
             d[pref] = null;
             return defaultValue;
         }
+
+        public void ToggleUserPreference(string pref)
+        {
+            var value = UserPreference(pref);
+            SetUserPreference(pref, value == "true" ? "false" : "true");
+        }
         public void SetUserPreference(string pref, object value)
         {
             if (UserPreference(pref) == value.ToString())
@@ -981,6 +1030,18 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.RepairTransactions")]
+        public int RepairTransactions([Parameter(DbType = "Int")] int? orgid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
+            return ((int)(result.ReturnValue));
+        }
+        [Function(Name = "dbo.RepairTransactionsOrgs")]
+        public int RepairTransactionsOrgs([Parameter(DbType = "Int")] int? orgid)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), orgid);
+            return ((int)(result.ReturnValue));
+        }
         [Function(Name = "dbo.UpdateSchoolGrade")]
         public int UpdateSchoolGrade([Parameter(DbType = "Int")] int? pid)
         {
@@ -1079,6 +1140,36 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), t1, t2);
             return ((int)(result.ReturnValue));
         }
+        public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
+	    {
+	        return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
+	    }
+	    public IQueryable<View.OrgPerson> OrgPeople(
+             int? oid,
+             string first,
+             string last,
+             string sgfilter,
+             bool filterchecked,
+             bool filtertag
+	        )
+	    {
+	        return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false, null, null, filterchecked,
+	            filtertag, null, Util.UserPeopleId);
+	    }
+	    public IQueryable<View.OrgPerson> OrgPeople(
+             int? oid,
+             string grouptype,
+             string first,
+             string last,
+             string sgfilter,
+             bool showhidden,
+             bool filterchecked,
+             bool filtertag
+	        )
+	    {
+	        return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden, null, null, filterchecked,
+	            filtertag, null, Util.UserPeopleId);
+	    }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
         {
             if (orgmustexist)

@@ -266,22 +266,22 @@ $(function () {
     };
 
     $.initDatePicker = function (f) {
-        $("ul.edit .datepicker", f).jqdatepicker({
-            //beforeShow: function () { $('#ui-datepicker-div').maxZIndex(); }
+        $("ul.edit .datepicker", f).datetimepicker({
+            minView: 2,
+            format: 'm/d/yy',
+            autoclose: true
         });
-        $("ul.edit .timepicker", f).jqdatetimepicker({
-            stepHour: 1,
-            stepMinute: 5,
-            timeOnly: true,
-            timeFormat: "hh:mm tt",
-            controlType: "slider"
+        $("ul.edit .timepicker", f).datetimepicker({
+            startView: 1,
+            maxView: 1,
+            format: 'H:ii P',
+            showMeridian: true,
+            autoclose: true
         });
-        $("ul.edit .datetimepicker", f).jqdatetimepicker({
-            stepHour: 1,
-            stepMinute: 15,
-            timeOnly: false,
-            timeFormat: "hh:mm tt",
-            controlType: "slider"
+        $("ul.edit .datetimepicker", f).datetimepicker({
+            format: 'm/d/yy H:ii P',
+            showMeridian: true,
+            autoclose: true
         });
     };
     $.showHideRegTypes = function (f) {

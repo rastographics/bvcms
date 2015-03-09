@@ -277,7 +277,7 @@
       break;
     case "AskCheckboxes":
       var cb = ((AskCheckboxes)ask);
-      if (cb.Cols > 1)
+      if (cb.Columns > 1)
       {
         <tr>
           <td style="padding: 3px" colspan="2" class="center">
@@ -285,7 +285,7 @@
             <table class="checkboxes grid table-striped">
               <thead>
                 <tr>
-                  @for (var n = 0; n < cb.Cols; n++)
+                  @for (var n = 0; n < cb.Columns; n++)
                   {
                     var a = cb.list[n];
                     if (a.SmallGroup == "nocheckbox")
@@ -296,10 +296,10 @@
                 </tr>
               </thead>
               <tbody>
-                @for (var n = cb.Cols.Value; n < cb.list.Count; n++)
+                @for (var n = cb.Columns.Value; n < cb.list.Count; n++)
                 {
                   var a = cb.list[n];
-                  if (n % cb.Cols == 0)
+                  if (n % cb.Columns == 0)
                   {
                     @Html.Raw("<tr>")
                   }
@@ -318,7 +318,7 @@
                       <td><input type="checkbox" value="@a.SmallGroup" name="@Html.NameFor2(m => m.Checkbox)" @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") /></td>
                     }
                   }
-                  if (n % cb.Cols == cb.Cols - 1)
+                  if (n % cb.Columns == cb.Columns - 1)
                   {
                     @Html.Raw("</tr>")
                   }

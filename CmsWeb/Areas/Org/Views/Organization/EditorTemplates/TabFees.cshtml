@@ -55,7 +55,8 @@
     DonationLabel:</span> 
     @Html.EditorFor(m => m.DonationLabel, "Html")
   </li>
-<li><div class="text big tip" title="OrgFees
+<li>
+  <div class="text big tip" title="OrgFees
     |This will give registrants a special fee
     |if they are members of a particular organization.
     |Note that this fee overrides all other fees 
@@ -63,8 +64,8 @@
     |If it is zero, the payment page will be skipped.">
     OrgFees:</div>
       <ul id="OrgFees" class="sort">
-	      @{ var listname = Html.NameFor2(m => m.OrgFees.list); }
-          @foreach(var item in Model.OrgFees.list)
+	      @{ var listname = Html.NameFor2(m => m.OrgFees); }
+          @foreach(var item in Model.OrgFees)
           {
               item.Name = listname;
               @Html.EditorFor(m => item)

@@ -2,19 +2,19 @@
 @using UtilityExtensions
 <form class="non-modal ajax">
     <div class="pagination pagination-mini">
-    @Html.Partial("Pager3", Model.Pager)
+    @Html.Partial("Pager3", Model)
     </div>
     <table id="results" class="table table-condensed table-striped">
         <thead>
             <tr>
-                <th>@Model.Pager.SortLink("Date")</th>
-                <th class="right">@Model.Pager.SortLink("Amount")</th>
-                <th><span class="pad-left">@Model.Pager.SortLink("Fund")</span></th>
-                <th>@Model.Pager.SortLink("Type")</th>
-                <th>@Model.Pager.SortLink("CheckNo")</th>
+                <th>@Model.SortLink("Date")</th>
+                <th class="right">@Model.SortLink("Amount")</th>
+                <th><span class="pad-left">@Model.SortLink("Fund")</span></th>
+                <th>@Model.SortLink("Type")</th>
+                <th>@Model.SortLink("CheckNo")</th>
                 @if (Model.ShowNames)
                 {
-                    <th>@Model.Pager.SortLink("Name")</th>
+                    <th>@Model.SortLink("Name")</th>
                 }
             </tr>
         </thead>
@@ -36,6 +36,6 @@
         </tbody>
     </table>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
 </form>

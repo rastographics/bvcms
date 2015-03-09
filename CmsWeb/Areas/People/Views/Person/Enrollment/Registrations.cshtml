@@ -1,9 +1,11 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.RegistrationsModel
 @{
     var goerlist = Model.GoerList();
 }
 <form class="form form-horizontal margin-top ajax span12" method="post">
+  @Html.HiddenFor2(m => m.PeopleId)
     <fieldset class="left-gutter">
         <legend>
             Registration History
@@ -26,7 +28,7 @@
                         <td>
                             @if (User.IsInRole("Access"))
                             {
-                                <a href="/Organization/@g.Id">@g.Trip</a>
+                <a href="@Util2.Org/@g.Id">@g.Trip</a>
                             }
                             else
                             {
@@ -91,6 +93,6 @@
 {
     if (User.IsInRole("Edit"))
     {
-        <a href="/Person2/RegistrationsEdit/@Model.person.PeopleId" class="pull-right btn btn-primary ajax">Edit</a>
+        <a href="/Person2/RegistrationsEdit" class="pull-right btn btn-primary ajax">Edit</a>
     }
 }

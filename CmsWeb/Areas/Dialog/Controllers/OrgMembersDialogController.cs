@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 				inactives = inactives ?? false,
 				pendings = pendings ?? false,
 				Pending = pendings ?? false,
-                prospects = prospects ?? false,
+                //prospects = prospects ?? false,
 				sg = sg,
 			};
 			return View(m);
@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			foreach (var om in q)
 			{
 				if (m.MemberType == MemberTypeCode.Drop)
-					om.Drop(Db, addToHistory: true);
+					om.Drop(Db);
 				else
 				{
 					if (m.MemberType > 0)

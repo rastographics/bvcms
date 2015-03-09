@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web;
 using CmsData;
 using CmsWeb.Models;
@@ -7,15 +8,19 @@ namespace CmsWeb.Areas.People.Models
 {
     public abstract class ContactsModel : PagedTableModel<CmsData.Contact, ContactInfo>
     {
-        public Person person;
+        public Person Person { get; set; }
+        public int? PeopleId
+        {
+            get { return Person == null ? (int?)null : Person.PeopleId; }
+            set { Person = DbUtil.Db.LoadPersonById(value ?? 0); }
+        }
 
-        public ContactsModel(int id)
+        protected ContactsModel()
             : base("Date", "desc")
         {
-            person = DbUtil.Db.LoadPersonById(id);
         }
-        public string AddContact { get; set; }
-        public string AddContactButton { get; set; }
+        public abstract string AddContact { get; }
+        public abstract string AddContactButton { get; }
 
         public IQueryable<Contact> FilteredModelList()
         {
@@ -29,8 +34,8 @@ namespace CmsWeb.Areas.People.Models
 
         override public IQueryable<Contact> DefineModelSort(IQueryable<Contact> q)
         {
-            if (Pager.Direction == "asc")
-                switch (Pager.Sort)
+            if (Direction == "asc")
+                switch (Sort)
                 {
                     case "Date":
                         return from c in q
@@ -54,7 +59,7 @@ namespace CmsWeb.Areas.People.Models
                                    select c;
                 }
             else
-                switch (Pager.Sort)
+                switch (Sort)
                 {
                     case "Date":
                         return from c in q

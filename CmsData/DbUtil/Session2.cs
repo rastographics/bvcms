@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using UtilityExtensions;
@@ -11,14 +12,37 @@ namespace CmsData
 {
     public partial class CMSDataContext
     {
+        private CurrentOrg currentOrg;
+        public CurrentOrg CurrentOrg
+        {
+            get { return currentOrg ?? (currentOrg = Util2.CurrentOrganization); }
+            set
+            {
+                Util2.CurrentOrganization = value;
+                currentOrg = value;
+            }
+        }
+
         public int? CurrentOrgId { get; set; }
-        public int CurrentOrgId0 { get { return CurrentOrgId ?? 0; } }
+
+        public int CurrentOrgId0
+        {
+            get
+            {
+                if (Util2.UseNewOrg)
+                {
+                    return (CurrentOrg ?? new CurrentOrg()).Id ?? Util2.CurrentOrgId ?? 0;
+                }
+                return CurrentOrgId ?? 0;
+            }
+        }
+
         public int[] CurrentGroups { get; set; }
         public string CurrentGroupsPrefix { get; set; }
         public int CurrentGroupsMode { get; set; }
         public int CurrentPeopleId { get; set; }
-        public int? CurrentTagOwnerId { get; set; }
         public string CurrentTagName { get; set; }
+        public int? CurrentTagOwnerId { get; set; }
         public int VisitLookbackDays { get; set; }
         public bool OrgMembersOnly { get; set; }
         public bool OrgLeadersOnly { get; set; }
@@ -27,6 +51,7 @@ namespace CmsData
         public int? QbDivisionOverride { get; set; }
         public string Host { get; set; }
         private string cmshost;
+
         public string CmsHost
         {
             get
@@ -39,13 +64,13 @@ namespace CmsData
                     return Util.URLCombine(Util.Scheme() + "://" + Request.Url.Authority, "");
                 }
                 var defaulthost = Setting("DefaultHost", "");
-                if(!defaulthost.HasValue())
+                if (!defaulthost.HasValue())
                     defaulthost = Util.URLCombine(ConfigurationManager.AppSettings["cmshost"], "");
-                if(defaulthost.HasValue())
+                if (defaulthost.HasValue())
                     return defaulthost.Replace("{church}", Host, ignoreCase: true);
                 throw (new Exception("No URL for Server in CmsHost"));
             }
-//            set { cmshost = value; }
+            //            set { cmshost = value; }
         }
         public string ServerLink(string path = "")
         {
@@ -56,12 +81,21 @@ namespace CmsData
         {
             if (HttpContext.Current != null && HttpContext.Current.Session != null)
             {
-                CurrentOrgId = Util2.CurrentOrgId;
-                CurrentGroups = Util2.CurrentGroups;
-                CurrentGroupsPrefix = Util2.CurrentGroupsPrefix;
-                CurrentGroupsMode = Util2.CurrentGroupsMode;
-                CurrentPeopleId = Util2.CurrentPeopleId;
-                CurrentTagOwnerId = Util2.CurrentTagOwnerId;
+                if (Util2.UseNewOrg)
+                {
+                    if (CurrentOrg == null)
+                        CurrentOrg = new CurrentOrg() {Id = Util2.CurrentOrgId};
+                    CurrentOrgId = CurrentOrg.Id;
+                }
+                else
+                {
+                    CurrentOrgId = Util2.CurrentOrgId;
+                    CurrentGroups = Util2.CurrentGroups;
+                    CurrentGroupsPrefix = Util2.CurrentGroupsPrefix;
+                    CurrentGroupsMode = Util2.CurrentGroupsMode;
+                    CurrentPeopleId = Util2.CurrentPeopleId;
+                    CurrentTagOwnerId = Util2.CurrentTagOwnerId;
+                }
                 CurrentTagName = Util2.CurrentTagName;
                 OrgMembersOnly = Util2.OrgMembersOnly;
                 OrgLeadersOnly = Util2.OrgLeadersOnly;
@@ -78,15 +112,15 @@ namespace CmsData
         }
         public string Setting(string name, string defaultvalue)
         {
-			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
+            var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
                 try
                 {
                     list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX,
                         StringComparer.OrdinalIgnoreCase);
-					HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-						DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
+                    HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                        DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
                 }
                 catch (SqlException)
                 {
@@ -106,12 +140,12 @@ namespace CmsData
         public void SetSetting(string name, string value)
         {
             name = name.Trim();
-			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
+            var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
                 list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
-				HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                        DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
             }
             list[name] = value;
 
@@ -126,18 +160,25 @@ namespace CmsData
         }
         public void DeleteSetting(string name)
         {
-			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
+            var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
                 list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
-				HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                        DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
             }
             list.Remove(name);
 
             var setting = Settings.SingleOrDefault(c => c.Id == name);
             if (setting != null)
                 Settings.DeleteOnSubmit(setting);
+        }
+        public void Log(string s)
+        {
+            var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+            output = output + "\\log-{0}-{1}.txt".Fmt(Host, DateTime.Today.ToSortableDate());
+            var text = "{0} {1}\r\n".Fmt(DateTime.Now.ToSortableTime(), s);
+            File.AppendAllText(output, text);
         }
     }
 }

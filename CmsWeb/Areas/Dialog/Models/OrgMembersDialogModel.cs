@@ -9,7 +9,7 @@ using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Models
 {
     public class OrgMembersDialogModel
     {

@@ -8,6 +8,7 @@ namespace CmsData.Registration
 {
 	public class AskText : Ask
 	{
+	    public override string Help { get { return @"These questions can be answered with text on multiple lines."; } }
 		public List<AskExtraQuestions.ExtraQuestion> list { get; private set; }
 
 		public AskText()

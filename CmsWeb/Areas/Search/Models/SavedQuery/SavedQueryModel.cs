@@ -19,7 +19,8 @@ namespace CmsWeb.Areas.Search.Models
         public bool ScratchPadsOnly { get; set; }
         public bool StatusFlagsOnly { get; set; }
 
-        public SavedQueryModel() : base("", "")
+        public SavedQueryModel() 
+            : base("Last Run", "desc")
         {
             admin = Roles.IsUserInRole("Admin");
         }
@@ -56,7 +57,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<Query> DefineModelSort(IQueryable<Query> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Public":
                     return from c in q

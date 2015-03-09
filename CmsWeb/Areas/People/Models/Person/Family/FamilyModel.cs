@@ -10,11 +10,8 @@ namespace CmsWeb.Areas.People.Models
     {
         public CmsData.Person Person;
         public FamilyModel(int id)
-            : base("", "")
         {
             Person = DbUtil.Db.LoadPersonById(id);
-            Pager.pagesize = 10;
-            Pager.ShowPageSize = false;
         }
         private Family family;
         public Family Family
@@ -39,12 +36,12 @@ namespace CmsWeb.Areas.People.Models
                    select m;
         }
 
-        public override IQueryable<CmsData.Person> DefineModelSort(IQueryable<CmsData.Person> q)
+        override public IQueryable<CmsData.Person> DefineModelSort(IQueryable<CmsData.Person> q)
         {
             return q;
         }
 
-        public override IEnumerable<FamilyMemberInfo> DefineViewList(IQueryable<CmsData.Person> q)
+        override public IEnumerable<FamilyMemberInfo> DefineViewList(IQueryable<CmsData.Person> q)
         {
             var q2 = from m in q
                      select new FamilyMemberInfo

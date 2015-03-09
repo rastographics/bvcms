@@ -1,17 +1,16 @@
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [HttpPost, Route("ContactsMade/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult ContactsMade(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult ContactsMade(ContactsMadeModel m)
         {
-            var m = new ContactsMadeModel(id);
-            m.Pager.Set("/Person2/ContactsMade/" + id, page, size, sort, dir);
             return View("Ministry/Contacts", m);
         }
         [HttpPost]
@@ -41,11 +40,9 @@ namespace CmsWeb.Areas.People.Controllers
             TempData["ContactEdit"] = true;
             return Content("/Contact2/" + c.ContactId);
         }
-        [HttpPost, Route("ContactsReceived/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult ContactsReceived(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult ContactsReceived(ContactsReceivedModel m)
         {
-            var m = new ContactsReceivedModel(id);
-            m.Pager.Set("/Person2/ContactsReceived/" + id, page, size, sort, dir);
             return View("Ministry/Contacts", m);
         }
         [HttpPost]
@@ -70,11 +67,9 @@ namespace CmsWeb.Areas.People.Controllers
             TempData["ContactEdit"] = true;
             return Content("/Contact2/{0}".Fmt(c.ContactId));
         }
-        [HttpPost, Route("TasksAbout/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult TasksAbout(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult TasksAbout(TasksAboutModel m)
         {
-            var m = new TasksAboutModel(id);
-            m.Pager.Set("/Person2/TasksAbout/" + id, page, size, sort, dir);
             return View("Ministry/Tasks", m);
         }
         [HttpPost]
@@ -87,17 +82,14 @@ namespace CmsWeb.Areas.People.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("/Task/List/{0}".Fmt(t.Id));
         }
-        [HttpPost, Route("TasksAssigned/{id}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult TasksAssigned(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult TasksAssigned(TasksAssignedModel m)
         {
-            var m = new TasksAssignedModel(id);
-            m.Pager.Set("/Person2/TasksAssigned/" + id, page, size, sort, dir);
             return View("Ministry/Tasks", m);
         }
         [HttpPost]
-        public ActionResult VolunteerApprovals(int id)
+        public ActionResult VolunteerApprovals(Main.Models.Other.VolunteerModel m)
         {
-            var m = new Main.Models.Other.VolunteerModel(id);
             return View("Ministry/Volunteer", m);
         }
     }

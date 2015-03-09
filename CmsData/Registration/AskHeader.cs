@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text;
 using UtilityExtensions;
 
@@ -5,6 +6,16 @@ namespace CmsData.Registration
 {
 	public class AskHeader : Ask
 	{
+	    public override string Help
+	    {
+	        get 
+            { return @"
+Displays the label text (can include HTML) on the registration page.
+This can be used to separate sections.
+"; 
+            }
+	    }
+        [DisplayName("Text/HTML")]
 		public string Label { get; set; }
 		public AskHeader() : base("AskHeader") { }
 		public static AskHeader Parse(Parser parser)

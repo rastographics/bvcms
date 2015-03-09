@@ -34,10 +34,10 @@
     }
     @if (Model.ShowPageSize)
     {
-        <li class="disabled"><a>&nbsp;Page Size:</a></li>
+        <li class="disabled"><a> Page Size:</a></li>
         foreach (var i in Model.PageSizeList())
         {
-        @Model.PageSizeItem(i.Text, 1, i.Text.ToInt(), i.Selected)
+        @Model.PageSizeItem(i.Text, i.Text.ToInt(), i.Selected)
         }
     }
     else
