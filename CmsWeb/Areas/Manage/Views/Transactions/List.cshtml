@@ -15,17 +15,17 @@
                 </div>
                 <div class="stat-panel">
                     <span class="stat-title">TOTAL AMOUNT</span>
-                    <span class="stat-figure"><span class="stat-symbol">$</span>@((tt.Amt - tt.Donate).ToString("N"))</span>
+                    <span class="stat-figure">@((tt.Amt - tt.Donate).ToString("C2"))</span>
                 </div>
                 <div class="stat-panel">
                     <span class="stat-title">TOTAL AMOUNT DUE</span>
-                    <span class="stat-figure"><span class="stat-symbol">$</span>@tt.Amtdue.ToString("N")</span>
+                    <span class="stat-figure">@tt.Amtdue.ToString("C2")</span>
                 </div>
                 @if (Model.finance)
                 {
                     <div class="stat-panel">
                         <span class="stat-title">TOTAL DONATED</span>
-                        <span class="stat-figure"><span class="stat-symbol">$</span>@tt.Donate.ToString("N")</span>
+                        <span class="stat-figure">@tt.Donate.ToString("C2")</span>
                     </div>
                 }
                 <div style="clear: both;"></div>

@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.TransactionsModel
+﻿@using System.Globalization
+@model CmsWeb.Models.TransactionsModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Transactions";
@@ -25,7 +26,7 @@
                         <div class="form-group">
                             <label for="gtamount" class="control-label">Amount From</label>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control" })
+                                <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control" })
                             </div>
                         </div>
                     </div>
@@ -33,7 +34,7 @@
                         <div class="form-group">
                             <label for="ltamount" class="control-label">Amount To</label>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control" })
+                                <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control" })
                             </div>
                         </div>
                     </div>
@@ -87,14 +88,11 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-4">
-
-                    </div>
-                    <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                    <div class="col-sm-12">
                         <div class="pull-right">
                             <a id="clear" href="/Transactions" class="btn btn-default">Clear</a>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-table"></i> Other Reports <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">

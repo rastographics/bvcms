@@ -320,7 +320,7 @@ namespace CmsWeb.Models
 					new CodeValueItem { Code = "16", Value = "Senior" },
 					new CodeValueItem { Code = "99", Value = "Special Class" },
 					new CodeValueItem { Code = "YYYY", Value = "Graduation Year" },
-					new CodeValueItem { Code = "+1", Value = "Add 1 to the Grade" },
+					new CodeValueItem { Code = "+1", Value = "Add 1 Grade Level" },
 				};
         }
         public static List<CodeValueItem> ReceiveSMS()

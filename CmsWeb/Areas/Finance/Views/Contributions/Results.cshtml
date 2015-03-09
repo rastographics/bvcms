@@ -5,11 +5,11 @@
         <div class="stat-panel-inner-container">
             <div class="stat-panel">
                 <span class="stat-title">TOTAL CONTRIBUTIONS</span>
-                <span class="stat-figure">@Model.Count.ToString2("n0")</span>
+                <span class="stat-figure">@Model.Count.ToString2("N0")</span>
             </div>
             <div class="stat-panel">
                 <span class="stat-title">TOTAL AMOUNT</span>
-                <span class="stat-figure"><span class="stat-symbol">$</span>@Model.Total.ToString2("n")</span>
+                <span class="stat-figure">@Model.Total.ToString2("C2")</span>
             </div>
             <div style="clear: both;"></div>
         </div>

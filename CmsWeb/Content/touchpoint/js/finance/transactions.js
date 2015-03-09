@@ -82,7 +82,6 @@
 
     $('body').on('click', '.report', function (ev) {
         ev.preventDefault();
-        $('#filter-dropdown').dropdown('toggle');
         var sdt = $('#startdt').val();
         var edt = $('#enddt').val();
         if (!sdt || !edt) {
@@ -96,7 +95,7 @@
             intializePopovers();
             $.unblock();
         });
-        return false;
+        return true;
     });
 
     $('body').on('click', '#export', function (ev) {

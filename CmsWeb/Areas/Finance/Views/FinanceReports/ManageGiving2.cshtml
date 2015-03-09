@@ -10,7 +10,7 @@
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
-                    <a class="delete btn btn-danger" href="/Vault/DeleteVaultData/@Model.person.PeopleId"><i class="fa fa-trash"></i> Delete</a>
+                    <a class="btn btn-default" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <a class="delete btn btn-danger" href="/Vault/DeleteVaultData/@Model.person.PeopleId"><i class="fa fa-trash"></i> Delete</a>
                 </div>
             </div>
             <div class="box-content">
@@ -41,7 +41,7 @@
                                         <td>@fund.Text</td>
                                         <td style="width: 100px;">
                                             <div class="pull-right">
-                                                $@amt.ToString("n2")
+                                                @amt.ToString("C2")
                                             </div>
                                         </td>
                                     </tr>
@@ -51,7 +51,7 @@
                         <tfoot>
                             <tr>
                                 <td><h4 class="pull-right">TOTAL:</h4></td>
-                                <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">$<span id="total">@Model.total.ToString("n2")</span></h2></td>
+                                <td style="width:100px;"><h2 class="pull-right" style="margin: 0;">@Model.total.ToString("C2")</h2></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -104,6 +104,7 @@
                     </div>
                 </div>
                 <a class="delete btn btn-danger visible-xs-block btn-block" href="/Vault/DeleteVaultData/@Model.person.PeopleId"><i class="fa fa-trash"></i> Delete</a>
+                <a class="btn btn-default visible-xs-block btn-block" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
             </div>
         </div>
     </div>

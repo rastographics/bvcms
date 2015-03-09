@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.ContributionSearchModel
+﻿@using System.Globalization
+@model CmsWeb.Models.ContributionSearchModel
 @{
     ViewBag.Title = "Contributions";
     ViewBag.PageHeader = "Contributions";
@@ -36,7 +37,7 @@
                         <div class="form-group">
                             <label for="SearchInfo_MinAmt" class="control-label">Amount From</label>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBoxFor(vv => vv.SearchInfo.MinAmt, new { @class = "form-control" })
+                                <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(vv => vv.SearchInfo.MinAmt, new { @class = "form-control" })
                             </div>
                         </div>
                     </div>
@@ -44,7 +45,7 @@
                         <div class="form-group">
                             <label for="SearchInfo_MaxAmt" class="control-label">Amount To</label>
                             <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-dollar"></i></span>@Html.TextBoxFor(vv => vv.SearchInfo.MaxAmt, new { @class = "form-control" })
+                                <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(vv => vv.SearchInfo.MaxAmt, new { @class = "form-control" })
                             </div>
                         </div>
                     </div>
