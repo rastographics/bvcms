@@ -19,19 +19,6 @@
             max-height: 60px !important;
             overflow-y: scroll !important;
         }
-         div.ti {
-             position: relative;
-             border: #0000ff dashed 1px;
-             min-height: 20px;
-         }
-
-        div.ti:hover {
-            background: #eeeeff;
-        }
-
-        div.tiAdd {
-            position: absolute;
-        }
     </style>
 }
 <div class="row">
@@ -107,23 +94,23 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <div id="tempateBody">
-                                @Html.Raw(c.Body)
-                            </div>
+                            <iframe src="/Email/EmailBody/@tid" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <input type="button" id="SaveDraft" class="btn btn-default" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" />
-                            <div class="btn-group" id="send-actions">
-                                <button type="button" class="btn btn-primary" id="Send"><i class="fa fa-paper-plane"></i> Send</button>
-                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a href="#" id="TestSend">Send Test Email (To Me)</a></li>
-                                </ul>
+                            <div class="pull-right">
+                                <input type="button" id="SaveDraft" class="btn btn-default" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" />
+                                <div class="btn-group" id="send-actions">
+                                    <button type="button" class="btn btn-primary" id="Send"><i class="fa fa-paper-plane"></i> Send</button>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu" role="menu">
+                                        <li><a href="#" id="TestSend">Send Test Email (To Me)</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -152,16 +139,22 @@
         </div>
     </div>
 </div>
-
-<div id="popupeditor" style="display:none;position: absolute;z-index: 2005;">
-    <form>
-        <textarea id="htmleditor"></textarea>
-        <div style="text-align: right;">
-            <a href="#" class="bt cancel">Cancel</a>
-            <a href="#" class="bt save blue">Save</a>
+<div class="modal fade" id="editor-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form>
+                    <textarea id="htmleditor"></textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
+            </div>
         </div>
-    </form>
+    </div>
 </div>
+
 
 @section scripts
 {

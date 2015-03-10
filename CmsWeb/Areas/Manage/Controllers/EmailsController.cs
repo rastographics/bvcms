@@ -90,7 +90,6 @@ namespace CmsWeb.Areas.Manage.Controllers
                 || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
                 return Content(m.queue.Body);
             return Content("not authorized");
-            
         }
 
 		public ActionResult ConvertToSearch(int id)

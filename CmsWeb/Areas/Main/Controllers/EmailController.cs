@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			if (!body.HasValue())
 				body = TempData["body"] as string;
 
-			if (!subj.HasValue() && templateID != 0)
+            if (!subj.HasValue() && templateID != 0)
 			{
 				if (templateID == null)
 					return View("SelectTemplate", new EmailTemplatesModel()
@@ -70,7 +70,13 @@ namespace CmsWeb.Areas.Main.Controllers
 			return View("Index", me);
 		}
 
-		[HttpPost]
+        public ActionResult EmailBody(int id)
+        {
+            ViewBag.templateID = id;
+            return View();
+        }
+        
+        [HttpPost]
 		[ValidateInput(false)]
 		public ActionResult SaveDraft(MassEmailer m, int saveid, string name, int roleid)
 		{
@@ -196,6 +202,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			if (keepdraft != "on" && saveid > 0) DbUtil.ContentDeleteFromID(saveid);
 			return Json(new { id = id });
 		}
+
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult TestEmail(MassEmailer m)
@@ -221,6 +228,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			}
 			return Content("Test email sent.");
 		}
+
 		[HttpPost]
 		public ActionResult TaskProgress(int id)
 		{
@@ -249,6 +257,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             return Json(new {title = title, message = message});
 		}
+
 		private EmailQueue SetProgressInfo(int id)
 		{
 			var emailqueue = DbUtil.Db.EmailQueues.SingleOrDefault(e => e.Id == id);
@@ -307,6 +316,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			}
 			return CMSMembershipProvider.provider.ValidateUser(username, password);
 		}
+
 		public ActionResult CheckQueued()
 		{
 			var q = from e in DbUtil.Db.EmailQueues
@@ -318,13 +328,7 @@ namespace CmsWeb.Areas.Main.Controllers
 				DbUtil.Db.SendPeopleEmail(emailqueue.Id);
 			return Content("done");
 		}
-		public ActionResult Timeout()
-		{
-			var m = Session["massemailer"] as MassEmailer;
-			if (m == null)
-				Response.Redirect("/");
-			return View(m);
-		}
+
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult CreateVoteTag(int orgid, bool confirm, string smallgroup, string message, string text, string votetagcontent)

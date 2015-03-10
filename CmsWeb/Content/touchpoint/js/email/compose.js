@@ -1,4 +1,5 @@
 ﻿$(function () {
+
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
 
@@ -40,32 +41,42 @@
         }
     });
 
-    $("a.save").click(function () {
-        var h = CKEDITOR.instances['htmleditor'].getData();
-        $(currentDiv).html(h);
-        $('#popupeditor').hide();
-    });
+    $.clearFunction = undefined;
+    $.addFunction = undefined;
 
-    $("a.cancel").click(function () {
-        $('#popupeditor').hide();
-    });
-
-    $.hClick = function (e) {
-        currentDiv = this;
-        $.removeButtons();
-        if($(this).html() !== "Click here to edit content")
-            CKEDITOR.instances['htmleditor'].setData($(this).html());
-
-        $("#popupeditor").show();
+    $.clearTemplateClass = function () {
+        if (typeof $.clearFunction != 'undefined') {
+            $.clearFunction();
+        }
     };
 
-    $('div[bvedit],div.bvedit').bind('click', $.hClick).addClass("ti");
+    $.addTemplateClass = function () {
+        if (typeof $.addFunction != 'undefined') {
+            $.addFunction();
+        }
+    };
 
-    $("#askName").dialog({ autoOpen: false, modal: true, closeOnEscape: true, title: "Save Draft", resizable: false, width: 'auto' });
+    window.displayEditor = function (div) {
+        currentDiv = div;
+        $('#editor-modal').modal('show');
+    };
+
+    $('#editor-modal').on('shown.bs.modal', function () {
+        var html = $(currentDiv).html();
+        if (html !== "Click here to edit content") {
+            CKEDITOR.instances['htmleditor'].setData(html);
+        }
+    });
+
+    $('#editor-modal').on('click', '#save-edit', function () {
+        var h = CKEDITOR.instances['htmleditor'].getData();
+        $(currentDiv).html(h);
+        $('#editor-modal').modal('hide');
+    });
 
     $("#Send").click(function () {
         $.block();
-        $('#body').val($("#tempateBody").html());
+        $('#body').val($('#email-body').contents().find('#tempateBody').html());
         var q = $("#SendEmail").serialize();
 
         $.post('/Email/QueueEmails', q, function (ret) {
@@ -74,7 +85,7 @@
                 swal("Error!", ret.error, "error");
             } else {
                 if (ret === "timeout") {
-                    window.location = "/Email/Timeout";
+                    swal("Session Timeout!", 'Your session timed out. Please copy your email content and start over.', "error");
                     return;
                 }
                 var taskid = ret.id;
@@ -93,7 +104,11 @@
                                     swal(ret.title, ret.message, "success");
                                     window.clearInterval(intervalid);
                                 } else {
-                                    swal(ret.title, ret.message, "info");
+                                    swal({
+                                        title: ret.title,
+                                        text: ret.message,
+                                        imageUrl: '/Content/touchpoint/img/spinner.gif'
+                                    });
                                 }
                             }
                         });
@@ -108,7 +123,7 @@
             $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
-            $("#body").val($("#tempateBody").html());
+            $("#body").val($('#email-body').contents().find('#tempateBody').html());
             $("#name").val($("#newName").val());
             $.addTemplateClass();
 
@@ -123,7 +138,7 @@
 
     $("#SaveDraftButton").click(function () {
         $.clearTemplateClass();
-        $("#body").val($("#tempateBody").html());
+        $("#body").val($('#email-body').contents().find('#tempateBody').html());
         $("#name").val($("#newName").val());
         $.addTemplateClass();
 
@@ -135,7 +150,7 @@
         $.block();
 
         $.clearTemplateClass();
-        $("#body").val($("#tempateBody").html());
+        $("#body").val($('#email-body').contents().find('#tempateBody').html());
         $.addTemplateClass();
 
         var q = $("#SendEmail").serialize();
@@ -146,7 +161,7 @@
                 swal("Error!", ret.error, "error");
             } else {
                 if (ret == "timeout") {
-                    window.location = "/Email/Timeout";
+                    swal("Session Timeout!", 'Your session timed out. Please copy your email content and start over.', "error");
                     return;
                 }
                 swal("Success!", ret, "success");
@@ -154,75 +169,6 @@
         });
     });
 
-    $.removeButtons = function () {
-        $("#controlButtons").remove();
-    };
-
-    $.hClickAdd = function (e) {
-        $.removeButtons();
-        parentTR = $(currentHover).parent();
-        var dup = $(currentHover).clone();
-        $(parentTR).after($(dup));
-        dup.wrap("<tr></tr>");
-        dup.attr("bvrepeatadd", "");
-        dup.removeAttr("bvrepeat");
-        dup.mouseenter($.hAddHoverIn).mouseleave($.hHoverOut);
-        $('div[bvedit],div.bvedit').bind('click', $.hClick).addClass("ti");
-    };
-
-    $.hHoverIn = function (ev) {
-        currentHover = this;
-        $(this).css("border", "solid 1px #ff0000");
-        $(this).append("<div id='controlButtons' class='tiAdd'><input id='addButton' type='button' value='Copy Section' /></div>");
-        $("#controlButtons").css("top", $(this).offset().top + 5).css("left", $(this).offset().left + 5);
-        $("#addButton").bind("click", $.hClickAdd);
-        ev.stopPropagation();
-    };
-
-    $.clearTemplateClass = function () {
-        $.removeButtons();
-        $("div[bvedit],div.bvedit").removeClass("ti");
-        $("div[bveditadd],div.bveditadd").removeClass("ti");
-    };
-
-    $.addTemplateClass = function () {
-        $("div[bveditadd],div.bveditadd").addClass("ti");
-        $("div[bvedit],div.bvedit").addClass("ti");
-    };
-
-    $.hHoverOut = function (ev) {
-        currentHover = null;
-        $(this).css("border", "");
-        $.removeButtons();
-        ev.stopPropagation();
-    };
-
-    $('td[bvrepeat]').mouseenter($.hHoverIn).mouseleave($.hHoverOut);
-
-    $.hAddHoverIn = function (ev) {
-        currentHover = this;
-        $(this).css("border", "solid 1px #ff0000");
-        $(this).append("<div id='controlButtons' class='tiAdd'><input id='removeButton' type='button' value='Remove' /></div>");
-        $("#controlButtons").css("top", $(this).offset().top + 5).css("left", $(this).offset().left + 5);
-        $("#removeButton").bind('click', $.removeSection);
-    };
-
-    $.updateDiv = function () {
-        var h = CKEDITOR.instances['htmleditor'].getData();
-        $(currentDiv).html(h);
-        $('#popupeditor').hide("close");
-    };
-
-    $.addRowAfter = function (ev) {
-        $(this).parent().parent().after("<tr bvrepeatadd=''>" + $(this).html() + "</tr>");
-        $("div[bvrepeatadd]").hover($.hAddHoverIn, $.hHoverOut);
-        ev.stopPropagation();
-    };
-
-    $.removeSection = function (ev) {
-        $(currentHover).parent().remove();
-        ev.stopPropagation();
-    };
 });
 
 

@@ -730,6 +730,7 @@
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\touchpoint\css\account.css" />
     <Content Include="Content\touchpoint\css\app.css" />
+    <Content Include="Content\touchpoint\css\editor.css" />
     <Content Include="Content\touchpoint\css\error.css" />
     <Content Include="Content\touchpoint\css\print.css" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
@@ -749,6 +750,7 @@
     <Content Include="Content\select2-3.5.2\select2.png" />
     <Content Include="Content\select2-3.5.2\select2x2.png" />
     <Content Include="Content\touchpoint\img\powered-by.png" />
+    <Content Include="Content\touchpoint\img\spinner.gif" />
     <Content Include="Content\touchpoint\js\admin\divisions.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
@@ -890,6 +892,8 @@
     <Content Include="Content\touchpoint\src\less\pager.less" />
     <Content Include="Content\touchpoint\src\less\charts.less" />
     <Content Include="Areas\Manage\Views\Batch\UpdateLookupValueSelection.cshtml" />
+    <Content Include="Areas\Main\Views\Email\EmailBody.cshtml" />
+    <Content Include="Content\touchpoint\src\less\editor.less" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Scripts\globalize\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-AU.js" />
@@ -2433,8 +2437,6 @@
     <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml">
     </Content>
     <Content Include="Areas\Reports\Views\Reports\VitalStats.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Email\Timeout.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Display\EditText.cshtml">
     </Content>

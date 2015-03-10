@@ -27,6 +27,10 @@ gulp.task('less', function() {
         .pipe(less())
         .pipe(minify())
         .pipe(gulp.dest(cssOutput));
+    gulp.src('content/touchpoint/src/less/editor.less')
+        .pipe(less())
+        .pipe(minify())
+        .pipe(gulp.dest(cssOutput));
     gulp.src('content/touchpoint/src/less/select2/select2-bootstrap.less')
         .pipe(less())
         .pipe(minify())
