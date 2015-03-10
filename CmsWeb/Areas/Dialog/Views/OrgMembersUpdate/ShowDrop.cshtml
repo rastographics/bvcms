@@ -1,0 +1,21 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Dialog.Models.OrgMembersUpdate
+<form class="form form-horizontal modal fade hide ajax members-update" method="POST">
+  <div class="modal-header">
+    <h4>Drop from @Model.OrgName</h4>
+    <div class="alert alert-danger">This will Drop @Model.Count people in @Model.Group from @Model.OrgName</div>
+  </div>
+  <div class="modal-body">
+    <fieldset class="display">
+      @Html.EditorFor(m => m.DropDate, new { help = "Leave Blank for Current Date/Time" })
+      @Html.EditorFor(m => m.RemoveFromEnrollmentHistory, new { help = "This will erase all history of this person's membership in " + Model.OrgName })
+    </fieldset>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    <a href="/OrgMembersUpdate/Drop" class="btn btn-danger ajax" 
+       data-confirm="Are you sure you want to drop @Model.Count @Model.Group from @Model.OrgName?">
+      Drop
+    </a>
+  </div>
+</form>

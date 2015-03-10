@@ -1,11 +1,12 @@
 using System.Linq;
 using System.Web.Mvc;
-using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
+using CmsWeb.Areas.Dialog.Models;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
+    // todo: use bootstrap
     [RouteArea("Dialog", AreaPrefix= "SearchUsers"), Route("{action=index}/{id?}")]
     public class SearchUsersController : CmsStaffController
     {
@@ -24,7 +25,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost]
         public ActionResult Results(SearchUsersModel m)
         {
-            return View(m);
+            return View("Index", m);
         }
         [HttpPost]
         public ActionResult MoveToTop(SearchUsersModel m)

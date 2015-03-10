@@ -17,6 +17,8 @@ namespace CmsWeb.Areas.Org2.Controllers
         [HttpGet, Route("~/Org/{id:int}")]
         public ActionResult Index(int id)
         {
+            if(!Util2.UseNewOrg)
+                return Redirect("/Organization/" + id);
             var db = DbUtil.Db;
             db.CurrentOrg = new CurrentOrg() { Id=id, GroupSelect = GroupSelectCode.Member};
 

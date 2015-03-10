@@ -52,14 +52,14 @@
         $(this).toggleClass("active");
         if ($(this).hasClass("active"))
             $("a.selectsg .fa-minus").show();
-        else 
+        else
             $("a.selectsg .fa-minus").hide();
     });
     $("a.selectsg").live("click", function (ev) {
         ev.preventDefault();
         var t = $(this).text();
         var sg = $("#sgFilter").val();
-        switch(t) {
+        switch (t) {
             case "Match All":
                 sg = "All:" + sg;
                 break;
@@ -136,7 +136,7 @@
         $("#MultiSelect").val(ismulti);
         if (ismulti) {
             $("#groupSelector button.dropdown-toggle").hide();
-                $("li.orgcontext").hide();
+            $("li.orgcontext").hide();
         }
         else {
             $("#groupSelector button.grp.active").removeClass("active");
@@ -159,19 +159,19 @@
             $this.addClass("active");
             $this.next().find("button.dropdown-toggle").show();
             $("li.orgcontext").hide();;
-            switch($this.text()) {
+            switch ($this.text()) {
                 case "Members":
                     $("li.current-list").show();
-                break;
+                    break;
                 case "Pending":
                     $("li.pending-list").show();
-                break;
-        }
+                    break;
+            }
         }
         var $a = "";
         $("#groupSelector button.grp.active").each(function () {
             $a += $(this).val();
-            });
+        });
         if ($a === "") {
             $this.toggleClass("active");
             return false;
@@ -191,12 +191,12 @@
         } else {
             pids = $(this);
             prevChecked = this;
-      }
-        var a = pids.map(function() { return $(this).val(); } ).get();
+        }
+        var a = pids.map(function () { return $(this).val(); }).get();
         $.post("/Organization/ToggleCheckboxes/{0}".format($("#Id").val()), {
             pids: a,
             chkd: prevChecked.checked
-    });
+        });
     });
 
     $('#deleteorg').click(function (ev) {
@@ -277,9 +277,9 @@
             f.on('hidden', function () {
                 d.remove();
                 f.remove();
-            RebindMemberGrids();
-    });
-    });
+                RebindMemberGrids();
+            });
+        });
     });
 
     $("a.membertype").live("click", function (ev) {
@@ -291,9 +291,9 @@
             f.on('hidden', function () {
                 d.remove();
                 f.remove();
-            RebindMemberGrids();
-    });
-    });
+                RebindMemberGrids();
+            });
+        });
     });
 
     $("#orgpicklist").live("click", function (ev) {
@@ -307,20 +307,20 @@
             f.on('hidden', function () {
                 d.remove();
                 f.remove();
-    });
-    });
+            });
+        });
     });
 
-    $.initializeSelectOrgsDialog = function(f) {
+    $.initializeSelectOrgsDialog = function (f) {
         $("#select-orgs #UpdateSelected").click(function (ev) {
-        ev.preventDefault();
+            ev.preventDefault();
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
                 return $(this).val();
             }).get().join(',');
-            
+
             UpdateSelectedOrgs(list, f);
             return false;
-                });
+        });
         $.SaveOrgIds = function (ev) {
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
                 return $(this).val();
@@ -334,7 +334,7 @@
         $.post("/Organization/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
             $("#orgpickdiv").html(ret);
             f.modal("hide");
-            });
+        });
     }
 
     $("#divisionlist").live("click", function (ev) {
@@ -348,17 +348,17 @@
                 a.load(a.data("refresh"), {});
                 d.remove();
                 f.remove();
-    });
+            });
             f.on("change", "input:checkbox", function () {
                 $("input[name='TargetDivision']", f).val($(this).val());
                 $("input[name='Adding']", f).val($(this).is(":checked"));
                 $.formAjaxClick($(this), "/SearchDivisions/AddRemoveDiv");
-    });
+            });
             f.on("click", "a.move", function () {
                 $("input[name='TargetDivision']", f).val($(this).data("moveid"));
                 $.formAjaxClick($(this), "/SearchDivisions/MoveToTop");
-    });
-    });
+            });
+        });
     });
 
     $.maxZIndex = $.fn.maxZIndex = function (opt) {
@@ -378,7 +378,7 @@
         });
     };
 
-    $.InitFunctions.popovers = function(f) {
+    $.InitFunctions.popovers = function (f) {
         $('[data-toggle="popover"]').popover({ html: true, placement: 'bottom' });
 
         $('body').on('click', function (e) {
@@ -388,7 +388,7 @@
                 if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
                     $(this).popover('hide');
                 }
-        });
+            });
         });
     };
 
@@ -528,7 +528,7 @@
     });
 */
     $.InitFunctions.CreateMeeting = function ($a) {
-        
+
     };
     $('a.taguntag').live("click", function (ev) {
         ev.preventDefault();
@@ -605,7 +605,7 @@
     $("a.deleteschedule").live("click", function (ev) {
         ev.preventDefault();
         $(this).closest("div.well").remove();
-            $.renumberListItems();
+        $.renumberListItems();
     });
 
     $.renumberListItems = function () {
@@ -711,12 +711,12 @@
             if (result) {
                 $.post(a[0].href, function (ret) {
                     if (ret === "ok")
-                    RebindMemberGrids();
-                else
-                    alert(ret);
-            });
-        }
-    });
+                        RebindMemberGrids();
+                    else
+                        alert(ret);
+                });
+            }
+        });
         return false;
     });
 
@@ -772,7 +772,7 @@
         $(submitDialog).dialog("close");
     });
     */
-    $.updateTable = function(a) {
+    $.updateTable = function (a) {
         if (!a)
             return false;
         var $form = a.closest("form.ajax");
@@ -874,7 +874,7 @@
                 $(liToMove).clone(true, true).insertAfter(liLast);
                 break;
             case 'delconfirm':
-               if (!$(a).attr("href"))
+                if (!$(a).attr("href"))
                     return false;
                 if (!confirm("are you sure?")) {
                     return false;
@@ -897,7 +897,7 @@
         enableDisableMoveUpward();
         enableDisableMoveDownward();
 
-        $('body a.movetop').off().on('click', function(e) {
+        $('body a.movetop').off().on('click', function (e) {
             moveItem($(this), 'top', e);
         });
 
@@ -941,6 +941,4 @@ function AddSelected() {
 }
 function CloseAddDialog(from) {
     $("#memberDialog").dialog("close");
-}
-function UpdateSelectedUsers(topid) {
 }

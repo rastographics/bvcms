@@ -2,8 +2,8 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
-using CmsWeb.Models;
 using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -19,7 +19,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
 				inactives = inactives ?? false,
 				pendings = pendings ?? false,
 				Pending = pendings ?? false,
-                //prospects = prospects ?? false,
 				sg = sg,
 			};
 			return View(m);

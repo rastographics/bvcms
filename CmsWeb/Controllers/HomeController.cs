@@ -146,6 +146,8 @@ namespace CmsWeb.Controllers
         {
             DbUtil.Db.SetUserPreference("UseNewOrg", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
+            if (Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
 

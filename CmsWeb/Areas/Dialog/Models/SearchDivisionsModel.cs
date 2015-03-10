@@ -4,107 +4,68 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
-using System.Web.Mvc;
 using CmsData;
-using UtilityExtensions;
-using System.Data.Linq.SqlClient;
-using System.Web.UI.WebControls;
-using System.Text.RegularExpressions;
+using CmsData.View;
+using CmsWeb.Models;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Dialog.Models
 {
-    public class SearchDivisionsModel
+    public class SearchDivisionsModel : PagedTableModel<SearchDivision, SearchDivision>
     {
-        public string name {get; set;}
-        public int maxitems { get; set; }
-        public int count { get; set; }
-        public int listcount { get; set; }
+        public string name { get; set; }
         public bool singlemode { get; set; }
         public bool ordered { get; set; }
-        public int id { get; set; }
-        public int? topid { get; set; }
+        public int Id { get; set; }
+        public int? TargetDivision { get; set; }
+        public bool Adding { get; set; }
 
         public SearchDivisionsModel()
         {
-            maxitems = 15;
+            PageSize = 10;
+            ShowPageSize = false;
         }
-        private IQueryable<Division> divisions;
-        public IQueryable<Division> FetchDivisions()
+        public SearchDivisionsModel(int id)
+            :this()
         {
-            if (divisions != null)
-                return divisions;
+            Id = id;
+        }
 
-            divisions = DbUtil.Db.Divisions.AsQueryable();
-            if (name.HasValue())
-            {
-                    if (name.AllDigits())
-                        divisions = from d in divisions
-                                where d.Id == name.ToInt()
-                                select d;
-                    else
-                        divisions = from d in divisions
-                                where d.Name.Contains(name)
-                                select d;
-            }
-            return divisions;
-        }
-        
-        public List<DivInfo> DivisionList()
+        public void AddRemoveDiv()
         {
-            var divs = FetchDivisions();
+            var d = DbUtil.Db.DivOrgs.SingleOrDefault(dd => dd.DivId == TargetDivision && dd.OrgId == Id);
+            if (Adding && d == null && TargetDivision.HasValue)
+            {
+                d = new DivOrg {OrgId = Id, DivId = TargetDivision.Value};
+                DbUtil.Db.DivOrgs.InsertOnSubmit(d);
+                DbUtil.Db.SubmitChanges();
+            }
+            else if (!Adding && d != null)
+            {
+                DbUtil.Db.DivOrgs.DeleteOnSubmit(d);
+                DbUtil.Db.SubmitChanges();
+            }
+            Page = 1;
+        }
 
-            var list = new List<DivInfo>();
-            if (!singlemode)
-            {
-                list = CheckedDivisionList(
-                        from dd in DbUtil.Db.DivOrgs
-                        where dd.OrgId == id
-                        orderby dd.Id ?? 99 // puts null values at end
-                        select dd.Division).ToList();
-                var ids = list.Select(p => p.DivId).ToArray();
-                topid = ids.FirstOrDefault();
-                // filter out checked ones
-                divs = divs.Where(d => !ids.Contains(d.Id));
-            }
-            count = divs.Count() + list.Count;
-            divs = divs.OrderBy(d => d.Program.Name).ThenBy(d => d.Name);
-            list.AddRange(DivisionList(divs).Take(maxitems));
-            listcount = list.Count;
-            return list;
-        }
-        private IEnumerable<DivInfo> CheckedDivisionList(IQueryable<Division> query)
+        public override IQueryable<SearchDivision> DefineModelList()
         {
-            return DivisionList(query, ck: true);
+
+            return DbUtil.Db.SearchDivisions(Id, name);
         }
-        private IEnumerable<DivInfo> DivisionList(IQueryable<Division> query)
+
+        public override IQueryable<SearchDivision> DefineModelSort(IQueryable<SearchDivision> q)
         {
-            return DivisionList(query, ck: false);
-        }
-        private IEnumerable<DivInfo> DivisionList(IQueryable<Division> query, bool ck)
-        {
-            var q = from d in query
-                    select new DivInfo
-                    {
-                        DivId = d.Id,
-                        Name = d.Name,
-                        Program = d.Program.Name,
-                        Programs = string.Join("|", d.ProgDivs.Where(pp => pp.ProgId != d.ProgId).Select(pp => pp.Program.Name)),
-                        IsChecked = ck,
-                    };
+            q = from sd in q
+                orderby sd.IsMain descending, sd.IsChecked descending, sd.Program, sd.Division
+                select sd;
             return q;
         }
-        public class DivInfo
+
+        public override IEnumerable<SearchDivision> DefineViewList(IQueryable<SearchDivision> q)
         {
-            public int DivId { get; set; }
-            public string Name { get; set; }
-            public string Program { get; set; }
-            public string Programs { get; set; }
-            public bool IsChecked { get; set; }
+            return q;
         }
     }
 }

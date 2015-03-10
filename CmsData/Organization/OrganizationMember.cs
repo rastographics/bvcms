@@ -355,7 +355,7 @@ namespace CmsData
             return OrgMemMemTags.Any(omt => omt.MemberTagId == id);
         }
 
-        public Registration.Settings RegSetting()
+        public Settings RegSetting()
         {
             return new Settings(Organization.RegSetting, DbUtil.Db, OrganizationId);
         }

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Security;
 using System.Web.Mvc;
 using System.Xml.Linq;
-using CmsWeb.Areas.Org2.Dialog.Models;
+using CmsWeb.Areas.Dialog.Models;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models.Avery;

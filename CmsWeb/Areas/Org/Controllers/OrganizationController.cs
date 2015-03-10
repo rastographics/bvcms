@@ -20,6 +20,8 @@ namespace CmsWeb.Areas.Org.Controllers
         [Route("~/Organization/{id:int}")]
         public ActionResult Index(int id)
         {            
+            if(Util2.UseNewOrg)
+                return Redirect("/Org/" + id);
             if (Util2.CurrentOrgId != id)
             {
                 Util2.CurrentGroups = null;
@@ -853,6 +855,12 @@ namespace CmsWeb.Areas.Org.Controllers
             if (meeting != null)
                 return Redirect("/Meeting/" + meeting.MeetingId);
             return Message("no meeting at " + dt.FormatDateTm());
+        }
+        [HttpPost]
+        public ActionResult DivisionList(int id)
+        {
+            var m = new OrganizationModel(id);
+            return View("DivisionList", m.Divisions());
         }
     }
 }

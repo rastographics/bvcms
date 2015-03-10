@@ -35,15 +35,14 @@ namespace CmsData
         const string STR_ActiveOrganizationId = "ActiveOrganizationId";
         public static int? CurrentOrgId
         {
-            get { return GetSessionObj(STR_CurrentTag, STR_DefaultTag).ToString(); }
-            set { SetSessionObj(STR_CurrentTag, value); }
-            }
-
-        const string STR_CurrentOrganization = "CurrentOrganization";
-        public static CurrentOrg CurrentOrganization
+            get
             {
-            get { return (CurrentOrg)GetSessionObj(STR_CurrentOrganization, null); }
-            set { SetSessionObj(STR_CurrentOrganization, value); }
+                return GetSessionObj(STR_ActiveOrganizationId, null).ToInt2();
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                    HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
             }
         }
 
@@ -229,7 +228,8 @@ namespace CmsData
         }
         public static string OrgMemberDialog
         {
-            get { return UseNewOrg ? "/OrgMemberDialog" : "/OrgMemberDialog2"; }
+            get { return "/OrgMemberDialog"; }
+            //get { return UseNewOrg ? "/OrgMemberDialog" : "/OrgMemberDialog2"; }
         }
 
 //        const string STR_ActiveOrganizationId = "ActiveOrganizationId";

@@ -12,8 +12,16 @@
 <ul class="dropdown-menu toolbar-email pull-left">
   <li class="header">Email</li>
   <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
+  <li><a href='/Email/@ViewBag.queryid?orgid=@oid' class="qid">All Current Members</a></li>
   <li><a href='/Email/@ViewBag.queryid?parents=true' class="qid">Parents</a></li>
   <li><a href='/Email/@ViewBag.queryid?ccparents=true' class="qid"> Child with Parents CC'd</a></li>
+  <li>
+    <a id="singleemail" href="/Email/@ViewBag.queryid?nodups=true" class="qid"
+       data-confirm="Warning, email replacements will not work">
+      Single Email Addresses
+    </a>
+  </li>
+  <li class="space"></li>
   @if ((bool?)ViewBag.ParentOrgContext == true)
   {
     <li><a href='/Email/@ViewBag.leadersqid'>Leaders under this org</a></li>

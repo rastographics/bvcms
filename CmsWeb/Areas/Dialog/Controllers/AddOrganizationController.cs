@@ -1,6 +1,6 @@
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Models;
+using CmsWeb.Areas.Dialog.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers

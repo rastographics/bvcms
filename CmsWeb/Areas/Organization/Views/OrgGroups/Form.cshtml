@@ -1,4 +1,5 @@
-﻿@using CmsWeb
+﻿@using CmsData
+@using CmsWeb
 @model CmsWeb.Areas.Org2.Models.OrgGroupsModel
 @Html.Hidden("orgid")
 @Html.Hidden("newgid")
@@ -6,7 +7,7 @@
 @Html.Hidden("isRecreationTeam")
 <table id="ManageGroups" cellspacing="5" class="roundbox">
     <tr><td colspan="3">
-        <h2><a href="/Org/@Model.orgid">Manage Groups for @Model.OrgName</a></h2></td></tr>
+        <h2><a href="@Util2.Org/@Model.orgid">Manage Groups for @Model.OrgName</a></h2></td></tr>
     <tr>
         <th class="right">Change Target Group:</th>
         <td colspan="2" class="wide100">@Html.DropDownList("groupidDD", Model.Groups(), new { @onchange = "groupid.value = this.value" })

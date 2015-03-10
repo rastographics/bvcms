@@ -1,0 +1,14 @@
+﻿@model CmsWeb.Areas.Dialog.Models.RepairTransactions
+<div class="modal-header">
+  <a class="close" data-dismiss="modal">x</a>
+  <h3>Repair Transactions</h3>
+</div>
+<div class="modal-body">
+  @Html.HiddenFor(m => m.Id)
+  @Html.DisplayFor(m => m.Count, new { Label = "Number of Members" })
+  Are you sure you want to repair Transactions?
+</div>
+<div class="modal-footer">
+  <a href="#" class="btn btn-success" data-dismiss="modal">Cancel</a>
+  <a href="/RepairTransactions/Process" class="btn btn-primary ajaxreloader">OK</a>
+</div>

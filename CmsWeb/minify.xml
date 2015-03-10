@@ -98,11 +98,10 @@
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
 
-      <organization Include="Scripts/Organization/Organization.js"/>
+      <organization Include="Scripts/Org/OrganizationOld.js"/>
       <organization Include="Scripts/Dialog/SearchUsers.js"/>
-      <organization Include="Scripts/Organization/RegSetting.js"/>
-      <organization Include="Scripts/Organization/OrgMemberDialog2.js"/>
-      <organization Include="Scripts/jQuery/jquery-ui-timepicker-addon.js"/>
+      <organization Include="Scripts/Org/RegSetting2.js"/>
+      <organization Include="Scripts/Org/OrgMemberDialog2.js"/>
       
       <org Include="Scripts/Org/Organization.js"/>
       <org Include="Scripts/Dialog/SearchUsers.js"/>

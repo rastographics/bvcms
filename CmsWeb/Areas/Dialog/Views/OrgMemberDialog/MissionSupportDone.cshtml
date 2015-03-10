@@ -1,0 +1,12 @@
+﻿@model CmsWeb.Areas.Dialog.Models.MissionSupportModel
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>@Model.OrgName</h4>
+</div>
+<div class="modal-body">
+    <h5>Completed Donation From @Model.Name @Model.ToGoerName</h5>
+</div>
+<div class="modal-footer">
+    <a href="/OrgMemberDialog/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Continue</a>
+    <a data-dismiss="modal" class="btn close btn-success">Close</a>
+</div>

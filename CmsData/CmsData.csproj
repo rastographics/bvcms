@@ -370,7 +370,6 @@
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="DbUtil\ModelViewModel.cs" />
-	<Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
     <Compile Include="AddressVerify.cs" />
     <Compile Include="Extensions\DeleteMeetingRun.cs" />
@@ -685,6 +684,7 @@
     <Compile Include="Registration\AskSuggestedFee.cs" />
     <Compile Include="Registration\AskHeader.cs" />
     <Compile Include="Registration\AskInstruction.cs" />
+    <Compile Include="Registration\Settings.cs" />
     <Compile Include="Registration\TimeSlots.cs" />
     <Compile Include="Registration\AskDropdown.cs" />
     <Compile Include="Registration\AskCheckboxes.cs" />
