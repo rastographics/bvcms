@@ -7,11 +7,13 @@
 @if (tt != null)
 {
     <div class="stat-panel-container">
-        <div class="stat-panel">
-            <span class="stat-title">TOTAL AMOUNT</span>
-            <span class="stat-figure">@tt.Amt.ToString("C2")</span>
+        <div class="stat-panel-inner-container">
+            <div class="stat-panel">
+                <span class="stat-title">TOTAL AMOUNT</span>
+                <span class="stat-figure">@tt.Amt.ToString("C2")</span>
+            </div>
+            <div style="clear: both;"></div>
         </div>
-        <div style="clear: both;"></div>
     </div>
 }
 <div class="table-responsive">
