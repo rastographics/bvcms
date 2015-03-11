@@ -128,7 +128,7 @@ namespace CmsWeb.Models
             Pager.Page = page; 
         }
 
-        private IEnumerable<EmailTo> GetEmailTos()
+        private IQueryable<EmailTo> GetEmailTos()
         {
             var q = from t in DbUtil.Db.EmailQueueTos
                     let opened = t.Person.EmailResponses.Any(er => er.EmailQueueId == t.Id)
