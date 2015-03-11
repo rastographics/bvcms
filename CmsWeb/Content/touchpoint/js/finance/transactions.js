@@ -7,13 +7,8 @@
         });
     }
 
-    function setLastActionDropdown() {
-        $("#resultsTable tbody tr:last").find('div.btn-group').addClass('dropup');
-    }
-
     $('#name').focus();
     intializePopovers();
-    setLastActionDropdown();
 
     $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
         ev.preventDefault();
@@ -72,7 +67,6 @@
         $.post("/Transactions/List", q, function (ret) {
             $('#results').html(ret);
             intializePopovers();
-            setLastActionDropdown();
             $.unblock();
         });
         return false;
