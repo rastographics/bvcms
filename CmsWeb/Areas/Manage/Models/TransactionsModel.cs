@@ -39,12 +39,21 @@ namespace CmsWeb.Models
         public int? GoerId { get; set; } // for mission trip supporters of this goer
         public int? SenderId { get; set; } // for mission trip goers of this supporter
 
-        public TransactionsModel(int? tranid)
+        public TransactionsModel(int? tranid, string reference = "", string desc = "")
             : this()
         {
             this.name = tranid.ToString();
             if (!tranid.HasValue)
                 GoerId = null;
+
+            if (!string.IsNullOrWhiteSpace(reference))
+            {
+                this.name = reference;
+            }
+            if (!string.IsNullOrWhiteSpace(desc))
+            {
+                this.description = desc;
+            }
         }
         public TransactionsModel()
         {

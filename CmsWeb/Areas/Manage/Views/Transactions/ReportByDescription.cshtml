@@ -38,7 +38,7 @@
                 foreach (var r in Model.FetchTransactionsByDescription())
                 {
                     <tr>
-                        <td><a href="#" class="filterbatchdesc">@r.Description</a></td>
+                        <td><a href="/Transactions/?desc=@r.Description" target="batchfilter">@r.Description</a></td>
                         <td class="text-right">@r.count</td>
                         <td class="text-right">@r.Total.ToString("N2")</td>
                     </tr>

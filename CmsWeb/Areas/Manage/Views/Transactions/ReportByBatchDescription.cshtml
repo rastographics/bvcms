@@ -38,7 +38,7 @@
                 foreach (var r in Model.FetchTransactionsByBatchDescription())
                 {
                     <tr>
-                        <td><a href="#" class="filterbatch">@r.BatchRef</a></td>
+                        <td><a href="/Transactions/?reference=@r.BatchRef" target="batchfilter">@r.BatchRef</a></td>
                         <td>@r.batchdate.FormatDate()</td>
                         <td>@r.BatchType</td>
                         <td>@r.Description</td>

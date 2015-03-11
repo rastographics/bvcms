@@ -77,11 +77,13 @@
         var f = $('#results').closest('form');
         $('#Page', f).val(1);
         $.getTable(f);
+        $('#page-header h2').text('Transactions');
         return false;
     });
 
     $('body').on('click', '.report', function (ev) {
         ev.preventDefault();
+        var header = $(this).text();
         var sdt = $('#startdt').val();
         var edt = $('#enddt').val();
         if (!sdt || !edt) {
@@ -91,6 +93,7 @@
         $.block();
         var args = "sdt=" + sdt + "&edt=" + edt;
         $.post($(this).attr("href"), args, function (ret) {
+            $('#page-header h2').text(header);
             $('#results').html(ret);
             intializePopovers();
             $.unblock();

@@ -15,9 +15,9 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpGet]
         [Route("~/Transactions")]
         [Route("~/Transactions/{id:int}")]
-        public ActionResult Index(int? id, int? goerid = null, int? senderid = null)
+        public ActionResult Index(int? id, int? goerid = null, int? senderid = null, string reference = "", string desc = "")
         {
-            var m = new TransactionsModel(id) {GoerId = goerid, SenderId = senderid};
+            var m = new TransactionsModel(id, reference, desc) {GoerId = goerid, SenderId = senderid};
             return View(m);
         }
 
