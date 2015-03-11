@@ -25,10 +25,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var qq = from t in DbUtil.Db.Transactions
                      where t.OriginalId == id || t.Id == id
                      orderby t.Id descending
-                     select t;
-            var ti = qq.FirstOrDefault();
+                     select new {t, email = t.TransactionPeople.FirstOrDefault().Person.EmailAddress };
+            var i = qq.FirstOrDefault();
+            if(i == null)
+                return Message("no outstanding transaction");
 
-            var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
+            var ti = i.t;
+            var email = i.email;
             var amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti);
             if (amtdue == 0)
                 return Message("no outstanding transaction");
@@ -43,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ti.State = "TN";
             }
 #endif
-            var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, amtdue);
+            var pf = PaymentForm.CreatePaymentFormForBalanceDue(ti, amtdue, email);
 
             SetHeaders(pf.OrgId ?? 0);
 
