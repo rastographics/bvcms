@@ -161,7 +161,7 @@ namespace CmsWeb.Models
             return tt.TotDue ?? 0;
         }
 
-        public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti, decimal amtdue)
+        public static PaymentForm CreatePaymentFormForBalanceDue(Transaction ti, decimal amtdue, string email)
         {
             PaymentInfo pi = null;
             if (ti.Person != null)
@@ -180,7 +180,7 @@ namespace CmsWeb.Models
                          Description = ti.Description,
                          OrgId = ti.OrgId,
                          OriginalId = ti.OriginalId,
-                         Email = Util.FirstAddress(ti.Emails).Address,
+                         Email = Util.FirstAddress(ti.Emails ?? email).Address,
                          FormId = Guid.NewGuid(),
 
                          First = ti.First,

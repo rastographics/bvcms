@@ -282,6 +282,7 @@ namespace CmsData
                     Suffix = Person.SuffixCode,
                     Address = Person.PrimaryAddress,
                     City = Person.PrimaryCity,
+                    Emails = Person.EmailAddress,
                     State = Person.PrimaryState,
                     Zip = Person.PrimaryZip,
                     LoginPeopleId = Util.UserPeopleId,
