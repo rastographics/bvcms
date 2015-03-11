@@ -107,20 +107,6 @@ $.InitializeDateElements = function () {
     }
 }
 
-$.InitializeDateTimeElements = function () {
-    var extraSmallDevice = $('.device-xs').is(':visible');
-    var smallDevice = $('.device-sm').is(':visible');
-    if (extraSmallDevice || smallDevice) {
-        $(".input-group.datetime input[type=text]").each(function (index) {
-            var isoSelector = '#' + $(this).attr('id') + 'Iso';
-            $(this).val($(isoSelector).val());
-            $(this).attr('type', 'datetime');
-        });
-    } else {
-        $(".input-group.datetime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' } });
-    }
-}
-
 // hookup initialize events when common empty dialog is shown.
 $('#empty-dialog').on('shown.bs.modal', function () {
     $.InitializeDateElements();
@@ -131,7 +117,6 @@ $(function () {
 
     // initialize any date fields.
     $.InitializeDateElements();
-    $.InitializeDateTimeElements();
     
     // scroll to the top the collapsed menu when selecting dropdown sub menus.
     $('#navbar ul.navbar-nav li.dropdown').on('show.bs.dropdown', function() {

@@ -71,7 +71,7 @@
                         <div class="form-group">
                             <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
                             <div class="col-sm-10">
-                                <div class="input-group datetime">
+                                <div class="input-group scheduleDateTime">
                                     @Html.TextBox("Schedule", Model.Schedule, new { @class = "form-control", placeholder = "Immediately" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
                                     @Html.Hidden("ScheduleIso", Model.Schedule, new { disabled = "disabled", placeholder = "Immediately" })
                                 </div>
@@ -161,4 +161,18 @@
     @ViewExtensions2.CKEditor()
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")
+    <script type="text/javascript">
+    $(function () {
+        var extraSmallDevice = $('.device-xs').is(':visible');
+        var smallDevice = $('.device-sm').is(':visible');
+        if (extraSmallDevice || smallDevice) {
+            $('#Schedule').val($('#ScheduleIso').val());
+            $('#Schedule').attr('type', 'datetime');
+        }
+        else {
+            $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' }, minDate: '@DateTime.UtcNow.ToString("o")' });
+        }
+    });
+    </script>
+    
 }

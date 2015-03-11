@@ -69,13 +69,13 @@
                 ev.stopPropagation();
             };
 
-            $.clearTemplateClass1 = function () {
+            $.clearTemplateClass = function () {
                 $.removeButtons();
                 $("div[bvedit],div.bvedit").removeClass("ti");
                 $("div[bveditadd],div.bveditadd").removeClass("ti");
             };
 
-            $.addTemplateClass1 = function () {
+            $.addTemplateClass = function () {
                 $("div[bveditadd],div.bveditadd").addClass("ti");
                 $("div[bvedit],div.bvedit").addClass("ti");
             };
@@ -86,8 +86,8 @@
                 ev.stopPropagation();
             };
 
-            window.parent.$.clearFunction = $.clearTemplateClass1;
-            window.parent.$.addFunction = $.addTemplateClass1;
+            window.parent.$.clearFunction = $.clearTemplateClass;
+            window.parent.$.addFunction = $.addTemplateClass;
         });
     </script>
 </body>
