@@ -12,18 +12,21 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Id / Name" data-content="This is the person making the payment, not necessarily the person registering for the event. Enter either a name, a People ID#, or a Transaction ID#."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="name" class="control-label">Id / Name</label>
                             @Html.TextBox("name", Model.name, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Description" data-content="This is the name of the Organization (registration) for which the transactions was made."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="description" class="control-label">Description</label>
                             @Html.TextBox("description", Model.description, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Amount From" data-content="Searches for items greater than or equal to the amount entered. Enter 0 to find all transactions with a payment."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="gtamount" class="control-label">Amount From</label>
                             <div class="input-group">
                                 <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control" })
@@ -32,6 +35,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Amount To" data-content="Searches for items less than or equal to the amount entered. Enter the same amount in both fields to find an exact amount."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="ltamount" class="control-label">Amount To</label>
                             <div class="input-group">
                                 <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control" })
@@ -42,6 +46,7 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date From" data-content="If you enter only a Date From, you will find transactions for just that date."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="startdt" class="control-label">Date From</label>
                             <div class="input-group date">
                                 @Html.TextBox("startdt", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
@@ -51,6 +56,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date To" data-content="If you enter only a Date To, you will find all transactions prior to and including that date."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="enddt" class="control-label">Date To</label>
                             <div class="input-group date">
                                 @Html.TextBox("enddt", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
