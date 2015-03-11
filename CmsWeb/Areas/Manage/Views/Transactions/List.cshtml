@@ -69,14 +69,18 @@
                                <label>Transation Id:</label> @t.TransactionId<br/>
                                <label>Approval Code:</label> @(t.ApprovalCode ?? "na")<br />
                                <label>Auth Code:</label> @(t.AuthCode ?? "na")<br/>
-                               <label>Message:</label> @(t.Message ?? "na")<br/>
-                               <label>Original Id:</label> <a href='#' class='filtertransaction'>@t.OriginalId <i class='fa fa-search'></i></a>
+                               <label>Message:</label> @(t.Message ?? "na")
+                               @if (t.OriginalId.HasValue)
+                               {
+                                   <br />
+                                   <label>Original Id:</label> <a href='#' class='filtertransaction' originalid='@t.OriginalId'>@t.OriginalId</a>
+                               }   
                                @if (t.Batch != null)
                                {
                                    <hr/>
                                    <label>Batch Type:</label> @t.Batchtyp<br/>
                                    <label>Batch Reference:</label> @t.Batchref<br />
-                                   <label>Batch Date:</label> <a href='#' class='filterbatch'>@t.Batch.FormatDate() <i class='fa fa-search'></i></a>
+                                   <label>Batch Date:</label> <a href='#' class='filterbatch'>@t.Batch.FormatDate()</a>
                                }
                             "><i class="fa fa-info-circle"></i></a>
                         </td>
