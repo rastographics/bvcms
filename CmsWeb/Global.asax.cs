@@ -93,7 +93,7 @@ namespace CmsWeb
                 Response.Redirect(redirect);
                 return;
             }
-            if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist)
+            if (r == DbUtil.CheckDatabaseResult.DatabaseDoesNotExist && HttpContext.Current.Request.Url.LocalPath.EndsWith("/"))
             {
                 var ret = DbUtil.CreateDatabase();
                 if (ret.HasValue())
