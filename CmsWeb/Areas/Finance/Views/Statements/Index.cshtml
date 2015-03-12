@@ -11,46 +11,58 @@
             <form action="/Statements/Start" method="post">
                 <div class="row">
                     <div class="col-sm-4">
-                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Starts With" data-content="Last Name starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow."><i class="fa fa-info-circle"></i></a>&nbsp;
-                        <label for="startswith" class="control-label">Starts With</label>
-                        <div class="input-group">
-                            @Html.TextBox("startswith", "", new { @class = "form-control" })
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Starts With" data-content="Last Name starts with, leave blank for all, or use a range like A-C or even Aa-Ab to further narrow."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="startswith" class="control-label">Starts With</label>
+                            <div class="input-group">
+                                @Html.TextBox("startswith", "", new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="FromDate" class="control-label">Start Date</label>
-                        <div class="input-group date">
-                            @Html.TextBox("FromDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                            @Html.Hidden("FromDateIso", "", new { disabled = "disabled" })
+                        <div class="form-group">
+                            <label for="FromDate" class="control-label">Start Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("FromDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("FromDateIso", "", new { disabled = "disabled" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="EndDate" class="control-label">End Date</label>
-                        <div class="input-group date">
-                            @Html.TextBox("EndDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                            @Html.Hidden("EndDateIso", "", new { disabled = "disabled" })
+                        <div class="form-group">
+                            <label for="EndDate" class="control-label">End Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("EndDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("EndDateIso", "", new { disabled = "disabled" })
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
-                        <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Sort" data-content="Type either name or zip."><i class="fa fa-info-circle"></i></a>&nbsp;
-                        <label for="sort" class="control-label">Sort</label>
-                        <div class="input-group">
-                            @Html.TextBox("sort", "", new { @class = "form-control" })
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Sort" data-content="Type either name or zip."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="sort" class="control-label">Sort</label>
+                            <div class="input-group">
+                                @Html.TextBox("sort", "", new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="TagId" class="control-label">Tag Id</label>
-                        <div class="input-group">
-                            @Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect(), new { @class = "form-control" })
+                        <div class="form-group">
+                            <label for="TagId" class="control-label">Tag Id</label>
+                            <div class="input-group">
+                                @Html.DropDownList("TagId", cv.UserTagsWithUnspecified().ToSelect(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <div class="checkbox">
-                            <label class="control-label">
-                                @Html.CheckBox("ExcludeElectronic", false) Exclude electronic only?
-                            </label>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("ExcludeElectronic", false) Exclude electronic only?
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>

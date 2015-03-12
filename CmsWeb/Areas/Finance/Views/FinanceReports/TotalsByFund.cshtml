@@ -13,49 +13,61 @@
             <form id="totals" method="POST">
                 <div class="row">
                     <div class="col-sm-4">
-                        <label for="CampusId" class="control-label">Campus</label>
-                        <div class="input-group">
-                            @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
+                        <div class="form-group">
+                            <label for="CampusId" class="control-label">Campus</label>
+                            <div class="input-group">
+                                @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="Dt1" class="control-label">From Date</label>
-                        <div class="input-group date">
-                            @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                            @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                        <div class="form-group">
+                            <label for="Dt1" class="control-label">From Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="Dt2" class="control-label">To Date</label>
-                        <div class="input-group date">
-                            @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                            @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                        <div class="form-group">
+                            <label for="Dt2" class="control-label">To Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-4">
-                        <label for="TaxDedNonTax" class="control-label">Tax Status</label>
-                        <div class="input-group">
-                            @Html.DropDownList("TaxDedNonTax", Model.TaxTypes(), new { @class = "form-control" })
+                        <div class="form-group">
+                            <label for="TaxDedNonTax" class="control-label">Tax Status</label>
+                            <div class="input-group">
+                                @Html.DropDownList("TaxDedNonTax", Model.TaxTypes(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="Online" class="control-label">Source</label>
-                        <div class="input-group">
-                            @Html.DropDownList("Online", Model.OnlineOptions(), new { @class = "form-control" })
+                        <div class="form-group">
+                            <label for="Online" class="control-label">Source</label>
+                            <div class="input-group">
+                                @Html.DropDownList("Online", Model.OnlineOptions(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <div class="checkbox">
-                            <label class="control-label">
-                                @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
-                            </label>
-                        </div>
-                        <div class="checkbox">
-                            <label class="control-label">
-                                @Html.CheckBox("IncludeBundleType") Include bundle type?
-                            </label>
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("IncludeBundleType") Include bundle type?
+                                </label>
+                            </div> 
                         </div>
                     </div>
                 </div>

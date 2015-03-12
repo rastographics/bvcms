@@ -33,13 +33,13 @@
         </tbody>
         <tfoot>
             <tr class="totals-row">
-                <th colspan="2"><a href="@Model.BundleTotalsUrl()" target="bundles">Total</a></th>
-                <th class="text-right">
+                <td colspan="2"><a href="@Model.BundleTotalsUrl()" target="bundles">Total</a></td>
+                <td class="text-right">
                     <a href="@Model.ContributionsUrl()" target="search">
                         @Model.FundTotal.Total.ToString2("c")
                     </a>
-                </th>
-                <th class="text-right">@Model.FundTotal.Count.ToString2("n0") </th>
+                </td>
+                <td class="text-right">@Model.FundTotal.Count.ToString2("n0") </td>
             </tr>
         </tfoot>
     </table>

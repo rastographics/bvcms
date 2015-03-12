@@ -11,48 +11,54 @@
             <form id="totals">
                 <div class="row">
                     <div class="col-sm-4">
-                        <label for="CampusId" class="control-label">Campus</label>
-                        <div class="input-group">
-                            @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
+                        <div class="form-group">
+                            <label for="CampusId" class="control-label">Campus</label>
+                            <div class="input-group">
+                                @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="dt1" class="control-label">From Date</label>
-                        <div class="input-group date">
-                            @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                            @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                        <div class="form-group">
+                            <label for="dt1" class="control-label">From Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
                         </div>
                     </div>
                     <div class="col-sm-4">
-                        <label for="dt2" class="control-label">To Date</label>
-                        <div class="input-group date">
-                            @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                            @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                        <div class="form-group">
+                            <label for="dt2" class="control-label">To Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-sm-12">
-                        <ul class="list-inline">
-                            <li>
-                                <div class="checkbox">
-                                    <label class="control-label">
-                                        @Html.CheckBox("NonTaxDeductible") Include non-tax deductible?
-                                    </label>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="checkbox">
-                                    <label class="control-label">
-                                        @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
-                                    </label>
-                                </div>
-                            </li>
-                        </ul>
+                    <div class="col-sm-9">
+                        <div class="form-group">
+                            <ul class="list-inline">
+                                <li>
+                                    <div class="checkbox">
+                                        <label class="control-label">
+                                            @Html.CheckBox("NonTaxDeductible") Include non-tax deductible?
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox">
+                                        <label class="control-label">
+                                            @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
+                                        </label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-3">
                         <div class="pull-right">
                             <button type="submit" class="btn btn-primary" id="run">Run</button>
                         </div>
