@@ -12,14 +12,14 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Id / Name" data-content="This is the person making the payment, not necessarily the person registering for the event. Enter either a name, a People ID#, or a Transaction ID#."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Id / Name" data-content="This is the person making the payment, not necessarily the person registering for the event. Enter either a name or a Transaction ID#."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="name" class="control-label">Id / Name</label>
                             @Html.TextBox("name", Model.name, new { @class = "form-control" })
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Description" data-content="This is the name of the Organization (registration) for which the transactions was made."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Description" data-content="This is the name of the Organization (registration) for which the transaction was made."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="description" class="control-label">Description</label>
                             @Html.TextBox("description", Model.description, new { @class = "form-control" })
                         </div>
