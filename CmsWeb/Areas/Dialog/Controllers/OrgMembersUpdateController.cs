@@ -34,5 +34,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
             m.Drop();
 		    return View("Dropped", m);
 		}
+        [HttpPost, Route("SmallGroupChecked/{id:int}")]
+        public ActionResult SmallGroupChecked(int id, bool ck, OrgMembersUpdate m)
+        {
+            m.UpdateSmallGroup(id, ck);
+            return Content("ok");
+        }
 	}
 }
