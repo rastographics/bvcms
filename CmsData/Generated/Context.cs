@@ -3989,6 +3989,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.WeekNumber", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? WeekNumber(
+            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                dt
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.Tool_VarbinaryToVarcharHex", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string ToolVarbinaryToVarcharHex(
@@ -3998,6 +4010,18 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 VarbinaryValue
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SundayForWeekNumber", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? SundayForWeekNumber(
+            [Parameter(Name = "wkn", DbType="int")] int? wkn
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                wkn
                 ).ReturnValue));
 		}
 

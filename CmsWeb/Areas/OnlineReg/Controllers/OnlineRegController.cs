@@ -54,6 +54,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return Message("no registration allowed on this org");
                 if (m.org.IsMissionTrip == true)
                 {
+//                    if (m.TotalAmount() == 0)
+//                        return Message("cannot have a mission trip without a fee");
+
                     if (gsid.HasValue) // this means that the person is a suppoter who got a support email
                     {
                         goerSupporter = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == gsid);
