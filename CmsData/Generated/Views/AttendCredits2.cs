@@ -22,7 +22,7 @@ namespace CmsData.View
 		
 		private bool? _Attended;
 		
-		private int? _WeekNumber;
+		private DateTime? _WeekDate;
 		
 		private int? _AttendanceTypeId;
 		
@@ -84,18 +84,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="WeekNumber", Storage="_WeekNumber", DbType="int")]
-		public int? WeekNumber
+		[Column(Name="WeekDate", Storage="_WeekDate", DbType="datetime")]
+		public DateTime? WeekDate
 		{
 			get
 			{
-				return this._WeekNumber;
+				return this._WeekDate;
 			}
 
 			set
 			{
-				if (this._WeekNumber != value)
-					this._WeekNumber = value;
+				if (this._WeekDate != value)
+					this._WeekDate = value;
 			}
 
 		}

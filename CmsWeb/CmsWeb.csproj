@@ -1365,6 +1365,9 @@
     <Content Include="Areas\Dialog\Views\OrgMembersDialog\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersDialog\Rows.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersDialog\Update.cshtml" />
+    <Content Include="Areas\Org\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Areas\Dialog\Views\AddToOrgFromTag\Process.cshtml" />
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Process.cshtml" />
@@ -1393,9 +1396,6 @@
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Dropped.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\ShowDrop.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Updated.cshtml" />
-    <Content Include="Areas\Org\Views\Web.config">
-      <SubType>Designer</SubType>
-    </Content>
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>

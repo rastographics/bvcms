@@ -1,13 +1,11 @@
-
-
 CREATE VIEW [dbo].[AttendCredits2]
 AS
 	SELECT
 		OrganizationId,
 		PeopleId,
 		CONVERT(BIT, MAX(Attended)) AS Attended,
-		([Year] * 100 + [Week]-1) WeekNumber,
-		MAX(AttendanceTypeId) AttendanceTypeId
+		DATEADD(ww, [Week], DATEADD(yy, [Year]-1900, 0)) - 4 - DATEPART(dw, DATEADD(ww, [Week], DATEADD(yy, [Year]-1900, 0)) - 4) + 1 WeekDate,
+		max(AttendanceTypeId) AttendanceTypeId
 	FROM (
 		SELECT	a.OrganizationId,
 				PeopleId,
@@ -30,8 +28,6 @@ AS
 	) AS InlineView
 	GROUP BY OrganizationId, PeopleId, [Year], [Week], AttendCredit
 	
-
-
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
