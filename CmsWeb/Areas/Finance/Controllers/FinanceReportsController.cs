@@ -122,6 +122,19 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
 
+        [HttpGet]
+        public ActionResult TotalsByFundAgeRange()
+        {
+            var m = new TotalsByFundAgeRangeModel();
+            return View(m);
+        }
+
+        [HttpPost]
+        public ActionResult TotalsByFundAgeRangeResults(TotalsByFundAgeRangeModel m)
+        {
+            return View(m);
+        }
+
         public ActionResult PledgeReport()
         {
             var fd = DateTime.Parse("1/1/1900");
