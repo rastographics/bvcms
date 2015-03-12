@@ -13,6 +13,7 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Web;
 using System.Data.SqlClient;
+using CmsData.View;
 
 namespace CmsData
 {
@@ -267,9 +268,19 @@ namespace CmsData
             }
         }
 
+        private bool transactionSummaryLoaded;
+        private TransactionSummary transactionSummary;
+        public TransactionSummary TransactionSummary(CMSDataContext db)
+        {
+            if(transactionSummaryLoaded)
+                return transactionSummary;
+            transactionSummary = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
+            transactionSummaryLoaded = true;
+            return transactionSummary;
+        }
         public Transaction AddTransaction(CMSDataContext db, string reason, decimal payment, string description, decimal? amount = null, bool? adjustFee = false)
         {
-            var ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
+            var ts = TransactionSummary(db);
             var ti = db.Transactions.SingleOrDefault(tt => tt.Id == TranId);
             if (ti == null)
             {
@@ -295,6 +306,7 @@ namespace CmsData
                     Suffix = Person.SuffixCode,
                     Address = Person.PrimaryAddress,
                     City = Person.PrimaryCity,
+                    Emails = Person.EmailAddress,
                     State = Person.PrimaryState,
                     Zip = Person.PrimaryZip,
                     LoginPeopleId = Util.UserPeopleId,
@@ -325,29 +337,28 @@ namespace CmsData
             return ti2;
         }
 
-        private decimal? amountDue;
-        public decimal? AmountDue(CMSDataContext Db)
+        public decimal AmountDue(CMSDataContext db)
         {
-            if (amountDue.HasValue)
-                return amountDue;
-
-            var qq = from t in Db.ViewTransactionSummaries
-                     where t.RegId == TranId && t.PeopleId == PeopleId
-                     select t;
-            var tt = qq.SingleOrDefault();
-            if (Organization.IsMissionTrip == true)
-                return amountDue = (tt == null ? 0 : tt.IndAmt) - TotalPaid(Db);
-            return amountDue = (tt == null ? 0 : tt.IndDue);
+            var ts = TransactionSummary(db);
+            if (ts == null)
+                return 0;
+            return FeePaid(db) - TotalPaid(db);
         }
 
         private decimal? totalPaid;
-        public decimal TotalPaid(CMSDataContext Db)
+        public decimal TotalPaid(CMSDataContext db)
         {
             if (totalPaid.HasValue)
                 return totalPaid.Value;
-
-            totalPaid = Db.TotalPaid(OrganizationId, PeopleId);
+            totalPaid = db.TotalPaid(OrganizationId, PeopleId);
             return totalPaid ?? 0;
+        }
+        public decimal FeePaid(CMSDataContext db)
+        {
+            var ts = TransactionSummary(db);
+            if (ts == null)
+                return 0;
+            return ts.IndAmt ?? 0;
         }
 
         public class SmallGroupItem
