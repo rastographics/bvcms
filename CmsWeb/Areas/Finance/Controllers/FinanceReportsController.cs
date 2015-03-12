@@ -123,6 +123,19 @@ namespace CmsWeb.Areas.Finance.Controllers
         }
 
         [HttpGet]
+        public ActionResult TotalsByFundRange(string pledged)
+        {
+            var m = new TotalsByFundRangeModel{ Pledged = pledged };
+            return View(m);
+        }
+
+        [HttpPost]
+        public ActionResult TotalsByFundRangeResults(TotalsByFundRangeModel m)
+        {
+            return View(m);
+        }
+
+        [HttpGet]
         public ActionResult TotalsByFundAgeRange()
         {
             var m = new TotalsByFundAgeRangeModel();
