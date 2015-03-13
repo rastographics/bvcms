@@ -78,7 +78,7 @@
                 {
                   if (Model.IsLeader)
                   {
-                    <div pid="@p.PeopleId" mid="@t.MeetingId" class="selectable commit-@p.Commitment" source="registered" title="@p.CommitmentText">@p.Name</div>
+                    <div pid="@p.PeopleId" mid="@t.MeetingId" class="selectable commit-@p.Commitment @(p.OtherCommitments)" source="registered" title="@p.CommitmentText">@p.Name</div>
                   }
                   else
                   {
