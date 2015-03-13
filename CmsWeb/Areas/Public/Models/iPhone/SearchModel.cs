@@ -69,7 +69,7 @@ namespace CmsWeb.Models.iPhone
             else
                 query = db.People.Select(p => p);
 
-            query = query.Where(pp => pp.DeceasedDate == null);
+            //query = query.Where(pp => pp.DeceasedDate == null);
 
             if (Name.HasValue())
             {

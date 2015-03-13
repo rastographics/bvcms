@@ -12,5 +12,6 @@ namespace CmsWeb.MobileAPI
 		public string gender { get; set; }
 		public string age { get; set; }
 		public string position { get; set; }
+		public bool deceased { get; set; }
 	}
 }
