@@ -1393,7 +1393,8 @@
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Dropped.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\ShowDrop.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Updated.cshtml" />
-    <Content Include="Areas\Org\Views\Web.config">
+    <Content Include="Areas\Dialog\Views\OrgMembersUpdate\SmallGroups.cshtml" />
+    <Content Include="Areas\People\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
     <None Include="Properties\PublishProfiles\production.pubxml">
@@ -2014,7 +2015,7 @@
     <Content Include="Areas\Search\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
-    <Content Include="Areas\People\Views\Web.config">
+    <Content Include="Areas\Org\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\People\Views\Address\Edit.cshtml" />

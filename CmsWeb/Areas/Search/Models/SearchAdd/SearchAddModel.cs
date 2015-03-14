@@ -196,6 +196,7 @@ namespace CmsWeb.Areas.Search.Models
                     return AddOrgMembers(iid, OriginCode.Enrollment, pending: true);
                 case "inactive":
                     return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.InActive);
+                case "prospect":
                 case "prospects":
                     return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.Prospect);
                 case "visitor":

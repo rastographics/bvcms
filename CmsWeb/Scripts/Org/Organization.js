@@ -193,7 +193,7 @@
             prevChecked = this;
         }
         var a = pids.map(function () { return $(this).val(); }).get();
-        $.post("/Organization/ToggleCheckboxes/{0}".format($("#Id").val()), {
+        $.post("/Org/ToggleCheckboxes/{0}".format($("#Id").val()), {
             pids: a,
             chkd: prevChecked.checked
         });
