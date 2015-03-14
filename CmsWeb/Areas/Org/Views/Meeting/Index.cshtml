@@ -1,4 +1,5 @@
-﻿@using CmsWeb
+﻿@using CmsData
+@using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingModel
 @{
@@ -54,7 +55,7 @@
       <tr>
         <td colspan="2" nowrap>
           <h2>
-            <a href="/Organization/@Model.meeting.OrganizationId">@Model.meeting.Organization.OrganizationName</a>
+            <a href="@Util2.Org/@Model.meeting.OrganizationId">@Model.meeting.Organization.OrganizationName</a>
             <span id="t-@Model.meeting.MeetingId" class="@(User.IsInRole("Admin") ? "clickEdit" : "")" style="font-size: 12px">@Model.meeting.MeetingDate.FormatDateTm()</span>
           </h2>
         </td>

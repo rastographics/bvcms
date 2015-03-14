@@ -823,7 +823,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 ev.Data = mesEvent[1];
             }
             DbUtil.Db.SubmitChanges();
-            return RedirectToAction("Index", "Organization", new { id = id });
+            return RedirectToAction("Index", "Org2", new { id = id });
         }
 
         public ActionResult ReGenPaylinks(int id)

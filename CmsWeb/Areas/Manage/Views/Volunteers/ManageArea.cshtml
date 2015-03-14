@@ -72,7 +72,7 @@
                   }
                   else
                   {
-                    @Helper.AnchorLink("Request Volunteers", "/Volunteers/Request0/{0}/{1}/{2}".Fmt(t.ticks, Model.OrgId, t.Limit), target: "_blank", style: "volreq")
+                    @Helper.AnchorLink("Request Volunteers ({0})".Fmt(t.Limit), "/Volunteers/Request0/{0}/{1}/{2}".Fmt(t.ticks, Model.OrgId, t.Limit), target: "_blank", style: "volreq")
                   }
                 </p>
                 @foreach (var p in t.OrderedPersons())

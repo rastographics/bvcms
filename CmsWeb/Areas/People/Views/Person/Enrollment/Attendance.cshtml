@@ -4,64 +4,64 @@
 <form class="non-modal ajax margin-top left-gutter">
   @Html.Partial("PagerHidden", Model)
   @Html.HiddenFor2(m => m.PeopleId)
-    <fieldset>
-        <legend>
-            @if (Model.Future)
-            {
-                <text>Future Meetings</text>
-                <small class="pull-right"><a class="ajax" href="/Person2/Attendance/@Model.PeopleId">Show Attendance History</a></small>
-            }
-            else
-            {
-                <text>Attendance History</text>
-                <small class="pull-right"><a class="ajax" href="/Person2/AttendanceFuture/@Model.PeopleId">Show Future Meetings</a></small>
-            }
-        </legend>
-        <div class="pagination pagination-mini">
-            @Html.Partial("Pager3", Model)
-        </div>
-        <table class="expanding table table-condensed table-hover">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>@Model.Pager.SortLink("Meeting")</th>
-                  @if (Model.Future)
-                  {
-                  <td>Commitment</td>
-                  }
-                  <th>@Model.Pager.SortLink("Organization")</th>
-                    <th>@Model.Pager.SortLink("MemberType")</th>
-                    <th>@Model.Pager.SortLink("AttendType")</th>
-                    <th>OtherAttends</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (User.IsInRole("Access"))
-                {
-                    foreach (var a in Model.ViewList())
-                    { 
-                    <tr>
-                        <td>
-                            <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") /></td>
-                        <td nowrap="nowrap"><a href="/Meeting/@a.MeetingId">@a.MeetingDate.GetWeekNumber() @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))</a></td>
-                      @if (Model.Future)
-                      {
-                      <td class="@(a.conflict ? " alert-danger"
-                          "" )">@a.Commitment</td>
-                      }
-                        <td><a href="/Organization/@a.OrganizationId">@a.OrganizationName</a></td>
-                        <td>@a.MemberType</td>
-                        <td>@a.AttendType</td>
-                        <td>@a.OtherAttends</td>
-                    </tr>
-                    }
-                }
-                else
-                {
-                    foreach (var a in Model.ViewList())
-                    { 
-                    <tr>
-                        <td>
+  <fieldset>
+    <legend>
+      @if (Model.Future)
+      {
+        <text>Future Meetings</text>
+        <small class="pull-right"><a class="ajax" href="/Person2/Attendance/@Model.PeopleId">Show Attendance History</a></small>
+      }
+      else
+      {
+        <text>Attendance History</text>
+        <small class="pull-right"><a class="ajax" href="/Person2/AttendanceFuture/@Model.PeopleId">Show Future Meetings</a></small>
+      }
+    </legend>
+    <div class="pagination pagination-mini">
+      @Html.Partial("Pager3", Model)
+    </div>
+    <table class="expanding table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th></th>
+          <th>@Model.SortLink("Meeting")</th>
+          @if (Model.Future)
+          {
+            <td>Commitment</td>
+          }
+          <th>@Model.SortLink("Organization")</th>
+          <th>@Model.SortLink("MemberType")</th>
+          <th>@Model.SortLink("AttendType")</th>
+          <th>OtherAttends</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (User.IsInRole("Access"))
+        {
+          foreach (var a in Model.ViewList())
+          {
+            <tr>
+              <td>
+                <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") />
+              </td>
+              <td nowrap="nowrap"><a href="/Meeting/@a.MeetingId">@a.MeetingDate.GetWeekNumber() @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))</a></td>
+              @if (Model.Future)
+              {
+                <td class="@(a.conflict ? " alert-danger" : "" )">@a.Commitment</td>
+              }
+              <td><a href="/Organization/@a.OrganizationId">@a.OrganizationName</a></td>
+              <td>@a.MemberType</td>
+              <td>@a.AttendType</td>
+              <td>@a.OtherAttends</td>
+            </tr>
+          }
+        }
+        else
+        {
+          foreach (var a in Model.ViewList())
+          {
+            <tr>
+              <td>
                 <input type="checkbox" @(a.AttendFlag ? "checked=checked" : "") disabled= disabled />
               </td>
               <td>
@@ -71,16 +71,16 @@
               {
                 <td class="@(a.conflict ? "alert-danger" : "")">@a.Commitment</td>
               }
-                        <td>@a.OrganizationName</td>
-                        <td>@a.MemberType</td>
-                        <td>@a.AttendType</td>
-                    </tr>
-                    }
-                }
-            </tbody>
-        </table>
-        <div class="pagination pagination-mini">
-            @Html.Partial("Pager3", Model)
-        </div>
-    </fieldset>
+              <td>@a.OrganizationName</td>
+              <td>@a.MemberType</td>
+              <td>@a.AttendType</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+    <div class="pagination pagination-mini">
+      @Html.Partial("Pager3", Model)
+    </div>
+  </fieldset>
 </form>

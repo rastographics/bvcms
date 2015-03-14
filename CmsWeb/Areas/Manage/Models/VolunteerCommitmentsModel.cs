@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
+using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models

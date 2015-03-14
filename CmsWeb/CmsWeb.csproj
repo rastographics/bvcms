@@ -331,33 +331,33 @@
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
-    <Compile Include="Areas\Organization\Controllers\Meetings.cs" />
-    <Compile Include="Areas\Organization\Controllers\OrgPeople.cs" />
-    <Compile Include="Areas\Organization\Controllers\OrganizationController.cs" />
-    <Compile Include="Areas\Organization\Controllers\Settings\Attendance.cs" />
-    <Compile Include="Areas\Organization\Controllers\Settings\ExtraValues.cs" />
-    <Compile Include="Areas\Organization\Controllers\Settings\Fees.cs" />
-    <Compile Include="Areas\Organization\Controllers\Settings\General.cs" />
-    <Compile Include="Areas\Organization\Controllers\Settings\Main.cs" />
-    <Compile Include="Areas\Organization\Controllers\Settings\Messages.cs" />
-    <Compile Include="Areas\Organization\Controllers\Settings\Questions.cs" />
-    <Compile Include="Areas\Organization\Controllers\Settings\Registration.cs" />
-    <Compile Include="Areas\Organization\Controllers\Toolbar.cs" />
-    <Compile Include="Areas\Organization\Controllers\Other\MeetingController.cs" />
-    <Compile Include="Areas\Organization\Controllers\Other\MemberDirectoryController.cs" />
-    <Compile Include="Areas\Organization\Controllers\Other\MissionTripEmailController.cs" />
-    <Compile Include="Areas\Organization\Controllers\Other\OrgChildrenController.cs" />
-    <Compile Include="Areas\Organization\Controllers\Other\OrgGroupsController.cs" />
-    <Compile Include="Areas\Organization\Controllers\Other\RegSettingController.cs" />
-    <Compile Include="Areas\Organization\Models\ScheduleInfo.cs" />
-    <Compile Include="Areas\Organization\Models\SettingsGeneralModel.cs" />
-    <Compile Include="Areas\Organization\Models\SettingsAttendanceModel.cs" />
-    <Compile Include="Areas\Organization\Models\OrgMain.cs" />
-    <Compile Include="Areas\Organization\Models\SettingsFeesModel.cs" />
-    <Compile Include="Areas\Organization\Models\SettingsRegistrationModel.cs" />
-    <Compile Include="Areas\Organization\Models\Other\MeetingModel.cs" />
-    <Compile Include="Areas\Organization\Models\Other\MemberDirectoryModel.cs" />
-    <Compile Include="Areas\Organization\Models\Other\MissionTripEmailer.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Meetings.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\OrgPeople.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Org2Controller.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Settings\Attendance.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Settings\ExtraValues.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Settings\Fees.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Settings\General.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Settings\Main.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Settings\Messages.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Settings\Questions.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Settings\Registration.cs" />
+    <Compile Include="Areas\Org\Controllers\Org2\Toolbar.cs" />
+    <Compile Include="Areas\Org\Controllers\MeetingController.cs" />
+    <Compile Include="Areas\Org\Controllers\MemberDirectoryController.cs" />
+    <Compile Include="Areas\Org\Controllers\MissionTripEmailController.cs" />
+    <Compile Include="Areas\Org\Controllers\OrgChildrenController.cs" />
+    <Compile Include="Areas\Org\Controllers\OrgGroupsController.cs" />
+    <Compile Include="Areas\Org\Controllers\RegSettingController.cs" />
+    <Compile Include="Areas\Org\Models\Org2\ScheduleInfo.cs" />
+    <Compile Include="Areas\Org\Models\Org2\SettingsGeneralModel.cs" />
+    <Compile Include="Areas\Org\Models\Org2\SettingsAttendanceModel.cs" />
+    <Compile Include="Areas\Org\Models\Org2\OrgMain.cs" />
+    <Compile Include="Areas\Org\Models\Org2\SettingsFeesModel.cs" />
+    <Compile Include="Areas\Org\Models\Org2\SettingsRegistrationModel.cs" />
+    <Compile Include="Areas\Org\Models\MeetingModel.cs" />
+    <Compile Include="Areas\Org\Models\MemberDirectoryModel.cs" />
+    <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
     <Compile Include="Areas\Org\Controllers\OrganizationController.cs" />
     <Compile Include="Areas\Org\Models\Organization\AttendInfo.cs" />
     <Compile Include="Areas\Org\Models\Organization\MeetingInfo.cs" />
@@ -470,7 +470,7 @@
     <Compile Include="Areas\Manage\Controllers\UploadPeopleController.cs" />
     <Compile Include="Areas\Finance\Controllers\StatementsController.cs" />
     <Compile Include="Areas\Reports\Models\Export\ExtraExcelResult.cs" />
-    <Compile Include="Areas\Organization\Models\OrgChildrenModel.cs" />
+    <Compile Include="Areas\Org\Models\Organization\OrgChildrenModel.cs" />
     <Compile Include="Areas\Manage\Controllers\UsersController.cs" />
     <Compile Include="Areas\Manage\Models\CheckinTimeModel.cs" />
     <Compile Include="Areas\Manage\Models\ContentModel.cs" />
@@ -624,7 +624,7 @@
     <Compile Include="Areas\Public\Controllers\ExternalServicesController.cs" />
     <Compile Include="Areas\Public\Controllers\MobileAPIController.cs" />
     <Compile Include="Areas\Public\Controllers\SmallGroupFinderController.cs" />
-    <Compile Include="Areas\Organization\Models\MeetingInfo.cs" />
+    <Compile Include="Areas\Org\Models\Org2\MeetingInfo.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\ClassResult.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\ClassesResult.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\BinaryResult.cs" />
@@ -651,9 +651,9 @@
     <Compile Include="Areas\Public\Models\CheckIn\SearchInfo.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\NameSearchResult2.cs" />
     <Compile Include="Areas\Public\Models\CheckIn\MultipleResult.cs" />
-    <Compile Include="Areas\Organization\Models\AttendInfo.cs" />
-    <Compile Include="Areas\Organization\Models\OrgGroupsModel.cs" />
-    <Compile Include="Areas\Organization\Models\PersonMemberInfo.cs" />
+    <Compile Include="Areas\Org\Models\Org2\AttendInfo.cs" />
+    <Compile Include="Areas\Org\Models\Organization\OrgGroupsModel.cs" />
+    <Compile Include="Areas\Org\Models\Org2\PersonMemberInfo.cs" />
     <Compile Include="Areas\Main\Models\Other\MassEmailer.cs" />
     <Compile Include="Areas\Search\Models\OrgSearchModel.cs" />
     <Compile Include="Areas\Finance\Models\PostBundleModel.cs" />
@@ -891,78 +891,78 @@
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\Text0.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\Text0.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Dialogs.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Other\DialogAddMES.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Other\DivisionList.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Other\NotifyList2.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\OrgPickList.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Other\ReGenPaylinks.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Other\SmallGroups.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Other\VolunteerCommitmentsSummary.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Settings\Attendance.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Settings\AttendanceEdit.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Settings\ExtrasGrid.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registration\Fees.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registration\FeesEdit.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Settings\General.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Settings\GeneralEdit.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Settings\Main.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Settings\MainEdit.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registration\Messages.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registration\MessagesEdit.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registration\Questions.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registration\QuestionsEdit.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registration\Registration.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registration\RegistrationEdit.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\People.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Meetings.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Settings.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Dialogs.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Other\DialogAddMES.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Other\DivisionList.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Other\NotifyList2.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\OrgPickList.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Other\ReGenPaylinks.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Other\SmallGroups.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Other\VolunteerCommitmentsSummary.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Settings\Attendance.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Settings\AttendanceEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Settings\ExtrasGrid.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\Fees.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\FeesEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Settings\General.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Settings\GeneralEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Settings\Main.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Settings\MainEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\Messages.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\MessagesEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\Questions.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\QuestionsEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\Registration.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\RegistrationEdit.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\People.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Meetings.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Settings.cshtml" />
     <Content Include="Scripts\Bootstrap\bootstrap-datetimepicker.min.js.map">
       <DependentUpon>bootstrap-datetimepicker.min.js</DependentUpon>
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\People\Table.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\People\FilterPeople.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\People\GroupOptions.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\People\GroupButtons.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\People\Hidden.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\QuestionsMenu.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\Schedules.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\Schedules.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\MasterOrgInfo.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AgeGroups.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AgeGroups.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\OrgFees.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\OrgFees.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskCheckboxes.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskDropdown.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\Ask.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Registrations.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskExtraQuestions.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskGradeOptions.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskGradeOptions.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskHeader.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskHeader.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskInstruction.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskInstruction.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskMenu.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\MenuItem.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskMenu.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskRequest.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskRequest.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskSize.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\Size.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskSize.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskSuggestedFee.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskSuggestedFee.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskText.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\Text.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskText.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskTickets.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskTickets.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskYesNoQuestions.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\AskYesNoQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\People\Table.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\People\FilterPeople.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\People\GroupOptions.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\People\GroupButtons.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\People\Hidden.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\QuestionsMenu.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\Schedules.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\Schedules.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\MasterOrgInfo.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AgeGroups.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AgeGroups.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\OrgFees.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\OrgFees.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskCheckboxes.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskDropdown.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\Ask.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registrations.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskExtraQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskGradeOptions.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskGradeOptions.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskHeader.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskHeader.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskInstruction.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskInstruction.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskMenu.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\MenuItem.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskMenu.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskRequest.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskRequest.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskSize.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\Size.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskSize.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskSuggestedFee.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskSuggestedFee.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskText.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\Text.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskText.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskTickets.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskTickets.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskYesNoQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\AskYesNoQuestions.cshtml" />
     <Content Include="Scripts\Chosen\chosen.proto.js" />
     <Content Include="Scripts\Chosen\chosen.proto.min.js" />
     <Content Include="Scripts\globalize.js" />
@@ -1061,7 +1061,7 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
-    <Content Include="Areas\Organization\Views\OrgGroups\Management.cshtml" />
+    <Content Include="Areas\Org\Views\OrgGroups\Management.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\PictureDialog.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\RelatedEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Tab.cshtml" />
@@ -1173,13 +1173,13 @@
     <Content Include="Content\images\computer_error.ogg" />
     <Content Include="Content\images\glass.ogg" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents1.cshtml" />
-    <Content Include="Areas\Organization\Views\MissionTripEmail\Index.cshtml" />
-    <Content Include="Areas\Organization\Views\MissionTripEmail\Supporters.cshtml" />
-    <Content Include="Areas\Organization\Views\MissionTripEmail\SupportersEdit.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\Index.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\Supporters.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\SupportersEdit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTrip.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTripHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTripDisplay.cshtml" />
-    <Content Include="Areas\Organization\Views\MissionTripEmail\Sent.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\Sent.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MissionTripFunding.cshtml" />
     <Content Include="Content\avery5160.docx" />
     <Content Include="Areas\Reports\Views\Reports\MeetingsForMonth.cshtml" />
@@ -1388,8 +1388,8 @@
     <Content Include="Areas\Dialog\Views\SearchDivisions\ModalDialog.cshtml" />
     <Content Include="Areas\Dialog\Views\RepairTransactions\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\RepairTransactions\Process.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Toolbar\Email.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\Toolbar\Gear.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Toolbar\Email.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Toolbar\Gear.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Dropped.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\ShowDrop.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Updated.cshtml" />
@@ -1499,7 +1499,7 @@
     <Content Include="Content\styles\images\forward_disabled.png" />
     <Content Include="Content\styles\images\forward_enabled.png" />
     <Content Include="Content\styles\images\forward_enabled_hover.png" />
-    <Content Include="Areas\Organization\Views\MemberDirectory\NoAccess.cshtml" />
+    <Content Include="Areas\Org\Views\MemberDirectory\NoAccess.cshtml" />
     <Content Include="Content\css\search.css" />
     <Content Include="Errors\AppOffline.htm" />
     <Content Include="healthcheck.txt" />
@@ -1669,9 +1669,9 @@
     <Compile Include="Areas\Manage\Models\UpdateFieldsModel.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchController.cs" />
     <Compile Include="Areas\Setup\Models\DivisionModel.cs" />
-    <Compile Include="Areas\Organization\Models\MeetingsModel.cs" />
-    <Compile Include="Areas\Organization\Models\OrgPeopleModel.cs" />
-    <Compile Include="Areas\Organization\Models\OrganizationModel.cs" />
+    <Compile Include="Areas\Org\Models\Org2\MeetingsModel.cs" />
+    <Compile Include="Areas\Org\Models\Org2\OrgPeopleModel.cs" />
+    <Compile Include="Areas\Org\Models\Org2\OrganizationModel.cs" />
     <Compile Include="Models\PagerModel2.cs" />
     <Compile Include="Areas\Reports\Models\Other\ContactsResult.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AveryResult.cs" />
@@ -1934,7 +1934,7 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\Confirm.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\TimeSlot.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\TimeSlot.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\Error.cshtml">
     </Content>
@@ -1972,8 +1972,8 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Manage\Views\CheckinTime\Index.cshtml" />
-    <Content Include="Areas\Organization\Views\Meeting\tickets.cshtml" />
-    <Content Include="Areas\Organization\Views\Meeting\ScanTicket.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\tickets.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\ScanTicket.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Timeout.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\Report.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\ReportByDescription.cshtml" />
@@ -1990,26 +1990,26 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolRequestReport.cshtml" />
     <Content Include="Areas\Manage\Views\Users\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Users\Results.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskExtraQuestions.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskCheckboxes.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\DropdownItem.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\Ask.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskExtraQuestions.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskCheckboxes.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\DropdownItem.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\Ask.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogType.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\Edit.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolunteerSlots.cshtml" />
-    <Content Include="Areas\Organization\Views\Meeting\TicketMeeting.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\TicketMeeting.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\SQLSelect.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\SQLView.cshtml" />
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\TimeSlots.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\TimeSlots.cshtml" />
     <Content Include="Areas\Finance\Views\Bundles\Index.cshtml" />
     <Content Include="Areas\Finance\Views\Bundles\Results.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Index.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Results.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Display.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Edit.cshtml" />
-    <Content Include="Areas\Organization\Views\MemberDirectory\Index.cshtml" />
-    <Content Include="Areas\Organization\Views\MemberDirectory\Results.cshtml" />
+    <Content Include="Areas\Org\Views\MemberDirectory\Index.cshtml" />
+    <Content Include="Areas\Org\Views\MemberDirectory\Results.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
     <Content Include="Areas\Search\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRange.cshtml" />
@@ -2052,9 +2052,6 @@
     <Content Include="Areas\People\Views\Person\Profile\Membership\Display.cshtml" />
     <Content Include="Areas\Search\Views\OrgSearch\OrganizationStructure.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />
-    <Content Include="Areas\Organization\Views\Web.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Content\less\accordion.less" />
     <Content Include="Content\less\alerts.less" />
     <Content Include="Content\less\breadcrumbs.less" />
@@ -2128,11 +2125,11 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\TagPeopleIds.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\Index.cshtml">
+    <Content Include="Areas\Org\Views\Org2\Index.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgGroups\Index.cshtml">
+    <Content Include="Areas\Org\Views\OrgGroups\Index.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgGroups\Rows.cshtml">
+    <Content Include="Areas\Org\Views\OrgGroups\Rows.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Email\EmailQueued.cshtml">
     </Content>
@@ -2403,13 +2400,13 @@
     </Content>
     <Content Include="Areas\Main\Views\Tags\Tags.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgGroups\Form.cshtml">
+    <Content Include="Areas\Org\Views\OrgGroups\Form.cshtml">
     </Content>
     <Content Include="Areas\Search\Views\OrgSearch\DivisionIds.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\DisplayTemplates\ScheduleInfo.cshtml">
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\ScheduleInfo.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Meeting\Index.cshtml">
+    <Content Include="Areas\Org\Views\Meeting\Index.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\SGMap\popup.cshtml">
     </Content>
@@ -2433,41 +2430,41 @@
     </Content>
     <Content Include="Areas\Manage\Views\Display\EditText.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\RegSetting\Edit.cshtml">
+    <Content Include="Areas\Org\Views\RegSetting\Edit.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\RegSetting\Index.cshtml">
+    <Content Include="Areas\Org\Views\RegSetting\Index.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AgeGroup.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AgeGroup.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\YesNoQuestion.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\YesNoQuestion.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\CheckboxItem.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\CheckboxItem.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\AskDropdown.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\AskDropdown.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\ExtraQuestion.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\ExtraQuestion.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\GradeOption.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\GradeOption.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\OrgFee.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\OrgFee.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\Html.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\Html.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Organization\EditorTemplates\TabMessages.cshtml">
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\TabMessages.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\APIMeta\Lookups.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgChildren\Form.cshtml">
+    <Content Include="Areas\Org\Views\OrgChildren\Form.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgChildren\Index.cshtml">
+    <Content Include="Areas\Org\Views\OrgChildren\Index.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\OrgChildren\Rows.cshtml">
+    <Content Include="Areas\Org\Views\OrgChildren\Rows.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Meeting\iPad.cshtml">
+    <Content Include="Areas\Org\Views\Meeting\iPad.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Merge\Index.cshtml">
     </Content>
-    <Content Include="Areas\Organization\Views\Meeting\ExtrasGrid.cshtml">
+    <Content Include="Areas\Org\Views\Meeting\ExtrasGrid.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Duplicates\Index.cshtml">
     </Content>
@@ -2643,7 +2640,6 @@
     <Folder Include="Areas\Manage\Models\Reports\" />
     <Folder Include="Areas\OnlineReg\Models\Payments\" />
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
-    <Folder Include="Areas\Organization\Views\Shared\" />
     <Folder Include="Areas\Org\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />
     <Folder Include="Areas\Public\Views\TestMobile\" />

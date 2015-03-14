@@ -80,10 +80,6 @@ namespace CmsWeb.Areas.People.Models
                 default:
                     if (!Direction.HasValue())
                         Direction = Future ? "asc" : "desc";
-                    if (Future)
-                        return Direction == "desc"
-                            ? q.OrderBy(a => a.MeetingDate) 
-                            : q.OrderByDescending(a => a.MeetingDate);
                     return Direction == "asc"
                         ? q.OrderBy(a => a.MeetingDate)
                         : q.OrderByDescending(a => a.MeetingDate);

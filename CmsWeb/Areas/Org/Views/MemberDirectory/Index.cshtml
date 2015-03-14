@@ -1,0 +1,78 @@
+﻿@using UtilityExtensions
+@using CmsWeb
+@model CmsWeb.Areas.Org.Models.MemberDirectoryModel
+@{
+    ViewBag.Title = "Member Directory";
+    Layout = "~/Views/Shared/Reports.cshtml";
+}
+@section head
+{
+    <style type="text/css">
+        #results {
+            font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+            font-size: 12px;
+            margin: 0 45px;
+            text-align: left;
+            border-collapse: collapse;
+        }
+            #results th {
+                text-align: left;
+                font-size: 14px;
+                font-weight: normal;
+                padding: 10px 8px;
+                color: #039;
+            }
+            #results td {
+                padding: 8px;
+                color: #669;
+            }
+            #results .alt {
+                background: #e8edff;
+            }
+        div.pager {
+            display: inline-block;
+        }
+    </style>
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $(".bt").button();
+            $("#search").click(function(ev) {
+                ev.preventDefault();
+                $.getTable();
+                return false;
+            });
+            $.gotoPage = function(ev, pg) {
+                $("#Page").val(pg);
+                $.getTable();
+                return false;
+            };
+            $.setPageSize = function(ev) {
+                $('#Page').val(1);
+                $("#PageSize").val($(ev).val());
+                return $.getTable();
+            };
+            $.getTable = function() {
+                var f = $('#results').closest('form');
+                var q = f.serialize();
+                $.post('/MemberDirectory/Results', q, function(ret) {
+                    $('#results').replaceWith(ret);
+                });
+            };
+        });
+    </script>
+}
+<form action="" id="form">
+    @Html.Hidden("OrgId")
+    <div class="roundbox">
+        <p><a href="/Person2/@Util.UserPeopleId">My Profile Page</a></p>
+        <h2>@(Model.FamilyOption ? "Family" : "Member") Directory for @Model.OrgName</h2>
+        @Html.LabelFor(vv => vv.Name, "Part of Name"): 
+        @Html.TextBoxFor(vv => vv.Name, new { title = "Part of the Name" })
+        <button id="search" class="blue bt">Search</button>
+    </div>
+    <hr />
+    @Html.Partial("Results", Model)
+</form>
