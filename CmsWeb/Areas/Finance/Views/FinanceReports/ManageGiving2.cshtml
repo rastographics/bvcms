@@ -10,7 +10,7 @@
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
-                    <a class="btn btn-default" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <a class="delete btn btn-danger" href="/Vault/DeleteVaultData/@Model.person.PeopleId"><i class="fa fa-trash"></i> Delete</a>
+                    <a class="btn btn-default" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                 </div>
             </div>
             <div class="box-content">
@@ -103,43 +103,8 @@
                         </div>
                     </div>
                 </div>
-                <a class="delete btn btn-danger visible-xs-block btn-block" href="/Vault/DeleteVaultData/@Model.person.PeopleId"><i class="fa fa-trash"></i> Delete</a>
                 <a class="btn btn-default visible-xs-block btn-block" href="/FinanceReports/ManagedGiving/"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
             </div>
         </div>
     </div>
 </div>
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            $("a.delete").click(function (e) {
-                e.preventDefault();
-                var href = this.href;
-                swal({
-                    title: "Are you sure?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                },
-                function () {
-                    $.post(href, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
-                        else {
-                            swal({
-                                title: "Deleted!",
-                                type: "success"
-                            },
-                            function () {
-                                window.location = "/FinanceReports/ManagedGiving";
-                            });
-                        }
-                    });
-                });
-            });
-        });
-    </script>
-}
