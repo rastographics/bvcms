@@ -96,7 +96,7 @@ namespace CmsData
             var cs = Util.GetConnectionString2("master");
 
             var retVal = CreateDatabase(Util.Host, sqlScriptsPath, cs, Util.ConnectionStringImage,
-                Util.GetConnectionString2("ElmahDb"), Util.ConnectionString);
+                Util.GetConnectionString2("Elmah"), Util.ConnectionString);
 
             HttpRuntime.Cache.Remove(Util.Host + "-DatabaseExists");
             HttpRuntime.Cache.Remove(Util.Host + "-CheckDatabaseResult");
