@@ -13,6 +13,7 @@ namespace CmsWeb.MobileAPI
 
 		public string first { get; set; }
 		public string last { get; set; }
+		public string suffix { get; set; }
 
 		public string gender { get; set; }
 		public int age { get; set; }
@@ -43,6 +44,7 @@ namespace CmsWeb.MobileAPI
 
 			first = p.PreferredName ?? "";
 			last = p.LastName ?? "";
+			suffix = p.SuffixCode;
 
 			if (p.AddressTypeId == 10)
 				primaryAddress = "Family";
@@ -102,6 +104,7 @@ namespace CmsWeb.MobileAPI
 				familyMember.age = m.Age.ToString();
 				familyMember.gender = m.Gender.Description;
 				familyMember.position = m.FamilyPosition.Description;
+				familyMember.deceased = m.Deceased;
 
 				family.Add(m.PeopleId.ToString(), familyMember);
 			}
