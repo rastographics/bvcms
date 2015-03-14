@@ -210,124 +210,6 @@ namespace CmsWeb.Areas.Reports.Models
 					  };
 			return q;
 		}
-        public static IEnumerable<AttendInfo> RollList0(int? MeetingId, int OrgId, DateTime MeetingDate, bool SortByName = false, bool CurrentMembers = false)
-		{
-			// people who attended, members or visitors
-			var attends = (from a in DbUtil.Db.Attends
-								where a.MeetingId == MeetingId
-								where a.EffAttendFlag == null || a.EffAttendFlag == true || a.Commitment != null
-								select new
-								{
-									a,
-									a.Person.Name2,
-									a.Person.Age,
-									a.Person.EmailAddress
-								}).ToList();
-
-			// Members at the time of the meeting
-			var members = FetchOrgMembers(OrgId, MeetingDate, CurrentMembers).ToList();
-
-			// the list that will appear at the top, 
-			// members who should attend and members who did attend
-			var memberlist = from p in members
-								  join pa in attends on p.PeopleId equals pa.a.PeopleId into j
-								  from pa in j.DefaultIfEmpty()
-								  let cid = pa != null ? pa.a.Commitment : null
-								  where CurrentMembers || MeetingDate > p.Joined// they were either a member at the time
-									  // or they attended as a member (workaround for bad transaction history)
-										 || (pa != null && !VisitAttendTypes.Contains(pa.a.AttendanceTypeId.Value))
-								  select new AttendInfo
-								  {
-									  PeopleId = p.PeopleId,
-									  Name = p.Name2,
-									  Email = p.Email,
-									  Attended = pa != null && pa.a.AttendanceFlag,
-									  AttendCommitmentId = cid,
-									  Commitment = CmsData.Codes.AttendCommitmentCode.Lookup(cid ?? 99),
-									  Member = true,
-									  CurrMember = true, // for iPhone's sake
-									  CurrMemberType = p.MemberType,
-									  MemberType = pa != null ? (pa.a.MemberType != null ? pa.a.MemberType.Description : "") : "",
-									  AttendType = pa != null ? (pa.a.AttendType != null ? pa.a.AttendType.Description : "") : "",
-									  Age = p.Age,
-									  OtherAttend = pa != null ? (int?)pa.a.OtherAttends : null
-								  };
-
-			// recent visitors and new visitors
-			var visitors = FetchVisitors(OrgId, MeetingDate, NoCurrentMembers: false).ToList();
-
-			// the list that appears at the bottom in bold, 
-			// visitors who attended, 
-			// recent visitors who did not attend excluding those who have since become members in the previous list
-			var visitorlist = from pvisitor in visitors
-									where members.All(mm => mm.PeopleId != pvisitor.PeopleId)
-									join pattender in attends on pvisitor.PeopleId equals pattender.a.PeopleId into j
-									from pattender in j.DefaultIfEmpty()
-									let cid = pattender != null ? pattender.a.Commitment : null
-									let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(cm => cm.PeopleId == pvisitor.PeopleId && cm.OrganizationId == OrgId)
-									select new AttendInfo
-									{
-										PeopleId = pvisitor.PeopleId,
-										Name = pvisitor.Name2,
-										Email = pvisitor.Email,
-										Attended = pattender != null && pattender.a.AttendanceFlag,
-										AttendCommitmentId = cid,
-										Commitment = CmsData.Codes.AttendCommitmentCode.Lookup(cid ?? 99),
-										Member = false,
-										CurrMember = om != null, // for iPhone's sake
-										CurrMemberType = "",
-										MemberType = pattender != null ? (pattender.a.MemberType != null ? pattender.a.MemberType.Description : "") : "",
-										AttendType = pattender != null ? (pattender.a.AttendType != null ? pattender.a.AttendType.Description : "") : "",
-										Age = pvisitor.Age,
-										OtherAttend = pattender != null ? (int?)pattender.a.OtherAttends : null
-									};
-
-			var otherlist = from pa in attends
-								 join v in visitorlist on pa.a.PeopleId equals v.PeopleId into jv
-								 join m in memberlist on pa.a.PeopleId equals m.PeopleId into jm
-								 from v in jv.DefaultIfEmpty()
-								 from m in jm.DefaultIfEmpty()
-								 let cid = pa != null ? pa.a.Commitment : null
-								 let mt = pa.a.MemberType == null ? "?" : pa.a.MemberType.Description + " ?"
-								 let at = pa.a.AttendType == null ? "?" : pa.a.AttendType.Description + " ?"
-								 where v == null && m == null
-								 select new AttendInfo
-								 {
-									 PeopleId = pa.a.PeopleId,
-									 Name = pa.Name2,
-									 Email = pa.EmailAddress,
-									 Attended = true,
-									 AttendCommitmentId = cid,
-									 Commitment = CmsData.Codes.AttendCommitmentCode.Lookup(cid ?? 99),
-									 Member = false,
-									 CurrMember = false, // for iPhone's sake
-									 MemberType = mt,
-									 AttendType = at
-								 };
-
-			// the final rollsheet
-			var rollsheet = from p in memberlist.Union(visitorlist).Union(otherlist)
-								 select new AttendInfo
-								 {
-									 PeopleId = p.PeopleId,
-									 Name = p.Name,
-									 Email = p.Email,
-									 Attended = p.Attended,
-									 AttendCommitmentId = p.AttendCommitmentId,
-									 Commitment = p.Commitment,
-									 Member = p.Member,
-									 CurrMember = p.CurrMember,
-									 CurrMemberType = p.CurrMemberType,
-									 MemberType = p.MemberType,
-									 AttendType = p.AttendType,
-									 OtherAttend = p.OtherAttend
-								 };
-
-			if (SortByName)
-				rollsheet = rollsheet.OrderBy(pp => pp.Name);
-			return rollsheet;
-		}
-
 
         public static IEnumerable<AttendInfo> RollList(int? meetingId, int orgId, DateTime meetingDate,
             bool sortByName = false, bool currentMembers = false)
@@ -358,7 +240,8 @@ namespace CmsWeb.Areas.Reports.Models
                        MemberType = p.MemberType,
                        AttendType = p.AttendType,
                        OtherAttend = p.OtherAttends,
-                       CurrMember = p.CurrMember ?? false
+                       CurrMember = p.CurrMember == true,
+                       Conflict = p.Conflict == true
                    };
         }
         public static IEnumerable<AttendInfo> RollListHighlight(int? meetingId, int orgId, DateTime meetingDate,
@@ -412,6 +295,7 @@ namespace CmsWeb.Areas.Reports.Models
 			public string AttendType { get; set; }
 			public int? OtherAttend { get; set; }
             public bool Highlight { get; set; }
+            public bool Conflict { get; set; }
 		}
 	}
 }

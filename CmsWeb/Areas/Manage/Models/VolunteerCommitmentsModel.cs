@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
+using CmsData.View;
 using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
@@ -35,13 +36,13 @@ namespace CmsWeb.Areas.Manage.Models
         public int OrgId { get; set; }
         public bool IsLeader { get; set; }
 
-        public class VolunteerInfo
-        {
-            public string Name { get; set; }
-            public int commits { get; set; }
-            public int PeopleId { get; set; }
-            public int OrgId { get; set; }
-        }
+        //        public class VolunteerInfo
+        //        {
+        //            public string Name { get; set; }
+        //            public int commits { get; set; }
+        //            public int PeopleId { get; set; }
+        //            public int OrgId { get; set; }
+        //        }
         public SelectList SmallGroups()
         {
             var q = from m in DbUtil.Db.MemberTags
@@ -53,29 +54,16 @@ namespace CmsWeb.Areas.Manage.Models
             list.Insert(0, "(not specified)");
             return new SelectList(list);
         }
-        public IEnumerable<VolunteerInfo> Volunteers()
+
+        private List<VolunteerCalendar> volunteers;
+        public IEnumerable<VolunteerCalendar> Volunteers()
         {
-            var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.OrganizationId == OrgId
-                    where SmallGroup1 == null || SmallGroup1 == "(not specified)"
-                        || om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == SmallGroup1)
-                    where SmallGroup2 == null || SmallGroup2 == "(not specified)"
-                        || om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == SmallGroup2)
-                    let commits = (from a in DbUtil.Db.Attends
-                                   where a.MeetingDate > Util.Now.Date
-                                   where a.OrganizationId == om.OrganizationId
-                                   where a.PeopleId == om.PeopleId
-                                   where a.Commitment == AttendCommitmentCode.Attending || a.Commitment == AttendCommitmentCode.Substitute
-                                   select a).Count()
-                    orderby om.Person.Name2
-                    select new VolunteerInfo
-                    {
-                        Name = om.Person.Name2,
-                        commits = commits,
-                        PeopleId = om.PeopleId,
-                        OrgId = om.OrganizationId
-                    };
-            return q;
+            if (volunteers != null)
+                return volunteers;
+            var q = from mm in DbUtil.Db.VolunteerCalendar(OrgId, SmallGroup1, SmallGroup2)
+                    orderby mm.PeopleId
+                    select mm;
+            return volunteers = q.ToList();
         }
         public List<TimeSlots.TimeSlot> TimeSlots { get; set; }
         public DragDropInfo ddinfo { get; set; }
@@ -136,25 +124,29 @@ namespace CmsWeb.Areas.Manage.Models
                          where m.OrganizationId == OrgId
                          orderby m.MeetingDate
                          select m).ToList();
-            var alist = (from a in DbUtil.Db.Attends
-                         where a.MeetingDate > Util.Now.Date
-                         where a.OrganizationId == OrgId
-                         where a.Commitment != null
-                         let other = (from oa in a.Person.Attends
-                                      where oa.OrganizationId != OrgId
-                                      where oa.MeetingDate == a.MeetingDate
-                                      where oa.Commitment == AttendCommitmentCode.Attending
-                                      select oa.AttendId).Count()
+
+            var alist = (from a in DbUtil.Db.AttendCommitments(OrgId)
                          orderby a.MeetingDate
-                         select new
-                         {
-                             a.MeetingId,
-                             a.MeetingDate,
-                             a.PeopleId,
-                             Name = a.Person.Name2,
-                             a.Commitment,
-                             other,
-                         }).ToList();
+                         select a).ToList();
+            //            var alist = (from a in DbUtil.Db.Attends
+            //                         where a.MeetingDate > Util.Now.Date
+            //                         where a.OrganizationId == OrgId
+            //                         where a.Commitment != null
+            //                         let other = (from oa in a.Person.Attends
+            //                                      where oa.OrganizationId != OrgId
+            //                                      where oa.MeetingDate == a.MeetingDate
+            //                                      where oa.Commitment == AttendCommitmentCode.Attending
+            //                                      select oa.AttendId).Count()
+            //                         orderby a.MeetingDate
+            //                         select new
+            //                         {
+            //                             a.MeetingId,
+            //                             a.MeetingDate,
+            //                             a.PeopleId,
+            //                             Name = a.Person.Name2,
+            //                             a.Commitment,
+            //                             other,
+            //                         }).ToList();
 
             var list = new List<Slot>();
             for (var sunday = Sunday; sunday <= EndDt; sunday = sunday.AddDays(7))
@@ -179,13 +171,13 @@ namespace CmsWeb.Areas.Manage.Models
                                         Limit = needed.ToInt2() ?? ts.Limit ?? 0,
                                         Persons = (from a in alist
                                                    where a.MeetingDate == time
-                                                   orderby a.Name
+                                                   orderby a.Name2
                                                    select new NameId
                                                    {
-                                                       Name = a.Name,
+                                                       Name = a.Name2,
                                                        PeopleId = a.PeopleId,
                                                        Commitment = a.Commitment,
-                                                       OtherCommitments = a.other
+                                                       OtherCommitments = a.Conflicts == true
                                                    }).ToList(),
                                         MeetingId = meetingid
                                     };
@@ -255,12 +247,12 @@ namespace CmsWeb.Areas.Manage.Models
             {
                 case "nocommits":
                     volids = (from p in Volunteers()
-                              where p.commits == 0
+                              where (p.Commits ?? false) == false
                               select p.PeopleId).ToList();
                     break;
                 case "commits":
                     volids = (from p in Volunteers()
-                              where p.commits > 0
+                              where p.Commits ?? false
                               select p.PeopleId).ToList();
                     break;
                 case "all":

@@ -3,6 +3,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Models;
 using UtilityExtensions;
 
@@ -29,7 +30,7 @@ namespace CmsWeb.Areas.People.Models
                       where org.LimitToRole == null || roles.Contains(org.LimitToRole)
                       select a;
             if (!HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.Session["showallmeetings"] == null)
-                q = q.Where(a => a.EffAttendFlag == null || a.EffAttendFlag == true);
+                q = q.Where(a => a.EffAttendFlag == null || a.EffAttendFlag == true || a.Commitment != null);
             if (Future)
                 q = q.Where(aa => aa.MeetingDate >= midnight);
             else
@@ -39,6 +40,10 @@ namespace CmsWeb.Areas.People.Models
         override public IEnumerable<AttendInfo> DefineViewList(IQueryable<Attend> q)
         {
             return from a in q
+                   let conflict = DbUtil.Db.ViewMeetingConflicts.Any(mm => 
+                       a.PeopleId == mm.PeopleId 
+                       && a.MeetingDate == mm.MeetingDate 
+                       && (mm.OrgId1 == a.OrganizationId || mm.OrgId2 == a.OrganizationId ) )
                    let o = a.Meeting.Organization
                    select new AttendInfo
                    {
@@ -53,6 +58,8 @@ namespace CmsWeb.Areas.People.Models
                        MemberType = a.MemberType.Description ?? "(null)",
                        AttendFlag = a.AttendanceFlag,
                        OtherAttends = a.OtherAttends,
+                       Commitment = AttendCommitmentCode.Lookup(a.Commitment ?? 99),
+                       conflict = Future && conflict,
                    };
         }
         override public IQueryable<Attend> DefineModelSort(IQueryable<Attend> q)
@@ -73,12 +80,8 @@ namespace CmsWeb.Areas.People.Models
                     return q.OrderByDescending(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
                 case "Meeting":
                 default:
-                    if (Future)
-                        return Pager.Direction == "desc"
-                            ? q.OrderBy(a => a.MeetingDate) 
-                            : q.OrderByDescending(a => a.MeetingDate);
                     return Pager.Direction == "asc"
-                        ? q.OrderBy(a => a.MeetingDate)
+                        ? q.OrderBy(a => a.MeetingDate) 
                         : q.OrderByDescending(a => a.MeetingDate);
             }
         }

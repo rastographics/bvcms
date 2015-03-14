@@ -1853,6 +1853,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.MeetingConflict> ViewMeetingConflicts
+	    {
+		    get { return this.GetTable< View.MeetingConflict>(); }
+
+	    }
+
 	    public Table< View.MemberDatum> ViewMemberDatas
 	    {
 		    get { return this.GetTable< View.MemberDatum>(); }
@@ -2060,6 +2066,17 @@ namespace CmsData
                 sched,
                 start,
                 end
+                );
+		}
+
+		[Function(Name="dbo.AttendCommitments", IsComposable = true)]
+		public IQueryable< View.AttendCommitment > AttendCommitments(
+            [Parameter(DbType="int")] int? oid
+            )
+		{
+			return this.CreateMethodCallQuery< View.AttendCommitment>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
                 );
 		}
 
@@ -3353,6 +3370,21 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.VolunteerCalendar", IsComposable = true)]
+		public IQueryable< View.VolunteerCalendar > VolunteerCalendar(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="nvarchar")] string sg1,
+            [Parameter(DbType="nvarchar")] string sg2
+            )
+		{
+			return this.CreateMethodCallQuery< View.VolunteerCalendar>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                sg1,
+                sg2
+                );
+		}
+
 		[Function(Name="dbo.WeeklyAttendsForOrgs", IsComposable = true)]
 		public IQueryable< View.WeeklyAttendsForOrg > WeeklyAttendsForOrgs(
             [Parameter(DbType="varchar")] string orgs,
@@ -3989,6 +4021,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.WeekNumber", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? WeekNumber(
+            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                dt
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.Tool_VarbinaryToVarcharHex", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string ToolVarbinaryToVarcharHex(
@@ -3998,6 +4042,18 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 VarbinaryValue
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SundayForWeekNumber", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? SundayForWeekNumber(
+            [Parameter(Name = "wkn", DbType="int")] int? wkn
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                wkn
                 ).ReturnValue));
 		}
 
