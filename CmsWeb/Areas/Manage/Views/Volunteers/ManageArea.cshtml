@@ -17,7 +17,7 @@
             <th>Week</th>
             @foreach (var t in Model.TimeSlots)
             {
-              <th>@t.Description<br/>@t.Datetime().ToString(DayHourFmt)</th>
+              <th>@t.Description<br />@t.Datetime().ToString(DayHourFmt)</th>
             }
           </tr>
         </thead>
@@ -79,7 +79,7 @@
                 {
                   if (Model.IsLeader)
                   {
-                    <div pid="@p.PeopleId" mid="@t.MeetingId" class="selectable commit-@p.Commitment" source="registered" title="@p.CommitmentText">@p.Name</div>
+                    <div pid="@p.PeopleId" mid="@t.MeetingId" class="selectable commit-@p.Commitment @(p.OtherCommitments ? "conflict" : "")" source="registered" title="@p.CommitmentText">@p.Name</div>
                   }
                   else
                   {
@@ -118,21 +118,34 @@
           <h4><em>Select header items in blue below, or a person, then click a target</em></h4>
                 var vlist = Model.Volunteers().ToList();
           <div class="volunteers">
-            <div class="selectable" source="all"><h3>All Volunteers</h3></div>
+          <div class="selectable" source="all">
+            <h3>All Volunteers</h3>
+          </div>
+          @if (vlist.Any(vv => vv.Conflicts == true))
+          {
+            <div class="selectable" source="commits"><h3>With Conflicts</h3></div>
+            foreach (var v in vlist.Where(vv => vv.Conflicts == true))
+            {
+              <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
+                @v.Name
+                @Helper.AnchorLink("registration page", "/OnlineReg/ManageVolunteer/{0}/{1}".Fmt(Model.OrgId, v.PeopleId), target: "committments")
+              </div>
+            }
+          }
             <div class="selectable" source="commits"><h3>With Commitments</h3></div>
-            @foreach (var v in vlist.Where(vv => vv.commits > 0))
+          @foreach (var v in vlist.Where(vv => vv.Commits == true && vv.Conflicts != true))
                     {
-                  <div class="selectable" source="person" pid="@v.PeopleId">
-                    @v.Name (@v.commits)
-                    @Helper.AnchorLink("registration page", "/OnlineReg/ManageVolunteer/{0}/{1}".Fmt(v.OrgId, v.PeopleId), target: "committments")
+            <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
+              @v.Name
+              @Helper.AnchorLink("registration page", "/OnlineReg/ManageVolunteer/{0}/{1}".Fmt(Model.OrgId, v.PeopleId), target: "committments")
                   </div>
                     }
             <div class="selectable" source="nocommits"><h3>With No Commitments</h3></div>
-            @foreach (var v in vlist.Where(vv => vv.commits == 0))
+          @foreach (var v in vlist.Where(vv => vv.Commits != true))
                     {
                   <div class="selectable" source="person" pid="@v.PeopleId">
-                    @v.Name (@v.commits)
-                    @Helper.AnchorLink("registration page", "/OnlineReg/ManageVolunteer/{0}/{1}".Fmt(v.OrgId, v.PeopleId), target: "committments")
+              <span class="@(v.Conflicts == true ? "conflict" : "")">@v.Name</span>
+              @Helper.AnchorLink("registration page", "/OnlineReg/ManageVolunteer/{0}/{1}".Fmt(Model.OrgId, v.PeopleId), target: "committments")
                   </div>
                     }
           </div>

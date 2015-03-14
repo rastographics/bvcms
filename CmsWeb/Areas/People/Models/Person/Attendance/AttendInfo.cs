@@ -30,5 +30,7 @@ namespace CmsWeb.Areas.People.Models
         public bool RegisteredFlag { get; set; }
         public int RollSheetSectionId { get; set; }
         public int OtherAttends { get; set; }
+        public string Commitment { get; set; }
+        public bool conflict { get; set; }
     }
 }

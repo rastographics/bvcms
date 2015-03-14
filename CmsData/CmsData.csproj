@@ -460,6 +460,7 @@
     <Compile Include="Finance\TransNational\Vault\VaultResponse.cs" />
     <Compile Include="Generated\ApiSession.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
+    <Compile Include="Generated\Functions\AttendCommitment.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\CurrOrgMembers2.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
@@ -484,6 +485,7 @@
     <Compile Include="Generated\Functions\RollList.cs" />
     <Compile Include="Generated\Functions\RollListHighlight.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
+    <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
     <Compile Include="Generated\MergeHistory.cs" />
     <Compile Include="Generated\MobileAppAction.cs" />
@@ -501,6 +503,7 @@
     <Compile Include="Generated\Views\AttendCredits2.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\FailedEmail.cs" />
+    <Compile Include="Generated\Views\MeetingConflict.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />
     <Compile Include="Generated\Views\OrgsWithFee.cs" />
     <Compile Include="Generated\Views\OrgsWithoutFee.cs" />

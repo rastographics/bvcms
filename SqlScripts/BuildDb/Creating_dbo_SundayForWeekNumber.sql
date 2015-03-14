@@ -1,7 +1,15 @@
-CREATE FUNCTION [dbo].[SundayForWeek](@year INT, @week INT)
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date, ,>
+-- Description:	<Description, ,>
+-- =============================================
+CREATE FUNCTION [dbo].[SundayForWeekNumber](@wkn INT)
 RETURNS datetime
 AS
 BEGIN
+
+DECLARE @year INT = FLOOR(@wkn / 100), 
+	@week INT = @wkn % 100
 
 DECLARE @dt1 DATETIME = DATEFROMPARTS(@year, 1, 1)
 DECLARE @dt DATETIME 

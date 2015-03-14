@@ -24,10 +24,14 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>@Model.SortLink("Meeting")</th>
-                    <th>@Model.SortLink("Organization")</th>
-                    <th>@Model.SortLink("MemberType")</th>
-                    <th>@Model.SortLink("AttendType")</th>
+                    <th>@Model.Pager.SortLink("Meeting")</th>
+                  @if (Model.Future)
+                  {
+                  <td>Commitment</td>
+                  }
+                  <th>@Model.Pager.SortLink("Organization")</th>
+                    <th>@Model.Pager.SortLink("MemberType")</th>
+                    <th>@Model.Pager.SortLink("AttendType")</th>
                     <th>OtherAttends</th>
                 </tr>
             </thead>
@@ -40,7 +44,12 @@
                         <td>
                             <input type="checkbox" mid="@a.MeetingId" pid="@a.PeopleId" @(a.AttendFlag ? "checked=checked" : "") class="atck" @(User.IsInRole("Admin") ? "" : "disabled=disabled") /></td>
                         <td nowrap="nowrap"><a href="/Meeting/@a.MeetingId">@a.MeetingDate.GetWeekNumber() @a.MeetingDate.Value.ToString("g") (@a.MeetingDate.Value.ToString("ddd"))</a></td>
-                        <td><a href="@Util2.Org/@a.OrganizationId">@a.OrganizationName</a></td>
+                      @if (Model.Future)
+                      {
+                      <td class="@(a.conflict ? " alert-danger"
+                          "" )">@a.Commitment</td>
+                      }
+                        <td><a href="/Organization/@a.OrganizationId">@a.OrganizationName</a></td>
                         <td>@a.MemberType</td>
                         <td>@a.AttendType</td>
                         <td>@a.OtherAttends</td>
@@ -53,8 +62,15 @@
                     { 
                     <tr>
                         <td>
-                            <input type="checkbox" @(a.AttendFlag ? "checked=checked" : "") disabled=disabled /></td>
-                        <td>@a.MeetingDate.Value.ToString("g")</td>
+                <input type="checkbox" @(a.AttendFlag ? "checked=checked" : "") disabled= disabled />
+              </td>
+              <td>
+                @a.MeetingDate.Value.ToString("g")
+              </td>
+              @if (Model.Future)
+              {
+                <td class="@(a.conflict ? "alert-danger" : "")">@a.Commitment</td>
+              }
                         <td>@a.OrganizationName</td>
                         <td>@a.MemberType</td>
                         <td>@a.AttendType</td>

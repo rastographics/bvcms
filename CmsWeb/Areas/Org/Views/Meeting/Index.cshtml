@@ -1,0 +1,300 @@
+﻿@using CmsWeb
+@using UtilityExtensions
+@model CmsWeb.Areas.Org.Models.MeetingModel
+@{
+  ViewBag.Title = "Meeting";
+  Layout = ViewExtensions2.Layout();
+  var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
+  var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";
+}
+@section head
+{
+  <style type="text/css">
+    tr.visitor td {
+      font-weight: bold;
+    }
+
+    .hidden {
+      visibility: hidden;
+    }
+
+    #attends tr td {
+      border-bottom: 1px solid #999;
+    }
+
+    .btn-group.btn-page-actions {
+      margin-top: 0;
+    }
+
+    #profile-header {
+      border-top: 5px solid #45a5f4;
+    }
+
+    #bluetoolbarstop ul.dropdown-div-reports {
+      margin-left: -100px;
+      width: 260px;
+    }
+  </style>
+}
+@section scripts
+{
+  @Fingerprint.Script("/Scripts/meeting/meeting.js")
+}
+
+@Html.Hidden("meetingid", Model.meeting.MeetingId)
+@Html.Hidden("sort", "false")
+@Html.Hidden("RegularMeetingHeadCount", RegularMeetingHeadCount)
+@if (Model.HasRegistered())
+{
+  @Html.Hidden("showregistered", "true")
+}
+<div class="row-fluid" id="profile-header">
+  <div class="span8">
+    <table class="roundbox pad5">
+      <tr>
+        <td colspan="2" nowrap>
+          <h2>
+            <a href="/Organization/@Model.meeting.OrganizationId">@Model.meeting.Organization.OrganizationName</a>
+            <span id="t-@Model.meeting.MeetingId" class="@(User.IsInRole("Admin") ? "clickEdit" : "")" style="font-size: 12px">@Model.meeting.MeetingDate.FormatDateTm()</span>
+          </h2>
+        </td>
+      </tr>
+      @if (User.IsInRole("Attendance"))
+      {
+        <tr>
+          <td class="right">Description:</td>
+          <td><span id="d-@Model.meeting.MeetingId" class="clickEdit">@Model.meeting.Description</span></td>
+        </tr>
+        <tr>
+          <td class="right">Meeting Type:</td>
+          <td>
+            <span id='g-@Model.meeting.MeetingId' class='clickSelectG'>@(Model.meeting.GroupMeetingFlag ? "Group (headcount)" : "Regular")</span> |
+            <span id='c-@Model.meeting.MeetingId' class='clickSelectC'>@Model.AttendCreditType()</span>
+          </td>
+        </tr>
+      }
+      else
+      {
+        <tr>
+          <td class="right">Description:</td>
+          <td>@Model.meeting.Description</td>
+        </tr>
+        <tr>
+          <td class="nowrap right">Meeting Type:</td>
+          <td>
+            @(Model.meeting.GroupMeetingFlag ? "Group (headcount)" : "Regular") |
+            @Model.AttendCreditType()
+          </td>
+        </tr>
+      }
+      <tr>
+        <td class="right top">Attendance:</td>
+        <td>
+          <fieldset style="padding: 3px; border: 1px solid #c0c0c0;">
+            <table width="100%" class="pad0">
+              <tr>
+                <td class="right">HeadCount:</td>
+                <td id="HeadCount" class="right">
+                  @if (User.IsInRole("Attendance") && CanEditHeadCount)
+                  {
+                    <span id="h=@Model.meeting.MeetingId" class="headcount">@Model.meeting.HeadCount.ToStringNoZero()</span>
+                  }
+                  else
+                  {
+                    @Model.meeting.HeadCount.ToStringNoZero()
+                  }
+                </td>
+                <td colspan="2"></td>
+              </tr>
+              <tr>
+                <td class="right">Present:</td>
+                <td class="right" id="NumPresent"><span>@Model.meeting.NumPresent</span></td>
+                <td class="right">New Guests:</td>
+                <td class="right" id="NumNewVisit"><span>@Model.meeting.NumNewVisit</span></td>
+              </tr>
+              <tr>
+                <td class="right">Members:</td>
+                <td class="right" id="NumMembers"><span>@Model.meeting.NumMembers</span></td>
+                <td class="right">Repeat Guests:</td>
+                <td class="right" id="NumRepeatVst"><span>@Model.meeting.NumRepeatVst</span></td>
+              </tr>
+              <tr>
+                <td class="right">Other Attends:</td>
+                <td class="right" id="NumOtherAttends"><span>@Model.meeting.NumOtherAttends</span></td>
+                <td class="right">Visiting Members:</td>
+                <td class="right" id="NumVstMembers"><span>@Model.meeting.NumVstMembers</span></td>
+              </tr>
+            </table>
+          </fieldset>
+        </td>
+      </tr>
+      <tr>
+        <td class="right">Show:</td>
+        <td nowrap id="showbuttons" class="center">
+          <table width="100%">
+            <tr>
+              <td>
+                <input type="radio" id="showall" name="show" value="all" /><label for="showall">All</label>
+              </td>
+              <td>
+                <input type="radio" id="showattends" name="show" value="attends" checked="checked" /><label for="showattends">Attends</label>
+              </td>
+              <td>
+                <input type="radio" id="showabsents" name="show" value="absents" /><label for="showabsents">Absents</label>
+              </td>
+              <td>
+                <input type="radio" id="showreg" name="show" value="reg" /><label for="showreg">Registered</label>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+
+      @if (User.IsInRole("Attendance"))
+      {
+        <tr>
+          <td class="right">Enable:</td>
+          <td>
+            <table width="100%">
+              <tr>
+                <td class="left" nowrap>
+                  <label for="editing" style="padding-right: 2em;">@Html.CheckBox("editing", Model.showall) Editing</label><br>
+                  <label for="registering" style="padding-right: 2em;">@Html.CheckBox("registering", Model.showregister) Register</label><br />
+                  <label for="currmembers">@Html.CheckBox("currmembers", Model.currmembers)</label>
+                  Current Mbrs
+                </td>
+                <td class="right" nowrap>
+                  <a href="/SearchAdd2/Dialog/registered/@Model.meeting.MeetingId" class="bt hidden searchadd">Add Registered</a>
+                  <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="bt searchadd" title="Click to Add Guests to Meeting">Add Guests</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      }
+    </table>
+  </div>
+  <div class="span4">
+    @Html.Partial("Toolbar/Toolbar")
+    @if (User.IsInRole("Edit"))
+    {
+      <div>
+        <table id="extras" class="@ViewExtensions2.GridClass" style="margin-top: 2em">
+          <thead>
+            <tr>
+              <td>Field</td>
+              <td>Value</td>
+              <td>
+                <a id="newextravalue" href="#">
+                  <img src="/Content/images/plus1.png" />
+                </a>
+              </td>
+            </tr>
+          </thead>
+          <tbody>
+            @Html.Partial("ExtrasGrid", Model.meeting)
+          </tbody>
+        </table>
+      </div>
+    }
+    @if (User.IsInRole("Attendance"))
+    {
+      <div>
+        Wand Target<br />
+        <input type="text" id="wandtarget" />
+      </div>
+    }
+  </div>
+</div>
+@if (Model.currmembers == true)
+{
+  <div class="alert alert-warning">
+    <h4>Showing Current Members...</h4>
+    Note that if you mark attendance for someone whose enrollment date is after @Model.meeting.MeetingDate.FormatDateTm(), they will be shown as a visitor to the meeting.
+    You can change their enrollment date prior to this meeting date by going back to the organization and using the Update Members button to change their enrollment date in one step.
+    This will allow you to mark them as members.
+  </div>
+}
+@if ((Model.org.MemberCount ?? 0) < 1000 || Model.showlarge)
+{
+  <table id="attends" class="@ViewExtensions2.GridClass">
+    <thead>
+      <tr>
+        <th>Attended</th>
+        <th class="showreg" style="display: none">Commitment</th>
+        <th><a href="#" id="sortbyname">Name</a></th>
+        <th>Current Member Type</th>
+        <th>Attend Member Type</th>
+        <th>Attend Type</th>
+        <th>Other Attend</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var a in Model.Attends())
+      {
+        <tr rowtype="@a.Member" @(!a.Member ? "class=visitor" : "")>
+          <td class="center">
+            <input type="checkbox" pid="@a.PeopleId" @(a.Attended ? "checked=checked" : "") class="atck" onclick=" return false " onkeydown=" return false " />
+          </td>
+          <td class="showreg" style="display: none">
+            <span id='c@(Model.meeting.MeetingId)_@(a.PeopleId)' class='clickSelect rgck commitment'>@a.Commitment</span>
+          </td>
+          <td class="name @(a.Conflict ? "alert-danger" : "")"><a href="/Person2/@a.PeopleId" title="@a.Age">@a.Name</a></td>
+          <td>@a.CurrMemberType</td>
+          <td>@a.MemberType</td>
+          <td>@a.AttendType</td>
+          <td>@a.OtherAttend</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
+else
+{
+  <div>
+    <b>This organization has @Model.org.MemberCount.ToString2("n0") members which is too large to display normally.</b>
+  </div>
+  <a class="bt" href="/Meeting/@Model.meeting.MeetingId?showlarge=true">Display Anyway</a>
+}
+<div id="visitorDialog" title="Add Guests">
+  <iframe style="width: 100%; height: 99%; border-width: 0px;"></iframe>
+</div>
+<div id="AddFromTag">
+  <iframe style="width: 100%; height: 99%; border-width: 0;"></iframe>
+</div>
+
+<table id="newvalueform" class="grid roundbox" style="display: none">
+  <tr>
+    <td colspan="2">
+      <h2>New Extra Value</h2>
+    </td>
+  </tr>
+  <tr>
+    <td>MultiLine:</td>
+    <td>@Html.CheckBox("multiline")</td>
+  </tr>
+  <tr>
+    <td>Field:</td>
+    <td>@Html.TextBox("fieldname")</td>
+  </tr>
+  <tr>
+    <td>Value:</td>
+    <td>@Html.TextBox("fieldvalue")</td>
+  </tr>
+</table>
+
+<table id="rollsheetoptions" class="grid roundbox" style="display: none">
+  <tr>
+    <td colspan="2">
+      <h2>Rollsheet Report</h2>
+    </td>
+  </tr>
+  <tr>
+    <td>By Group:</td>
+    <td>@Html.CheckBox("bygroup")</td>
+  </tr>
+  <tr>
+    <td>SmallGroup Prefix (optional):</td>
+    <td>@Html.TextBox("sgprefix")</td>
+  </tr>
+</table>

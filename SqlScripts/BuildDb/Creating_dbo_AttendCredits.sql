@@ -14,7 +14,6 @@ AS
 				DATEPART(yy, m.MeetingDate) AS [Year], 
 				DATEPART(ww, m.MeetingDate) AS [Week], 
 				s.ScheduleId,
-				AttendanceTypeId,
 				CASE WHEN ISNULL(m.AttendCreditId, 1) = 1 
 					THEN AttendId + 20 -- make every meeting count, 20 gets it out of the way of AttendCredit codes
 					ELSE m.AttendCreditId
