@@ -44,6 +44,8 @@ namespace CmsData.View
 		
 		private bool? _CurrMember;
 		
+		private bool? _Conflict;
+		
 		
 		public RollList()
 		{
@@ -284,6 +286,23 @@ namespace CmsData.View
 			{
 				if (this._CurrMember != value)
 					this._CurrMember = value;
+			}
+
+		}
+
+		
+		[Column(Name="Conflict", Storage="_Conflict", DbType="bit")]
+		public bool? Conflict
+		{
+			get
+			{
+				return this._Conflict;
+			}
+
+			set
+			{
+				if (this._Conflict != value)
+					this._Conflict = value;
 			}
 
 		}

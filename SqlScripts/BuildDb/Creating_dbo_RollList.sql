@@ -1,4 +1,5 @@
 
+
 CREATE FUNCTION [dbo].[RollList]
 (
 	@mid INT
@@ -21,7 +22,8 @@ RETURNS @table TABLE
 	MemberType NVARCHAR(100), 
 	AttendType NVARCHAR(100),
 	OtherAttends INT,
-	CurrMember BIT
+	CurrMember BIT,
+	Conflict BIT
 )
 AS
 BEGIN
@@ -90,6 +92,7 @@ BEGIN
 		   ,at.Description Attendtype
 		   ,a.OtherAttends
 		   ,CASE WHEN om.PeopleId IS NULL THEN 0 ELSE 1 END
+		   ,CASE WHEN GETDATE() > @meetingdt OR mc.PeopleId IS NULL THEN 0 ELSE 1 END
 	FROM @members m
 	LEFT JOIN @attends a ON a.PeopleId = m.PeopleId
 	JOIN dbo.People p ON p.PeopleId = m.PeopleId
@@ -97,6 +100,7 @@ BEGIN
 	LEFT JOIN lookup.MemberType mt ON mt.Id = a.membertype
 	LEFT JOIN lookup.AttendType at ON at.Id = a.attendtype
 	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @oid
+	LEFT JOIN dbo.MeetingConflicts mc ON mc.PeopleId = a.PeopleId AND mc.MeetingDate = @meetingdt AND @oid IN (mc.OrgId1, mc.OrgId2)
 	WHERE (@current = 1 OR @meetingdt > m.joindt OR (a.PeopleId IS NOT NULL AND attendtype NOT IN (40,50,60,110)))
 
 	-- recent visitors who have not become members as of the meeting date
@@ -115,6 +119,7 @@ BEGIN
 		   ,at.Description Attendtype
 	       ,a.OtherAttends
 		   ,CASE WHEN om.PeopleId IS NULL THEN 0 ELSE 1 END
+		   ,0
 	FROM @visitors v
 	LEFT JOIN @attends a ON a.PeopleId = v.PeopleId
 	JOIN dbo.People p ON p.PeopleId = v.PeopleId
@@ -139,6 +144,7 @@ BEGIN
 		   ,at.Description Attendtype
 	       ,a.OtherAttends
 		   ,CASE WHEN om.PeopleId IS NULL THEN 0 ELSE 1 END
+		   ,0
 	FROM @attends a
 	LEFT JOIN @table t ON t.PeopleId = a.PeopleId 
 	JOIN dbo.People p ON p.PeopleId = a.PeopleId
