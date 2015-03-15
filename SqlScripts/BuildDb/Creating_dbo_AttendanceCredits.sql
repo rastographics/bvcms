@@ -10,19 +10,12 @@ AS
 BEGIN
     DECLARE @yearago DATETIME,
 			@lastmeet DATETIME,
-			@maxfuturemeeting DATETIME,
-			@tzoffset INT,
 			@earlycheckinhours INT = 10 -- to include future meetings
 			
-	SELECT @tzoffset = CONVERT(INT, Setting) FROM dbo.Setting WHERE Id = 'TZOffset'
-	SELECT @maxfuturemeeting = DATEADD(hh ,ISNULL(@tzoffset,0) + @earlycheckinhours, GETDATE())
 		
-    SELECT @lastmeet = MAX(MeetingDate) 
-    FROM dbo.Meetings
-    WHERE OrganizationId = @orgid
-    AND MeetingDate <= @maxfuturemeeting
+    SELECT @lastmeet = dbo.MaxMeetingDate(@orgid)
     
-    SELECT @yearago = DATEADD(year, -1, @lastmeet)
+    SELECT @yearago = DATEADD(ww, -52, @lastmeet)
 			
 	INSERT INTO @t
 	SELECT
@@ -49,7 +42,7 @@ BEGIN
 		WHERE m.OrganizationId = @orgid
 			AND PeopleId = @pid
 			AND m.MeetingDate >= @yearago
-			AND m.MeetingDate <= @maxfuturemeeting
+			AND m.MeetingDate <= @lastmeet
 	) AS InlineView
 	GROUP BY [Year], [Week], AttendCredit
 	ORDER BY [Year] DESC, [Week] DESC
