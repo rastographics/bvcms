@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.Search.Models
         public CodeInfo Expired { get; set; }
         public CodeInfo Complete { get; set; }
         public CodeInfo Abandoned { get; set; }
+        public bool FromMobileAppOnly { get; set; }
         public string count { get; set; }
 
         public RegistrationSearchInfo()

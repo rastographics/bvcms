@@ -119,6 +119,12 @@ namespace CmsWeb.Areas.Search.Models
                         select r;
                     break;
             }
+            if (SearchParameters.FromMobileAppOnly)
+            {
+                q = from r in q
+                    where (r.Mobile == true)
+                    select r;
+            }
 
             DateTime startDateRange;
             DateTime endDateRange;
@@ -128,7 +134,7 @@ namespace CmsWeb.Areas.Search.Models
                 if (SearchParameters.EndDate.HasValue)
                     endDateRange = SearchParameters.EndDate.Value.AddHours(+24);
                 else
-                    endDateRange = DateTime.Today;
+                    endDateRange = DateTime.Today.AddHours(24);
 
             }
             else if (SearchParameters.EndDate.HasValue)
