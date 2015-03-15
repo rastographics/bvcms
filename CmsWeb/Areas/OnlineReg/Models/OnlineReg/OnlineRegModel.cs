@@ -22,7 +22,7 @@ namespace CmsWeb.Models
     {
         
         public bool? testing { get; set; }
-        public bool? FromMobile { get { return MobileAppMenuController.Source.HasValue(); } }
+        public string FromMobile { get; set; }
         public string URL { get; set; }
         private int? _masterorgid;
 
@@ -120,8 +120,6 @@ namespace CmsWeb.Models
                         foreach (var ee in e.Elements())
                             _history.Add(ee.Value);
                         break;
-                    case "FromMobile":
-                        break;
                     default:
                         Util.SetPropertyFromText(this, name, e.Value);
                         break;
@@ -157,7 +155,9 @@ namespace CmsWeb.Models
                             w.Add(pi.Name, testing);
                         break;
                     case "FromMobile":
-                        if (FromMobile == true)
+                        if (FromMobile.HasValue())
+                            w.Add(pi.Name, FromMobile);
+                        else if(MobileAppMenuController.Source.HasValue())
                             w.Add(pi.Name, MobileAppMenuController.Source);
                         break;
                     case "prospect":
