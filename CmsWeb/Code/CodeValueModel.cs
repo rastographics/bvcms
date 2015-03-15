@@ -417,7 +417,7 @@ namespace CmsWeb.Code
 				new CodeValueItem { Value = "Gift Bag Given" },
 			};
         }
-        public IEnumerable<CodeValueItem> YesNoAll()
+        public static IEnumerable<CodeValueItem> YesNoAll()
         {
             return new List<CodeValueItem> 
 			{

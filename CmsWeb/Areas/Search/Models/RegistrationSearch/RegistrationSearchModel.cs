@@ -184,23 +184,23 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-        private const string STR_RegistrationSearch = "RegistrationSearch";
-        internal void GetFromSession()
-        {
-            var os = HttpContext.Current.Session[STR_RegistrationSearch] as RegistrationSearchInfo;
-            if (os != null)
-                SearchParameters.CopyPropertiesFrom(os);
-        }
-        internal void SaveToSession()
-        {
-            var os = new RegistrationSearchInfo();
-            SearchParameters.CopyPropertiesTo(os);
-            HttpContext.Current.Session[STR_RegistrationSearch] = os;
-        }
-
-        internal void ClearSession()
-        {
-            HttpContext.Current.Session.Remove(STR_RegistrationSearch);
-        }
+//        private const string STR_RegistrationSearch = "RegistrationSearch";
+//        internal void GetFromSession()
+//        {
+//            var os = HttpContext.Current.Session[STR_RegistrationSearch] as RegistrationSearchInfo;
+//            if (os != null)
+//                SearchParameters.CopyPropertiesFrom(os);
+//        }
+//        internal void SaveToSession()
+//        {
+//            var os = new RegistrationSearchInfo();
+//            SearchParameters.CopyPropertiesTo(os);
+//            HttpContext.Current.Session[STR_RegistrationSearch] = os;
+//        }
+//
+//        internal void ClearSession()
+//        {
+//            HttpContext.Current.Session.Remove(STR_RegistrationSearch);
+//        }
     }
 }

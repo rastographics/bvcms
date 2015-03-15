@@ -20,10 +20,11 @@ namespace CmsWeb.Areas.Search.Models
 
         public RegistrationSearchInfo()
         {
-            Active = new CodeInfo("YesNoAll");
-            Complete = new CodeInfo("YesNoAll");
-            Abandoned = new CodeInfo("YesNoAll");
-            Expired = new CodeInfo("YesNoAll");
+            var yna = CodeValueModel.YesNoAll().ToSelect("Value");
+            Active = new CodeInfo("All", yna);
+            Complete = new CodeInfo("All", yna);
+            Abandoned = new CodeInfo("All", yna);
+            Expired = new CodeInfo("All", yna);
         }
     }
 }
