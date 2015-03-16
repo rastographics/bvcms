@@ -1384,6 +1384,9 @@
     <Content Include="Areas\People\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Areas\Org\Views\Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
@@ -2002,9 +2005,6 @@
     <Content Include="Areas\Search\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
-    <Content Include="Areas\Org\Views\Web.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Areas\People\Views\Address\Edit.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\Display.cshtml" />
     <Content Include="Areas\People\Views\Person\Personal\Edit.cshtml" />
