@@ -236,6 +236,7 @@ namespace CmsData.Codes
         public const int Online = 4;
         public const int OnlinePledge = 5;
         public const int Pledge = 6;
+        public const int MissionTrip = 20;
         public const int GiftsInKind = 30;
         public const int Stock = 32;
     }
