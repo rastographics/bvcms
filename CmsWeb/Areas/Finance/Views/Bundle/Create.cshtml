@@ -10,14 +10,6 @@
             </div>
             <div class="box-content">
                 <form id="bundleform">
-                    @if (!Model.CanChangeStatus)
-                    {
-                        <div class="alert alert-warning">
-                            <p>
-                                <strong>Warning!</strong> This bundle cannot be closed because the totals do not match, or there are contributions not associated with a person.
-                            </p>
-                        </div>
-                    }
                     <div class="row">
                         <div class="col-sm-3">
                             <div class="form-group">
@@ -41,7 +33,7 @@
                                 @Html.EditorFor(m => m.Bundle.DepositDate)
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="Bundle_TotalCash" class="control-label">Total Cash</label>
                                 <div class="input-group">
@@ -49,7 +41,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="Bundle_TotalChecks" class="control-label">Total Checks</label>
                                 <div class="input-group">
@@ -57,22 +49,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-3">
+                        <div class="col-sm-4">
                             <div class="form-group">
                                 <label for="Bundle_TotalEnvelopes" class="control-label">Total Coin</label>
                                 <div class="input-group">
                                     <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalEnvelopes, new { @class = "form-control" })
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-3">
-                            <div class="form-group">
-                                <label for="Status" class="control-label">Bundle Status</label>
-                                <select name="Status" id="Status" class="form-control" @(!Model.CanChangeStatus ? "disabled='disabled'" : "")><option value="Open">Open</option><option value="Closed">Closed</option></select>
-                                @if (Model.CanChangeStatus)
-                                {
-                                    @Html.HiddenFor(m => m.IsOpen)
-                                }
                             </div>
                         </div>
                     </div>
