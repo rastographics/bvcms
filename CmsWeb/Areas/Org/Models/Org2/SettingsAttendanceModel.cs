@@ -38,9 +38,9 @@ namespace CmsWeb.Areas.Org2.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        public IEnumerable<SelectListItem> AttendCreditList()
+        public SelectList AttendCreditList()
         {
-            return CodeValueModel.ConvertToSelect(CodeValueModel.AttendCredits(), "Id");
+            return CodeValueModel.AttendCredits().ToSelect();
         }
         public string NewMeetingTime
         {

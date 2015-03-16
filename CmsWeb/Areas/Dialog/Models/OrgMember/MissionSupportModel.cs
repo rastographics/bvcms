@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
@@ -58,7 +59,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public decimal? AmountGoer { get; set; }
         public decimal? AmountGeneral { get; set; }
 
-        public IEnumerable<CodeValueItem> GoerList()
+        public SelectList GoerList()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
                 where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
@@ -70,7 +71,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 };
             var list = q.ToList();
             list.Insert(0, new CodeValueItem() { Id=0, Value = "(please select a Goer)" });
-            return list;
+            return list.ToSelect();
         }
 
         public string ToGoerName;

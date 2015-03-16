@@ -57,23 +57,24 @@ namespace CmsWeb.Models
             }.Select(x => new { value = x, text = x }),
                 "value", "text").ToList();
         }
-        public List<SelectListItem> Tags()
+        public SelectList Tags()
         {
             var cv = new CodeValueModel();
-            var tg = CodeValueModel.ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Id");
-            tg = tg.Select(tt => new SelectListItem { Text = "tag: {0}:{1}".Fmt(tt.Value, tt.Text) }).ToList();
+            var tg = cv.UserTags(Util.UserPeopleId);
+            tg = tg.Select(tt => new CodeValueItem() { Value = "tag: {0}:{1}".Fmt(tt.Id, tt.Value) }).ToList();
             var q = from e in DbUtil.Db.PeopleExtras
                     where e.StrValue != null
                     group e by e.FieldValue into g
-                    select new SelectListItem { Text = "exval: " + g.Key };
+                    select new CodeValueItem() { Value = "exval: " + g.Key };
             tg.AddRange(q);
             if (HttpContext.Current.User.IsInRole("Admin"))
-                tg.Insert(0, new SelectListItem { Text = "last query" });
-            tg.Insert(0, new SelectListItem { Text = "(not specified)" });
-            var sel = tg.SingleOrDefault(mm => mm.Text == Tag);
+                tg.Insert(0, new CodeValueItem() { Value = "last query" });
+            tg.Insert(0, new CodeValueItem() { Value = "(not specified)" });
+            var list = tg.ToSelect("Value");
+            var sel = list.SingleOrDefault(mm => mm.Value == Tag);
             if (sel != null)
                 sel.Selected = true;
-            return tg.ToList();
+            return list;
         }
         public IEnumerable<TitleItems> FetchTitleItems()
         {

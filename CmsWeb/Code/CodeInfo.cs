@@ -35,12 +35,6 @@ namespace CmsWeb.Code
                 Value = value.ToString();
             Items = items;
         }
-        public CodeInfo(object value, IEnumerable<SelectListItem> items)
-        {
-            if (value != null)
-                Value = value.ToString();
-            Items = items;
-        }
         public string Value
         {
             get { return value; }

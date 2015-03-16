@@ -424,11 +424,11 @@ namespace CmsWeb.Models
             return CodeValueModel.ConvertToSelect(cv.GetStateListUnknown(), "Code");
         }
 
-        public IEnumerable<SelectListItem> Countries()
+        public SelectList Countries()
         {
-            var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList(), null);
-            list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
-            return list;
+            var list = CodeValueModel.GetCountryList().ToList();
+            list.Insert(0, new CodeValueItem() {Value = "(not specified)"});
+            return list.ToSelect("Value");
         }
 
         public override string ToString()
