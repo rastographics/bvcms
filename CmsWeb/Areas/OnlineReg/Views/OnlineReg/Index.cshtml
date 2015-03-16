@@ -1,94 +1,63 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.OnlineRegModel
 @{
-    Layout = Model.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Registration";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
 }
 @section head
 {
-    @if (Model.DisplaySpecialFunds)
-    {
-        @Fingerprint.Css("/Content/select2-3.5.2/select2.css")
-        @Fingerprint.Css("/Content/select2-3.5.2/select2-bootstrap.css")
-    }
+  @if (Model.DisplaySpecialFunds)
+  {
+    @Fingerprint.Css("/Content/select2-3.5.2/select2.css")
+    @Fingerprint.Css("/Content/select2-3.5.2/select2-bootstrap.css")
+  }
 }
 @section scripts
 {
-    <script type="text/javascript">
-        $.dateFormat = '@Util.jQueryDateFormat';
-        $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-        $.tmout = parseInt('@Model.TimeOut');
-        var specialGivingFundsPrefix = "List[0]";
-    </script>
-    @(Model.UseBootstrap 
-        ? @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
-          : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
-    
-    @if (Model.DisplaySpecialFunds)
-    {
-        @Fingerprint.Script("/Scripts/select2-3.5.2/select2.min.js")
-    }
+  <script type="text/javascript">
+    $.dateFormat = '@Util.jQueryDateFormat';
+    $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
+    $.tmout = parseInt('@Model.TimeOut');
+    var specialGivingFundsPrefix = "List[0]";
+  </script>
+  @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
+  @if (Model.DisplaySpecialFunds)
+  {
+    @Fingerprint.Script("/Scripts/select2-3.5.2/select2.min.js")
+  }
 }
 <noscript>
-    <style type="text/css">
-        .pagecontainer {
-            display: none;
-        }      
-    </style>
-    <div class="noscriptmsg">
-        This registration site requires javascript to be enabled on your browser.
-    </div>
+  <style type="text/css">
+    .pagecontainer {
+      display: none;
+    }
+  </style>
+  <div class="noscriptmsg">
+    This registration site requires javascript to be enabled on your browser.
+  </div>
 </noscript>
 
-@if (Model.UseBootstrap)
-{
-    <div class="regform">
-        <h3>@Model.Header</h3>
-        @{var msg = Model.Filled();}
-        @if (Model.NotAvailable())
-        {
-            <h4 id="sorry">Sorry, Registration is not available at this time</h4>
-            @Html.Raw(Util.PickFirst(Model.Instructions, ""))
-        }
-        else if (msg.HasValue())
-        {
-            <h4 id="sorry">Sorry, @msg</h4>
-            @Html.Raw(Util.PickFirst(Model.Instructions, ""))
-        }
-        else
-        {
-            <form id="completeReg" class="DisplayEdit form-horizontal" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
-                @Html.Partial("Flow2/List", Model)
-            </form>
-            if (Model.RecordFamilyAttendance())
-            {
-                @Html.Partial("Flow2/FamilyAttendTemplate")     
-            }
-        }
-    </div>
-}
-else
-{
-<div class="regform pagecontainer">
-    <h2>@Model.Header</h2>
-    @{var msg = Model.Filled();}
-    @if (Model.NotAvailable())
+<div class="regform">
+  <h3>@Model.Header</h3>
+  @{var msg = Model.Filled();}
+  @if (Model.NotAvailable())
+  {
+    <h4 id="sorry">Sorry, Registration is not available at this time</h4>
+    @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+  }
+  else if (msg.HasValue())
+  {
+    <h4 id="sorry">Sorry, @msg</h4>
+    @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+  }
+  else
+  {
+    <form id="completeReg" class="DisplayEdit form-horizontal" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
+      @Html.Partial("Flow2/List", Model)
+    </form>
+    if (Model.RecordFamilyAttendance())
     {
-        <h4 id="sorry">Sorry, Registration is not available at this time</h4>
-        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
+      @Html.Partial("Flow2/FamilyAttendTemplate")
     }
-    else if (msg.HasValue())
-    {
-        <h4 id="sorry">Sorry, @msg</h4>
-        @Html.Raw(Util.PickFirst(Model.Instructions, ""))
-    }
-    else
-    {
-        <form id="completeReg" class="DisplayEdit" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
-            @Html.Partial("Flow/List", Model)
-        </form>
-    }
+  }
 </div>
-}

@@ -146,22 +146,6 @@
 <li> <span class="keyword big">NotReqPhone:</span> @Html.CheckBox("NotReqPhone", Model.NotReqPhone) </li>
 <li> <span class="keyword big">NotReqGender:</span> @Html.CheckBox("NotReqGender", Model.NotReqGender) </li>
 <li> <span class="keyword big">NotReqMarital:</span> @Html.CheckBox("NotReqMarital", Model.NotReqMarital) </li>
-@if (User.IsInRole("Developer"))
-{
-<li>
-    <span class="keyword big tip" title="Old Shell
-        |Enter the name of the HTML shell for this registration
-        |(stored in Special Content)">
-        Old Shell:
-    </span> @Html.TextBox("Shell", Model.Shell)
-</li>
-<li>
-    <span class="keyword big tip" title="UseBootstrap
-        |Use Bootstrap shell">
-        UseBootstrap:
-    </span> @Html.CheckBox("org.UseBootstrap", Model.org.UseBootstrap ?? true)
-</li>
-}
 <li>
     <span class="keyword big tip" title="Shell
         |Enter the name of the HTML shell (bootstrap) for this registration

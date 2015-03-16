@@ -3,27 +3,23 @@
 @using CmsWeb.Models
 @using UtilityExtensions
 @{
-    Layout = Model.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Registration";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-    <script type="text/javascript">
-        $.dateFormat = '@Util.jQueryDateFormat';
-        $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-        $.tmout = parseInt('@Model.TimeOut');
-    </script>
-    @(Model.UseBootstrap
-        ? @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
-        : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
+  <script type="text/javascript">
+    $.dateFormat = '@Util.jQueryDateFormat';
+    $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
+    $.tmout = parseInt('@Model.TimeOut');
+  </script>
+  @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
 }
 
 <div class="confirm">
   @Html.Raw(Model.TrackingCode)
   @Html.Raw(Model.GetThankYouMessage())
-  @if (Model.UseBootstrap && MobileAppMenuController.InMobileAppMode)
+  @if (MobileAppMenuController.InMobileAppMode)
   {
     <a href="@MobileAppMenuController.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
   }

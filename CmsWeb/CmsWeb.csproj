@@ -1022,9 +1022,6 @@
     <Content Include="Areas\Org\Views\MissionTripEmail\Index.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\Supporters.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\SupportersEdit.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTrip.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTripHidden.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\SupportMissionTripDisplay.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\Sent.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\MissionTripFunding.cshtml" />
     <Content Include="Areas\Org\Views\OrgMemberDialog\MissionSupport.cshtml" />
@@ -1090,18 +1087,8 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\RecordFamilyAttendance.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmFamilyAttendance.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FamilyAttendTemplate.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\Bootstrap\Process.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\OldUI\Process.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Dropdown.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\Bootstrap\OneTimeLink.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\Bootstrap\Setup.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\OldUI\OneTimeLink.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\OldUI\Setup.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Bootstrap\OneTimeLink.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Bootstrap\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Confirm.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OldUI\OneTimeLink.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OldUI\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\OneTimeLink.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManagePledge\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\EmptyRow.cshtml" />
@@ -2140,34 +2127,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\TransactionTest.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Unknown.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\AddressDisplay.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\AddressEdit.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\Buttons.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\List.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\Login.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\ModelHidden.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\OtherDisplay.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\OtherEdit.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\OtherHidden.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\PersonDisplay.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\PersonEdit.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\PersonHidden.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\PersonMetaHidden.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow\Registrant.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\OptOut\Cancel.cshtml">
       <SubType>Code</SubType>

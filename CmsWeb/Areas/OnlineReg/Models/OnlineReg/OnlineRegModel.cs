@@ -28,7 +28,7 @@ namespace CmsWeb.Models
 
         public bool DisplaySpecialFunds
         {
-            get { return UseBootstrap && (OnlineGiving() || ManageGiving()); }
+            get { return OnlineGiving() || ManageGiving(); }
         }
 
         public int? masterorgid

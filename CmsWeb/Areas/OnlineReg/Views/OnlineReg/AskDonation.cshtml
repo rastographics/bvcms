@@ -2,9 +2,7 @@
 @using CmsWeb
 @model CmsWeb.Models.OnlineRegModel
 @{
-    Layout = Model.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
+    Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "Online Registration";
 }
 @section scripts

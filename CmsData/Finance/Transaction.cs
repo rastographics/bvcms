@@ -61,15 +61,6 @@ namespace CmsData
             return s;
         }
 
-        private bool? usebootstrap;
-        public bool UseBootstrap(CMSDataContext db)
-        {
-            if (usebootstrap.HasValue)
-                return usebootstrap.Value;
-            var org = db.LoadOrganizationById(OrgId);
-            usebootstrap = org.UseBootstrap ?? true;
-            return usebootstrap.Value;
-        }
         private int? timeOut;
         public int TimeOut
         {
