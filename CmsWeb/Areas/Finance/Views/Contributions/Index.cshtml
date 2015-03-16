@@ -163,7 +163,7 @@
     <script type="text/javascript">
         $(function () {
 
-            function intializePopovers() {
+            function initializePopovers() {
                 $('[data-toggle="popover"]').popover({ html: true });
                 $('[data-toggle="popover"]').click(function (ev) {
                     ev.preventDefault();
@@ -209,7 +209,7 @@
                 $.block();
                 $.post('/Contributions/Results', q, function (ret) {
                     $('#results').replaceWith(ret);
-                    intializePopovers();
+                    initializePopovers();
                     $.unblock();
                 });
             };
@@ -270,7 +270,7 @@
                 return true;
             });
 
-            intializePopovers();
+            initializePopovers();
         });
     </script>
 }

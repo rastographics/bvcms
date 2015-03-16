@@ -1,5 +1,5 @@
 ﻿$(function () {
-    function intializePopovers() {
+    function initializePopovers() {
         $('[data-toggle="popover"]').popover({ html: true });
         $('[data-toggle="popover"]').click(function (ev) {
             ev.preventDefault();
@@ -66,7 +66,7 @@
         $.post($('#search').attr('href'), q, function (ret) {
             $('#results').replaceWith(ret).ready(function () {
                 $("#totalcount").text($("#totcnt").val());
-                intializePopovers();
+                initializePopovers();
                 $.unblock();
             });
         });
@@ -110,5 +110,5 @@
         return false;
     });
 
-    intializePopovers();
+    initializePopovers();
 });

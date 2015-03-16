@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
 
-    function intializePopovers() {
+    function initializePopovers() {
         $('[data-toggle="popover"]').popover({html: true});
         $('[data-toggle="popover"]').click(function(ev) {
             ev.preventDefault();
@@ -8,7 +8,7 @@
     }
 
     $('#name').focus();
-    intializePopovers();
+    initializePopovers();
 
     $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
         ev.preventDefault();
@@ -66,7 +66,7 @@
         $.block();
         $.post("/Transactions/List", q, function (ret) {
             $('#results').html(ret);
-            intializePopovers();
+            initializePopovers();
             $.unblock();
         });
         return false;
@@ -95,7 +95,7 @@
         $.post($(this).attr("href"), args, function (ret) {
             $('#page-header h2').text(header);
             $('#results').html(ret);
-            intializePopovers();
+            initializePopovers();
             $.unblock();
         });
         return true;
@@ -136,7 +136,7 @@
                     },
                     function () {
                         $("#results").html(ret);
-                        intializePopovers();
+                        initializePopovers();
                     });
                 }
             });
@@ -173,7 +173,7 @@
             else {
                 swal("Transaction Refunded!", "", "success");
                 $("#results").html(ret);
-                intializePopovers();
+                initializePopovers();
             }
         });
         return false;
@@ -188,7 +188,7 @@
         q += "&parid=" + parid;
         $.post(a.attr("href"), q, function (ret) {
             $('#results').html(ret);
-            intializePopovers();
+            initializePopovers();
         });
         return false;
     });
@@ -225,7 +225,7 @@
             else {
                 swal("Transaction Adjusted!", "", "success");
                 $("#results").html(ret);
-                intializePopovers();
+                initializePopovers();
             }
         });
         return false;

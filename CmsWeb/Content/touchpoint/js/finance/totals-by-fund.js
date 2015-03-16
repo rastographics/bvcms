@@ -1,6 +1,6 @@
 ﻿$(function () {
 
-    function intializePopovers() {
+    function initializePopovers() {
         $('[data-toggle="popover"]').popover({ html: true });
         $('[data-toggle="popover"]').click(function (ev) {
             ev.preventDefault();
@@ -29,7 +29,7 @@
 		$.post("/FinanceReports/TotalsByFundResults", q, function (ret) {
 		    $.unblock();
 		    $("#results").html(ret);
-		    intializePopovers();
+		    initializePopovers();
 		});
 	});
 
@@ -89,5 +89,5 @@
 	        $("#export-quickbooks").css("display", "inline");
 	});
 
-	intializePopovers();
+	initializePopovers();
 });
