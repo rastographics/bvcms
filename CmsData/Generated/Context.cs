@@ -4595,6 +4595,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.GetCurrentMissionTripBundle", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetCurrentMissionTripBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                next,
+                prev
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.FirstActivity", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
 		public DateTime? FirstActivity(

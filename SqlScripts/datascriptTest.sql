@@ -2334,6 +2334,7 @@ INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwire
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (4, N'OL', N'Online', 1)
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (5, N'OLP', N'Online Pledge', 1)
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (6, N'PL', N'Pledge', 1)
+INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (20, N'MTT', N'Mission Trip Transaction', 1)
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (30, N'GK', N'Gifts in Kind', 1)
 INSERT INTO [lookup].[BundleHeaderTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (32, N'SK', N'Stock', 1)
 INSERT INTO [lookup].[BundleStatusTypes] ([Id], [Code], [Description], [Hardwired]) VALUES (0, N'C', N'Closed', 1)
