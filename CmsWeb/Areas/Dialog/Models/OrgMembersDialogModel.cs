@@ -120,6 +120,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     where (om.Pending ?? false) == pendings
                     where (inactives && om.MemberTypeId == inactive)
                         || (!inactives && om.MemberTypeId != inactive)
+                    where (om.MemberTypeId != MemberTypeCode.Prospect)
                     select om;
             return q;
         }

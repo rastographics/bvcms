@@ -1387,6 +1387,10 @@
     <Content Include="Areas\Org\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Areas\Org\Views\Meeting\Toolbar\Email.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\Toolbar\Gear.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\Toolbar\Reports.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\Toolbar\Toolbar.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
