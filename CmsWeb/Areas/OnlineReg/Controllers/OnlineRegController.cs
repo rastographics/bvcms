@@ -460,8 +460,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     p.IsNew = true;
                     m.SendLinkForPledge();
                     DbUtil.Db.SubmitChanges();
-                    if(!m.UseBootstrap)
-                        SetHeaders(m);
+                    SetHeaders(m);
                     return View("ManagePledge/OneTimeLink", m);
                 }
                 if (m.ManageGiving())
@@ -469,8 +468,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     p.IsNew = true;
                     m.SendLinkToManageGiving();
                     DbUtil.Db.SubmitChanges();
-                    if(!m.UseBootstrap)
-                        SetHeaders(m);
+                    SetHeaders(m);
                     return View("ManageGiving/OneTimeLink", m);
                 }
                 if (p.ComputesOrganizationByAge())
@@ -705,8 +703,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 m.UpdateDatum();
-                var view = m.UseBootstrap ? "Flow2/List" : "Flow/List";
-                var content = ViewExtensions2.RenderPartialViewToString2(this, view, m);
+                var content = ViewExtensions2.RenderPartialViewToString2(this, "Flow2/List", m);
                 return Content(content);
             }
             catch (Exception ex)

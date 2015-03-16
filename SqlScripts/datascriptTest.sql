@@ -1726,7 +1726,7 @@ INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogFeedUrl', N'http://f
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'ChangePasswordDays', N'360')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'CheckRemoteAccessRole', N'false ')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'DbConvertedDate', N'5/19/2011')
-INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'DefaultHost', N'https://testdb.bvcms.com')
+INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'DefaultHost', N'https://testdb.tpsdb.com')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'ImpersonatePassword', N'impersonate')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'MaxExcelRows', N'10000')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'MinContributionAmount', N'25')

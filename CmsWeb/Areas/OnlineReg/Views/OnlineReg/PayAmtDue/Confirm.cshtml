@@ -1,38 +1,34 @@
 ﻿@using CmsData
 @model Transaction
 @{
-    Layout = Model.UseBootstrap(DbUtil.Db)
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Registration";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-    @(Model.UseBootstrap(DbUtil.Db) 
-        ? Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
-        : Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
-    <script type="text/javascript">
-        $(function () {
-            $(document).bind("idle.idleTimer", function () {
-                window.location.href = '@Model.Url';
-            });
-            var tmout = parseInt('@Model.TimeOut');
+  @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
+  <script type="text/javascript">
+    $(function () {
+      $(document).bind("idle.idleTimer", function () {
+        window.location.href = '@Model.Url';
+      });
+      var tmout = parseInt('@Model.TimeOut');
 
-            $(document).bind("keydown", function() {
-                $(document).unbind("keydown");
-                $.idleTimer(tmout);
-            });
-            $.idleTimer(tmout);
-        });
-    </script>
+      $(document).bind("keydown", function () {
+        $(document).unbind("keydown");
+        $.idleTimer(tmout);
+      });
+      $.idleTimer(tmout);
+    });
+  </script>
 }
 
 <div class="confirm">
 
-   <h2>Transaction Completed</h2>
-    <p>
-        Thank you for your payment of @Model.Amt.Value.ToString("N") for @Model.Description.<br />
-        Your balance is @ViewBag.amtdue<br/>
-        You should receive a confirmation email shortly.
-    </p>
+  <h2>Transaction Completed</h2>
+  <p>
+    Thank you for your payment of @Model.Amt.Value.ToString("N") for @Model.Description.<br />
+    Your balance is @ViewBag.amtdue<br />
+    You should receive a confirmation email shortly.
+  </p>
 </div>

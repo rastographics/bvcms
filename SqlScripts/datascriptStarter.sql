@@ -1628,7 +1628,7 @@ INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminMail', N'bethany@to
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogAppUrl', N'http://blog.touchpointsoftware.com')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogFeedUrl', N'http://feeds.feedburner.com/BvcmsBlog')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'DbConvertedDate', N'5/5/2009')
-INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'DefaultHost', N'https://StarterDb.bvcms.com')
+INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'DefaultHost', N'https://StarterDb.tpsdb.com')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'MaxExcelRows', N'10000')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'MinContributionAmount', N'25')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'NameOfChurch', NULL)

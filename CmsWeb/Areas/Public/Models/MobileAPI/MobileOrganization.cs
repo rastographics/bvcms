@@ -24,10 +24,12 @@ namespace CmsWeb.MobileAPI
 
 		public DateTime createOrgDateTime(DateTime time, int day)
 		{
-			if( day == 0 )
-				return DateTime.Today.AddHours(time.Hour).AddMinutes(time.Minute);
-			else
-				return DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek).AddDays(day - 7).AddHours(time.Hour).AddMinutes(time.Minute);
+			DateTime dt = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek).AddDays(day).AddHours(time.Hour).AddMinutes(time.Minute);
+
+			if (dt.Date > DateTime.Today)
+				dt = dt.AddDays(-7);
+
+			return dt;
 		}
 	}
 

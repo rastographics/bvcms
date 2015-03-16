@@ -64,6 +64,11 @@
                             <label for="SearchParameters_Abandoned" class="control-label">Abandoned</label>
                             @Html.DropDownListFor(m => m.SearchParameters.Abandoned.Value, Model.SearchParameters.Abandoned.Items, new { @class = "form-control" })
                         </div>
+                        <div class="checkbox">
+                            <label class="control-label">
+                                @Html.CheckBoxFor(m => m.SearchParameters.FromMobileAppOnly) From mobile app only?
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <div class="row">

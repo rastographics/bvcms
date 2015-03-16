@@ -1,18 +1,17 @@
 ﻿@model CmsWeb.Models.ManageSubsModel
 @using CmsWeb
 @{
-    Layout = Model.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Registration";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
 }
 <div class="confirm">
-	@Html.Hidden("otheredit", 0)
-	<h2>Confirmation</h2>
-	<div>@Html.Raw(Model.Instructions)</div>
-	<p>
-		Thank you @Model.person.PreferredName, for managing your subscriptions to @Model.Description()<br />
-		You should receive a confirmation email shortly.</p>
-	<p> You have subscribed to the following:</p>
-	@Html.Raw(Model.Summary)
+  @Html.Hidden("otheredit", 0)
+  <h2>Confirmation</h2>
+  <div>@Html.Raw(Model.Instructions)</div>
+  <p>
+    Thank you @Model.person.PreferredName, for managing your subscriptions to @Model.Description()<br />
+    You should receive a confirmation email shortly.
+  </p>
+  <p> You have subscribed to the following:</p>
+  @Html.Raw(Model.Summary)
 </div>

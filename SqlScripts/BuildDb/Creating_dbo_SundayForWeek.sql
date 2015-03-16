@@ -3,14 +3,10 @@ RETURNS datetime
 AS
 BEGIN
 
-DECLARE @dt1 DATETIME = DATEFROMPARTS(@year, 1, 1)
-DECLARE @dt DATETIME 
-SELECT @dt = DATEADD(dd,-1,DATEADD(wk, DATEDIFF(wk,0,dateadd(dd,7-datepart(day,@dt1),@dt1)), 0))
+DECLARE @wkn INT = @year * 100 + @week - 1
+RETURN dbo.SundayForWeekNumber(@wkn)
 
-SELECT @dt = DATEADD(ww, @week - 1, @dt) -- sunday for week number
 
-	-- Return the result of the function
-	RETURN @dt
 
 END
 GO

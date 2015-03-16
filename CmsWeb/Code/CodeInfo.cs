@@ -15,7 +15,8 @@ namespace CmsWeb.Code
         private string value;
 
         [NonSerialized]
-        private IEnumerable<SelectListItem> items;
+        [NoUpdate]
+        private SelectList items;
 
         public CodeInfo()
         {
@@ -28,11 +29,11 @@ namespace CmsWeb.Code
                 Value = value.ToString();
             Name = name;
         }
-        public CodeInfo(object value, IEnumerable<CodeValueItem> items)
+        public CodeInfo(object value, SelectList items)
         {
             if (value != null)
                 Value = value.ToString();
-            Items = items.ToSelect();
+            Items = items;
         }
         public string Value
         {
@@ -40,7 +41,7 @@ namespace CmsWeb.Code
             set { this.value = value; }
         }
 
-        public IEnumerable<SelectListItem> Items
+        public SelectList Items
         {
             get { return items; }
             set { items = value; }
@@ -66,17 +67,16 @@ namespace CmsWeb.Code
                     case "ContactResult":
                         Items = cv.ContactResultList().ToSelect("Value");
                         break;
-                    case "YesNoAll":
-                        Items = cv.YesNoAll().ToSelect("Value");
-                        break;
                     default:
+                        if (items != null)
+                            return;
                         var getlist = cv.GetType().GetMethod(value + "List");
                         if (getlist != null)
                         {
                             var list = getlist.Invoke(cv, null);
-                            if (list as IEnumerable<CodeValueItem> != null)
+                            if (list is IEnumerable<CodeValueItem>)
                                 Items = ((IEnumerable<CodeValueItem>)getlist.Invoke(cv, null)).ToSelect();
-                            else if (list as SelectList != null)
+                            else if (list is SelectList)
                                 Items = ((SelectList)getlist.Invoke(cv, null));
                         }
                         else
@@ -145,6 +145,9 @@ namespace CmsWeb.Code
                 Value = ((CodeInfo)midvalue).Value;
             else
                 Value = midvalue.ToString();
+            var cinfo = midvalue as CodeInfo;
+            if (items == null && cinfo != null && cinfo.items != null)
+                items = cinfo.items;
             Name = vm.Name;
         }
     }

@@ -85,8 +85,7 @@ Please call the church to resolve this before we can complete your information."
                     else if (model.MemberOnly() && model.person.MemberStatusId != MemberStatusCode.Member)
                     {
                         modelState.AddModelError(foundname, "Sorry, must be a member of church");
-                        if (model.setting.UseBootstrap)
-                            model.NotFoundText = @"<strong>Sorry, must be a member of this church</strong>";
+                        model.NotFoundText = @"<strong>Sorry, must be a member of this church</strong>";
                         model.IsValidForContinue = false;
                     }
                     else if (model.org != null)
@@ -124,8 +123,7 @@ Please call the church to resolve this before we can complete your account.<br /
                             && !model.Parent.SupportMissionTrip)
                         {
                             modelState.AddModelError(foundname, "This person is already registered");
-                            if (model.setting.UseBootstrap || model.Parent.UseBootstrap)
-                                model.NotFoundText = @"<strong>This person is already registered</strong>";
+                            model.NotFoundText = @"<strong>This person is already registered</strong>";
                             model.CancelText = "Register a different person";
                             model.IsValidForContinue = false;
                         }
@@ -136,8 +134,7 @@ Please call the church to resolve this before we can complete your account.<br /
                                 if (!model.person.OrganizationMembers.Any(mm => reqmemberids.Contains(mm.OrganizationId)))
                                 {
                                     modelState.AddModelError(foundname, "Must be member of specified organization");
-                                    if (model.setting.UseBootstrap)
-                                        model.NotFoundText = @"<strong>Must be a member of specified organization to register</strong>";
+                                    model.NotFoundText = @"<strong>Must be a member of specified organization to register</strong>";
                                     model.IsValidForContinue = false;
                                 }
                             var reqnomemberids = model.setting.ValidateOrgIds.Where(ii => ii < 0).ToList();
@@ -145,8 +142,7 @@ Please call the church to resolve this before we can complete your account.<br /
                                 if (model.person.OrganizationMembers.Any(mm => reqnomemberids.Contains(-mm.OrganizationId)))
                                 {
                                     modelState.AddModelError(foundname, "Must not be a member of specified organization");
-                                    if (model.setting.UseBootstrap)
-                                        model.NotFoundText = @"<strong>Must not be a member of specified organization to register</strong>";
+                                    model.NotFoundText = @"<strong>Must not be a member of specified organization to register</strong>";
                                     model.IsValidForContinue = false;
                                 }
                         }
@@ -155,8 +151,7 @@ Please call the church to resolve this before we can complete your account.<br /
                     {
                         modelState.AddModelError(foundname, "Person already in Pending Registration");
                         model.CancelText = "Register a different person";
-                        if (model.setting.UseBootstrap)
-                            model.NotFoundText = @"<strong>Person already in Pending Registration</strong>";
+                        model.NotFoundText = @"<strong>Person already in Pending Registration</strong>";
                         model.IsValidForContinue = false;
                     }
                 }

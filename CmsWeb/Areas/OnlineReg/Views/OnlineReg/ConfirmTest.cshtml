@@ -7,7 +7,7 @@
 </head>
 <body>
   <h2>Registration History</h2>
-  @if (Model.Count() > 0)
+  @if (Model.Any())
   {
     <table border="1" cellpadding="2" cellspacing="0">
       <thead><tr><th>Id</th><th>Time</th><th>Header</th><th>User</th></tr></thead>
@@ -15,8 +15,9 @@
       {
         <tr>
           <td>@i.ed.Id</td>
-          <td><a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@i.ed.Id">@i.ed.Stamp.Value</a><br/>
-              @(i.ed.Completed == true ? "completed" : "incomplete")
+          <td>
+            <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@i.ed.Id">@i.ed.Stamp.Value</a><br />
+            @(i.ed.Completed == true ? "completed" : "incomplete")
           </td>
           @if (i.m.Orgid > 0 && i.m.org != null)
           {

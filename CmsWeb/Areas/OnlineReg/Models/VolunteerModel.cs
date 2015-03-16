@@ -244,16 +244,6 @@ namespace CmsWeb.Models
 		{
 			get { return setting ?? (setting = new Settings(Org.RegSetting, DbUtil.Db, OrgId)); }
 		}
-        private bool? usebootstrap;
-        public bool UseBootstrap
-        {
-            get
-            {
-                if (!usebootstrap.HasValue)
-                    usebootstrap = Setting.UseBootstrap;
-                return usebootstrap.Value;
-            }
-        }
 		public SelectList Volunteers()
 		{
 			var q = from m in DbUtil.Db.OrganizationMembers

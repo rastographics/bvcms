@@ -50,16 +50,6 @@ namespace CmsWeb.Models
                 return setting ?? (setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid));
             }
         }
-        private bool? usebootstrap;
-        public bool UseBootstrap
-        {
-            get
-            {
-                if (!usebootstrap.HasValue)
-                    usebootstrap = Setting.UseBootstrap;
-                return usebootstrap.Value;
-            }
-        }
         public PledgeInfo GetPledgeInfo()
         {
             var RRTypes = new int[] { 6, 7 };
