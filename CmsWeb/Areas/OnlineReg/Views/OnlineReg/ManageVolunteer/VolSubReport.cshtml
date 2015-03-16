@@ -1,49 +1,46 @@
-﻿@model CmsWeb.Models.VolSubModel 
+﻿@model CmsWeb.Models.VolSubModel
 @using UtilityExtensions
 @{
-    Layout = Model.Setting.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Volunteer Substitute Report";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Volunteer Substitute Report";
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Volunteer/ManageVolunteer.js")
+  @Fingerprint.Script("/Scripts/Volunteer/ManageVolunteer.js")
 }
 @section head
 {
-<style type="text/css">
-.item
-{
-    float: left;
-    width: 13.3em;
-    margin: 0 2em 0 0;
-    border-right: 1px solid #eee;
-    padding: 0 0 5px 0;
-}
-</style>
+  <style type="text/css">
+    .item {
+      float: left;
+      width: 13.3em;
+      margin: 0 2em 0 0;
+      border-right: 1px solid #eee;
+      padding: 0 0 5px 0;
+    }
+  </style>
 }
 <h2>@Model.org.OrganizationName</h2>
 <h3>@Model.person.Name on @Model.attend.MeetingDate.ToString("MMM d, yyyy") at @Model.attend.MeetingDate.ToString("h:mm tt")</h3>
 <div>
-<table class="@ViewExtensions2.GridClass">
-<thead>
-    <tr>
+  <table class="@ViewExtensions2.GridClass">
+    <thead>
+      <tr>
         <th>Substitute</th>
         <th>Response</th>
         <th>Responded</th>
-    </tr>
-</thead>
-<tbody>
-@foreach (var r in Model.SubRequests())
-{
-    <tr>
-        <td>@r.SubName</td>
-        <td>@r.Requested.ToString("g")</td>
-        <td>@r.Responded.ToString2("g")</td>
-        <td>@r.CanSubDisplay</td>
-    </tr>
-}
-</tbody>
-</table>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var r in Model.SubRequests())
+      {
+        <tr>
+          <td>@r.SubName</td>
+          <td>@r.Requested.ToString("g")</td>
+          <td>@r.Responded.ToString2("g")</td>
+          <td>@r.CanSubDisplay</td>
+        </tr>
+      }
+    </tbody>
+  </table>
 </div>

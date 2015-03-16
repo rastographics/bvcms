@@ -13,20 +13,20 @@ namespace CmsWeb.Areas.Search.Controllers
             Response.NoCache();
             var m = new RegistrationSearchModel();
 
-            m.GetFromSession();
+            //m.GetFromSession();
             return View(m);
         }
         [HttpPost]
         public ActionResult Results(RegistrationSearchModel m)
         {
-            m.SaveToSession();
+            //m.SaveToSession();
             return View(m);
         }
         [HttpPost]
         public ActionResult Clear()
         {
-            var m = new RegistrationSearchModel();
-            m.ClearSession();
+            //var m = new RegistrationSearchModel();
+            //m.ClearSession();
             return Redirect("/RegistrationSearch");
         }
     }

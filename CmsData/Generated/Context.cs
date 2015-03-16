@@ -4401,6 +4401,16 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.MaxPastMeeting", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? MaxPastMeeting(
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.UserRoleList", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string UserRoleList(
@@ -4410,6 +4420,18 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 uid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.MaxMeetingDate", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? MaxMeetingDate(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
                 ).ReturnValue));
 		}
 

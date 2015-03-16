@@ -463,20 +463,6 @@ namespace CmsWeb.Models
             return msg;
         }
 
-        private bool? usebootstrap;
-
-        public bool UseBootstrap
-        {
-            get
-            {
-                if (!usebootstrap.HasValue)
-                    usebootstrap = org != null
-                        ? org.UseBootstrap ?? true
-                        : masterorg != null && (masterorg.UseBootstrap ?? true);
-                return usebootstrap.Value;
-            }
-        }
-
         private int? timeOut;
         public int TimeOut
         {

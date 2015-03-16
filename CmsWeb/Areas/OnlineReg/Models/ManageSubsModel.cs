@@ -162,16 +162,6 @@ namespace CmsWeb.Models
                 return setting ?? (setting = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId));
             }
         }
-        private bool? usebootstrap;
-        public bool UseBootstrap
-        {
-            get
-            {
-                if (!usebootstrap.HasValue)
-                    usebootstrap = Setting.UseBootstrap;
-                return usebootstrap.Value;
-            }
-        }
         public string Instructions
         {
             get

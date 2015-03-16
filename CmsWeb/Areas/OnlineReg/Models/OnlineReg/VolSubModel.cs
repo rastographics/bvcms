@@ -332,15 +332,5 @@ See you there!</p>".Fmt(r.Substitute.Name, r.Requestor.Name,
         {
             get { return setting ?? (setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId)); }
         }
-        private bool? usebootstrap;
-        public bool UseBootstrap
-        {
-            get
-            {
-                if (!usebootstrap.HasValue)
-                    usebootstrap = Setting.UseBootstrap;
-                return usebootstrap.Value;
-            }
-        }
     }
 }

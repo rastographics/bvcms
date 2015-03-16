@@ -1,15 +1,13 @@
 ﻿@{
-    Layout = Model.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Registration";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
 }
 
 <div class="confirm">
 
-   <h2>Transaction Completed</h2>
-    <p>
-        Thank you for your Commitment to @ViewData["Organization"]<br />
-        You should receive a confirmation email shortly.
-    </p>
+  <h2>Transaction Completed</h2>
+  <p>
+    Thank you for your Commitment to @ViewData["Organization"]<br />
+    You should receive a confirmation email shortly.
+  </p>
 </div>

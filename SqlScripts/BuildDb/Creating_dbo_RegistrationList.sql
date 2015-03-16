@@ -1,5 +1,3 @@
-
-
 CREATE VIEW [dbo].[RegistrationList]
 AS
 
@@ -14,6 +12,7 @@ SELECT
 	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/FirstName[1]', 'varchar(50)') [first]
 	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/LastName[1]', 'varchar(50)') [last]
 	,data.value('count(/OnlineRegModel/List/OnlineRegPersonModel)', 'int') cnt
+	,cast (CASE WHEN data.value('(/OnlineRegModel/URL)[1]', 'varchar(100)') LIKE '%source=%' THEN 1 ELSE 0 END AS BIT) [mobile]
 	,tt.completed
 	,tt.abandoned
 	,tt.UserPeopleId
@@ -34,8 +33,6 @@ FROM
 ) tt
 LEFT JOIN dbo.Organizations o ON o.OrganizationId = tt.OrganizationId
 LEFT JOIN dbo.People pu ON pu.PeopleId = tt.UserPeopleId
-
-
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

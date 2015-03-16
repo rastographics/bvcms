@@ -1,9 +1,7 @@
 ﻿@model CmsWeb.Models.OnlineRegModel
 @using UtilityExtensions
 @{
-  Layout = Model.UseBootstrap
-      ? "~/Views/Shared/onlinereg2.cshtml"
-      : "~/Views/Shared/onlinereg.cshtml";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
   ViewBag.Title = "Online Registration";
 }
 @section scripts
@@ -15,23 +13,10 @@
   </script>
 }
 
-@if (Model.UseBootstrap)
-{
-    <div class="regform">
-        <h3>@Model.Header</h3>
-        <h4>
-            We have saved your progress.<br/> 
-            An email with a link to finish this registration will come to you shortly.
-        </h4>
-    </div>
-}
-else
-{
-  <div class="regform pagecontainer">
-    <h2>@Model.Header</h2>
-    <h4>
-      We have saved your progress.<br/> 
-      An email with a link to finish this registration will come to you shortly.
-    </h4>
-  </div>
-}
+<div class="regform">
+  <h3>@Model.Header</h3>
+  <h4>
+    We have saved your progress.<br />
+    An email with a link to finish this registration will come to you shortly.
+  </h4>
+</div>

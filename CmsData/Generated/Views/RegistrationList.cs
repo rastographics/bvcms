@@ -36,6 +36,8 @@ namespace CmsData.View
 		
 		private int? _Cnt;
 		
+		private bool? _Mobile;
+		
 		private bool? _Completed;
 		
 		private bool? _Abandoned;
@@ -220,6 +222,23 @@ namespace CmsData.View
 			{
 				if (this._Cnt != value)
 					this._Cnt = value;
+			}
+
+		}
+
+		
+		[Column(Name="mobile", Storage="_Mobile", DbType="bit")]
+		public bool? Mobile
+		{
+			get
+			{
+				return this._Mobile;
+			}
+
+			set
+			{
+				if (this._Mobile != value)
+					this._Mobile = value;
 			}
 
 		}

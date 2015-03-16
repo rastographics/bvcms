@@ -56,11 +56,6 @@ namespace CmsData.Registration
 		public string GroupToJoin { get; set; }
 	    public bool AddAsProspect { get; set; }
 
-        public bool UseBootstrap
-        {
-            get { return org != null && (org.UseBootstrap ?? true); }
-        }
-
         public string DonationFund()
 		{
 			return (from f in Db.ContributionFunds

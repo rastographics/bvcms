@@ -3,9 +3,7 @@
 @using CmsWeb.Models
 @using UtilityExtensions
 @{
-    Layout = Model.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "Online Registration";
 }
 @section scripts
@@ -15,16 +13,14 @@
         $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
         $.tmout = parseInt('@Model.TimeOut');
     </script>
-    @(Model.UseBootstrap
-        ? @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
-        : @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js"))
+  @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
 }
 
 <div class="confirm">
   @Html.Raw(Model.TrackingCode)
-    @Html.Raw(Model.GetThankYouMessage())
-  @if (Model.UseBootstrap && MobileAppMenuController.InMobileAppMode)
-    {
+  @Html.Raw(Model.GetThankYouMessage())
+  @if (MobileAppMenuController.InMobileAppMode)
+  {
     <a href="@MobileAppMenuController.MobileAppReturnUrl" class="btn btn-primary">Return to Application</a>
-    }
+  }
 </div>

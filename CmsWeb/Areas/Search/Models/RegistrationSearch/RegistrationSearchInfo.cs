@@ -15,14 +15,16 @@ namespace CmsWeb.Areas.Search.Models
         public CodeInfo Expired { get; set; }
         public CodeInfo Complete { get; set; }
         public CodeInfo Abandoned { get; set; }
+        public bool FromMobileAppOnly { get; set; }
         public string count { get; set; }
 
         public RegistrationSearchInfo()
         {
-            Active = new CodeInfo("YesNoAll");
-            Complete = new CodeInfo("YesNoAll");
-            Abandoned = new CodeInfo("YesNoAll");
-            Expired = new CodeInfo("YesNoAll");
+            var yna = CodeValueModel.YesNoAll().ToSelect("Value");
+            Active = new CodeInfo("All", yna);
+            Complete = new CodeInfo("All", yna);
+            Abandoned = new CodeInfo("All", yna);
+            Expired = new CodeInfo("All", yna);
         }
     }
 }

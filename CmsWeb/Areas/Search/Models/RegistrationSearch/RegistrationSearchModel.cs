@@ -119,6 +119,12 @@ namespace CmsWeb.Areas.Search.Models
                         select r;
                     break;
             }
+            if (SearchParameters.FromMobileAppOnly)
+            {
+                q = from r in q
+                    where (r.Mobile == true)
+                    select r;
+            }
 
             DateTime startDateRange;
             DateTime endDateRange;
@@ -128,7 +134,7 @@ namespace CmsWeb.Areas.Search.Models
                 if (SearchParameters.EndDate.HasValue)
                     endDateRange = SearchParameters.EndDate.Value.AddHours(+24);
                 else
-                    endDateRange = DateTime.Today;
+                    endDateRange = DateTime.Today.AddHours(24);
 
             }
             else if (SearchParameters.EndDate.HasValue)
@@ -178,23 +184,23 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-        private const string STR_RegistrationSearch = "RegistrationSearch";
-        internal void GetFromSession()
-        {
-            var os = HttpContext.Current.Session[STR_RegistrationSearch] as RegistrationSearchInfo;
-            if (os != null)
-                SearchParameters.CopyPropertiesFrom(os);
-        }
-        internal void SaveToSession()
-        {
-            var os = new RegistrationSearchInfo();
-            SearchParameters.CopyPropertiesTo(os);
-            HttpContext.Current.Session[STR_RegistrationSearch] = os;
-        }
-
-        internal void ClearSession()
-        {
-            HttpContext.Current.Session.Remove(STR_RegistrationSearch);
-        }
+//        private const string STR_RegistrationSearch = "RegistrationSearch";
+//        internal void GetFromSession()
+//        {
+//            var os = HttpContext.Current.Session[STR_RegistrationSearch] as RegistrationSearchInfo;
+//            if (os != null)
+//                SearchParameters.CopyPropertiesFrom(os);
+//        }
+//        internal void SaveToSession()
+//        {
+//            var os = new RegistrationSearchInfo();
+//            SearchParameters.CopyPropertiesTo(os);
+//            HttpContext.Current.Session[STR_RegistrationSearch] = os;
+//        }
+//
+//        internal void ClearSession()
+//        {
+//            HttpContext.Current.Session.Remove(STR_RegistrationSearch);
+//        }
     }
 }

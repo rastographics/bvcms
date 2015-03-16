@@ -116,17 +116,6 @@ namespace CmsWeb.Models
             get { return _setting ?? (_setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid)); }
         }
 
-        private bool? _usebootstrap;
-        public bool UseBootstrap
-        {
-            get
-            {
-                if (!_usebootstrap.HasValue)
-                    _usebootstrap = Setting.UseBootstrap;
-                return _usebootstrap.Value;
-            }
-        }
-
         public bool NoCreditCardsAllowed { get; set; }
         public bool NoEChecksAllowed { get; set; }
 
@@ -526,16 +515,10 @@ namespace CmsWeb.Models
 
         public SelectList PeriodOptions()
         {
-            if (UseBootstrap)
-                return new SelectList(new Dictionary<string, string>
-                {
-                    {"M", "Month"},
-                    {"W", "Week"},
-                }, "Key", "Value");
             return new SelectList(new Dictionary<string, string>
             {
-                {"M", "Month(s)"},
-                {"W", "Week(s)"},
+                {"M", "Month"},
+                {"W", "Week"},
             }, "Key", "Value");
         }
 

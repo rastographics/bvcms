@@ -1,34 +1,36 @@
-﻿@model CmsWeb.Models.ManageSubsModel 
+﻿@model CmsWeb.Models.ManageSubsModel
 @using CmsWeb
 @{
-    Layout = Model.Setting.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Registration";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js")
+  @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js")
 }
 <h2>@Model.Description()</h2>
 <div>@Html.Raw(Model.Instructions)</div>
 <h4>Email Subscription Options for @Model.person.Name &lt;@Model.person.EmailAddress&gt;</h4>
-@using(Html.BeginForm("ConfirmSubscriptions", "OnlineReg"))
+@using (Html.BeginForm("ConfirmSubscriptions", "OnlineReg"))
 {
-    @Html.Hidden("specialedit", 1)
-    @Html.Hidden("pid", Model.pid)
-    @Html.Hidden("masterorgid", Model.masterorgid)
-   <table id="subs">
+  @Html.Hidden("specialedit", 1)
+  @Html.Hidden("pid", Model.pid)
+  @Html.Hidden("masterorgid", Model.masterorgid)
+  <table id="subs">
     @foreach (var o in Model.OrderSubs(Model.FetchSubs()))
-    { 
-		<tr><td class="top">
-			    <input type="checkbox" name="Subscribe" @o.CHECKED value="@o.OrgId" /></td>
-			<td><h3>@o.Name</h3>
-				<h4>@o.Description</h4></td>
-        </tr>
+    {
+      <tr>
+        <td class="top">
+          <input type="checkbox" name="Subscribe" @o.CHECKED value="@o.OrgId" />
+        </td>
+        <td>
+          <h3>@o.Name</h3>
+          <h4>@o.Description</h4>
+        </td>
+      </tr>
     }
-   </table>
-   <input id="submitit" type="submit" class="submitbutton" value='Submit' />
+  </table>
+  <input id="submitit" type="submit" class="submitbutton" value='Submit' />
 }
 
 

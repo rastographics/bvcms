@@ -12,10 +12,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             ViewBag.Url = m2.URL;
             Session["gobackurl"] = m2.URL;
-            if(m2.UseBootstrap)
-                SetHeaders2(m2.Orgid ?? m2.masterorgid ?? 0);
-            else
-                SetHeaders(m2.Orgid ?? m2.masterorgid ?? 0);
+            SetHeaders2(m2.Orgid ?? m2.masterorgid ?? 0);
         }
         private void SetHeaders2(int id)
         {
@@ -52,13 +49,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             Settings setting = null;
             var org = DbUtil.Db.LoadOrganizationById(id);
-            if (org != null && (org.UseBootstrap ?? true))
+            if (org != null)
             {
                 SetHeaders2(id);
                 return;
             }
             var shell = "";
-            if ((settings == null || !settings.ContainsKey(id)) && org != null)
+            if ((settings == null || !settings.ContainsKey(id)))
             {
                 setting = OnlineRegModel.ParseSetting(org.RegSetting, id);
                 shell = DbUtil.Content(setting.Shell, null);

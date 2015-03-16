@@ -31,7 +31,6 @@ namespace CmsWeb.Models
         public string Terms { get; set; }
         public int DatumId { get; set; }
         public Guid FormId { get; set; }
-        public bool UseBootstrap { get; set; }
         public string URL { get; set; }
         public string FullName()
         {
@@ -219,7 +218,6 @@ namespace CmsWeb.Models
             pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : "";
             var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
             var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
-            pf.UseBootstrap = setting.UseBootstrap;
             return pf;
         }
         public static PaymentForm CreatePaymentForm(OnlineRegModel m)
@@ -277,7 +275,6 @@ namespace CmsWeb.Models
 
             pf.AllowSaveProgress = m.AllowSaveProgress();
             pf.NoCreditCardsAllowed = m.NoCreditCardsAllowed();
-            pf.UseBootstrap = m.UseBootstrap;
             if (m.OnlineGiving())
             {
                 pf.NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();

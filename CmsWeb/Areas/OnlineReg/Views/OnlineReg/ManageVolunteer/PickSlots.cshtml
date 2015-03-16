@@ -1,9 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Models.VolunteerModel 
 @{
-    Layout = Model.Setting.UseBootstrap
-        ? "~/Views/Shared/onlinereg2.cshtml"
-        : "~/Views/Shared/onlinereg.cshtml";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
     ViewBag.Title = "Online Registration";
 }
 @section scripts
@@ -13,11 +11,25 @@
 @section head
 {
 <style type="text/css">
-    .wk-1 { background-color: #B1ECB1; }
-    .wk-2 { background-color: #E0E0FF; } 
-    .wk-3 { background-color: #FFE1E1; }
-    .wk-4 { background-color: #FFFFDB; }
-    .wk-5 { background-color: #E1E1E1; }
+    .wk-1 {
+      background-color: #B1ECB1;
+    }
+
+    .wk-2 {
+      background-color: #E0E0FF;
+    }
+
+    .wk-3 {
+      background-color: #FFE1E1;
+    }
+
+    .wk-4 {
+      background-color: #FFFFDB;
+    }
+
+    .wk-5 {
+      background-color: #E1E1E1;
+    }
 </style>
 }
 @if (Model.IsLeader)
