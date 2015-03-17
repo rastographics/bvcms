@@ -10,17 +10,6 @@
     if (window.location.hash) {
         lastTab = window.location.hash;
     }
-    if (lastTab) {
-        var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
-        var tabparent = tlink.closest("ul").data("tabparent");
-        if (tabparent) {
-            $("a[href='#" + tabparent + "']").click().tab("show");
-        }
-        if (tlink.attr("href") !== '#') {
-            $.cookie('lasttab', tlink.attr("href"));
-            tlink.click().tab("show");
-        }
-    }
     $("a[href='#Settings-tab']").on('shown', function (e) {
         if ($("#SettingsOrg").length < 2) {
             $("a[href='#SettingsOrg']").click().tab("show");
@@ -37,6 +26,17 @@
                 break;
         }
     });
+    if (lastTab) {
+        var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
+        var tabparent = tlink.closest("ul").data("tabparent");
+        if (tabparent) {
+            $("a[href='#" + tabparent + "']").click().tab("show");
+        }
+        if (tlink.attr("href") !== '#') {
+            $.cookie('lasttab', tlink.attr("href"));
+            tlink.click().tab("show");
+        }
+    }
 
     $.InitFunctions.Editable = function () {
         $("a.editable").editable();
