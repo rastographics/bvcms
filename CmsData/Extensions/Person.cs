@@ -1312,8 +1312,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     	next = next.AddDays(7);
                     var prev = next.AddDays(-7);
                     var bid = BundleTypeCode.MissionTrip == typecode
-                        ? Db.GetCurrentOnlineBundle(next, prev)
-                        : Db.GetCurrentMissionTripBundle(next, prev);
+                        ? Db.GetCurrentMissionTripBundle(next, prev)
+                        : Db.GetCurrentOnlineBundle(next, prev);
                     bundle = Db.BundleHeaders.SingleOrDefault(bb => bb.BundleHeaderId == bid);
                 }
                 catch (Exception)
@@ -1323,9 +1323,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             if(!Util.HasValue(spec))
             {
+                var nextd = d.AddDays(1);
                 var bid = BundleTypeCode.MissionTrip == typecode
-                    ? Db.GetCurrentOnlineBundle(now, d)
-                    : Db.GetCurrentMissionTripBundle(now, d);
+                    ? Db.GetCurrentMissionTripBundle(nextd, d)
+                    : Db.GetCurrentOnlineBundle(nextd, d);
                 bundle = Db.BundleHeaders.SingleOrDefault(bb => bb.BundleHeaderId == bid);
             }
             if (bundle == null)
@@ -1335,7 +1336,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     BundleHeaderTypeId = typecode.Value,
                     BundleStatusId = BundleStatusCode.Open,
                     CreatedBy = Util.UserId1,
-                    ContributionDate = now,
+                    ContributionDate = d,
                     CreatedDate = now,
                     FundId = Db.Setting("DefaultFundId", "1").ToInt(),
                     RecordStatus = false,
