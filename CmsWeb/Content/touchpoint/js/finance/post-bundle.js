@@ -1,0 +1,417 @@
+﻿$(function () {
+
+    $('#pid').blur(function () {
+        var tr, pid;
+        if ($(this).val() == '')
+            return false;
+        if ($(this).val() == 'd') {
+            tr = $('#bundle > tbody > tr:first');
+            pid = $("a.pid", tr).text();
+            $('#name').val($("td.name", tr).text());
+            $('#checkno').val($("td.checkno", tr).text());
+            $('#notes').val($("td.notes", tr).text());
+            $('#amt').focus();
+            $(this).val($.trim(pid));
+            return true;
+        }
+
+        var q = $('#pbform').serialize();
+        $.post("/PostBundle/GetNamePid/", q, function (ret) {
+            if (ret.error == 'not found') {
+
+                $.growlUI("PeopleId", "Not Found");
+                $('#name').focus();
+                $('#pid').val('');
+            }
+            else {
+                $('#name').val(ret.name);
+                $('#pid').val(ret.PeopleId);
+                $('#amt').focus();
+            }
+        });
+    });
+
+    //$('td.name').tooltip({ showBody: "|" });
+
+    $(".ui-autocomplete-input").on("autocompleteopen", function () {
+        var autocomplete = $(this).data("autocomplete"),
+    		menu = autocomplete.menu;
+        if (!autocomplete.options.selectFirst) {
+            return;
+        }
+        menu.activate($.Event({ type: "mouseenter" }), menu.element.children().first());
+    });
+
+    $("#name").focus(function () {
+        $.enteredname = $(this).val();
+    });
+
+    //$("a.trigger-dropdown").dropdown2();
+
+    $("#name").autocomplete({
+        appendTo: "#SearchResults2",
+        autoFocus: true,
+        minLength: 3,
+        source: function (request, response) {
+            if ($("#moreresults").is(":checked")) {
+                $.post("/PostBundle/Names2", request, function (ret) {
+                    response(ret.slice(0, 30));
+                }, "json");
+                $("#SearchResults2 > ul").css({
+                    'max-height': 400,
+                    'overflow-y': 'auto'
+                });
+            }
+            else {
+                $.post("/PostBundle/Names", request, function (ret) {
+                    response(ret.slice(0, 10));
+                }, "json");
+            }
+        },
+        select: function (event, ui) {
+            $("#name").val(ui.item.Name);
+            $("#pid").val(ui.item.Pid);
+            return false;
+        }
+    }).data("uiAutocomplete")._renderItem = function (ul, item) {
+        return $("<li>")
+            .append("<a><b>" + item.Name + "</b>" + item.Spouse + "<br>" + item.Addr + item.RecentGifts + "</a>")
+            .appendTo(ul);
+    };
+
+    $("#name").blur(function () {
+        if ($('#pid').val() == '' && $(this).val() != '') {
+            $.growl("Name", "Not Found");
+            $('#name').focus();
+        }
+        else if ($(this).val() != $.enteredname && $.enteredname != '') {
+            var q = $('#pbform').serialize();
+            $.post("/PostBundle/GetNamePid/", q, function (ret) {
+                if (ret.error == 'not found') {
+                    $.growlUI("PeopleId", "Not Found");
+                    $('#name').focus();
+                    $('#pid').val('');
+                }
+                else {
+                    $('#name').val(ret.name);
+                    $('#pid').val(ret.PeopleId);
+                    $('#amt').focus();
+                }
+            });
+        }
+    });
+
+    var keyallowed = true;
+
+    $('#notes').keydown(function (event) {
+        if (keyallowed && (event.keyCode == 9 || event.keyCode == 13) && !event.shiftKey) {
+            event.preventDefault();
+            keyallowed = false;
+            $.PostRow({ scroll: false });
+        }
+    });
+
+    $('#pid').keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            if (!$.browser.msie)
+                $('#pid').blur();
+            $('#name').focus();
+        }
+    });
+
+    $('#name').keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            $('#amt').focus();
+        }
+    });
+
+    $('#amt').keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            $('#fund').focus();
+        }
+    });
+
+    $('#fund').keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            $('#checkno').focus();
+        }
+    });
+
+    $('#checkno').keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            $('#notes').focus();
+        }
+    });
+
+    $('a.update').click(function (event) {
+        event.preventDefault();
+        $.PostRow({ scroll: true });
+    });
+
+    $("body").on("click", 'a.edit', function (ev) {
+        ev.preventDefault();
+        var tr = $(this).closest("tr");
+        $('#editid').val(tr.attr("cid"));
+        $('#pid').val($.trim($("a.pid", tr).text()));
+        $('#name').val($("td.name", tr).text());
+        $('#contributiondate').val($(".date", tr).val());
+        $("#gear").show();
+        $('#fund').val($("td.fund", tr).attr('val'));
+
+        var plnt = $("td.PLNT span", tr).text();
+        plnt = plnt || "CN";
+        $('#PLNT').val(plnt);
+        
+        var a = $('#amt');
+        a.val($("td.amt", tr).attr("val"));
+        $('#checkno').val($("td.checkno", tr).text());
+        $('#notes').val($("td.notes", tr).text());
+        tr.hide();
+        if (a.val() == '0.00')
+            a.val('');
+        $('html,body').animate({ scrollTop: 0 }, 600);
+        a.focus();
+        $('a.edit').hide();
+        $('a.split').hide();
+        $('a.delete').hide();
+    });
+
+    $("body").on("click", 'a.split', function (ev) {
+        ev.preventDefault();
+        var newamt = prompt("Amount to split out", "");
+        newamt = parseFloat(newamt);
+        if (isNaN(newamt))
+            return false;
+        var tr = $(this).closest("tr");
+
+        var q = {
+            pid: $("a.pid", tr).text(),
+            name: $("td.name", tr).text(),
+            fund: $("td.fund", tr).attr('val'),
+            pledge: $("td.fund", tr).attr('pledge'),
+            amt: newamt,
+            splitfrom: tr.attr("cid"),
+            checkno: $("td.checkno", tr).text(),
+            notes: $("td.notes", tr).text(),
+            id: $("#id").val()
+        };
+        $.PostRow({ scroll: true, q: q });
+    });
+
+    $("body").on("click", 'a.delete', function (ev) {
+        ev.preventDefault();
+        var tr = $(this).closest("tr");
+        $('#editid').val(tr.attr("cid"));
+        var q = $('#pbform').serialize();
+        
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post("/PostBundle/DeleteRow/", q, function (ret) {
+                if (ret && ret.error)
+                    swal("Error!", ret.error, "error");
+                else {
+                    tr.remove();
+                    $('#totalitems').text(ret.totalitems);
+                    $('#itemcount').text(ret.itemcount);
+                    $('#editid').val('');
+                    swal({
+                        title: "Deleted!",
+                        type: "success"
+                    });
+                }
+            });
+        });
+    });
+
+    $("body").on("click", 'a.pid', function (ev) {
+        if (!$(this).hasClass('searchadd')) {
+            event.preventDefault();
+            var d = $('#searchDialog');
+            $('iframe', d).attr("src", this.href);
+            d.dialog("open");
+        }
+    });
+
+    $('#bundle').bind('mousedown', function (e) {
+        if ($(e.target).hasClass("clickEdit")) {
+            $(e.target).editable(function (value, settings) {
+                $.post("/PostBundle/Edit/", { id: e.target.id, value: value }, function (ret) {
+                    $('#totalitems').text(ret.totalitems);
+                    $('#itemcount').text(ret.itemcount);
+                    $('#a' + ret.cid).text(ret.amt);
+                });
+                return (value);
+            }, {
+                indicator: "<img src='/Content/images/loading.gif'>",
+                tooltip: "Click to edit...",
+                style: 'display: inline',
+                width: '4em',
+                height: 25
+            });
+        }
+        else if ($(e.target).hasClass("clickSelect")) {
+            $(e.target).editable("/PostBundle/Edit/", {
+                indicator: '<img src="/Content/images/loading.gif">',
+                loadtype: 'post',
+                loadurl: "/PostBundle/Funds/",
+                type: "select",
+                submit: "OK",
+                style: 'display: inline'
+            });
+        }
+    });
+
+    $.PostRow = function (options) {
+        $("#gear").hide();
+        if (!options.q) {
+            var n = parseFloat($('#amt').val());
+            var plnt = $("#PLNT").val();
+            if (!n > 0 && plnt != 'GK' && plnt != 'SK') {
+                swal("Contribution Error!", "Cannot post. No amount specified.", "error");
+                return;
+            }
+            if (!isNaN(n) && n != 0 && plnt == 'GK') {
+                swal("Contribution Error!", "Cannot post. Gift In Kind must be zero.", "error");
+                return;
+            }
+            options.q = $('#pbform').serialize();
+        }
+        var action = "/PostBundle/PostRow/";
+        var cid = $('#editid').val();
+        if (cid)
+            action = "/PostBundle/UpdateRow/";
+        $.post(action, options.q, function (ret) {
+            if (!ret)
+                return;
+            if (ret.error) {
+                alert(ret.error);
+                return;
+            }
+            $('#totalitems').text(ret.totalitems);
+            $('#itemcount').text(ret.itemcount);
+            var pid = $('#pid').val();
+            var tr;
+            if (cid) {
+                tr = $('tr[cid="' + cid + '"]');
+                tr.replaceWith(ret.row);
+                tr = $('tr[cid="' + cid + '"]');
+            }
+            else if (options.q.splitfrom) {
+                tr = $('tr[cid="' + options.q.splitfrom + '"]');
+                $('#a' + options.q.splitfrom).text(ret.othersplitamt);
+                $(ret.row).insertAfter(tr);
+                tr = $('tr[cid="' + ret.cid + '"]');
+            }
+            else {
+                $('#bundle tbody').prepend(ret.row);
+                tr = $('#bundle tbody tr:first');
+            }
+            $('td.name', tr).tooltip({ showBody: "|" });
+            $('a.edit').show();
+            $('a.split').show();
+            $('a.delete').show();
+            $(".bt", tr).button();
+            $('#editid').val('');
+            $('#entry input').val('');
+            $('#fund').val($('#fundid').val());
+            //$.Stripe();
+            $('#pid').focus();
+            keyallowed = true;
+            var top = tr.offset().top - 360;
+            if (options.scroll == true) {
+                $('html,body').animate({ scrollTop: top }, 1000);
+            }
+            tr.effect("highlight", { color: '#fcf8e3' }, 3000);
+        });
+    };
+    $('#searchDialog').dialog({
+        title: 'Search/Add Contributor',
+        bgiframe: true,
+        autoOpen: false,
+        width: 750,
+        height: 700,
+        modal: true,
+        overlay: {
+            opacity: 0.5,
+            background: "black"
+        }, close: function () {
+            $('iframe', this).attr("src", "");
+        }
+    });
+    $("#totalitems").text($("#titems").val());
+    $("#totalcount").text($("#tcount").val());
+
+
+    $("#showmove").click(function (ev) {
+        ev.preventDefault();
+        $('#move-modal').modal('show');
+    });
+
+    $('#move-modal').on('shown.bs.modal', function () {
+        $("#moveto").val('').focus();
+    });
+
+    $("#moveit").click(function (ev) {
+        ev.preventDefault();
+        $.post("/PostBundle/Move/" + $("#editid").val(), { moveto: $("#moveto").val() }, function (ret) {
+            $('#move-modal').modal('hide');
+            if (ret.status === "ok") {
+                $('#editid').val('');
+                $('#entry input').val('');
+                $('#fund').val($('#fundid').val());
+                $('#pid').focus();
+                $('#totalitems').text(ret.totalitems);
+                $('#itemcount').text(ret.itemcount);
+                keyallowed = true;
+                swal({
+                    title: "Moved!",
+                    text: "Contribution was successfully moved.",
+                    type: "success"
+                });
+            } else {
+                swal("Error!", ret.error, "error");
+            }
+        });
+    });
+
+    $("#movecancel").click(function (ev) {
+        ev.preventDefault();
+        $.unblockUI();
+    });
+
+    $("#showdate").click(function (ev) {
+        ev.preventDefault();
+        $('#edit-date-modal').modal('show');
+    });
+
+    $('#edit-date-modal').on('shown.bs.modal', function () {
+        $.InitializeDateElements();
+        $("#newcontributiondate").val('').focus();
+    });
+
+    $("#editdatedone").click(function (ev) {
+        ev.preventDefault();
+        $("#contributiondate").val($("#newcontributiondate").val());
+        $('#edit-date-modal').modal('hide');
+    });
+});
+
+function AddSelected(ret) {
+    $('#searchDialog').dialog("close");
+    var tr = $('tr[cid=' + ret.cid + ']');
+    $('a.pid', tr).text(ret.pid);
+    $('td.name', tr).text(ret.name);
+    $('a.edit', tr).click();
+}

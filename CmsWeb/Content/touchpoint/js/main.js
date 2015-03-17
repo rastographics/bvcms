@@ -42,16 +42,19 @@ $.block = function () {
     });
     initializeLoading();
 };
+
 $.unblock = function () {
     setTimeout(function () {
         $.unblockUI();
     }, 500);
     
 };
+
 function initializeLoading() {
     $("#loading").velocity("fadeIn", { display: "inline", duration: 500 });
     animateColors();
 }
+
 function animateColors() {
     $(".top").velocity({ fill: "#eaab00" }, 250, function () {
         $(".right").velocity({ fill: "#eaab00" }, 250, function () {
@@ -64,6 +67,25 @@ function animateColors() {
     }).velocity({ fill: "#f8e3b8" }, 350);
 }
 
+$.growl = function (title, text) {
+    $.blockUI.defaults.growlCSS = {
+        width: '350px',
+        top: '70px',
+        left: '',
+        right: '10px',
+        border: 'none',
+        padding: '5px',
+        opacity: 0.6,
+        cursor: 'default',
+        color: '#fff',
+        backgroundColor: '#eaab00',
+        '-webkit-border-radius': '0',
+        '-moz-border-radius': '0',
+        'border-radius': '0'
+    };
+
+    $.growlUI(title, text);
+}
 
 /* helper methods */
 String.prototype.startsWith = function (t, i) {

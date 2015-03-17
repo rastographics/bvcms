@@ -6,20 +6,34 @@
             @(Model.PeopleId == null ? "select" : Model.PeopleId.ToString())
         </a>
     </td>
-    <td class="name" title="@Model.tip">@Model.Name</td>
-    <td class="amt" val="@Model.Amt" class="right">
+    <td class="name" title="@Model.tip">
+        @Model.Name
+    </td>
+    <td class="amt text-right" val="@Model.Amt">
         <span id='a@(Model.ContributionId)' class='clickEdit'>@Model.AmtDisplay</span>            
     </td>
-    <td class="PLNT">@Model.PLNT</td>
+    <td class="text-center PLNT">
+        <span>@Model.PLNT</span>
+    </td>
     <td class="fund" val="@Model.FundId">
-        <span id='f@(Model.ContributionId)' 
-            class='clickSelect'>@Model.FundDisplay</span>
+        <span id='f@(Model.ContributionId)' class='clickSelect'>@Model.FundDisplay</span>
     </td>
-    <td class="checkno">@Model.CheckNo</td>
-    <td class="notes">@Model.Notes</td>
-    <td><small><a class="edit bt" href='#'>edit</a></small>
-        <input type="hidden" class="date" value="@Model.Date.FormatDate()"/>
+    <td class="checkno">
+        @Model.CheckNo
     </td>
-    <td><small><a class="split bt" href='#'>split</a></small></td>
-	<td><a class="delete" href='#'><img src="/Content/images/delete.gif"/></a></td>
+    <td class="notes">
+        @Model.Notes
+    </td>
+    <td colspan="2">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                Actions <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                <li><a class="edit" href="#"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a></li>
+                <li><a class="split" href="#"><i class="fa fa-expand"></i>&nbsp;&nbsp;Split</a></li>
+                <li><a class="delete" href="#"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
+            </ul>
+        </div>
+    </td>
 </tr>

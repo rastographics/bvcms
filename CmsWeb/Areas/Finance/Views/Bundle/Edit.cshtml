@@ -76,7 +76,14 @@
                             </div>
                         </div>
                     </div>
-                    <br />
+                    <ul class="list-inline">
+                        <li>
+                            <strong>Bundle Total</strong> <span class="badge">@Model.TotalHeader().ToString("C2")</span>
+                        </li>
+                        <li>
+                            <strong>Items Total</strong> <span class="badge">@Model.TotalItems().ToString("C2")</span>
+                        </li>
+                    </ul>
                     <p>
                         <a href="/Bundle/Cancel/@Model.BundleId" class="btn btn-default displayedit">Cancel</a> <a href="/Bundle/Update/@Model.BundleId" class="btn btn-primary displayedit">Save</a>
                     </p>

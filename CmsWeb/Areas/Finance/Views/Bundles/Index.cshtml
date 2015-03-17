@@ -26,7 +26,7 @@
 {
     <script type="text/javascript">
         $(function () {
-            function intializePopovers() {
+            function initializePopovers() {
                 $('[data-toggle="popover"]').popover({ html: true });
                 $('[data-toggle="popover"]').click(function (ev) {
                     ev.preventDefault();
@@ -67,13 +67,13 @@
                 $.post("/bundles/results", q, function (ret) {
                     $('#results').html(ret).ready(function () {
                         $('#results > table > tbody > tr:even').addClass('alt');
-                        intializePopovers();
+                        initializePopovers();
                         $.unblock();
                     });
                 });
                 return false;
             };
-            intializePopovers();
+            initializePopovers();
         });
     </script>
 }
