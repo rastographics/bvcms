@@ -1,5 +1,6 @@
 ﻿@using CmsData
 @using CmsWeb
+@using CmsWeb.Areas.Org.Models
 @model CmsWeb.Areas.Org.Models.OrganizationModel
 @{
   Layout = ViewExtensions2.Layout();
@@ -184,7 +185,7 @@
       </tr>
       <tr class="forRollsheet">
         <th>Meeting Date: </th>
-        <td>@Html.DatePicker("NextMeetingDate") </td>
+        <td>@Html.DatePicker("NextMeetingDate")</td>
       </tr>
       <tr>
         <th>Meeting Time: </th>

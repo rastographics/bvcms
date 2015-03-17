@@ -10,6 +10,7 @@ using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace CmsWeb.Controllers
 {
@@ -61,9 +62,8 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            var q = DbUtil.Db.RecurringGivingNotifyPersons();
-            //var q = DbUtil.Db.PeopleFromPidString("828612,819918,333,1078427", "Finance").Select(mm => mm.Name);
-            return Content(string.Join(",", q));
+            var q = DbUtil.Db.CardIdentifiers.Select(mm => "{0}\t{1}".Fmt(mm.PeopleId, mm.Person.Name));
+            return Content(string.Join("\n", q), "text/plain");
         }
 #endif
 
