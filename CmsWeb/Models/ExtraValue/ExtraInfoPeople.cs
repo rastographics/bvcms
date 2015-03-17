@@ -62,9 +62,10 @@ namespace CmsWeb.Models.ExtraValues
                          join sv in NameTypes on i.key.Field equals sv.Name into j
                          from sv in j.DefaultIfEmpty()
                          let type = sv == null ? i.key.Type : sv.Type
-                         let typedisplay = sv == null 
-                                ? adhoctypes.Single(ee => ee.Code == type).Value 
-                                : standardtypes.Single(ee => ee.Code == type).Value 
+                         let typobj = sv == null 
+                                ? adhoctypes.SingleOrDefault(ee => ee.Code == type)
+                                : standardtypes.SingleOrDefault(ee => ee.Code == type)
+                         let typedisplay = typobj == null ? "unknown" : typobj.Value
                          select new ExtraInfoPeople
                          {
                              Field = i.key.Field,
