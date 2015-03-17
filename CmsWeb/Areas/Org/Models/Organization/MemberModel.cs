@@ -311,7 +311,7 @@ namespace CmsWeb.Areas.Org.Models
                     case "Name":
                         q = from om in q
                             let p = om.Person
-                            orderby p.Name2,
+                            orderby p.Name2 descending,
                             p.PeopleId descending
                             select om;
                         break;
