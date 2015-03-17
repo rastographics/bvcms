@@ -65,7 +65,9 @@
 @helper FormAction()
 {
   <div class="pull-right">
-    <a href="/Org/Questions/@Model.OrgId" class="btn ajax">Cancel</a> <a href="#addQuestions" class="btn btn-success" data-toggle="modal">Add Question Item</a> <a href="/Organization/QuestionsUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+    <a href="/Org/Questions/@Model.OrgId" class="btn ajax">Cancel</a>
+    <a href="#addQuestions" class="btn btn-success" data-toggle="modal">Add Question Item</a> 
+    <a href="/Org/QuestionsUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
   </div>
   <div class="formerror">@Html.ValidationMessage("Form")</div>
 }

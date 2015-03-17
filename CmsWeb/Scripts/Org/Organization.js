@@ -331,7 +331,7 @@
     };
 
     function UpdateSelectedOrgs(list, f) {
-        $.post("/Organization/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
+        $.post("/Org/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
             $("#orgpickdiv").html(ret);
             f.modal("hide");
         });
@@ -421,7 +421,7 @@
         });
     };
     $.InitFunctions.ReloadMeetings = function (f) {
-        $("#Meetings-tab").load("/Organization/Meetings", { id: $("input[name=Id]", "#Meetings-tab").val() });
+        $("#Meetings-tab").load("/Org/Meetings", { id: $("input[name=Id]", "#Meetings-tab").val() });
     }
     $.InitFunctions.showHideRegTypes = function (f) {
         $("#Fees-tab").show();
@@ -446,7 +446,7 @@
 
     $('#selectquestions a').live("click", function (ev) {
         ev.preventDefault();
-        $.post('/Organization/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
+        $.post('/Org/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
             $('#addQuestions').modal('hide');
             $('html, body').animate({ scrollTop: $("body").height() }, 800);
             var newli = $("#QuestionList").append(ret);
@@ -532,7 +532,7 @@
     };
     $('a.taguntag').live("click", function (ev) {
         ev.preventDefault();
-        $.post('/Organization/ToggleTag/' + $(this).attr('pid'), null, function (ret) {
+        $.post('/Org/ToggleTag/' + $(this).attr('pid'), null, function (ret) {
             $(ev.target).text(ret);
         });
         return false;
