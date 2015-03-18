@@ -67,18 +67,30 @@ function animateColors() {
     }).velocity({ fill: "#f8e3b8" }, 350);
 }
 
-$.growl = function (title, text) {
+$.growl = function (title, text, type) {
+    var backColor = '#46494d';
+
+    if (type == 'danger') {
+        backColor = '#d9534f';
+    }
+    else if (type == 'info') {
+        backColor = '#548cc5';
+    }
+    else if (type == 'warning') {
+        backColor = '#eaab00';
+    }
+
     $.blockUI.defaults.growlCSS = {
-        width: '350px',
-        top: '70px',
+        width: '250px',
+        top: '63px',
         left: '',
         right: '10px',
         border: 'none',
         padding: '5px',
-        opacity: 0.6,
+        opacity: .97,
         cursor: 'default',
         color: '#fff',
-        backgroundColor: '#eaab00',
+        backgroundColor: backColor,
         '-webkit-border-radius': '0',
         '-moz-border-radius': '0',
         'border-radius': '0'

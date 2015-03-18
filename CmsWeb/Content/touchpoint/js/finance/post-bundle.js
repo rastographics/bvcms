@@ -19,7 +19,7 @@
         $.post("/PostBundle/GetNamePid/", q, function (ret) {
             if (ret.error == 'not found') {
 
-                $.growlUI("PeopleId", "Not Found");
+                $.growl("No Results!", "Person id not found.", "warning");
                 $('#name').focus();
                 $('#pid').val('');
             }
@@ -81,14 +81,14 @@
 
     $("#name").blur(function () {
         if ($('#pid').val() == '' && $(this).val() != '') {
-            $.growl("Name", "Not Found");
+            $.growl("No Results!", "Name of person not found.", "warning");
             $('#name').focus();
         }
         else if ($(this).val() != $.enteredname && $.enteredname != '') {
             var q = $('#pbform').serialize();
             $.post("/PostBundle/GetNamePid/", q, function (ret) {
                 if (ret.error == 'not found') {
-                    $.growlUI("PeopleId", "Not Found");
+                    $.growl("No Results!", "Person id not found.", "warning");
                     $('#name').focus();
                     $('#pid').val('');
                 }

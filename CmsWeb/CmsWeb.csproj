@@ -902,6 +902,7 @@
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundRangeResults.cshtml" />
     <Content Include="Areas\Finance\Views\Bundle\Create.cshtml" />
+    <Content Include="Content\touchpoint\src\less\jquery-ui-overrides.less" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Scripts\globalize\globalize.culture.en-029.js" />
     <Content Include="Scripts\globalize\globalize.culture.en-AU.js" />
