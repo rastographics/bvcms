@@ -3,11 +3,15 @@
 <tr cid="@Model.ContributionId">
     <td>
         <a href="/SearchAdd2/Dialog/contributor/@Model.ContributionId" class="searchadd pid">
-            @(Model.PeopleId == null ? "select" : Model.PeopleId.ToString())
+            @(Model.PeopleId == null ? "Select" : Model.PeopleId.ToString())
         </a>
         <input type="hidden" class="date" value="@Model.Date.FormatDate()" />
     </td>
-    <td class="name" title="@Model.tip">
+    <td class="name">
+        @if (Model.PeopleId != null)
+        {
+            <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@Model.Name" data-content="@Model.tip"><i class="fa fa-info-circle"></i></a>
+        }
         <span>@Model.Name</span>
     </td>
     <td class="amt text-right" val="@Model.Amt">

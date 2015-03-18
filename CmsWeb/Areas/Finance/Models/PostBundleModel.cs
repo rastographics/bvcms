@@ -459,7 +459,7 @@ namespace CmsWeb.Models
         }
         public static string Tip(int? pid, int? age, string memstatus, string address, string city, string state, string zip)
         {
-            return "PeopleId: {0}|Age: {1}|{2}|{3}|{4}".Fmt(pid, age, memstatus, address, Util.FormatCSZ(city, state, zip));
+            return "<label>People Id:</label> {0}<br/><label>Age:</label> {1}<br/>{2}<br/>{3}<br/>{4}".Fmt(pid, age, memstatus, address, Util.FormatCSZ(city, state, zip));
         }
 
         public decimal TotalItems

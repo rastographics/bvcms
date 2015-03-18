@@ -1,5 +1,13 @@
 ﻿$(function () {
 
+    function initializePopovers() {
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
+        });
+    }
+    initializePopovers();
+
     $('#pid').blur(function () {
         var tr, pid;
         if ($(this).val() == '')
@@ -31,8 +39,6 @@
         });
     });
 
-    //$('td.name').tooltip({ showBody: "|" });
-
     $(".ui-autocomplete-input").on("autocompleteopen", function () {
         var autocomplete = $(this).data("autocomplete"),
     		menu = autocomplete.menu;
@@ -45,8 +51,6 @@
     $("#name").focus(function () {
         $.enteredname = $(this).val();
     });
-
-    //$("a.trigger-dropdown").dropdown2();
 
     $("#name").autocomplete({
         appendTo: "#SearchResults2",
@@ -367,6 +371,7 @@
             }
             tr.effect("highlight", { color: '#fcf8e3' }, 3000);
             $("#gear").hide();
+            initializePopovers();
             initializeEditable();
         });
     };
