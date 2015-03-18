@@ -179,14 +179,23 @@ namespace CmsWeb.Areas.Org.Models
 			get
 			{
 				var sc = org.OrgSchedules.FirstOrDefault(); // SCHED
-				if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
-					return Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
+			    if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
+			    {
+					var dt = Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
+			        if (dt >= Util.Now.Date)
+			            dt = dt.AddDays(-7);
+			        return dt;
+			    }
 				return Util.Now.Date;
 			}
 		}
 		public DateTime NextMeetingDate
 		{
-			get { return PrevMeetingDate.AddDays(7); }
+		    get
+		    {
+		        var dt = PrevMeetingDate.AddDays(7);
+		        return dt;
+		    }
 		}
 		private Settings _RegSettings;
 		public Settings RegSettings

@@ -1,3 +1,5 @@
+
+
 CREATE PROCEDURE [dbo].[WorshipAttendance] (@tagid INT)
 AS
 BEGIN
@@ -7,10 +9,7 @@ BEGIN
 
 	DECLARE @wid INT = ISNULL((SELECT Setting FROM dbo.Setting WHERE Id = 'WorshipId'), 0)
 
-	DECLARE @lastmeet DATETIME = (SELECT MAX(MeetingDate)
-								  FROM dbo.Meetings
-								  WHERE OrganizationId = @wid
-								  AND NumPresent > 0)
+	DECLARE @lastmeet DATETIME = dbo.MaxMeetingDate(@wid)
 
 	DECLARE @lastWeekNumber INT = dbo.WeekNumber(@lastmeet)
     
@@ -35,7 +34,7 @@ BEGIN
 
 	SELECT 
 		 t.PeopleId
-		,p.Name
+		,p.Name2 AS Name
 		,p.Age
 		,dbo.SundayForWeekNumber(@lastWeekNumber) Dt00
 
@@ -65,6 +64,7 @@ BEGIN
 
 		,CONVERT(FLOAT, (SELECT COUNT(*) FROM #t WHERE WeekNumber >= @w52 AND Attended = 1 AND OrganizationId <> @wid AND PeopleId = t.PeopleId))
 		/ NULLIF((SELECT COUNT(*) FROM #t WHERE WeekNumber >= @w52 AND OrganizationId <> @wid AND PeopleId = t.PeopleId), 0) * 100 AS MF52
+		,mf.AttendPct MFPct
 		,dbo.SundayForWeekNumber(@w52) Dt52
 
 
@@ -73,7 +73,8 @@ BEGIN
 	from #t t
 	JOIN dbo.People p ON p.PeopleId = t.PeopleId
 	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @wid
-	GROUP BY t.PeopleId, p.Name, p.Age, om.AttendStr
+	LEFT JOIN dbo.OrganizationMembers mf ON mf.PeopleId = p.PeopleId AND mf.OrganizationId = p.BibleFellowshipClassId
+	GROUP BY t.PeopleId, p.Name2, p.Age, om.AttendStr, mf.AttendPct
 
 	DROP TABLE #t
 

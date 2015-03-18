@@ -32,7 +32,7 @@
 <div class="regform">
     <h2>@Model.Header</h2>
     <form class="DisplayEdit" action="/OnlineReg/CompleteRegistration/@Model.qtesting" method="post">
-        @Html.Partial("Flow/ModelHidden", Model)
+        @Html.Partial("Flow2/ModelHidden", Model)
         @Html.Raw(Util.PickFirst(Model.DonationLabel(), @"<h2>Please consider making an extra donation</h2>"))
         @if (Model.List.Count > 1)
         {
@@ -44,9 +44,9 @@
             var viewdata = new ViewDataDictionary(ViewData)
             { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
             var p = Model.List[i];
-            @Html.Partial("Flow/PersonMetaHidden", p, viewdata)
-            @Html.Partial("Flow/PersonHidden", p, viewdata)
-            @Html.Partial("Flow/OtherHidden", p, viewdata)
+            @Html.Partial("Flow2/PersonMetaHidden", p, viewdata)
+            @Html.Partial("Flow2/PersonHidden", p, viewdata)
+            @Html.Partial("Flow2/OtherHidden", p, viewdata)
             if(Model.List.Count > 1)
             {
                 <input type="radio" name="donor" value="@i" /> @(p.FirstName + " " + p.LastName + " " + p.Suffix) @:(@p.age)<br />

@@ -7,9 +7,9 @@ RETURN
 		   p.Name,
 	       commits = CAST(CASE WHEN EXISTS(SELECT NULL FROM dbo.Attend a
 				                WHERE a.MeetingDate > GETDATE()
-				                AND a.OrganizationId = @oid
+				                AND a.OrganizationId = om.OrganizationId
 				                AND a.PeopleId = om.PeopleId
-				                AND a.Commitment = 1 OR a.Commitment = 4)
+				                AND a.Commitment IN (1,4))
 						THEN 1 ELSE 0 END AS BIT),
 		   conflicts = CAST(CASE WHEN EXISTS(
 								SELECT NULL FROM dbo.MeetingConflicts mc
