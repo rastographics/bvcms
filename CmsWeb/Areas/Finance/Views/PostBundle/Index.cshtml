@@ -13,7 +13,8 @@
 @Html.Hidden("fundispledge", Model.FundName)
 @{
     var b = Model.bundle;
-    var difference = (b.TotalCash + b.TotalChecks + b.TotalEnvelopes) - Model.TotalItems;
+    var bundleTotal = b.TotalCash + b.TotalChecks + b.TotalEnvelopes;
+    var difference = bundleTotal - Model.TotalItems;
 }
 @section head {
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
@@ -51,7 +52,7 @@
                         <div class="stat-panel-inner-container">
                             <div class="stat-panel">
                                 <span class="stat-title">BUNDLE TOTAL</span>
-                                <span class="stat-figure">@((b.TotalCash + b.TotalChecks + b.TotalEnvelopes).ToString2("C2"))</span>
+                                <span class="stat-figure">@(bundleTotal.ToString2("C2"))</span>
                             </div>
                             <div class="stat-panel">
                                 <span class="stat-title">ITEMS TOTAL</span>
@@ -164,19 +165,16 @@
                     <tfoot>
                         <tr class="totals-row">
                             <td class="text-left">Bundle Total</td>
-                            <td class="text-right">@((b.TotalCash + b.TotalChecks + b.TotalEnvelopes).ToString2("C2"))</td>
+                            <td class="text-right">@(bundleTotal.ToString2("C2"))</td>
                         </tr>
-                        @if (difference.GetValueOrDefault() != 0)
-                        {
-                            <tr>
-                                <td class="text-left">Items Total</td>
-                                <td class="text-right totalitems">@Model.TotalItems.ToString("C2")</td>
-                            </tr>
-                            <tr class="totals-row warning">
-                                <td class="text-left">Difference</td>
-                                <td class="text-right difference">@difference.GetValueOrDefault().ToString("C2")</td>
-                            </tr>
-                        }
+                        <tr class="diffRow" @(difference.GetValueOrDefault() == 0 ? "style=display:none;" : "")>
+                            <td class="text-left">Items Total</td>
+                            <td class="text-right totalitems">@Model.TotalItems.ToString("C2")</td>
+                        </tr>
+                        <tr class="totals-row warning diffRow" @(difference.GetValueOrDefault() == 0 ? "style=display:none;" : "")>
+                            <td class="text-left">Difference</td>
+                            <td class="text-right difference">@difference.GetValueOrDefault().ToString("C2")</td>
+                        </tr>
                     </tfoot>
                 </table>
             </div>

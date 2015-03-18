@@ -232,9 +232,11 @@
                     swal("Error!", ret.error, "error");
                 else {
                     tr.remove();
+                    showHideDiffRow(ret.diff);
                     $('.totalitems').text(ret.totalitems);
                     $('.difference').text(ret.difference);
                     $('.itemcount').text(ret.itemcount);
+                    
                     $('#editid').val('');
                     swal({
                         title: "Deleted!",
@@ -244,6 +246,14 @@
             });
         });
     });
+
+    function showHideDiffRow(diff) {
+        if (diff == 0) {
+            $('tr.diffRow').hide();
+        } else {
+            $('tr.diffRow').show();
+        }
+    }
 
     $("body").on("click", 'a.pid', function (ev) {
         if (!$(this).hasClass('searchadd')) {
@@ -272,6 +282,7 @@
                 return data;
             },
             success: function (ret) {
+                showHideDiffRow(ret.diff);
                 $('.totalitems').text(ret.totalitems);
                 $('.difference').text(ret.difference);
                 $('.itemcount').text(ret.itemcount);
@@ -322,6 +333,7 @@
                 alert(ret.error);
                 return;
             }
+            showHideDiffRow(ret.diff);
             $('.totalitems').text(ret.totalitems);
             $('.difference').text(ret.difference);
             $('.itemcount').text(ret.itemcount);
@@ -394,6 +406,7 @@
                 $('#entry input').val('');
                 $('#fund').val($('#fundid').val());
                 $('#pid').focus();
+                showHideDiffRow(ret.diff);
                 $('.totalitems').text(ret.totalitems);
                 $('.difference').text(ret.difference);
                 $('.itemcount').text(ret.itemcount);

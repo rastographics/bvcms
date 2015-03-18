@@ -76,9 +76,10 @@ namespace CmsWeb.Areas.Finance.Controllers
                       select h).Single();
 
             var totalitems = q.totalitems.GetValueOrDefault().ToString("C2");
-            var difference = ((sh.TotalCash + sh.TotalChecks + sh.TotalEnvelopes) - q.totalitems).GetValueOrDefault().ToString("C2");
-
-            return Json(new { status = "ok", totalitems, difference, q.itemcount });
+            var diff = ((sh.TotalCash + sh.TotalChecks + sh.TotalEnvelopes) - q.totalitems);
+            var difference = diff.GetValueOrDefault().ToString("C2");
+            
+            return Json(new { status = "ok", totalitems, diff, difference, q.itemcount });
         }
         public ActionResult Names(string term)
         {
