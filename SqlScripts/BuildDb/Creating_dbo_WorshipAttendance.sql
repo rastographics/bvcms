@@ -1,3 +1,5 @@
+
+
 CREATE PROCEDURE [dbo].[WorshipAttendance] (@tagid INT)
 AS
 BEGIN
@@ -32,7 +34,7 @@ BEGIN
 
 	SELECT 
 		 t.PeopleId
-		,p.Name
+		,p.Name2 AS Name
 		,p.Age
 		,dbo.SundayForWeekNumber(@lastWeekNumber) Dt00
 
@@ -72,7 +74,7 @@ BEGIN
 	JOIN dbo.People p ON p.PeopleId = t.PeopleId
 	LEFT JOIN dbo.OrganizationMembers om ON om.PeopleId = p.PeopleId AND om.OrganizationId = @wid
 	LEFT JOIN dbo.OrganizationMembers mf ON mf.PeopleId = p.PeopleId AND mf.OrganizationId = p.BibleFellowshipClassId
-	GROUP BY t.PeopleId, p.Name, p.Age, om.AttendStr, mf.AttendPct
+	GROUP BY t.PeopleId, p.Name2, p.Age, om.AttendStr, mf.AttendPct
 
 	DROP TABLE #t
 
