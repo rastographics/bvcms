@@ -5,28 +5,29 @@
         <a href="/SearchAdd2/Dialog/contributor/@Model.ContributionId" class="searchadd pid">
             @(Model.PeopleId == null ? "select" : Model.PeopleId.ToString())
         </a>
+        <input type="hidden" class="date" value="@Model.Date.FormatDate()" />
     </td>
     <td class="name" title="@Model.tip">
-        @Model.Name
+        <span>@Model.Name</span>
     </td>
     <td class="amt text-right" val="@Model.Amt">
-        <span id='a@(Model.ContributionId)' class='clickEdit'>@Model.AmtDisplay</span>            
+        <a id="a@(Model.ContributionId)" data-pk="a@(Model.ContributionId)" class="clickEdit">@Model.AmtDisplay</a>            
     </td>
     <td class="text-center PLNT">
         <span>@Model.PLNT</span>
     </td>
     <td class="fund" val="@Model.FundId">
-        <span id='f@(Model.ContributionId)' class='clickSelect'>@Model.FundDisplay</span>
+        <a id="f@(Model.ContributionId)" class="clickSelect" data-value="@Model.FundId" data-pk="f@(Model.ContributionId)">@Model.FundDisplay</a>
     </td>
     <td class="checkno">
-        @Model.CheckNo
+        <span>@Model.CheckNo</span>
     </td>
     <td class="notes">
-        @Model.Notes
+        <span>@Model.Notes</span>
     </td>
     <td colspan="2">
         <div class="btn-group">
-            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-default btn-sm dropdown-toggle contribution-actions" data-toggle="dropdown" aria-expanded="false">
                 Actions <span class="caret"></span>
             </button>
             <ul class="dropdown-menu dropdown-menu-right" role="menu">

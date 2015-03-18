@@ -135,18 +135,7 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public IEnumerable Funds2()
-        {
-            var q = from f in DbUtil.Db.ContributionFunds
-                    where f.FundStatusId == 1
-                    orderby f.FundId
-                    select new
-                    {
-                        Code = f.FundId.ToString(),
-                        Value = "{0} - {1}".Fmt(f.FundId, f.FundName),
-                    };
-            return q.ToDictionary(k => k.Code, v => v.Value);
-        }
+        
         public object GetNamePidFromId()
         {
             IEnumerable<object> q;
@@ -334,7 +323,8 @@ namespace CmsWeb.Models
                         amt = c.ContributionAmount.ToString2("N2"),
                         cid,
                         totalitems = bh.BundleDetails.Sum(d =>
-                            d.Contribution.ContributionAmount).ToString2("N2"),
+                            d.Contribution.ContributionAmount).ToString2("C2"),
+                        difference = ((bh.TotalCash + bh.TotalChecks + bh.TotalEnvelopes) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount)).ToString2("C2"),
                         itemcount = bh.BundleDetails.Count(),
                         othersplitamt = othersplitamt.ToString2("N2")
                     };
@@ -455,10 +445,13 @@ namespace CmsWeb.Models
                 DbUtil.Db.Contributions.DeleteOnSubmit(c);
                 DbUtil.Db.SubmitChanges();
             }
+
+            var totalItems = bundle.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
+            var difference = (bundle.TotalCash + bundle.TotalChecks + bundle.TotalEnvelopes) - totalItems;
             return new
             {
-                totalitems = bundle.BundleDetails.Sum(d =>
-                    d.Contribution.ContributionAmount).ToString2("N2"),
+                totalitems = totalItems.ToString2("C2"),
+                difference = difference.ToString2("C2"),
                 itemcount = bundle.BundleDetails.Count(),
             };
         }

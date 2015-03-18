@@ -158,7 +158,7 @@
         var tr = $(this).closest("tr");
         $('#editid').val(tr.attr("cid"));
         $('#pid').val($.trim($("a.pid", tr).text()));
-        $('#name').val($("td.name", tr).text());
+        $('#name').val($("td.name span", tr).text());
         $('#contributiondate').val($(".date", tr).val());
         $("#gear").show();
         $('#fund').val($("td.fund", tr).attr('val'));
@@ -169,26 +169,34 @@
         
         var a = $('#amt');
         a.val($("td.amt", tr).attr("val"));
-        $('#checkno').val($("td.checkno", tr).text());
-        $('#notes').val($("td.notes", tr).text());
+        $('#checkno').val($("td.checkno span", tr).text());
+        $('#notes').val($("td.notes span", tr).text());
         tr.hide();
         if (a.val() == '0.00')
             a.val('');
         $('html,body').animate({ scrollTop: 0 }, 600);
         a.focus();
-        $('a.edit').hide();
-        $('a.split').hide();
-        $('a.delete').hide();
+        $('button.contribution-actions').prop('disabled', true);
     });
 
     $("body").on("click", 'a.split', function (ev) {
         ev.preventDefault();
-        var newamt = prompt("Amount to split out", "");
+        $('#split-modal').modal('show');
+        $('#contributionId').val($(this).closest("tr").attr('cid'));
+    });
+
+    $('#split-modal').on('shown.bs.modal', function () {
+        $("#amt-split").val('').focus();
+    });
+
+    $("#split-submit").click(function (ev) {
+        ev.preventDefault();
+
+        var newamt = $("#amt-split").val();
         newamt = parseFloat(newamt);
         if (isNaN(newamt))
             return false;
-        var tr = $(this).closest("tr");
-
+        var tr = $('tr[cid=' + $('#contributionId').val() + ']');
         var q = {
             pid: $("a.pid", tr).text(),
             name: $("td.name", tr).text(),
@@ -201,6 +209,7 @@
             id: $("#id").val()
         };
         $.PostRow({ scroll: true, q: q });
+        $('#split-modal').modal('hide');
     });
 
     $("body").on("click", 'a.delete', function (ev) {
@@ -223,8 +232,9 @@
                     swal("Error!", ret.error, "error");
                 else {
                     tr.remove();
-                    $('#totalitems').text(ret.totalitems);
-                    $('#itemcount').text(ret.itemcount);
+                    $('.totalitems').text(ret.totalitems);
+                    $('.difference').text(ret.difference);
+                    $('.itemcount').text(ret.itemcount);
                     $('#editid').val('');
                     swal({
                         title: "Deleted!",
@@ -244,37 +254,50 @@
         }
     });
 
-    $('#bundle').bind('mousedown', function (e) {
-        if ($(e.target).hasClass("clickEdit")) {
-            $(e.target).editable(function (value, settings) {
-                $.post("/PostBundle/Edit/", { id: e.target.id, value: value }, function (ret) {
-                    $('#totalitems').text(ret.totalitems);
-                    $('#itemcount').text(ret.itemcount);
-                    $('#a' + ret.cid).text(ret.amt);
-                });
-                return (value);
-            }, {
-                indicator: "<img src='/Content/images/loading.gif'>",
-                tooltip: "Click to edit...",
-                style: 'display: inline',
-                width: '4em',
-                height: 25
-            });
-        }
-        else if ($(e.target).hasClass("clickSelect")) {
-            $(e.target).editable("/PostBundle/Edit/", {
-                indicator: '<img src="/Content/images/loading.gif">',
-                loadtype: 'post',
-                loadurl: "/PostBundle/Funds/",
-                type: "select",
-                submit: "OK",
-                style: 'display: inline'
-            });
-        }
-    });
+    $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+    function initializeEditable() {
+        $(".clickEdit").editable({
+            mode: 'popup',
+            type: 'text',
+            url: "/PostBundle/Edit/",
+            params: function (params) {
+                var data = {};
+                data['id'] = params.pk;
+                data['value'] = params.value;
+                return data;
+            },
+            success: function (ret) {
+                $('.totalitems').text(ret.totalitems);
+                $('.difference').text(ret.difference);
+                $('.itemcount').text(ret.itemcount);
+                $('#a' + ret.cid).closest('td').attr('val', ret.amt);
+            }
+        });
+
+        $(".clickSelect").editable({
+            mode: 'popup',
+            type: 'select',
+            url: "/PostBundle/Edit/",
+            source: "/PostBundle/Funds/",
+            params: function (params) {
+                var data = {};
+                data['id'] = params.pk;
+                data['value'] = params.value;
+                return data;
+            },
+            success: function (ret, value) {
+                $(this).closest('td').attr('val', value);
+            }
+        });
+    }
+    initializeEditable();
 
     $.PostRow = function (options) {
-        $("#gear").hide();
         if (!options.q) {
             var n = parseFloat($('#amt').val());
             var plnt = $("#PLNT").val();
@@ -299,8 +322,9 @@
                 alert(ret.error);
                 return;
             }
-            $('#totalitems').text(ret.totalitems);
-            $('#itemcount').text(ret.itemcount);
+            $('.totalitems').text(ret.totalitems);
+            $('.difference').text(ret.difference);
+            $('.itemcount').text(ret.itemcount);
             var pid = $('#pid').val();
             var tr;
             if (cid) {
@@ -319,14 +343,10 @@
                 tr = $('#bundle tbody tr:first');
             }
             $('td.name', tr).tooltip({ showBody: "|" });
-            $('a.edit').show();
-            $('a.split').show();
-            $('a.delete').show();
-            $(".bt", tr).button();
+            $('button.contribution-actions').prop('disabled', false);
             $('#editid').val('');
             $('#entry input').val('');
             $('#fund').val($('#fundid').val());
-            //$.Stripe();
             $('#pid').focus();
             keyallowed = true;
             var top = tr.offset().top - 360;
@@ -334,6 +354,8 @@
                 $('html,body').animate({ scrollTop: top }, 1000);
             }
             tr.effect("highlight", { color: '#fcf8e3' }, 3000);
+            $("#gear").hide();
+            initializeEditable();
         });
     };
     $('#searchDialog').dialog({
@@ -350,8 +372,8 @@
             $('iframe', this).attr("src", "");
         }
     });
-    $("#totalitems").text($("#titems").val());
-    $("#totalcount").text($("#tcount").val());
+    //$(".totalitems").text($("#titems").val());
+    //$("#totalcount").text($("#tcount").val());
 
 
     $("#showmove").click(function (ev) {
@@ -372,14 +394,17 @@
                 $('#entry input').val('');
                 $('#fund').val($('#fundid').val());
                 $('#pid').focus();
-                $('#totalitems').text(ret.totalitems);
-                $('#itemcount').text(ret.itemcount);
+                $('.totalitems').text(ret.totalitems);
+                $('.difference').text(ret.difference);
+                $('.itemcount').text(ret.itemcount);
                 keyallowed = true;
                 swal({
                     title: "Moved!",
                     text: "Contribution was successfully moved.",
                     type: "success"
                 });
+                $('button.contribution-actions').prop('disabled', false);
+                $("#gear").hide();
             } else {
                 swal("Error!", ret.error, "error");
             }
@@ -397,8 +422,8 @@
     });
 
     $('#edit-date-modal').on('shown.bs.modal', function () {
+        $("#newcontributiondate").val($("#contributiondate").val()).focus();
         $.InitializeDateElements();
-        $("#newcontributiondate").val('').focus();
     });
 
     $("#editdatedone").click(function (ev) {

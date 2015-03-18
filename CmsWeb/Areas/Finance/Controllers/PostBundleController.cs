@@ -67,11 +67,18 @@ namespace CmsWeb.Areas.Finance.Controllers
                      group d by d.BundleHeaderId into g
                      select new
                      {
-                         totalitems = g.Sum(d =>
-                             d.Contribution.ContributionAmount).ToString2("N2"),
+                         totalitems = g.Sum(d => d.Contribution.ContributionAmount),
                          itemcount = g.Count(),
                      }).Single();
-            return Json(new { status = "ok", q.totalitems, q.itemcount });
+
+            var sh = (from h in DbUtil.Db.BundleHeaders 
+                      where h.BundleHeaderId == pbid 
+                      select h).Single();
+
+            var totalitems = q.totalitems.GetValueOrDefault().ToString("C2");
+            var difference = ((sh.TotalCash + sh.TotalChecks + sh.TotalEnvelopes) - q.totalitems).GetValueOrDefault().ToString("C2");
+
+            return Json(new { status = "ok", totalitems, difference, q.itemcount });
         }
         public ActionResult Names(string term)
         {
@@ -138,11 +145,18 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
         }
 
-        [HttpPost]
         public JsonResult Funds()
         {
-            var m = new PostBundleModel();
-            return Json(m.Funds2());
+            var q = from f in DbUtil.Db.ContributionFunds
+                    where f.FundStatusId == 1
+                    orderby f.FundId
+                    select new
+                    {
+                        value = f.FundId,
+                        text = "{0} - {1}".Fmt(f.FundId, f.FundName),
+                    };
+
+            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult Edit(string id, string value)

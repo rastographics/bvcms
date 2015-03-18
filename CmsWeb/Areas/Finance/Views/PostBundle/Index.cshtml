@@ -1,4 +1,5 @@
-﻿@using CmsData
+﻿@using System.Globalization
+@using CmsData
 @using DocumentFormat.OpenXml.Office2010.Word
 @using UtilityExtensions
 @using CmsWeb
@@ -14,7 +15,8 @@
     var b = Model.bundle;
     var difference = (b.TotalCash + b.TotalChecks + b.TotalEnvelopes) - Model.TotalItems;
 }
-@section head{
+@section head {
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     <style>
         div.growlUI h1 {
             font-size: 30px;
@@ -60,11 +62,11 @@
                             </div>
                             <div class="stat-panel">
                                 <span class="stat-title">ITEMS TOTAL</span>
-                                <span class="stat-figure">@Model.TotalItems.ToString("C2")</span>
+                                <span class="stat-figure totalitems">@Model.TotalItems.ToString("C2")</span>
                             </div>
                             <div class="stat-panel">
                                 <span class="stat-title">ITEM COUNT</span>
-                                <span class="stat-figure">@Model.TotalCount.ToString("N0")</span>
+                                <span class="stat-figure itemcount">@Model.TotalCount.ToString("N0")</span>
                             </div>
                             <div style="clear: both;"></div>
                         </div>
@@ -87,7 +89,7 @@
                                 <tr id="entry" class="success">
                                     <td>
                                         <input id="pid" name="pid" type="text" style="width: 6em;" class="form-control input-sm" />
-                                        
+                                        <input type="hidden" id="contributiondate" name="contributiondate" />
                                     </td>
                                     <td>
                                         <input id="name" name="name" type="text" style="width: 14em" class="form-control input-sm" />
@@ -175,11 +177,11 @@
                         {
                             <tr>
                                 <td class="text-left">Items Total</td>
-                                <td class="text-right">@Model.TotalItems.ToString("C2")</td>
+                                <td class="text-right totalitems">@Model.TotalItems.ToString("C2")</td>
                             </tr>
                             <tr class="totals-row warning">
                                 <td class="text-left">Difference</td>
-                                <td class="text-right">@difference.GetValueOrDefault().ToString("C2")</td>
+                                <td class="text-right difference">@difference.GetValueOrDefault().ToString("C2")</td>
                             </tr>
                         }
                     </tfoot>
@@ -263,6 +265,30 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="split-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Split Contribution</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="amt-split" class="control-label">Amount to Split</label>
+                    <div class="input-group">
+                        <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span><input type="text" id="amt-split" name="amt-split" class="form-control" />
+                    </div>
+                    <input type="hidden" id="contributionId" name="contributionId" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <a href="#" id="split-submit" name="split-submit" class="btn btn-primary">Submit</a>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts {
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/finance/post-bundle.js")
 }
