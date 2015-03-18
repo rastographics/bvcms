@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.Org2.Models
         public bool AskDonation { get; set; }
 
         [Reg, Display(Description = DonationFundIdDescription)]
-        public bool DonationFundId { get; set; }
+        public int? DonationFundId { get; set; }
 
         [Reg, Display(Description = DonationLabelDescription)]
         public string DonationLabel { get; set; }

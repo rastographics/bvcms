@@ -4,16 +4,16 @@
     <title>@ViewBag.Title</title>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
     @ViewExtensions2.GoogleFonts()
-    @ViewExtensions2.NewStyles()
     @ViewExtensions2.jQueryUICss()
+    @ViewExtensions2.NewStyles()
     @Fingerprint.Css("/content/styles/siteblue.css")
     @ViewExtensions2.OldStyles()
     @ViewExtensions2.FontAwesome()
     @RenderSection("head", required: false)
     @ViewExtensions2.FixupsCss()
     @ViewExtensions2.jQuery()
-    @ViewExtensions2.Bootstrap()
     @ViewExtensions2.jQueryUI()
+    @ViewExtensions2.Bootstrap()
     @Fingerprint.Script("/Scripts/bundle.main2c.js")
     @Html.Partial("DatePickerDefaults")
     <script>

@@ -3,6 +3,7 @@
 @{
   var NotJoinOrg = Model.Org.RegistrationTypeId != CmsData.Codes.RegistrationTypeCode.JoinOrganization;
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";
+  ViewBag.FalseValue = "";
 }
 <form class="form form-horizontal non-modal ajax span12" data-init="datetimepicker">
   <br />

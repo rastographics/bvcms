@@ -145,7 +145,8 @@ namespace CmsWeb.Areas.Dialog.Models
                 DbUtil.Db.SubmitChanges();
             }
         }
-        public void UpdateSmallGroup(int sgtagid, bool ck)
+
+        public void AddSmallGroup(int sgtagid)
         {
             var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
             foreach (var pid in pids)
@@ -153,14 +154,22 @@ namespace CmsWeb.Areas.Dialog.Models
                 DbUtil.DbDispose();
                 DbUtil.Db = new CMSDataContext(Util.ConnectionString);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
-                if (ck)
-                    om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = sgtagid });
-                else
-                {
-                    var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
-                    if (mt != null)
-                        DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
-                }
+                om.OrgMemMemTags.Add(new OrgMemMemTag {MemberTagId = sgtagid});
+                DbUtil.Db.SubmitChanges();
+            }
+        }
+
+        public void RemoveSmallGroup(int sgtagid)
+        {
+            var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
+            foreach (var pid in pids)
+            {
+                DbUtil.DbDispose();
+                DbUtil.Db = new CMSDataContext(Util.ConnectionString);
+                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
+                var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
+                if (mt != null)
+                    DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
                 DbUtil.Db.SubmitChanges();
             }
         }

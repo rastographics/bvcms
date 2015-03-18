@@ -3,8 +3,9 @@
 <form class="form form-horizontal modal fade hide ajax members-update" method="POST">
   <div class="modal-header">
     <h4>Add/Remove people to/from small groups in @Model.OrgName</h4>
+    <a class="close" data-dismiss="modal">x</a>
     <div class="alert alert-danger">
-      Each checkbox when checked, will add or remove @Model.Count people for the indicated small group.
+      Each button will add or remove @Model.Count people for the indicated small group.
     </div>
   </div>
   <div class="modal-body">
@@ -40,7 +41,8 @@
   <div class="control-group">
     <label class="control-label">@mt.Name</label>
     <div class="controls">
-      <input class="update-smallgroup" href="/OrgMembersUpdate/SmallGroupClick/@mt.Id" value="@mt.Id" type="checkbox" />
+      <a href="/OrgMembersUpdate/AddSmallGroup/@mt.Id" class="btn btn-mini btn-success update-smallgroup">Add</a>
+      <a href="/OrgMembersUpdate/RemoveSmallGroup/@mt.Id" class="btn btn-mini btn-danger update-smallgroup">Remove</a>
     </div>
   </div>
 }

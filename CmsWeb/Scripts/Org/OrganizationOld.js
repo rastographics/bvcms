@@ -13,53 +13,53 @@ $(function () {
     $("li.current-list").show();
     $("a.trigger-dropdown").dropdown2();
     $("#main-tab").tabs({
-      activate: function(event, ui) {
-        var qid = "";
+        activate: function (event, ui) {
+            var qid = "";
 
-        switch ($(ui.newTab[0]).text()) {
-            case "Members":
-                qid = $("#currentQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.current-list").show();
-                break;
-            case "Previous":
-                qid = $("#previousQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Pending":
-                qid = $("#pendingQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();;
-                $("li.pending-list").show();
-                break;
-            case "Inactive":
-            case "Senders":
-                qid = $("#inactiveQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Prospects":
-                qid = $("#prospectsQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Guests":
-                qid = $("#visitedQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Settings":
-            case "Meetings":
-                $("#bluetoolbarstop li > a.qid").parent().addClass("hidy");
-                break;
+            switch ($(ui.newTab[0]).text()) {
+                case "Members":
+                    qid = $("#currentQid").val();
+                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                    $("li.current-list").show();
+                    break;
+                case "Previous":
+                    qid = $("#previousQid").val();
+                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                    $("li.orgcontext").hide();
+                    break;
+                case "Pending":
+                    qid = $("#pendingQid").val();
+                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                    $("li.orgcontext").hide();;
+                    $("li.pending-list").show();
+                    break;
+                case "Inactive":
+                case "Senders":
+                    qid = $("#inactiveQid").val();
+                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                    $("li.orgcontext").hide();
+                    break;
+                case "Prospects":
+                    qid = $("#prospectsQid").val();
+                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                    $("li.orgcontext").hide();
+                    break;
+                case "Guests":
+                    qid = $("#visitedQid").val();
+                    $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
+                    $("li.orgcontext").hide();
+                    break;
+                case "Settings":
+                case "Meetings":
+                    $("#bluetoolbarstop li > a.qid").parent().addClass("hidy");
+                    break;
+            }
+            if (qid) {
+                $("#bluetoolbarstop a.qid").each(function () {
+                    $(this).attr("href", this.href.replace(/(.*\/)([^\/?]*)(\?[^?]*)?$/mg, "$1" + qid + "$3"));
+                });
+            }
         }
-        if (qid) {
-            $("#bluetoolbarstop a.qid").each(function() {
-                $(this).attr("href", this.href.replace(/(.*\/)([^\/?]*)(\?[^?]*)?$/mg, "$1" + qid + "$3"));
-            });
-        }
-      }
     });
     $("#main-tab").show();
     $('#deleteorg').click(function (ev) {
@@ -121,7 +121,14 @@ $(function () {
         return false;
     });
     $(".bt").button();
-    $(".datepicker").jqdatepicker();
+    $(".datepicker").datetimepicker({
+        autoclose: true,
+        orientation: "auto",
+        minView: 2,
+        forceParse: false,
+        format: $.dtoptions.format
+    });
+
 
     $(".CreateAndGo").click(function (ev) {
         ev.preventDefault();
@@ -260,14 +267,14 @@ $(function () {
 
     $.initDatePicker = function (f) {
         $("ul.edit .datepicker").datetimepicker({
-            format: "m/d/yyyy",
             autoclose: true,
-            todayBtn: false,
+            orientation: "auto",
             minView: 2,
-            pickerPosition: "bottom-left"
+            forceParse: false,
+            format: $.dtoptions.format
         });
         $("ul.edit .datetimepicker").datetimepicker({
-            format: "m/d/yyyy H:ii P",
+            format: $.dtoptions.format + " H:ii P",
             showMeridian: true,
             autoclose: true,
             todayBtn: false,
@@ -479,7 +486,13 @@ $(function () {
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
                 $('.bt').button();
-                $(".datepicker").jqdatepicker();
+                $(".datepicker").datepickertimepicker({
+                    autoclose: true,
+                    orientation: "auto",
+                    minView: 2,
+                    forceParse: false,
+                    format: $.dtoptions.format
+                });
             });
         });
         return false;

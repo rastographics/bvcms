@@ -2,6 +2,7 @@
 @model CmsWeb.Areas.Org2.Models.SettingsFeesModel
 @{
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowFeesHelp") == "true";
+  ViewBag.FalseValue = "";
 }
 <form class="form form-horizontal non-modal ajax span12" data-init="datepicker">
     <br />

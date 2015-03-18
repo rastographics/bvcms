@@ -6,16 +6,14 @@
         return true;
     });
     $("#membergroups .update-smallgroup").live("click", function (ev) {
+        ev.preventDefault();
         var href = $(this).attr("href");
-        var checked = $(this).is(":checked");
-        var msg = checked
-            ? "This will add everybody to this small group. Are you sure?"
-            : "This will remove everybody from this small group. Are you sure?";
+        var msg = "This will add or remove everybody to/from this small group. Are you sure?";
         bootbox.confirm(msg, function (confirmed) {
             if (confirmed)
-                $.post(href, { ck: checked });
+                $.post(href);
         });
-        return true;
+        return false;
     });
     $("#dropmember").live("click", function (ev) {
         var f = $(this).closest('form');

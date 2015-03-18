@@ -602,7 +602,7 @@
         return false;
     });
 
-    $("a.deleteschedule").live("click", function (ev) {
+    $("a.delete-well").live("click", function (ev) {
         ev.preventDefault();
         $(this).closest("div.well").remove();
         $.renumberListItems();

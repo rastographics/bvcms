@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Org2.Models
                         q = from p in q orderby p.AttPct descending select p;
                         break;
                     case "Name":
-                        q = from p in q orderby p.Name2, p.PeopleId descending select p;
+                        q = from p in q orderby p.Name2 descending , p.PeopleId descending select p;
                         break;
                     case "Bday":
                         q = from p in q orderby p.BirthMonth descending, p.BirthDay descending, p.Name2 descending select p;

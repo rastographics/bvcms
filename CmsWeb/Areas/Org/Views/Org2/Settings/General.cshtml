@@ -2,6 +2,7 @@
 @model CmsWeb.Areas.Org2.Models.SettingsGeneralModel
 @{
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowGeneralHelp") == "true";
+  ViewBag.FalseValue = "";
 }
 <form class="form form-horizontal non-modal ajax span12 margin-top">
   @Html.Hidden("Id", Model.Id)

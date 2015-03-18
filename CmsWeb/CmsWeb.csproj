@@ -1391,6 +1391,7 @@
     <Content Include="Areas\People\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\ScheduleInfo.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>

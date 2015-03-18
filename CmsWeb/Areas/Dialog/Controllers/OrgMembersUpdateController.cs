@@ -39,11 +39,18 @@ namespace CmsWeb.Areas.Dialog.Controllers
             m.Drop();
 		    return View("Dropped", m);
 		}
-        [HttpPost, Route("SmallGroupClick/{id:int}")]
-        public ActionResult SmallGroupClick(int id, bool ck)
+        [HttpPost, Route("~/OrgMembersUpdate/AddSmallGroup/{id:int}")]
+        public ActionResult AddSmallGroup(int id)
         {
             var m = new OrgMembersUpdate();
-            m.UpdateSmallGroup(id, ck);
+            m.AddSmallGroup(id);
+            return Content("ok");
+        }
+        [HttpPost, Route("~/OrgMembersUpdate/RemoveSmallGroup/{id:int}")]
+        public ActionResult RemoveSmallGroup(int id)
+        {
+            var m = new OrgMembersUpdate();
+            m.RemoveSmallGroup(id);
             return Content("ok");
         }
 	}

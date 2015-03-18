@@ -6,11 +6,10 @@
     @Html.Raw(ci.hiddenindex)
     @Html.HiddenFor(m => m.Id, new {@class = "renumberMe"})
     <div class="control-group">
-      <label class="control-label">AgeGroup Number</label>
+      <label class="control-label">AgeGroup</label>
         <div class="controls">
           <p>
-            <span class="large">@Model.Id</span>
-            <a href="#" class="deleteagegroup pull-right btn btn-mini btn-danger">delete</a>
+            <a href="#" class="delete-well pull-right btn btn-mini btn-danger">delete</a>
           </p>
         </div>
     </div>
