@@ -84,9 +84,15 @@
                             <strong>Items Total</strong> <span class="badge">@Model.TotalItems().ToString("C2")</span>
                         </li>
                     </ul>
-                    <p>
+                    <div class="hidden-xs">
                         <a href="/Bundle/Cancel/@Model.BundleId" class="btn btn-default displayedit">Cancel</a> <a href="/Bundle/Update/@Model.BundleId" class="btn btn-primary displayedit">Save</a>
-                    </p>
+                    </div>
+                    <div class="visible-xs-block">
+                        <a href="/Bundle/Update/@Model.BundleId" class="btn btn-primary displayedit btn-block">Save</a>
+                        <a href="/Bundle/Cancel/@Model.BundleId" class="btn btn-default displayedit btn-block">Cancel</a>
+                        <hr/>
+                        <a class="btn btn-default btn-block" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    </div>
                 </form>
             </div>
         </div>

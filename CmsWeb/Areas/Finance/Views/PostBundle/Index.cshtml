@@ -52,7 +52,7 @@
                         <div class="stat-panel-inner-container">
                             <div class="stat-panel">
                                 <span class="stat-title">BUNDLE TOTAL</span>
-                                <span class="stat-figure">@(bundleTotal.ToString2("C2"))</span>
+                                <span class="stat-figure">@(bundleTotal.GetValueOrDefault().ToString("C2"))</span>
                             </div>
                             <div class="stat-panel">
                                 <span class="stat-title">ITEMS TOTAL</span>
@@ -139,10 +139,11 @@
                         <br/>
                         <br/>
                     </div>
+                    <a class="btn btn-default visible-xs-block btn-block" href="/Bundle/@Model.id"><i class="fa fa-arrow-circle-left"></i> Back to Bundle Details</a>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3">
+        <div class="hidden-xs col-lg-3">
             <div class="box box-primary" style="background-color: #fff;">
                 <div class="box-title">
                     <h5>Bundle Totals</h5>
@@ -165,7 +166,7 @@
                     <tfoot>
                         <tr class="totals-row">
                             <td class="text-left">Bundle Total</td>
-                            <td class="text-right">@(bundleTotal.ToString2("C2"))</td>
+                            <td class="text-right">@(bundleTotal.GetValueOrDefault().ToString("C2"))</td>
                         </tr>
                         <tr class="diffRow" @(difference.GetValueOrDefault() == 0 ? "style=display:none;" : "")>
                             <td class="text-left">Items Total</td>

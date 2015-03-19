@@ -5,7 +5,7 @@
     var difference = Model.TotalHeader() - Model.TotalItems();
 }
 <div class="row">
-    <div class="col-md-8 col-lg-9">
+    <div class="col-sm-12 col-md-8 col-lg-9">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
@@ -75,10 +75,38 @@
                 <form id="results">
                     @Html.Partial("Results", Model)
                 </form>
+                <div class="visible-xs-block">
+                    <div class="btn-group btn-block">
+                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right btn-block">
+                            @if (Model.IsAdmin || Model.IsOpen)
+                            {
+                                <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
+                            }
+                            @if (Model.CanEdit)
+                            {
+                                <li><a id="editbundle" href="/Bundle/Edit/@Model.BundleId"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a></li>
+                            }
+                            @if (Model.IsOpen)
+                            {
+                                <li><a href="/PostBundle/@Model.BundleId"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Post Bundle / Edit</a></li>
+                            }
+                            @if (Model.IsOpen || Model.IsAdmin || Model.CanEdit)
+                            {
+                                <li class="divider"></li>
+                            }
+                            <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>
+                        </ul>
+                    </div>
+                    <hr/>
+                    <a class="btn btn-default btn-block" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                </div>
             </div>
         </div>
     </div>
-    <div class="col-md-4 col-lg-3">
+    <div class="hidden-xs col-md-4 col-lg-3">
         <div class="box box-primary" style="background-color: #fff;">
             <div class="box-title">
                 <h5>Bundle Totals</h5>
