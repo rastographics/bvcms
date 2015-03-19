@@ -52,12 +52,22 @@
                         <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
                         <div class="col-sm-10">
                             <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                                @foreach (var recipient in Model.Recipients)
+                                @if (Model.Recipients.Count() > 500)
                                 {
-                                    <option value="@recipient" selected="selected">@recipient</option>
+                                    <option value="" selected="selected">@Model.Count people@(Model.wantParents ? " including parents." : ".")</option>
+                                }
+                                else
+                                {
+                                    foreach (var recipient in Model.Recipients)
+                                    {
+                                        <option value="@recipient" selected="selected">@recipient</option>
+                                    }
                                 }
                             </select>
-                            <p class="help-block">@Model.Count @( Model.Count != 1 ? "people" : "person")@(Model.wantParents ? " including parents." : ".")</p>
+                            @if (Model.Recipients.Count() <= 500)
+                            {
+                                <p class="help-block">@Model.Count @( Model.Count != 1 ? "people" : "person")@(Model.wantParents ? " including parents." : ".")</p>
+                            }
                         </div>
                     </div>
                     <div class="form-group">
