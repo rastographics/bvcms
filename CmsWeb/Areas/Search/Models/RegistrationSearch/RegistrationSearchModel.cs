@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Search.Models
         public RegistrationSearchInfo SearchParameters { get; set; }
 
         public RegistrationSearchModel()
-            : base("Date", "desc")
+            : base("Date", "desc", true)
         {
             SearchParameters = new RegistrationSearchInfo();
         }

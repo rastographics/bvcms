@@ -12,6 +12,10 @@ namespace CmsWeb.Models
         {
             Pager = new PagerModel2(Count) {Sort = defaultSort, Direction = defaultDirection};
         }
+        protected PagedTableModel(string defaultSort, string defaultDirection, bool useAjax)
+        {
+            Pager = new PagerModel2(Count) { Sort = defaultSort, Direction = defaultDirection, AjaxPager = useAjax};
+        }
         private int? count;
         public int Count()
         {
