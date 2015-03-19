@@ -51,53 +51,6 @@
         return true;
     });
 
-    $('body').on('click', '#filter-link', function (ev) {
-        ev.preventDefault();
-        $('#Page').val(1);
-        $.getTable();
-        return false;
-    });
-
-    $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
-        ev.preventDefault();
-        var newsort = $(this).text();
-        var sort = $("#Sort");
-        var dir = $("#Direction");
-        if ($(sort).val() == newsort && $(dir).val() == 'asc')
-            $(dir).val('desc');
-        else
-            $(dir).val('asc');
-        $(sort).val(newsort);
-
-        $.getTable();
-        return false;
-    });
-
-    $.gotoPage = function (e, pg) {
-        $("#Page").val(pg);
-        $.getTable();
-        return false;
-    };
-
-    $.setPageSize = function (e) {
-        $('#Page').val(1);
-        $("#PageSize").val($(e).val());
-        return $.getTable();
-    };
-
-    $.getTable = function () {
-        var f = $('#form-saved-query');
-        var q = null;
-        if (f)
-            q = f.serialize();
-        $.block();
-        $.post("/SavedQuery/Results", q, function (ret) {
-            $('#results').html(ret);
-            $.unblock();
-        });
-        return false;
-    };
-
     $("#SearchQuery").focus();
 
 });

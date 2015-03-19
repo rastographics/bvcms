@@ -17,10 +17,10 @@ namespace CmsWeb.Areas.Search.Controllers
             m.Pager.Set("/SavedQuery/Results", 1, null, "Last Run", "desc");
             return View(m);
         }
-        [HttpPost, Route("Results/{page?}/{pageSize?}/{sort=Last Run}/{direction=desc}")]
-        public ActionResult Results(int? page, int? pageSize, string sort, string direction, SavedQueryModel m)
+        [HttpPost, Route("Results/{page?}/{size?}/{sort=Last Run}/{dir=desc}")]
+        public ActionResult Results(int? page, int? size, string sort, string dir, SavedQueryModel m)
         {
-            m.Pager.Set("/SavedQuery/Results", page, pageSize, sort, direction);
+            m.Pager.Set("/SavedQuery/Results", page, size, sort, dir);
             return View(m);
         }
         [HttpPost]

@@ -5,11 +5,11 @@
         <table class="table table-striped" id="resultsTable">
             <thead>
                 <tr>
-                    <th><a href="#" class="sortable">Description</a></th>
-                    <th><a href="#" class="sortable">Owner</a></th>
-                    <th class="text-center"><a href="#" class="sortable">Public</a></th>
-                    <th><a href="#" class="sortable">Last Run</a></th>
-                    <th class="text-right"><a href="#" class="sortable">Count</a></th>
+                    <th>@Model.Pager.SortLink("Description")</th>
+                    <th>@Model.Pager.SortLink("Owner")</th>
+                    <th class="text-center">@Model.Pager.SortLink("Public")</th>
+                    <th>@Model.Pager.SortLink("Last Run")</th>
+                    <th class="text-right">@Model.Pager.SortLink("Count")</th>
                     <th colspan="2" style="width: 100px;">Actions</th>
                 </tr>
             </thead>
@@ -26,8 +26,4 @@
         </table>
     </div>
     @Html.Partial("PagerBottom", Model.Pager)
-    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-    @Html.Hidden("Page", Model.Pager.Page)
-    @Html.Hidden("Sort", Model.Pager.Page)
-    @Html.Hidden("Direction", Model.Pager.Page)
 </div>
