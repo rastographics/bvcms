@@ -42,10 +42,15 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             if (!id.HasValue)
                 return Content("need an integer id");
-            var m = new MemberType { Id = id.Value };
-            DbUtil.Db.MemberTypes.InsertOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/MemberType/");
+            
+            if (!DbUtil.Db.MemberTypes.Any(mt => mt.Id == id))
+            {
+                var m = new MemberType { Id = id.Value };
+                DbUtil.Db.MemberTypes.InsertOnSubmit(m);
+                DbUtil.Db.SubmitChanges();
+            }
+            
+            return Redirect("/MemberType/#{0}".Fmt(id));
         }
         [HttpPost]
         public ActionResult Move(int fromid, int toid)
