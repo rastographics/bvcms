@@ -14,7 +14,7 @@
                 <div class="box-tools">
                     @using (Html.BeginForm("Create", "Ministry"))
                     {
-                        <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Ministry</button>
+                        <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Ministry</button>
                     } 
                 </div>
             </div>
@@ -50,6 +50,7 @@
                     @using (Html.BeginForm("Create", "Ministry"))
                     {
                         <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Ministry</button>
+                        <a href="/Lookups" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                     }
                 </div>
             </div>
