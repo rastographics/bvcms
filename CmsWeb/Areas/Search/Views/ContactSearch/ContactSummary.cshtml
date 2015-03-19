@@ -1,38 +1,35 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Search.Models.ContactSummaryInfo>
-
 @{
-    ViewBag.Title = "ContactSummary";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.Title = "Contact Summary";
+    ViewBag.PageHeader = "Contact Summary";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-
-<div class="container">
-<h2>Contact Summary</h2>
-
-<table class="table table-condensed table-striped not-wide">
-    <thead>
-        <tr>
-            <th> Count </th>
-            <th> ContactType </th>
-            <th> ReasonType </th>
-            <th> Ministry </th>
-            <th> HasComments </th>
-            <th> HasDate </th>
-            <th> HasContactor </th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td> @item.Count </td>
-            <td> @item.ContactType </td>
-            <td> @item.ReasonType </td>
-            <td> @item.Ministry </td>
-            <td> @item.HasComments </td>
-            <td> @item.HasDate </td>
-            <td> @item.HasContactor </td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Count</th>
+                <th>Contact Type</th>
+                <th>Reason Type</th>
+                <th>Ministry</th>
+                <th>Has Comments</th>
+                <th>Has Date</th>
+                <th>Has Contactor</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Count</td>
+                    <td>@item.ContactType</td>
+                    <td>@item.ReasonType</td>
+                    <td>@item.Ministry</td>
+                    <td>@item.HasComments</td>
+                    <td>@item.HasDate</td>
+                    <td>@item.HasContactor</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 </div>

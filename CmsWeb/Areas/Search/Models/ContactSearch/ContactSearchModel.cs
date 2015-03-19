@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Search.Models
         public ContactSearchInfo SearchParameters { get; set; }
 
         public ContactSearchModel()
-            : base("Date", "desc")
+            : base("Date", "desc", true)
         {
             SearchParameters = new ContactSearchInfo();
         }
