@@ -146,7 +146,7 @@
         return false;
     });
 
-    $('a.taguntag').on('click', function (ev) {
+    $('body').on('click', 'a.taguntag', function (ev) {
         ev.preventDefault();
         $.block();
         var a = $(this);
