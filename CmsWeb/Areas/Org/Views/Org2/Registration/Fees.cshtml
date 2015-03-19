@@ -5,8 +5,8 @@
   ViewBag.FalseValue = "";
 }
 <form class="form form-horizontal non-modal ajax span12" data-init="datepicker">
-    <br />
-    @FormAction()
+  <br />
+  @FormAction()
   <div>
     @Html.DisplayFor(m => m.Fee)
     @Html.DisplayFor(m => m.Deposit)
@@ -23,7 +23,7 @@
     @Html.DisplayFor(m => m.AccountingCode)
     @Html.DisplayFor(m => m.ExtraValueFeeName)
   </div>
-    @FormAction()
+  @FormAction()
 </form>
 @helper FormAction()
 {
@@ -34,5 +34,5 @@
       <a href="/Org/FeesEdit/@Model.Id" class="btn edit btn-primary ajax">Edit</a>
     }
   </div>
-  <div class="formerror">@Html.ValidationMessage("Form")</div>
+  @Html.DivValidationMessage("Form", "inline")
 }

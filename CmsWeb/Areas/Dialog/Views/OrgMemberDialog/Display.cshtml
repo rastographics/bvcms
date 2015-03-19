@@ -31,7 +31,7 @@
 
             @Html.DisplayFor(m => m.MemberType)
             @Html.DisplayFor(m => m.InactiveDate)
-            @Html.DisplayFor(m => m.EnrollmentDate)
+            @Html.DisplayFor(m => m.EnrollmentDate, "DateAndTime")
             @Html.DisplayFor(m => m.Pending)
             @if (Model.RegisterEmail.HasValue())
             {

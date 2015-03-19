@@ -15,7 +15,7 @@
         $.DatePickersAndChosen();
     };
     $.DatePickers = function() {
-        $("form .dateonly").datetimepicker({
+        $("form .dateonly").datepicker({
             autoclose: true,
             orientation: "auto",
             minView: 2,

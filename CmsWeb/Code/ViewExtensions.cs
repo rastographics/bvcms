@@ -70,7 +70,7 @@ namespace CmsWeb
                 return null;
             }
         }
-        public static MvcHtmlString DivValidationMessage(this HtmlHelper helper, string field)
+        public static MvcHtmlString DivValidationMessage(this HtmlHelper helper, string field, string @class = null)
         {
             try
             {
@@ -84,6 +84,8 @@ namespace CmsWeb
                     return null;
                 var div = new TagBuilder("div");
                 div.AddCssClass("alert alert-danger");
+                if(@class.HasValue())
+                    div.AddCssClass(@class);
                 div.InnerHtml = s;
                 return new MvcHtmlString(div.ToString());
             }

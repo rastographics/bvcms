@@ -32,6 +32,8 @@ namespace CmsWeb.Areas.Org2.Controllers
         [HttpPost]
         public ActionResult FeesUpdate(SettingsFeesModel m)
         {
+            if (!ModelState.IsValid)
+                return PartialView("Registration/FeesEdit", m);
             DbUtil.LogActivity("Update Fees {0}".Fmt(m.Org.OrganizationName));
             try
             {
