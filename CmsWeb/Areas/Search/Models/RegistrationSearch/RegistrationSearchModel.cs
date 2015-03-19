@@ -55,18 +55,18 @@ namespace CmsWeb.Areas.Search.Models
                         select c;
             }
 
-            if (SearchParameters.count.HasValue())
+            if (SearchParameters.Count.HasValue())
             {
-                var cnt = SearchParameters.count.GetDigits().ToInt();
-                if (SearchParameters.count.AllDigits())
+                var cnt = SearchParameters.Count.GetDigits().ToInt();
+                if (SearchParameters.Count.AllDigits())
                     q = q.Where(cc => cc.Cnt == cnt);
-                else if(SearchParameters.count.StartsWith(">="))
+                else if (SearchParameters.Count.StartsWith(">="))
                     q = q.Where(cc => cc.Cnt >= cnt);
-                else if(SearchParameters.count.StartsWith(">"))
+                else if (SearchParameters.Count.StartsWith(">"))
                     q = q.Where(cc => cc.Cnt > cnt);
-                else if(SearchParameters.count.StartsWith("<="))
+                else if (SearchParameters.Count.StartsWith("<="))
                     q = q.Where(cc => cc.Cnt <= cnt);
-                else if(SearchParameters.count.StartsWith("<"))
+                else if (SearchParameters.Count.StartsWith("<"))
                     q = q.Where(cc => cc.Cnt < cnt);
             }
 

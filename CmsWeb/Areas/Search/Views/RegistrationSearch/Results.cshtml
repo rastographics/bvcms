@@ -1,5 +1,8 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.RegistrationSearchModel
+@{
+    Model.Pager.AjaxPager = true;
+}
 <div id="results">
     @Html.Partial("PagerTop", Model.Pager)
     <div class="table-responsive">
@@ -31,7 +34,7 @@
                             else
                             {
                                 <text>anonymous</text>
-                            }
+                            }  
                         </td>
                         <td>@r.Dob</td>
                         <td class="text-right">@r.Cnt.ToString2("n0")</td>
@@ -49,7 +52,7 @@
     </div>
     @Html.Partial("PagerBottom", Model.Pager)
     @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-    @Html.Hidden("Page", Model.Pager.Page)
+    @*@Html.Hidden("Page", Model.Pager.Page)
     @Html.Hidden("Sort", Model.Pager.Sort)
-    @Html.Hidden("Direction", Model.Pager.Direction)
+    @Html.Hidden("Dir", Model.Pager.Direction)*@
 </div>

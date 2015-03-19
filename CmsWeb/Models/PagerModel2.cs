@@ -32,6 +32,7 @@ namespace CmsWeb.Models
 		public string URL { get; set; }
 		public string Sort { get; set; }
 		public string Direction { get; set; }
+        public bool AjaxPager { get; set; }
 
 		public string SortExpression
 		{
