@@ -408,9 +408,9 @@
 
         $(".datetimepicker-hours table thead, .datetimepicker-minutes table thead").attr('style', 'display:block; overflow:hidden; height:0;');
     };
-    $.InitFunctions.datepicker = function (f) {
-        $(".datepicker").datepicker();
-    };
+//    $.InitFunctions.datepicker = function (f) {
+//        $(".datepicker").datepicker();
+//    };
     $.InitFunctions.datetimepicker = function (f) {
         $(".datetimepicker").datetimepicker({
             format: "m/d/yyyy H:ii P",

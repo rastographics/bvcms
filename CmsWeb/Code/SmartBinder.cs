@@ -80,10 +80,11 @@ namespace CmsWeb
             var modelState = new ModelState { Value = valueResult };
             object actualValue = null;
             int i;
-            if (int.TryParse(valueResult.AttemptedValue, out i))
-                actualValue = i;
-            else if(valueResult.AttemptedValue.HasValue())
-                modelState.Errors.Add(new FormatException("not a valid integer"));
+            if (valueResult != null)
+                if (int.TryParse(valueResult.AttemptedValue, out i))
+                    actualValue = i;
+                else if (valueResult.AttemptedValue.HasValue())
+                    modelState.Errors.Add(new FormatException("not a valid integer"));
             bindingContext.ModelState.Add(bindingContext.ModelName, modelState);
             return actualValue;
         }
