@@ -164,13 +164,30 @@ $(function () {
 
 
     // clear tags
-    $('#cleartag').click(function (e) {
+    $('a.cleartag').click(function (e) {
         e.preventDefault();
         var href = this.href;
-        if (confirm("are you sure you want to empty the active tag?"))
+
+        swal({
+            title: "Are you sure?",
+            text: "This will empty your active tag.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, empty it!",
+            closeOnConfirm: false
+        },
+        function () {
             $.post(href, {}, function () {
-                window.location.reload();
+                swal({
+                    title: "Done!",
+                    type: "success"
+                },
+                function () {
+                    window.location.reload();
+                });
             });
+        });
     });
 
 
