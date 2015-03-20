@@ -107,7 +107,7 @@
 
     var keyallowed = true;
 
-    $('#notes').keydown(function (event) {
+    $('#notes').keypress(function (event) {
         if (keyallowed && (event.keyCode == 9 || event.keyCode == 13) && !event.shiftKey) {
             event.preventDefault();
             keyallowed = false;
@@ -118,8 +118,6 @@
     $('#pid').keydown(function (event) {
         if (event.keyCode == 13) {
             event.preventDefault();
-            if (!$.browser.msie)
-                $('#pid').blur();
             $('#name').focus();
         }
     });
@@ -132,6 +130,13 @@
     });
 
     $('#amt').keydown(function (event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            $('#PLNT').focus();
+        }
+    });
+
+    $('#PLNT').keydown(function (event) {
         if (event.keyCode == 13) {
             event.preventDefault();
             $('#fund').focus();
@@ -318,11 +323,11 @@
             var plnt = $("#PLNT").val();
             if (!n > 0 && plnt != 'GK' && plnt != 'SK') {
                 swal("Contribution Error!", "Cannot post. No amount specified.", "error");
-                return;
+                return true;
             }
             if (!isNaN(n) && n != 0 && plnt == 'GK') {
                 swal("Contribution Error!", "Cannot post. Gift In Kind must be zero.", "error");
-                return;
+                return true;
             }
             options.q = $('#pbform').serialize();
         }
