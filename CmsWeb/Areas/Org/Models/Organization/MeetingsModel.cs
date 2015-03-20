@@ -50,6 +50,9 @@ namespace CmsWeb.Areas.Org.Models
             var q = ApplySort();
             q = q.Skip(Pager.StartRow).Take(Pager.PageSize);
             var q2 = from m in q
+                     let mc = future && DbUtil.Db.ViewMeetingConflicts.Any(mm => 
+                         mm.MeetingDate == m.MeetingDate 
+                         && (mm.OrgId1 == m.OrganizationId || mm.OrgId2 == m.OrganizationId))
                      let o = m.Organization
                      select new MeetingInfo
                      {
@@ -60,7 +63,8 @@ namespace CmsWeb.Areas.Org.Models
                          NumPresent = m.NumPresent,
                          HeadCount = m.HeadCount,
                          NumVisitors = m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers,
-                         Description = m.Description
+                         Description = m.Description,
+                         Conflict = mc
                      };
             return q2;
         }
