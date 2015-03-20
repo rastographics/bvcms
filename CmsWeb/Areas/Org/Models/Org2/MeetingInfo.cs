@@ -23,5 +23,6 @@ namespace CmsWeb.Areas.Org2.Models
         public string Location { get; set; }
         public bool GroupMeeting { get; set; }
         public string Description { get; set; }
+        public bool Conflict { get; set; }
     }
 }

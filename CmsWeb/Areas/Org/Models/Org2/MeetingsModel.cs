@@ -73,6 +73,9 @@ namespace CmsWeb.Areas.Org2.Models
         {
             var q2 = from m in q
                      let o = m.Organization
+                     let mc = Future && DbUtil.Db.ViewMeetingConflicts.Any(mm => 
+                         mm.MeetingDate == m.MeetingDate 
+                         && (mm.OrgId1 == m.OrganizationId || mm.OrgId2 == m.OrganizationId))
                      select new MeetingInfo
                      {
                          MeetingId = m.MeetingId,
@@ -82,7 +85,8 @@ namespace CmsWeb.Areas.Org2.Models
                          NumPresent = m.NumPresent,
                          HeadCount = m.HeadCount,
                          NumVisitors = m.NumNewVisit + m.NumRepeatVst + m.NumVstMembers,
-                         Description = m.Description
+                         Description = m.Description,
+                         Conflict = mc
                      };
             return q2;
         }
