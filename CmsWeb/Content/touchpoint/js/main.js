@@ -156,9 +156,9 @@ $(function () {
     $('#navbar ul.navbar-nav li.dropdown').on('show.bs.dropdown', function() {
         var xs = $('.device-xs').is(':visible');
         if (xs) {
-            var offset = $(this).offset();
-            offset.top -= 60;
-            $('#navbar').animate({ scrollTop: offset.top });
+            var position = $(this).position();
+            position.top -= 55;
+            $('#navbar').animate({ scrollTop: position.top });
         }
     });
 
