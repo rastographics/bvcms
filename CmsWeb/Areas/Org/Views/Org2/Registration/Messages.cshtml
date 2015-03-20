@@ -1,19 +1,43 @@
-﻿@model CmsData.Registration.Settings
+﻿@using CmsData
+@model CmsWeb.Areas.Org2.Models.SettingsMessagesModel
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowMessagesHelp") == "true";
+  ViewBag.FalseValue = "";
+}
 <form class="form form-horizontal non-modal ajax span12">
   <br />
   @FormAction()
-  <ul class="noedit" style="list-style: none; margin-left: 5px;">
-    @Html.EditorFor(m => m, "TabMessages")
-  </ul>
+  <div>
+    @Html.DisplayFor(m => m.Subject)
+    @Html.DisplayFor(m => m.Body, "Html")
+    @Html.DisplayFor(m => m.NotifyIds, "NotifyList")
+    @Html.DisplayFor(m => m.InstructionLogin, "Html")
+    @Html.DisplayFor(m => m.InstructionSelect, "Html")
+    @Html.DisplayFor(m => m.InstructionFind, "Html")
+    @Html.DisplayFor(m => m.InstructionOptions, "Html")
+    @Html.DisplayFor(m => m.InstructionSpecial, "Html")
+    @Html.DisplayFor(m => m.InstructionSubmit, "Html")
+    @Html.DisplayFor(m => m.InstructionSorry, "Html")
+    @Html.DisplayFor(m => m.ThankYouMessage, "Html")
+    @Html.DisplayFor(m => m.Terms, "Html")
+    @Html.DisplayFor(m => m.ReminderSubject)
+    @Html.DisplayFor(m => m.ReminderBody, "Html")
+    @Html.DisplayFor(m => m.GiftNotifyIds, "NotifyList")
+    @Html.DisplayFor(m => m.SupportSubject)
+    @Html.DisplayFor(m => m.SupportBody, "Html")
+    @Html.DisplayFor(m => m.SenderSubject)
+    @Html.DisplayFor(m => m.SenderBody, "Html")
+  </div>
   @FormAction()
 </form>
 @helper FormAction()
 {
-  if (User.IsInRole("Edit"))
-  {
-    <div class="pull-right">
-      <a href="/Org/MessagesEdit/@Model.OrgId" class="btn edit ajax">Edit</a>
-    </div>
-    @Html.DivValidationMessage("Form", "inline")
-  }
+  <div class="pull-right">
+    <a href="/Org/MessagesHelpToggle/@Model.Id" class="btn ajax">Toggle Help</a>
+    @if (User.IsInRole("Edit"))
+    {
+      <a href="/Org/MessagesEdit/@Model.Id" class="btn edit btn-primary ajax">Edit</a>
+    }
+  </div>
+  @Html.DivValidationMessage("Form", "inline")
 }

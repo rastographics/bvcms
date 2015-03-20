@@ -350,6 +350,7 @@
     <Compile Include="Areas\Org\Controllers\OrgGroupsController.cs" />
     <Compile Include="Areas\Org\Controllers\RegSettingController.cs" />
     <Compile Include="Areas\Org\Models\Org2\ScheduleInfo.cs" />
+    <Compile Include="Areas\Org\Models\Org2\SettingsMessagesModel.cs" />
     <Compile Include="Areas\Org\Models\Org2\SettingsGeneralModel.cs" />
     <Compile Include="Areas\Org\Models\Org2\SettingsAttendanceModel.cs" />
     <Compile Include="Areas\Org\Models\Org2\OrgMain.cs" />
@@ -1392,6 +1393,10 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\ScheduleInfo.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\Html.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\EditorTemplates\NotifyList.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\DisplayTemplates\NotifyList.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Registration\NotifyList.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
@@ -2414,8 +2419,6 @@
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\OrgFee.cshtml">
     </Content>
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\Html.cshtml">
-    </Content>
-    <Content Include="Areas\Org\Views\Org2\EditorTemplates\TabMessages.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\APIMeta\Lookups.cshtml">
     </Content>

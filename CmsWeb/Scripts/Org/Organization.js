@@ -310,6 +310,18 @@
             });
         });
     });
+//    $("a.notifylist").live("click", function (ev) {
+//        ev.preventDefault();
+//        $("<div />").load(this.href, {}, function () {
+//            var d = $(this);
+//            var f = d.find("form");
+//            f.modal("show");
+//            f.on('hidden', function () {
+//                d.remove();
+//                f.remove();
+//            });
+//        });
+//    });
 
     $.initializeSelectOrgsDialog = function (f) {
         $("#select-orgs #UpdateSelected").click(function (ev) {

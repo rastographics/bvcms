@@ -7,16 +7,14 @@
     
 
     $.InitFunctions.SettingFormsInit = function (f) {
-        //$(".tip", f).tooltip({ opacity: 0, showBody: "|" });
-        $.InitFunctions.popovers();
-        $(".noedit input", f).attr("disabled", "disabled");
-        $(".noedit select", f).attr("disabled", "disabled");
-        $(".noedit a", f).not('[target="otherorg"]').removeAttr("href");
-        $(".noedit a", f).not('[target="otherorg"]').css("color", "grey");
-        $(".noedit a", f).not('[target="otherorg"]').unbind("click");
-        $('.edit a.notifylist').SearchUsers({
+//        $(".noedit input", f).attr("disabled", "disabled");
+//        $(".noedit select", f).attr("disabled", "disabled");
+//        $(".noedit a", f).not('[target="otherorg"]').removeAttr("href");
+//        $(".noedit a", f).not('[target="otherorg"]').css("color", "grey");
+//        $(".noedit a", f).not('[target="otherorg"]').unbind("click");
+        $('a.notifylist').SearchUsers({
             UpdateShared: function (topid, topid0, ele) {
-                $.post("/Organization/UpdateNotifyIds", {
+                $.post("/Org/UpdateNotifyIds", {
                     id: $("#OrganizationId").val(),
                     topid: topid,
                     field: ele.data("field")

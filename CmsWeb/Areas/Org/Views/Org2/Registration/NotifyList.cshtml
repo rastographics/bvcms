@@ -1,0 +1,13 @@
+﻿@model string
+<div class="display block border">
+  <b>choose users to notify (confirmation comes from first)</b>
+  @{
+    var q = from p in ViewExtensions2.PeopleFromPidString(Model)
+      select new {p.FromEmail, p.PeopleId};
+    foreach (var p in q)
+    {
+      <div>@p.FromEmail &mdash; (@p.PeopleId)</div>
+    }
+  }
+  <input type="hidden" name="@ViewBag.field" value="@Model"/>
+</div>

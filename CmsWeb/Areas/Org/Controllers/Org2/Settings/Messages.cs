@@ -5,6 +5,7 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using CmsData.Codes;
+using CmsWeb.Areas.Org2.Models;
 
 namespace CmsWeb.Areas.Org2.Controllers
 {
@@ -13,27 +14,33 @@ namespace CmsWeb.Areas.Org2.Controllers
         [HttpPost]
         public ActionResult Messages(int id)
         {
-            return PartialView("Registration/Messages", getRegSettings(id));
+            var m = new SettingsMessagesModel(id);
+            return PartialView("Registration/Messages", m);
+        }
+        [HttpPost]
+        public ActionResult MessagesHelpToggle(int id)
+        {
+            DbUtil.Db.ToggleUserPreference("ShowMessagesHelp");
+            var m = new SettingsMessagesModel(id);
+            return PartialView("Registration/Messages", m);
         }
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult MessagesEdit(int id)
         {
-            return PartialView("Registration/MessagesEdit", getRegSettings(id));
+            var m = new SettingsMessagesModel(id);
+            return PartialView("Registration/MessagesEdit", m);
         }
         [HttpPost]
-        public ActionResult MessagesUpdate(int id)
+        public ActionResult MessagesUpdate(SettingsMessagesModel m)
         {
-            var m = getRegSettings(id);
-            DbUtil.LogActivity("Update Messages {0}".Fmt(m.org.OrganizationName));
-            //m.VoteTags.Clear();
+            if (!ModelState.IsValid)
+                return PartialView("Registration/MessagesEdit", m);
+            DbUtil.LogActivity("Update Fees {0}".Fmt(m.Org.OrganizationName));
             try
             {
-                UpdateModel(m);
-                var os = new Settings(m.ToString(), DbUtil.Db, id);
-                m.org.RegSetting = os.ToString();
-                DbUtil.Db.SubmitChanges();
-                if (!m.org.NotifyIds.HasValue())
+                m.Update();
+                if (!m.Org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);
                 return PartialView("Registration/Messages", m);
             }
@@ -54,7 +61,7 @@ namespace CmsWeb.Areas.Org2.Controllers
             DbUtil.Db.SubmitChanges();
             var o = DbUtil.Db.LoadOrganizationById(id);
             string notifyids = null;
-            switch (field)
+            switch (field.ToLower())
             {
                 case "notifyids":
                     notifyids = o.NotifyIds;
@@ -78,7 +85,7 @@ namespace CmsWeb.Areas.Org2.Controllers
                                  select p.PeopleId).ToArray();
             var o = DbUtil.Db.LoadOrganizationById(id);
             var notifyids = string.Join(",", selected_pids);
-            switch (field)
+            switch (field.ToLower())
             {
                 case "notifyids":
                     o.NotifyIds = notifyids;
@@ -92,7 +99,7 @@ namespace CmsWeb.Areas.Org2.Controllers
             DbUtil.Db.SubmitChanges();
             ViewBag.OrgId = id;
             ViewBag.field = field;
-            var view = ViewExtensions2.RenderPartialViewToString2(this, "Other/NotifyList2", notifyids);
+            var view = ViewExtensions2.RenderPartialViewToString2(this, "Registration/NotifyList", notifyids);
             return Content(view);
             //return View("NotifyList2", notifyids);
         }
