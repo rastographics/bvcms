@@ -42,6 +42,12 @@
                 type: 'POST',
                 url: url,
                 data: {},
+                beforeSend: function () {
+                    $.block();
+                },
+                complete: function () {
+                    $.unblock();
+                },
                 success: function (data, status) {
                     d.addClass("loaded");
                     d.html(data).ready(function () {
@@ -53,6 +59,10 @@
                             $.InitFunctions[$form.data("init2")]();
                         }
                     });
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $.unblock();
+                    swal("Error!", thrownError, "error");
                 }
             });
         return true;
@@ -118,7 +128,14 @@
                 type: 'POST',
                 url: url,
                 data: data,
+                beforeSend: function () {
+                    $.block();
+                },
+                complete: function () {
+                    $.unblock();
+                },
                 success: function (ret, status) {
+                    $.unblock();
                     if (a.data("redirect"))
                         window.location = ret;
                     else if ($form.hasClass("modal")) {
@@ -147,6 +164,7 @@
                     }
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
+                    $.unblock();
                     swal("Error!", thrownError, "error");
                 }
             });
@@ -157,18 +175,6 @@
     $.validator.addMethod("unallowedcode", function (value, element, params) {
         return value !== params.code;
     }, "required, select item");
-
-    $.ajaxSetup({
-        beforeSend: function () {
-            $.block();
-        },
-        complete: function () {
-            $.unblock();
-        },
-        error: function () {
-            $.unblock();
-        }
-    });
 
     if (!$.InitFunctions)
         $.InitFunctions = {};
