@@ -1,19 +1,37 @@
 ﻿@model CmsWeb.Areas.People.Models.ContactorsModel
-<table class="table table-condensed not-wide no-border table-striped">
-    @foreach (var c in Model.Contactors())
-    { 
-        <tr>
-            <td><a class="link in" href="/Person2/@c.PeopleId">@c.Name</a></td>
-            @if (Model.CanViewComments)
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                @if (Model.CanViewComments)
+                {
+                    <th style="width: 100px;">Actions</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model.Contactors())
             {
-                <td><a class="remove in" href="/Contact2/RemoveContactor/@c.ContactId/@c.PeopleId">Remove</a></td>
+                <tr>
+                    <td>
+                        <a class="link in" href="/Person2/@c.PeopleId">@c.Name</a>
+                    </td>
+                    @if (Model.CanViewComments)
+                    {
+                        <td style="width: 100px;">
+                            <a class="remove in btn btn-danger btn-sm" href="/Contact2/RemoveContactor/@c.ContactId/@c.PeopleId"><i class="fa fa-trash"></i> Remove</a>
+                        </td>
+                    }
+                </tr>
             }
-        </tr>
-    }
-</table>
+        </tbody>
+    </table>
+</div>
 @if (Model.CanViewComments)
 {
-    <div class="right">
-        <a id="newteamcontact" href="/Contact2/NewTeamContact/@Model.Contact.ContactId" class="btn btn-success in">Add New Contact for Team</a>
+    <div>
+        <a id="newteamcontact" href="/Contact2/NewTeamContact/@Model.Contact.ContactId" class="btn btn-default in">Add New Contact for Team</a>
     </div>
+    <br/>
 }

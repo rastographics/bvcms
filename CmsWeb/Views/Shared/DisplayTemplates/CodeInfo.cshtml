@@ -1,14 +1,12 @@
 ﻿@model CmsWeb.Code.CodeInfo
-<div class="control-group">
-    @Html.LabelFor(m => m, new { @class = "control-label" })
-    <div class="controls">
-        @if (Model != null)
-        {
-            <p>@Model</p>
-        }
-        else
-        {
-            <p>&nbsp;</p>
-        }
-    </div>
-</div>
+<dl>
+    <dt>@Html.DisplayNameFor(m => m)</dt>
+    @if (Model != null)
+    {
+        <dd>@Model</dd>
+    }
+    else
+    {
+        <dd>&nbsp;</dd>
+    }
+</dl>

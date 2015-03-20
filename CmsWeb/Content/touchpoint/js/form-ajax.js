@@ -1,20 +1,21 @@
 ﻿$(function () {
 
-    //$.AttachFormElements = function () {
-    //    $("form.ajax input.ajax-typeahead").typeahead({
-    //        minLength: 3,
-    //        remote: {
-    //            url: "test",
-    //            beforeSend: function (jqXhr, settings) {
-    //                $.SetLoadingIndicator();
-    //            },
-    //            replace: function (url, uriEncodedQuery) {
-    //                return $("input:focus").data("link") + "?query=" + uriEncodedQuery;
-    //            }
-    //        }
-    //    });
-    //    $.DatePickersAndChosen();
-    //};
+    $.AttachFormElements = function () {
+        //$("form.ajax input.ajax-typeahead").typeahead({
+        //    minLength: 3,
+        //    remote: {
+        //        url: "test",
+        //        beforeSend: function (jqXhr, settings) {
+        //            $.SetLoadingIndicator();
+        //        },
+        //        replace: function (url, uriEncodedQuery) {
+        //            return $("input:focus").data("link") + "?query=" + uriEncodedQuery;
+        //        }
+        //    }
+        //});
+        //$.DatePickersAndChosen();
+        $.InitializeDateElements();
+    };
 
     //$.DatePickersAndChosen = function () {
     //    $("form.ajax .date").datepicker({
@@ -79,9 +80,16 @@
         event.preventDefault();
         var t = $(this);
         if (t.data("confirm"))
-            bootbox.confirm(t.data("confirm"), function (ret) {
-                if (ret == true)
-                    $.formAjaxSubmit(t);
+            swal({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            },
+            function () {
+                $.formAjaxSubmit(t);
             });
         else
             $.formAjaxSubmit(t);
@@ -106,9 +114,16 @@
         event.preventDefault();
         var t = $(this);
         if (t.data("confirm"))
-            bootbox.confirm(t.data("confirm"), function (ret) {
-                if (ret === true)
-                    $.formAjaxClick(t);
+            swal({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            },
+            function () {
+                $.formAjaxClick(t);
             });
         else
             $.formAjaxClick(t);
@@ -145,14 +160,14 @@
                             if (top < 10)
                                 top = 10;
                             $form.css({ 'margin-top': top, 'top': '0' });
-                            //$.AttachFormElements();
+                            $.AttachFormElements();
                             if (a.data("callback"))
                                 $.InitFunctions[a.data("callback")]();
                         });
                     } else {
                         var results = $($form.data("results") || $form);
                         results.replaceWith(ret).ready(function () {
-                            //$.AttachFormElements();
+                            $.AttachFormElements();
                             if ($form.data("init"))
                                 $.InitFunctions[$form.data("init")]();
                             if ($form.data("init2")) {

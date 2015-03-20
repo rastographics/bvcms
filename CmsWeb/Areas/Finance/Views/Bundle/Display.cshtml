@@ -39,20 +39,30 @@
             <div class="box-content">
                 <form id="bundleform" class="well">
                     <div class="row">
-                        <dl class="col-sm-6">
-                            <dt>Bundle Status</dt>
-                            <dd>@Model.Status</dd>
-                            <dt>Bundle Type</dt>
-                            <dd>@Model.Type</dd>
-                            <dt>Default Fund</dt>
-                            <dd><a href="/PostBundle/FundTotals/@Model.BundleId" style="text-decoration: underline;">@Model.DefaultFund</a></dd>
-                        </dl>
-                        <dl class="col-sm-6">
-                            <dt>Contribution Date</dt>
-                            <dd>@Model.Bundle.ContributionDate.ToShortDateString()</dd>
-                            <dt>Deposit Date</dt>
-                            <dd>@Model.Bundle.DepositDate.FormatDate()</dd>
-                        </dl>
+                        <div class="col-sm-6">
+                            <dl>
+                                <dt>Bundle Status</dt>
+                                <dd>@Model.Status</dd>
+                            </dl>
+                            <dl>
+                                <dt>Bundle Type</dt>
+                                <dd>@Model.Type</dd>
+                            </dl>
+                            <dl>
+                                <dt>Default Fund</dt>
+                                <dd><a href="/PostBundle/FundTotals/@Model.BundleId" style="text-decoration: underline;">@Model.DefaultFund</a></dd>
+                            </dl>
+                        </div>
+                        <div class="col-sm-6">
+                            <dl>
+                                <dt>Contribution Date</dt>
+                                <dd>@Model.Bundle.ContributionDate.ToShortDateString()</dd>
+                            </dl>
+                            <dl>
+                                <dt>Deposit Date</dt>
+                                <dd>@Model.Bundle.DepositDate.FormatDate()</dd>
+                            </dl>
+                        </div>
                     </div>
                 </form>
                 <div class="stat-panel-container">

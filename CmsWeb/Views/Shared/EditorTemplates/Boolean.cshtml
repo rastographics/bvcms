@@ -1,14 +1,8 @@
 ﻿@model bool
-<div class="control-group @ViewBag.hide">
-    @if (((string) ViewBag.label).HasValue())
-    {
-        @Html.LabelFor(m => m, ((string)ViewBag.label), new {@class = "control-label"})
-    }
-    else
-    {
-        @Html.LabelFor(m => m, new {@class = "control-label"})
-    }
-    <div class="controls">
-        @Html.CheckBoxFor(m => m)
+<div class="form-group">
+    <div class="checkbox">
+        <label class="control-label">
+            @Html.CheckBoxFor(m => m) @(ViewBag.label ?? Html.DisplayNameFor(m => m))
+        </label>
     </div>
 </div>

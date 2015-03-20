@@ -1,14 +1,32 @@
 ﻿@model CmsWeb.Areas.People.Models.ContacteesModel
-<table class="table table-condensed not-wide no-border table-striped">
-    @foreach (var c in Model.Contactees())
-    { 
-        <tr>
-            <td><a class="link in" href="/Person2/@c.PeopleId">@c.Name</a></td>
-            @if (Model.CanViewComments)
-            {
-                <td><a class="remove in" href="/Contact2/RemoveContactee/@c.ContactId/@c.PeopleId">Remove</a></td>
-                <td><a class="addtask in" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId">Add Followup Task</a></td>
-            }
-        </tr>
-    }
-</table>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                @if (Model.CanViewComments)
+                {
+                    <th colspan="2" style="width: 100px;">Actions</th>
+                }
+            </tr>
+        </thead>
+        @foreach (var c in Model.Contactees())
+        {
+            <tr>
+                <td>
+                    <a class="link in" href="/Person2/@c.PeopleId">@c.Name</a>
+                </td>
+                @if (Model.CanViewComments)
+                {
+                    <td style="width: 50px;">
+                        <a class="addtask in btn btn-default btn-sm" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId"><i class="fa fa-plus-circle"></i> Add Followup Task</a>
+                    </td>
+                    <td style="width: 50px;">
+                        <a class="remove in btn btn-danger btn-sm" href="/Contact2/RemoveContactee/@c.ContactId/@c.PeopleId"><i class="fa fa-trash"></i> Remove</a>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+</div>
+

@@ -1,41 +1,46 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ContactModel
-<form id="edit-contact" class="form ajax form-horizontal w120" method="post">
+<form id="edit-contact" class="form ajax" method="post">
     @Html.Hidden("editing", "true")
     @Html.HiddenFor(m => m.ContactId)
-    <fieldset>
-        <legend>Contact</legend>
-        @if (Model.Incomplete.HasValue())
-        {
-            <div class="alert alert-danger">
-                @Model.Incomplete
+    @if (Model.Incomplete.HasValue())
+    {
+        <div class="alert alert-danger">
+            @Model.Incomplete
+        </div>
+    }
+    <div class="box box-responsive">
+       <div class="box-content">
+            <div class="row">
+                <div class="col-sm-6">
+                    @Html.EditorFor(m => m.ContactDate)
+                    @Html.EditorFor(m => m.Ministry)
+                    @Html.EditorFor(m => m.ContactType)
+                    @Html.EditorFor(m => m.ContactReason)
+                    @Html.EditorFor(m => m.LimitToRole)
+                </div>
+                <div class="col-sm-6">
+                    
+                    @Html.EditorFor(m => m.NotAtHome)
+                    @Html.EditorFor(m => m.LeftDoorHanger)
+                    @Html.EditorFor(m => m.LeftMessage)
+                    @Html.EditorFor(m => m.ContactMade)
+                    @Html.EditorFor(m => m.GospelShared)
+                    @Html.EditorFor(m => m.PrayerRequest)
+                    @Html.EditorFor(m => m.GiftBagGiven)
+                </div>
+                @if (Model.CanViewComments)
+                {
+                    <div class="col-sm-12">
+                        @Html.EditorFor(m => m.Comments, "TextArea")
+                        @Html.ValidationMessage("Comments")
+                    </div>
+                }
             </div>
-        }
-        <div class="inline w120 align-top height33">
-            @Html.EditorFor(m => m.ContactDate)
-            @Html.EditorFor(m => m.Ministry)
-            @Html.EditorFor(m => m.ContactType)
-            @Html.EditorFor(m => m.ContactReason)
-            @Html.EditorFor(m => m.LimitToRole)
+            <br/>
+            <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a> <a id="update" class="btn btn-primary ajax" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
+            @Html.ValidationMessage("contactors")
+            @Html.ValidationMessage("contactees")
         </div>
-        <div class="inline w180 left-gutter">
-            @Html.EditorFor(m => m.NotAtHome)
-            @Html.EditorFor(m => m.LeftDoorHanger)
-            @Html.EditorFor(m => m.LeftMessage)
-            @Html.EditorFor(m => m.ContactMade)
-            @Html.EditorFor(m => m.GospelShared)
-            @Html.EditorFor(m => m.PrayerRequest)
-            @Html.EditorFor(m => m.GiftBagGiven)
-        </div>
-        <div class="w120 margin-top">
-            @Html.EditorFor(m => m.Comments, "TextArea")
-            @Html.ValidationMessage("Comments")
-        </div>
-        <div class="right">
-            <a id="cancel" class="btn ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a>
-            <a id="update" class="btn btn-primary ajax" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
-        </div>
-    </fieldset>
-    @Html.ValidationMessage("contactors")
-    @Html.ValidationMessage("contactees")
+    </div>
 </form>
