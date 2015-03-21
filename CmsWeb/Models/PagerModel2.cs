@@ -38,6 +38,7 @@ namespace CmsWeb.Models
 //            set { _url = value; }
 //        }
 
+        public int DisplayCount = 0;
         public string Sort { get; set; }
         public string Direction { get; set; }
 

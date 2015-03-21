@@ -58,7 +58,7 @@
         switch (ask.Type)
         {
             case "AskSize":
-                //@Html.EditorFor(m => m, "AskSize", new { label = ((AskSize)ask).Label })
+                @Html.EditorFor(m => m, "AskSize", new { label = ((AskSize)ask).Label })
                 break;
             case "AskRequest":
                 @Html.EditorFor(m => m.request,
