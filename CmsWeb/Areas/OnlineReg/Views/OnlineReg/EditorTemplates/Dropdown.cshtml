@@ -1,5 +1,6 @@
 ﻿@model string
 @{
+    var name = Html.NameFor2(m => m);
     const string labelclasses = "control-label col-sm-3 labelsize";
     var items = (IEnumerable<SelectListItem>)ViewBag.items;
 }
@@ -8,7 +9,7 @@
         ? Html.Label(ViewBag.label as string, new {@class = labelclasses }) 
         : Html.LabelFor(m => m, new {@class = labelclasses }))
     <div class="col-sm-9">
-        @Html.DropDownListFor(m => m, items, new { @class = "form-control" })
+        @Html.DropDownList(name, items, new { @class = "form-control" })
         @Html.ValidationMessageFor(m => m)
     </div>
 </div>

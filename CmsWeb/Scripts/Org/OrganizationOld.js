@@ -486,7 +486,7 @@ $(function () {
         $.post(f.attr('action'), q, function (ret) {
             $(f).html(ret).ready(function () {
                 $('.bt').button();
-                $(".datepicker").datepickertimepicker({
+                $(".datepicker").datetimepicker({
                     autoclose: true,
                     orientation: "auto",
                     minView: 2,

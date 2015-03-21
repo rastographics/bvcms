@@ -1,0 +1,8 @@
+﻿@model CmsWeb.Models.OnlineRegPersonModel
+<div class="form-group">
+  @Html.Label(ViewBag.Label as string, new { @class = "control-label col-sm-3 labelsize" })
+  <div class="col-sm-9">
+    @Html.DropDownListFor(m => m.shirtsize, Model.ShirtSizes(), new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.shirtsize)
+  </div>
+</div>
