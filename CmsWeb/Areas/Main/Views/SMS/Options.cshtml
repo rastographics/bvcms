@@ -3,38 +3,51 @@
 @using UtilityExtensions;
 @model Guid
 @{
-    ViewBag.Title = "Options";
-    Layout = ViewExtensions2.Layout();
-
+    ViewBag.Title = "SMS Message Options";
+    ViewBag.PageHeader = "SMS Message Options";
+    Layout = ViewExtensions2.TouchPointLayout();
     var groups = TwilioHelper.getAvailableLists(Util.UserId);
     var count = TwilioHelper.getSendCount(Model);
 }
+<div class="row">
+    <div class="col-md-7">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form action="/SMS/Send/@Model" method="post">
+                    <div class="form-group">
+                        <label for="iSendGroup" class="control-label">Sending to @(count) @( count == 1 ? "person" : "people")</label>
+                        @Html.DropDownList("iSendGroup", new SelectList(groups, "ID", "Name"), new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label for="sTitle" class="control-label">Title</label>
+                        <input name="sTitle" id="sTitle" size="40" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="sMessage" class="control-label">Message</label>
+                        <textarea id="sMessage" name="sMessage" id="sMessage" cols="40" rows="4" class="form-control"></textarea><br />
+                        <div id="charCount">0/160</div>
+                    </div>
+                    <input type="submit" value="Send SMS" class="btn btn-primary" />
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+
 @section scripts
 {
     <script type="text/javascript">
         var maxSMS = 160;
 
         $(document).ready(function () {
-             $("#sMessage").on("keypress", checkSize).on("input", checkSize);
-         });
-         function checkSize(event) {
-                if ($(this).val().length >= maxSMS)
-                    $(this).val($(this).val().substring(0, maxSMS));
-                $("#charCount").html(($(this).val().length + "/" + maxSMS));
-         }
+            $("#sMessage").on("keypress", checkSize).on("input", checkSize);
+        });
+        function checkSize(event) {
+            if ($(this).val().length >= maxSMS)
+                $(this).val($(this).val().substring(0, maxSMS));
+            $("#charCount").html(($(this).val().length + "/" + maxSMS));
+        }
     </script>
 }
-<br />
-<b>Sending to @(count) @( count == 1 ? "person" : "people" )</b>
-<form action="/SMS/Send/@Model" method="post">
-    @Html.DropDownList( "iSendGroup", new SelectList( groups, "ID", "Name" ) )<br />
-    <br />
-    <b>Title:</b><br />
-    <input name="sTitle" size="40" /><br />
-    <br />
-    <b>Message:</b><br />
-    <textarea id="sMessage" name="sMessage" cols="40" rows="4"></textarea><br />
-    <div id="charCount">0/160</div>
-    <br />
-    <input type="submit" value="Send SMS" />
-</form>
