@@ -20,10 +20,13 @@ namespace CmsWeb.Areas.Setup.Controllers
         [HttpPost]
         public ActionResult Create(string id)
         {
-            var m = new Setting { Id = id };
-            DbUtil.Db.Settings.InsertOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
-            DbUtil.Db.SetSetting(id, null);
+            if (!DbUtil.Db.Settings.Any(s => s.Id == id))
+            {
+                var m = new Setting { Id = id };
+                DbUtil.Db.Settings.InsertOnSubmit(m);
+                DbUtil.Db.SubmitChanges();
+                DbUtil.Db.SetSetting(id, null);
+            }
             return Redirect("/Settings/#{0}".Fmt(id));
         }
 

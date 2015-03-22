@@ -33,7 +33,7 @@
                             {
                                 <tr>
                                     <td style="width: 100px;">
-                                        @item.MinistryId
+                                        @item.MinistryId<a href="#" id="@item.MinistryId"></a>
                                     </td>
                                     <td style="width: 500px;">
                                         <a id="MinistryName.@item.MinistryId" data-pk="MinistryName.@item.MinistryId" class="clickEdit">@item.MinistryName</a>
@@ -108,6 +108,20 @@
                     });
                 });
             });
+
+            // positions scrollbar and highlights new setting.
+            var hash = document.location.hash;
+            if (hash) {
+                var offset = $(hash).offset();
+                offset.top -= 80;
+                $('body').animate({ scrollTop: offset.top }, 500);
+
+                var row = $(hash).closest('tr');
+                var bgColor = $(row).css('background-color');
+                $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                    $(row).animate({ backgroundColor: bgColor }, 1000);
+                });
+            }
         });
     </script>
 }

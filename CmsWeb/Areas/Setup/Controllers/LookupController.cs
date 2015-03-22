@@ -1,4 +1,5 @@
 using System.Data.SqlClient;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
@@ -52,9 +53,15 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (!id.HasValue)
                 TempData["ErrorMessage"] = "Id must be a number.";
             else
-                DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", id);
-            
-            return RedirectToAction("Index", new { id = type });
+            {
+                var q = DbUtil.Db.ExecuteQuery<Row>("select * from lookup." + type + " where id = {0}", id);
+                if (!q.Any())
+                {
+                    DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", id);
+                }
+            }
+
+            return Redirect("/Lookup/{0}/#{1}".Fmt(type, id));
         }
 
         [HttpPost]

@@ -20,13 +20,13 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Create(string zipcode)
         {
             var zip = DbUtil.Db.Zips.SingleOrDefault(mz => mz.ZipCode == zipcode);
-            if (zip != null)
-                return Content(Util.EndShowMessage("Zipcode already exists", "/MetroZips", "Go back"));
-
-            var m = new Zip { ZipCode = zipcode };
-            DbUtil.Db.Zips.InsertOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/MetroZips/");
+            if (zip == null)
+            {
+                var m = new Zip { ZipCode = zipcode };
+                DbUtil.Db.Zips.InsertOnSubmit(m);
+                DbUtil.Db.SubmitChanges();
+            }
+            return Redirect("/MetroZips/#{0}".Fmt(zipcode));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

@@ -42,7 +42,7 @@
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td style="width: 100px;">@item.Id</td>
+                                <td style="width: 100px;">@item.Id<a href="#" id="@item.Id"></a></td>
                                 <td style="width: 300px;">
                                     @if (item.Hardwired.GetValueOrDefault())
                                     {
@@ -161,6 +161,20 @@
             $('#new-modal').on('shown.bs.modal', function () {
                 $("#id").val('').focus();
             });
+
+            // positions scrollbar and highlights new setting.
+            var hash = document.location.hash;
+            if (hash) {
+                var offset = $(hash).offset();
+                offset.top -= 80;
+                $('body').animate({ scrollTop: offset.top }, 500);
+
+                var row = $(hash).closest('tr');
+                var bgColor = $(row).css('background-color');
+                $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                    $(row).animate({ backgroundColor: bgColor }, 1000);
+                });
+            }
         });
     </script>
 }
