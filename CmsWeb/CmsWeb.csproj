@@ -318,6 +318,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\StewardshipTechnology.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\GraceCC.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\TeaysValley.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\Vanco2.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\Vanco.cs">

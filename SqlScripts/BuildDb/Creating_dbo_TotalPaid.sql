@@ -1,5 +1,5 @@
 CREATE FUNCTION [dbo].[TotalPaid](@oid int, @pid int) 
-RETURNS int
+RETURNS MONEY
 AS
 BEGIN
 	DECLARE @c MONEY, @mt BIT, @tranid INT
