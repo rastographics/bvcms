@@ -57,11 +57,21 @@
     $('body').on('click', '#singleemail', function (ev) {
         ev.preventDefault();
         var t = $(this);
-        bootbox.confirm(t.data("confirm"), function (ret) {
-            if(ret)
-                window.location = t[0].href;
+        
+        swal({
+            title: "Are you sure?",
+            text: "Warning, email replacement codes will not work.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            confirmButtonText: "Yes, continue!",
+            closeOnConfirm: false
+        },
+        function () {
+            window.location = t[0].href;
         });
-        return false;
+
+        return true;
     });
 
     $('body').on('click', '#UnTagAll', function (ev) {
@@ -81,44 +91,60 @@
     $('body').on('click', '#AddContact', function (ev) {
         ev.preventDefault();
         var url = this.href;
-        bootbox.confirm("Are you sure you want to add a contact for all these people?", function (result) {
-            if (result === true) {
-                $.block();
-                $.post(url, null, function (ret) {
-                    $.unblock();
-                    if (ret < 0)
-                        $.growlUI("error", "too many people to add to a contact (max 100)");
-                    else if (ret == 0)
-                        $.growlUI("error", "no results");
-                    else
-                        window.location = ret;
-                });
-            }
+
+        swal({
+            title: "Are you sure?",
+            text: "This will add a contact for all listed people.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            confirmButtonText: "Yes, add contact!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.block();
+            $.post(url, null, function (ret) {
+                $.unblock();
+                if (ret < 0)
+                    swal("Error!", "Too many people to add to a contact (max 100).", "error");
+                else if (ret == 0)
+                    swal("Error!", "No results.", "error");
+                else
+                    window.location = ret;
+            });
         });
-        return false;
+        return true;
     });
 
     $('body').on('click', '#AddTasks', function (ev) {
         ev.preventDefault();
-        var message = "Are you sure you want to add a task for all these people?";
+        var message = "This will add a task for all listed people.";
         if (window.location.pathname.contains("/Person"))
-            message = "Are you sure you want to add a task for this person?";
+            message = "This will add a task for this person.";
         var url = this.href;
-        bootbox.confirm(message, function (result) {
-            if (result === true) {
-                $.block();
-                $.post(url, null, function (ret) {
-                    $.unblock();
-                    if (ret > 100)
-                        $.growlUI("error", "too many people to add tasks for (max 100)");
-                    else if (ret == 0)
-                        $.growlUI("error", "no results");
-                    else
-                        window.location = "/Task";
-                });
-            }
+        
+        swal({
+            title: "Are you sure?",
+            text: message,
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-success",
+            confirmButtonText: "Yes, add task!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.block();
+            $.post(url, null, function (ret) {
+                $.unblock();
+                if (ret > 100)
+                    swal("Error!", "Too many people to add tasks for (max 100).", "error");
+                else if (ret == 0)
+                    swal("Error!", "No results.", "error");
+                else
+                    window.location = "/Task";
+            });
         });
-        return false;
+        return true;
     });
 
 });
