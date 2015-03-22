@@ -4840,13 +4840,13 @@ namespace CmsData
 		}
 
 		[Function(Name="dbo.TotalPaid", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? TotalPaid(
+		[return: Parameter(DbType = "money")]
+		public decimal? TotalPaid(
             [Parameter(Name = "oid", DbType="int")] int? oid,
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid
