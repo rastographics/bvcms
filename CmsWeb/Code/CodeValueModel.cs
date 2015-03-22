@@ -120,18 +120,6 @@ namespace CmsWeb.Code
                    };
         }
 
-        public IEnumerable<CodeValueItem> TitleCodes()
-        {
-            return from ms in DbUtil.Db.NameTitles
-                   orderby ms.Description
-                   select new CodeValueItem
-                   {
-                       Id = ms.Id,
-                       Code = ms.Code,
-                       Value = ms.Description
-                   };
-        }
-
         public IEnumerable<CodeValueItem> VolApplicationStatusCodes()
         {
             var q = from sc in DbUtil.Db.VolApplicationStatuses
@@ -394,7 +382,6 @@ namespace CmsWeb.Code
         public IEnumerable<CodeValueItem> PositionInFamilyList() { return FamilyPositionCodes(); }
         public IEnumerable<CodeValueItem> ResCodeList() { return ResidentCodesWithZero(); }
         public IEnumerable<CodeValueItem> StateList() { return GetStateList(); }
-        public IEnumerable<CodeValueItem> TitleList() { return TitleCodes(); }
         public IEnumerable<CodeValueItem> LetterStatusList() { return LetterStatusCodes(); }
 
         public SelectList MinistrySelectList() { return MinistryList().ToSelect(); }
