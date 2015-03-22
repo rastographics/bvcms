@@ -9,7 +9,7 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-lg-9">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
@@ -25,11 +25,11 @@
                                     <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Code" data-content="Please enter exactly as in the help article, using no spaces. Also, they are case-sensitive."><i class="fa fa-info-circle"></i></a>&nbsp;
                                     Setting Code
                                 </th>
-                                <th style="width: 300px;">
+                                <th style="width: 500px;">
                                     <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Setting Value" data-content="Click value to edit."><i class="fa fa-info-circle"></i></a>&nbsp;
                                     Setting Value
                                 </th>
-                                <th style="width: 100px;">Action</th>
+                                <th style="width: 50px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -37,10 +37,10 @@
                             {
                                 <tr>
                                     <td style="width: 100px;">@item.Id</td>
-                                    <td style="width: 300px;">
+                                    <td style="width: 500px;">
                                         <a id="@item.Id" class="clickEdit" data-pk="@(item.Id)">@item.SettingX</a>
                                     </td>
-                                    <td style="width: 100px;">
+                                    <td style="width: 50px;">
                                         <a id="d@(item.Id)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                                     </td>
                                 </tr>

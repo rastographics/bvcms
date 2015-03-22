@@ -8,7 +8,7 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-lg-7">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
@@ -24,8 +24,8 @@
                         <thead>
                             <tr>
                                 <th style="width: 100px;">Role Id</th>
-                                <th style="width: 300px;">Role Name</th>
-                                <th style="width: 100px;">Action</th>
+                                <th style="width: 500px;">Role Name</th>
+                                <th style="width: 50px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,13 +35,13 @@
                                     <td style="width: 100px;">@item.RoleId</td>
                                     @if (item.Hardwired == true)
                                     {
-                                        <td style="width: 300px;">@item.RoleName</td>
-                                        <td style="width: 100px;"></td>
+                                        <td style="width: 500px;">@item.RoleName</td>
+                                        <td style="width: 50px;"></td>
                                     }
                                     else
                                     {
-                                        <td style="width: 300px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
-                                        <td style="width: 100px;"><a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a></td>
+                                        <td style="width: 500px;"><a id="RoleName.@item.RoleName" data-pk="RoleName.@item.RoleName" class="clickEdit">@item.RoleName</a></td>
+                                        <td style="width: 50px;"><a id="d@(item.RoleId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a></td>
                                     }
                                 </tr>
                             }

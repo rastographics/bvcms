@@ -8,7 +8,7 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-lg-7">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
@@ -24,8 +24,8 @@
                         <thead>
                             <tr>
                                 <th style="width: 100px;">Ministry Id</th>
-                                <th style="width: 300px;">Ministry Name</th>
-                                <th style="width: 100px;">Action</th>
+                                <th style="width: 500px;">Ministry Name</th>
+                                <th style="width: 50px;">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,10 +35,10 @@
                                     <td style="width: 100px;">
                                         @item.MinistryId
                                     </td>
-                                    <td style="width: 300px;">
+                                    <td style="width: 500px;">
                                         <a id="MinistryName.@item.MinistryId" data-pk="MinistryName.@item.MinistryId" class="clickEdit">@item.MinistryName</a>
                                     </td>
-                                    <td style="width: 100px;">
+                                    <td style="width: 50px;">
                                         <a id="d@(item.MinistryId)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
                                     </td>
                                 </tr>

@@ -8,7 +8,7 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
 }
 <div class="row">
-    <div class="col-sm-9">
+    <div class="col-lg-8">
         <div class="alert alert-success alert-dismissible" style="display: none;">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
             <strong>Success!</strong> <span id="success-message"></span>
@@ -36,18 +36,18 @@
                         <thead>
                             <tr>
                                 <th style="width: 100px;">Zip Code</th>
-                                <th style="width: 300px;">Metro Marginal Code</th>
-                                <th style="width: 100px;">Action</th>
+                                <th style="width: 500px;">Metro Marginal Code</th>
+                                <th style="width: 50px;">Action</th>
                             </tr>
                         </thead>
                         @foreach (var item in Model)
                         {
                             <tr>
                                 <td style="width: 100px;">@item.ZipCode</td>
-                                <td style="width: 300px;">
+                                <td style="width: 500px;">
                                     <a id="r@(item.ZipCode)" class="clickSelect" data-value="@(item.ResidentCode == null ? "" : item.ResidentCode.Id.ToString())" data-pk="r@(item.ZipCode)">@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</a>
                                 </td>
-                                <td style="width: 100px;">
+                                <td style="width: 50px;">
                                     <a id="d@(item.ZipCode)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
                                 </td>
                             </tr>
