@@ -21,11 +21,14 @@
     @Html.EditorFor(m => m.Terms, "Html")
     @Html.EditorFor(m => m.ReminderSubject)
     @Html.EditorFor(m => m.ReminderBody, "Html")
-    @Html.EditorFor(m => m.GiftNotifyIds, "NotifyList", new { OrgId = Model.Id, Field = "GiftNotifyIds"})
-    @Html.EditorFor(m => m.SupportSubject)
-    @Html.EditorFor(m => m.SupportBody, "Html")
-    @Html.EditorFor(m => m.SenderSubject)
-    @Html.EditorFor(m => m.SenderBody, "Html")
+    @if (Model.Org.IsMissionTrip == true)
+    {
+      @Html.EditorFor(m => m.SupportSubject)
+      @Html.EditorFor(m => m.SupportBody, "Html")
+      @Html.EditorFor(m => m.GiftNotifyIds, "NotifyList", new {OrgId = Model.Id, Field = "GiftNotifyIds"})
+      @Html.EditorFor(m => m.SenderSubject)
+      @Html.EditorFor(m => m.SenderBody, "Html")
+    }
     @FormAction()
   </div>
 </form>

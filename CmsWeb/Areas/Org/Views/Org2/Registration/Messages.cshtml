@@ -22,11 +22,14 @@
     @Html.DisplayFor(m => m.Terms, "Html")
     @Html.DisplayFor(m => m.ReminderSubject)
     @Html.DisplayFor(m => m.ReminderBody, "Html")
-    @Html.DisplayFor(m => m.GiftNotifyIds, "NotifyList")
-    @Html.DisplayFor(m => m.SupportSubject)
-    @Html.DisplayFor(m => m.SupportBody, "Html")
-    @Html.DisplayFor(m => m.SenderSubject)
-    @Html.DisplayFor(m => m.SenderBody, "Html")
+    @if (Model.Org.IsMissionTrip == true)
+    {
+      @Html.DisplayFor(m => m.SupportSubject)
+      @Html.DisplayFor(m => m.SupportBody, "Html")
+      @Html.DisplayFor(m => m.GiftNotifyIds, "NotifyList")
+      @Html.DisplayFor(m => m.SenderSubject)
+      @Html.DisplayFor(m => m.SenderBody, "Html")
+    }
   </div>
   @FormAction()
 </form>
