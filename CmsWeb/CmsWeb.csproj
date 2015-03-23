@@ -1457,6 +1457,7 @@
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\Toolbar\Email.cshtml" />
     <Content Include="Areas\Org\Views\Organization\EditorTemplates\ScheduleInfo.cshtml" />
+    <Content Include="Areas\Finance\Views\Shared\EditorTemplates\Decimal.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
@@ -2790,7 +2791,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Dialog\Views\Shared\" />
-    <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
     <Folder Include="Areas\Manage\Models\Reports\" />
     <Folder Include="Areas\OnlineReg\Models\Payments\" />
