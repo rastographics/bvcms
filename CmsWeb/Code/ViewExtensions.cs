@@ -784,6 +784,13 @@ namespace CmsWeb
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.4.1/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
+        public static HtmlString jqueryGlobalize()
+        {
+            return new HtmlString(@"
+<script src=""{0}"" type=""text/javascript""></script>
+<script src=""{1}"" type=""text/javascript""></script>
+".Fmt(Globalize,GlobalizeCulture));
+        }
         public static HtmlString jQuery()
         {
             return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>\n");
@@ -794,9 +801,7 @@ namespace CmsWeb
         }
         public static HtmlString jQueryUI()
         {
-            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js""></script>
-    <script> $.fn.jqdatepicker = $.fn.datepicker; </script>
-");
+            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js""></script>");
         }
 
         public static HtmlString Bootstrap()

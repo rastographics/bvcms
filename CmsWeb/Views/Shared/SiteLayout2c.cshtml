@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <html>
 <head>
     <title>@ViewBag.Title</title>
@@ -14,23 +15,24 @@
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap()
     @ViewExtensions2.jQueryUI()
+  @ViewExtensions2.jqueryGlobalize()
     @Fingerprint.Script("/Scripts/bundle.main2c.js")
-    @Html.Partial("DatePickerDefaults")
+    @Html.Partial("DatePickerDefaults2")
     @RenderSection("scripts", required: false)
 </head>
-<body>
-    <div class="page-container">
-        @Html.Partial("Notices")
-        @Html.Partial("NewHeader3")
-        <div id="oldpages" class="container">
-            @RenderBody()
+    <body>
+        <div class="page-container">
+            @Html.Partial("Notices")
+            @Html.Partial("NewHeader3")
+            <div id="oldpages" class="container">
+                @RenderBody()
+            </div>
         </div>
-    </div>
-    @Html.Partial("Footer")
-    @Html.Partial("Dialogs")
-    @RenderSection("PopupsPlaceholder", required: false)
+        @Html.Partial("Footer")
+        @Html.Partial("Dialogs")
+        @RenderSection("PopupsPlaceholder", required: false)
         <div id="loading-indicator">
             <img src="/Content/img/ajax-loader.gif" />
         </div>
-</body>
+    </body>
 </html>

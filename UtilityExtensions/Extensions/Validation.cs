@@ -111,14 +111,14 @@ namespace UtilityExtensions
         {
             get
             {
-
                 var dt = new DateTime(2002, 1, 30);
                 var s = dt.ToShortDateString();
+                var sep = s.Contains("-") ? "-" : "/";
                 if (s.StartsWith("30"))
-                    return "d/m/yyyy";
+                    return "d{0}m{0}yyyy".Fmt(sep);
                 if (s.StartsWith("2002"))
-                    return "yyyy/mm/dd";
-                return "m/d/yyyy";
+                    return "yyyy{0}mm{0}dd".Fmt(sep);
+                return "m{0}d{0}yyyy".Fmt(sep);
             }
         }
         public static string jQueryDateFormat2WithTime

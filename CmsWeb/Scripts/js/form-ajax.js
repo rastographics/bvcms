@@ -323,4 +323,15 @@
     };
     if (!$.InitFunctions)
         $.InitFunctions = {};
+ 
+   $.fn.jqdatepicker = function() {
+        this.datepicker({
+            autoclose: true,
+            orientation: "auto",
+            forceParse: false,
+            format: $.dtoptions.format
+        });
+        return this;
+    };
 });
+
