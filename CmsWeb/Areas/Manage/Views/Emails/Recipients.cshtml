@@ -36,7 +36,7 @@
     </div>
     @Html.Partial("PagerBottom", Model.Pager)
     @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-    @Html.Hidden("Page", Model.Pager)
-    @Html.Hidden("Sort", Model.Pager)
-    @Html.Hidden("Direction", Model.Pager)
+    @Html.Hidden("Page", Model.Pager.Page)
+    @Html.Hidden("Sort", Model.Pager.Sort)
+    @Html.Hidden("Direction", Model.Pager.Direction)
 </div>
