@@ -15,8 +15,8 @@
         <div class="box-title-btn">
             <div class="box-tools">
                 <a href="/ContactSearch2" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
-                <a id="delete" class="btn btn-danger submit" data-confirm="Are you sure you want to delete this contact?" href="/Contact2/ContactDelete/@Model.ContactId"><i class="fa fa-trash"></i> Delete</a> 
-                <a id="edit" class="btn btn-primary ajax" href="/Contact2/ContactEdit/@Model.ContactId"><i class="fa fa-pencil"></i> Edit</a>
+                <a class="btn btn-danger submit" data-confirm="Are you sure you want to delete this contact?" href="/Contact2/ContactDelete/@Model.ContactId"><i class="fa fa-trash"></i> Delete</a> 
+                <a class="btn btn-primary ajax" href="/Contact2/ContactEdit/@Model.ContactId"><i class="fa fa-pencil"></i> Edit</a>
             </div>
         </div>
         <div class="box-content">
@@ -64,7 +64,7 @@
                         <span class="label label-success"><i class="fa fa-check"></i>&nbsp;&nbsp;@Html.DisplayNameFor(m => m.GiftBagGiven)</span>
                     }
                 </div>
-                @if (Model.CanViewComments)
+                @if (Model.CanViewComments && !string.IsNullOrWhiteSpace(Model.Comments))
                 {
                     <div class="col-sm-12">
                         <p>
@@ -72,6 +72,14 @@
                         </p>
                     </div>
                 }
+                <div class="visible-xs-block">
+                    <div class="col-sm-12">
+                        <a class="btn btn-primary btn-block ajax" href="/Contact2/ContactEdit/@Model.ContactId"><i class="fa fa-pencil"></i> Edit</a>
+                        <a class="btn btn-danger btn-block submit" data-confirm="Are you sure you want to delete this contact?" href="/Contact2/ContactDelete/@Model.ContactId"><i class="fa fa-trash"></i> Delete</a>
+                        <a href="/ContactSearch2" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    </div>
+                </div>
+                <br/>
             </div>
         </div>
     </div>
