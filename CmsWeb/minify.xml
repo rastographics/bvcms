@@ -63,7 +63,7 @@
       <main2c Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2c Include="Scripts/jQuery/jquery.mousewheel.js"/>
       <main2c Include="Scripts/jquery.validate.js"/>
-      <main2c Include="Scripts/globalize.js"/>
+      <main2c Include="Scripts/additional-methods.js"/>
       <main2c Include="Scripts/jquery.validate.globalize.js"/>
       <main2c Include="Scripts/jQuery/jquery.sortElements.js"/>
       <main2c Include="Scripts/jQuery/jquery.textarea.js"/>

@@ -763,7 +763,6 @@
     <Compile Include="Generated\DUser.cs" />
     <Compile Include="Generated\Functions\VerseSummaryForCategory2.cs" />
     <Compile Include="Generated\ReadPlan.cs" />
-    <Compile Include="Generated\ShirtSize.cs" />
     <Compile Include="Generated\UploadAuthenticationXref.cs" />
     <Compile Include="Generated\Views\BlogCategoriesView.cs" />
     <Compile Include="Generated\Views\OrphanedImage.cs" />
@@ -892,7 +891,6 @@
     <Compile Include="Generated\MemberStatus.cs" />
     <Compile Include="Generated\MemberType.cs" />
     <Compile Include="Generated\Ministry.cs" />
-    <Compile Include="Generated\NameTitle.cs" />
     <Compile Include="Generated\Organization.cs" />
     <Compile Include="Generated\OrganizationMember.cs" />
     <Compile Include="Generated\Person.cs" />

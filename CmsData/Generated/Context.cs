@@ -410,10 +410,6 @@ namespace CmsData
         partial void UpdateMobileAppVideoType(MobileAppVideoType instance);
         partial void DeleteMobileAppVideoType(MobileAppVideoType instance);
         
-        partial void InsertNameTitle(NameTitle instance);
-        partial void UpdateNameTitle(NameTitle instance);
-        partial void DeleteNameTitle(NameTitle instance);
-        
         partial void InsertNewMemberClassStatus(NewMemberClassStatus instance);
         partial void UpdateNewMemberClassStatus(NewMemberClassStatus instance);
         partial void DeleteNewMemberClassStatus(NewMemberClassStatus instance);
@@ -557,10 +553,6 @@ namespace CmsData
         partial void InsertSetting(Setting instance);
         partial void UpdateSetting(Setting instance);
         partial void DeleteSetting(Setting instance);
-        
-        partial void InsertShirtSize(ShirtSize instance);
-        partial void UpdateShirtSize(ShirtSize instance);
-        partial void DeleteShirtSize(ShirtSize instance);
         
         partial void InsertSMSGroupMember(SMSGroupMember instance);
         partial void UpdateSMSGroupMember(SMSGroupMember instance);
@@ -1316,12 +1308,6 @@ namespace CmsData
 
 		}
 
-		public Table< NameTitle> NameTitles
-		{
-			get	{ return this.GetTable< NameTitle>(); }
-
-		}
-
 		public Table< NewMemberClassStatus> NewMemberClassStatuses
 		{
 			get	{ return this.GetTable< NewMemberClassStatus>(); }
@@ -1535,12 +1521,6 @@ namespace CmsData
 		public Table< Setting> Settings
 		{
 			get	{ return this.GetTable< Setting>(); }
-
-		}
-
-		public Table< ShirtSize> ShirtSizes
-		{
-			get	{ return this.GetTable< ShirtSize>(); }
 
 		}
 
@@ -4860,13 +4840,13 @@ namespace CmsData
 		}
 
 		[Function(Name="dbo.TotalPaid", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? TotalPaid(
+		[return: Parameter(DbType = "money")]
+		public decimal? TotalPaid(
             [Parameter(Name = "oid", DbType="int")] int? oid,
             [Parameter(Name = "pid", DbType="int")] int? pid
             )
 		{
-			return ((int?)(this.ExecuteMethodCall(this, 
+			return ((decimal?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 oid,
                 pid

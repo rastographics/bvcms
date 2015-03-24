@@ -269,13 +269,13 @@ $(function () {
         $("ul.edit .datepicker", f).jqdatepicker({
             //beforeShow: function () { $('#ui-datepicker-div').maxZIndex(); }
         });
-        $("ul.edit .timepicker", f).jqdatetimepicker({
-            stepHour: 1,
-            stepMinute: 5,
-            timeOnly: true,
-            timeFormat: "hh:mm tt",
-            controlType: "slider"
-        });
+//        $("ul.edit .timepicker", f).datepicker({
+//            stepHour: 1,
+//            stepMinute: 5,
+//            timeOnly: true,
+//            timeFormat: "hh:mm tt",
+//            controlType: "slider"
+//        });
         $("ul.edit .datetimepicker", f).jqdatetimepicker({
             stepHour: 1,
             stepMinute: 15,

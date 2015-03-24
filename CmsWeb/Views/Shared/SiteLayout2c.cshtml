@@ -1,4 +1,5 @@
 ﻿<!DOCTYPE html>
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <html>
 <head>
     <title>@ViewBag.Title</title>
@@ -14,11 +15,9 @@
     @ViewExtensions2.jQuery()
     @ViewExtensions2.Bootstrap()
     @ViewExtensions2.jQueryUI()
+  @ViewExtensions2.jqueryGlobalize()
     @Fingerprint.Script("/Scripts/bundle.main2c.js")
-    @Html.Partial("DatePickerDefaults")
-    <script>
-        $.dtoptions = { format: '@Util.jQueryDateFormat2' };
-    </script>
+    @Html.Partial("DatePickerDefaults2")
     @RenderSection("scripts", required: false)
 </head>
     <body>
