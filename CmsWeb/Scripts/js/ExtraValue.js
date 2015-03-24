@@ -27,6 +27,7 @@
                     $("#ExtraValueBitPrefix").parent().parent().addClass('hide');
                     $("#ExtraValueCheckboxes").parent().parent().addClass('hide');
                     $("#ExtraValueCodes").parent().parent().addClass('hide');
+                    $("#ExtraValueLink").parent().parent().addClass('hide');
                     switch ($("#ExtraValueType_Value").val()) {
                         case "Code":
                             $("#ExtraValueCodes").parent().parent().removeClass('hide');
@@ -34,6 +35,9 @@
                         case "Bits":
                             $("#ExtraValueBitPrefix").parent().parent().removeClass('hide');
                             $("#ExtraValueCheckboxes").parent().parent().removeClass('hide');
+                            break;
+                        case "Link":
+                            $("#ExtraValueLink").parent().parent().removeClass('hide');
                             break;
                         case "Codes":
                             $("#ExtraValueCodes").parent().parent().removeClass('hide');
@@ -43,7 +47,7 @@
                 $("#ExtraValueType_Value").live("change", showHide);
             });
         $.InitFunctions.StandardExtraValueDialogCallback = function () {
-            if ($("#StandardExtraValueError").length == 0) {
+            if ($("#StandardExtraValueError").length === 0) {
                 $("#extravalue-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax-refresh");
                 if (a.length > 0)

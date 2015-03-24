@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Web;
-using Org.BouncyCastle.Cms;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -19,6 +19,7 @@ namespace CmsWeb.Models.ExtraValues
                 Codes = ptr.Codes,
                 Order = ptr.Order,
                 Standard = ptr.Standard,
+                Link = ptr.Link,
             };
             return v;
         }
@@ -163,6 +164,15 @@ namespace CmsWeb.Models.ExtraValues
         {
             var a = s.SplitStr(":", 2);
             return a.Length > 1 ? a[1] : s;
+        }
+
+        public HtmlString HyperLink()
+        {
+            var s = HttpUtility.HtmlDecode(Link);
+            s = s.Replace("{id}", Id.ToString());
+            if(s.Contains("{queryid}"))
+                s = s.Replace("{queryid}", Model.CurrentPersonQueryId().ToString());
+            return new HtmlString(s);
         }
     }
 }
