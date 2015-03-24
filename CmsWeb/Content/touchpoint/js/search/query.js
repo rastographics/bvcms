@@ -414,11 +414,6 @@
         return false;
     });
 
-    $.navigate = function (url, data) {
-        url += (url.match(/\?/) ? "&" : "?") + data;
-        window.location = url;
-    };
-
     if ($("#NewSearchId").val()) {
         liedit = $("li[data-qid='" + $("#NewSearchId").val() + "']");
         $EditCondition({ isnew: true });

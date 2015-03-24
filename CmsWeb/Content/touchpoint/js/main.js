@@ -100,6 +100,21 @@ $.growl = function (title, text, type) {
 }
 
 /* helper methods */
+
+$.navigate = function (url, data) {
+    url += (url.match(/\?/) ? "&" : "?") + data;
+    window.location = url;
+};
+
+$.fn.getCheckboxVal = function () {
+    var vals = [];
+    var i = 0;
+    this.each(function () {
+        vals[i++] = $(this).val();
+    });
+    return vals;
+};
+
 String.prototype.startsWith = function (t, i) {
     return (t == this.substring(0, t.length));
 };

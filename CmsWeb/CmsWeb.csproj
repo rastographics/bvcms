@@ -764,6 +764,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\people\contact.js" />
+    <Content Include="Content\touchpoint\js\people\task.js" />
     <Content Include="Content\touchpoint\js\search\people-search.js" />
     <Content Include="Content\touchpoint\js\search\query.js" />
     <Content Include="Content\touchpoint\js\search\saved-query-list.js" />

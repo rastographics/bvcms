@@ -1,90 +1,72 @@
 ﻿@model CmsWeb.Models.TaskModel
 @using CmsWeb
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Tasks";
+    ViewBag.PageHeader = "Tasks";
 }
+<div class="row">
+    <div class="col-md-9">
+        <form id="form" action="/Task/List" method="get">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <button class="btn btn-default taskDelegate"><i class="fa fa-users"></i> Delegate 0 Task(s)</button> <button class="btn btn-danger taskDelete"><i class="fa fa-trash"></i> Delete 0 Task(s)</button> <a href="#" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Task</a>
+                    </div>
+                </div>
+                <div class="box-content">
+                    @Html.Hidden("SortTask")
+                    <div class="well">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="StatusId" class="control-label">Status</label>
+                                    @Html.DropDownList("StatusId", Model.TaskStatusCodes(), new { @class = "form-control " })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="checkbox">
+                                    <label class="control-label">
+                                        @Html.CheckBox("OwnerOnly") Owned tasks only?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="results">
+                        @Html.Partial("PagerTop", Model)
+                        <div class="table-responsive">
+                            <table id="tasks" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 5px;"></th>
+                                        <th><a href="#" class="sortable">Task</a></th>
+                                        <th><a href="#" class="sortable">About</a></th>
+                                        <th><a href="#" class="sortable">Due/Completed</a></th>
+                                        <th>Status</th>
+                                        <th><a href="#" class="sortable">Assigned</a></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @Html.Partial("Rows", Model)
+                                </tbody>
+                            </table>
+                        </div>
+                        @Html.Partial("PagerBottom", Model)
+                        @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+                        @Html.Hidden("Page", Model.Page)
+                        @Html.Hidden("Sort", Model.Sort)
+                        @Html.Hidden("Direction", Model.Direction)
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/bundle.TaskPage.js")
+    @Fingerprint.Script("/Content/touchpoint/js/people/task.js")
 }
-    <form id="form" action="/Task/List" method="get">
-    @Html.Hidden("SortTask")
-    <div class="roundbox floatleft">
-    <h2>Tasks</h2>
-    <table>
-@if (User.IsInRole("AdvancedTask"))
-{ 
-        <tr>
-            <th> Project: </th>
-            <td> @Html.DropDownList("Project", Model.Projects()) </td>
-        </tr>
-        <tr>
-            <th> Location: </th>
-            <td> @Html.DropDownList("Location", Model.Locations()) </td>
-        </tr>
-} 
-        <tr>
-            <th> Status: </th>
-            <td> @Html.DropDownList("StatusId", Model.TaskStatusCodes()) </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <label for="OnwerOnly" class="Bold">
-                    Owned Tasks Only:</label>
-                @Html.CheckBox("OwnerOnly")
-            </td>
-        </tr>
-    </table>
-    </div>
-    <div class="floatclear"></div>
-    @Html.Hidden("CurTab", Model.MyListId())
-    <div id="tabs">
-        <ul>
-             @Html.Partial("Tabs", Model) 
-        </ul>
-@foreach (var list in Model.FetchTaskLists())
-{ 
-        <div id='@list.Id' style="display:none"></div>
-}
-    </div>
-        <table>
-            <tr>
-                <td>
-                    @Html.DropDownList("actions", ViewData.Model.ActionItems())
-                </td>
-                <td>
-                    New Task:
-                    <input type="text" id="TaskDesc" maxlength="100" style="width: 217px" />
-                    <a id="AddTask" href="#">Add Task</a>
-                    <a id="delegateall" href="/SearchAdd2/Dialog/taskdelegate2/1" class="searchadd"></a>
-                </td>
-            </tr>
-        </table>
-        <table id="tasks" class="@ViewExtensions2.GridClass">
-            <thead>
-                <tr>
-                    <th> </th>
-                    <th> <a href="#" class="sortable">Due/Completed</a> </th>
-                    <th> <a href="#" class="sortable">Task</a> </th>
-                    <th> <a href="#" class="sortable">About</a> </th>
-                    <th> Status </th>
-                    <th> <a href="#" class="sortable">Assigned</a> </th>
-                </tr>
-            </thead>
-            <tbody>
-                 @Html.Partial("Rows", Model) 
-            </tbody>
-        </table>
-         @Html.Partial("Pager", Model.pagerModel()) 
-        <div>
-            New List(tab):
-            <input type="text" id="ListName" maxlength="50" style="width: 217px" />
-            <a id="AddList" href="#">Add List</a>
-        </div>
-<input type="hidden" id="Count" value='@Model.Count' />
-@Html.Hidden("Sort",Model.Sort)
-    </form>
-    <div id="dialogbox">
-    <iframe id="searchDialogiframe" style="width:100%;height:99%;border-width:0px;"></iframe>
-    </div>
