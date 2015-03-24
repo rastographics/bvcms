@@ -766,7 +766,13 @@ namespace CmsWeb
     <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.min.js""></script>");
         }
 
-        public static string jqueryGlobalize { get { return "/Content/touchpoint/lib/jquery-globalize/js/globalize.js"; } }
+        public static HtmlString jqueryGlobalize()
+        {
+            return new HtmlString(@"
+<script src=""{0}"" type=""text/javascript""></script>
+<script src=""{1}"" type=""text/javascript""></script>
+".Fmt(Globalize, GlobalizeCulture));
+        }
 
         public static string jqueryGlobalizeCulture
         {
@@ -807,25 +813,25 @@ namespace CmsWeb
             return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js""></script>");
         }
 
- 
+
         public static string Globalize { get { return "/Scripts/globalize.js"; } }
-        public static string GlobalizeCulture 
-        { 
-            get 
+        public static string GlobalizeCulture
+        {
+            get
             {
                 //Determine culture - GUI culture for preference, user selected culture as fallback
                 var currentCulture = CultureInfo.CurrentCulture;
                 var filePattern = "/Scripts/globalize/globalize.culture.{0}.js";
                 var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
- 
+
                 //Try to pick a more appropriate regionalisation
                 if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
                     regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
                 else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
                     regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
- 
+
                 return regionalisedFileToUse;
-            } 
+            }
         }
 
         public static HtmlString LoDash()

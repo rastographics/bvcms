@@ -75,7 +75,7 @@
         @ViewExtensions2.Velocity()
         @ViewExtensions2.Moment()
         @ViewExtensions2.jQueryValidation()
-        <script src="@Url.Content(ViewExtensions2.jqueryGlobalize)" type="text/javascript"></script>
+        @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
         <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
         @Fingerprint.Script("/Content/touchpoint/lib/jquery-validate-globalize/js/jquery.validate.globalize.js")
         @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js")
