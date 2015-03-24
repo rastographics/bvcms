@@ -20,7 +20,6 @@
     var notOpened = Model.CountOfNotOpenedRecipients;
     var failed = Model.CountOfFailedRecipients;
     var percentage = !Model.queue.Sent.HasValue && Model.queue.SendWhen.HasValue ? 0 : Math.Round(((decimal)all - (decimal)failed) / (decimal)all * 100);
-    
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
@@ -91,8 +90,8 @@
             </div>
             <div class="stat-row text-center">
                 <div class="stat-cell bordered no-border-t no-padding-hr">
-                    <div class="pie-chart" data-percent="@percentage">
-                        <div class="pie-chart-label">@percentage%</div>
+                    <div class="pie-chart" data-percent="@(failed > 0 && percentage == 100 ? 99 : percentage)">
+                        <div class="pie-chart-label">@(failed > 0 && percentage == 100 ? 99 : percentage)%</div>
                     </div>
                 </div>
             </div>
