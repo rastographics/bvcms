@@ -19,6 +19,23 @@
             <div class="box-content">
                 <form id="Edit" action="/Task/Update/@Model.Id" method="POST">
                     @Html.Hidden("TaskId", Model.Id)
+                    <div class="well">
+                        @if (Model.WhoId.HasValue)
+                        {
+                            <strong><a href="@Model.PersonUrl" style="font-size: 1.5em;">@Model.Who</a></strong>
+                        }
+                        @if (Model.WhoId.HasValue)
+                        {
+                            <br />
+                            <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
+                            <div>
+                                <a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a>
+                                | <a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">driving directions</a><br />
+                                <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
+                                | @Model.WhoPhone
+                            </div>
+                        }
+                    </div>
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">

@@ -198,7 +198,7 @@
                 <ul class="list-group">
                     @foreach (var task in tasks)
                     {
-                        <li class="list-group-item"><a href="/Task/List/@task.TaskId#Detail">@task.Description</a> (<a href="@task.Url">@task.Who</a>)</li>
+                        <li class="list-group-item"><a href="/Task/Detail/@task.TaskId">@task.Description</a> (<a href="@task.Url">@task.Who</a>)</li>
                     }
                 </ul>
             }

@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var tasks = new TaskModel { Id = id.ToString() };
             tasks.CompleteTask(id);
-            return PartialView("Columns", tasks.FetchTask(id));
+            return Content("Done");
         }
 
         [HttpPost]
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var tasks = new TaskModel { Id = id.ToString() };
             tasks.AcceptTask(id);
-            return PartialView("Detail", tasks.FetchTask(id));
+            return Content("Done");
         }
 
         public ActionResult Detail(int id)
@@ -164,7 +164,6 @@ namespace CmsWeb.Areas.Main.Controllers
             var t = m.FetchTask(id);
             UpdateModel(t);
             t.UpdateTask();
-            t = m.FetchTask(id);
             return RedirectToAction("Detail", new {id = id});
         }
 

@@ -28,7 +28,7 @@ namespace CmsWeb.Areas.People.Models
                        AssignedTo = person.PreferredName,
                        AboutId = t.WhoId,
                        AssignedToId = (t.CoOwnerId ?? t.OwnerId),
-                       link = "/Task/List/" + t.Id + "#detail",
+                       link = "/Task/Detail/" + t.Id,
                        Desc = t.Description,
                        completed = t.CompletedOn
                    };

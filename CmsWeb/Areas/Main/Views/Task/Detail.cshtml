@@ -7,122 +7,156 @@
     ViewBag.Title = "Task Details";
     ViewBag.PageHeader = "Task Details";
 }
-@{var link = Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/List/" + Model.Id + "#detail#select"); }
+@{var link = Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/Detail/" + Model.Id); }
 <div class="row">
     <div class="col-sm-12 col-md-12 col-lg-8">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <h5>@Model.Description</h5>
                 <div class="box-tools">
-                    <a class="btn btn-default" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    <a class="btn btn-default" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            @if (Model.CanAccept)
+                            {
+                                <li><a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a></li>
+                            }
+                            @if (Model.CanComplete)
+                            {
+                                <li><a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a></li>
+                            }
+                            @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
+                            {
+                                <li><a href="#" class="completewcontact"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
+                            }
+                            @if (Model.IsAnOwner)
+                            {
+                                <li class="divider"></li>
+                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Assign / Change Regarding</a></li>
+                                <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
+                            }
+                            @if (Model.IsOwner)
+                            {
+                                <li class="divider"></li>
+                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">Transfer Ownership</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">Delegate Task</a></li>
+                            }
+                        </ul>
+                    </div>
                 </div>
             </div>
             <div class="box-content">
-                <form id="Edit" action="/Task/Update/">
-                    <div class="well">
-                        @if (Model.WhoId.HasValue)
-                        {
-                            <strong><a href="@Model.PersonUrl" style="font-size: 1.5em;">@Model.Who</a></strong> 
-                        }
-                        @if (Model.IsAnOwner)
-                        {
-                            <a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd">@Model.ChangeWho</a>
-                        }
-                        @if (Model.WhoId.HasValue)
-                        {
-                            <br/>
-                            <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
-                            <div>
-                                <a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a>
-                                | <a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">driving directions</a><br />
-                                <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
-                                | @Model.WhoPhone
-                            </div>
-                        }
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <dl>
-                                <dt>Owner</dt>
-                                <dd>
-                                    <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">@Model.Owner</a>
-                                    @if (Model.IsOwner)
-                                    {
-                                        <a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">(transfer)</a>
-                                    }
-                                </dd>
-                            </dl>
-                            <dl>
-                                <dt>Delegated To</dt>
-                                <dd>
-                                    @if (Model.CoOwnerId.HasValue)
-                                    {
-                                        <a href="mailto:@Model.CoOwnerEmail">@Model.CoOwner</a>
-                                    }
-                                    @if (Model.IsOwner)
-                                    {
-                                        <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">@Model.ChangeCoOwner</a>
-                                    }
-                                </dd>
-                            </dl>
-                            <dl>
-                                <dt>Status</dt>
-                                <dd>
-                                    <span class="edit-select" vid="Status" canedit="@Model.IsAnOwner">@Model.Status</span>
-                                    @if (Model.CanComplete)
-                                    {
-                                        <a href="#" class="complete" task="@Model.Id" style="font-size:120%">(complete)</a>
-                                    }
-                                    @if (Model.CanAccept)
-                                    {
-                                        <a href="#" class="accept" task="@Model.Id" style="font-size:120%">(accept)</a>
-                                    }
-                                    @if (Model.ShowCompleted)
-                                    {
-                                        <span style="font-size: smaller; color: Gray">@Model.CompletedOn.ToString2("f")</span>
-                                    }
-                                </dd>
-                            </dl>
+                @Html.Hidden("TaskId", Model.Id)
+                <div class="well">
+                    @if (Model.WhoId.HasValue)
+                    {
+                        <strong><a href="@Model.PersonUrl" style="font-size: 1.5em;">@Model.Who</a></strong> 
+                    }
+                    @if (Model.WhoId.HasValue)
+                    {
+                        <br/>
+                        <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
+                        <div>
+                            <a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a>
+                            | <a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">driving directions</a><br />
+                            <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
+                            | @Model.WhoPhone
                         </div>
-                        <div class="col-sm-6">
-                            <dl>
-                                <dt>Created Date</dt>
-                                <dd>@Model.CreatedOn.ToString("f")</dd>
-                            </dl>
-                            <dl>
-                                <dt>Due Date</dt>
-                                <dd>@Model.Due.ToString2("d")</dd>
-                            </dl>
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <dl>
+                            <dt>Owner</dt>
+                            <dd>
+                                <a href="mailto:@Model.OwnerEmail?subject=@Model.Description&body=@link">@Model.Owner</a>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>Delegated To</dt>
+                            <dd>
+                                @if (Model.CoOwnerId.HasValue)
+                                {
+                                    <a href="mailto:@Model.CoOwnerEmail">@Model.CoOwner</a>
+                                }
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>Status</dt>
+                            <dd>
+                                @Model.Status 
+                                @if (Model.ShowCompleted)
+                                {
+                                    <span>@Model.CompletedOn.ToString2("f")</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="col-sm-6">
+                        <dl>
+                            <dt>Created Date</dt>
+                            <dd>@Model.CreatedOn.ToString("f")</dd>
+                        </dl>
+                        <dl>
+                            <dt>Due Date</dt>
+                            <dd>@Model.Due.ToString2("d")</dd>
+                        </dl>
+                        @if (Model.Description != "New Person Data Entry")
+                        {
                             <dl>
                                 <dt>Completed Contact</dt>
                                 <dd>
                                     <a href="@Model.ContactUrl">@Model.CompletedContact.FormatDate()</a>
-                                    @if (Model.CanCompleteWithContact)
-                                    {
-                                        <a href="#" class="completewcontact">(complete)</a>
-                                    }
                                 </dd>
                             </dl>
-                        </div>
+                        }
+                        
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <dl>
-                                <dt>Notes</dt>
-                                <dd>@Html.Raw(Model.FmtNotes)</dd>
-                            </dl>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <dl>
+                            <dt>Notes</dt>
+                            <dd>@Html.Raw(Model.FmtNotes)</dd>
+                        </dl>
                     </div>
-                    @if (Model.IsAnOwner)
-                    {
-                        <a href="/Task/Edit/@Model.Id" class="btn btn-primary">Edit</a>
-                    }
-                    else
-                    {
-                        <a href="/Task/List" class="btn btn-primary">Return</a>
-                    }
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
+@section scripts{
+    <script type="text/javascript">
+        $(function() {
+            $("body").on("click", 'a.completewcontact', function (ev) {
+                ev.preventDefault();
+                var taskid = $('#TaskId').val();
+                $.post('/Task/CompleteWithContact/' + taskid, null, function(ret) {
+                    window.location = "/Contact2/" + ret.ContactId + "?edit=true";
+                });
+                return false;
+            });
+
+            $("body").on("click", 'a.complete', function (ev) {
+                ev.preventDefault();
+                var id = $('#TaskId').val();
+                $.post('/Task/SetComplete/' + id, null, function(ret) {
+                    window.location = "/Task/Detail/" + id;
+                });
+                return false;
+            });
+
+            $("body").on("click", 'a.accept', function (ev) {
+                ev.preventDefault();
+                var id = $('#TaskId').val();
+                $.post('/Task/Accept/' + id, null, function(ret) {
+                    window.location = "/Task/Detail/" + id;
+                });
+                return false;
+            });
+        });
+    </script>
+}

@@ -104,14 +104,6 @@ namespace CmsWeb.Models
     public class TaskDetail : TaskInfo
     {
         public string OwnerEmail { get; set; }
-        //public HtmlString TaskEmail
-        //{
-        //    get
-        //    {
-        //        return new HtmlString("mailto:{0}?subject={1}&body={3}/Task/List/{2}#detail#select")
-        //        .Fmt(OwnerEmail, Description, Id, DbUtil.Db.CmsHost);
-        //    }
-        //}
         public bool ForceCompleteWContact { get; set; }
         public string CoOwnerEmail { get; set; }
         public string WhoEmail
