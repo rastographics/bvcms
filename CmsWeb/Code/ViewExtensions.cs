@@ -741,7 +741,7 @@ namespace CmsWeb
         }
         public static HtmlString FontAwesome()
         {
-            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
+            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
         public static HtmlString CKEditor()
         {
