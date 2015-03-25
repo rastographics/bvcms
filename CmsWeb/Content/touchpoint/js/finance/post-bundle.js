@@ -374,7 +374,7 @@
             if (options.scroll == true) {
                 $('html,body').animate({ scrollTop: top }, 1000);
             }
-            tr.effect("highlight", { color: '#fcf8e3' }, 3000);
+            $(tr).children('td').effect("highlight", { color: '#fcf8e3' }, 3000);
             $("#gear").hide();
             initializePopovers();
             initializeEditable();
