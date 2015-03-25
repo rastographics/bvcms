@@ -89,13 +89,13 @@ namespace CmsWeb.Models
         public string Zip { get; set; }
         public string Country { get; set; }
 
-        public SelectList Countries
+        public IEnumerable<SelectListItem> Countries
         {
             get
             {
-                var list = CodeValueModel.GetCountryList().Where(c => c.Code != "NA").ToList();
-                list.Insert(0, new CodeValueItem() {Value = "(not specified)"});
-                return list.ToSelect("Value");
+                var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
+                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                return list;
             }
         }
 

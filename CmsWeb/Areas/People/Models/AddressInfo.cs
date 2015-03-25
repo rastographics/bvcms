@@ -159,11 +159,14 @@ namespace CmsWeb.Areas.People.Models
         {
             return CodeValueModel.ConvertToSelect(CodeValueModel.GetStateList(), "Code");
         }
-        public static SelectList Countries()
+        public static IEnumerable<SelectListItem> Countries
         {
-            var list = CodeValueModel.GetCountryList().ToList();
-            list.Insert(0, new CodeValueItem() { Value = "(not specified)" });
-            return list.ToSelect("Value");
+            get
+            {
+                var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
+                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                return list;
+            }
         }
 
         public AddressInfo()
