@@ -8,7 +8,7 @@
     $("#membergroups .update-smallgroup").live("click", function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
-        var msg = "This will add or remove everybody to/from this small group. Are you sure?";
+        var msg = "This will add or remove everybody to/from this sub-group. Are you sure?";
         bootbox.confirm(msg, function (confirmed) {
             if (confirmed)
                 $.post(href);

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Web;
 using CmsData;
@@ -78,7 +77,6 @@ namespace CmsWeb.Areas.People.Models
                     return q.OrderByDescending(a => a.AttendanceTypeId).ThenByDescending(a => a.MeetingDate);
                 case "Meeting":
                 default:
-                    return Pager.Direction == "asc"
                     if (!Direction.HasValue())
                         Direction = Future ? "asc" : "desc";
                     return Direction == "asc"
