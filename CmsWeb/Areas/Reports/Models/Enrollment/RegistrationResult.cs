@@ -71,6 +71,8 @@ namespace CmsWeb.Areas.Reports.Models
 				var re = new Regex("((?<label>.*?:) (?<value>.*$))|(?<value0>.*$)", RegexOptions.Multiline);
 				pageEvents.StartPageSet("Registration Report: {0:d}".Fmt(dt));
 				var q2 = DbUtil.Db.PeopleQuery(qid.Value);
+			    if (!oid.HasValue)
+			        oid = DbUtil.Db.CurrentOrgId;
 				var q = from p in q2
 						orderby p.Name2
 						select new

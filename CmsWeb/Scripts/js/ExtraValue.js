@@ -27,6 +27,7 @@
                     $("#ExtraValueBitPrefix").parent().parent().addClass('hide');
                     $("#ExtraValueCheckboxes").parent().parent().addClass('hide');
                     $("#ExtraValueCodes").parent().parent().addClass('hide');
+                    $("#ExtraValueLink").parent().parent().addClass('hide');
                     switch ($("#ExtraValueType_Value").val()) {
                         case "Code":
                             $("#ExtraValueCodes").parent().parent().removeClass('hide');
@@ -34,6 +35,9 @@
                         case "Bits":
                             $("#ExtraValueBitPrefix").parent().parent().removeClass('hide');
                             $("#ExtraValueCheckboxes").parent().parent().removeClass('hide');
+                            break;
+                        case "Link":
+                            $("#ExtraValueLink").parent().parent().removeClass('hide');
                             break;
                         case "Codes":
                             $("#ExtraValueCodes").parent().parent().removeClass('hide');

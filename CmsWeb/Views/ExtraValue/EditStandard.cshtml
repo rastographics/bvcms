@@ -1,5 +1,4 @@
-﻿@using System.Diagnostics.Eventing.Reader
-@using CmsWeb.Models.ExtraValues
+﻿@using CmsWeb.Models.ExtraValues
 @model NewExtraValueModel
 <form id='editextravalue-dialog' class='modal fade hide validate ajax form-horizontal' data-width='600'>
     <div class="modal-header">
@@ -22,6 +21,9 @@
                 break;
             case "Code":
                 @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { help = "Each code should be a short name on a separate line" })
+                break;
+            case "Link":
+                @Html.EditorFor(m => m.ExtraValueLink)
                 break;
         }
         @if (ViewBag.Error != null)

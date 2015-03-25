@@ -3,10 +3,16 @@
 @model CmsWeb.Models.ExtraValues.Value
 @if (Model.UserCanView(DbUtil.Db))
 {
+    var well = Model.Type == "Text2" ? "well" : "";
     <div style="display:table-row">
         @if (Model.Type == "Header")
         {
             <div class="cell"><b>@Html.Raw(Model.Name)</b></div>
+        }
+        else if (Model.Type == "Link")
+        {
+          <div class="nowrap cell width120 right"><span class="bold size11"></span></div>
+          <div class="margin-left @well">@Model.HyperLink()</div>
         }
         else
         {
@@ -15,7 +21,6 @@
             {
                 var dv = Model.DataValue;
                 var ds = Model.DataSource;
-                var well = Model.Type == "Text2" ? "well" : "";
                 <div class="margin-left @well">
                     <a href="#"
                        data-pk="@Model.Id"
@@ -30,7 +35,7 @@
             }
             else
             {
-                <div class="cell pad-left">tml.Raw(Model)</div>
+                <div class="cell pad-left">@Html.Raw(Model)</div>
             }
         }
     </div>

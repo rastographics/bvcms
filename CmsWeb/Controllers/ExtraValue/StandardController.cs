@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.ExtraValue;
@@ -22,12 +21,14 @@ namespace CmsWeb.Controllers
             var m = new NewExtraValueModel(table, name);
             return View(m);
         }
+        [ValidateInput(false)]
         [HttpPost, Route("ExtraValue/SaveEditedStandard")]
         public ActionResult SaveEditedStandard(NewExtraValueModel m)
         {
             var i = Views.GetViewsViewValue(DbUtil.Db, m.ExtraValueTable, m.ExtraValueName);
             i.value.VisibilityRoles = m.VisibilityRoles;
             i.value.Codes = m.ConvertToCodes();
+            i.value.Link = Server.HtmlEncode(m.ExtraValueLink);
             i.views.Save(DbUtil.Db);
             return View("EditStandard", m);
         }
@@ -47,6 +48,7 @@ namespace CmsWeb.Controllers
             return Content("ok");
         }
 
+        [ValidateInput(false)]
         [HttpPost, Route("ExtraValue/SaveNewStandard")]
         public ActionResult SaveNewStandard(NewExtraValueModel m)
         {
