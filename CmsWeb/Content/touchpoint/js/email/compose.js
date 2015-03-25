@@ -91,7 +91,7 @@
                 var taskid = ret.id;
                 if (taskid === 0) {
                     $.unblock();
-                    swal(ret);
+                    swal("Success!", ret.content, "success");
                 } else {
                     $("#send-actions").remove();
                     var intervalid = window.setInterval(function () {
