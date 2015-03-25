@@ -12,9 +12,11 @@ namespace CmsData.ExtraValue
         [XmlAttribute] public string Name { get; set; }
         [XmlAttribute] public string Type { get; set; }
         [XmlAttribute] public string VisibilityRoles { get; set; }
+        [XmlAttribute] public string Link { get; set; }
 
         [XmlElement("Code")]
         public List<string> Codes { get; set; }
+
 
         [XmlIgnore] public int Order;
         [XmlIgnore] public int Id;

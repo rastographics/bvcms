@@ -26,6 +26,12 @@ namespace CmsWeb.Models.ExtraValues
         public bool? ValueBit { get; set; }
         public int? ValueInt { get; set; }
 
+        public Guid CurrentPersonQueryId()
+        {
+            var qb = DbUtil.Db.QueryIsCurrentPerson();
+            return qb.QueryId;
+        }
+
         public ExtraValueModel(int id, string table)
             : this(id, table, null)
         {

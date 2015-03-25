@@ -39,7 +39,7 @@
                         <td>
                             <a href="/ExtraValue/EditStandard/@Model.Table?name=@Server.UrlEncode(f.Name)" class="extravalue btn btn-mini">Edit</a>
                         </td>
-                        <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@f.Name" 
+                        <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@Server.UrlEncode(f.Name)" 
                            class="dialog-options" 
                            data-target="/Dialog/DeleteStandardExtra"
                            data-callback="DeleteStandardCallback"

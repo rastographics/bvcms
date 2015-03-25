@@ -4,14 +4,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Add Organization</title>
+    @ViewExtensions2.NewStyles()
     @ViewExtensions2.jQueryUICss()
     @Fingerprint.Css("/content/styles/siteblue.css")
     @ViewExtensions2.OldStyles()
+    @ViewExtensions2.FontAwesome()
+    @ViewExtensions2.FixupsCss()
     @ViewExtensions2.jQuery()
+    @ViewExtensions2.Bootstrap()
     @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/jQuery/jquery-migrate-1.1.1.js")
-    @Fingerprint.Script("/Scripts/jQuery/jquery.blockUI.js")
-    @Html.Partial("DatePickerDefaults")
+    @ViewExtensions2.jqueryGlobalize()
+    @Fingerprint.Script("/Scripts/bundle.main2c.js")
+    @Html.Partial("DatePickerDefaults2")
 </head>
 <body>
 <form action="/AddOrganization/Submit/@Model.OrganizationId" method="post">

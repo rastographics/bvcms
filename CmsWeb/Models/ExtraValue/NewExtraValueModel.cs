@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Web;
 using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Code;
@@ -20,7 +21,7 @@ namespace CmsWeb.Models.ExtraValues
         public string ExtraValueTable { get; set; }
         public string ExtraValueLocation { get; set; }
 
-        [DisplayName("Name"), StringLength(20), Required]
+        [DisplayName("Name"), StringLength(50), Required]
         public string ExtraValueName { get; set; }
 
         [DisplayName("Type")]
@@ -31,6 +32,9 @@ namespace CmsWeb.Models.ExtraValues
 
         [DisplayName("Type")]
         public CodeInfo AdhocExtraValueType { get; set; }
+
+        [DisplayName("HyperLink")]
+        public string ExtraValueLink { get; set; }
 
         [DisplayName("Text Value")]
         public string ExtraValueTextBox { get; set; }
@@ -91,6 +95,7 @@ namespace CmsWeb.Models.ExtraValues
             ExtraValueName = name;
             ExtraValueTable = table;
             VisibilityRoles = f.VisibilityRoles;
+            ExtraValueLink = HttpUtility.HtmlDecode(f.Link);
             var codes = string.Join("\n", f.Codes);
             switch (ExtraValueType.Value)
             {
@@ -172,6 +177,7 @@ Option 2
                 Name = ExtraValueName,
                 VisibilityRoles = VisibilityRoles,
                 Codes = ConvertToCodes(),
+                Link = HttpUtility.HtmlEncode(ExtraValueLink)
             };
             var i = Views.GetViewsView(DbUtil.Db, ExtraValueTable, ExtraValueLocation);
             i.view.Values.Add(v);
