@@ -66,9 +66,5 @@
         });
         return false;
     });
-    $('form').submit(function () {
-        $.block();
-        return true;
-    });
 });
 
