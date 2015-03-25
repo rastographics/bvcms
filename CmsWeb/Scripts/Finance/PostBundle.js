@@ -312,7 +312,7 @@
             if (options.scroll == true) {
                 $('html,body').animate({ scrollTop: top }, 1000);
             }
-            tr.effect("highlight", {}, 3000);
+            $(tr).children('td').effect("highlight", {}, 3000);
         });
     };
     $('#searchDialog').dialog({
