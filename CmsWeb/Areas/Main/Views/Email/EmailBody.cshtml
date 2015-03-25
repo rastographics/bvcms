@@ -11,7 +11,14 @@
 </head>
 <body>
     <div id="tempateBody">
-        @Html.Raw(c.Body)
+        @if (c.Body == "<div bvedit=\"\" style=\"max-width:600px;\">Click here to edit content</div>\r\n")
+        {
+            <font face="Arial">@Html.Raw(c.Body)</font>
+        }
+        else
+        {
+            @Html.Raw(c.Body)
+        }
     </div>
     @ViewExtensions2.jQuery()
     <script type="text/javascript">
