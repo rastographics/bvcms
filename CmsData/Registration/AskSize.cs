@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using UtilityExtensions;
@@ -71,6 +72,7 @@ Display a dropdown of custom sizes. With each size you can:
 		{
 			public string Name { get; set; }
 			public string Description { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 
 			public void Output(StringBuilder sb)

@@ -333,8 +333,8 @@
     <RecentRegistrationType Title="Recent Registration Type" Type="Code" DisplayAs="RecentOrgJoinDate({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType" DataSource="RegistrationTypes99" DataValueField="IdCode">
       Select Registration Type from the list, enter the number of days to look back and select options: Program/Division/Organization, Org Type.
     </RecentRegistrationType>
-    <SmallGroup Title="In Small Group" Type="StringEqualOrStartsWith" DisplayAs="SmallGroup({0}, {1}, {2})" Params="Program,Division,Organization">
-      Enter all of part of a Small Group name, select a Comparison and select Program/Division/Organization.
+    <SmallGroup Title="In Sub-Group" Type="StringEqualOrStartsWith" DisplayAs="SubGroup({0}, {1}, {2})" Params="Program,Division,Organization">
+      Enter all of part of a Sub-Group name, select a Comparison and select Program/Division/Organization.
     </SmallGroup>
     <NumberOfMemberships Title="Number of Enrollments" Type="NullInteger" DisplayAs="NumEnrollments({0}, {1}, {2}, {3})" Params="Program,Division,Organization,Schedule">
       Enter a number of Enrollments, select a Comparison and select Program/Division/Organization.

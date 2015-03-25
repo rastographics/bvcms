@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -93,6 +94,7 @@ You can optionally associate a fee with one or more items.
 		{
 			public string Name { get; set; }
 			public string Description { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 			public decimal? Fee { get; set; }
 			public int? Limit { get; set; }

@@ -77,7 +77,7 @@ CKEDITOR.on('dialogDefinition', function (ev) {
         advancedTab.remove('advTabIndex');
 
         var relField = advancedTab.get('advRel');
-        relField.label = "SmallGroup";
+        relField.label = "Sub-Group";
         var titleField = advancedTab.get('advTitle');
         titleField.label = "Message";
         var idField = advancedTab.get('advLangCode');

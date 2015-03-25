@@ -19,7 +19,7 @@ And you can specify a maximum number they can check.
 
 For each checkbox, you can specify the following:
 
-* **SmallGroup** (required)
+* **Sub-Group** (required)
 * **Fee** (optional) for the selection.
 * **Limit** (optional) which limits the number of people allowed for a selection.
 * **DateTime** (optional) which registers them in a meeting.
@@ -114,6 +114,7 @@ For each checkbox, you can specify the following:
             }
             public string Name { get; set; }
             public string Description { get; set; }
+            [DisplayName("Sub-Group")]
             public string SmallGroup { get; set; }
             public decimal? Fee { get; set; }
             public int? Limit { get; set; }

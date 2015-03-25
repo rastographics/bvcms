@@ -107,6 +107,7 @@ namespace CmsData.Registration
 		public class AgeGroup
 		{
 			public int Id { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 			public int StartAge { get; set; }
 			public int EndAge { get; set; }

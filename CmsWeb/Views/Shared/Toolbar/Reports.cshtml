@@ -1,10 +1,11 @@
-﻿@using CmsWeb.Areas.Reports.Models
+﻿@using UtilityExtensions
+@using CmsWeb.Areas.Reports.Models
 @{
   var qid = ViewBag.queryid;
   var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
   var oid = ViewBag.oid;
-    var custom = (new CustomReportsModel(DbUtil.Db, oid)).ReportList().ToList();
-    var isAdmin = User.IsInRole("Admin") || User.IsInRole("Design");
+  var custom = (new CustomReportsModel(DbUtil.Db, oid)).ReportList().ToList();
+  var isAdmin = User.IsInRole("Admin") || User.IsInRole("Design");
 }
 <ul class="dropdown-menu dropdown-div-reports">
   <li>
@@ -30,7 +31,7 @@
         {
           <li class="header current-list pending-list orgcontext">Org Members Export</li>
           <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' class="qid" title="Includes Org Member info">Member Export</a></li>
-          <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' class="qid" title="Includes Org Member and Small Group columns">Groups Export</a></li>
+          <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' class="qid" title="Includes Org Member and Sub-Group columns">Sub-Groups Export</a></li>
           <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
         }
 

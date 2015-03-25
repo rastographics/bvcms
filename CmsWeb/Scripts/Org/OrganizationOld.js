@@ -501,7 +501,7 @@ $(function () {
         ev.preventDefault();
         var f = $(this).closest("form");
         $("#FilterGroups").dialog({
-            title: "Filter by Name, Small Groups",
+            title: "Filter by Name, Sub-Groups",
             width: "300px",
             buttons: [{
                 "text": 'Cancel',

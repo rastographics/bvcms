@@ -2818,8 +2818,6 @@
     <Content Include="Views\Shared\Reports.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Views\Shared\ExportToolBar.cshtml">
-    </Content>
     <Content Include="Web.test.config">
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>

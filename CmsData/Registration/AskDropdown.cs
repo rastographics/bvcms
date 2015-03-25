@@ -92,6 +92,7 @@ This will be presented as a dropdown selection.
 		{
 		    public string Name { get; set; }
 			public string Description { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 			public decimal? Fee { get; set; }
 			public int? Limit { get; set; }
