@@ -15,7 +15,7 @@ namespace CmsData.Registration
 Display a dropdown of custom sizes. With each size you can:
 
 * Associate a Fee
-* Put in a SmallGroup
+* Put in a Sub-Group
 * Adds an extra item to the sizes to indicate they will use last year's shirt.
 "; 
             }

@@ -16,7 +16,7 @@ namespace CmsData.Registration
             { return @"
 This will be presented as a dropdown selection.
 
-* **SmallGroup** Enters them in a smallgroup within the organization.
+* **SmallGroup** Enters them in a sub-group within the organization.
 * **Fee** (optional) for the selection.
 * **Limit** (optional) which limits the number of people allowed for a selection.
 * **DateTime** (optional) which registers them in a meeting.

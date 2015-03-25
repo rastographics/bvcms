@@ -13,7 +13,7 @@ namespace CmsData.Registration
 	        get 
             { return @"
 These are questions that will force a yes or no answer.
-The results will be in small groups with a Yes- or No- prepended to the name.
+The results will be in sub-groups with a Yes- or No- prepended to the name.
 "; 
             }
 	    }

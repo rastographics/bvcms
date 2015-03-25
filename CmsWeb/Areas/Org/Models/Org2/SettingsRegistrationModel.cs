@@ -240,7 +240,7 @@ A registrant must be in one of these organizations before registering.
 Use a comma separated list of OrgIds.
 ";
         private const string AgeGroupsDescription = @"
-This will put registrant in a small group based on their age,
+This will put registrant in a sub-group based on their age,
 with an optional age-based fee
 ";
         private const string GroupToJoinDescription = @"Joins registrant to another organization at the same time. ";
