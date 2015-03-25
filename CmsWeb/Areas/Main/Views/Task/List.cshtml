@@ -1,5 +1,6 @@
 ﻿@model CmsWeb.Models.TaskModel
 @using CmsWeb
+@using UtilityExtensions
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Tasks";
@@ -11,7 +12,7 @@
             <div class="box box-responsive">
                 <div class="box-title-btn">
                     <div class="box-tools">
-                        <button class="btn btn-default taskDelegate"><i class="fa fa-users"></i> Delegate 0 Task(s)</button> <button class="btn btn-danger taskDelete"><i class="fa fa-trash"></i> Delete 0 Task(s)</button> <a href="#" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Task</a>
+                        <button class="btn btn-default taskDelegate"><i class="fa fa-users"></i> Delegate 0 Task(s)</button> <button class="btn btn-danger taskDelete"><i class="fa fa-trash"></i> Delete 0 Task(s)</button> <a href="#" class="btn btn-success" id="addTask"><i class="fa fa-plus-circle"></i> Add Task</a>
                     </div>
                 </div>
                 <div class="box-content">
@@ -50,7 +51,41 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @Html.Partial("Rows", Model)
+                                    @if (Model.Count() == 0)
+                                    {
+                                        <tr id="nomatch">
+                                            <td colspan="6">No matching records.</td>
+                                        </tr>
+                                    }
+                                    @foreach (var t in Model.FetchTasks())
+                                    {
+                                        <tr id="r@(Model.Id)">
+                                            <td style="width: 5px;">
+                                                @if (t.IsAnOwner)
+                                                {
+                                                    <input type="checkbox" value="@t.Id" class="actionitem" />
+                                                }
+                                            </td>
+                                            <td>
+                                                <a href="/Task/Detail/@t.Id">@t.Description</a>
+                                            </td>
+                                            <td>
+                                                @if (t.WhoId.HasValue)
+                                                {
+                                                    <a href="/Person2/@t.WhoId">@t.Who</a>
+                                                }
+                                            </td>
+                                            <td>
+                                                @t.DueOrCompleted.FormatDate()
+                                            </td>
+                                            <td>
+                                                @t.Status
+                                            </td>
+                                            <td>
+                                                @t.DispOwner
+                                            </td>
+                                        </tr>
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -64,6 +99,27 @@
             </div>
             
         </form>
+    </div>
+</div>
+<div class="modal fade" id="new-task-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            @Html.Hidden("type", ViewData["type"])
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add New Task</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="description" class="control-label">Task</label>
+                    <input type="text" id="description" name="description" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <a href="#" id="newTaskSubmit" class="btn btn-primary">Submit</a>
+            </div>
+        </div>
     </div>
 </div>
 @section scripts

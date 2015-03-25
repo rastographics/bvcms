@@ -50,14 +50,11 @@
             </div>
             <div class="box-content">
                 @Html.Hidden("TaskId", Model.Id)
-                <div class="well">
-                    @if (Model.WhoId.HasValue)
-                    {
-                        <strong><a href="@Model.PersonUrl" style="font-size: 1.5em;">@Model.Who</a></strong> 
-                    }
-                    @if (Model.WhoId.HasValue)
-                    {
-                        <br/>
+                @if (Model.WhoId.HasValue)
+                {
+                    <div class="well">
+                        <strong><a href="@Model.PersonUrl" style="font-size: 1.5em;">@Model.Who</a></strong>
+                        <br />
                         <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
                         <div>
                             <a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a>
@@ -65,8 +62,8 @@
                             <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
                             | @Model.WhoPhone
                         </div>
-                    }
-                </div>
+                    </div>
+                }
                 <div class="row">
                     <div class="col-sm-6">
                         <dl>
@@ -123,6 +120,40 @@
                             <dd>@Html.Raw(Model.FmtNotes)</dd>
                         </dl>
                     </div>
+                </div>
+                <div class="visible-xs-block">
+                    <div class="btn-group btn-block">
+                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right btn-block">
+                            @if (Model.CanAccept)
+                            {
+                                <li><a href="#" class="accept"><i class="fa fa-thumbs-o-up fa-fw"></i>&nbsp;&nbsp;Accept Task</a></li>
+                            }
+                            @if (Model.CanComplete)
+                            {
+                                <li><a href="#" class="complete"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task</a></li>
+                            }
+                            @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
+                            {
+                                <li><a href="#" class="completewcontact"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
+                            }
+                            @if (Model.IsAnOwner)
+                            {
+                                <li class="divider"></li>
+                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Assign / Change Regarding</a></li>
+                                <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
+                            }
+                            @if (Model.IsOwner)
+                            {
+                                <li class="divider"></li>
+                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">Transfer Ownership</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">Delegate Task</a></li>
+                            }
+                        </ul>
+                    </div>
+                    <a class="btn btn-default btn-block" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
                 </div>
             </div>
         </div>

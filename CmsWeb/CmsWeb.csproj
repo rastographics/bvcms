@@ -2507,25 +2507,11 @@
     </Content>
     <Content Include="Areas\Finance\Views\PostBundle\Index.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Task\Columns.cshtml">
-    </Content>
     <Content Include="Areas\Main\Views\Task\Detail.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Detail2.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Task\Edit.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Task\List.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Row.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Rows.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Tabs.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\TabsOptions.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\TabsOptionsRows.cshtml">
     </Content>
     <Content Include="Areas\Search\Views\SearchAdd\NewPerson.cshtml">
     </Content>

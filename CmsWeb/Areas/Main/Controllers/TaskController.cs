@@ -28,13 +28,11 @@ namespace CmsWeb.Areas.Main.Controllers
             ViewData["Title"] = "Tasks";
         }
 
-        public ActionResult List(string id)
+        public ActionResult List()
         {
             var tasks = new TaskModel();
             UpdateModel(tasks);
             DbUtil.LogActivity("Tasks");
-            if (id == "0")
-                return PartialView("Rows", tasks);
             return View(tasks);
         }
 
@@ -60,40 +58,12 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Detail", tasks.FetchTask(id));
         }
 
-        public ActionResult Columns(int id)
-        {
-            var tasks = new TaskModel();
-            return PartialView(tasks.FetchTask(id));
-        }
-
-        public ActionResult Row(int id)
-        {
-            var tasks = new TaskModel();
-            return PartialView(tasks.FetchTask(id));
-        }
-
         [HttpPost]
-        public ActionResult AddTask(string CurTab, string TaskDesc)
-        {
-            var model = new TaskModel { CurTab = CurTab };
-            var listid = model.CurListId;
-            if (listid == 0)
-            {
-                listid = TaskModel.InBoxId(model.PeopleId);
-                var c = new HttpCookie("tasktab", model.CurTab);
-                c.Expires = Util.Now.AddDays(360);
-                Response.Cookies.Add(c);
-            }
-            var tid = model.AddTask(model.PeopleId, listid, TaskDesc);
-            return PartialView("Row", model.FetchTask(tid));
-        }
-
-        [HttpPost]
-        public ActionResult AddList(string ListName)
+        public ActionResult AddTask(string description)
         {
             var model = new TaskModel();
-            model.AddList(ListName);
-            return View("TabsOptions", model);
+            var tid = model.AddTask(model.PeopleId, 0, description);
+            return Content(tid.ToString());
         }
 
         [HttpPost]
@@ -140,7 +110,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     t.ForceCompleteWContact = true;
             }
             DbUtil.Db.SubmitChanges();
-            return PartialView("Rows", tasks);
+            return Content("Done");
         }
 
         [HttpPost]
@@ -174,26 +144,10 @@ namespace CmsWeb.Areas.Main.Controllers
             tasks.CurTab = curtab;
             var a = items.SplitStr(",").Select(i => i.ToInt());
 
-            if (option.StartsWith("M"))
-            {
-                var ToTab = option.Substring(1).ToInt();
-                if (curtab == "t" + ToTab)
-                    return new EmptyResult();
-                tasks.MoveTasksToList(a, ToTab);
-            }
-            else if (option == "deletelist")
-            {
-                tasks.DeleteList(curtab);
-                return PartialView("TabsOptionsRows", tasks);
-            }
-            else if (option == "delete")
+            if (option == "delete")
                 tasks.DeleteTasks(a);
-            else if (option.StartsWith("P"))
-                tasks.Priortize(a, option);
-            else if (option == "archive")
-                tasks.ArchiveTasks(a);
 
-            return PartialView("Rows", tasks);
+            return Content("Done");
         }
 
         public ActionResult NotesExcel2(Guid? id)

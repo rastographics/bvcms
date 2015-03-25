@@ -19,13 +19,10 @@
             <div class="box-content">
                 <form id="Edit" action="/Task/Update/@Model.Id" method="POST">
                     @Html.Hidden("TaskId", Model.Id)
-                    <div class="well">
-                        @if (Model.WhoId.HasValue)
-                        {
+                    @if (Model.WhoId.HasValue)
+                    {
+                        <div class="well">
                             <strong><a href="@Model.PersonUrl" style="font-size: 1.5em;">@Model.Who</a></strong>
-                        }
-                        @if (Model.WhoId.HasValue)
-                        {
                             <br />
                             <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
                             <div>
@@ -34,8 +31,8 @@
                                 <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
                                 | @Model.WhoPhone
                             </div>
-                        }
-                    </div>
+                        </div>
+                    }
                     <div class="row">
                         <div class="col-sm-4">
                             <div class="form-group">
@@ -69,7 +66,15 @@
                             </div>
                         </div>
                     </div>
-                    <a href="/Task/Detail/@Model.Id" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save</button>
+                    <div class="hidden-xs">
+                        <a href="/Task/Detail/@Model.Id" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                    <div class="visible-xs-block">
+                        <button type="submit" class="btn btn-primary btn-block">Save</button>
+                        <a href="/Task/Detail/@Model.Id" class="btn btn-default btn-block">Cancel</a>
+                        <hr/>
+                        <a class="btn btn-default btn-block" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    </div>
                 </form>
             </div>
         </div>
