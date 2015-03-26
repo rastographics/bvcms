@@ -264,15 +264,6 @@
         }
     }
 
-    $("body").on("click", 'a.pid', function (ev) {
-        if (!$(this).hasClass('searchadd')) {
-            event.preventDefault();
-            var d = $('#searchDialog');
-            $('iframe', d).attr("src", this.href);
-            d.dialog("open");
-        }
-    });
-
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                                             '<i class="fa fa-fw fa-check"></i>' +
                                         '</button>' +
@@ -380,23 +371,7 @@
             initializeEditable();
         });
     };
-    $('#searchDialog').dialog({
-        title: 'Search/Add Contributor',
-        bgiframe: true,
-        autoOpen: false,
-        width: 750,
-        height: 700,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            $('iframe', this).attr("src", "");
-        }
-    });
-    //$(".totalitems").text($("#titems").val());
-    //$("#totalcount").text($("#tcount").val());
-
+    
 
     $("#showmove").click(function (ev) {
         ev.preventDefault();
@@ -457,9 +432,8 @@
 });
 
 function AddSelected(ret) {
-    $('#searchDialog').dialog("close");
     var tr = $('tr[cid=' + ret.cid + ']');
     $('a.pid', tr).text(ret.pid);
-    $('td.name', tr).text(ret.name);
+    $('td.name span', tr).text(ret.name);
     $('a.edit', tr).click();
 }
