@@ -41,8 +41,7 @@ $(function () {
         }
         var f = $(this).closest("form");
         var url = this.href;
-        f.attr("action", url);
-
+        
         swal({
             title: "Are you sure?",
             type: "warning",
