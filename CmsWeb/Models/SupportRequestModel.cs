@@ -40,7 +40,7 @@ namespace CmsWeb.Models
         private readonly List<string> ccAddrs = new List<string>();
         public void SendSupportRequest()
         {
-            const string to = "support@bvcms.com";
+            const string to = "support@touchpointsoftware.com";
 
             var msg = CreateRequest("Support Request", to);
 
@@ -48,31 +48,31 @@ namespace CmsWeb.Models
             {
                 var c = Contact.AddContact(DbUtil.Db, Util.UserPeopleId.Value, DateTime.Now, "<p>{0}</p>{1}".Fmt(msg.Subject, body));
                 c.LimitToRole = "Admin";
-                c.MinistryId = Contact.FetchOrCreateMinistry(DbUtil.Db, "BVCMS Support").MinistryId;
+                c.MinistryId = Contact.FetchOrCreateMinistry(DbUtil.Db, "TouchPoint Support").MinistryId;
                 DbUtil.Db.SubmitChanges();
             }
 
             var smtp = Util.Smtp();
             smtp.Send(msg);
 
-            const string responseSubject = "Your BVCMS support request has been received";
-            const string responseBody = "Your support request has been received. We will respond to you as quickly as possible.<br><br>BVCMS Support Team";
+            const string responseSubject = "Your TouchPoint support request has been received";
+            const string responseBody = "Your support request has been received. We will respond to you as quickly as possible.<br><br>TouchPoint Support Team";
 
-            var response = new MailMessage("support@bvcms.com", Util.UserEmail, responseSubject, responseBody)
+            var response = new MailMessage("support@touchpointsoftware.com", Util.UserEmail, responseSubject, responseBody)
                 { IsBodyHtml = true };
 
             smtp.Send(response);
 
             if (DbUtil.AdminMail.Length > 0)
             {
-                var toAdmin = new MailMessage("support@bvcms.com", DbUtil.AdminMail, msg.Subject, Util.UserFullName + " submitted a support request to BVCMS:<br><br>" + body)
+                var toAdmin = new MailMessage("support@touchpointsoftware.com", DbUtil.AdminMail, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint:<br><br>" + body)
                     { IsBodyHtml = true };
                 smtp.Send(toAdmin);
             }
 
             foreach (var ccsend in ccAddrs)
             {
-                var toCC = new MailMessage("support@bvcms.com", ccsend, msg.Subject, Util.UserFullName + " submitted a support request to BVCMS and CCed you:<br><br>" + body)
+                var toCC = new MailMessage("support@touchpointsoftware.com", ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body)
                     { IsBodyHtml = true };
                 smtp.Send(toCC);
             }
@@ -81,7 +81,7 @@ namespace CmsWeb.Models
         public void MyDataSendSupportRequest()
         {
             var to = DbUtil.AdminMail;
-            var msg = CreateRequest("BVCMS MyData Request", to);
+            var msg = CreateRequest("TouchPoint MyData Request", to);
             var smtp = Util.Smtp();
             smtp.Send(msg);
         }
@@ -111,12 +111,12 @@ namespace CmsWeb.Models
                 cn.Execute(SupportUpdate, new { subject, id });
                 cn.Close();
             }
-            const string @from = "support-system@bvcms.com";
+            const string @from = "support-system@touchpointsoftware.com";
 
             var sb = new StringBuilder();
             sb.AppendFormat(@"<b>Request ID: {0}</b><br>
                             <b>Request By:</b> {1} ({2})<br>
-                            <b>Host:</b> https://{3}.bvcms.com<br>
+                            <b>Host:</b> https://{3}.touchpointsoftware.com<br>
                             ", id, Util.UserFullName, Util.UserEmail, Util.Host);
 
             if (!prefix.Contains("MyData"))
@@ -153,9 +153,9 @@ namespace CmsWeb.Models
                     catch (FormatException) { }
                 }
             }
-            msg.To.Add("support@bvcms.com");
+            msg.To.Add("support@touchpointsoftware.com");
             msg.ReplyToList.Add(who);
-            msg.ReplyToList.Add("support@bvcms.com");
+            msg.ReplyToList.Add("support@touchpointsoftware.com");
             msg.IsBodyHtml = true;
             msg.Headers.Add("X-BVCMS-SUPPORT", "request");
 

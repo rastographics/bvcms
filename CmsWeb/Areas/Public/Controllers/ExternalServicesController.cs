@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 DbUtil.Db.SubmitChanges();
 
-                DbUtil.Db.Email(DbUtil.AdminMail, check.User, "BVCMS Notification: Background Check Complete", "A scheduled background check has been completed for " + check.Person.Name);
+                DbUtil.Db.Email(DbUtil.AdminMail, check.User, "TouchPoint Notification: Background Check Complete", "A scheduled background check has been completed for " + check.Person.Name);
             }
 
             //System.IO.File.WriteAllText(@"C:\" + DateTime.Now.ToString("yyyyMMddHHmmssfff") + ".txt", req);

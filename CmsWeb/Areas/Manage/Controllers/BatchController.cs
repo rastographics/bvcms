@@ -535,7 +535,7 @@ There is no Undo button.");
 model.TestEmail = True
 model.EmailContent( 
 	'RecentMovedOutOfTown',
-	819918, 'karen@bvcms.com', 'Karen Worrell',
+	819918, 'karen@touchpointsoftware.com', 'Karen Worrell',
 	'RecentMovedOutOfTownMessage')
 model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.DateTime )
 ";
