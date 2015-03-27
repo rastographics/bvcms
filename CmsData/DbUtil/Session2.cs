@@ -23,6 +23,13 @@ namespace CmsData
             }
         }
 
+        public void SetCurrentOrgId(int? id)
+        {
+            if(CurrentOrg == null)
+                CurrentOrg = new CurrentOrg() { GroupSelect = Codes.GroupSelectCode.Member };
+            CurrentOrg.Id = id;
+        }
+
         public int? CurrentOrgId { get; set; }
 
         public int CurrentOrgId0

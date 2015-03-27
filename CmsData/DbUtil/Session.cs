@@ -23,9 +23,9 @@ namespace CmsData
         }
         public static void SetSessionObj(string key, object value)
         {
-                if (HttpContext.Current != null)
+            if (HttpContext.Current != null)
                 HttpContext.Current.Session[key] = value;
-            }
+        }
 
         public static string CurrentTag
         {
@@ -48,10 +48,10 @@ namespace CmsData
 
         const string STR_CurrentOrganization = "CurrentOrganization";
         public static CurrentOrg CurrentOrganization
-            {
+        {
             get { return (CurrentOrg)GetSessionObj(STR_CurrentOrganization, null); }
             set { SetSessionObj(STR_CurrentOrganization, value); }
-            }
+        }
 
         const string STR_ActiveGroupId = "ActiveGroup";
         public static int[] CurrentGroups
@@ -100,7 +100,7 @@ namespace CmsData
         {
             get { return GetSessionObj(STR_ActivePersonId, 0).ToInt(); }
             set { SetSessionObj(STR_ActivePersonId, value); }
-            }
+        }
         const string STR_FromMobile = "source";
         public static string FromMobile
         {
@@ -136,7 +136,7 @@ namespace CmsData
         {
             get { return (bool)GetSessionObj(STR_OrgMembersOnly, false); }
             set { SetSessionObj(STR_OrgMembersOnly, value); }
-            }
+        }
         public const string STR_OrgLeadersOnly = "OrgLeadersOnly";
         public static bool OrgLeadersOnly
         {
@@ -194,22 +194,22 @@ namespace CmsData
             }
         }
 
-//        public const string STR_MostRecentQueries = "MostRecentQueries";
-//        public static List<MostRecentItem> MostRecentQueries
-//        {
-//            get
-//            {
-//                var mru = (List<MostRecentItem>)GetSessionObj(STR_MostRecentQueries, null);
-//                if (mru == null)
-//                {
-//                    mru = (from i in DbUtil.Db.MostRecentItems(Util.UserId)
-//                           where i.Type == "query"
-//                           select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
-//                    HttpContext.Current.Session[STR_MostRecentQueries] = mru;
-//                }
-//                return mru;
-//            }
-//        }
+        //        public const string STR_MostRecentQueries = "MostRecentQueries";
+        //        public static List<MostRecentItem> MostRecentQueries
+        //        {
+        //            get
+        //            {
+        //                var mru = (List<MostRecentItem>)GetSessionObj(STR_MostRecentQueries, null);
+        //                if (mru == null)
+        //                {
+        //                    mru = (from i in DbUtil.Db.MostRecentItems(Util.UserId)
+        //                           where i.Type == "query"
+        //                           select new MostRecentItem() { Id = i.Id.Value, Name = i.Name }).ToList();
+        //                    HttpContext.Current.Session[STR_MostRecentQueries] = mru;
+        //                }
+        //                return mru;
+        //            }
+        //        }
         public static bool TargetLinkPeople
         {
             get
@@ -232,19 +232,19 @@ namespace CmsData
             //get { return UseNewOrg ? "/OrgMemberDialog" : "/OrgMemberDialog2"; }
         }
 
-//        const string STR_ActiveOrganizationId = "ActiveOrganizationId";
-//        public static int? CurrentOrgId
-//        {
-//            get
-//            {
-//                return GetSessionObj(STR_ActiveOrganizationId, null).ToInt2();
-//            }
-//            set
-//            {
-//                if (HttpContext.Current != null)
-//                    HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
-//            }
-//        }
+        //        const string STR_ActiveOrganizationId = "ActiveOrganizationId";
+        //        public static int? CurrentOrgId
+        //        {
+        //            get
+        //            {
+        //                return GetSessionObj(STR_ActiveOrganizationId, null).ToInt2();
+        //            }
+        //            set
+        //            {
+        //                if (HttpContext.Current != null)
+        //                    HttpContext.Current.Session[STR_ActiveOrganizationId] = value;
+        //            }
+        //        }
         public static bool UseNewFeature
         {
             get

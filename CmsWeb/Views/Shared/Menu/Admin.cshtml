@@ -75,9 +75,6 @@ l                        </ul>
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
     
-    var useneworg = Util2.UseNewOrg;
-    @Helper.LiAnchorLink("Use New Org is " + (useneworg ? "ON" : "OFF"), "/Home/UseNewOrg/" + useneworg, developer)
-    
     @Helper.LiHeader("Reports", admin)
     @Helper.LiAnchorLink("Registration History", "/RegistrationSearch", admin)
     @Helper.LiAnchorLink("Registration Summary", "/Reports/RegistrationSummary?days=90", admin)

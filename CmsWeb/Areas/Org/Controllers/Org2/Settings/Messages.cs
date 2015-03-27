@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Org2.Controllers
             Response.NoCache();
             var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
             DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
-            DbUtil.Db.CurrentOrg.Id = id;
+            DbUtil.Db.SetCurrentOrgId(id);
             DbUtil.Db.SubmitChanges();
             var o = DbUtil.Db.LoadOrganizationById(id);
             string notifyids = null;

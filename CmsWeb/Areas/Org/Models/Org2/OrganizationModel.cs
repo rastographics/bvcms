@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Org2.Models
         private void populate(int id)
         {
             Id = id;
-            DbUtil.Db.CurrentOrg.Id = id;
+            DbUtil.Db.SetCurrentOrgId(id);
             if (Org == null)
                 return;
             OrgMain = new OrgMain(Org);

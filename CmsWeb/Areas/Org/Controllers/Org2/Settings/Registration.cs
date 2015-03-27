@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Org2.Controllers
             if (Util.SessionTimedOut())
                 return Content("<script type='text/javascript'>window.onload = function() { parent.location = '/'; }</script>");
             Response.NoCache();
-            DbUtil.Db.CurrentOrg.Id = id;
+            DbUtil.Db.SetCurrentOrgId(id);
             var o = DbUtil.Db.LoadOrganizationById(id);
             Session["orgPickList"] = (o.OrgPickList ?? "").Split(',').Select(oo => oo.ToInt()).ToList();
             return Redirect("/SearchOrgs/" + id);
@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Org2.Controllers
         public ActionResult UpdateOrgIds(int id, string list)
         {
             var o = DbUtil.Db.LoadOrganizationById(id);
-            DbUtil.Db.CurrentOrg.Id = id;
+            DbUtil.Db.SetCurrentOrgId(id);
             var m = new Settings(o.RegSetting, DbUtil.Db, id);
             m.org = o;
             o.OrgPickList = list;

@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Org2.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult CopySettings()
         {
-            if (Util.SessionTimedOut() || DbUtil.Db.CurrentOrg.Id == 0)
+            if (Util.SessionTimedOut() || DbUtil.Db.CurrentOrgId0 == 0)
                 return Redirect("/");
             Session["OrgCopySettings"] = DbUtil.Db.CurrentOrg.Id;
             return Redirect("/OrgSearch/");
