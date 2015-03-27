@@ -364,6 +364,17 @@
                 $("#newName").val('').focus();
             });
 
+            var lastChecked = null;
+            $(document).on("click", "input[draft]", null, function (e) {
+                if (e.shiftKey && lastChecked !== null) {
+                    var start = $('input[draft]').index(this);
+                    var end = $('input[draft]').index(lastChecked);
+                    $('input[draft]').slice(Math.min(start, end), Math.max(start, end) + 1).prop("checked", true);
+                }
+                lastChecked = this;
+                checkChanged();
+            });
+
             $(document).on("change", "input[draft]", null, checkChanged);
 
             $("button.draftDelete").click(function (e) {

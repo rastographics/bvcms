@@ -128,7 +128,7 @@
                 if (e.shiftKey && lastChecked !== null) {
                     var start = $('input[type="checkbox"]').index(this);
                     var end = $('input[type="checkbox"]').index(lastChecked);
-                    $('input[type="checkbox"]').slice(Math.min(start, end), Math.max(start, end) + 1).attr('checked', lastChecked.checked);
+                    $('input[type="checkbox"]').slice(Math.min(start, end), Math.max(start, end) + 1).prop("checked", true);
                 }
 
                 lastChecked = this;

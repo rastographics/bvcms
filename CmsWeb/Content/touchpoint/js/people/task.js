@@ -49,6 +49,17 @@
         refreshList();
     });
 
+    var lastChecked = null;
+    $(document).on("click", "input.actionitem", null, function (e) {
+        if (e.shiftKey && lastChecked !== null) {
+            var start = $('input.actionitem').index(this);
+            var end = $('input.actionitem').index(lastChecked);
+            $('input.actionitem').slice(Math.min(start, end), Math.max(start, end) + 1).prop("checked", true);
+        }
+        lastChecked = this;
+        checkChanged();
+    });
+
     $(document).on("change", "input.actionitem", null, checkChanged);
 
     function checkChanged() {
