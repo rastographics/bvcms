@@ -27,13 +27,6 @@
         $("#search-add #Name").focus();
     });
 
-    //$.fn.loadWith = function (u, f) {
-    //    var c = $(this);
-    //    $.post(u, function (d) {
-    //        c.replaceWith(d).ready(f);
-    //    });
-    //};
-
     $('body').on('keydown', '#search-add input', function (ev) {
         if (ev.keyCode === 13) {
             ev.preventDefault();
@@ -115,9 +108,18 @@
             .off('hidden')
             .on("hidden", function (e) { e.stopPropagation(); })
             .collapse("show");
+
         tr.removeClass("notshown").addClass("shown");
         tr.find("i").removeClass("fa-caret-right").addClass("fa-caret-down");
     };
+
+    $('body').on('shown.bs.collapse', function () {
+        $.resizeModalBackDrop();
+    });
+
+    $('body').on('hidden.bs.collapse', function () {
+        $.resizeModalBackDrop();
+    });
 
     var $CollapseAll = function (tr) {
         tr.nextUntil("tr.section").find("div.collapse")

@@ -158,17 +158,7 @@
                         window.location = ret;
                     else if (isModal == true) {
                         $form.html(ret).ready(function () {
-                            // resize modal backdrop height.
-                            var dialog = $('.modal-dialog');
-                            var backdrop = $('.modal-backdrop');
-                            var height = dialog.innerHeight();
-
-                            $(backdrop).css({
-                                height: height + 60,
-                                minHeight: '100%',
-                                margin: 'auto'
-                            });
-                            
+                            $.resizeModalBackDrop();
                             $.AttachFormElements();
                             if (a.data("callback"))
                                 $.InitFunctions[a.data("callback")]();
@@ -194,6 +184,19 @@
             });
         }
         return false;
+    };
+
+    $.resizeModalBackDrop = function () {
+        // resize modal backdrop height.
+        var dialog = $('.modal-dialog');
+        var backdrop = $('.modal-backdrop');
+        var height = dialog.innerHeight();
+
+        $(backdrop).css({
+            height: height + 60,
+            minHeight: '100%',
+            margin: 'auto'
+        });
     };
 
     $.validator.addMethod("unallowedcode", function (value, element, params) {

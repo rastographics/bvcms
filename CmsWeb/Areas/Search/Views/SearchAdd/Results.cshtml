@@ -40,19 +40,20 @@
                                 <tr class="master @oddrow">
                                     @if (Model.OnlyOne)
                                     {
-                                        <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                                        <td><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
+                                        <td style="border-bottom: none;"><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
+                                        <td style="border-bottom: none;"><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
                                     }
                                     else
                                     {
-                                        <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                                        <td><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
+                                        <td style ="border-bottom: none;"><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
+                                        <td style="border-bottom: none;"><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
                                     }
                                     <td class="addrcol" title="click for more info">@c.Address</td>
                                     <td>@c.Age</td>
                                 </tr>
                                 <tr class="details @oddrow">
-                                    <td colspan="4">
+                                    <td style="padding-top: 0; padding-bottom: 0; border-top: none;"></td>
+                                    <td colspan="3" style="padding-top: 0; padding-bottom: 0; border-top: none;">
                                         <div class="indent collapse">
                                             @c.ToolTip
                                         </div>
