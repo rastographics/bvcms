@@ -9,13 +9,6 @@
         </div>
         <div class="modal-body">
             <div class="row">
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <a class="helplink btn btn-info btn-sm" target="_blank" href="@Model.HelpLink("NewFamily")"><i class="fa fa-question-circle"></i> Help</a>
-                    </div>
-                </div>
-                <br/>
-                <br/>
                 @Html.EditorFor(m => m, "HiddenSearch")
                 @Html.EditorFor(m => m, "HiddenMeta")
                 @{  var n = 0;

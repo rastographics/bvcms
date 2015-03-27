@@ -8,11 +8,6 @@
         <div class="modal-body">
             <div class="row">
                 <div class="col-sm-12">
-                    <div class="pull-right">
-                        <a class="helplink btn btn-info btn-sm" target="_blank" href="@Model.HelpLink("PendingList")"><i class="fa fa-question-circle"></i> Help</a>
-                    </div>
-                </div>
-                <div class="col-sm-12">
                     @Html.EditorFor(m => m, "HiddenSearch")
                     @Html.EditorFor(m => m, "HiddenMeta")
                     @Html.EditorFor(m => m, "HiddenPeople")
