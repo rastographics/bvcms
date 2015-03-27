@@ -1,38 +1,50 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
 @using CmsWeb
 @using UtilityExtensions
-<div class="modal-header">
-    <a class="close" data-dismiss="modal">×</a>
-    <h3>Add Address for New Family</h3>
-</div>
-<div class="modal-body">
-    <a class="helplink pull-right" target="_blank" href='@Model.HelpLink("NewFamily")'>help</a>
-    <fieldset class="display">
-        @Html.EditorFor(m => m, "HiddenSearch")
-        @Html.EditorFor(m => m, "HiddenMeta")
-        @{  var n = 0;
-            for (n = 0; n < Model.PendingList.Count - 1; n++)
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Add Address for New Family</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <a class="helplink btn btn-info btn-sm" target="_blank" href="@Model.HelpLink("NewFamily")"><i class="fa fa-question-circle"></i> Help</a>
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                @Html.EditorFor(m => m, "HiddenSearch")
+                @Html.EditorFor(m => m, "HiddenMeta")
+                @{  var n = 0;
+                  for (n = 0; n < Model.PendingList.Count - 1; n++)
+                  {
+                    @Html.EditorFor(m => m.PendingList[n], "HiddenPerson")
+                    @Html.EditorFor(m => m.PendingList[n], "HiddenAddress")
+                  }
+                }
+                @Html.EditorFor(m => Model.PendingList[n], "HiddenPerson")
+                @Html.EditorFor(m => Model.PendingList[n], "Address")
+                @{ var p = Model.PendingList[n]; }
+                @Html.Raw(p.AddressInfo.Error)
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="pull-left">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel All</a>
+            </div>
+            <a href="/SearchAdd2/CancelPerson/@n" class="btn btn-default ajax">Cancel Person</a>
+            @if (p.AddressInfo.Error.HasValue())
             {
-            @Html.EditorFor(m => m.PendingList[n], "HiddenPerson")
-            @Html.EditorFor(m => m.PendingList[n], "HiddenAddress")
+                <a href="/SearchAdd2/AddNewAddress/NoCheck" class="btn btn-danger ajax">Skip Address Check</a>
+                <a href="/SearchAdd2/AddNewAddress" class="btn btn-primary ajax validate">Submit Again</a>
             }
-        }
-        @Html.EditorFor(m => Model.PendingList[n], "HiddenPerson")
-        @Html.EditorFor(m => Model.PendingList[n], "Address")
-    </fieldset>
-    @{ var p = Model.PendingList[n]; }
-    @Html.Raw(p.AddressInfo.Error)
-</div>
-<div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Cancel All</a>
-    <a href="/SearchAdd2/CancelPerson/@n" class="btn ajax">Cancel Person</a>
-    @if (p.AddressInfo.Error.HasValue())
-    {
-        <a href="/SearchAdd2/AddNewAddress/NoCheck" class="btn btn-danger ajax">Skip Address Check</a>
-        <a href="/SearchAdd2/AddNewAddress" class="btn btn-primary ajax validate">Submit Again</a>
-    }
-    else
-    {
-        <a href="/SearchAdd2/AddNewAddress" class="btn btn-primary ajax validate">Submit</a>
-    }
+            else
+            {
+                <a href="/SearchAdd2/AddNewAddress" class="btn btn-primary ajax validate">Submit</a>
+            }
+        </div>
+    </div>
 </div>

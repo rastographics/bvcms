@@ -3,16 +3,24 @@
     var help = ViewData["help"] as string;
     if (help.HasValue())
     {
-        help = "<label class='help-inline'>{0}</label>".Fmt(help);
+        help = "<span class='help-block'>{0}</span>".Fmt(help);
+    }
+
+    var isoDateString = string.Empty;
+    DateTime isoDate;
+    if (DateTime.TryParse(Model, out isoDate))
+    {
+        isoDateString = isoDate.ToString("yyyy-MM-dd");
     }
 }
-<div class="control-group">
-    @Html.LabelFor(m => m, new { @class="control-label"})
+<div class="form-group">
+    @Html.LabelFor(m => m, new { @class = "control-label" })
     <div class="controls">
-        <div class="input-append date">
-            @Html.TextBoxFor2(m => m, true)
-            <span class="add-on"><i class="fa fa-calendar"></i></span>@Html.Raw(help)
+        <div class="input-group date">
+            @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+            @Html.Hidden("{0}{1}".Fmt(Html.IdFor(m => m), "Iso"), isoDateString, new { disabled = "disabled" })
         </div>
+        @Html.Raw(help)
         @Html.ValidationMessageLabelFor(m => m)
     </div>
 </div>

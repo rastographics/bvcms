@@ -67,7 +67,7 @@
         <div class="device-sm visible-sm-block"></div>
         <div class="device-xs visible-xs-block"></div>
         <div class="device-xss"></div>
-        <div class="modal fade" id="empty-dialog"></div>
+        <div class="modal fade" id="empty-dialog" data-keyboard='false' data-backdrop='static'></div>
         @ViewExtensions2.jQuery()
         @ViewExtensions2.LoDash()
         @ViewExtensions2.Bootstrap3()
@@ -86,6 +86,7 @@
         @Fingerprint.Script("/Content/touchpoint/js/main.js")
         @Fingerprint.Script("/Content/touchpoint/js/export-toolbar.js")
         @Fingerprint.Script("/Content/touchpoint/js/form-ajax.js")
+        @Fingerprint.Script("/Content/touchpoint/js/search/search-add.js")
         <script type="text/javascript">
             $.dateFormat = '@Util.jQueryDateFormat';
         </script>

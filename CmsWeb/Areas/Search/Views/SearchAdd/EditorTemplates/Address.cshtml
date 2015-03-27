@@ -1,15 +1,28 @@
 ﻿@model CmsWeb.Areas.Search.Models.PendingPersonModel
-<div class="control-group">
-    <label class="control-label">For</label>
-    <div class="controls">
-        <p>@Model.FirstName @Model.LastName</p>
+<div class="col-sm-12">
+    <div class="well">
+        <strong><span style="font-size: 1.5em;">@Model.FirstName @Model.LastName</span></strong>
     </div>
 </div>
-@Html.EditorFor(m => m.HomePhone)
-@Html.EditorFor(m => m.AddressInfo.AddressLineOne)
-@Html.EditorFor(m => m.AddressInfo.AddressLineTwo)
-@Html.EditorFor(m => m.AddressInfo.CityName)
-@Html.EditorFor(m => m.AddressInfo.StateCode)
-@Html.EditorFor(m => m.AddressInfo.ZipCode)
-@Html.EditorFor(m => m.AddressInfo.Country)
+<div class="col-sm-6">
+    @Html.EditorFor(m => m.AddressInfo.AddressLineOne)
+</div>
+<div class="col-sm-6">
+    @Html.EditorFor(m => m.AddressInfo.AddressLineTwo)
+</div>
+<div class="col-sm-4">
+    @Html.EditorFor(m => m.AddressInfo.CityName)
+</div>
+<div class="col-sm-4">
+    @Html.EditorFor(m => m.AddressInfo.StateCode)
+</div>
+<div class="col-sm-4">
+    @Html.EditorFor(m => m.AddressInfo.ZipCode)
+</div>
+<div class="col-sm-5">
+    @Html.EditorFor(m => m.HomePhone)
+</div>
+<div class="col-sm-7">
+    @Html.EditorFor(m => m.AddressInfo.Country)
+</div>
 @Html.EditorFor(m => m.AddressInfo.ResCode, "HiddenCodeInfo")

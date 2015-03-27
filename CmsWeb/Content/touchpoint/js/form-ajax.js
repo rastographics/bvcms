@@ -139,12 +139,15 @@
         if (data.length === 0)
             data = {};
         if (!a.hasClass("validate") || $form.valid()) {
+            var isModal = $form.hasClass("modal-form");
+
             $.ajax({
                 type: 'POST',
                 url: url,
                 data: data,
                 beforeSend: function () {
-                    $.block();
+                    if (isModal == false)
+                        $.block();
                 },
                 complete: function () {
                     $.unblock();
@@ -153,13 +156,19 @@
                     $.unblock();
                     if (a.data("redirect"))
                         window.location = ret;
-                    else if ($form.hasClass("modal")) {
+                    else if (isModal == true) {
                         $form.html(ret).ready(function () {
-                            $form.removeClass("hide");
-                            var top = ($(window).height() - $form.height()) / 2;
-                            if (top < 10)
-                                top = 10;
-                            $form.css({ 'margin-top': top, 'top': '0' });
+                            // resize modal backdrop height.
+                            var dialog = $('.modal-dialog');
+                            var backdrop = $('.modal-backdrop');
+                            var height = dialog.innerHeight();
+
+                            $(backdrop).css({
+                                height: height + 60,
+                                minHeight: '100%',
+                                margin: 'auto'
+                            });
+                            
                             $.AttachFormElements();
                             if (a.data("callback"))
                                 $.InitFunctions[a.data("callback")]();

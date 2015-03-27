@@ -1,7 +1,7 @@
 ﻿@using CmsWeb.Code
 @model CodeInfo
 @{
-    var attributes = ViewData["PlainSelect"] != null ? new { plain = "true" } : null;
+    var attributes = ViewData["PlainSelect"] != null ? new { plain = "true", @class = "form-control" } : null;
 }
 <div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label" })

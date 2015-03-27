@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Results(int? page, int? size, string sort, string dir, SearchAddModel m)
         {
             DbUtil.Db.SetNoLock();
-            m.Pager.Set("/SearchAdd2/Results", page ?? 1, size ?? 15, "na", "na");
+            m.Pager.Set("/SearchAdd2/Results", page ?? 1, size ?? 10, "na", "na");
             ModelState.Clear();
             return View(m);
         }
@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult ResultsFamily(int? page, int? size, string sort, string dir, SearchAddModel m)
         {
             DbUtil.Db.SetNoLock();
-            m.Pager.Set("/SearchAdd2/ResultsFamily", page ?? 1, size ?? 15, "na", "na");
+            m.Pager.Set("/SearchAdd2/ResultsFamily", page ?? 1, size ?? 10, "na", "na");
             ModelState.Clear();
             return View(m);
         }

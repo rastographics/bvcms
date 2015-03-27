@@ -88,10 +88,10 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
-        [DisplayName("Addr Line 1"), RemoveNA]
+        [DisplayName("Address Line 1"), RemoveNA]
         public string AddressLineOne { get; set; }
 
-        [DisplayName("Addr Line 2"), RemoveNA]
+        [DisplayName("Address Line 2"), RemoveNA]
         public string AddressLineTwo { get; set; }
 
         [RemoveNA]

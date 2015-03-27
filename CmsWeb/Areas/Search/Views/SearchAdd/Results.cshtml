@@ -1,93 +1,94 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
 @{ var rownum = 0; }
-<div class="modal-header">
-    <a class="close" data-dismiss="modal">×</a>
-    <h3>Individual Search Results</h3>
-</div>
-<div class="modal-body">
-    <a class="helplink pull-right" target="_blank" href='@Model.HelpLink("Results")'>help</a>
-    <p>
-        Click a Name below to Select that Person
-    </p>
-    @if (Model.Count() == 0)
-    {
-        <div class="alert">
-            <h5>No Matching Records</h5>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Individual Search Results</h4>
         </div>
-    }
-    else
-    {
-        <table id="people" class="table expanding table-condensed table-hover">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Name</th>
-                    <th>Address</th>
-                    <th>Age</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="section notshown">
-                    <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
-                    <td colspan="3"><span>Toggle Details Display</span></td>
-                </tr>
-                @foreach (var c in Model.ViewList())
+        <div class="modal-body">
+            <div class="alert alert-info">
+                <div class="pull-right">
+                    <a class="helplink btn btn-info btn-sm" target="_blank" href="@Model.HelpLink("Results")" style="margin-top: -5px;"><i class="fa fa-question-circle"></i> Help</a>
+                </div>
+                Click a Name below to Select that Person
+            </div>
+            @if (Model.Count() == 0)
+            {
+                <div class="alert">
+                    <h5>No Matching Records</h5>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table id="people" class="table expanding table-condensed table-hover">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                                <th>Address</th>
+                                <th>Age</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="section notshown">
+                                <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
+                                <td colspan="3"><span>Toggle Details Display</span></td>
+                            </tr>
+                            @foreach (var c in Model.ViewList())
+                            {
+                                rownum++;
+                                var oddrow = rownum % 2 == 0 ? "oddrow" : "";
+                                <tr class="master @oddrow">
+                                    @if (Model.OnlyOne)
+                                    {
+                                        <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
+                                        <td><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
+                                        <td><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
+                                    }
+                                    <td class="addrcol" title="click for more info">@c.Address</td>
+                                    <td>@c.Age</td>
+                                </tr>
+                                <tr class="details @oddrow">
+                                    <td colspan="4">
+                                        <div class="indent collapse">
+                                            @c.ToolTip
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @Html.Partial("PagerBottom", Model.Pager)
+            }
+            @Html.EditorFor(m => m, "HiddenSearch")
+            @Html.EditorFor(m => m, "HiddenMeta")
+            @Html.EditorFor(m => m, "HiddenPeople")
+        </div>
+        <div class="modal-footer">
+            <a href="/SearchAdd2/SearchPerson" class="btn btn-default ajax"><i class="fa fa-arrow-circle-left"></i> Refine your Search</a>
+            @if (Model.PendingList.Count > 0)
+            {
+                <a href="/SearchAdd2/CancelSearch" class="btn btn-default ajax">List</a>
+            }
+            @if (!Model.OnlyOne)
+            {
+                if (Model.AddContext == "Family")
                 {
-                    rownum++;
-                    var oddrow = rownum % 2 == 0 ? "oddrow" : "";
-                    <tr class="master @oddrow">
-                        @if (Model.OnlyOne)
-                        {
-                            <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                            <td><a href="/SearchAdd2/Select/@c.PeopleId" class="commit">@c.Name</a></td>
-                        }
-                        else
-                        {
-                            <td><a rel="reveal" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-                            <td><a href="/SearchAdd2/Select/@c.PeopleId" class="ajax">@c.Name</a></td>
-                        }
-                        <td class="addrcol" title="click for more info">@c.Address</td>
-                        <td>@c.Age</td>
-                    </tr>
-                    <tr class="details @oddrow">
-                        <td colspan="4">
-                            <div class="indent collapse">
-                                @c.ToolTip
-                            </div>
-                        </td>
-                    </tr>
+                    <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax"><i class="fa fa-plus-circle"></i> Add New Person</a>
                 }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4">
-                        <div class="pagination pagination-mini">
-                            @Html.Partial("Pager3", Model.Pager)
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    }
-    @Html.EditorFor(m => m, "HiddenSearch")
-    @Html.EditorFor(m => m, "HiddenMeta")
-    @Html.EditorFor(m => m, "HiddenPeople")
+                else
+                {
+                    <a href="/SearchAdd2/SearchFamily" class="btn btn-primary ajax">Search for Family</a>
+                }
+            }
+        </div>
+    </div>
 </div>
-<div class="modal-footer">
-    <a href="/SearchAdd2/SearchPerson" class="btn ajax">Refine your Search</a>
-    @if (Model.PendingList.Count > 0)
-    {
-    <a href="/SearchAdd2/CancelSearch" class="btn ajax">List</a>
-    }
-    @if (!Model.OnlyOne)
-    {
-        if (Model.AddContext == "Family")
-        {
-        <a href="/SearchAdd2/NewPerson/0" class="btn btn-success ajax">Add New Person</a>
-        }
-        else
-        {
-        <a href="/SearchAdd2/SearchFamily" class="btn btn-primary ajax">Search for Family</a>
-        }
-    }
-</div>
+
