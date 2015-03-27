@@ -65,6 +65,11 @@
         }
     }
 
+    $('button.taskDelegate').click(function (ev) {
+        ev.preventDefault();
+        $("#delegateall").click();
+    });
+
     $('button.taskDelete').click(function (ev) {
         ev.preventDefault();
 
@@ -99,8 +104,28 @@
         var q = $('#form').serialize();
         $.navigate("/Task/List", q);
     };
-    
+
     $("#OwnerOnly").click(refreshList);
     $("#StatusId").change(refreshList);
     checkChanged();
 });
+
+function AddSelected(ret) {
+    if (ret.how === "addselected2")
+        return AddSelected2(ret);
+    ActOnPerson(ret.url, ret.pid);
+}
+function AddSelected2(ret) {
+    var ai = $(".actionitem:checked").getCheckboxVal().join(",");
+    var qs = "items=" + ai;
+    $.post('/Task/DelegateAll/' + ret.pid, qs, function (ret) {
+        $('#tasks > tbody').html(ret);
+    });
+}
+
+function ActOnPerson(action, peopleid) {
+    var taskid = $('#TaskId').val();
+    $.post(action + taskid + "?peopleid=" + peopleid, null, function (ret) {
+        $('#r' + taskid).html(ret);
+    });
+}

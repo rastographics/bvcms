@@ -30,7 +30,7 @@
                             }
                             @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
                             {
-                                <li><a href="#" class="completewcontact"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
+                                <li><a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
                             }
                             @if (Model.IsAnOwner)
                             {
@@ -41,7 +41,7 @@
                             @if (Model.IsOwner)
                             {
                                 <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">Transfer Ownership</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
                                 <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">Delegate Task</a></li>
                             }
                         </ul>
@@ -57,10 +57,28 @@
                         <br />
                         <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
                         <div>
-                            <a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a>
-                            | <a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">driving directions</a><br />
-                            <a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
-                            | @Model.WhoPhone
+                            <ul class="list-inline">
+                                <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
+                                <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
+                            </ul>
+                            @if (!string.IsNullOrWhiteSpace(Model.WhoEmail2) && !string.IsNullOrWhiteSpace(Model.WhoPhone))
+                            {
+                                <ul class="list-inline">
+                                    <li><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;<a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a></li>
+                                    <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a></li>
+                                </ul>
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrWhiteSpace(Model.WhoEmail2))
+                                {
+                                    <i class="fa fa-envelope-o"></i><text>&nbsp;&nbsp;</text><a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
+                                }
+                                if (!string.IsNullOrWhiteSpace(Model.WhoPhone))
+                                {
+                                    <i class="fa fa-phone"></i><text>&nbsp;&nbsp;</text><a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
+                                }
+                            }
                         </div>
                     </div>
                 }
@@ -137,7 +155,7 @@
                             }
                             @if (Model.CanCompleteWithContact && Model.Description != "New Person Data Entry")
                             {
-                                <li><a href="#" class="completewcontact"><i class="fa fa-check fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
+                                <li><a href="#" class="completewcontact"><i class="fa fa-check-square-o fa-fw"></i>&nbsp;&nbsp;Complete Task w/ Contact</a></li>
                             }
                             @if (Model.IsAnOwner)
                             {
@@ -148,7 +166,7 @@
                             @if (Model.IsOwner)
                             {
                                 <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">Transfer Ownership</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
                                 <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">Delegate Task</a></li>
                             }
                         </ul>
@@ -188,6 +206,17 @@
                 });
                 return false;
             });
+
         });
+
+        function AddSelected(ret) {
+            ActOnPerson(ret.url, ret.pid);
+        }
+        function ActOnPerson(action, peopleid) {
+            var id = $('#TaskId').val();
+            $.post(action + id + "?peopleid=" + peopleid, null, function (ret) {
+                window.location = "/Task/Detail/" + id;
+            });
+        }
     </script>
 }

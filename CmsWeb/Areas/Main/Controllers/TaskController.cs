@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.Main.Controllers
                     t.ForceCompleteWContact = true;
             }
             DbUtil.Db.SubmitChanges();
-            return Content("Done");
+            return PartialView("Rows", tasks);
         }
 
         [HttpPost]
@@ -147,7 +147,7 @@ namespace CmsWeb.Areas.Main.Controllers
             if (option == "delete")
                 tasks.DeleteTasks(a);
 
-            return Content("Done");
+            return PartialView("Rows", tasks);
         }
 
         public ActionResult NotesExcel2(Guid? id)

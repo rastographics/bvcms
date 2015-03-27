@@ -116,7 +116,7 @@ namespace CmsWeb.Models
             {
                 if (who != null && who.EmailAddress.HasValue())
                     return who.EmailAddress;
-                return "no email";
+                return string.Empty;
             }
         }
         public string ContactUrl
