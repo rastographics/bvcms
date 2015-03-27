@@ -14,7 +14,7 @@ namespace CmsCheckin
 		private const int MAX_TRIES = 360;
 
 		private DateTime dtLastPrint;
-		private const int INT_count = 10;
+		private const int INT_count = 5;
 
 		private int triesLeft;
 

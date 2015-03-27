@@ -5,6 +5,7 @@ using System.Xml.Linq;
 using System.Drawing.Printing;
 using CmsCheckin.Classes;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace CmsCheckin
 {
@@ -127,7 +128,7 @@ namespace CmsCheckin
 			Program.PrinterHeight = PrinterHeight.Text;
 			Program.DisableLocationLabels = DisableLocationLabels.Checked;
 			Program.AdminPIN = AdminPIN.Text;
-			
+
 			if (BuildingAccessMode.Checked == true)
 			{
 				try
@@ -205,14 +206,26 @@ namespace CmsCheckin
 		private void Login_Load(object sender, EventArgs e)
 		{
 			password.Focus();
+
 			var prtdoc = new PrintDocument();
 			var defp = prtdoc.PrinterSettings.PrinterName;
-			foreach (var s in PrinterSettings.InstalledPrinters)
-				Printer.Items.Add(s);
+			var printerList = new List<string>();
 
-			Printer.SelectedIndex = Printer.FindStringExact(defp);
-			if (Settings1.Default.Printer.HasValue())
+			for (int i = 0; i < PrinterSettings.InstalledPrinters.Count; i++)
+			{
+				printerList.Add(PrinterSettings.InstalledPrinters[i]);
+				Printer.Items.Add(PrinterSettings.InstalledPrinters[i]);
+			}
+
+			if (printerList.Contains(Settings1.Default.Printer))
+			{
 				Printer.SelectedIndex = Printer.FindStringExact(Settings1.Default.Printer);
+			}
+			else
+			{
+				Printer.SelectedIndex = Printer.FindStringExact(defp);
+			}
+
 			DisableLocationLabels.Checked = Settings1.Default.DisableLocationLabels;
 			BuildingAccessMode.Checked = Settings1.Default.BuildingMode;
 			URL.Text = Settings1.Default.URL;
@@ -262,6 +275,16 @@ namespace CmsCheckin
 				PrintKiosks.Enabled = false;
 				label12.Enabled = false;
 				label1.Enabled = false;
+			}
+
+			if (Settings1.Default.PopupForVersion < 1)
+			{
+				MessageBox.Show("The Check-In program has been updated,\nplease verify the following settings:\n\n" +
+					"Login Page\n\n- Server name (e.g. <yourchurch>.tpsdb.com)\n- Username\n- Password\n- Printer\n- Advanced Page Size (Optional)\n\n" +
+					"Settings Page\n\n- Campus\n- Early Checkin Hours\n- Late Checkin Minutes\n- Checkboxes at the bottom", "New Version", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+				Settings1.Default.PopupForVersion = 1;
+				Settings1.Default.Save();
 			}
 		}
 
