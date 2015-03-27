@@ -1,22 +1,30 @@
-﻿@using CmsWeb
-@model CmsWeb.Areas.Dialog.Models.OrgMembersDialogModel
+﻿@model CmsWeb.Models.OrgMembersDialogModel
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
     <title>Index</title>
+    @ViewExtensions2.GoogleFonts()
     @ViewExtensions2.jQueryUICss()
     @Fingerprint.Css("/content/styles/siteblue.css")
     @ViewExtensions2.OldStyles()
+    @ViewExtensions2.FontAwesome()
+    @ViewExtensions2.FixupsCss()
     @ViewExtensions2.jQuery()
+    @ViewExtensions2.Bootstrap()
     @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/jQuery/jquery-migrate-1.1.1.js")
     @Fingerprint.Script("/Scripts/jQuery/jquery.blockUI.js")
-    @Fingerprint.Script("/Scripts/jquery.validate.js")
-    @Html.Partial("DatePickerDefaults")
 
+    @ViewExtensions2.jqueryGlobalize()
+    @Fingerprint.Script("/Scripts/jquery.validate.js")
+    @Fingerprint.Script("/Scripts/additional-methods.js")
+    @Fingerprint.Script("/Scripts/jquery.validate.globalize.js")
+    @Html.Partial("DatePickerDefaults2")
+    @Fingerprint.Script("/Scripts/js/form-ajax.js")
     @Fingerprint.Script("/Scripts/Dialog/OrgMembersDialog.js")
 </head>
 <body>
+<div class="container">
 <form action="/OrgMembersDialog/Update" method="post">
 @Html.Hidden("orgid")
 @Html.Hidden("pendings")
@@ -25,28 +33,30 @@
 <h4>@Model.title()</h4>
 <a class="helplink" target="_blank" href='@Model.HelpLink()'>help</a>
 <table class="roundbox">
-	<tr> <td colspan="4"><h2>Filter Members</h2></td> </tr>
+      <tr> <td colspan="4">
+        <h2>Filter Members</h2></td> </tr>
 	<tr>
 		<th>Tag: </th>
-		<td>@Html.DropDownList("tag", Model.Tags(), new { @class="filter" })</td>
+        <td>@Html.DropDownList("tag", Model.Tags(), new {@class = "filter"})</td>
 		<td>Inactive Date:</td>
 		<td rowspan="2" class="right"><a id="ClearFilter" class="bt" href="#">clear</a></td>
 	</tr>
 	<tr>
 		<th>Member Type:</th>
-		<td>@Html.DropDownList("memtype", Model.MemberTypeCodesWithNotSpecified(), new { @class = "filter" })</td>
-		<td nowrap="">@Html.TextBox("inactivedt", "", new { @class="filter datepicker" })</td>
+        <td>@Html.DropDownList("memtype", Model.MemberTypeCodesWithNotSpecified(), new {@class = "filter"})</td>
+        <td nowrap="">@Html.TextBox("inactivedt", "", new {@class = "filter datepicker"})</td>
 	</tr>
 	<tr>
 	</tr>
-	<tr> <td colspan="4"> <h2>New Values</h2></td></tr>
+      <tr> <td colspan="4">
+        <h2>New Values</h2></td></tr>
     <tr><td colspan="4">
 			<table>
 				<tr>
 					<td class="right">Membertype:</td>
 					<td>@Html.DropDownList("MemberType", Model.MemberTypeCodesWithDrop())</td>
 					<td>Enrollment</td>
-                    <td nowrap="">@Html.TextBox("EnrollmentDate", "", new { @class = "datepicker", style = "width:100px" })</td>
+              <td nowrap="">@Html.TextBox("EnrollmentDate", "", new {@class = "datepicker", style = "width:100px"})</td>
 					<td>Add Pmt</td>
                     <td>@Html.TextBox("addpmt")</td>
 				</tr>
@@ -56,7 +66,7 @@
 						MakeMemberTypes Original:@Html.CheckBox("MemTypeOriginal")
 					</td>
 					<td>InActive</td>
-                    <td nowrap="">@Html.TextBox("InactiveDate", "", new { @class = "datepicker", style = "width:100px" })</td>
+              <td nowrap="">@Html.TextBox("InactiveDate", "", new {@class = "datepicker", style = "width:100px"})</td>
 					<td>Reason:</td>
                     <td>@Html.TextBox("addpmtreason")</td>
 				</tr>
@@ -64,8 +74,8 @@
         </td>
     </tr>
 </table>
-<input id="SelectAll" type="checkbox" /> Select All
-	<input id="submit" type="submit" class="bt" name="Update" class="bt blue" value="Update Selected" />
+    <input id="SelectAll" type="checkbox"/> Select All
+    <input id="submit" type="submit" class="bt" name="Update" class="bt blue" value="Update Selected"/>
 <div>
 <table class="@ViewExtensions2.GridClass">
     <thead>
@@ -84,6 +94,7 @@
 </table>
 </div>
 </form>
+</div>
 </body>
 </html>
 

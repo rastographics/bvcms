@@ -515,7 +515,7 @@ namespace CmsWeb.Models
 						msg = msg.Replace("{resetlink}", url);
 						Util.SendMsg(ConfigurationManager.AppSettings["sysfromemail"],
 							 DbUtil.Db.CmsHost, Util.FirstAddress(DbUtil.AdminMail),
-							 "bvcms new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
+							 "touchpointsoftware new password link", msg, Util.ToMailAddressList(p.EmailAddress ?? p.EmailAddress2), 0, null);
 					}
 					DbUtil.LogActivity("ForgotPassword ('{0}', {1})".Fmt(username, path));
 					return;

@@ -7,7 +7,7 @@
     <meta name="language" content="en-US">
     <meta name="viewport" content="maximum-scale=1.0,width=device-width,initial-scale=1.0">
     <!-- title -->
-    <title>BVCMS error</title>
+    <title>TouchPoint error</title>
     <!-- css -->
     <style type="text/css">
         * {

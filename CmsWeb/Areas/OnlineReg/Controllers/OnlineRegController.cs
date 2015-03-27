@@ -301,7 +301,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     FirstName = "Another",
                     LastName = "Child",
                     DateOfBirth = "12/1/02",
-                    EmailAddress = "karen@bvcms.com",
+                    EmailAddress = "karen@touchpointsoftware.com",
 #endif
                 });
             return FlowList(m, "Cancel");

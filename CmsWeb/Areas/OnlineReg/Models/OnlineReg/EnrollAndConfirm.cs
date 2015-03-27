@@ -344,7 +344,7 @@ AmountDue: {5:C}<br/>
                         amtdue, // Amount Due
                         p.PrepareSummaryText(ti),
                         usedAdmins ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
-<a href='http://docs.bvcms.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>" : ""));
+<a href='http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>" : ""));
             }
         }
 

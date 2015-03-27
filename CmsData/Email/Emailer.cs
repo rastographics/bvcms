@@ -102,6 +102,7 @@ namespace CmsData
         {
             var list = (from p in CMSRoleProvider.provider.GetAdmins()
                         where !p.EmailAddress.Contains("bvcms.com")
+                        where !p.EmailAddress.Contains("touchpointsoftware.com")
                         select p).ToList();
             if (list.Count == 0)
                 list = (from p in CMSRoleProvider.provider.GetAdmins()
@@ -141,7 +142,7 @@ namespace CmsData
                      where p.PeopleId == a[0]
                      select p.FromEmail;
             if (!q2.Any())
-                return Setting("AdminMail", "info@bvcms.com");
+                return Setting("AdminMail", "info@touchpointsoftware.com");
             return q2.SingleOrDefault();
         }
         public List<Person> StaffPeopleForOrg(int orgid, out bool usedAdmins)
