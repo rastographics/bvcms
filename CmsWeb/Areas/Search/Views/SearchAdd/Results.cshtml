@@ -70,7 +70,7 @@
             @Html.EditorFor(m => m, "HiddenPeople")
         </div>
         <div class="modal-footer">
-            <a href="/SearchAdd2/SearchPerson" class="btn btn-default ajax"><i class="fa fa-arrow-circle-left"></i> Refine your Search</a>
+            <a href="/SearchAdd2/SearchPerson?displaySkipSearch=@Model.DisplaySkipSearch" class="btn btn-default ajax"><i class="fa fa-arrow-circle-left"></i> Refine your Search</a>
             @if (Model.PendingList.Count > 0)
             {
                 <a href="/SearchAdd2/CancelSearch" class="btn btn-default ajax">List</a>

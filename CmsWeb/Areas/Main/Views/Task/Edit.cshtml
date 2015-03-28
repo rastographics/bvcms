@@ -9,7 +9,7 @@
     ViewBag.PageHeader = "Edit Task";
 }
 <div class="row">
-    <div class="col-sm-12 col-md-12 col-lg-8">
+    <div class="col-sm-12 col-md-12 col-lg-7">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
@@ -26,7 +26,7 @@
                             <br />
                             <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
                             <div>
-                                <ul class="list-inline">
+                                <ul class="list-inline" style="margin-bottom: 0;">
                                     <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
                                     <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
                                 </ul>

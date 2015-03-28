@@ -1,29 +1,5 @@
 ﻿$(function () {
 
-    $('#addTask').click(function(ev) {
-        ev.preventDefault();
-        $('#new-task-modal').modal('show');
-    });
-
-    $('#new-task-modal').on('shown.bs.modal', function () {
-        $("#description").val('').focus();
-    });
-
-    $('#newTaskSubmit').click(function (ev) {
-        ev.preventDefault();
-        var desc = $("#description").val();
-        if (!desc || desc.length == 0) {
-            $('#new-task-modal').modal('hide');
-            return false;
-        }
-
-        var qs = "description=" + desc;
-        $.post('/Task/AddTask/', qs, function (ret) {
-            document.location.href = "/Task/Edit/" + ret;
-            $('#new-task-modal').modal('hide');
-        });
-    });
-
     $.gotoPage = function (e, pg) {
         $("#Page").val(pg);
         refreshList();

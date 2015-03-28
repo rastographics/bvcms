@@ -9,12 +9,20 @@
 }
 @{var link = Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/Detail/" + Model.Id); }
 <div class="row">
-    <div class="col-sm-12 col-md-12 col-lg-8">
+    <div class="col-sm-12 col-md-12 col-lg-7">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <h5>@Model.Description</h5>
                 <div class="box-tools">
                     <a class="btn btn-default" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
+                    @if (Model.CanAccept)
+                    {
+                        <a href="#" class="accept btn btn-success"><i class="fa fa-thumbs-o-up fa-fw"></i> Accept Task</a> 
+                    }
+                    @if (Model.IsAnOwner)
+                    {
+                        <a href="/Task/Edit/@Model.Id" class="btn btn-default"><i class="fa fa-pencil fa-fw"></i> Edit</a> 
+                    }
                     <div class="btn-group">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             Actions <span class="caret"></span>
@@ -35,14 +43,14 @@
                             @if (Model.IsAnOwner)
                             {
                                 <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Assign / Change Regarding</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
                                 <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
                             }
                             @if (Model.IsOwner)
                             {
                                 <li class="divider"></li>
                                 <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
-                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">Delegate Task</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
                             }
                         </ul>
                     </div>
@@ -57,7 +65,7 @@
                         <br />
                         <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
                         <div>
-                            <ul class="list-inline">
+                            <ul class="list-inline" style="margin-bottom: 0;">
                                 <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
                                 <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
                             </ul>
@@ -160,14 +168,14 @@
                             @if (Model.IsAnOwner)
                             {
                                 <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Assign / Change Regarding</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
                                 <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
                             }
                             @if (Model.IsOwner)
                             {
                                 <li class="divider"></li>
                                 <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
-                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">Delegate Task</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
                             }
                         </ul>
                     </div>

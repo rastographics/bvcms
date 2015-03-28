@@ -12,11 +12,11 @@
             <div class="box box-responsive">
                 <div class="box-title-btn">
                     <div class="box-tools">
-                        <a id="delegateall" href="/SearchAdd2/Dialog/taskdelegate2/1" class="searchadd"></a>
-                        <button class="btn btn-default taskDelegate"><i class="fa fa-users"></i> Delegate 0 Task(s)</button> <button class="btn btn-danger taskDelete"><i class="fa fa-trash"></i> Delete 0 Task(s)</button> <a href="#" class="btn btn-success" id="addTask"><i class="fa fa-plus-circle"></i> Add Task</a>
+                        <button class="btn btn-default taskDelegate"><i class="fa fa-users"></i> Delegate 0 Task(s)</button> <button class="btn btn-danger taskDelete"><i class="fa fa-trash"></i> Delete 0 Task(s)</button>
                     </div>
                 </div>
                 <div class="box-content">
+                    <a id="delegateall" href="/SearchAdd2/Dialog/taskdelegate2/1?displaySkipSearch=false" class="searchadd"></a>
                     @Html.Hidden("SortTask")
                     <div class="well">
                         <div class="row">
@@ -62,31 +62,15 @@
                         @Html.Hidden("Sort", Model.Sort)
                         @Html.Hidden("Direction", Model.Direction)
                     </div>
+                    <div class="visible-xs-block">
+                        <br />
+                        <button class="btn btn-default btn-block taskDelegate"><i class="fa fa-users"></i> Delegate 0 Task(s)</button>
+                        <button class="btn btn-danger btn-block taskDelete"><i class="fa fa-trash"></i> Delete 0 Task(s)</button>
+                    </div>
                 </div>
             </div>
             
         </form>
-    </div>
-</div>
-<div class="modal fade" id="new-task-modal">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            @Html.Hidden("type", ViewData["type"])
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Add New Task</h4>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="description" class="control-label">Task</label>
-                    <input type="text" id="description" name="description" class="form-control" />
-                </div>
-            </div>
-            <div class="modal-footer">
-                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                <a href="#" id="newTaskSubmit" class="btn btn-primary">Submit</a>
-            </div>
-        </div>
     </div>
 </div>
 @section scripts
