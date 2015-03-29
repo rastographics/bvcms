@@ -190,16 +190,16 @@ CKEditorFuncNum, baseurl + fn, error));
                 var message = DbUtil.Db.ContentHtml("ForgotUsername", Resource1.AccountController_ForgotUsername);
                 message = message.Replace("{name}", user.Name);
                 message = message.Replace("{username}", user.Username);
-                DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "bvcms forgot username", message);
+                DbUtil.Db.EmailRedacted(DbUtil.AdminMail, user.Person, "touchpoint forgot username", message);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.EmailRedacted(DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
-                    "bvcms user: {0} forgot username".Fmt(user.Name), "no content");
+                    "touchpoint user: {0} forgot username".Fmt(user.Name), "no content");
             }
             if (!q.Any())
                 DbUtil.Db.EmailRedacted(DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
-                    "bvcms unknown email: {0} forgot username".Fmt(email), "no content");
+                    "touchpoint unknown email: {0} forgot username".Fmt(email), "no content");
 
             return RedirectToAction("RequestUsername");
 

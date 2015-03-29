@@ -162,7 +162,7 @@ namespace CmsData
         {
             var t = p.AddTaskAbout(db, forPeopleId, description);
             db.SubmitChanges();
-            db.Email(db.Setting("AdminMail", "support@bvcms.com"), db.LoadPersonById(forPeopleId),
+            db.Email(db.Setting("AdminMail", "support@touchpointsoftware.com"), db.LoadPersonById(forPeopleId),
                 "TASK: " + description,
                 Task.TaskLink(db, description, t.Id) + "<br/>" + p.Name);
         }

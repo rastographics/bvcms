@@ -101,6 +101,8 @@ namespace CmsWeb.Models
 
         private bool Filled(Organization o)
         {
+            if (SupportMissionTrip)
+                return false;
             if (o != null)
                 if ((o.ClassFilled ?? false) || (o.Limit > 0 && o.Limit <= o.RegLimitCount(DbUtil.Db)))
                     return true;
