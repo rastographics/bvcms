@@ -62,5 +62,18 @@ namespace CmsWeb.Controllers
             var cc = ReportsModel.QueryDataCondition(field, type);
             return Redirect("/Query/" + cc.Id);
         }
+        [HttpGet, Route("ExtraValue/FamilyQueryCodes")]
+        public ActionResult FamilyQueryCodes(string field, string value)
+        {
+            var c = ReportsModel.FamilyQueryCodesCondition(field, value);
+            return Redirect("/Query/" + c.Id);
+        }
+
+        [HttpGet, Route("ExtraValue/FamilyQueryData")]
+        public ActionResult FamilyQueryData(string field, string type)
+        {
+            var cc = ReportsModel.FamilyQueryDataCondition(field, type);
+            return Redirect("/Query/" + cc.Id);
+        }
     }
 }

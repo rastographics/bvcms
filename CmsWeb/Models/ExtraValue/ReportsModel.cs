@@ -19,6 +19,14 @@ namespace CmsWeb.Models.ExtraValues
             c.Save(DbUtil.Db);
             return c;
         }
+        public static Condition FamilyQueryCodesCondition(string field, string value)
+        {
+            var c = DbUtil.Db.ScratchPadCondition();
+            c.Reset(DbUtil.Db);
+            c.AddNewClause(QueryType.FamilyExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
+            c.Save(DbUtil.Db);
+            return c;
+        }
         public static Condition QueryDataCondition(string field, string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -41,6 +49,33 @@ namespace CmsWeb.Models.ExtraValues
                     break;
                 case "?":
                     cc.AddNewClause(QueryType.HasPeopleExtraField, CompareType.Equal, field);
+                    break;
+            }
+            cc.Save(DbUtil.Db);
+            return cc;
+        }
+        public static Condition FamilyQueryDataCondition(string field, string type)
+        {
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            Condition c = null;
+
+            switch (type.ToLower())
+            {
+                case "text":
+                    c = cc.AddNewClause(QueryType.FamilyExtraData, CompareType.NotEqual, "");
+                    c.Quarters = field;
+                    break;
+                case "date":
+                    c = cc.AddNewClause(QueryType.FamilyExtraDate, CompareType.NotEqual, null);
+                    c.Quarters = field;
+                    break;
+                case "int":
+                    c = cc.AddNewClause(QueryType.FamilyExtraInt, CompareType.NotEqual, "");
+                    c.Quarters = field;
+                    break;
+                case "?":
+                    cc.AddNewClause(QueryType.HasFamilyExtraField, CompareType.Equal, field);
                     break;
             }
             cc.Save(DbUtil.Db);

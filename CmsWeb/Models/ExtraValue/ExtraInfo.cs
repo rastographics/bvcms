@@ -40,6 +40,8 @@ namespace CmsWeb.Models.ExtraValues
             {
                 case "People":
                     return new ExtraInfoPeople();
+                case "Family":
+                    return new ExtraInfoFamily();
                 case "Organization":
                     return new ExtraInfoOrganization();
             }
