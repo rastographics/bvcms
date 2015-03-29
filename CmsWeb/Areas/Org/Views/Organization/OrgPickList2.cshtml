@@ -1,0 +1,7 @@
+﻿@using CmsWeb.Areas.Org2.Models
+@model CmsData.Registration.Settings
+<b><a id="orgpicklist" href="/Organization/OrgPickList/@Model.OrgId">Choose Organizations</a></b>
+@foreach (var o in SettingsRegistrationModel.OrganizationsFromIdString(Model.org))
+{
+    <div><a href="/Organization/@o.OrganizationId" target="otherorg">@o.OrganizationName</a></div>
+}
