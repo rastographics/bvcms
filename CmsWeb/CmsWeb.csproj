@@ -716,6 +716,8 @@
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskGradeOptions.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Related.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -1675,7 +1677,7 @@
     <Content Include="Areas\Org\Views\Organization\OnlineRegQuestionsEdit.cshtml" />
     <Content Include="Areas\Org\Views\Organization\OrgInfo.cshtml" />
     <Content Include="Areas\Org\Views\Organization\OrgInfoEdit.cshtml" />
-    <Content Include="Areas\Org\Views\Organization\OrgPickList2.cshtml" />
+    <Content Include="Areas\Org\Views\Org2\Other\OrgPickList2.cshtml" />
     <Content Include="Areas\Org\Views\Organization\PendingMemberGrid.cshtml" />
     <Content Include="Areas\Org\Views\Organization\PrevMemberGrid.cshtml" />
     <Content Include="Areas\Org\Views\Organization\ProspectGrid.cshtml" />
@@ -1737,7 +1739,14 @@
     <Content Include="Areas\Org\Views\Org2\DisplayTemplates\NotifyList.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Registration\NotifyList.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskSize.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskGradeOptions.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
+    <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
