@@ -4,7 +4,7 @@
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp") == "true";
   ViewBag.FalseValue = "";
 }
-<form class="form form-horizontal non-modal ajax span12" data-init="datepicker" data-init2="timepicker">
+<form class="form form-horizontal non-modal ajax span12" data-init="timepicker">
   @FormAction()
   @Html.DisplayFor(m => m.Schedules, "Schedules")
   @Html.DisplayFor(m => m.NotWeekly)

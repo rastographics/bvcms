@@ -1,6 +1,6 @@
-﻿@model bool?
+﻿@model bool
 @{
-  var t = Model == true ? ViewBag.TrueValue ?? "True" : ViewBag.FalseValue ?? "False";
+  var t = Model ? ViewBag.TrueValue ?? "True" : ViewBag.FalseValue ?? "False";
 }
 <div class="control-group">
   @Html.LabelFor(m => m, new { @class = "control-label" })

@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Org2.Models
         public CodeInfo OrganizationType { get; set; }
         public CodeInfo SecurityType { get; set; }
         public CodeInfo OrganizationStatus { get; set; }
-        public bool? IsBibleFellowshipOrg { get; set; }
+        public bool IsBibleFellowshipOrg { get; set; }
 
         private string _schedule;
         public string Schedule
