@@ -137,27 +137,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdminLogin.cs">
+    <Compile Include="BuildingAttendant.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AdminLogin.Designer.cs">
-      <DependentUpon>AdminLogin.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Attendant.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Attendant.Designer.cs">
-      <DependentUpon>Attendant.cs</DependentUpon>
+    <Compile Include="BuildingAttendant.Designer.cs">
+      <DependentUpon>BuildingAttendant.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\BigCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Capture.cs" />
-    <Compile Include="ChooseActivities.cs">
+    <Compile Include="Classes\Capture.cs" />
+    <Compile Include="BuildingChooseActivities.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ChooseActivities.Designer.cs">
-      <DependentUpon>ChooseActivities.cs</DependentUpon>
+    <Compile Include="BuildingChooseActivities.Designer.cs">
+      <DependentUpon>BuildingChooseActivities.cs</DependentUpon>
     </Compile>
     <Compile Include="AddGuests.cs">
       <SubType>Form</SubType>
@@ -187,11 +181,17 @@
     <Compile Include="Dialogs\PINDialog.Designer.cs">
       <DependentUpon>PINDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Menu2.cs">
+    <Compile Include="Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Login.Designer.cs">
+      <DependentUpon>Login.cs</DependentUpon>
+    </Compile>
+    <Compile Include="BuildingMenu.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Menu2.Designer.cs">
-      <DependentUpon>Menu2.cs</DependentUpon>
+    <Compile Include="BuildingMenu.Designer.cs">
+      <DependentUpon>BuildingMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="EnterGenderMarital2.cs">
       <SubType>UserControl</SubType>
@@ -199,60 +199,53 @@
     <Compile Include="EnterGenderMarital2.Designer.cs">
       <DependentUpon>EnterGenderMarital2.cs</DependentUpon>
     </Compile>
-    <Compile Include="Home2.cs">
+    <Compile Include="BuildingHome.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Home2.Designer.cs">
-      <DependentUpon>Home2.cs</DependentUpon>
+    <Compile Include="BuildingHome.Designer.cs">
+      <DependentUpon>BuildingHome.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListFamily2.cs">
+    <Compile Include="BuildingListFamily.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ListFamily2.Designer.cs">
-      <DependentUpon>ListFamily2.cs</DependentUpon>
+    <Compile Include="BuildingListFamily.Designer.cs">
+      <DependentUpon>BuildingListFamily.cs</DependentUpon>
     </Compile>
-    <Compile Include="DidItWork.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="DidItWork.Designer.cs">
-      <DependentUpon>DidItWork.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DoPrinting.cs" />
-    <Compile Include="ImageResizer.cs">
+    <Compile Include="CommonImageResizer.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ImageResizer.Designer.cs">
-      <DependentUpon>ImageResizer.cs</DependentUpon>
+    <Compile Include="CommonImageResizer.Designer.cs">
+      <DependentUpon>CommonImageResizer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Menu.cs">
+    <Compile Include="AttendMenu.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Menu.Designer.cs">
-      <DependentUpon>Menu.cs</DependentUpon>
+    <Compile Include="AttendMenu.Designer.cs">
+      <DependentUpon>AttendMenu.cs</DependentUpon>
     </Compile>
-    <Compile Include="Picture.cs">
+    <Compile Include="CommonPicture.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Picture.Designer.cs">
-      <DependentUpon>Picture.cs</DependentUpon>
+    <Compile Include="CommonPicture.Designer.cs">
+      <DependentUpon>CommonPicture.cs</DependentUpon>
     </Compile>
-    <Compile Include="PrintingServer.cs">
+    <Compile Include="AttendPrintingServer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PrintingServer.Designer.cs">
-      <DependentUpon>PrintingServer.cs</DependentUpon>
+    <Compile Include="AttendPrintingServer.Designer.cs">
+      <DependentUpon>AttendPrintingServer.cs</DependentUpon>
     </Compile>
-    <Compile Include="TakePicture.cs">
+    <Compile Include="CommonTakePicture.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="TakePicture.Designer.cs">
-      <DependentUpon>TakePicture.cs</DependentUpon>
+    <Compile Include="CommonTakePicture.Designer.cs">
+      <DependentUpon>CommonTakePicture.cs</DependentUpon>
     </Compile>
-    <Compile Include="Login.cs">
+    <Compile Include="LoginSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Login.Designer.cs">
-      <DependentUpon>Login.cs</DependentUpon>
+    <Compile Include="LoginSettings.Designer.cs">
+      <DependentUpon>LoginSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="EnterNumber.cs">
       <SubType>UserControl</SubType>
@@ -266,17 +259,17 @@
     <Compile Include="EnterGenderMarital.Designer.cs">
       <DependentUpon>EnterGenderMarital.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListFamily.cs">
+    <Compile Include="AttendListFamily.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ListFamily.Designer.cs">
-      <DependentUpon>ListFamily.cs</DependentUpon>
+    <Compile Include="AttendListFamily.Designer.cs">
+      <DependentUpon>AttendListFamily.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListClasses.cs">
+    <Compile Include="AttendListClasses.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ListClasses.Designer.cs">
-      <DependentUpon>ListClasses.cs</DependentUpon>
+    <Compile Include="AttendListClasses.Designer.cs">
+      <DependentUpon>AttendListClasses.cs</DependentUpon>
     </Compile>
     <Compile Include="EnterDate.cs">
       <SubType>UserControl</SubType>
@@ -302,18 +295,17 @@
     <Compile Include="Dialogs\PleaseWait.Designer.cs">
       <DependentUpon>PleaseWait.cs</DependentUpon>
     </Compile>
-    <Compile Include="Print.cs" />
-    <Compile Include="ListNames.cs">
+    <Compile Include="CommonListNames.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ListNames.Designer.cs">
-      <DependentUpon>ListNames.cs</DependentUpon>
+    <Compile Include="CommonListNames.Designer.cs">
+      <DependentUpon>CommonListNames.cs</DependentUpon>
     </Compile>
-    <Compile Include="ListFamilies.cs">
+    <Compile Include="CommonListFamilies.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ListFamilies.Designer.cs">
-      <DependentUpon>ListFamilies.cs</DependentUpon>
+    <Compile Include="CommonListFamilies.Designer.cs">
+      <DependentUpon>CommonListFamilies.cs</DependentUpon>
     </Compile>
     <Compile Include="BaseForm.cs">
       <SubType>Form</SubType>
@@ -321,22 +313,19 @@
     <Compile Include="BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Home.cs">
+    <Compile Include="AttendHome.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Home.Designer.cs">
-      <DependentUpon>Home.cs</DependentUpon>
+    <Compile Include="AttendHome.Designer.cs">
+      <DependentUpon>AttendHome.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AdminLogin.resx">
-      <DependentUpon>AdminLogin.cs</DependentUpon>
+    <EmbeddedResource Include="BuildingAttendant.resx">
+      <DependentUpon>BuildingAttendant.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Attendant.resx">
-      <DependentUpon>Attendant.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ChooseActivities.resx">
-      <DependentUpon>ChooseActivities.cs</DependentUpon>
+    <EmbeddedResource Include="BuildingChooseActivities.resx">
+      <DependentUpon>BuildingChooseActivities.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AddGuests.resx">
       <DependentUpon>AddGuests.cs</DependentUpon>
@@ -347,38 +336,35 @@
     <EmbeddedResource Include="Dialogs\PINDialog.resx">
       <DependentUpon>PINDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Menu2.resx">
-      <DependentUpon>Menu2.cs</DependentUpon>
+    <EmbeddedResource Include="BuildingMenu.resx">
+      <DependentUpon>BuildingMenu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EnterGenderMarital2.resx">
       <DependentUpon>EnterGenderMarital2.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Home2.resx">
-      <DependentUpon>Home2.cs</DependentUpon>
+    <EmbeddedResource Include="BuildingHome.resx">
+      <DependentUpon>BuildingHome.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListFamily2.resx">
-      <DependentUpon>ListFamily2.cs</DependentUpon>
+    <EmbeddedResource Include="BuildingListFamily.resx">
+      <DependentUpon>BuildingListFamily.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="DidItWork.resx">
-      <DependentUpon>DidItWork.cs</DependentUpon>
+    <EmbeddedResource Include="CommonImageResizer.resx">
+      <DependentUpon>CommonImageResizer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ImageResizer.resx">
-      <DependentUpon>ImageResizer.cs</DependentUpon>
+    <EmbeddedResource Include="AttendMenu.resx">
+      <DependentUpon>AttendMenu.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Menu.resx">
-      <DependentUpon>Menu.cs</DependentUpon>
+    <EmbeddedResource Include="CommonPicture.resx">
+      <DependentUpon>CommonPicture.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Picture.resx">
-      <DependentUpon>Picture.cs</DependentUpon>
+    <EmbeddedResource Include="AttendPrintingServer.resx">
+      <DependentUpon>AttendPrintingServer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PrintingServer.resx">
-      <DependentUpon>PrintingServer.cs</DependentUpon>
+    <EmbeddedResource Include="CommonTakePicture.resx">
+      <DependentUpon>CommonTakePicture.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TakePicture.resx">
-      <DependentUpon>TakePicture.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Login.resx">
-      <DependentUpon>Login.cs</DependentUpon>
+    <EmbeddedResource Include="LoginSettings.resx">
+      <DependentUpon>LoginSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EnterNumber.resx">
       <DependentUpon>EnterNumber.cs</DependentUpon>
@@ -386,11 +372,11 @@
     <EmbeddedResource Include="EnterGenderMarital.resx">
       <DependentUpon>EnterGenderMarital.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListFamily.resx">
-      <DependentUpon>ListFamily.cs</DependentUpon>
+    <EmbeddedResource Include="AttendListFamily.resx">
+      <DependentUpon>AttendListFamily.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListClasses.resx">
-      <DependentUpon>ListClasses.cs</DependentUpon>
+    <EmbeddedResource Include="AttendListClasses.resx">
+      <DependentUpon>AttendListClasses.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EnterDate.resx">
       <DependentUpon>EnterDate.cs</DependentUpon>
@@ -401,17 +387,17 @@
     <EmbeddedResource Include="EnterText.resx">
       <DependentUpon>EnterText.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListNames.resx">
-      <DependentUpon>ListNames.cs</DependentUpon>
+    <EmbeddedResource Include="CommonListNames.resx">
+      <DependentUpon>CommonListNames.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ListFamilies.resx">
-      <DependentUpon>ListFamilies.cs</DependentUpon>
+    <EmbeddedResource Include="CommonListFamilies.resx">
+      <DependentUpon>CommonListFamilies.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Home.resx">
-      <DependentUpon>Home.cs</DependentUpon>
+    <EmbeddedResource Include="AttendHome.resx">
+      <DependentUpon>AttendHome.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\PleaseWait.resx">
       <DependentUpon>PleaseWait.cs</DependentUpon>
@@ -421,8 +407,8 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="StartUp.resx">
-      <DependentUpon>StartUp.cs</DependentUpon>
+    <EmbeddedResource Include="LoginSettingsMore.resx">
+      <DependentUpon>LoginSettingsMore.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config" />
     <None Include="packages.config" />
@@ -431,7 +417,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="PrintRawHelper.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -442,13 +427,13 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings1.settings</DependentUpon>
     </Compile>
-    <Compile Include="StartUp.cs">
+    <Compile Include="LoginSettingsMore.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StartUp.Designer.cs">
-      <DependentUpon>StartUp.cs</DependentUpon>
+    <Compile Include="LoginSettingsMore.Designer.cs">
+      <DependentUpon>LoginSettingsMore.cs</DependentUpon>
     </Compile>
-    <Compile Include="Util.cs" />
+    <Compile Include="Classes\Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
