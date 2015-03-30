@@ -633,7 +633,7 @@ namespace CmsCheckin
 			}
 
 			if (Program.addguests == null && list.Where(i => i.ischecked && i.access == "true").Any()) {
-				Program.addguests = new AddGuests();
+				Program.addguests = new BuildingAddGuests();
 				Program.addguests.StartPosition = FormStartPosition.Manual;
 				Program.addguests.Location = new Point(Program.baseform.Location.X + 100, Program.baseform.Location.Y + 100);
 				var i = 1;

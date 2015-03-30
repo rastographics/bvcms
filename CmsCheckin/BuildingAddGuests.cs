@@ -2,9 +2,9 @@
 
 namespace CmsCheckin
 {
-	public partial class AddGuests : Form
+	public partial class BuildingAddGuests : Form
 	{
-		public AddGuests()
+		public BuildingAddGuests()
 		{
 			InitializeComponent();
 		}
