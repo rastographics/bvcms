@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Search.Controllers
     [RouteArea("Org", AreaPrefix="OrgSearch"), Route("{action=index}/{id?}")]
     public class OrgSearchController : CmsStaffController
     {
-        private const string STR_OrgSearch = "OrgSearch2";
+        private const string STR_OrgSearch = "OrgSearch";
 
         [Route("~/OrgSearch/{progid:int?}/{div:int?}")]
         public ActionResult Index(int? div, int? progid)
@@ -39,7 +39,9 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.TagProgramId = m.ProgramId;
             }
             else if (Session[STR_OrgSearch].IsNotNull())
+            {
                 (Session[STR_OrgSearch] as OrgSearchInfo).CopyPropertiesTo(m);
+            }
 
             return View(m);
         }
