@@ -17,12 +17,17 @@ namespace CmsWeb.Areas.Search.Controllers
         private const string STR_OrgSearch = "OrgSearch";
 
         [Route("~/OrgSearch/{progid:int?}/{div:int?}")]
-        public ActionResult Index(int? div, int? progid)
+        public ActionResult Index(int? div, int? progid, string name)
         {
             Response.NoCache();
             var m = new OrgSearchModel();
             m.StatusId = OrgStatusCode.Active;
 
+            if (name.HasValue())
+            {
+                m.Name = name;
+                m.StatusId = null;
+            }
             if (div.HasValue)
             {
                 m.DivisionId = div;
