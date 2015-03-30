@@ -116,7 +116,7 @@ namespace CmsWeb.Models
             var sb = new StringBuilder();
             sb.AppendFormat(@"<b>Request ID: {0}</b><br>
                             <b>Request By:</b> {1} ({2})<br>
-                            <b>Host:</b> https://{3}.touchpointsoftware.com<br>
+                            <b>Host:</b> https://{3}.tpsdb.com<br>
                             ", id, Util.UserFullName, Util.UserEmail, Util.Host);
 
             if (!prefix.Contains("MyData"))
