@@ -49,7 +49,7 @@ namespace CmsCheckin
 		public static int ThisDay { get; set; }
 		public static int? Grade { get; set; }
 		public static bool editing { get; set; }
-		public static AddGuests addguests;
+		public static BuildingAddGuests addguests;
 
 		[STAThread]
 		static void Main(string[] args)

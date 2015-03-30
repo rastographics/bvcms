@@ -1,6 +1,6 @@
 ﻿namespace CmsCheckin
 {
-	partial class AddGuests
+	partial class BuildingAddGuests
 	{
 		/// <summary>
 		/// Required designer variable.

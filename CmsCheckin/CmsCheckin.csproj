@@ -143,9 +143,6 @@
     <Compile Include="BuildingAttendant.Designer.cs">
       <DependentUpon>BuildingAttendant.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\BigCheckBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Classes\Capture.cs" />
     <Compile Include="BuildingChooseActivities.cs">
       <SubType>Form</SubType>
@@ -153,11 +150,11 @@
     <Compile Include="BuildingChooseActivities.Designer.cs">
       <DependentUpon>BuildingChooseActivities.cs</DependentUpon>
     </Compile>
-    <Compile Include="AddGuests.cs">
+    <Compile Include="BuildingAddGuests.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddGuests.Designer.cs">
-      <DependentUpon>AddGuests.cs</DependentUpon>
+    <Compile Include="BuildingAddGuests.Designer.cs">
+      <DependentUpon>BuildingAddGuests.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\BaseBuildingInfo.cs" />
     <Compile Include="Classes\LabelEntryBase.cs" />
@@ -307,10 +304,10 @@
     <Compile Include="CommonListFamilies.Designer.cs">
       <DependentUpon>CommonListFamilies.cs</DependentUpon>
     </Compile>
-    <Compile Include="BaseForm.cs">
+    <Compile Include="Controls\BaseForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="BaseForm.Designer.cs">
+    <Compile Include="Controls\BaseForm.Designer.cs">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </Compile>
     <Compile Include="AttendHome.cs">
@@ -327,8 +324,8 @@
     <EmbeddedResource Include="BuildingChooseActivities.resx">
       <DependentUpon>BuildingChooseActivities.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AddGuests.resx">
-      <DependentUpon>AddGuests.cs</DependentUpon>
+    <EmbeddedResource Include="BuildingAddGuests.resx">
+      <DependentUpon>BuildingAddGuests.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\AddIDCard.resx">
       <DependentUpon>AddIDCard.cs</DependentUpon>
@@ -393,7 +390,7 @@
     <EmbeddedResource Include="CommonListFamilies.resx">
       <DependentUpon>CommonListFamilies.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="BaseForm.resx">
+    <EmbeddedResource Include="Controls\BaseForm.resx">
       <DependentUpon>BaseForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AttendHome.resx">
