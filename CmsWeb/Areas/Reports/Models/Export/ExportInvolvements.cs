@@ -255,6 +255,11 @@ namespace CmsWeb.Models
             public string Tickets { get; set; }
         }
 
+       public static IEnumerable<CurrOrgMember> OrgMemberList(int orgid)
+        {
+            var Db = DbUtil.Db;
+            return Db.CurrOrgMembers(orgid.ToString());
+        }
         public static EpplusResult PromoList(Guid queryid, int maximumRows)
         {
             var Db = DbUtil.Db;

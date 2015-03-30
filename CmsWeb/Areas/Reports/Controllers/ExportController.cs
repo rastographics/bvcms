@@ -139,7 +139,9 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "FamilyMembers":
                     return ExportPeople.FetchExcelListFamilyMembers(id);
                 case "OrgMembers":
-                    return OrgsMembersExcelModel.Export();
+                    return Util2.UseNewOrg 
+                        ? OrgsMembersExcelModel.Export() 
+                        : OrgsMembersExcelModel.Export(DbUtil.Db.CurrentOrgId0);
                 case "Groups":
                     return ExportInvolvements.OrgMemberListGroups();
             }

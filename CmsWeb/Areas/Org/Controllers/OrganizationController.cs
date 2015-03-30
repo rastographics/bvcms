@@ -27,6 +27,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 Util2.CurrentGroups = null;
                 Util2.CurrentGroupsPrefix = null;
                 Util2.CurrentGroupsMode = 0;
+                DbUtil.Db.SetCurrentOrgId(id);
             }
 
             var m = new OrganizationModel(id);

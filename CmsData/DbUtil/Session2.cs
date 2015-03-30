@@ -36,11 +36,7 @@ namespace CmsData
         {
             get
             {
-                if (Util2.UseNewOrg)
-                {
-                    return (CurrentOrg ?? new CurrentOrg()).Id ?? Util2.CurrentOrgId ?? 0;
-                }
-                return CurrentOrgId ?? 0;
+                return (CurrentOrg ?? new CurrentOrg()).Id ?? Util2.CurrentOrgId ?? 0;
             }
         }
 
