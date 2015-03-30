@@ -4,7 +4,6 @@
   <h4>Select Divisions</h4>
 </div>
 <div class="modal-body">
-  @Html.HiddenFor(m => m.Page)
   @Html.HiddenFor(m => m.ordered)
   @Html.HiddenFor(m => m.singlemode)
   @Html.HiddenFor(m => m.Id)
@@ -13,6 +12,7 @@
   @Html.TextBoxFor(m => m.name, new { title = "Partial Program / Division Name" })
   <a id="search" class="btn btn-primary ajax">Search</a>
   <div class="pagination pagination-mini">
+    @Html.Partial("PagerHidden", Model)
     @Html.Partial("Pager3", Model)
   </div>
   <table class="@ViewExtensions2.GridClass">
