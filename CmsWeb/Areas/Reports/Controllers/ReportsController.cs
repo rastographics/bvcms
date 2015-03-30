@@ -470,8 +470,29 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [HttpPost, Route("RollsheetForOrg/{orgid:int}")]
-        public ActionResult RollsheetForOrg(int orgid, NewMeetingInfo mi)
+        [HttpPost]
+        public ActionResult Rollsheet(string dt, int? bygroup, string sgprefix,
+            bool? altnames, string highlight, OrgSearchModel m)
+        {
+            DateTime? dt2 = dt.ToDate();
+            if (!dt2.HasValue)
+                return Message("no date");
+            var mi = new NewMeetingInfo()
+            {
+                ByGroup = bygroup > 0,
+                GroupFilterPrefix = sgprefix,
+                UseAltNames = altnames == true,
+                HighlightGroup = highlight,
+                MeetingDate = dt2.Value
+            };
+            return new RollsheetResult
+            {
+                OrgSearchModel = m,
+                NewMeetingInfo = mi
+            };
+        }
+        [HttpPost, Route("RollsheetForOrg/{orgid:int?}")]
+        public ActionResult RollsheetForOrg(int? orgid, NewMeetingInfo mi)
         {
             return new RollsheetResult
             {

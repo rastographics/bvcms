@@ -58,8 +58,12 @@ namespace CmsWeb.Areas.Org2.Models
             {
                 var sc = Org.OrgSchedules.FirstOrDefault(); // SCHED
                 if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
-                    return Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0)
-                        .Add(sc.SchedTime.Value.TimeOfDay);
+                {
+					var dt = Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
+			        if (dt >= Util.Now.Date)
+			            dt = dt.AddDays(-7);
+                    return dt.Add(sc.SchedTime.Value.TimeOfDay); 
+                }
                 return Util.Now.Date;
             }
         }
@@ -67,7 +71,6 @@ namespace CmsWeb.Areas.Org2.Models
         {
             get { return PrevMeetingDate.AddDays(7); }
         }
-
         public void UpdateSchedules()
         {
             DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(Org.OrgSchedules);
