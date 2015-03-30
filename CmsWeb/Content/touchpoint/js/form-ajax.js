@@ -1,5 +1,247 @@
 ﻿$(function () {
 
+    $.AttachFormElements = function () {
+        //$("form.ajax input.ajax-typeahead").typeahead({
+        //    minLength: 3,
+        //    remote: {
+        //        url: "test",
+        //        beforeSend: function (jqXhr, settings) {
+        //            $.SetLoadingIndicator();
+        //        },
+        //        replace: function (url, uriEncodedQuery) {
+        //            return $("input:focus").data("link") + "?query=" + uriEncodedQuery;
+        //        }
+        //    }
+        //});
+        //$.DatePickersAndChosen();
+        $.InitializeDateElements();
+    };
+
+    //$.DatePickers = function () {
+    //    $("form .dateonly").datetimepicker({
+    //        autoclose: true,
+    //        orientation: "auto",
+    //        minView: 2,
+    //        forceParse: false,
+    //        format: $.dtoptions.format
+    //    });
+    //    $("form .datetime").datetimepicker({
+    //        autoclose: true,
+    //        showMeridian: true,
+    //        orientation: "auto",
+    //        forceParse: false,
+    //        format: $.dtoptions.formatTime
+    //    });
+    //};
+
+    //$.DatePickersAndChosen = function () {
+    //    $.DatePickers();
+    //    $('form.ajax select:not([plain])').select2({ dropdownAutoWidth: true });
+    //    $('form.ajax a.editable').editable();
+    //};
+
+    $('body').on('click', 'ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor', function (event) {
+        var $this = $(this);
+        var alreadyClicked = $this.data('clicked');
+        if (alreadyClicked) {
+            return false;
+        }
+        $this.data('clicked', true);
+        var state = $this.attr("href") || $this.data("target");
+        var d = $(state);
+        var $form = d.find("form.ajax");
+        var postdata = $form.serialize();
+        var url = d.data("link");
+        if (!d.hasClass("loaded"))
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: postdata,
+                beforeSend: function () {
+                    $.block();
+                },
+                complete: function () {
+                    $.unblock();
+                },
+                success: function (data, status) {
+                    $.unblock();
+                    d.addClass("loaded");
+                    d.html(data).ready(function () {
+                        if (d.data("init"))
+                            $.InitFunctions[d.data("init")]();
+                        if (d.data("init2"))
+                            $.InitFunctions[d.data("init2")]();
+                        var $form2 = d.find("form.ajax");
+                        if ($form2.length > 0)
+                            $form = $form2;
+                        if ($form.data("init"))
+                            $.InitFunctions[$form.data("init")]();
+                        if ($form.data("init2"))
+                            $.InitFunctions[$form.data("init2")]();
+                    });
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $.unblock();
+                    swal("Error!", thrownError, "error");
+                }
+            });
+        return true;
+    });
+
+    $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
+        event.preventDefault();
+        var d = $(this).closest("div.tab-pane");
+        $.formAjaxClick($(this), d.data("link"));
+        return false;
+    });
+
+    $('body').on('click', 'form.ajax a.submit', function (event) {
+        event.preventDefault();
+        var t = $(this);
+        if (t.data("confirm"))
+            swal({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            },
+            function () {
+                $.formAjaxSubmit(t);
+            });
+        else
+            $.formAjaxSubmit(t);
+        return false;
+    });
+
+    $.formAjaxSubmit = function (a) {
+        var $form = a.closest("form.ajax");
+        $form.attr("action", a[0].href);
+        $form.submit();
+    };
+
+    $('body').on('click', 'form.ajax input.ajax', function () {
+        $.formAjaxClick($(this));
+    });
+
+    $('body').on('change', 'form.ajax select.ajax', function (event) {
+        event.preventDefault();
+        var t = $(this);
+        var link = t.data("link");
+        $.formAjaxClick(t, link);
+        return false;
+    });
+
+    $('body').on('click', 'form.ajax a.ajax', function (event) {
+        event.preventDefault();
+        var t = $(this);
+        if (t.data("confirm"))
+            swal({
+                title: "Are you sure?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, delete it!",
+                closeOnConfirm: false
+            },
+            function () {
+                $.formAjaxClick(t);
+            });
+        else
+            $.formAjaxClick(t);
+        return false;
+    });
+
+    $.formAjaxClick = function (a, link) {
+        var $form = a.closest("form.ajax");
+        var $tablink = $form.closest("div.tab-pane");
+        var $modalbody = a.closest("div.modal-body");
+        var ahref = a.attr("href");
+        if (ahref === '#')
+            ahref = null;
+        var url = link
+            || a.data("link")
+            || ahref
+            || $form[0].action
+            || $tablink.data("link")
+            || $modalbody.data("target")
+            || '#';
+
+        if (a.data("size"))
+            $("input[name='PageSize']", $form).val(a.data("size"));
+        if (a.data("page"))
+            $("input[name='Page']", $form).val(a.data("page"));
+        if (a.data("sortby"))
+            $("input[name='Sort']", $form).val(a.data("sortby"));
+        if (a.data("dir"))
+            $("input[name='Direction']", $form).val(a.data("dir"));
+        var $tabinit = $form.closest("div.tab-pane[data-init]");
+
+        var data = $form.serialize();
+        if (data.length === 0)
+            data = {};
+        if (!a.hasClass("validate") || $form.valid()) {
+            var isModal = $form.hasClass("modal-form");
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: data,
+                beforeSend: function () {
+                    if (isModal == false)
+                        $.block();
+                },
+                complete: function () {
+                    $.unblock();
+                },
+                success: function (ret, status) {
+                    $.unblock();
+                    if (a.data("redirect"))
+                        window.location = ret;
+                    else if (isModal == true) {
+                        $form.html(ret).ready(function () {
+                            $.resizeModalBackDrop();
+                            $.AttachFormElements();
+                            if (a.data("callback"))
+                                $.InitFunctions[a.data("callback")]();
+                        });
+                    } else {
+                        var results = $($form.data("results") || $form);
+                        results.replaceWith(ret).ready(function () {
+                            $.AttachFormElements();
+                            if ($tabinit.data("init"))
+                                $.InitFunctions[$tabinit.data("init")]();
+                            if ($tabinit.data("init2"))
+                                $.InitFunctions[$tabinit.data("init2")]();
+                            if ($form.data("init"))
+                                $.InitFunctions[$form.data("init")]();
+                            if ($form.data("init2"))
+                                $.InitFunctions[$form.data("init2")]();
+                            if (a.data("callback"))
+                                $.InitFunctions[a.data("callback")]();
+                        });
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    $.unblock();
+                    swal("Error!", thrownError, "error");
+                }
+            });
+        }
+        return false;
+    };
+
+    $.validator.addMethod("unallowedcode", function (value, element, params) {
+        return value !== params.code;
+    }, "required, select item");
+
+    $.validator.addMethod("dateandtimevalid", function (value, element) {
+        var stamp = value.split(" ");
+        var validDate = !/Invalid|NaN/.test(new Date(stamp[0]).toString());
+        var validTime = /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?$/i.test(stamp[1]);
+        return this.optional(element) || (validDate && validTime);
+    }, "Please enter a valid date and time.");
+
     $('body').on('click', 'a.dialog-options', function (ev) {
         ev.preventDefault();
         var $a = $(this);
@@ -8,6 +250,7 @@
         var dialog = $a.data("target") || this.href;
         $.dialogOptions(dialog, $a);
     });
+
     $.dialogOptions = function (dialog, $a) {
         $("<div id='dialog-options' />").load(dialog, {}, function () {
             var d = $(this);
@@ -61,191 +304,59 @@
         return false;
     };
 
-    $.AttachFormElements = function () {
-        //$("form.ajax input.ajax-typeahead").typeahead({
-        //    minLength: 3,
-        //    remote: {
-        //        url: "test",
-        //        beforeSend: function (jqXhr, settings) {
-        //            $.SetLoadingIndicator();
-        //        },
-        //        replace: function (url, uriEncodedQuery) {
-        //            return $("input:focus").data("link") + "?query=" + uriEncodedQuery;
-        //        }
-        //    }
-        //});
-        //$.DatePickersAndChosen();
-        $.InitializeDateElements();
-    };
+    $('body').on('click', 'a.longrunop', function (ev) {
+        ev.preventDefault();
+        var data = {};
+        if ($(this).data("post"))
+            data = $(this).closest("form").serializeArray();
+        $('<form class="modal form-horizontal ajax validate fade hide" />').load(this.href, data, function () {
+            var f = $(this);
+            var callback = $("#callback", f).val();
+            f.modal("show");
+            var tm = 250; // initial timeout
+            f.on('hidden', function () {
+                tm = 0;
+                f.remove();
+                if (callback)
+                    $.InitFunctions[callback]();
+            });
+            f.on("click", "a.ajaxreloader", function (event) {
+                event.preventDefault();
+                var href = this.href;
+                var postdata = f.serialize() || {};
+                var myloop = function () {
+                    $.post(href, postdata, function (ret) {
+                        postdata = f.serialize();
+                        f.html(ret);
+                        if ($("#finished", f).val())
+                            tm = 0;
+                        if (tm > 0) {
+                            tm += 500;
+                            if (tm > 3000)
+                                tm = 3000;
+                            setTimeout(myloop, tm);
+                        }
+                    });
+                }
+                setTimeout(myloop, tm);
+                return false;
+            });
+        });
+        return false;
+    });
 
-    //$.DatePickersAndChosen = function () {
-    //    $("form.ajax .date").datepicker({
+    if (!$.InitFunctions)
+        $.InitFunctions = {};
+
+    //$.fn.jqdatepicker = function () {
+    //    this.datepicker({
     //        autoclose: true,
     //        orientation: "auto",
     //        forceParse: false,
     //        format: $.dtoptions.format
     //    });
-    //    $('form.ajax select:not([plain])').chosen();
-    //    $('form.ajax a.editable').editable();
+    //    return this;
     //};
-
-    $('body').on('click', 'ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor', function (event) {
-        var $this = $(this);
-        var alreadyClicked = $this.data('clicked');
-        if (alreadyClicked) {
-            return false;
-        }
-        $this.data('clicked', true);
-        var state = $this.attr("href") || $this.data("target");
-        var d = $(state);
-        var url = d.data("link");
-        if (!d.hasClass("loaded"))
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {},
-                beforeSend: function () {
-                    $.block();
-                },
-                complete: function () {
-                    $.unblock();
-                },
-                success: function (data, status) {
-                    d.addClass("loaded");
-                    d.html(data).ready(function () {
-                        var $form = d.find("form.ajax");
-                        if ($form.data("init")) {
-                            $.InitFunctions[$form.data("init")]();
-                        }
-                        if ($form.data("init2")) {
-                            $.InitFunctions[$form.data("init2")]();
-                        }
-                    });
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    $.unblock();
-                    swal("Error!", thrownError, "error");
-                }
-            });
-        return true;
-    });
-
-    $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {
-        event.preventDefault();
-        var d = $(this).closest("div.tab-pane");
-        $.formAjaxClick($(this), d.data("link"));
-        return false;
-    });
-
-    $('body').on('click', 'form.ajax a.submit', function (event) {
-        event.preventDefault();
-        var t = $(this);
-        if (t.data("confirm"))
-            swal({
-                title: "Are you sure?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            },
-            function () {
-                $.formAjaxSubmit(t);
-            });
-        else
-            $.formAjaxSubmit(t);
-        return false;
-    });
-
-    $.formAjaxSubmit = function (a) {
-        var $form = a.closest("form.ajax");
-        $form.attr("action", a[0].href);
-        $form.submit();
-    };
-
-    $('body').on('change', 'form.ajax select.ajax', function (event) {
-        event.preventDefault();
-        var t = $(this);
-        var link = t.data("link");
-        $.formAjaxClick(t, link);
-        return false;
-    });
-
-    $('body').on('click', 'form.ajax a.ajax', function (event) {
-        event.preventDefault();
-        var t = $(this);
-        if (t.data("confirm"))
-            swal({
-                title: "Are you sure?",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
-            },
-            function () {
-                $.formAjaxClick(t);
-            });
-        else
-            $.formAjaxClick(t);
-        return false;
-    });
-
-    $.formAjaxClick = function (a, link) {
-        var $form = a.closest("form.ajax");
-        var url = link || a.data("link");
-        if (typeof url === 'undefined')
-            url = a[0].href;
-        var data = $form.serialize();
-        if (data.length === 0)
-            data = {};
-        if (!a.hasClass("validate") || $form.valid()) {
-            var isModal = $form.hasClass("modal-form");
-
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: data,
-                beforeSend: function () {
-                    if (isModal == false)
-                        $.block();
-                },
-                complete: function () {
-                    $.unblock();
-                },
-                success: function (ret, status) {
-                    $.unblock();
-                    if (a.data("redirect"))
-                        window.location = ret;
-                    else if (isModal == true) {
-                        $form.html(ret).ready(function () {
-                            $.resizeModalBackDrop();
-                            $.AttachFormElements();
-                            if (a.data("callback"))
-                                $.InitFunctions[a.data("callback")]();
-                        });
-                    } else {
-                        var results = $($form.data("results") || $form);
-                        results.replaceWith(ret).ready(function () {
-                            $.AttachFormElements();
-                            if ($form.data("init"))
-                                $.InitFunctions[$form.data("init")]();
-                            if ($form.data("init2")) {
-                                $.InitFunctions[$form.data("init2")]();
-                            }
-                            if (a.data("callback"))
-                                $.InitFunctions[a.data("callback")]();
-                        });
-                    }
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    $.unblock();
-                    swal("Error!", thrownError, "error");
-                }
-            });
-        }
-        return false;
-    };
 
     $.resizeModalBackDrop = function () {
         // resize modal backdrop height.
@@ -259,11 +370,4 @@
             margin: 'auto'
         });
     };
-
-    $.validator.addMethod("unallowedcode", function (value, element, params) {
-        return value !== params.code;
-    }, "required, select item");
-
-    if (!$.InitFunctions)
-        $.InitFunctions = {};
 });
