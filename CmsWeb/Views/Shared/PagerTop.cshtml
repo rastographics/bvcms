@@ -8,7 +8,7 @@
         {
             if (Model.AjaxPager)
             {
-                <span>Show </span>@Html.DropDownList("Size", Model.PageSizeList(), new { @class = "form-control ajax", data_link = Model.URL })<span> rows</span>
+                <span>Show </span>@Html.DropDownList("Size", Model.PageSizeList(), new { @class = "form-control ajax" })<span> rows</span>
             }
             else
             {

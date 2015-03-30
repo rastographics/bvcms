@@ -169,12 +169,12 @@
         }
     });
 
-    $('a.ShareLink').on("click", function (e) {
-        e.preventDefault();
-        var d = $('#usersDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("open");
-    });
+    //$('a.ShareLink').on("click", function (e) {
+    //    e.preventDefault();
+    //    var d = $('#usersDialog');
+    //    $('iframe', d).attr("src", this.href);
+    //    d.dialog("open");
+    //});
     
 });
 

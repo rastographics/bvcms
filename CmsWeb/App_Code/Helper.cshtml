@@ -4,12 +4,23 @@
 {
   <a href="@href" @(target.HasValue() ? "target=" + target : "") @(id.HasValue() ? "id=" + id : "") @(style.HasValue() ? "class=" + style : "")>@text</a>
 }
+@helper AnchorLinkIcon(string text, string icon, string href, string id = null, string target = null, string style = null)
+{
+    <a href="@href" @(target.HasValue() ? "target=" + target : "") @(id.HasValue() ? "id=" + id : "") @(style.HasValue() ? "class=" + style : "")><i class="@icon"></i>&nbsp;&nbsp;@text</a>
+}
 @helper LiAnchorLink(string text, string url, bool display = true, string target = null)
 {
-  if (display)
-  {
-    <li>@Helper.AnchorLink(text, url, target: target)</li>
-  }
+    if (display)
+    {
+        <li>@Helper.AnchorLink(text, url, target: target)</li>
+    }
+}
+@helper LiAnchorLinkIcon(string text, string icon, string url, bool display = true, string target = null)
+{
+    if (display)
+    {
+        <li>@Helper.AnchorLinkIcon(text, icon, url, target: target)</li>
+    }
 }
 @helper LiHeader(string text, bool display = true)
 {

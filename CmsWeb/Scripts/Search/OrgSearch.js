@@ -284,7 +284,7 @@
         $("#orgsearchform").attr("target","_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
-        $.hideDropdowns();
+        //$.hideDropdowns();
         return false;
     });
     $('#newmeetings').click(function (ev) {

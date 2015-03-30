@@ -27,16 +27,16 @@ namespace CmsWeb.Models
             ShowPageSize = true;
         }
 
-        //        public string URL
-        //        {
-        //            get
-        //            {
-        //                if (!_url.HasValue())
-        //                    _url = "/{0}/{1}".Fmt(Controller(), Action());
-        //                return _url;
-        //            }
-        //            set { _url = value; }
-        //        }
+        //public string URL
+        //{
+        //    get
+        //    {
+        //        if (!_url.HasValue())
+        //            _url = "/{0}/{1}".Fmt(Controller(), Action());
+        //        return _url;
+        //    }
+        //    set { _url = value; }
+        //}
 
         public int DisplayCount = 0;
         public string Sort { get; set; }
