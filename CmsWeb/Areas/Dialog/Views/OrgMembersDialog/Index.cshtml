@@ -1,4 +1,4 @@
-﻿@model CmsWeb.Models.OrgMembersDialogModel
+﻿@model CmsWeb.Areas.Dialog.Models.OrgMembersDialogModel
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" >
 <head>
@@ -14,7 +14,7 @@
     @ViewExtensions2.jQueryUI()
     @Fingerprint.Script("/Scripts/jQuery/jquery-migrate-1.1.1.js")
     @Fingerprint.Script("/Scripts/jQuery/jquery.blockUI.js")
- 
+
     @ViewExtensions2.jqueryGlobalize()
     @Fingerprint.Script("/Scripts/jquery.validate.js")
     @Fingerprint.Script("/Scripts/additional-methods.js")
@@ -25,75 +25,75 @@
 </head>
 <body>
 <div class="container">
-  <form action="/OrgMembersDialog/Update" method="post">
-    @Html.Hidden("orgid")
-    @Html.Hidden("pendings")
-    @Html.Hidden("inactives")
-    @Html.Hidden("prospects")
-    <h4>@Model.title()</h4>
-    <a class="helplink" target="_blank" href='@Model.HelpLink()'>help</a>
-    <table class="roundbox">
+<form action="/OrgMembersDialog/Update" method="post">
+@Html.Hidden("orgid")
+@Html.Hidden("pendings")
+@Html.Hidden("inactives")
+@Html.Hidden("prospects")
+<h4>@Model.title()</h4>
+<a class="helplink" target="_blank" href='@Model.HelpLink()'>help</a>
+<table class="roundbox">
       <tr> <td colspan="4">
         <h2>Filter Members</h2></td> </tr>
-      <tr>
-        <th>Tag: </th>
+	<tr>
+		<th>Tag: </th>
         <td>@Html.DropDownList("tag", Model.Tags(), new {@class = "filter"})</td>
-        <td>Inactive Date:</td>
-        <td rowspan="2" class="right"><a id="ClearFilter" class="bt" href="#">clear</a></td>
-      </tr>
-      <tr>
-        <th>Member Type:</th>
+		<td>Inactive Date:</td>
+		<td rowspan="2" class="right"><a id="ClearFilter" class="bt" href="#">clear</a></td>
+	</tr>
+	<tr>
+		<th>Member Type:</th>
         <td>@Html.DropDownList("memtype", Model.MemberTypeCodesWithNotSpecified(), new {@class = "filter"})</td>
         <td nowrap="">@Html.TextBox("inactivedt", "", new {@class = "filter datepicker"})</td>
-      </tr>
-      <tr>
-      </tr>
+	</tr>
+	<tr>
+	</tr>
       <tr> <td colspan="4">
         <h2>New Values</h2></td></tr>
-      <tr><td colspan="4">
-          <table>
-            <tr>
-              <td class="right">Membertype:</td>
-              <td>@Html.DropDownList("MemberType", Model.MemberTypeCodesWithDrop())</td>
-              <td>Enrollment</td>
+    <tr><td colspan="4">
+			<table>
+				<tr>
+					<td class="right">Membertype:</td>
+					<td>@Html.DropDownList("MemberType", Model.MemberTypeCodesWithDrop())</td>
+					<td>Enrollment</td>
               <td nowrap="">@Html.TextBox("EnrollmentDate", "", new {@class = "datepicker", style = "width:100px"})</td>
-              <td>Add Pmt</td>
-              <td>@Html.TextBox("addpmt")</td>
-            </tr>
-            <tr>
-              <td colspan="2">
-                Pending:@Html.CheckBox("Pending")<br/>
-                MakeMemberTypes Original:@Html.CheckBox("MemTypeOriginal")
-              </td>
-              <td>InActive</td>
+					<td>Add Pmt</td>
+                    <td>@Html.TextBox("addpmt")</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						Pending:@Html.CheckBox("Pending")<br/>
+						MakeMemberTypes Original:@Html.CheckBox("MemTypeOriginal")
+					</td>
+					<td>InActive</td>
               <td nowrap="">@Html.TextBox("InactiveDate", "", new {@class = "datepicker", style = "width:100px"})</td>
-              <td>Reason:</td>
-              <td>@Html.TextBox("addpmtreason")</td>
-            </tr>
-          </table>
+					<td>Reason:</td>
+                    <td>@Html.TextBox("addpmtreason")</td>
+				</tr>
+			</table>
         </td>
-      </tr>
-    </table>
+    </tr>
+</table>
     <input id="SelectAll" type="checkbox"/> Select All
     <input id="submit" type="submit" class="bt" name="Update" class="bt blue" value="Update Selected"/>
-    <div>
-      <table class="@ViewExtensions2.GridClass">
-        <thead>
-        <tr>
-          <th>Select </th>
-          <th>Name </th>
-          <th>Age </th>
-          <th>Enrollment </th>
-          <th>MemberType </th>
-          <th>Inactive </th>
-        </tr>
-        </thead>
-        <tbody>
-        @Html.Partial("Rows", Model)
-        </tbody>
-      </table>
-    </div>
-  </form>
+<div>
+<table class="@ViewExtensions2.GridClass">
+    <thead>
+	<tr>
+		<th>Select </th>
+		<th>Name </th>
+		<th>Age </th>
+		<th>Enrollment </th>
+		<th>MemberType </th>
+		<th>Inactive </th>
+	</tr>
+	</thead>
+	<tbody>
+ @Html.Partial("Rows", Model) 
+    </tbody>
+</table>
+</div>
+</form>
 </div>
 </body>
 </html>

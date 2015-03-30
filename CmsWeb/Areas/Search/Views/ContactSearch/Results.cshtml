@@ -1,6 +1,6 @@
 ﻿@model CmsWeb.Areas.Search.Models.ContactSearchModel
 <div id="results">
-    @Html.Partial("PagerTop", Model.Pager)
+    @Html.Partial("PagerTop", Model)
     <div class="table-responsive">
         <table id="results-table" class="table table-striped">
             <thead>
@@ -30,6 +30,6 @@
             </tbody>
         </table>
     </div>
-    @Html.Partial("PagerBottom", Model.Pager)
+    @Html.Partial("PagerBottom", Model)
     @Html.Hidden("totcnt", Model.Count().ToString("N0"))
 </div>           

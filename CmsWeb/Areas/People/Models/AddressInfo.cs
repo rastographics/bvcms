@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data.Linq;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Web;
@@ -158,11 +159,14 @@ namespace CmsWeb.Areas.People.Models
         {
             return CodeValueModel.ConvertToSelect(CodeValueModel.GetStateList(), "Code");
         }
-        public static IEnumerable<SelectListItem> Countries()
+        public static IEnumerable<SelectListItem> Countries
         {
-            var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList(), null);
-            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
-            return list;
+            get
+            {
+                var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
+                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                return list;
+            }
         }
 
         public AddressInfo()

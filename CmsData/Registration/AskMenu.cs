@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,16 @@ namespace CmsData.Registration
 {
 	public class AskMenu : Ask
 	{
+	    public override string Help
+	    {
+	        get 
+            { return @"
+These will present a series of textboxes next to a label 
+allowing you to enter the number of items to purchase or select.
+You can optionally associate a fee with one or more items.
+"; 
+            }
+	    }
 		public string Label { get; set; }
 		public List<MenuItem> list { get; set; }
 
@@ -83,6 +94,7 @@ namespace CmsData.Registration
 		{
 			public string Name { get; set; }
 			public string Description { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 			public decimal? Fee { get; set; }
 			public int? Limit { get; set; }

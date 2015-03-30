@@ -17,7 +17,7 @@
                 switch (ret.how) {
                     case 'rebindgrids':
                         if (self.parent.RebindMemberGrids)
-                            self.parent.RebindMemberGrids($("#from").val());
+                            self.parent.RebindMemberGrids();
                         break;
                     case 'addselected':
                         if (self.parent.AddSelected)

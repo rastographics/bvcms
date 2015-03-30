@@ -1,47 +1,7 @@
 ﻿$(document).ready(function () {
-    $(document).on("click", "a.dialog-options", function (ev) {
-        ev.preventDefault();
-        var $a = $(this);
-        $("<div id='dialog-options' />").load($a.data("target"), function () {
-            var d = $(this);
-            var f = d.find("form");
-            if ($a[0].title)
-                f.find("h3.title").text($a[0].title);
-            f.modal("show");
-            f.attr("action", $a[0].href);
-            f.on('hidden', function () {
-                d.remove();
-            });
-            f.validate({
-                submitHandler: function (form) {
-                    if (form.method.toUpperCase() === 'GET') {
-                        form.submit();
-                    }
-                    else {
-                        var q = f.serialize();
-                        $.post(form.action, q, function (ret) {
-                            if (ret)
-                                $.growlUI("", ret);
-                            if ($a.data("callback")) {
-                                $.InitFunctions[$a.data("callback")]($a);
-                            }
-                        });
-                    }
-                    f.modal("hide");
-                },
-                highlight: function (element) {
-                    $(element).closest(".control-group").addClass("error");
-                },
-                unhighlight: function (element) {
-                    $(element).closest(".control-group").removeClass("error");
-                }
-            });
-        });
-        return false;
-    });
-
     if (!$.InitFunctions)
         $.InitFunctions = {};
+
     $.InitFunctions.TagAllCallBack = function (a) {
         $(".taguntag:visible").text("Remove");
     };

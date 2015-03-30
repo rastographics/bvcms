@@ -6,7 +6,7 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Org.Controllers
+namespace CmsWeb.Areas.Org2.Controllers
 {
     [ValidateInput(false)]
     [RouteArea("Org", AreaPrefix="RegSettings"), Route("{action=index}/{id?}")]

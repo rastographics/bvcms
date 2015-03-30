@@ -94,7 +94,7 @@ namespace CmsData
                 if (noreplacements)
                     texta[i] = "";
                 else
-                    texta[i] = DoReplaceCode(texta[i], p, pi, emailqueueto);
+                texta[i] = DoReplaceCode(texta[i], p, pi, emailqueueto);
 
             return string.Join("", texta);
         }
@@ -362,7 +362,7 @@ namespace CmsData
             if (!match.Success || !emailqueueto.OrgId.HasValue)
                 return code;
             var field = match.Groups["field"].Value;
-            var ev = db.OrganizationExtras.SingleOrDefault(ee => ee.Field == field && ee.OrganizationId == db.CurrentOrgId);
+            var ev = db.OrganizationExtras.SingleOrDefault(ee => ee.Field == field && ee.OrganizationId == db.CurrentOrg.Id);
             if (ev == null || !ev.Data.HasValue())
                 return null;
             return ev.Data;
@@ -520,7 +520,7 @@ namespace CmsData
                 return @"<a href=""{0}"" style=""{1}"">{2}</a>".Fmt(url, d["style"], inside);
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
-        
+
         private const string registerHrefReId = "href=\"https{0,1}://registerlink2{0,1}/(?<id>\\d+)\"";
         readonly Regex RegisterHrefReId = new Regex(registerHrefReId, RegexOptions.Singleline);
         private string RegisterLinkHref(string code, EmailQueueTo emailqueueto)

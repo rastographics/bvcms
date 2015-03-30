@@ -11,51 +11,52 @@
     };
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
 }
-<form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable">
-    <fieldset class="left-gutter margin-top">
-        <legend>Statements</legend>
-        <div class="inline left-gutter">
-            <table class="table not-wide table-condensed">
-                <thead>
-                    <tr>
-                        <th>Year</th>
-                        <th class="right">Count</th>
-                        <th class="right">Amount</th>
-                    </tr>
-                </thead>
-                @foreach (var year in ContributionsModel.Statements(Model.PeopleId))
-                {
-                    TotalAmount += year.Amount;
-                    TotalCount += year.Count;
-                    <tr>
-                        <td><a href="/Person2/ContributionStatement/@Model.PeopleId/@year.StartDate.ToSortableDate()/@year.EndDate.ToSortableDate()">@year.StartDate.Year</a></td>
-                        <td class="right">@year.Count.ToString("N0")</td>
-                        <td class="right">
-                            @if (finance)
-                            {
-                            <a href='/Contributions/@Model.PeopleId?year=@year.StartDate.Year'>@year.Amount.ToString("c")</a>
-                            }
-                            else
-                            {
-                            @year.Amount.ToString("c")
-                            }
-                        </td>
-                    </tr>
-                }
-                <tfoot>
-                    <tr>
-                        <td>Total</td>
-                        <td class="right">@TotalCount.ToString("N0")</td>
-                        <td class="right">@TotalAmount.ToString("c")</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-        <div class="inline left-gutter align-top well">
-            <p><b>Statement/Envelope Options</b></p>
-            @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable) 
-            @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
-            @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
-        </div>
-    </fieldset>
+<form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable" data-init2="ExtraEditable">
+  <fieldset class="left-gutter margin-top">
+    <legend>Statements</legend>
+    <div class="inline left-gutter">
+      <table class="table not-wide table-condensed">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th class="right">Count</th>
+            <th class="right">Amount</th>
+          </tr>
+        </thead>
+        @foreach (var year in ContributionsModel.Statements(Model.PeopleId))
+        {
+          TotalAmount += year.Amount;
+          TotalCount += year.Count;
+          <tr>
+            <td><a href="/Person2/ContributionStatement/@Model.PeopleId/@year.StartDate.ToSortableDate()/@year.EndDate.ToSortableDate()">@year.StartDate.Year</a></td>
+            <td class="right">@year.Count.ToString("N0")</td>
+            <td class="right">
+              @if (finance)
+              {
+                <a href='/Contributions/@Model.PeopleId?year=@year.StartDate.Year'>@year.Amount.ToString("c")</a>
+              }
+              else
+              {
+                @year.Amount.ToString("c")
+              }
+            </td>
+          </tr>
+        }
+        <tfoot>
+          <tr>
+            <td>Total</td>
+            <td class="right">@TotalCount.ToString("N0")</td>
+            <td class="right">@TotalAmount.ToString("c")</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="inline left-gutter align-top well">
+      <p><b>Statement/Envelope Options</b></p>
+      @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
+      @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+      @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+    </div>
+  </fieldset>
 </form>
+

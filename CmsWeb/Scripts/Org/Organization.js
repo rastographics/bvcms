@@ -1,67 +1,204 @@
-﻿onload = function () {
-    var e = document.getElementById("refreshed");
-    if (e.value == "no")
-        e.value = "yes";
-    else {
-        e.value = "no";
-        location.reload();
+﻿$(function () {
+    $('a[data-toggle="tab"]').on('shown', function (e) {
+        e.preventDefault();
+        var tab = $(e.target).attr('href').replace("#", "#tab-");
+        window.location.hash = tab;
+        $.cookie('lasttab', tab);
+        return false;
+    });
+    var lastTab = $.cookie('lasttab');
+    if (window.location.hash) {
+        lastTab = window.location.hash;
     }
-};
-$(function () {
-    $("#Settings-tab").tabs();
-    $("li.pending-list").hide();
-    $("li.current-list").show();
-    $("a.trigger-dropdown").dropdown2();
-    $("#main-tab").tabs({
-      activate: function(event, ui) {
-        var qid = "";
-
-        switch ($(ui.newTab[0]).text()) {
-            case "Members":
-                qid = $("#currentQid").val();
+    $("a[href='#Settings-tab']").on('shown', function (e) {
+        if ($("#SettingsOrg").length < 2) {
+            $("a[href='#SettingsOrg']").click().tab("show");
+        }
+    });
+    $("#tab-area > ul.nav-tabs > li > a").on('shown', function (e) {
+        switch ($(this).text()) {
+            case "People":
                 $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.current-list").show();
-                break;
-            case "Previous":
-                qid = $("#previousQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Pending":
-                qid = $("#pendingQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();;
-                $("li.pending-list").show();
-                break;
-            case "Inactive":
-            case "Senders":
-                qid = $("#inactiveQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Prospects":
-                qid = $("#prospectsQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
-                break;
-            case "Guests":
-                qid = $("#visitedQid").val();
-                $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
-                $("li.orgcontext").hide();
                 break;
             case "Settings":
             case "Meetings":
                 $("#bluetoolbarstop li > a.qid").parent().addClass("hidy");
                 break;
         }
-        if (qid) {
-            $("#bluetoolbarstop a.qid").each(function() {
-                $(this).attr("href", this.href.replace(/(.*\/)([^\/?]*)(\?[^?]*)?$/mg, "$1" + qid + "$3"));
-            });
-        }
-      }
     });
-    $("#main-tab").show();
+    if (lastTab) {
+        var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
+        var tabparent = tlink.closest("ul").data("tabparent");
+        if (tabparent) {
+            $("a[href='#" + tabparent + "']").click().tab("show");
+        }
+        if (tlink.attr("href") !== '#') {
+            $.cookie('lasttab', tlink.attr("href"));
+            tlink.click().tab("show");
+        }
+    }
+
+    $.InitFunctions.Editable = function () {
+        $("a.editable").editable();
+        $("a.editable-bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
+    };
+    $('a.click-pencil').live("click", function (e) {
+        e.stopPropagation();
+        $(this).prev().editable('toggle');
+        return false;
+    });
+    $("#excludesg").live("click", function (ev) {
+        ev.stopPropagation();
+        $(this).toggleClass("active");
+        if ($(this).hasClass("active"))
+            $("a.selectsg .fa-minus").show();
+        else
+            $("a.selectsg .fa-minus").hide();
+    });
+    $("a.selectsg").live("click", function (ev) {
+        ev.preventDefault();
+        var t = $(this).text();
+        var sg = $("#sgFilter").val();
+        switch (t) {
+            case "Match All":
+                sg = "All:" + sg;
+                break;
+            case "None Assigned":
+                sg = "None";
+                break;
+            default:
+                if (sg && sg !== "All:")
+                    sg = sg + ',';
+                if ($("#excludesg").hasClass("active"))
+                    t = '-' + t;
+                sg = sg + t;
+                break;
+        }
+        $("#sgFilter").val(sg);
+        $("#excludesg").removeClass("active");
+        $("a.selectsg .fa-minus").hide();
+        return false;
+    });
+    $("#showhide").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#ShowHidden").val($(this).hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
+    $("a.setfilter").live("click", function (ev) {
+        ev.preventDefault();
+        $("#FilterIndividuals").val(!$("#filter-ind").hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
+    $("#filter-ind").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#FilterIndividuals").val($(this).hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
+    $("#filter-tag").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#FilterTag").val($(this).hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
+    $("#clear-filter").live("click", function (ev) {
+        ev.preventDefault();
+        $("input[name='sgFilter']").val('');
+        $("input[name='nameFilter']").val('');
+        $("#FilterTag").val(false);
+        $("#FilterIndividuals").val(false);
+        RebindMemberGrids();
+    });
+    $("#ministryinfo").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#ShowMinistryInfo").val($(this).hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
+    $("#showaddress").live("click", function (ev) {
+        ev.preventDefault();
+        $(this).toggleClass("active");
+        $("#ShowAddress").val($(this).hasClass("active"));
+        RebindMemberGrids();
+        return false;
+    });
+    $("#multigroup").live("click", function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        $this.toggleClass('active');
+        var ismulti = $this.hasClass("active");
+        $("#MultiSelect").val(ismulti);
+        if (ismulti) {
+            $("#groupSelector button.dropdown-toggle").hide();
+            $("li.orgcontext").hide();
+        }
+        else {
+            $("#groupSelector button.grp.active").removeClass("active");
+            $("#groupSelector button[value='10']").addClass("active").closest("button.dropdown-toggle").show();
+            $("#GroupSelect").val("10");
+            $("#showhide").removeClass("active");
+            $("#ShowHidden").val($("#showhide").hasClass("active"));
+        }
+        RebindMemberGrids();
+        return false;
+    });
+    $("#groupSelector button.grp").live("click", function (event) {
+        event.preventDefault();
+        var $this = $(this);
+        if ($("#multigroup").hasClass("active")) {
+            $this.toggleClass('active');
+        } else {
+            $("#groupSelector button.grp.active").removeClass("active");
+            $("#groupSelector button.dropdown-toggle").hide();
+            $this.addClass("active");
+            $this.next().find("button.dropdown-toggle").show();
+            $("li.orgcontext").hide();;
+            switch ($this.text()) {
+                case "Members":
+                    $("li.current-list").show();
+                    break;
+                case "Pending":
+                    $("li.pending-list").show();
+                    break;
+            }
+        }
+        var $a = "";
+        $("#groupSelector button.grp.active").each(function () {
+            $a += $(this).val();
+        });
+        if ($a === "") {
+            $this.toggleClass("active");
+            return false;
+        }
+        $("#GroupSelect").val($a);
+        RebindMemberGrids();
+        return false;
+    });
+    var prevChecked = null;
+    $("input.omck").live("click", function (e) {
+        var pids = null;
+        if (e.shiftKey && prevChecked) {
+            var start = $("input.omck").index(this); // the one we just checked
+            var end = $("input.omck").index(prevChecked); // the prev one checked
+            pids = $("input.omck").slice(Math.min(start, end), Math.max(start, end) + 1);
+            pids.attr('checked', prevChecked.checked); // make them all the same as the lastChecked
+        } else {
+            pids = $(this);
+            prevChecked = this;
+        }
+        var a = pids.map(function () { return $(this).val(); }).get();
+        $.post("/Org/ToggleCheckboxes/{0}".format($("#Id").val()), {
+            pids: a,
+            chkd: prevChecked.checked
+        });
+    });
+
     $('#deleteorg').click(function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
@@ -120,8 +257,6 @@ $(function () {
         }
         return false;
     });
-    $(".bt").button();
-    $(".datepicker").jqdatepicker();
 
     $(".CreateAndGo").click(function (ev) {
         ev.preventDefault();
@@ -131,123 +266,113 @@ $(function () {
             });
         return false;
     });
-    $('#memberDialog').dialog({
-        title: 'Add Members Dialog',
-        bgiframe: true,
-        autoOpen: false,
-        zindex: 9999,
-        width: 750,
-        height: 700,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            $('iframe', this).attr("src", "");
-        }
-    });
-    $('#AddFromTag').dialog({
-        title: 'Add From Tag',
-        bgiframe: true,
-        autoOpen: false,
-        width: 750,
-        height: 650,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            $('iframe', this).attr("src", "");
-            RebindMemberGrids();
-        }
-    });
-    $('a.addfromtag').live("click", function (e) {
-        e.preventDefault();
-        var d = $('#AddFromTag');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", "Add Members From Tag");
-        d.dialog("open");
-    });
-    $('#LongRunOp').dialog({
-        bgiframe: true,
-        autoOpen: false,
-        width: 600,
-        height: 400,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            $('iframe', this).attr("src", "");
-            RebindMemberGrids();
-            $.updateTable($('#Meetings-tab form'));
-        }
-    });
-    $('#RepairTransactions').live("click", function (e) {
-        e.preventDefault();
-        var d = $('#LongRunOp');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", "Repair Transactions");
-        d.dialog("open");
-    });
-    $('a.delmeeting').live('click', function (ev) {
+    $('a.members-dialog').live("click", function (ev) {
+        var $a = $(this);
         ev.preventDefault();
-        if (confirm("delete meeting for sure?")) {
-            var d = $('#LongRunOp');
-            $('iframe', d).attr("src", this.href);
-            d.dialog("option", "title", "Delete Meeting");
-            d.dialog("open");
-        }
-        return false;
-    });
-
-
-    $('a.addmembers').live("click", function (e) {
-        e.preventDefault();
-        var d = $('#memberDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", "Add Members");
-        d.dialog("open");
-    });
-    $('a.memberdialog').live("click", function (e) {
-        e.preventDefault();
-        var title;
-        var d = $('#memberDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", this.title || 'Edit Member Dialog');
-        d.dialog("open");
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            $.DatePickersAndChosen();
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+                RebindMemberGrids();
+            });
+        });
     });
 
     $("a.membertype").live("click", function (ev) {
         ev.preventDefault();
-        var href = this.href;
-        $("#member-dialog").css({ 'margin-top': '', 'top': '' })
-            .load(href, {}, function () {
-                $(this).modal("show");
-                $(this).on('hidden', function () {
-                    $(this).empty();
-                });
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+                RebindMemberGrids();
             });
+        });
     });
 
-    $("#inactive-link").click(function () {
-        $.showTable($('#Inactive-tab form'));
+    $("#orgpicklist").live("click", function (ev) {
+        ev.preventDefault();
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            $.initializeSelectOrgsDialog(f);
+
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+            });
+        });
     });
-    $("#prospects-link").click(function () {
-        $.showTable($('#Prospects-tab form'));
+//    $("a.notifylist").live("click", function (ev) {
+//        ev.preventDefault();
+//        $("<div />").load(this.href, {}, function () {
+//            var d = $(this);
+//            var f = d.find("form");
+//            f.modal("show");
+//            f.on('hidden', function () {
+//                d.remove();
+//                f.remove();
+//            });
+//        });
+//    });
+
+    $.initializeSelectOrgsDialog = function (f) {
+        $("#select-orgs #UpdateSelected").click(function (ev) {
+            ev.preventDefault();
+            var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
+                return $(this).val();
+            }).get().join(',');
+
+            UpdateSelectedOrgs(list, f);
+            return false;
+        });
+        $.SaveOrgIds = function (ev) {
+            var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
+                return $(this).val();
+            }).get().join(',');
+            $.post("/SearchOrgs/SaveOrgIds/" + $("#select-orgs #id").val(), { oids: list });
+        };
+        $('body').on('change', '#select-orgs input:checkbox', $.SaveOrgIds);
+    };
+
+    function UpdateSelectedOrgs(list, f) {
+        $.post("/Org/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
+            $("#orgpickdiv").html(ret);
+            f.modal("hide");
+        });
+    }
+
+    $("#divisionlist").live("click", function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        $("<div />").load(a.attr("href"), {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function () {
+                a.load(a.data("refresh"), {});
+                d.remove();
+                f.remove();
+            });
+            f.on("change", "input:checkbox", function () {
+                $("input[name='TargetDivision']", f).val($(this).val());
+                $("input[name='Adding']", f).val($(this).is(":checked"));
+                $.formAjaxClick($(this), "/SearchDivisions/AddRemoveDiv");
+            });
+            f.on("click", "a.move", function () {
+                $("input[name='TargetDivision']", f).val($(this).data("moveid"));
+                $.formAjaxClick($(this), "/SearchDivisions/MoveToTop");
+            });
+        });
     });
-    $("#pending-link").click(function () {
-        $.showTable($('#Pending-tab form'));
-    });
-    $("#priors-link").click(function () {
-        $.showTable($('#Priors-tab form'));
-    });
-    $("#visitors-link").click(function () {
-        $.showTable($('#Visitors-tab form'));
-    });
-    $("#meetings-link").click(function () {
-        $.showTable($('#Meetings-tab form'));
-    });
+
     $.maxZIndex = $.fn.maxZIndex = function (opt) {
         var def = { inc: 10, group: "*" };
         $.extend(def, opt);
@@ -265,84 +390,73 @@ $(function () {
         });
     };
 
-    $.initDatePicker = function (f) {
-        $("ul.edit .datepicker", f).jqdatepicker({
-            //beforeShow: function () { $('#ui-datepicker-div').maxZIndex(); }
-        });
-//        $("ul.edit .timepicker", f).datepicker({
-//            stepHour: 1,
-//            stepMinute: 5,
-//            timeOnly: true,
-//            timeFormat: "hh:mm tt",
-//            controlType: "slider"
-//        });
-        $("ul.edit .datetimepicker", f).jqdatetimepicker({
-            stepHour: 1,
-            stepMinute: 15,
-            timeOnly: false,
-            timeFormat: "hh:mm tt",
-            controlType: "slider"
+    $.InitFunctions.popovers = function (f) {
+        $('[data-toggle="popover"]').popover({ html: true, placement: 'bottom' });
+
+        $('body').on('click', function (e) {
+            $('[data-toggle="popover"]').each(function () {
+                //the 'is' for buttons that trigger popups
+                //the 'has' for icons within a button that triggers a popup
+                if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+                    $(this).popover('hide');
+                }
+            });
         });
     };
-    $.showHideRegTypes = function (f) {
-        $("#Settings-tab").tabs('option', 'disabled', []);
-        $("#QuestionList li").show();
-        $(".yes6").hide();
+
+    $.InitFunctions.popovers();
+
+    $.InitFunctions.timepicker = function (f) {
+        $(".timepicker").datetimepicker({
+            format: "H:ii P",
+            showMeridian: true,
+            autoclose: true,
+            todayBtn: false,
+            pickerPosition: "bottom-left",
+            startView: 1,
+            minView: 0,
+            maxView: 1
+        });
+
+        $(".datetimepicker-hours table thead, .datetimepicker-minutes table thead").attr('style', 'display:block; overflow:hidden; height:0;');
+    };
+    $.InitFunctions.ReloadMeetings = function (f) {
+        $("#Meetings-tab").load("/Org/Meetings", { id: $("input[name=Id]", "#Meetings-tab").val() });
+    }
+    $.InitFunctions.showHideRegTypes = function (f) {
+        $("#Fees-tab").show();
+        $("#Questions-tab").show();
+        $("#Messages-tab").show();
+
+        $("#QuestionList").show();
+        $("#TimeSlotsList").hide();
         switch ($("#org_RegistrationTypeId").val()) {
             case "0":
-                $("#Settings-tab").tabs('option', 'disabled', [3, 4, 5]);
+                $("#Fees-tab").hide();
+                $("#Questions-tab").hide();
+                $("#Messages-tab").hide();
                 break;
             case "6":
-                $("#QuestionList > li").hide();
-                $(".yes6").show();
+                $("#QuestionList").hide();
+                $("#TimeSlotsList").show();
                 break;
         }
     };
-    $("#org_RegistrationTypeId").live("change", $.showHideRegTypes);
-    $.showHideRegTypes();
-    $("a.displayedit,a.displayedit2").live('click', function (ev) {
-        ev.preventDefault();
-        var f = $(this).closest('form');
-        $.post($(this).attr('href'), null, function (ret) {
-            $(f).html(ret).ready(function () {
-                $.initDatePicker(f);
-                $(".submitbutton,.bt", f).button();
-                $(".roundbox select", f).css("width", "100%");
-                $("#schedules", f).sortable({ stop: $.renumberListItems });
-                $("#editor", f);
-                $.regsettingeditclick(f);
-                $.showHideRegTypes();
-                $.updateQuestionList();
-                $("#selectquestions").dialog({
-                    title: "Add Question",
-                    autoOpen: false,
-                    width: 550,
-                    height: 250,
-                    modal: true
-                });
-                $('a.AddQuestion').click(function (ev) {
-                    var d = $('#selectquestions');
-                    d.dialog("open");
-                    ev.preventDefault();
-                    return false;
-                });
-                $(".helptip").tooltip({ showBody: "|" });
-            });
-        });
-        return false;
-    });
+    $("#org_RegistrationTypeId").live("change", $.InitFunctions.showHideRegTypes);
+
     $('#selectquestions a').live("click", function (ev) {
         ev.preventDefault();
-        $.post('/Organization/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
-            $('#selectquestions').dialog("close");
+        $.post('/Org/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
+            $('#addQuestions').modal('hide');
             $('html, body').animate({ scrollTop: $("body").height() }, 800);
             var newli = $("#QuestionList").append(ret);
-            $("#QuestionList > li:last").effect("highlight", {}, 3000);
-            $(".tip", newli).tooltip({ opacity: 0, showBody: "|" });
-            $.updateQuestionList();
+            $.InitFunctions.updateQuestionList();
+            $.InitFunctions.popovers();
+            $.InitFunctions.movequestions();
         });
         return false;
     });
+
     $("ul.enablesort a.del").live("click", function (ev) {
         ev.preventDefault();
         if (!$(this).attr("href"))
@@ -350,16 +464,7 @@ $(function () {
         $(this).parent().parent().parent().remove();
         return false;
     });
-    $("ul.enablesort a.delt").live("click", function (ev) {
-        ev.preventDefault();
-        if (!$(this).attr("href"))
-            return false;
-        if (confirm("are you sure?")) {
-            $(this).parent().parent().remove();
-            $.updateQuestionList();
-        }
-        return false;
-    });
+
     $.exceptions = [
         "AskDropdown",
         "AskCheckboxes",
@@ -369,7 +474,7 @@ $(function () {
         "AskMenu",
         "AskText"
     ];
-    $.updateQuestionList = function () {
+    $.InitFunctions.updateQuestionList = function () {
         $("#selectquestions li").each(function () {
             var type = this.className;
             var text = $(this).text();
@@ -378,10 +483,12 @@ $(function () {
             if ($.inArray(type, $.exceptions) >= 0 || $("li.type-" + type).length == 0)
                 $(this).html("<a href='#' type='" + type + "'>" + text + "</a>");
             else
-                $(this).html("<span>" + text + "</span>");
+                $(this).html("<span style='text-decoration: line-through;'>" + text + "</span>");
         });
     };
+
     $(".helptip").tooltip({ showBody: "|", blocked: true });
+
     $("form.DisplayEdit a.submitbutton").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
@@ -401,30 +508,31 @@ $(function () {
         });
         return false;
     });
-    $("#future").live('click', function () {
-        var f = $(this).closest('form');
-        var q = f.serialize();
-        $.post($(f).attr("action"), q, function (ret) {
-            $(f).html(ret);
-            $(".bt", f).button();
-        });
+
+    $("#Future").live('click', function () {
+        $.formAjaxClick($(this));
     });
-    $("#ShowProspects").live('click', function () {
-        var f = $(this).closest('form');
-        var q = f.serialize();
-        $.post($(f).attr("action"), q, function (ret) {
-            $(f).html(ret);
-            $(".bt", f).button();
-        });
-    });
+
+    //    $("input[name='showHidden']").live('click', function () {
+    //        $.formAjaxClick($(this));
+    //    });
+    //    $("#Future").live('click', function () {
+    //        $.formAjaxClick($(this));
+    //    });
+
+    /*
     $("form.DisplayEdit").submit(function () {
         if (!$("#submitit").val())
             return false;
         return true;
     });
+*/
+    $.InitFunctions.CreateMeeting = function ($a) {
+
+    };
     $('a.taguntag').live("click", function (ev) {
         ev.preventDefault();
-        $.post('/Organization/ToggleTag/' + $(this).attr('pid'), null, function (ret) {
+        $.post('/Org/ToggleTag/' + $(this).attr('pid'), null, function (ret) {
             $(ev.target).text(ret);
         });
         return false;
@@ -471,83 +579,35 @@ $(function () {
         }
     });
 
-    $.getTable = function (f) {
-        var q = q || f.serialize();
-        var ff = $("#FilterGroups form");
-        q = q + '&' + ff.serialize();
-        $.post(f.attr('action'), q, function (ret) {
-            $(f).html(ret).ready(function () {
-                $('.bt').button();
-                $(".datepicker").jqdatepicker();
-            });
-        });
-        return false;
-    };
-    $("a.filtergroupslink").live("click", function (ev) {
-        ev.preventDefault();
-        var f = $(this).closest("form");
-        $("#FilterGroups").dialog({
-            title: "Filter by Name, Small Groups",
-            width: "300px",
-            buttons: [{
-                "text": 'Cancel',
-                "class": 'bt',
-                "click": function () {
-                    $("#FilterGroups").dialog("close");
-                }
-            }, {
-                "text": 'Clear',
-                "class": 'bt green',
-                "click": function () {
-                    $("#namefilter").val('');
-                    $("#sgprefix").val('');
-                    $("#smallgrouplist").val(null);
-                    $.getTable(f);
-                    $("#FilterGroups").dialog("close");
-                }
-            }, {
-                "text": 'Ok',
-                "class": 'blue bt',
-                "click": function () {
-                    $.getTable(f);
-                    $("#FilterGroups").dialog("close");
-                }
-            }
-            ]
-        });
-        return false;
-    });
-    $("#namefilter").keypress(function (e) {
-        if ((e.keyCode || e.which) == 13) {
+    $("#nameFilter").live("keypress", function (e) {
+        if ((e.keyCode || e.which) === 13) {
             e.preventDefault();
-            var d = $("#FilterGroups").dialog();
-            buttons = d.dialog('option', 'buttons');
-            buttons[2].click();
+            RebindMemberGrids();
         }
         return true;
     });
+
     $("#addsch").live("click", function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
         if (href) {
             var f = $(this).closest('form');
             $.post(href, null, function (ret) {
-                $("#schedules", f).append(ret).ready(function () {
+                $("#schedules").append(ret).ready(function () {
+                    $.InitFunctions.timepicker();
                     $.renumberListItems();
-                    $.initDatePicker(f);
                 });
             });
         }
         return false;
     });
-    $("a.deleteschedule").live("click", function (ev) {
+
+    $("a.delete-well").live("click", function (ev) {
         ev.preventDefault();
-        var href = $(this).attr("href");
-        if (href) {
-            $(this).parent().remove();
-            $.renumberListItems();
-        }
+        $(this).closest("div.well").remove();
+        $.renumberListItems();
     });
+
     $.renumberListItems = function () {
         var i = 1;
         $(".renumberMe").each(function () {
@@ -555,12 +615,7 @@ $(function () {
             i++;
         });
     };
-    $("#NewMeetingDialog").dialog({
-        autoOpen: false,
-        width: 560,
-        height: 550,
-        modal: true
-    });
+    /*
     $('#RollsheetLink').live("click", function (ev) {
         ev.preventDefault();
         $('#grouplabel').text("By Group");
@@ -613,38 +668,7 @@ $(function () {
         });
         d.dialog('open');
     });
-    $('#NewMeeting').live("click", function (ev) {
-        ev.preventDefault();
-        $('#grouplabel').text("Group Meeting");
-        $("tr.forMeeting").show();
-        $("tr.forRollsheet").hide();
-        var d = $("#NewMeetingDialog");
-
-        var sch = $("#ScheduleListPrev").val();
-        if (sch) {
-            var a = sch.split(',');
-            $("#PrevMeetingDate").val(a[0]);
-            $("#NewMeetingTime").val(a[1]);
-            $("#AttendCreditList").val(a[2]);
-        }
-
-        d.dialog("option", "buttons", {
-            "Ok": function () {
-                var dt = $.GetPrevMeetingDateTime();
-                if (!dt.valid)
-                    return false;
-                var url = "?d=" + dt.date + "&t=" + dt.time +
-                "&group=" + ($('#group').is(":checked") ? "true" : "false");
-                $.post("/Organization/NewMeeting", { d: dt.date, t: dt.time, AttendCredit: $("#AttendCreditList").val(), group: $('#group').is(":checked") }, function (ret) {
-                    if (!ret.startsWith("error"))
-                        window.location = ret;
-                });
-                $(this).dialog("close");
-            }
-        });
-        d.dialog('open');
-        return false;
-    });
+    */
     $("#ScheduleListPrev").change(function () {
         var a = $(this).val().split(",");
         $("#PrevMeetingDate").val(a[0]);
@@ -679,62 +703,21 @@ $(function () {
         }
         return { date: d, time: t, valid: v };
     };
+
     $('a.joinlink').live('click', function (ev) {
         ev.preventDefault();
-        $.post($(this)[0].href,
-            function (ret) {
-                if (ret == "ok")
-                    RebindMemberGrids();
-                else
-                    alert(ret);
-            });
-        return false;
-    });
-    $('#divisionsDialog').dialog({
-        title: 'Select Divisions Dialog',
-        bgiframe: true,
-        autoOpen: false,
-        width: 690,
-        height: 650,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            $('iframe', this).remove();
-            var f = $("#orginfoform");
-            $.post("/Organization/OrgInfo/" + $("#OrganizationId").val(), null, function (ret) {
-                $(f).html(ret).ready(function () {
-                    $(".submitbutton,.bt").button();
+        var a = $(this);
+        bootbox.confirm(a.attr("confirm"), function (result) {
+            if (result) {
+                $.post(a[0].href, function (ret) {
+                    if (ret === "ok")
+                        RebindMemberGrids();
+                    else
+                        alert(ret);
                 });
-            });
-        }
-    });
-    $("#divisionlist").live("click", function (e) {
-        e.preventDefault();
-        $('#divisionsDialog').dialog("open");
-        var iframe = $("<iframe style='width: 100%; height: 99%; border-width: 0;'></iframe>").appendTo("#divisionsDialog");
-        iframe.attr("src", this.href);
-    });
-    $('#orgsDialog').dialog({
-        title: 'Select Orgs Dialog',
-        bgiframe: true,
-        autoOpen: false,
-        width: 690,
-        height: 650,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            $('iframe', this).attr("src", "");
-        }
-    });
-    $('#orgpicklist').live("click", function (e) {
-        e.preventDefault();
-        var d = $('#orgsDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("open");
+            }
+        });
+        return false;
     });
 
     $.extraEditable = function () {
@@ -756,41 +739,6 @@ $(function () {
         });
     };
     $.extraEditable();
-    $("#newvalueform").dialog({
-        autoOpen: false,
-        buttons: {
-            "Ok": function () {
-                var ck = $("#multiline").is(':checked');
-                var fn = $("#fieldname").val();
-                var v = $("#fieldvalue").val();
-                if (fn)
-                    $.post("/Organization/NewExtraValue/" + $("#OrganizationId").val(), { field: fn, value: v, multiline: ck }, function (ret) {
-                        if (ret.startsWith("error"))
-                            alert(ret);
-                        else {
-                            $("#extras > tbody").html(ret);
-                            $.extraEditable();
-                        }
-                        $("#fieldname").val("");
-                    });
-                $(this).dialog("close");
-            }
-        }
-    });
-    $("#newextravalue").live("click", function (ev) {
-        ev.preventDefault();
-        var d = $('#newvalueform');
-        d.dialog("open");
-    });
-    $("#TryRegDialog").dialog({
-        autoOpen: false,
-        width: 500
-    });
-    $("#tryreg").live("click", function (ev) {
-        ev.preventDefault();
-        var d = $('#TryRegDialog');
-        d.dialog("open");
-    });
     $("a.deleteextra").live("click", function (ev) {
         ev.preventDefault();
         if (confirm("are you sure?"))
@@ -804,7 +752,9 @@ $(function () {
             });
         return false;
     });
+
     // Add for ministrEspace
+    /*
     var submitDialog = $("#dialogHolder").dialog({ modal: true, width: 'auto', title: 'Select ministrEspace Event', autoOpen: false });
     $("#addMESEvent").click(function (ev) {
         ev.preventDefault();
@@ -821,27 +771,174 @@ $(function () {
         ev.preventDefault();
         $(submitDialog).dialog("close");
     });
+    */
+    $.updateTable = function (a) {
+        if (!a)
+            return false;
+        var $form = a.closest("form.ajax");
+        if ($form.length)
+            $.formAjaxClick(a);
+        return false;
+    };
+    $.InitFunctions.ReloadPeople = function () {
+        RebindMemberGrids();
+    };
+
+    $("body").on("click", 'div.newitem > a', function (ev) {
+        if (!$(this).attr("href"))
+            return false;
+        ev.preventDefault();
+        var a = $(this);
+        var f = a.closest("form");
+        $.post(a.attr("href"), null, function (ret) {
+            a.parent().prev().append(ret);
+            $.InitFunctions.movequestions();
+        });
+    });
+
+    function clearCuttingBoard() {
+        $('div.movable-list').each(function () {
+            $(this).children('div.movable').each(function () {
+                $(this).removeClass('cutting');
+            });
+        });
+    }
+
+    function initializeCutPaste() {
+        $('div.movable-list').each(function () {
+            if ($(this).children('div.movable').length <= 1) {
+                $(this).children('div.movable').find('div a.cut').addClass('disabled');
+            }
+            $(this).children('div.movable').find('div a.paste').addClass('disabled');
+        });
+    }
+
+    function enablePaste(ul) {
+        $(ul).children('div.movable').each(function () {
+            $(this).find('div a.paste').first().removeClass('disabled');
+        });
+    }
+
+    function enableDisableMoveUpward() {
+        $('div.movable-list').each(function () {
+            $(this).children('div.movable').find('div a.movetop').removeClass('disabled');
+            $(this).children('div.movable').find('div a.moveup').removeClass('disabled');
+            $(this).children('div.movable').first().find('div a.movetop').addClass('disabled');
+            $(this).children('div.movable').first().find('div a.moveup').addClass('disabled');
+        });
+    }
+
+    function enableDisableMoveDownward() {
+        $('div.movable-list').each(function () {
+            $(this).children('div.movable').find('div a.movebottom').removeClass('disabled');
+            $(this).children('div.movable').find('div a.movedown').removeClass('disabled');
+            $(this).children('div.movable').last().find('div a.movebottom').addClass('disabled');
+            $(this).children('div.movable').last().find('div a.movedown').addClass('disabled');
+        });
+    }
+
+    function moveItem(a, action, e) {
+        e.preventDefault();
+        if ($(a).hasClass('disabled')) {
+            return false;
+        }
+        var ul = $(a).closest('div.movable-list');
+        var liToMove = $(a).closest('div.movable');
+
+        switch (action) {
+            case 'top':
+                var liFirst = $(ul).children('div.movable').first();
+                $(liToMove).clone(true, true).insertBefore(liFirst);
+                break;
+            case 'up':
+                var liPrev = liToMove.prev('div.movable');
+                $(liToMove).clone(true, true).insertBefore(liPrev);
+                break;
+            case 'cut':
+                clearCuttingBoard();
+                $(liToMove).addClass('cutting');
+                enablePaste(ul);
+                return false;
+                break;
+            case 'paste':
+                var li = $(a).closest('div.movable');
+                liToMove = $(ul).children('div.cutting').first();
+                $(liToMove).clone(true, true).insertAfter(li);
+                break;
+            case 'down':
+                var liNext = liToMove.next('div.movable');
+                $(liToMove).clone(true, true).insertAfter(liNext);
+                break;
+            case 'bottom':
+                var liLast = $(ul).children('div.movable').last();
+                $(liToMove).clone(true, true).insertAfter(liLast);
+                break;
+            case 'delconfirm':
+                if (!$(a).attr("href"))
+                    return false;
+                if (!confirm("are you sure?")) {
+                    return false;
+                }
+                break;
+            case 'delete':
+                if (!$(a).attr("href"))
+                    return false;
+                break;
+        }
+
+        $(liToMove).remove();
+        $.InitFunctions.updateQuestionList();
+        $.InitFunctions.movequestions();
+    }
+
+    $.InitFunctions.movequestions = function () {
+        clearCuttingBoard();
+        initializeCutPaste();
+        enableDisableMoveUpward();
+        enableDisableMoveDownward();
+
+        $('body a.movetop').off().on('click', function (e) {
+            moveItem($(this), 'top', e);
+        });
+
+        $('body a.moveup').off().on('click', function (e) {
+            moveItem($(this), 'up', e);
+        });
+
+        $('body a.cut').off().on('click', function (e) {
+            moveItem($(this), 'cut', e);
+        });
+
+        $('body a.paste').off().on('click', function (e) {
+            moveItem($(this), 'paste', e);
+        });
+
+        $('body a.movedown').off().on('click', function (e) {
+            moveItem($(this), 'down', e);
+        });
+
+        $('body a.movebottom').off().on('click', function (e) {
+            moveItem($(this), 'bottom', e);
+        });
+
+        $('body a.delconfirm').off().on('click', function (e) {
+            moveItem($(this), 'delconfirm', e);
+        });
+
+        $('body a.delete').off().on('click', function (e) {
+            moveItem($(this), 'delete', e);
+        });
+    };
+
+    $.InitFunctions.movequestions();
+
 });
-function RebindMemberGrids(from) {
-    $.updateTable($('#Members-tab form'));
-    $.updateTable($('#Inactive-tab form'));
-    $.updateTable($('#Pending-tab form'));
-    $.updateTable($('#Priors-tab form'));
-    $.updateTable($('#Prospects-tab form'));
-    $.updateTable($('#Visitors-tab form'));
-    $("#memberDialog").dialog("close");
+function RebindMemberGrids() {
+    $.formAjaxClick($("a.setfilter"));
 }
 function AddSelected() {
     RebindMemberGrids();
 }
 function CloseAddDialog(from) {
     $("#memberDialog").dialog("close");
-}
-function UpdateSelectedUsers(topid) {
-}
-function UpdateSelectedOrgs(list) {
-    $.post("/Organization/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
-        $("#orgpickdiv").html(ret);
-        $("#orgsDialog").dialog("close");
-    });
 }

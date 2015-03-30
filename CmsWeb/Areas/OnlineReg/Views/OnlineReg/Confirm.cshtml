@@ -4,15 +4,15 @@
 @using UtilityExtensions
 @{
   Layout = "~/Views/Shared/onlinereg2.cshtml";
-  ViewBag.Title = "Online Registration";
+    ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-  <script type="text/javascript">
-    $.dateFormat = '@Util.jQueryDateFormat';
-    $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-    $.tmout = parseInt('@Model.TimeOut');
-  </script>
+    <script type="text/javascript">
+        $.dateFormat = '@Util.jQueryDateFormat';
+        $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
+        $.tmout = parseInt('@Model.TimeOut');
+    </script>
   @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
 }
 

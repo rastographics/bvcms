@@ -451,7 +451,7 @@ namespace CmsData.API
                 var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
                 if (om == null)
                     throw new Exception("no orgmember");
-                om.Drop(Db, addToHistory: true);
+                om.Drop(Db, DateTime.Now);
                 Db.SubmitChanges();
                 return @"<DropOrgMember status=""ok"" />";
             }
@@ -652,7 +652,7 @@ namespace CmsData.API
         public void SendVolunteerReminders(int id, bool sendall)
         {
             var org = Db.LoadOrganizationById(id);
-            DbUtil.Db.CurrentOrgId = id;
+            DbUtil.Db.SetCurrentOrgId(id);
             var setting = new Registration.Settings(org.RegSetting, Db, org.OrganizationId);
             setting.org = org;
             var currmembers = (from om in org.OrganizationMembers
@@ -752,7 +752,7 @@ namespace CmsData.API
         public void SendEventReminders(int id)
         {
             var org = Db.LoadOrganizationById(id);
-            Db.CurrentOrgId = id;
+            Db.SetCurrentOrgId(id);
             var setting = new Settings(org.RegSetting, Db, org.OrganizationId) { org = org };
             var currmembers = from om in org.OrganizationMembers
                               where (om.Pending ?? false) == false
@@ -812,7 +812,7 @@ namespace CmsData.API
             public string Orgname { get; set; }
             public string First { get; set; }
             public string Last { get; set; }
-            private readonly CmsData.OrganizationMember om;
+            private readonly OrganizationMember om;
             private readonly Settings setting;
 
             public SummaryInfo(CMSDataContext db, OrganizationMember om)

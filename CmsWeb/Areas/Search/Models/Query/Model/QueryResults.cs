@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<Person> DefineModelSort(IQueryable<Person> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Name":
                     return from p in q

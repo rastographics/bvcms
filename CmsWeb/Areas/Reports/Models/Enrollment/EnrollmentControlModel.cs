@@ -7,8 +7,9 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using CmsWeb.Areas.Org.Models;
 using CmsData;
+using CmsWeb.Areas.Search.Models;
+using CmsWeb.Code;
 using Dapper;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -76,8 +77,8 @@ ORDER BY na
                 sched = m.ScheduleId,
                 status = m.StatusId,
                 onlinereg = m.OnlineReg,
-                mainfellowship = m.TypeId == OrgSearchModel.OrgType.MainFellowship,
-                parentorg = m.TypeId == OrgSearchModel.OrgType.ParentOrg
+                mainfellowship = m.TypeId == CodeValueModel.OrgType.MainFellowship,
+                parentorg = m.TypeId == CodeValueModel.OrgType.ParentOrg
             });
             return q2.ToList();
         }

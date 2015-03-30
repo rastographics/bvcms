@@ -268,19 +268,19 @@ namespace CmsWeb.Models
                 var text = Setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"),
                     ignoreCase: true);
 //            text = text.Replace("{name}", person.Name, ignoreCase: true);
-                text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
-                text = text.Replace("{email}", person.EmailAddress, ignoreCase: true);
-                text = text.Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true);
-                text = text.Replace("{contact}", staff.Name, ignoreCase: true);
-                text = text.Replace("{contactemail}", staff.EmailAddress, ignoreCase: true);
-                text = text.Replace("{contactphone}", Organization.PhoneNumber.FmtFone(), ignoreCase: true);
-                text = text.Replace("{details}", details, ignoreCase: true);
+            text = text.Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true);
+            text = text.Replace("{email}", person.EmailAddress, ignoreCase: true);
+            text = text.Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true);
+            text = text.Replace("{contact}", staff.Name, ignoreCase: true);
+            text = text.Replace("{contactemail}", staff.EmailAddress, ignoreCase: true);
+            text = text.Replace("{contactphone}", Organization.PhoneNumber.FmtFone(), ignoreCase: true);
+            text = text.Replace("{details}", details, ignoreCase: true);
 
-                var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(orgid));
-                var mm = new EmailReplacements(DbUtil.Db, text, from);
-                text = mm.DoReplacements(person);
+            var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(orgid));
+            var mm = new EmailReplacements(DbUtil.Db, text, from);
+            text = mm.DoReplacements(person);
 
-                Util.SendMsg(Util.SysFromEmail, Util.Host, from, Setting.Subject, text,
+            Util.SendMsg(Util.SysFromEmail, Util.Host, from, Setting.Subject, text,
                     Util.EmailAddressListFromString(contributionEmail), 0, pid);
             }
 

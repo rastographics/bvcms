@@ -345,17 +345,18 @@ namespace CmsData
             return o;
         }
 
-        public static void AddAsPreviousMember(CMSDataContext db, int oid, int pid, int mbrid, DateTime joindt, DateTime dropdt)
+        public static void AddAsPreviousMember(CMSDataContext db, int oid, int pid, string orgname, int mbrid, DateTime joindt, DateTime dropdt, int userid)
         {
             db.EnrollmentTransactions.InsertOnSubmit(
                 new EnrollmentTransaction
                 {
                     OrganizationId = oid,
                     PeopleId = pid,
+                    OrganizationName = orgname,
                     MemberTypeId = mbrid,
                     TransactionDate = joindt,
                     TransactionTypeId = 1,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = userid,
                     CreatedDate = Util.Now,
                 });
             db.EnrollmentTransactions.InsertOnSubmit(
@@ -363,10 +364,11 @@ namespace CmsData
                 {
                     OrganizationId = oid,
                     PeopleId = pid,
+                    OrganizationName = orgname,
                     MemberTypeId = mbrid,
                     TransactionDate = dropdt,
                     TransactionTypeId = 5,
-                    CreatedBy = Util.UserId1,
+                    CreatedBy = userid,
                     CreatedDate = Util.Now,
                 });
             db.SubmitChanges();

@@ -1,0 +1,21 @@
+﻿@model AskSize
+@using CmsData.Registration
+<div class="table not-wide w100">
+  <label>
+    Sizes
+  </label>
+  @if (ViewBag.ShowHelp != false)
+  {
+    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+  }
+  @Html.DisplayFor(m => m.Label)
+  @Html.DisplayFor(m => m.AllowLastYear)
+  @Html.DisplayFor(m => m.Fee)
+  @foreach (var i in Model.list)
+  {
+    <div class="well not-wide margin-left-wide">
+      @Html.DisplayFor(m => i.Description)
+      @Html.DisplayForIf(m => i.SmallGroup, i.SmallGroup != i.Description)
+    </div>
+  }
+</div>

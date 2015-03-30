@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
-using System.Text.RegularExpressions;
 using System.Web;
 using CmsData;
 using Newtonsoft.Json;
@@ -216,7 +215,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 DbUtil.Db.CopySession();
                 var from = new MailAddress(p.EmailAddress ?? p.EmailAddress2, p.Name);
-                DbUtil.Db.CurrentOrgId = OrgId;
+                DbUtil.Db.SetCurrentOrgId(OrgId);
                 var gs = new GoerSupporter()
                 {
                     Created = DateTime.Now,
@@ -260,7 +259,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 DbUtil.Db.CopySession();
                 var from = new MailAddress(p.EmailAddress ?? p.EmailAddress2, p.Name);
-                DbUtil.Db.CurrentOrgId = OrgId;
+                DbUtil.Db.SetCurrentOrgId(OrgId);
                 var emailQueue = DbUtil.Db.CreateQueueForSupporters(p.PeopleId, from, Subject, Body, null, plist, false);
                 DbUtil.Db.SendPeopleEmail(emailQueue.Id);
             }
@@ -270,7 +269,6 @@ namespace CmsWeb.Areas.Org.Models
             }
             return null;
         }
-
         private void SendNoDbEmail(Person goer, GoerSupporter gs)
         {
             var sysFromEmail = Util.SysFromEmail;
@@ -288,10 +286,7 @@ namespace CmsWeb.Areas.Org.Models
                 var link = @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
                 text = text.Replace("{unsubscribe}", link, ignoreCase: true);
                 text = text.Replace("%7Bfromemail%7D", from.Address, ignoreCase: true);
-
-                var slink = DbUtil.Db.ServerLink("/OnlineReg/{0}?gsid={1}".Fmt(OrgId, gs.Id));
-                text = Regex.Replace(text, "https{0,1}://supportlink", slink, RegexOptions.IgnoreCase);
-
+                text = text.Replace("http://supportlink", DbUtil.Db.ServerLink("/OnlineReg/{0}?gsid={1}".Fmt(OrgId, gs.Id)), ignoreCase: true);
                 Util.SendMsg(sysFromEmail, DbUtil.Db.CmsHost, from, Subject, text, Util.ToMailAddressList(gs.NoDbEmail), gs.Id, null);
             }
             catch (Exception ex)

@@ -861,14 +861,10 @@ namespace CmsWeb.Areas.Public.Controllers
             var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == mpjo.peopleID && m.OrganizationId == mpjo.orgID);
 
             if (om == null && mpjo.join)
-            {
                 om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
-            }
 
             if (om != null && !mpjo.join)
-            {
-                om.Drop(DbUtil.Db, addToHistory: true);
-            }
+                om.Drop(DbUtil.Db);
 
             DbUtil.Db.SubmitChanges();
 

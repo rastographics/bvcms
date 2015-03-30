@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Org.Models;
 using CmsWeb.Models;
 using UtilityExtensions;
 using System.Collections.Generic;
@@ -118,7 +117,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			}
 			else if (pid.HasValue)
 			{
-				var leader = OrganizationModel.VolunteerLeaderInOrg(id.ToInt2());
+				var leader = OrganizationMember.VolunteerLeaderInOrg(DbUtil.Db, id.ToInt2());
 				if (leader)
 					m = new VolunteerModel(orgId: id.ToInt(), peopleId: pid.Value, leader: true);
 			}

@@ -5,6 +5,7 @@ using System.Net;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -44,11 +45,9 @@ namespace CmsWeb.Areas.People.Controllers
             return View("Emails/Optouts", p);
 		}
 
-        [HttpPost, Route("FailedEmails/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult FailedEmails(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult FailedEmails(FailedMailModel m)
         {
-            var m = new FailedMailModel(id);
-            m.Pager.Set("/Person2/FailedEmails/" + id, page, size, sort, dir);
             return View("Emails/Failed", m);
         }
 		[HttpPost, Route("EmailUnblock"), Authorize(Roles = "Admin")]
@@ -68,32 +67,24 @@ namespace CmsWeb.Areas.People.Controllers
 		    DbUtil.Db.SpamReporterRemove(email);
 			return Content(ret);
 		}
-        [HttpPost, Route("ReceivedEmails/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult ReceivedEmails(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult ReceivedEmails(EmailReceivedModel m)
         {
-            var m = new EmailReceivedModel(id);
-            m.Pager.Set("/Person2/ReceivedEmails/" + id, page, size, sort, dir);
             return View("Emails/Emails", m);
         }
-        [HttpPost, Route("SentEmails/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult SentEmails(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult SentEmails(EmailSentModel m)
         {
-            var m = new EmailSentModel(id);
-            m.Pager.Set("/Person2/SentEmails/" + id, page, size, sort, dir);
             return View("Emails/Emails", m);
         }
-        [HttpPost, Route("ScheduledEmails/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult ScheduledEmails(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult ScheduledEmails(EmailScheduledModel m)
         {
-            var m = new EmailScheduledModel(id);
-            m.Pager.Set("/Person2/ScheduledEmails/" + id, page, size, sort, dir);
             return View("Emails/Emails", m);
         }
-        [HttpPost, Route("TransactionalEmails/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult TransactionalEmails(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult TransactionalEmails(EmailTransactionalModel m)
         {
-            var m = new EmailTransactionalModel(id);
-            m.Pager.Set("/Person2/TransactionalEmails/" + id, page, size, sort, dir);
             return View("Emails/Emails", m);
         }
         [HttpGet, Route("ViewEmail/{emailid:int}")]

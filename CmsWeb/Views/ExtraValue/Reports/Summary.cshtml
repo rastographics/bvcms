@@ -42,10 +42,10 @@
                                     }
                                 </td>
                                 <td class="action">
-                                    <a class="rename btn btn-sm btn-default" data-default="@e.Field" href="/ExtraValue/RenameAll?field=@Server.UrlEncode(e.Field)"><i class="fa fa-pencil"></i> Rename</a>
+                                    <a class="rename btn btn-sm btn-default" data-default="@e.Field" href="@e.RenameAllUrl"><i class="fa fa-pencil"></i> Rename</a>
                                 </td>
                                 <td class="action">
-                                    <a class="delete btn btn-sm btn-danger" href="/ExtraValue/DeleteAll?field=@e.Field&type=@e.Type&value=@e.Value"><i class="fa fa-trash"></i> Delete</a>
+                                    <a class="delete btn btn-sm btn-danger" href="@e.DeleteAllUrl"><i class="fa fa-trash"></i> Delete</a>
                                 </td>
                             </tr>
                         }
@@ -58,12 +58,13 @@
                                 <td>@e.Value</td>
                                 <td>@e.TypeDisplay</td>
                                 <td class="text-right">@e.Count.ToString("N0")</td>
-                                <td>
+                                <td class="text-center">
                                     @if (e.Standard)
                                     {
-                                        @:Standard
-                        }
+                                        <i class="fa fa-check"></i>
+                                    }
                                 </td>
+                                <td></td>
                                 <td></td>
                             </tr>
                         }

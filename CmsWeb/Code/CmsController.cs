@@ -213,6 +213,12 @@ namespace CmsWeb
             this.pkg = pkg;
             this.fn = fn;
         }
+        public EpplusResult(string fn)
+        {
+            pkg = new ExcelPackage();
+            pkg.Workbook.Worksheets.Add("Sheet1");
+            this.fn = fn;
+        }
         public override void ExecuteResult(ControllerContext context)
         {
             context.HttpContext.Response.Clear();

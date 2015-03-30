@@ -3,4 +3,10 @@
 <dl>
     <dt>@Html.DisplayNameFor(m => m)</dt>
     <dd>@Html.Raw(Model.HasValue() ? Model : "&nbsp;")</dd>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+        <dd>
+            <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        </dd>
+    }
 </dl>

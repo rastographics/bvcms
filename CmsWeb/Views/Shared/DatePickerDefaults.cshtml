@@ -7,7 +7,10 @@
             return this.optional(element) || /@Util.jQueryDateValidation/.test(value);
         };
         $.dateFormat = '@Util.jQueryDateFormat';    
-        $.dtoptions = { format: '@Util.jQueryDateFormat' };
+        $.dtoptions = {
+           format: '@Util.jQueryDateFormat2',
+           formatTime: '@Util.jQueryDateFormat2WithTime'
+        };
         $.datepicker.setDefaults({
             dateFormat: $.dateFormat,
             changeMonth: true,

@@ -1,19 +1,12 @@
-﻿@using CmsWeb.Models
-@using CmsData
-@using UtilityExtensions
-@model SearchOrgsModel
+﻿@model CmsWeb.Areas.Dialog.Models.SearchOrgsModel
 @{
     var list = Model.OrgList();
 }
-<b>showing top @Model.listcount of @Model.count.ToString("N0")</b>
-<ul id="results" class="sort">
+<b>Showing top @Model.listcount of @Model.count.ToString("N0")</b>
 @foreach (var o in list)
-{ 
-    <li>
+{
+    <label class="checkbox">
         <input type="checkbox" @(o.IsChecked ? "checked='checked'" : "") value="@o.OrgId" />
-        <span title="Other Divisions|@o.Divisions" class="tip">@o.Division</span>
-        &mdash;
-        <span title="@o.OrgId" class="tip">@o.Name</span>
-    </li>
+        @o.Division &mdash; @o.Name
+    </label>
 }
-</ul>

@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
@@ -20,12 +19,15 @@ namespace CmsWeb.Areas.Org.Controllers
 
         [Route("~/Organization/{id:int}")]
         public ActionResult Index(int id)
-        {
+        {            
+            if(Util2.UseNewOrg)
+                return Redirect("/Org/" + id);
             if (Util2.CurrentOrgId != id)
             {
                 Util2.CurrentGroups = null;
                 Util2.CurrentGroupsPrefix = null;
                 Util2.CurrentGroupsMode = 0;
+                DbUtil.Db.SetCurrentOrgId(id);
             }
 
             var m = new OrganizationModel(id);
@@ -409,7 +411,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult OnlineRegFeesUpdate(int id)
         {
             var m = GetRegSettings(id);
-            m.OrgFees.list.Clear();
+            m.OrgFees.Clear();
             try
             {
                 DbUtil.LogActivity("Update OnlineRegFees {0}".Fmt(m.org.OrganizationName));
@@ -504,8 +506,8 @@ namespace CmsWeb.Areas.Org.Controllers
         }
         [HttpPost]
         public ActionResult NewOrgFee(string id)
-        {
-            return View("EditorTemplates/OrgFee", new OrgFees.OrgFee { Name = id });
+        {            
+            return View("EditorTemplates/OrgFee", new Settings.OrgFee() { Name = id });
         }
         [HttpPost]
         public ActionResult NewAgeGroup()
@@ -822,7 +824,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 ev.Data = mesEvent[1];
             }
             DbUtil.Db.SubmitChanges();
-            return RedirectToAction("Index", "Organization", new { id = id });
+            return RedirectToAction("Index", "Org2", new { id = id });
         }
 
         public ActionResult ReGenPaylinks(int id)
@@ -854,6 +856,12 @@ namespace CmsWeb.Areas.Org.Controllers
             if (meeting != null)
                 return Redirect("/Meeting/" + meeting.MeetingId);
             return Message("no meeting at " + dt.FormatDateTm());
+        }
+        [HttpPost]
+        public ActionResult DivisionList(int id)
+        {
+            var m = new OrganizationModel(id);
+            return View("DivisionList", m.Divisions());
         }
     }
 }

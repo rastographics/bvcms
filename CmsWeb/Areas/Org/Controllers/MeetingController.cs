@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 using System.Data.Linq;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
+using CmsWeb.Areas.Org.Models;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 currmembers = CurrentMembers ?? false,
                 showall = showall == true,
                 sortbyname = sortbyname == true,
-                showlarge = showlarge ?? false,
+                showlarge = showlarge ?? false
             };
             if (m.meeting == null)
                 return RedirectShowError("no meeting");
@@ -402,29 +402,28 @@ namespace CmsWeb.Areas.Org.Controllers
                 g.Groups[4].Value.ToInt(),
                 g.Groups[5].Value.ToInt(),
                 0);
-            var newMtg = DbUtil.Db.CreateMeeting(orgid, dt);
-//            var newMtg = DbUtil.Db.Meetings.FirstOrDefault(m => m.OrganizationId == orgid && m.MeetingDate == dt);
-//            if (newMtg == null)
-//            {
-//                var attsch = organization.OrgSchedules.SingleOrDefault(ss => ss.MeetingTime.Value.TimeOfDay == dt.TimeOfDay && ss.MeetingTime.Value.DayOfWeek == dt.DayOfWeek);
-//                int? attcred = null;
-//                if (attsch != null)
-//                    attcred = attsch.AttendCreditId;
-//                newMtg = new CmsData.Meeting
-//                {
-//                    CreatedDate = Util.Now,
-//                    CreatedBy = Util.UserId1,
-//                    OrganizationId = orgid,
-//                    GroupMeetingFlag = false,
-//                    Location = organization.Location,
-//                    MeetingDate = dt,
-//                    AttendCreditId = attcred,
-//                };
-//                DbUtil.Db.Meetings.InsertOnSubmit(newMtg);
-//                DbUtil.Db.SubmitChanges();
-//                DbUtil.LogActivity("Created new meeting for {0}".Fmt(organization.OrganizationName));
-//            }
-            return Content("/Meeting/{0}?showall=true".Fmt(newMtg));
+            var newMtg = DbUtil.Db.Meetings.FirstOrDefault(m => m.OrganizationId == orgid && m.MeetingDate == dt);
+            if (newMtg == null)
+            {
+                var attsch = organization.OrgSchedules.SingleOrDefault(ss => ss.MeetingTime.Value.TimeOfDay == dt.TimeOfDay && ss.MeetingTime.Value.DayOfWeek == dt.DayOfWeek);
+                int? attcred = null;
+                if (attsch != null)
+                    attcred = attsch.AttendCreditId;
+                newMtg = new CmsData.Meeting
+                {
+                    CreatedDate = Util.Now,
+                    CreatedBy = Util.UserId1,
+                    OrganizationId = orgid,
+                    GroupMeetingFlag = false,
+                    Location = organization.Location,
+                    MeetingDate = dt,
+                    AttendCreditId = attcred,
+                };
+                DbUtil.Db.Meetings.InsertOnSubmit(newMtg);
+                DbUtil.Db.SubmitChanges();
+                DbUtil.LogActivity("Created new meeting for {0}".Fmt(organization.OrganizationName));
+            }
+            return Content("/Meeting/{0}?showall=true".Fmt(newMtg.MeetingId));
         }
         public ActionResult QueryAttendees(int Id)
         {

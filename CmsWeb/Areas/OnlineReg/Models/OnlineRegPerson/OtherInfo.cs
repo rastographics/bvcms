@@ -119,12 +119,12 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem { Text = "(please select)", Value = "00" });
             return list;
         }
-        public static List<SelectListItem> ShirtSizes(CMSDataContext Db, Organization org)
+        public static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Organization org)
         {
             var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
             return ShirtSizes(setting);
         }
-        private static List<SelectListItem> ShirtSizes(Settings setting)
+        private static IEnumerable<SelectListItem> ShirtSizes(Settings setting)
         {
             var askSize = setting.AskItems.FirstOrDefault(aa => aa is AskSize) as AskSize;
             var q = from ss in askSize.list
@@ -139,7 +139,7 @@ namespace CmsWeb.Models
                 list.Add(new SelectListItem { Value = "lastyear", Text = "Use shirt from last year" });
             return list;
         }
-        public List<SelectListItem> ShirtSizes()
+        public IEnumerable<SelectListItem> ShirtSizes()
         {
             return ShirtSizes(setting);
         }

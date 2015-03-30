@@ -1,0 +1,14 @@
+﻿@model AskInstruction
+@using CmsData.Registration
+<div class="table not-wide w100">
+  <label class="ask-question">
+    Instruction 
+  </label>
+  @if (ViewBag.ShowHelp != false)
+  {
+    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+  }
+  <div class="maxWidthMedium">
+    @Html.DisplayFor(m => m.Label)
+  </div>
+</div>

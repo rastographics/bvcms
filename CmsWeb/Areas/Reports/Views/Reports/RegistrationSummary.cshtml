@@ -1,4 +1,5 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @model IEnumerable<CmsData.View.RecentRegistration>
 @{
     ViewBag.Title = "Registrations Summary Report";
@@ -24,7 +25,7 @@
                         <tr>
                             <td>@r.Dt1.FormatDate()</td>
                             <td>@r.Dt2.FormatDate()</td>
-                            <td class="text-right"><a href="/Organization/@r.OrganizationId">@r.Cnt.ToString2("N0")</a></td>
+                            <td class="text-right"><a href="@Util2.Org/@r.OrganizationId">@r.Cnt.ToString2("N0")</a></td>
                             <td class="text-center">
                                 @if (r.Completed.GetValueOrDefault())
                                 {

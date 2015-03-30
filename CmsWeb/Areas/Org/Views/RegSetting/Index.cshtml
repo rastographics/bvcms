@@ -5,7 +5,7 @@
   Layout = ViewExtensions2.Layout();
 }
 <div class="roundbox cell">
-  <h2>Registration Settings for <a href="/Organization/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
+  <h2>Registration Settings for <a href="/Org/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
   <form action="/RegSettings/Edit/@ViewData["OrganizationId"]" method="post">
     <input id="edit" type="submit" class="bt" value="Edit Text" />
     <a href="/RegSettings/ConvertFromMdy/@ViewBag.OrganizationId" class="bt">Convert From MDY</a>

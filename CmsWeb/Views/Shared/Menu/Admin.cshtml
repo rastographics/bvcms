@@ -41,7 +41,7 @@
                             @AdminList2(admin, design, managetrans, edit, manageemails, true, developer)
                         </ul>
                         <ul class="span3 unstyled pull-left">
-                            @AdminList1(admin, design, managetrans, edit, manageemails, true, developer)
+                            @AdminList1(admin, design, managetrans, edit, manageemails, finance: true, developer: developer)
                         </ul>
                     </div>
                 </li>
@@ -57,8 +57,8 @@
                             @AdminList2(admin, design, managetrans, edit, manageemails, finance:false, developer:developer)
                         </ul>
                         <ul class="span6 unstyled pull-left">
-                            @AdminList1(admin, design, managetrans, edit, manageemails, finance:false, developer:developer)
-                        </ul>
+                            @AdminList1(admin, design, managetrans, edit, manageemails, finance:false, developer: developer)
+l                        </ul>
                     </div>
                 </li>
             </ul>
@@ -74,9 +74,6 @@
     @Helper.LiAnchorLink("Settings", "/Settings/", admin)
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
-  
-    var usenewfeature = Util2.UseNewFeature;
-    @Helper.LiAnchorLink("New Feature is " + (usenewfeature ? "ON" : "OFF"), "/Home/UseNewFeature/" + usenewfeature, developer)
     
     @Helper.LiHeader("Reports", admin)
     @Helper.LiAnchorLink("Registration History", "/RegistrationSearch", admin)

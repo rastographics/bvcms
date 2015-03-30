@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using UtilityExtensions;
 using System.Text;
@@ -72,7 +73,7 @@ namespace CmsData.Registration
 		public string InstructionAll { get; set; }
 		public string ThankYouMessage { get; set; }
 
-		public OrgFees OrgFees { get; set; }
+		public List<OrgFee> OrgFees { get; set; }
 		public List<AgeGroup> AgeGroups { get; set; }
 		public TimeSlots TimeSlots { get; set; }
 		public List<int> LinkGroupsFromOrgs { get; set; }
@@ -106,11 +107,20 @@ namespace CmsData.Registration
 		public class AgeGroup
 		{
 			public int Id { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 			public int StartAge { get; set; }
 			public int EndAge { get; set; }
 			public decimal? Fee { get; set; }
 		}
+
+        public class OrgFee
+        {
+            public string Name;
+            [DisplayName("Org Id")]
+            public int? OrgId { get; set; }
+            public decimal? Fee { get; set; }
+        }
 
 		public Organization org { get; set; }
 		public int OrgId { get; set; }
@@ -118,7 +128,7 @@ namespace CmsData.Registration
 
 	    public Settings()
 		{
-			OrgFees = new OrgFees();
+	        OrgFees = new List<OrgFee>();
 			TimeSlots = new TimeSlots();
 			AgeGroups = new List<AgeGroup>();
 			LinkGroupsFromOrgs = new List<int>();
@@ -309,7 +319,7 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.OrgMemberFees:
 				case Parser.RegKeywords.OrgFees:
-					OrgFees = OrgFees.Parse(parser);
+					ParseOrgFees(parser);
 					break;
 				case Parser.RegKeywords.VoteTags:
 					ParseVoteTags(parser);
@@ -651,6 +661,32 @@ namespace CmsData.Registration
 				AgeGroups.Add(agegroup);
 			}
 		}
+		private void ParseOrgFees(Parser parser)
+		{
+			parser.lineno++;
+			if (parser.curr.indent == 0)
+				return;
+			var startindent = parser.curr.indent;
+			while (parser.curr.indent == startindent)
+			{
+				if (parser.curr.kw != Parser.RegKeywords.None)
+					throw parser.GetException("unexpected line");
+				var oid = parser.GetInt();
+				if (oid == 0)
+				{
+					parser.lineno--;
+					throw parser.GetException("invalid orgid");
+				}
+				var f = new OrgFee { OrgId = oid };
+				if (parser.curr.indent > startindent)
+				{
+					if (parser.curr.kw != Parser.RegKeywords.Fee)
+						throw parser.GetException("expected fee");
+					f.Fee = parser.GetDecimal();
+				}
+				OrgFees.Add(f);
+			}
+		}
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
@@ -663,7 +699,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit);
 			AddDonation(sb);
 			AddAgeGroups(sb);
-			OrgFees.Output(sb);
+			AddOrgFees(sb);
 			AddValueCk(0, sb, "OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee);
 			AddInstructions(sb);
 			AddTerms(sb);
@@ -723,6 +759,18 @@ namespace CmsData.Registration
 			{
 				AddValueCk(1, sb, "{0}-{1}".Fmt(i.StartAge, i.EndAge));
 				AddValueCk(2, sb, "SmallGroup", i.SmallGroup);
+				AddValueCk(2, sb, "Fee", i.Fee);
+			}
+			sb.AppendLine();
+		}
+		private void AddOrgFees(StringBuilder sb)
+		{
+			if (OrgFees.Count == 0)
+				return;
+			AddValueNoCk(0, sb, "OrgFees", "");
+			foreach (var i in OrgFees)
+			{
+				AddValueCk(1, sb, "{0}".Fmt(i.OrgId));
 				AddValueCk(2, sb, "Fee", i.Fee);
 			}
 			sb.AppendLine();
@@ -813,32 +861,6 @@ namespace CmsData.Registration
 		{
 			if (value.HasValue())
 				sb.AppendFormat("{0}{1}\n", new string('\t', n), value.Trim());
-		}
-		public class OrgPickInfo
-		{
-			public int OrganizationId { get; set; }
-			public string OrganizationName { get; set; }
-		}
-		public List<OrgPickInfo> OrganizationsFromIdString(Organization org)
-		{
-			var a = org.OrgPickList.SplitStr(",").Select(ss => ss.ToInt()).ToArray();
-			var d = new Dictionary<int, int>();
-			var n = 0;
-			foreach (var i in a)
-				d.Add(n++, i);
-			var q = (from o in Db.Organizations
-					 where a.Contains(o.OrganizationId)
-					 select new OrgPickInfo
-					 {
-						 OrganizationId = o.OrganizationId,
-						 OrganizationName = o.OrganizationName
-					 }).ToList();
-			var list = (from op in q
-						join i in d on op.OrganizationId equals i.Value into j
-						from i in j
-						orderby i.Key
-						select op).ToList();
-			return list;
 		}
 		public class MasterOrgInfo
 		{

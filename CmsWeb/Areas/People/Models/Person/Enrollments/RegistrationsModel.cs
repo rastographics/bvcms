@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web;
@@ -11,27 +12,25 @@ namespace CmsWeb.Areas.People.Models
 {
     public class RegistrationsModel
     {
-        public Person person;
-        private int peopleId;
-
-        [NoUpdate]
-        public int PeopleId
+        public int? PeopleId { get; set; }
+        public Person Person
         {
-            get { return peopleId; }
-            set
+            get
             {
-                peopleId = value;
-                person = DbUtil.Db.LoadPersonById(peopleId);
+                if (_person == null && PeopleId.HasValue)
+                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                return _person;
             }
         }
+        private Person _person;
 
         public RegistrationsModel(int id)
         {
-            person = DbUtil.Db.LoadPersonById(id);
-            var rr = person.SetRecReg();
+            PeopleId = id;
+            var rr = Person.SetRecReg();
             this.CopyPropertiesFrom(rr);
-            CustodyIssue = person.CustodyIssue ?? false;
-            OkTransport = person.OkTransport ?? false;
+            CustodyIssue = Person.CustodyIssue ?? false;
+            OkTransport = Person.OkTransport ?? false;
         }
         public RegistrationsModel() { }
 
@@ -87,13 +86,13 @@ namespace CmsWeb.Areas.People.Models
 
         public void UpdateModel()
         {
-            var rr = person.SetRecReg();
+            var rr = Person.SetRecReg();
             this.CopyPropertiesTo(rr);
-            person.CustodyIssue = CustodyIssue;
-            person.OkTransport = OkTransport;
+            Person.CustodyIssue = CustodyIssue;
+            Person.OkTransport = OkTransport;
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Updated RecReg: {0}".Fmt(person.Name));
+            DbUtil.LogActivity("Updated RecReg: {0}".Fmt(Person.Name));
         }
 
         public class GoerItem
@@ -106,7 +105,7 @@ namespace CmsWeb.Areas.People.Models
 
         public List<GoerItem> GoerList()
         {
-            return (from m in person.OrganizationMembers
+            return (from m in Person.OrganizationMembers
                     where m.Organization.IsMissionTrip == true
                     where m.Organization.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                     where m.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")

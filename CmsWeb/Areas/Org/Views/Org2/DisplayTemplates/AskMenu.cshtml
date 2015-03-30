@@ -1,0 +1,20 @@
+﻿@model AskMenu
+@using CmsData.Registration
+<div class="table not-wide w100">
+  <label>
+    Menu Items
+  </label>
+  @if (ViewBag.ShowHelp != false)
+  {
+    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+  }
+  @Html.DisplayFor(m => m.Label)
+  @foreach (var i in Model.list)
+  {
+    <div class="well not-wide margin-left-wide">
+      @Html.DisplayFor(m => i.Description)
+      @Html.DisplayForIf(m => i.SmallGroup, i.SmallGroup != i.Description)
+      @Html.DisplayForIf(m => i.Fee, i.Fee > 0)
+    </div>
+  }
+</div>

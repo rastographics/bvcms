@@ -9,4 +9,10 @@
     {
         <dd>&nbsp;</dd>
     }
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+        <dd>
+            <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        </dd>
+    }
 </dl>

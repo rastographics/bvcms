@@ -318,7 +318,7 @@ namespace CmsWeb.Models
             else
                 message = donationtext.Replace(message, "");
 
-            Db.CurrentOrgId = Orgid;
+            DbUtil.Db.SetCurrentOrgId(Orgid);
             // send confirmations
             if (subject != "DO NOT SEND")
                 Db.Email(NotifyIds[0].FromEmail, p0, elist,
@@ -468,7 +468,7 @@ AmountDue: {5:C}<br/>
                 message = message.Replace("{paid}", p.TotalAmount().ToString("c"));
                 message = message.Replace("{sessiontotal}", amtpaid.ToString("c"));
                 message = message.Replace("{participants}", details);
-                Db.CurrentOrgId = p.orgid;
+                Db.SetCurrentOrgId(p.orgid);
 
                 if (ti.Donate > 0)
                 {

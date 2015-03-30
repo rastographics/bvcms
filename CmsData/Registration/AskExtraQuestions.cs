@@ -8,6 +8,7 @@ namespace CmsData.Registration
 {
 	public class AskExtraQuestions : Ask
 	{
+	    public override string Help { get { return @"These questions can be answered with text."; } }
 		public List<ExtraQuestion> list { get; private set; }
 
 		public AskExtraQuestions()

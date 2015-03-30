@@ -6,13 +6,14 @@ using System.Linq;
 using System.Security;
 using System.Web.Mvc;
 using System.Xml.Linq;
+using CmsWeb.Areas.Dialog.Models;
 using CmsData;
 using CmsData.View;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
-using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Reports.Models;
 using CmsWeb.Areas.Reports.ViewModels;
+using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
 using Dapper;
 using MoreLinq;
@@ -150,7 +151,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult ClassList(string org, OrgSearchModel m)
         {
-            return new ClassListResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
+            return new ClassListResult(m) { orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null };
         }
 
         [HttpGet]
@@ -357,7 +358,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult OrgLeaders(string org, OrgSearchModel m)
         {
-            return new OrgLeadersResult(m) { orgid = org == "curr" ? Util2.CurrentOrgId : null };
+            return new OrgLeadersResult(m) { orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null };
         }
 
         [HttpGet]
@@ -388,21 +389,23 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new QueryStatsResult();
         }
 
-        public ActionResult RallyRollsheet(string org, string dt, int? meetingid, int? bygroup, string sgprefix,
-            bool? altnames, string highlight, OrgSearchModel m)
+        [HttpPost, Route("RallyRollsheetForOrg/{orgid:int}")]
+        public ActionResult RallyRollsheetForOrg(int orgid, NewMeetingInfo mi)
         {
-            DateTime? dt2 = dt.ToDate();
-
+            return new RallyRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
+        }
+        [HttpGet, Route("RallyRollsheetForMeeting/{meetingid:int}")]
+        public ActionResult RallyRollsheetForMeeting(int meetingid)
+        {
+            return new RallyRollsheetResult { meetingid = meetingid };
+        }
+        [HttpPost]
+        public ActionResult RallyRollsheets(NewMeetingInfo mi, OrgSearchModel m)
+        {
             return new RallyRollsheetResult
             {
-                orgid = org == "curr" ? Util2.CurrentOrgId : null,
-                groups = org == "curr" ? Util2.CurrentGroups : new[] { 0 },
-                meetingid = meetingid,
-                bygroup = bygroup.HasValue,
-                sgprefix = sgprefix,
-                dt = dt2,
-                altnames = altnames,
-                Model = m
+                OrgSearchModel = m,
+                NewMeetingInfo = mi
             };
         }
 
@@ -467,39 +470,27 @@ namespace CmsWeb.Areas.Reports.Controllers
             };
         }
 
-        [HttpGet]
-        [Route("Rollsheet")]
-        [Route("Rollsheet/{meetingid:int}")]
-        public ActionResult Rollsheet(int? meetingid, string org, string dt, int? bygroup, string sgprefix,
-            bool? altnames, string highlight)
+        [HttpPost, Route("RollsheetForOrg/{orgid:int}")]
+        public ActionResult RollsheetForOrg(int orgid, NewMeetingInfo mi)
         {
-            DateTime? dt2 = dt.ToDate();
             return new RollsheetResult
             {
-                orgid = org == "curr" ? Util2.CurrentOrgId : null,
-                groups = org == "curr" ? Util2.CurrentGroups : new[] { 0 },
-                meetingid = meetingid,
-                bygroup = bygroup.HasValue,
-                sgprefix = sgprefix,
-                dt = dt2,
-                altnames = altnames,
-                highlightsg = highlight,
+                orgid = orgid, 
+                NewMeetingInfo = mi,
             };
         }
-        [HttpPost]
-        public ActionResult Rollsheet(string dt, int? bygroup, string sgprefix,
-            bool? altnames, string highlight, OrgSearchModel m)
+        [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
+        public ActionResult RollsheetForMeeting(int meetingid)
         {
-            DateTime? dt2 = dt.ToDate();
+            return new RollsheetResult { meetingid = meetingid };
+        }
+        [HttpPost]
+        public ActionResult Rollsheets(NewMeetingInfo mi, OrgSearchModel m)
+        {
             return new RollsheetResult
             {
-                groups = new[] { 0 },
-                bygroup = bygroup.HasValue,
-                sgprefix = sgprefix,
-                dt = dt2,
-                altnames = altnames,
-                highlightsg = highlight,
-                Model = m
+                OrgSearchModel = m,
+                NewMeetingInfo = mi
             };
         }
 
@@ -540,9 +531,9 @@ namespace CmsWeb.Areas.Reports.Controllers
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
             var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
             var fields = (from ff in xml.Root.Descendants("Value")
-                          let vroles = ff.Attribute("VisibilityRoles")
-                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
-                          select ff.Attribute("Name").Value);
+                                          let vroles = ff.Attribute("VisibilityRoles")
+                                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
+                                          select ff.Attribute("Name").Value);
             var nodisplaycols = string.Join("|", fields);
 
             var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
@@ -612,7 +603,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult ShirtSizes(string org, OrgSearchModel m)
         {
-            int? orgid = org == "curr" ? Util2.CurrentOrgId : null;
+            int? orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null;
             IQueryable<Organization> orgs = m.FetchOrgs();
             IQueryable<ShirtSizeInfo> q = from om in DbUtil.Db.OrganizationMembers
                                           join o in orgs on om.OrganizationId equals o.OrganizationId

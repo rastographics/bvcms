@@ -8,14 +8,30 @@ namespace CmsWeb.Controllers
 {
     public partial class ExtraValueController
     {
-        [HttpGet, Route("ExtraValue/Summary")]
-        public ActionResult Summary()
+        [HttpGet, Route("ExtraValue/Summary/{table}")]
+        public ActionResult Summary(string table)
         {
-            var m = ReportsModel.CodeSummary();
+            var m = ExtraInfo.CodeSummary(table);
             var c = DbUtil.Db.Content("StandardExtraValues2", "<Views />", ContentTypeCode.TypeText);
             ViewBag.EvSpecId = c.Id;
             return View("Reports/Summary", m);
         }
+
+        [HttpPost, Route("ExtraValue/RenameAll/{table}")]
+        public ActionResult RenameAll(string table, string field, string newname )
+        {
+            ExtraInfo.RenameAll(table, field, newname);
+            return Content(newname);
+        }
+
+        [HttpPost, Route("ExtraValue/DeleteAll/{table}/{type}")]
+        public ActionResult DeleteAll(string table, string type, string field, string value)
+        {
+            var ret = ExtraInfo.DeleteAll(table, type, field, value);
+            return Content(ret);
+        }
+
+
 
         [HttpGet, Route("ExtraValue/Grid/{id}")]
         public ActionResult Grid(Guid id, string sort)
@@ -46,19 +62,18 @@ namespace CmsWeb.Controllers
             var cc = ReportsModel.QueryDataCondition(field, type);
             return Redirect("/Query/" + cc.Id);
         }
-
-        [HttpPost, Route("ExtraValue/DeleteAll")]
-        public ActionResult DeleteAll(string field, string type, string value)
+        [HttpGet, Route("ExtraValue/FamilyQueryCodes")]
+        public ActionResult FamilyQueryCodes(string field, string value)
         {
-            var ret = ReportsModel.DeleteAll(field, type, value);
-            return Content(ret);
+            var c = ReportsModel.FamilyQueryCodesCondition(field, value);
+            return Redirect("/Query/" + c.Id);
         }
 
-        [HttpPost, Route("ExtraValue/RenameAll")]
-        public ActionResult RenameAll(string field, string newname )
+        [HttpGet, Route("ExtraValue/FamilyQueryData")]
+        public ActionResult FamilyQueryData(string field, string type)
         {
-            ReportsModel.RenameAll(field, newname);
-            return Content(newname);
+            var cc = ReportsModel.FamilyQueryDataCondition(field, type);
+            return Redirect("/Query/" + cc.Id);
         }
     }
 }

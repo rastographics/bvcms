@@ -23,33 +23,34 @@
     });
     $("a.editaddr").live("click", function (ev) {
         ev.preventDefault();
-        $("#edit-address").css({ "margin-top": "", "top": "" })
-            .load($(this).attr("href"), {}, function () {
-                var modal = $(this);
-                modal.modal("show");
-                modal.on('hidden', function () {
-                    $(this).empty();
-                });
-                modal.on("click", "a.clear-address", function () {
-                    $("#AddressLineOne").val("");
-                    $("#AddressLineTwo").val("");
-                    $("#CityName").val("");
-                    $("#ZipCode").val("");
-                    $("#BadAddress").prop('checked', false); ;
-                    $("#StateCode_Value").val("");
-                    $("#StateCode_Value").trigger("chosen:updated");
-                    $("#ResCode_Value").val("0");
-                    $("#ResCode_Value").trigger("chosen:updated");
-                    $("#Country_Value").val("United States");
-                    $("#FromDt").val("");
-                    $("#ToDt").val("");
-                });
-                modal.on("click", "a.close-saved-address", function () {
-                    $.post($(this).attr("href"), {}, function (ret) {
-                        $("#profile-header").html(ret).ready(SetProfileEditable);
-                    });
+        $("<div />").load($(this).attr("href"), {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+            });
+            f.on("click", "a.clear-address", function () {
+                $("#AddressLineOne").val("");
+                $("#AddressLineTwo").val("");
+                $("#CityName").val("");
+                $("#ZipCode").val("");
+                $("#BadAddress").prop('checked', false);;
+                $("#StateCode_Value").val("");
+                $("#StateCode_Value").trigger("chosen:updated");
+                $("#ResCode_Value").val("0");
+                $("#ResCode_Value").trigger("chosen:updated");
+                $("#Country_Value").val("United States");
+                $("#FromDt").val("");
+                $("#ToDt").val("");
+            });
+            f.on("click", "a.close-saved-address", function () {
+                $.post($(this).attr("href"), {}, function (ret) {
+                    $("#profile-header").html(ret).ready(SetProfileEditable);
                 });
             });
+        });
     });
     $("a.personal-picture, a.family-picture").live("click", function (ev) {
         ev.preventDefault();
@@ -114,16 +115,19 @@
             });
         });
     });
-    $("form.ajax a.membertype").live("click", function (ev) {
+    $("a.membertype").live("click", function (ev) {
         ev.preventDefault();
-        var href = this.href;
-        $("#member-dialog").css({ 'margin-top': '', 'top': '' })
-            .load(href, {}, function () {
-                $(this).modal("show");
-                $(this).on('hidden', function () {
-                    $(this).empty();
-                });
+        var $a = $(this);
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+                $.RebindMemberGrids();
             });
+        });
     });
     $('a[data-toggle="tab"]').on('shown', function (e) {
         e.preventDefault();
@@ -187,10 +191,10 @@
             $.cookie('lasttab', id);
         }
     });
-//    $.validator.addMethod("ValidDate", function (value, element, params) {
-//        var v = $.DateValid(value);
-//        return this.optional(element) || v;
-//    }, "Please enter valid date");
+    //    $.validator.addMethod("ValidDate", function (value, element, params) {
+    //        var v = $.DateValid(value);
+    //        return this.optional(element) || v;
+    //    }, "Please enter valid date");
     $('#future').live("click", function (ev) {
         ev.preventDefault();
         var d = $(this).closest('div.loaded');
@@ -224,16 +228,18 @@
     var SetProfileEditable = function () {
         $(".popover-map").dropdown();
         $('#PositionInFamily').editable({
-            source: [{
-                value: 10,
-                text: "Primary Adult"
-            }, {
-                value: 20,
-                text: "Secondary Adult"
-            }, {
-                value: 30,
-                text: "Child"
-            }],
+            source: [
+                {
+                    value: 10,
+                    text: "Primary Adult"
+                }, {
+                    value: 20,
+                    text: "Secondary Adult"
+                }, {
+                    value: 30,
+                    text: "Child"
+                }
+            ],
             type: "select",
             url: "/Person2/PostData",
             name: "position"
@@ -281,6 +287,11 @@
                 $.growlUI("email unspamed", ret);
             });
     });
+    $.RebindMemberGrids = function() {
+        $("#refresh-current").click();
+        $("#refresh-pending").click();
+        $("#refresh-previous").click();
+    };
 });
 
 function AddSelected(ret) {
@@ -299,14 +310,11 @@ function AddSelected(ret) {
     }
 }
 
-function RebindMemberGrids() {
-    $("#refresh-current").click();
-    $("#refresh-pending").click();
-}
 function RebindUserInfoGrid() {
     $.updateTable($('#user-tab form'));
     $("#memberDialog").dialog('close');
 }
+
 function dialogError(arg) {
     return arg;
 }

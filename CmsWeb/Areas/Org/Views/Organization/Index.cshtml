@@ -15,8 +15,7 @@
 @section scripts
 {
   @ViewExtensions2.CKEditor()
-  @Fingerprint.Script("/Scripts/bundle.org.js")
-  @Fingerprint.Script("/Scripts/Org/OrgMemberDialog2.js")
+  @Fingerprint.Script("/Scripts/bundle.organization.js")
 }
 @Html.Hidden("refreshed", "no")
 @Html.Hidden("OrganizationId")
@@ -216,28 +215,23 @@
       </tr>
     </table>
   </div>
-  <div id="TryRegDialog" class="roundbox" style="display: none">
-    <table>
-      <tr>
-        <td>
-          <h2>Try Registration</h2>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <p>
+<div id="TryRegDialog" class="modal hide fade" tabindex="-1">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">×</button>
+        <h3>Try Registration</h3>
+    </div>
+    <div class="modal-body">
+        <div class="alert alert-info">
             Copy the following URL for the public registration link.
             If you want to see exactly what the user sees,
-            You should use the link below in a different browser.
+            you should use the link below in a different browser.
             Or log out first, then use the link.
-          </p>
-          <blockquote>
+        </div>
+        <blockquote>
             <a href="/OnlineReg/@o.OrganizationId" target="blank">@DbUtil.Db.ServerLink("/OnlineReg/" + o.OrganizationId)</a>
-          </blockquote>
-        </td>
-      </tr>
-    </table>
-  </div>
+        </blockquote>
+    </div>
+</div>
   <div id="memberDialog">
     <iframe id="memberDialogiframe" style="width: 100%; height: 99%; border-width: 0;"></iframe>
   </div>
@@ -253,15 +247,15 @@
       <input id="namefilter" name="namefilter" type="text" />
       <hr />
       <div>
-        <b>Small Group Prefix</b>
+        <b>Sub-Group Prefix</b>
       </div>
       <div>
-        Match on the first few letters of a small group. Lead with - to eliminate. Comma separate for more.
+        Match on the first few letters of a sub-group. Lead with - to eliminate. Comma separate for more.
       </div>
       <input id="sgprefix" name="sgprefix" type="text" />
       <hr />
       <div>
-        <b>Small Group Filter</b>
+        <b>Sub-Group Filter</b>
       </div>
       <div>
         <label>@Html.RadioButton("selectmode", "0") Match Any</label>

@@ -1,0 +1,21 @@
+﻿@model CmsData.Registration.Settings.AgeGroup
+@using CmsWeb
+@using (var ci = Html.BeginCollectionItem("AgeGroups"))
+{
+  <div class="well">
+    @Html.Raw(ci.hiddenindex)
+    @Html.HiddenFor(m => m.Id, new {@class = "renumberMe"})
+    <div class="control-group">
+      <label class="control-label">AgeGroup</label>
+        <div class="controls">
+          <p>
+            <a href="#" class="delete-well pull-right btn btn-mini btn-danger">delete</a>
+          </p>
+        </div>
+    </div>
+    @Html.EditorFor(m => m.StartAge)
+    @Html.EditorFor(m => m.EndAge)
+    @Html.EditorFor(m => m.SmallGroup) 
+    @Html.EditorFor(m => m.Fee) 
+  </div>
+}

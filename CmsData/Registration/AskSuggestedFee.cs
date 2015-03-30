@@ -5,6 +5,7 @@ namespace CmsData.Registration
 {
 	public class AskSuggestedFee : Ask
 	{
+	    public override string Help { get { return @"Allows the final fee to be adjusted to any amount (including zero)."; } }
 		public string Label { get; set; }
 		public AskSuggestedFee() : base("AskSuggestedFee") { }
 		public static AskSuggestedFee Parse(Parser parser)

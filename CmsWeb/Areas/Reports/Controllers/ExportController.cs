@@ -5,8 +5,8 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Reports.Models;
+using CmsWeb.Areas.Search.Models;
 using CmsWeb.Models;
 using Dapper;
 using MoreLinq;
@@ -139,7 +139,9 @@ namespace CmsWeb.Areas.Reports.Controllers
                 case "FamilyMembers":
                     return ExportPeople.FetchExcelListFamilyMembers(id);
                 case "OrgMembers":
-                    return OrgsMembersExcelModel.Export(Util2.CurrentOrgId ?? 0);
+                    return Util2.UseNewOrg 
+                        ? OrgsMembersExcelModel.Export() 
+                        : OrgsMembersExcelModel.Export(DbUtil.Db.CurrentOrgId0);
                 case "Groups":
                     return ExportInvolvements.OrgMemberListGroups();
             }

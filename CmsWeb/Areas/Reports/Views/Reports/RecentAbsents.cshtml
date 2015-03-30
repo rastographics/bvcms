@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<dynamic>
+@using CmsData
 @using CmsWeb
 @using UtilityExtensions
 @{
@@ -18,7 +19,7 @@
         <thead>
         <tr>
             <th colspan="6" class="left"><hr/>
-                <a href="/Organization/@item.OrganizationId">@item.OrganizationName</a> (@item.LeaderName) <br/>
+                <a href="@Util2.Org/@item.OrganizationId">@item.OrganizationName</a> (@item.LeaderName) <br/>
                 Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before @Util.FormatDate(item.lastmeeting)
                 <hr/>
             </th>

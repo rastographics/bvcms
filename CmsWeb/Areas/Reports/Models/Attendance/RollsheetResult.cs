@@ -6,14 +6,16 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using CmsWeb.Areas.Org.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;
 using UtilityExtensions;
 using System.Web.Mvc;
+using CmsWeb.Areas.Dialog.Models;
 using CmsData.Codes;
+using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -30,13 +32,9 @@ namespace CmsWeb.Areas.Reports.Models
             public string VisitorType { get; set; }
         }
 
-        public OrgSearchModel Model;
+        public OrgSearchModel OrgSearchModel;
+        public NewMeetingInfo NewMeetingInfo;
         public int? meetingid, orgid;
-        public int[] groups;
-        public bool? bygroup;
-        public bool? altnames;
-        public string sgprefix, highlightsg;
-        public DateTime? dt;
         bool pageSetStarted;
         private bool hasRows;
 
@@ -48,20 +46,16 @@ namespace CmsWeb.Areas.Reports.Models
             if (meetingid.HasValue)
             {
                 meeting = DbUtil.Db.Meetings.Single(mt => mt.MeetingId == meetingid);
-                dt = meeting.MeetingDate;
+                Debug.Assert(meeting.MeetingDate != null, "meeting.MeetingDate != null");
+                NewMeetingInfo = new NewMeetingInfo {MeetingDate = meeting.MeetingDate.Value};
                 orgid = meeting.OrganizationId;
             }
 
-            var list1 = bygroup == true ? ReportList2().ToList() : ReportList().ToList();
+            var list1 = NewMeetingInfo.ByGroup == true ? ReportList2().ToList() : ReportList().ToList();
 
             if (!list1.Any())
             {
                 Response.Write("no data found");
-                return;
-            }
-            if (!dt.HasValue)
-            {
-                Response.Write("bad date");
                 return;
             }
             Response.ContentType = "application/pdf";
@@ -86,10 +80,11 @@ namespace CmsWeb.Areas.Reports.Models
                 table.DefaultCell.Border = PdfPCell.NO_BORDER;
                 table.DefaultCell.Padding = 0;
                 table.WidthPercentage = 100;
+                var co = DbUtil.Db.CurrentOrg;
                 if (meeting != null)
                 {
                     var Groups = o.Groups;
-                    if (Groups[0] == 0)
+                    if (!Groups.HasValue())
                     {
                         var q = from at in meeting.Attends
                                 where at.AttendanceFlag == true || at.Commitment == AttendCommitmentCode.Attending || at.Commitment == AttendCommitmentCode.Substitute
@@ -97,7 +92,7 @@ namespace CmsWeb.Areas.Reports.Models
                                 select new
                                            {
                                                at.MemberType.Code,
-                                               Name2 = (altnames == true && at.Person.AltName != null && at.Person.AltName.Length > 0) ? at.Person.AltName : at.Person.Name2,
+                                               Name2 = NewMeetingInfo.UseAltNames && at.Person.AltName.HasValue() ? at.Person.AltName : at.Person.Name2,
                                                at.PeopleId,
                                                at.Person.DOB,
                                            };
@@ -108,21 +103,17 @@ namespace CmsWeb.Areas.Reports.Models
                     }
                     else
                     {
-                        var q = from at in meeting.Attends
-                                let om =
-                                    at.Organization.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == at.PeopleId)
-                                let gc = om.OrgMemMemTags.Count(mt => Groups.Contains(mt.MemberTagId))
-                                where gc == Groups.Length || Groups[0] <= 0
-                                where gc > 0
-                                where !Groups.Contains(-1) || (Groups.Contains(-1) && om.OrgMemMemTags.Count() == 0)
-                                where
-                                    at.AttendanceFlag == true || at.Commitment == AttendCommitmentCode.Attending ||
-                                    at.Commitment == AttendCommitmentCode.Substitute
+                        var comm = new[] {AttendCommitmentCode.Attending, AttendCommitmentCode.Substitute};
+                        var q = from at in DbUtil.Db.Attends
+                                where at.MeetingId == meeting.MeetingId
+                                join om in DbUtil.Db.OrgMember(orgid, GroupSelectCode.Member, null, null, Groups, showhidden: false) on at.PeopleId equals om.PeopleId into mm
+                                from om in mm.DefaultIfEmpty()
+                                where at.AttendanceFlag || comm.Contains(at.Commitment ?? 0 )
                                 orderby at.Person.LastName, at.Person.FamilyId, at.Person.Name2
                                 select new
                                            {
                                                at.MemberType.Code,
-                                               Name2 = (altnames == true && at.Person.AltName != null && at.Person.AltName.Length > 0) ? at.Person.AltName : at.Person.Name2,
+                                               Name2 = NewMeetingInfo.UseAltNames && at.Person.AltName.HasValue() ? at.Person.AltName : at.Person.Name2,
                                                at.PeopleId,
                                                at.Person.DOB,
                                            };
@@ -132,23 +123,48 @@ namespace CmsWeb.Areas.Reports.Models
                             table.AddCell(AddRow(a.Code, a.Name2, a.PeopleId, a.DOB, "", font));
                     }
                 }
-                else
+                else if (OrgSearchModel != null)
                 {
-                    var Groups = o.Groups;
-                    if (Groups == null)
-                        Groups = new int[] { 0 };
                     var q = from om in DbUtil.Db.OrganizationMembers
                             where om.OrganizationId == o.OrgId
-                            let gc = om.OrgMemMemTags.Count(mt => Groups.Contains(mt.MemberTagId))
-                            where gc == Groups.Length || Groups[0] <= 0
-                            where !Groups.Contains(-1) || (Groups.Contains(-1) && om.OrgMemMemTags.Count() == 0)
-                            where (om.Pending ?? false) == false
-                            where om.MemberTypeId != MemberTypeCode.InActive
-                            where om.MemberTypeId != MemberTypeCode.Prospect
+                        join m in DbUtil.Db.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
+                        where om.EnrollmentDate <= Util.Now
+                        orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
+                        let p = om.Person
+                        let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
+                        select new
+                        {
+                            PeopleId = p.PeopleId,
+                            Name2 = ch ? p.AltName : p.Name2,
+                            BirthDate = Util.FormatBirthday(
+                                p.BirthYear,
+                                p.BirthMonth,
+                                p.BirthDay),
+                            MemberTypeCode = om.MemberType.Code,
+                            ch,
+                            highlight =
+                                om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup)
+                                    ? NewMeetingInfo.HighlightGroup
+                                    : ""
+                        };
+                    if (q.Any())
+                        StartPageSet(o);
+                    foreach (var m in q)
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
+
+                }
+                else if(co.GroupSelect == GroupSelectCode.Member)
+                {
+                    var Groups = NewMeetingInfo.ByGroup == true ? o.Groups : co.SgFilter;
+                    var q = from om in DbUtil.Db.OrganizationMembers
+                        where om.OrganizationId == orgid
+                        join m in DbUtil.Db.OrgPeople(orgid, co.GroupSelect,
+                            co.First(), co.Last(), Groups, co.ShowHidden,
+                            co.FilterIndividuals, co.FilterTag) on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
                             orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
                             let p = om.Person
-                            let ch = altnames == true && p.AltName != null && p.AltName.Length > 0
+                        let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
                             select new
                             {
                                 PeopleId = p.PeopleId,
@@ -159,17 +175,53 @@ namespace CmsWeb.Areas.Reports.Models
                                     p.BirthDay),
                                 MemberTypeCode = om.MemberType.Code,
                                 ch,
-                                highlight = om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == highlightsg) ? highlightsg : ""
+                            highlight =
+                                om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup)
+                                    ? NewMeetingInfo.HighlightGroup
+                                    : ""
+                        };
+                    if (q.Any())
+                        StartPageSet(o);
+                    foreach (var m in q)
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
+                }
+                else
+                {
+                        var q = from m in DbUtil.Db.OrgPeople(orgid, co.GroupSelect,
+                                co.First(), co.Last(), co.SgFilter, co.ShowHidden,
+                                co.FilterIndividuals, co.FilterTag)
+                            orderby m.Name2
+                            let p = DbUtil.Db.People.Single(pp => pp.PeopleId == m.PeopleId)
+                            let om = p.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == orgid)
+                            let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
+                            select new
+                            {
+                                p.PeopleId,
+                                Name2 = ch ? p.AltName : p.Name2,
+                                BirthDate = Util.FormatBirthday(
+                                    p.BirthYear,
+                                    p.BirthMonth,
+                                    p.BirthDay),
+                                MemberTypeCode = om == null ? "Guest" : om.MemberType.Code,
+                                ch,
+                                highlight = om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup) ? NewMeetingInfo.HighlightGroup : ""
                             };
                     if (q.Any())
                         StartPageSet(o);
                     foreach (var m in q)
                         table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
                 }
-
-                if (bygroup == false && groups[0] == 0 && meeting == null)
+                if (OrgSearchModel != null
+                   || (co != null 
+                        && co.GroupSelect == GroupSelectCode.Member 
+                        && meeting == null
+                        && !co.SgFilter.HasValue() 
+                        && !co.NameFilter.HasValue() 
+                        && !co.FilterIndividuals
+                        && !co.FilterTag
+                        && NewMeetingInfo.ByGroup == false))
                 {
-                    foreach ( var m in RollsheetModel.FetchVisitors(o.OrgId, dt.Value, NoCurrentMembers: true, UseAltNames: altnames == true))
+                    foreach ( var m in RollsheetModel.FetchVisitors(o.OrgId, NewMeetingInfo.MeetingDate, NoCurrentMembers: true, UseAltNames: NewMeetingInfo.UseAltNames))
                     {
                         if(table.Rows.Count == 0)
                             StartPageSet(o);
@@ -201,28 +253,6 @@ namespace CmsWeb.Areas.Reports.Models
                         doc.NewPage();
                     }
                 }
-
-//                foreach (var li in list)
-//                {
-//                    y = ct.YLine;
-//                    ct.AddElement(li);
-//                    status = ct.Go(true);
-//                    if (ColumnText.HasMoreText(status))
-//                    {
-//                        ++col;
-//                        if (col > 1)
-//                        {
-//                            col = 0;
-//                            doc.NewPage();
-//                        }
-//                        ct.SetSimpleColumn(cols[col]);
-//                        y = doc.Top;
-//                    }
-//                    ct.YLine = y;
-//                    ct.SetText(null);
-//                    ct.AddElement(li);
-//                    status = ct.Go();
-//                }
             }
             if (!hasRows)
             {
@@ -266,8 +296,8 @@ namespace CmsWeb.Areas.Reports.Models
 //            }
             pageEvents.StartPageSet(
                                     "{0}: {1}, {2} ({3})".Fmt(o.Division, o.Name, o.Location, o.Teacher),
-                                    "{0:f} ({1})".Fmt(dt, o.OrgId),
-                                    "M.{0}.{1:MMddyyHHmm}".Fmt(o.OrgId, dt));
+                                    "{0:f} ({1})".Fmt(NewMeetingInfo.MeetingDate, o.OrgId),
+                                    "M.{0}.{1:MMddyyHHmm}".Fmt(o.OrgId, NewMeetingInfo.MeetingDate));
         }
         private PdfPTable AddRow(string Code, string name, int pid, string dob, string highlight, Font font)
         {
@@ -311,13 +341,13 @@ namespace CmsWeb.Areas.Reports.Models
             public string Name { get; set; }
             public string Teacher { get; set; }
             public string Location { get; set; }
-            public int[] Groups { get; set; }
+            public string Groups { get; set; }
         }
         private IEnumerable<OrgInfo> ReportList()
         {
-            var orgs = Model == null
+            var orgs = OrgSearchModel == null
                 ? DbUtil.Db.Organizations.AsQueryable()
-                : Model.FetchOrgs();
+                : OrgSearchModel.FetchOrgs();
             var roles = DbUtil.Db.CurrentRoles();
             var q = from o in orgs
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
@@ -330,20 +360,20 @@ namespace CmsWeb.Areas.Reports.Models
                         Name = o.OrganizationName,
                         Teacher = o.LeaderName,
                         Location = o.Location,
-                        Groups = groups
+                        Groups = NewMeetingInfo.GroupFilterPrefix
                     };
             return q;
         }
         private IEnumerable<OrgInfo> ReportList2()
         {
-            var orgs = Model == null
+            var orgs = OrgSearchModel == null
                 ? DbUtil.Db.Organizations.AsQueryable()
-                : Model.FetchOrgs();
+                : OrgSearchModel.FetchOrgs();
             var roles = DbUtil.Db.CurrentRoles();
             var q = from o in orgs
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     from sg in o.MemberTags
-                    where (sgprefix ?? "") == "" || sg.Name.StartsWith(sgprefix)
+                    where (NewMeetingInfo.GroupFilterPrefix ?? "") == "" || sg.Name.StartsWith(NewMeetingInfo.GroupFilterPrefix)
                     where o.OrganizationId == orgid || (orgid ?? 0) == 0
                     select new OrgInfo
                     {
@@ -352,7 +382,7 @@ namespace CmsWeb.Areas.Reports.Models
                         Name = sg.Name,
                         Teacher = "",
                         Location = o.Location,
-                        Groups = new int[] { sg.Id }
+                        Groups = sg.Name
                     };
             return q;
         }

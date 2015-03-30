@@ -1,0 +1,12 @@
+﻿@using CmsWeb.Models
+@model OnlineRegPersonModel
+@{
+  var items = (IEnumerable<SelectListItem>)ViewBag.items;
+}
+<div class="form-group">
+  @Html.Label(ViewBag.Label as string, new { @class = "control-label col-sm-3 labelsize" })
+  <div class="col-sm-9">
+    @Html.DropDownListFor(m => m.gradeoption, items, new { @class = "form-control" })
+    @Html.ValidationMessageFor(m => m.gradeoption)
+  </div>
+</div>

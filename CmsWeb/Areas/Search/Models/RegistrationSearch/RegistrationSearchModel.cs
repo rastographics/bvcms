@@ -157,7 +157,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<RegistrationList> DefineModelSort(IQueryable<RegistrationList> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Date":
                     return from r in q

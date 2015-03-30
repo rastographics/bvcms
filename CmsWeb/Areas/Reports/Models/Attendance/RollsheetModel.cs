@@ -10,8 +10,6 @@ using System.Linq;
 using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
-using CmsData.ExtraValue;
-using CmsWeb.Areas.Dialog.Controllers;
 
 namespace CmsWeb.Areas.Reports.Models
 {

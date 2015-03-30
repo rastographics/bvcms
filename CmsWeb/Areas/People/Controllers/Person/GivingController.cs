@@ -4,25 +4,23 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
     public partial class PersonController
     {
-        [HttpPost, Route("Contributions/{id:int}/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult Contributions(int id, int? page, int? size, string sort, string dir)
+        [HttpPost]
+        public ActionResult Contributions(ContributionsModel m)
         {
-            var m = new ContributionsModel(id);
-            m.Pager.Set("/Person2/Contributions/" + id, page, size, sort, dir);
             return View("Giving/Contributions", m);
         }
         [HttpPost]
-        public ActionResult Statements(int id)
+        public ActionResult Statements(ContributionsModel m)
         {
-            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
+            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, m.PeopleId))
                 return Content("No permission to view statement");
-            var m = new ContributionsModel(id);
             return View("Giving/Statements", m);
         }
         public ActionResult Statement(int id, string fr, string to)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -9,7 +10,21 @@ namespace CmsData.Registration
 {
 	public class AskDropdown : Ask
 	{
-		public string Label { get; set; }
+	    public override string Help
+	    {
+	        get 
+            { return @"
+This will be presented as a dropdown selection.
+
+* **Sub-Group** Enters them in a sub-group within the organization.
+* **Fee** (optional) for the selection.
+* **Limit** (optional) which limits the number of people allowed for a selection.
+* **DateTime** (optional) which registers them in a meeting.
+"; 
+            }
+	    }
+
+	    public string Label { get; set; }
 		public List<DropdownItem> list { get; set; }
 
 		public AskDropdown()
@@ -77,12 +92,14 @@ namespace CmsData.Registration
 		{
 		    public string Name { get; set; }
 			public string Description { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 			public decimal? Fee { get; set; }
 			public int? Limit { get; set; }
 			[DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:g}")]
 			public DateTime? MeetingTime { get; set; }
 
+            [DisplayName("DateTime")]
 		    public string MeetingTimeString
 		    {
 		        get { return MeetingTime.ToString2("g"); }

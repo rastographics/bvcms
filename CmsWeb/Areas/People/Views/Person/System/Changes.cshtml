@@ -1,14 +1,16 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.ChangesModel
 <form class="non-modal ajax" method="post">
+  @Html.Partial("PagerHidden", Model)
+  @Html.HiddenFor2(m => m.PeopleId)
     <a href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
     <table class="table table-striped table-condensed">
         <thead>
             <tr>
-                <th>@Model.Pager.SortLink("Time")</th>
+                <th>@Model.SortLink("Time")</th>
                 <th>User</th>
                 <th>Field</th>
                 <th>Before</th>
@@ -27,7 +29,10 @@
                 <td>@c.After</td>
                 @if (c.Reversable)
                 {
-                    <td><a class="ajax" data-confirm="Are you sure you want to reverse this change?" href="/Person2/Reverse/@Model.person.PeopleId/@c.pf/@c.Field?value=@c.Before">reverse</a></td>
+                  <td>
+                    <a class="ajax" data-confirm="Are you sure you want to reverse this change?" 
+                       href="/Person2/Reverse/@Model.Person.PeopleId/@c.pf/@c.Field?value=@c.Before">reverse</a>
+                  </td>
                 }
                 else
                 {
@@ -38,6 +43,6 @@
         </tbody>
     </table>
     <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model.Pager)
+        @Html.Partial("Pager3", Model)
     </div>
 </form>

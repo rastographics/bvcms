@@ -20,8 +20,8 @@ else
     </div>
     <ul class="meta unstyled">
         <li class="role">
-            @Address(Model.PrimaryAddr)
-            @Address(Model.OtherAddr)
+            @ShowAddress(Model.PrimaryAddr)
+            @ShowAddress(Model.OtherAddr)
             @ContactLine()
         </li>
         <li class="badges">
@@ -43,7 +43,7 @@ else
 </div>
 @*@Html.Partial("Personal/PictureUpload", Model)*@
 
-@helper Address(AddressInfo a)
+@helper ShowAddress(AddressInfo a)
 {
     var editHide = Model.Person.CanUserEditFamilyAddress ? "" : "hide";
     if (a.AddressLineOne.HasValue() || a.Preferred)

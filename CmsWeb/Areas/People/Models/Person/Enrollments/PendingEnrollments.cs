@@ -9,16 +9,19 @@ namespace CmsWeb.Areas.People.Models
 {
     public class PendingEnrollments : PagedTableModel<OrganizationMember, OrgMemberInfo>
     {
-        readonly int PeopleId;
-        public CmsData.Person person { get; set; }
-        public PendingEnrollments(int id)
-            : base("", "")
+        public int? PeopleId { get; set; }
+        public Person Person
         {
-            PeopleId = id;
-            person = DbUtil.Db.LoadPersonById(id);
+            get
+            {
+                if (_person == null && PeopleId.HasValue)
+                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                return _person;
+            }
         }
+        private Person _person;
 
-        public override IQueryable<OrganizationMember> DefineModelList()
+        override public IQueryable<OrganizationMember> DefineModelList()
         {
             var roles = DbUtil.Db.CurrentRoles();
             return from o in DbUtil.Db.Organizations
@@ -28,7 +31,7 @@ namespace CmsWeb.Areas.People.Models
                    select om;
         }
 
-        public override IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)
+        override public IQueryable<OrganizationMember> DefineModelSort(IQueryable<OrganizationMember> q)
         {
             return q.OrderBy(m => m.Organization.OrganizationName);
         }

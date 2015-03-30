@@ -1,0 +1,53 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Dialog.Models.OrgMembersUpdate
+@{
+  var managetransactions = User.IsInRole("ManageTransactions");
+  var admin = User.IsInRole("Admin");
+  var missiongiving = User.IsInRole("MissionGiving");
+}
+<form class="form form-horizontal modal fade hide ajax members-update" method="POST">
+  <div class="modal-header">
+    <h4>@Model.OrgName</h4>
+    <div class="alert alert-danger">This will update information on @Model.Count @Model.Group</div>
+  </div>
+  <div class="modal-body">
+    <div id="memberdata">
+      <a class="helplink pull-right" target="_blank" href='http://docs.touchpointsoftware.com'>help</a>
+      <fieldset class="display">
+        @Html.HiddenFor(m => m.Id)
+        @Html.EditorFor(m => m.MemberType)
+        @Html.EditorFor(m => m.EnrollmentDate)
+        @Html.EditorFor(m => m.InactiveDate)
+        @Html.EditorFor(m => m.RemoveInactiveDate)
+        @Html.EditorFor(m => m.Pending)
+      </fieldset>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
+    @if (managetransactions || admin || missiongiving)
+    {
+      <div class="btn-group">
+        <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li>
+            <a href="/OrgMemberUpdate/AddTransaction" class="ajax">Add Transaction</a>
+          </li>
+          <li>
+            <a href="/OrgMemberUpdate/AddFeeAdjustment" class="ajax">Make Fee Adjustment</a>
+          </li>
+        </ul>
+      </div>
+    }
+    <a href="/OrgMembersUpdate/ShowDrop" class="btn btn-warning ajax">
+      Drop
+    </a>
+    <a href="/OrgMembersUpdate/SmallGroups" class="btn btn-warning ajax">
+      Sub-Groups
+    </a>
+    <a href="/OrgMembersUpdate/Update" class="btn btn-danger ajax"
+       data-confirm="Are you sure you want to update @Model.Count @Model.Group?">
+      Update
+    </a>
+  </div>
+</form>

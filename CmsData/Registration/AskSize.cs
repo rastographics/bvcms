@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using UtilityExtensions;
@@ -7,6 +8,18 @@ namespace CmsData.Registration
 {
 	public class AskSize : Ask
 	{
+	    public override string Help
+	    {
+	        get 
+            { return @"
+Display a dropdown of custom sizes. With each size you can:
+
+* Associate a Fee
+* Put in a Sub-Group
+* Adds an extra item to the sizes to indicate they will use last year's shirt.
+"; 
+            }
+	    }
 		public decimal? Fee { get; set; }
 		public string Label { get; set; }
 		public bool AllowLastYear { get; set; }
@@ -59,6 +72,7 @@ namespace CmsData.Registration
 		{
 			public string Name { get; set; }
 			public string Description { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 
 			public void Output(StringBuilder sb)

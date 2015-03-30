@@ -30,7 +30,11 @@
     @Html.DropDownList("PageSize", Model.PageSizeList(), new { onchange = "$.setPageSize(this)" })
 }
 </div>
-<div style="clear:both"></div>
-@Html.HiddenFor(m => m.Page)
-@Html.HiddenFor(m => m.Sort)
-@Html.HiddenFor(m => m.Direction)
+<div style="clear: both"></div>
+@if(Model.DisplayCount == 0)
+{
+  @Html.HiddenFor(m => m.Page)
+  @Html.HiddenFor(m => m.Sort)
+  @Html.HiddenFor(m => m.Direction)
+  Model.DisplayCount++;
+}

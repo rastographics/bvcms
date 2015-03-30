@@ -1,18 +1,19 @@
-﻿@using CmsWeb
+﻿@using CmsData.Codes
+@using CmsWeb
 @model CmsWeb.Areas.Org.Models.MemberModel
 @{ ViewData["OrgMemberContext"] = true;
-   ViewData["OrgMemberContext"] = false;
+ ViewData["OrgMemberContext"] = false;
 }
 @Html.Hidden("current-qid", (Guid?)ViewBag.queryid)
 <p>
-    Count: <strong id="current-count">@Model.Count()</strong>&nbsp;&nbsp;
-    <a class="filtergroupslink bt" href="#" title="filter by name or group">Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))</a>
-    @if (User.IsInRole("Edit"))
-    {
-        <a href="/SearchAdd2/Dialog/org/@Model.OrganizationId" class="searchadd bt">Add People</a>
-        <a href="/AddToOrgFromTag/@Model.OrganizationId" class="addfromtag bt" title="Add Members From Tag">add from tag</a>
-        <a id="currMembersUpdate" href="/OrgMembersDialog/@Model.OrganizationId" title="Update Members" class="memberdialog bt">update members</a>
-    }
+  Count: <strong id="current-count">@Model.Count()</strong>&nbsp;&nbsp;
+  <a class="filtergroupslink bt" href="#" title="filter by name or group">Filter @(Html.Raw(Model.isFiltered ? "<span style='color:red'>(filtered)</span>" : ""))</a>
+  @if (User.IsInRole("Edit"))
+  {
+    <a href="/SearchAdd2/Dialog/org/@Model.OrganizationId" class="searchadd bt">Add People</a>
+    <a href="/AddToOrgFromTag/@Model.OrganizationId/@GroupSelectCode.Member" class="bt longrunop" title="Add Members From Tag">Add from Tag</a>
+    <a id="currMembersUpdate" href="/OrgMembersDialog/@Model.OrganizationId" title="Update Members" class="memberdialog bt">Update Members</a>
+  }
 </p>
 @Html.Partial("MemberGrid", Model)
 

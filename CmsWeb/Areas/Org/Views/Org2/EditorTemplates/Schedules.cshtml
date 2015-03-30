@@ -1,0 +1,20 @@
+﻿@using UtilityExtensions
+@model IEnumerable<CmsWeb.Areas.Org2.Models.ScheduleInfo>
+<div class="control-group">
+  <label class="control-label">Schedules</label>
+  <div class="controls">
+    <div id="schedules" class="table not-wide">
+      @foreach (var sc in Model.OrderBy(cc => cc.Id))
+      {
+        @Html.EditorFor(m => sc)
+      }
+    </div>
+    <div>
+      <a id="addsch" href="/Org/NewSchedule"><img src="/Content/images/plus1.png" /> Add Schedule</a>
+    </div>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+        <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+  </div>
+</div>

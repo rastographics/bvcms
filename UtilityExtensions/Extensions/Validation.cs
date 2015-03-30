@@ -121,6 +121,10 @@ namespace UtilityExtensions
                 return "m{0}d{0}yyyy".Fmt(sep);
             }
         }
+        public static string jQueryDateFormat2WithTime
+        {
+            get { return jQueryDateFormat2 + " H:ii P"; }
+        }
         public static string jQueryNumberValidation
         {
             get

@@ -1,0 +1,12 @@
+﻿@model string
+@using UtilityExtensions
+<div class="control-group">
+  @Html.LabelFor(m => m, new { @class = "control-label" })
+  <div class="controls @ViewBag.AddClass">
+    @Html.Partial("Registration/NotifyList", Model)
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+  </div>
+</div>

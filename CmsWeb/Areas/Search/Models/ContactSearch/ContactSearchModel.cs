@@ -174,7 +174,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public override IQueryable<Contact> DefineModelSort(IQueryable<Contact> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "ID":
                     return from c in q

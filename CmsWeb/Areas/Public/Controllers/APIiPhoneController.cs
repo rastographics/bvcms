@@ -200,7 +200,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             else if (om != null && !Member)
             {
-                om.Drop(DbUtil.Db, addToHistory: true);
+                om.Drop(DbUtil.Db);
                 DbUtil.LogActivity("iphone drop(org:{0} person:{1})".Fmt(OrgId, PeopleId));
             }
             DbUtil.Db.SubmitChanges();

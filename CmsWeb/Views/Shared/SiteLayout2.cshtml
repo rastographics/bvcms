@@ -23,17 +23,17 @@
     </script>
     @RenderSection("scripts", required: false)
 </head>
-    <body>
-        <div class="page-container">
-            @Html.Partial("Notices")
-            @Html.Partial("NewHeader3")
-            @RenderBody()
-        </div>
-        @Html.Partial("Footer")
-        @Html.Partial("Dialogs2")
-        @RenderSection("PopupsPlaceholder", required: false)
+<body>
+    <div class="page-container">
+        @Html.Partial("Notices")
+        @Html.Partial("NewHeader3")
+        @RenderBody()
+    </div>
+    @Html.Partial("Footer")
+    @Html.Partial("Dialogs2")
+    @RenderSection("PopupsPlaceholder", required: false)
         <div id="loading-indicator">
             <img src="/Content/img/ajax-loader.gif" />
         </div>
-    </body>
+</body>
 </html>

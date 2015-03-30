@@ -8,9 +8,9 @@
       <new2css Include="Content/css/normalize.css"/>
       <new2css Include="Content/css/bvcms.css"/>
       <new2css Include="Content/bootstrap-modal/css/bootstrap-modal.css"/>
-      <new2css Include="Content/css/chosen.css"/>
+      <new2css Include="Content/css/select2.css"/>
       <new2css Include="Content/css/bootstrap-editable.css"/>
-      <new2css Include="Content/css/datepicker.css"/>
+      <new2css Include="Content/css/bootstrap-datetimepicker.css"/>
       <new2css Include="Content/css/typeahead.js-bootstrap.css"/>
       
       <stylecss Include="Content/styles/dropdown.css"/>
@@ -27,7 +27,7 @@
       <main2 Include="Scripts/Bootstrap/bootstrap-modal.js"/>
       <main2 Include="Scripts/Bootstrap/bootstrap-editable.js"/>
       <main2 Include="Scripts/Bootstrap/bootbox.js"/>
-      <main2 Include="Scripts/Bootstrap/bootstrap-datepicker.js"/>
+      <main2 Include="Scripts/Bootstrap/bootstrap-datetimepicker.js"/>
       <main2 Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2 Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2 Include="Scripts/jQuery/jquery.mousewheel.js"/>
@@ -41,7 +41,7 @@
       <main2 Include="Scripts/jQuery/jquery.tooltip.js"/>
       <main2 Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
 <!--      <main2 Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
-      <main2 Include="Scripts/chosen/chosen.jquery.js"/>
+      <main2 Include="Scripts/Bootstrap/select2.js"/>
       <main2 Include="Scripts/js/Pager3.js"/>
       <main2 Include="Scripts/js/header.js"/>
       <main2 Include="Scripts/js/ExportToolBar2.js"/>
@@ -58,7 +58,7 @@
       <main2c Include="Scripts/Bootstrap/bootstrap-modal.js"/>
       <main2c Include="Scripts/Bootstrap/bootstrap-editable.js"/>
       <main2c Include="Scripts/Bootstrap/bootbox.js"/>
-      <main2c Include="Scripts/Bootstrap/bootstrap-datepicker.js"/>
+      <main2c Include="Scripts/Bootstrap/bootstrap-datetimepicker.js"/>
       <main2c Include="Scripts/jQuery/jquery.cookie.js"/>
       <main2c Include="Scripts/jQuery/jquery.blockUI.js"/>
       <main2c Include="Scripts/jQuery/jquery.mousewheel.js"/>
@@ -73,6 +73,7 @@
       <main2c Include="Scripts/jQuery/jquery.multiSelect.js"/>
       <main2c Include="Scripts/jquery/jquery.hiddenposition.1.1.js"/>
 <!--      <main2c Include="Scripts/jQuery/jquery.ui.touch-punch.js"/>-->
+      <main2c Include="Scripts/Bootstrap/select2.js"/>
       <main2c Include="Scripts/chosen/chosen.jquery.js"/>
       <main2c Include="Scripts/js/Pager.js"/>
       <main2c Include="Scripts/js/header.js"/>
@@ -97,12 +98,15 @@
       <onlineregister Include="Scripts/jQuery/jquery.sortElements.js"/>
       <onlineregister Include="Scripts/jQuery/jquery.showpassword.js"/>
 
-      <org Include="Scripts/jQuery/jquery-ui-timepicker-addon.js"/>
+      <organization Include="Scripts/Org/OrganizationOld.js"/>
+      <organization Include="Scripts/Dialog/SearchUsers.js"/>
+      <organization Include="Scripts/Org/RegSetting2.js"/>
+      <organization Include="Scripts/Org/OrgMemberDialog2.js"/>
+      
       <org Include="Scripts/Org/Organization.js"/>
       <org Include="Scripts/Dialog/SearchUsers.js"/>
-      <org Include="Scripts/js/RegSetting.js"/>
-<!--      <org Include="Scripts/js/form-ajax.js"/>-->
-<!--      <org Include="Scripts/js/ExtraValue.js"/>-->
+      <org Include="Scripts/Org/RegSetting.js"/>      
+      <org Include="Scripts/Org/OrgMemberDialog2.js"/>
 
       <query2 Include="Scripts/Bootstrap/bootstrap-multiselect.js"/>
       <query2 Include="Scripts/jQuery/jquery.scrollintoview.js"/>
@@ -130,6 +134,7 @@
     <JavascriptCompressorTask SourceFiles="@(main2c)" OutputFile="Scripts\bundle.main2c.js" />
     <JavascriptCompressorTask SourceFiles="@(onlineregister)" OutputFile="Scripts\bundle.onlineregister.js" />
     <JavascriptCompressorTask SourceFiles="@(org)" OutputFile="Scripts\bundle.org.js" />
+    <JavascriptCompressorTask SourceFiles="@(organization)" OutputFile="Scripts\bundle.organization.js" />
     <JavascriptCompressorTask SourceFiles="@(query2)" OutputFile="Scripts\bundle.query2.js" />
     <JavascriptCompressorTask SourceFiles="@(person)" OutputFile="Scripts\bundle.person.js" />
     <JavascriptCompressorTask SourceFiles="@(taskpage)" OutputFile="Scripts\bundle.taskpage.js" />

@@ -6,15 +6,15 @@ namespace CmsWeb.Areas.People.Models
 {
     public class TasksAssignedModel : TasksModel
     {
-        public TasksAssignedModel(int id) : base(id) { }
-
         override public IQueryable<Task> DefineModelList()
         {
             return from t in DbUtil.Db.Tasks
                    where t.WhoId != null
-                   where (t.CoOwnerId ?? t.OwnerId) == person.PeopleId
+                   where (t.CoOwnerId ?? t.OwnerId) == Person.PeopleId
                    select t;
         }
+
+        public override string AddTask { get { return null; } }
 
         public override IEnumerable<TaskInfo> DefineViewList(IQueryable<Task> q)
         {
@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.People.Models
                        CreatedDate = t.CreatedOn,
                        DueDate = t.Due,
                        About = t.AboutWho.Name,
-                       AssignedTo = person.PreferredName,
+                       AssignedTo = Person.PreferredName,
                        AboutId = t.WhoId,
                        AssignedToId = (t.CoOwnerId ?? t.OwnerId),
                        link = "/Task/Detail/" + t.Id,

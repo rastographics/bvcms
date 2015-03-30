@@ -1,21 +1,10 @@
-﻿@using CmsWeb
-@using CmsWeb.Models
-@model SearchOrgsModel
-<html>
-<head>
-<title>Index</title>
-    @ViewExtensions2.jQueryUICss()
-    @Fingerprint.Css("/content/styles/siteblue.css")
-    @ViewExtensions2.OldStyles()
-    <link href="/Content/styles/style2.css" rel="stylesheet" type="text/css" />
-    @ViewExtensions2.jQuery()
-    @ViewExtensions2.jQueryUI()
-    @Fingerprint.Script("/Scripts/jQuery/jquery-migrate-1.1.1.js")
-    @Fingerprint.Script("/Scripts/jQuery/jquery.blockUI.js")
-    @Fingerprint.Script("/Scripts/Search/SearchOrgs.js")
-</head>
-<body>
-    <form name="form1">
+﻿@model CmsWeb.Areas.Dialog.Models.SearchOrgsModel
+<form name="form1" id="select-orgs" class="form form-horizontal modal fade hide validate ajax">
+    <div class="modal-header">
+        <a class="close" data-dismiss="modal">×</a>
+        <h3>Select Orgs Dialog</h3>
+    </div>
+    <div class="modal-body">
         @Html.Hidden("ordered", Model.ordered)
         @Html.Hidden("singlemode", Model.singlemode)
         @Html.Hidden("id", Model.id)
@@ -26,15 +15,15 @@
             </tr>
             <tr>
                 <td>
-                    <input type="button" class="bt" value="Update Selected" id="UpdateSelected" />
+                    <input type="button" class="btn" value="Update Selected" id="UpdateSelected" />
                 </td>
                 <td class="right">
-                    <a id="clear" href="#" class="bt">Clear</a>
-                    <a href="/SearchOrgs/Results" id="search" class="bt default formlink blue">Search</a>
+                    <button type="reset" class="btn">Clear</button>
+                    <a href="/SearchOrgs/Results" id="search" class="btn btn-primary default formlink blue ajax">Search</a>
                 </td>
             </tr>
         </table>
+        <br/>
         @Html.Partial("Results", Model)
-    </form>
-</body>
-</html>
+    </div>
+</form>

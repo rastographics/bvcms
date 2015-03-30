@@ -18,12 +18,16 @@
             }
 		</td>
 		<td class="tip" title="@om.ToolTip"><a href="/Person2/@om.PeopleId">@om.Name</a></td>
-		<td><div>@om.Address</div>
-    @if (om.Address2.HasValue())
-    {
-        <div>@om.Address2</div>
-    }
-		<div>@om.CityStateZip</div></td>
+	  <td>@om.MemberStatus @* This is actually MemberType in this instance *@
+@*
+	    <div>@om.Address</div>
+	    @if (om.Address2.HasValue())
+	    {
+	      <div>@om.Address2</div>
+	    }
+	    <div>@om.CityStateZip</div>
+*@
+	  </td>
 		<td>@om.Gender </td>
 		<td>@om.Age </td>
 		<td>@om.Request </td>

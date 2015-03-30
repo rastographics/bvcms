@@ -25,5 +25,9 @@
             @Html.Hidden("{0}{1}".Fmt(Html.IdFor(m => m), "Iso"), Model.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
         </div>
         @Html.ValidationMessageLabelFor(m => m)
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
     </div>
 </div>

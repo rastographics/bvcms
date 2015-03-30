@@ -250,43 +250,21 @@
         return false;
     });
     $('div.dialog').dialog({ autoOpen: false });
-    $('#rollsheet1').click(function (ev) {
-        ev.preventDefault();
-        hideDropdowns();
-        $.post('/OrgSearch/DefaultMeetingDate/' + $('#ScheduleId').val(), null, function (ret) {
-            $('#MeetingDate').val(ret.date);
-            $('#MeetingTime').val(ret.time);
-            $("#rollsheet2").attr("href", "/Reports/Rollsheet");
-            $("#rallycb").show();
-            var d = $('#PanelRollsheet');
-            d.dialog('open');
-        });
-        return false;
+    $("a.rollsheets").live("click", function () {
+        $.dialogOptions("/Dialog/ForNewRollsheets/" + $('#ScheduleId').val(), $(this));
     });
-    $('#rollsheet2').click(function (ev) {
-        ev.preventDefault();
+    $.InitFunctions.Rollsheets = function(a, q) {
         hideDropdowns();
-        $('div.dialog').dialog('close');
-        var args = "?dt=" + $('#MeetingDate').val() + " " + $('#MeetingTime').val();
-        if ($('#altnames').is(":checked"))
-            args += "&altnames=true";
-        if ($('#bygroup').is(":checked"))
-            args += "&bygroup=1";
-        if ($("#highlightsg").val())
-            args += "&highlight=" + $("#highlightsg").val();
-        if ($("#sgprefix").val())
-            args += "&sgprefix=" + $("#sgprefix").val();
-
-        if ($('#rallymode').is(":checked"))
-            $("#orgsearchform").attr("action", "/Reports/RallyRollsheet" + args);
-        else
-            $("#orgsearchform").attr("action", "/Reports/Rollsheet" + args);
-        $("#orgsearchform").attr("target","_blank");
+        $("#orgsearchform").attr("action", "/Reports/Rollsheets?" + q);
         $("#orgsearchform").submit();
-        $("#orgsearchform").removeAttr("target");
-        $.hideDropdowns();
         return false;
-    });
+    }
+    $.InitFunctions.RallyRollsheets = function(a, q) {
+        hideDropdowns();
+        $("#orgsearchform").attr("action", "/Reports/RallyRollsheets?" + q);
+        $("#orgsearchform").submit();
+        return false;
+    }
     $('#newmeetings').click(function (ev) {
         ev.preventDefault();
         hideDropdowns();

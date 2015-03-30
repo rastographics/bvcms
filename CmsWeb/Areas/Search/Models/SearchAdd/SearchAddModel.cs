@@ -11,6 +11,7 @@ using System.Text;
 using System.Web;
 using CmsData.Codes;
 using CmsWeb.Code;
+using CmsWeb.Models;
 using UtilityExtensions;
 using CmsData;
 
@@ -206,6 +207,7 @@ namespace CmsWeb.Areas.Search.Models
                 case "inactive":
                     return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.InActive);
                 case "prospect":
+                case "prospects":
                     return AddOrgMembers(iid, OriginCode.Enrollment, MemberTypeCode.Prospect);
                 case "visitor":
                     return AddVisitors(iid, OriginCode.Visit);

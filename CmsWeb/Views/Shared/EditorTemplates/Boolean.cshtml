@@ -5,4 +5,9 @@
             @Html.CheckBoxFor(m => m) @(ViewBag.label ?? Html.DisplayNameFor(m => m))
         </label>
     </div>
+    <span class="help-block">@Html.Raw(ViewBag.help)</span>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+        <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
 </div>

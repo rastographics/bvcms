@@ -30,8 +30,8 @@ namespace CmsWeb.Models
         {
             return masterorg.OrganizationName;
         }
-        private CmsData.Organization _masterorg;
-        public CmsData.Organization masterorg
+        private Organization _masterorg;
+        public Organization masterorg
         {
             get
             {
@@ -143,7 +143,7 @@ namespace CmsWeb.Models
 
             foreach (var om in drops)
             {
-                om.Drop(DbUtil.Db, addToHistory: true);
+                om.Drop(DbUtil.Db);
                 DbUtil.Db.SubmitChanges();
             }
             foreach (var id in joins)

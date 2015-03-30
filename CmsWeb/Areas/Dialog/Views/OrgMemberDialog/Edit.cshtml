@@ -1,0 +1,46 @@
+﻿@using CmsData
+@using UtilityExtensions
+@model CmsWeb.Areas.Dialog.Models.OrgMemberModel
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>@Model.Name</h4>
+    <h4>@Model.OrgName</h4>
+</div>
+<div class="modal-body">
+    <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank" 
+            style="font-family: Courier New">Attendance</a>: @Model.AttendStr
+    <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("UpdateOrgMember")'>help</a>
+    <fieldset class="display">
+        @Html.HiddenFor(m => m.OrgId)
+        @Html.HiddenFor(m => m.PeopleId)
+        @Html.EditorFor(m => m.MemberType)
+        @Html.EditorFor(m => m.InactiveDate)
+        @Html.EditorFor(m => m.EnrollmentDate, "DateAndTime")
+        @Html.EditorFor(m => m.Pending)
+        @if (Model.RegisterEmail.HasValue())
+        {
+            @Html.EditorFor(m => m.RegisterEmail)
+        }
+        @if (Model.Setting.AskVisible("AskRequest"))
+        {
+            @Html.EditorFor(m => m.Request)
+        }
+        @if (Model.Grade.HasValue)
+        {
+            @Html.EditorFor(m => m.Grade)
+        }
+        @if (Model.Setting.AskVisible("AskTickets"))
+        {
+            @Html.EditorFor(m => m.Tickets)
+        }
+        @if (Model.Setting.AskVisible("AskSize"))
+        {
+            @Html.EditorFor(m => m.ShirtSize)
+        }
+        @Html.EditorFor(m => m.UserData, "TextArea")
+    </fieldset>
+</div>
+<div class="modal-footer">
+    <a href="/OrgMemberDialog/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Cancel Edit</a>
+    <a href="/OrgMemberDialog/Update" class="btn btn-primary ajax">Save</a>
+</div>

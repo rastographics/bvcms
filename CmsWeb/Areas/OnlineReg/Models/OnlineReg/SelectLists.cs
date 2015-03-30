@@ -66,7 +66,7 @@ namespace CmsWeb.Models
             list.Insert(0, new ClassInfo { Text = "Registration Options", Id = 0});
             return list;
         }
-        private static string ClassName(CmsData.Organization o)
+        private static string ClassName(Organization o)
         {
             var lead = o.LeaderName;
             if (lead.HasValue())

@@ -1,5 +1,5 @@
-﻿@model MissionTripEmailer
-@using CmsWeb.Areas.Org.Models
+﻿@using CmsWeb.Areas.Org.Models
+@model MissionTripEmailer
 @{
     Model.Recipients = Model.GetRecipients().ToList();
 }
@@ -12,7 +12,7 @@
                 @Html.HiddenFor(m => m.Recipients[i].Id)
                 @Html.CheckBoxFor(m => m.Recipients[i].Active)
                 <a>@r.NameOrEmail</a>
-                <a class="remove pull-right" href="/MissionTripEmail/RemoveSupporter/@Model.PeopleId/@r.Id"><i class="fa fa-minus-circle"></i></a><br />
+                <a class="remove pull-right" href="/MissionTripEmail2/RemoveSupporter/@Model.PeopleId/@r.Id"><i class="fa fa-minus-circle"></i></a><br />
                 @Html.TextBoxFor(m => m.Recipients[i].Salutation, new { @class = "input-medium" })
             </td>
         </tr>

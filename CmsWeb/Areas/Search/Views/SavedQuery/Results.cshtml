@@ -1,15 +1,15 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryModel
 <div id="results">
-    @Html.Partial("PagerTop", Model.Pager)
+    @Html.Partial("PagerTop", Model)
     <div class="table-responsive">
         <table class="table table-striped" id="resultsTable">
             <thead>
                 <tr>
-                    <th>@Model.Pager.SortLink("Description")</th>
-                    <th>@Model.Pager.SortLink("Owner")</th>
-                    <th class="text-center">@Model.Pager.SortLink("Public")</th>
-                    <th>@Model.Pager.SortLink("Last Run")</th>
-                    <th class="text-right">@Model.Pager.SortLink("Count")</th>
+                    <th>@Model.SortLink("Description")</th>
+                    <th>@Model.SortLink("Owner")</th>
+                    <th class="text-center">@Model.SortLink("Public")</th>
+                    <th>@Model.SortLink("Last Run")</th>
+                    <th class="text-right">@Model.SortLink("Count")</th>
                     <th colspan="2" style="width: 100px;">Actions</th>
                 </tr>
             </thead>
@@ -25,5 +25,5 @@
             </tbody>
         </table>
     </div>
-    @Html.Partial("PagerBottom", Model.Pager)
+    @Html.Partial("PagerBottom", Model)
 </div>

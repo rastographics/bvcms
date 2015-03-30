@@ -40,10 +40,6 @@ a.ui-state-default {
     cursor: pointer;
 }
 
-input {
-    margin: 3px;
-}
-
 .text {
     /*height: 20px;*/
     margin-top: 5px;
@@ -122,10 +118,6 @@ div.settings ul.padded {
 
 ul.padded > li {
     padding-left: 12px;
-}
-
-.newitem {
-    margin: 18px;
 }
 
 textarea.html {
@@ -210,4 +202,18 @@ textarea.html {
 
 li.hidy {
     display: none;
+}
+div.filter {
+    margin: 5px;
+}
+div.filter .btn {
+    font-size: 14px;
+}
+#groupSelector li > a.active {
+    background-color: #0088cc;
+    color: white;
+}
+div.filter li > a.active {
+    background-color: #0088cc;
+    color: white;
 }

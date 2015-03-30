@@ -1,18 +1,19 @@
-﻿@using UtilityExtensions
+﻿@using CmsData
+@using UtilityExtensions
 @model CmsWeb.Areas.Search.Models.RegistrationSearchModel
 <div id="results">
-    @Html.Partial("PagerTop", Model.Pager)
+    @Html.Partial("PagerTop", Model)
     <div class="table-responsive">
         <table id="resultsTable" class="table table-striped">
             <thead>
                 <tr>
-                    <th>@Model.Pager.SortLink("Date")</th>
+                    <th>@Model.SortLink("Date")</th>
                     <th>Registrant</th>
                     <th>User</th>
                     <th>Birthday</th>
                     <th class="text-right">Count</th>
                     <th class="text-center">Complete</th>
-                    <th>@Model.Pager.SortLink("Organization")</th>
+                    <th>@Model.SortLink("Organization")</th>
                 </tr>
             </thead>
             <tbody>
@@ -41,12 +42,12 @@
                                 <i class="fa fa-check"></i>
                             }
                         </td>
-                        <td><a href="/Organization/@r.OrganizationId" target="detail">@r.OrganizationName</a></td>
+                        <td><a href="@Util2.Org/@r.OrganizationId" target="detail">@r.OrganizationName</a></td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-    @Html.Partial("PagerBottom", Model.Pager)
+    @Html.Partial("PagerBottom", Model)
     @Html.Hidden("totcnt", Model.Count().ToString("N0"))
 </div>

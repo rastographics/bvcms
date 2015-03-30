@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
@@ -9,23 +10,33 @@ namespace CmsWeb.Areas.People.Models
 {
     public class ChangesModel : PagedTableModel<ChangeLogDetail, ChangeLogInfo>
     {
-        public readonly Person person;
-        public ChangesModel(int id)
+        public int PeopleId
+        {
+            get { return peopleid; }
+            set
+            {
+                peopleid = value;
+                Person = DbUtil.Db.LoadPersonById(peopleid);
+            }
+        }
+        private int peopleid;
+        public Person Person;
+
+        public ChangesModel()
             : base("Time", "desc")
         {
-            person = DbUtil.Db.LoadPersonById(id);
         }
         public void Reverse(string field, string value, string pf)
         {
             switch (pf)
             {
                 case "p":
-                    person.UpdateValueFromText(field, value);
-                    person.LogChanges(DbUtil.Db, Util.UserPeopleId.Value);
+                    Person.UpdateValueFromText(field, value);
+                    Person.LogChanges(DbUtil.Db, Util.UserPeopleId ?? 0);
                     break;
                 case "f":
-                    person.Family.UpdateValueFromText(field, value);
-                    person.Family.LogChanges(DbUtil.Db, person.PeopleId, Util.UserPeopleId.Value);
+                    Person.Family.UpdateValueFromText(field, value);
+                    Person.Family.LogChanges(DbUtil.Db, PeopleId, Util.UserPeopleId ?? 0);
                     break;
             }
             DbUtil.Db.SubmitChanges();
@@ -34,12 +45,12 @@ namespace CmsWeb.Areas.People.Models
         override public IQueryable<ChangeLogDetail> DefineModelList()
         {
             return from c in DbUtil.Db.ViewChangeLogDetails
-                   where c.PeopleId == person.PeopleId || c.FamilyId == person.FamilyId
+                   where c.PeopleId == PeopleId || c.FamilyId == Person.FamilyId
                    select c;
         }
         override public IQueryable<ChangeLogDetail> DefineModelSort(IQueryable<ChangeLogDetail> q)
         {
-            switch (Pager.SortExpression)
+            switch (SortExpression)
             {
                 case "Time":
                     return q.OrderBy(a => a.Created);
@@ -113,9 +124,9 @@ namespace CmsWeb.Areas.People.Models
                 case "p":
                     if (field == "Picture")
                         return false;
-                    return FieldEqual(person, field, value);
+                    return FieldEqual(Person, field, value);
                 case "f":
-                    return FieldEqual(person.Family, field, value);
+                    return FieldEqual(Person.Family, field, value);
             }
             return false;
         }

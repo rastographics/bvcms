@@ -1,56 +1,35 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using CmsWeb.Models;
-using UtilityExtensions;
 using CmsData;
+using CmsWeb.Areas.Dialog.Models;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
     [RouteArea("Dialog", AreaPrefix= "SearchDivisions"), Route("{action}/{id?}")]
     public class SearchDivisionsController : CmsStaffController
     {
-        [HttpGet, Route("~/SearchDivisions/{id:int}")]
-        public ActionResult Index(int id, bool? singlemode, bool? ordered)
+        [HttpPost, Route("~/SearchDivisions/{id:int}")]
+        public ActionResult Index(int id)
         {
-            Response.NoCache();
-            var m = new SearchDivisionsModel
-            {
-                id = id,
-                singlemode = singlemode ?? false,
-                ordered = ordered ?? false,
-            };
+            var m = new SearchDivisionsModel(id);
             return View(m);
         }
         [HttpPost]
-        public ActionResult Results(SearchDivisionsModel m)
+        public ActionResult ModalDialog(SearchDivisionsModel m)
         {
             return View(m);
         }
         [HttpPost]
         public ActionResult MoveToTop(SearchDivisionsModel m)
         {
-            DbUtil.Db.SetMainDivision(m.id, m.topid);
-            return View("Results", m);
+            DbUtil.Db.SetMainDivision(m.Id, m.TargetDivision);
+            return View("ModalDialog", m);
         }
         [HttpPost]
-        public ActionResult AddRemoveDiv(int id, int divid, bool ischecked)
+        public ActionResult AddRemoveDiv(SearchDivisionsModel m)
         {
-            var d = DbUtil.Db.DivOrgs.SingleOrDefault(dd => dd.DivId == divid && dd.OrgId == id);
-            if (ischecked && d == null)
-            {
-                d = new DivOrg { OrgId = id, DivId = divid };
-                DbUtil.Db.DivOrgs.InsertOnSubmit(d);
-                DbUtil.Db.SubmitChanges();
-            }
-            if (!ischecked && d != null)
-            {
-                DbUtil.Db.DivOrgs.DeleteOnSubmit(d);
-                DbUtil.Db.SubmitChanges();
-            }
-            return new EmptyResult();
+            m.AddRemoveDiv();
+            return View("ModalDialog", m);
         }
+
     }
 }

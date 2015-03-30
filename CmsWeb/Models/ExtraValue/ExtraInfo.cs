@@ -1,9 +1,9 @@
-﻿using System.Web;
-using UtilityExtensions;
+﻿using System;
+using System.Collections.Generic;
 
 namespace CmsWeb.Models.ExtraValues
 {
-    public class ExtraInfo
+    public abstract class ExtraInfo
     {
         public string Field { get; set; }
         public string Value { get; set; }
@@ -13,31 +13,39 @@ namespace CmsWeb.Models.ExtraValues
         public bool Standard { get; set; }
         public bool CanView { get; set; }
 
-        public string QueryUrl
+        public abstract string QueryUrl { get; }
+        public abstract string DeleteAllUrl { get; }
+        public abstract string ConvertToStandardUrl { get; }
+        public abstract string RenameAllUrl { get; }
+
+        public abstract void RenameAll(string field, string newname);
+        public abstract string DeleteAll(string type, string field, string value);
+        public abstract IEnumerable<ExtraInfo> CodeSummary();
+
+        public static IEnumerable<ExtraInfo> CodeSummary(string table)
         {
-            get
-            {
-                if (Type == "Bit" || Type == "Code")
-                    return "/ExtraValue/QueryCodes?field={0}&value={1}"
-                        .Fmt(HttpUtility.UrlEncode(Field), HttpUtility.UrlEncode(Value));
-                return "/ExtraValue/QueryData?field={0}&type={1}"
-                    .Fmt(HttpUtility.UrlEncode(Field), Type);
-            }
+            return GetExtraInfo(table).CodeSummary();
         }
-        public string DeleteAllUrl
+        public static void RenameAll(string table, string field, string newname)
         {
-            get
-            {
-                return "/ExtraValue/DeleteAll?field={0}&type={1}&value={2}"
-                    .Fmt(HttpUtility.UrlEncode(Field), Type, HttpUtility.UrlEncode(Value));
-            }
+            GetExtraInfo(table).RenameAll(field, newname);
         }
-        public string ConvertToStandardUrl
+        public static string DeleteAll(string table, string type, string field, string value)
         {
-            get
+            return GetExtraInfo(table).DeleteAll(type, field, value);
+        }
+        public static ExtraInfo GetExtraInfo(string table)
+        {
+            switch (table)
             {
-                return "/ExtraValue/ConvertToStandard/People?name={0}".Fmt(HttpUtility.UrlEncode(Field));
+                case "People":
+                    return new ExtraInfoPeople();
+                case "Family":
+                    return new ExtraInfoFamily();
+                case "Organization":
+                    return new ExtraInfoOrganization();
             }
+            throw new Exception("unknown table " + table);
         }
     }
 }

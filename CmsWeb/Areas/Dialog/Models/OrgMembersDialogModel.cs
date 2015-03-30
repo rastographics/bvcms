@@ -9,7 +9,7 @@ using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
 
-namespace CmsWeb.Areas.Org.Models
+namespace CmsWeb.Areas.Dialog.Models
 {
     public class OrgMembersDialogModel
     {
@@ -120,6 +120,7 @@ namespace CmsWeb.Areas.Org.Models
                     where (om.Pending ?? false) == pendings
                     where (inactives && om.MemberTypeId == inactive)
                         || (!inactives && om.MemberTypeId != inactive)
+                    where (om.MemberTypeId != MemberTypeCode.Prospect)
                     select om;
             return q;
         }

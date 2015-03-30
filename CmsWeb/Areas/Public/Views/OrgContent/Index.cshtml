@@ -1,4 +1,5 @@
-﻿@model CmsWeb.Models.OrgContentInfo
+﻿@using CmsData
+@model CmsWeb.Models.OrgContentInfo
 @{
     ViewBag.Title = "OrgContent";
     Layout = "~/Views/Shared/Site2.cshtml";
@@ -20,7 +21,7 @@ else if (Model.Inactive)
 else
 {
     <div style="max-width: 600px;">
-    <h1><a href="/Organization/@Model.OrgId">@Model.OrgName</a></h1>
+    <h1><a href="@Util2.Org/@Model.OrgId">@Model.OrgName</a></h1>
     @Html.Raw(Model.Html)
     </div>
 }

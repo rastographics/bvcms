@@ -7,9 +7,19 @@
     <li><a href="#volunteer" data-toggle="tab" class="ajax">Volunteer</a></li>
 </ul> 
 <div class="tab-content">
-    <div class="tab-pane" id="contactsreceived" data-link="/Person2/ContactsReceived/@Model.PeopleId"></div>
-    <div class="tab-pane" id="contactsmade" data-link="/Person2/ContactsMade/@Model.PeopleId"></div>
-    <div class="tab-pane" id="tasksabout" data-link="/Person2/TasksAbout/@Model.PeopleId"></div>
-    <div class="tab-pane" id="tasksassigned" data-link="/Person2/TasksAssigned/@Model.PeopleId"></div>
-    <div class="tab-pane" id="volunteer" data-link="/Person2/VolunteerApprovals/@Model.PeopleId"></div>
+  <div class="tab-pane" id="contactsreceived" data-link="/Person2/ContactsReceived">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
+  <div class="tab-pane" id="contactsmade" data-link="/Person2/ContactsMade">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
+  <div class="tab-pane" id="tasksabout" data-link="/Person2/TasksAbout">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
+  <div class="tab-pane" id="tasksassigned" data-link="/Person2/TasksAssigned">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
+  <div class="tab-pane" id="volunteer" data-link="/Person2/VolunteerApprovals">
+    @Helper.HiddenId("PeopleId", Model.PeopleId)
+  </div>
 </div>

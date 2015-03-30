@@ -1,0 +1,14 @@
+﻿@using UtilityExtensions
+@model string
+<div class="control-group">
+  @Html.LabelFor(m => m, new { @class = "control-label" })
+  <div class="controls @ViewBag.AddClass">
+    <a class="notifylist" href="/Org/NotifyIds/@ViewBag.OrgId?field=@ViewBag.field" data-field="@ViewBag.field" data-target="#usersDialog">
+      @Html.Partial("Registration/NotifyList", Model)
+    </a>
+    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+    }
+  </div>
+</div>

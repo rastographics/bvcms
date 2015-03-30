@@ -5,16 +5,23 @@ using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
-    public abstract class PagedTableModel<TModel, TView>
+    public abstract class PagedTableModel<TModel, TView> : PagerModel2
     {
-        public PagerModel2 Pager { get; set; }
         protected PagedTableModel(string defaultSort, string defaultDirection)
+           : this()
         {
-            Pager = new PagerModel2(Count) {Sort = defaultSort, Direction = defaultDirection};
+            Sort = defaultSort;
+            Direction = defaultDirection;
+        }
+        protected PagedTableModel()
+        {
+            GetCount = Count;
         }
         protected PagedTableModel(string defaultSort, string defaultDirection, bool useAjax)
         {
-            Pager = new PagerModel2(Count) { Sort = defaultSort, Direction = defaultDirection, AjaxPager = useAjax};
+            Sort = defaultSort;
+            Direction = defaultDirection;
+            AjaxPager = useAjax;
         }
         private int? count;
         public int Count()
@@ -39,8 +46,10 @@ namespace CmsWeb.Models
         {
             var q = DefineModelSort(ModelList());
             if(q == null)
-                throw new Exception("sort not defined {0}".Fmt(Pager.SortExpression));
-            return q.Skip(Pager.StartRow).Take(Pager.PageSize);
+                throw new Exception("sort not defined {0}".Fmt(SortExpression));
+            if (PageSize == 0)
+                return q;
+            return q.Skip(StartRow).Take(PageSize);
         }
         public IEnumerable<TView> ViewList()
         {

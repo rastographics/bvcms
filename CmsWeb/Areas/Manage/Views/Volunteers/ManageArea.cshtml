@@ -1,4 +1,5 @@
 ﻿@model CmsWeb.Areas.Manage.Models.VolunteerCommitmentsModel
+@using CmsData
 @using UtilityExtensions
 @{
   const string DayHourFmt = "ddd h:mm tt";
@@ -6,7 +7,7 @@
 
 @Html.Hidden("OrgId", Model.OrgId)
 @Html.Hidden("SortByWeek", Model.SortByWeek)
-<h2>Volunteer Calendar for @Helper.AnchorLink(Model.OrgName, "/Organization/" + Model.OrgId)</h2>
+<h2>Volunteer Calendar for @Helper.AnchorLink(Model.OrgName, Util2.Org + "/" + Model.OrgId)</h2>
 <table>
   <tr>
     <td class="top">
@@ -71,7 +72,7 @@
                   }
                   else
                   {
-                    @Helper.AnchorLink("Request Volunteers", "/Volunteers/Request0/{0}/{1}/{2}".Fmt(t.ticks, Model.OrgId, t.Limit), target: "_blank", style: "volreq")
+                    @Helper.AnchorLink("Request Volunteers ({0})".Fmt(t.Limit), "/Volunteers/Request0/{0}/{1}/{2}".Fmt(t.ticks, Model.OrgId, t.Limit), target: "_blank", style: "volreq")
                   }
                 </p>
                 @foreach (var p in t.OrderedPersons())
@@ -96,27 +97,27 @@
     <td>&nbsp;</td>
     <td class="top">
       @if (Model.IsLeader)
-      {
-        <p>
-          @if (User.IsInRole("Edit"))
-          {
-            @Helper.AnchorLink("Email Reminders", "/Organization/Reminders/" + Model.OrgId, id: "sendreminders", style: "bt")
-          }
-          else
-          {
-            <a enabled="false">Email Reminders</a>
-          }
-          @Html.CheckBox("emailall") Email All (default next 7 days)
-        </p>
-        <p>
-          Small Group Filters<br />
-          @Html.DropDownList("sg1", Model.SmallGroups(), new { @class = "smallgroup" })<br />
-          @Html.DropDownList("sg2", Model.SmallGroups(), new { @class = "smallgroup" })
-        </p>
-        <div class="drop day" target="clear" week="0" time="1-1-1000" style="padding:5px;height:2em;border:2px solid black;">target here to remove commitments</div>
-        <h4><em>Select header items in blue below, or a person, then click a target</em></h4>
-        var vlist = Model.Volunteers().ToList();
-        <div class="volunteers">
+            {
+          <p>
+            @if (User.IsInRole("Edit"))
+                    {
+            @Helper.AnchorLink("Email Reminders", Util2.Org + "/Reminders/" + Model.OrgId, id: "sendreminders", style: "bt")
+                    }
+                    else
+                    {
+                  <a enabled="false">Email Reminders</a>
+                    }
+            @Html.CheckBox("emailall") Email All (default next 7 days)
+          </p>
+          <p>
+          Sub-Group Filters<br />
+            @Html.DropDownList("sg1", Model.SmallGroups(), new { @class = "smallgroup" })<br />
+            @Html.DropDownList("sg2", Model.SmallGroups(), new { @class = "smallgroup" })
+          </p>
+          <div class="drop day" target="clear" week="0" time="1-1-1000" style="padding:5px;height:2em;border:2px solid black;">target here to remove commitments</div>
+          <h4><em>Select header items in blue below, or a person, then click a target</em></h4>
+                var vlist = Model.Volunteers().ToList();
+          <div class="volunteers">
           <div class="selectable" source="all">
             <h3>All Volunteers</h3>
           </div>
@@ -131,24 +132,24 @@
               </div>
             }
           }
-          <div class="selectable" source="commits"><h3>With Commitments</h3></div>
+            <div class="selectable" source="commits"><h3>With Commitments</h3></div>
           @foreach (var v in vlist.Where(vv => vv.Commits == true && vv.Conflicts != true))
-          {
+                    {
             <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
               @v.Name
               @Helper.AnchorLink("registration page", "/OnlineReg/ManageVolunteer/{0}/{1}".Fmt(Model.OrgId, v.PeopleId), target: "committments")
-            </div>
-          }
-          <div class="selectable" source="nocommits"><h3>With No Commitments</h3></div>
+                  </div>
+                    }
+            <div class="selectable" source="nocommits"><h3>With No Commitments</h3></div>
           @foreach (var v in vlist.Where(vv => vv.Commits != true))
-          {
-            <div class="selectable" source="person" pid="@v.PeopleId">
+                    {
+                  <div class="selectable" source="person" pid="@v.PeopleId">
               <span class="@(v.Conflicts == true ? "conflict" : "")">@v.Name</span>
               @Helper.AnchorLink("registration page", "/OnlineReg/ManageVolunteer/{0}/{1}".Fmt(Model.OrgId, v.PeopleId), target: "committments")
-            </div>
-          }
-        </div>
-      }
+                  </div>
+                    }
+          </div>
+            }
     </td>
   </tr>
 </table>

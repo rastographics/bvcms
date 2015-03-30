@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,27 @@ namespace CmsData.Registration
 {
     public class AskCheckboxes : Ask
     {
+        public override string Help
+        {
+            get { return @"
+This is a group of checkboxes where you can check more than one.
+You can specify a minumum number they must check.
+And you can specify a maximum number they can check.
+
+For each checkbox, you can specify the following:
+
+* **Sub-Group** (required)
+* **Fee** (optional) for the selection.
+* **Limit** (optional) which limits the number of people allowed for a selection.
+* **DateTime** (optional) which registers them in a meeting.
+"; 
+            }
+        }
+
         public string Label { get; set; }
-        public int? Min { get; set; }
-        public int? Max { get; set; }
-        public int? Cols { get; set; }
+        public int? Minimum { get; set; }
+        public int? Maximum { get; set; }
+        public int? Columns { get; set; }
         public List<CheckboxItem> list { get; set; }
 
         public AskCheckboxes()
@@ -26,9 +44,9 @@ namespace CmsData.Registration
             if (list.Count == 0)
                 return;
             Settings.AddValueNoCk(0, sb, "Checkboxes", Label);
-            Settings.AddValueCk(1, sb, "Minimum", Min);
-            Settings.AddValueCk(1, sb, "Maximum", Max);
-            Settings.AddValueCk(1, sb, "Columns", Cols);
+            Settings.AddValueCk(1, sb, "Minimum", Minimum);
+            Settings.AddValueCk(1, sb, "Maximum", Maximum);
+            Settings.AddValueCk(1, sb, "Columns", Columns);
             foreach (var i in list)
                 i.Output(sb);
             sb.AppendLine();
@@ -37,9 +55,9 @@ namespace CmsData.Registration
         {
             var cb = new AskCheckboxes();
             cb.Label = parser.GetString("CheckBoxes");
-            cb.Min = parser.GetInt(Parser.RegKeywords.Minimum);
-            cb.Max = parser.GetInt(Parser.RegKeywords.Maximum);
-            cb.Cols = parser.GetInt(Parser.RegKeywords.Columns) ?? 1;
+            cb.Minimum = parser.GetInt(Parser.RegKeywords.Minimum);
+            cb.Maximum = parser.GetInt(Parser.RegKeywords.Maximum);
+            cb.Columns = parser.GetInt(Parser.RegKeywords.Columns) ?? 1;
             cb.list = new List<CheckboxItem>();
             if (parser.curr.indent == 0)
                 return cb;
@@ -96,12 +114,14 @@ namespace CmsData.Registration
             }
             public string Name { get; set; }
             public string Description { get; set; }
+            [DisplayName("Sub-Group")]
             public string SmallGroup { get; set; }
             public decimal? Fee { get; set; }
             public int? Limit { get; set; }
             [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:g}")]
             public DateTime? MeetingTime { get; set; }
 
+            [DisplayName("DateTime")]
 		    public string MeetingTimeString
 		    {
 		        get { return MeetingTime.ToString2("g"); }

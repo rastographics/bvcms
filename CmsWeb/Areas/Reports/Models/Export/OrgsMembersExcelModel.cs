@@ -1,9 +1,12 @@
+using System;
 using System.Reflection;
 using CmsData.View;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
 using OfficeOpenXml;
 using System.Linq;
+using CmsData;
+using CmsData.Codes;
 using OfficeOpenXml.Style;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
 
@@ -11,10 +14,29 @@ namespace CmsWeb.Models
 {
     public class OrgsMembersExcelModel
     {
+        public static EpplusResult Export()
+        {
+            if (DbUtil.Db.CurrentOrg.GroupSelect != GroupSelectCode.Member)
+                return new EpplusResult("EmptyResult.xlsx");
+
+            var co = DbUtil.Db.CurrentOrg;
+            var filter = DbUtil.Db.OrgPeople(co.Id, co.First(), co.Last(), co.SgFilter, co.FilterIndividuals,
+                co.FilterTag).Select(pp => pp.PeopleId).ToList();
+            var list = DbUtil.Db.CurrOrgMembers2(co.Id.ToString(), string.Join(",", filter));
+
+            var count = list.Count();
+            if(count == 0)
+                return new EpplusResult("EmptyResult.xlsx");
+
+            var cols = typeof(CurrOrgMember).GetProperties();
+            var ep = new ExcelPackage();
+            var ws = ep.Workbook.Worksheets.Add("Sheet1");
+            ws.Cells["A2"].LoadFromCollection(list);
+            return FormatResult(ws, count, cols, ep);
+        }
         public static EpplusResult Export(int id)
         {
             var q = ExportInvolvements.OrgMemberList(id);
-
             var cols = typeof(CurrOrgMember).GetProperties();
             var count = q.Count();
             var ep = new ExcelPackage();

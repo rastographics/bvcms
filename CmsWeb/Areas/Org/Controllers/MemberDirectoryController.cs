@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Models;
+using CmsWeb.Areas.Org.Models;
 
 namespace CmsWeb.Areas.Org.Controllers
 {

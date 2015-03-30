@@ -8,6 +8,15 @@ namespace CmsData.Registration
 {
 	public class AskYesNoQuestions : Ask
 	{
+	    public override string Help
+	    {
+	        get 
+            { return @"
+These are questions that will force a yes or no answer.
+The results will be in sub-groups with a Yes- or No- prepended to the name.
+"; 
+            }
+	    }
 		public List<YesNoQuestion> list { get; private set; }
 
 		public AskYesNoQuestions()

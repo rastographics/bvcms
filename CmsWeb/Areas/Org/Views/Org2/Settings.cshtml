@@ -1,0 +1,21 @@
+﻿@model CmsWeb.Areas.Org2.Models.OrganizationModel
+<ul class="nav nav-tabs subnav" data-tabparent="Settings-tab">
+  <li class="active">
+    <a href="#General" data-toggle="tab">General</a>
+  </li>
+  <li>
+    <a href="#Attendance" data-toggle="tab" class="ajax">Attendance</a>
+  </li>
+  <li>
+    <a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a>
+  </li>
+</ul>
+<div class="tab-content">
+  <div id="General" class="tab-pane settings active" data-link="/Org/General">
+    @Html.Partial("Settings/General", Model.SettingsGeneralModel)
+  </div>
+  <div id="Attendance" class="tab-pane settings" data-link="/Org/Attendance">
+    @Helper.HiddenId("Id", Model.Id)
+  </div>
+  <div class="tab-pane ajax" id="extravalues" data-link="/ExtraValue/Display/Organization/Standard/@Model.Id"></div>
+</div>

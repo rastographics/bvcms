@@ -212,8 +212,8 @@ namespace CmsWeb.Models
             }
         }
 
-        private CmsData.Organization _masterorg;
-        public CmsData.Organization masterorg
+        private Organization _masterorg;
+        public Organization masterorg
         {
             get
             {
@@ -426,7 +426,7 @@ namespace CmsWeb.Models
 
         public IEnumerable<SelectListItem> Countries()
         {
-            var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList(), null);
+            var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
             list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
             return list;
         }

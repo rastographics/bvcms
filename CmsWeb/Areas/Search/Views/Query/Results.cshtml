@@ -6,8 +6,6 @@
     var useemployer = ViewExtensions2.DbSetting("UseEmployerNotTeacher", "false") == "true";
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
-
-
 <!--@Html.Raw(ViewBag.xml)-->
 <div class="box box-responsive">
     <div class="box-title">
@@ -16,7 +14,7 @@
     <div class="box-content">
         @Html.Partial("Toolbar/Toolbar.touch")
         <h4 class="visible-xs-block">@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h4>
-        @Html.Partial("PagerTop", Model.Pager)
+        @Html.Partial("PagerTop", Model)
         <div class="table-responsive">
             <table class="table table-striped" id="resultsTable">
                 <thead>
@@ -73,10 +71,10 @@
                 </tbody>
             </table>
         </div>
-        @Html.Partial("PagerBottom", Model.Pager)
+        @Html.Partial("PagerBottom", Model)
         @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-        @Html.Hidden("Page", Model.Pager.Page)
-        @Html.Hidden("Sort", Model.Pager.Sort)
-        @Html.Hidden("Direction", Model.Pager.Direction)
+        @Html.Hidden("Page", Model.Page)
+        @Html.Hidden("Sort", Model.Sort)
+        @Html.Hidden("Direction", Model.Direction)
     </div>
 </div>

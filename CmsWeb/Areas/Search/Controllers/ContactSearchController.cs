@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using CmsWeb.Areas.Search.Models;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
@@ -12,15 +13,13 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             Response.NoCache();
             var m = new ContactSearchModel();
-            m.Pager.Set("/ContactSearch2/Results");
 
             m.GetFromSession();
             return View(m);
         }
-        [HttpPost, Route("Results/{page?}/{size?}/{sort?}/{dir?}")]
-        public ActionResult Results(int? page, int? size, string sort, string dir, ContactSearchModel m)
+        [HttpPost]
+        public ActionResult Results(ContactSearchModel m)
         {
-            m.Pager.Set("/ContactSearch2/Results", page, size, sort, dir);
             m.SaveToSession();
             return View(m);
         }

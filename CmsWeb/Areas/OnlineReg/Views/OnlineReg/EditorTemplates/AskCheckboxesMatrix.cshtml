@@ -10,7 +10,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    @for (var n = 0; n < ask.Cols; n++)
+                    @for (var n = 0; n < ask.Columns; n++)
                     {
                         var a = ask.list[n];
                         if (a.SmallGroup == "nocheckbox")
@@ -21,10 +21,10 @@
                 </tr>
             </thead>
             <tbody>
-                @for (var n = ask.Cols ?? 1; n < ask.list.Count; n++)
+                @for (var n = ask.Columns ?? 1; n < ask.list.Count; n++)
                 {
                     var a = ask.list[n];
-                    if (n % ask.Cols == 0)
+                    if (n % ask.Columns == 0)
                     {
                         @Html.Raw("<tr>")
                     }
@@ -49,7 +49,7 @@
                             }
                         }
                     }
-                    if (n % ask.Cols == ask.Cols - 1)
+                    if (n % ask.Columns == ask.Columns - 1)
                     {
                         @Html.Raw("</tr>")
                     }

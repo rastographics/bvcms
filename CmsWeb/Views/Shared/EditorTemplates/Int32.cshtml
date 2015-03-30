@@ -5,5 +5,9 @@
         @Html.TextBoxFor2(m => m, true, null, new { @class = "form-control" })
         <span class="help-block">@Html.Raw(ViewData["help"])</span>
         @Html.ValidationMessageLabelFor(m => m)
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
     </div>
 </div>

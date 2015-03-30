@@ -1,5 +1,6 @@
-﻿@using CmsWeb
-@using CmsWeb.Areas.Org.Models
+﻿@using System.Web.Mvc.Html
+@using CmsWeb
+@using CmsWeb.Areas.Search.Models
 @model OrgSearchModel
 @{
   Layout = ViewExtensions2.Layout();
@@ -7,7 +8,7 @@
 }
 @section scripts
 {
-  @Fingerprint.Script("/Scripts/Org/OrgSearch.js")
+  @Fingerprint.Script("/Scripts/Search/OrgSearch.js")
   @ViewExtensions2.CKEditor()
 }
 @section head

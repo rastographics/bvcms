@@ -10,8 +10,9 @@ using CmsData.Codes;
 using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Models;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Org.Models
 {
     public class MemberDirectoryModel : PagerModel2
     {

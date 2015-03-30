@@ -1,6 +1,7 @@
 ﻿@using CmsWeb
 @using CmsWeb.Areas.Org.Models
 @using CmsWeb.Areas.Search.Models
+@using CmsWeb.Code
 @model QueryModel
 <div id="condition-edit">
     @Html.Hidden("ConditionName")
@@ -54,13 +55,13 @@
         @if (Model.StartDateVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.StartDate, Model.StartDateVisible)
+                @(Model.ConditionName == "AttendedAsOf" ? Html.EditorForIf(m => m.StartDate, Model.StartDateVisible, "DateAndTime") : Html.EditorForIf(m => m.StartDate, Model.StartDateVisible))
             </div>
         }
         @if (Model.EndDateVisible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.EndDate, Model.EndDateVisible)
+                @(Model.ConditionName == "AttendedAsOf" ? Html.EditorForIf(m => m.EndDate, Model.EndDateVisible, "DateAndTime") : Html.EditorForIf(m => m.EndDate, Model.EndDateVisible))
             </div>
         }
         @if (Model.QuartersVisible)
@@ -132,7 +133,7 @@
         @if (Model.OrgType2Visible)
         {
             <div class="col-sm-6">
-                @Html.EditorForIf(m => m.OrgType2, Model.OrgType2Visible, "DropDown", new { items = OrgSearchModel.OrgTypes() })
+                @Html.EditorForIf(m => m.OrgType2, Model.OrgType2Visible, "DropDown", new { items = CodeValueModel.OrgTypes() })
             </div>
         }
         @if (Model.ScheduleVisible)

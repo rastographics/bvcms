@@ -1,0 +1,43 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Org2.Models.SettingsMessagesModel
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowMessagesHelp") == "true";
+}
+<form class="form form-horizontal non-modal ajax span12">
+    <br/>
+    @FormAction()
+  <div>
+    @Html.EditorFor(m => m.Subject)
+    @Html.EditorFor(m => m.Body, "Html")
+    @Html.EditorFor(m => m.NotifyIds, "NotifyList", new { OrgId = Model.Id, Field = "NotifyIds"})
+    @Html.EditorFor(m => m.InstructionLogin, "Html")
+    @Html.EditorFor(m => m.InstructionSelect, "Html")
+    @Html.EditorFor(m => m.InstructionFind, "Html")
+    @Html.EditorFor(m => m.InstructionOptions, "Html")
+    @Html.EditorFor(m => m.InstructionSpecial, "Html")
+    @Html.EditorFor(m => m.InstructionSubmit, "Html")
+    @Html.EditorFor(m => m.InstructionSorry, "Html")
+    @Html.EditorFor(m => m.ThankYouMessage, "Html")
+    @Html.EditorFor(m => m.Terms, "Html")
+    @Html.EditorFor(m => m.ReminderSubject)
+    @Html.EditorFor(m => m.ReminderBody, "Html")
+    @if (Model.Org.IsMissionTrip == true)
+    {
+      @Html.EditorFor(m => m.SupportSubject)
+      @Html.EditorFor(m => m.SupportBody, "Html")
+      @Html.EditorFor(m => m.GiftNotifyIds, "NotifyList", new {OrgId = Model.Id, Field = "GiftNotifyIds"})
+      @Html.EditorFor(m => m.SenderSubject)
+      @Html.EditorFor(m => m.SenderBody, "Html")
+    }
+    @FormAction()
+  </div>
+</form>
+
+@helper FormAction()
+{
+    <div class="pull-right">
+        <a href="/Org/Messages/@Model.Id" class="btn ajax">Cancel</a>
+        <a href="/Org/MessagesUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
+    </div>
+    <div class="formerror">@Html.ValidationMessage("Form")</div>
+}

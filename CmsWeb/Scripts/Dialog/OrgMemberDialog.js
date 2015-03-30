@@ -18,7 +18,7 @@
     $("body").on("click", 'a.delete', function (ev) {
         if (confirm("are you sure?"))
             $.post($(this).attr("href"), null, function (ret) {
-                self.parent.RebindMemberGrids($("#from").val());
+                self.parent.RebindMemberGrids();
             });
         return false;
     });
@@ -27,7 +27,7 @@
         var f = $(this).closest('form');
         if (confirm("are you sure?"))
             $.post($(this).attr('href'), null, function (ret) {
-                self.parent.RebindMemberGrids($("#from").val());
+                self.parent.RebindMemberGrids();
             });
         return false;
     });
@@ -38,7 +38,7 @@
         $.post($(this).attr('href'), q, function (ret) {
             if (ret.substring(0, 5) != "error")
                 $.displayEdit(f, ret);
-            self.parent.RebindMemberGrids($("#from").val());
+            self.parent.RebindMemberGrids();
         });
         return false;
     });

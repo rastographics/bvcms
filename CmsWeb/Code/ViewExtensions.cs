@@ -27,6 +27,7 @@ using System.Linq;
 using System.Web.Hosting;
 using System.Web.Script.Serialization;
 using ExpressionHelper = System.Web.Mvc.ExpressionHelper;
+using MarkdownDeep;
 
 namespace CmsWeb
 {
@@ -69,7 +70,7 @@ namespace CmsWeb
                 return null;
             }
         }
-        public static MvcHtmlString DivValidationMessage(this HtmlHelper helper, string field)
+        public static MvcHtmlString DivValidationMessage(this HtmlHelper helper, string field, string @class = null)
         {
             try
             {
@@ -83,6 +84,8 @@ namespace CmsWeb
                     return null;
                 var div = new TagBuilder("div");
                 div.AddCssClass("alert alert-danger");
+                if(@class.HasValue())
+                    div.AddCssClass(@class);
                 div.InnerHtml = s;
                 return new MvcHtmlString(div.ToString());
             }
@@ -389,6 +392,22 @@ namespace CmsWeb
                 tb.MergeAttribute("value", "");
             return new HtmlString(tb.ToString());
         }
+        public static HtmlString HiddenFor3<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression)
+        {
+            var tb = new TagBuilder("input");
+            tb.MergeAttribute("type", "hidden");
+            var name = ExpressionHelper.GetExpressionText(expression);
+            var v = htmlHelper.ViewData.Eval(name);
+            var prefix = htmlHelper.ViewData.TemplateInfo.HtmlFieldPrefix;
+            if (Util.HasValue(prefix))
+                name = prefix + "." + name;
+            tb.MergeAttribute("name", name);
+            if (v != null)
+                tb.MergeAttribute("value", v.ToString());
+            else
+                tb.MergeAttribute("value", "");
+            return new HtmlString(tb.ToString());
+        }
         public static HtmlString DatePicker(this HtmlHelper helper, string name)
         {
             var tb = new TagBuilder("input");
@@ -604,6 +623,8 @@ namespace CmsWeb
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
 
+            if (attributes.ContainsKey("data-rule-date") && attributes.ContainsKey("data-rule-dateandtimevalid"))
+                attributes.Remove("data-rule-date");
             var textBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
                 htmlHelper.TextBoxFor(expression, format, attributes));
 
@@ -681,6 +702,22 @@ namespace CmsWeb
                 htmlHelper.DropDownListFor(m => m.Value, selectList, optionLabel, attributes));
 
             return dropDown;
+        }
+        public static IHtmlString DisplayForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool show, string templateName, object viewdata = null, object htmlAttributes = null)
+        {
+            if (!show)
+                return null;
+            if (templateName == null)
+                return htmlHelper.DisplayFor(expression, viewdata);
+            return htmlHelper.DisplayFor(expression, templateName, viewdata);
+        }
+        public static IHtmlString DisplayForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool show, object viewdata = null)
+        {
+            return htmlHelper.DisplayForIf(expression, show, null, viewdata);
         }
         public static IHtmlString EditorForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
@@ -837,6 +874,17 @@ namespace CmsWeb
         public static HtmlString LoDash()
         {
             return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
+        }
+
+        public static HtmlString Markdown(this HtmlHelper helper, string text)
+        {
+            var md = new Markdown();
+            string output = md.Transform(text.Trim());
+            return new HtmlString(output);
+        }
+        public static bool ShowOrgSettingsHelp(this HtmlHelper helper)
+        {
+            return DbUtil.Db.UserPreference("ShowOrgSettingsHelp", "true") == "true";
         }
 
         public static string Layout()

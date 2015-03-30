@@ -334,27 +334,6 @@
             });
         return false;
     });
-    $("#rollsheetoptions").dialog({
-        autoOpen: false,
-        buttons: {
-            "Ok": function () {
-                var ck = $("#bygroup").is(':checked');
-                var sg = $("#sgprefix").val();
-                var q = "?MeetingId=" + $("#meetingid").val();
-                if (ck)
-                    q = q.appendQuery("bygroup=1");
-                if (sg.length > 0)
-                    q = q.appendQuery("sgprefix=" + sg);
-                $(this).dialog("close");
-                window.open("/Reports/Rollsheet" + q);
-            }
-        }
-    });
-    $("body").on("click", '#rollsheet', function (ev) {
-        ev.preventDefault();
-        var d = $('#rollsheetoptions');
-        d.dialog("open");
-    });
 });
 function AddSelected(ret) {
     $('#visitorDialog').dialog("close");

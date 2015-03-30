@@ -9,8 +9,8 @@ namespace CmsWeb.Areas.Org.Models
 {
     public class MeetingModel
     {
-        public CmsData.Meeting meeting;
-        public CmsData.Organization org;
+        public Meeting meeting;
+        public Organization org;
 
         public bool showall { get; set; }
         public bool currmembers { get; set; }
@@ -18,7 +18,6 @@ namespace CmsWeb.Areas.Org.Models
         public bool showregistered { get; set; }
         public bool sortbyname { get; set; }
         public bool showlarge { get; set; }
-        public bool usenew { get; set; }
 
         public MeetingModel(int id)
         {
@@ -40,15 +39,10 @@ namespace CmsWeb.Areas.Org.Models
             return DbUtil.Db.Setting("RegularMeetingHeadCount", "enable");
         }
 
-        public IEnumerable<RollsheetModel.AttendInfo> Attends(bool sorted = false, string highlight = null)
+        public IEnumerable<RollsheetModel.AttendInfo> Attends(bool sorted = false)
         {
-            var rm = highlight == null 
-                ? RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers)
-                : RollsheetModel.RollListHighlight(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers, highlight);
-
-            return rm;
+            return RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted, currmembers);
         }
-
         public IEnumerable<RollsheetModel.AttendInfo> VisitAttends(bool sorted = false)
         {
             var q = RollsheetModel.RollList(meeting.MeetingId, meeting.OrganizationId, meeting.MeetingDate.Value, sorted);
