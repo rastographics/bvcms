@@ -3,51 +3,6 @@
     $('body').on('click', 'a.dialog-options', function (ev) {
         ev.preventDefault();
         var $a = $(this);
-        $("<div id='dialog-options' />").load($a.data("target"), function () {
-            var div = $(this);
-            var dialog = div.find("div.modal-dialog");
-            var f = div.find("form");
-            f.attr("action", $a[0].href);
-
-            if ($a[0].title)
-                div.find("h3.modal-title").text($a[0].title);
-
-            $('#empty-dialog').html(dialog);
-            $('#empty-dialog').modal("show");
-
-            dialog.on('hidden', function () {
-                div.remove();
-                dialog.remove();
-            });
-            f.validate({
-                submitHandler: function (form) {
-                    if (form.method.toUpperCase() === 'GET') {
-                        form.submit();
-                    }
-                    else {
-                        var q = f.serialize();
-                        $.post(form.action, q, function (ret) {
-                            if ($a.data("callback")) {
-                                $.InitFunctions[$a.data("callback")]($a);
-                            }
-                        });
-                    }
-                    $('#empty-dialog').modal("hide");
-                },
-                highlight: function (element) {
-                    $(element).closest(".form-group").addClass("has-error");
-                },
-                unhighlight: function (element) {
-                    $(element).closest(".form-group").removeClass("has-error");
-                }
-            });
-        });
-        return true;
-    });
-
-    $('body').on('click', 'a.dialog-options', function (ev) {
-        ev.preventDefault();
-        var $a = $(this);
         // data-target is the dialog  and a.href is the report
         // or a.href is the dialog and form.action is the report
         var dialog = $a.data("target") || this.href;
