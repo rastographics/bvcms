@@ -252,19 +252,27 @@
     });
 
     $.dialogOptions = function (dialog, $a) {
-        $("<div id='dialog-options' />").load(dialog, {}, function () {
-            var d = $(this);
-            var f = d.find("form");
-            if ($a[0].title)
-                f.find("h3.title").text($a[0].title);
-            f.modal("show");
+        $("<div id='dialog-options' />").load(dialog, function () {
+            var div = $(this);
+            var dlg = div.find("div.modal-dialog");
+            var f = div.find("form");
+
             if (!f.attr("action"))
                 f.attr("action", $a[0].href); // a.href will be the report/export
+
+            if ($a[0].title)
+                div.find("h3.modal-title").text($a[0].title);
+
+            $('#empty-dialog').html(dlg);
+            $('#empty-dialog').modal("show");
+            
             f.on('hidden', function () {
-                d.remove();
-                f.remove();
+                div.remove();
+                dlg.remove();
             });
-            $.DatePickers();
+
+            $.AttachFormElements();
+
             f.validate({
                 submitHandler: function (form) {
                     if (form.method.toUpperCase() === 'GET')
@@ -273,7 +281,7 @@
                         var q = f.serialize();
                         $.post(form.action, q, function (ret) {
                             if (ret)
-                                $.growlUI("", ret);
+                                swal("Error!", ret, "error");
                             if ($a.data("callback")) {
                                 $.InitFunctions[$a.data("callback")]($a);
                             }
@@ -291,13 +299,13 @@
                             $.InitFunctions[$a.data("callback")]($a, q);
                         }
                     }
-                    f.modal("hide");
+                    $('#empty-dialog').modal("hide");
                 },
                 highlight: function (element) {
-                    $(element).closest(".control-group").addClass("error");
+                    $(element).closest(".form-group").addClass("error");
                 },
                 unhighlight: function (element) {
-                    $(element).closest(".control-group").removeClass("error");
+                    $(element).closest(".form-group").removeClass("error");
                 }
             });
         });
