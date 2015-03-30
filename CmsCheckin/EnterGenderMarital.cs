@@ -220,7 +220,7 @@ namespace CmsCheckin
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			var f = new TakePicture();
+			var f = new CommonTakePicture();
 			f.ShowDialog();
 		}
 	}

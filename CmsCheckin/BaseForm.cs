@@ -20,10 +20,10 @@ namespace CmsCheckin
 			Program.CursorHide();
             ControlsAdd(home);
 			home.Visible = true;
-			if (home is Home)
-				textbox = ((Home)home).textBox1;
-			else if (home is Home2)
-				textbox = ((Home2)home).textBox1;
+			if (home is AttendHome)
+				textbox = ((AttendHome)home).textBox1;
+			else if (home is BuildingHome)
+				textbox = ((BuildingHome)home).textBox1;
         }
 
 
