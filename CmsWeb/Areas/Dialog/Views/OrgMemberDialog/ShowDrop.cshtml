@@ -8,7 +8,7 @@
       @Html.HiddenFor(m => m.PeopleId)
       @Html.HiddenFor(m => m.OrgId)
       @Html.EditorFor(m => m.DropDate, new {help = "Leave Blank for Current Date/Time"})
-      @Html.EditorFor(m => m.RemoveFromEnrollmentHistory, new {help = "This will erase all history of this person's membership in " + Model.OrgName})
+      @Html.EditorFor(m => m.RemoveFromEnrollmentHistory)
     </fieldset>
   </div>
   <div class="modal-footer">

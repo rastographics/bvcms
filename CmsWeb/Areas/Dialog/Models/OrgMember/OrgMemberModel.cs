@@ -177,6 +177,8 @@ namespace CmsWeb.Areas.Dialog.Models
         }
 
         public DateTime? DropDate { get; set; }
+
+        [Display(Description = @"Checking this box will erase all enrollment history (but not attendance) of this person in this organization")]
         public bool RemoveFromEnrollmentHistory { get; set; }
 
         public void Drop()
