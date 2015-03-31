@@ -325,12 +325,12 @@
 
     function UpdateSelectedOrgs(list, f) {
         $.post("/Org/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
-            $("#orgpickdiv").html(ret);
+            $("#orgpickdiv").replaceWith(ret);
             f.modal("hide");
         });
     }
     $.initializeSelectOrgsDialog = function (f) {
-        $("#select-orgs #UpdateSelected").click(function (ev) {
+        $("#select-orgs #UpdateSelected").live("click", function (ev) {
             ev.preventDefault();
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
                 return $(this).val();
@@ -338,6 +338,14 @@
 
             UpdateSelectedOrgs(list, f);
             return false;
+        });
+        $("#select-orgs").on('keydown', "#name", function (ev) {
+            if (ev.keyCode === 13) {
+                ev.preventDefault();
+                $('#select-orgs #search').click();
+                return false;
+            }
+            return true;
         });
         $.SaveOrgIds = function (ev) {
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {

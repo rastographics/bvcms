@@ -5,6 +5,7 @@ using System.Web.UI;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
 using CmsWeb.Code;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -59,6 +60,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("Drop")]
         public ActionResult Drop(OrgMemberModel m)
         {
+            DbUtil.LogActivity(m.RemoveFromEnrollmentHistory
+                ? "removed enrollment history on {0} for {1}".Fmt(m.PeopleId, m.OrgId)
+                : "dropped {0} for {1}".Fmt(m.PeopleId, m.OrgId));
             m.Drop();
             return View("Dropped", m);
         }

@@ -4,6 +4,7 @@
 @{
   var managetransactions = User.IsInRole("ManageTransactions");
   var admin = User.IsInRole("Admin");
+  var edit = User.IsInRole("Edit");
   var missiongiving = User.IsInRole("MissionGiving");
 }
 <form class="form form-horizontal modal fade hide validate ajax">
@@ -143,9 +144,12 @@
         </ul>
       </div>
     }
+    @if (edit)
+    {
     <a href="/OrgMemberDialog/ShowDrop/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Drop</a>
     <a href="/OrgMemberDialog/Move/@Model.OrgId/@Model.PeopleId" class="btn btn-warning ajax">Move</a>
     <a href="/OrgMemberDialog/Edit/@Model.OrgId/@Model.PeopleId" class="btn btn-primary ajax">Edit</a>
+    }
   </div>
 </form>
 @helper SmallGroup(MemberTag mt)
