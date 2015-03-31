@@ -151,8 +151,16 @@ $.InitializeDateElements = function () {
             $(this).val($(isoSelector).val());
             $(this).attr('type', 'date');
         });
-    } else {
-        $(".input-group.date").datetimepicker({ format: 'MM/DD/YYYY', widgetPositioning : { horizontal: 'left' } });
+
+        $(".input-group.datetime input[type=text]").each(function (index) {
+            var isoSelector = '#' + $(this).attr('id') + 'Iso';
+            $(this).val($(isoSelector).val());
+            $(this).attr('type', 'datetime-local');
+        });
+    }
+    else {
+        $(".input-group.date").datetimepicker({ format: 'MM/DD/YYYY', widgetPositioning: { horizontal: 'left' } });
+        $(".input-group.datetime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' } });
     }
 }
 
