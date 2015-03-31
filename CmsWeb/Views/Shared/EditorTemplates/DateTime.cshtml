@@ -24,6 +24,7 @@
             @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: @fmt, htmlAttributes: new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
             @Html.Hidden("{0}{1}".Fmt(Html.IdFor(m => m), "Iso"), Model.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
         </div>
+        <span class="help-block">@Html.Raw(ViewData["help"])</span>
         @Html.ValidationMessageLabelFor(m => m)
         @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
         {

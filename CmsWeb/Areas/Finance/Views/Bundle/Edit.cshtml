@@ -45,7 +45,7 @@
                             <div class="form-group">
                                 <label for="Bundle_TotalCash" class="control-label">Total Cash</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalCash, new { @class = "form-control" })
+                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalCash, "{0:f2}", new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -53,7 +53,7 @@
                             <div class="form-group">
                                 <label for="Bundle_TotalChecks" class="control-label">Total Checks</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalChecks, new { @class = "form-control" })
+                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalChecks, "{0:f2}", new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
@@ -61,7 +61,7 @@
                             <div class="form-group">
                                 <label for="Bundle_TotalEnvelopes" class="control-label">Total Coin</label>
                                 <div class="input-group">
-                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalEnvelopes, new { @class = "form-control" })
+                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalEnvelopes, "{0:f2}", new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
