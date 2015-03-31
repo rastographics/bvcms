@@ -735,8 +735,14 @@ $(function () {
             });
         });
     });
+    function UpdateSelectedOrgs(list, f) {
+        $.post("/Organization/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
+            $("#orgpickdiv").html(ret);
+            f.modal("hide");
+        });
+    }
     $.initializeSelectOrgsDialog = function (f) {
-        $("#select-orgs #UpdateSelected").click(function (ev) {
+        $("#select-orgs").on("click", "#UpdateSelected", function (ev) {
             ev.preventDefault();
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
                 return $(this).val();
@@ -744,6 +750,14 @@ $(function () {
 
             UpdateSelectedOrgs(list, f);
             return false;
+        });
+        $("#select-orgs").on('keydown', "#name", function (ev) {
+            if (ev.keyCode === 13) {
+                ev.preventDefault();
+                $('#select-orgs #search').click();
+                return false;
+            }
+            return true;
         });
         $.SaveOrgIds = function (ev) {
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
@@ -753,13 +767,6 @@ $(function () {
         };
         $('body').on('change', '#select-orgs input:checkbox', $.SaveOrgIds);
     };
-
-    function UpdateSelectedOrgs(list, f) {
-        $.post("/Org/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
-            $("#orgpickdiv").html(ret);
-            f.modal("hide");
-        });
-    }
 
     $.extraEditable = function () {
         $('.editarea').editable('/Organization/EditExtra/', {

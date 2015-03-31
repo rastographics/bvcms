@@ -65,13 +65,11 @@ namespace CmsWeb.Areas.Org2.Controllers
         [HttpPost]
         public ActionResult UpdateOrgIds(int id, string list)
         {
-            var o = DbUtil.Db.LoadOrganizationById(id);
             DbUtil.Db.SetCurrentOrgId(id);
-            var m = new Settings(o.RegSetting, DbUtil.Db, id);
-            m.org = o;
-            o.OrgPickList = list;
+            var m = new SettingsRegistrationModel(id);
+            m.Org.OrgPickList = list;
             DbUtil.Db.SubmitChanges();
-            return PartialView("Other/OrgPickList2", m);
+            return PartialView("DisplayTemplates/OrgPickList", m);
         }
         private static Settings getRegSettings(int id)
         {
