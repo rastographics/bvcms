@@ -120,16 +120,16 @@ namespace CmsWeb.Areas.Org2.Models
                         q = from p in q orderby p.InactiveDate, p.Name2 select p;
                         break;
                     case "Contact Made":
-                        q = from p in q orderby p.LastContactMadeDt ?? SqlDateTime.MinValue, p.Name2 select p;
+                        q = from p in q orderby p.LastContactMadeDt ?? SqlDateTime.MinValue.Value, p.Name2 select p;
                         break;
                     case "Contact Received":
                         q = from p in q orderby p.LastContactReceivedDt, p.Name2 select p;
                         break;
                     case "Task About":
-                        q = from p in q orderby p.TaskAboutDt ?? SqlDateTime.MinValue, p.Name2 select p;
+                        q = from p in q orderby p.TaskAboutDt ?? SqlDateTime.MinValue.Value, p.Name2 select p;
                         break;
                     case "Task Assigned":
-                        q = from p in q orderby p.TaskDelegatedDt ?? SqlDateTime.MinValue, p.Name2 select p;
+                        q = from p in q orderby p.TaskDelegatedDt ?? SqlDateTime.MinValue.Value, p.Name2 select p;
                         break;
                     case "Tab":
                         q = from p in q orderby p.Tab, p.Name2 select p;
@@ -175,16 +175,16 @@ namespace CmsWeb.Areas.Org2.Models
                         q = from p in q orderby p.InactiveDate descending, p.Name2 descending select p;
                         break;
                     case "Contact Made":
-                        q = from p in q orderby p.LastContactMadeDt ?? SqlDateTime.MinValue descending, p.Name2 descending select p;
+                        q = from p in q orderby p.LastContactMadeDt ?? SqlDateTime.MinValue.Value descending, p.Name2 descending select p;
                         break;
                     case "Contact Received":
                         q = from p in q orderby p.LastContactReceivedDt descending, p.Name2 descending select p;
                         break;
                     case "Task About":
-                        q = from p in q orderby p.TaskAboutDt ?? SqlDateTime.MinValue descending, p.Name2 descending select p;
+                        q = from p in q orderby p.TaskAboutDt ?? SqlDateTime.MinValue.Value descending, p.Name2 descending select p;
                         break;
                     case "Task Assigned":
-                        q = from p in q orderby p.TaskDelegatedDt ?? SqlDateTime.MinValue descending, p.Name2 descending select p;
+                        q = from p in q orderby p.TaskDelegatedDt ?? SqlDateTime.MinValue.Value descending, p.Name2 descending select p;
                         break;
                     case "Age":
                         q = from p in q orderby p.BirthYear descending, p.BirthMonth descending, p.BirthDay descending select p;
