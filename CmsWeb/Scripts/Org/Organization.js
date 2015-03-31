@@ -323,6 +323,12 @@
 //        });
 //    });
 
+    function UpdateSelectedOrgs(list, f) {
+        $.post("/Org/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
+            $("#orgpickdiv").html(ret);
+            f.modal("hide");
+        });
+    }
     $.initializeSelectOrgsDialog = function (f) {
         $("#select-orgs #UpdateSelected").click(function (ev) {
             ev.preventDefault();
@@ -342,12 +348,6 @@
         $('body').on('change', '#select-orgs input:checkbox', $.SaveOrgIds);
     };
 
-    function UpdateSelectedOrgs(list, f) {
-        $.post("/Org/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
-            $("#orgpickdiv").html(ret);
-            f.modal("hide");
-        });
-    }
 
     $("#divisionlist").live("click", function (ev) {
         ev.preventDefault();

@@ -175,32 +175,6 @@ $(function () {
         d.dialog("option", "title", "Add Members From Tag");
         d.dialog("open");
     });
-    $('#LongRunOp').dialog({
-        bgiframe: true,
-        autoOpen: false,
-        width: 600,
-        height: 400,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            $('iframe', this).attr("src", "");
-            RebindMemberGrids();
-            $.updateTable($('#Meetings-tab form'));
-        }
-    });
-    $('a.delmeeting').live('click', function (ev) {
-        ev.preventDefault();
-        if (confirm("delete meeting for sure?")) {
-            var d = $('#LongRunOp');
-            $('iframe', d).attr("src", this.href);
-            d.dialog("option", "title", "Delete Meeting");
-            d.dialog("open");
-        }
-        return false;
-    });
-
 
     $('a.addmembers').live("click", function (e) {
         e.preventDefault();
@@ -265,6 +239,12 @@ $(function () {
         });
     };
 
+    $.InitFunctions.ReloadMeetings = function (f) {
+        $("#Meetings-tab form").load("/Organization/MeetingGrid", {
+            id: $("#OrganizationId").val(),
+            future: $("#future").is(':checked')
+        });
+    }
     $.initDatePicker = function (f) {
         $("ul.edit .datepicker").datetimepicker({
             autoclose: true,
@@ -743,10 +723,43 @@ $(function () {
     });
     $('#orgpicklist').live("click", function (e) {
         e.preventDefault();
-        var d = $('#orgsDialog');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("open");
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            $.initializeSelectOrgsDialog(f);
+
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+            });
+        });
     });
+    $.initializeSelectOrgsDialog = function (f) {
+        $("#select-orgs #UpdateSelected").click(function (ev) {
+            ev.preventDefault();
+            var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
+                return $(this).val();
+            }).get().join(',');
+
+            UpdateSelectedOrgs(list, f);
+            return false;
+        });
+        $.SaveOrgIds = function (ev) {
+            var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
+                return $(this).val();
+            }).get().join(',');
+            $.post("/SearchOrgs/SaveOrgIds/" + $("#select-orgs #id").val(), { oids: list });
+        };
+        $('body').on('change', '#select-orgs input:checkbox', $.SaveOrgIds);
+    };
+
+    function UpdateSelectedOrgs(list, f) {
+        $.post("/Org/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
+            $("#orgpickdiv").html(ret);
+            f.modal("hide");
+        });
+    }
 
     $.extraEditable = function () {
         $('.editarea').editable('/Organization/EditExtra/', {

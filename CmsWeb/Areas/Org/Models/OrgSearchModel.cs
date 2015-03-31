@@ -213,6 +213,18 @@ namespace CmsWeb.Areas.Search.Models
                                     where o.Location == loc
                                     select o;
                 }
+                else if (Name.StartsWith("ev:"))
+                {
+                    organizations = from o in organizations
+                                    where o.OrganizationExtras.Any(ee => ee.Field.StartsWith(Name.Substring(3)))
+                                    select o;
+                }
+                else if (Name.StartsWith("-ev:"))
+                {
+                    organizations = from o in organizations
+                                    where !o.OrganizationExtras.Any(ee => ee.Field.StartsWith(Name.Substring(4)))
+                                    select o;
+                }
                 else
                     organizations = from o in organizations
                                     where o.OrganizationName.Contains(Name)

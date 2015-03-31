@@ -1,9 +1,11 @@
 ﻿@model CmsWeb.Areas.People.Models.ContributionsModel
 @using UtilityExtensions
 <form class="non-modal ajax">
-    <div class="pagination pagination-mini">
+  <div class="pagination pagination-mini">
+    @Html.HiddenFor(m => m.PeopleId)
+    @Html.Partial("PagerHidden", Model)
     @Html.Partial("Pager3", Model)
-    </div>
+  </div>
     <table id="results" class="table table-condensed table-striped">
         <thead>
             <tr>

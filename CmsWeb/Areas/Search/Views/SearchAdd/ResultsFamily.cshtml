@@ -55,6 +55,7 @@
                     </table>
                 </div>
                 @Html.Partial("PagerBottom", Model)
+                @Html.Partial("PagerHidden", Model)
             }
             @Html.EditorFor(m => m, "HiddenSearch")
             @Html.EditorFor(m => m, "HiddenMeta")
