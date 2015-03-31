@@ -18,6 +18,7 @@ namespace CmsWeb.Models
             GetCount = Count;
         }
         protected PagedTableModel(string defaultSort, string defaultDirection, bool useAjax)
+            : this()
         {
             Sort = defaultSort;
             Direction = defaultDirection;
