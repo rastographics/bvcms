@@ -60,7 +60,7 @@ namespace CmsWeb.Models
                 table.Columns[i].Name = name;
                 var colrange = ws.Cells[1, col, count + 2, col];
 
-                if (name.Contains("Date"))
+                if (name.Contains("Date") || name == "LastAttend")
                 {
                     colrange.Style.Numberformat.Format = "mm-dd-yy";
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
