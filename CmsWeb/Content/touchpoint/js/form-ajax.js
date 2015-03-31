@@ -125,11 +125,11 @@
         $.formAjaxClick($(this));
     });
 
-    $('body').on('change', 'form.ajax select.ajax', function (event) {
+    $('body').on('change', 'form.ajax #Size', function (event) {
         event.preventDefault();
         var t = $(this);
-        var link = t.data("link");
-        $.formAjaxClick(t, link);
+        $(t).attr('data-size', $(t).val());
+        $.formAjaxClick(t);
         return false;
     });
 
