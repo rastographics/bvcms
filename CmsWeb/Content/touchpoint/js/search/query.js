@@ -445,7 +445,7 @@
 
     $.setPageSize = function (e) {
         $('#Page').val(1);
-        $("#Size").val($(e).val());
+        $("#PageSize").val($(e).val());
         RefreshList();
         return false;
     };
@@ -476,9 +476,9 @@ function RefreshList() {
                 $("#Sort").val(newsort);
                 var dir = $("#Dir").val();
                 if (oldsort == newsort && dir == 'asc')
-                    $("#Dir").val('desc');
+                    $("#Direction").val('desc');
                 else
-                    $("#Dir").val('asc');
+                    $("#Direction").val('asc');
                 RefreshList();
                 return false;
             });
