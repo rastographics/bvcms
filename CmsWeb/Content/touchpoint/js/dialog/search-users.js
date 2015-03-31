@@ -5,15 +5,14 @@
         return this.each(function () {
             var $this = $(this);
             $this.click(function (ev) {
-                ev.preventDefault();
+               ev.preventDefault();
                 var url = $(this).attr('href');
 
-                $("<div />").load(url, {}, function () {
-                    var d = $(this);
-                    var f = d.find("form");
-                    f.modal("show");
-
-
+                $("<form id='search-add' class='modal-form validate ajax' />").load(url, {}, function () {
+                    var f = $(this);
+                    $('#empty-dialog').html(f);
+                    $('#empty-dialog').modal("show");
+            
                     $(f).off("click", ".UpdateSelected");
                     $(f).on("click", ".UpdateSelected", function (ev2) {
                         ev2.preventDefault();
@@ -21,7 +20,7 @@
                         var topid0 = $("#topid0").val();
                         if (opts.UpdateShared)
                             opts.UpdateShared(topid, topid0, $this);
-                        f.modal("hide");
+                        $('#empty-dialog').modal("hide");
                         return false;
                     });
                     $(f).off("keypress", "#searchname");
@@ -63,8 +62,7 @@
                     });
 
                     f.on('hidden', function () {
-                        d.remove();
-                        f.remove();
+                        $('#empty-dialog').remove();
                     });
                 });
 
