@@ -10,6 +10,7 @@ using System.Text;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Windows.Forms.Design;
 using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.Manage.Models;
@@ -413,7 +414,11 @@ namespace CmsWeb.Models
 			{
 				Util.UserId = i.u.UserId;
 				Util.UserPeopleId = i.u.PeopleId;
-				Util.UserEmail = i.u.EmailAddress;
+
+                if (i.u.Person != null && i.u.Person.Picture != null)
+                    Util.UserThumbPictureUrl = i.u.Person.Picture.ThumbUrl;
+				
+                Util.UserEmail = i.u.EmailAddress;
 				Util2.CurrentPeopleId = i.u.PeopleId.Value;
 				Util.UserPreferredName = i.PreferredName;
 				Util.UserFullName = i.u.Name;
