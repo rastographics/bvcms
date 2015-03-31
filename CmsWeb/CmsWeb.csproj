@@ -2722,8 +2722,6 @@
     </Content>
     <Content Include="Areas\Dialog\Views\OrgMembersDialog\Rows.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Email\EmailQueued.cshtml">
-    </Content>
     <Content Include="Areas\Main\Views\Email\Index.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Coupon\Create.cshtml">
