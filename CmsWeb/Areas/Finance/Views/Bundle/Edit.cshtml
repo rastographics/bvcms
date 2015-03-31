@@ -24,20 +24,20 @@
         </td>
     </tr>
     <tr>
-        <th>Deposit Date</th>
-        <td>@Html.EditorFor(m => m.Bundle.DepositDate, "datepicker")</td>
+      <th>Deposit Date</th>
+      <td>@Html.EditorFor(m => m.Bundle.DepositDate, "datepicker")</td>
     </tr>
     <tr>
         <th>Total Cash</th>
-        <td>@Html.EditorFor(m => m.Bundle.TotalCash)</td>
+        <td>@Html.TextBoxFor(m => m.Bundle.TotalCash, "{0:f2}")</td>
     </tr>
     <tr>
         <th>Total Checks</th>
-        <td>@Html.EditorFor(m => m.Bundle.TotalChecks)</td>
+        <td>@Html.TextBoxFor(m => m.Bundle.TotalChecks, "{0:f2}")</td>
     </tr>
     <tr>
         <th>Total Coin</th>
-        <td>@Html.EditorFor(m => m.Bundle.TotalEnvelopes)</td>
+        <td>@Html.TextBoxFor(m => m.Bundle.TotalEnvelopes, "{0:f2}")</td>
     </tr>
     <tr>
         <th>Default Fund</th>
