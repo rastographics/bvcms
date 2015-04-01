@@ -194,14 +194,16 @@ $(function () {
 
     $("a.membertype").live("click", function (ev) {
         ev.preventDefault();
-        var href = this.href;
-        $("#member-dialog").css({ 'margin-top': '', 'top': '' })
-            .load(href, {}, function () {
-                $(this).modal("show");
-                $(this).on('hidden', function () {
-                    $(this).empty();
-                });
+        $("<div />").load(this.href, {}, function () {
+            var d = $(this);
+            var f = d.find("form");
+            f.modal("show");
+            f.on('hidden', function () {
+                d.remove();
+                f.remove();
+                RebindMemberGrids();
             });
+        });
     });
 
     $("#inactive-link").click(function () {
