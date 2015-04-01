@@ -355,9 +355,11 @@ namespace CmsCheckin
 				Program.attendant.AddHistoryString("-- " + DateTime.Now.ToString("MM-dd-yy hh:mm tt") + " Check-in rejected for " + c.name + " because they are not permitted to use the facility.");
 				MessageBox.Show("An access error has occurred. Please check with the attendant.", "Access Error");
 				return;
-			}
-
-			if (c.access == "true") {
+			} else if (c.access == "timer") {
+				Program.attendant.AddHistoryString("-- " + DateTime.Now.ToString("MM-dd-yy hh:mm tt") + " Check-in rejected for " + c.name + " because they have logged in recently.");
+				MessageBox.Show("An access error has occurred. Please check with the attendant.", "Access Error");
+				return;
+			} else if (c.access == "true") {
 				c.accesstype = 1;
 			} else {
 				if (c.visitcount < Program.BuildingInfo.maxvisits && Program.addguests == null) {

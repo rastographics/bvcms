@@ -6,80 +6,164 @@ using System.Drawing.Printing;
 using CmsCheckin.Classes;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace CmsCheckin
 {
 	public partial class LoginSettings : Form
 	{
+		public XDocument campuses { get; set; }
+
+		private bool CancelClose { get; set; }
+		private TextBox current = null;
+
+		private Regex rx = new Regex("\\D");
+
 		public LoginSettings()
 		{
 			InitializeComponent();
 
-			b1.Click += buttonclick;
-			b2.Click += buttonclick;
-			b3.Click += buttonclick;
-			b4.Click += buttonclick;
-			b5.Click += buttonclick;
-			b6.Click += buttonclick;
-			b7.Click += buttonclick;
-			b8.Click += buttonclick;
-			b9.Click += buttonclick;
-			b0.Click += buttonclick;
-			bdash.Click += buttonclick;
-			bequal.Click += buttonclick;
+			b1.Click += onKeyboardClick;
+			b2.Click += onKeyboardClick;
+			b3.Click += onKeyboardClick;
+			b4.Click += onKeyboardClick;
+			b5.Click += onKeyboardClick;
+			b6.Click += onKeyboardClick;
+			b7.Click += onKeyboardClick;
+			b8.Click += onKeyboardClick;
+			b9.Click += onKeyboardClick;
+			b0.Click += onKeyboardClick;
+			bdash.Click += onKeyboardClick;
+			bequal.Click += onKeyboardClick;
 
-			bq.Click += buttonclick;
-			bw.Click += buttonclick;
-			be.Click += buttonclick;
-			br.Click += buttonclick;
-			bt.Click += buttonclick;
-			by.Click += buttonclick;
-			bu.Click += buttonclick;
-			bi.Click += buttonclick;
-			bo.Click += buttonclick;
-			bp.Click += buttonclick;
-			blbrace.Click += buttonclick;
-			brbrace.Click += buttonclick;
+			bq.Click += onKeyboardClick;
+			bw.Click += onKeyboardClick;
+			be.Click += onKeyboardClick;
+			br.Click += onKeyboardClick;
+			bt.Click += onKeyboardClick;
+			by.Click += onKeyboardClick;
+			bu.Click += onKeyboardClick;
+			bi.Click += onKeyboardClick;
+			bo.Click += onKeyboardClick;
+			bp.Click += onKeyboardClick;
+			blbrace.Click += onKeyboardClick;
+			brbrace.Click += onKeyboardClick;
 
-			ba.Click += buttonclick;
-			bs.Click += buttonclick;
-			bd.Click += buttonclick;
-			bf.Click += buttonclick;
-			bg.Click += buttonclick;
-			bh.Click += buttonclick;
-			bj.Click += buttonclick;
-			bk.Click += buttonclick;
-			bl.Click += buttonclick;
+			ba.Click += onKeyboardClick;
+			bs.Click += onKeyboardClick;
+			bd.Click += onKeyboardClick;
+			bf.Click += onKeyboardClick;
+			bg.Click += onKeyboardClick;
+			bh.Click += onKeyboardClick;
+			bj.Click += onKeyboardClick;
+			bk.Click += onKeyboardClick;
+			bl.Click += onKeyboardClick;
 
-			bz.Click += buttonclick;
-			bx.Click += buttonclick;
-			bc.Click += buttonclick;
-			bv.Click += buttonclick;
-			bb.Click += buttonclick;
-			bn.Click += buttonclick;
-			bm.Click += buttonclick;
+			bz.Click += onKeyboardClick;
+			bx.Click += onKeyboardClick;
+			bc.Click += onKeyboardClick;
+			bv.Click += onKeyboardClick;
+			bb.Click += onKeyboardClick;
+			bn.Click += onKeyboardClick;
+			bm.Click += onKeyboardClick;
 
-			bcomma.Click += buttonclick;
-			bdot.Click += buttonclick;
-			bslash.Click += buttonclick;
+			bcomma.Click += onKeyboardClick;
+			bdot.Click += onKeyboardClick;
+			bslash.Click += onKeyboardClick;
 
 			//username.KeyPress += textBox_KeyPress;
 			//password.KeyPress += textBox_KeyPress;
 			//URL.KeyPress += textBox_KeyPress;
 
-			username.Enter += textbox_Enter;
-			password.Enter += textbox_Enter;
-			URL.Enter += textbox_Enter;
-			building.Enter += textbox_Enter;
-			PrintKiosks.Enter += textbox_Enter;
-			PrinterWidth.Enter += textbox_Enter;
-			PrinterHeight.Enter += textbox_Enter;
-
-			password.Focus();
+			username.Enter += onTextboxEnter;
+			password.Enter += onTextboxEnter;
+			URL.Enter += onTextboxEnter;
+			building.Enter += onTextboxEnter;
+			PrintKiosks.Enter += onTextboxEnter;
+			PrinterWidth.Enter += onTextboxEnter;
+			PrinterHeight.Enter += onTextboxEnter;
+			AdminPIN.Enter += onTextboxEnter;
+			AdminPINTimeout.Enter += onTextboxEnter;
 		}
 
-		public XDocument campuses { get; set; }
-		private void button1_Click(object sender, EventArgs e)
+		private void onLoginSettingsLoad(object sender, EventArgs e)
+		{
+			this.CenterToScreen();
+			this.Location = new Point(this.Location.X, this.Location.Y / 2);
+
+			var prtdoc = new PrintDocument();
+			var defp = prtdoc.PrinterSettings.PrinterName;
+			var printerList = new List<string>();
+
+			for (int i = 0; i < PrinterSettings.InstalledPrinters.Count; i++) {
+				printerList.Add(PrinterSettings.InstalledPrinters[i]);
+				Printer.Items.Add(PrinterSettings.InstalledPrinters[i]);
+			}
+
+			if (printerList.Contains(Settings1.Default.Printer)) {
+				Printer.SelectedIndex = Printer.FindStringExact(Settings1.Default.Printer);
+			} else {
+				Printer.SelectedIndex = Printer.FindStringExact(defp);
+			}
+
+			DisableLocationLabels.Checked = Settings1.Default.DisableLocationLabels;
+			BuildingAccessMode.Checked = Settings1.Default.BuildingMode;
+			URL.Text = Settings1.Default.URL;
+			username.Text = Settings1.Default.username;
+			PrintKiosks.Text = Settings1.Default.Kiosks;
+			PrintMode.Text = Settings1.Default.PrintMode;
+			building.Text = Settings1.Default.Building;
+			AdvancedPageSize.Checked = Settings1.Default.AdvancedPageSize;
+			PrinterWidth.Text = Settings1.Default.PrinterWidth;
+			PrinterHeight.Text = Settings1.Default.PrinterHeight;
+			UseSSL.Checked = Settings1.Default.UseSSL;
+			AdminPIN.Text = Settings1.Default.AdminPIN;
+			AdminPINTimeout.Text = Settings1.Default.AdminPINTimeout;
+
+			if (!Util.IsDebug()) {
+				this.Height = 496;
+
+				PrintTest.Enabled = false;
+				label5.Enabled = false;
+				LabelFormat.Enabled = false;
+				LabelList.Enabled = false;
+				label10.Enabled = false;
+				LoadLabelList.Enabled = false;
+				SaveLabel.Enabled = false;
+
+				PrintTest.Visible = false;
+				label5.Visible = false;
+				LabelFormat.Visible = false;
+				LabelList.Visible = false;
+				label10.Visible = false;
+				LoadLabelList.Visible = false;
+				SaveLabel.Visible = false;
+			}
+
+			if (PrintMode.Text == "Print From Server") {
+				PrintKiosks.Enabled = true;
+				label1.Enabled = true;
+			} else {
+				PrintKiosks.Enabled = false;
+				label1.Enabled = false;
+			}
+
+			if (username.Text.Length > 0) {
+				current = password;
+				this.ActiveControl = password;
+			} else {
+				current = URL;
+				this.ActiveControl = URL;
+			}
+		}
+
+		private void onLoginSettingsClosing(object sender, FormClosingEventArgs e)
+		{
+			e.Cancel = CancelClose;
+			CancelClose = false;
+		}
+
+		private void onGoClick(object sender, EventArgs e)
 		{
 			Settings1.Default.URL = URL.Text;
 			Settings1.Default.username = username.Text;
@@ -138,7 +222,9 @@ namespace CmsCheckin
 					CancelClose = true;
 				}
 			}
+
 			var wc = Util.CreateWebClient();
+
 			try {
 				var url = new Uri(new Uri(Program.URL), "Checkin2/Campuses");
 				var str = wc.DownloadString(url);
@@ -183,149 +269,19 @@ namespace CmsCheckin
 			}
 		}
 
-		TextBox current = null;
-		private void Login_Load(object sender, EventArgs e)
-		{
-			password.Focus();
-
-			var prtdoc = new PrintDocument();
-			var defp = prtdoc.PrinterSettings.PrinterName;
-			var printerList = new List<string>();
-
-			for (int i = 0; i < PrinterSettings.InstalledPrinters.Count; i++) {
-				printerList.Add(PrinterSettings.InstalledPrinters[i]);
-				Printer.Items.Add(PrinterSettings.InstalledPrinters[i]);
-			}
-
-			if (printerList.Contains(Settings1.Default.Printer)) {
-				Printer.SelectedIndex = Printer.FindStringExact(Settings1.Default.Printer);
-			} else {
-				Printer.SelectedIndex = Printer.FindStringExact(defp);
-			}
-
-			DisableLocationLabels.Checked = Settings1.Default.DisableLocationLabels;
-			BuildingAccessMode.Checked = Settings1.Default.BuildingMode;
-			URL.Text = Settings1.Default.URL;
-			username.Text = Settings1.Default.username;
-			PrintKiosks.Text = Settings1.Default.Kiosks;
-			PrintMode.Text = Settings1.Default.PrintMode;
-			building.Text = Settings1.Default.Building;
-			AdvancedPageSize.Checked = Settings1.Default.AdvancedPageSize;
-			PrinterWidth.Text = Settings1.Default.PrinterWidth;
-			PrinterHeight.Text = Settings1.Default.PrinterHeight;
-			UseSSL.Checked = Settings1.Default.UseSSL;
-			AdminPIN.Text = Settings1.Default.AdminPIN;
-			AdminPINTimeout.Text = Settings1.Default.AdminPINTimeout;
-
-			if (!Util.IsDebug()) {
-				this.Height = 570;
-
-				PrintTest.Enabled = false;
-				label5.Enabled = false;
-				LabelFormat.Enabled = false;
-				LabelList.Enabled = false;
-				label10.Enabled = false;
-				LoadLabelList.Enabled = false;
-				SaveLabel.Enabled = false;
-				UseSSL.Enabled = false;
-
-				PrintTest.Visible = false;
-				label5.Visible = false;
-				LabelFormat.Visible = false;
-				LabelList.Visible = false;
-				label10.Visible = false;
-				LoadLabelList.Visible = false;
-				SaveLabel.Visible = false;
-				UseSSL.Visible = false;
-
-			}
-
-			if (PrintMode.Text == "Print From Server") {
-				PrintKiosks.Enabled = true;
-				label12.Enabled = true;
-				label1.Enabled = true;
-			} else {
-				PrintKiosks.Enabled = false;
-				label12.Enabled = false;
-				label1.Enabled = false;
-			}
-
-			if (username.Text.Length > 0) {
-				current = password;
-				this.ActiveControl = password;
-			} else {
-				current = URL;
-				this.ActiveControl = URL;
-			}
-
-			if (Settings1.Default.PopupForVersion < 1) {
-				MessageBox.Show("The Check-In program has been updated,\nplease verify the following settings:\n\n" +
-					"Login Page\n\n- Server name (e.g. <yourchurch>.tpsdb.com)\n- Username\n- Password\n- Printer\n- Advanced Page Size (Optional)\n\n" +
-					"Settings Page\n\n- Campus\n- Early Checkin Hours\n- Late Checkin Minutes\n- Checkboxes at the bottom", "New Version", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-				Settings1.Default.PopupForVersion = 1;
-				Settings1.Default.Save();
-			}
-		}
-
-		void buttonclick(object sender, EventArgs e)
+		void onKeyboardClick(object sender, EventArgs e)
 		{
 			var b = sender as Button;
 			var d = b.Text[0];
-			KeyStroke(d);
+			keystroke(d);
 		}
 
-		private void textBox_KeyPress(object sender, KeyPressEventArgs e)
+		private void onBackspaceClick(object sender, EventArgs e)
 		{
-			if (current == null) return;
-
-			if (e.KeyChar == '\b') BackSpace();
-			else KeyStroke(e.KeyChar);
-
-			e.Handled = true;
+			backspace();
 		}
 
-		private void KeyStroke(char d)
-		{
-			if (current == null) return;
-
-			current.Text += d;
-			current.Focus();
-			current.Select(current.Text.Length, 0);
-		}
-
-		private void BackSpace()
-		{
-			if (current == null) return;
-
-			var t = current.Text;
-			var len = t.Length - 1;
-
-			if (len < 0) len = 0;
-
-			current.Text = t.Substring(0, len);
-			current.Focus();
-			current.Select(current.Text.Length, 0);
-		}
-
-		private void textbox_Enter(object sender, EventArgs e)
-		{
-			current = (TextBox)sender;
-		}
-
-		private void bbs_Click(object sender, EventArgs e)
-		{
-			BackSpace();
-		}
-
-		public bool CancelClose { get; set; }
-		private void Login_FormClosing(object sender, FormClosingEventArgs e)
-		{
-			e.Cancel = CancelClose;
-			CancelClose = false;
-		}
-
-		private void bshift_Click(object sender, EventArgs e)
+		private void onShiftClick(object sender, EventArgs e)
 		{
 			if (ba.Text == "A") {
 				ba.Text = "a";
@@ -373,7 +329,6 @@ namespace CmsCheckin
 				bcomma.Text = ",";
 				bdot.Text = ".";
 				bslash.Text = "/";
-
 			} else {
 				ba.Text = "A";
 				bb.Text = "B";
@@ -423,12 +378,7 @@ namespace CmsCheckin
 			}
 		}
 
-		private void Printer_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			LabelPrinterSize.Text = "Label Size: " + PrinterHelper.getPrinterWidth(Printer.Text) + " X " + PrinterHelper.getPrinterHeight(Printer.Text);
-		}
-
-		private void PrintTest_Click(object sender, EventArgs e)
+		private void onPrintTestClick(object sender, EventArgs e)
 		{
 			Program.PrinterWidth = PrinterWidth.Text;
 			Program.PrinterHeight = PrinterHeight.Text;
@@ -439,7 +389,7 @@ namespace CmsCheckin
 			else PrinterHelper.printTestLabel(Printer.Text, LabelFormat.Text.Replace("\r\n", ""));
 		}
 
-		private void LoadLabelList_Click(object sender, EventArgs e)
+		private void onLoadLabelsClick(object sender, EventArgs e)
 		{
 			System.Diagnostics.Debug.Print("Loading Label List...");
 
@@ -462,13 +412,7 @@ namespace CmsCheckin
 			}
 		}
 
-		private void LabelList_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			string[] sLabelPieces = LabelList.Text.Split(new char[] { '~' });
-			LabelFormat.Text = PrinterHelper.fetchLabelFormat(sLabelPieces[0], int.Parse(sLabelPieces[1])).Replace("~", "~\r\n");
-		}
-
-		private void SaveLabel_Click(object sender, EventArgs e)
+		private void onSaveLabelClick(object sender, EventArgs e)
 		{
 			string[] sLabelPieces = LabelList.Text.Split(new char[] { '~' });
 			PrinterHelper.saveLabelFormat(sLabelPieces[0], sLabelPieces[1], LabelFormat.Text.Replace("\r\n", ""));
@@ -476,13 +420,24 @@ namespace CmsCheckin
 			LoadLabelList.PerformClick();
 		}
 
-		private void SizeFromPrinter_Click(object sender, EventArgs e)
+		private void onFromPrinterClick(object sender, EventArgs e)
 		{
 			PrinterWidth.Text = PrinterHelper.getPrinterWidth(Printer.Text).ToString();
 			PrinterHeight.Text = PrinterHelper.getPrinterHeight(Printer.Text).ToString();
 		}
 
-		private void AdvancedPageSize_CheckedChanged(object sender, EventArgs e)
+		private void onPrinterChanged(object sender, EventArgs e)
+		{
+			LabelPrinterSize.Text = "Label Size: " + PrinterHelper.getPrinterWidth(Printer.Text) + " X " + PrinterHelper.getPrinterHeight(Printer.Text);
+		}
+
+		private void onLabelListChanged(object sender, EventArgs e)
+		{
+			string[] sLabelPieces = LabelList.Text.Split(new char[] { '~' });
+			LabelFormat.Text = PrinterHelper.fetchLabelFormat(sLabelPieces[0], int.Parse(sLabelPieces[1])).Replace("~", "~\r\n");
+		}
+
+		private void onAdvancedPageSizeChanged(object sender, EventArgs e)
 		{
 			if (AdvancedPageSize.Checked) {
 				PageWidthLabel.Enabled = true;
@@ -509,23 +464,47 @@ namespace CmsCheckin
 			}
 		}
 
-		private void PrintMode_SelectedIndexChanged(object sender, EventArgs e)
+		private void onPrintModeChanged(object sender, EventArgs e)
 		{
 			if (PrintMode.SelectedIndex == 2) {
 				PrintKiosks.Enabled = true;
-				label12.Enabled = true;
 				label1.Enabled = true;
 			} else {
 				PrintKiosks.Enabled = false;
-				label12.Enabled = false;
 				label1.Enabled = false;
 				PrintKiosks.Text = "";
 			}
 		}
 
-		private Regex rx = new Regex("\\D");
+		private void onTextboxEnter(object sender, EventArgs e)
+		{
+			current = (TextBox)sender;
+		}
 
-		private void NumbersOnly(object sender, EventArgs e)
+		private void keystroke(char d)
+		{
+			if (current == null) return;
+
+			current.Text += d;
+			current.Focus();
+			current.Select(current.Text.Length, 0);
+		}
+
+		private void backspace()
+		{
+			if (current == null) return;
+
+			var t = current.Text;
+			var len = t.Length - 1;
+
+			if (len < 0) len = 0;
+
+			current.Text = t.Substring(0, len);
+			current.Focus();
+			current.Select(current.Text.Length, 0);
+		}
+
+		private void limitNumbersOnly(object sender, EventArgs e)
 		{
 			TextBox tb = sender as TextBox;
 
