@@ -65,7 +65,13 @@
       left join lookup.residentcode rc on rc.id = p.primaryrescode
     </join>
     <join name="ts">
-  	  left join dbo.TransactionSummary ts ON ts.OrganizationId = {orgid} and ts.PeopleId = p.PeopleId
+  	  left join dbo.TransactionSummary ts on ts.OrganizationId = {orgid} and ts.PeopleId = p.PeopleId
+    </join>
+    <join name="bfcm">
+	    left join dbo.OrganizationMembers om on om.PeopleId = p.PeopleId AND om.OrganizationId = p.BibleFellowshipClassId
+    </join>
+    <join name="bfc">
+      left join dbo.Organizations bfc on bfc.OrganizationId = p.BibleFellowshipClassId
     </join>
   </Joins>
   <Columns>
@@ -193,6 +199,9 @@
     <column name="Mother" join="mo"> mo.name </column>
     <column name="MotherEmail" join="mo"> mo.emailaddress </column>
     <column name="MotherCell" join="mo"> dbo.fmtphone(mo.cellphone) </column>
+    <column name="MainClass" join="bfc"> bfc.OrganizationName </column>
+    <column name="AttendPct" join="bfcm"> om.AttendPct </column>
+    <column name="AttendStr" join="bfcm"> om.AttendStr </column>
   </Columns>
   <SpecialColumns>
     <column name="StatusFlag">
