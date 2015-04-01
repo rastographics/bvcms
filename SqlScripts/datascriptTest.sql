@@ -1060,7 +1060,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
                                 	<table border="0" cellpadding="0" cellspacing="0" width="600" id="templateHeader">
                                         <tr>
                                             <td class="headerContent">
-                                                <img src="http://www.bvcms.com/content/images/placeholder_600.gif" style="max-width:160px;" />
+                                                <img src="http://www.touchpointsoftware.com/content/images/placeholder_600.gif" style="max-width:160px;" />
                                             </td>
                                         </tr>
                                     </table> 
@@ -1081,7 +1081,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''lspacing="0" width="200">
                                                                         <table border="0" cellpadding="0" cellspacing="4">
                                                                             <tr>
                                                                                 <td align="left" valign="middle" width="16">
-                                                                                    <img src="http://www.bvcms.com/content/images/sfs_icon_facebook.png" />
+                                                                                    <img src="http://www.touchpointsoftware.com/content/images/sfs_icon_facebook.png" />
                                                                                 </td>
                                                                                 <td align="left" valign="top">
                                                                                     <div>
@@ -1091,7 +1091,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''lspacing="0" width="200">
                                                                             </tr>
                                                                             <tr>
                                                                                 <td align="left" valign="middle" width="16">
-                                                                                    <img src="http://www.bvcms.com/content/images/sfs_icon_twitter.png" style="margin:0 !important;" />
+                                                                                    <img src="http://www.touchpointsoftware.com/content/images/sfs_icon_twitter.png" style="margin:0 !important;" />
                                                                                 </td>
                                                                                 <td align="left" valign="top">
                                                                                     <div>
@@ -1106,7 +1106,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''lspacing="0" width="200">
                                                             <table border="0" cellpadding="20" cellspacing="0" width="100%">
                                                                 <tr bvrepeat>
                                                                     <td valign="top">
-                                                                        <img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;" />
+                                                                        <img src="http://www.touchpointsoftware.com/content/images/placeholder_160.gif" style="max-width:160px;" />
                                                                         <div bvedit>
                                                                             <h4>Heading 4</h4>
                                                                             Sections in the side bar are shown here.</div>
@@ -1154,7 +1154,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''r>
                                                                         <table border="0" cellpadding="20" cellspacing="0" width="100%">
                                                                             <tr bvrepeat>
                                                                                 <td valign="top">
-                                                                                    <img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;"/>
+                                                                                    <img src="http://www.touchpointsoftware.com/content/images/placeholder_160.gif" style="max-width:160px;"/>
           '',NULL,NULL) WHERE [Id]=69
 UPDATE [dbo].[Content] SET [Body].WRITE(N''                                                                          <div bvedit>
                                                                                         <h4>Heading 4</h4>
@@ -1169,7 +1169,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''                                     
                                                                         <table border="0" cellpadding="20" cellspacing="0" width="100%">
                                                                             <tr bvrepeat>
                                                                                 <td valign="top">
-                                                                                    <img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;" />
+                                                                                    <img src="http://www.touchpointsoftware.com/content/images/placeholder_160.gif" style="max-width:160px;" />
                                                                                     <div bvedit>
                                                                                         <h4>Heading 4</h4>
                                                                                         <strong>Content blocks:</strong> Put all the great things you want to say here 
@@ -1443,7 +1443,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N'ign="top">
 													<tr>
 														<td class="headerContent">
 															<div bvedit="">
-																<img id="headerImage" src="http://www.bvcms.com/content/images/placeholder_600.gif" style="max-width:600px;" /></div>
+																<img id="headerImage" src="http://www.touchpointsoftware.com/content/images/placeholder_600.gif" style="max-width:600px;" /></div>
 														</td>
 													</tr>
 												</tbody>
