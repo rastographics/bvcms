@@ -130,6 +130,9 @@ namespace CmsCheckin
 				a.activeother = e.Attribute("activeother").Value;
 				a.parent = e.Attribute("parent").Value;
 
+				if (e.Attribute("parents") != null)
+					a.parents = e.Attribute("parents").Value;
+
 				a.org = e.Attribute("org").Value;
 				a.orgname = e.Attribute("orgname").Value;
 				a.custody = bool.Parse(e.Attribute("custody").Value);
@@ -401,6 +404,7 @@ namespace CmsCheckin
 				transport = c.transport,
 				requiressecuritylabel = c.RequiresSecurityLabel,
 				securitycode = Program.SecurityCode,
+				parents = c.parents
 			};
 
 			IEnumerable<LabelInfo> liList = new[] { li };
@@ -646,6 +650,7 @@ namespace CmsCheckin
 						  requiressecuritylabel = c.RequiresSecurityLabel,
 						  securitycode = Program.SecurityCode,
 						  dob = (c.dob != null && c.dob.Length > 0 ? DateTime.Parse(c.dob) : DateTime.Now),
+						  parents = c.parents
 					  };
 
 			Util.UnLockFamily();
@@ -804,6 +809,7 @@ namespace CmsCheckin
 		public string grade { get; set; }
 		public string activeother { get; set; }
 		public string parent { get; set; }
+		public string parents { get; set; }
 		public bool custody { get; set; }
 		public bool transport { get; set; }
 
@@ -907,6 +913,7 @@ namespace CmsCheckin
 		public bool custody { get; set; }
 		public bool requiressecuritylabel { get; set; }
 		public string securitycode { get; set; }
+		public string parents { get; set; }
 	}
 	[Serializable]
 	public class PrintJob

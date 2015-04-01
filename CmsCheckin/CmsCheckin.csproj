@@ -163,6 +163,12 @@
     <Compile Include="Classes\LabelEntry.cs" />
     <Compile Include="Classes\LabelSet.cs" />
     <Compile Include="Classes\PrinterHelper.cs" />
+    <Compile Include="CommonKeyboard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CommonKeyboard.Designer.cs">
+      <DependentUpon>CommonKeyboard.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\EnterTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -178,6 +184,7 @@
     <Compile Include="Dialogs\PINDialog.Designer.cs">
       <DependentUpon>PINDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\KeyboardInterface.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -327,6 +334,9 @@
     <EmbeddedResource Include="BuildingAddGuests.resx">
       <DependentUpon>BuildingAddGuests.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CommonKeyboard.resx">
+      <DependentUpon>CommonKeyboard.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\AddIDCard.resx">
       <DependentUpon>AddIDCard.cs</DependentUpon>
     </EmbeddedResource>
@@ -359,6 +369,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CommonTakePicture.resx">
       <DependentUpon>CommonTakePicture.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Login.resx">
+      <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="LoginSettings.resx">
       <DependentUpon>LoginSettings.cs</DependentUpon>
@@ -466,6 +479,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Binaries\DirectShowLib-2005.dll" />
+    <Content Include="Graphics\logo_light.png" />
     <Content Include="Notes\Add To Index File.txt" />
   </ItemGroup>
   <ItemGroup />

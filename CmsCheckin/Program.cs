@@ -59,6 +59,9 @@ namespace CmsCheckin
 
 			AdminPINLastAccess = DateTime.Now.AddYears(-1);
 
+			var start = new Login();
+			start.ShowDialog();
+
 			var login = new LoginSettings();
 
 			if (!Util.IsDebug())
