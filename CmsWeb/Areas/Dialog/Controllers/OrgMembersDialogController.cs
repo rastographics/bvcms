@@ -13,16 +13,17 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [Route("~/OrgMembersDialog/{id:int}")]
 		public ActionResult Index(int id, bool? inactives, bool? pendings, bool? prospects, int? sg)
 		{
-			var m = new OrgMembersDialogModel
-			{
-				orgid = id,
-				inactives = inactives ?? false,
-				pendings = pendings ?? false,
-				Pending = pendings ?? false,
-				sg = sg,
-			};
-			return View(m);
-		}
+            var m = new OrgMembersDialogModel
+            {
+                orgid = id,
+                inactives = inactives ?? false,
+                pendings = pendings ?? false,
+                Pending = pendings ?? false,
+                prospects = prospects ?? false,
+                sg = sg,
+            };
+            return View(m);
+        }
 		[HttpPost]
 		public ActionResult Filter(OrgMembersDialogModel m)
 		{
