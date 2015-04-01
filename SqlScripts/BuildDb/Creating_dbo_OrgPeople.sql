@@ -112,12 +112,17 @@ RETURN
 			)
 		)
 	)
-	AND (NOT(@grouptype LIKE '%50%' AND @grouptype LIKE '%60%')
+	AND (
+		 -- Either we are not mixing Previous and Visitors
+		 NOT(@grouptype LIKE '%50%' AND @grouptype LIKE '%60%') 
+		 -- OR this person is not a previous nor a visitor
+		 OR GroupCode NOT IN ('50', '60')
+		 -- OR we prefer the Visitor(60) over the Previous(50) if both are in list so we only get one
 		 OR GroupCode = (SELECT MAX(GroupCode) 
 				FROM 
 				(
-				SELECT GroupCode FROM dbo.OrgPeopleGuests(@oid, @showhidden) WHERE PeopleId = p.PeopleId UNION
-				SELECT GroupCode FROM dbo.OrgPeoplePrevious(@oid) WHERE PeopleId = p.PeopleId
+				SELECT GroupCode FROM dbo.OrgPeopleGuests(@oid, @showhidden) WHERE PeopleId = tt.PeopleId UNION
+				SELECT GroupCode FROM dbo.OrgPeoplePrevious(@oid) WHERE PeopleId = tt.PeopleId
 				) tabt)
 	)
 )
