@@ -1,12 +1,14 @@
 ﻿@model CmsWeb.Areas.People.Models.EmailInfo
-<div class="control-group">
+<div class="form-group">
     @Html.LabelFor(m => m, new { @class="control-label"})
     <div class="controls">
         <div class="textcombo">
-            @Html.TextBoxFor(m => m.Address, new { @class = "text email lg" })<br/>
-            <label class="addon">
-                @Html.CheckBoxFor(m => m.Send, new { @class="checkbox" }) <span>Active</span>
-            </label>
+            @Html.TextBoxFor(m => m.Address, new { @class = "text email lg form-control" })
+            <div class="checkbox">
+                <label>
+                    @Html.CheckBoxFor(m => m.Send, new { @class = "checkbox" })  Active email?
+                </label>
+            </div>
         </div>
     </div>
 </div>

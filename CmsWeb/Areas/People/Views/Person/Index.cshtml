@@ -1,109 +1,213 @@
-﻿@using CmsData
+﻿@using System.Text
+@using CmsData
 @using CmsWeb.Areas.People.Models
+@using iTextSharp.text.pdf.qrcode
 @using UtilityExtensions
 @model PersonModel
 @{
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Person";
     var inaccess = User.IsInRole("Access");
     var showtip = !DbUtil.Db.UserPreference("hide-tip-person", "false").ToBool() && inaccess;
     var mydatashowtip = !DbUtil.Db.UserPreference("hide-tip-mydata", "false").ToBool() && !inaccess;
+    var gender = Model.Person.Gender.Code;
+    var portraitUrl = gender == "M" ? Model.Picture.MediumMaleUrl : gender == "F" ? Model.Picture.MediumFemaleUrl : Model.Picture.MediumUrl;
 }
 @section head
 {
-    @Fingerprint.Css("/Content/css/bootstrap-tour.css")
-    @Fingerprint.Css("/Content/css/person-main.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
     <style>
-        #tab-area textarea {
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-            width: 100%;
-            height: 120px;
-        }
         .badaddress {
             text-decoration: line-through;
         }
+        .profile-block {
+            margin-bottom: 18px; 
+            text-align: center;
+        }
+        .profile-photo {
+            display: inline-block; 
+            margin-bottom: 10px; 
+            border-radius: 999999px; 
+            background-color: #fff; 
+            border: 1px solid #e6e6e6; 
+            padding-top: 5px; 
+            padding-left:5px; 
+            padding-right: 5px;
+        }
+        #profile-portrait {
+            background-image: url(@portraitUrl);
+            height: 180px;
+            width: 180px;
+            display: inline-block;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: top;
+        }
     </style>
+}
+<br/>
+<div class="row">
+    <div class="col-sm-4 col-md-3 col-lg-2">
+        <div class="profile-block">
+            <div class="profile-photo">
+                @if (Model.Person.CanUserEditBasic)
+                {
+                    <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new"><div id="profile-portrait" class="img-circle"></div></a>
+                }
+                else
+                {
+                    <a href="@Model.Picture.LargeUrl" title="Click to see larger version" target="_blank"><div id="profile-portrait" class="img-circle"></div></a>
+                }
+            </div>
+        </div>
+        <div id="sidebar">
+            @Html.Partial("Family/Members", Model.FamilyModel)
+            @Html.Partial("Family/Related", Model.FamilyModel)
+            @if (User.IsInRole("Access"))
+            {
+                @Html.Partial("Family/ExtraValues", Model)
+            }
+            @Html.Partial("Family/Photo", Model)
+        </div>
+    </div>
+    <div class="col-sm-8 col-md-9 col-lg-10">
+        <div style="margin-left: 24px; margin-right: 20px;">
+            @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar.touch", Model.Users) : Html.Partial("Toolbar/ToolbarMyData.touch", Model.Users))
+        </div>
+        <h1 id="nameline" class="@(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">
+            @Model.Name
+        </h1>
+        <ul class="meta list-unstyled">
+            <li class="role">
+                @ShowAddress(Model.PrimaryAddr)
+                @ShowAddress(Model.OtherAddr)
+                @ContactLine()
+            </li>
+            <li class="badges">
+                @if (Model.basic.Campus.Items.Count() > 1)
+                {
+                    @Html.DisplayFor(m => m.basic.Campus, "InlineCode")
+                }
+                @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
+                @Badge(true, @Model.MemberStatus, "label-success")
+                @foreach (var status in Model.StatusFlags)
+                {
+                    @Badge(Model.MemberStatus != status, status, "label-success")
+                }
+                @Badge(Model.basic.DoNotVisitFlag, "Do Not Visit", "label-important")
+                @Badge(Model.basic.DoNotCallFlag, "Do Not Call", "label-important")
+                @Badge(Model.basic.DoNotMailFlag, "Do Not Mail", "label-important")
+            </li>
+        </ul>
+        <br/>
+        <ul class="nav nav-tabs" id="person-tabs">
+            <li class="active"><a href="#personal" aria-controls="personal" data-toggle="tab">Personal</a></li>
+            <li id="involvementstop"><a href="#enrollment" aria-controls="enrollment" data-toggle="tab">Involvement</a></li>
+            <li><a href="#profile" aria-controls="profile" data-toggle="tab">Profile</a></li>
+            @if (User.IsInRole("Access"))
+            {
+                <li><a href="#ministry" aria-controls="ministry" data-toggle="tab">Ministry</a></li>
+            }
+            @if (!User.IsInRole("Access") && Model.Person.CanUserSeeGiving)
+            {
+                <li id="givingstop"><a href="#giving" aria-controls="giving" data-toggle="tab">Giving</a></li>
+            }
+            else if (Model.Person.CanUserSeeGiving)
+            {
+                <li><a href="#giving" aria-controls="giving" data-toggle="tab">Giving</a></li>  
+            }
+            <li><a href="#emails" aria-controls="emails" data-toggle="tab">Emails</a></li>
+            @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+            {
+                <li><a href="#system" aria-controls="system" data-toggle="tab">System</a></li>
+            }
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="personal">
+                @Html.Partial("Personal/Display", Model.basic)
+            </div>
+            <div class="tab-pane fade" id="enrollment">
+                @Html.Partial("Enrollment/Tab", Model)
+            </div>
+            <div class="tab-pane fade" id="profile">
+                @Html.Partial("Profile/Tab", Model)
+            </div>
+            @if (User.IsInRole("Access"))
+            {
+                <div class="tab-pane fade" id="ministry">
+                    @Html.Partial("Ministry/Tab", Model)
+                </div>
+            }
+            @if (Model.Person.CanUserSeeGiving)
+            {
+                <div class="tab-pane fade" id="giving">
+                    @Html.Partial("Giving/Tab", Model)
+                </div>
+            }
+            <div class="tab-pane fade" id="emails">
+                @Html.Partial("Emails/Tab", Model)
+            </div>
+            @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+            {
+                <div class="tab-pane fade" id="system">
+                    @Html.Partial("System/Tab", Model)
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@Html.Hidden("PeopleId", Model.PeopleId)
+@helper ShowAddress(AddressInfo a)
+{
+    var editHide = Model.Person.CanUserEditFamilyAddress ? "" : "hide";
+    if (a.AddressLineOne.HasValue() || a.Preferred)
+    {
+        var icon = a.Name == "FamilyAddr" ? "fa-home" : "fa-male";
+        var addr = a.AddrCityStateZipLine();
+        var start = DbUtil.StartAddress;
+        <div class="dropdown">
+            <i class="fa @icon fa-fw"></i>
+            <a href="#" class="dropdown-toggle @a.BadAddressClass" data-toggle="dropdown">@addr</a>&nbsp;&nbsp;
+            <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr editable-click @editHide"><i class="fa fa-pencil"></i></a>
+            <ul class="dropdown-menu">
+                <li class="@editHide"><a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr">Edit Address</a></li>
+                <li><a href="http://www.google.com/maps?q=@addr" target="_blank">Google Map</a></li>
+                <li><a href="http://www.bing.com/maps/?q=@addr" target="_blank">Bing Map</a></li>
+                <li><a href='http://www.bing.com/maps/?rtp=adr.@start~adr.@addr' target="_blank">Driving Directions (Bing)</a></li>
+                <li><a href='http://www.google.com/maps?f=d&saddr=@(start)&pw=2&daddr=@addr' target="_blank">Driving Directions (Google)</a></li>
+            </ul>
+        </div>
+    }
+}
+@helper ContactLine()
+{
+    const string bull = " &bull; ";
+    var sb = new StringBuilder(Model.Email);
+    sb.AppendNext(bull, Model.Cell);
+    sb.AppendNext(bull, Model.HomePhone);
+    if (sb.Length > 0)
+    {
+        <i class="fa fa-envelope fa-fw"></i>
+        <span id="contactline">@Html.Raw(sb)</span>
+    }
+}
+@helper Badge(bool tf, string badge, string labeltype)
+{
+    if (tf)
+    {
+        <span class="label @labeltype">@badge</span>
+    }
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/bundle.person.js")
-    @if (showtip)
-    {
-        @Fingerprint.Script("/Scripts/People/persontour.js")
-    }
-    @if (mydatashowtip)
-    {
-        @Fingerprint.Script("/Scripts/People/mydatatour.js")
-    }
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-typeahead/js/bootstrap3-typeahead.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/people/person.js")
+    <script type="text/javascript">
+        $(function () {
+            $("#person-tabs").tabdrop();
+        });
+    </script>
 }
-<div class="container">
-    <div class="row-fluid">
-        <div class="span9">
-            <div class="row-fluid">
-                <div class="span12" id="profile-header">
-                    @Html.Partial("Personal/Header", Model)
-                </div>
-            </div>
-            <div class="row-fluid">
-                <div class="span12">
-                    <div id="tab-area" class="tabbable primary-tabs">
-                        <ul class="nav nav-tabs">
-                            <li><a href="#" data-target="#personal" data-toggle="tab" class="active">Personal</a></li>
-                            <li id="involvementstop"><a href="#enrollment"  data-toggle="tab">Involvement</a></li>
-                            <li><a href="#profile" data-toggle="tab">Profile</a></li>
-                            @if (User.IsInRole("Access")) 
-                            {
-                                <li id="ministrystop"><a href="#ministry" data-toggle="tab">Ministry</a></li> 
-                            }
-                            @if (!User.IsInRole("Access") && Model.Person.CanUserSeeGiving)
-                            {
-                                <li id="givingstop"><a href="#giving" data-toggle="tab">Giving</a></li> 
-                            }
-                            else if (Model.Person.CanUserSeeGiving) 
-                            {
-                                <li><a href="#giving" data-toggle="tab">Giving</a></li> 
-                            }
-                            <li><a href="#emails" data-toggle="tab">Emails</a></li>
-                            @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
-                            {
-                                <li><a id="systemTab" href="#system" data-toggle="tab">System</a></li> 
-                            }
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="personal">@Html.Partial("Personal/Display", Model.basic)</div>
-                            <div class="tab-pane" id="enrollment">@Html.Partial("Enrollment/Tab", Model)</div>
-                            <div class="tab-pane" id="profile">@Html.Partial("Profile/Tab", Model)</div>
-                            @if (User.IsInRole("Access")) 
-                            {
-                                <div class="tab-pane" id="ministry">@Html.Partial("Ministry/Tab", Model)</div> 
-                            }
-                            @if (Model.Person.CanUserSeeGiving) 
-                            {
-                                <div class="tab-pane" id="giving">@Html.Partial("Giving/Tab", Model)</div> 
-                            }
-                            <div class="tab-pane" id="emails">@Html.Partial("Emails/Tab", Model)</div>
-                            @if (User.IsInRole("Edit") || User.IsInRole("Admin")) 
-                            {
-                                <div class="tab-pane" id="system">@Html.Partial("System/Tab", Model)</div> 
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="span3">
-            <div id="sidebar">
-                @Html.Partial("Family/Members", Model.FamilyModel)
-                @Html.Partial("Family/Related", Model.FamilyModel)
-                @if (User.IsInRole("Access"))
-                {
-                    @Html.Partial("Family/ExtraValues", Model)
-                }
-                @Html.Partial("Family/Photo", Model)
-            </div>
-        </div>
-    </div>
-    @Html.Hidden("PeopleId", Model.PeopleId)
-</div>

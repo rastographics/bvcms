@@ -1,44 +1,16 @@
 ﻿$(function () {
 
     $.AttachFormElements = function () {
-        //$("form.ajax input.ajax-typeahead").typeahead({
-        //    minLength: 3,
-        //    remote: {
-        //        url: "test",
-        //        beforeSend: function (jqXhr, settings) {
-        //            $.SetLoadingIndicator();
-        //        },
-        //        replace: function (url, uriEncodedQuery) {
-        //            return $("input:focus").data("link") + "?query=" + uriEncodedQuery;
-        //        }
-        //    }
-        //});
-        //$.DatePickersAndChosen();
+        $("form.ajax input.ajax-typeahead").typeahead({
+            minLength: 3,
+            source: function (query, process) {
+                return $.post($("input:focus").data("link") + "?query=" + query, function (data) {
+                    return process(data);
+                });
+            }
+        });
         $.InitializeDateElements();
     };
-
-    //$.DatePickers = function () {
-    //    $("form .dateonly").datetimepicker({
-    //        autoclose: true,
-    //        orientation: "auto",
-    //        minView: 2,
-    //        forceParse: false,
-    //        format: $.dtoptions.format
-    //    });
-    //    $("form .datetime").datetimepicker({
-    //        autoclose: true,
-    //        showMeridian: true,
-    //        orientation: "auto",
-    //        forceParse: false,
-    //        format: $.dtoptions.formatTime
-    //    });
-    //};
-
-    //$.DatePickersAndChosen = function () {
-    //    $.DatePickers();
-    //    $('form.ajax select:not([plain])').select2({ dropdownAutoWidth: true });
-    //    $('form.ajax a.editable').editable();
-    //};
 
     $('body').on('click', 'ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor', function (event) {
         var $this = $(this);

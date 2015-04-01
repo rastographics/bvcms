@@ -3,6 +3,16 @@
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model PersonModel
+           
+
+
+
+
+
+
+
+
+
 @if (Model.Person.CanUserEditBasic)
 {
     <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">@Picture()</a>

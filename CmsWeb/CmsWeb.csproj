@@ -809,6 +809,7 @@
     <Content Include="Content\select2-3.5.2\select2x2.png" />
     <Content Include="Content\touchpoint\img\powered-by.png" />
     <Content Include="Content\touchpoint\img\spinner.gif" />
+    <Content Include="Content\touchpoint\img\unknown.png" />
     <Content Include="Content\touchpoint\js\admin\divisions.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
@@ -820,6 +821,7 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\people\contact.js" />
+    <Content Include="Content\touchpoint\js\people\person.js" />
     <Content Include="Content\touchpoint\js\people\task.js" />
     <Content Include="Content\touchpoint\js\search\people-search.js" />
     <Content Include="Content\touchpoint\js\search\query.js" />
@@ -844,6 +846,7 @@
     <Content Include="Content\touchpoint\lib\ckeditor\js\ckeditorconfig.js" />
     <Content Include="Content\touchpoint\lib\jquery-blockUI\js\jquery.blockUI.js" />
     <Content Include="Content\touchpoint\lib\jquery-chosen\js\chosen.jquery.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-cookie\js\jquery.cookie.js" />
     <Content Include="Content\touchpoint\lib\jquery-easypiechart\js\jquery.easypiechart.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-029.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-AU.js" />
@@ -2432,6 +2435,7 @@
     <Content Include="Content\touchpoint\src\less\dropdown-large.less" />
     <Content Include="Content\touchpoint\src\less\stats-panel.less" />
     <Content Include="Content\touchpoint\src\less\footers.less" />
+    <Content Include="Views\Shared\Toolbar\ToolbarMyData.touch.cshtml" />
     <None Include="Web.bvcms.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
