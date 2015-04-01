@@ -233,7 +233,7 @@ namespace CmsData
             if (tag == null)
                 return null;
 
-            using(var tran = new TransactionScope())
+            using(var tran = new TransactionScope(TransactionScopeOption.Required, TimeSpan.FromSeconds(1200)))
             {
                 var emailqueue = new EmailQueue
                 {

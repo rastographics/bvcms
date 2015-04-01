@@ -211,7 +211,7 @@ namespace CmsWeb.Areas.Reports.Models
                     foreach (var m in q)
                         table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
                 }
-                if (OrgSearchModel != null
+                if ((OrgSearchModel != null && NewMeetingInfo.ByGroup == false)
                    || (co != null 
                         && co.GroupSelect == GroupSelectCode.Member 
                         && meeting == null
