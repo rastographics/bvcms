@@ -21,6 +21,7 @@ namespace CmsWeb.Models
             public string Goer { get; set; }
             public DateTime? DateGiven { get; set; }
             public decimal? Amt { get; set; }
+            public string NoticeSent { get; set; }
         }
         public static EpplusResult List(int id)
         {
@@ -48,7 +49,8 @@ namespace CmsWeb.Models
                     GoerId = sa.GoerId,
                     Goer = g.Name2,
                     DateGiven = sa.Created,
-                    Amt = sa.Amount
+                    Amt = sa.Amount,
+                    NoticeSent = sa.NoNoticeToGoer == true ? "not sent" : "sent"
                 };
             return q;
         }

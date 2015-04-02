@@ -420,7 +420,7 @@
         $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
-        $.hideDropdowns();
+        //$.hideDropdowns();
         return false;
     });
     $('body').on('click', 'a.taguntag', function (ev) {
