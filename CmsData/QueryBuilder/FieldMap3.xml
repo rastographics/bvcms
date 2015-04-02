@@ -215,6 +215,9 @@
     <RecentEmailCount Title="Recent Email Count" Type="Integer" DisplayAs="RecentEmailCount({0})" Params="Days">
       Enter a number of days and number of emails along with a Comparison.
     </RecentEmailCount>
+    <RecentEmailSentCount Title="Recent Email Sent Count" Type="Integer" DisplayAs="RecentEmailSentCount({0})" Params="Days">
+      Enter a number of days and number of emails along with a Comparison.
+    </RecentEmailSentCount>
     <EmailRecipient Title="Email Recipients" Type="IntegerEqual" DisplayAs="EmailRecipientForId">
       Enter Email ID number.
     </EmailRecipient>
