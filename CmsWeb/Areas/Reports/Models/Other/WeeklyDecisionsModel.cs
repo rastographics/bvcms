@@ -193,7 +193,7 @@ namespace CmsWeb.Areas.Reports.Models
             if (!dt1.HasValue)
                 return null;
             var q = from p in DbUtil.Db.People
-                    let agerange = DbUtil.Db.BaptismAgeRange(p.Age ?? 0)
+                    let agerange = DbUtil.Db.BaptismAgeRange(p.Age)
                     where p.BaptismDate >= dt1 && p.BaptismDate < dt2v
                     where (Campus ?? 0) == 0 || p.CampusId == Campus
                     group p by agerange into g
@@ -306,7 +306,7 @@ namespace CmsWeb.Areas.Reports.Models
                 case "ForDecisionType":
                     cc.AddNewClause(QueryType.DecisionDate, CompareType.GreaterEqual, dt1);
                     cc.AddNewClause(QueryType.DecisionDate, CompareType.Less, dt2v);
-                    if((Campus ?? 0) > 0)
+                    if ((Campus ?? 0) > 0)
                         cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
                     if (NotAll)
                         cc.AddNewClause(QueryType.DecisionTypeId, CompareType.Equal, key);
@@ -316,17 +316,26 @@ namespace CmsWeb.Areas.Reports.Models
                     cc.AddNewClause(QueryType.BaptismDate, CompareType.Less, dt2v);
                     if (NotAll)
                     {
-                        var a = key.Split('-');
-                        if (a[0].StartsWith("Over "))
+                        if (key == " NA")
                         {
-                            a = key.Split(' ');
-                            a[0] = (a[1].ToInt() + 1).ToString();
-                            a[1] = "120";
+                            cc.AddNewClause(QueryType.BDate, CompareType.Equal, null);
+                            if ((Campus ?? 0) > 0)
+                                cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
                         }
-                        cc.AddNewClause(QueryType.Age, CompareType.GreaterEqual, a[0].ToInt());
-                        cc.AddNewClause(QueryType.Age, CompareType.LessEqual, a[1].ToInt());
-                        if((Campus ?? 0) > 0)
-                            cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
+                        else
+                        {
+                            var a = key.Split('-');
+                            if (a[0].StartsWith("Over "))
+                            {
+                                a = key.Split(' ');
+                                a[0] = (a[1].ToInt() + 1).ToString();
+                                a[1] = "120";
+                            }
+                            cc.AddNewClause(QueryType.Age, CompareType.GreaterEqual, a[0].ToInt());
+                            cc.AddNewClause(QueryType.Age, CompareType.LessEqual, a[1].ToInt());
+                            if ((Campus ?? 0) > 0)
+                                cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
+                        }
                     }
                     break;
                 case "ForBaptismType":
@@ -334,7 +343,7 @@ namespace CmsWeb.Areas.Reports.Models
                     cc.AddNewClause(QueryType.BaptismDate, CompareType.Less, dt2v);
                     if (NotAll)
                         cc.AddNewClause(QueryType.BaptismTypeId, CompareType.Equal, key);
-                    if((Campus ?? 0) > 0)
+                    if ((Campus ?? 0) > 0)
                         cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
                     break;
                 case "ForNewMemberType":
@@ -342,7 +351,7 @@ namespace CmsWeb.Areas.Reports.Models
                     cc.AddNewClause(QueryType.JoinDate, CompareType.Less, dt2v);
                     if (NotAll)
                         cc.AddNewClause(QueryType.JoinCodeId, CompareType.Equal, key);
-                    if((Campus ?? 0) > 0)
+                    if ((Campus ?? 0) > 0)
                         cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
                     break;
                 case "ForDropType":
@@ -351,7 +360,7 @@ namespace CmsWeb.Areas.Reports.Models
                     if (NotAll)
                         cc.AddNewClause(QueryType.DropCodeId, CompareType.Equal, key);
                     cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-                    if((Campus ?? 0) > 0)
+                    if ((Campus ?? 0) > 0)
                         cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
                     break;
                 case "DroppedForChurch":
@@ -370,7 +379,7 @@ namespace CmsWeb.Areas.Reports.Models
                             break;
                     }
                     cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
-                    if((Campus ?? 0) > 0)
+                    if ((Campus ?? 0) > 0)
                         cc.AddNewClause(QueryType.CampusId, CompareType.Equal, Campus);
                     break;
             }
