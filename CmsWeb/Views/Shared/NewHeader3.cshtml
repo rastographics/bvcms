@@ -2,7 +2,7 @@
 @{
   var access = User.IsInRole("Access");
   var finance = User.IsInRole("Finance");
-  var developer = User.IsInRole("Developer");
+  var admin = User.IsInRole("Admin");
   var targetperson = Util2.TargetLinkPeople;
   var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 }
@@ -45,7 +45,7 @@
               @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
               @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", testnofinance)
             }
-            @Helper.LiAnchorLink("Use {0} Org".Fmt(useneworg ? "OLD" : "NEW"), "/Home/UseNewOrg/" + useneworg, developer)
+            @Helper.LiAnchorLink("Use {0} Org".Fmt(useneworg ? "OLD" : "NEW"), "/Home/UseNewOrg/" + useneworg, admin)
 
             <li class="space"></li>
             @Helper.LiAnchorLink("Reset Help tips", "/ResetTips")
