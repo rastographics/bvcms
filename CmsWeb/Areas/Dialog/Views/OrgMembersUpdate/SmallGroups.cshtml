@@ -1,6 +1,7 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Dialog.Models.OrgMembersUpdate
 <form class="form form-horizontal modal fade hide ajax members-update" method="POST">
+  @Html.HiddenFor(m => m.Id)
   <div class="modal-header">
     <h4>Add/Remove people to/from Sub-Groups in @Model.OrgName</h4>
     <a class="close" data-dismiss="modal">x</a>
@@ -13,25 +14,32 @@
       <div class="well">
         @{
           var list = DbUtil.Db.MemberTags.Where(mm => mm.OrgId == Model.Id).OrderBy(t => t.Name).ToList();
-          var itemspercol = list.Count / 3;
-          var remainder = list.Count % 3;
+          var itemspercol = list.Count/3;
+          var remainder = list.Count%3;
           itemspercol += (remainder > 0 ? 1 : 0);
         }
-        @for (var col = 0; col < (int)Math.Ceiling((double)list.Count / itemspercol); col++)
+        @for (var col = 0; col < (int) Math.Ceiling((double) list.Count/itemspercol); col++)
         {
           <div class="inline align-top">
-            @for (var i = col * itemspercol; i < Math.Min((col + 1) * itemspercol, list.Count); i++)
+            @for (var i = col*itemspercol; i < Math.Min((col + 1)*itemspercol, list.Count); i++)
             {
               @SmallGroup(list[i])
             }
           </div>
         }
+        <div class="control-group">
+          <label class="control-label">New Sub-Group</label>
+          <div class="controls">
+            @Html.TextBoxFor(m => m.NewGroup)
+            <a href="/OrgMembersUpdate/AddNewSmallGroup/" class="btn btn-success ajax">Add New</a>
+          </div>
+        </div>
       </div>
     </fieldset>
   </div>
   <div class="modal-footer">
     <a href="#" class="btn" data-dismiss="modal">Close Dialog</a>
-    <a href="/OrgMembersUpdate" class="btn ajax">
+    <a href="/OrgMembersUpdate/@Model.Id" class="btn ajax">
       Return to Org Members Update Dialog
     </a>
   </div>
@@ -41,8 +49,8 @@
   <div class="control-group">
     <label class="control-label">@mt.Name</label>
     <div class="controls">
-      <a href="/OrgMembersUpdate/AddSmallGroup/@mt.Id" class="btn btn-mini btn-success update-smallgroup">Add</a>
-      <a href="/OrgMembersUpdate/RemoveSmallGroup/@mt.Id" class="btn btn-mini btn-danger update-smallgroup">Remove</a>
+      <a href="/OrgMembersUpdate/AddSmallGroup/@mt.Id" class="btn btn-mini btn-success ajax">Add</a>
+      <a href="/OrgMembersUpdate/RemoveSmallGroup/@mt.Id" class="btn btn-mini btn-danger ajax">Remove</a>
     </div>
   </div>
 }

@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
 using CmsData;
 using CmsData.Codes;
 using CmsData.View;
@@ -9,14 +10,11 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
-    public class OrgMembersUpdate
+    public class OrgMembersUpdate : IValidatableObject
     {
         public OrgMembersUpdate()
         {
             MemberType = new CodeInfo(0, "MemberType");
-            OrgName = (string)HttpContext.Current.Session["ActiveOrganization"];
-            if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Pending)
-                Pending = true;
         }
         private int? id;
         public int? Id
@@ -24,12 +22,25 @@ namespace CmsWeb.Areas.Dialog.Models
             get
             {
                 if (!id.HasValue)
-                    id = DbUtil.Db.CurrentOrg.Id;
-                if (id != DbUtil.Db.CurrentOrg.Id)
-                    throw new Exception("Current org has changed from {0} to {1}, aborting".Fmt(id, DbUtil.Db.CurrentOrgId0));
+                {
+//                    if (DbUtil.Db.CurrentOrg == null)
+//                        throw new Exception("Current org no longer exists, aborting");
+                    id = DbUtil.Db.CurrentOrgId0;
+                }
+//                if (id != DbUtil.Db.CurrentOrgId0)
+//                    throw new Exception("Current org has changed from {0} to {1}, aborting".Fmt(id, DbUtil.Db.CurrentOrgId0));
                 return id;
             }
-            set { id = value; }
+            set
+            {
+                id = value;
+                if (id > 0)
+                {
+                    OrgName = DbUtil.Db.LoadOrganizationById(id).OrganizationName;
+                    if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Pending)
+                        Pending = true;
+                }
+            }
         }
 
         private int? count;
@@ -45,6 +56,12 @@ namespace CmsWeb.Areas.Dialog.Models
         }
 
         public string OrgName;
+
+        public decimal? Amount { get; set; }
+        public decimal? Payment { get; set; }
+        public bool AdjustFee { get; set; }
+        [StringLength(100)]
+        public string Description { get; set; }
         public string Group
         {
             get
@@ -76,10 +93,11 @@ namespace CmsWeb.Areas.Dialog.Models
         public bool RemoveFromEnrollmentHistory { get; set; }
         public bool RemoveInactiveDate { get; set; }
         public DateTime? DropDate { get; set; }
+        public string NewGroup { get; set; }
 
         public IQueryable<OrgPerson> People(ICurrentOrg co)
         {
-            var q = from p in DbUtil.Db.OrgPeople(Id, co.GroupSelect,
+            var q = from p in DbUtil.Db.OrgPeople(id, co.GroupSelect,
                         co.First(), co.Last(), co.SgFilter, co.ShowHidden,
                         Util2.CurrentTag, Util2.CurrentTagOwnerId,
                         co.FilterIndividuals, co.FilterTag, false, Util.UserPeopleId)
@@ -95,10 +113,10 @@ namespace CmsWeb.Areas.Dialog.Models
                 DbUtil.DbDispose();
                 DbUtil.Db = new CMSDataContext(Util.ConnectionString);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
-                if(DropDate.HasValue)
-        			om.Drop(DbUtil.Db, DropDate.Value);
+                if (DropDate.HasValue)
+                    om.Drop(DbUtil.Db, DropDate.Value);
                 else
-        			om.Drop(DbUtil.Db);
+                    om.Drop(DbUtil.Db);
                 DbUtil.Db.SubmitChanges();
                 if (RemoveFromEnrollmentHistory)
                 {
@@ -127,20 +145,20 @@ namespace CmsWeb.Areas.Dialog.Models
                 if (EnrollmentDate.HasValue)
                     om.EnrollmentDate = EnrollmentDate;
 
-				om.Pending = Pending;
+                om.Pending = Pending;
 
                 if (MemberType.Value != "0")
                     om.MemberTypeId = MemberType.Value.ToInt();
 
-				if (MakeMemberTypeOriginal)
-				{
-					var et = (from e in DbUtil.Db.EnrollmentTransactions
-							  where e.PeopleId == om.PeopleId
-							  where e.OrganizationId == Id
-							  orderby e.TransactionDate
-							  select e).First();
-					et.MemberTypeId = om.MemberTypeId;
-				}
+                if (MakeMemberTypeOriginal)
+                {
+                    var et = (from e in DbUtil.Db.EnrollmentTransactions
+                              where e.PeopleId == om.PeopleId
+                              where e.OrganizationId == Id
+                              orderby e.TransactionDate
+                              select e).First();
+                    et.MemberTypeId = om.MemberTypeId;
+                }
 
                 DbUtil.Db.SubmitChanges();
             }
@@ -154,7 +172,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 DbUtil.DbDispose();
                 DbUtil.Db = new CMSDataContext(Util.ConnectionString);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
-                om.OrgMemMemTags.Add(new OrgMemMemTag {MemberTagId = sgtagid});
+                om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = sgtagid });
                 DbUtil.Db.SubmitChanges();
             }
         }
@@ -172,6 +190,49 @@ namespace CmsWeb.Areas.Dialog.Models
                     DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
                 DbUtil.Db.SubmitChanges();
             }
+            DbUtil.Db = new CMSDataContext(Util.ConnectionString);
+            DbUtil.Db.ExecuteCommand(@"
+DELETE dbo.MemberTags 
+WHERE Id = {1} AND OrgId = {0} 
+AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTagId = {1})
+", Id, sgtagid);
+        }
+
+        public string CurrentOrgError;
+        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+        {
+            var results = new List<ValidationResult>();
+            if (id != DbUtil.Db.CurrentOrgId0)
+            {
+                CurrentOrgError = "Current org has changed from {0} to {1}".Fmt(id, DbUtil.Db.CurrentOrgId0);
+                results.Add(new ValidationResult(CurrentOrgError));
+                throw new Exception(CurrentOrgError);
+            }
+            return results;
+        }
+        internal void PostTransactions()
+        {
+            var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
+            foreach (var pid in pids)
+            {
+                var db = new CMSDataContext(Util.ConnectionString);
+                var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
+                var ts = db.ViewTransactionSummaries.SingleOrDefault(
+                        tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);
+                var reason = ts == null ? "Inital Tran" : "Adjustment";
+                om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee);
+                db.SubmitChanges();
+            }
+        }
+
+        public void AddNewSmallGroup()
+        {
+            var o = DbUtil.Db.LoadOrganizationById(Id);
+            var mt = new MemberTag() { Name = NewGroup };
+            o.MemberTags.Add(mt);
+            DbUtil.Db.SubmitChanges();
+            AddSmallGroup(mt.Id);
+            NewGroup = null;
         }
     }
 }

@@ -425,7 +425,7 @@ Please call the church to resolve this before we can complete your registration.
                         break;
                 }
             var totalAmount = model.TotalAmount();
-            if (model.setting.Deposit > 0)
+            if (model.setting.Deposit > 0 && totalAmount > 0)
                 if (!model.paydeposit.HasValue)
                     modelState.AddModelError(model.Parent.GetNameFor(mm => mm.List[i].paydeposit), "please indicate");
                 else

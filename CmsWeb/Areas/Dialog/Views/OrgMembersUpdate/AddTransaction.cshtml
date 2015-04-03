@@ -1,0 +1,16 @@
+﻿@model CmsWeb.Areas.Dialog.Models.OrgMembersUpdate
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">x</a>
+    <h4>@Model.OrgName</h4>
+    <h5>Adding Transaction for @Model.Count people</h5>
+</div>
+<div class="modal-body">
+    @Html.HiddenFor(m => m.Id)
+    @Html.EditorFor(m => m.Amount, new { label = "Total Fee" })
+    @Html.EditorFor(m => m.Payment, new { help = "a negative number increases balance" })
+    @Html.EditorFor(m => m.Description)
+</div>
+<div class="modal-footer">
+    <a href="/OrgMembersUpdate/@Model.Id" class="btn ajax" data-data="none">Cancel</a>
+    <a id="add-mission-support" href="/OrgMembersUpdate/PostTransactions" class="btn ajax btn-primary">Add Transaction</a>
+</div>

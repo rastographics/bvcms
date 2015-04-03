@@ -1748,6 +1748,9 @@
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\OrgPickList2.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddFeeAdjustment.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddTransaction.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddTransactionDone.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
@@ -2203,6 +2206,7 @@
     <Content Include="Views\Shared\EditorTemplates\Time.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Time.cshtml" />
     <Content Include="Views\MobileAppMenu\Index.cshtml" />
+    <Content Include="Views\Shared\Message2.cshtml" />
     <None Include="Web.TeamCity.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

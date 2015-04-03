@@ -136,6 +136,10 @@ namespace CmsWeb
         {
             return View("Message", model: text);
         }
+        public ViewResult Message2(string text)
+        {
+            return View("Message2", model: text);
+        }
     }
     [CMSLog]
     [MyRequireHttps]

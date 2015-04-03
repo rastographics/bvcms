@@ -140,7 +140,7 @@
         var $tabinit = $form.closest("div.tab-pane[data-init]");
 
         var data = $form.serialize();
-        if (data.length === 0)
+        if (data.length === 0 || a.data("data") === "none")
             data = {};
         if (!a.hasClass("validate") || $form.valid()) {
             $.ajax({

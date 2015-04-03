@@ -792,11 +792,12 @@
         RebindMemberGrids();
     };
 
-    $("div.newitem").on("click", 'a', function (ev) {
+    $("body").on("click", 'div.newitem > a', function (ev) {
         if (!$(this).attr("href"))
             return false;
         ev.preventDefault();
         var a = $(this);
+        var f = a.closest("form");
         $.post(a.attr("href"), null, function (ret) {
             a.parent().prepend(ret);
             $.InitFunctions.movequestions();
