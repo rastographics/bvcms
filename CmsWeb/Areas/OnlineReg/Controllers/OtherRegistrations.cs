@@ -286,7 +286,7 @@ emailid={2}
             if (q.org == null)
                 return Message("org missing, bad link");
 
-            if (q.om == null && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
+            if (q.om == null && q.org.IsMissionTrip != true && q.org.Limit <= q.org.RegLimitCount(DbUtil.Db))
                 return Message("sorry, maximum limit has been reached");
 
             if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))

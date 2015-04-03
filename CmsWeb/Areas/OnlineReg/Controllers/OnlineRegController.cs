@@ -162,7 +162,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
                 if (showfamily != true && p.org != null && p.Found == true)
                 {
-                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                    if(!m.SupportMissionTrip)
+                        p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                     if (p.IsFilled)
                         ModelState.AddModelError(m.GetNameFor(mm => mm.List[0].Found), "Sorry, but registration is closed.");
                     if (p.Found == true)
@@ -271,7 +272,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (p.org != null && p.Found == true)
             {
-                p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                if(!m.SupportMissionTrip)
+                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                 if (p.IsFilled)
                     ModelState.AddModelError(m.GetNameFor(mm => mm.List[m.List.IndexOf(p)].Found), "Sorry, but registration is filled.");
                 if (p.Found == true)
@@ -315,7 +317,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, id);
             if (p.org != null && p.Found == true)
             {
-                p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                if(!m.SupportMissionTrip)
+                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                 if (p.IsFilled)
                     ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
                 if (p.Found == true)
@@ -404,7 +407,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else if (p.org != null)
             {
-                p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                if(!m.SupportMissionTrip)
+                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                 if (p.IsFilled)
                     ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
                 if (p.Found == true)
@@ -473,9 +477,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
                 else if (!p.ManageSubscriptions())
                 {
-                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                    if(!m.SupportMissionTrip)
+                        p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                     if (p.IsFilled)
-                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, that age group is filled");
+                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, registration is filled");
                 }
                 p.IsNew = true;
             }
