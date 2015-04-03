@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.Org.Models
                 qp = from p in qp
                      where p.EmailAddress == text || p.EmailAddress2 == text
                      select p;
-            const string addsupport = "/MissionTripEmail/AddSupporter/{0}/{1}";
+            const string addsupport = "/MissionTripEmail2/AddSupporter/{0}/{1}";
             var rp = from p in qp
                      where (p.EmailAddress.Length > 0 && (p.SendEmailAddress1 ?? true))
                          || (p.EmailAddress2.Length > 0 && p.SendEmailAddress2 == true)

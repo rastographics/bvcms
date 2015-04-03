@@ -6,7 +6,7 @@
         beforeSend: function (jqXhr, settings) {
             $.SetLoadingIndicator();
         },
-        remote: '/MissionTripEmail/Search/{0}?q=%QUERY'.format($("#PeopleId").val()),
+        remote: '/MissionTripEmail2/Search/{0}?q=%QUERY'.format($("#PeopleId").val()),
         minLength: 3,
         template: 'dummy string',
         engine: {
@@ -122,7 +122,7 @@
 //        var q = $("#SendEmail").serialize() + "&" + a.join("&");
         var q = $("#SendEmail").serialize();
 
-        $.post('/MissionTripEmail/Send', q, function (ret) {
+        $.post('/MissionTripEmail2/Send', q, function (ret) {
             if (ret.startsWith("/MissionTripEmail"))
                 window.location = ret;
             else
@@ -135,7 +135,7 @@
         $("#Body").val($("#tempateBody").html());
         $.addTemplateClass();
         var q = $("#SendEmail").serialize();
-        $.post('/MissionTripEmail/TestSend', q, function (ret) {
+        $.post('/MissionTripEmail2/TestSend', q, function (ret) {
             if (ret.error) {
                 $(".testsend").notify(ret.message, "error");
             }
