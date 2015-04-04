@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Org2.Controllers
             try
             {
                 m.Update();
-                if (!m.Org.NotifyIds.HasValue())
+                if (!m.Org.NotifyIds.HasValue() && m.Org.RegistrationTypeId > 0)
                     ModelState.AddModelError("Form", needNotify);
                 return PartialView("Registration/Registration", m);
             }

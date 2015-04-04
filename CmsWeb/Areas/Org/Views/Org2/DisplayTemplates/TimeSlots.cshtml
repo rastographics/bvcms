@@ -1,0 +1,36 @@
+﻿@model CmsData.Registration.TimeSlots
+@using CmsWeb
+@using UtilityExtensions
+<div id="TimeSlotsList" class="control-group">
+  <label class="control-label">Time Slots</label>
+  <div class="controls">
+    <div class="table not-wide w80">
+      @Html.DisplayFor(m => m.TimeSlotLockDays)
+      <table class="table not-wide table-striped">
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th>Day</th>
+            <th>Time</th>
+            <th>Limit</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var f in Model.list)
+          {
+            <tr>
+              <td>@f.Description</td>
+              <td>@f.DayOfWeek</td>
+              <td>@f.Time.FormatTime()</td>
+              <td>@f.Limit</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    @if (ViewBag.ShowHelp != false)
+    {
+      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+    }
+  </div>
+</div>

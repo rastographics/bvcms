@@ -9,7 +9,11 @@ namespace CmsData.Registration
 {
 	public class TimeSlots
 	{
+        public string Help { get { return @"
+This is help for TimeSlots
+"; } }
 		public List<TimeSlot> list { get; private set; }
+        [Display(Name="Lock Days")]
 		public int? TimeSlotLockDays { get; set; }
 		public bool HasValue { get { return list.Count > 0; } }
 

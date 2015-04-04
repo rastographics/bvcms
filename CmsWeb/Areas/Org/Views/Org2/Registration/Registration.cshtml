@@ -11,6 +11,7 @@
   <div>
     @Html.HiddenFor(m => m.Id)
     @Html.DisplayFor(m => m.RegistrationType)
+    @Html.Hidden("RegistrationType_Value", Model.RegistrationType.Value)
     @Html.DisplayFor(m => m.Title)
     @Html.DisplayFor(m => m.ClassFilled)
     @Html.DisplayFor(m => m.RegistrationClosed)

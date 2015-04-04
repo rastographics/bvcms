@@ -1,0 +1,12 @@
+﻿@model CmsData.Registration.TimeSlots.TimeSlot
+@using CmsWeb
+@using (var ci = Html.BeginCollectionItem("TimeSlot"))
+{
+  <div class="well">
+    @Html.Raw(ci.hiddenindex)
+    @Html.DisplayFor(m => m.Description)
+    @Html.DisplayFor(m => m.DayOfWeek)
+    @Html.DisplayFor(m => m.Time)
+    @Html.DisplayFor(m => m.Limit)
+  </div>
+}
