@@ -10,26 +10,6 @@
 }
 <div class="form-group">
   <div class="col-sm-12">
-@*    @if (!specialcase.HasValue())*@
-@*    {*@
-@*      var fees = Model.TotalAmount();*@
-@*      <div class="alert-block alert-info">*@
-@*        <h4>You are almost done!</h4>*@
-@*        You can add additional people to your registration if you want.*@
-@*        @if (fees > 0)*@
-@*        {*@
-@*          <text>*@
-@*            You will be able to make your payment after clicking the Complete Registration button.*@
-@*          </text>*@
-@*        }*@
-@*        else*@
-@*        {*@
-@*          <text>*@
-@*            Click the Complete Registration button to finalize your registration.*@
-@*          </text>*@
-@*        }*@
-@*      </div>*@
-@*    }*@
     <span class="pull-right">
       @if (!Model.OnlyOneAllowed())
       {
@@ -41,17 +21,17 @@
           @Helper.OnlineRegSubmitButton("Manage Subscriptions")
           break;
         case "pledge":
-        @Helper.OnlineRegSubmitButton("Email me a link to manage my pledge")
+          @Helper.OnlineRegSubmitButton("Email me a link to manage my pledge")
           sendlinkmsg = "This link will be sent to " + UtilityExtensions.Util.ObscureEmail(Model.last.person.EmailAddress);
           break;
         case "account":
-        @Helper.OnlineRegSubmitButton("Create Account")
+          @Helper.OnlineRegSubmitButton("Create Account")
           break;
         case "onlyone":
-        @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true, style: "btn-default")
+          @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true, style: "btn-default")
           break;
         default:
-        @Helper.OnlineRegSubmitButton("Continue Registration", style: "btn-success min-width15em")
+          @Helper.OnlineRegSubmitButton("Continue Registration", style: "btn-success min-width15em")
           if (Model.AllowSaveProgress())
           {
             @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")

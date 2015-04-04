@@ -67,9 +67,10 @@ namespace CmsWeb.Models
                         ))
                     {
                         modelState.AddModelError(foundname, "No Email Address on record");
-                        model.NotFoundText = @"<strong>No Email Address on Record</strong><br/>
-We have found your record but we have no email address for you.<br/>
-This means that we cannot proceed until we have that to protect your data.<br/>
+                        model.RegistrantProblem = @"
+** No Email Address on Record**  
+We have found your record but we have no email address for you. 
+This means that we cannot proceed until we have that to protect your data.
 Please call the church to resolve this before we can complete your information.";
                         model.IsValidForContinue = false;
                     }
@@ -85,7 +86,7 @@ Please call the church to resolve this before we can complete your information."
                     else if (model.MemberOnly() && model.person.MemberStatusId != MemberStatusCode.Member)
                     {
                         modelState.AddModelError(foundname, "Sorry, must be a member of church");
-                        model.NotFoundText = @"<strong>Sorry, must be a member of this church</strong>";
+                        model.RegistrantProblem = @"**Sorry, must be a member of this church**";
                         model.IsValidForContinue = false;
                     }
                     else if (model.org != null)
@@ -123,7 +124,7 @@ Please call the church to resolve this before we can complete your account.<br /
                             && !model.Parent.SupportMissionTrip)
                         {
                             modelState.AddModelError(foundname, "This person is already registered");
-                            model.NotFoundText = @"<strong>This person is already registered</strong>";
+                            model.RegistrantProblem = @"**This person is already registered**";
                             model.CancelText = "Register a different person";
                             model.IsValidForContinue = false;
                         }
@@ -134,7 +135,7 @@ Please call the church to resolve this before we can complete your account.<br /
                                 if (!model.person.OrganizationMembers.Any(mm => reqmemberids.Contains(mm.OrganizationId)))
                                 {
                                     modelState.AddModelError(foundname, "Must be member of specified organization");
-                                    model.NotFoundText = @"<strong>Must be a member of specified organization to register</strong>";
+                                    model.RegistrantProblem = @"**Must be a member of specified organization to register**";
                                     model.IsValidForContinue = false;
                                 }
                             var reqnomemberids = model.setting.ValidateOrgIds.Where(ii => ii < 0).ToList();
@@ -142,7 +143,7 @@ Please call the church to resolve this before we can complete your account.<br /
                                 if (model.person.OrganizationMembers.Any(mm => reqnomemberids.Contains(-mm.OrganizationId)))
                                 {
                                     modelState.AddModelError(foundname, "Must not be a member of specified organization");
-                                    model.NotFoundText = @"<strong>Must not be a member of specified organization to register</strong>";
+                                    model.RegistrantProblem = @"**Must not be a member of specified organization to register**";
                                     model.IsValidForContinue = false;
                                 }
                         }
@@ -151,14 +152,15 @@ Please call the church to resolve this before we can complete your account.<br /
                     {
                         modelState.AddModelError(foundname, "Person already in Pending Registration");
                         model.CancelText = "Register a different person";
-                        model.NotFoundText = @"<strong>Person already in Pending Registration</strong>";
+                        model.RegistrantProblem = @"**Person already in Pending Registration**";
                         model.IsValidForContinue = false;
                     }
                 }
                 else if (model.count > 1)
                 {
                     modelState.AddModelError(foundname, "More than one match, sorry");
-                    model.NotFoundText = @"<strong>MORE THAN ONE MATCH</strong><br />
+                    model.RegistrantProblem = @"
+**MORE THAN ONE MATCH**  
 We have found more than one record that matches your information
 This is an unexpected error and we don't know which one is you.
 Please call the church to resolve this before we can complete your registration.";
@@ -167,12 +169,12 @@ Please call the church to resolve this before we can complete your registration.
                 else if (model.count == 0)
                 {
                     modelState.AddModelError(foundname, "record not found");
-                    model.NotFoundText = @" <strong>RECORD NOT FOUND</strong><br />
-                            We were not able to find you in our database. Please check the information you entered.
-                            <ul>
-                                <li>If everything looks good, select ""New Profile""</li>
-                                <li>If you make a correction, select ""Search Again""</li>
-                            </ul>";
+                    model.RegistrantProblem = @"
+**RECORD NOT FOUND**  
+We were not able to find you in our database. Please check the information you entered.
+* If everything looks good, select ""New Profile""
+* If you make a correction, select ""Search Again""
+";
                 }
             }
             ValidateBirthdayRange(model, modelState, i);

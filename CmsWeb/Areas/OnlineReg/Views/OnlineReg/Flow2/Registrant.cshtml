@@ -1,102 +1,101 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.OnlineRegPersonModel
 @{
-    var or = "";
+  bool? loginShown = null;
 }
-
 @if (!Model.ShowDisplay())
-// This is a header that will show above the last unfinished item
 {
-    if (Model.LastItem() && !Model.Finished() && Model.NotFirst())
-    {
-        @Helper.OnlineRegSubmitButtonRow("Complete Registration for the above people", style: "btn-mini btn-warning margin-top")
-    }
-    if (Model.UserSelectsOrganization()) // show a select organization dropdown
-    {
-        @Html.EditorFor(m => m, "SelectClass")
-    }
-    if (Model.Parent.UserPeopleId.HasValue && Model.Parent.FamilyMembers().Any())
-    // show a family list because logged in and more than one in family
-    {
-        @Html.EditorFor(m => m, "SelectFamily")
-        @Helper.OnlineRegHeaderFullRow("Or find another non-family member here")
-    }
-    else
-    {
-        if (Model.Parent.List.Count == 1 && !Model.IsNew && Model.Found != true && !Model.LoggedIn && !Model.OtherOK)
-        {
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <h4 class="inline-block">Already have an account?</h4>
-                    <a href="/OnlineReg/YesLogin" class="btn btn-success submitlink">
-                        Login Here
-                    </a>
-                    @{ or = "Or "; }
-                </div>
-            </div>
-        }
-    }
+  if (Model.LastItem() && !Model.Finished() && Model.NotFirst())
+  {
+    @Helper.OnlineRegSubmitButtonRow("Complete Registration for the above people", style: "btn-mini btn-warning margin-top")
+  }
+  
+  // show a select class dropdown
+  if (Model.UserSelectsOrganization()) 
+  {
+    @Html.EditorFor(m => m, "SelectClass")
+  }
+  
+  
+  // show a family list if logged in and more than one in family
+  if (Model.Parent.UserPeopleId.HasValue && Model.Parent.FamilyMembers().Any())
+  {
+    @Html.EditorFor(m => m, "SelectFamily")
+    @Helper.OnlineRegHeaderFullRow("Or find another non-family member here")
+  }
+  
+  
+  // otherwise if this is the first registrant, not logged in, and we are about to search for a person
+  // then give them the option to login
+  else if (Model.Parent.List.Count == 1 && !Model.IsNew && Model.Found != true && !Model.LoggedIn && !Model.OtherOK)
+  {
+    loginShown = true;
+    <div class="form-group">
+      <div class="col-sm-12">
+        <h4 class="inline-block">Already have an account?</h4>
+        <a href="/OnlineReg/YesLogin" class="btn btn-success submitlink">
+          Login Here
+        </a>
+      </div>
+    </div>
+  }
 }
+@* Registrant Panel *@
 <div class="panel panel-default">
-    <div class="panel-heading">
-        <h4 class="panel-title">
-            @if (Model.Finished())
-            {
-                <a data-toggle="collapse" data-target="#collapse@(Model.Index)">
-                @if (Model.Found.HasValue)
-                {
-                    @Model.FirstName@:&nbsp;@Model.LastName <small>(click to toggle details)</small>
-                }
-                </a>
-            }
-            else
-            {
-                if (Model.Found.HasValue)
-                {
-                    @Model.FirstName@:&nbsp;@Model.LastName
-                }
-                else
-                {
-                    <text>
-                        @(or)Help us find your record in our database
-                        <small class="inline-block">(you can add a new record if not found)</small>
-                    </text>
-                }
-            }
-        </h4>
-    </div>
-    <div id="collapse@(Model.Index)" class="panel-collapse collapse @(Model.Finished() ? "" : "in")">
-        <div class="panel-body">
-            @Html.ValidationSummary()
-            @if (!Model.ShowAddress && Model.NotFoundText.HasValue())
-            {
-                @Html.DivAlertBox(Model.NotFoundText)
-            }
-            @Html.Partial("Flow2/PersonMetaHidden", Model)
+  <div class="panel-heading">
+    <h4 class="panel-title">
+      @if (Model.Finished())
+      {
+        <a data-toggle="collapse" data-target="#collapse@(Model.Index)">
+          @if (Model.Found.HasValue)
+          {
+            @Model.FirstName@:&nbsp;@Model.LastName <small>(click to toggle details)</small>
+          }
+        </a>
+      }
+      else if (Model.Found.HasValue)
+      {
+        @Model.FirstName@:&nbsp;@Model.LastName
+      }
+      else
+      {
+        @(loginShown == true ? "Or " : "")<text>Enter your information below</text>
+      }
+    </h4>
+  </div>
+  <div id="collapse@(Model.Index)" class="panel-collapse collapse @(Model.Finished() ? "" : "in")">
+    <div class="panel-body">
+      @Html.ValidationSummary()
+      @if (!Model.ShowAddress && Model.RegistrantProblem.HasValue())
+      {
+        @Html.DivAlertBox(Html.Markdown(Model.RegistrantProblem).ToString())
+      }
+      @Html.Partial("Flow2/PersonMetaHidden", Model)
 
-            @if (Model.ShowDisplay())
-            {
-                @Html.Partial("Flow2/PersonHidden", Model)
-                @Html.Partial("Flow2/PersonDisplay", Model)
-            }
-            else
-            {
-                if (!Model.Parent.IsEnded())
-                    // Show next person to register, because still taking registrations
-                {
-                    if (Model.IsFamily)
-                        // Already found, display only
-                    {
-                        @Html.Partial("Flow2/PersonHidden", Model)
-                        @Html.Partial("Flow2/PersonDisplay", Model)
-                    }
-                    else // Find or Add New Registrant
-                    {
-                        Model.Parent.ShowFindInstructions = true;
-                        @Html.Partial("Flow2/PersonEdit", Model)
-                    }
-                }
-            }
-        </div>
+      @if (Model.ShowDisplay())
+      {
+        @Html.Partial("Flow2/PersonHidden", Model)
+        @Html.Partial("Flow2/PersonDisplay", Model)
+      }
+      else
+      {
+        // Show next person to register, because still taking registrations
+        if (!Model.Parent.IsEnded())
+        {
+          // Already found, display only
+          if (Model.IsFamily)
+          {
+            @Html.Partial("Flow2/PersonHidden", Model)
+            @Html.Partial("Flow2/PersonDisplay", Model)
+          }
+          // Find or Add New Registrant
+          else
+          {
+            Model.Parent.ShowFindInstructions = true;
+            @Html.Partial("Flow2/PersonEdit", Model)
+          }
+        }
+      }
     </div>
+  </div>
 </div>

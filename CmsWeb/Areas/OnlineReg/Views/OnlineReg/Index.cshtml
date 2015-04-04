@@ -3,6 +3,9 @@
 @{
   Layout = "~/Views/Shared/onlinereg2.cshtml";
   ViewBag.Title = "Online Registration";
+  var filled = Model.Filled();
+  var complete = Model.AskDonation() ? "AskDonation" : "CompleteRegistration";
+  var action = "/OnlineReg/{0}/{1}".Fmt(complete, Model.qtesting);
 }
 @section head
 {
@@ -39,22 +42,22 @@
 
 <div class="regform">
   <h3>@Model.Header</h3>
-  @{var msg = Model.Filled();}
   @if (Model.NotAvailable())
   {
     <h4 id="sorry">Sorry, Registration is not available at this time</h4>
     @Html.Raw(Util.PickFirst(Model.Instructions, ""))
   }
-  else if (msg.HasValue())
+  else if (filled.HasValue())
   {
-    <h4 id="sorry">Sorry, @msg</h4>
+    <h4 id="sorry">Sorry, @filled</h4>
     @Html.Raw(Util.PickFirst(Model.Instructions, ""))
   }
   else
   {
-    <form id="completeReg" class="DisplayEdit form-horizontal" action="/OnlineReg/@(Model.AskDonation() ? "AskDonation" : "CompleteRegistration")/@Model.qtesting" method="post">
+    <form id="completeReg" class="DisplayEdit form-horizontal" action="@action" method="post">
       @Html.Partial("Flow2/List", Model)
     </form>
+    
     if (Model.RecordFamilyAttendance())
     {
       @Html.Partial("Flow2/FamilyAttendTemplate")

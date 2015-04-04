@@ -540,7 +540,7 @@ namespace CmsWeb.Models
                 age--;
             return age;
         }
-        public string NotFoundText;
+        public string RegistrantProblem;
         public string CancelText = "Cancel this person";
         internal int count;
 
