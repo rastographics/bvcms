@@ -6,99 +6,109 @@
     var rownum = 0;
 }
 <form class="non-modal ajax">
-  @Html.Partial("PagerHidden", Model)
-  @Html.HiddenFor2(m => m.PeopleId)
-    <div class="pagination pagination-mini">
-    @Html.Partial("Pager3", Model)
-        <a id="refresh-current" href="#" class="ajax-refresh pull-right"><i class="fa fa-refresh"></i></a>
+    <div class="row hidden-xs">
+        <div class="col-sm-12">
+            <div class="pull-right">
+                <a id="refresh-current" href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
+            </div>
+        </div>
     </div>
-    <table class="expanding table table-condensed table-hover">
-        <thead>
-            <tr>
-        <th>@Model.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
-        <th>@Model.SortLink("Organization")</th>
-                <th>Leader</th>
-        <th>@Model.SortLink("Enroll Date")</th>
-                <th>MemberType</th>
-                <th>AttendPct</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var om in Model.ViewList())
-            {
-                rownum++;
-                var oddrow = rownum % 2 == 0 ? "oddrow" : "";
-        if (om.OrgType != pOrgType && Model.Sort == "default")
-                {
-                    pOrgType = om.OrgType;
-                <tr class="section notshown">
-                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
-                    <td colspan="5"><span>@om.OrgType</span></td>
-                </tr>
-                }
-                if (User.IsInRole("Access"))
-                {
-                <tr class="master @oddrow">
-                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
-            <td><a href="@Util2.Org/@om.OrgId">@om.Name</a></td>
-                    <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
-                    <td>@om.EnrollDate.FormatDate()</td>
-            <td>
-              <a class="membertype" href="@Util2.OrgMemberDialog/Display/@om.OrgId/@om.PeopleId">
-                        @om.MemberType
-                    </a>
-                    </td>
-                    <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>
-                </tr>
-                <tr class="details @oddrow">
-                    <td colspan="6">
-                        <div class="collapse indent">
-                            <strong>Program:</strong> <span>@om.ProgramName,</span>
-                            <strong>Division:</strong> <span>@om.DivisionName</span>
-                            @if (om.Location.HasValue())
-                            {
-                                @om.LocComma<strong>Location:</strong> <span>@om.Location</span>
-                            }
-                            @if (om.Schedule.HasValue())
-                            {
-                                @om.SchComma<strong>Schedule:</strong> <span>@om.Schedule</span>
-                            }
-                <div>
-                  <a href="/OrgContent/@om.OrgId">Members Page</a>
-                  @if (om.HasDirectory)
-                  {
-                    <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">Online Directory</a>
-                  }
-                </div>
-                        </div>
-                    </td>
-                </tr>
-                }
-                else
-                {
-                <tr>
-                    <td></td>
-                    <td class="indent">
-                        @if (om.HasDirectory)
+    <br/>
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Partial("PagerTop", Model)
+            <div class="table-responsive">
+                <table class="expanding table table-hover">
+                    <thead>
+                        <tr>
+                            <th>@Model.SortLink2("default", @"<i class=""fa fa-sort""></i>")</th>
+                            <th>@Model.SortLink("Organization")</th>
+                            <th>Leader</th>
+                            <th>@Model.SortLink("Enroll Date")</th>
+                            <th>MemberType</th>
+                            <th>AttendPct</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var om in Model.ViewList())
                         {
-                            <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">@om.Name</a>
+                            rownum++;
+                            var oddrow = rownum % 2 == 0 ? "oddrow" : "";
+                            if (om.OrgType != pOrgType && Model.Sort == "default")
+                            {
+                                pOrgType = om.OrgType;
+                                <tr class="section notshown">
+                                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
+                                    <td colspan="5"><span>@om.OrgType</span></td>
+                                </tr>
+                            }
+                            if (User.IsInRole("Access"))
+                            {
+                                <tr class="master @oddrow">
+                                    <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-info-circle"></i></a></td>
+                                    <td><a href="@Util2.Org/@om.OrgId">@om.Name</a></td>
+                                    <td><a href="/Person2/@om.LeaderId">@om.LeaderName</a></td>
+                                    <td>@om.EnrollDate.FormatDate()</td>
+                                    <td>
+                                        <a class="membertype" href="@Util2.OrgMemberDialog/Display/@om.OrgId/@om.PeopleId">
+                                            @om.MemberType
+                                        </a>
+                                    </td>
+                                    <td>@(om.AttendPct > 0 ? om.AttendPct.Value.ToString("N1") : "")</td>
+                                </tr>
+                                <tr class="details @oddrow">
+                                    <td colspan="6">
+                                        <div class="collapse indent">
+                                            <strong>Program:</strong> <span>@om.ProgramName,</span>
+                                            <strong>Division:</strong> <span>@om.DivisionName</span>
+                                            @if (om.Location.HasValue())
+                                            {
+                                                @om.LocComma<strong>Location:</strong> <span>@om.Location</span>
+                                            }
+                                            @if (om.Schedule.HasValue())
+                                            {
+                                                @om.SchComma<strong>Schedule:</strong> <span>@om.Schedule</span>
+                                            }
+                                            <div>
+                                                <a href="/OrgContent/@om.OrgId">Members Page</a>
+                                                @if (om.HasDirectory)
+                                                {
+                                                    <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">Online Directory</a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td></td>
+                                    <td class="indent">
+                                        @if (om.HasDirectory)
+                                        {
+                                            <a title="@om.DivisionName" href="/MemberDirectory/@om.OrgId">@om.Name</a>
+                                        }
+                                        else
+                                        {
+                                            <a title="@om.DivisionName" href="/OrgContent/@om.OrgId">@om.Name</a>
+                                        }
+                                    </td>
+                                    <td>@om.LeaderName</td>
+                                    <td>@om.EnrollDate.FormatDate()</td>
+                                    <td>@om.MemberType</td>
+                                    <td>@om.AttendPct.ToString2("N1")</td>
+                                </tr>
+                            }
                         }
-                        else
-                        {
-                            <a title="@om.DivisionName" href="/OrgContent/@om.OrgId">@om.Name</a>
-                        }
-                    </td>
-                    <td>@om.LeaderName</td>
-                    <td>@om.EnrollDate.FormatDate()</td>
-                    <td>@om.MemberType</td>
-                    <td>@om.AttendPct.ToString2("N1")</td>
-                </tr>
-                }
-            }
-        </tbody>
-    </table>
-    <div class="pagination pagination-mini">
-    @Html.Partial("Pager3", Model)
+                    </tbody>
+                </table>
+            </div>
+            @Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+            @Html.HiddenFor2(m => m.PeopleId)
+        </div>
     </div>
+    <br/>
 </form>
 

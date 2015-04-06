@@ -4,95 +4,102 @@
 @{
     var goerlist = Model.GoerList();
 }
-<form class="form form-horizontal margin-top ajax span12" method="post">
-  @Html.HiddenFor2(m => m.PeopleId)
-    <fieldset class="left-gutter">
-        <legend>
-            Registration History
-            @FormActions()
-        </legend>
-        @if (goerlist.Count > 0)
-        {
-            <h4>Mission Trip Funding</h4>
-            <table class="table table-condensed not-wide">
-                <tr>
-                    <th>Trip</th>
-                    <th class="right">Cost</th>
-                    <th class="right">Paid</th>
-                    <th class="right">Balance</th>
-                    <th></th>
-                </tr>
-                @foreach (var g in goerlist)
-                {
+<form class="ajax" method="post">
+    <h3>Registration History</h3>
+    @FormActions()
+    <div class="row">
+        <div class="col-sm-12">
+            @if (goerlist.Count > 0)
+            {
+                <h4>Mission Trip Funding</h4>
+                <table class="table table-striped">
                     <tr>
-                        <td>
-                            @if (User.IsInRole("Access"))
-                            {
-                <a href="@Util2.Org/@g.Id">@g.Trip</a>
-                            }
-                            else
-                            {
-                                <span>@g.Trip</span>
-                            }
-                        </td>
-                        <td class="right">@g.Cost.ToString("C")</td>
-                        <td class="right">@g.Paid.ToString("C")</td>
-                        <td class="right">@((g.Cost - g.Paid).ToString("C"))</td>
-                        <td>
-                            @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
-                            {
-                            <a href="/MissionTripEmail/@g.Id/@Model.PeopleId">Email Supporters</a>
-                            }
-                        </td>
+                        <th>Trip</th>
+                        <th class="text-right">Cost</th>
+                        <th class="text-right">Paid</th>
+                        <th class="text-right">Balance</th>
+                        <th></th>
                     </tr>
-                }
-            </table>
-        }
-        <div class="inline display align-top width220">
-            <div class="well">
-                @Html.DisplayFor(m => m.ShirtSize)
-                @Html.DisplayFor(m => m.CustodyIssue)
-                @Html.DisplayFor(m => m.OkTransport)
-                @Html.DisplayFor(m => m.Emcontact)
-                @Html.DisplayFor(m => m.Emphone)
+                    @foreach (var g in goerlist)
+                    {
+                        <tr>
+                            <td>
+                                @if (User.IsInRole("Access"))
+                                {
+                                    <a href="@Util2.Org/@g.Id">@g.Trip</a>
+                                }
+                                else
+                                {
+                                    <span>@g.Trip</span>
+                                }
+                            </td>
+                            <td class="text-right">@g.Cost.ToString("C")</td>
+                            <td class="text-right">@g.Paid.ToString("C")</td>
+                            <td class="text-right">@((g.Cost - g.Paid).ToString("C"))</td>
+                            <td>
+                                @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
+                                {
+                                    <a href="/MissionTripEmail/@g.Id/@Model.PeopleId">Email Supporters</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            <div class="inline display align-top width220">
+                <div class="well">
+                    @Html.DisplayFor(m => m.ShirtSize)
+                    @Html.DisplayFor(m => m.CustodyIssue)
+                    @Html.DisplayFor(m => m.OkTransport)
+                    @Html.DisplayFor(m => m.Emcontact)
+                    @Html.DisplayFor(m => m.Emphone)
+                </div>
+                <div class="well">
+                    @Html.DisplayFor(m => m.Tylenol)
+                    @Html.DisplayFor(m => m.Advil)
+                    @Html.DisplayFor(m => m.Robitussin)
+                    @Html.DisplayFor(m => m.Maalox)
+                </div>
             </div>
-            <div class="well">
-                @Html.DisplayFor(m => m.Tylenol)
-                @Html.DisplayFor(m => m.Advil)
-                @Html.DisplayFor(m => m.Robitussin)
-                @Html.DisplayFor(m => m.Maalox)
+            <div class="inline display align-top width140 left-gutter">
+                <div class="well">
+                    @Html.DisplayFor(m => m.Insurance)
+                    @Html.DisplayFor(m => m.Policy)
+                    @Html.DisplayFor(m => m.Doctor)
+                    @Html.DisplayFor(m => m.Docphone)
+                </div>
+                <div class="well">
+                    @Html.DisplayFor(m => m.Mname)
+                    @Html.DisplayFor(m => m.Fname)
+                    @Html.DisplayFor(m => m.Coaching)
+                </div>
+                <div class="well">
+                    @Html.DisplayFor(m => m.Member)
+                    @Html.DisplayFor(m => m.ActiveInAnotherChurch)
+                </div>
+            </div>
+            <div class="margin-top">
+                @Html.DisplayFor(m => m.MedicalDescription)
+            </div>
+            <div class="margin-top">
+                @Html.DisplayFor(m => m.Comments)
             </div>
         </div>
-        <div class="inline display align-top width140 left-gutter">
-            <div class="well">
-                @Html.DisplayFor(m => m.Insurance)
-                @Html.DisplayFor(m => m.Policy)
-                @Html.DisplayFor(m => m.Doctor)
-                @Html.DisplayFor(m => m.Docphone)
-            </div>
-            <div class="well">
-                @Html.DisplayFor(m => m.Mname)
-                @Html.DisplayFor(m => m.Fname)
-                @Html.DisplayFor(m => m.Coaching)
-            </div>
-            <div class="well">
-                @Html.DisplayFor(m => m.Member)
-                @Html.DisplayFor(m => m.ActiveInAnotherChurch)
-            </div>
-        </div>
-        <div class="margin-top">
-            @Html.DisplayFor(m => m.MedicalDescription)
-        </div>
-        <div class="margin-top">
-            @Html.DisplayFor(m => m.Comments)
-        </div>
-        <div>@FormActions() </div>
-    </fieldset>
+    </div>
+    @FormActions()
+    @Html.HiddenFor2(m => m.PeopleId)
+    <br/>
 </form>
 @helper FormActions()
 {
     if (User.IsInRole("Edit"))
     {
-        <a href="/Person2/RegistrationsEdit" class="pull-right btn btn-primary ajax">Edit</a>
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/Person2/RegistrationsEdit" class="pull-right btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
+                </div>
+            </div>
+        </div>
     }
 }

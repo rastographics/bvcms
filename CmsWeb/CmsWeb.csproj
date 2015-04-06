@@ -815,6 +815,7 @@
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
     <Content Include="Content\touchpoint\js\email\compose.js" />
     <Content Include="Content\touchpoint\js\export-toolbar.js" />
+    <Content Include="Content\touchpoint\js\extra-value.js" />
     <Content Include="Content\touchpoint\js\finance\post-bundle.js" />
     <Content Include="Content\touchpoint\js\finance\totals-by-fund.js" />
     <Content Include="Content\touchpoint\js\finance\transactions.js" />

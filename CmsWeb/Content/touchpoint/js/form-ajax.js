@@ -12,11 +12,11 @@
         $.InitializeDateElements();
     };
 
-    $('body').on('click', 'ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor', function (event) {
+    $('body').on('click', 'ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor, ul.nav-pills a.ajax,a.ajax.ui-tabs-anchor', function (event) {
         var $this = $(this);
         var alreadyClicked = $this.data('clicked');
         if (alreadyClicked) {
-            return false;
+            return true;
         }
         $this.data('clicked', true);
         var state = $this.attr("href") || $this.data("target");
@@ -38,6 +38,7 @@
                 success: function (data, status) {
                     $.unblock();
                     d.addClass("loaded");
+                    $('select.nav-select-pills').val(state);
                     d.html(data).ready(function () {
                         if (d.data("init"))
                             $.InitFunctions[d.data("init")]();
@@ -48,7 +49,7 @@
                             $form = $form2;
                         if ($form.data("init"))
                             $.InitFunctions[$form.data("init")]();
-                        if ($form.data("init2"))
+                        if ($form.data("init2")) 
                             $.InitFunctions[$form.data("init2")]();
                     });
                 },
@@ -58,6 +59,10 @@
                 }
             });
         return true;
+    });
+
+    $('body').on('change', 'select.nav-select-pills', function (event) {
+        $("a[href='" + $(this).val() + "']").click().tab("show");
     });
 
     $("div.tab-pane").on("click", "a.ajax-refresh", function (event) {

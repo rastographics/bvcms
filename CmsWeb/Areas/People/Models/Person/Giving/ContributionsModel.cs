@@ -36,9 +36,8 @@ namespace CmsWeb.Areas.People.Models
         public CodeInfo EnvelopeOptions { get; set; }
 
         public ContributionsModel()
-            : base("Date", "desc")
-        {
-        }
+            : base("Date", "desc", true)
+        {}
 
         public override IQueryable<Contribution> DefineModelList()
         {

@@ -1,12 +1,19 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
-<ul class="nav nav-tabs subnav" data-tabparent="ministry">
+<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="ministry">
     <li><a href="#contactsreceived" data-toggle="tab" class="ajax">Contacts Received</a></li>
     <li><a href="#contactsmade" data-toggle="tab" class="ajax">Contacts Made</a></li>
     <li><a href="#tasksabout" data-toggle="tab" class="ajax">Tasks About</a></li>
     <li><a href="#tasksassigned" data-toggle="tab" class="ajax">Tasks Assigned</a></li>
     <li><a href="#volunteer" data-toggle="tab" class="ajax">Volunteer</a></li>
-</ul> 
-<div class="tab-content">
+</ul>
+<select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+    <option value="#contactsreceived">Contacts Received</option>
+    <option value="#contactsmade">Contacts Made</option>
+    <option value="#tasksabout">Tasks About</option>
+    <option value="#tasksassigned">Tasks Assigned</option>
+    <option value="#volunteer">Volunteer</option>
+</select>
+<div class="tab-content" style="border: none;">
   <div class="tab-pane" id="contactsreceived" data-link="/Person2/ContactsReceived">
     @Helper.HiddenId("PeopleId", Model.PeopleId)
   </div>

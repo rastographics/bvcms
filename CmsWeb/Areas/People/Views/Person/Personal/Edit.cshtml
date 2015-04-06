@@ -1,7 +1,6 @@
 ﻿@model CmsWeb.Areas.People.Models.BasicPersonInfo
 <form class="ajax" method="post">
     @FormAction()
-    @Html.HiddenFor(m => m.PeopleId)
     <h4>General</h4>
     <div class="well">
         <div class="row">
@@ -102,8 +101,10 @@
             </div>
         </div>
     </div>
-    @FormAction()
+    @Html.HiddenFor(m => m.PeopleId)
     @Html.HiddenFor(m => m.CreatedDate)
+    @FormAction()
+    <br/>
 </form>
 
 @helper FormAction()
@@ -116,5 +117,4 @@
             </div>
         </div>
     </div>
-    <br/>
 }

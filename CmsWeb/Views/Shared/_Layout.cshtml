@@ -85,11 +85,10 @@
         @Fingerprint.Script("/Content/touchpoint/lib/jquery-blockUI/js/jquery.blockUI.js")
         @Fingerprint.Script("/Content/touchpoint/js/main.js")
         @Fingerprint.Script("/Content/touchpoint/js/export-toolbar.js")
+        @Fingerprint.Script("/Content/touchpoint/js/extra-value.js")
         @Fingerprint.Script("/Content/touchpoint/js/form-ajax.js")
         @Fingerprint.Script("/Content/touchpoint/js/search/search-add.js")
-        <script type="text/javascript">
-            $.dateFormat = '@Util.jQueryDateFormat';
-        </script>
+        @Html.Partial("DatePickerDefaults")
         @RenderSection("scripts", false)
         @Html.Partial("SearchBox")
     </body>

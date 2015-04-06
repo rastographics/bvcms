@@ -2,7 +2,7 @@
 @model CmsWeb.Code.CodeInfo
 @if (User.IsInRole("Edit"))
 {
-    <span id="@Model.Name" class="edit-inline-label label label-info" data-value="@Model.Value" data-pk="@Util2.CurrentPeopleId" title="@Model.Name">@Model</span>
+    <a id="@Model.Name" class="edit-inline-label label label-info" data-value="@Model.Value" data-pk="@Util2.CurrentPeopleId" title="@Model.Name">@Model</a>
 }
 else
 {

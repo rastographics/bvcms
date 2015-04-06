@@ -15,6 +15,7 @@
 }
 @section head
 {
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
     <style>
         .badaddress {
@@ -42,6 +43,19 @@
             background-repeat: no-repeat;
             background-size: cover;
             background-position: top;
+        }
+        .edit-inline-label:after {
+            display: inline-block;
+            margin-left: 5px;
+            content: "\f040";
+            font-family: FontAwesome;
+        }
+
+        a.click-pencil:after {
+            content: "\f040";
+            font-family: FontAwesome;
+            text-decoration: none;
+            padding-left: 0.5em;
         }
     </style>
 }
@@ -200,6 +214,7 @@
 }
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")

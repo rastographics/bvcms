@@ -19,7 +19,7 @@
         }
     </div>
     <div class="sidebar_content">
-        <ul id="family_members" class="nav nav-stacked nav-tabs">
+        <ul id="family_members" class="nav nav-stacked nav-tabs nav-tabs-left">
             @foreach (var m in Model.ViewList())
             {
                 var active = m.Id == Model.Person.PeopleId ? "active" : "";

@@ -1,11 +1,17 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
-<ul class="nav nav-tabs subnav" data-tabparent="system">
+<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="system">
     <li><a href="#user" data-toggle="tab" class="ajax"><span>User Account</span></a></li>
     <li><a href="#changes" data-toggle="tab" class="ajax"><span>Changes</span></a></li>
     <li><a href="#duplicates" data-toggle="tab" class="ajax"><span>Duplicates</span></a></li>
     <li><a href="#mergehistory" data-toggle="tab" class="ajax"><span>Merge History</span></a></li>
 </ul>
-<div class="tab-content">
+<select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+    <option value="#user">User Account</option>
+    <option value="#changes">Changes</option>
+    <option value="#duplicates">Duplicates</option>
+    <option value="#mergehistory">Merge History</option>
+</select>
+<div class="tab-content" style="border: none;">
     <div class="tab-pane" id="user" data-link="/Person2/Users/@Model.PeopleId"></div>
   <div class="tab-pane" id="changes" data-link="/Person2/Changes">
     @Helper.HiddenId("PeopleId", Model.PeopleId)

@@ -14,6 +14,17 @@ dl {
   border-color: #e5eaea;
 }
 
+.nav-pills li a {
+  color: #70757a;
+  background: #f8fafa;
+}
+
+.nav-pills li {
+  border: solid 1px #e5eaea;
+  margin-left: 0;
+  margin-right: -3px;
+}
+
 .nav-tabs li.active a:after {
   content: "";
   display: block;
@@ -29,6 +40,14 @@ dl {
   -ms-transition: all 0.1s ease-in-out 0s;
   -o-transition: all 0.1s ease-in-out 0s;
   transition: all 0.1s ease-in-out 0s;
+}
+
+.nav-tabs-left li.active a:after {
+  background: none;
+}
+
+.nav-tabs-left li.active {
+  border-right: 3px solid @global-brand-primary;
 }
 
 .tab-content {

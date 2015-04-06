@@ -1,27 +1,34 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
 @Html.Hidden("FutureLink", "/Person2/AttendanceFuture/" + Model.PeopleId)
-<ul class="nav nav-tabs subnav" data-tabparent="enrollment">
-  <li><a href="#current" class="ajax" data-toggle="tab">Current</a></li>
-  <li><a href="#previous" class="ajax" data-toggle="tab">Previous</a></li>
-  <li><a href="#pending" class="ajax" data-toggle="tab">Pending</a></li>
-  <li><a href="#attends" class="ajax" data-toggle="tab">Attendance</a></li>
-  <li><a href="#registrations" class="ajax" data-toggle="tab">Registrations</a></li>
+<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="enrollment">
+    <li><a href="#current" class="ajax" data-toggle="tab">Current</a></li>
+    <li><a href="#previous" class="ajax" data-toggle="tab">Previous</a></li>
+    <li><a href="#pending" class="ajax" data-toggle="tab">Pending</a></li>
+    <li><a href="#attends" class="ajax" data-toggle="tab">Attendance</a></li>
+    <li><a href="#registrations" class="ajax" data-toggle="tab">Registrations</a></li>
 </ul>
-<div class="tab-content">
-  <div class="tab-pane" id="current" data-link="/Person2/EnrollGrid">
-    @Helper.HiddenId("PeopleId", Model.PeopleId)
-  </div>
-  <div class="tab-pane" id="previous" data-link="/Person2/PrevEnrollGrid">
-    @Helper.HiddenId("PeopleId", Model.PeopleId)
-  </div>
-  <div class="tab-pane" id="pending" data-link="/Person2/PendingEnrollGrid">
-    @Helper.HiddenId("PeopleId", Model.PeopleId)
-  </div>
-  <div class="tab-pane" id="attends" data-link="/Person2/Attendance">
-    @Helper.HiddenId("PeopleId", Model.PeopleId)
-  </div>
-  <div class="tab-pane" id="registrations" data-link="/Person2/Registrations">
-    @Helper.HiddenId("PeopleId", Model.PeopleId)
-  </div>
+<select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+    <option value="#current">Current</option>
+    <option value="#previous">Previous</option>
+    <option value="#pending">Pending</option>
+    <option value="#attends">Attendance</option>
+    <option value="#registrations">Registrations</option>
+</select>
+<div class="tab-content" style="border: none;">
+    <div class="tab-pane" id="current" data-link="/Person2/EnrollGrid">
+        @Helper.HiddenId("PeopleId", Model.PeopleId)
+    </div>
+    <div class="tab-pane" id="previous" data-link="/Person2/PrevEnrollGrid">
+        @Helper.HiddenId("PeopleId", Model.PeopleId)
+    </div>
+    <div class="tab-pane" id="pending" data-link="/Person2/PendingEnrollGrid">
+        @Helper.HiddenId("PeopleId", Model.PeopleId)
+    </div>
+    <div class="tab-pane" id="attends" data-link="/Person2/Attendance">
+        @Helper.HiddenId("PeopleId", Model.PeopleId)
+    </div>
+    <div class="tab-pane" id="registrations" data-link="/Person2/Registrations">
+        @Helper.HiddenId("PeopleId", Model.PeopleId)
+    </div>
 </div>
 

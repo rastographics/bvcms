@@ -12,10 +12,11 @@ namespace CmsWeb.Areas.People.Models
     {
         public int PeopleId { get; set; }
         public bool Future { get; set; }
+
         public PersonAttendHistoryModel()
-            : base("Meeting", "") 
-        {
-        }
+            : base("Meeting", "", true) 
+        { }
+
         override public IQueryable<Attend> DefineModelList()
         {
             var midnight = Util.Now.Date.AddDays(1);

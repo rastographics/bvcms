@@ -22,9 +22,9 @@ namespace CmsWeb.Areas.People.Models
         private Person _person;
 
         public PreviousEnrollments()
-            : base("Org Name", "asc")
-        {
-        }
+            : base("Org Name", "asc", true)
+        {}
+
         override public IQueryable<EnrollmentTransaction> DefineModelList()
         {
             var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly

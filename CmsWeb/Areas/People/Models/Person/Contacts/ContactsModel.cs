@@ -16,9 +16,9 @@ namespace CmsWeb.Areas.People.Models
         }
 
         protected ContactsModel()
-            : base("Date", "desc")
-        {
-        }
+            : base("Date", "desc", true)
+        {}
+
         public abstract string AddContact { get; }
         public abstract string AddContactButton { get; }
 

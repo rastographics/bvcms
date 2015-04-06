@@ -38,16 +38,16 @@
             @Html.DisplayFor(m => m.DoNotPublishPhones, new { TrueValue = "No Directories", FalseValue = "N/A" })
         </div>
     </div>
-  @FormAction()
-  <p class="record_added muted">
-    <small>
-      Record added @Model.CreatedDate.FormatDateTm()
-      @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
-      {
-        @:(<a href="/Person2/User/@Model.person.CreatedBy">@Model.person.CreatedBy</a>)
+    <p class="record_added muted">
+        <small>
+            Record added @Model.CreatedDate.FormatDateTm()
+            @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
+            {
+                @:(<a href="/Person2/User/@Model.person.CreatedBy">@Model.person.CreatedBy</a>)
       }
-    </small>
-  </p>
+        </small>
+    </p>
+  @FormAction()
 </form>
 
 @helper FormAction()
