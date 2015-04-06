@@ -132,7 +132,7 @@ namespace UtilityExtensions
                 return relativeUrl;
             if (relativeUrl.Length == 0)
                 return baseUrl;
-            return string.Format("{0}/{1}", baseUrl.TrimEnd(new[] {'/', '\\'}), relativeUrl.TrimStart(new[] {'/', '\\'}));
+            return string.Format("{0}/{1}", baseUrl.TrimEnd('/', '\\'), relativeUrl.TrimStart('/', '\\'));
         }
 
         public static string GetDigits(this string zip, int maxlen = 99)
