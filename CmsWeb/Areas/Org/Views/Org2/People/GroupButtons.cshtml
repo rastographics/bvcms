@@ -3,7 +3,7 @@
 
 @GroupButton(GroupSelectCode.Member, "Members")
 @GroupButton(GroupSelectCode.Previous, "Previous")
-@GroupButton(GroupSelectCode.Inactive, "Inactive")
+@GroupButton(GroupSelectCode.Inactive, Model.Org.IsMissionTrip == true ? "Senders" : "Inactive")
 @GroupButton(GroupSelectCode.Pending, "Pending")
 @GroupButton(GroupSelectCode.Prospect, "Prospects")
 @GroupButton(GroupSelectCode.Guest, "Guests")
