@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using CmsData;
 
 namespace CmsWeb.Models
 {
@@ -32,6 +34,38 @@ namespace CmsWeb.Models
                         Age = m.Age
                     };
             return q;
+        }
+
+        public void StartRegistrationForFamilyMember(int id, ModelStateDictionary modelState)
+        {
+            modelState.Clear(); // ensure we pull form fields from our model, not MVC's
+            HistoryAdd("Register");
+            int index = List.Count - 1;
+            if (List[index].classid.HasValue)
+                classid = List[index].classid;
+            var p = LoadExistingPerson(id, index);
+            p.ValidateModelForFind(modelState, id, selectFromFamily: true);
+            if (!modelState.IsValid)
+                return;
+            List[index] = p;
+            if (p.ManageSubscriptions() && p.Found == true)
+                return;
+
+            if (p.org != null && p.Found == true)
+            {
+                if (!SupportMissionTrip)
+                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+                if (p.IsFilled)
+                    modelState.AddModelError(this.GetNameFor(mm => mm.List[List.IndexOf(p)].Found), 
+                        "Sorry, but registration is filled.");
+                if (p.Found == true)
+                    p.FillPriorInfo();
+                return;
+            }
+            if (p.org == null && p.ComputesOrganizationByAge())
+                modelState.AddModelError(this.GetNameFor(mm => mm.List[id].Found), p.NoAppropriateOrgError);
+            if (p.ShowDisplay() && p.org != null && p.ComputesOrganizationByAge())
+                p.classid = p.org.OrganizationId;
         }
     }
 }

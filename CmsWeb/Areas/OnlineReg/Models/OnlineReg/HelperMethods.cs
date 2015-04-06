@@ -563,5 +563,24 @@ namespace CmsWeb.Models
             }
         }
 #endif
+
+        public void CancelRegistrant(int n)
+        {
+            HistoryAdd("Cancel id=" + n);
+            List.RemoveAt(n);
+            if (List.Count == 0)
+                List.Add(new OnlineRegPersonModel
+                {
+                    orgid = Orgid,
+                    masterorgid = masterorgid,
+                    LoggedIn = UserPeopleId.HasValue,
+#if DEBUG
+                    FirstName = "Another",
+                    LastName = "Child",
+                    DateOfBirth = "12/1/02",
+                    EmailAddress = "karen@touchpointsoftware.com",
+#endif
+                });
+        }
     }
 }

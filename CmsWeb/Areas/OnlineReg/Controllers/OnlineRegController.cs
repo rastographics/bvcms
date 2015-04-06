@@ -18,165 +18,36 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     [RouteArea("OnlineReg", AreaPrefix = "OnlineReg"), Route("{action}/{id?}")]
     public partial class OnlineRegController : CmsController
     {
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+            filterContext.Result = Message(filterContext.Exception.Message);
+            filterContext.ExceptionHandled = true;
+        }
+
         [HttpGet]
         [Route("~/OnlineReg/{id:int}")]
         [Route("~/OnlineReg/Index/{id:int}")]
-        public ActionResult Index(int? id, bool? testing, string email, bool? nologin, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
+        public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
-#if DEBUG2
-            OnlineRegModel.DebugCleanUp();
-#endif
-            if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
-                return Content("Site is disabled for maintenance, check back later");
             Response.NoCache();
-            if (!id.HasValue)
-                return Message("no organization");
-
-            MobileAppMenuController.Source = source;
-            var m = new OnlineRegModel()
+            try
             {
-                Orgid = id
-            };
-            
-            if (m.org == null && m.masterorg == null)
-                return Message("invalid registration");
+                var m = new OnlineRegModel(Request, id, testing, email, login, source);
+                m.PrepareMissionTrip(gsid, goerid);
+                SetHeaders(m);
 
-            GoerSupporter goerSupporter = null; // used for mission trips
+                var pid = m.CheckRegisterTag(registertag);
 
-            if (m.masterorg != null)
-            {
-                if (!OnlineRegModel.UserSelectClasses(m.masterorg).Any())
-                    return Message("no classes available on this org");
+                return pid > 0 
+                    ? RouteRegistration(m, pid, showfamily) 
+                    : View(m);
             }
-            else if (m.org != null)
+            catch (Exception ex)
             {
-                if ((m.org.RegistrationTypeId ?? 0) == RegistrationTypeCode.None)
-                    return Message("no registration allowed on this org");
-                if (m.org.IsMissionTrip == true)
-                {
-                    if (gsid.HasValue) // this means that the person is a suppoter who got a support email
-                    {
-                        goerSupporter = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == gsid);
-                        if (goerSupporter != null)
-                        {
-                            m.GoerId = goerSupporter.GoerId; // suppoert this particular goer
-                            m.GoerSupporterId = gsid;
-                        }
-                        else
-                            m.GoerId = 0; // allow this supporter to still select a goer
-                    }
-                    else if (goerid.HasValue)
-                    {
-                        m.GoerId = goerid;
-                    }
-                }
+                return Message(ex.Message);
             }
-            if (Request.Url != null) m.URL = Request.Url.OriginalString;
-
-            SetHeaders(m);
-
-            m.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
-
-            if (Util.ValidEmail(email) || login != true)
-                m.nologin = true;
-
-            if (m.nologin)
-                m.CreateList();
-            else
-                m.List = new List<OnlineRegPersonModel>();
-
-            if (Util.ValidEmail(email))
-                m.List[0].EmailAddress = email;
-
-
-            var pid = 0;
-            if (registertag.HasValue())
-            {
-                var guid = registertag.ToGuid();
-                if (guid == null)
-                    return Message("invalid link");
-                var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
-                if (ot == null)
-                    return Message("invalid link");
-#if DEBUG
-#else
-                if (ot.Used)
-                    return Message("link used");
-#endif
-                if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
-                    return Message("link expired");
-                var a = ot.Querystring.Split(',');
-                pid = a[1].ToInt();
-                m.registertag = registertag;
-            }
-            else if (User.Identity.IsAuthenticated)
-            {
-                pid = Util.UserPeopleId ?? 0;
-            }
-
-            if (pid > 0)
-            {
-                m.UserPeopleId = pid;
-                var existingRegistration = m.GetExistingRegistration(pid);
-                if (existingRegistration != null)
-                {
-                    TempData["er"] = m.UserPeopleId;
-                    return Redirect("/OnlineReg/Existing/" + existingRegistration.DatumId);
-                }
-                OnlineRegPersonModel p = null;
-                if (showfamily != true)
-                {
-                    p = m.LoadExistingPerson(pid, 0);
-                    OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, 0);
-                    p.LoggedIn = true;
-                    if (m.masterorg == null)
-                    {
-                        if (m.List.Count == 0)
-                            m.List.Add(p);
-                        else
-                            m.List[0] = p;
-                    }
-                }
-                if (!ModelState.IsValid)
-                    return View(m);
-
-                if (m.masterorg != null && m.masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2)
-                {
-                    TempData["ms"] = m.UserPeopleId;
-                    return Redirect("/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid));
-                }
-                if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
-                {
-                    TempData["mg"] = m.UserPeopleId;
-                    return ManageGiving(m.Orgid.ToString(), m.testing);
-                }
-                if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge)
-                {
-                    TempData["mp"] = m.UserPeopleId;
-                    return Redirect("/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid));
-                }
-                if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-                {
-                    TempData["ps"] = m.UserPeopleId;
-                    return Redirect("/OnlineReg/ManageVolunteer/{0}".Fmt(m.Orgid));
-                }
-                if (showfamily != true && p.org != null && p.Found == true)
-                {
-                    if(!m.SupportMissionTrip)
-                        p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
-                    if (p.IsFilled)
-                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[0].Found), "Sorry, but registration is closed.");
-                    if (p.Found == true)
-                        p.FillPriorInfo();
-                    p.CheckSetFee();
-                    m.HistoryAdd("index, pid={0}, !showfamily, p.org, found=true".Fmt(pid));
-                    return View(m);
-                }
-                m.HistoryAdd("index, pid=" + pid);
-                return View(m);
-            }
-            m.HistoryAdd("index");
-            return View(m);
         }
 
         // authenticate user
@@ -190,44 +61,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return FlowList(m, "Login");
             }
             Session["OnlineRegLogin"] = true;
+
             if (m.Orgid == Util.CreateAccountCode)
                 return Content("/Person2/" + Util.UserPeopleId);
-            var existingRegistration = m.GetExistingRegistration(Util.UserPeopleId ?? 0);
-            if (existingRegistration != null)
-            {
-                TempData["er"] = m.UserPeopleId = Util.UserPeopleId;
-                return Content("/OnlineReg/Existing/" + existingRegistration.DatumId);
-            }
-            Debug.Assert(Util.UserPeopleId != null, "Util.UserPeopleId != null");
 
-            m.CreateList();
-            m.UserPeopleId = Util.UserPeopleId;
-
-            if (m.ManagingSubscriptions())
-            {
-                TempData["ms"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid));
-            }
-            if (m.ChoosingSlots())
-            {
-                TempData["ps"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManageVolunteer/{0}".Fmt(m.Orgid));
-            }
-            if (m.OnlinePledge())
-            {
-                TempData["mp"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid));
-            }
-            if (m.ManageGiving())
-            {
-                TempData["mg"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
-            }
-            if (m.OnlineGiving())
-                return Register(Util.UserPeopleId.Value, m);
+            var route = RouteSpecialLogin(m);
+            if(route != null)
+                return route;
 
             if (m.UserSelectsOrganization())
-                OnlineRegPersonModelValidator.ValidateModelForFind(m.List[0], ModelState, m, 0);
+                m.List[0].ValidateModelForFind(ModelState, 0);
 
             m.List[0].LoggedIn = true;
             m.HistoryAdd("login");
@@ -253,71 +96,38 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
             return FlowList(m, "NoLogin");
         }
+
+        /* Register a person from the Family List 
+         * there is no need to Find their record 
+         * this will take them to the registration Questions page
+         */
         [HttpPost]
         public ActionResult Register(int id, OnlineRegModel m)
         {
-            ModelState.Clear();
-            m.HistoryAdd("Register");
-            int index = m.List.Count - 1;
-            if (m.List[index].classid.HasValue)
-                m.classid = m.List[index].classid;
-            var p = m.LoadExistingPerson(id, index);
-            OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, id, selectFromFamily: true);
-            if (!ModelState.IsValid)
-                return FlowList(m, "Register");
-            m.List[index] = p;
-            if (p.ManageSubscriptions() && p.Found == true)
-                //p.OtherOK = true;
-                return FlowList(m, "Register");
-
-            if (p.org != null && p.Found == true)
-            {
-                if(!m.SupportMissionTrip)
-                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
-                if (p.IsFilled)
-                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[m.List.IndexOf(p)].Found), "Sorry, but registration is filled.");
-                if (p.Found == true)
-                    p.FillPriorInfo();
-                //if (!p.AnyOtherInfo())
-                //p.OtherOK = true;
-                return FlowList(m, "Register");
-            }
-            if (p.org == null && p.ComputesOrganizationByAge())
-                ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), p.NoAppropriateOrgError);
-            if (p.ShowDisplay() && p.org != null && p.ComputesOrganizationByAge())
-                p.classid = p.org.OrganizationId;
+            m.StartRegistrationForFamilyMember(id, ModelState);
             return FlowList(m, "Register");
         }
+
+        // Cancel will remove a person from the completed registrants list
         [HttpPost]
         public ActionResult Cancel(int id, OnlineRegModel m)
         {
-            m.HistoryAdd("Cancel id=" + id);
-            m.List.RemoveAt(id);
-            if (m.List.Count == 0)
-                m.List.Add(new OnlineRegPersonModel
-                {
-                    orgid = m.Orgid,
-                    masterorgid = m.masterorgid,
-                    LoggedIn = m.UserPeopleId.HasValue,
-#if DEBUG
-                    FirstName = "Another",
-                    LastName = "Child",
-                    DateOfBirth = "12/1/02",
-                    EmailAddress = "karen@touchpointsoftware.com",
-#endif
-                });
+            m.CancelRegistrant(id);
             return FlowList(m, "Cancel");
         }
+
         [HttpPost]
         public ActionResult ShowMoreInfo(int id, OnlineRegModel m)
         {
             m.HistoryAdd("ShowMoreInfo id=" + id);
             DbUtil.Db.SetNoLock();
             var p = m.List[id];
-            OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, id);
+            p.ValidateModelForFind(ModelState, id);
+
+
             if (p.org != null && p.Found == true)
             {
-                if(!m.SupportMissionTrip)
+                if (!m.SupportMissionTrip)
                     p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                 if (p.IsFilled)
                     ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
@@ -383,7 +193,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 p.orgid = p.classid;
             }
             p.PeopleId = null;
-            OnlineRegPersonModelValidator.ValidateModelForFind(p, ModelState, m, id);
+            p.ValidateModelForFind(ModelState, id);
             if (p.Found == true && m.org != null)
             {
                 var setting = settings[m.org.OrganizationId];
@@ -407,7 +217,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             else if (p.org != null)
             {
-                if(!m.SupportMissionTrip)
+                if (!m.SupportMissionTrip)
                     p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                 if (p.IsFilled)
                     ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
@@ -424,10 +234,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private ActionResult ErrorResult(OnlineRegModel m, Exception ex, string errorDisplay)
         {
-            m.UpdateDatum();
+            try
+            {
+                m.UpdateDatum();
+            }
+            catch (Exception)
+            {
+            }
             var ex2 = new Exception("{0}, {2}".Fmt(errorDisplay, m.DatumId, DbUtil.Db.ServerLink("/OnlineReg/RegPeople/") + m.DatumId), ex);
             ErrorSignal.FromCurrentContext().Raise(ex2);
             TempData["error"] = errorDisplay;
+            TempData["stack"] = ex.StackTrace;
             return Content("/Error/");
         }
 
@@ -437,7 +254,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ModelState.Clear();
             m.HistoryAdd("SubmitNew id=" + id);
             var p = m.List[id];
-            OnlineRegPersonModelValidator.ValidateModelForNew(p, ModelState, id);
+            p.ValidateModelForNew(ModelState, id);
 
             if (ModelState.IsValid)
             {
@@ -477,7 +294,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
                 else if (!p.ManageSubscriptions())
                 {
-                    if(!m.SupportMissionTrip)
+                    if (!m.SupportMissionTrip)
                         p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
                     if (p.IsFilled)
                         ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, registration is filled");
@@ -500,7 +317,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("SubmitOtherInfo id=" + id);
             if (m.List.Count <= id)
                 return Content("<p style='color:red'>error: cannot find person on submit other info</p>");
-            OnlineRegPersonModelValidator.ValidateModelForOther(m.List[id], ModelState, id);
+            m.List[id].ValidateModelQuestions(ModelState, id);
             return FlowList(m, "SubmitOtherInfo");
         }
         [HttpPost]
@@ -702,7 +519,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
-                return ErrorResult(m, ex, "In " + function + ex.Message);
+                return ErrorResult(m, ex, "In " + function + "<br>" + ex.Message);
             }
         }
 
@@ -740,9 +557,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.UpdateDatum();
             var p = m.UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
 
-            if(p == null)
+            if (p == null)
                 return Content("We have not found your record yet, cannot save progress, sorry");
-            if(m.masterorgid == null && m.Orgid == null)
+            if (m.masterorgid == null && m.Orgid == null)
                 return Content("Registration is not far enough along to save, sorry.");
 
             var registerLink = EmailReplacements.CreateRegisterLink(m.masterorgid ?? m.Orgid, "Resume registration for {0}".Fmt(m.Header));
@@ -770,6 +587,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View(m);
         }
 
-        
+
     }
 }

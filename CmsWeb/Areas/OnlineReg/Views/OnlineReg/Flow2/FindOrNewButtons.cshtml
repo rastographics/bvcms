@@ -1,12 +1,13 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.OnlineRegPersonModel
+
+@* we have not searched for the person yet, let them find their profile *@
 @if (!Model.Found.HasValue)
-// we have not searched for the person yet, let them find their profile
 {
   <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
       <div class="pull-right">
-        @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Find Profile", style: "btn-primary min-width15em")
+        @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Submit", style: "btn-primary min-width15em")
         @if (Model.Parent.AllowSaveProgress())
         {
           <div>
@@ -17,25 +18,27 @@
     </div>
   </div>
 }
-else // display the results of the find
+// display the results of the find
+else
 {
-    if (Model.Found == false)
-    // Ask which family to add to
-    {
-        @Html.Partial("Flow2/AddToFamily", Model)
-    }
-    <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
+  // we are about to add a new record, so ask which family to add to
+  if (Model.Found == false)
+  {
+    @Html.Partial("Flow2/AddToFamily", Model)
+  }
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
       <div class="pull-right">
         @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Search Again", style: "btn-primary min-width15em")
-                @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode && (Model.Found ?? false) == false )
-                // Allow Add New Profile if valid data, not memberonly, not create account mode
-                {
+
+        @* Allow Add New Profile if valid data, not memberonly, not create account mode *@
+        @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode && (Model.Found ?? false) == false)
+        {
           <div>
-                    @Helper.OnlineRegAjaxButton("/OnlineReg/ShowMoreInfo/" + Model.Index,
+            @Helper.OnlineRegAjaxButton("/OnlineReg/ShowMoreInfo/" + Model.Index,
                       "New Profile", style: "btn-warning min-width15em", id: "regnew")
           </div>
-                }
+        }
         @if (Model.Parent.AllowSaveProgress())
         {
           <div>
@@ -43,15 +46,15 @@ else // display the results of the find
           </div>
         }
       </div>
-            @if (!Model.IsValidForContinue && Model.orgid == Util.CreateAccountCode)
-            // display helpful message if an anonomous person is trying to create an account
-            {
-                <p class="alert alert-info">
-                    Call the church if you think your record should be in the system. It may be that
-                    we are missing some information on your record that we need to identify you like
-                    a phone number, date of birth or email address.
-                </p>
-            }
-        </div>
+      @if (!Model.IsValidForContinue && Model.orgid == Util.CreateAccountCode)
+      // display helpful message if an anonomous person is trying to create an account
+      {
+        <p class="alert alert-info">
+          Call the church if you think your record should be in the system. It may be that
+          we are missing some information on your record that we need to identify you like
+          a phone number, date of birth or email address.
+        </p>
+      }
     </div>
+  </div>
 }

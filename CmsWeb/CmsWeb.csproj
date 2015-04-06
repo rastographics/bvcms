@@ -332,6 +332,10 @@
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelQuestions.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelForFind.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\Initialize.cs" />
     <Compile Include="Areas\Org\Controllers\Org2\Meetings.cs" />
     <Compile Include="Areas\Org\Controllers\Org2\OrgPeople.cs" />
     <Compile Include="Areas\Org\Controllers\Org2\Org2Controller.cs" />
@@ -2014,7 +2018,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\Transaction.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\NotReqFields.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\OtherInfo.cs" />
-    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\OnlineRegPersonModelValidator.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelForNew.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\FamilyMembers.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\HelperMethods.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\Transaction.cs" />

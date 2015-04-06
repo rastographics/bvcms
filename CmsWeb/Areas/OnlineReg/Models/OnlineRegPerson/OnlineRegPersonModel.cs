@@ -22,6 +22,7 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegPersonModel : IXmlSerializable
     {
+        // IsValidForContinue = false means that there is some reason registrant cannot proceed to the questions page
         public bool IsValidForContinue { get; set; }
         public bool IsValidForNew { get; set; }
 

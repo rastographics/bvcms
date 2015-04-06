@@ -20,7 +20,7 @@ namespace CmsWeb.Models
     [Serializable]
     public partial class OnlineRegModel : IXmlSerializable
     {
-        
+
         public bool? testing { get; set; }
         public string FromMobile { get; set; }
         public string URL { get; set; }
@@ -131,7 +131,7 @@ namespace CmsWeb.Models
         {
             var w = new APIWriter(writer);
             writer.WriteComment(DateTime.Now.ToString());
-            foreach (var pi in typeof (OnlineRegModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            foreach (var pi in typeof(OnlineRegModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                                           .Where(vv => vv.CanRead && vv.CanWrite))
             {
                 switch (pi.Name)
@@ -157,7 +157,7 @@ namespace CmsWeb.Models
                     case "FromMobile":
                         if (FromMobile.HasValue())
                             w.Add(pi.Name, FromMobile);
-                        else if(MobileAppMenuController.Source.HasValue())
+                        else if (MobileAppMenuController.Source.HasValue())
                             w.Add(pi.Name, MobileAppMenuController.Source);
                         break;
                     case "prospect":
@@ -176,6 +176,52 @@ namespace CmsWeb.Models
             HttpContext.Current.Items["OnlineRegModel"] = this;
         }
 
+        public OnlineRegModel(HttpRequestBase req, int? id, bool? testing, string email, bool? login, string source)
+            : this()
+        {
+#if DEBUG2
+            OnlineRegModel.DebugCleanUp();
+#endif
+            Orgid = id;
+            if (req.Url != null)
+                URL = req.Url.OriginalString;
+
+            if (DbUtil.Db.Roles.Any(rr => rr.RoleName == "disabled"))
+                throw new Exception("Site is disabled for maintenance, check back later");
+            if (!id.HasValue)
+                throw new Exception("no organization");
+
+            MobileAppMenuController.Source = source;
+
+            if (org == null && masterorg == null)
+                throw new Exception("invalid registration");
+
+            if (masterorg != null)
+            {
+                if (!UserSelectClasses(masterorg).Any())
+                    throw new Exception("no classes available on this org");
+            }
+            else if (org != null)
+            {
+                if ((org.RegistrationTypeId ?? 0) == RegistrationTypeCode.None)
+                    throw new Exception("no registration allowed on this org");
+            }
+            this.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
+
+            if (Util.ValidEmail(email) || login != true)
+                nologin = true;
+
+            if (nologin)
+                CreateList();
+            else
+                List = new List<OnlineRegPersonModel>();
+
+            if (Util.ValidEmail(email))
+                List[0].EmailAddress = email;
+
+            HistoryAdd("index");
+        }
+
         public bool ShowFindInstructions;
         public bool ShowLoginInstructions;
         public bool ShowOtherInstructions;
@@ -191,13 +237,13 @@ namespace CmsWeb.Models
 
         public void ParseSettings()
         {
-//            if (HttpContext.Current.Items.Contains("RegSettings"))
-//                return;
+            //            if (HttpContext.Current.Items.Contains("RegSettings"))
+            //                return;
             var list = new Dictionary<int, Settings>();
             if (masterorgid.HasValue)
             {
                 var q = from o in UserSelectClasses(masterorg)
-                        select new {o.OrganizationId, o.RegSetting};
+                        select new { o.OrganizationId, o.RegSetting };
                 foreach (var i in q)
                     list[i.OrganizationId] = new Settings(i.RegSetting, DbUtil.Db, i.OrganizationId);
                 list[masterorg.OrganizationId] = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId);
@@ -206,8 +252,8 @@ namespace CmsWeb.Models
                 return;
             else if (org != null)
                 list[_orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, _orgid.Value);
-//            if (HttpContext.Current.Items.Contains("RegSettings"))
-//                return;
+            //            if (HttpContext.Current.Items.Contains("RegSettings"))
+            //                return;
             HttpContext.Current.Items["RegSettings"] = list;
 
             if (org == null || !org.AddToSmallGroupScript.HasValue()) return;
