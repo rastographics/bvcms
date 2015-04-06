@@ -13,6 +13,7 @@ BEGIN
 	-- Add the T-SQL statements to compute the return value here
 	SELECT @r = 
 		CASE 
+		WHEN @age IS NULL THEN ' NA'
 		WHEN @age < 12 THEN '0-11'
 		WHEN @age < 19 THEN '12-18'
 		WHEN @age < 24 THEN '19-23'

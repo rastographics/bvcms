@@ -55,15 +55,23 @@
                 success: function (data, status) {
                     d.addClass("loaded");
                     d.html(data).ready(function () {
-                        if (d.data("init"))
-                            $.InitFunctions[d.data("init")]();
+                        if (d.data("init")) {
+                            var temp = d.data("init").split(",");
+                            for(var i in temp)
+                                if (temp.hasOwnProperty(i))
+                                    $.InitFunctions[temp[i]]();
+                        }
                         if (d.data("init2"))
                             $.InitFunctions[d.data("init2")]();
                         var $form2 = d.find("form.ajax");
                         if ($form2.length > 0)
                             $form = $form2;
-                        if ($form.data("init"))
-                            $.InitFunctions[$form.data("init")]();
+                        if ($form.data("init")) {
+                            var t = $form.data("init").split(",");
+                            for(var ii in t)
+                                if (t.hasOwnProperty(ii))
+                                    $.InitFunctions[t[ii]]();
+                        }
                         if ($form.data("init2"))
                             $.InitFunctions[$form.data("init2")]();
                     });
@@ -140,7 +148,7 @@
         var $tabinit = $form.closest("div.tab-pane[data-init]");
 
         var data = $form.serialize();
-        if (data.length === 0)
+        if (data.length === 0 || a.data("data") === "none")
             data = {};
         if (!a.hasClass("validate") || $form.valid()) {
             $.ajax({
@@ -165,12 +173,20 @@
                         var results = $($form.data("results") || $form);
                         results.replaceWith(ret).ready(function () {
                             $.AttachFormElements();
-                            if ($tabinit.data("init"))
-                                $.InitFunctions[$tabinit.data("init")]();
+                            if ($tabinit.data("init")) {
+                                var temp = $tabinit.data("init").split(",");
+                                for(var i in temp)
+                                    if (temp.hasOwnProperty(i))
+                                        $.InitFunctions[temp[i]]();
+                            }
+                            if ($form.data("init")) {
+                                var t = $form.data("init").split(",");
+                                for(var ii in t)
+                                    if (t.hasOwnProperty(ii))
+                                        $.InitFunctions[t[ii]]();
+                            }
                             if ($tabinit.data("init2")) 
                                 $.InitFunctions[$tabinit.data("init2")]();
-                            if ($form.data("init"))
-                                $.InitFunctions[$form.data("init")]();
                             if ($form.data("init2"))
                                 $.InitFunctions[$form.data("init2")]();
                             if (a.data("callback"))

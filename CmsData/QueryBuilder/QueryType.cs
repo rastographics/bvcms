@@ -198,6 +198,7 @@ namespace CmsData
         RecentCreated,
         RecentDecisionType,
         RecentEmailCount,
+        RecentEmailSentCount,
         RecentFirstTimeGiver,
         RecentGivingAsPctOfPrevious,
         RecentJoinChurch,

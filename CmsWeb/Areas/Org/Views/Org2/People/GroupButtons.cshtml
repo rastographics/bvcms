@@ -3,7 +3,7 @@
 
 @GroupButton(GroupSelectCode.Member, "Members")
 @GroupButton(GroupSelectCode.Previous, "Previous")
-@GroupButton(GroupSelectCode.Inactive, "Inactive")
+@GroupButton(GroupSelectCode.Inactive, Model.Org.IsMissionTrip == true ? "Senders" : "Inactive")
 @GroupButton(GroupSelectCode.Pending, "Pending")
 @GroupButton(GroupSelectCode.Prospect, "Prospects")
 @GroupButton(GroupSelectCode.Guest, "Guests")
@@ -29,7 +29,7 @@
         <ul class="dropdown-menu">
           <li><a href="/SearchAdd2/Dialog/org/@Model.Id" class="searchadd">Add Members</a></li>
           <li><a href="/AddToOrgFromTag/@Model.Id/@GroupSelectCode.Member" class="longrunop" title="Add Members From Tag">Add from Tag</a></li>
-          <li><a href="/OrgMembersUpdate" title="Update Members" class="members-dialog">Update Members</a></li>
+          <li><a href="/OrgMembersUpdate/@Model.Id" title="Update Members" class="members-dialog">Update Members</a></li>
         </ul>
         break;
       case GroupSelectCode.Prospect:

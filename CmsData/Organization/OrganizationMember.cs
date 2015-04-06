@@ -288,7 +288,8 @@ namespace CmsData
                     LoginPeopleId = Util.UserPeopleId,
                     Approved = true,
                     Amt = payment,
-                    Amtdue = (amount ?? payment) - payment,
+                    //Amtdue = (amount ?? payment) - payment,
+                    Amtdue = (amount ?? 0) - payment,
                     AdjustFee = adjustFee,
                     Message = description,
                 };

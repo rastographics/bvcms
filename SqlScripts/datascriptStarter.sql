@@ -773,7 +773,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''.rightColumnContent div{
 												<tbody>
 													<tr>
 														<td class="headerContent">
-															<img src="http://www.touchpointsoftware.com/content/images/placeholder_600.gif" style="max-width:160px;" /></td>
+															<img src="http://www.bvcms.com/content/images/placeholder_600.gif" style="max-width:160px;" /></td>
 													</tr>
 												</tbody>
 											</table>
@@ -797,7 +797,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''.rightColumnContent div{
 																								<tbody>
 																									<tr>
 																										<td align="left" valign="middle" width="16">
-																											<img src="http://www.touchpointsoftware.com/content/images/sfs_icon_facebook.png" /></td>
+																											<img src="http://www.bvcms.com/content/images/sfs_icon_facebook.png" /></td>
 																										<td align="left" valign="top">
 																											<div>
 																												<a href="http://facebook.com/yourpage">Friend on Facebook</a></div>
@@ -806,7 +806,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''>
 																									</tr>
 																									<tr>
 																										<td align="left" valign="middle" width="16">
-																											<img src="http://www.touchpointsoftware.com/content/images/sfs_icon_twitter.png" style="margin:0 !important;" /></td>
+																											<img src="http://www.bvcms.com/content/images/sfs_icon_twitter.png" style="margin:0 !important;" /></td>
 																										<td align="left" valign="top">
 																											<div>
 																												<a href="http://www.twitter.com/yourname">Follow on Twitter</a></div>
@@ -822,7 +822,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''>
 																				<tbody>
 																					<tr bvrepeat="">
 																						<td valign="top">
-																							<img src="http://www.touchpointsoftware.com/content/images/placeholder_160.gif" style="max-width:160px;" />
+																							<img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;" />
 																							<div bvedit="">
 																								<h4>
 																									Heading 4</h4>
@@ -881,7 +881,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''>
 																								<tbody>
 																									<tr bvrepeat="">
 																										<td valign="top">
-																											<img src="http://www.touchpointsoftware.com/content/images/placeholder_160.gif" style="max-width:160px;" />
+																											<img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;" />
 																											<div bvedit="">
 																												<h4>
 																													Heading 4</h4>
@@ -897,7 +897,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''							<strong>Content blocks:</stron
 																								<tbody>
 																									<tr bvrepeat="">
 																										<td valign="top">
-																											<img src="http://www.touchpointsoftware.com/content/images/placeholder_160.gif" style="max-width:160px;" />
+																											<img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;" />
 																											<div bvedit="">
 																												<h4>
 																													Heading 4</h4>
@@ -1172,7 +1172,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N'ign="top">
 													<tr>
 														<td class="headerContent">
 															<div bvedit="">
-																<img id="headerImage" src="http://www.touchpointsoftware.com/content/images/placeholder_600.gif" style="max-width:600px;" /></div>
+																<img id="headerImage" src="http://www.bvcms.com/content/images/placeholder_600.gif" style="max-width:600px;" /></div>
 														</td>
 													</tr>
 												</tbody>

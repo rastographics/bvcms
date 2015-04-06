@@ -3,7 +3,7 @@
 @{
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp") == "true";
 }
-<form class="form form-horizontal non-modal ajax span12" data-init="movequestions" data-init2="updateQuestionList">
+<form class="form form-horizontal non-modal ajax span12" data-init="movequestions,updateQuestionList,showHideRegTypes,timepicker">
   <br />
   @FormAction()
   <div id="QuestionList" class="movable-list noedit">
@@ -13,6 +13,7 @@
       @Html.DisplayFor(m => ask)
     }
   </div>
+  @Html.DisplayFor(m => m.TimeSlots)
   @FormAction()
 </form>
 @helper FormAction()

@@ -97,6 +97,16 @@ namespace CmsData
             var right = Expression.Convert(Expression.Constant(cnt), left.Type);
             return Compare(left, right);
         }
+        internal Expression RecentEmailSentCount()
+        {
+            var cnt = TextValue.ToInt();
+            var mindt = Util.Now.AddDays(-Days).Date;
+            Expression<Func<Person, int>> pred = p =>
+                p.EmailQueues.Count(e => e.Sent >= mindt && (e.Transactional ?? false) == false);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Convert(Expression.Constant(cnt), left.Type);
+            return Compare(left, right);
+        }
         internal Expression EmailRecipient()
         {
             var id = TextValue.ToInt();

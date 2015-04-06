@@ -438,7 +438,7 @@
 
         $("#QuestionList").show();
         $("#TimeSlotsList").hide();
-        switch ($("#org_RegistrationTypeId").val()) {
+        switch ($("#RegistrationType_Value").val()) {
             case "0":
                 $("#Fees-tab").hide();
                 $("#Questions-tab").hide();
@@ -799,8 +799,9 @@
         var a = $(this);
         var f = a.closest("form");
         $.post(a.attr("href"), null, function (ret) {
-            a.parent().prev().append(ret);
+            a.parent().prepend(ret);
             $.InitFunctions.movequestions();
+            $.InitFunctions.timepicker();
         });
     });
 

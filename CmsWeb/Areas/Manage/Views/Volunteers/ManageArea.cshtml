@@ -65,7 +65,7 @@
                 <p class="date">
                   @if (t.MeetingId > 0)
                   {
-                    @Helper.AnchorLink("Rollsheet ({0}/{1})".Fmt(t.Count, t.Limit), "/Reports/Rollsheet/" + t.MeetingId, target: "_blank")<br />
+                    @Helper.AnchorLink("Rollsheet ({0}/{1})".Fmt(t.Count, t.Limit), "/Reports/RollsheetForMeeting/" + t.MeetingId, target: "_blank")<br />
                     @Helper.AnchorLink("Email", "/Volunteers/EmailSlot/" + t.MeetingId, target: "meeting")<br />
                     @Helper.AnchorLink("Meeting", "/Meeting/" + t.MeetingId, target: "meeting")<br />
                     @Helper.AnchorLink("Request Volunteers", "/Volunteers/Request/{0}/{1}".Fmt(t.MeetingId, t.Limit), target: "_blank", style: "volreq")
