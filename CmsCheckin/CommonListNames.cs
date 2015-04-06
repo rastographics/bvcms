@@ -34,7 +34,7 @@ namespace CmsCheckin
                         return true;
                     case Keys.Escape:
                         Program.TimerStop();
-                        if (Program.HideCursor)
+                        if (Program.settings.hideCursor)
                             Cursor.Hide();
                         this.GoHome(string.Empty);
                         return true;

@@ -10,12 +10,13 @@ using System.Drawing;
 
 namespace CmsCheckin
 {
-	public partial class LoginSettings : Form
+	public partial class LoginSettings : Form, KeyboardInterface
 	{
 		public XDocument campuses { get; set; }
 
 		private bool CancelClose { get; set; }
 		private TextBox current = null;
+		private Form keyboard;
 
 		private Regex rx = new Regex("\\D");
 
@@ -23,61 +24,6 @@ namespace CmsCheckin
 		{
 			InitializeComponent();
 
-			b1.Click += onKeyboardClick;
-			b2.Click += onKeyboardClick;
-			b3.Click += onKeyboardClick;
-			b4.Click += onKeyboardClick;
-			b5.Click += onKeyboardClick;
-			b6.Click += onKeyboardClick;
-			b7.Click += onKeyboardClick;
-			b8.Click += onKeyboardClick;
-			b9.Click += onKeyboardClick;
-			b0.Click += onKeyboardClick;
-			bdash.Click += onKeyboardClick;
-			bequal.Click += onKeyboardClick;
-
-			bq.Click += onKeyboardClick;
-			bw.Click += onKeyboardClick;
-			be.Click += onKeyboardClick;
-			br.Click += onKeyboardClick;
-			bt.Click += onKeyboardClick;
-			by.Click += onKeyboardClick;
-			bu.Click += onKeyboardClick;
-			bi.Click += onKeyboardClick;
-			bo.Click += onKeyboardClick;
-			bp.Click += onKeyboardClick;
-			blbrace.Click += onKeyboardClick;
-			brbrace.Click += onKeyboardClick;
-
-			ba.Click += onKeyboardClick;
-			bs.Click += onKeyboardClick;
-			bd.Click += onKeyboardClick;
-			bf.Click += onKeyboardClick;
-			bg.Click += onKeyboardClick;
-			bh.Click += onKeyboardClick;
-			bj.Click += onKeyboardClick;
-			bk.Click += onKeyboardClick;
-			bl.Click += onKeyboardClick;
-
-			bz.Click += onKeyboardClick;
-			bx.Click += onKeyboardClick;
-			bc.Click += onKeyboardClick;
-			bv.Click += onKeyboardClick;
-			bb.Click += onKeyboardClick;
-			bn.Click += onKeyboardClick;
-			bm.Click += onKeyboardClick;
-
-			bcomma.Click += onKeyboardClick;
-			bdot.Click += onKeyboardClick;
-			bslash.Click += onKeyboardClick;
-
-			//username.KeyPress += textBox_KeyPress;
-			//password.KeyPress += textBox_KeyPress;
-			//URL.KeyPress += textBox_KeyPress;
-
-			username.Enter += onTextboxEnter;
-			password.Enter += onTextboxEnter;
-			URL.Enter += onTextboxEnter;
 			building.Enter += onTextboxEnter;
 			PrintKiosks.Enter += onTextboxEnter;
 			PrinterWidth.Enter += onTextboxEnter;
@@ -90,6 +36,10 @@ namespace CmsCheckin
 		{
 			this.CenterToScreen();
 			this.Location = new Point(this.Location.X, this.Location.Y / 2);
+
+			keyboard = new CommonKeyboard(this);
+			keyboard.Show();
+			attachKeyboard();
 
 			var prtdoc = new PrintDocument();
 			var defp = prtdoc.PrinterSettings.PrinterName;
@@ -108,20 +58,17 @@ namespace CmsCheckin
 
 			DisableLocationLabels.Checked = Settings1.Default.DisableLocationLabels;
 			BuildingAccessMode.Checked = Settings1.Default.BuildingMode;
-			URL.Text = Settings1.Default.URL;
-			username.Text = Settings1.Default.username;
 			PrintKiosks.Text = Settings1.Default.Kiosks;
 			PrintMode.Text = Settings1.Default.PrintMode;
 			building.Text = Settings1.Default.Building;
 			AdvancedPageSize.Checked = Settings1.Default.AdvancedPageSize;
 			PrinterWidth.Text = Settings1.Default.PrinterWidth;
 			PrinterHeight.Text = Settings1.Default.PrinterHeight;
-			UseSSL.Checked = Settings1.Default.UseSSL;
 			AdminPIN.Text = Settings1.Default.AdminPIN;
 			AdminPINTimeout.Text = Settings1.Default.AdminPINTimeout;
 
 			if (!Util.IsDebug()) {
-				this.Height = 496;
+				this.Height = 385;
 
 				PrintTest.Enabled = false;
 				label5.Enabled = false;
@@ -138,6 +85,8 @@ namespace CmsCheckin
 				label10.Visible = false;
 				LoadLabelList.Visible = false;
 				SaveLabel.Visible = false;
+			} else {
+				this.Height = 640;
 			}
 
 			if (PrintMode.Text == "Print From Server") {
@@ -148,13 +97,7 @@ namespace CmsCheckin
 				label1.Enabled = false;
 			}
 
-			if (username.Text.Length > 0) {
-				current = password;
-				this.ActiveControl = password;
-			} else {
-				current = URL;
-				this.ActiveControl = URL;
-			}
+			attachKeyboard();
 		}
 
 		private void onLoginSettingsClosing(object sender, FormClosingEventArgs e)
@@ -165,8 +108,6 @@ namespace CmsCheckin
 
 		private void onGoClick(object sender, EventArgs e)
 		{
-			Settings1.Default.URL = URL.Text;
-			Settings1.Default.username = username.Text;
 			Settings1.Default.Kiosks = PrintKiosks.Text;
 			Settings1.Default.PrintMode = PrintMode.Text;
 			Settings1.Default.Printer = Printer.Text;
@@ -176,49 +117,37 @@ namespace CmsCheckin
 			Settings1.Default.PrinterWidth = PrinterWidth.Text;
 			Settings1.Default.PrinterHeight = PrinterHeight.Text;
 			Settings1.Default.AdvancedPageSize = AdvancedPageSize.Checked;
-			Settings1.Default.UseSSL = UseSSL.Checked;
 			Settings1.Default.AdminPIN = AdminPIN.Text;
 
 			if (AdminPINTimeout.Text.Length > 0) {
 				try {
-					Program.AdminPINTimeout = int.Parse(AdminPINTimeout.Text);
+					Program.settings.adminPINTimeout = int.Parse(AdminPINTimeout.Text);
 					Settings1.Default.AdminPINTimeout = AdminPINTimeout.Text;
-				}
-				catch (Exception) {
-					Program.AdminPINTimeout = 0;
+				} catch (Exception) {
+					Program.settings.adminPINTimeout = 0;
 					Settings1.Default.AdminPINTimeout = "0";
 				}
 			} else {
-				Program.AdminPINTimeout = 0;
+				Program.settings.adminPINTimeout = 0;
 			}
 
 			Settings1.Default.Save();
 
-			if (URL.Text.StartsWith("localhost") || !UseSSL.Checked)
-				Program.URL = "http://" + URL.Text;
-			else if (Settings1.Default.UseSSL)
-				Program.URL = "https://" + URL.Text;
-			else
-				Program.URL = "http://" + URL.Text;
-
-			Program.Username = username.Text;
-			Program.Password = password.Text;
-			Program.PrinterWidth = PrinterWidth.Text;
-			Program.PrinterHeight = PrinterHeight.Text;
-			Program.DisableLocationLabels = DisableLocationLabels.Checked;
-			Program.AdminPIN = AdminPIN.Text;
+			Program.settings.printerWidth = PrinterWidth.Text;
+			Program.settings.printerHeight = PrinterHeight.Text;
+			Program.settings.disableLocationLabels = DisableLocationLabels.Checked;
+			Program.settings.adminPIN = AdminPIN.Text;
 
 			if (BuildingAccessMode.Checked == true) {
 				try {
-					Program.Building = building.Text;
+					Program.settings.building = building.Text;
 					Program.BuildingInfo = Util.FetchBuildingInfo();
 					if (Program.BuildingInfo.Activities.Count == 0) {
 						CancelClose = true;
 						return;
 					}
-				}
-				catch (Exception) {
-					MessageBox.Show("cannot find " + Program.URL);
+				} catch (Exception) {
+					MessageBox.Show("Cannot find " + Program.settings.createURL());
 					CancelClose = true;
 				}
 			}
@@ -226,7 +155,7 @@ namespace CmsCheckin
 			var wc = Util.CreateWebClient();
 
 			try {
-				var url = new Uri(new Uri(Program.URL), "Checkin2/Campuses");
+				var url = Program.settings.createURI("Checkin2/Campuses");
 				var str = wc.DownloadString(url);
 				if (str == "not authorized") {
 					MessageBox.Show(str);
@@ -234,9 +163,8 @@ namespace CmsCheckin
 					return;
 				}
 				campuses = XDocument.Parse(str);
-			}
-			catch (WebException) {
-				MessageBox.Show("cannot find " + Program.URL);
+			} catch (WebException) {
+				MessageBox.Show("Cannot find " + Program.settings.createURL());
 				CancelClose = true;
 			}
 
@@ -269,119 +197,10 @@ namespace CmsCheckin
 			}
 		}
 
-		void onKeyboardClick(object sender, EventArgs e)
-		{
-			var b = sender as Button;
-			var d = b.Text[0];
-			keystroke(d);
-		}
-
-		private void onBackspaceClick(object sender, EventArgs e)
-		{
-			backspace();
-		}
-
-		private void onShiftClick(object sender, EventArgs e)
-		{
-			if (ba.Text == "A") {
-				ba.Text = "a";
-				bb.Text = "b";
-				bc.Text = "c";
-				bd.Text = "d";
-				be.Text = "e";
-				bf.Text = "f";
-				bg.Text = "g";
-				bh.Text = "h";
-				bi.Text = "i";
-				bj.Text = "j";
-				bk.Text = "k";
-				bl.Text = "l";
-				bm.Text = "m";
-				bn.Text = "n";
-				bo.Text = "o";
-				bp.Text = "p";
-				bq.Text = "q";
-				br.Text = "r";
-				bs.Text = "s";
-				bt.Text = "t";
-				bu.Text = "u";
-				bv.Text = "v";
-				bw.Text = "w";
-				bx.Text = "x";
-				by.Text = "y";
-				bz.Text = "z";
-
-				b1.Text = "1";
-				b2.Text = "2";
-				b3.Text = "3";
-				b4.Text = "4";
-				b5.Text = "5";
-				b6.Text = "6";
-				b7.Text = "7";
-				b8.Text = "8";
-				b9.Text = "9";
-				b0.Text = "0";
-				bdash.Text = "-";
-				bequal.Text = "=";
-				blbrace.Text = "[";
-				brbrace.Text = "]";
-				bcolon.Text = ":";
-				bcomma.Text = ",";
-				bdot.Text = ".";
-				bslash.Text = "/";
-			} else {
-				ba.Text = "A";
-				bb.Text = "B";
-				bc.Text = "C";
-				bd.Text = "D";
-				be.Text = "E";
-				bf.Text = "F";
-				bg.Text = "G";
-				bh.Text = "H";
-				bi.Text = "I";
-				bj.Text = "J";
-				bk.Text = "K";
-				bl.Text = "L";
-				bm.Text = "M";
-				bn.Text = "N";
-				bo.Text = "O";
-				bp.Text = "P";
-				bq.Text = "Q";
-				br.Text = "R";
-				bs.Text = "S";
-				bt.Text = "T";
-				bu.Text = "U";
-				bv.Text = "V";
-				bw.Text = "W";
-				bx.Text = "X";
-				by.Text = "Y";
-				bz.Text = "Z";
-
-				b1.Text = "!";
-				b2.Text = "@";
-				b3.Text = "#";
-				b4.Text = "$";
-				b5.Text = "%";
-				b6.Text = "^";
-				b7.Text = "&&";
-				b8.Text = "*";
-				b9.Text = "(";
-				b0.Text = ")";
-				bdash.Text = "_";
-				bequal.Text = "+";
-				blbrace.Text = "{";
-				brbrace.Text = "}";
-				bcolon.Text = ";";
-				bcomma.Text = "<";
-				bdot.Text = ">";
-				bslash.Text = "?";
-			}
-		}
-
 		private void onPrintTestClick(object sender, EventArgs e)
 		{
-			Program.PrinterWidth = PrinterWidth.Text;
-			Program.PrinterHeight = PrinterHeight.Text;
+			Program.settings.printerWidth = PrinterWidth.Text;
+			Program.settings.printerHeight = PrinterHeight.Text;
 
 			string[] sLabelPieces = LabelList.Text.Split(new char[] { '~' });
 
@@ -392,12 +211,6 @@ namespace CmsCheckin
 		private void onLoadLabelsClick(object sender, EventArgs e)
 		{
 			System.Diagnostics.Debug.Print("Loading Label List...");
-
-			if (URL.Text.Contains("localhost")) Program.URL = "http://" + URL.Text;
-			else Program.URL = "https://" + URL.Text;
-
-			Program.Username = username.Text;
-			Program.Password = password.Text;
 
 			string[] labelList = PrinterHelper.fetchLabelList();
 
@@ -481,16 +294,26 @@ namespace CmsCheckin
 			current = (TextBox)sender;
 		}
 
-		private void keystroke(char d)
+		private void limitNumbersOnly(object sender, EventArgs e)
+		{
+			TextBox tb = sender as TextBox;
+
+			try {
+				tb.Text = rx.Replace(tb.Text, "");
+				tb.Select(tb.Text.Length, 0);
+			} catch (ArgumentException) { }
+		}
+
+		public void onKeyboardKeyPress(string key)
 		{
 			if (current == null) return;
 
-			current.Text += d;
+			current.Text += key;
 			current.Focus();
 			current.Select(current.Text.Length, 0);
 		}
 
-		private void backspace()
+		public void onBackspaceKeyPress()
 		{
 			if (current == null) return;
 
@@ -504,15 +327,14 @@ namespace CmsCheckin
 			current.Select(current.Text.Length, 0);
 		}
 
-		private void limitNumbersOnly(object sender, EventArgs e)
+		private void attachKeyboard()
 		{
-			TextBox tb = sender as TextBox;
+			keyboard.Location = new Point(this.Location.X + (this.Width / 2) - (keyboard.Width / 2), this.Location.Y + this.Height + 5);
+		}
 
-			try {
-				tb.Text = rx.Replace(tb.Text, "");
-				tb.Select(tb.Text.Length, 0);
-			}
-			catch (ArgumentException) { }
+		private void onLoginSettingsMove(object sender, EventArgs e)
+		{
+			attachKeyboard();
 		}
 	}
 }

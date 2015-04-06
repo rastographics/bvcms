@@ -72,7 +72,7 @@ namespace CmsCheckin
 			var url = "Checkin2/SingleFamily/" + fid;
 
 			var post = new NameValueCollection();
-			post.Add("building", Program.Building);
+			post.Add("building", Program.settings.building);
 			post.Add("querybit", Program.BuildingInfo.querybit);
 
 			var x = this.PostDocument(url, post);
@@ -761,7 +761,7 @@ namespace CmsCheckin
 
 		public override string ToString()
 		{
-			return "{0:MM-dd-yy hh:mm tt} {1} ({2})".Fmt(lastpress, name, ItemsDisplay());
+			return String.Format("{0:MM-dd-yy hh:mm tt} {1} ({2})", lastpress, name, ItemsDisplay());
 		}
 	}
 

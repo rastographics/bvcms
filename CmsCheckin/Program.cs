@@ -11,37 +11,11 @@ namespace CmsCheckin
 	static class Program
 	{
 		// Settings
-		public static string Username { get; set; }
-		public static string Password { get; set; }
-		public static string URL { get; set; }
-		public static string Printer { get; set; }
-		public static string PrinterWidth { get; set; }
-		public static string PrinterHeight { get; set; }
-		public static string PrintKiosks { get; set; }
-		public static string AdminPassword { get; set; }
-		public static string AdminPIN { get; set; }
-		public static int AdminPINTimeout { get; set; }
-		public static DateTime AdminPINLastAccess { get; set; }
-		public static int EarlyCheckinHours { get; set; }
-		public static int LateCheckinMinutes { get; set; }
-		public static bool HideCursor { get; set; }
-		public static bool EnableTimer { get; set; }
-		public static bool DisableJoin { get; set; }
-		public static bool FullScreen { get; set; }
-		public static string KioskName { get; set; }
-		public static bool AskEmFriend { get; set; }
-		public static bool AskGrade { get; set; }
-		public static bool AskChurch { get; set; }
-		public static bool AskChurchName { get; set; }
-		public static bool AskLabels { get; set; }
-		public static bool DisableLocationLabels { get; set; }
-		public static bool SecurityLabelPerChild { get; set; }
-		public static string PrintMode { get; set; }
-		public static bool BuildingMode { get; set; }
-		public static string Building { get; set; }
-		public static BaseBuildingInfo BuildingInfo { get; set; }
+		public static Settings settings = new Settings();
 
 		// Usage Varirables
+		public static DateTime AdminPINLastAccess { get; set; }
+		public static BaseBuildingInfo BuildingInfo { get; set; }
 		public static int FamilyId { get; set; }
 		public static int PeopleId { get; set; }
 		public static int CampusId { get; set; }
@@ -67,35 +41,40 @@ namespace CmsCheckin
 			if (!Util.IsDebug())
 				login.FullScreen.Checked = true;
 
-			login.password.Focus();
-
 			var r = login.ShowDialog();
 			if (r == DialogResult.Cancel)
 				return;
 
-			PrintMode = login.PrintMode.Text;
-			PrintKiosks = login.PrintKiosks.Text;
-			Printer = login.Printer.Text;
-			DisableLocationLabels = login.DisableLocationLabels.Checked;
-			BuildingMode = login.BuildingAccessMode.Checked;
-			FullScreen = login.FullScreen.Checked;
+			settings.printMode = login.PrintMode.Text;
+			settings.printForKiosks = login.PrintKiosks.Text;
+			settings.printer = login.Printer.Text;
+			settings.disableLocationLabels = login.DisableLocationLabels.Checked;
+			settings.buildingMode = login.BuildingAccessMode.Checked;
+			settings.fullScreen = login.FullScreen.Checked;
 
 			BaseForm b;
-			if (BuildingMode) {
+
+			if (settings.buildingMode) {
 				attendant = new BuildingAttendant();
 				attendant.Location = new Point(Settings1.Default.AttendantLocX, Settings1.Default.AttendantLocY);
+
 				home2 = new BuildingHome();
+
 				b = new BaseForm(home2);
+
 				b.StartPosition = FormStartPosition.Manual;
 				b.Location = new Point(Settings1.Default.BaseFormLocX, Settings1.Default.BaseFormLocY);
+
 				baseform = b;
-				if (FullScreen) {
+
+				if (settings.fullScreen) {
 					b.WindowState = FormWindowState.Maximized;
 					b.FormBorderStyle = FormBorderStyle.None;
 				} else {
 					b.FormBorderStyle = FormBorderStyle.FixedSingle;
 					b.ControlBox = false;
 				}
+
 				attendant.StartPosition = FormStartPosition.Manual;
 				Application.Run(attendant);
 				return;
@@ -106,25 +85,23 @@ namespace CmsCheckin
 			if (ret == DialogResult.Cancel)
 				return;
 
-			AdminPassword = f.AdminPassword;
 			CampusId = f.CampusId;
 			ThisDay = f.DayOfWeek;
-			HideCursor = f.HideCursor.Checked;
-			AskGrade = f.AskGrade.Checked;
-			AskLabels = false;
-			EarlyCheckinHours = int.Parse(f.LeadHours.Text);
-			LateCheckinMinutes = int.Parse(f.LateMinutes.Text);
-			AskEmFriend = f.AskEmFriend.Checked;
-			KioskName = f.KioskName.Text;
-			AskChurch = f.AskChurch.Checked;
-			AskChurchName = f.AskChurchName.Checked;
-			EnableTimer = f.EnableTimer.Checked;
-			DisableJoin = f.DisableJoin.Checked;
-			SecurityLabelPerChild = f.SecurityLabelPerChild.Checked;
+			settings.hideCursor = f.HideCursor.Checked;
+			settings.askGrade = f.AskGrade.Checked;
+			settings.earlyHours = int.Parse(f.LeadHours.Text);
+			settings.lateMinutes = int.Parse(f.LateMinutes.Text);
+			settings.askFriend = f.AskEmFriend.Checked;
+			settings.kioskName = f.KioskName.Text;
+			settings.askChurch = f.AskChurch.Checked;
+			settings.askChurchName = f.AskChurchName.Checked;
+			settings.enableTimer = f.EnableTimer.Checked;
+			settings.disableJoin = f.DisableJoin.Checked;
+			settings.securityLabelPerChild = f.SecurityLabelPerChild.Checked;
 
 			f.Dispose();
 
-			if (PrintMode == "Print From Server") {
+			if (settings.printMode == "Print From Server") {
 				var p = new AttendPrintingServer();
 				Application.Run(p);
 				return;
@@ -136,10 +113,11 @@ namespace CmsCheckin
 			b.StartPosition = FormStartPosition.Manual;
 			b.Location = new Point(Settings1.Default.BaseFormLocX, Settings1.Default.BaseFormLocY);
 
-			if (FullScreen) {
+			if (settings.fullScreen) {
 				b.WindowState = FormWindowState.Maximized;
 				b.FormBorderStyle = FormBorderStyle.None;
 			}
+
 			Application.Run(b);
 		}
 
@@ -147,24 +125,24 @@ namespace CmsCheckin
 		{
 			// Convert from earlyhours to lateminutes
 			var lateminutes = -earlyhours * 60;
-			return earlyhours > EarlyCheckinHours || lateminutes > LateCheckinMinutes;
+			return earlyhours > settings.earlyHours || lateminutes > settings.lateMinutes;
 		}
 
 		public static bool CheckAdminPIN()
 		{
 			TimeSpan ts = new TimeSpan(DateTime.Now.Ticks - AdminPINLastAccess.Ticks);
 
-			if (ts.TotalSeconds < AdminPINTimeout) {
+			if (ts.TotalSeconds < settings.adminPINTimeout) {
 				SetAdminLastAccess();
 				return true;
 			}
 
-			if (Program.AdminPIN.Length > 0) {
+			if (Program.settings.adminPIN.Length > 0) {
 				PINDialog pd = new PINDialog();
 				var results = pd.ShowDialog();
 
 				if (results == DialogResult.OK) {
-					if (pd.sPIN == Program.AdminPIN) {
+					if (pd.sPIN == Program.settings.adminPIN) {
 						SetAdminLastAccess();
 						return true;
 					} else
@@ -194,7 +172,7 @@ namespace CmsCheckin
 
 		public static string QueryString
 		{
-			get { return string.Format("?campus={0}&thisday={1}&kioskmode={2}&kiosk={3}", CampusId, ThisDay, false, KioskName); }
+			get { return string.Format("?campus={0}&thisday={1}&kioskmode={2}&kiosk={3}", CampusId, ThisDay, false, settings.kioskName); }
 		}
 		public static CheckState ActiveOther(string s)
 		{
@@ -213,7 +191,7 @@ namespace CmsCheckin
 
 		public static void Timer2Reset()
 		{
-			if (!EnableTimer)
+			if (!settings.enableTimer)
 				return;
 			if (timer2 == null)
 				return;
@@ -222,7 +200,7 @@ namespace CmsCheckin
 		}
 		public static void Timer2Start(EventHandler t)
 		{
-			if (!EnableTimer)
+			if (!settings.enableTimer)
 				return;
 			if (timer2 != null)
 				Timer2Stop();
@@ -241,7 +219,7 @@ namespace CmsCheckin
 		}
 		public static void TimerReset()
 		{
-			if (!EnableTimer)
+			if (!settings.enableTimer)
 				return;
 			if (timer1 == null)
 				return;
@@ -250,7 +228,7 @@ namespace CmsCheckin
 		}
 		public static void TimerStart(EventHandler t)
 		{
-			if (!EnableTimer)
+			if (!settings.enableTimer)
 				return;
 			if (timer1 != null)
 				TimerStop();
@@ -261,7 +239,7 @@ namespace CmsCheckin
 		}
 		public static void TimerStop()
 		{
-			if (!EnableTimer)
+			if (!settings.enableTimer)
 				return;
 			if (timer1 == null)
 				return;
@@ -279,7 +257,7 @@ namespace CmsCheckin
 		}
 		public static void CursorHide()
 		{
-			if (!Program.HideCursor)
+			if (!Program.settings.hideCursor)
 				return;
 			if (!showing)
 				return;

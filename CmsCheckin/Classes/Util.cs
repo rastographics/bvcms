@@ -18,10 +18,10 @@ namespace CmsCheckin
 	{
 		public static WebClient CreateWebClient()
 		{
+			string auth = String.Format("{0}:{1}", Program.settings.user, Program.settings.pass);
+
 			var wc = new WebClient();
-			wc.Headers.Add("Authorization",
-				"Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes("{0}:{1}"
-							.Fmt(Program.Username, Program.Password))));
+			wc.Headers.Add("Authorization", "Basic " + Convert.ToBase64String(Encoding.ASCII.GetBytes(auth)));
 			return wc;
 		}
 		public static string GetDigits(this string s)
@@ -34,15 +34,11 @@ namespace CmsCheckin
 					digits.Append(c);
 			return digits.ToString();
 		}
-		public static string Fmt(this string fmt, params object[] p)
-		{
-			return string.Format(fmt, p);
-		}
 
 		public static XDocument GetDocument(this Control f, string page)
 		{
 			var wc = Util.CreateWebClient();
-			var url = new Uri(new Uri(Program.URL), page);
+			var url = Program.settings.createURI(page);
 
 			var str = wc.DownloadString(url);
 
@@ -50,16 +46,16 @@ namespace CmsCheckin
 			return x;
 		}
 
-        public static XDocument PostDocument(this Control f, string page, NameValueCollection post)
-        {
-            var wc = Util.CreateWebClient();
-            var url = new Uri(new Uri(Program.URL), page);
+		public static XDocument PostDocument(this Control f, string page, NameValueCollection post)
+		{
+			var wc = Util.CreateWebClient();
+			var url = Program.settings.createURI(page);
 
-            var str = wc.UploadValues(url,post);
+			var str = wc.UploadValues(url, post);
 
-            var x = XDocument.Parse(Encoding.ASCII.GetString(str));
-            return x;
-        }
+			var x = XDocument.Parse(Encoding.ASCII.GetString(str));
+			return x;
+		}
 
 		public static int ToInt(this string s)
 		{
@@ -114,29 +110,25 @@ namespace CmsCheckin
 			coll.Add("gender", gender.ToString());
 			coll.Add("campusid", Program.CampusId.ToString());
 			coll.Add("allergies", allergies);
-			if (Program.AskGrade)
-			{
+			if (Program.settings.askGrade) {
 				coll.Add("grade", grade);
-				coll.Add("AskGrade", Program.AskGrade.ToString());
+				coll.Add("AskGrade", Program.settings.askGrade.ToString());
 			}
-			if (Program.AskChurchName)
-			{
+			if (Program.settings.askChurchName) {
 				coll.Add("churchname", churchname);
-				coll.Add("AskChurchName", Program.AskChurchName.ToString());
+				coll.Add("AskChurchName", Program.settings.askChurchName.ToString());
 			}
-			if (Program.AskEmFriend)
-			{
+			if (Program.settings.askFriend) {
 				coll.Add("parent", parent);
 				coll.Add("emphone", emphone.GetDigits());
-				coll.Add("AskEmFriend", Program.AskEmFriend.ToString());
+				coll.Add("AskEmFriend", Program.settings.askFriend.ToString());
 				coll.Add("emfriend", emfriend);
 			}
-			if (Program.AskChurch)
-			{
+			if (Program.settings.askChurch) {
 				coll.Add("activeother", (activeother == CheckState.Checked).ToString());
-				coll.Add("AskChurch", Program.AskChurch.ToString());
+				coll.Add("AskChurch", Program.settings.askChurch.ToString());
 			}
-			var url = new Uri(new Uri(Program.URL), "Checkin2/AddPerson/" + Program.FamilyId);
+			var url = Program.settings.createURI("Checkin2/AddPerson/" + Program.FamilyId);
 			var resp = wc.UploadValues(url, "POST", coll);
 			var s = Encoding.ASCII.GetString(resp);
 			var a = s.Split('.');
@@ -182,30 +174,26 @@ namespace CmsCheckin
 			coll.Add("gender", gender.ToString());
 			coll.Add("campusid", Program.CampusId.ToString());
 			coll.Add("allergies", allergies);
-			if (Program.AskGrade)
-			{
+			if (Program.settings.askGrade) {
 				coll.Add("grade", grade);
-				coll.Add("AskGrade", Program.AskGrade.ToString());
+				coll.Add("AskGrade", Program.settings.askGrade.ToString());
 			}
-			if (Program.AskChurchName)
-			{
+			if (Program.settings.askChurchName) {
 				coll.Add("churchname", churchname);
-				coll.Add("AskChurchName", Program.AskChurchName.ToString());
+				coll.Add("AskChurchName", Program.settings.askChurchName.ToString());
 			}
-			if (Program.AskEmFriend)
-			{
+			if (Program.settings.askFriend) {
 				coll.Add("parent", parent);
 				coll.Add("emphone", emphone.GetDigits());
-				coll.Add("AskEmFriend", Program.AskEmFriend.ToString());
+				coll.Add("AskEmFriend", Program.settings.askFriend.ToString());
 				coll.Add("emfriend", emfriend);
 			}
-			if (Program.AskChurch)
-			{
+			if (Program.settings.askChurch) {
 				coll.Add("activeother", (activeother == CheckState.Checked).ToString());
-				coll.Add("AskChurch", Program.AskChurch.ToString());
+				coll.Add("AskChurch", Program.settings.askChurch.ToString());
 			}
 
-			var url = new Uri(new Uri(Program.URL), "Checkin2/EditPerson/" + id);
+			var url = Program.settings.createURI("Checkin2/EditPerson/" + id);
 
 			var resp = wc.UploadValues(url, "POST", coll);
 
@@ -243,7 +231,7 @@ namespace CmsCheckin
 			coll.Add("gender", gender.ToString());
 			coll.Add("campusid", Program.CampusId.ToString());
 
-			var url = new Uri(new Uri(Program.URL), "Checkin2/EditPerson/" + id);
+			var url = Program.settings.createURI("Checkin2/EditPerson/" + id);
 
 			var resp = wc.UploadValues(url, "POST", coll);
 
@@ -295,8 +283,7 @@ namespace CmsCheckin
 		public static bool DateIsOK(string s)
 		{
 			var re = new Regex(@"\A(([1-9]|1[012])(/(?<day>3[01]|[12][0-9]|[1-9])?)?(?<g3>/([0-9]{1,2})?)?)\Z");
-			if (re.IsMatch(s))
-			{
+			if (re.IsMatch(s)) {
 				var m = re.Match(s);
 				if (m.Groups["day"].Length == 0 && m.Groups["g3"].Length > 0)
 					return false;
@@ -310,8 +297,7 @@ namespace CmsCheckin
 			if (!s.HasValue())
 				return true;
 			if (Regex.IsMatch(s, @"\A(?:\A(0?[1-9]|1[012])[-/](0?[1-9]|[12][0-9]|3[01])[-/](19|20)?[0-9]{2}\s*\z)\Z"))
-				if (DateTime.TryParse(s, out dt))
-				{
+				if (DateTime.TryParse(s, out dt)) {
 					//if (dt > DateTime.Now.Date)
 					//    dt = dt.AddYears(-100);
 					return true;
@@ -374,8 +360,7 @@ namespace CmsCheckin
 		{
 			if (info.c.oid == 0)
 				return;
-			try
-			{
+			try {
 				var wc = CreateWebClient();
 				var coll = new NameValueCollection();
 				coll.Add("PeopleId", info.c.pid.ToString());
@@ -383,8 +368,8 @@ namespace CmsCheckin
 				Uri url = null;
 				coll.Add("Present", info.ischecked.ToString());
 				coll.Add("hour", info.c.hour.Value.ToString("g"));
-				coll.Add("kiosk", Program.KioskName);
-				url = new Uri(new Uri(Program.URL), "Checkin2/RecordAttend2/");
+				coll.Add("kiosk", Program.settings.kioskName);
+				url = Program.settings.createURI("Checkin2/RecordAttend2/");
 
 				var resp = wc.UploadValues(url, "POST", coll);
 #if DEBUG
@@ -392,39 +377,36 @@ namespace CmsCheckin
 #endif
 				var s = Encoding.ASCII.GetString(resp);
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 			}
 		}
 
-		public static int GetGuestCount( int PersonID )
+		public static int GetGuestCount(int PersonID)
 		{
-			try
-			{
+			try {
 				var wc = CreateWebClient();
 				var coll = new NameValueCollection();
 				coll.Add("id", PersonID.ToString());
 				var s = "Checkin2/FetchGuestCount/";
-				var url = new Uri(new Uri(Program.URL), s);
+				var url = Program.settings.createURI(s);
 				var resp = wc.UploadValues(url, "POST", coll);
 				return Encoding.ASCII.GetString(resp).ToInt();
 			}
-			catch (Exception) {}
+			catch (Exception) { }
 
 			return 0;
 		}
 
 		public static bool AddIDCard(string cardID, int personID)
 		{
-			try
-			{
+			try {
 				var c = new NameValueCollection();
 				c.Add("cardid", cardID);
 				c.Add("personid", personID.ToString());
 				c.Add("overwrite", "true");
 
 				var path = "Checkin2/AddIDCard/";
-				var url = new Uri(new Uri(Program.URL), path);
+				var url = Program.settings.createURI(path);
 
 				var wc = CreateWebClient();
 				var resp = wc.UploadValues(url, "POST", c);
@@ -437,112 +419,100 @@ namespace CmsCheckin
 			return false;
 		}
 
-		public static int BuildingCheckin(int pid, List<Activity> activities, int accesstype )
+		public static int BuildingCheckin(int pid, List<Activity> activities, int accesstype)
 		{
-			try
-			{
+			try {
 				var xs = new XmlSerializer(typeof(List<Activity>), new XmlRootAttribute("Activities"));
 				var sw = new StringWriter();
 				xs.Serialize(sw, activities);
 
 				var bits = Encoding.UTF8.GetBytes(sw.ToString());
 				var wc = CreateWebClient();
-				var s = "Checkin2/BuildingCheckin/{0}?location={1}&accesstype={2}".Fmt(pid,Program.Building,accesstype);
+				var s = String.Format("Checkin2/BuildingCheckin/{0}?location={1}&accesstype={2}", pid, Program.settings.building, accesstype);
 				var g = Program.GuestOf();
 				if (g != null)
 					s += "&guestof=" + g.CheckinId;
-				var url = new Uri(new Uri(Program.URL), s);
+				var url = Program.settings.createURI(s);
 				var ret = wc.UploadData(url, "POST", bits);
 				return Encoding.ASCII.GetString(ret).ToInt();
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 			}
 			return 0;
 		}
 		public static void BuildingUnCheckin(int pid)
 		{
-			try
-			{
+			try {
 				var wc = CreateWebClient();
-				var url = new Uri(new Uri(Program.URL), "Checkin2/BuildingUnCheckin/" + pid);
+				var url = Program.settings.createURI("Checkin2/BuildingUnCheckin/" + pid);
 				wc.UploadString(url, "POST", "");
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 			}
 		}
 		public static void JoinUnJoin(ClassInfo c, bool joining)
 		{
 			if (c.oid == 0)
 				return;
-			try
-			{
+			try {
 				var wc = CreateWebClient();
 				var coll = new NameValueCollection();
 				coll.Add("PeopleId", c.pid.ToString());
 				coll.Add("OrgId", c.oid.ToString());
 				Uri url = null;
 				coll.Add("Member", joining.ToString());
-				url = new Uri(new Uri(Program.URL), "Checkin2/Membership/");
+				url = Program.settings.createURI("Checkin2/Membership/");
 				var resp = wc.UploadValues(url, "POST", coll);
 #if DEBUG
 				//System.Threading.Thread.Sleep(1500);
 #endif
 				var s = Encoding.ASCII.GetString(resp);
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 			}
 		}
 		public static void AddUpdateNotes(int peopleid, string notes)
 		{
-			try
-			{
+			try {
 				var wc = CreateWebClient();
 				var coll = new NameValueCollection();
 				coll.Add("peopleid", peopleid.ToString());
-				coll.Add("field", Program.Building + "-notes");
+				coll.Add("field", Program.settings.building + "-notes");
 				coll.Add("value", notes);
-				var url = new Uri(new Uri(Program.URL), "APIPerson/AddEditExtraValue/");
+				var url = Program.settings.createURI("APIPerson/AddEditExtraValue/");
 				var resp = wc.UploadValues(url, "POST", coll);
 				var s = Encoding.ASCII.GetString(resp);
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 			}
 		}
 		public static void UnLockFamily()
 		{
 			if (Program.FamilyId == 0)
 				return;
-			try
-			{
+			try {
 				var wc = CreateWebClient();
 				var coll = new NameValueCollection();
 				coll.Add("fid", Program.FamilyId.ToString());
-				var url = new Uri(new Uri(Program.URL), "Checkin2/UnLockFamily/");
+				var url = Program.settings.createURI("Checkin2/UnLockFamily/");
 				var resp = wc.UploadValues(url, "POST", coll);
 				var s = Encoding.ASCII.GetString(resp);
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 			}
 		}
 		public static void ReportPrinterProblem()
 		{
-			try
-			{
+			try {
 				var wc = CreateWebClient();
 				var coll = new NameValueCollection();
-				coll.Add("kiosk", Program.KioskName);
+				coll.Add("kiosk", Program.settings.kioskName);
 				coll.Add("campusid", Program.CampusId.ToString());
-				var url = new Uri(new Uri(Program.URL), "Checkin2/ReportPrinterProblem/");
+				var url = Program.settings.createURI("Checkin2/ReportPrinterProblem/");
 				var resp = wc.UploadValues(url, "POST", coll);
 				var s = Encoding.ASCII.GetString(resp);
 			}
-			catch (Exception)
-			{
+			catch (Exception) {
 			}
 		}
 		public static void UploadPrintJob(IEnumerable<LabelInfo> q)
@@ -552,14 +522,14 @@ namespace CmsCheckin
 			var sw = new StringWriter();
 			xs.Serialize(sw, j);
 			var bits = Encoding.UTF8.GetBytes(sw.ToString());
-			var url = new Uri(new Uri(Program.URL), "Checkin2/UploadPrintJob/" + Program.KioskName);
+			var url = Program.settings.createURI("Checkin2/UploadPrintJob/" + Program.settings.kioskName);
 			var wc = CreateWebClient();
 			wc.UploadData(url, "POST", bits);
 		}
 		public static PrintJobs FetchPrintJob()
 		{
 			var wc = Util.CreateWebClient();
-			var url = new Uri(new Uri(Program.URL), "Checkin2/FetchPrintJobs/" + Program.PrintKiosks);
+			var url = Program.settings.createURI("Checkin2/FetchPrintJobs/" + Program.settings.printForKiosks);
 			var xml = wc.DownloadString(url);
 			var xs = new XmlSerializer(typeof(PrintJobs));
 			var sr = new StringReader(xml);
@@ -570,7 +540,7 @@ namespace CmsCheckin
 		public static BaseBuildingInfo FetchBuildingInfo()
 		{
 			var wc = Util.CreateWebClient();
-			var url = new Uri(new Uri(Program.URL), "Checkin2/FetchBuildingActivities/" + Program.Building);
+			var url = Program.settings.createURI("Checkin2/FetchBuildingActivities/" + Program.settings.building);
 			var xml = wc.DownloadString(url);
 			var xs = new XmlSerializer(typeof(BaseBuildingInfo), new XmlRootAttribute("BuildingCheckin"));
 			var sr = new StringReader(xml);
@@ -581,7 +551,7 @@ namespace CmsCheckin
 		public static Image GetImage(int peopleid)
 		{
 			var wc = Util.CreateWebClient();
-			var url = new Uri(new Uri(Program.URL), "Checkin2/FetchImage/" + peopleid);
+			var url = Program.settings.createURI("Checkin2/FetchImage/" + peopleid);
 			var bits = wc.DownloadData(url);
 			var istream = new MemoryStream(bits);
 			var img = Image.FromStream(istream);
@@ -592,10 +562,10 @@ namespace CmsCheckin
 		public static string GetNotes(int pid)
 		{
 			var wc = CreateWebClient();
-			var url = new Uri(new Uri(Program.URL), "APIPerson/ExtraValues/" + pid + "?fields=" + Program.Building + "-notes");
+			var url = Program.settings.createURI("APIPerson/ExtraValues/" + pid + "?fields=" + Program.settings.building + "-notes");
 			var str = wc.DownloadString(url);
 			var x = XDocument.Parse(str);
-			var n = x.Root.Element(Program.Building + "-notes");
+			var n = x.Root.Element(Program.settings.building + "-notes");
 			if (n != null)
 				return n.Value;
 			return "";

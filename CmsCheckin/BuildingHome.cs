@@ -170,7 +170,7 @@ namespace CmsCheckin
 
             var post = new NameValueCollection();
             post.Add("page", "1");
-            post.Add("building", Program.Building);
+            post.Add("building", Program.settings.building);
             post.Add("querybit", Program.BuildingInfo.querybit);
 
             var x = this.PostDocument(url, post);

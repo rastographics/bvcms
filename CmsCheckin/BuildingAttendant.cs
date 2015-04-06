@@ -14,30 +14,26 @@ namespace CmsCheckin
 		{
 			if (Program.baseform == null)
 				Program.baseform = new BaseForm(new BuildingHome());
-			if (Program.baseform.Visible)
-			{
+			if (Program.baseform.Visible) {
 				Program.baseform.Hide();
 				ShowCheckin.Text = "Show Checkin";
-			}
-			else
-			{
+			} else {
 				Program.baseform.Show();
 				ShowCheckin.Text = "Hide Checkin";
 			}
 		}
 		public void AddHistory(PersonInfo p)
 		{
-			if (InvokeRequired) 
-			{ 
-				Invoke(new Action<PersonInfo>(AddHistory), new[] { p }); 
-				return; 
+			if (InvokeRequired) {
+				Invoke(new Action<PersonInfo>(AddHistory), new[] { p });
+				return;
 			}
-			history.Items.Insert( 0, p );
+			history.Items.Insert(0, p);
 		}
 
-		public void AddHistoryString( string item )
+		public void AddHistoryString(string item)
 		{
-			history.Items.Insert( 0, item );
+			history.Items.Insert(0, item);
 		}
 
 		private void Attendant_LocationChanged(object sender, EventArgs e)
@@ -71,7 +67,7 @@ namespace CmsCheckin
 			var p = history.SelectedItem as PersonInfo;
 			if (p == null)
 				return;
-			System.Diagnostics.Process.Start(Program.URL + "/Person2/" + p.pid);
+			System.Diagnostics.Process.Start(Program.settings.createURL("Person2/" + p.pid));
 		}
 	}
 }

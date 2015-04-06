@@ -209,7 +209,7 @@ namespace CmsCheckin
 					twidlb = Math.Max(twidlb, (int)Math.Ceiling(size.Width));
 					twidlb = Math.Max(twidlb, mwid);
 
-					size = g.MeasureString("{0:h:mm tt} {1}".Fmt(c.cinfo.hour, c.org), font);
+					size = g.MeasureString(String.Format("{0:h:mm tt} {1}", c.cinfo.hour, c.org), font);
 					widorg = Math.Max(widorg, (int)Math.Ceiling(size.Width));
 
 					size = g.MeasureString("|", labfont);
@@ -353,7 +353,7 @@ namespace CmsCheckin
 				org.Size = new Size(widorg + 5, maxheight);
 				org.Font = font;
 				org.UseMnemonic = false;
-				org.Text = "{0:h:mm tt} {1}".Fmt(c.cinfo.hour, c.org);
+				org.Text = String.Format("{0:h:mm tt} {1}", c.cinfo.hour, c.org);
 				org.TextAlign = ContentAlignment.MiddleLeft;
 				org.Name = "org" + c.Row;
 				if (c.cinfo.oid != 0)
@@ -594,14 +594,14 @@ namespace CmsCheckin
 			home.cellphone.textBox1.Text = c.cell.FmtFone();
 			home.gendermarital.Marital = c.marital;
 			home.gendermarital.Gender = c.gender;
-			if (Program.AskChurch)
+			if (Program.settings.askChurch)
 				home.gendermarital.ActiveOther.CheckState =
 					 c.activeother == bool.TrueString ? CheckState.Checked :
 					 c.activeother == bool.FalseString ? CheckState.Unchecked : CheckState.Indeterminate;
-			if (Program.AskGrade)
+			if (Program.settings.askGrade)
 				home.grade.textBox1.Text = c.grade;
 			home.allergy.textBox1.Text = c.allergies;
-			if (Program.AskEmFriend) {
+			if (Program.settings.askFriend) {
 				home.parent.textBox1.Text = c.parent;
 				home.emfriend.textBox1.Text = c.emfriend;
 				home.emphone.textBox1.Text = c.emphone.FmtFone();
@@ -655,7 +655,7 @@ namespace CmsCheckin
 
 			Util.UnLockFamily();
 
-			if (Program.PrintMode == "Print To Server") {
+			if (Program.settings.printMode == "Print To Server") {
 				PrintServerLabels(q);
 				return;
 			}

@@ -261,7 +261,7 @@ namespace CmsCheckin
 			addr.SetBackNext(email, zip);
 			zip.SetBackNext(addr, dob);
 
-			if (Program.AskGrade) {
+			if (Program.settings.askGrade) {
 				grade = new EnterNumber("Grade");
 				form.ControlsAdd(grade);
 
@@ -273,7 +273,7 @@ namespace CmsCheckin
 				cellphone.SetBackNext(dob, homephone);
 			}
 
-			if (Program.AskEmFriend) {
+			if (Program.settings.askFriend) {
 				parent = new EnterText("Parent Name", true);
 				form.ControlsAdd(parent);
 				emfriend = new EnterText("Emergency Friend", true);
@@ -284,7 +284,7 @@ namespace CmsCheckin
 				homephone.SetBackNext(cellphone, parent);
 				parent.SetBackNext(homephone, emfriend);
 				emfriend.SetBackNext(parent, emphone);
-				if (Program.AskChurchName) {
+				if (Program.settings.askChurchName) {
 					church = new EnterText("Church Name", true);
 					form.ControlsAdd(church);
 
@@ -296,7 +296,7 @@ namespace CmsCheckin
 					allergy.SetBackNext(emphone, null);
 				}
 			} else {
-				if (Program.AskChurchName) {
+				if (Program.settings.askChurchName) {
 					church = new EnterText("Church Name", true);
 					form.ControlsAdd(church);
 
@@ -345,21 +345,21 @@ namespace CmsCheckin
 			addr.textBox1.Text = null;
 			zip.textBox1.Text = null;
 			dob.textBox1.Text = null;
-			if (Program.AskGrade)
+			if (Program.settings.askGrade)
 				grade.textBox1.Text = null;
 			allergy.textBox1.Text = null;
-			if (Program.AskEmFriend) {
+			if (Program.settings.askFriend) {
 				emfriend.textBox1.Text = null;
 				emphone.textBox1.Text = null;
 				parent.textBox1.Text = null;
 			}
 			cellphone.textBox1.Text = null;
 			homephone.textBox1.Text = null;
-			if (Program.AskChurchName)
+			if (Program.settings.askChurchName)
 				church.textBox1.Text = null;
 			gendermarital.Gender = 0;
 			gendermarital.Marital = 0;
-			if (Program.AskChurch)
+			if (Program.settings.askChurch)
 				gendermarital.ActiveOther.CheckState = CheckState.Indeterminate;
 		}
 		public void SetFields(string Last, string Email, string Addr, string Zip, string Home, string Parent, string EmFriend, string EmPhone, string AnotherChurch, string ChurchName)
@@ -369,12 +369,12 @@ namespace CmsCheckin
 			addr.textBox1.Text = Addr;
 			zip.textBox1.Text = Zip;
 			homephone.textBox1.Text = Home;
-			if (Program.AskEmFriend) {
+			if (Program.settings.askFriend) {
 				emfriend.textBox1.Text = EmFriend;
 				parent.textBox1.Text = Parent;
 				emphone.textBox1.Text = EmPhone;
 			}
-			if (Program.AskChurchName)
+			if (Program.settings.askChurchName)
 				church.textBox1.Text = ChurchName;
 			gendermarital.ActiveOther.CheckState = Program.ActiveOther(AnotherChurch);
 		}

@@ -82,7 +82,7 @@ namespace CmsCheckin
         {
             this.Cursor = Cursors.WaitCursor;
             var bits = ConvertImageToByteArray(imageResizer1.SaveImage(), ImageFormat.Jpeg);
-            var url = new Uri(new Uri(Program.URL), "Checkin2/UploadImage/" + Program.PeopleId);
+				var url = Program.settings.createURI("Checkin2/UploadImage/" + Program.PeopleId);
             var wc = Util.CreateWebClient();
             wc.UploadData(url, "POST", bits);
             this.Close();
