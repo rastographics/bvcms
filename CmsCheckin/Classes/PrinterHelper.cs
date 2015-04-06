@@ -22,7 +22,7 @@ namespace CmsCheckin.Classes
 
 		private static int iPageHeight, iPageWidth, iPagePixelsX, iPagePixelsY;
 
-	    private static List<LabelPage> lPageList;
+		private static List<LabelPage> lPageList;
 
 		private static Dictionary<string, string> dLabelFormats = new Dictionary<string, string>();
 
@@ -50,7 +50,7 @@ namespace CmsCheckin.Classes
 		public static void doPrinting(IEnumerable<LabelInfo> q, bool bPrintSingle = false)
 		{
 			LabelSet lsLabels = new LabelSet();
-			int iLabelSize = PrinterHelper.getPageHeight(Program.Printer);
+			int iLabelSize = PrinterHelper.getPageHeight(Program.settings.printer);
 
 			// Adjust all records that are not members to have a "G" for Guest. Fix for iPad sending a "V" instead of a "G"
 			foreach (var u in (from c in q where c.mv != "M" select c)) { u.mv = "G"; }
@@ -62,20 +62,15 @@ namespace CmsCheckin.Classes
 						select from c in g
 								 select c;
 
-			if (bPrintSingle)
-			{
+			if (bPrintSingle) {
 				string[] sFormats = PrinterHelper.SINGLE;
 
-				foreach (var li in q2)
-				{
-					foreach (string sItem in sFormats)
-					{
+				foreach (var li in q2) {
+					foreach (string sItem in sFormats) {
 						lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), li.ToList<LabelInfo>());
 					}
 				}
-			}
-			else
-			{
+			} else {
 				var extras = from e in q
 								 where e.n > 1
 								 where e.requiressecuritylabel == true
@@ -93,15 +88,12 @@ namespace CmsCheckin.Classes
 							  select from c in g
 										select c;
 
-				foreach (var li in q2)
-				{
+				foreach (var li in q2) {
 					int iPersonSecurityCount = PrinterHelper.getSecurityCount(li);
 
-					if (iPersonSecurityCount > 0 || li.First().age < 13)
-					{
+					if (iPersonSecurityCount > 0 || li.First().age < 13) {
 						string[] sFormats = PrinterHelper.MAIN;
-						foreach (string sItem in sFormats)
-						{
+						foreach (string sItem in sFormats) {
 							lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), li.ToList<LabelInfo>());
 						}
 
@@ -109,56 +101,44 @@ namespace CmsCheckin.Classes
 										  where gi.mv != "M"
 										  select gi;
 
-						foreach (var guestLabel in guestIn)
-						{
+						foreach (var guestLabel in guestIn) {
 							string[] sGuestFormats = PrinterHelper.GUEST;
 							IEnumerable<LabelInfo> iGuestLabels = new[] { guestLabel };
 
-							foreach (string sItem in sGuestFormats)
-							{
+							foreach (string sItem in sGuestFormats) {
 								lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), iGuestLabels.ToList<LabelInfo>());
 							}
 						}
-					}
-					else
-					{
+					} else {
 
 						string[] sFormats = PrinterHelper.NAMETAG;
-						foreach (string sItem in sFormats)
-						{
+						foreach (string sItem in sFormats) {
 							lsLabels.addPages(PrinterHelper.fetchLabelFormat(sItem, iLabelSize), li.ToList<LabelInfo>());
 						}
 					}
 				}
 
-				foreach (var le in extras)
-				{
+				foreach (var le in extras) {
 					int iLabels = le.FirstOrDefault().n - 1;
 
-					for (int iX = 0; iX < iLabels; iX++)
-					{
+					for (int iX = 0; iX < iLabels; iX++) {
 						lsLabels.addPages(PrinterHelper.fetchLabelFormat("Extra", iLabelSize), le.ToList<LabelInfo>());
 					}
 				}
 
-				if (lsLabels.getCount() > 0)
-				{
+				if (lsLabels.getCount() > 0) {
 					int iSecurityCount = PrinterHelper.getSecurityCount(q);
 
-					if (iSecurityCount > 0)
-					{
+					if (iSecurityCount > 0) {
 						var s = q2.First().Take(1).ToList<LabelInfo>();
 
-						for (int iX = 0; iX < iSecurityCount; iX++)
-						{
+						for (int iX = 0; iX < iSecurityCount; iX++) {
 							lsLabels.addPages(PrinterHelper.fetchLabelFormat("Security", iLabelSize), s);
 						}
 					}
 
-					if (Program.DisableLocationLabels == false)
-					{
-						foreach (var lc in locs)
-						{
+					if (Program.settings.disableLocationLabels == false) {
+						foreach (var lc in locs) {
 							lsLabels.addPages(PrinterHelper.fetchLabelFormat("Location", iLabelSize), lc.ToList<LabelInfo>());
 						}
 					}
@@ -167,30 +147,24 @@ namespace CmsCheckin.Classes
 
 			if (Settings1.Default.ExtraBlankLabel == true && q.Count() > 0) lsLabels.addBlank();
 
-			PrinterHelper.printAllLabels(Program.Printer, lsLabels);
+			PrinterHelper.printAllLabels(Program.settings.printer, lsLabels);
 		}
 
 		public static void setPaperSize(PrintDocument pd)
 		{
 			string sPrinter = pd.PrinterSettings.PrinterName;
 
-			if (sPrinter == "PDFCreator")
-			{
+			if (sPrinter == "PDFCreator") {
 				PaperSize paperSize = new PaperSize("CustomLabelSize", getPageHeight(sPrinter), getPageWidth(sPrinter));
 				paperSize.RawKind = (int)PaperKind.Custom;
 				pd.DefaultPageSettings.PaperSize = paperSize;
 				pd.DefaultPageSettings.Landscape = true;
-			}
-			else
-			{
-				if (pd.DefaultPageSettings.Landscape)
-				{
+			} else {
+				if (pd.DefaultPageSettings.Landscape) {
 					PaperSize paperSize = new PaperSize("CustomLabelSize", getPageHeight(sPrinter), getPageWidth(sPrinter));
 					paperSize.RawKind = (int)PaperKind.Custom;
 					pd.DefaultPageSettings.PaperSize = paperSize;
-				}
-				else
-				{
+				} else {
 					PaperSize paperSize = new PaperSize("CustomLabelSize", getPageWidth(sPrinter), getPageHeight(sPrinter));
 					paperSize.RawKind = (int)PaperKind.Custom;
 					pd.DefaultPageSettings.PaperSize = paperSize;
@@ -243,10 +217,8 @@ namespace CmsCheckin.Classes
 
 		public static void printLabel(Graphics gPage, LabelPage lpPage)
 		{
-			foreach (LabelEntry leItem in lpPage.leEntries)
-			{
-				switch (leItem.iType)
-				{
+			foreach (LabelEntry leItem in lpPage.leEntries) {
+				switch (leItem.iType) {
 					case LabelEntry.TYPE_STRING:
 					case LabelEntry.TYPE_LABEL:
 						drawString(gPage, leItem.sFontName, leItem.fSize, leItem.sText, iPageWidth * leItem.fStartX, iPageHeight * leItem.fStartY, leItem.iAlignX, leItem.iAlignY);
@@ -266,15 +238,13 @@ namespace CmsCheckin.Classes
 
 						Image ibc = (Image)bw.Write(leItem.sText);
 
-						switch (leItem.iAlignX)
-						{
+						switch (leItem.iAlignX) {
 							case 1: break;
 							case 2: offsetX = leItem.iWidth * 0.5f; break;
 							case 3: offsetX = leItem.iWidth; break;
 						}
 
-						switch (leItem.iAlignY)
-						{
+						switch (leItem.iAlignY) {
 							case 1: break;
 							case 2: offsetY = leItem.iHeight * 0.5f; break;
 							case 3: offsetY = leItem.iHeight; break;
@@ -293,15 +263,13 @@ namespace CmsCheckin.Classes
 
 			SizeF sfSize = g.MeasureString(sText, drawFont);
 
-			switch (iAlignX)
-			{
+			switch (iAlignX) {
 				case 1: break;
 				case 2: fX = fX - (sfSize.Width * 0.5f); break;
 				case 3: fX = fX - sfSize.Width; break;
 			}
 
-			switch (iAlignY)
-			{
+			switch (iAlignY) {
 				case 1: break;
 				case 2: fY = fY - (sfSize.Height * 0.5f); break;
 				case 3: fY = fY - sfSize.Height; break;
@@ -321,12 +289,9 @@ namespace CmsCheckin.Classes
 
 		public static int getSecurityCount(IEnumerable<LabelInfo> liList)
 		{
-			if (Program.SecurityLabelPerChild)
-			{
+			if (Program.settings.securityLabelPerChild) {
 				return liList.Count(li => li.requiressecuritylabel == true && li.n > 0);
-			}
-			else
-			{
+			} else {
 				if (liList.Count(li => li.requiressecuritylabel == true && li.n > 0) > 0) return 1;
 				else return 0;
 			}
@@ -336,12 +301,9 @@ namespace CmsCheckin.Classes
 		{
 			int pageWidth = 0;
 
-			if (Program.PrinterWidth.HasValue() && int.TryParse(Program.PrinterWidth, out pageWidth))
-			{
+			if (Program.settings.printerWidth.HasValue() && int.TryParse(Program.settings.printerWidth, out pageWidth)) {
 				return pageWidth;
-			}
-			else
-			{
+			} else {
 				return getPrinterWidth(sPrinter);
 			}
 		}
@@ -350,12 +312,9 @@ namespace CmsCheckin.Classes
 		{
 			int pageHeight = 0;
 
-			if (Program.PrinterHeight.HasValue() && int.TryParse(Program.PrinterHeight, out pageHeight))
-			{
+			if (Program.settings.printerHeight.HasValue() && int.TryParse(Program.settings.printerHeight, out pageHeight)) {
 				return pageHeight;
-			}
-			else
-			{
+			} else {
 				return getPrinterHeight(sPrinter);
 			}
 		}
@@ -392,15 +351,11 @@ namespace CmsCheckin.Classes
 		{
 			string sKey = createLabelName(sName, iSize);
 
-			if (dLabelFormats.ContainsKey(sKey))
-			{
+			if (dLabelFormats.ContainsKey(sKey)) {
 				Debug.Print("Using cached label format for: " + sKey);
 				return dLabelFormats[sKey];
-			}
-			else
-			{
-				try
-				{
+			} else {
+				try {
 					Debug.Print("Fetching label format for: " + sKey);
 
 					var c = new NameValueCollection();
@@ -408,7 +363,7 @@ namespace CmsCheckin.Classes
 					c.Add("iSize", iSize.ToString());
 
 					var path = "Checkin2/FetchLabelFormat/";
-					var url = new Uri(new Uri(Program.URL), path);
+					var url = Program.settings.createURI(path);
 
 					var wc = Util.CreateWebClient();
 					var resp = wc.UploadValues(url, "POST", c);
@@ -418,8 +373,7 @@ namespace CmsCheckin.Classes
 					dLabelFormats.Add(sKey, ret);
 
 					return ret;
-				}
-				catch (Exception) { }
+				} catch (Exception) { }
 			}
 
 			return "";
@@ -429,15 +383,14 @@ namespace CmsCheckin.Classes
 		{
 			string sKey = createLabelName(sName, sSize);
 
-			try
-			{
+			try {
 				var c = new NameValueCollection();
 				c.Add("sName", sName);
 				c.Add("iSize", sSize);
 				c.Add("sFormat", sFormat);
 
 				var path = "Checkin2/SaveLabelFormat/";
-				var url = new Uri(new Uri(Program.URL), path);
+				var url = Program.settings.createURI(path);
 
 				var wc = Util.CreateWebClient();
 				var resp = wc.UploadValues(url, "POST", c);
@@ -448,18 +401,16 @@ namespace CmsCheckin.Classes
 				else dLabelFormats.Add(sKey, sFormat);
 
 				return ret;
-			}
-			catch (Exception) { }
+			} catch (Exception) { }
 
 			return 1;
 		}
 
 		public static string[] fetchLabelList()
 		{
-			try
-			{
+			try {
 				var path = "Checkin2/FetchLabelList/";
-				var url = new Uri(new Uri(Program.URL), path);
+				var url = Program.settings.createURI(path);
 
 				var wc = Util.CreateWebClient();
 				var resp = wc.DownloadData(url);
@@ -467,8 +418,7 @@ namespace CmsCheckin.Classes
 				string ret = Encoding.ASCII.GetString(resp);
 
 				return ret.Split(new char[] { ',' });
-			}
-			catch (Exception) { }
+			} catch (Exception) { }
 
 			return null;
 		}

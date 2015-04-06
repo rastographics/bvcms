@@ -111,6 +111,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Binaries\DirectShowLib-2005.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -143,6 +146,7 @@
     <Compile Include="BuildingAttendant.Designer.cs">
       <DependentUpon>BuildingAttendant.cs</DependentUpon>
     </Compile>
+    <Compile Include="Classes\BaseMessage.cs" />
     <Compile Include="Classes\Capture.cs" />
     <Compile Include="BuildingChooseActivities.cs">
       <SubType>Form</SubType>
@@ -157,12 +161,14 @@
       <DependentUpon>BuildingAddGuests.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\BaseBuildingInfo.cs" />
+    <Compile Include="Classes\CheckInSetting.cs" />
     <Compile Include="Classes\LabelEntryBase.cs" />
     <Compile Include="Classes\LabelEntryFormat.cs" />
     <Compile Include="Classes\LabelPage.cs" />
     <Compile Include="Classes\LabelEntry.cs" />
     <Compile Include="Classes\LabelSet.cs" />
     <Compile Include="Classes\PrinterHelper.cs" />
+    <Compile Include="Classes\Settings.cs" />
     <Compile Include="CommonKeyboard.cs">
       <SubType>Form</SubType>
     </Compile>

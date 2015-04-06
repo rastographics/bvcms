@@ -736,7 +736,7 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(790, 248);
+			this.ClientSize = new System.Drawing.Size(790, 246);
 			this.Controls.Add(this.brbrace);
 			this.Controls.Add(this.blbrace);
 			this.Controls.Add(this.bequal);
@@ -786,7 +786,6 @@
 			this.Controls.Add(this.brshift);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "CommonKeyboard";
-			this.Text = "CommonKeyboard";
 			this.ResumeLayout(false);
 
 		}

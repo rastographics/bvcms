@@ -132,6 +132,7 @@
 			this.label2.TabIndex = 5;
 			this.label2.Text = "https://";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.label2.Click += new System.EventHandler(this.onProtocolClick);
 			// 
 			// label3
 			// 
@@ -152,6 +153,7 @@
 			this.LoginButton.TabIndex = 11;
 			this.LoginButton.Text = "Login";
 			this.LoginButton.UseVisualStyleBackColor = true;
+			this.LoginButton.Click += new System.EventHandler(this.onLoginClick);
 			// 
 			// Login
 			// 

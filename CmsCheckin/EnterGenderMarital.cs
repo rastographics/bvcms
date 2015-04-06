@@ -25,29 +25,29 @@ namespace CmsCheckin
 			zip.Text = home.zip.textBox1.Text;
 			allergies.Text = home.allergy.textBox1.Text;
 
-			if (Program.AskGrade)
+			if (Program.settings.askGrade)
 				grade.Text = home.grade.textBox1.Text;
 
-			if (Program.AskEmFriend)
+			if (Program.settings.askFriend)
 			{
 				ParentName.Text = home.parent.textBox1.Text;
 				EmFriend.Text = home.emfriend.textBox1.Text;
 				EmPhone.Text = home.emphone.textBox1.Text;
 			}
 
-			if (Program.AskChurchName)
+			if (Program.settings.askChurchName)
 				churchname.Text = home.church.textBox1.Text;
 
-			ActiveOther.Visible = Program.AskChurch;
-			churchname.Visible = Program.AskChurchName;
-			churchnameLab.Visible = Program.AskChurchName;
-			emfriendlab.Visible = Program.AskEmFriend;
-			emphonelab.Visible = Program.AskEmFriend;
-			emergencylab.Visible = Program.AskEmFriend;
-			EmPhone.Visible = Program.AskEmFriend;
-			EmFriend.Visible = Program.AskEmFriend;
-			grade.Visible = Program.AskGrade;
-			gradelab.Visible = Program.AskGrade;
+			ActiveOther.Visible = Program.settings.askChurch;
+			churchname.Visible = Program.settings.askChurchName;
+			churchnameLab.Visible = Program.settings.askChurchName;
+			emfriendlab.Visible = Program.settings.askFriend;
+			emphonelab.Visible = Program.settings.askFriend;
+			emergencylab.Visible = Program.settings.askFriend;
+			EmPhone.Visible = Program.settings.askFriend;
+			EmFriend.Visible = Program.settings.askFriend;
+			grade.Visible = Program.settings.askGrade;
+			gradelab.Visible = Program.settings.askGrade;
 
 			if (Marital == 0 && dob.Text.Age().ToInt() <= 16)
 				single.Checked = true;
@@ -202,7 +202,7 @@ namespace CmsCheckin
 				sb.AppendLine("first name needed");
 			if (!last.Text.HasValue())
 				sb.AppendLine("last name needed");
-			if (Program.AskChurch && ActiveOther.CheckState == CheckState.Indeterminate)
+			if (Program.settings.askChurch && ActiveOther.CheckState == CheckState.Indeterminate)
 				sb.AppendLine("Active Other Church needed");
 			if (sb.Length > 0)
 			{

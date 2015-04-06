@@ -49,7 +49,7 @@ namespace CmsCheckin
 
 		private void CheckServer()
 		{
-			int iLabelSize = PrinterHelper.getPageHeight(Program.Printer);
+			int iLabelSize = PrinterHelper.getPageHeight(Program.settings.printer);
 
 			timer1.Stop();
 			Countdown.Text = "Checking...";
