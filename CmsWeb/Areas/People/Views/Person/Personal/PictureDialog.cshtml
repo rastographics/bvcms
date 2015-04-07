@@ -1,26 +1,42 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
-           @{
-               var canedit = Model.Person.CanUserEditFamilyAddress;
-           }
-<form id="picture-modal" action="/Person2/UploadPicture/@Model.PeopleId" method="post" enctype="multipart/form-data" class="modal fade hide">
-    <div class="modal-header">
-        <button class="close" data-dismiss="modal" type="button" aria-hidden="true"><i class="fa fa-times"></i></button>
-        <h3>Photo</h3>
+@{
+    var canedit = Model.Person.CanUserEditFamilyAddress;
+}
+<div class="modal-dialog">
+    <div class="modal-content">
+        <form id="picture-modal" action="/Person2/UploadPicture/@Model.PeopleId" method="post" enctype="multipart/form-data">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Photo</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="text-center">
+                            <a href="@Model.Picture.LargeUrl" target="_blank"><img src="@Model.Picture.SmallUrl" alt="" class="img-thumbnail"></a>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <a class="btn btn-default btn-block" href="@Model.Picture.LargeUrl" target="_blank"><i class="fa fa-picture-o"></i>&nbsp;&nbsp;View Full Image</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a id="refresh-thumbnail" href="/Person2/RefreshThumbnail/@Model.PeopleId" data-dismiss="modal" class="btn btn-default btn-block"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Refresh Thumbnail</a>
+                        }
+                        <a id="delete-picture" href="/Person2/DeletePicture/@Model.PeopleId" class="btn btn-danger btn-block"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <hr/>
+                        <label for="picture">Upload new photo</label>
+                        <input type="file" name="picture" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <input type="submit" class="btn btn-primary" value="Upload" />
+            </div>
+        </form>
     </div>
-    <div class="modal-body">
-        <a href="@Model.Picture.LargeUrl" target="_blank"><img src="@Model.Picture.SmallUrl" alt=""> View full image</a>
-        <fieldset class="">
-            <label>Upload new photo</label>
-            <input type="file" name="picture">
-        </fieldset>
-    </div>
-    <div class="modal-footer">
-        @if (User.IsInRole("Admin"))
-        {
-        <a id="refresh-thumbnail" href="/Person2/RefreshThumbnail/@Model.PeopleId" data-dismiss="modal">refresh thumbnail</a>
-        }
-        <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-        <a id="delete-picture" href="/Person2/DeletePicture/@Model.PeopleId" class="btn btn-danger">Delete</a>
-        <input type="submit" class="btn btn-primary" value="Upload" />
-    </div>
-</form>
+</div>

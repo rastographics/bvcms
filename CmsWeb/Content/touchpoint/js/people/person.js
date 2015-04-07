@@ -65,12 +65,19 @@
     $('body').on('click', '#deletePerson', function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
-        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
-            if (result === true) {
-                $.post(href, {}, function (ret) {
-                    window.location = ret;
-                });
-            }
+
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post(href, {}, function (ret) {
+                window.location = ret;
+            });
         });
     });
 
@@ -80,19 +87,7 @@
             var f = $(this);
             $('#empty-dialog').html(f);
             $('#empty-dialog').modal("show");
-            //var div = $(this);
-            //var dialog = div.find('#edit-address');
-            //console.log(dialog);
-            //var f = div.find("form");
-
-            //$('#empty-dialog').html(dialog);
-            //$('#empty-dialog').modal("show");
-
-            //f.on('hidden', function () {
-            //    div.remove();
-            //    dialog.remove();
-            //});
-
+            
             f.on("click", "a.clear-address", function () {
                 $("#AddressLineOne").val("");
                 $("#AddressLineTwo").val("");
@@ -112,6 +107,10 @@
                     $("#profile-header").html(ret).ready(SetProfileEditable);
                 });
             });
+
+            $('#empty-dialog').on('hidden', function () {
+                $('#empty-dialog').remove();
+            });
         });
     });
 
@@ -119,24 +118,37 @@
         ev.preventDefault();
         $("<div />")
             .load($(this).attr("href"), {}, function () {
-                var d = $(this);
-                var f = d.find("form");
-                f.modal("show");
-                f.on('hidden', function () {
-                    d.remove();
-                    f.remove();
+                var div = $(this);
+                var dialog = div.find("div.modal-dialog");
+                var f = div.find("form");
+
+                $('#empty-dialog').html(dialog);
+                $('#empty-dialog').modal("show");
+                dialog.on('hidden', function () {
+                    div.remove();
+                    dialog.remove();
                 });
+
                 $("#delete-picture").click(function (ev) {
                     ev.preventDefault();
                     var a = this;
-                    bootbox.confirm("Are you sure you want to delete this picture?", function (result) {
-                        if (result === true) {
-                            f.attr("action", a.href);
-                            f.submit();
-                        }
+
+                    swal({
+                        title: "Are you sure?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: false
+                    },
+                    function () {
+                        f.attr("action", a.href);
+                        f.submit();
                     });
+
                     return false;
                 });
+
                 $("#refresh-thumbnail").click(function (ev) {
                     ev.preventDefault();
                     var a = this;
@@ -149,33 +161,45 @@
 
     $('body').on('click', '#family_related a.edit', function (ev) {
         ev.preventDefault();
-        $("<div class='modal fade hide' />").load($(this).attr("href"), {}, function () {
-            var modal = $(this);
-            modal.modal("show");
-            modal.on('shown', function () {
-                modal.find("textarea").focus();
+        $("<div />").load($(this).attr("href"), {}, function () {
+            var div = $(this);
+            var dialog = div.find('div.modal-dialog');
+            $('#empty-dialog').html(dialog);
+            $('#empty-dialog').modal("show");
+
+            $('#empty-dialog').on('shown', function () {
+                dialog.find("textarea").focus();
             });
-            modal.on('hidden', function () {
+            $('#empty-dialog').on('hidden', function () {
                 $(this).remove();
             });
-            modal.on("click", "a.save", function (e) {
+            $('#empty-dialog').on("click", "a.save", function (e) {
                 e.preventDefault();
-                $.post($(this).attr("href"), { value: modal.find("textarea").val() }, function (ret) {
+                $.post($(this).attr("href"), { value: dialog.find("textarea").val() }, function (ret) {
                     $("#related-families-div").html(ret);
-                    modal.modal("hide");
+                    $('#empty-dialog').modal("hide");
                 });
             });
-            modal.on("click", "a.delete", function (e) {
+            $('#empty-dialog').on("click", "a.delete", function (e) {
                 e.preventDefault();
                 var a = $(this);
-                bootbox.confirm("Are you sure you want to remove this relationship?", function (result) {
-                    if (result === true)
-                        $.post(a.attr("href"), {}, function (ret) {
-                            $("#related-families-div").html(ret);
-                            modal.modal("hide");
-                        });
-                });
-                return false;
+
+                swal({
+                    title: "Are you sure?",
+                    text: "This will remove the family relationship.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+               function () {
+                   $.post(a.attr("href"), {}, function (ret) {
+                       $("#related-families-div").html(ret);
+                       $('#empty-dialog').modal("hide");
+                   });
+               });
+               return false;
             });
         });
     });

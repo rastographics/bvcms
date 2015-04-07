@@ -45,10 +45,10 @@
                     @Html.EditorFor(m => m.ToDt)
                 </div>
                 <div class="col-sm-4">
-                    @(Model.Preferred ? Html.DisplayFor(m => m.Preferred) : Html.EditorFor(m => m.Preferred))
+                    @Html.DisplayFor(m => m.ResCode)
                 </div>
                 <div class="col-sm-4">
-                    @Html.DisplayFor(m => m.ResCode)
+                    @(Model.Preferred ? Html.DisplayFor(m => m.Preferred) : Html.EditorFor(m => m.Preferred))
                 </div>
                 <div class="col-sm-4">
                     <div class="pull-right">

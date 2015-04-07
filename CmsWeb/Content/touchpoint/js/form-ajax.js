@@ -12,7 +12,7 @@
         $.InitializeDateElements();
     };
 
-    $('body').on('click', 'ul.nav-tabs a.ajax,a.ajax.ui-tabs-anchor, ul.nav-pills a.ajax,a.ajax.ui-tabs-anchor', function (event) {
+    $('body').on('click', 'ul.nav-tabs a.ajax, a.ajax.ui-tabs-anchor, ul.nav-pills a.ajax, a.ajax.ui-tabs-anchor', function (event) {
         var $this = $(this);
         var alreadyClicked = $this.data('clicked');
         if (alreadyClicked) {
@@ -24,48 +24,52 @@
         var $form = d.find("form.ajax");
         var postdata = $form.serialize();
         var url = d.data("link");
-        if (!d.hasClass("loaded"))
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: postdata,
-                beforeSend: function () {
-                    $.block();
-                },
-                complete: function () {
-                    $.unblock();
-                },
-                success: function (data, status) {
-                    $.unblock();
-                    d.addClass("loaded");
-                    $('select.nav-select-pills').val(state);
-                    d.html(data).ready(function () {
-                        if (d.data("init")) {
-                            var temp = d.data("init").split(",");
-                            for (var i in temp)
-                                if (temp.hasOwnProperty(i))
-                                    $.InitFunctions[temp[i]]();
-                        }
-                        if (d.data("init2"))
-                            $.InitFunctions[d.data("init2")]();
-                        var $form2 = d.find("form.ajax");
-                        if ($form2.length > 0)
-                            $form = $form2;
-                        if ($form.data("init")) {
-                            var t = $form.data("init").split(",");
-                            for (var ii in t)
-                                if (t.hasOwnProperty(ii))
-                                    $.InitFunctions[t[ii]]();
-                        }
-                        if ($form.data("init2"))
-                            $.InitFunctions[$form.data("init2")]();
-                    });
-                },
-                error: function (xhr, ajaxOptions, thrownError) {
-                    $.unblock();
-                    swal("Error!", thrownError, "error");
-                }
-            });
+        
+        if ($(url).length > 0) {
+            if (!d.hasClass("loaded")) {
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: postdata,
+                    beforeSend: function () {
+                        $.block();
+                    },
+                    complete: function () {
+                        $.unblock();
+                    },
+                    success: function (data, status) {
+                        $.unblock();
+                        d.addClass("loaded");
+                        $('select.nav-select-pills').val(state);
+                        d.html(data).ready(function () {
+                            if (d.data("init")) {
+                                var temp = d.data("init").split(",");
+                                for (var i in temp)
+                                    if (temp.hasOwnProperty(i))
+                                        $.InitFunctions[temp[i]]();
+                            }
+                            if (d.data("init2"))
+                                $.InitFunctions[d.data("init2")]();
+                            var $form2 = d.find("form.ajax");
+                            if ($form2.length > 0)
+                                $form = $form2;
+                            if ($form.data("init")) {
+                                var t = $form.data("init").split(",");
+                                for (var ii in t)
+                                    if (t.hasOwnProperty(ii))
+                                        $.InitFunctions[t[ii]]();
+                            }
+                            if ($form.data("init2"))
+                                $.InitFunctions[$form.data("init2")]();
+                        });
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        $.unblock();
+                        swal("Error!", thrownError, "error");
+                    }
+                });
+            }
+        }
         return true;
     });
 
