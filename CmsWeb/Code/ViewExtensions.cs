@@ -842,6 +842,10 @@ namespace CmsWeb
 
         public static HtmlString Markdown(this HtmlHelper helper, string text)
         {
+            return Markdown(text);
+        }
+        public static HtmlString Markdown(string text)
+        {
             var md = new Markdown();
             string output = md.Transform(text.Trim());
             return new HtmlString(output);
