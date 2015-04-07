@@ -557,6 +557,11 @@ $(function () {
         height: 550,
         modal: true
     });
+    $("#Schedule_Value").live("change", function () {
+        var ss = $(this).val().split(',');
+        $(".modal #MeetingDate").val(ss[0]);
+        $(".modal #AttendCredit_Value").val(ss[1]);
+    });
     $('#RollsheetLink').live("click", function (ev) {
         ev.preventDefault();
         $('#grouplabel').text("By Group");
