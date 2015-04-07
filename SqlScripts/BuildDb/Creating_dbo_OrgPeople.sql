@@ -84,16 +84,16 @@ RETURN
 	( 
 		(ISNULL(LEN(@sgfilter), 0) > 0 AND @sgfilter NOT LIKE 'ALL:%' AND @sgfilter <> 'NONE'
 			AND EXISTS(SELECT NULL FROM split(tt.Groups, CHAR(10)) mt
-			    WHERE EXISTS(SELECT NULL FROM split(@sgfilter, ',') pf 
-					WHERE pf.value NOT LIKE '-%' AND mt.Value LIKE (pf.Value + '%')
+			    WHERE EXISTS(SELECT NULL FROM split(@sgfilter, ';') pf 
+					WHERE pf.value NOT LIKE '-%' AND mt.Value LIKE (REPLACE(pf.Value, '*', '%'))
 				)
 			)
 		)
 		OR (@sgfilter LIKE 'ALL:%' 
-			AND (SELECT COUNT(*) FROM split(SUBSTRING(@sgfilter, 5, 200), ',') pf
+			AND (SELECT COUNT(*) FROM split(SUBSTRING(@sgfilter, 5, 200), ';') pf
 				 WHERE pf.value NOT LIKE '-%'
 			) = (SELECT COUNT(*) FROM split(Groups, CHAR(10)) mt
-				 JOIN split(SUBSTRING(@sgfilter, 5, 200), ',') pf ON  mt.Value LIKE (pf.Value + '%')
+				 JOIN split(SUBSTRING(@sgfilter, 5, 200), ';') pf ON  mt.Value LIKE (REPLACE(pf.Value, '*', '%'))
 				 WHERE pf.value NOT LIKE '-%'
 			)
 		)
@@ -101,13 +101,13 @@ RETURN
 		OR @sgfilter IS NULL -- no filter
 		OR LEN(@sgfilter) = 0 -- filter is empty
 		-- check to see if they are all exclusion small groups
-		OR NOT EXISTS(SELECT NULL FROM split(@sgfilter, ',') pf WHERE pf.value NOT LIKE '-%')
+		OR NOT EXISTS(SELECT NULL FROM split(@sgfilter, ';') pf WHERE pf.value NOT LIKE '-%')
 	)
-	AND (NOT EXISTS(SELECT NULL FROM split(@sgfilter, ',') pf WHERE pf.value LIKE '-%')
+	AND (NOT EXISTS(SELECT NULL FROM split(@sgfilter, ';') pf WHERE pf.value LIKE '-%')
 		OR (ISNULL(LEN(@sgfilter), 0) > 0 AND @sgfilter NOT LIKE 'ALL:%' AND @sgfilter <> 'NONE' 
 			AND NOT EXISTS(SELECT NULL FROM split(Groups, CHAR(10)) mt
-			    WHERE EXISTS(SELECT NULL FROM split(@sgfilter, ',') pf 
-					WHERE pf.value LIKE '-%' AND mt.Value LIKE SUBSTRING(pf.Value,2,200) + '%'
+			    WHERE EXISTS(SELECT NULL FROM split(@sgfilter, ';') pf 
+					WHERE pf.value LIKE '-%' AND mt.Value LIKE SUBSTRING(pf.Value,2,200)
 				)
 			)
 		)

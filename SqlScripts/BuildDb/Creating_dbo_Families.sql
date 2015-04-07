@@ -15,7 +15,7 @@ CREATE TABLE [dbo].[Families]
 [CityName] [nvarchar] (30) NULL,
 [StateCode] [nvarchar] (30) NULL,
 [ZipCode] [nvarchar] (15) NULL CONSTRAINT [DF_Families_ZipCode] DEFAULT (''),
-[CountryName] [nvarchar] (30) NULL,
+[CountryName] [nvarchar] (40) NULL,
 [StreetName] [nvarchar] (40) NULL,
 [HomePhone] [nvarchar] (20) NULL,
 [ModifiedBy] [int] NULL,
