@@ -100,9 +100,9 @@ namespace CmsData
                     CurrentGroups = Util2.CurrentGroups;
                     CurrentGroupsPrefix = Util2.CurrentGroupsPrefix;
                     CurrentGroupsMode = Util2.CurrentGroupsMode;
-                    CurrentPeopleId = Util2.CurrentPeopleId;
-                    CurrentTagOwnerId = Util2.CurrentTagOwnerId;
                 }
+                CurrentPeopleId = Util2.CurrentPeopleId;
+                CurrentTagOwnerId = Util2.CurrentTagOwnerId;
                 CurrentTagName = Util2.CurrentTagName;
                 OrgMembersOnly = Util2.OrgMembersOnly;
                 OrgLeadersOnly = Util2.OrgLeadersOnly;

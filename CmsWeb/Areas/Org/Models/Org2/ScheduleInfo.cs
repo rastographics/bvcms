@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.Org2.Models
             get
             {
                 var dt = PrevMeetingTime;
-                return "{0},{1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCredit);
+                return "{0} {1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCredit.Value);
             }
         }
         public string ValueNext
@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Org2.Models
             get
             {
                 var dt = NextMeetingTime;
-                return "{0},{1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCredit);
+                return "{0} {1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCredit.Value);
             }
         }
 
