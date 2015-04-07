@@ -22,17 +22,17 @@
             text-decoration: line-through;
         }
         .profile-block {
-            margin-bottom: 18px; 
+            margin-bottom: 18px;
             text-align: center;
         }
         .profile-photo {
-            display: inline-block; 
-            margin-bottom: 10px; 
-            border-radius: 999999px; 
-            background-color: #fff; 
-            border: 1px solid #e6e6e6; 
-            padding-top: 5px; 
-            padding-left:5px; 
+            display: inline-block;
+            margin-bottom: 10px;
+            border-radius: 999999px;
+            background-color: #fff;
+            border: 1px solid #e6e6e6;
+            padding-top: 5px;
+            padding-left:5px;
             padding-right: 5px;
         }
         #profile-portrait {
@@ -43,6 +43,33 @@
             background-repeat: no-repeat;
             background-size: cover;
             background-position: top;
+        }
+        .family-block {
+            text-align: center;
+            width: 100%;
+        }
+        .family-photo {
+            display: inline-block;
+            background-color: #fff;
+            border: 1px solid #e6e6e6;
+            padding-top: 5px;
+            padding-left:5px;
+            padding-right: 5px;
+            width: 100%;
+        }
+        #family-portrait {
+            background-image: url(@Model.FamilyPicture.MediumUrl);
+            height: 230px;
+            width: 100%;
+            display: inline-block;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: top;
+        }
+        @@media (max-width: 768px) {
+            .family-photo {
+                width: 180px !important;
+            }
         }
         .edit-inline-label:after {
             display: inline-block;
@@ -77,11 +104,11 @@
         <div id="sidebar">
             @Html.Partial("Family/Members", Model.FamilyModel)
             @Html.Partial("Family/Related", Model.FamilyModel)
+            @Html.Partial("Family/Photo", Model)
             @if (User.IsInRole("Access"))
             {
                 @Html.Partial("Family/ExtraValues", Model)
             }
-            @Html.Partial("Family/Photo", Model)
         </div>
     </div>
     <div class="col-sm-8 col-md-9 col-lg-10">
@@ -182,7 +209,7 @@
         <div class="dropdown">
             <i class="fa @icon fa-fw"></i>
             <a href="#" class="dropdown-toggle @a.BadAddressClass" data-toggle="dropdown">@addr</a>&nbsp;&nbsp;
-            <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr editable-click @editHide"><i class="fa fa-pencil"></i></a>
+            <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr @editHide"><i class="fa fa-pencil"></i></a>
             <ul class="dropdown-menu">
                 <li class="@editHide"><a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr">Edit Address</a></li>
                 <li><a href="http://www.google.com/maps?q=@addr" target="_blank">Google Map</a></li>

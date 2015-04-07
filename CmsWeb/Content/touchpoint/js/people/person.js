@@ -7,6 +7,49 @@
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
 
+    $('#family-members-section').on('hide.bs.collapse', function () {
+        toggleIcons($('#family-members-collapse i'), false);
+    });
+
+    $('#family-members-section').on('show.bs.collapse', function () {
+        toggleIcons($('#family-members-collapse i'), true);
+    });
+
+    $('#related-family-section').on('hide.bs.collapse', function () {
+        toggleIcons($('#related-family-collapse i'), false);
+    });
+
+    $('#related-family-section').on('show.bs.collapse', function () {
+        toggleIcons($('#related-family-collapse i'), true);
+    });
+
+    $('#family-picture-section').on('hide.bs.collapse', function () {
+        toggleIcons($('#family-picture-collapse i'), false);
+    });
+
+    $('#family-picture-section').on('show.bs.collapse', function () {
+        toggleIcons($('#family-picture-collapse i'), true);
+    });
+
+    function toggleIcons(ele, expand) {
+        if (expand) {
+            $(ele).removeClass("fa-chevron-circle-right").addClass('fa-chevron-circle-down');
+        } else {
+            $(ele).removeClass("fa-chevron-circle-down").addClass('fa-chevron-circle-right');
+        }
+    }
+
+    var xs = $('.device-xs').is(':visible');
+    if (xs) {
+        $('#family-members-section').collapse('hide');
+        $('#related-family-section').collapse('hide');
+        $('#family-picture-section').collapse('hide');
+    } else {
+        $('#family-members-section').collapse('show');
+        $('#related-family-section').collapse('show');
+        $('#family-picture-section').collapse('show');
+    }
+
     $('body').on('click', '#split', function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
@@ -33,14 +76,23 @@
 
     $('body').on('click', 'a.editaddr', function (ev) {
         ev.preventDefault();
-        $("<div />").load($(this).attr("href"), {}, function () {
-            var d = $(this);
-            var f = d.find("form");
-            f.modal("show");
-            f.on('hidden', function () {
-                d.remove();
-                f.remove();
-            });
+        $("<form class='validate ajax' />").load($(this).attr("href"), {}, function () {
+            var f = $(this);
+            $('#empty-dialog').html(f);
+            $('#empty-dialog').modal("show");
+            //var div = $(this);
+            //var dialog = div.find('#edit-address');
+            //console.log(dialog);
+            //var f = div.find("form");
+
+            //$('#empty-dialog').html(dialog);
+            //$('#empty-dialog').modal("show");
+
+            //f.on('hidden', function () {
+            //    div.remove();
+            //    dialog.remove();
+            //});
+
             f.on("click", "a.clear-address", function () {
                 $("#AddressLineOne").val("");
                 $("#AddressLineTwo").val("");

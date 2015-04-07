@@ -1,14 +1,10 @@
 ﻿@using CmsWeb.Areas.People.Models
 @model PersonModel
 <div>
-    <div class="sidebar_title group inactive">
-        <a href="/Person2/@Model.PeopleId?v=@DateTime.Now.Second#familyextravalues">
-            @if (Model.Person.CanUserEditAll)
-            {
-            <i class="fa fa-plus"></i>
-            }
-            Family Extra Values
-        </a>
+    <div class="row">
+        <div class="col-sm-12">
+            <a href="/Person2/@Model.PeopleId?v=@DateTime.Now.Second#familyextravalues" class="btn btn-default btn-sm btn-block"><i class="fa fa-search"></i>&nbsp;&nbsp;Family Extra Values</a>
+        </div>
     </div>
 </div>
 
