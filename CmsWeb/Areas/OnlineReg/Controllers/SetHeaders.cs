@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
@@ -8,6 +9,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 {
     public partial class OnlineRegController
     {
+        private Dictionary<int, Settings> _settings;
+        public Dictionary<int, Settings> settings
+        {
+            get
+            {
+                if (_settings == null)
+                    _settings = HttpContext.Items["RegSettings"] as Dictionary<int, Settings>;
+                return _settings;
+            }
+        }
+
         private void SetHeaders(OnlineRegModel m2)
         {
             ViewBag.Url = m2.URL;

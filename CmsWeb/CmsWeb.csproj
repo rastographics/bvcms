@@ -332,6 +332,7 @@
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelQuestions.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelForFind.cs" />
@@ -2328,7 +2329,6 @@
     <Content Include="Areas\Finance\Views\PostBundle\Row.cshtml" />
     <Content Include="Areas\Finance\Views\Contributions\Index.cshtml" />
     <Content Include="Areas\Finance\Views\Contributions\Results.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Current.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Failed.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageGiving\EmailConfirmation.cshtml" />
     <Content Include="ConnectionStrings.config">

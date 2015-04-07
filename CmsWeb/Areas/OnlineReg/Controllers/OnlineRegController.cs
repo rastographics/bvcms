@@ -1,11 +1,9 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
 using CmsData.Registration;
-using CmsWeb.Controllers;
 using CmsWeb.Models;
 using Elmah;
 using UtilityExtensions;
@@ -32,22 +30,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
             Response.NoCache();
-            try
-            {
-                var m = new OnlineRegModel(Request, id, testing, email, login, source);
-                m.PrepareMissionTrip(gsid, goerid);
-                SetHeaders(m);
+            var m = new OnlineRegModel(Request, id, testing, email, login, source);
+            m.PrepareMissionTrip(gsid, goerid);
+            SetHeaders(m);
 
-                var pid = m.CheckRegisterTag(registertag);
+            var pid = m.CheckRegisterTag(registertag);
 
-                return pid > 0 
-                    ? RouteRegistration(m, pid, showfamily) 
-                    : View(m);
-            }
-            catch (Exception ex)
-            {
-                return Message(ex.Message);
-            }
+            return pid > 0
+                ? RouteRegistration(m, pid, showfamily)
+                : View(m);
         }
 
         // authenticate user
@@ -66,7 +57,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("/Person2/" + Util.UserPeopleId);
 
             var route = RouteSpecialLogin(m);
-            if(route != null)
+            if (route != null)
                 return route;
 
             if (m.UserSelectsOrganization())
@@ -76,6 +67,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("login");
             return FlowList(m, "Login");
         }
+
         // Register without logging in
         [HttpPost]
         public ActionResult NoLogin(OnlineRegModel m)
@@ -85,6 +77,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("nologin");
             return FlowList(m, "NoLogin");
         }
+
         [HttpPost]
         public ActionResult YesLogin(OnlineRegModel m)
         {
@@ -320,6 +313,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.List[id].ValidateModelQuestions(ModelState, id);
             return FlowList(m, "SubmitOtherInfo");
         }
+
         [HttpPost]
         public ActionResult AddAnotherPerson(OnlineRegModel m)
         {
@@ -354,6 +348,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
             return FlowList(m, "AddAnotherPerson");
         }
+
         [HttpPost]
         public ActionResult AskDonation(OnlineRegModel m)
         {
@@ -465,42 +460,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Json(null);
             return Json(new { city = z.City.Trim(), state = z.State });
         }
-        private Dictionary<int, Settings> _settings;
-        public Dictionary<int, Settings> settings
-        {
-            get
-            {
-                if (_settings == null)
-                    _settings = HttpContext.Items["RegSettings"] as Dictionary<int, Settings>;
-                return _settings;
-            }
-        }
-        public class CurrentRegistration
-        {
-            public string OrgName { get; set; }
-            public int OrgId { get; set; }
-            public string RegType { get; set; }
-        }
-        public ActionResult Current()
-        {
-            var q = from o in DbUtil.Db.Organizations
-                    where o.LastMeetingDate == null || o.LastMeetingDate < DateTime.Today
-                    where o.RegistrationTypeId > 0
-                    where o.OrganizationStatusId == 30
-                    where !(o.RegistrationClosed ?? false)
-                    select new { o.FullName2, o.OrganizationId, o.RegistrationTypeId, o.LastMeetingDate, o.OrgPickList };
-            var list = q.ToList();
-            var q2 = from i in list
-                     where !list.Any(ii => (ii.OrgPickList ?? "0").Split(',').Contains(i.OrganizationId.ToString()))
-                     orderby i.OrganizationId
-                     select new CurrentRegistration
-                              {
-                                  OrgName = i.FullName2,
-                                  OrgId = i.OrganizationId,
-                                  RegType = RegistrationTypeCode.Lookup(i.RegistrationTypeId)
-                              };
-            return View(q2);
-        }
+
         public ActionResult Timeout(string ret)
         {
             FormsAuthentication.SignOut();
@@ -522,71 +482,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return ErrorResult(m, ex, "In " + function + "<br>" + ex.Message);
             }
         }
-
-        [HttpGet]
-        public ActionResult Continue(int id)
-        {
-            var m = OnlineRegModel.GetRegistrationFromDatum(id);
-            if (m == null)
-                return Message("no existing registration available");
-            var n = m.List.Count - 1;
-            m.HistoryAdd("continue");
-            m.UpdateDatum();
-            SetHeaders(m);
-            return View("Index", m);
-        }
-        [HttpGet]
-        public ActionResult StartOver(int id)
-        {
-            var pid = (int)TempData["er"];
-            if (pid == 0)
-                return Message("not logged in");
-            var m = OnlineRegModel.GetRegistrationFromDatum(id);
-            if (m == null)
-                return Message("no existing registration available");
-            m.HistoryAdd("startover");
-            m.UpdateDatum(abandoned: true);
-            return Redirect(m.URL);
-        }
-        [HttpPost]
-        public ActionResult SaveProgress(OnlineRegModel m)
-        {
-            m.HistoryAdd("saveprogress");
-            if (m.UserPeopleId == null)
-                m.UserPeopleId = Util.UserPeopleId;
-            m.UpdateDatum();
-            var p = m.UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(m.UserPeopleId.Value) : m.List[0].person;
-
-            if (p == null)
-                return Content("We have not found your record yet, cannot save progress, sorry");
-            if (m.masterorgid == null && m.Orgid == null)
-                return Content("Registration is not far enough along to save, sorry.");
-
-            var registerLink = EmailReplacements.CreateRegisterLink(m.masterorgid ?? m.Orgid, "Resume registration for {0}".Fmt(m.Header));
-            var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
-            var notifyids = DbUtil.Db.NotifyIds((m.masterorgid ?? m.Orgid).Value, (m.masterorg ?? m.org).NotifyIds);
-            DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
-
-            /* We use Content as an ActionResult instead of Message because we want plain text sent back
-             * This is an HttpPost ajax call and will have a SiteLayout wrapping this.
-             */
-            return Content("We have saved your progress. An email with a link to finish this registration will come to you shortly.");
-        }
-        [HttpGet]
-        public ActionResult Existing(int id)
-        {
-            var pid = (int)TempData["er"];
-            if (pid == 0)
-                return Message("not logged in");
-            var m = OnlineRegModel.GetRegistrationFromDatum(id);
-            if (m == null)
-                return Message("no existing registration available");
-            if (m.UserPeopleId != m.Datum.UserPeopleId)
-                return Message("incorrect user");
-            TempData["er"] = pid;
-            return View(m);
-        }
-
 
     }
 }
