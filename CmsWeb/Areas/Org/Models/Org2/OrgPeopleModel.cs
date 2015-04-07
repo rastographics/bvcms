@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Web;
 using CmsData;
-using CmsWeb.Code;
 using CmsWeb.Models;
 using UtilityExtensions;
 using System.Web.Mvc;
@@ -201,14 +201,6 @@ namespace CmsWeb.Areas.Org2.Models
 
         public override IEnumerable<OrgPerson> DefineViewList(IQueryable<OrgPerson> q)
         {
-            //            if (ShowMinistryInfo)
-            //            {
-            //                var miq = from p in q
-            //                          let tab = "{0}-{1}".Fmt(p.Tab, p.PeopleId)
-            //                          join mi in DbUtil.Db.ViewMinistryInfos on p.PeopleId equals mi.PeopleId
-            //                          select new { tab, mi };
-            //                MinistryInfo = miq.ToDictionary(mm => mm.tab, mm => mm.mi);
-            //            }
             return q;
         }
 
@@ -223,8 +215,6 @@ namespace CmsWeb.Areas.Org2.Models
                        Value = mt.Id.ToString()
                    };
         }
-
-        //public Dictionary<string, MinistryInfo> MinistryInfo;
 
         public string GroupOptions
         {
@@ -269,15 +259,6 @@ namespace CmsWeb.Areas.Org2.Models
         public string FilterIndActive { get { return FilterIndividuals ? "active" : ""; } }
 
         public int? Id { get; set; }
-//        {
-//            get { return Org.OrganizationId; }
-//            set
-//            {
-//                if (Org != null) 
-//                    return;
-//                Org = DbUtil.Db.LoadOrganizationById(value);
-//            }
-//        }
         public string GroupSelect { get; set; }
         public string NameFilter { get; set; }
         public string SgFilter { get; set; }
@@ -286,5 +267,35 @@ namespace CmsWeb.Areas.Org2.Models
         public bool FilterTag { get; set; }
         public bool FilterIndividuals { get; set; }
         public bool ClearFilter { get; set; }
+
+        public HtmlString NameFilterHelp
+        {
+            get
+            {
+                return ViewExtensions2.Markdown(@"
+**Match a Name**
+
+* First and last name or just last name.
+* You can put just the first few letters of each.
+* PeopleId works too.
+");
+            }
+        }
+        public HtmlString SgFilterHelp
+        {
+            get
+            {
+                return ViewExtensions2.Markdown(@"
+**Match a sub-group name.**
+
+* Partial match just the first few letters of a sub-group when you follow with asterisk (`*`)
+* Lead with a minus sign (`-`) to exclude a sub-group.
+* Use a semi-colon (`;`) to separate multiple sub-groups.
+* `NONE` to find no sub-groups assigned.
+* `ALL:` to match people who are in each group specified.
+");
+            }
+        }
+
     }
 }

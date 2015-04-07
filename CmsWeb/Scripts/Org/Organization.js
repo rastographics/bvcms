@@ -68,7 +68,7 @@
                 break;
             default:
                 if (sg && sg !== "All:")
-                    sg = sg + ',';
+                    sg = sg + ';';
                 if ($("#excludesg").hasClass("active"))
                     t = '-' + t;
                 sg = sg + t;
@@ -791,6 +791,11 @@
     $.InitFunctions.ReloadPeople = function () {
         RebindMemberGrids();
     };
+    $("#Schedule_Value").live("change", function () {
+        var ss = $(this).val().split(',');
+        $(".modal #MeetingDate").val(ss[0]);
+        $(".modal #AttendCredit_Value").val(ss[1]);
+    });
 
     $("body").on("click", 'div.newitem > a', function (ev) {
         if (!$(this).attr("href"))

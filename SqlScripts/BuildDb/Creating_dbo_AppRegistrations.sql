@@ -1,4 +1,3 @@
-
 CREATE VIEW [dbo].[AppRegistrations]
 AS
 (
@@ -14,11 +13,12 @@ AS
 		,o.RegEnd
 	FROM dbo.Organizations o
 	JOIN dbo.ActiveRegistrations ON ActiveRegistrations.OrganizationId = o.OrganizationId
-	AND RegStart IS NOT NULL
-	AND RegEND > GETDATE()
-	AND o.OrganizationStatusId = 30
-)
+		AND RegStart IS NOT NULL
+		AND RegEND > GETDATE()
+		AND o.OrganizationStatusId = 30
+	WHERE ISNULL(o.AppCategory, '') <> 'Invitation Only'
 
+)
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
