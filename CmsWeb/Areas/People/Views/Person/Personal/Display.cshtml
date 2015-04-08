@@ -1,41 +1,98 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.People.Models.BasicPersonInfo
 <form class="ajax" method="post">
-  @FormAction()
-    <div class="row">
-        <div class="col-sm-3">
-            @Html.DisplayFor(m => m.TitleCode)
-            @Html.DisplayFor(m => m.FirstName)
-            @Html.DisplayFor(m => m.NickName)
-            @Html.DisplayFor(m => m.MiddleName)
-            @Html.DisplayFor(m => m.LastName)
-            @Html.DisplayFor(m => m.AltName)
-            @Html.DisplayFor(m => m.MaidenName)
-            @Html.DisplayFor(m => m.SuffixCode)
+    @FormAction()
+    <h4>General</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-lg-1">
+                @Html.DisplayFor(m => m.TitleCode)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.FirstName)
+            </div>
+            <div class="col-lg-2">
+                @Html.DisplayFor(m => m.MiddleName)
+            </div>
+            <div class="col-lg-5">
+                @Html.DisplayFor(m => m.LastName)
+            </div>
+            <div class="col-lg-1">
+                @Html.DisplayFor(m => m.SuffixCode)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.NickName)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.AltName)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.MaidenName)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.Gender)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.MaritalStatus)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.DOB, "Birthday")
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.WeddingDate)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.DeceasedDate, "DeceasedDate")
+            </div>
         </div>
-        <div class="col-sm-3">
-            @Html.DisplayFor(m => m.Gender)
-            @Html.DisplayFor(m => m.MaritalStatus)
-            @Html.DisplayFor(m => m.DOB, "Birthday")
-            @Html.DisplayFor(m => m.WeddingDate)
-            @Html.DisplayFor(m => m.DeceasedDate, "DeceasedDate")
-            @Html.DisplayFor(m => m.OccupationOther)
-            @Html.DisplayFor(m => m.EmployerOther)
-            @Html.DisplayFor(m => m.SchoolOther)
-            @Html.DisplayFor(m => m.Grade)
+    </div>
+    <h4>Employment / School</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-lg-4">
+                @Html.DisplayFor(m => m.OccupationOther)
+            </div>
+            <div class="col-lg-4">
+                @Html.DisplayFor(m => m.EmployerOther)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.SchoolOther)
+            </div>
+            <div class="col-lg-1">
+                @Html.DisplayFor(m => m.Grade)
+            </div>
         </div>
-        <div class="col-sm-3">
-            @Html.DisplayFor(m => m.EmailAddress)
-            @Html.DisplayFor(m => m.EmailAddress2)
-            @Html.DisplayFor(m => m.DoNotCallFlag, new { TrueValue = "No Calls", FalseValue = "N/A" })
-            @Html.DisplayFor(m => m.DoNotMailFlag, new { TrueValue = "No Mail", FalseValue = "N/A" })
-            @Html.DisplayFor(m => m.DoNotVisitFlag, new { TrueValue = "No Visit", FalseValue = "N/A" })
-        </div>
-        <div class="col-sm-3">
-            @Html.DisplayFor(m => m.CellPhone)
-            @Html.DisplayFor(m => m.WorkPhone)
-            @Html.DisplayFor(m => m.HomePhone)
-            @Html.DisplayFor(m => m.DoNotPublishPhones, new { TrueValue = "No Directories", FalseValue = "N/A" })
+    </div>
+    <h4>Communication</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-lg-6">
+                @Html.DisplayFor(m => m.EmailAddress)
+            </div>
+            <div class="col-lg-6">
+                @Html.DisplayFor(m => m.EmailAddress2)
+            </div>
+            <div class="col-lg-4">
+                @Html.DisplayFor(m => m.HomePhone)
+            </div>
+            <div class="col-lg-4">
+                @Html.DisplayFor(m => m.WorkPhone)
+            </div>
+            <div class="col-lg-4">
+                @Html.DisplayFor(m => m.CellPhone)
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.DoNotCallFlag, new { TrueValue = "No Calls", FalseValue = "N/A" })
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.DoNotMailFlag, new { TrueValue = "No Mail", FalseValue = "N/A" })
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.DoNotVisitFlag, new { TrueValue = "No Visit", FalseValue = "N/A" })
+            </div>
+            <div class="col-lg-3">
+                @Html.DisplayFor(m => m.DoNotPublishPhones, new { TrueValue = "No Directories", FalseValue = "N/A" })
+            </div>
         </div>
     </div>
     <p class="record_added muted">
@@ -47,7 +104,8 @@
       }
         </small>
     </p>
-  @FormAction()
+    @FormAction()
+    <br />
 </form>
 
 @helper FormAction()
@@ -59,5 +117,4 @@
             </div>
         </div>
     </div>
-    <br />
 }

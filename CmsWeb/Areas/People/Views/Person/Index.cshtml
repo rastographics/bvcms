@@ -18,8 +18,22 @@
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
     <style>
+        dt {
+            font-weight: normal !important;
+            color: #808080;
+        }
+        dd {
+            font-weight: 600 !important;
+            padding: 5px !important;
+            border: solid 1px #eee !important;
+            height: 32px !important;
+        }
         .badaddress {
             text-decoration: line-through;
+        }
+        #toolbar-container {
+            margin-left: 24px; 
+            margin-right: 20px;
         }
         .profile-block {
             margin-bottom: 18px;
@@ -70,6 +84,10 @@
             .family-photo {
                 width: 180px !important;
             }
+            #toolbar-container {
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
         }
         .edit-inline-label:after {
             display: inline-block;
@@ -100,6 +118,10 @@
                     <a href="@Model.Picture.LargeUrl" title="Click to see larger version" target="_blank"><div id="profile-portrait" class="img-circle"></div></a>
                 }
             </div>
+            @if (Model.Person.CanUserEditBasic)
+            {
+                <a class="personal-picture btn btn-default" href="/Person2/PictureDialog/@Model.PeopleId"><i class="fa fa-pencil"></i> Edit Picture</a>
+            }
         </div>
         <div id="sidebar">
             @Html.Partial("Family/Members", Model.FamilyModel)
@@ -112,7 +134,7 @@
         </div>
     </div>
     <div class="col-sm-8 col-md-9 col-lg-10">
-        <div style="margin-left: 24px; margin-right: 20px;">
+        <div id="toolbar-container">
             @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar.touch", Model.Users) : Html.Partial("Toolbar/ToolbarMyData.touch", Model.Users))
         </div>
         <h1 id="nameline" class="@(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">

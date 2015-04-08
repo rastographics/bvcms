@@ -1,16 +1,12 @@
 ﻿@model CmsWeb.Areas.People.Models.EmailInfo
-<div class="control-group">
-    @Html.LabelFor(m=> m, new { @class = "control-label nwrap"})
-    <div class="controls">
-        <p>
-            @if (Model.Send)
-            {
-                <span class="email_display">@Model.Address</span>
-            }
-            else
-            {
-                <del class="email_display">@Model.Address</del>
-            }
-        </p>
-    </div>
-</div>
+<dl>
+    <dt>@Html.DisplayNameFor(m => m)</dt>
+    @if (Model.Send)
+    {
+        <dd><span class="email_display">@Model.Address</span></dd>
+    }
+    else
+    {
+        <dd><del class="email_display">@Model.Address</del></dd>
+    }
+</dl>
