@@ -6,6 +6,7 @@ using IronPython.Modules;
 using UtilityExtensions;
 using System.Text;
 using System.Web;
+using CmsData.Codes;
 
 namespace CmsData.View
 {
@@ -45,6 +46,10 @@ namespace CmsData.View
             } 
         }
 
+        public string Group
+        {
+            get { return GroupCode == GroupSelectCode.Member ? "Member" : "NonMember"; }
+        }
         public string BirthDate
         {
             get { return Util.FormatBirthday( BirthYear, BirthMonth, BirthDay); }

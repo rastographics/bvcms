@@ -226,11 +226,6 @@ namespace CmsData
         {
             get { return UseNewOrg ? "/Org" : "/Organization"; }
         }
-        public static string OrgMemberDialog
-        {
-            get { return "/OrgMemberDialog"; }
-            //get { return UseNewOrg ? "/OrgMemberDialog" : "/OrgMemberDialog2"; }
-        }
 
         //        const string STR_ActiveOrganizationId = "ActiveOrganizationId";
         //        public static int? CurrentOrgId

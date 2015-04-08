@@ -4,9 +4,12 @@
     <h4>@Model.OrgName</h4>
 </div>
 <div class="modal-body">
-    <h5>Completed Donation From @Model.Name @Model.ToGoerName</h5>
+  <h5>Completed Donation From @Model.Name @Model.ToGoerName</h5>
+  @Html.HiddenFor(m => m.OrgId)
+  @Html.HiddenFor(m => m.PeopleId)
+  @Html.HiddenFor(m => m.Group)
 </div>
 <div class="modal-footer">
-    <a href="/OrgMemberDialog/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Continue</a>
+    <a href="/OrgMemberDialog/Display" class="btn ajax">Continue</a>
     <a data-dismiss="modal" class="btn close btn-success">Close</a>
 </div>
