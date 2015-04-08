@@ -1,14 +1,15 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
-<fieldset class="left-gutter margin-top">
-    <legend>Volunteer Approvals @FormAction()</legend>
-    <table class="table not-wide">
+@FormAction()
+<h4>Volunteer Approvals</h4>
+<div class="table-responsive">
+    <table class="table table-striped">
         <tr>
             <th>Approvals:</th>
             <td>
                 @foreach (var ck in Model.ApprovalList)
                 {
-                    <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled"/>
+                    <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled" />
                     @ck.Description<br />
                 }
             </td>
@@ -18,12 +19,18 @@
             <td colspan="2">@Model.V.ProcessedDate.FormatDate()</td>
         </tr>
     </table>
-</fieldset>
-
+</div>
+<br/>
 @helper FormAction()
 {
     if (User.IsInRole("ApplicationReview"))
-    { 
-    <a href="/Volunteering/@Model.V.PeopleId" class="btn pull-right">Manage</a>
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/Volunteering/@Model.V.PeopleId" class="btn btn-default">Manage</a>
+                </div>
+            </div>
+        </div>
     }
 }

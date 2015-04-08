@@ -15,7 +15,41 @@
     var ExtraMembershipDataLabel = DbUtil.Db.Setting("ExtraMembershipDataLabel", "Extra Membership Data");
     var NewMemberClassLabel = DbUtil.Db.Setting("NewMemberClassLabel", "New Member Class");
 }
-<form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable" data-init2="ExtraEditable">
+<form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
+    <h3>Member Profile</h3>
+    @FormAction()
+    <h4>Statement/Envelope Options</h4>
+    <div class="well">
+        @if (User.IsInRole("Membership") || Model.person.CanUserSeeGiving)
+        {
+            @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
+            @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+            @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+        }
+        else
+        {
+            @Html.DisplayFor(m => m.ElectronicStatement)
+            @Html.DisplayFor(m => m.ContributionOptions)
+            @Html.DisplayFor(m => m.EnvelopeOptions)
+        }
+    </div>
+    <h4>Decision</h4>
+    <div class="well">
+        @Html.DisplayFor(m => m.DecisionType)
+        @Html.DisplayFor(m => m.DecisionDate)
+    </div>
+    <h4>Baptism</h4>
+    <div class="well">
+        @Html.DisplayFor(m => m.BaptismType)
+        @Html.DisplayFor(m => m.BaptismStatus)
+        @Html.DisplayFor(m => m.BaptismDate)
+        @Html.DisplayFor(m => m.BaptismSchedDate)
+    </div>
+    <h4>@NewMemberClassLabel</h4>
+    <div class="well">
+        @Html.DisplayFor(m => m.NewMemberClassStatus)
+        @Html.DisplayFor(m => m.NewMemberClassDate)
+    </div>
     <div class="row-fluid display">
         <fieldset class="left-gutter">
             <legend>Member Profile @FormAction()</legend>
@@ -24,15 +58,15 @@
                     <p><b>Statement/Envelope Options</b></p>
                     @if (User.IsInRole("Membership") || Model.person.CanUserSeeGiving)
                     {
-                      @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable) 
-                      @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
-                      @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                        @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable) 
+                        @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                        @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
                     }
                     else
                     {
-                      @Html.DisplayFor(m => m.ElectronicStatement)
-                      @Html.DisplayFor(m => m.ContributionOptions)
-                      @Html.DisplayFor(m => m.EnvelopeOptions)
+                        @Html.DisplayFor(m => m.ElectronicStatement)
+                        @Html.DisplayFor(m => m.ContributionOptions)
+                        @Html.DisplayFor(m => m.EnvelopeOptions)
                     }
                 </div>
                 <div class="well">
@@ -87,28 +121,28 @@
                 }
             </div>
             <a href="#" class="pull-right ajax-refresh"><i class="fa fa-refresh"></i></a>
-          <div class="table">
-            @{
-              var list = evmodel.GetExtraValues().ToList(); 
-            }
-            @foreach (var f in list)
-            {
-              if (f.Type == "Header" || f == list[0]) // if this is a header or the first item, start the well
-              {
-                if (f != list[0]) // if not on the first item, close the previous well
-                {
-                  @Html.Raw("</div>")
+            <div class="table">
+                @{
+                    var list = evmodel.GetExtraValues().ToList(); 
                 }
-                @Html.Raw("<div class='well'>")
-              }
-              @Html.EditorFor(m => f)
+                @foreach (var f in list)
+                {
+                    if (f.Type == "Header" || f == list[0]) // if this is a header or the first item, start the well
+                    {
+                        if (f != list[0]) // if not on the first item, close the previous well
+                        {
+                            @Html.Raw("</div>")
+                        }
+                        @Html.Raw("<div class='well'>")
+                    }
+                    @Html.EditorFor(m => f)
               
-              if (f == list.Last()) // if this was the last item, close the well
-              {
-                @Html.Raw("</div>")
-              }
-            }
-          </div>
+                    if (f == list.Last()) // if this was the last item, close the well
+                    {
+                        @Html.Raw("</div>")
+                    }
+                }
+            </div>
         </fieldset>
     </div>
     <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@evmodel.Table/Membership/@evmodel.Id" />
@@ -133,12 +167,16 @@
 {
     if (User.IsInRole("Membership"))
     {
-        <span class="pull-right">
-            @if (Model.MemberStatus.Value.ToInt() == MemberStatusCode.JustAdded)
-            {
-                <a href="/Person2/JustAddedNotMember/@Model.PeopleId" class="btn ajax">Set Just Added to Not Member</a>
-            }
-            <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn ajax">Edit Membership</a>
-        </span>
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    @if (Model.MemberStatus.Value.ToInt() == MemberStatusCode.JustAdded)
+                    {
+                        <a href="/Person2/JustAddedNotMember/@Model.PeopleId" class="btn btn-default ajax">Set Just Added to Not Member</a>
+                    }
+                    <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
+                </div>
+            </div>
+        </div>
     }
 }
