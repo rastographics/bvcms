@@ -110,7 +110,7 @@ namespace CmsWeb.Code
 
             if (mid.PropertyType.Name == "CodeInfo")
             {
-                Util.SetPropertyEx(model, vm.Name + ".Value", Value);
+                Util.SetPropertyEx(model, vm.Name + ".Value", Value == "0" ? null : Value);
             }
             else
             {
@@ -123,7 +123,7 @@ namespace CmsWeb.Code
                             model.UpdateValue(changes, altname, Value.ToInt());
                     return changes;
                 }
-                mid.SetPropertyFromText(model, Value);
+                mid.SetPropertyFromText(model, Value == "0" ? null : Value);
             }
 
             return changes;

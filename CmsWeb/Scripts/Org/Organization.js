@@ -68,7 +68,7 @@
                 break;
             default:
                 if (sg && sg !== "All:")
-                    sg = sg + ',';
+                    sg = sg + ';';
                 if ($("#excludesg").hasClass("active"))
                     t = '-' + t;
                 sg = sg + t;
@@ -108,8 +108,8 @@
     });
     $("#clear-filter").live("click", function (ev) {
         ev.preventDefault();
-        $("input[name='sgFilter']").val('');
-        $("input[name='nameFilter']").val('');
+        $("textarea[name='sgFilter']").val('');
+        $("textarea[name='nameFilter']").val('');
         $("#FilterTag").val(false);
         $("#FilterIndividuals").val(false);
         RebindMemberGrids();
@@ -587,7 +587,7 @@
         }
     });
 
-    $("#nameFilter").live("keypress", function (e) {
+    $("#nameFilter,#sgFilter").live("keypress", function (e) {
         if ((e.keyCode || e.which) === 13) {
             e.preventDefault();
             RebindMemberGrids();
@@ -791,6 +791,11 @@
     $.InitFunctions.ReloadPeople = function () {
         RebindMemberGrids();
     };
+    $("#Schedule_Value").live("change", function () {
+        var ss = $(this).val().split(',');
+        $(".modal #MeetingDate").val(ss[0]);
+        $(".modal #AttendCredit_Value").val(ss[1]);
+    });
 
     $("body").on("click", 'div.newitem > a', function (ev) {
         if (!$(this).attr("href"))
@@ -940,6 +945,10 @@
     };
 
     $.InitFunctions.movequestions();
+
+//    $("document").on("focus", "#sgFilter", function () {
+//        $(this).autosize();
+//    });
 
 });
 function RebindMemberGrids() {

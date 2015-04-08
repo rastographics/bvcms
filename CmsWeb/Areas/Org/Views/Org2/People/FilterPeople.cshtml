@@ -1,36 +1,32 @@
 ﻿@model CmsWeb.Areas.Org2.Models.OrgPeopleModel
 <div class="filter">
   <div class="form-inline">
-      <span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p>First and last name or just last name.</p><p>You can put just the first few letters of each.</p><p>PeopleId works too.</p>" data-original-title="Name Filter"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;<input type="text" class="form-control tip"
-           name="nameFilter" id="nameFilter" placeholder="Name Filter" value="@Model.NameFilter">
-      &nbsp;&nbsp;&nbsp;<span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p>Match a sub-group name.</p><p>You can just use the first few letters of a sub-group.</p><p>Lead with - to exclude.</p><p>Comma separate for multiple sub-groups.</p><p>NONE to find no sub-groups assigned.</p><p>ALL: to match all.</p>" data-original-title="Sub-Group Filter"><i class="fa fa-info-circle"></i></span>&nbsp;
-      <div class="input-append">
-       <input type="text" class="form-control tip" id="sgFilter"
-             name="sgFilter" placeholder="Sub-Group Filter" value="@Model.SgFilter"/>
-      <div class="btn-group">
-        <button class="btn dropdown-toggle" data-toggle="dropdown">
-          <span class="caret"></span>
-        </button>
-          <ul class="dropdown-menu" style="height: 200px; overflow: auto;">
-              <li>
-                  <a href="#" id="excludesg">Exclude</a>
-              </li>
-              <li>
-                  <a href="#" class="selectsg">Match All</a>
-              </li>
-              <li>
-                  <a href="#" class="selectsg">None Assigned</a>
-              </li>
-
-              @foreach (var sg in Model.SmallGroups())
-              {
-                  <li>
-                      <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>@sg.Text</a>
-                  </li>
-              }
-          </ul>
-      </div>
-    </div>
+    <span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="@Model.NameFilterHelp" data-original-title="Name Filter"><i class="fa fa-info-circle"></i></span> &nbsp;&nbsp;
+    <textarea rows="4" id="nameFilter" name="nameFilter" placeholder="Name Filter">@Model.NameFilter</textarea> &nbsp;&nbsp;&nbsp;
+    <span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="@Model.SgFilterHelp" data-original-title="Sub-Group Filter"><i class="fa fa-info-circle"></i></span>&nbsp;
+    <textarea rows="4" id="sgFilter" name="sgFilter" placeholder="Sub-Group Filter">@Model.SgFilter</textarea>
+    <div class="btn-group" style="margin-left: -4px">
+      <button class="btn dropdown-toggle" data-toggle="dropdown">
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" style="height: 200px; overflow: auto;">
+        <li>
+          <a href="#" id="excludesg">Exclude</a>
+        </li>
+        <li>
+          <a href="#" class="selectsg">Match All</a>
+        </li>
+        <li>
+          <a href="#" class="selectsg">None Assigned</a>
+        </li>
+        @foreach (var sg in Model.SmallGroups())
+        {
+          <li>
+            <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>@sg.Text</a>
+          </li>
+        }
+      </ul>
+    </div> &nbsp;
     <div class="input-append">
       <a class="setfilter btn">
         Filter

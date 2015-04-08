@@ -53,28 +53,32 @@ namespace CmsData
         public DateTime? QbEndDateOverride { get; set; }
         public int? QbDivisionOverride { get; set; }
         public string Host { get; set; }
-        private string cmshost;
 
         public string CmsHost
         {
             get
             {
-                if (cmshost.HasValue())
-                    return cmshost;
-                if (HttpContext.Current != null)
+                // choose DefaultHost setting first
+                var defaultHost = Setting("DefaultHost", "");
+
+                // if no DefaultHost setting exists, use current URL
+                if (!defaultHost.HasValue() && HttpContext.Current != null)
                 {
-                    var Request = HttpContext.Current.Request;
-                    return Util.URLCombine(Util.Scheme() + "://" + Request.Url.Authority, "");
+                    var request = HttpContext.Current.Request;
+                    defaultHost = Util.URLCombine(Util.Scheme() + "://" + request.Url.Authority, "");
                 }
-                var defaulthost = Setting("DefaultHost", "");
-                if (!defaulthost.HasValue())
-                    defaulthost = Util.URLCombine(ConfigurationManager.AppSettings["cmshost"], "");
-                if (defaulthost.HasValue())
-                    return defaulthost.Replace("{church}", Host, ignoreCase: true);
+
+                // finally, try the "cmshost" setting
+                if (!defaultHost.HasValue())
+                    defaultHost = Util.URLCombine(ConfigurationManager.AppSettings["cmshost"], "");
+
+                if (defaultHost.HasValue())
+                    return defaultHost.Replace("{church}", Host, ignoreCase: true);
+
                 throw (new Exception("No URL for Server in CmsHost"));
             }
-//            set { cmshost = value; }
         }
+
         public string ServerLink(string path = "")
         {
             return Util.URLCombine(CmsHost, path);
@@ -96,9 +100,9 @@ namespace CmsData
                     CurrentGroups = Util2.CurrentGroups;
                     CurrentGroupsPrefix = Util2.CurrentGroupsPrefix;
                     CurrentGroupsMode = Util2.CurrentGroupsMode;
-                    CurrentPeopleId = Util2.CurrentPeopleId;
-                    CurrentTagOwnerId = Util2.CurrentTagOwnerId;
                 }
+                CurrentPeopleId = Util2.CurrentPeopleId;
+                CurrentTagOwnerId = Util2.CurrentTagOwnerId;
                 CurrentTagName = Util2.CurrentTagName;
                 OrgMembersOnly = Util2.OrgMembersOnly;
                 OrgLeadersOnly = Util2.OrgLeadersOnly;

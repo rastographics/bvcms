@@ -587,9 +587,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 else
                 {
                     var np = Db.GetNewPeopleManagers();
-                    if(np != null)
+                    if (np != null)
                         Db.Email(Util.SysFromEmail, np,
-                            "Just Added Person on " + Db.Host, "{0} ({1})".Fmt(p.Name, p.PeopleId));
+                            "Just Added Person on " + Db.Host, "<a href='{0}'>{1}</a>".Fmt(Db.ServerLink("/Person2/" + p.PeopleId), p.Name));
                 }
             }
             return p;
