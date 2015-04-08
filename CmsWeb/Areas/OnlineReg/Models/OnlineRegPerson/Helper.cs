@@ -85,8 +85,8 @@ namespace CmsWeb.Models
         public IEnumerable<Organization> GetOrgsInDiv()
         {
             return from o in DbUtil.Db.Organizations
-                where o.DivOrgs.Any(di => di.DivId == divid)
-                select o;
+                   where o.DivOrgs.Any(di => di.DivId == divid)
+                   select o;
         }
 
         private bool RegistrationType(int typ)
@@ -94,8 +94,8 @@ namespace CmsWeb.Models
             if (divid == null)
                 return false;
             var q = from o in GetOrgsInDiv()
-                where o.RegistrationTypeId == typ
-                select o;
+                    where o.RegistrationTypeId == typ
+                    select o;
             return q.Any();
         }
 
@@ -152,6 +152,22 @@ namespace CmsWeb.Models
             return false;
         }
 
+        public bool IsSpecialReg()
+        {
+            return ManageSubscriptions()
+                   || OnlinePledge()
+                   || ManageGiving()
+                   || Parent.ChoosingSlots();
+        }
+
+        public bool RegistrationFull()
+        {
+            if (org == null) 
+                return false;
+            if (!Parent.SupportMissionTrip)
+                IsFilled = org.RegLimitCount(DbUtil.Db) >= org.Limit;
+            return IsFilled;
+        }
         public string GetSpecialScript()
         {
             if (org == null) return "Organization not found.";
@@ -404,17 +420,17 @@ namespace CmsWeb.Models
                 return;
             }
             var q = from p in person.Family.People
-                let om =
-                    p.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == p.PeopleId && mm.OrganizationId == orgid)
-                let forceattend = p.PeopleId == PeopleId
-                orderby p.PositionInFamilyId, p.GenderId, p.Age descending
-                select new FamilyAttendInfo()
-                {
-                    PeopleId = p.PeopleId,
-                    Name = p.Name,
-                    Age = p.Age,
-                    Attend = (om != null && om.IsInGroup("Attended")) || forceattend
-                };
+                    let om =
+                        p.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == p.PeopleId && mm.OrganizationId == orgid)
+                    let forceattend = p.PeopleId == PeopleId
+                    orderby p.PositionInFamilyId, p.GenderId, p.Age descending
+                    select new FamilyAttendInfo()
+                    {
+                        PeopleId = p.PeopleId,
+                        Name = p.Name,
+                        Age = p.Age,
+                        Attend = (om != null && om.IsInGroup("Attended")) || forceattend
+                    };
             FamilyAttend = q.ToList();
         }
 
@@ -427,7 +443,7 @@ namespace CmsWeb.Models
         public IEnumerable<SelectListItem> Countries()
         {
             var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
-            list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
             return list;
         }
 
@@ -571,6 +587,11 @@ namespace CmsWeb.Models
             return NameLookup.ContainsKey(name) ? NameLookup[name] : name;
         }
 
+        public void SetClassId()
+        {
+            if (org != null && ShowDisplay() && ComputesOrganizationByAge())
+                classid = org.OrganizationId;
+        }
     }
 
     public class FamilyAttendInfo

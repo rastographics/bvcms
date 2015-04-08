@@ -10,10 +10,23 @@ namespace CmsWeb.Models
     public partial class OnlineRegPersonModel
     {
         private ModelStateDictionary modelState;
+
         public void ValidateModelForFind(ModelStateDictionary modelstate, int i, bool selectFromFamily = false)
         {
+            DbUtil.Db.SetNoLock();
             modelState = modelstate;
             Index = i;
+            if (classid.HasValue)
+            {
+                Parent.Orgid = classid;
+                Parent.classid = classid;
+                orgid = classid;
+            }
+            PeopleId = null; // not found yet
+            ValidateModelForFind(selectFromFamily);
+        }
+        private void ValidateModelForFind(bool selectFromFamily = false)
+        {
             IsValidForContinue = true; // true till proven false
 
             if (NeedsUserSelection()) return;

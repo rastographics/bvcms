@@ -26,7 +26,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         [HttpGet]
         [Route("~/OnlineReg/{id:int}")]
-        [Route("~/OnlineReg/Index/{id:int}")]
         public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
             Response.NoCache();
@@ -68,10 +67,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return FlowList(m, "Login");
         }
 
-        // Register without logging in
         [HttpPost]
         public ActionResult NoLogin(OnlineRegModel m)
         {
+            // User clicked the register without logging in
             m.nologin = true;
             m.CreateList();
             m.HistoryAdd("nologin");
@@ -81,6 +80,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult YesLogin(OnlineRegModel m)
         {
+            // Takes them to the login screen after clicking the Login Here button
             m.HistoryAdd("yeslogin");
             m.nologin = false;
             m.List = new List<OnlineRegPersonModel>();
@@ -90,21 +90,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return FlowList(m, "NoLogin");
         }
 
-        /* Register a person from the Family List 
-         * there is no need to Find their record 
-         * this will take them to the registration Questions page
-         */
         [HttpPost]
         public ActionResult Register(int id, OnlineRegModel m)
         {
+            // Click a person from the family list * Take them to the Questions page
             m.StartRegistrationForFamilyMember(id, ModelState);
             return FlowList(m, "Register");
         }
 
-        // Cancel will remove a person from the completed registrants list
         [HttpPost]
         public ActionResult Cancel(int id, OnlineRegModel m)
         {
+            // After clicking Cancel, remove a person from the completed registrants list
             m.CancelRegistrant(id);
             return FlowList(m, "Cancel");
         }
@@ -112,118 +109,36 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult ShowMoreInfo(int id, OnlineRegModel m)
         {
-            m.HistoryAdd("ShowMoreInfo id=" + id);
-            DbUtil.Db.SetNoLock();
+            // Show the Address, Gender, Marital form because record is not found
             var p = m.List[id];
             p.ValidateModelForFind(ModelState, id);
-
-
-            if (p.org != null && p.Found == true)
-            {
-                if (!m.SupportMissionTrip)
-                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
-                if (p.IsFilled)
-                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
-                if (p.Found == true)
-                    p.FillPriorInfo();
-                return FlowList(m, "ShowMoreInfo");
-            }
-            if (!p.whatfamily.HasValue && (id > 0 || p.LoggedIn == true))
-            {
-                ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].whatfamily), "Choose a family option");
-                return FlowList(m, "ShowMoreInfo");
-            }
-            switch (p.whatfamily)
-            {
-                case 1:
-                    var u = DbUtil.Db.LoadPersonById(m.UserPeopleId.Value);
-                    p.AddressLineOne = u.PrimaryAddress;
-                    p.City = u.PrimaryCity;
-                    p.State = u.PrimaryState;
-                    p.ZipCode = u.PrimaryZip.FmtZip();
-                    break;
-                case 2:
-                    var pb = m.List[id - 1];
-                    p.AddressLineOne = pb.AddressLineOne;
-                    p.City = pb.City;
-                    p.State = pb.State;
-                    p.ZipCode = pb.ZipCode;
-                    break;
-                default:
-#if DEBUG
-                    p.AddressLineOne = "235 Riveredge Cv.";
-                    p.City = "Cordova";
-                    p.State = "TN";
-                    p.ZipCode = "38018";
-                    p.gender = 1;
-                    p.married = 10;
-                    p.HomePhone = "9017581862";
-#endif
-                    break;
-            }
-            p.ShowAddress = true;
+            p.PrepareToAddNewPerson(ModelState, id);
             return FlowList(m, "ShowMoreInfo");
         }
 
         [HttpPost]
         public ActionResult PersonFind(int id, OnlineRegModel m)
         {
+            // Anonymous person tries to find their record
             m.HistoryAdd("PersonFind id=" + id);
-
             if (id >= m.List.Count)
                 return FlowList(m, "PersonFind");
-
-            DbUtil.Db.SetNoLock();
-
             var p = m.List[id];
             if (p.IsValidForNew)
                 return ErrorResult(m, new Exception("Unexpected onlinereg state: IsValidForNew is true and in PersonFind"), "PersonFind, unexpected state");
-
-            if (p.classid.HasValue)
-            {
-                m.Orgid = p.classid;
-                m.classid = p.classid;
-                p.orgid = p.classid;
-            }
-            p.PeopleId = null;
             p.ValidateModelForFind(ModelState, id);
-            if (p.Found == true && m.org != null)
-            {
-                var setting = settings[m.org.OrganizationId];
-                if (setting.AllowReRegister)
-                {
-                    var om = m.org.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == p.PeopleId);
-                    if (om != null)
-                    {
-                        m.ConfirmReregister();
-                        DbUtil.Db.SubmitChanges();
-                        return View("ConfirmReregister", m);
-                    }
-                }
-            }
-            if (p.ManageSubscriptions()
-                 || p.OnlinePledge()
-                 || p.ManageGiving()
-                 || m.ChoosingSlots())
-            {
+            if(p.AnonymousReRegistrant()) 
+                return View("ConfirmReregister", m); // send email with link to reg-register
+            p.FillPriorInfo();
+            if(p.IsSpecialReg())
                 p.OtherOK = true;
-            }
-            else if (p.org != null)
-            {
-                if (!m.SupportMissionTrip)
-                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
-                if (p.IsFilled)
-                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
-                if (p.Found == true)
-                    p.FillPriorInfo();
-            }
-            if (p.org != null && p.ShowDisplay() && p.ComputesOrganizationByAge())
-                p.classid = p.org.OrganizationId;
-
+            else if (p.RegistrationFull())
+                ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
+            p.SetClassId();
             p.CheckSetFee();
-
             return FlowList(m, "PersonFind");
         }
+
 
         private ActionResult ErrorResult(OnlineRegModel m, Exception ex, string errorDisplay)
         {

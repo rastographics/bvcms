@@ -25,7 +25,7 @@ namespace CmsWeb.Models
 
         public bool Attended(int id)
         {
-            if (FamilyAttend == null) 
+            if (FamilyAttend == null)
                 return false;
             var a = FamilyAttend.SingleOrDefault(aa => aa.PeopleId == id);
             if (a == null)
@@ -146,68 +146,70 @@ namespace CmsWeb.Models
         public List<SelectListItem> MissionTripGoers()
         {
             var q = from g in DbUtil.Db.OrganizationMembers
-                where g.OrganizationId == orgid
-                where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
-                select new SelectListItem()
-                {
-                    Value = g.PeopleId.ToString(),
-                    Text = g.Person.Name
-                };
+                    where g.OrganizationId == orgid
+                    where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                    select new SelectListItem()
+                    {
+                        Value = g.PeopleId.ToString(),
+                        Text = g.Person.Name
+                    };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem() {Value = "0", Text = "(please select)"});
+            list.Insert(0, new SelectListItem() { Value = "0", Text = "(please select)" });
             return list;
         }
         public void FillPriorInfo()
         {
-            if (!IsNew && LoggedIn == true)
+            if (Found != true) 
+                return;
+            if (IsNew || !LoggedIn) 
+                return;
+
+            var rr = DbUtil.Db.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
+            if (rr != null)
             {
-                var rr = DbUtil.Db.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
-                if (rr != null)
+                if (setting.AskVisible("AskRequest"))
                 {
-                    if (setting.AskVisible("AskRequest"))
-                    {
-                        var om = GetOrgMember();
-                        if (om != null)
-                            request = om.Request;
-                    }
-                    if (setting.AskVisible("AskSize"))
-                        shirtsize = rr.ShirtSize;
-                    if (setting.AskVisible("AskEmContact"))
-                    {
-                        emcontact = rr.Emcontact;
-                        emphone = rr.Emphone;
-                    }
-                    if (setting.AskVisible("AskInsurance"))
-                    {
-                        insurance = rr.Insurance;
-                        policy = rr.Policy;
-                    }
-                    if (setting.AskVisible("AskDoctor"))
-                    {
-                        docphone = rr.Docphone;
-                        doctor = rr.Doctor;
-                    }
-                    if (setting.AskVisible("AskParents"))
-                    {
-                        mname = rr.Mname;
-                        fname = rr.Fname;
-                    }
-                    if (setting.AskVisible("AskAllergies"))
-                        medical = rr.MedicalDescription;
-                    if (setting.AskVisible("AskCoaching"))
-                        coaching = rr.Coaching;
-                    if (setting.AskVisible("AskChurch"))
-                    {
-                        otherchurch = rr.ActiveInAnotherChurch ?? false;
-                        memberus = rr.Member ?? false;
-                    }
-                    if (setting.AskVisible("AskTylenolEtc"))
-                    {
-                        tylenol = rr.Tylenol;
-                        advil = rr.Advil;
-                        robitussin = rr.Robitussin;
-                        maalox = rr.Maalox;
-                    }
+                    var om = GetOrgMember();
+                    if (om != null)
+                        request = om.Request;
+                }
+                if (setting.AskVisible("AskSize"))
+                    shirtsize = rr.ShirtSize;
+                if (setting.AskVisible("AskEmContact"))
+                {
+                    emcontact = rr.Emcontact;
+                    emphone = rr.Emphone;
+                }
+                if (setting.AskVisible("AskInsurance"))
+                {
+                    insurance = rr.Insurance;
+                    policy = rr.Policy;
+                }
+                if (setting.AskVisible("AskDoctor"))
+                {
+                    docphone = rr.Docphone;
+                    doctor = rr.Doctor;
+                }
+                if (setting.AskVisible("AskParents"))
+                {
+                    mname = rr.Mname;
+                    fname = rr.Fname;
+                }
+                if (setting.AskVisible("AskAllergies"))
+                    medical = rr.MedicalDescription;
+                if (setting.AskVisible("AskCoaching"))
+                    coaching = rr.Coaching;
+                if (setting.AskVisible("AskChurch"))
+                {
+                    otherchurch = rr.ActiveInAnotherChurch ?? false;
+                    memberus = rr.Member ?? false;
+                }
+                if (setting.AskVisible("AskTylenolEtc"))
+                {
+                    tylenol = rr.Tylenol;
+                    advil = rr.Advil;
+                    robitussin = rr.Robitussin;
+                    maalox = rr.Maalox;
                 }
             }
 #if DEBUG2
@@ -241,6 +243,7 @@ namespace CmsWeb.Models
             grade = "4";
 #endif
         }
+
         public bool NeedsCopyFromPrevious()
         {
             if (org != null)

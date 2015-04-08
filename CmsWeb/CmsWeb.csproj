@@ -334,6 +334,7 @@
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\PrepareToAddNew.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelQuestions.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelForFind.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\Initialize.cs" />
