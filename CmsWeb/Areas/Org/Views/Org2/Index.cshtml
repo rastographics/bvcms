@@ -11,16 +11,24 @@
   @Fingerprint.Css("/Content/styles/organization.css")
   <style>
     li.cutting {
-        border: dashed 1px #717171;
-        opacity: 0.5;
+      border: dashed 1px #717171;
+      opacity: 0.5;
     }
+
     .disabled {
-        color: #999 !important;
+      color: #999 !important;
     }
+
     .datetimepicker table tr td span {
-        width: 30%;
+      width: 30%;
     }
-    </style>
+
+    #sgFilter, #nameFilter {
+      width: 10em;
+      height: 1.6em;
+      overflow: hidden;
+    }
+  </style>
 
 }
 @section scripts

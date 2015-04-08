@@ -108,8 +108,8 @@
     });
     $("#clear-filter").live("click", function (ev) {
         ev.preventDefault();
-        $("input[name='sgFilter']").val('');
-        $("input[name='nameFilter']").val('');
+        $("textarea[name='sgFilter']").val('');
+        $("textarea[name='nameFilter']").val('');
         $("#FilterTag").val(false);
         $("#FilterIndividuals").val(false);
         RebindMemberGrids();
@@ -587,7 +587,7 @@
         }
     });
 
-    $("#nameFilter").live("keypress", function (e) {
+    $("#nameFilter,#sgFilter").live("keypress", function (e) {
         if ((e.keyCode || e.which) === 13) {
             e.preventDefault();
             RebindMemberGrids();
@@ -945,6 +945,10 @@
     };
 
     $.InitFunctions.movequestions();
+
+//    $("document").on("focus", "#sgFilter", function () {
+//        $(this).autosize();
+//    });
 
 });
 function RebindMemberGrids() {
