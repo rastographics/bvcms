@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using CmsData.Codes
 @model CmsWeb.Areas.Dialog.Models.OrgMembersUpdate
 @{
   var managetransactions = User.IsInRole("ManageTransactions");
@@ -25,16 +26,12 @@
   </div>
   <div class="modal-footer">
     <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-    @if (managetransactions || admin || missiongiving)
+    @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member 
+      && (managetransactions || admin || missiongiving))
     {
       <div class="btn-group">
         <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>
         <ul class="dropdown-menu">
-@*
-          <li>
-            <a href="/OrgMembersUpdate/AddTransaction" class="ajax">Add Transaction</a>
-          </li>
-*@
           <li>
             <a href="/OrgMembersUpdate/AddFeeAdjustment" class="ajax">Make Fee Adjustment</a>
           </li>
@@ -44,9 +41,12 @@
     <a href="/OrgMembersUpdate/ShowDrop" class="btn btn-warning ajax">
       Drop
     </a>
+    @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member)
+    {
     <a href="/OrgMembersUpdate/SmallGroups" class="btn btn-warning ajax">
       Sub-Groups
     </a>
+    }
     <a href="/OrgMembersUpdate/Update" class="btn btn-danger ajax"
        data-confirm="Are you sure you want to update @Model.Count @Model.Group?">
       Update

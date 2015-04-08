@@ -1,4 +1,5 @@
 ﻿@using CmsData
+@using CmsData.Codes
 @using UtilityExtensions
 @model CmsWeb.Areas.Dialog.Models.OrgMemberModel
 @{
@@ -17,8 +18,11 @@
     <div class="tabbable group">
       <ul class="nav nav-tabs">
         <li class="active"><a href="#memberdata" data-toggle="tab">Member Data</a></li>
-        <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
-        <li><a href="#membernotes" data-toggle="tab">Notes</a></li>
+        @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member)
+        {
+          <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
+          <li><a href="#membernotes" data-toggle="tab">Notes</a></li>
+        }
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" id="memberdata">
@@ -59,18 +63,18 @@
                   {
                     <table class="table table-condensed">
                       <thead>
-                        <tr>
-                          <th>Total Fee</th>
-                          <th>Amount Paid</th>
-                          <th>Amount Due</th>
-                        </tr>
+                      <tr>
+                        <th>Total Fee</th>
+                        <th>Amount Paid</th>
+                        <th>Amount Due</th>
+                      </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td> @Model.TransactionSummary.IndAmt.ToString2("c") </td>
-                          <td> @Model.AmountPaidTransactions.ToString2("c") </td>
-                          <td> @Model.AmountDue.ToString2("c") </td>
-                        </tr>
+                      <tr>
+                        <td> @Model.TransactionSummary.IndAmt.ToString2("c") </td>
+                        <td> @Model.AmountPaidTransactions.ToString2("c") </td>
+                        <td> @Model.AmountDue.ToString2("c") </td>
+                      </tr>
                       </tbody>
                     </table>
                   }
@@ -94,6 +98,8 @@
           </fieldset>
 
         </div>
+        @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member)
+        {
         <div class="tab-pane" id="membergroups">
           <div class="well">
             @{
@@ -116,12 +122,15 @@
         <div id="membernotes" class="tab-pane">
           @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
         </div>
+        }
       </div>
     </div>
   </div>
   <div class="modal-footer">
     <a href="#" class="btn" data-dismiss="modal">Close</a>
-    @if (managetransactions || admin || missiongiving)
+    
+    @if ((managetransactions || admin || missiongiving) 
+      && DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member)
     {
       <div class="btn-group">
         <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>
