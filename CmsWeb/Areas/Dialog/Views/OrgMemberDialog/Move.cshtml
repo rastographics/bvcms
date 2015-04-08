@@ -8,6 +8,7 @@
 <div class="modal-body" data-target="/OrgMemberDialog/MoveResults">
     @Html.HiddenFor(m => m.OrgId)
     @Html.HiddenFor(m => m.PeopleId)
+    @Html.HiddenFor(m => m.Group)
     @Html.Partial("PagerHidden", Model)
     @Html.TextBox("OrgSearch")
     <a id="orgsearchbtn" href="#" class="btn ajax">Search for Organization</a>
@@ -29,5 +30,5 @@
     </div>
 </div>
 <div class="modal-footer">
-    <a href="/OrgMemberDialog/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Cancel Move</a>
+    <a href="/OrgMemberDialog/Display" class="btn ajax">Cancel Move</a>
 </div>

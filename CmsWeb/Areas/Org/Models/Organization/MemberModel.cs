@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Org.Models
         public Organization Org { get; set; }
         private int[] Groups;
         private int GroupsMode;
-        private GroupSelect Select;
+        public GroupSelect Select;
         private string NameFilter;
         private string SgPrefix;
 

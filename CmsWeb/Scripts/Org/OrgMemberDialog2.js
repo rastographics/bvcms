@@ -1,8 +1,10 @@
 ﻿$(function () {
     $("#membergroups .ckbox").live("click", function (ev) {
-        $.post($(this).attr("href"), {
-            ck: $(this).is(":checked")
+        var f = $(this).closest("form");
+        var q = f.serialize() + '&' + $.param({
+             'ck': $(this).is(":checked")
         });
+        $.post($(this).attr("href"), q);
         return true;
     });
     $("#membergroups .update-smallgroup").live("click", function (ev) {
@@ -15,19 +17,19 @@
         });
         return false;
     });
-//    $("#dropmember").live("click", function (ev) {
-//        var f = $(this).closest('form');
-//        var href = this.href;
-//        bootbox.confirm("are you sure?", function (confirmed) {
-//            if (confirmed) {
-//                $.post(href, null, function(ret) {
-//                    f.modal("hide");
-//                    RebindMemberGrids();
-//                });
-//            }
-//        });
-//        return false;
-//    });
+    //    $("#dropmember").live("click", function (ev) {
+    //        var f = $(this).closest('form');
+    //        var href = this.href;
+    //        bootbox.confirm("are you sure?", function (confirmed) {
+    //            if (confirmed) {
+    //                $.post(href, null, function(ret) {
+    //                    f.modal("hide");
+    //                    RebindMemberGrids();
+    //                });
+    //            }
+    //        });
+    //        return false;
+    //    });
     $('#OrgSearch').live("keydown", function (event) {
         if (event.keyCode === 13) {
             event.preventDefault();
@@ -40,7 +42,7 @@
         var href = $(this).attr("href");
         bootbox.confirm("are you sure?", function (confirmed) {
             if (confirmed) {
-                $.post(href, null, function(ret) {
+                $.post(href, null, function (ret) {
                     f.modal("hide");
                     $.RebindMemberGrids();
                 });

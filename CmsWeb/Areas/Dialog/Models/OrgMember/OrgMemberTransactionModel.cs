@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
 using CmsWeb.Models;
+using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -40,6 +41,8 @@ namespace CmsWeb.Areas.Dialog.Models
                 : i.ts != null ? i.ts.TotDue ?? 0 : 0;
         }
 
+        public string Group { get; set; }
+
         public int? OrgId
         {
             get { return orgId; }
@@ -68,8 +71,15 @@ namespace CmsWeb.Areas.Dialog.Models
         [StringLength(100)]
         public string Description { get; set; }
 
-        internal void PostTransaction()
+        internal void PostTransaction(ModelStateDictionary modelState)
         {
+            if (TransactionSummary != null && (Payment ?? 0) == 0)
+                modelState.AddModelError("Payment", "must have non zero value");
+            if (TransactionSummary == null && (Amount ?? 0) == 0) 
+                modelState.AddModelError("Amount", "Initial Fee Must be > 0");
+            if (!modelState.IsValid)
+                return;
+
             var reason = TransactionSummary == null
                 ? "Inital Tran"
                 : "Adjustment";
