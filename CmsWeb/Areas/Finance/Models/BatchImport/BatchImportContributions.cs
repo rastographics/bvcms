@@ -44,6 +44,9 @@ namespace CmsWeb.Models
             if(text.Substring(0, Math.Min(text.Length, 200)).Contains("Financial_Institution,Corporate_ID,Corporate_Name,Processing_Date,Deposit_Account,Site_ID,Deposit_ID,Deposit_Receipt_Time,ISN,Account_Number,Routing_and_Transit,Serial_Number,Tran_Code,Amount,"))
                 using (var csv = new CsvReader(new StringReader(text), hasHeaders:true))
                     return BatchProcessGraceCC(csv, date, fundid);
+            if(text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Item,Sequence #,Item Date,Item Status,Customer Name,Routing / Account #,Check #,Amount,Deposit As,Amount Source,Image Quality Pass,Scanned Count"))
+                using (var csv = new CsvReader(new StringReader(text), hasHeaders:true))
+                    return BatchProcessEnon(csv, date, fundid);
 
             switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
             {

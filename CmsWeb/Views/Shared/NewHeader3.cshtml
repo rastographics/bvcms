@@ -2,7 +2,6 @@
 @{
   var access = User.IsInRole("Access");
   var finance = User.IsInRole("Finance");
-  var admin = User.IsInRole("Admin");
   var targetperson = Util2.TargetLinkPeople;
   var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 }
@@ -39,13 +38,13 @@
             @Helper.LiAnchorLink("Logout as " + Util.UserName, "/Account/LogOff/")
             @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
             <li class="space"></li>
-            @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson, access)
+            @Helper.LiAnchorLink("Target Person Tab is " + (targetperson ? "ON" : "OFF"), "/Home/TargetPerson/" + targetperson)
             @if (finance)
             {
               @Helper.LiAnchorLink("Turn finance off", "/APITest/TurnFinanceOff", !testnofinance)
               @Helper.LiAnchorLink("Turn finance on", "/APITest/TurnFinanceOn", testnofinance)
             }
-            @Helper.LiAnchorLink("Use {0} Org".Fmt(useneworg ? "OLD" : "NEW"), "/Home/UseNewOrg/" + useneworg, admin)
+            @Helper.LiAnchorLink("Use {0} Org".Fmt(useneworg ? "OLD" : "NEW"), "/Home/UseNewOrg/" + useneworg)
 
             <li class="space"></li>
             @Helper.LiAnchorLink("Reset Help tips", "/ResetTips")

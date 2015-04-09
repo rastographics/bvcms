@@ -6,6 +6,8 @@
   var admin = User.IsInRole("Admin");
   var edit = User.IsInRole("Edit");
   var missiongiving = User.IsInRole("MissionGiving");
+  var member = Model.Group == "Member";
+  var sender = Model.Group == "Inactive" && Model.Organization.IsMissionTrip == true;
 }
 <form class="form form-horizontal modal fade hide validate ajax">
   @Html.HiddenFor(m => m.OrgId)
@@ -20,11 +22,8 @@
     <div class="tabbable group">
       <ul class="nav nav-tabs">
         <li class="active"><a href="#memberdata" data-toggle="tab">Member Data</a></li>
-        @if (Model.Group == "Member")
-        {
-          <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
-          <li><a href="#membernotes" data-toggle="tab">Notes</a></li>
-        }
+        <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
+        <li><a href="#membernotes" data-toggle="tab">Notes</a></li>
       </ul>
       <div class="tab-content">
         <div class="tab-pane active" id="memberdata">
@@ -96,8 +95,6 @@
           </fieldset>
 
         </div>
-        @if (Model.Group == "Member")
-        {
         <div class="tab-pane" id="membergroups">
           <div class="well">
             @{
@@ -120,7 +117,6 @@
         <div id="membernotes" class="tab-pane">
           @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
         </div>
-        }
       </div>
     </div>
   </div>
@@ -128,7 +124,7 @@
     <a href="#" class="btn" data-dismiss="modal">Close</a>
     
     @if ((managetransactions || admin || missiongiving) 
-      && Model.Group == "Member")
+      && (member || sender))
     {
       <div class="btn-group">
         <button class="btn btn-success dropdown-toggle" data-toggle="dropdown">Transaction <span class="caret"></span></button>

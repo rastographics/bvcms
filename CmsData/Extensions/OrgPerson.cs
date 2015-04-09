@@ -48,7 +48,12 @@ namespace CmsData.View
 
         public string Group
         {
-            get { return GroupCode == GroupSelectCode.Member ? "Member" : "NonMember"; }
+            get 
+            { 
+                return GroupCode == GroupSelectCode.Member ? "Member" 
+                    : GroupCode == GroupSelectCode.Inactive ? "Inactive"
+                    : "NonMember"; 
+            }
         }
         public string BirthDate
         {
