@@ -264,6 +264,7 @@
     <Compile Include="Areas\Dialog\Models\SearchOrgsModel.cs" />
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\Enon.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreek.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgia.cs">
       <SubType>Code</SubType>
