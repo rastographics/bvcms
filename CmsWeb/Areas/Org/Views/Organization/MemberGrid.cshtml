@@ -1,10 +1,10 @@
-﻿@using CmsData
-@using CmsWeb
-@using CmsWeb.Areas.Org.Models
+﻿@using CmsWeb.Areas.Org.Models
 @using UtilityExtensions
-@model CmsWeb.Areas.Org.Models.MemberModel
+@model MemberModel
 @{
-  var group = Model.Select == MemberModel.GroupSelect.Active ? "Member" : "NotMember";
+  var group = Model.Select == MemberModel.GroupSelect.Active ? "Member" 
+    : Model.Select == MemberModel.GroupSelect.Inactive ? "Inactive"
+    : "NotMember";
 }
 <table id="MemberGrid" class="@ViewExtensions2.GridClass" cellpadding="4">
   <thead>

@@ -293,6 +293,7 @@ namespace CmsWeb.Areas.Org2.Models
 * Use a semi-colon (`;`) to separate multiple sub-groups.
 * `NONE` to find no sub-groups assigned.
 * `ALL:` to match people who are in each group specified.
+* When there is more groups than fit into the textbox, most browsers will let you resize that box so you can see the rest.
 ");
             }
         }
