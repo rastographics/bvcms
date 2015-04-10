@@ -4,6 +4,7 @@
 @{
   var managetransactions = User.IsInRole("ManageTransactions");
   var admin = User.IsInRole("Admin");
+  var manager = User.IsInRole("ManageGroups");
   var edit = User.IsInRole("Edit");
   var missiongiving = User.IsInRole("MissionGiving");
   var member = Model.Group == "Member";
@@ -108,7 +109,7 @@
               <div class="inline align-top">
                 @for (var i = col * itemspercol; i < Math.Min((col + 1) * itemspercol, list.Count); i++)
                 {
-                  @SmallGroup(list[i])
+                  @SmallGroup(list[i], manager || admin)
                 }
               </div>
             }
@@ -155,12 +156,12 @@
     }
   </div>
 </form>
-@helper SmallGroup(MemberTag mt)
+@helper SmallGroup(MemberTag mt, bool canedit)
 {
   <div class="control-group">
     <label class="control-label">@mt.Name</label>
     <div class="controls">
-      <input href="/OrgMemberDialog/SmallGroupChecked/@mt.Id" class="ckbox" type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "") />
+      <input href="/OrgMemberDialog/SmallGroupChecked/@mt.Id" class="ckbox" @(canedit ? "" : "disabled=disabled") type="checkbox" @(Model.OrgMemMemTags.Any(omt => omt.MemberTagId == mt.Id) ? "checked='checked'" : "")/>
     </div>
   </div>
 }

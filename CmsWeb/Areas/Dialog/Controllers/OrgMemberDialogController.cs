@@ -22,6 +22,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             return View("Display", m);
         }
+        [Authorize(Roles = "Admin,ManageGroups")]
         [HttpPost, Route("SmallGroupChecked/{sgtagid:int}")]
         public ActionResult SmallGroupChecked(int sgtagid, bool ck, OrgMemberModel m)
         {
