@@ -17,113 +17,117 @@
 }
 <form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
     <h3>Member Profile</h3>
-    @FormAction()
-    <h4>Statement/Envelope Options</h4>
-    <div class="well">
-        @if (User.IsInRole("Membership") || Model.person.CanUserSeeGiving)
-        {
-            @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
-            @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
-            @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
-        }
-        else
-        {
-            @Html.DisplayFor(m => m.ElectronicStatement)
-            @Html.DisplayFor(m => m.ContributionOptions)
-            @Html.DisplayFor(m => m.EnvelopeOptions)
-        }
-    </div>
-    <h4>Decision</h4>
-    <div class="well">
-        @Html.DisplayFor(m => m.DecisionType)
-        @Html.DisplayFor(m => m.DecisionDate)
-    </div>
-    <h4>Baptism</h4>
-    <div class="well">
-        @Html.DisplayFor(m => m.BaptismType)
-        @Html.DisplayFor(m => m.BaptismStatus)
-        @Html.DisplayFor(m => m.BaptismDate)
-        @Html.DisplayFor(m => m.BaptismSchedDate)
-    </div>
-    <h4>@NewMemberClassLabel</h4>
-    <div class="well">
-        @Html.DisplayFor(m => m.NewMemberClassStatus)
-        @Html.DisplayFor(m => m.NewMemberClassDate)
-    </div>
-    <div class="row-fluid display">
-        <fieldset class="left-gutter">
-            <legend>Member Profile @FormAction()</legend>
-            <div class="inline align-top">
-                <div class="well">
-                    <p><b>Statement/Envelope Options</b></p>
-                    @if (User.IsInRole("Membership") || Model.person.CanUserSeeGiving)
-                    {
-                        @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable) 
-                        @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
-                        @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
-                    }
-                    else
-                    {
-                        @Html.DisplayFor(m => m.ElectronicStatement)
-                        @Html.DisplayFor(m => m.ContributionOptions)
-                        @Html.DisplayFor(m => m.EnvelopeOptions)
-                    }
-                </div>
-                <div class="well">
-                    <p><b>Decision</b></p>
-                    @Html.DisplayFor(m => m.DecisionType)
-                    @Html.DisplayFor(m => m.DecisionDate)
-                </div>
-                <div class="well">
-                    <p><b>Baptism</b></p>
-                    @Html.DisplayFor(m => m.BaptismType)
-                    @Html.DisplayFor(m => m.BaptismStatus)
-                    @Html.DisplayFor(m => m.BaptismDate)
-                    @Html.DisplayFor(m => m.BaptismSchedDate)
-                </div>
-                <div class="well">
-                    <p><b>@NewMemberClassLabel</b></p>
-                    @Html.DisplayFor(m => m.NewMemberClassStatus)
-                    @Html.DisplayFor(m => m.NewMemberClassDate)
+    <div class="row">
+        <div class="col-lg-8">
+            @FormAction()
+            <h4>Church Membership</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.MemberStatus)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.JoinType)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.JoinDate)
+                    </div>
+                    <div class="col-md-12 col-lg-12">
+                        @Html.DisplayFor(m => m.OtherPreviousChurch)
+                    </div>
                 </div>
             </div>
-            <div class="inline align-top left-gutter">
-                <div class="well">
-                    <p><b>Church Membership</b></p>
-                    @Html.DisplayFor(m => m.MemberStatus)
-                    @Html.DisplayFor(m => m.JoinType)
-                    @Html.DisplayFor(m => m.JoinDate)
-                    @Html.DisplayFor(m => m.OtherPreviousChurch)
+            <h4>Decision</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-6 col-lg-6">
+                        @Html.DisplayFor(m => m.DecisionType)
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        @Html.DisplayFor(m => m.DecisionDate)
+                    </div>
                 </div>
-                <div class="well">
-                    <p><b>Drop</b></p>
-                    @Html.DisplayFor(m => m.DropType)
-                    @Html.DisplayFor(m => m.DropDate)
-                    @Html.DisplayFor(m => m.OtherNewChurch)
-                </div>
-                <div class="well maxWidthMedium">
-                    <p><b>Letter Status</b></p>
-                    @Html.DisplayFor(m => m.LetterStatus)
-                    @Html.DisplayFor(m => m.LetterDateRequested)
-                    @Html.DisplayFor(m => m.LetterDateReceived)
+            </div>
+            <h4>Letter Status</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.LetterStatus)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.LetterDateRequested)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.LetterDateReceived)
+                    </div>
                     @if (User.IsInRole("Access"))
                     {
-                        @Html.DisplayFor(m => m.LetterStatusNotes)
+                        <div class="col-md-12 col-lg-12">
+                            @Html.DisplayFor(m => m.LetterStatusNotes)
+                        </div>
                     }
                 </div>
             </div>
-            <div class="legend">
-                @ExtraMembershipDataLabel
-                @if (User.IsInRole("Admin"))
-                {
-                    <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@evmodel.Table/Membership/@evmodel.Id"><i class="fa fa-plus"></i></a>
-                    <a class="extravalue nounderline font14px edit pad-left dark" href="/ExtraValue/ListStandard/@evmodel.Table/Membership/@evmodel.Id?title=Edit+Membership+Extra+Vaues"><i class="fa fa-pencil"></i></a>
-                }
+            <h4>Baptism</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-6 col-lg-3">
+                        @Html.DisplayFor(m => m.BaptismType)
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        @Html.DisplayFor(m => m.BaptismStatus)
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        @Html.DisplayFor(m => m.BaptismDate)
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        @Html.DisplayFor(m => m.BaptismSchedDate)
+                    </div>
+                </div>
             </div>
-            <a href="#" class="pull-right ajax-refresh"><i class="fa fa-refresh"></i></a>
+            <h4>@NewMemberClassLabel</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-6 col-lg-6">
+                        @Html.DisplayFor(m => m.NewMemberClassStatus)
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        @Html.DisplayFor(m => m.NewMemberClassDate)
+                    </div>
+                </div>
+            </div>
+            <h4>Drop</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.DropType)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.DropDate)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.DisplayFor(m => m.OtherNewChurch)
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <h4>@ExtraMembershipDataLabel</h4>
+            <div class="row hidden-xs">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <a href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="extravalue edit btn btn-default" href="/ExtraValue/ListStandard/@evmodel.Table/Membership/@evmodel.Id?title=Edit+Membership+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
+                            <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@evmodel.Table/Membership/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+                        }
+                    </div>
+                </div>
+            </div>
+            <br />
             <div class="table">
                 @{
-                    var list = evmodel.GetExtraValues().ToList(); 
+                    var list = evmodel.GetExtraValues().ToList();
                 }
                 @foreach (var f in list)
                 {
@@ -136,30 +140,74 @@
                         @Html.Raw("<div class='well'>")
                     }
                     @Html.EditorFor(m => f)
-              
+
                     if (f == list.Last()) // if this was the last item, close the well
                     {
                         @Html.Raw("</div>")
                     }
                 }
             </div>
-        </fieldset>
+            <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@evmodel.Table/Membership/@evmodel.Id" />
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Statement/Envelope Options
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        @if (User.IsInRole("Membership") || Model.person.CanUserSeeGiving)
+                        {
+                            <div class="col-sm-12">
+                                @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
+                            </div>
+                            <div class="col-sm-12">
+                                @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                            </div>
+                            <div class="col-sm-12">
+                                @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-sm-12">
+                                @Html.DisplayFor(m => m.ElectronicStatement)
+                            </div>
+                            <div class="col-sm-12">
+                                @Html.DisplayFor(m => m.ContributionOptions)
+                            </div>
+                            <div class="col-sm-12">
+                                @Html.DisplayFor(m => m.EnvelopeOptions)
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            @if (User.IsInRole("Access"))
+            {
+                <div class="panel panel-default">
+                    <div class="panel-heading">Status Flags</div>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Flag</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in Model.StatusFlags())
+                            {
+                                <tr>
+                                    <td>@s.Flag</td>
+                                    <td>@s.Name @s.Role</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
     </div>
-    <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@evmodel.Table/Membership/@evmodel.Id" />
-    @if (User.IsInRole("Access"))
-    {
-        <table class="@ViewExtensions2.GridClass">
-            <thead>
-                <tr><td>Status Flag</td><td>Name</td></tr>
-            </thead>
-            <tbody>
-                @foreach (var s in Model.StatusFlags())
-                {
-                    <tr><td>@s.Flag</td><td>@s.Name @s.Role</td></tr>
-                }
-            </tbody>
-        </table>
-    }
 </form>
 
 

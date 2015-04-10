@@ -5,6 +5,20 @@
     <h4>Membership Documents</h4>
     <br/>
     <div class="row">
+        <div class="col-sm-12">
+            <div class="well">
+                <label for="doc" class="control-label">Select Image File to Upload</label>
+                <div class="form-inline">
+                    <div class="input-group">
+                        <input type="file" name="doc" class="form-control" />
+                        @Html.ValidationMessage("doc")
+                    </div>
+                    <div class="input-group">
+                        <input type="submit" name="Upload" value="Submit" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </div>
         @foreach (var i in MemberDocModel.DocForms(Model))
         {
             <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;">
@@ -21,20 +35,6 @@
                 </div>
             </div>
         }
-        <div class="col-sm-12">
-            <br/>
-            <div class="well">
-                <label for="doc" class="control-label">Select Image File to Upload</label>
-                <div class="form-inline">
-                    <div class="input-group">
-                        <input type="file" name="doc" class="form-control" />
-                        @Html.ValidationMessage("doc")
-                    </div>
-                    <div class="input-group">
-                        <input type="submit" name="Upload" value="Submit" class="btn btn-primary" />
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
+    <br/>
 </form>
