@@ -8,6 +8,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
 using CmsData.API;
 using CmsData.Codes;
 using CmsWeb.Code;
@@ -164,7 +167,7 @@ namespace CmsWeb.Models
         }
         public SelectList ContributionStatuses()
         {
-            return new SelectList(new CodeValueModel().ContributionStatuses(), 
+            return new SelectList(new CodeValueModel().ContributionStatuses(),
                 "Id", "Value", SearchInfo.Status.ToString());
         }
         public SelectList ContributionTypes()
@@ -185,7 +188,7 @@ namespace CmsWeb.Models
     				new CodeValueItem { Id = 2, Value = "Both Online & Not" },
     				new CodeValueItem { Id = 1, Value = "Online" },
     				new CodeValueItem { Id = 0, Value = "Not Online" },
-                }, "Id", "Value", SearchInfo.Online.ToString() );
+                }, "Id", "Value", SearchInfo.Online.ToString());
         }
         public SelectList BundleTypes()
         {
@@ -278,7 +281,42 @@ namespace CmsWeb.Models
     				new CodeValueItem { Code = "Both", Value = "Both Tax & Non-Tax" },
     				new CodeValueItem { Code = "Pledge", Value = "Pledges" },
     				new CodeValueItem { Code = "All", Value = "All Items" },
-                }, "Code", "Value", SearchInfo.TaxNonTax );
+                }, "Code", "Value", SearchInfo.TaxNonTax);
+        }
+
+        public string CheckConversion()
+        {
+            if (!HttpContext.Current.User.IsInRole("conversion"))
+                return null;
+            if (!SearchInfo.Name.HasValue()) 
+                return null;
+            if (!(SearchInfo.FundId > 0)) 
+                return null;
+            var re = new Regex(@"move to fundid (\d+)");
+            var match = re.Match(SearchInfo.Name);
+            if (!match.Success) 
+                return null;
+
+            var newfundid = match.Groups[1].Value.ToInt2();
+            if (!(newfundid > 0))
+                return null;
+
+            var oldfund = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == SearchInfo.FundId);
+            var newfund = DbUtil.Db.ContributionFunds.SingleOrDefault(ff => ff.FundId == newfundid) ??
+                          DbUtil.Db.FetchOrCreateFund(newfundid.Value, oldfund.FundDescription);
+
+            SearchInfo.Name = null;
+            var q = api.FetchContributions();
+            var sb = new StringBuilder();
+            foreach (var c in q)
+            {
+                sb.AppendFormat("UPDATE dbo.Contribution SET FundId = {0} WHERE ContributionId = {1} AND FundId = {2}\n",
+                    newfundid, c.ContributionId, c.FundId);
+            }
+            var sql = sb.ToString();
+            DbUtil.Db.ContentText("MovedFunds-{0}".Fmt(DateTime.Now), sql);
+            DbUtil.Db.ExecuteCommand(sql);
+            return "/Contributions?fundId=" + newfundid;
         }
     }
 }
