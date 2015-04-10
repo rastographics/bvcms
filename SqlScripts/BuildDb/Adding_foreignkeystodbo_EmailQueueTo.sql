@@ -1,5 +1,5 @@
-ALTER TABLE [dbo].[EmailQueueTo] ADD CONSTRAINT [FK_EmailQueueTo_EmailQueue] FOREIGN KEY ([Id]) REFERENCES [dbo].[EmailQueue] ([Id])
 ALTER TABLE [dbo].[EmailQueueTo] ADD CONSTRAINT [FK_EmailQueueTo_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
+ALTER TABLE [dbo].[EmailQueueTo] ADD CONSTRAINT [FK_EmailQueueTo_EmailQueue] FOREIGN KEY ([Id]) REFERENCES [dbo].[EmailQueue] ([Id])
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

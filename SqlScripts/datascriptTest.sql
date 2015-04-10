@@ -77,6 +77,7 @@ ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [FK_Organizations_Organization
 ALTER TABLE [dbo].[Organizations] DROP CONSTRAINT [ChildOrgs__ParentOrg]
 ALTER TABLE [dbo].[ActivityLog] DROP CONSTRAINT [FK_ActivityLog_Organizations]
 ALTER TABLE [dbo].[Coupons] DROP CONSTRAINT [FK_Coupons_Organizations]
+ALTER TABLE [dbo].[GoerSenderAmounts] DROP CONSTRAINT [FK_GoerSenderAmounts_Organizations]
 ALTER TABLE [dbo].[OrganizationExtra] DROP CONSTRAINT [FK_OrganizationExtra_Organizations]
 ALTER TABLE [lookup].[MemberType] DROP CONSTRAINT [FK_MemberType_AttendType]
 ALTER TABLE [dbo].[Division] DROP CONSTRAINT [FK_Division_Program]
@@ -3960,6 +3961,7 @@ ALTER TABLE [dbo].[Organizations] ADD CONSTRAINT [FK_Organizations_OrganizationT
 ALTER TABLE [dbo].[Organizations] WITH NOCHECK ADD CONSTRAINT [ChildOrgs__ParentOrg] FOREIGN KEY ([ParentOrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[ActivityLog] WITH NOCHECK ADD CONSTRAINT [FK_ActivityLog_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[Coupons] WITH NOCHECK ADD CONSTRAINT [FK_Coupons_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
+ALTER TABLE [dbo].[GoerSenderAmounts] WITH NOCHECK ADD CONSTRAINT [FK_GoerSenderAmounts_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[OrganizationExtra] WITH NOCHECK ADD CONSTRAINT [FK_OrganizationExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [lookup].[MemberType] ADD CONSTRAINT [FK_MemberType_AttendType] FOREIGN KEY ([AttendanceTypeId]) REFERENCES [lookup].[AttendType] ([Id])
 ALTER TABLE [dbo].[Division] ADD CONSTRAINT [FK_Division_Program] FOREIGN KEY ([ProgId]) REFERENCES [dbo].[Program] ([Id])
