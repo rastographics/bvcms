@@ -64,6 +64,62 @@ namespace CmsWeb.Models
             ShowAddress = true;
             return false;
         }
+
+        public string AddNew(ModelStateDictionary modelstate, int id)
+        {
+            modelState = modelstate;
+            Index = id;
+
+            if (modelState.IsValid)
+            {
+                if (Parent.ManagingSubscriptions())
+                {
+                    IsNew = true;
+                    Parent.ConfirmManageSubscriptions();
+                    DbUtil.Db.SubmitChanges();
+                    return "ManageSubscriptions/OneTimeLink";
+                }
+                if (Parent.OnlinePledge())
+                {
+                    IsNew = true;
+                    Parent.SendLinkForPledge();
+                    DbUtil.Db.SubmitChanges();
+                    return "ManagePledge/OneTimeLink";
+                }
+                if (Parent.ManageGiving())
+                {
+                    IsNew = true;
+                    Parent.SendLinkToManageGiving();
+                    DbUtil.Db.SubmitChanges();
+                    return "ManageGiving/OneTimeLink";
+                }
+                if (ComputesOrganizationByAge())
+                {
+                    if (org == null)
+                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, cannot find an appropriate age group");
+                    else if (org.RegEnd.HasValue && DateTime.Now > org.RegEnd)
+                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, registration has ended for that group");
+                    else if (org.OrganizationStatusId == OrgStatusCode.Inactive)
+                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
+                    else if (org.OrganizationStatusId == OrgStatusCode.Inactive)
+                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
+                }
+                else if (!ManageSubscriptions())
+                {
+                    if (!Parent.SupportMissionTrip)
+                        IsFilled = org.RegLimitCount(DbUtil.Db) >= org.Limit;
+                    if (IsFilled)
+                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, registration is filled");
+                }
+                IsNew = true;
+            }
+            IsValidForExisting = modelState.IsValid == false;
+            if (IsNew)
+                FillPriorInfo();
+            if (org != null && ShowDisplay() && ComputesOrganizationByAge())
+                classid = org.OrganizationId;
+            return null;
+        }
         internal bool AnonymousReRegistrant()
         {
             if (Found != true || Parent.Orgid == null) 

@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
         }
 
-        private void SetHeaders(OnlineRegModel m2)
+        public void SetHeaders(OnlineRegModel m2)
         {
             ViewBag.Url = m2.URL;
             Session["gobackurl"] = m2.URL;

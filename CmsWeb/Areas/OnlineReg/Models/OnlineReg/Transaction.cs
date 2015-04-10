@@ -24,6 +24,9 @@ namespace CmsWeb.Models
                 amt = max;
             else if ((amt - totalother) > max)
                 amt = max + totalother;
+//            var evdep = org.GetExtraValue("FamilyDeposit");
+//            if (evdep != null)
+//                return evdep.Data.ToDecimal() ?? 0;
             return amt;
         }
 

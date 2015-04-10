@@ -164,59 +164,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var p = m.List[id];
             p.ValidateModelForNew(ModelState, id);
 
-            if (ModelState.IsValid)
-            {
-                if (m.ManagingSubscriptions())
-                {
-                    p.IsNew = true;
-                    m.ConfirmManageSubscriptions();
-                    DbUtil.Db.SubmitChanges();
-                    return View("ManageSubscriptions/OneTimeLink", m);
-                }
-                if (m.OnlinePledge())
-                {
-                    p.IsNew = true;
-                    m.SendLinkForPledge();
-                    DbUtil.Db.SubmitChanges();
-                    SetHeaders(m);
-                    return View("ManagePledge/OneTimeLink", m);
-                }
-                if (m.ManageGiving())
-                {
-                    p.IsNew = true;
-                    m.SendLinkToManageGiving();
-                    DbUtil.Db.SubmitChanges();
-                    SetHeaders(m);
-                    return View("ManageGiving/OneTimeLink", m);
-                }
-                if (p.ComputesOrganizationByAge())
-                {
-                    if (p.org == null)
-                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, cannot find an appropriate age group");
-                    else if (p.org.RegEnd.HasValue && DateTime.Now > p.org.RegEnd)
-                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, registration has ended for that group");
-                    else if (p.org.OrganizationStatusId == OrgStatusCode.Inactive)
-                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
-                    else if (p.org.OrganizationStatusId == OrgStatusCode.Inactive)
-                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
-                }
-                else if (!p.ManageSubscriptions())
-                {
-                    if (!m.SupportMissionTrip)
-                        p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
-                    if (p.IsFilled)
-                        ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].Found), "Sorry, registration is filled");
-                }
-                p.IsNew = true;
-            }
-            p.IsValidForExisting = ModelState.IsValid == false;
-            if (p.IsNew)
-                p.FillPriorInfo();
-            if (p.org != null && p.ShowDisplay() && p.ComputesOrganizationByAge())
-                p.classid = p.org.OrganizationId;
-            //if (!p.AnyOtherInfo())
-            //    p.OtherOK = ModelState.IsValid;
-            return FlowList(m, "SubmitNew");
+            SetHeaders(m);
+            var ret = p.AddNew(ModelState, id);
+            return ret.HasValue() 
+                ? View(ret, m) 
+                : FlowList(m, "SubmitNew");
         }
 
         [HttpPost]
@@ -270,18 +222,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("AskDonation");
             if (m.List.Count == 0)
                 return Content("Can't find any registrants");
-            RemoveLastRegistrantIfEmpty(m);
+            m.RemoveLastRegistrantIfEmpty();
             SetHeaders(m);
             return View(m);
         }
 
-        private static void RemoveLastRegistrantIfEmpty(OnlineRegModel m)
-        {
-            if (!m.last.IsNew && !m.last.Found == true)
-                m.List.Remove(m.last);
-            if (!(m.last.IsValidForNew || m.last.IsValidForExisting))
-                m.List.Remove(m.last);
-        }
 
         [HttpPost]
         public ActionResult CompleteRegistration(OnlineRegModel m)
@@ -301,70 +246,21 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("Registration cannot be completed after a page refresh.");
             var m = Util.DeSerialize<OnlineRegModel>(s);
 
-            m.HistoryAdd("CompleteRegistration");
-
-            if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
+            var ret = m.CompleteRegistration(this);
+            switch (ret.RouteType)
             {
-                var p = m.List[0];
-                if (p.IsNew)
-                    p.AddPerson(null, p.org.EntryPointId ?? 0);
-                SpecialRegModel.SaveResults(m.Orgid ?? 0, m.List[0].PeopleId ?? 0, m.List[0].SpecialTest);
-                return View("SpecialRegistrationResults");
+                case OnlineRegModel.RouteType.Error:
+                    return Message(ret.Message);
+                case OnlineRegModel.RouteType.Action:
+                    return View(ret.View);
+                case OnlineRegModel.RouteType.Redirect:
+                    return RedirectToAction(ret.View, ret.RouteData);
+                case OnlineRegModel.RouteType.Terms:
+                    return View(ret.View, ret.PaymentModel);
+                case OnlineRegModel.RouteType.Payment:
+                    return View(ret.View, ret.PaymentForm);
             }
-
-            if (m.AskDonation() && !m.donor.HasValue && m.donation > 0)
-            {
-                SetHeaders(m);
-                ModelState.AddModelError("donation",
-                     "Please indicate a donor or clear the donation amount");
-                return View("AskDonation", m);
-            }
-
-            if (m.List.Count == 0)
-                return Message("Can't find any registrants");
-
-            RemoveLastRegistrantIfEmpty(m);
-
-            m.UpdateDatum();
-            DbUtil.LogActivity("Online Registration: {0} ({1})".Fmt(m.Header, m.DatumId));
-
-            if (m.PayAmount() == 0 && (m.donation ?? 0) == 0 && !m.Terms.HasValue())
-                return RedirectToAction("Confirm",
-                     new
-                     {
-                         id = m.DatumId,
-                         TransactionID = "zero due",
-                     });
-
-            var terms = Util.PickFirst(m.Terms, "");
-            if (terms.HasValue())
-                ViewData["Terms"] = terms;
-
-            SetHeaders(m);
-            if (m.PayAmount() == 0 && m.Terms.HasValue())
-            {
-                return View("Terms", new PaymentModel
-                     {
-                         Terms = m.Terms,
-                         _URL = m.URL,
-                         PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/Confirm/" + m.DatumId),
-                         _timeout = m.TimeOut
-                     });
-            }
-
-            var om =
-                 DbUtil.Db.OrganizationMembers.SingleOrDefault(
-                      mm => mm.OrganizationId == m.Orgid && mm.PeopleId == m.List[0].PeopleId);
-            m.ParseSettings();
-
-            if (om != null && m.settings[om.OrganizationId].AllowReRegister == false && !m.SupportMissionTrip)
-                return Message("You are already registered it appears");
-
-            var pf = PaymentForm.CreatePaymentForm(m);
-            if (OnlineRegModel.GetTransactionGateway() == "serviceu")
-                return View("Payment/ServiceU", pf);
-            ModelState.Clear();
-            return View("Payment/Process", pf);
+            throw new Exception("unexpected value on CompleteRegistration");
         }
 
         [HttpPost]
