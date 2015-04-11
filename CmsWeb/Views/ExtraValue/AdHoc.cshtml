@@ -1,26 +1,28 @@
 ﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
-<form class="form ajax span12 margin-top" method="post"  data-init="ExtraEditable">
-    <fieldset class="left-gutter">
-        <legend>AdHoc Extra Values 
-            <span class="pull-right">
-                <a href="/ExtraValue/Display/@Model.Table/Standard/@Model.Id" class="ajax font14px">Standard Extra Values</a>
-            </span>
-        </legend>
-        <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="ajax pull-right reload"><i class="fa fa-refresh"></i></a>
-        <table class="table not-wide">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th class="width100">Value</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var f in Model.GetExtraValues().ToList())
-                {
-                    @Html.EditorFor(m => f)
-                }
-            </tbody>
-        </table>
-    </fieldset>
+<form class="form ajax span12 margin-top" method="post" data-init="ExtraEditable">
+  <fieldset class="left-gutter">
+    <legend>
+      AdHoc Extra Values
+      <a class="adhoc-extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewAdhoc/@Model.Table/Adhoc/@Model.Id"><i class="fa fa-plus"></i></a>
+      <span class="pull-right">
+        <a href="/ExtraValue/Display/@Model.Table/Standard/@Model.Id" class="ajax font14px">Standard Extra Values</a>
+      </span>
+    </legend>
+    <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="ajax pull-right reload"><i class="fa fa-refresh"></i></a>
+    <table class="table not-wide">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th class="width100">Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var f in Model.GetExtraValues().ToList())
+        {
+          @Html.EditorFor(m => f)
+        }
+      </tbody>
+    </table>
+  </fieldset>
 </form>
 
