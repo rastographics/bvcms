@@ -22,7 +22,7 @@
     }
     @foreach (var o in Model.ViewList())
     {
-        <div><a class="movemember" title="@o.Tip" href="/OrgMemberDialog/MoveSelect/@o.FromOrgId/@o.PeopleId/@o.ToOrgId">@o.OrgName</a></div>
+        <div><a class="movemember" title="@o.Tip" href="/OrgMemberDialog/MoveSelect/@o.ToOrgId">@o.OrgName</a></div>
         <div class="pad-left"><i>@Html.Raw(o.Tip)</i></div>
     }
     <div class="pagination pagination-mini">

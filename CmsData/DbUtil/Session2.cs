@@ -27,6 +27,7 @@ namespace CmsData
         {
             if(CurrentOrg == null)
                 CurrentOrg = new CurrentOrg() { GroupSelect = Codes.GroupSelectCode.Member };
+            CurrentOrgId = id;
             CurrentOrg.Id = id;
         }
 

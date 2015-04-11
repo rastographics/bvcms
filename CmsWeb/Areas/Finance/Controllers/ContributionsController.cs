@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.Routing;
 using CmsData.API;
 using CmsWeb.Models;
+using UtilityExtensions;
 using ContributionSearchModel = CmsWeb.Models.ContributionSearchModel;
 
 namespace CmsWeb.Areas.Finance.Controllers
@@ -52,6 +54,9 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult Results(ContributionSearchModel m)
         {
+            var ret = m.CheckConversion();
+            if(ret.HasValue())
+                return Content(ret);
             return View(m);
         }
         [HttpPost]
