@@ -16,9 +16,11 @@ namespace CmsWeb.Controllers
             return View(m);
         }
         [HttpPost, Route("ExtraValue/EditStandard/{table}")]
-        public ActionResult EditStandard(string table, string name)
+        public ActionResult EditStandard(string table, int id, string location, string name)
         {
             var m = new NewExtraValueModel(table, name);
+            m.Id = id;
+            m.ExtraValueLocation = location;
             return View(m);
         }
         [ValidateInput(false)]
@@ -30,7 +32,7 @@ namespace CmsWeb.Controllers
             i.value.Codes = m.ConvertToCodes();
             i.value.Link = Server.HtmlEncode(m.ExtraValueLink);
             i.views.Save(DbUtil.Db);
-            return View("EditStandard", m);
+            return View("ListStandard", new ExtraValueModel(m.Id, m.ExtraValueTable, m.ExtraValueLocation));
         }
 
         [HttpPost, Route("ExtraValue/ListStandard/{table}/{location}/{id:int}")]

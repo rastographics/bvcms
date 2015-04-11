@@ -7,49 +7,45 @@
         <div class="col-sm-9">
             <div class="pull-right">
                 <a class="ajax btn btn-default" href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id"><i class="fa fa-search"></i> Show Adhoc Values</a> 
-                <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@Model.Table/Standard/@Model.Id"><i class="fa fa-plus-circle"></i> Add</a> 
-                <a class="extravalue btn btn-default" href="/ExtraValue/ListStandard/@Model.Table/Standard/@Model.Id"><i class="fa fa-pencil"></i> Edit</a>
+            </div>
+        </div>
+    </div>
+    <div class="row hidden-xs">
+        <div class="col-sm-12">
+            <div class="pull-right">
+                <a href="#" class="btn btn-default ajax-refresh"><i class="fa fa-refresh"></i> Refresh</a> 
+                @if (User.IsInRole("Admin"))
+                {
+                    <a class="extravalue btn btn-default" href="/ExtraValue/ListStandard/@Model.Table/Standard/@Model.Id"><i class="fa fa-pencil"></i> Edit</a>
+                    <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@Model.Table/Standard/@Model.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+                }
             </div>
         </div>
     </div>
     <br/>
     <div class="row">
-        <table class="table not-wide">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th class="width100">Value</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var f in Model.GetExtraValues())
-                {
-                    if (f.UserCanView(DbUtil.Db))
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 450px;">Name</th>
+                        <th>Value</th>
+                        <th style="width: 50px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var f in Model.GetExtraValues())
                     {
-                        @(f.UserCanEdit()
+                        if (f.UserCanView(DbUtil.Db))
+                        {
+                            @(f.UserCanEdit()
                               ? Html.EditorFor(m => f)
                               : Html.DisplayFor(m => f))
+                        }
                     }
-                }
-            </tbody>
-
-
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
-    <fieldset class="left-gutter">
-        <legend>Standard Extra Values 2222
-            @if (User.IsInRole("Admin"))
-            {
-                <a class="extravalue nounderline font18px dark pad-left" href="/ExtraValue/NewStandard/@Model.Table/Standard/@Model.Id"><i class="fa fa-plus"></i></a>
-                <a class="extravalue nounderline font14px dark pad-left" href="/ExtraValue/ListStandard/@Model.Table/Standard/@Model.Id"><i class="fa fa-pencil"></i></a>
-            }
-            <span class="pull-right">
-                <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="ajax font14px">Adhoc Values</a>
-            </span>
-        </legend>
-        <a href="#" class="pull-right ajax-refresh"><i class="fa fa-refresh"></i></a>
-        
-    </fieldset>
     <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@Model.Table/Standard/>@Model.Id" />
 </form>

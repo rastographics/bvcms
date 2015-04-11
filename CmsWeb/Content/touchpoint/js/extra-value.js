@@ -5,23 +5,23 @@
     $('body').on('click', 'a.extravalue', function (ev) {
         ev.preventDefault();
         var $a = $(this);
-        $("<div />")
+        $("<form id='extravalue-dialog' class='modal-form validate ajax' />")
             .load($(this).attr("href"), {}, function () {
-                var d = $(this);
-                var f = d.find("form");
-                f.modal("show");
+                var form = $(this);
+                $('#empty-dialog').html(form);
+                $('#empty-dialog').modal("show");
+                
                 $.AttachFormElements();
                 $(this).validate({
                     highlight: function (element) {
-                        $(element).closest(".control-group").addClass("error");
+                        $(element).closest(".form-group").addClass("error");
                     },
                     unhighlight: function (element) {
-                        $(element).closest(".control-group").removeClass("error");
+                        $(element).closest(".form-group").removeClass("error");
                     }
                 });
-                f.on('hidden', function () {
-                    d.remove();
-                    f.remove();
+                $('#empty-dialog').on('hidden', function () {
+                    $('#empty-dialog').remove();
                 });
                 var showHide = function () {
                     $("#ExtraValueBitPrefix").parent().parent().addClass('hide');
@@ -48,7 +48,7 @@
             });
         $.InitFunctions.StandardExtraValueDialogCallback = function () {
             if ($("#StandardExtraValueError").length === 0) {
-                $("#extravalue-dialog").modal("hide");
+                $("#empty-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax-refresh");
                 if (a.length > 0)
                     a.click();
@@ -56,21 +56,45 @@
         };
         $.InitFunctions.EditStandardExtraValueDialogCallback = function () {
             if ($("#EditStandardExtraValueError").length == 0) {
-                $("#editextravalue-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax-refresh");
                 if (a.length > 0)
                     a.click();
             }
         };
-        $.InitFunctions.DeleteStandardCallback = function (a) {
-            $(a.data("rowid")).remove();
-        };
-
         $('body').on('click', '#CloseListStandard', function (e) {
             e.preventDefault();
             $.InitFunctions.StandardExtraValueDialogCallback();
         });
     });
+
+    $('body').on('click', 'a.delete-extra-value', function (ev) {
+        ev.preventDefault();
+
+        var title = $(this).attr('title');
+        var url = $(this).attr('href');
+        var rowId = $(this).data("rowid");
+        bootbox.dialog({
+            title: title,
+            message: '<div class="checkbox"><label class="control-label"><input type="checkbox" name="removedata" id="removedata" /> Remove data too?</label></div><span class="help-block">Checking this box will remove all associated data too.</span>',
+            buttons: {
+                cancel: {
+                    label: "Cancel",
+                    className: "btn-default"
+                },
+                remove: {
+                    label: "Delete",
+                    className: "btn-danger",
+                    callback: function () {
+                        var removeData = $('#removedata').is(':checked');
+                        $.post(url + '&removedata=' + removeData, null, function () {
+                            $(rowId).remove();
+                        });
+                    }
+                }
+            }
+        });
+    });
+
 
     //-------------------------------------------
     // AdHoc ------------------------------------
@@ -78,23 +102,23 @@
     $('body').on('click', 'a.adhoc-extravalue', function (ev) {
         ev.preventDefault();
         var $a = $(this);
-        $("<div />")
+        $("<form id='extravalue-dialog' class='modal-form validate ajax' />")
             .load($a.attr("href"), {}, function () {
-                var d = $(this);
-                var f = d.find("form");
-                f.modal("show");
+                var form = $(this);
+                $('#empty-dialog').html(form);
+                $('#empty-dialog').modal("show");
+
                 $.AttachFormElements();
-                f.validate({
+                form.validate({
                     highlight: function (element) {
-                        $(element).closest(".control-group").addClass("error");
+                        $(element).closest(".form-group").addClass("error");
                     },
                     unhighlight: function (element) {
-                        $(element).closest(".control-group").removeClass("error");
+                        $(element).closest(".form-group").removeClass("error");
                     }
                 });
-                f.on('hidden', function () {
-                    d.remove();
-                    f.remove();
+                $('#empty-dialog').on('hidden', function () {
+                    $('#empty-dialog').remove();
                 });
                 var showHide = function () {
                     $("#ExtraValueTextBox").parent().parent().addClass('hide');
@@ -125,7 +149,7 @@
             });
         $.InitFunctions.AdhocDialogCallback = function () {
             if ($("#ExtraValueError").length == 0) {
-                $("#extravalue-dialog").modal("hide");
+                $("#empty-dialog").modal("hide");
                 var a = $a.closest("form").find("a.ajax.reload");
                 if (a.length > 0)
                     a.click();

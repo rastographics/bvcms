@@ -1823,7 +1823,6 @@
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Process.cshtml" />
     <Content Include="Areas\Dialog\Views\Dialog\ChooseFormat.cshtml" />
-    <Content Include="Areas\Dialog\Views\Dialog\DeleteStandardExtra.cshtml" />
     <Content Include="Areas\Dialog\Views\Dialog\GetExtraValue.cshtml" />
     <Content Include="Areas\Dialog\Views\Dialog\MeetingInfo.cshtml" />
     <Content Include="Areas\Dialog\Views\Dialog\TagAll.cshtml" />
