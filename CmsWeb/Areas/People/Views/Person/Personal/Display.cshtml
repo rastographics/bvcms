@@ -101,7 +101,7 @@
             @if (User.IsInRole("Edit") || User.IsInRole("Admin"))
             {
                 @:(<a href="/Person2/User/@Model.person.CreatedBy">@Model.person.CreatedBy</a>)
-      }
+            }
         </small>
     </p>
     @FormAction()

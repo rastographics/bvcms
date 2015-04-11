@@ -3,6 +3,24 @@
 @using CmsData
 @model User
 @{
+  var definedSystemRoles = new[] { "Access", "Admin", "Delete", "Developer", "Edit" };
+  var definedFinancialRoles = new[] { "Finance", "FinanceAdmin", "ManageTransactions", "MissionGiving" };
+  var definedPeopleRoles = new[] { "ApplicationReview", "Attendance", "Manager", "Manager2", "Membership", "OrgLeadersOnly", "Tasks" };
+  var definedOrganizationRoles = new[] { "Checkin", "ContentEdit", "Coupon", "Coupon2", "ManageGroups", "OrgTagger" };
+  var definedEmailRoles = new[] { "Design", "ManageEmails", "ScheduleEmails" };
+  
+  var allRoles = CmsData.User.AllRoles(DbUtil.Db);
+  var systemRoles = allRoles.Where(r => definedSystemRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
+  var financialRoles = allRoles.Where(r => definedFinancialRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
+  var peopleRoles = allRoles.Where(r => definedPeopleRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
+  var organizationRoles = allRoles.Where(r => definedOrganizationRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
+  var emailRoles = allRoles.Where(r => definedEmailRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
+  var customRoles = allRoles.Where(r => !definedSystemRoles.Contains(r.RoleName) &&
+                                        !definedFinancialRoles.Contains(r.RoleName) &&
+                                        !definedPeopleRoles.Contains(r.RoleName) &&
+                                        !definedOrganizationRoles.Contains(r.RoleName) &&
+                                        !definedEmailRoles.Contains(r.RoleName)).Select(r => r.RoleName).ToList();
+    
   var list = (from rr in CmsData.User.AllRoles(DbUtil.Db)
               where rr.RoleName != "OrgLeadersOnly"
               select rr.RoleName).ToList();
@@ -10,65 +28,131 @@
   var remainder = list.Count % 3;
   itemspercol += (remainder > 0 ? 1 : 0);
 }
-<form class="margin-top form-horizontal ajax left-gutter" autocomplete="off">
-  <fieldset>
-    <legend>
-      Manage User @Model.Username
-      <span class="pull-right">
-        <small><a class="ajax" href='/Person2/Users/@Model.PeopleId'>User List</a></small>&nbsp;&nbsp;
-        <a class="helplink" target="_blank" href='@Util.HelpLink("ManageUser")'>help</a>
-      </span>
-    </legend>
-    <input style="display:none" type="text" name="fakeusernameremembered"/>
-    <input style="display:none" type="password" name="fakepasswordremembered"/>
-    <div class="row-fluid">
-      <div class="inline align-top wauto">
-        <div class="control-group">
-          <label class="control-label">User Name</label>
-          <div class="controls">
-            <input type="text" name="u" value="@Model.Username" />
-          </div>
+<form class="ajax" autocomplete="off">
+    <div class="row hidden-xs">
+        <div class="col-sm-12">
+            <div class="pull-right">
+                <a class="ajax btn btn-default" href="/Person2/Users/@Model.PeopleId"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                <a href="/Person2/Impersonate/@Model.UserId" class="btn btn-default"><i class="fa fa-sign-in"></i> Impersonate</a>
+                <a href="/Person2/UserDelete/@Model.UserId" class="btn btn-danger ajax" data-confirm="Are you sure you want to remove User @Model.Username?"><i class="fa fa-trash"></i> Delete</a>
+                <a href="/Person2/UserUpdate/@Model.UserId" class="btn btn-primary validate ajax">Save</a>
+            </div>
         </div>
-      </div>
-      <div class="inline align-top left-gutter wauto">
-        <div class="control-group">
-          <label class="control-label">Password</label>
-          <div class="controls">
-            <input type="password" name="p" value="" />
-          </div>
-        </div>
-      </div>
-      @if (ViewBag.ErrorMsg != null)
-      {
+    </div>
+    <h4>Manage User @Model.Username</h4>
+    <input style="display:none" type="text" name="fakeusernameremembered" />
+    <input style="display:none" type="password" name="fakepasswordremembered" />
+    @if (ViewBag.ErrorMsg != null)
+    {
         <div class="alert alert-danger">@ViewBag.ErrorMsg</div>
-      }
-    </div>
+    }
     <div class="well">
-      @for (var col = 0; col < (int)Math.Ceiling((double)list.Count / itemspercol); col++)
-      {
-        <div class="inline align-top left-gutter">
-          @for (var i = col * itemspercol; i < Math.Min((col + 1) * itemspercol, list.Count); i++)
-          {
-            @Role(list[i])
-          }
+        <div class="row">
+            <div class="col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="u">User Name</label>
+                    <div class="controls">
+                        <input type="text" id="u" name="u" value="@Model.Username" class="form-control" />
+                        @Html.Editor("sendwelcome", new { label = "Send welcome email?" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <div class="form-group">
+                    <label class="control-label" for="p">Password</label>
+                    <div class="controls">
+                        <input type="password" id="p" name="p" value="" class="form-control" />
+                    </div>
+                </div>
+            </div>
         </div>
-      }
-      <div>
-        @Role("OrgLeadersOnly", "<strong>Warning!</strong> limiting role, see help link above")
-      </div>
     </div>
-    <div>
-      User Created: @Model.CreationDate.FormatDateTm()
-      <div class="pull-right inline">
-        <a href="/Person2/Impersonate/@Model.UserId" class="btn btn-warning">Impersonate User</a>
-        <a href="/Person2/UserDelete/@Model.UserId" class="btn btn-danger ajax" data-confirm="Are you sure you want to remove User @Model.Username?">Delete User</a>
-        <a href="/Person2/UserUpdate/@Model.UserId" class="btn btn-primary validate ajax">Save</a>
-        <div class="inline wauto">@Html.Editor("sendwelcome", new { label = "Send Welcome" })</div>
-      </div>
+    <h4>Roles</h4>
+    <div class="well">
+        <strong>System</strong>
+        <div class="row">
+            <div class="col-sm-12">
+                @foreach (var role in systemRoles)
+                {
+                    @Role(role)
+                }
+            </div>
+        </div>
+        <br/>
+        <strong>Financial</strong>
+        <div class="row">
+            <div class="col-sm-12">
+                @foreach (var role in financialRoles)
+                {
+                    @Role(role)
+                }
+            </div>
+        </div>
+        <br/>
+        <strong>People</strong>
+        <div class="row">
+            <div class="col-sm-12">
+                @foreach (var role in peopleRoles.Where(r => r != "OrgLeadersOnly"))
+                {
+                    @Role(role)
+                }
+                @if (peopleRoles.Contains("OrgLeadersOnly"))
+                {
+                    if (!Model.CanAssign(DbUtil.Db, "OrgLeadersOnly"))
+                    {
+                        if (Model.Roles.Contains("OrgLeadersOnly"))
+                        {
+                            <input name="role" value="OrgLeadersOnly" class="ckbox" type="hidden" checked='checked' />
+                        }
+                    }
+                    else
+                    {
+                        <div class="checkbox">
+                            <label class="control-label bg-warning" style="padding-top: 5px; padding-bottom: 5px; padding-right: 5px; padding-left: 25px; border: solid 1px #faebcc;">
+                                <input name="role" value="OrgLeadersOnly" class="ckbox" type="checkbox" @(Model.Roles.Any(ro => ro == "OrgLeadersOnly") ? "checked='checked'" : "") /> <span class="text-warning">OrgLeadersOnly (limiting role)</span>
+                            </label>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <strong>Organization</strong>
+        <div class="row">
+            <div class="col-sm-12">
+                @foreach (var role in organizationRoles)
+                {
+                    @Role(role)
+                }
+            </div>
+        </div>
+        <br />
+        <strong>Email</strong>
+        <div class="row">
+            <div class="col-sm-12">
+                @foreach (var role in emailRoles)
+                {
+                    @Role(role)
+                }
+            </div>
+        </div>
+        <br />
+        <strong>Custom Protected</strong>
+        <div class="row">
+            <div class="col-sm-12">
+                @foreach (var role in customRoles)
+                {
+                    @Role(role)
+                }
+            </div>
+        </div>
     </div>
-  </fieldset>
+    <p class="record_added muted">
+        <small>
+            User created @Model.CreationDate.FormatDateTm()
+        </small>
+    </p>
 </form>
-@helper Role(string role, string warning = null)
+@helper Role(string role)
 {
   if (!Model.CanAssign(DbUtil.Db, role))
   {
@@ -78,13 +162,7 @@
     }
     return;
   }
-  <div class="control-group @(warning.HasValue() ? "warning" : "")">
-    <label class="control-label">@role</label>
-    <div class="controls">
-      <input name="role" value="@role" class="ckbox" type="checkbox" @(Model.Roles.Any(ro => ro == role) ? "checked='checked'" : "") />
-      <span class="help-inline">
-        @Html.Raw(warning)
-      </span>
-    </div>
-  </div>
+  <label class="checkbox-inline control-label">
+    <input name="role" value="@role" class="ckbox" type="checkbox" @(Model.Roles.Any(ro => ro == role) ? "checked='checked'" : "") /> @role
+  </label>
 }
