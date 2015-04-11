@@ -90,11 +90,12 @@
         if (t.data("confirm"))
             swal({
                 title: "Are you sure?",
+                text: t.data("confirm"),
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
+                confirmButtonText: "Yes, delete!",
+                closeOnConfirm: true
             },
             function () {
                 $.formAjaxSubmit(t);
@@ -128,11 +129,12 @@
         if (t.data("confirm"))
             swal({
                 title: "Are you sure?",
+                text: t.data("confirm"),
                 type: "warning",
                 showCancelButton: true,
                 confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes, delete it!",
-                closeOnConfirm: false
+                confirmButtonText: "Yes, delete!",
+                closeOnConfirm: true
             },
             function () {
                 $.formAjaxClick(t);

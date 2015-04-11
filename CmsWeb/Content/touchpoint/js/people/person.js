@@ -379,17 +379,37 @@
     };
 
     $('body').on('click', '#failedemails a.unblock', function (ev) {
-        if (confirm("are you sure?"))
-            $.post("/Manage/Emails/Unblock", { email: $(this).attr("email") }, function (ret) {
-                $.growlUI("email unblocked", ret);
+        var address = $(this).attr("email");
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, unblock it!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post("/Manage/Emails/Unblock", { email: address }, function (ret) {
+                swal({ title: "Email unblocked!", type: "success" });
             });
+        });
     });
 
     $('body').on('click', '#failedemails a.unspam', function (ev) {
-        if (confirm("are you sure?"))
-            $.post("/Manage/Emails/Unspam", { email: $(this).attr("email") }, function (ret) {
-                $.growlUI("email unspamed", ret);
+        var address = $(this).attr("email");
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, unspam it!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post("/Manage/Emails/Unspam", { email: address }, function (ret) {
+                swal({ title: "Email unspamed!", type: "success" });
             });
+        });
     });
 
     $.RebindMemberGrids = function() {
