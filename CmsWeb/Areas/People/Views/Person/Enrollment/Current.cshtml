@@ -31,9 +31,9 @@
                             if (om.OrgType != pOrgType && Model.Sort == "default")
                             {
                                 pOrgType = om.OrgType;
-                                <tr class="section notshown">
+                                <tr class="section notshown info">
                                     <td><a rel="reveal" title="More Information" href="#" class="reveal"><i class="fa fa-caret-right"></i></a></td>
-                                    <td colspan="5"><span>@om.OrgType</span></td>
+                                    <td colspan="5"><span style="font-weight: 600;">@om.OrgType</span></td>
                                 </tr>
                             }
                             if (User.IsInRole("Access"))
