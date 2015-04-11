@@ -64,6 +64,10 @@
         };
         $.InitFunctions.DeleteStandardCallback = function (a) {
             $(a.data("rowid")).remove();
+            $("#extravalue-dialog").modal("hide");
+            var a = $a.closest("form").find("a.ajax-refresh");
+            if (a.length > 0)
+                a.click();
         };
         $("#CloseListStandard").live("click", function (e) {
             e.preventDefault();

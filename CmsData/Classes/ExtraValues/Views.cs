@@ -103,7 +103,7 @@ namespace CmsData.ExtraValue
         }
         public static List<Value> GetStandardExtraValuesOrdered(CMSDataContext db, string table, string location)
         {
-            var views = GetViews(db);
+            var views = GetViews(db, nocache: true);
             var q = from vv in views.List
                     where vv.Table == table
                     where location == null || vv.Location == location
