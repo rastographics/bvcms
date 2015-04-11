@@ -1,15 +1,13 @@
 ﻿@using UtilityExtensions
 @model CmsData.Person.Duplicate
-    <tr>
-        <td class="top"><a href="/Person2/@Model.PeopleId">@Model.First</a><br />
-            @Model.Nick<br />
-            @Model.Middle</td>
-        <td class="top">@Model.Last<br />
-            @Model.Maiden</td>
-        <td class="top">@Util.FormatBirthday(Model.BYear, Model.BMon, Model.BDay)</td>
-        <td class="top">@Model.Email<br /><br />
-            @Model.Member</td>
-        <td class="top">@Model.FamAddr<br />
-            @Model.PerAddr</td>
-    </tr>
+<tr>
+    <td><a href="/Person2/@Model.PeopleId">@Model.First</a></td>
+    <td>@Model.Nick</td>
+    <td>@Model.Middle</td>
+    <td>@Model.Last</td>
+    <td>@Model.Maiden</td>
+    <td>@Util.FormatBirthday(Model.BYear, Model.BMon, Model.BDay)</td>
+    <td>@Model.Email<br/>@Model.Member</td>
+    <td>@Model.FamAddr<br />@Model.PerAddr</td>
+</tr>
 
