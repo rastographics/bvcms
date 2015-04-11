@@ -20,17 +20,27 @@
         </tr>
     </table>
 </div>
+@FormAction(true)
 <br/>
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
     if (User.IsInRole("ApplicationReview"))
     {
-        <div class="row hidden-xs">
-            <div class="col-sm-12">
-                <div class="pull-right">
-                    <a href="/Volunteering/@Model.V.PeopleId" class="btn btn-default">Manage</a>
+        if (xs)
+        {
+            <div class="visible-xs-block">
+                <a href="/Volunteering/@Model.V.PeopleId" class="btn btn-default btn-block">Manage</a>
+            </div>
+        }
+        else
+        {
+            <div class="row hidden-xs">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        <a href="/Volunteering/@Model.V.PeopleId" class="btn btn-default">Manage</a>
+                    </div>
                 </div>
             </div>
-        </div>
+        }
     }
 }

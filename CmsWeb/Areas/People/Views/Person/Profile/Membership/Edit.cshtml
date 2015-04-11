@@ -122,15 +122,26 @@
             </div>
         </div>
     </div>
+    @FormAction(true)
 </form>
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
-    <div class="row hidden-xs">
-        <div class="col-sm-12">
-            <div class="pull-right">
-                <a href="/Person2/Membership/@Model.PeopleId" class="edit-basic btn btn-default ajax">Cancel</a>
-                <a href="/Person2/MembershipUpdate" class="edit-basic btn btn-primary ajax validate">Save</a>
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            <a href="/Person2/MembershipUpdate" class="edit-basic btn btn-primary btn-block ajax validate">Save</a>
+            <a href="/Person2/Membership/@Model.PeopleId" class="edit-basic btn btn-default btn-block ajax">Cancel</a>
+        </div>
+    }
+    else
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/Person2/Membership/@Model.PeopleId" class="edit-basic btn btn-default ajax">Cancel</a>
+                    <a href="/Person2/MembershipUpdate" class="edit-basic btn btn-primary ajax validate">Save</a>
+                </div>
             </div>
         </div>
-    </div>
+    }
 }

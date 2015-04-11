@@ -5,10 +5,10 @@
     @if (Model.Future)
     {
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-9">
                 <h4>Future Meetings</h4>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-3">
                 <div class="pull-right">
                     <a class="ajax btn btn-default" href="/Person2/Attendance/@Model.PeopleId"><i class="fa fa-search"></i> Show Attendance History</a>
                 </div>
@@ -18,10 +18,10 @@
     else
     {
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-9">
                 <h4>Attendance History</h4>
             </div>
-            <div class="col-sm-9">
+            <div class="col-sm-3">
                 <div class="pull-right">
                     <a class="ajax btn btn-default" href="/Person2/AttendanceFuture/@Model.PeopleId"><i class="fa fa-search"></i> Show Future Meetings</a>
                 </div>

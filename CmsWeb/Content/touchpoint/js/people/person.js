@@ -393,9 +393,8 @@
     });
 
     $.RebindMemberGrids = function() {
-        $("#refresh-current").click();
-        $("#refresh-pending").click();
-        $("#refresh-previous").click();
+        $("a.refresh-current").click();
+        $("a.refresh-pending").click();
     };
 });
 

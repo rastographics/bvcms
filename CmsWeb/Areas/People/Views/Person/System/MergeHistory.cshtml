@@ -1,12 +1,6 @@
 ﻿@model IEnumerable<CmsData.MergeHistory>
 <form class="non-modal ajax" method="post">
-    <div class="row hidden-xs">
-        <div class="col-sm-12">
-            <div class="pull-right">
-                <a href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
-            </div>
-        </div>
-    </div>
+    @FormAction()
     <table class="table table-striped">
         <thead>
             <tr>
@@ -30,4 +24,24 @@
             }
         </tbody>
     </table>
+    @FormAction(true)
 </form>
+@helper FormAction(bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            <a href="#" class="ajax-refresh btn btn-default btn-block"><i class="fa fa-refresh"></i> Refresh</a>
+        </div>
+    }
+    else
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
+                </div>
+            </div>
+        </div>
+    }
+}

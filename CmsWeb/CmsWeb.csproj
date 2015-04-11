@@ -990,7 +990,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
-    <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
@@ -1020,6 +1019,7 @@
     <Content Include="Areas\Main\Views\Task\Rows.cshtml" />
     <Content Include="Areas\Main\Views\Task\Row.cshtml" />
     <Content Include="Areas\Main\Views\Task\Columns.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\Text0.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
@@ -1869,7 +1869,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
-    <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\OrgPickList2.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddFeeAdjustment.cshtml" />

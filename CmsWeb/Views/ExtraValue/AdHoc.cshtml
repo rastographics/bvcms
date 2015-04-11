@@ -1,22 +1,16 @@
 ﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
 <form class="ajax" method="post"  data-init="ExtraEditable">
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-9">
             <h4>AdHoc Extra Values</h4>
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-3">
             <div class="pull-right">
                 <a class="ajax btn btn-default" href="/ExtraValue/Display/@Model.Table/Standard/@Model.Id"><i class="fa fa-search"></i> Show Standard Extra Values</a>
             </div>
         </div>
     </div>
-    <div class="row hidden-xs">
-        <div class="col-sm-12">
-            <div class="pull-right">
-                <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="btn btn-default ajax reload"><i class="fa fa-refresh"></i> Refresh</a>
-            </div>
-        </div>
-    </div>
+    @FormAction()
     <br/>
     <div class="table-responsive">
         <table class="table table-striped">
@@ -35,4 +29,24 @@
             </tbody>
         </table>
     </div>
+    @FormAction(true)
 </form>
+@helper FormAction(bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="btn btn-default btn-block ajax reload"><i class="fa fa-refresh"></i> Refresh</a>
+        </div>
+    }
+    else
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="btn btn-default ajax reload"><i class="fa fa-refresh"></i> Refresh</a>
+                </div>
+            </div>
+        </div>
+    }
+}

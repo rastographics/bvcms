@@ -110,20 +110,10 @@
                     </div>
                 </div>
             </div>
+            @FormAction(true)
             <hr />
             <h4>@ExtraMembershipDataLabel</h4>
-            <div class="row hidden-xs">
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <a href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <a class="extravalue edit btn btn-default" href="/ExtraValue/ListStandard/@evmodel.Table/Membership/@evmodel.Id?title=Edit+Membership+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
-                            <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@evmodel.Table/Membership/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
-                        }
-                    </div>
-                </div>
-            </div>
+            @ExtraDataFormAction(evmodel)
             <br />
             <div class="table">
                 @{
@@ -147,6 +137,7 @@
                     }
                 }
             </div>
+            @ExtraDataFormAction(evmodel, true)
             <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@evmodel.Table/Membership/@evmodel.Id" />
         </div>
         <div class="col-lg-4">
@@ -209,20 +200,61 @@
         </div>
     </div>
 </form>
-
-
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
     if (User.IsInRole("Membership"))
+    {
+        if (xs)
+        {
+            <div class="visible-xs-block">
+                <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn btn-default btn-block ajax"><i class="fa fa-pencil"></i> Edit</a>
+                @if (Model.MemberStatus.Value.ToInt() == MemberStatusCode.JustAdded)
+                {
+                    <a href="/Person2/JustAddedNotMember/@Model.PeopleId" class="btn btn-default btn-block ajax">Set Just Added to Not Member</a>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="row hidden-xs">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        @if (Model.MemberStatus.Value.ToInt() == MemberStatusCode.JustAdded)
+                        {
+                            <a href="/Person2/JustAddedNotMember/@Model.PeopleId" class="btn btn-default ajax">Set Just Added to Not Member</a>
+                        }
+                        <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+}
+@helper ExtraDataFormAction(ExtraValueModel evmodel, bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="extravalue btn btn-success btn-block" href="/ExtraValue/NewStandard/@evmodel.Table/Membership/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
+                <a class="extravalue edit btn btn-default btn-block" href="/ExtraValue/ListStandard/@evmodel.Table/Membership/@evmodel.Id?title=Edit+Membership+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
+                <hr/>
+            }
+            <a href="#" class="ajax-refresh btn btn-default btn-block"><i class="fa fa-refresh"></i> Refresh</a>
+        </div>
+    }
+    else
     {
         <div class="row hidden-xs">
             <div class="col-sm-12">
                 <div class="pull-right">
-                    @if (Model.MemberStatus.Value.ToInt() == MemberStatusCode.JustAdded)
+                    <a href="#" class="ajax-refresh btn btn-default"><i class="fa fa-refresh"></i> Refresh</a>
+                    @if (User.IsInRole("Admin"))
                     {
-                        <a href="/Person2/JustAddedNotMember/@Model.PeopleId" class="btn btn-default ajax">Set Just Added to Not Member</a>
+                        <a class="extravalue edit btn btn-default" href="/ExtraValue/ListStandard/@evmodel.Table/Membership/@evmodel.Id?title=Edit+Membership+Extra+Vaues"><i class="fa fa-pencil"></i> Edit Extra Value</a>
+                        <a class="extravalue btn btn-success" href="/ExtraValue/NewStandard/@evmodel.Table/Membership/@evmodel.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
                     }
-                    <a href="/Person2/MembershipEdit/@Model.PeopleId" class="edit-basic btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
                 </div>
             </div>
         </div>
