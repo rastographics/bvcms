@@ -50,30 +50,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(pf.OrgId ?? 0);
 
-            if (OnlineRegModel.GetTransactionGateway() != "serviceu")
-                return View("Payment/Process", pf);
-
-
-            ViewBag.TranId = ti.Id;
-            var pm = new PaymentModel
-            {
-                NameOnAccount = pf.FullName(),
-                Address = pf.Address,
-                Amount = pf.Amtdue,
-                City = pf.City,
-                Email = pf.Email,
-                Phone = pf.Phone.FmtFone(),
-                State = pf.State,
-                PostalCode = pf.Zip,
-                testing = pf.testing,
-                PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/ConfirmServiceU/" + id),
-                Misc2 = pf.Description,
-                Misc1 = pf.FullName(),
-                _URL = pf.URL,
-                _timeout = new PaymentForm().TimeOut,
-            };
-
-            return View("PayAmtDue/ServiceU", pm);
+            return View("Payment/Process", pf);
         }
 
         private static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
@@ -173,8 +150,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
             ti.Testing = true;
 #endif
-            if (OnlineRegModel.GetTransactionGateway() == "serviceu")
-                ti = PaymentForm.CreateTransaction(DbUtil.Db, ti, amount);
             ConfirmDuePaidTransaction(ti, transactionId, sendmail: true);
             ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
             SetHeaders(ti.OrgId ?? 0);

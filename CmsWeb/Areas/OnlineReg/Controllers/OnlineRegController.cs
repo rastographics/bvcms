@@ -615,15 +615,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(m);
             if (m.PayAmount() == 0 && m.Terms.HasValue())
-            {
-                return View("Terms", new PaymentModel
-                     {
-                         Terms = m.Terms,
-                         _URL = m.URL,
-                         PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/Confirm/" + m.DatumId),
-                         _timeout = m.TimeOut
-                     });
-            }
+                return View("Terms", m);
 
             var om =
                  DbUtil.Db.OrganizationMembers.SingleOrDefault(
@@ -634,8 +626,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("You are already registered it appears");
 
             var pf = PaymentForm.CreatePaymentForm(m);
-            if (OnlineRegModel.GetTransactionGateway() == "serviceu")
-                return View("Payment/ServiceU", pf);
             ModelState.Clear();
             return View("Payment/Process", pf);
         }
