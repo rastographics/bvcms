@@ -1,7 +1,7 @@
 ﻿@using CmsData.Classes.Twilio
 @{ var twilio = TwilioHelper.userSendSMS(Util.UserId); }
 <ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
-    <li class="col-sm-4">
+    <li class="col-sm-12">
         <ul>
             <li class="dropdown-header">Email</li>
             <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
@@ -15,8 +15,8 @@
             @if ((bool?)ViewBag.ParentOrgContext == true)
             {
                 <li class="divider"></li>
-                <li><a href='/Email/@ViewBag.leadersqid'>Leaders under this org</a></li>
-                <li><a href='/Email/@ViewBag.membersqid'>Members under this org</a></li>
+                <li><a href='/Email/@ViewBag.leadersqid'><span class="text-success">Leaders under this org</span></a></li>
+                <li><a href='/Email/@ViewBag.membersqid'><span class="text-success">Members under this org</span></a></li>
             }
             <li class="divider"></li>
             <li class="dropdown-header">SMS</li>

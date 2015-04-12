@@ -1,0 +1,66 @@
+﻿@{
+  var admin = User.IsInRole("Admin");
+  var edit = User.IsInRole("Edit");
+  var manager2 = User.IsInRole("Manager2");
+  var manager = User.IsInRole("Manager");
+}
+@if (admin)
+{
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-6">
+            <ul id="ultoolbar">
+                <li class="dropdown-header">Administrative</li>
+                <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="text-success">Put in New Family</span></a></li>
+                <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId"><span class="text-success">Merge this duplicate</span></a></li>
+                @if (User.IsInRole("Delete"))
+                {
+                    <li><a id="deletePerson" href="/Person2/Delete/@ViewBag.PeopleId"><span class="text-success">Delete this record</span></a></li>
+                }
+                else
+                {
+                    <li><a href="http://docs.touchpointsoftware.com/People/DeletePerson.html" target="_blank"><span class="text-success">Delete this record</span></a></li>
+                }
+            </ul>
+        </li>
+        <li class="col-sm-6">
+            @Html.Partial("Toolbar/GearStandard.touch")
+        </li>
+    </ul>
+}
+else if (manager || manager2)
+{
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-6">
+            <ul id="ultoolbar">
+                <li class="dropdown-header">Administrative</li>
+                <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="text-success">Put in New Family</span></a></li>
+                <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId"><span class="text-success">Merge this duplicate</span></a></li>
+            </ul>
+        </li>
+        <li class="col-sm-6">
+            @Html.Partial("Toolbar/GearStandard.touch")
+        </li>
+    </ul>
+}
+else if (edit)
+{
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-4">
+            <ul id="ultoolbar">
+                <li class="dropdown-header">Administrative</li>
+                <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="text-success">Put in New Family</span></a></li>
+            </ul>
+        </li>
+        <li class="col-sm-6">
+            @Html.Partial("Toolbar/GearStandard.touch")
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-12">
+            @Html.Partial("Toolbar/GearStandard.touch")
+        </li>
+    </ul>
+}
