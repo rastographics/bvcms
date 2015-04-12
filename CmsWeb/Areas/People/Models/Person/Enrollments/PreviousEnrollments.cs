@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.People.Models
         private Person _person;
 
         public PreviousEnrollments()
-            : base("Org Name", "asc")
+            : base("default", "asc")
         {
         }
         override public IQueryable<EnrollmentTransaction> DefineModelList()

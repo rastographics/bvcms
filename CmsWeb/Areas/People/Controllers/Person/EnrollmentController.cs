@@ -11,12 +11,16 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult EnrollGrid(CurrentEnrollments m)
         {
+            if (!m.Sort.HasValue())
+                m.Sort = "default";
             DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Current", m);
         }
         [HttpPost]
         public ActionResult PrevEnrollGrid(PreviousEnrollments m)
         {
+            if (!m.Sort.HasValue())
+                m.Sort = "default";
             DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.Person.Name));
             return View("Enrollment/Previous", m);
         }
