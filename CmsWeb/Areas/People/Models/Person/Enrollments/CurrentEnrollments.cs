@@ -22,6 +22,11 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
+        public CurrentEnrollments()
+            : base("default", "asc")
+        {
+        }
+
         override public IQueryable<OrganizationMember> DefineModelList()
         {
             var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly

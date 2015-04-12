@@ -28,7 +28,7 @@
 @helper FormAction()
 {
   <div class="pull-right">
-    <a href="/Org/FeesHelpToggle/@Model.Id" class="btn ajax">Toggle Help</a>
+    <a href="/Org/FeesHelpToggle/@Model.Id" class="btn ajax">@(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
     @if (User.IsInRole("Edit"))
     {
       <a href="/Org/FeesEdit/@Model.Id" class="btn edit btn-primary ajax">Edit</a>

@@ -305,9 +305,6 @@
     <Compile Include="Areas\Finance\Models\BatchImport\Regions.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\ServiceU.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\FirstState.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SunTrust.cs">
       <SubType>Code</SubType>
@@ -2009,7 +2006,6 @@
     <Compile Include="Areas\OnlineReg\Controllers\ConfirmTest.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageVolunteers.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Coupon.cs" />
-    <Compile Include="Areas\OnlineReg\Controllers\PayDueOld.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\PayDue.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\TransactionInfo.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentForm.cs" />
@@ -2059,7 +2055,6 @@
     <Compile Include="Areas\Manage\Controllers\OrgMembersController.cs" />
     <Compile Include="Areas\Manage\Models\OrgMembersModel.cs" />
     <Compile Include="Areas\Public\Controllers\OptOutController.cs" />
-    <Compile Include="Areas\Public\Models\PaymentModel.cs" />
     <Compile Include="Areas\Setup\Controllers\DivisionController.cs" />
     <Compile Include="Code\CmsController.cs" />
     <Compile Include="Areas\Manage\Controllers\DisplayController.cs" />
@@ -2676,8 +2671,6 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Confirm.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\OldConfirm.cshtml">
-    </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmAccount.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\Confirm.cshtml">
@@ -2693,12 +2686,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Index.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions\Choose.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\Process.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\ServiceU.cshtml">
-    </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\ServiceU.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\Process.cshtml">
     </Content>

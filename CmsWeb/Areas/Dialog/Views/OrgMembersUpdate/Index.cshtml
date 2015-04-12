@@ -18,6 +18,8 @@
       <fieldset class="display">
         @Html.HiddenFor(m => m.Id)
         @Html.EditorFor(m => m.MemberType)
+        @Html.EditorFor(m => m.MakeMemberTypeOriginal)
+        <div style="height: .8em;"></div>
         @Html.EditorFor(m => m.EnrollmentDate)
         @Html.EditorFor(m => m.InactiveDate)
         @Html.EditorFor(m => m.RemoveInactiveDate)

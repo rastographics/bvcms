@@ -23,7 +23,6 @@ namespace CmsWeb.Models
             public RouteType RouteType;
             public string Message;
             public string View;
-            public PaymentModel PaymentModel;
             public PaymentForm PaymentForm;
             public RouteValueDictionary RouteData;
 
@@ -35,13 +34,12 @@ namespace CmsWeb.Models
                     View = view
                 };
             }
-            public static RouteModel ViewTerms(string view, PaymentModel pm)
+            public static RouteModel ViewTerms(string view)
             {
                 return new RouteModel()
                 {
                     RouteType = RouteType.Terms, 
                     View = view,
-                    PaymentModel = pm, 
                 };
             }
             public static RouteModel ViewPayment(string view, PaymentForm pf)
@@ -121,15 +119,8 @@ namespace CmsWeb.Models
         private RouteModel CheckTermsNoFee(OnlineRegController ctl)
         {
             ctl.SetHeaders(this);
-            if (PayAmount() == 0 && Terms.HasValue())
-                return RouteModel.ViewTerms("Terms",
-                    new PaymentModel
-                    {
-                        Terms = Terms,
-                        _URL = URL,
-                        PostbackURL = DbUtil.Db.ServerLink("/OnlineReg/Confirm/" + DatumId),
-                        _timeout = TimeOut
-                    });
+            if (PayAmount() == 0 && Terms.HasValue())               
+                return RouteModel.ViewTerms("Terms");
             return null;
         }
 

@@ -36,6 +36,12 @@ namespace CmsData
 		
    		
     	
+		private EntityRef< Organization> _Organization;
+		
+		private EntityRef< Person> _Goer;
+		
+		private EntityRef< Person> _Sender;
+		
 	#endregion
 	
     #region Extensibility Method Definitions
@@ -72,6 +78,12 @@ namespace CmsData
 		{
 			
 			
+			this._Organization = default(EntityRef< Organization>); 
+			
+			this._Goer = default(EntityRef< Person>); 
+			
+			this._Sender = default(EntityRef< Person>); 
+			
 			OnCreated();
 		}
 
@@ -101,6 +113,7 @@ namespace CmsData
 
 		
 		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int NOT NULL")]
+		[IsForeignKey]
 		public int OrgId
 		{
 			get { return this._OrgId; }
@@ -109,6 +122,9 @@ namespace CmsData
 			{
 				if (this._OrgId != value)
 				{
+				
+					if (this._Organization.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
                     this.OnOrgIdChanging(value);
 					this.SendPropertyChanging();
@@ -123,6 +139,7 @@ namespace CmsData
 
 		
 		[Column(Name="SupporterId", UpdateCheck=UpdateCheck.Never, Storage="_SupporterId", DbType="int NOT NULL")]
+		[IsForeignKey]
 		public int SupporterId
 		{
 			get { return this._SupporterId; }
@@ -131,6 +148,9 @@ namespace CmsData
 			{
 				if (this._SupporterId != value)
 				{
+				
+					if (this._Goer.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
                     this.OnSupporterIdChanging(value);
 					this.SendPropertyChanging();
@@ -145,6 +165,7 @@ namespace CmsData
 
 		
 		[Column(Name="GoerId", UpdateCheck=UpdateCheck.Never, Storage="_GoerId", DbType="int")]
+		[IsForeignKey]
 		public int? GoerId
 		{
 			get { return this._GoerId; }
@@ -153,6 +174,9 @@ namespace CmsData
 			{
 				if (this._GoerId != value)
 				{
+				
+					if (this._Sender.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
 				
                     this.OnGoerIdChanging(value);
 					this.SendPropertyChanging();
@@ -262,6 +286,132 @@ namespace CmsData
 	
 	#region Foreign Keys
     	
+		[Association(Name="FK_GoerSenderAmounts_Organizations", Storage="_Organization", ThisKey="OrgId", IsForeignKey=true)]
+		public Organization Organization
+		{
+			get { return this._Organization.Entity; }
+
+			set
+			{
+				Organization previousValue = this._Organization.Entity;
+				if (((previousValue != value) 
+							|| (this._Organization.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._Organization.Entity = null;
+						previousValue.GoerSenderAmounts.Remove(this);
+					}
+
+					this._Organization.Entity = value;
+					if (value != null)
+					{
+						value.GoerSenderAmounts.Add(this);
+						
+						this._OrgId = value.OrganizationId;
+						
+					}
+
+					else
+					{
+						
+						this._OrgId = default(int);
+						
+					}
+
+					this.SendPropertyChanged("Organization");
+				}
+
+			}
+
+		}
+
+		
+		[Association(Name="GoerAmounts__Goer", Storage="_Goer", ThisKey="SupporterId", IsForeignKey=true)]
+		public Person Goer
+		{
+			get { return this._Goer.Entity; }
+
+			set
+			{
+				Person previousValue = this._Goer.Entity;
+				if (((previousValue != value) 
+							|| (this._Goer.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._Goer.Entity = null;
+						previousValue.GoerAmounts.Remove(this);
+					}
+
+					this._Goer.Entity = value;
+					if (value != null)
+					{
+						value.GoerAmounts.Add(this);
+						
+						this._SupporterId = value.PeopleId;
+						
+					}
+
+					else
+					{
+						
+						this._SupporterId = default(int);
+						
+					}
+
+					this.SendPropertyChanged("Goer");
+				}
+
+			}
+
+		}
+
+		
+		[Association(Name="SenderAmounts__Sender", Storage="_Sender", ThisKey="GoerId", IsForeignKey=true)]
+		public Person Sender
+		{
+			get { return this._Sender.Entity; }
+
+			set
+			{
+				Person previousValue = this._Sender.Entity;
+				if (((previousValue != value) 
+							|| (this._Sender.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._Sender.Entity = null;
+						previousValue.SenderAmounts.Remove(this);
+					}
+
+					this._Sender.Entity = value;
+					if (value != null)
+					{
+						value.SenderAmounts.Add(this);
+						
+						this._GoerId = value.PeopleId;
+						
+					}
+
+					else
+					{
+						
+						this._GoerId = default(int?);
+						
+					}
+
+					this.SendPropertyChanged("Sender");
+				}
+
+			}
+
+		}
+
+		
 	#endregion
 	
 		public event PropertyChangingEventHandler PropertyChanging;

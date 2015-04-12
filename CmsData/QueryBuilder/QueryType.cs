@@ -78,6 +78,7 @@ namespace CmsData
         GuestAsOf,
         HadIndContributions,
         HasBalanceInCurrentOrg,
+        HasBalance,
         HasCommitmentForMeetingId,
         HasContacts,
         HasCurrentTag,

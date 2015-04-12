@@ -1,62 +1,79 @@
-﻿@model CmsWeb.Models.PaymentModel
+﻿@model CmsWeb.Models.OnlineRegModel
 @{
-    Layout = "~/Views/Shared/onlinereg.cshtml";
-    ViewBag.Title = "Online Registration";
+  Layout = "~/Views/Shared/onlinereg.cshtml";
+  ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-    <script type="text/javascript">
-        $(function() {
-            $(document).bind("idle.idleTimer", function() {
-                window.location.href = '@Model._URL';
-            });
-            var tmout = parseInt('@Model._timeout');
-            $.idleTimer(tmout);
+  <script type="text/javascript">
+    $(function () {
+      $(document).bind("idle.idleTimer", function () {
+        window.location.href = '@Model.URL';
+      });
+      var tmout = parseInt('@Model.TimeOut');
+      $.idleTimer(tmout);
 
-            if ($('#IAgree').attr("id")) {
-                $("#Submit").attr("disabled", "disabled");
-            }
-            $("#IAgree").click(function() {
-                var checked_status = this.checked;
-                if (checked_status == true) {
-                    $("#Submit").removeAttr("disabled");
-                } else {
-                    $("#Submit").attr("disabled", "disabled");
-                }
-            });
-        });
-    </script>
+      if ($('#IAgree').attr("id")) {
+        $("#Submit").attr("disabled", "disabled");
+      }
+      $("#IAgree").click(function () {
+        var checked_status = this.checked;
+        if (checked_status === true) {
+          $("#Submit").removeAttr("disabled");
+        } else {
+          $("#Submit").attr("disabled", "disabled");
+        }
+      });
+    });
+  </script>
 }
 <style type="text/css">
-div.terms {
-   width:600px;
-   height:200px;
-   border:1px solid #ccc;
-   background:#f2f2f2;
-   padding:6px;
-   overflow:auto;
-}
-div.terms p,
-div.terms li {font:normal 11px/15px arial;color:#333;}
-div.terms h3 {font:bold 14px/19px arial;color:#000;}
-div.terms h4 {font:bold 12px/17px arial;color:#000;}
-div.terms strong {color:#000;}	
-a.submitbutton,a.button {
-  padding:5px;
-    border-color:#D9DFEA #0E1F5B #0E1F5B #D9DFEA;
-    background-color:#3B5998;
-  border: 1px solid;
-    color:#FFFFFF;
-  text-decoration:none;
-}
+  div.terms {
+    width: 600px;
+    height: 200px;
+    border: 1px solid #ccc;
+    background: #f2f2f2;
+    padding: 6px;
+    overflow: auto;
+  }
+
+    div.terms p,
+    div.terms li {
+      font: normal 11px/15px arial;
+      color: #333;
+    }
+
+    div.terms h3 {
+      font: bold 14px/19px arial;
+      color: #000;
+    }
+
+    div.terms h4 {
+      font: bold 12px/17px arial;
+      color: #000;
+    }
+
+    div.terms strong {
+      color: #000;
+    }
+
+  a.submitbutton, a.button {
+    padding: 5px;
+    border-color: #D9DFEA #0E1F5B #0E1F5B #D9DFEA;
+    background-color: #3B5998;
+    border: 1px solid;
+    color: #FFFFFF;
+    text-decoration: none;
+  }
 </style>
-    <h2>Terms of Agreement</h2>
+<h2>Terms of Agreement</h2>
 @Html.Raw(Model.Terms)
-<form action="@Model.PostbackURL" method="post">
-    @Html.Hidden("TransactionID", "zero due")
-    <p>@Html.CheckBox("IAgree") I agree to the above terms and conditions.</p>
-    <p>
-        You must agree to the terms above for you or your minor child before you can continue with confirmation.</p>
-    <p></p>
-    <p><input type="submit" id="Submit" value="Continue Registration" /></p>
+<form action="/OnlineReg/Confirm/@Model.DatumId" method="post">
+  @Html.Hidden("TransactionID", "zero due")
+  <p>@Html.CheckBox("IAgree") I agree to the above terms and conditions.</p>
+  <p>
+    You must agree to the terms above for you or your minor child before you can continue with confirmation.
+  </p>
+  <p></p>
+  <p><input type="submit" id="Submit" value="Continue Registration" /></p>
 </form>

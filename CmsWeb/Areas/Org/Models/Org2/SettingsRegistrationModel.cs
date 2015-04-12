@@ -137,8 +137,8 @@ namespace CmsWeb.Areas.Org2.Models
         [Org, Display(Name = "OnRegister Script Name", Description = AddToSmallGroupScriptDescription)]
         public string AddToSmallGroupScript { get; set; }
 
-        [Reg, Display(Name = "Registration Title", Description = TitleDescription)]
-        public string Title { get; set; }
+        [Org, Display(Description = TitleDescription)]
+        public string RegistrationTitle { get; set; }
 
         [Reg, Display(Description = VaidateOrgsDescription)]
         public string VaidateOrgs { get; set; }

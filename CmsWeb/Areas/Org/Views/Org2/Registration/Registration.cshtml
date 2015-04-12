@@ -12,7 +12,7 @@
     @Html.HiddenFor(m => m.Id)
     @Html.DisplayFor(m => m.RegistrationType)
     @Html.Hidden("RegistrationType_Value", Model.RegistrationType.Value)
-    @Html.DisplayFor(m => m.Title)
+    @Html.DisplayFor(m => m.RegistrationTitle)
     @Html.DisplayFor(m => m.ClassFilled)
     @Html.DisplayFor(m => m.RegistrationClosed)
     @Html.DisplayFor(m => m.RegStart)
@@ -48,7 +48,7 @@
 @helper FormAction()
 {
   <div class="pull-right">
-    <a href="/Org/RegistrationHelpToggle/@Model.Id" class="btn ajax">Toggle Help</a>
+    <a href="/Org/RegistrationHelpToggle/@Model.Id" class="btn ajax">@(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
     @if (User.IsInRole("Edit"))
     {
       <a href="/Org/RegistrationEdit/@Model.Id" class="btn edit btn-primary ajax">Edit</a>

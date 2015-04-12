@@ -105,14 +105,6 @@ namespace CmsWeb.Models
                 using (var csv = new CsvReader(new StringReader(text), true))
                     return BatchProcessChase(csv, date, fundid);
 
-            //if (text.StartsWith("Report Date,Report Requestor"))
-            //    using (var csv = new CsvReader(new StringReader(text), true))
-            //        return BatchProcessSunTrust2(csv, date, fundid);
-
-            if (text.Contains("ProfileID"))
-                using (var csv = new CsvReader(new StringReader(text), true))
-                    return BatchProcessServiceU(csv, date);
-
             throw new Exception("unsupported import file");
         }
 

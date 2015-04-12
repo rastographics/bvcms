@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return pid > 0
                 ? RouteRegistration(m, pid, showfamily)
                 : View(m);
-        }
+                }
 
         // authenticate user
         [HttpPost]
@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             // Click a person from the family list * Take them to the Questions page
             m.StartRegistrationForFamilyMember(id, ModelState);
-            return FlowList(m, "Register");
+                return FlowList(m, "Register");
         }
 
         [HttpPost]
@@ -113,8 +113,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var p = m.List[id];
             p.ValidateModelForFind(ModelState, id);
             p.PrepareToAddNewPerson(ModelState, id);
-            return FlowList(m, "ShowMoreInfo");
-        }
+                return FlowList(m, "ShowMoreInfo");
+            }
 
         [HttpPost]
         public ActionResult PersonFind(int id, OnlineRegModel m)
@@ -133,7 +133,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if(p.IsSpecialReg())
                 p.OtherOK = true;
             else if (p.RegistrationFull())
-                ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
+                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             p.SetClassId();
             p.CheckSetFee();
             return FlowList(m, "PersonFind");
@@ -144,7 +144,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             try
             {
-                m.UpdateDatum();
+            m.UpdateDatum();
             }
             catch (Exception)
             {
@@ -164,12 +164,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var p = m.List[id];
             p.ValidateModelForNew(ModelState, id);
 
-            SetHeaders(m);
+                    SetHeaders(m);
             var ret = p.AddNew(ModelState, id);
             return ret.HasValue() 
                 ? View(ret, m) 
                 : FlowList(m, "SubmitNew");
-        }
+                }
 
         [HttpPost]
         public ActionResult SubmitOtherInfo(int id, OnlineRegModel m)
@@ -256,11 +256,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 case OnlineRegModel.RouteType.Redirect:
                     return RedirectToAction(ret.View, ret.RouteData);
                 case OnlineRegModel.RouteType.Terms:
-                    return View(ret.View, ret.PaymentModel);
+                    return View(ret.View, m);
                 case OnlineRegModel.RouteType.Payment:
                     return View(ret.View, ret.PaymentForm);
             }
             throw new Exception("unexpected value on CompleteRegistration");
+
         }
 
         [HttpPost]
@@ -291,7 +292,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             catch (Exception ex)
             {
                 return ErrorResult(m, ex, "In " + function + "<br>" + ex.Message);
-            }
+        }
         }
 
     }

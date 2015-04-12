@@ -252,7 +252,7 @@ namespace CmsWeb.Models
                         return "Support: " + org.OrganizationName;
                 }
                 if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
-                    return Util.PickFirst(settings[org.OrganizationId].Title, org.OrganizationName);
+                    return Util.PickFirst(org.RegistrationTitle, org.OrganizationName);
                 return org.OrganizationName;
             }
         }
