@@ -461,21 +461,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.SendLinkToManageGiving();
                 ret = ConfirmEnum.ConfirmAccount;
             }
-            else if (t.TransactionGateway.ToLower() == "serviceu")
-            {
-                t.TransactionId = transactionId;
-                if (m.testing == true && !t.TransactionId.Contains("(testing)"))
-                    t.TransactionId += "(testing)";
-                t.Message = "Transaction Completed";
-                t.Approved = true;
-                m.EnrollAndConfirm();
-                if (m.List.Any(pp => pp.PeopleId == null))
-                {
-                    LogOutOfOnlineReg();
-                    throw new Exception("no person");
-                }
-                m.UseCoupon(t.TransactionId, t.Amt ?? 0);
-            }
             else
             {
                 if (!t.TransactionId.HasValue())

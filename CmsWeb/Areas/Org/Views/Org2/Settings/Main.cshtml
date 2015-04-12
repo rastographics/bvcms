@@ -10,24 +10,23 @@
           <small>@Model.LeaderName</small>
         </legend>
         <div class="row-fluid">
-            <div class="control-group">
-              <label class="control-label"><span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>Use this link to manage the divisions this organization belongs to.</p><p style='font-weight: normal;'>A dialog box will pop up.</p>" data-original-title="Divisions"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;Divisions:</label>
-              <div class="controls">
-                <a id="divisionlist" href="/SearchDivisions/@Model.Id" data-refresh="/Org/DivisionList/@Model.Id">
-                  @Html.Partial("Other/DivisionList", OrganizationModel.Divisions(Model.Id))
-                </a>
-              </div>
+          <div class="control-group">
+            <label class="control-label"><span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>Use this link to manage the divisions this organization belongs to.</p><p style='font-weight: normal;'>A dialog box will pop up.</p>" data-original-title="Divisions"><i class="fa fa-info-circle"></i></span>&nbsp;&nbsp;Divisions:</label>
+            <div class="controls">
+              <a id="divisionlist" href="/SearchDivisions/@Model.Id" data-refresh="/Org/DivisionList/@Model.Id">
+                @Html.Partial("Other/DivisionList", OrganizationModel.Divisions(Model.Id))
+              </a>
+            </div>
           </div>
+          @Html.DisplayFor(m => m.OrganizationName)
           <div class="inline display align-top">
-            @Html.DisplayFor(m => m.OrganizationName)
             @Html.DisplayFor(m => m.Campus)
             @Html.DisplayFor(m => m.LeaderMemberType)
             @Html.DisplayFor(m => m.Schedule)
-@*            <span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>An upcoming new feature for classifying your organizations.</p><p style='font-weight: normal;'>In progress, stay tuned.</p>" data-original-title="What is Organization Type?"><i class="fa fa-info-circle"></i></span>*@
+            @*            <span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="<p style='font-weight: normal;'>An upcoming new feature for classifying your organizations.</p><p style='font-weight: normal;'>In progress, stay tuned.</p>" data-original-title="What is Organization Type?"><i class="fa fa-info-circle"></i></span>*@
           </div>
           <div class="inline display align-top">
             @Html.DisplayFor(m => m.OrganizationType)
-            @Html.DisplayFor(m => m.SecurityType)
             @Html.DisplayFor(m => m.OrganizationStatus)
             @Html.DisplayFor(m => m.IsBibleFellowshipOrg)
             @if (Model.Org.OrgPickList.HasValue())

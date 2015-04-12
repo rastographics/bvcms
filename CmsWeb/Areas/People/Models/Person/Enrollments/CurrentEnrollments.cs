@@ -22,8 +22,8 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
-        public CurrentEnrollments() 
-            : base ("","",true)
+        public CurrentEnrollments()
+            : base("default", "asc", true)
         {}
 
         override public IQueryable<OrganizationMember> DefineModelList()

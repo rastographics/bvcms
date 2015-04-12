@@ -3965,6 +3965,22 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.OrgCheckedCount", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? OrgCheckedCount(
+            [Parameter(Name = "oid", DbType="int")] int? oid,
+            [Parameter(Name = "groupselect", DbType="varchar")] string groupselect,
+            [Parameter(Name = "pid", DbType="int")] int? pid
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid,
+                groupselect,
+                pid
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.Age", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? Age(
@@ -3989,6 +4005,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.GetCurrentOnlineBundle", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetCurrentOnlineBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                next,
+                prev
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.EntryPointId", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? EntryPointId(
@@ -4001,18 +4031,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.WeekNumber", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? WeekNumber(
-            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                dt
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.Tool_VarbinaryToVarcharHex", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string ToolVarbinaryToVarcharHex(
@@ -4022,18 +4040,6 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 VarbinaryValue
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.SundayForWeekNumber", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? SundayForWeekNumber(
-            [Parameter(Name = "wkn", DbType="int")] int? wkn
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                wkn
                 ).ReturnValue));
 		}
 
@@ -4301,6 +4307,18 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.WeekNumber", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? WeekNumber(
+            [Parameter(Name = "dt", DbType="datetime")] DateTime? dt
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                dt
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.DollarRange", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? DollarRange(
@@ -4310,6 +4328,18 @@ namespace CmsData
 			return ((int?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 amt
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.SundayForWeekNumber", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? SundayForWeekNumber(
+            [Parameter(Name = "wkn", DbType="int")] int? wkn
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                wkn
                 ).ReturnValue));
 		}
 
@@ -4349,6 +4379,16 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.MaxPastMeeting", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? MaxPastMeeting(
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.DaysSinceContact", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? DaysSinceContact(
@@ -4381,13 +4421,29 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.MaxPastMeeting", IsComposable = true)]
+		[Function(Name="dbo.MaxMeetingDate", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
-		public DateTime? MaxPastMeeting(
+		public DateTime? MaxMeetingDate(
+            [Parameter(Name = "oid", DbType="int")] int? oid
             )
 		{
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                oid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.GetCurrentMissionTripBundle", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? GetCurrentMissionTripBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                next,
+                prev
                 ).ReturnValue));
 		}
 
@@ -4400,18 +4456,6 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 uid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.MaxMeetingDate", IsComposable = true)]
-		[return: Parameter(DbType = "datetime")]
-		public DateTime? MaxMeetingDate(
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-		{
-			return ((DateTime?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid
                 ).ReturnValue));
 		}
 
@@ -4535,22 +4579,6 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
-		[Function(Name="dbo.OrgCheckedCount", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? OrgCheckedCount(
-            [Parameter(Name = "oid", DbType="int")] int? oid,
-            [Parameter(Name = "groupselect", DbType="varchar")] string groupselect,
-            [Parameter(Name = "pid", DbType="int")] int? pid
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                oid,
-                groupselect,
-                pid
-                ).ReturnValue));
-		}
-
 		[Function(Name="dbo.SchoolGrade", IsComposable = true)]
 		[return: Parameter(DbType = "int")]
 		public int? SchoolGrade(
@@ -4572,20 +4600,6 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 peopleid
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetCurrentMissionTripBundle", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? GetCurrentMissionTripBundle(
-            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
-            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                next,
-                prev
                 ).ReturnValue));
 		}
 
@@ -4622,20 +4636,6 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 dt
-                ).ReturnValue));
-		}
-
-		[Function(Name="dbo.GetCurrentOnlineBundle", IsComposable = true)]
-		[return: Parameter(DbType = "int")]
-		public int? GetCurrentOnlineBundle(
-            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
-            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
-            )
-		{
-			return ((int?)(this.ExecuteMethodCall(this, 
-                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
-                next,
-                prev
                 ).ReturnValue));
 		}
 

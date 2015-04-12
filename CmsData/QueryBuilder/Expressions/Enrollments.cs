@@ -323,5 +323,25 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression HasBalance()
+        {
+            var tf = CodeIds == "1";
+            var co = db.CurrentOrg;
+            Expression<Func<Person, bool>> pred = p =>
+                    p.OrganizationMembers.Any(m =>
+                    (Organization == 0 || m.OrganizationId == Organization)
+                    && (Division == 0 || m.Organization.DivOrgs.Any(t => t.DivId == Division))
+                    && (Program == 0 || m.Organization.DivOrgs.Any(t => t.Division.ProgDivs.Any(d => d.ProgId == Program)))
+                    && (from ts in db.ViewTransactionSummaries
+                           where ts.PeopleId == p.PeopleId
+                           where ts.OrganizationId == m.OrganizationId
+                           orderby ts.RegId descending
+                        select ts.IndDue).FirstOrDefault() > 0);
+
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }
