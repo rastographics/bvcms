@@ -72,7 +72,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public NewExtraValueModel(Guid id)
         {
-            AdhocExtraValueType = new CodeInfo("Text", "AdhocExtraValueType");
+            ExtraValueType = new CodeInfo("Text", "AdhocExtraValueType");
             QueryId = id;
             ExtraValueTable = "People";
             ExtraValueLocation = "Adhoc";

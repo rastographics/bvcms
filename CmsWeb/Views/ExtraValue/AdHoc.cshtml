@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Models.ExtraValues.ExtraValueModel
-<form class="ajax" method="post"  data-init="ExtraEditable">
+<form class="ajax" method="post" data-init="ExtraEditable">
     <div class="row">
         <div class="col-sm-9">
             <h4>AdHoc Extra Values</h4>
@@ -36,6 +36,7 @@
     if (xs)
     {
         <div class="visible-xs-block">
+            <a class="adhoc-extravalue btn btn-success btn-block" href="/ExtraValue/NewAdhoc/@Model.Table/Adhoc/@Model.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
             <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="btn btn-default btn-block ajax reload"><i class="fa fa-refresh"></i> Refresh</a>
         </div>
     }
@@ -44,7 +45,8 @@
         <div class="row hidden-xs">
             <div class="col-sm-12">
                 <div class="pull-right">
-                    <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="btn btn-default ajax reload"><i class="fa fa-refresh"></i> Refresh</a>
+                    <a href="/ExtraValue/Display/@Model.Table/Adhoc/@Model.Id" class="btn btn-default ajax reload"><i class="fa fa-refresh"></i> Refresh</a> 
+                    <a class="adhoc-extravalue btn btn-success" href="/ExtraValue/NewAdhoc/@Model.Table/Adhoc/@Model.Id"><i class="fa fa-plus-circle"></i> Add Extra Value</a>
                 </div>
             </div>
         </div>
