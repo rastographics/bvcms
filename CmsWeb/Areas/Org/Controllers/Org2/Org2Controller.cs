@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Org2.Controllers
                 if (!User.IsInRole(m.Org.LimitToRole))
                     return NotAllowed("no privilege to view ", m.Org.OrganizationName);
 
-            DbUtil.LogActivity("Viewing Organization ({0})".Fmt(m.Org.OrganizationName), m.Org.OrganizationName, orgid: id);
+            DbUtil.LogActivity("Viewing Org({0})".Fmt(m.Org.OrganizationName), m.Org.OrganizationName, orgid: id);
 
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.Org.FullName;

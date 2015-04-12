@@ -58,6 +58,7 @@ ALTER TABLE [dbo].[ActivityLog] DROP CONSTRAINT [FK_ActivityLog_Organizations]
 ALTER TABLE [dbo].[Attend] DROP CONSTRAINT [FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL]
 ALTER TABLE [dbo].[Coupons] DROP CONSTRAINT [FK_Coupons_Organizations]
 ALTER TABLE [dbo].[EnrollmentTransaction] DROP CONSTRAINT [ENROLLMENT_TRANSACTION_ORG_FK]
+ALTER TABLE [dbo].[GoerSenderAmounts] DROP CONSTRAINT [FK_GoerSenderAmounts_Organizations]
 ALTER TABLE [dbo].[Meetings] DROP CONSTRAINT [FK_MEETINGS_TBL_ORGANIZATIONS_TBL]
 ALTER TABLE [dbo].[MemberTags] DROP CONSTRAINT [FK_MemberTags_Organizations]
 ALTER TABLE [dbo].[OrganizationExtra] DROP CONSTRAINT [FK_OrganizationExtra_Organizations]
@@ -495,10 +496,16 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <p>
 	You registered for {org}, and we found your record, but there was no email address on your existing record in our database. If you would like for us to update your record with this email address or another, Please contact the church at <strong>{phone}</strong> to let us know. It is important that we have your email address so that you will receive future important notices regarding this registration. But we won&#39;t add that to your record without your permission. Thank you</p>
 ', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (67, N'NewUserWelcome', N'New User Welcome', N'<title></title>
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (67, N'NewUserWelcome', N'New User Welcome', N'<html>
+<head>
+	<title></title>
+</head>
+<body>&nbsp;</body>
+</html>
+<title></title>
 <p>Hi {name},</p>
 
-<p>You now have a new user account on our church&#39;s Church Management System (BVCMS).</p>
+<p>You now have a new user account on our church&#39;s Church Management System (TouchPoint Software).</p>
 
 <p>Your username is {username}</p>
 
@@ -510,10 +517,10 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 
 <p>Welcome,</p>
 
-<p>The BVCMS Team<br />
+<p>The TouchPoint Team<br />
 <br />
 &nbsp;</p>
-', '2013-09-09 23:32:14.270', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+', '2013-09-09 23:32:14.270', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (69, N'Empty Template', N'Empty Template', N'<html>
 <body>
 <div bvedit style="max-width:600px;">Click here to edit content</div>
@@ -1241,16 +1248,30 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N'ign="top">
 	</body>
 </html>
 ',NULL,NULL) WHERE [Id]=71
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (74, N'ForgotPasswordReset2', N'ForgotPasswordReset2', N'<p>Someone recently requested a new password for {email}.
-To set your password, click your username below:</p>
-<blockquote>{resetlink}</blockquote>
-<p>If this is a mistake, please disregard this message, your password will not be changed.</p>
-<p>Thanks,<br />
-The BVCMS Team</p>
-', '2013-09-09 23:32:14.270', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (75, N'ExistingUserConfirmation', N'ExistingUserConfirmation', N'<p>Hi {name},</p>
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (74, N'ForgotPasswordReset2', N'ForgotPasswordReset2', N'<html>
+<head>
+	<title></title>
+</head>
+<body>
+<p>Someone recently requested a new password for {email}. To set your password, click your username below:</p>
 
-<p>We noticed you already have an account in our church&#39;s BVCMS database.</p>
+<blockquote>{resetlink}</blockquote>
+
+<p>If this is a mistake, please disregard this message, your password will not be changed.</p>
+
+<p>Thanks,<br />
+The TouchPoint Team</p>
+</body>
+</html>
+', '2013-09-09 23:32:14.270', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (75, N'ExistingUserConfirmation', N'ExistingUserConfirmation', N'<html>
+<head>
+	<title></title>
+</head>
+<body>
+<p>Hi {name},</p>
+
+<p>We noticed you already have an account in our church&#39;s TouchPoint database.</p>
 
 <p>You can login at <a href="{host}">{host}</a>. And if you can&#39;t remember your password or username, click the <strong>Forgot Password / Create Account link</strong> when you get there. Enter either your username or the email address that is on your people record in the database. This will send you a link you can use to reset your password. Just follow the directions in that email to set your password.</p>
 
@@ -1261,9 +1282,18 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <p><span style="line-height: 1.6em;">Thank You</span></p>
 
 <p>&nbsp;</p>
-', '2014-03-01 18:22:36.030', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (76, N'NoGivingSetupMessage', N'NoGivingSetupMessage', N'
-        <p class="alert alert-block alert-info">Sorry, it appears that your church has not set up online giving through BVCMS.</p>', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+</body>
+</html>
+', '2014-03-01 18:22:36.030', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (76, N'NoGivingSetupMessage', N'NoGivingSetupMessage', N'<html>
+<head>
+	<title></title>
+</head>
+<body>
+<p class="alert alert-block alert-info">Sorry, it appears that your church has not set up online giving through TouchPoint.</p>
+</body>
+</html>
+', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (77, N'StandardExtraValues2', N'StandardExtraValues2', N'<?xml version="1.0" encoding="utf-16"?>
 <Views>
   <View Table="People" Location="Entry">
@@ -1289,13 +1319,20 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <p>Thank you!<br />
 {church}</p>
 ', '2014-08-04 06:30:45.873', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (80, N'ForgotPasswordBadEmail', N'ForgotPasswordBadEmail', N'<p>Someone recently requested a new password for this email address {email}.  
-However, we could not find an account associated with this email address.
-You may try a different email address, or contact the church.</p>
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (80, N'ForgotPasswordBadEmail', N'ForgotPasswordBadEmail', N'<html>
+<head>
+	<title></title>
+</head>
+<body>
+<p>Someone recently requested a new password for this email address {email}. However, we could not find an account associated with this email address. You may try a different email address, or contact the church.</p>
+
 <p>If this is a mistake, please disregard this message, your password will not be changed.</p>
+
 <p>Thanks,<br />
-The BVCMS Team</p>
-', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+The TouchPoint Team</p>
+</body>
+</html>
+', NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (81, N'CustomReports', N'CustomReports', N'<CustomReports>
   <Report name="Email">
     <Column name="Email" />
@@ -2824,9 +2861,9 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 12)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 15)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
 SET IDENTITY_INSERT [dbo].[Users] ON
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-02-19 13:31:39.463', NULL, '2015-01-14 14:36:59.747', '2009-05-05 22:46:43.890', 0, '2014-10-16 15:43:29.923', 0, '2015-02-17 14:05:54.207', 0, NULL, NULL, NULL, 1, N'starterdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-10-17 15:42:49.050')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-04-09 15:13:41.597', NULL, '2015-01-14 14:36:59.747', '2009-05-05 22:46:43.890', 0, '2014-10-16 15:43:29.923', 0, '2015-04-09 14:48:04.417', 0, NULL, NULL, NULL, 1, N'starterdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, '2014-10-17 15:42:49.050')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2015-02-19 14:32:47.887', '2014-01-24 10:36:52.857', '2013-12-19 00:03:08.440', '2010-10-30 15:23:25.763', 0, '2013-12-19 00:03:08.360', 0, '2013-12-18 22:54:19.783', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-12-19 22:55:00.120')
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2015-03-27 11:41:27.177', '2015-03-27 11:41:02.163', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'lpSVokbyDdVaXxNGDjZT4St468A=', NULL, NULL, 1, '2015-04-09 15:18:41.013', '2015-04-09 15:14:43.463', '2013-10-14 10:43:23.743', '2010-10-30 15:29:25.757', 0, '2013-10-14 10:43:23.667', 0, '2013-10-14 10:41:24.547', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, '2013-10-15 10:42:47.710')
 SET IDENTITY_INSERT [dbo].[Users] OFF
 INSERT INTO [dbo].[Volunteer] ([PeopleId], [StatusId], [ProcessedDate], [Standard], [Children], [Leader], [Comments]) VALUES (3, NULL, NULL, 0, 0, 0, NULL)
 ALTER TABLE [dbo].[Volunteer] ADD CONSTRAINT [FK_Volunteer_PEOPLE_TBL] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])
@@ -2876,6 +2913,7 @@ ALTER TABLE [dbo].[ActivityLog] WITH NOCHECK ADD CONSTRAINT [FK_ActivityLog_Orga
 ALTER TABLE [dbo].[Attend] WITH NOCHECK ADD CONSTRAINT [FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[Coupons] WITH NOCHECK ADD CONSTRAINT [FK_Coupons_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[EnrollmentTransaction] WITH NOCHECK ADD CONSTRAINT [ENROLLMENT_TRANSACTION_ORG_FK] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
+ALTER TABLE [dbo].[GoerSenderAmounts] WITH NOCHECK ADD CONSTRAINT [FK_GoerSenderAmounts_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[Meetings] WITH NOCHECK ADD CONSTRAINT [FK_MEETINGS_TBL_ORGANIZATIONS_TBL] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[MemberTags] WITH NOCHECK ADD CONSTRAINT [FK_MemberTags_Organizations] FOREIGN KEY ([OrgId]) REFERENCES [dbo].[Organizations] ([OrganizationId])
 ALTER TABLE [dbo].[OrganizationExtra] WITH NOCHECK ADD CONSTRAINT [FK_OrganizationExtra_Organizations] FOREIGN KEY ([OrganizationId]) REFERENCES [dbo].[Organizations] ([OrganizationId])

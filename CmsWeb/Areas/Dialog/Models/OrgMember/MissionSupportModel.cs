@@ -33,6 +33,8 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public CodeInfo Goer { get; set; }
 
+        public string Group { get; set; }
+
         public int? OrgId
         {
             get { return orgId; }

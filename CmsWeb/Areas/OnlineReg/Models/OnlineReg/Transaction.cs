@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using CmsData;
 using UtilityExtensions;
@@ -24,9 +25,13 @@ namespace CmsWeb.Models
                 amt = max;
             else if ((amt - totalother) > max)
                 amt = max + totalother;
-//            var evdep = org.GetExtraValue("FamilyDeposit");
-//            if (evdep != null)
-//                return evdep.Data.ToDecimal() ?? 0;
+
+            if (org != null)
+            {
+                var famdeposit = org.GetExtraValue("FamilyDeposit");
+                if (famdeposit != null && famdeposit.IntValue.HasValue)
+                    return Convert.ToDecimal(famdeposit.IntValue);
+            }
             return amt;
         }
 

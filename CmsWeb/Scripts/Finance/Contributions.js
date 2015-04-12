@@ -21,7 +21,10 @@
         var q = f.serialize();
         $.block();
         $.post('/Contributions/Results', q, function (ret) {
-            $('#results').replaceWith(ret);
+            if (ret.startsWith('/'))
+                window.location = ret;
+            else
+                $('#results').replaceWith(ret);
             $.unblock();
         });
     };

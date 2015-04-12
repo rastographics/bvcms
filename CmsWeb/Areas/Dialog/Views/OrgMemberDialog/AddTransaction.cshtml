@@ -7,6 +7,7 @@
 <div class="modal-body">
     @Html.HiddenFor(m => m.OrgId)
     @Html.HiddenFor(m => m.PeopleId)
+    @Html.HiddenFor(m => m.Group)
     @(Model.TransactionSummary == null
         ? Html.EditorFor(m => m.Amount, new { label = "Total Fee" })
         : Html.DisplayFor(m => m.Due, new { label = "Balance Due" }))
@@ -14,6 +15,6 @@
     @Html.EditorFor(m => m.Description)
 </div>
 <div class="modal-footer">
-    <a href="/OrgMemberDialog/Display/@Model.OrgId/@Model.PeopleId" class="btn ajax">Cancel</a>
-    <a id="add-mission-support" href="/OrgMemberDialog/PostTransaction/@Model.OrgId/@Model.PeopleId" class="btn ajax btn-primary">Add Transaction</a>
+    <a href="/OrgMemberDialog/Display" class="btn ajax">Cancel</a>
+    <a id="add-mission-support" href="/OrgMemberDialog/PostTransaction" class="btn ajax btn-primary">Add Transaction</a>
 </div>

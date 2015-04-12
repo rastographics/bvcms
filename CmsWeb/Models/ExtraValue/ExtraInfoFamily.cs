@@ -107,7 +107,7 @@ namespace CmsWeb.Models.ExtraValues
 
             return qcodes.Union(qdatums).OrderBy(ee => ee.Field);
         }
-        public override string DeleteAll(string field, string type, string value)
+        public override string DeleteAll(string type, string field, string value)
         {
             var ev = DbUtil.Db.FamilyExtras.FirstOrDefault(ee => ee.Field == field);
             if (ev == null)

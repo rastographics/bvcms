@@ -109,7 +109,7 @@ namespace CmsWeb.Models
         [DisplayName("Emergency Contact"), StringLength(100)]
         public string emcontact { get; set; }
 
-        [DisplayName("Emergency Phone"), StringLength(100)]
+        [DisplayName("Emergency Phone"), StringLength(50)]
         public string emphone { get; set; }
 
         [DisplayName("Insurance Carrier"), StringLength(100)]

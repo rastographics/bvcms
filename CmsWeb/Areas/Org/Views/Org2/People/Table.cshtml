@@ -208,7 +208,7 @@
 {
   if (!(new[] {GroupSelectCode.Guest, GroupSelectCode.Previous}).Contains(p.GroupCode))
   {
-    <div><a class="membertype" href="/OrgMemberDialog/Display/@Model.Id/@p.PeopleId"> @p.MemberType </a></div>
+    <div><a class="membertype" href="/OrgMemberDialog/@p.Group/@Model.Id/@p.PeopleId"> @p.MemberType </a></div>
   }
 }
 @helper ManagePrevMemberLinks(OrgPerson p)

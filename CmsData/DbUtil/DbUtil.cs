@@ -139,7 +139,7 @@ namespace CmsData
                 return s;
             s = db.ContentText("StandardExtraValues2", "<Views />");
             HttpRuntime.Cache.Insert(db.Host + "StandardExtraValues2", s, null,
-                DateTime.Now.AddMinutes(Util.IsDebug() ? 0 : 1), Cache.NoSlidingExpiration);
+                DateTime.Now.AddSeconds(Util.IsDebug() ? 0 : 10), Cache.NoSlidingExpiration);
             return s;
         }
         public static void SetStandardExtraValues2(string xml)

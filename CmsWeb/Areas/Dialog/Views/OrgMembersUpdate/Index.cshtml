@@ -4,6 +4,7 @@
 @{
   var managetransactions = User.IsInRole("ManageTransactions");
   var admin = User.IsInRole("Admin");
+  var manager = User.IsInRole("ManageGroups");
   var missiongiving = User.IsInRole("MissionGiving");
 }
 <form class="form form-horizontal modal fade hide ajax members-update" method="POST">
@@ -41,7 +42,7 @@
     <a href="/OrgMembersUpdate/ShowDrop" class="btn btn-warning ajax">
       Drop
     </a>
-    @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member)
+    @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member && (admin || manager))
     {
     <a href="/OrgMembersUpdate/SmallGroups" class="btn btn-warning ajax">
       Sub-Groups
