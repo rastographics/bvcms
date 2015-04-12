@@ -14,7 +14,6 @@ namespace CmsData.Registration
 			return AskItems.Find(aa => aa.Type == name) != null;
 		}
 		public decimal? Deposit { get; set; }
-		public string Title { get; set; }
 		public string Shell { get; set; }
 		public string ShellBs { get; set; }
 		public decimal? Fee { get; set; }
@@ -324,9 +323,6 @@ namespace CmsData.Registration
 				case Parser.RegKeywords.VoteTags:
 					ParseVoteTags(parser);
 					break;
-				case Parser.RegKeywords.Title:
-					Title = parser.GetString();
-					break;
 				case Parser.RegKeywords.Shell:
 					Shell = parser.GetString();
 					break;
@@ -339,6 +335,9 @@ namespace CmsData.Registration
 
 
 // BEGIN support for old Registration Documents
+				case Parser.RegKeywords.Title:
+					parser.GetString();
+					break;
 				case Parser.RegKeywords.GiveOrgMembAccess:
 					parser.GetBool();
 					break;
@@ -705,7 +704,6 @@ namespace CmsData.Registration
 			AddTerms(sb);
 			AddTrackCode(sb);
 
-			AddValueCk(0, sb, "Title", Title);
 			AddValueCk(0, sb, "ValidateOrgs", ValidateOrgs);
 			AddValueCk(0, sb, "Shell", Shell);
 			AddValueCk(0, sb, "ShellBs", ShellBs);

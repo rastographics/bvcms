@@ -168,6 +168,8 @@ namespace CmsData
 		
 		private string _AppCategory;
 		
+		private string _RegistrationTitle;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -182,6 +184,8 @@ namespace CmsData
    		private EntitySet< Coupon> _Coupons;
 		
    		private EntitySet< DivOrg> _DivOrgs;
+		
+   		private EntitySet< GoerSenderAmount> _GoerSenderAmounts;
 		
    		private EntitySet< Meeting> _Meetings;
 		
@@ -440,6 +444,9 @@ namespace CmsData
 		partial void OnAppCategoryChanging(string value);
 		partial void OnAppCategoryChanged();
 		
+		partial void OnRegistrationTitleChanging(string value);
+		partial void OnRegistrationTitleChanged();
+		
     #endregion
 		public Organization()
 		{
@@ -457,6 +464,8 @@ namespace CmsData
 			this._Coupons = new EntitySet< Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
 			
 			this._DivOrgs = new EntitySet< DivOrg>(new Action< DivOrg>(this.attach_DivOrgs), new Action< DivOrg>(this.detach_DivOrgs)); 
+			
+			this._GoerSenderAmounts = new EntitySet< GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_GoerSenderAmounts), new Action< GoerSenderAmount>(this.detach_GoerSenderAmounts)); 
 			
 			this._Meetings = new EntitySet< Meeting>(new Action< Meeting>(this.attach_Meetings), new Action< Meeting>(this.detach_Meetings)); 
 			
@@ -2167,6 +2176,28 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="RegistrationTitle", UpdateCheck=UpdateCheck.Never, Storage="_RegistrationTitle", DbType="nvarchar(200)")]
+		public string RegistrationTitle
+		{
+			get { return this._RegistrationTitle; }
+
+			set
+			{
+				if (this._RegistrationTitle != value)
+				{
+				
+                    this.OnRegistrationTitleChanging(value);
+					this.SendPropertyChanging();
+					this._RegistrationTitle = value;
+					this.SendPropertyChanged("RegistrationTitle");
+					this.OnRegistrationTitleChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
@@ -2237,6 +2268,16 @@ namespace CmsData
    		    get { return this._DivOrgs; }
 
 			set	{ this._DivOrgs.Assign(value); }
+
+   		}
+
+		
+   		[Association(Name="FK_GoerSenderAmounts_Organizations", Storage="_GoerSenderAmounts", OtherKey="OrgId")]
+   		public EntitySet< GoerSenderAmount> GoerSenderAmounts
+   		{
+   		    get { return this._GoerSenderAmounts; }
+
+			set	{ this._GoerSenderAmounts.Assign(value); }
 
    		}
 
@@ -2691,6 +2732,19 @@ namespace CmsData
 		}
 
 		private void detach_DivOrgs(DivOrg entity)
+		{
+			this.SendPropertyChanging();
+			entity.Organization = null;
+		}
+
+		
+		private void attach_GoerSenderAmounts(GoerSenderAmount entity)
+		{
+			this.SendPropertyChanging();
+			entity.Organization = this;
+		}
+
+		private void detach_GoerSenderAmounts(GoerSenderAmount entity)
 		{
 			this.SendPropertyChanging();
 			entity.Organization = null;

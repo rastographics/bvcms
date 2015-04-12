@@ -325,6 +325,8 @@ namespace CmsData
 		
    		private EntitySet< VoluteerApprovalId> _VoluteerApprovalIds;
 		
+   		private EntitySet< GoerSenderAmount> _GoerAmounts;
+		
    		private EntitySet< PeopleCanEmailFor> _OnBehalfOfPeople;
 		
    		private EntitySet< OrganizationMember> _OrganizationMembers;
@@ -332,6 +334,8 @@ namespace CmsData
    		private EntitySet< BackgroundCheck> _People;
 		
    		private EntitySet< PeopleCanEmailFor> _PersonsCanEmail;
+		
+   		private EntitySet< GoerSenderAmount> _SenderAmounts;
 		
    		private EntitySet< SubRequest> _SubRequests;
 		
@@ -829,6 +833,8 @@ namespace CmsData
 			
 			this._VoluteerApprovalIds = new EntitySet< VoluteerApprovalId>(new Action< VoluteerApprovalId>(this.attach_VoluteerApprovalIds), new Action< VoluteerApprovalId>(this.detach_VoluteerApprovalIds)); 
 			
+			this._GoerAmounts = new EntitySet< GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_GoerAmounts), new Action< GoerSenderAmount>(this.detach_GoerAmounts)); 
+			
 			this._OnBehalfOfPeople = new EntitySet< PeopleCanEmailFor>(new Action< PeopleCanEmailFor>(this.attach_OnBehalfOfPeople), new Action< PeopleCanEmailFor>(this.detach_OnBehalfOfPeople)); 
 			
 			this._OrganizationMembers = new EntitySet< OrganizationMember>(new Action< OrganizationMember>(this.attach_OrganizationMembers), new Action< OrganizationMember>(this.detach_OrganizationMembers)); 
@@ -836,6 +842,8 @@ namespace CmsData
 			this._People = new EntitySet< BackgroundCheck>(new Action< BackgroundCheck>(this.attach_People), new Action< BackgroundCheck>(this.detach_People)); 
 			
 			this._PersonsCanEmail = new EntitySet< PeopleCanEmailFor>(new Action< PeopleCanEmailFor>(this.attach_PersonsCanEmail), new Action< PeopleCanEmailFor>(this.detach_PersonsCanEmail)); 
+			
+			this._SenderAmounts = new EntitySet< GoerSenderAmount>(new Action< GoerSenderAmount>(this.attach_SenderAmounts), new Action< GoerSenderAmount>(this.detach_SenderAmounts)); 
 			
 			this._SubRequests = new EntitySet< SubRequest>(new Action< SubRequest>(this.attach_SubRequests), new Action< SubRequest>(this.detach_SubRequests)); 
 			
@@ -2138,7 +2146,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="CountryName", UpdateCheck=UpdateCheck.Never, Storage="_CountryName", DbType="nvarchar(30)")]
+		[Column(Name="CountryName", UpdateCheck=UpdateCheck.Never, Storage="_CountryName", DbType="nvarchar(40)")]
 		public string CountryName
 		{
 			get { return this._CountryName; }
@@ -3320,7 +3328,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="PrimaryCountry", UpdateCheck=UpdateCheck.Never, Storage="_PrimaryCountry", DbType="nvarchar(30)")]
+		[Column(Name="PrimaryCountry", UpdateCheck=UpdateCheck.Never, Storage="_PrimaryCountry", DbType="nvarchar(40)")]
 		public string PrimaryCountry
 		{
 			get { return this._PrimaryCountry; }
@@ -3938,6 +3946,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="GoerAmounts__Goer", Storage="_GoerAmounts", OtherKey="SupporterId")]
+   		public EntitySet< GoerSenderAmount> GoerAmounts
+   		{
+   		    get { return this._GoerAmounts; }
+
+			set	{ this._GoerAmounts.Assign(value); }
+
+   		}
+
+		
    		[Association(Name="OnBehalfOfPeople__PersonCanEmail", Storage="_OnBehalfOfPeople", OtherKey="CanEmail")]
    		public EntitySet< PeopleCanEmailFor> OnBehalfOfPeople
    		{
@@ -3974,6 +3992,16 @@ namespace CmsData
    		    get { return this._PersonsCanEmail; }
 
 			set	{ this._PersonsCanEmail.Assign(value); }
+
+   		}
+
+		
+   		[Association(Name="SenderAmounts__Sender", Storage="_SenderAmounts", OtherKey="GoerId")]
+   		public EntitySet< GoerSenderAmount> SenderAmounts
+   		{
+   		    get { return this._SenderAmounts; }
+
+			set	{ this._SenderAmounts.Assign(value); }
 
    		}
 
@@ -5426,6 +5454,19 @@ namespace CmsData
 		}
 
 		
+		private void attach_GoerAmounts(GoerSenderAmount entity)
+		{
+			this.SendPropertyChanging();
+			entity.Goer = this;
+		}
+
+		private void detach_GoerAmounts(GoerSenderAmount entity)
+		{
+			this.SendPropertyChanging();
+			entity.Goer = null;
+		}
+
+		
 		private void attach_OnBehalfOfPeople(PeopleCanEmailFor entity)
 		{
 			this.SendPropertyChanging();
@@ -5475,6 +5516,19 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.OnBehalfOfPerson = null;
+		}
+
+		
+		private void attach_SenderAmounts(GoerSenderAmount entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sender = this;
+		}
+
+		private void detach_SenderAmounts(GoerSenderAmount entity)
+		{
+			this.SendPropertyChanging();
+			entity.Sender = null;
 		}
 
 		

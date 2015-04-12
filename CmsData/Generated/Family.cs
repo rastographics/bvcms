@@ -543,7 +543,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="CountryName", UpdateCheck=UpdateCheck.Never, Storage="_CountryName", DbType="nvarchar(30)")]
+		[Column(Name="CountryName", UpdateCheck=UpdateCheck.Never, Storage="_CountryName", DbType="nvarchar(40)")]
 		public string CountryName
 		{
 			get { return this._CountryName; }
