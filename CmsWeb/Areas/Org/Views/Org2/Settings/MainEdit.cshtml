@@ -8,15 +8,14 @@
           <small>@Model.LeaderName</small>
         </legend>
         <div class="row-fluid">
+          @Html.HiddenFor(m => m.Id)
+          @Html.EditorFor(m => m.OrganizationName)
           <div class="inline display align-top">
-            @Html.HiddenFor(m => m.Id)
-            @Html.EditorFor(m => m.OrganizationName)
             @Html.EditorFor(m => m.Campus)
             @Html.EditorFor(m => m.LeaderMemberType)
           </div>
           <div class="inline display align-top">
             @Html.EditorFor(m => m.OrganizationType)
-            @Html.EditorFor(m => m.SecurityType)
             @Html.EditorFor(m => m.OrganizationStatus)
             @Html.EditorFor(m => m.IsBibleFellowshipOrg)
           </div>
