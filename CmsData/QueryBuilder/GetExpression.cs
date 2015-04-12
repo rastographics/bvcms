@@ -61,6 +61,7 @@ namespace CmsData
                 { QueryType.GuestAsOf, GuestAttendedAsOf },
                 { QueryType.HadIndContributions, HadIndContributions },
                 { QueryType.HasBalanceInCurrentOrg, HasBalanceInCurrentOrg },
+                { QueryType.HasBalance, HasBalance},
                 { QueryType.HasCommitmentForMeetingId, HasCommitmentForMeetingId },
                 { QueryType.HasContacts, HasContacts },
                 { QueryType.HasCurrentTag, HasCurrentTag },

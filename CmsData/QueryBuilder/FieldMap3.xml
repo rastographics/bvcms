@@ -345,6 +345,9 @@
     <RecentIncompleteRegistrations Title="Recent Incomplete Registrations" Type="Bit" DisplayAs="RecentIncompleteReg({0}, {1}, {2}, {3})" Params="Days,Program,Division,Organization" DataValueField="IdCode">
       Select Days to look back and Program/Division/Organization from the list and specify True or False.
     </RecentIncompleteRegistrations>
+    <HasBalance Title="Has Balance In Org" Type="Bit" DisplayAs="HasBalance({0}, {1}, {2})" Params="Program,Division,Organization" DataValueField="IdCode">
+      Select True or False for Members with a Balance in the selected Program or Divison or Organization
+    </HasBalance>
   </CurrentEnrollments>
   <EnrollmentHistory Title="Enrollment History">
     <WasMemberAsOf Title="Was Member As Of" Type="Bit" DisplayAs="WasMemberAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
