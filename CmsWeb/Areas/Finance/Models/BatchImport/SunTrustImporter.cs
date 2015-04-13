@@ -4,34 +4,39 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.IO;
 using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    public partial class BatchImportContributions
+    internal class SunTrustImporter : IContributionBatchImporter
     {
-        public static int? BatchProcessSunTrust(CsvReader csv, DateTime date, int? fundid)
+        public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
+        {
+            using (var csv = new CsvReader(new StringReader(text), true))
+                return BatchProcessSunTrust(csv, date, fundid);
+        }
+
+        private static int? BatchProcessSunTrust(CsvReader csv, DateTime date, int? fundid)
         {
             var prevbundle = -1;
             var curbundle = 0;
 
-            var bh = GetBundleHeader(date, DateTime.Now);
+            var bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
 
-            int fieldCount = csv.FieldCount;
+            var fieldCount = csv.FieldCount;
             var cols = csv.GetFieldHeaders();
 
             while (csv.ReadNextRecord())
             {
-                var bd = new CmsData.BundleDetail
+                var bd = new BundleDetail
                 {
                     CreatedBy = Util.UserId,
                     CreatedDate = DateTime.Now,
@@ -68,8 +73,8 @@ namespace CmsWeb.Models
                                     }
                                 }
 
-                                FinishBundle(bh);
-                                bh = GetBundleHeader(date, DateTime.Now);
+                                BatchImportContributions.FinishBundle(bh);
+                                bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
                                 prevbundle = curbundle;
                             }
                             break;
@@ -108,7 +113,7 @@ namespace CmsWeb.Models
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }
-            FinishBundle(bh);
+            BatchImportContributions.FinishBundle(bh);
             return bh.BundleHeaderId;
         }
     }

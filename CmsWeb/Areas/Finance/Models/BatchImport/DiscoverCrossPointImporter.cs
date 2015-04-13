@@ -4,54 +4,34 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.IO;
-using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    public partial class BatchImportContributions
+    internal class DiscoverCrossPointImporter : IContributionBatchImporter
     {
-        public static int? BatchProcessBankOfNorthGeorgia(string text, DateTime date, int? fundid)
+        public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
+            return BatchProcessDiscoverCrosspoint(text, date, fundid);
+        }
+
+        private static int? BatchProcessDiscoverCrosspoint(string text, DateTime date, int? fundid)
+        {
+            var prevdt = DateTime.MinValue;
             BundleHeader bh = null;
             var sr = new StringReader(text);
-            string line = "";
-            do
-            {
-                line = sr.ReadLine();
-                if (line == null)
-                    return null;
-            } while (!line.Contains("Item ID"));
-            var sep = ',';
-            if (line.Contains("Item ID\t"))
-                sep = '\t';
-
             for (; ; )
             {
-                line = sr.ReadLine();
+                var line = sr.ReadLine();
                 if (line == null)
                     break;
-                line = line.TrimStart();
-                var csv = line.Split(sep);
-                if (!csv[6].HasValue())
-                    continue;
-
-                if (csv[21] == "VDP")
-                {
-                    if (bh != null)
-                        FinishBundle(bh);
-                    bh = GetBundleHeader(date, DateTime.Now);
-                    continue;
-                }
-
+                var csv = line.Split(',');
                 var bd = new BundleDetail
                 {
                     CreatedBy = Util.UserId,
@@ -72,12 +52,20 @@ namespace CmsWeb.Models
                     ContributionTypeId = ContributionTypeCode.CheckCash,
                 };
 
+                var dt = csv[2].ToDate().Value;
 
-                string ck, rt, ac;
-                rt = csv[14];
-                ac = csv[20];
-                ck = csv[17];
-                bd.Contribution.ContributionAmount = csv[9].GetAmount();
+                if (dt != prevdt)
+                {
+                    if (bh != null)
+                        BatchImportContributions.FinishBundle(bh);
+                    bh = BatchImportContributions.GetBundleHeader(dt, DateTime.Now);
+                    prevdt = dt;
+                }
+                bd.Contribution.ContributionAmount = csv[1].ToDecimal();
+
+                var ck = csv[3];
+                var rt = csv[4];
+                var ac = csv[0];
 
                 bd.Contribution.CheckNo = ck;
                 var eac = Util.Encrypt(rt + "|" + ac);
@@ -90,7 +78,7 @@ namespace CmsWeb.Models
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }
-            FinishBundle(bh);
+            BatchImportContributions.FinishBundle(bh);
             return bh.BundleHeaderId;
         }
     }
