@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -94,7 +96,7 @@ namespace CmsWeb.Models
             get
             {
                 var list = CodeValueModel.ConvertToSelect(CodeValueModel.GetCountryList().Where(c => c.Code != "NA"), null);
-                list.Insert(0, new SelectListItem {Text = "(not specified)", Value = ""});
+                list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "" });
                 return list;
             }
         }
@@ -151,8 +153,8 @@ namespace CmsWeb.Models
         {
             var org = db.LoadOrganizationById(ti.OrgId);
             var tt = (from t in db.ViewTransactionSummaries
-                          where t.RegId == ti.OriginalId
-                          select t).FirstOrDefault();
+                      where t.RegId == ti.OriginalId
+                      select t).FirstOrDefault();
             if (tt == null)
                 return 0;
             if (org.IsMissionTrip ?? false)
@@ -392,6 +394,236 @@ namespace CmsWeb.Models
 #else
     			return "off";
 #endif
+            }
+        }
+
+
+        public void PreventNegatives()
+        {
+            if (AmtToPay < 0) AmtToPay = 0;
+            if (Donate < 0) Donate = 0;
+            AllowCoupon = false;
+        }
+
+        public void PreventZero(ModelStateDictionary modelState)
+        {
+            if ((AmtToPay ?? 0) > 0 || (Donate ?? 0) > 0)
+                return;
+            DbUtil.Db.SubmitChanges();
+            modelState.AddModelError("form", "amount zero");
+        }
+        public void ValidatePaymentForm(ModelStateDictionary modelState)
+        {
+            switch (Type)
+            {
+                case PaymentType.Ach:
+                    PaymentValidator.ValidateBankAccountInfo(modelState, Routing, Account);
+                    break;
+                case PaymentType.CreditCard:
+                    PaymentValidator.ValidateCreditCardInfo(modelState, this);
+                    break;
+                default:
+                    modelState.AddModelError("Type", "Please select Bank Account or Credit Card.");
+                    break;
+            }
+            ValidateBillingDetails(modelState);
+        }
+        public void ValidateBillingDetails(ModelStateDictionary modelState)
+        {
+            if (!First.HasValue())
+                modelState.AddModelError("First", "First name is required.");
+
+            if (!Last.HasValue())
+                modelState.AddModelError("Last", "Last name is required");
+
+            if (!Address.HasValue())
+                modelState.AddModelError("Address", "Address is required.");
+
+            if (!City.HasValue())
+                modelState.AddModelError("City", "City is required");
+
+            if (!State.HasValue())
+                modelState.AddModelError("State", "State is required.");
+
+            if (!Country.HasValue())
+                modelState.AddModelError("Country", "Country is required.");
+
+            if (!Zip.HasValue())
+                modelState.AddModelError("Zip", "Zipcode is required.");
+        }
+
+        public void CheckStoreInVault(ModelStateDictionary modelState, int peopleid)
+        {
+            if (IsLoggedIn.GetValueOrDefault() && SavePayInfo)
+                return;
+
+            var gateway = DbUtil.Db.Gateway(testing);
+
+            // we need to perform a $1 auth if this is a brand new credit card that we are going to store it in the vault.
+            // otherwise we skip doing an auth just call store in vault just like normal.
+            VerifyCardWithAuth(modelState, gateway, peopleid);
+            if (!modelState.IsValid)
+                return;
+
+            InitializePaymentInfo(peopleid);
+
+            gateway.StoreInVault(peopleid, Type, CreditCard,
+                DbUtil.NormalizeExpires(Expires).ToString2("MMyy"), CVV, Routing, Account,
+                IsGiving.GetValueOrDefault());
+        }
+
+        /// Perform a $1 authorization... the amount is randomized because some gateways will reject identical, subsequent amounts
+        /// within a short period of time.
+        private void VerifyCardWithAuth(ModelStateDictionary modelState, IGateway gateway, int peopleId)
+        {
+            if (Type != PaymentType.CreditCard)
+                return;
+
+            if (CreditCard.StartsWith("X"))
+                return;
+
+            var random = new Random();
+            var dollarAmt = (decimal)random.Next(100, 199) / 100;
+
+            var transactionResponse = gateway.AuthCreditCard(peopleId, dollarAmt, CreditCard,
+                DbUtil.NormalizeExpires(Expires).ToString2("MMyy"), "One Time Auth", 0, CVV, string.Empty,
+                First, Last, Address, Address2, City, State, Country, Zip, Phone);
+
+            if (!transactionResponse.Approved)
+                modelState.AddModelError("form", transactionResponse.Message);
+
+            // if we got this far that means the auth worked so now let's do a void for that auth.
+            var voidResponse = gateway.VoidCreditCardTransaction(transactionResponse.TransactionId);
+        }
+        private void InitializePaymentInfo(int peopleId)
+        {
+            var person = DbUtil.Db.LoadPersonById(peopleId);
+            var pi = person.PaymentInfo();
+            if (pi == null)
+            {
+                pi = new PaymentInfo();
+                person.PaymentInfos.Add(pi);
+            }
+            pi.SetBillingAddress(First, MiddleInitial, Last, Suffix, Address, Address2, City,
+                State, Country, Zip, Phone);
+        }
+        public Transaction ProcessPaymentTransaction(OnlineRegModel m)
+        {
+            var ti = (m != null && m.Transaction != null)
+                ? PaymentForm.CreateTransaction(DbUtil.Db, m.Transaction, AmtToPay)
+                : CreateTransaction(DbUtil.Db);
+
+            int? pid = null;
+            if (m != null)
+            {
+                m.ParseSettings();
+
+                pid = m.UserPeopleId;
+                if (m.TranId == null)
+                    m.TranId = ti.Id;
+            }
+
+            if (!pid.HasValue)
+            {
+                var pds = DbUtil.Db.FindPerson(First, Last, null, Email, Phone);
+                if (pds.Count() == 1)
+                    pid = pds.Single().PeopleId.Value;
+            }
+
+            TransactionResponse tinfo;
+            var gw = DbUtil.Db.Gateway(testing);
+
+            if (SavePayInfo)
+                tinfo = gw.PayWithVault(pid ?? 0, AmtToPay ?? 0, Description, ti.Id, Type);
+            else
+            {
+                tinfo = Type == PaymentType.Ach
+                    ? PayWithCheck(gw, pid, ti)
+                    : PayWithCreditCard(gw, pid, ti);
+            }
+
+            ti.TransactionId = tinfo.TransactionId;
+
+            if (ti.Testing.GetValueOrDefault() && !ti.TransactionId.Contains("(testing)"))
+                ti.TransactionId += "(testing)";
+
+            ti.Approved = tinfo.Approved;
+
+            if (!ti.Approved.GetValueOrDefault())
+            {
+                ti.Amtdue += ti.Amt;
+                if (m != null && m.OnlineGiving())
+                    ti.Amtdue = 0;
+            }
+
+            ti.Message = tinfo.Message;
+            ti.AuthCode = tinfo.AuthCode;
+            ti.TransactionDate = DateTime.Now;
+
+            DbUtil.Db.SubmitChanges();
+            return ti;
+        }
+        private TransactionResponse PayWithCreditCard(IGateway gateway, int? peopleId, Transaction transaction)
+        {
+            return gateway.PayWithCreditCard(peopleId ?? 0, AmtToPay ?? 0, CreditCard,
+                DbUtil.NormalizeExpires(Expires).ToString2("MMyy"), Description, transaction.Id,
+                CVV, Email, First, Last, Address, Address2,
+                City, State, Country, Zip, Phone);
+        }
+
+        private TransactionResponse PayWithCheck(IGateway gw, int? pid, Transaction ti)
+        {
+            return gw.PayWithCheck(pid ?? 0, AmtToPay ?? 0, Routing, Account, Description, ti.Id, Email,
+                First, MiddleInitial, Last, Suffix, Address, Address2, City, State, Country,
+                Zip, Phone);
+        }
+
+        public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m)
+        {
+            PreventNegatives();
+
+            PreventZero(modelState);
+            if (!modelState.IsValid)
+                return RouteModel.ProcessPayment();
+
+            try
+            {
+                ValidatePaymentForm(modelState);
+                if (!modelState.IsValid)
+                    return RouteModel.ProcessPayment();
+
+                if(m != null && m.UserPeopleId.HasValue && m.UserPeopleId > 0)
+                    CheckStoreInVault(modelState, m.UserPeopleId.Value);
+                if (!modelState.IsValid)
+                    return RouteModel.ProcessPayment();
+//                if(m != null)
+//                    ViewData["Terms"] = m.Terms;
+
+                var ti = ProcessPaymentTransaction(m);
+
+                if (ti.Approved == false)
+                {
+                    modelState.AddModelError("form", ti.Message);
+                    return RouteModel.ProcessPayment();
+                }
+
+                HttpContext.Current.Session["FormId"] = FormId;
+                if (m != null)
+                {
+                    m.DatumId = DatumId; // todo: not sure this is necessary
+                    m.FinishRegistration(ti);
+                }
+
+                ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
+
+                ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
+                return View("PayAmtDue/Confirm", ti);
+            }
+            catch (Exception ex)
+            {
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+                modelState.AddModelError("form", ex.Message);
+                return RouteModel.ProcessPayment();
             }
         }
     }

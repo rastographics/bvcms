@@ -175,9 +175,8 @@ namespace CmsData
             bool usedAdmins;
             return StaffPeopleForOrg(orgid, out usedAdmins);
         }
-        public List<Person> NotifyIds(int orgid, string ids)
+        public List<Person> NotifyIds(string ids)
         {
-            var org = LoadOrganizationById(orgid);
             var a = (ids ?? "").Split(',').Select(ss => ss.ToInt()).ToArray();
             var q2 = from p in People
                      where a.Contains(p.PeopleId)

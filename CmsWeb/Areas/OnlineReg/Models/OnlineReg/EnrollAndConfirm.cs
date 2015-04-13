@@ -254,7 +254,7 @@ namespace CmsWeb.Models
                             "SupportMissionTrip: org={0}".Fmt(p.orgid), tranid: ti.Id);
                     }
                 }
-                var notifyids = Db.NotifyIds(org.OrganizationId, org.GiftNotifyIds);
+                var notifyids = Db.NotifyIds(org.GiftNotifyIds);
                 Db.Email(NotifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
                     "${0:N2} donation received from {1}".Fmt(ti.Amt, Transaction.FullName(ti)));
 

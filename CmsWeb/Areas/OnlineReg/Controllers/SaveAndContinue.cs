@@ -57,7 +57,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var registerLink = EmailReplacements.CreateRegisterLink(m.masterorgid ?? m.Orgid, "Resume registration for {0}".Fmt(m.Header));
             var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
-            var notifyids = DbUtil.Db.NotifyIds((m.masterorgid ?? m.Orgid).Value, (m.masterorg ?? m.org).NotifyIds);
+            var notifyids = DbUtil.Db.NotifyIds((m.masterorg ?? m.org).NotifyIds);
             DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
 
             /* We use Content as an ActionResult instead of Message because we want plain text sent back

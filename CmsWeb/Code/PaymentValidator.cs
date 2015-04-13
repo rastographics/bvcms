@@ -126,29 +126,5 @@ namespace CmsWeb.Code
                     sum += number[i];
             return sum % 10 == 0;
         }
-
-        public static void ValidateBillingDetails(ModelStateDictionary modelState, PaymentForm pf)
-        {
-            if (!pf.First.HasValue())
-                modelState.AddModelError("First", "First name is required.");
-
-            if (!pf.Last.HasValue())
-                modelState.AddModelError("Last", "Last name is required");
-
-            if (!pf.Address.HasValue())
-                modelState.AddModelError("Address", "Address is required.");
-            
-            if (!pf.City.HasValue())
-                modelState.AddModelError("City", "City is required");
-
-            if (!pf.State.HasValue())
-                modelState.AddModelError("State", "State is required.");
-
-            if (!pf.Country.HasValue())
-                modelState.AddModelError("Country", "Country is required.");
-
-            if (!pf.Zip.HasValue())
-                modelState.AddModelError("Zip", "Zipcode is required.");
-        }
     }
 }

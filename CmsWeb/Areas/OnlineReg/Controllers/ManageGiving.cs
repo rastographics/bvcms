@@ -121,7 +121,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.Confirm(this);
 
 	        SetHeaders(m.orgid);
-	        LogOutOfOnlineReg();
+	        OnlineRegModel.LogOutOfOnlineReg();
 
 		    return View("ManageGiving/Confirm", m);
 		}

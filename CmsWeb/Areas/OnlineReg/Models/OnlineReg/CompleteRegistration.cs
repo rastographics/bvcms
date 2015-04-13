@@ -1,6 +1,5 @@
 using System.Linq;
 using CmsData;
-using System.Web.Routing;
 using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Controllers;
 using UtilityExtensions;
@@ -9,66 +8,6 @@ namespace CmsWeb.Models
 {
     public partial class OnlineRegModel
     {
-
-        public enum RouteType
-        {
-            Error,
-            Action,
-            Redirect,
-            Terms,
-            Payment,
-        }
-        public class RouteModel
-        {
-            public RouteType RouteType;
-            public string Message;
-            public string View;
-            public PaymentForm PaymentForm;
-            public RouteValueDictionary RouteData;
-
-            public static RouteModel ViewAction(string view)
-            {
-                return new RouteModel()
-                {
-                    RouteType = RouteType.Action, 
-                    View = view
-                };
-            }
-            public static RouteModel ViewTerms(string view)
-            {
-                return new RouteModel()
-                {
-                    RouteType = RouteType.Terms, 
-                    View = view,
-                };
-            }
-            public static RouteModel ViewPayment(string view, PaymentForm pf)
-            {
-                return new RouteModel()
-                {
-                    RouteType = RouteType.Payment, 
-                    View = view,
-                    PaymentForm = pf, 
-                };
-            }
-            public static RouteModel ErrorMessage(string message)
-            {
-                return new RouteModel()
-                {
-                    RouteType = RouteType.Error, 
-                    Message = message
-                };
-            }
-            public static RouteModel Redirect(string where, object d)
-            {
-                return new RouteModel()
-                {
-                    RouteType = RouteType.Redirect,
-                    View = where, 
-                    RouteData = new RouteValueDictionary(d),
-                };
-            }
-        }
         public RouteModel CompleteRegistration(OnlineRegController ctl)
         {
             HistoryAdd("CompleteRegistration");
@@ -119,7 +58,7 @@ namespace CmsWeb.Models
         private RouteModel CheckTermsNoFee(OnlineRegController ctl)
         {
             ctl.SetHeaders(this);
-            if (PayAmount() == 0 && Terms.HasValue())               
+            if (PayAmount() == 0 && Terms.HasValue())
                 return RouteModel.ViewTerms("Terms");
             return null;
         }
@@ -169,4 +108,5 @@ namespace CmsWeb.Models
                 List.Remove(last);
         }
     }
+
 }

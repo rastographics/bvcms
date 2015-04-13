@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
-using CmsData.Registration;
 using CmsWeb.Models;
 using Elmah;
 using UtilityExtensions;
@@ -247,17 +246,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var m = Util.DeSerialize<OnlineRegModel>(s);
 
             var ret = m.CompleteRegistration(this);
-            switch (ret.RouteType)
+            switch (ret.Route)
             {
-                case OnlineRegModel.RouteType.Error:
+                case RouteType.Error:
                     return Message(ret.Message);
-                case OnlineRegModel.RouteType.Action:
+                case RouteType.Action:
                     return View(ret.View);
-                case OnlineRegModel.RouteType.Redirect:
+                case RouteType.Redirect:
                     return RedirectToAction(ret.View, ret.RouteData);
-                case OnlineRegModel.RouteType.Terms:
+                case RouteType.Terms:
                     return View(ret.View, m);
-                case OnlineRegModel.RouteType.Payment:
+                case RouteType.Payment:
                     return View(ret.View, ret.PaymentForm);
             }
             throw new Exception("unexpected value on CompleteRegistration");
