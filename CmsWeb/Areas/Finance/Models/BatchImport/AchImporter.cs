@@ -69,14 +69,21 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var name = line.Substring(54, 22).Trim();
             var traceNumber = line.Substring(79, 15).Trim();
 
+            if (transactionCode != "27" && transactionCode != "37")
+                return;
+
             var dollars = amountWithoutDecimal.Substring(0, amountWithoutDecimal.Length - 2);
             var cents = amountWithoutDecimal.Substring(amountWithoutDecimal.Length - 2);
 
             var amount = string.Format("{0}.{1}", dollars, cents);
 
-            var detail = BatchImportContributions.AddContributionDetail(_batchDate, _fundId, amount, traceNumber,
+            var detail = BatchImportContributions.AddContributionDetail(_batchDate, _fundId, amount,
+                individualIdNumber,
                 routingNumber,
                 accountNumber);
+
+            if (!detail.Contribution.PeopleId.HasValue)
+                detail.Contribution.ContributionDesc = name;
 
             _bundleHeader.BundleDetails.Add(detail);
         }
