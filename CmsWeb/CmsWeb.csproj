@@ -826,6 +826,7 @@
     <Content Include="Content\touchpoint\js\search\query.js" />
     <Content Include="Content\touchpoint\js\search\saved-query-list.js" />
     <Content Include="Content\touchpoint\js\search\search-add.js" />
+    <Content Include="Content\touchpoint\js\support\support.js" />
     <Content Include="Content\touchpoint\js\tags.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-bootbox\js\bootbox.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-datepicker\css\datepicker3.css" />
