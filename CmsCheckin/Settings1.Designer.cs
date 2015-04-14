@@ -97,7 +97,7 @@ namespace CmsCheckin {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Kiosk")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string KioskName {
             get {
                 return ((string)(this["KioskName"]));

@@ -32,8 +32,8 @@ namespace CmsCheckin
                             ShowPage(page + 1);
                         return true;
                     case Keys.Escape:
-                        this.Swap(Program.home.family);
-                        Program.home.family.ShowFamily(FamilyId);
+                        this.Swap(Program.attendHome.family);
+                        Program.attendHome.family.ShowFamily(FamilyId);
                         return true;
                     case Keys.S | Keys.Alt:
                         Program.TimerReset();
@@ -189,15 +189,15 @@ namespace CmsCheckin
             ShowAllClasses = false;
             if (Program.baseform.textbox.Parent is AttendHome)
             {
-                this.Swap(Program.home.family);
-                Program.home.family.classlist.Add(c);
-                Program.home.family.ShowFamily(FamilyId);
+                this.Swap(Program.attendHome.family);
+                Program.attendHome.family.classlist.Add(c);
+                Program.attendHome.family.ShowFamily(FamilyId);
             }
             else if (Program.baseform.textbox.Parent is BuildingHome)
             {
-                this.Swap(Program.home2.family);
-                Program.home2.family.classlist.Add(c);
-                Program.home2.family.ShowFamily(FamilyId);
+                this.Swap(Program.buildingHome.family);
+                Program.buildingHome.family.classlist.Add(c);
+                Program.buildingHome.family.ShowFamily(FamilyId);
             }
         }
 
@@ -206,13 +206,13 @@ namespace CmsCheckin
             Program.JoiningNotAttending = false;
             if (Program.baseform.textbox.Parent is AttendHome)
             {
-                this.Swap(Program.home.family);
-                Program.home.family.ShowFamily(FamilyId);
+                this.Swap(Program.attendHome.family);
+                Program.attendHome.family.ShowFamily(FamilyId);
             }
             else if (Program.baseform.textbox.Parent is BuildingHome)
             {
-                this.Swap(Program.home2.family);
-                Program.home2.family.ShowFamily(FamilyId);
+                this.Swap(Program.buildingHome.family);
+                Program.buildingHome.family.ShowFamily(FamilyId);
             }
             ShowAllClasses = false;
         }

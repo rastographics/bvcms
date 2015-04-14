@@ -61,6 +61,7 @@ namespace CmsWeb.MobileAPI
 		public const int API_ERROR_SESSION_TOKEN_EXPIRED = -3;
 		public const int API_ERROR_SESSION_TOKEN_NOT_FOUND = -4;
 		public const int API_ERROR_IMPROPER_HEADER_STRUCTURE = -5;
+		public const int API_ERROR_INVALID_CREDENTIALS = -6;
 
 		// API Device Numbers
 		public const int API_DEVICE_UNKNOWN = 0;

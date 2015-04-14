@@ -30,18 +30,22 @@ namespace CmsCheckin
 			this.CenterToScreen();
 			this.Location = new Point(this.Location.X, this.Location.Y / 2);
 
-			if (Settings1.Default.PopupForVersion < 1) {
-				MessageBox.Show("The Check-In program has been updated,\nplease verify the following settings:\n\n" +
-					"Login Page\n\n- Server name (e.g. <yourchurch>.tpsdb.com)\n- Username\n- Password\n- Printer\n- Advanced Page Size (Optional)\n\n" +
-					"Settings Page\n\n- Campus\n- Early Checkin Hours\n- Late Checkin Minutes\n- Checkboxes at the bottom", "New Version", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			updateViews();
 
-				Settings1.Default.PopupForVersion = 1;
-				Settings1.Default.Save();
-			}
+			//if (Program.settings.popupForVersion < 1) {
+			//	MessageBox.Show("The Check-In program has been updated,\nplease verify the following settings:\n\n" +
+			//		"Login Page\n\n- Server name (e.g. <yourchurch>.tpsdb.com)\n- Username\n- Password\n- Printer\n- Advanced Page Size (Optional)\n\n" +
+			//		"Settings Page\n\n- Campus\n- Early Checkin Hours\n- Late Checkin Minutes\n- Checkboxes at the bottom", "New Version", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+			//	Program.settings.setPopupForVersion(1);
+			//}
 
 			keyboard = new CommonKeyboard(this);
 			keyboard.Show();
 			attachKeyboard();
+
+			URL.Text = Program.settings.subdomain;
+			username.Text = Program.settings.user;
 
 			if (username.Text.Length > 0) {
 				current = password;
@@ -50,23 +54,6 @@ namespace CmsCheckin
 				current = URL;
 				this.ActiveControl = URL;
 			}
-		}
-
-		private void saveSettings()
-		{
-			//if (URL.Text.StartsWith("localhost") || !UseSSL.Checked)
-			//	Program.URL = "http://" + URL.Text;
-			//else if (Settings1.Default.UseSSL)
-			//	Program.URL = "https://" + URL.Text;
-			//else
-			//	Program.URL = "http://" + URL.Text;
-
-			Settings1.Default.URL = URL.Text;
-			Settings1.Default.username = username.Text;
-			Settings1.Default.Save();
-
-			Program.settings.user = username.Text;
-			Program.settings.pass = password.Text;
 		}
 
 		private void onFormMove(object sender, EventArgs e)
@@ -118,6 +105,7 @@ namespace CmsCheckin
 			Program.settings.subdomain = URL.Text;
 			Program.settings.user = username.Text;
 			Program.settings.pass = password.Text;
+			Program.settings.save();
 
 			try {
 				var wc = Util.CreateWebClient();
@@ -126,23 +114,32 @@ namespace CmsCheckin
 				var existsResults = wc.DownloadString(exists);
 
 				if (existsResults != "1") {
-					MessageBox.Show("The server you enter is not valid, please try again.\n\n" + Program.settings.createURL(), "Server not found!");
-					return;
+					MessageBox.Show("The server you enter is not valid, please try again.\n\n" + Program.settings.createURL(), "Connection Error");
 				} else {
-					var auth = Program.settings.createURI("CheckIn/Authenticate");
+					var auth = Program.settings.createURI("CheckInAPI/Authenticate");
 					var authResults = wc.DownloadString(auth);
 
 					BaseMessage bm = JsonConvert.DeserializeObject<BaseMessage>(authResults);
 
 					if (bm.error == 0) {
-						List<CheckInSetting> settings = JsonConvert.DeserializeObject<List<CheckInSetting>>(bm.data);
-						this.Hide();
-					} else {
+						CheckInInformation info = JsonConvert.DeserializeObject<CheckInInformation>(bm.data);
 
+						if (info != null) {
+							Program.settingsList = info.settings;
+							Program.campusList = info.campuses;
+
+							Program.settingsList.Insert(0, new CheckInSettingsEntry() { name = "<Current>", settings = "" });
+
+							DialogResult = DialogResult.OK;
+							this.Hide();
+						}
+
+					} else {
+						MessageBox.Show("Error: " + bm.error, "Server Error");
 					}
 				}
 			} catch (WebException) {
-				MessageBox.Show("Could not connect to: " + Program.settings.createURL());
+				MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Connection Error");
 			}
 		}
 
@@ -150,6 +147,20 @@ namespace CmsCheckin
 		{
 			if (ModifierKeys.HasFlag(Keys.Control) && ModifierKeys.HasFlag(Keys.Alt) && ModifierKeys.HasFlag(Keys.Shift)) {
 				Program.settings.ssl = !Program.settings.ssl;
+				updateViews();
+			}
+		}
+
+		private void updateViews()
+		{
+			if (Program.settings.ssl) {
+				protocolLabel.Text = "https://";
+				domainLabel.Visible = true;
+				URL.Width = 260;
+			} else {
+				protocolLabel.Text = "http://";
+				domainLabel.Visible = false;
+				URL.Width = 330;
 			}
 		}
 	}

@@ -540,7 +540,7 @@ namespace CmsCheckin
 		{
 			var c = list[(int)menu.Tag];
 
-			var home = Program.home2;
+			var home = Program.buildingHome;
 			Program.PeopleId = c.pid;
 			home.SetFields(c.last, c.email, c.addr, c.zip, c.home);
 			home.first.textBox1.Text = c.first;
@@ -592,9 +592,9 @@ namespace CmsCheckin
 			Program.TimerStop();
 			if (list.Count == 0) {
 				if (Program.baseform.textbox.Parent is AttendHome)
-					this.Swap(Program.home.namesearch);
+					this.Swap(Program.attendHome.namesearch);
 				else if (Program.baseform.textbox.Parent is BuildingHome)
-					this.Swap(Program.home2.namesearch);
+					this.Swap(Program.buildingHome.namesearch);
 				return;
 			}
 			foreach (var c in sucontrols) {
@@ -621,8 +621,8 @@ namespace CmsCheckin
 			Util.UnLockFamily();
 			RemoveMenu();
 
-			Program.home2.SetFields(c.last, c.email, c.addr, c.zip, c.home);
-			this.Swap(Program.home2.first);
+			Program.buildingHome.SetFields(c.last, c.email, c.addr, c.zip, c.home);
+			this.Swap(Program.buildingHome.first);
 		}
 
 		private void Return_Click(object sender, EventArgs e)
