@@ -4,22 +4,24 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.IO;
-using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    public partial class BatchImportContributions
+    internal class FbcStark2Importer : IContributionBatchImporter
     {
-        public static int? BatchProcessFbcStark2(string text, DateTime date, int? fundid)
+        public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
+        {
+            return BatchProcessFbcStark2(text, date, fundid);
+        }
+
+        private static int? BatchProcessFbcStark2(string text, DateTime date, int? fundid)
         {
             var prevdt = DateTime.MinValue;
             BundleHeader bh = null;
@@ -70,15 +72,14 @@ namespace CmsWeb.Models
                 if (dt != prevdt)
                 {
                     if (bh != null)
-                        FinishBundle(bh);
-                    bh = GetBundleHeader(dt, DateTime.Now);
+                        BatchImportContributions.FinishBundle(bh);
+                    bh = BatchImportContributions.GetBundleHeader(dt, DateTime.Now);
                     prevdt = dt;
                 }
 
-                string ck, rt, ac;
-                rt = csv[7];
-                ac = csv[8];
-                ck = csv[9];
+                var rt = csv[7];
+                var ac = csv[8];
+                var ck = csv[9];
                 bd.Contribution.ContributionAmount = csv[10].GetAmount();
 
                 bd.Contribution.CheckNo = ck;
@@ -92,7 +93,7 @@ namespace CmsWeb.Models
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }
-            FinishBundle(bh);
+            BatchImportContributions.FinishBundle(bh);
             return bh.BundleHeaderId;
         }
     }

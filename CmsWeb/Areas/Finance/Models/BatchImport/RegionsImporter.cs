@@ -4,30 +4,49 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
-using UtilityExtensions;
+using System.Text.RegularExpressions;
 using CmsData;
 using CmsData.Codes;
 using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    public partial class BatchImportContributions
+    internal class RegionsImporter : IContributionBatchImporter
     {
-        public static int? BatchProcessChase(CsvReader csv, DateTime date, int? fundid)
+        public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
+        {
+            using (var csv = new CsvReader(new StringReader(text), true))
+                return BatchProcessRegions(csv, date, fundid);
+        }
+
+        private static int? BatchProcessRegions(CsvReader csv, DateTime date, int? fundid)
         {
             var prevbundle = -1;
             var curbundle = 0;
 
-            var bh = GetBundleHeader(date, DateTime.Now);
+            var bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
 
+            Regex re = new Regex(
+                @"(?<g1>d(?<rt>.*?)d\sc(?<ac>.*?)(?:c|\s)(?<ck>.*?))$
+		|(?<g2>d(?<rt>.*?)d(?<ck>.*?)(?:c|\s)(?<ac>.*?)c[\s!]*)$
+		|(?<g3>d(?<rt>.*?)d(?<ac>.*?)c(?<ck>.*?$))
+		|(?<g4>c(?<ck>.*?)c\s*d(?<rt>.*?)d(?<ac>.*?)c\s*$)
+		", RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
             int fieldCount = csv.FieldCount;
             var cols = csv.GetFieldHeaders();
 
             while (csv.ReadNextRecord())
             {
-                var bd = new BundleDetail
+                
+                if (!csv[12].Contains("Check"))
+                    continue;
+                var bd = new CmsData.BundleDetail
                 {
                     CreatedBy = Util.UserId,
                     CreatedDate = DateTime.Now,
@@ -46,41 +65,41 @@ namespace CmsWeb.Models
                     ContributionStatusId = 0,
                     ContributionTypeId = ContributionTypeCode.CheckCash,
                 };
-                string ac = null, rt = null, ck = null;
+                string ac = null, rt = null;
                 for (var c = 1; c < fieldCount; c++)
                 {
-                    switch (cols[c])
+                    switch (cols[c].ToLower())
                     {
-                        case "DEPOSIT NUMBER":
+                        case "deposit number":
                             curbundle = csv[c].ToInt();
                             if (curbundle != prevbundle)
                             {
-                                FinishBundle(bh);
-                                bh = GetBundleHeader(date, DateTime.Now);
+                                if (curbundle == 3143)
+                                {
+                                    foreach (var i in bh.BundleDetails)
+                                    {
+                                        Debug.WriteLine(i.Contribution.ContributionDesc);
+                                        Debug.WriteLine(i.Contribution.BankAccount);
+                                    }
+                                }
+
+                                BatchImportContributions.FinishBundle(bh);
+                                bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
                                 prevbundle = curbundle;
                             }
                             break;
-                        case "AMOUNT":
+                        case "post amount":
                             bd.Contribution.ContributionAmount = csv[c].GetAmount();
                             break;
-                        case "CHECK NUMBER":
-                            ck = csv[c];
-                            break;
-                        case "ROUTING NUMBER":
-                            rt = csv[c];
-                            break;
-                        case "ACCOUNT NUMBER":
-                            ac = csv[c];
+                        //    break;
+                        case "micr":
+                            var m = re.Match(csv[c]);
+                            rt = m.Groups["rt"].Value;
+                            ac = m.Groups["ac"].Value;
+                            bd.Contribution.CheckNo = m.Groups["ck"].Value.Truncate(20);
                             break;
                     }
                 }
-                if (!ck.HasValue())
-                    if (ac.Contains(' '))
-                    {
-                        var a = ac.SplitStr(" ", 2);
-                        ck = a[0];
-                        ac = a[1];
-                    }
                 var eac = Util.Encrypt(rt + "|" + ac);
                 var q = from kc in DbUtil.Db.CardIdentifiers
                         where kc.Id == eac
@@ -89,11 +108,9 @@ namespace CmsWeb.Models
                 if (pid != null)
                     bd.Contribution.PeopleId = pid;
                 bd.Contribution.BankAccount = eac;
-                bd.Contribution.CheckNo = ck;
-                bd.Contribution.ContributionDesc = "Deposit Id: " + curbundle;
                 bh.BundleDetails.Add(bd);
             }
-            FinishBundle(bh);
+            BatchImportContributions.FinishBundle(bh);
             return bh.BundleHeaderId;
         }
     }

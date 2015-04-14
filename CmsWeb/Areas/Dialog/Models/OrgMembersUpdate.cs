@@ -70,16 +70,12 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     case GroupSelectCode.Member:
                         return "Current Members";
-                        break;
                     case GroupSelectCode.Inactive:
                         return "Inactive Members";
-                        break;
                     case GroupSelectCode.Pending:
                         return "Pending Members";
-                        break;
                     case GroupSelectCode.Prospect:
                         return "Prospects";
-                        break;
                 }
                 return "People";
             }

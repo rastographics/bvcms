@@ -264,62 +264,59 @@
     <Compile Include="Areas\Dialog\Models\SearchOrgsModel.cs" />
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\Enon.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\HollyCreek.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgia.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\DepositRecord.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\EnonImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\HollyCreekImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\BankOfNorthGeorgiaImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\Metropolitan.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\Chase.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\IContributionBatchImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\MetropolitanImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\ChaseImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\DiscoverCrosspoint.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\DiscoverCrossPointImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\Ebcfamily.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\EbcfamilyImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\JackHenryImport.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\FbcFayetteville.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\FbcStark.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\JackHenryImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\FbcFayettevilleImporter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\FbcStark2.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\FccHudson.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\FcchudsonImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\MagTek.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\MagtekImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\OakbrookChurch.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\OakbrookChurchImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\Kindred.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\Redeemer.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\KindredImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\RedeemerImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\Regions.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\RegionsImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\FirstState.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\SunTrust.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\FirstStateImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\SunTrustImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\SunTrust2.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\SilverdaleImporter.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\SilverDale.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Areas\Finance\Models\BatchImport\StewardshipTechnology.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\GraceCC.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\TeaysValley.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\Vanco2.cs" />
-    <Compile Include="Areas\Finance\Models\BatchImport\Vanco.cs">
+    <Compile Include="Areas\Finance\Models\BatchImport\StewardshipTechnologyImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\GraceCcImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\TeaysValleyImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\Vanco2Importer.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\VancoImporter.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\ContributionStatementsExtra.cs" />

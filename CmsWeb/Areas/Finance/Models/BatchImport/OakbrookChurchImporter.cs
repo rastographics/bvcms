@@ -4,22 +4,24 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using UtilityExtensions;
 using CmsData;
 using CmsData.Codes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.IO;
 using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    public partial class BatchImportContributions
+    internal class OakbrookChurchImporter : IContributionBatchImporter
     {
-        public static int? BatchProcessOakbrookChurch(CsvReader csv, DateTime date, int? fundid)
+        public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static int? BatchProcessOakbrookChurch(CsvReader csv, DateTime date, int? fundid)
         {
             var cols = csv.GetFieldHeaders();
 
@@ -35,12 +37,12 @@ namespace CmsWeb.Models
                 if (csv[16] == "Credit")
                 {
                     if (bh != null)
-                        FinishBundle(bh);
-                    bh = GetBundleHeader(date, DateTime.Now);
+                        BatchImportContributions.FinishBundle(bh);
+                    bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
                     continue;
                 }
                 if (bh == null)
-                    bh = GetBundleHeader(date, DateTime.Now);
+                    bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
 
                 var bd = new BundleDetail
                 {
@@ -76,7 +78,7 @@ namespace CmsWeb.Models
                 bd.Contribution.BankAccount = eac;
                 bh.BundleDetails.Add(bd);
             }
-            FinishBundle(bh);
+            BatchImportContributions.FinishBundle(bh);
             return bh.BundleHeaderId;
         }
     }

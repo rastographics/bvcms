@@ -326,7 +326,6 @@ namespace CmsWeb.Models
 
             Db.SubmitChanges();
             // notify the staff
-            var n = 0;
             foreach (var p in List)
             {
                 var tt = pids2.Single(vv => vv.PeopleId == p.PeopleId);

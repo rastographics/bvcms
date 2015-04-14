@@ -4,21 +4,23 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using UtilityExtensions;
+using System.Text.RegularExpressions;
 using CmsData;
 using CmsData.Codes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.IO;
-using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    public partial class BatchImportContributions
+    internal class MagtekImporter : IContributionBatchImporter
     {
+        public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
+        {
+            return BatchProcessMagTek(text, date);
+        }
+
         private static int? BatchProcessMagTek(string lines, DateTime date)
         {
             var now = DateTime.Now;
@@ -43,7 +45,7 @@ namespace CmsWeb.Models
                 var rt = m.Groups["rt"].Value;
                 var ac = m.Groups["ac"].Value;
                 var ck = m.Groups["ck"].Value;
-                var bd = new CmsData.BundleDetail
+                var bd = new BundleDetail
                 {
                     CreatedBy = Util.UserId,
                     CreatedDate = now,

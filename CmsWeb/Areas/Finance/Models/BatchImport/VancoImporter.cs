@@ -4,22 +4,31 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using UtilityExtensions;
-using CmsData;
-using CmsData.Codes;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.IO;
-using LumenWorks.Framework.IO.Csv;
 
-namespace CmsWeb.Models
+using System;
+using System.IO;
+using System.Linq;
+using CmsData;
+using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
+
+namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    public partial class BatchImportContributions
+    internal class VancoImporter : IContributionBatchImporter
     {
-        public static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
+        public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
+        {
+            if (fromFile)
+            {
+                using (var csv = new CsvReader(new StringReader(text), false))
+                    return BatchProcessVanco(csv, date, fundid);
+            }
+
+            using (var csv = new CsvReader(new StringReader(text), false, '\t'))
+                return BatchProcessVanco(csv, date, fundid);
+        }
+
+        private static int? BatchProcessVanco(CsvReader csv, DateTime date, int? fundid)
         {
             var fundList = (from f in DbUtil.Db.ContributionFunds
                             orderby f.FundId
@@ -27,7 +36,7 @@ namespace CmsWeb.Models
 
             var cols = csv.GetFieldHeaders();
             BundleHeader bh = null;
-            var firstfund = FirstFundId();
+            var firstfund = BatchImportContributions.FirstFundId();
             var fund = fundid != null && fundList.Contains(fundid ?? 0) ? fundid ?? 0 : firstfund;
 
             while (csv.ReadNextRecord())
@@ -37,27 +46,27 @@ namespace CmsWeb.Models
                 var account = csv[0];
                 var amount = csv[1];
                 var fundText = csv[3];
-                int fundNum = 0;
+                var fundNum = 0;
 
-                Int32.TryParse(fundText, out fundNum);
+                int.TryParse(fundText, out fundNum);
 
                 if (bh == null)
-                    bh = GetBundleHeader(date, DateTime.Now);
+                    bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
 
                 BundleDetail bd;
 
                 if (fundList.Contains(fundNum))
-                    bd = AddContributionDetail(date, fundNum, amount, checkno, routing, account);
+                    bd = BatchImportContributions.AddContributionDetail(date, fundNum, amount, checkno, routing, account);
                 else
                 {
-                    bd = AddContributionDetail(date, fund, amount, checkno, routing, account);
+                    bd = BatchImportContributions.AddContributionDetail(date, fund, amount, checkno, routing, account);
                     bd.Contribution.ContributionDesc = "Used default fund (fund requested: {0})".Fmt(fundText);
                 }
 
                 bh.BundleDetails.Add(bd);
             }
 
-            FinishBundle(bh);
+            BatchImportContributions.FinishBundle(bh);
 
             return bh.BundleHeaderId;
         }

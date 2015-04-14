@@ -8,7 +8,7 @@ using OfficeOpenXml.Style;
 using UtilityExtensions;
 using CmsWeb.Models;
 using CmsData.Codes;
-using CmsWeb;
+using CmsWeb.Areas.Finance.Models.BatchImport;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
@@ -28,27 +28,32 @@ namespace CmsWeb.Areas.Finance.Controllers
             m.fund = m.bundle.FundId ?? 1;
             return View(m);
         }
+
         [HttpPost]
         public ActionResult GetNamePid(PostBundleModel m)
         {
             var o = m.GetNamePidFromId();
             return Json(o);
         }
+
         [HttpPost]
         public ActionResult PostRow(PostBundleModel m)
         {
             return Json(m.PostContribution(this));
         }
+
         [HttpPost]
         public ActionResult UpdateRow(PostBundleModel m)
         {
             return Json(m.UpdateContribution(this));
         }
+
         [HttpPost]
         public ActionResult DeleteRow(PostBundleModel m)
         {
             return Json(m.DeleteContribution());
         }
+
         [HttpPost]
         public ActionResult Move(int id, int? moveto)
         {
@@ -81,11 +86,13 @@ namespace CmsWeb.Areas.Finance.Controllers
             
             return Json(new { status = "ok", totalitems, diff, difference, q.itemcount });
         }
+
         public ActionResult Names(string term)
         {
             var n = PostBundleModel.Names(term, 10).ToArray();
             return Json(n, JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult Names2(string term)
         {
             var n = PostBundleModel.Names2(term, 30).ToArray();
@@ -97,6 +104,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var m = new PostBundleModel(id);
             return View(m);
         }
+
         [HttpGet]
         public ActionResult Batch()
         {
@@ -109,14 +117,14 @@ namespace CmsWeb.Areas.Finance.Controllers
         [HttpPost]
         public ActionResult BatchUpload(DateTime date, HttpPostedFileBase file, int? fundid, string text)
         {
-            bool fromFile = false;
+            var fromFile = false;
             string s;
 
             if (file != null)
             {
-                byte[] buffer = new byte[file.ContentLength];
+                var buffer = new byte[file.ContentLength];
                 file.InputStream.Read(buffer, 0, file.ContentLength);
-                System.Text.Encoding enc = null;
+                System.Text.Encoding enc;
                 if (buffer[0] == 0xFF && buffer[1] == 0xFE)
                 {
                     enc = new System.Text.UnicodeEncoding();
@@ -159,6 +167,7 @@ namespace CmsWeb.Areas.Finance.Controllers
 
             return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public ActionResult Edit(string id, string value)
         {
