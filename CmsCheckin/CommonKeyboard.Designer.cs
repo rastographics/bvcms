@@ -737,6 +737,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(790, 246);
+			this.ControlBox = false;
 			this.Controls.Add(this.brbrace);
 			this.Controls.Add(this.blbrace);
 			this.Controls.Add(this.bequal);
@@ -784,8 +785,12 @@
 			this.Controls.Add(this.bo);
 			this.Controls.Add(this.bi);
 			this.Controls.Add(this.brshift);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "CommonKeyboard";
+			this.ShowIcon = false;
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.ResumeLayout(false);
 
 		}

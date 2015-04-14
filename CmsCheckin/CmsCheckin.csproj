@@ -146,7 +146,7 @@
     <Compile Include="BuildingAttendant.Designer.cs">
       <DependentUpon>BuildingAttendant.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\BaseMessage.cs" />
+    <Compile Include="Classes\Base\BaseMessage.cs" />
     <Compile Include="Classes\Capture.cs" />
     <Compile Include="BuildingChooseActivities.cs">
       <SubType>Form</SubType>
@@ -161,14 +161,17 @@
       <DependentUpon>BuildingAddGuests.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\BaseBuildingInfo.cs" />
-    <Compile Include="Classes\CheckInSetting.cs" />
-    <Compile Include="Classes\LabelEntryBase.cs" />
-    <Compile Include="Classes\LabelEntryFormat.cs" />
-    <Compile Include="Classes\LabelPage.cs" />
-    <Compile Include="Classes\LabelEntry.cs" />
-    <Compile Include="Classes\LabelSet.cs" />
-    <Compile Include="Classes\PrinterHelper.cs" />
+    <Compile Include="Classes\CheckInCampus.cs" />
+    <Compile Include="Classes\CheckInInformation.cs" />
+    <Compile Include="Classes\CheckInSettingsEntry.cs" />
+    <Compile Include="Classes\Printing\LabelEntryBase.cs" />
+    <Compile Include="Classes\Printing\LabelEntryFormat.cs" />
+    <Compile Include="Classes\Printing\LabelPage.cs" />
+    <Compile Include="Classes\Printing\LabelEntry.cs" />
+    <Compile Include="Classes\Printing\LabelSet.cs" />
+    <Compile Include="Classes\Printing\PrinterHelper.cs" />
     <Compile Include="Classes\Settings.cs" />
+    <Compile Include="Classes\WeekDay.cs" />
     <Compile Include="CommonKeyboard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -423,9 +426,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="LoginSettingsMore.resx">
-      <DependentUpon>LoginSettingsMore.cs</DependentUpon>
-    </EmbeddedResource>
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Match.datasource" />
@@ -442,12 +442,6 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings1.settings</DependentUpon>
-    </Compile>
-    <Compile Include="LoginSettingsMore.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LoginSettingsMore.Designer.cs">
-      <DependentUpon>LoginSettingsMore.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\Util.cs" />
   </ItemGroup>

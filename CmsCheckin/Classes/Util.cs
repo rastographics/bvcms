@@ -108,7 +108,7 @@ namespace CmsCheckin
 				coll.Add("home", cell);
 			coll.Add("marital", marital.ToString());
 			coll.Add("gender", gender.ToString());
-			coll.Add("campusid", Program.CampusId.ToString());
+			coll.Add("campusid", Program.settings.campusID);
 			coll.Add("allergies", allergies);
 			if (Program.settings.askGrade) {
 				coll.Add("grade", grade);
@@ -172,7 +172,7 @@ namespace CmsCheckin
 				coll.Add("home", cell);
 			coll.Add("marital", marital.ToString());
 			coll.Add("gender", gender.ToString());
-			coll.Add("campusid", Program.CampusId.ToString());
+			coll.Add("campusid", Program.settings.campusID);
 			coll.Add("allergies", allergies);
 			if (Program.settings.askGrade) {
 				coll.Add("grade", grade);
@@ -229,7 +229,7 @@ namespace CmsCheckin
 				coll.Add("home", cell);
 			coll.Add("marital", marital.ToString());
 			coll.Add("gender", gender.ToString());
-			coll.Add("campusid", Program.CampusId.ToString());
+			coll.Add("campusid", Program.settings.campusID);
 
 			var url = Program.settings.createURI("Checkin2/EditPerson/" + id);
 
@@ -507,7 +507,7 @@ namespace CmsCheckin
 				var wc = CreateWebClient();
 				var coll = new NameValueCollection();
 				coll.Add("kiosk", Program.settings.kioskName);
-				coll.Add("campusid", Program.CampusId.ToString());
+				coll.Add("campusid", Program.settings.campusID);
 				var url = Program.settings.createURI("Checkin2/ReportPrinterProblem/");
 				var resp = wc.UploadValues(url, "POST", coll);
 				var s = Encoding.ASCII.GetString(resp);

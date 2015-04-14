@@ -158,13 +158,13 @@ namespace CmsCheckin
         {
 			if (Program.baseform.textbox.Parent is AttendHome)
 			{
-				Program.home.textBox1.Text = name;
-				this.Swap(Program.home.namesearch);
+				Program.attendHome.textBox1.Text = name;
+				this.Swap(Program.attendHome.namesearch);
 			}
 			else if (Program.baseform.textbox.Parent is BuildingHome)
 			{
-				Program.home2.namesearch.textBox1.Text = name;
-				this.Swap(Program.home2.namesearch);
+				Program.buildingHome.namesearch.textBox1.Text = name;
+				this.Swap(Program.buildingHome.namesearch);
 			}
         }
 
@@ -173,9 +173,9 @@ namespace CmsCheckin
             Program.FamilyId = 0;
             Program.editing = false;
 			if (Program.baseform.textbox.Parent is AttendHome)
-				this.Swap(Program.home.first);
+				this.Swap(Program.attendHome.first);
 			else if (Program.baseform.textbox.Parent is BuildingHome)
-				this.Swap(Program.home2.first);
+				this.Swap(Program.buildingHome.first);
         }
 
         private void ClearControls()

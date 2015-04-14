@@ -145,7 +145,7 @@ namespace CmsCheckin.Classes
 				}
 			}
 
-			if (Settings1.Default.ExtraBlankLabel == true && q.Count() > 0) lsLabels.addBlank();
+			if (Program.settings.extraLabel == true && q.Count() > 0) lsLabels.addBlank();
 
 			PrinterHelper.printAllLabels(Program.settings.printer, lsLabels);
 		}

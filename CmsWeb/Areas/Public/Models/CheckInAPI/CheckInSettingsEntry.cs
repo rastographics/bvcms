@@ -5,7 +5,7 @@ using System.Web;
 
 namespace CmsWeb.CheckInAPI
 {
-	public class CheckInSetting
+	public class CheckInSettingsEntry
 	{
 		public int id = 0;
 		public string name = "";

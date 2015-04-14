@@ -21,7 +21,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="KioskName" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Kiosk</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="AskEmFriend" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

@@ -5,17 +5,32 @@ using System.Xml.Linq;
 using System.Drawing.Printing;
 using CmsCheckin.Classes;
 using System.Text.RegularExpressions;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Drawing;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace CmsCheckin
 {
 	public partial class LoginSettings : Form, KeyboardInterface
 	{
-		public XDocument campuses { get; set; }
+		private static List<WeekDay> weekDays = new List<WeekDay>() {
+			new WeekDay { id = "0", name = "Sunday" },
+			new WeekDay { id = "1", name = "Monday" },
+			new WeekDay { id = "2", name = "Tuesday" },
+			new WeekDay { id = "3", name = "Wednesday" },
+			new WeekDay { id = "4", name = "Thursday" },
+			new WeekDay { id = "5", name = "Friday" },
+			new WeekDay { id = "6", name = "Saturday" }
+		};
 
 		private bool CancelClose { get; set; }
-		private TextBox current = null;
+
+		private ComboBox currentComboBox = null;
+		private TextBox currentTextBox = null;
 		private Form keyboard;
 
 		private Regex rx = new Regex("\\D");
@@ -24,12 +39,31 @@ namespace CmsCheckin
 		{
 			InitializeComponent();
 
-			building.Enter += onTextboxEnter;
+			DayOfWeekCombo.DataSource = new BindingSource(weekDays, null);
+			DayOfWeekCombo.DisplayMember = "Name";
+			DayOfWeekCombo.ValueMember = "ID";
+			DayOfWeekCombo.SelectedIndex = (int)DateTime.Now.DayOfWeek;
+
+			CampusCombo.DataSource = new BindingSource(Program.campusList, null);
+			CampusCombo.DisplayMember = "Name";
+			CampusCombo.ValueMember = "ID";
+
+			SettingsCombo.DataSource = new BindingSource(Program.settingsList, null);
+			SettingsCombo.DisplayMember = "Name";
+			SettingsCombo.Enter += onComboBoxEnter;
+
+			Building.Enter += onTextboxEnter;
+
 			PrintKiosks.Enter += onTextboxEnter;
+			KioskName.Enter += onTextboxEnter;
+
 			PrinterWidth.Enter += onTextboxEnter;
 			PrinterHeight.Enter += onTextboxEnter;
+
 			AdminPIN.Enter += onTextboxEnter;
 			AdminPINTimeout.Enter += onTextboxEnter;
+
+			updateDisplay();
 		}
 
 		private void onLoginSettingsLoad(object sender, EventArgs e)
@@ -50,39 +84,28 @@ namespace CmsCheckin
 				Printer.Items.Add(PrinterSettings.InstalledPrinters[i]);
 			}
 
-			if (printerList.Contains(Settings1.Default.Printer)) {
-				Printer.SelectedIndex = Printer.FindStringExact(Settings1.Default.Printer);
+			if (printerList.Contains(Program.settings.printer)) {
+				Printer.SelectedIndex = Printer.FindStringExact(Program.settings.printer);
 			} else {
 				Printer.SelectedIndex = Printer.FindStringExact(defp);
 			}
 
-			DisableLocationLabels.Checked = Settings1.Default.DisableLocationLabels;
-			BuildingAccessMode.Checked = Settings1.Default.BuildingMode;
-			PrintKiosks.Text = Settings1.Default.Kiosks;
-			PrintMode.Text = Settings1.Default.PrintMode;
-			building.Text = Settings1.Default.Building;
-			AdvancedPageSize.Checked = Settings1.Default.AdvancedPageSize;
-			PrinterWidth.Text = Settings1.Default.PrinterWidth;
-			PrinterHeight.Text = Settings1.Default.PrinterHeight;
-			AdminPIN.Text = Settings1.Default.AdminPIN;
-			AdminPINTimeout.Text = Settings1.Default.AdminPINTimeout;
-
 			if (!Util.IsDebug()) {
-				this.Height = 385;
+				this.Height = 390;
 
 				PrintTest.Enabled = false;
-				label5.Enabled = false;
+				FormatLabel.Enabled = false;
 				LabelFormat.Enabled = false;
 				LabelList.Enabled = false;
-				label10.Enabled = false;
+				NameLabel.Enabled = false;
 				LoadLabelList.Enabled = false;
 				SaveLabel.Enabled = false;
 
 				PrintTest.Visible = false;
-				label5.Visible = false;
+				FormatLabel.Visible = false;
 				LabelFormat.Visible = false;
 				LabelList.Visible = false;
-				label10.Visible = false;
+				NameLabel.Visible = false;
 				LoadLabelList.Visible = false;
 				SaveLabel.Visible = false;
 			} else {
@@ -91,10 +114,10 @@ namespace CmsCheckin
 
 			if (PrintMode.Text == "Print From Server") {
 				PrintKiosks.Enabled = true;
-				label1.Enabled = true;
+				KiosksToPrintForLabel.Enabled = true;
 			} else {
 				PrintKiosks.Enabled = false;
-				label1.Enabled = false;
+				KiosksToPrintForLabel.Enabled = false;
 			}
 
 			attachKeyboard();
@@ -104,44 +127,19 @@ namespace CmsCheckin
 		{
 			e.Cancel = CancelClose;
 			CancelClose = false;
+
+			keyboard.Close();
+			keyboard.Dispose();
 		}
 
-		private void onGoClick(object sender, EventArgs e)
+		private void onStartClick(object sender, EventArgs e)
 		{
-			Settings1.Default.Kiosks = PrintKiosks.Text;
-			Settings1.Default.PrintMode = PrintMode.Text;
-			Settings1.Default.Printer = Printer.Text;
-			Settings1.Default.DisableLocationLabels = DisableLocationLabels.Checked;
-			Settings1.Default.BuildingMode = BuildingAccessMode.Checked;
-			Settings1.Default.Building = building.Text;
-			Settings1.Default.PrinterWidth = PrinterWidth.Text;
-			Settings1.Default.PrinterHeight = PrinterHeight.Text;
-			Settings1.Default.AdvancedPageSize = AdvancedPageSize.Checked;
-			Settings1.Default.AdminPIN = AdminPIN.Text;
+			updateSettings();
 
-			if (AdminPINTimeout.Text.Length > 0) {
+			if (Program.settings.buildingMode == true) {
 				try {
-					Program.settings.adminPINTimeout = int.Parse(AdminPINTimeout.Text);
-					Settings1.Default.AdminPINTimeout = AdminPINTimeout.Text;
-				} catch (Exception) {
-					Program.settings.adminPINTimeout = 0;
-					Settings1.Default.AdminPINTimeout = "0";
-				}
-			} else {
-				Program.settings.adminPINTimeout = 0;
-			}
-
-			Settings1.Default.Save();
-
-			Program.settings.printerWidth = PrinterWidth.Text;
-			Program.settings.printerHeight = PrinterHeight.Text;
-			Program.settings.disableLocationLabels = DisableLocationLabels.Checked;
-			Program.settings.adminPIN = AdminPIN.Text;
-
-			if (BuildingAccessMode.Checked == true) {
-				try {
-					Program.settings.building = building.Text;
 					Program.BuildingInfo = Util.FetchBuildingInfo();
+
 					if (Program.BuildingInfo.Activities.Count == 0) {
 						CancelClose = true;
 						return;
@@ -150,22 +148,6 @@ namespace CmsCheckin
 					MessageBox.Show("Cannot find " + Program.settings.createURL());
 					CancelClose = true;
 				}
-			}
-
-			var wc = Util.CreateWebClient();
-
-			try {
-				var url = Program.settings.createURI("Checkin2/Campuses");
-				var str = wc.DownloadString(url);
-				if (str == "not authorized") {
-					MessageBox.Show(str);
-					CancelClose = true;
-					return;
-				}
-				campuses = XDocument.Parse(str);
-			} catch (WebException) {
-				MessageBox.Show("Cannot find " + Program.settings.createURL());
-				CancelClose = true;
 			}
 
 			if (CancelClose == false && !BuildingAccessMode.Checked) {
@@ -193,6 +175,7 @@ namespace CmsCheckin
 			}
 
 			if (CancelClose == false) {
+				DialogResult = DialogResult.OK;
 				this.Hide();
 			}
 		}
@@ -210,11 +193,12 @@ namespace CmsCheckin
 
 		private void onLoadLabelsClick(object sender, EventArgs e)
 		{
-			System.Diagnostics.Debug.Print("Loading Label List...");
-
 			string[] labelList = PrinterHelper.fetchLabelList();
 
-			if (labelList == null) return;
+			if (labelList == null) {
+				MessageBox.Show("Could fetch label formats.", "Label List Error");
+				return;
+			}
 
 			LabelList.Items.Clear();
 			LabelList.Text = "";
@@ -223,6 +207,8 @@ namespace CmsCheckin
 			foreach (var label in labelList) {
 				LabelList.Items.Add(label);
 			}
+
+			MessageBox.Show("Label list load complete!", "Label List");
 		}
 
 		private void onSaveLabelClick(object sender, EventArgs e)
@@ -277,21 +263,51 @@ namespace CmsCheckin
 			}
 		}
 
+		private void onBuildingModeChanged(object sender, EventArgs e)
+		{
+			if (BuildingAccessMode.Checked) {
+				Building.Enabled = true;
+				Building.Text = "";
+			} else {
+				Building.Enabled = false;
+				Building.Text = "";
+			}
+		}
+
 		private void onPrintModeChanged(object sender, EventArgs e)
 		{
 			if (PrintMode.SelectedIndex == 2) {
 				PrintKiosks.Enabled = true;
-				label1.Enabled = true;
+				KiosksToPrintForLabel.Enabled = true;
+
+				mainOptionsGroup.Enabled = false;
+				buildingOptionsGroup.Enabled = false;
+				askForOptioonsGroup.Enabled = false;
+				otherOptionsGroup.Enabled = false;
+				adminOptionsGroup.Enabled = false;
 			} else {
 				PrintKiosks.Enabled = false;
-				label1.Enabled = false;
+				KiosksToPrintForLabel.Enabled = false;
 				PrintKiosks.Text = "";
+
+				mainOptionsGroup.Enabled = true;
+				buildingOptionsGroup.Enabled = true;
+				askForOptioonsGroup.Enabled = true;
+				otherOptionsGroup.Enabled = true;
+				adminOptionsGroup.Enabled = true;
 			}
 		}
 
 		private void onTextboxEnter(object sender, EventArgs e)
 		{
-			current = (TextBox)sender;
+			currentTextBox = (TextBox)sender;
+			currentComboBox = null;
+		}
+
+		private void onComboBoxEnter(object sender, EventArgs e)
+		{
+			currentComboBox = (ComboBox)sender;
+			currentTextBox = null;
 		}
 
 		private void limitNumbersOnly(object sender, EventArgs e)
@@ -306,25 +322,38 @@ namespace CmsCheckin
 
 		public void onKeyboardKeyPress(string key)
 		{
-			if (current == null) return;
-
-			current.Text += key;
-			current.Focus();
-			current.Select(current.Text.Length, 0);
+			if (currentTextBox != null) {
+				currentTextBox.Text += key;
+				currentTextBox.Focus();
+				currentTextBox.Select(currentTextBox.Text.Length, 0);
+			} else if (currentComboBox != null) {
+				currentComboBox.Text += key;
+				currentComboBox.Focus();
+				currentComboBox.Select(currentComboBox.Text.Length, 0);
+			}
 		}
 
 		public void onBackspaceKeyPress()
 		{
-			if (current == null) return;
+			if (currentTextBox != null) {
+				var t = currentTextBox.Text;
+				var len = t.Length - 1;
 
-			var t = current.Text;
-			var len = t.Length - 1;
+				if (len < 0) len = 0;
 
-			if (len < 0) len = 0;
+				currentTextBox.Text = t.Substring(0, len);
+				currentTextBox.Focus();
+				currentTextBox.Select(currentTextBox.Text.Length, 0);
+			} else if (currentComboBox != null) {
+				var t = currentComboBox.Text;
+				var len = t.Length - 1;
 
-			current.Text = t.Substring(0, len);
-			current.Focus();
-			current.Select(current.Text.Length, 0);
+				if (len < 0) len = 0;
+
+				currentComboBox.Text = t.Substring(0, len);
+				currentComboBox.Focus();
+				currentComboBox.Select(currentComboBox.Text.Length, 0);
+			}
 		}
 
 		private void attachKeyboard()
@@ -335,6 +364,159 @@ namespace CmsCheckin
 		private void onLoginSettingsMove(object sender, EventArgs e)
 		{
 			attachKeyboard();
+		}
+
+		private void updateSettings()
+		{
+			// First Column
+			Program.settings.campusID = ((CheckInCampus)Program.campusList[CampusCombo.SelectedIndex]).id;
+			Program.settings.campus = ((CheckInCampus)Program.campusList[CampusCombo.SelectedIndex]).name;
+			Program.settings.dayOfWeek = DayOfWeekCombo.SelectedIndex;
+
+			int.TryParse(EarlyHours.Text, out Program.settings.earlyHours);
+			int.TryParse(LateMinutes.Text, out Program.settings.lateMinutes);
+
+			Program.settings.buildingMode = BuildingAccessMode.Checked;
+			Program.settings.building = Building.Text;
+
+			// Second Column
+			Program.settings.printMode = PrintMode.Text;
+			Program.settings.printForKiosks = PrintKiosks.Text;
+			Program.settings.printer = Printer.Text;
+			Program.settings.kioskName = KioskName.Text;
+
+			Program.settings.advancedPageSize = AdvancedPageSize.Checked;
+			Program.settings.printerWidth = PrinterWidth.Text;
+			Program.settings.printerHeight = PrinterHeight.Text;
+
+			// Third Column
+			Program.settings.disableLocationLabels = DisableLocationLabels.Checked;
+			Program.settings.extraLabel = ExtraBlankLabel.Checked;
+			Program.settings.securityLabelPerChild = SecurityLabelPerChild.Checked;
+
+			Program.settings.askFriend = AskFriend.Checked;
+			Program.settings.askChurch = AskChurch.Checked;
+			Program.settings.askChurchName = AskChurchName.Checked;
+			Program.settings.askGrade = AskGrade.Checked;
+
+			Program.settings.fullScreen = FullScreen.Checked;
+			Program.settings.hideCursor = HideCursor.Checked;
+			Program.settings.enableTimer = EnableTimer.Checked;
+			Program.settings.disableJoin = DisableJoin.Checked;
+
+			// Four Column			
+			Program.settings.adminPIN = AdminPIN.Text;
+			Program.settings.adminPINTimeout = AdminPINTimeout.Text;
+		}
+
+		private void updateDisplay()
+		{
+			// First Column
+			CampusCombo.SelectedIndex = CampusCombo.FindStringExact(Program.settings.campus);
+
+			if (CampusCombo.SelectedIndex == -1) {
+				CampusCombo.SelectedIndex = 0;
+			}
+
+			DayOfWeekCombo.Text = Program.settings.dayOfWeek.ToString();
+
+			EarlyHours.Text = Program.settings.earlyHours.ToString();
+			LateMinutes.Text = Program.settings.lateMinutes.ToString();
+
+			BuildingAccessMode.Checked = Program.settings.buildingMode;
+			Building.Text = Program.settings.building;
+
+			// Second Column
+			PrintMode.Text = Program.settings.printMode;
+			PrintKiosks.Text = Program.settings.printForKiosks;
+			Printer.Text = Program.settings.printer;
+			KioskName.Text = Program.settings.kioskName;
+
+			AdvancedPageSize.Checked = Program.settings.advancedPageSize;
+			PrinterWidth.Text = Program.settings.printerWidth;
+			PrinterHeight.Text = Program.settings.printerHeight;
+
+			// Third Column
+			DisableLocationLabels.Checked = Program.settings.disableLocationLabels;
+			ExtraBlankLabel.Checked = Program.settings.extraLabel;
+			SecurityLabelPerChild.Checked = Program.settings.securityLabelPerChild;
+
+			AskFriend.Checked = Program.settings.askFriend;
+			AskChurch.Checked = Program.settings.askChurch;
+			AskChurchName.Checked = Program.settings.askChurchName;
+			AskGrade.Checked = Program.settings.askGrade;
+
+			FullScreen.Checked = Program.settings.fullScreen;
+			HideCursor.Checked = Program.settings.hideCursor;
+			EnableTimer.Checked = Program.settings.enableTimer;
+			DisableJoin.Checked = Program.settings.disableJoin;
+
+			// Four Column			
+			AdminPIN.Text = Program.settings.adminPIN;
+			AdminPINTimeout.Text = Program.settings.adminPINTimeout;
+		}
+
+		private void onSettingsSave(object sender, EventArgs e)
+		{
+			if (SettingsCombo.Text.Length > 0 && SettingsCombo.Text != "<Current>") {
+				updateSettings();
+
+				CheckInSettingsEntry settings = new CheckInSettingsEntry();
+				settings.name = SettingsCombo.Text.Trim();
+				settings.settings = JsonConvert.SerializeObject(Program.settings);
+
+				try {
+					var wc = Util.CreateWebClient();
+					var post = new NameValueCollection();
+					var msg = new BaseMessage();
+
+					msg.data = JsonConvert.SerializeObject(settings);
+
+					post.Add("data", JsonConvert.SerializeObject(msg));
+
+					var save = Program.settings.createURI("CheckInAPI/SaveSettings");
+					var saveResults = wc.UploadValues(save, post);
+
+					BaseMessage bm = JsonConvert.DeserializeObject<BaseMessage>(Encoding.ASCII.GetString(saveResults));
+
+					if (bm.error == 0) {
+						MessageBox.Show("Your settings have been saved!", "Save Complete");
+						Program.updateSettingsList(settings.name, settings.settings);
+						rebindSettingsList();
+					} else {
+						MessageBox.Show("The server you enter is not valid, please try again.\n\n" + Program.settings.createURL(), "Communication Error");
+					}
+				} catch (WebException) {
+					MessageBox.Show("Could not connect to: " + Program.settings.createURL(), "Communication Error");
+				}
+			} else {
+				if (SettingsCombo.Text.Length == 0) {
+					MessageBox.Show("The settings name cannot be blank, please save as a different name.", "Invalid Settings Name");
+				} else {
+					MessageBox.Show("The settings name cannot be \"<Current>\", please save as a different name.", "Invalid Settings Name");
+				}
+			}
+		}
+
+		private void onSettingsNameChanged(object sender, EventArgs e)
+		{
+			string name = SettingsCombo.Text;
+
+			if (name != "<Current>") {
+				CheckInSettingsEntry entry = Program.getSettingsFromList(name);
+
+				if (entry != null) {
+					Program.settings.copy(JsonConvert.DeserializeObject<Settings>(entry.settings));
+					updateDisplay();
+				}
+			}
+		}
+
+		private void rebindSettingsList()
+		{
+			SettingsCombo.DataSource = null;
+			SettingsCombo.DataSource = new BindingSource(Program.settingsList, null);
+			SettingsCombo.DisplayMember = "Name";
 		}
 	}
 }

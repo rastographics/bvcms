@@ -28,21 +28,21 @@
 		private void InitializeComponent()
 		{
 			this.PrintKiosks = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.KiosksToPrintForLabel = new System.Windows.Forms.Label();
 			this.PrintMode = new System.Windows.Forms.ComboBox();
 			this.Printer = new System.Windows.Forms.ComboBox();
 			this.label4 = new System.Windows.Forms.Label();
 			this.DisableLocationLabels = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.BuildingAccessMode = new System.Windows.Forms.CheckBox();
-			this.building = new System.Windows.Forms.TextBox();
+			this.Building = new System.Windows.Forms.TextBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.PrintTest = new System.Windows.Forms.Button();
-			this.label5 = new System.Windows.Forms.Label();
+			this.FormatLabel = new System.Windows.Forms.Label();
 			this.LabelFormat = new System.Windows.Forms.TextBox();
 			this.LoadLabelList = new System.Windows.Forms.Button();
 			this.LabelList = new System.Windows.Forms.ComboBox();
-			this.label10 = new System.Windows.Forms.Label();
+			this.NameLabel = new System.Windows.Forms.Label();
 			this.SaveLabel = new System.Windows.Forms.Button();
 			this.LabelPrinterSize = new System.Windows.Forms.Label();
 			this.PageWidthLabel = new System.Windows.Forms.Label();
@@ -59,24 +59,24 @@
 			this.AskChurchName = new System.Windows.Forms.CheckBox();
 			this.AskChurch = new System.Windows.Forms.CheckBox();
 			this.AskGrade = new System.Windows.Forms.CheckBox();
-			this.AskEmFriend = new System.Windows.Forms.CheckBox();
+			this.AskFriend = new System.Windows.Forms.CheckBox();
 			this.SecurityLabelPerChild = new System.Windows.Forms.CheckBox();
 			this.KioskName = new System.Windows.Forms.TextBox();
 			this.label6 = new System.Windows.Forms.Label();
 			this.LateMinutes = new System.Windows.Forms.ComboBox();
 			this.label7 = new System.Windows.Forms.Label();
-			this.LeadHours = new System.Windows.Forms.ComboBox();
+			this.EarlyHours = new System.Windows.Forms.ComboBox();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
-			this.cbDayOfWeek = new System.Windows.Forms.ComboBox();
-			this.cbCampusId = new System.Windows.Forms.ComboBox();
-			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.DayOfWeekCombo = new System.Windows.Forms.ComboBox();
+			this.CampusCombo = new System.Windows.Forms.ComboBox();
+			this.askForOptioonsGroup = new System.Windows.Forms.GroupBox();
 			this.otherOptionsGroup = new System.Windows.Forms.GroupBox();
-			this.DisableJoin = new System.Windows.Forms.CheckBox();
-			this.EnableTimer = new System.Windows.Forms.CheckBox();
-			this.HideCursor = new System.Windows.Forms.CheckBox();
 			this.FullScreen = new System.Windows.Forms.CheckBox();
+			this.HideCursor = new System.Windows.Forms.CheckBox();
+			this.EnableTimer = new System.Windows.Forms.CheckBox();
+			this.DisableJoin = new System.Windows.Forms.CheckBox();
 			this.adminOptionsGroup = new System.Windows.Forms.GroupBox();
 			this.buildingOptionsGroup = new System.Windows.Forms.GroupBox();
 			this.printerOptionsGroup = new System.Windows.Forms.GroupBox();
@@ -85,9 +85,9 @@
 			this.mainOptionsGroup = new System.Windows.Forms.GroupBox();
 			this.button1 = new System.Windows.Forms.Button();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.comboBox1 = new System.Windows.Forms.ComboBox();
 			this.button2 = new System.Windows.Forms.Button();
-			this.groupBox1.SuspendLayout();
+			this.SettingsCombo = new System.Windows.Forms.ComboBox();
+			this.askForOptioonsGroup.SuspendLayout();
 			this.otherOptionsGroup.SuspendLayout();
 			this.adminOptionsGroup.SuspendLayout();
 			this.buildingOptionsGroup.SuspendLayout();
@@ -107,20 +107,21 @@
 			this.PrintKiosks.Size = new System.Drawing.Size(230, 22);
 			this.PrintKiosks.TabIndex = 7;
 			// 
-			// label1
+			// KiosksToPrintForLabel
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Enabled = false;
-			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(11, 76);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(123, 16);
-			this.label1.TabIndex = 118;
-			this.label1.Text = "Kiosks To Print For:";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.KiosksToPrintForLabel.AutoSize = true;
+			this.KiosksToPrintForLabel.Enabled = false;
+			this.KiosksToPrintForLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KiosksToPrintForLabel.Location = new System.Drawing.Point(11, 76);
+			this.KiosksToPrintForLabel.Name = "KiosksToPrintForLabel";
+			this.KiosksToPrintForLabel.Size = new System.Drawing.Size(123, 16);
+			this.KiosksToPrintForLabel.TabIndex = 118;
+			this.KiosksToPrintForLabel.Text = "Kiosks To Print For:";
+			this.KiosksToPrintForLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// PrintMode
 			// 
+			this.PrintMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.PrintMode.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.PrintMode.FormattingEnabled = true;
 			this.PrintMode.Items.AddRange(new object[] {
@@ -132,7 +133,6 @@
 			this.PrintMode.Name = "PrintMode";
 			this.PrintMode.Size = new System.Drawing.Size(230, 24);
 			this.PrintMode.TabIndex = 6;
-			this.PrintMode.Text = "Print To Printer";
 			this.PrintMode.SelectedIndexChanged += new System.EventHandler(this.onPrintModeChanged);
 			// 
 			// Printer
@@ -165,6 +165,7 @@
 			this.DisableLocationLabels.Name = "DisableLocationLabels";
 			this.DisableLocationLabels.Size = new System.Drawing.Size(172, 20);
 			this.DisableLocationLabels.TabIndex = 14;
+			this.DisableLocationLabels.Tag = "";
 			this.DisableLocationLabels.Text = "Disable Location Labels";
 			this.DisableLocationLabels.UseVisualStyleBackColor = true;
 			// 
@@ -189,14 +190,16 @@
 			this.BuildingAccessMode.TabIndex = 17;
 			this.BuildingAccessMode.Text = "Building Mode";
 			this.BuildingAccessMode.UseVisualStyleBackColor = true;
+			this.BuildingAccessMode.CheckedChanged += new System.EventHandler(this.onBuildingModeChanged);
 			// 
-			// building
+			// Building
 			// 
-			this.building.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.building.Location = new System.Drawing.Point(74, 47);
-			this.building.Name = "building";
-			this.building.Size = new System.Drawing.Size(150, 22);
-			this.building.TabIndex = 12;
+			this.Building.Enabled = false;
+			this.Building.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.Building.Location = new System.Drawing.Point(74, 47);
+			this.Building.Name = "Building";
+			this.Building.Size = new System.Drawing.Size(150, 22);
+			this.Building.TabIndex = 12;
 			// 
 			// label3
 			// 
@@ -221,15 +224,15 @@
 			this.PrintTest.UseVisualStyleBackColor = true;
 			this.PrintTest.Click += new System.EventHandler(this.onPrintTestClick);
 			// 
-			// label5
+			// FormatLabel
 			// 
-			this.label5.AutoSize = true;
-			this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label5.Location = new System.Drawing.Point(9, 373);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(119, 13);
-			this.label5.TabIndex = 135;
-			this.label5.Text = "Test Label Print Format:";
+			this.FormatLabel.AutoSize = true;
+			this.FormatLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.FormatLabel.Location = new System.Drawing.Point(15, 367);
+			this.FormatLabel.Name = "FormatLabel";
+			this.FormatLabel.Size = new System.Drawing.Size(149, 16);
+			this.FormatLabel.TabIndex = 135;
+			this.FormatLabel.Text = "Test Label Print Format:";
 			// 
 			// LabelFormat
 			// 
@@ -264,14 +267,14 @@
 			this.LabelList.TabStop = false;
 			this.LabelList.SelectedIndexChanged += new System.EventHandler(this.onLabelListChanged);
 			// 
-			// label10
+			// NameLabel
 			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(493, 368);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(48, 16);
-			this.label10.TabIndex = 142;
-			this.label10.Text = "Name:";
+			this.NameLabel.AutoSize = true;
+			this.NameLabel.Location = new System.Drawing.Point(493, 368);
+			this.NameLabel.Name = "NameLabel";
+			this.NameLabel.Size = new System.Drawing.Size(48, 16);
+			this.NameLabel.TabIndex = 142;
+			this.NameLabel.Text = "Name:";
 			// 
 			// SaveLabel
 			// 
@@ -287,10 +290,10 @@
 			// LabelPrinterSize
 			// 
 			this.LabelPrinterSize.AutoSize = true;
-			this.LabelPrinterSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.LabelPrinterSize.Location = new System.Drawing.Point(137, 373);
+			this.LabelPrinterSize.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.LabelPrinterSize.Location = new System.Drawing.Point(164, 367);
 			this.LabelPrinterSize.Name = "LabelPrinterSize";
-			this.LabelPrinterSize.Size = new System.Drawing.Size(86, 13);
+			this.LabelPrinterSize.Size = new System.Drawing.Size(108, 16);
 			this.LabelPrinterSize.TabIndex = 144;
 			this.LabelPrinterSize.Text = "Printer Size Here";
 			// 
@@ -414,6 +417,7 @@
 			this.ExtraBlankLabel.Name = "ExtraBlankLabel";
 			this.ExtraBlankLabel.Size = new System.Drawing.Size(160, 20);
 			this.ExtraBlankLabel.TabIndex = 157;
+			this.ExtraBlankLabel.Tag = "";
 			this.ExtraBlankLabel.Text = "Print Extra Blank Label";
 			this.ExtraBlankLabel.UseVisualStyleBackColor = true;
 			// 
@@ -450,18 +454,18 @@
 			this.AskGrade.Text = "Grade";
 			this.AskGrade.UseVisualStyleBackColor = true;
 			// 
-			// AskEmFriend
+			// AskFriend
 			// 
-			this.AskEmFriend.AutoSize = true;
-			this.AskEmFriend.Checked = true;
-			this.AskEmFriend.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.AskEmFriend.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AskEmFriend.Location = new System.Drawing.Point(16, 21);
-			this.AskEmFriend.Name = "AskEmFriend";
-			this.AskEmFriend.Size = new System.Drawing.Size(137, 20);
-			this.AskEmFriend.TabIndex = 158;
-			this.AskEmFriend.Text = "Emergency Friend";
-			this.AskEmFriend.UseVisualStyleBackColor = true;
+			this.AskFriend.AutoSize = true;
+			this.AskFriend.Checked = true;
+			this.AskFriend.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.AskFriend.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.AskFriend.Location = new System.Drawing.Point(16, 21);
+			this.AskFriend.Name = "AskFriend";
+			this.AskFriend.Size = new System.Drawing.Size(137, 20);
+			this.AskFriend.TabIndex = 158;
+			this.AskFriend.Text = "Emergency Friend";
+			this.AskFriend.UseVisualStyleBackColor = true;
 			// 
 			// SecurityLabelPerChild
 			// 
@@ -471,6 +475,7 @@
 			this.SecurityLabelPerChild.Name = "SecurityLabelPerChild";
 			this.SecurityLabelPerChild.Size = new System.Drawing.Size(221, 20);
 			this.SecurityLabelPerChild.TabIndex = 175;
+			this.SecurityLabelPerChild.Tag = "";
 			this.SecurityLabelPerChild.Text = "Security Label Per Child/Meeting";
 			this.SecurityLabelPerChild.UseVisualStyleBackColor = true;
 			// 
@@ -495,6 +500,7 @@
 			// 
 			// LateMinutes
 			// 
+			this.LateMinutes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.LateMinutes.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.LateMinutes.FormattingEnabled = true;
 			this.LateMinutes.Items.AddRange(new object[] {
@@ -509,7 +515,6 @@
 			this.LateMinutes.Name = "LateMinutes";
 			this.LateMinutes.Size = new System.Drawing.Size(210, 24);
 			this.LateMinutes.TabIndex = 169;
-			this.LateMinutes.Text = "1440";
 			// 
 			// label7
 			// 
@@ -522,11 +527,12 @@
 			this.label7.Text = "Late Check In Minutes:";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// LeadHours
+			// EarlyHours
 			// 
-			this.LeadHours.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.LeadHours.FormattingEnabled = true;
-			this.LeadHours.Items.AddRange(new object[] {
+			this.EarlyHours.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.EarlyHours.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.EarlyHours.FormattingEnabled = true;
+			this.EarlyHours.Items.AddRange(new object[] {
             "1",
             "2",
             "3",
@@ -541,11 +547,10 @@
             "12",
             "24",
             "36"});
-			this.LeadHours.Location = new System.Drawing.Point(14, 147);
-			this.LeadHours.Name = "LeadHours";
-			this.LeadHours.Size = new System.Drawing.Size(210, 24);
-			this.LeadHours.TabIndex = 167;
-			this.LeadHours.Text = "5";
+			this.EarlyHours.Location = new System.Drawing.Point(14, 147);
+			this.EarlyHours.Name = "EarlyHours";
+			this.EarlyHours.Size = new System.Drawing.Size(210, 24);
+			this.EarlyHours.TabIndex = 167;
 			// 
 			// label8
 			// 
@@ -580,37 +585,39 @@
 			this.label13.Text = "Campus:";
 			this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// cbDayOfWeek
+			// DayOfWeekCombo
 			// 
-			this.cbDayOfWeek.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.cbDayOfWeek.FormattingEnabled = true;
-			this.cbDayOfWeek.Location = new System.Drawing.Point(14, 95);
-			this.cbDayOfWeek.Name = "cbDayOfWeek";
-			this.cbDayOfWeek.Size = new System.Drawing.Size(210, 24);
-			this.cbDayOfWeek.TabIndex = 165;
+			this.DayOfWeekCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.DayOfWeekCombo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.DayOfWeekCombo.FormattingEnabled = true;
+			this.DayOfWeekCombo.Location = new System.Drawing.Point(14, 95);
+			this.DayOfWeekCombo.Name = "DayOfWeekCombo";
+			this.DayOfWeekCombo.Size = new System.Drawing.Size(210, 24);
+			this.DayOfWeekCombo.TabIndex = 165;
 			// 
-			// cbCampusId
+			// CampusCombo
 			// 
-			this.cbCampusId.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.cbCampusId.FormattingEnabled = true;
-			this.cbCampusId.Location = new System.Drawing.Point(14, 43);
-			this.cbCampusId.Name = "cbCampusId";
-			this.cbCampusId.Size = new System.Drawing.Size(210, 24);
-			this.cbCampusId.TabIndex = 163;
+			this.CampusCombo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.CampusCombo.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.CampusCombo.FormattingEnabled = true;
+			this.CampusCombo.Location = new System.Drawing.Point(14, 43);
+			this.CampusCombo.Name = "CampusCombo";
+			this.CampusCombo.Size = new System.Drawing.Size(210, 24);
+			this.CampusCombo.TabIndex = 163;
 			// 
-			// groupBox1
+			// askForOptioonsGroup
 			// 
-			this.groupBox1.Controls.Add(this.AskChurch);
-			this.groupBox1.Controls.Add(this.AskGrade);
-			this.groupBox1.Controls.Add(this.AskChurchName);
-			this.groupBox1.Controls.Add(this.AskEmFriend);
-			this.groupBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.groupBox1.Location = new System.Drawing.Point(518, 123);
-			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(242, 128);
-			this.groupBox1.TabIndex = 176;
-			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "Ask For Options";
+			this.askForOptioonsGroup.Controls.Add(this.AskChurch);
+			this.askForOptioonsGroup.Controls.Add(this.AskGrade);
+			this.askForOptioonsGroup.Controls.Add(this.AskChurchName);
+			this.askForOptioonsGroup.Controls.Add(this.AskFriend);
+			this.askForOptioonsGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.askForOptioonsGroup.Location = new System.Drawing.Point(518, 123);
+			this.askForOptioonsGroup.Name = "askForOptioonsGroup";
+			this.askForOptioonsGroup.Size = new System.Drawing.Size(242, 128);
+			this.askForOptioonsGroup.TabIndex = 176;
+			this.askForOptioonsGroup.TabStop = false;
+			this.askForOptioonsGroup.Text = "Ask For Options";
 			// 
 			// otherOptionsGroup
 			// 
@@ -626,29 +633,16 @@
 			this.otherOptionsGroup.TabStop = false;
 			this.otherOptionsGroup.Text = "Other Options";
 			// 
-			// DisableJoin
+			// FullScreen
 			// 
-			this.DisableJoin.AutoSize = true;
-			this.DisableJoin.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.DisableJoin.Location = new System.Drawing.Point(128, 52);
-			this.DisableJoin.Name = "DisableJoin";
-			this.DisableJoin.Size = new System.Drawing.Size(102, 20);
-			this.DisableJoin.TabIndex = 174;
-			this.DisableJoin.Text = "Disable Join";
-			this.DisableJoin.UseVisualStyleBackColor = true;
-			// 
-			// EnableTimer
-			// 
-			this.EnableTimer.AutoSize = true;
-			this.EnableTimer.Checked = true;
-			this.EnableTimer.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.EnableTimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.EnableTimer.Location = new System.Drawing.Point(128, 21);
-			this.EnableTimer.Name = "EnableTimer";
-			this.EnableTimer.Size = new System.Drawing.Size(108, 20);
-			this.EnableTimer.TabIndex = 170;
-			this.EnableTimer.Text = "Enable Timer";
-			this.EnableTimer.UseVisualStyleBackColor = true;
+			this.FullScreen.AutoSize = true;
+			this.FullScreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.FullScreen.Location = new System.Drawing.Point(16, 21);
+			this.FullScreen.Name = "FullScreen";
+			this.FullScreen.Size = new System.Drawing.Size(94, 20);
+			this.FullScreen.TabIndex = 13;
+			this.FullScreen.Text = "Full Screen";
+			this.FullScreen.UseVisualStyleBackColor = true;
 			// 
 			// HideCursor
 			// 
@@ -663,16 +657,29 @@
 			this.HideCursor.Text = "Hide Cursor";
 			this.HideCursor.UseVisualStyleBackColor = true;
 			// 
-			// FullScreen
+			// EnableTimer
 			// 
-			this.FullScreen.AutoSize = true;
-			this.FullScreen.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FullScreen.Location = new System.Drawing.Point(16, 21);
-			this.FullScreen.Name = "FullScreen";
-			this.FullScreen.Size = new System.Drawing.Size(94, 20);
-			this.FullScreen.TabIndex = 13;
-			this.FullScreen.Text = "Full Screen";
-			this.FullScreen.UseVisualStyleBackColor = true;
+			this.EnableTimer.AutoSize = true;
+			this.EnableTimer.Checked = true;
+			this.EnableTimer.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.EnableTimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.EnableTimer.Location = new System.Drawing.Point(128, 21);
+			this.EnableTimer.Name = "EnableTimer";
+			this.EnableTimer.Size = new System.Drawing.Size(108, 20);
+			this.EnableTimer.TabIndex = 170;
+			this.EnableTimer.Text = "Enable Timer";
+			this.EnableTimer.UseVisualStyleBackColor = true;
+			// 
+			// DisableJoin
+			// 
+			this.DisableJoin.AutoSize = true;
+			this.DisableJoin.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.DisableJoin.Location = new System.Drawing.Point(128, 52);
+			this.DisableJoin.Name = "DisableJoin";
+			this.DisableJoin.Size = new System.Drawing.Size(102, 20);
+			this.DisableJoin.TabIndex = 174;
+			this.DisableJoin.Text = "Disable Join";
+			this.DisableJoin.UseVisualStyleBackColor = true;
 			// 
 			// adminOptionsGroup
 			// 
@@ -690,7 +697,7 @@
 			// 
 			// buildingOptionsGroup
 			// 
-			this.buildingOptionsGroup.Controls.Add(this.building);
+			this.buildingOptionsGroup.Controls.Add(this.Building);
 			this.buildingOptionsGroup.Controls.Add(this.BuildingAccessMode);
 			this.buildingOptionsGroup.Controls.Add(this.label3);
 			this.buildingOptionsGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -706,7 +713,7 @@
 			this.printerOptionsGroup.Controls.Add(this.PrintMode);
 			this.printerOptionsGroup.Controls.Add(this.label2);
 			this.printerOptionsGroup.Controls.Add(this.PrintKiosks);
-			this.printerOptionsGroup.Controls.Add(this.label1);
+			this.printerOptionsGroup.Controls.Add(this.KiosksToPrintForLabel);
 			this.printerOptionsGroup.Controls.Add(this.Printer);
 			this.printerOptionsGroup.Controls.Add(this.label4);
 			this.printerOptionsGroup.Controls.Add(this.KioskName);
@@ -750,12 +757,12 @@
 			// 
 			// mainOptionsGroup
 			// 
-			this.mainOptionsGroup.Controls.Add(this.cbCampusId);
-			this.mainOptionsGroup.Controls.Add(this.cbDayOfWeek);
+			this.mainOptionsGroup.Controls.Add(this.CampusCombo);
+			this.mainOptionsGroup.Controls.Add(this.DayOfWeekCombo);
 			this.mainOptionsGroup.Controls.Add(this.label13);
 			this.mainOptionsGroup.Controls.Add(this.label12);
 			this.mainOptionsGroup.Controls.Add(this.label8);
-			this.mainOptionsGroup.Controls.Add(this.LeadHours);
+			this.mainOptionsGroup.Controls.Add(this.EarlyHours);
 			this.mainOptionsGroup.Controls.Add(this.label7);
 			this.mainOptionsGroup.Controls.Add(this.LateMinutes);
 			this.mainOptionsGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -775,11 +782,12 @@
 			this.button1.TabIndex = 184;
 			this.button1.Text = "Start";
 			this.button1.UseVisualStyleBackColor = true;
+			this.button1.Click += new System.EventHandler(this.onStartClick);
 			// 
 			// groupBox2
 			// 
 			this.groupBox2.Controls.Add(this.button2);
-			this.groupBox2.Controls.Add(this.comboBox1);
+			this.groupBox2.Controls.Add(this.SettingsCombo);
 			this.groupBox2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.groupBox2.Location = new System.Drawing.Point(766, 146);
 			this.groupBox2.Name = "groupBox2";
@@ -787,14 +795,6 @@
 			this.groupBox2.TabIndex = 185;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "Load/Save";
-			// 
-			// comboBox1
-			// 
-			this.comboBox1.FormattingEnabled = true;
-			this.comboBox1.Location = new System.Drawing.Point(9, 22);
-			this.comboBox1.Name = "comboBox1";
-			this.comboBox1.Size = new System.Drawing.Size(148, 24);
-			this.comboBox1.TabIndex = 0;
 			// 
 			// button2
 			// 
@@ -805,11 +805,21 @@
 			this.button2.TabIndex = 1;
 			this.button2.Text = "Save";
 			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.onSettingsSave);
+			// 
+			// SettingsCombo
+			// 
+			this.SettingsCombo.FormattingEnabled = true;
+			this.SettingsCombo.Location = new System.Drawing.Point(9, 22);
+			this.SettingsCombo.Name = "SettingsCombo";
+			this.SettingsCombo.Size = new System.Drawing.Size(148, 24);
+			this.SettingsCombo.TabIndex = 0;
+			this.SettingsCombo.SelectedIndexChanged += new System.EventHandler(this.onSettingsNameChanged);
 			// 
 			// LoginSettings
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-			this.ClientSize = new System.Drawing.Size(944, 606);
+			this.ClientSize = new System.Drawing.Size(944, 602);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.button1);
 			this.Controls.Add(this.mainOptionsGroup);
@@ -819,17 +829,17 @@
 			this.Controls.Add(this.printerOptionsGroup);
 			this.Controls.Add(this.buildingOptionsGroup);
 			this.Controls.Add(this.adminOptionsGroup);
-			this.Controls.Add(this.groupBox1);
+			this.Controls.Add(this.askForOptioonsGroup);
 			this.Controls.Add(this.LabelPrinterSize);
 			this.Controls.Add(this.SaveLabel);
-			this.Controls.Add(this.label10);
+			this.Controls.Add(this.NameLabel);
 			this.Controls.Add(this.LabelList);
 			this.Controls.Add(this.LoadLabelList);
 			this.Controls.Add(this.LabelFormat);
-			this.Controls.Add(this.label5);
+			this.Controls.Add(this.FormatLabel);
 			this.Controls.Add(this.PrintTest);
 			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "LoginSettings";
@@ -837,8 +847,8 @@
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.onLoginSettingsClosing);
 			this.Load += new System.EventHandler(this.onLoginSettingsLoad);
 			this.Move += new System.EventHandler(this.onLoginSettingsMove);
-			this.groupBox1.ResumeLayout(false);
-			this.groupBox1.PerformLayout();
+			this.askForOptioonsGroup.ResumeLayout(false);
+			this.askForOptioonsGroup.PerformLayout();
 			this.otherOptionsGroup.ResumeLayout(false);
 			this.otherOptionsGroup.PerformLayout();
 			this.adminOptionsGroup.ResumeLayout(false);
@@ -862,21 +872,21 @@
 		#endregion
 
 		public System.Windows.Forms.TextBox PrintKiosks;
-		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label KiosksToPrintForLabel;
 		public System.Windows.Forms.ComboBox PrintMode;
 		public System.Windows.Forms.ComboBox Printer;
 		private System.Windows.Forms.Label label4;
 		public System.Windows.Forms.CheckBox DisableLocationLabels;
 		private System.Windows.Forms.Label label2;
 		public System.Windows.Forms.CheckBox BuildingAccessMode;
-		public System.Windows.Forms.TextBox building;
+		public System.Windows.Forms.TextBox Building;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button PrintTest;
-		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label FormatLabel;
 		private System.Windows.Forms.TextBox LabelFormat;
 		private System.Windows.Forms.Button LoadLabelList;
 		private System.Windows.Forms.ComboBox LabelList;
-		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label NameLabel;
 		private System.Windows.Forms.Button SaveLabel;
 		private System.Windows.Forms.Label LabelPrinterSize;
 		private System.Windows.Forms.Label PageWidthLabel;
@@ -893,19 +903,19 @@
 		public System.Windows.Forms.CheckBox AskChurchName;
 		public System.Windows.Forms.CheckBox AskChurch;
 		public System.Windows.Forms.CheckBox AskGrade;
-		public System.Windows.Forms.CheckBox AskEmFriend;
+		public System.Windows.Forms.CheckBox AskFriend;
 		public System.Windows.Forms.CheckBox SecurityLabelPerChild;
 		public System.Windows.Forms.TextBox KioskName;
 		private System.Windows.Forms.Label label6;
 		public System.Windows.Forms.ComboBox LateMinutes;
 		private System.Windows.Forms.Label label7;
-		public System.Windows.Forms.ComboBox LeadHours;
+		public System.Windows.Forms.ComboBox EarlyHours;
 		private System.Windows.Forms.Label label8;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label13;
-		private System.Windows.Forms.ComboBox cbDayOfWeek;
-		private System.Windows.Forms.ComboBox cbCampusId;
-		private System.Windows.Forms.GroupBox groupBox1;
+		private System.Windows.Forms.ComboBox DayOfWeekCombo;
+		private System.Windows.Forms.ComboBox CampusCombo;
+		private System.Windows.Forms.GroupBox askForOptioonsGroup;
 		private System.Windows.Forms.GroupBox otherOptionsGroup;
 		public System.Windows.Forms.CheckBox FullScreen;
 		public System.Windows.Forms.CheckBox HideCursor;
@@ -920,6 +930,6 @@
 		private System.Windows.Forms.Button button1;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Button button2;
-		private System.Windows.Forms.ComboBox comboBox1;
+		private System.Windows.Forms.ComboBox SettingsCombo;
 	}
 }

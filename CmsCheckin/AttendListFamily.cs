@@ -508,9 +508,9 @@ namespace CmsCheckin
 			var c = list[(int)menu.Tag];
 			SaveClasses();
 			RemoveMenu();
-			this.Swap(Program.home.classes);
+			this.Swap(Program.attendHome.classes);
 			Program.JoiningNotAttending = true;
-			Program.home.classes.ShowResults(c.cinfo.pid);
+			Program.attendHome.classes.ShowResults(c.cinfo.pid);
 		}
 		void DropThis_Click(object sender, EventArgs e)
 		{
@@ -522,9 +522,9 @@ namespace CmsCheckin
 			RemoveMenu();
 
 			if (Program.baseform.textbox.Parent is AttendHome)
-				Program.home.family.ShowFamily(Program.FamilyId);
+				Program.attendHome.family.ShowFamily(Program.FamilyId);
 			else if (Program.baseform.textbox.Parent is BuildingHome)
-				Program.home2.family.ShowFamily(Program.FamilyId);
+				Program.buildingHome.family.ShowFamily(Program.FamilyId);
 		}
 		void JoinThis_Click(object sender, EventArgs e)
 		{
@@ -535,9 +535,9 @@ namespace CmsCheckin
 			Util.JoinUnJoin(c.cinfo, true);
 			RemoveMenu();
 			if (Program.baseform.textbox.Parent is AttendHome)
-				Program.home.family.ShowFamily(Program.FamilyId);
+				Program.attendHome.family.ShowFamily(Program.FamilyId);
 			else if (Program.baseform.textbox.Parent is BuildingHome)
-				Program.home2.family.ShowFamily(Program.FamilyId);
+				Program.buildingHome.family.ShowFamily(Program.FamilyId);
 		}
 
 		void CancelMenu_Click(object sender, EventArgs e)
@@ -549,8 +549,8 @@ namespace CmsCheckin
 			var c = list[(int)menu.Tag];
 			SaveClasses();
 			RemoveMenu();
-			this.Swap(Program.home.classes);
-			Program.home.classes.ShowResults(c.cinfo.pid);
+			this.Swap(Program.attendHome.classes);
+			Program.attendHome.classes.ShowResults(c.cinfo.pid);
 		}
 		private void SaveClasses()
 		{
@@ -585,7 +585,7 @@ namespace CmsCheckin
 		{
 			var c = list[(int)menu.Tag];
 
-			var home = Program.home;
+			var home = Program.attendHome;
 			Program.PeopleId = c.cinfo.pid;
 			home.SetFields(c.last, c.email, c.addr, c.zip, c.home, c.parent, c.emfriend, c.emphone, c.activeother, c.church);
 			home.first.textBox1.Text = c.first;
@@ -719,9 +719,9 @@ namespace CmsCheckin
 			Program.TimerStop();
 			if (list.Count == 0) {
 				if (Program.baseform.textbox.Parent is AttendHome)
-					this.Swap(Program.home.namesearch);
+					this.Swap(Program.attendHome.namesearch);
 				else if (Program.baseform.textbox.Parent is BuildingHome)
-					this.Swap(Program.home2.namesearch);
+					this.Swap(Program.buildingHome.namesearch);
 				return;
 			}
 			foreach (var c in sucontrols) {
@@ -748,8 +748,8 @@ namespace CmsCheckin
 			SaveClasses();
 			Util.UnLockFamily();
 			RemoveMenu();
-			Program.home.SetFields(c.last, c.email, c.addr, c.zip, c.home, c.parent, c.emfriend, c.emphone, c.activeother, c.church);
-			this.Swap(Program.home.first);
+			Program.attendHome.SetFields(c.last, c.email, c.addr, c.zip, c.home, c.parent, c.emfriend, c.emphone, c.activeother, c.church);
+			this.Swap(Program.attendHome.first);
 		}
 
 		private void CheckUnCheckDoWork(object sender, DoWorkEventArgs e)

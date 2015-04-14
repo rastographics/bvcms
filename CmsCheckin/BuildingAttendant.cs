@@ -38,9 +38,7 @@ namespace CmsCheckin
 
 		private void Attendant_LocationChanged(object sender, EventArgs e)
 		{
-			Settings1.Default.AttendantLocX = this.Location.X;
-			Settings1.Default.AttendantLocY = this.Location.Y;
-			Settings1.Default.Save();
+			Program.settings.attendantPositionChanged(this.Location);
 		}
 
 		private void save_Click(object sender, EventArgs e)

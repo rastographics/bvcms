@@ -36,8 +36,8 @@
 			this.username = new System.Windows.Forms.TextBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
+			this.domainLabel = new System.Windows.Forms.Label();
+			this.protocolLabel = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.LoginButton = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.Logo)).BeginInit();
@@ -111,28 +111,28 @@
 			this.label6.Text = "Username:";
 			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// label1
+			// domainLabel
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label1.Location = new System.Drawing.Point(328, 166);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(87, 20);
-			this.label1.TabIndex = 5;
-			this.label1.Text = ".tpsdb.com";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.domainLabel.AutoSize = true;
+			this.domainLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.domainLabel.Location = new System.Drawing.Point(328, 166);
+			this.domainLabel.Name = "domainLabel";
+			this.domainLabel.Size = new System.Drawing.Size(87, 20);
+			this.domainLabel.TabIndex = 5;
+			this.domainLabel.Text = ".tpsdb.com";
+			this.domainLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
-			// label2
+			// protocolLabel
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label2.Location = new System.Drawing.Point(12, 166);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(57, 20);
-			this.label2.TabIndex = 5;
-			this.label2.Text = "https://";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			this.label2.Click += new System.EventHandler(this.onProtocolClick);
+			this.protocolLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.protocolLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.protocolLabel.Location = new System.Drawing.Point(12, 166);
+			this.protocolLabel.Name = "protocolLabel";
+			this.protocolLabel.Size = new System.Drawing.Size(57, 20);
+			this.protocolLabel.TabIndex = 5;
+			this.protocolLabel.Text = "https://";
+			this.protocolLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.protocolLabel.Click += new System.EventHandler(this.onProtocolClick);
 			// 
 			// label3
 			// 
@@ -161,8 +161,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(427, 399);
 			this.Controls.Add(this.LoginButton);
-			this.Controls.Add(this.label2);
-			this.Controls.Add(this.label1);
+			this.Controls.Add(this.protocolLabel);
+			this.Controls.Add(this.domainLabel);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.label8);
 			this.Controls.Add(this.URL);
@@ -192,8 +192,8 @@
 		public System.Windows.Forms.TextBox username;
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.Label label6;
-		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label domainLabel;
+		private System.Windows.Forms.Label protocolLabel;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button LoginButton;
 	}

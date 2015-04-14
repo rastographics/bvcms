@@ -12,7 +12,7 @@ namespace CmsCheckin
         }
         public void ShowScreen()
         {
-			var home = Program.home2;
+			var home = Program.buildingHome;
             first.Text = home.first.textBox1.Text;
             goesby.Text = home.goesby.textBox1.Text;
             last.Text = home.last.textBox1.Text;
@@ -51,7 +51,7 @@ namespace CmsCheckin
             var gender = Gender;
             var marital = Marital;
             if (cellphone.Text.HasValue() && !homephone.Text.HasValue())
-                Program.home2.homephone.textBox1.Text = cellphone.Text;
+                Program.buildingHome.homephone.textBox1.Text = cellphone.Text;
             if (Program.editing)
                 this.EditPerson(Program.PeopleId, first.Text, last.Text, goesby.Text, dob.Text, email.Text, addr.Text, zip.Text, cellphone.Text, homephone.Text, marital, gender);
             else
@@ -71,8 +71,8 @@ namespace CmsCheckin
                 else
                     ph = "";
 			Program.ClearFields();
-			this.Swap(Program.home2.family);
-			Program.home2.family.ShowFamily(Program.FamilyId);
+			this.Swap(Program.buildingHome.family);
+			Program.buildingHome.family.ShowFamily(Program.FamilyId);
         }
 
         public int Gender
@@ -145,7 +145,7 @@ namespace CmsCheckin
         }
         private void GoBack_Click(object sender, EventArgs e)
         {
-            this.Swap(Program.home2.homephone);
+            this.Swap(Program.buildingHome.homephone);
         }
 
         private bool ValidateFields()

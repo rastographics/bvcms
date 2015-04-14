@@ -41,9 +41,7 @@ namespace CmsCheckin
 
 		private void BaseForm_LocationChanged(object sender, EventArgs e)
 		{
-			Settings1.Default.BaseFormLocX = this.Location.X;
-			Settings1.Default.BaseFormLocY = this.Location.Y;
-			Settings1.Default.Save();
+			Program.settings.basePositionChanged(this.Location);
 		}
     }
 }
