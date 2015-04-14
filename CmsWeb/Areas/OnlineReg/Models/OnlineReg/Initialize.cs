@@ -36,7 +36,7 @@ namespace CmsWeb.Models
             }
         }
 
-        public int CheckRegisterTag(string regtag)
+        public int CheckRegisterLink(string regtag)
         {
             var pid = 0;
             if (regtag.HasValue())

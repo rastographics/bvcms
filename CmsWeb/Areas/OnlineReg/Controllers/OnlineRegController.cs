@@ -32,12 +32,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.PrepareMissionTrip(gsid, goerid);
             SetHeaders(m);
 
-            var pid = m.CheckRegisterTag(registertag);
+            var pid = m.CheckRegisterLink(registertag);
 
             return pid > 0
                 ? RouteRegistration(m, pid, showfamily)
                 : View(m);
-                }
+        }
 
         // authenticate user
         [HttpPost]
@@ -94,7 +94,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             // Click a person from the family list * Take them to the Questions page
             m.StartRegistrationForFamilyMember(id, ModelState);
-                return FlowList(m, "Register");
+            return FlowList(m, "Register");
         }
 
         [HttpPost]
@@ -112,8 +112,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var p = m.List[id];
             p.ValidateModelForFind(ModelState, id);
             p.PrepareToAddNewPerson(ModelState, id);
-                return FlowList(m, "ShowMoreInfo");
-            }
+            return FlowList(m, "ShowMoreInfo");
+        }
 
         [HttpPost]
         public ActionResult PersonFind(int id, OnlineRegModel m)
@@ -126,13 +126,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (p.IsValidForNew)
                 return ErrorResult(m, new Exception("Unexpected onlinereg state: IsValidForNew is true and in PersonFind"), "PersonFind, unexpected state");
             p.ValidateModelForFind(ModelState, id);
-            if(p.AnonymousReRegistrant()) 
+            if (p.AnonymousReRegistrant())
                 return View("ConfirmReregister", m); // send email with link to reg-register
             p.FillPriorInfo();
-            if(p.IsSpecialReg())
+            if (p.IsSpecialReg())
                 p.OtherOK = true;
             else if (p.RegistrationFull())
-                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
+                ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             p.SetClassId();
             p.CheckSetFee();
             return FlowList(m, "PersonFind");
@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             try
             {
-            m.UpdateDatum();
+                m.UpdateDatum();
             }
             catch (Exception)
             {
@@ -163,12 +163,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var p = m.List[id];
             p.ValidateModelForNew(ModelState, id);
 
-                    SetHeaders(m);
+            SetHeaders(m);
             var ret = p.AddNew(ModelState, id);
-            return ret.HasValue() 
-                ? View(ret, m) 
+            return ret.HasValue()
+                ? View(ret, m)
                 : FlowList(m, "SubmitNew");
-                }
+        }
 
         [HttpPost]
         public ActionResult SubmitOtherInfo(int id, OnlineRegModel m)
@@ -291,7 +291,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             catch (Exception ex)
             {
                 return ErrorResult(m, ex, "In " + function + "<br>" + ex.Message);
-        }
+            }
         }
 
     }
