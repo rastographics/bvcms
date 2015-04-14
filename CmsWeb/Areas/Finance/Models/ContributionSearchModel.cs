@@ -310,8 +310,11 @@ namespace CmsWeb.Models
             var sb = new StringBuilder();
             foreach (var c in q)
             {
-                sb.AppendFormat("UPDATE dbo.Contribution SET FundId = {0} WHERE ContributionId = {1} AND FundId = {2}\n",
-                    newfundid, c.ContributionId, c.FundId);
+                sb.AppendFormat(@"
+-- for pid = {3}, moving {4:c} from '{5}' to '{6}'
+UPDATE dbo.Contribution SET FundId = {0} WHERE ContributionId = {1} AND FundId = {2}
+",              newfundid, c.ContributionId, c.FundId, 
+                c.PeopleId, c.ContributionAmount, oldfund.FundDescription, newfund.FundDescription);
             }
             var sql = sb.ToString();
             DbUtil.Db.ContentText("MovedFunds-{0}".Fmt(DateTime.Now), sql);
