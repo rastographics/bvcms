@@ -2644,7 +2644,6 @@
     <Content Include="Areas\Manage\Views\SMS\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\GroupDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\NumberDialog.cshtml" />
-    <Content Include="Areas\Setup\Views\Twilio\RemoveDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\EmailInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\EmailInfo.cshtml" />

@@ -1,42 +1,47 @@
 ﻿@using CmsData
 @{
-    int groupID = ViewBag.ID;
-    SMSGroup group = null;
-    
-    if( groupID > 0 )
+    int groupId = ViewBag.ID;
+    string action;
+    var groupName = "";
+    var groupDescription = "";
+    string title = "";
+
+    if (groupId > 0)
     {
-        group = (from e in DbUtil.Db.SMSGroups
-                 where e.Id == groupID
-                 select e).Single();
+        var group = (from e in DbUtil.Db.SMSGroups
+                     where e.Id == groupId
+                     select e).Single();
+        action = "GroupUpdate";
+        groupName = group.Name;
+        groupDescription = group.Description;
+        title = "Edit Group";
+    }
+    else
+    {
+        action = "GroupCreate";
+        title = "Create New Group";
     }
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>NumberDialog</title>
-</head>
-<body>
-    <center>
-	    <form action="@( groupID > 0 ? "/Twilio/GroupUpdate" : "/Twilio/GroupCreate" )" method="post">
-            <input type="hidden" name="id" value="@groupID" />
-	        <table cellspacing="10">
-	        <tr>
-		        <td align="right">Name:</td>
-		        <td align="left"><input name="name" size="25" value="@( groupID > 0 ? group.Name : "" )" /></td>
-	        </tr>
-                <tr>
-		        <td align="right">Description:</td>
-		        <td align="left"><input name="description" size="25" value="@( groupID > 0 ? group.Description : "" )" /></td>
-	        </tr>
-	        <tr>
-		        <td align="center" colspan="2">
-                    <br />
-			        <input type="submit" class="bt" value="Submit" /> &nbsp;&nbsp; <input type="button" class="bt" cancelbutton="dialog" value="Cancel" />
-		        </td>
-	        </tr>
-	        </table>
-	    </form>
-	</center>
-</body>
-</html>
+
+@using (Html.BeginForm(action, "Twilio"))
+{
+    @Html.Hidden("id", groupId)
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">@title</h4>
+    </div>
+    <div class="modal-body">
+            <div class="form-group">
+                @Html.Label("name", "Name", new { @class="control-label" })
+                @Html.TextBox("name", groupName, new { @class="form-control" })
+            </div>
+            <div class="form-group">
+                @Html.Label("description", "Description", new { @class="control-label" })
+                @Html.TextBox("description", groupDescription, new { @class="form-control" })
+            </div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+        <input type="submit" value="Submit" class="btn btn-primary" />
+    </div>
+}
