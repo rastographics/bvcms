@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using StackExchange.Profiling
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")">
@@ -91,5 +92,6 @@
         @Html.Partial("DatePickerDefaults")
         @RenderSection("scripts", false)
         @Html.Partial("SearchBox")
+        @MiniProfiler.RenderIncludes()
     </body>
 </html>
