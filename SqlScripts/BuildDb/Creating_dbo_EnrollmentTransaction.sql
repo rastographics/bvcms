@@ -24,7 +24,7 @@ CREATE TABLE [dbo].[EnrollmentTransaction]
 [RegisterEmail] [nvarchar] (80) NULL,
 [TranId] [int] NULL,
 [Score] [int] NOT NULL CONSTRAINT [DF_EnrollmentTransaction_Score] DEFAULT ((0)),
-[SmallGroups] [nvarchar] (500) NULL,
+[SmallGroups] [nvarchar] (2000) NULL,
 [SkipInsertTriggerProcessing] [bit] NULL
 )
 GO

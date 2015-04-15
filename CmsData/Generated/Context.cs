@@ -122,6 +122,10 @@ namespace CmsData
         partial void UpdateCheckInActivity(CheckInActivity instance);
         partial void DeleteCheckInActivity(CheckInActivity instance);
         
+        partial void InsertCheckInSetting(CheckInSetting instance);
+        partial void UpdateCheckInSetting(CheckInSetting instance);
+        partial void DeleteCheckInSetting(CheckInSetting instance);
+        
         partial void InsertCheckInTime(CheckInTime instance);
         partial void UpdateCheckInTime(CheckInTime instance);
         partial void DeleteCheckInTime(CheckInTime instance);
@@ -873,6 +877,12 @@ namespace CmsData
 		public Table< CheckInActivity> CheckInActivities
 		{
 			get	{ return this.GetTable< CheckInActivity>(); }
+
+		}
+
+		public Table< CheckInSetting> CheckInSettings
+		{
+			get	{ return this.GetTable< CheckInSetting>(); }
 
 		}
 

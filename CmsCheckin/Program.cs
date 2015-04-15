@@ -5,325 +5,274 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Windows.Forms;
 using CmsCheckin.Dialogs;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace CmsCheckin
 {
-    static class Program
-    {
-        public static bool UseNewLabels = true;
+	static class Program
+	{
+		// Settings
+		public static List<CheckInSettingsEntry> settingsList = new List<CheckInSettingsEntry>();
+		public static List<CheckInCampus> campusList = new List<CheckInCampus>();
 
-        [STAThread]
-        static void Main(string[] args)
-        {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+		public static Settings settings = new Settings();
 
-            AdminPINLastAccess = DateTime.Now.AddYears(-1);
+		// Usage Varirables
+		public static DateTime AdminPINLastAccess { get; set; }
+		public static BaseBuildingInfo BuildingInfo { get; set; }
+		public static int FamilyId { get; set; }
+		public static int PeopleId { get; set; }
+		public static string SecurityCode { get; set; }
+		public static int? Grade { get; set; }
+		public static bool editing { get; set; }
+		public static BuildingAddGuests addguests;
 
-            var login = new Login();
+		private static bool cursorShowing = true;
 
-            if (!Util.IsDebug())
-                login.FullScreen.Checked = true;
+		public static BuildingAttendant attendant;
+		public static BaseForm baseform;
+		public static AttendHome attendHome;
+		public static BuildingHome buildingHome;
+		public static int MaxLabels { get; set; }
+		public static bool JoiningNotAttending { get; set; }
 
-            login.password.Focus();
-            var r = login.ShowDialog();
-            if (r == DialogResult.Cancel)
-                return;
-            PrintMode = login.PrintMode.Text;
-            PrintKiosks = login.PrintKiosks.Text;
-            Printer = login.Printer.Text;
-            DisableLocationLabels = login.DisableLocationLabels.Checked;
-            BuildingMode = login.BuildingAccessMode.Checked;
-            FullScreen = login.FullScreen.Checked;
+		public static Timer timer;
 
-            BaseForm b;
-            if (BuildingMode)
-            {
-                attendant = new Attendant();
-                attendant.Location = new Point(Settings1.Default.AttendantLocX, Settings1.Default.AttendantLocY);
-                home2 = new Home2();
-                b = new BaseForm(home2);
-                b.StartPosition = FormStartPosition.Manual;
-                b.Location = new Point(Settings1.Default.BaseFormLocX, Settings1.Default.BaseFormLocY);
-                baseform = b;
-                if (FullScreen)
-                {
-                    b.WindowState = FormWindowState.Maximized;
-                    b.FormBorderStyle = FormBorderStyle.None;
-                }
-                else
-                {
-                    b.FormBorderStyle = FormBorderStyle.FixedSingle;
-                    b.ControlBox = false;
-                }
-                attendant.StartPosition = FormStartPosition.Manual;
-                Application.Run(attendant);
-                return;
-            }
+		[STAThread]
+		static void Main(string[] args)
+		{
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
 
-            var f = new StartUp { campuses = login.campuses };
-            var ret = f.ShowDialog();
-            if (ret == DialogResult.Cancel)
-                return;
+			settings.load();
 
-            AdminPassword = f.AdminPassword;
-            CampusId = f.CampusId;
-            ThisDay = f.DayOfWeek;
-            HideCursor = f.HideCursor.Checked;
-            AskGrade = f.AskGrade.Checked;
-            AskLabels = false;
-            EarlyCheckinHours = int.Parse(f.LeadHours.Text);
-            LateCheckinMinutes = int.Parse(f.LateMinutes.Text);
-            AskEmFriend = f.AskEmFriend.Checked;
-            KioskName = f.KioskName.Text;
-            AskChurch = f.AskChurch.Checked;
-            AskChurchName = f.AskChurchName.Checked;
-            EnableTimer = f.EnableTimer.Checked;
-            DisableJoin = f.DisableJoin.Checked;
-            SecurityLabelPerChild = f.SecurityLabelPerChild.Checked;
+			AdminPINLastAccess = DateTime.Now.AddYears(-1);
 
-            f.Dispose();
+			var login = new Login();
+			var loginResults = login.ShowDialog();
 
-            if (PrintMode == "Print From Server")
-            {
-                var p = new PrintingServer();
-                Application.Run(p);
-                return;
-            }
+			if (loginResults == DialogResult.Cancel)
+				return;
 
-            home = new Home();
-            b = new BaseForm(home);
-            baseform = b;
-            b.StartPosition = FormStartPosition.Manual;
-            b.Location = new Point(Settings1.Default.BaseFormLocX, Settings1.Default.BaseFormLocY);
+			var loginSettings = new LoginSettings();
+			var loginSettingsResults = loginSettings.ShowDialog();
 
-            if (FullScreen)
-            {
-                b.WindowState = FormWindowState.Maximized;
-                b.FormBorderStyle = FormBorderStyle.None;
-            }
-            Application.Run(b);
-        }
+			if (loginSettingsResults == DialogResult.Cancel)
+				return;
 
-        public static bool TooEarlyOrLate(double earlyhours)
-        {
-            // Convert from earlyhours to lateminutes
-            var lateminutes = -earlyhours * 60;
-            return earlyhours > EarlyCheckinHours || lateminutes > LateCheckinMinutes;
-        }
+			if (settings.buildingMode) {
+				attendant = new BuildingAttendant();
+				attendant.Location = settings.attendantLastPosition();
 
-        public static bool CheckAdminPIN()
-        {
-            TimeSpan ts = new TimeSpan(DateTime.Now.Ticks - AdminPINLastAccess.Ticks);
+				buildingHome = new BuildingHome();
 
-            if (ts.TotalSeconds < AdminPINTimeout)
-            {
-                SetAdminLastAccess();
-                return true;
-            }
+				baseform = new BaseForm(buildingHome);
+				baseform.StartPosition = FormStartPosition.Manual;
+				baseform.Location = settings.baseLastPosition();
 
-            if (Program.AdminPIN.Length > 0)
-            {
-                PINDialog pd = new PINDialog();
-                var results = pd.ShowDialog();
+				if (settings.fullScreen) {
+					baseform.WindowState = FormWindowState.Maximized;
+					baseform.FormBorderStyle = FormBorderStyle.None;
+				} else {
+					baseform.FormBorderStyle = FormBorderStyle.FixedSingle;
+					baseform.ControlBox = false;
+				}
 
-                if (results == DialogResult.OK)
-                {
-                    if (pd.sPIN == Program.AdminPIN)
-                    {
-                        SetAdminLastAccess();
-                        return true;
-                    }
-                    else
-                        return false;
-                }
-                else
-                    return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+				attendant.StartPosition = FormStartPosition.Manual;
+				Application.Run(attendant);
+				return;
+			}
 
-        public static void SetAdminLastAccess()
-        {
-            AdminPINLastAccess = DateTime.Now;
-        }
+			if (settings.printMode == "Print From Server") {
+				var p = new AttendPrintingServer();
+				Application.Run(p);
+				return;
+			}
 
-        public static string AdminPIN { get; set; }
-        public static int AdminPINTimeout { get; set; }
-        public static DateTime AdminPINLastAccess { get; set; }
+			attendHome = new AttendHome();
 
-        public static string Username { get; set; }
-        public static string Password { get; set; }
-        public static string URL { get; set; }
-        public static string Printer { get; set; }
-        public static string PrinterWidth { get; set; }
-        public static string PrinterHeight { get; set; }
-        public static string PrintKiosks { get; set; }
-        public static string AdminPassword { get; set; }
-        public static int FamilyId { get; set; }
-        public static int PeopleId { get; set; }
-        public static int CampusId { get; set; }
-        public static string SecurityCode { get; set; }
-        public static int ThisDay { get; set; }
-        public static int EarlyCheckinHours { get; set; }
-        public static int LateCheckinMinutes { get; set; }
-        public static int? Grade { get; set; }
-        public static bool HideCursor { get; set; }
-        public static bool editing { get; set; }
-        public static bool EnableTimer { get; set; }
-        public static bool DisableJoin { get; set; }
-        public static bool FullScreen { get; set; }
-        public static string KioskName { get; set; }
-        public static bool AskEmFriend { get; set; }
-        public static bool AskGrade { get; set; }
-        public static bool AskChurch { get; set; }
-        public static bool AskChurchName { get; set; }
-        public static bool AskLabels { get; set; }
-        public static bool DisableLocationLabels { get; set; }
-        public static bool SecurityLabelPerChild { get; set; }
-        public static string PrintMode { get; set; }
-        public static bool BuildingMode { get; set; }
-        public static string Building { get; set; }
-        public static BaseBuildingInfo BuildingInfo { get; set; }
-        public static AddGuests addguests;
+			baseform = new BaseForm(attendHome);
+			baseform.StartPosition = FormStartPosition.Manual;
+			baseform.Location = settings.baseLastPosition();
 
-        public static PersonInfo GuestOf()
-        {
-            if (addguests != null)
-            {
-                var rb = addguests.groupBox1.Controls.OfType<RadioButton>()
-                    .FirstOrDefault(r => r.Checked);
-                if (rb != null)
-                    return rb.Tag as PersonInfo;
-            }
-            return null;
-        }
+			if (settings.fullScreen) {
+				baseform.WindowState = FormWindowState.Maximized;
+				baseform.FormBorderStyle = FormBorderStyle.None;
+			}
 
-        public static string QueryString
-        {
-            get { return string.Format("?campus={0}&thisday={1}&kioskmode={2}&kiosk={3}", CampusId, ThisDay, false, KioskName); }
-        }
-        public static CheckState ActiveOther(string s)
-        {
-            return s == bool.TrueString || s == "Checked" ? CheckState.Checked :
-            s == bool.FalseString || s == "Unchecked" ? CheckState.Unchecked : CheckState.Indeterminate;
-        }
-        public static Attendant attendant;
-        public static BaseForm baseform;
-        public static Home home;
-        public static Home2 home2;
-        public static int MaxLabels { get; set; }
-        public static bool JoiningNotAttending { get; set; }
+			Application.Run(baseform);
+		}
 
-        public static Timer timer1;
-        public static Timer timer2;
+		public static void updateSettingsList(string name, string settings)
+		{
+			foreach (CheckInSettingsEntry entry in settingsList) {
+				if (entry.name == name) {
+					entry.settings = settings;
+					return;
+				}
+			}
 
-        public static void Timer2Reset()
-        {
-            if (!EnableTimer)
-                return;
-            if (timer2 == null)
-                return;
-            timer2.Stop();
-            timer2.Start();
-        }
-        public static void Timer2Start(EventHandler t)
-        {
-            if (!EnableTimer)
-                return;
-            if (timer2 != null)
-                Timer2Stop();
-            timer2 = new Timer();
-            timer2.Interval = 60000;
-            timer2.Tick += t;
-            timer2.Start();
-        }
-        public static void Timer2Stop()
-        {
-            if (timer2 == null)
-                return;
-            timer2.Stop();
-            timer2.Dispose();
-            timer2 = null;
-        }
-        public static void TimerReset()
-        {
-            if (!EnableTimer)
-                return;
-            if (timer1 == null)
-                return;
-            timer1.Stop();
-            timer1.Start();
-        }
-        public static void TimerStart(EventHandler t)
-        {
-            if (!EnableTimer)
-                return;
-            if (timer1 != null)
-                TimerStop();
-            timer1 = new Timer();
-            timer1.Interval = 60000;
-            timer1.Tick += t;
-            timer1.Start();
-        }
-        public static void TimerStop()
-        {
-            if (!EnableTimer)
-                return;
-            if (timer1 == null)
-                return;
-            timer1.Stop();
-            timer1.Dispose();
-            timer1 = null;
-        }
-        private static bool showing = true;
-        public static void CursorShow()
-        {
-            if (showing)
-                return;
-            Cursor.Show();
-            showing = true;
-        }
-        public static void CursorHide()
-        {
-            if (!Program.HideCursor)
-                return;
-            if (!showing)
-                return;
-            Cursor.Hide();
-            showing = false;
-        }
-        public static void ClearFields()
-        {
-            if (baseform.textbox.Parent is Home)
-                home.ClearFields();
-            else if (baseform.textbox.Parent is Home2)
-                home2.ClearFields();
-        }
-        private delegate void SetPropertyThreadSafeDelegate<TResult>(Control @this, Expression<Func<TResult>> property, TResult value);
+			settingsList.Add(new CheckInSettingsEntry(name, settings));
+		}
 
-        public static void SetPropertyThreadSafe<TResult>(this Control @this, Expression<Func<TResult>> property, TResult value)
-        {
-            var propertyInfo = (property.Body as MemberExpression).Member as PropertyInfo;
+		public static CheckInSettingsEntry getSettingsFromList(string name)
+		{
+			foreach (CheckInSettingsEntry entry in settingsList) {
+				if (entry.name == name) {
+					return entry;
+				}
+			}
 
-            if (propertyInfo == null ||
-                //!@this.GetType().IsSubclassOf(propertyInfo.ReflectedType) ||
-                @this.GetType().GetProperty(propertyInfo.Name, propertyInfo.PropertyType) == null)
-            {
-                throw new ArgumentException("The lambda expression 'property' must reference a valid property on this Control.");
-            }
+			return null;
+		}
 
-            if (@this.InvokeRequired)
-            {
-                @this.Invoke(new SetPropertyThreadSafeDelegate<TResult>(SetPropertyThreadSafe), new object[] { @this, property, value });
-            }
-            else
-            {
-                @this.GetType().InvokeMember(propertyInfo.Name, BindingFlags.SetProperty, null, @this, new object[] { value });
-            }
-        }
-    }
+		public static bool TooEarlyOrLate(double earlyhours)
+		{
+			// Convert from earlyhours to lateminutes
+			var lateminutes = -earlyhours * 60;
+			return earlyhours > settings.earlyHours || lateminutes > settings.lateMinutes;
+		}
+
+		public static bool CheckAdminPIN()
+		{
+			TimeSpan ts = new TimeSpan(DateTime.Now.Ticks - AdminPINLastAccess.Ticks);
+
+			if (ts.TotalSeconds < settings.adminPINTimeoutNumber) {
+				SetAdminLastAccess();
+				return true;
+			}
+
+			if (Program.settings.adminPIN.Length > 0) {
+				PINDialog pd = new PINDialog();
+				var results = pd.ShowDialog();
+
+				if (results == DialogResult.OK) {
+					if (pd.sPIN == Program.settings.adminPIN) {
+						SetAdminLastAccess();
+						return true;
+					} else
+						return false;
+				} else
+					return false;
+			} else {
+				return true;
+			}
+		}
+
+		public static void SetAdminLastAccess()
+		{
+			AdminPINLastAccess = DateTime.Now;
+		}
+
+		public static PersonInfo GuestOf()
+		{
+			if (addguests != null) {
+				var rb = addguests.groupBox1.Controls.OfType<RadioButton>().FirstOrDefault(r => r.Checked);
+
+				if (rb != null)
+					return rb.Tag as PersonInfo;
+			}
+
+			return null;
+		}
+
+		public static string QueryString
+		{
+			get { return string.Format("?campus={0}&thisday={1}&kioskmode={2}&kiosk={3}", settings.campusID, settings.dayOfWeek, false, settings.kioskName); }
+		}
+
+		public static CheckState ActiveOther(string s)
+		{
+			return s == bool.TrueString || s == "Checked" ? CheckState.Checked :
+			s == bool.FalseString || s == "Unchecked" ? CheckState.Unchecked : CheckState.Indeterminate;
+		}
+
+		public static void TimerReset()
+		{
+			if (!settings.enableTimer)
+				return;
+
+			if (timer == null)
+				return;
+
+			timer.Stop();
+			timer.Start();
+		}
+
+		public static void TimerStart(EventHandler t)
+		{
+			if (!settings.enableTimer)
+				return;
+
+			if (timer != null)
+				TimerStop();
+
+			timer = new Timer();
+			timer.Interval = 60000;
+			timer.Tick += t;
+			timer.Start();
+		}
+
+		public static void TimerStop()
+		{
+			if (!settings.enableTimer)
+				return;
+
+			if (timer == null)
+				return;
+
+			timer.Stop();
+			timer.Dispose();
+			timer = null;
+		}
+
+		public static void CursorShow()
+		{
+			if (cursorShowing)
+				return;
+
+			Cursor.Show();
+			cursorShowing = true;
+		}
+
+		public static void CursorHide()
+		{
+			if (!Program.settings.hideCursor)
+				return;
+
+			if (!cursorShowing)
+				return;
+
+			Cursor.Hide();
+			cursorShowing = false;
+		}
+
+		public static void ClearFields()
+		{
+			if (baseform.textbox.Parent is AttendHome)
+				attendHome.ClearFields();
+			else if (baseform.textbox.Parent is BuildingHome)
+				buildingHome.ClearFields();
+		}
+
+		private delegate void SetPropertyThreadSafeDelegate<TResult>(Control @this, Expression<Func<TResult>> property, TResult value);
+
+		public static void SetPropertyThreadSafe<TResult>(this Control @this, Expression<Func<TResult>> property, TResult value)
+		{
+			var propertyInfo = (property.Body as MemberExpression).Member as PropertyInfo;
+
+			if (propertyInfo == null ||
+				//!@this.GetType().IsSubclassOf(propertyInfo.ReflectedType) ||
+				 @this.GetType().GetProperty(propertyInfo.Name, propertyInfo.PropertyType) == null) {
+				throw new ArgumentException("The lambda expression 'property' must reference a valid property on this Control.");
+			}
+
+			if (@this.InvokeRequired) {
+				@this.Invoke(new SetPropertyThreadSafeDelegate<TResult>(SetPropertyThreadSafe), new object[] { @this, property, value });
+			} else {
+				@this.GetType().InvokeMember(propertyInfo.Name, BindingFlags.SetProperty, null, @this, new object[] { value });
+			}
+		}
+	}
 }

@@ -2,17 +2,17 @@
 @using CmsData
 @using UtilityExtensions
 @{
-    var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
-    var name = goer != null ? goer.Name : "selected participant";
+  var goer = DbUtil.Db.LoadPersonById(Model.Parent.GoerId ?? 0);
+  var name = goer != null ? goer.Name : "selected participant";
 }
 @if (goer == null)
 {
-    <div class="form-group">
-        @Html.Label("Choose Participant", new { @class = "control-label col-sm-3 labelsize" })
-        <div class="col-sm-9">
-            @Html.DropDownListFor(m => m.MissionTripGoerId, Model.MissionTripGoers())
-        </div>
+  <div class="form-group">
+    @Html.Label("Choose Participant", new { @class = "control-label col-sm-3 labelsize" })
+    <div class="col-sm-9">
+      @Html.DropDownListFor(m => m.MissionTripGoerId, Model.MissionTripGoers())
     </div>
+  </div>
 }
 @Html.EditorFor(m => m.MissionTripSupportGoer, new { label = "Your gift to support " + name })
 @Html.EditorFor(m => m.MissionTripNoNoticeToGoer,
@@ -20,27 +20,27 @@
 @Html.EditorFor(m => m.MissionTripSupportGeneral,
     new
     {
-        label = "Make a gift toward this mission trip's Team Fund",
-        help = "note: these will show as two separate contributions"
+      label = "Make a gift toward this mission trip's Team Fund",
+      help = "note: these will show as two separate contributions"
     })
 <div class="form-group">
-    <div class="col-sm-offset-3 col-sm-9">
-        @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
-        {
-            if (Model.InMobileAppMode && !Util.UserPeopleId.HasValue && !Model.LoggedIn)
-          {
-            @Html.Hidden("CreatingAccount", true)
-          }
-          else
-          {
-            <div class="checkbox">
-              <label>
-                @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
-              </label>
-            </div>
-          }
-        }
-        @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitOtherInfo/" + @Model.Index, "Submit", style: "btn-primary pull-right")
-        @Html.DivValidationMessage("Form")
-    </div>
+  <div class="col-sm-offset-3 col-sm-9">
+    @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount() && !Model.IsSpecialScript())
+    {
+      if (Model.InMobileAppMode && !Util.UserPeopleId.HasValue && !Model.LoggedIn)
+      {
+        @Html.Hidden("CreatingAccount", true)
+      }
+      else
+      {
+        <div class="checkbox">
+          <label>
+            @Html.CheckBoxFor(m => m.CreatingAccount) Create Account (optional)
+          </label>
+        </div>
+      }
+    }
+    @Helper.OnlineRegAjaxButton("/OnlineReg/SubmitOtherInfo/" + @Model.Index, "Submit", style: "btn-primary pull-right")
+    @Html.DivValidationMessage("Form")
+  </div>
 </div>

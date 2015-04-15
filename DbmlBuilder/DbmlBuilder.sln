@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbmlBuilder", "DbmlBuilder\DbmlBuilder.csproj", "{E2175298-0B05-4A7B-AAD4-B8520F6B125D}"
 EndProject
 Global

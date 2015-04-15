@@ -202,7 +202,9 @@ namespace CmsWeb.Models
             {
                 var p = List[0];
                 ti.Fund = p.setting.DonationFund();
-                var goerid = p.Parent.GoerId ?? p.MissionTripGoerId;
+                var goerid = p.Parent.GoerId > 0
+                    ? p.Parent.GoerId 
+                    : p.MissionTripGoerId;
                 if (p.MissionTripSupportGoer > 0)
                 {
                     var gsa = new GoerSenderAmount
@@ -326,10 +328,8 @@ namespace CmsWeb.Models
 
             Db.SubmitChanges();
             // notify the staff
-            var n = 0;
             foreach (var p in List)
             {
-                var tt = pids2.Single(vv => vv.PeopleId == p.PeopleId);
                 Db.Email(Util.PickFirst(p.person.FromEmail, NotifyIds[0].FromEmail), NotifyIds, Header,
                     @"{7}{0} has registered for {1}<br/>
 Total Fee for this registrant: {2:C}<br/>
