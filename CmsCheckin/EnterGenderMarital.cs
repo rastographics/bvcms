@@ -13,7 +13,7 @@ namespace CmsCheckin
 
 		public void ShowScreen()
 		{
-			var home = Program.home;
+			var home = Program.attendHome;
 			first.Text = home.first.textBox1.Text;
 			goesby.Text = home.goesby.textBox1.Text;
 			last.Text = home.last.textBox1.Text;
@@ -25,29 +25,29 @@ namespace CmsCheckin
 			zip.Text = home.zip.textBox1.Text;
 			allergies.Text = home.allergy.textBox1.Text;
 
-			if (Program.AskGrade)
+			if (Program.settings.askGrade)
 				grade.Text = home.grade.textBox1.Text;
 
-			if (Program.AskEmFriend)
+			if (Program.settings.askFriend)
 			{
 				ParentName.Text = home.parent.textBox1.Text;
 				EmFriend.Text = home.emfriend.textBox1.Text;
 				EmPhone.Text = home.emphone.textBox1.Text;
 			}
 
-			if (Program.AskChurchName)
+			if (Program.settings.askChurchName)
 				churchname.Text = home.church.textBox1.Text;
 
-			ActiveOther.Visible = Program.AskChurch;
-			churchname.Visible = Program.AskChurchName;
-			churchnameLab.Visible = Program.AskChurchName;
-			emfriendlab.Visible = Program.AskEmFriend;
-			emphonelab.Visible = Program.AskEmFriend;
-			emergencylab.Visible = Program.AskEmFriend;
-			EmPhone.Visible = Program.AskEmFriend;
-			EmFriend.Visible = Program.AskEmFriend;
-			grade.Visible = Program.AskGrade;
-			gradelab.Visible = Program.AskGrade;
+			ActiveOther.Visible = Program.settings.askChurch;
+			churchname.Visible = Program.settings.askChurchName;
+			churchnameLab.Visible = Program.settings.askChurchName;
+			emfriendlab.Visible = Program.settings.askFriend;
+			emphonelab.Visible = Program.settings.askFriend;
+			emergencylab.Visible = Program.settings.askFriend;
+			EmPhone.Visible = Program.settings.askFriend;
+			EmFriend.Visible = Program.settings.askFriend;
+			grade.Visible = Program.settings.askGrade;
+			gradelab.Visible = Program.settings.askGrade;
 
 			if (Marital == 0 && dob.Text.Age().ToInt() <= 16)
 				single.Checked = true;
@@ -80,7 +80,7 @@ namespace CmsCheckin
 			var gender = Gender;
 			var marital = Marital;
 			if (cellphone.Text.HasValue() && !homephone.Text.HasValue())
-				Program.home.homephone.textBox1.Text = cellphone.Text;
+				Program.attendHome.homephone.textBox1.Text = cellphone.Text;
 
 			if (Program.editing)
 				this.EditPerson(Program.PeopleId, first.Text, last.Text, goesby.Text, dob.Text, email.Text, addr.Text, zip.Text, cellphone.Text, homephone.Text, allergies.Text, grade.Text, ParentName.Text, EmFriend.Text, EmPhone.Text, churchname.Text, ActiveOther.CheckState, marital, gender);
@@ -106,13 +106,13 @@ namespace CmsCheckin
 			Program.ClearFields();
 			if (Program.editing)
 			{
-				this.Swap(Program.home.family);
-				Program.home.family.ShowFamily(Program.FamilyId);
+				this.Swap(Program.attendHome.family);
+				Program.attendHome.family.ShowFamily(Program.FamilyId);
 			}
 			else
 			{
-				this.Swap(Program.home.classes);
-				Program.home.classes.ShowResults(Program.PeopleId);
+				this.Swap(Program.attendHome.classes);
+				Program.attendHome.classes.ShowResults(Program.PeopleId);
 			}
 		}
 
@@ -188,7 +188,7 @@ namespace CmsCheckin
 
 		private void GoBack_Click(object sender, EventArgs e)
 		{
-			this.Swap(Program.home.allergy);
+			this.Swap(Program.attendHome.allergy);
 		}
 
 		private bool ValidateFields()
@@ -202,7 +202,7 @@ namespace CmsCheckin
 				sb.AppendLine("first name needed");
 			if (!last.Text.HasValue())
 				sb.AppendLine("last name needed");
-			if (Program.AskChurch && ActiveOther.CheckState == CheckState.Indeterminate)
+			if (Program.settings.askChurch && ActiveOther.CheckState == CheckState.Indeterminate)
 				sb.AppendLine("Active Other Church needed");
 			if (sb.Length > 0)
 			{
@@ -220,7 +220,7 @@ namespace CmsCheckin
 
 		private void button2_Click(object sender, EventArgs e)
 		{
-			var f = new TakePicture();
+			var f = new CommonTakePicture();
 			f.ShowDialog();
 		}
 	}

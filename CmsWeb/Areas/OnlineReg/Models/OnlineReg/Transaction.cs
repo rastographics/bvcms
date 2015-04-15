@@ -29,24 +29,25 @@ namespace CmsWeb.Models
             else if ((amt - totalother) > max)
                 amt = max + totalother;
 
-            if (org != null)
-            {
-                var famdeposit = org.GetExtraValue("FamilyDeposit");
-                if (famdeposit != null && famdeposit.IntValue.HasValue)
-                {
-                    var total = TotalAmount();
-                    var famdep = Convert.ToDecimal(famdeposit.IntValue);
-                    return CachePayAmount(Math.Min(total, famdep));
-                }
-            }
             return CachePayAmount(amt);
         }
 
         private decimal CachePayAmount(decimal amt)
         {
             payAmt = amt;
-            return amt;
+            if (org != null) // Check Family Deposit
+            {
+                var famdeposit = org.GetExtraValue("FamilyDeposit");
+                if (famdeposit != null && famdeposit.IntValue.HasValue)
+                {
+                    var total = TotalAmount();
+                    var famdep = Convert.ToDecimal(famdeposit.IntValue);
+                    payAmt = Math.Min(total, famdep);
+                }
+            }
+            return payAmt.Value;
         }
+
 
         private decimal? totAmt;
         public decimal TotalAmount()

@@ -97,7 +97,6 @@ namespace CmsWeb.Models
             }
         }
         private int? _Page;
-        private string _url;
 
         public int? Page
         {

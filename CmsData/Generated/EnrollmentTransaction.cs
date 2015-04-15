@@ -732,7 +732,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="SmallGroups", UpdateCheck=UpdateCheck.Never, Storage="_SmallGroups", DbType="nvarchar(500)")]
+		[Column(Name="SmallGroups", UpdateCheck=UpdateCheck.Never, Storage="_SmallGroups", DbType="nvarchar(2000)")]
 		public string SmallGroups
 		{
 			get { return this._SmallGroups; }

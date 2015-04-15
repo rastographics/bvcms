@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using StackExchange.Profiling
+<!DOCTYPE html>
 <html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <html>
 <head>
@@ -34,5 +35,6 @@
         <div id="loading-indicator">
             <img src="/Content/img/ajax-loader.gif" />
         </div>
+        @MiniProfiler.RenderIncludes()
     </body>
 </html>

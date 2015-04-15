@@ -2,21 +2,21 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
 using System.Web;
-using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Routing;
-using System.Web.Security;
 using CmsData;
 using CmsWeb.Code;
 using CmsWeb.Framework;
-using UtilityExtensions;
-using System.IO;
-using System.Threading;
-using System.Globalization;
-using System.Linq;
+using CmsWeb.Models;
 using Elmah;
-using MoreLinq;
+using StackExchange.Profiling;
+using UtilityExtensions;
 
 namespace CmsWeb
 {
@@ -27,7 +27,7 @@ namespace CmsWeb
         {
             MvcHandler.DisableMvcResponseHeader = true;
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
-	    ModelBinders.Binders.Add(typeof(decimal), new DecimalModelBinder());
+            ModelBinders.Binders.Add(typeof(decimal), new DecimalModelBinder());
             ModelBinders.Binders.Add(typeof(decimal?), new DecimalModelBinder());
             ModelBinders.Binders.Add(typeof(int?), new NullableIntModelBinder());
             ModelMetadataProviders.Current = new ModelViewMetadataProvider();
@@ -36,9 +36,10 @@ namespace CmsWeb
             HttpRuntime.Cache.Remove("BuildDate");
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.Add(new CmsViewEngine(true));
-#if DEBUG
-            //HibernatingRhinos.Profiler.Appender.LinqToSql.LinqToSqlProfiler.Initialize();
-#endif
+
+            MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
+            MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
+
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -55,10 +56,10 @@ namespace CmsWeb
                     Response.Redirect(redirect);
                     return;
                 }
-                Models.AccountModel.SetUserInfo(Util.UserName, Session);
+                AccountModel.SetUserInfo(Util.UserName, Session);
             }
             Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
-            Util.Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;
 
             LogBrowser();
@@ -67,16 +68,16 @@ namespace CmsWeb
         private void LogBrowser()
         {
             var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-            if (cs != null)
+            if (cs == null) return;
+
+            using (var cn = new SqlConnection(cs.ConnectionString))
             {
-                var cn = new SqlConnection(cs.ConnectionString);
                 cn.Open();
                 var cmd = new SqlCommand("LogBrowser", cn) { CommandType = CommandType.StoredProcedure };
                 cmd.Parameters.AddWithValue("browser", Request.Browser.Type);
                 cmd.Parameters.AddWithValue("who", Util.UserName);
                 cmd.Parameters.AddWithValue("host", Util.Host);
                 cmd.ExecuteNonQuery();
-                cn.Close();
             }
         }
 
@@ -91,6 +92,9 @@ namespace CmsWeb
                 Response.Redirect("/Error/Offline");
                 return;
             }
+
+            MiniProfiler.Start();
+
             var r = DbUtil.CheckDatabaseExists(Util.CmsHost);
             var redirect = ViewExtensions2.DatabaseErrorUrl(r);
 #if DEBUG
@@ -141,6 +145,14 @@ namespace CmsWeb
                 if (r.HasValue())
                     Response.Redirect(r);
             }
+
+            MiniProfiler.Stop();
+        }
+
+        protected void Application_PostAuthorizeRequest()
+        {
+            if (!IsAuthorizedToViewProfiler(Request))
+                MiniProfiler.Stop(discardResults: true);
         }
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
@@ -210,6 +222,18 @@ namespace CmsWeb
             sensitiveFormData.ForEach(k => error.Form.Set(k, "*****"));
             ErrorLog.GetDefault(ctx).Log(error);
             e.Dismiss();
+        }
+
+        private static bool IsAuthorizedToViewProfiler(HttpRequest request)
+        {
+            if (request.IsLocal)
+                return true;
+
+            var ctx = request.RequestContext.HttpContext;
+            if (ctx == null || ctx.User == null)
+                return false;
+
+            return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled", "false") == "true";
         }
     }
 }

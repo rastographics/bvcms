@@ -148,10 +148,11 @@ namespace CmsWeb.Models
             var q = from g in DbUtil.Db.OrganizationMembers
                 where g.OrganizationId == orgid
                 where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                orderby g.Person.Name2
                 select new SelectListItem()
                 {
                     Value = g.PeopleId.ToString(),
-                    Text = g.Person.Name
+                    Text = g.Person.Name2
                 };
             var list = q.ToList();
             list.Insert(0, new SelectListItem() {Value = "0", Text = "(please select)"});
