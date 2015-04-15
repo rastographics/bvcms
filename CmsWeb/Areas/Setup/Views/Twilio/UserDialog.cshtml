@@ -1,6 +1,6 @@
 ﻿@using CmsData.Classes.Twilio
 @{
-    var people = TwilioHelper.getUnassignedPeople(ViewBag.ID);
+    var people = TwilioHelper.GetUnassignedPeople(ViewBag.ID);
 }
 <!DOCTYPE html>
 <html>
@@ -10,36 +10,36 @@
 </head>
 <body>
     <center>
-	    <form action="/Twilio/UserAdd" method="post">
+        <form action="/Twilio/UserAdd" method="post">
             <input type="hidden" name="groupID" value="@ViewBag.ID" />
-	        <table cellspacing="10">
-            @if (people.Count > 0)
-            {
-	            <tr>
-		            <td align="right">Person:</td>
-		            <td align="left">@Html.DropDownList( "userID", new SelectList( people, "UserId", "User.Name" ) )</td>
-	            </tr>
-	            <tr>
-		            <td align="center" colspan="2">
-                        <br />
-			            <input type="submit" class="bt" value="Submit" /> &nbsp;&nbsp; <input type="button" class="bt" cancelbutton="dialog" value="Cancel" />
-		            </td>
-	            </tr>
-            }
-            else
-            {
-                <tr>
-		            <td align="center">There are no additional unassigned people.</td>
-                </tr>
-                <tr>
-		            <td align="center">
-                        <br />
-			            <input type="button" class="bt" cancelbutton="dialog" value="OK" />
-		            </td>
-	            </tr>
-            }
-	        </table>
-	    </form>
-	</center>
+            <table cellspacing="10">
+                @if (people.Count > 0)
+                {
+                    <tr>
+                        <td align="right">Person:</td>
+                        <td align="left">@Html.DropDownList("userID", new SelectList(people, "UserId", "User.Name"))</td>
+                    </tr>
+                    <tr>
+                        <td align="center" colspan="2">
+                            <br />
+                            <input type="submit" class="bt" value="Submit" /> &nbsp;&nbsp; <input type="button" class="bt" cancelbutton="dialog" value="Cancel" />
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td align="center">There are no additional unassigned people.</td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <br />
+                            <input type="button" class="bt" cancelbutton="dialog" value="OK" />
+                        </td>
+                    </tr>
+                }
+            </table>
+        </form>
+    </center>
 </body>
 </html>
