@@ -123,13 +123,24 @@
 
         $('#search-box').on('shown.bs.modal', function () {
             $('.search-box-input').focus();
+            selectedIndex = -1;
 
             Mousetrap.bind('down', function () {
                 keyboardSelectSearchResult('down');
                 return false;
             });
 
+            Mousetrap.bind('tab', function () {
+                keyboardSelectSearchResult('down');
+                return false;
+            });
+
             Mousetrap.bind('up', function () {
+                keyboardSelectSearchResult('up');
+                return false;
+            });
+
+            Mousetrap.bind('shift+tab', function () {
                 keyboardSelectSearchResult('up');
                 return false;
             });
