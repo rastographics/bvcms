@@ -1,11 +1,15 @@
-﻿<ul class="dropdown-menu dropdown-div-gear onecolumn">
-  <li><a id="newmeetings" href='#'>Create Meetings</a></li>
-  @if (Session["OrgCopySettings"] != null)
-  {
-    <li><a id="PasteSettings" href="/OrgSearch/PasteSettings">Paste Settings</a></li>
-  }
-  @if (User.IsInRole("Admin"))
-  {
-    <li><a id="RepairTransactions" href="/OrgSearch/RepairTransactions">Repair Transactions</a></li>
-  }
+﻿<ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-1" role="menu">
+    <li class="col-sm-12">
+        <ul>
+            <li><a id="newmeetings" href='#'><span class="text-success">Create Meetings</span></a></li>
+            @if (Session["OrgCopySettings"] != null)
+            {
+                <li><a id="PasteSettings" href="/OrgSearch/PasteSettings"><span class="text-success">Paste Settings</span></a></li>
+            }
+            @if (User.IsInRole("Admin"))
+            {
+                <li><a id="RepairTransactions" href="/OrgSearch/RepairTransactions"><span class="text-success">Repair Transactions</span></a></li>
+            }
+        </ul>
+    </li>
 </ul>

@@ -99,8 +99,8 @@ namespace CmsWeb.Areas.Search.Models
                         Schedule = DbUtil.Db.GetScheduleDesc(sc.MeetingTime),
                         Location = o.Location,
                         AllowSelfCheckIn = o.CanSelfCheckin ?? false,
-                        BDayStart = o.BirthDayStart.FormatDate("na"),
-                        BDayEnd = o.BirthDayEnd.FormatDate("na"),
+                        BDayStart = o.BirthDayStart.FormatDate(),
+                        BDayEnd = o.BirthDayEnd.FormatDate(),
                         Tag = (TagDiv ?? 0) == 0 ? "" : o.DivOrgs.Any(ot => ot.DivId == TagDiv) ? "Remove" : "Add",
                         ChangeMain = (o.DivisionId == null || o.DivisionId != TagDiv) && o.DivOrgs.Any(d => d.DivId == TagDiv),
                     };

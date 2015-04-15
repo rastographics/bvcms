@@ -1,22 +1,42 @@
 ﻿@model CmsWeb.Areas.Search.Models.OrgSearchModel.OrganizationInfo
 @{ var o = Model; }
 <tr>
-  <td class="tip" title="@o.ToolTip"><img src="/Content/images/group.png" /></td>
-  <td><a href="/Organization/@o.Id">@o.OrganizationName</a></td>
-  <td><a href="/Person2/@o.LeaderId">@o.LeaderName</a></td>
-  <td class="right">@o.MemberCount</td>
-  @if (o.PrevMemberCount == 0 && o.ProspectCount == 0)
-  {
-    <td></td>
-  }
-  else
-  {
-    <td class="right"><span class="smallfont">@o.PrevMemberCount / @o.ProspectCount</span></td>
-  }
-  <td>@o.Schedule</td>
-  <td><span id='ck-@o.Id' class='yesno pointer'>@(o.AllowSelfCheckIn ? "yes" : "no")</span></td>
-  <td><span id='bs-@o.Id' class='bday pointer'>@o.BDayStart</span></td>
-  <td><span id='be-@o.Id' class='bday pointer'>@o.BDayEnd</span></td>
-  <td><a id='tt-@o.Id' href="/OrgSearch/ToggleTag/@o.Id" class="taguntag" title="Add to/Remove from Target Division">@o.Tag</a></td>
-  <td><a id='mm-@o.Id' href="/OrgSearch/MainDiv/@o.Id" class="maindiv" title="Make Target Main Division">@(o.ChangeMain == true ? "Make Main" : "")</a></td>
+    <td class="text-center">
+        <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@o.OrganizationName (@o.Id)"
+           data-content="
+            <label>Program Name:</label> @o.ProgramName (@o.ProgramId)<br/>
+            <label>Division Name:</label> @o.DivisionName (@o.DivisionId)<br />
+            <label>Leader:</label> @o.LeaderName<br/>
+            <label>First Meeting:</label> @o.FirstMeetingDate<br/>
+            <label>Last Meeting:</label> @o.LastMeetingDate<br />
+            <label>Schedule:</label> @o.Schedule<br />
+            <label>Location:</label> @o.Location<br />
+            <label>Divisions:</label> @o.Divisions<br />
+        "><i class="fa fa-info-circle"></i></a>
+    </td>
+    <td><a href="/Organization/@o.Id">@o.OrganizationName</a></td>
+    <td><a href="/Person2/@o.LeaderId">@o.LeaderName</a></td>
+    <td class="text-right">@o.MemberCount</td>
+    @if (o.PrevMemberCount == 0 && o.ProspectCount == 0)
+    {
+        <td></td>
+    }
+    else
+    {
+        <td class="text-right"><span class="smallfont">@o.PrevMemberCount / @o.ProspectCount</span></td>
+    }
+    <td>@o.Schedule</td>
+    <td><a id="ck-@o.Id" data-pk="ck-@o.Id" class="clickSelect" data-title="Self Check-in" data-source="[{ value: 'yes', text: 'Yes' },{ value: 'no', text: 'No' }]" data-value="@(o.AllowSelfCheckIn ? "yes" : "no")">@(o.AllowSelfCheckIn ? "Yes" : "No")</a></td>
+    <td><a id="bs-@o.Id" data-pk="bs-@o.Id" class="clickDate" data-title="Birthday Start" data-emptytext="N/A" data-emptyclass="empty-primary">@o.BDayStart</a></td>
+    <td><a id="be-@o.Id" data-pk="be-@o.Id" class="clickDate" data-title="Birthday End" data-emptytext="N/A" data-emptyclass="empty-primary">@o.BDayEnd</a></td>
+    @if (!string.IsNullOrWhiteSpace(o.Tag))
+    {
+        <td><a id="tt-@o.Id" href="/OrgSearch/ToggleTag/@o.Id" class="taguntag btn btn-sm @(o.Tag == "Add" ? "btn-success" : "btn-default")" title="Add to/Remove from Target Division">@o.Tag</a></td>
+        <td>
+            @if (o.ChangeMain.GetValueOrDefault())
+            {
+                <a id="mm-@o.Id" href="/OrgSearch/MainDiv/@o.Id" class="maindiv btn btn-sm btn-default" title="Make Target Main Division">Make Main</a>
+            }
+        </td>
+    }
 </tr>

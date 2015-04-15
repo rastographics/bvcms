@@ -1,16 +1,32 @@
 ﻿$(function () {
+    $('#Name').focus();
+
+    $('#org-search-tabs').tabdrop();
+
+    function initializePopovers() {
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
+        });
+    }
+
+    initializePopovers();
+
     CKEDITOR.replace('editor', {
         height: 200,
         customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
 
-    $('#Name').focus();
+    $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                    '<i class="fa fa-fw fa-check"></i>' +
+                                '</button>' +
+                                '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                    '<i class="fa fa-fw fa-times"></i>' +
+                                '</button>';
     
-    //$("a.trigger-dropdown").dropdown2();
-
     $("#clear").click(function (ev) {
         ev.preventDefault();
-        $("#PublicView").removeAttr('checked');
+        $("#PublicView").val(false);
         $("input:text").val("");
         $("#ProgramId,#CampusId,#ScheduleId,#TypeId").val(0);
         $("#OnlineReg").val(-1);
@@ -21,7 +37,30 @@
         return false;
     });
 
-    $("#PublicView").click(function () {
+    $("#view-main").click(function () {
+        $("#PublicView").val(false);
+        $("#management-view").hide();
+        $('#TagProgramId').val(0);
+        $('#TagDiv').val(0);
+        $('#TargetType').val(0);
+        $.getTable();
+    });
+
+    $("#view-manage").click(function () {
+        $("#PublicView").val(false);
+        $('#TagProgramId').val(0);
+        $('#TagDiv').val(0);
+        $('#TargetType').val(0);
+        $("#management-view").show();
+        $.getTable();
+    });
+
+    $("#view-public").click(function () {
+        $("#PublicView").val(true);
+        $("#management-view").hide();
+        $('#TagProgramId').val(0);
+        $('#TagDiv').val(0);
+        $('#TargetType').val(0);
         $.getTable();
     });
 
@@ -36,10 +75,6 @@
         }
         $.getTable();
         return false;
-    });
-
-    $("#hideshow").click(function () {
-        $(".managedivisions").toggle();
     });
 
     $.gotoPage = function (e, pg) {
@@ -81,143 +116,80 @@
         return false;
     });
 
-    //$(".datepicker").jqdatepicker();
-
-    //$.editable.addInputType('datepicker', {
-    //    element: function (settings, original) {
-    //        var input = $('<input>');
-    //        if (settings.width != 'none') { input.width(settings.width); }
-    //        if (settings.height != 'none') { input.height(settings.height); }
-    //        input.attr('autocomplete', 'off');
-    //        $(this).append(input);
-    //        return (input);
-    //    },
-    //    plugin: function (settings, original) {
-    //        var form = this;
-    //        settings.onblur = 'ignore';
-    //        $(this).find('input').jqdatepicker().bind('click', function () {
-    //            $(this).datepickerjq('show');
-    //            return false;
-    //        }).bind('dateSelected', function (e, selectedDate, $td) {
-    //            $(form).submit();
-    //        });
-    //    }
-    //});
-
-    //$.editable.addInputType("checkbox", {
-    //    element: function (settings, original) {
-    //        var input = $('<input type="checkbox">');
-    //        $(this).append(input);
-    //        $(input).click(function () {
-    //            var value = $(input).attr("checked") ? 'yes' : 'no';
-    //            $(input).val(value);
-    //        });
-    //        return (input);
-    //    },
-    //    content: function (string, settings, original) {
-    //        var checked = string == "yes" ? 1 : 0;
-    //        var input = $(':input:first', this);
-    //        $(input).attr("checked", checked);
-    //        var value = $(input).attr("checked") ? 'yes' : 'no';
-    //        $(input).val(value);
-    //    }
-    //});
-
     $.fmtTable = function () {
-        //$("#resultsTable td.tip[title]").tooltip({
-        //    showBody: "|"
-        //});
-        
-        $('#resultsTable').bind('mousedown', function (e) {
-            if ($(e.target).hasClass("bday")) {
-                $(e.target).editable('/OrgSearch/Edit/', {
-                    type: 'datepicker',
-                    tooltip: 'click to edit...',
-                    event: 'click',
-                    submit: 'OK',
-                    cancel: 'Cancel',
-                    width: '100px',
-                    height: 25
-                });
-            } else if ($(e.target).hasClass("category")) {
-                $(e.target).editable("/OrgSearch/Edit", {
-                    //indicator: '<img src="/Content/images/loading.gif">',
-                    loadurl: "/MobileAPI/RegCategories/",
-                    placeholder: 'edit',
-                    loadtype: "POST",
-                    type: "select",
-                    submit: "OK",
-                    style: 'display: inline'
-                });
-            }
-            else if ($(e.target).hasClass("yesno")) {
-                $(e.target).editable('/OrgSearch/Edit', {
-                    type: 'checkbox',
-                    onblur: 'ignore',
-                    submit: 'OK'
-                });
-            } else if ($(e.target).hasClass("publicsort")) {
-                $(e.target).editable('/OrgSearch/Edit', {
-                    width: 150,
-                    placeholder: 'edit',
-                    height: 22,
-                    submit: 'OK',
-                    tooltip: 'click to edit...'
-                });
+        $('.clickSelect').editable({
+            mode: 'popup',
+            type: 'select',
+            sourceOptions: {
+                type: 'post'
+            },
+            url: '/OrgSearch/Edit',
+            params: function (params) {
+                var data = {};
+                data['id'] = params.pk;
+                data['value'] = params.value;
+                return data;
             }
         });
+
+        $('.clickDate').editable({
+            mode: 'popup',
+            type: 'date',
+            url: '/OrgSearch/Edit',
+            format: 'mm/dd/yyyy',
+            viewformat: 'mm/dd/yyyy',
+            datepicker: {
+                weekStart: 1
+            },
+            params: function (params) {
+                var data = {};
+                data['id'] = params.pk;
+                data['value'] = params.value;
+                return data;
+            }
+        });
+
+        $(".clickEdit").editable({
+            mode: 'popup',
+            type: 'text',
+            url: "/OrgSearch/Edit/",
+            params: function (params) {
+                var data = {};
+                data['id'] = params.pk;
+                data['value'] = params.value;
+                return data;
+            }
+        });
+
+        initializePopovers();
     };
 
     $('body').on('click', '.descredit', function (ev) {
-        $.descredit($(this).prev());
+        ev.preventDefault();
+        return $.descredit($(this).prev());
     });
 
     $.descredit = function($a) {
         if ($a.text() === "edit")
             $a.html('');
         CKEDITOR.instances['editor'].setData($a.html());
-        dimOn();
-        $("#EditorDialog").center().show();
-        $("#saveedit").off("click").on("click", function (ev) {
+
+        $('#editor-modal').modal('show');
+        $("#save-edit").off("click").on("click", function (ev) {
             ev.preventDefault();
             var v = CKEDITOR.instances['editor'].getData();
             $a.html(v);
             var id = $a.attr("id");
             $.post("/OrgSearch/SetDescription", { id: id, description: v });
             CKEDITOR.instances['editor'].setData('');
-            $('#EditorDialog').hide("close");
-            dimOff();
+            $('#editor-modal').modal('hide');
             return false;
         });
         return false;
     };
 
-    $('body').on('click', '#canceledit', function (ev) {
-        ev.preventDefault();
-        $('#EditorDialog').hide("close");
-        dimOff();
-        return false;
-    });
+    $.fmtTable(); 
 
-    $.fmtTable();
-
-    $.maxZIndex = $.fn.maxZIndex = function (opt) {
-        var def = { inc: 10, group: "*" };
-        $.extend(def, opt);
-        var zmax = 0;
-        $(def.group).each(function () {
-            var cur = parseInt($(this).css('z-index'));
-            zmax = cur > zmax ? cur : zmax;
-        });
-        if (!this.jquery)
-            return zmax;
-        return this.each(function () {
-            zmax += def.inc;
-            $(this).css("z-index", zmax);
-        });
-    };
-
-    $("#searchvalues select").css("width", "100%");
     $('#ProgramId').change(function () {
         $.post('/OrgSearch/DivisionIds/' + $(this).val(), null, function (ret) {
             $('#DivisionId').html(ret);
@@ -228,35 +200,66 @@
         ev.preventDefault();
         var f = $('#resultsTable').closest('form');
         var q = f.serialize();
-        $.post('/OrgSearch/ApplyType/' + $("#TargetType").val(), q, function (ret) {
-            if (ret !== "") {
-                if (ret === "ok")
-                    $.getTable();
-                else {
-                    $.growlUI("Apply Type", ret);
+
+        swal({
+            title: "Are you sure?",
+            text: "This will apply the selected target type to the entire filtered list.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, apply change!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post('/OrgSearch/ApplyType/' + $("#TargetType").val(), q, function (ret) {
+                if (ret !== "") {
+                    if (ret === "ok")
+                        $.getTable();
+                    else {
+                        swal("Error!", ret, "error");
+                    }
                 }
-            }
+            });
         });
         return false;
+    });
+
+    $("#AddNewDiv").click(function (ev) {
+        ev.preventDefault();
+        $('#NewDivProgramId').val($("#TagProgramId option:selected").val());
+        $("#NewDiv").val("");
+        $('#new-div-modal').modal('show');
     });
 
     $("#MakeNewDiv").click(function (ev) {
         ev.preventDefault();
-        $.post('/OrgSearch/MakeNewDiv/', { id: $("#TagProgramId").val(), name: $("#NewDiv").val() }, function (ret) {
+        $.post('/OrgSearch/MakeNewDiv/', { id: $("#NewDivProgramId").val(), name: $("#NewDiv").val() }, function (ret) {
             $('#TagDiv').html(ret);
             $("#NewDiv").val("");
+            $('#new-div-modal').modal('hide');
         });
         return false;
     });
 
+    $("#RenameDivision").click(function (ev) {
+        ev.preventDefault();
+        if ($('#TagDiv option:selected').val() == 0) {
+            swal("Error!", "Must select a target division.", "error");
+            return false;
+        }
+        $("#RenamedDiv").val($("#TagDiv option:selected").text());
+        $('#rename-div-modal').modal('show');
+    });
+
     $("#RenameDiv").click(function (ev) {
         ev.preventDefault();
-        $.post('/OrgSearch/RenameDiv/', { id: $("#TagProgramId").val(), divid: $("#TagDiv").val(), name: $("#NewDiv").val() }, function (ret) {
-            if (ret == "error")
-                alert("expected error");
-            {
+        $.post('/OrgSearch/RenameDiv/', { id: $("#TagProgramId").val(), divid: $("#TagDiv").val(), name: $("#RenamedDiv").val() }, function (ret) {
+            if (ret == "error") {
+                swal("Error!", "Unexpected error.", "error");
+            } else {
                 $('#TagDiv').html(ret);
-                $("#NewDiv").val("");
+                $("#RenamedDiv").val("");
+                $('#rename-div-modal').modal('hide');
             }
         });
         return false;
@@ -283,39 +286,47 @@
 
     $('#AttNotices').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         var did = $('#DivisionId').val();
-        if (!confirm("This will send email notices to leaders based on your filters, continue?"))
-            return false;
-        $.block();
-        var q = $("#orgsearchform").serialize();
-        $.post("/OrgSearch/EmailAttendanceNotices", q, function () {
-            $.unblock();
-            $.growlUI("complete", "Email Notices Sent");
-        });
-        return false;
-    });
 
-    $('div.dialog').dialog({ autoOpen: false });
+        swal({
+            title: "Are you sure?",
+            text: "This will send email notices to leaders based on your filters.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, send notices!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.block();
+            var q = $("#orgsearchform").serialize();
+            $.post("/OrgSearch/EmailAttendanceNotices", q, function () {
+                $.unblock();
+                swal({
+                    title: "Complete!",
+                    text: "Email notices sent.",
+                    type: "success"
+                });
+            });
+        });
+        
+        return true;
+    });
 
     $('#rollsheet1').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         $.post('/OrgSearch/DefaultMeetingDate/' + $('#ScheduleId').val(), null, function (ret) {
             $('#MeetingDate').val(ret.date);
             $('#MeetingTime').val(ret.time);
             $("#rollsheet2").attr("href", "/Reports/Rollsheet");
-            $("#rallycb").show();
-            var d = $('#PanelRollsheet');
-            d.dialog('open');
+            $('#rollsheet-modal').modal('show');
         });
-        return false;
+        return true;
     });
 
     $('#rollsheet2').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        $('div.dialog').dialog('close');
+        $('#rollsheet-modal').modal('hide');
         var args = "?dt=" + $('#MeetingDate').val() + " " + $('#MeetingTime').val();
         if ($('#altnames').is(":checked"))
             args += "&altnames=true";
@@ -333,26 +344,21 @@
         $("#orgsearchform").attr("target","_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
-        //$.hideDropdowns();
         return false;
     });
 
     $('#newmeetings').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         $.post('/OrgSearch/DefaultMeetingDate/' + $('#ScheduleId').val(), null, function (ret) {
             $('#NewMeetingDate').val(ret.date);
             $('#NewMeetingTime').val(ret.time);
-            var d = $('#PanelMeetings');
-            d.dialog('open');
+            $('#new-meetings-modal').modal('show');
         });
-        return false;
+        return true;
     });
 
     $('#createmeetings').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        $('div.dialog').dialog('close');
         var dt = getISODateTime(new Date($('#NewMeetingDate').val() + " " + $('#NewMeetingTime').val()));
         var args = "?dt=" + dt;
         var q = $("#orgsearchform").serialize();
@@ -361,149 +367,171 @@
             $("#orgsearchform").attr("action", "/Reports/AttendanceDetail" + args2);
             $("#orgsearchform").submit();
         });
+        $('#new-meetings-modal').modal('hide');
         return false;
     });
 
     $('#ExportExcel').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         $("#orgsearchform").attr("action", "/OrgSearch/ExportExcel");
         $("#orgsearchform").submit();
-        return false;
+        return true;
     });
 
     $('#weeklyattendance').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         $("#orgsearchform").attr("action", "/Reports/WeeklyAttendance");
         $("#orgsearchform").submit();
-        return false;
+        return true;
     });
 
     $('#ExportMembersExcel').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         $("#orgsearchform").attr("action", "/OrgSearch/ExportMembersExcel");
         $("#orgsearchform").submit();
-        return false;
+        return true;
     });
 
     $('#Meetings').click(function (ev) {
         ev.preventDefault();
-        $('div.dialog').dialog('close');
-        hideDropdowns();
         $("#orgsearchform").attr("action", "/Reports/Meetings");
         $("#orgsearchform").submit();
-        return false;
+        return true;
     });
 
     $('#Structure').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         $("#orgsearchform").attr("action", "/OrgSearch/OrganizationStructure");
         $("#orgsearchform").submit();
-        return false;
-    });
-    $('#RecentAbsents').click(function (ev) {
-        ev.preventDefault();
-        hideDropdowns();
-        $("#orgsearchform").attr("action", "/Reports/RecentAbsents");
-        $("#orgsearchform").submit();
-        return false;
+        return true;
     });
 
-    $("MeetingsForDateRangeDialog").on("dialogclose", function (event, ui) {
-        $("#attdetail2").off("click");
+    $('#RecentAbsents').click(function (ev) {
+        ev.preventDefault();
+        $("#orgsearchform").attr("action", "/Reports/RecentAbsents");
+        $("#orgsearchform").submit();
+        return true;
     });
 
     $(".StartEndReport").click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        var action = this.href;
-        var d = $('#MeetingsForDateRangeDialog');
-        d.dialog('open');
+        $('#meetings-daterange-action').val(this.href);
+        $('#meetings-daterange-modal').modal('show');
+        return true;
+    });
+
+    $('#meetings-daterange-modal').on('shown.bs.modal', function () {
         $('#attdetail2').on("click", function (ev2) {
             ev2.preventDefault();
-            $('div.dialog').dialog('close');
+            $('#meetings-daterange-modal').modal('hide');
             var args = "?dt1=" + $('#MeetingDate1').val() + "&dt2=" + $('#MeetingDate2').val();
-            $("#orgsearchform").attr("action", action + args);
+            $("#orgsearchform").attr("action", $('#meetings-daterange-action').val() + args);
             $("#orgsearchform").submit();
             return false;
         });
-        return false;
     });
 
-    $("MeetingsForMonthDialog").on("dialogclose", function (event, ui) {
-        $("#meetingsformonth2").off("click");
+    $('#meetings-daterange-modal').on('hidden.bs.modal', function() {
+        $("#attdetail2").off("click");
     });
-
+    
     $(".MonthReport").click(function(ev) {
         ev.preventDefault();
-        hideDropdowns();
-        var action = this.href;
-        var d = $('#MeetingsForMonthDialog');
-        d.dialog('open');
+        $('#meetings-month-action').val(this.href);
+        $('#meetings-month-modal').modal('show');
+        return true;
+    });
+
+    $('#meetings-month-modal').on('shown.bs.modal', function () {
         $('#meetingsformonth2').on("click", function (ev2) {
             ev2.preventDefault();
-            $('div.dialog').dialog('close');
+            $('#meetings-month-modal').modal('hide');
             var args = "?dt1=" + $('#monthdt1').val();
             $("#orgsearchform").attr("action", action + args);
             $("#orgsearchform").submit();
             return false;
         });
-        return false;
+    });
+
+    $('#meetings-month-modal').on('hidden.bs.modal', function () {
+        $("#meetingsformonth2").off("click");
     });
 
     $('#PasteSettings').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         var href = this.href;
         var q = $("#orgsearchform").serialize();
-        $.post("/OrgSearch/Count", q, function(cnt) {
-            bootbox.confirm("Are you sure you want to replace settings on " + cnt + " organizations? There is no undo button.", function(result) {
-                if (result) {
-                    $.post(href, q, function () {
-                        $.growlUI("Completed", "Settings Replaced");
+        $.post("/OrgSearch/Count", q, function (cnt) {
+            swal({
+                title: "Are you sure?",
+                text: "This will replace settings on " + cnt + " organizations. There is no undo button.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-warning",
+                confirmButtonText: "Yes, replace settings!",
+                closeOnConfirm: true
+            },
+            function () {
+                $.block();
+                $.post(href, q, function () {
+                    $.unblock();
+                    swal({
+                        title: "Completed!",
+                        text: "Settings replaced.",
+                        type: "success"
                     });
-                }
+                });
             });
         });
+        return true;
     });
 
     $('#RepairTransactions').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        if (!confirm("Are you sure you want to run repair transactions?"))
-            return false;
         var f = $('form');
         var q = f.serialize();
-        $.post(this.href, q, function (ret) {
-            $.growlUI("Completed", "Repair Completed");
+        var url = this.href;
+
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, repair transactions!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.block();
+            $.post(url, q, function (ret) {
+                $.unblock();
+                swal({
+                    title: "Completed!",
+                    text: "Repair completed.",
+                    type: "success"
+                });
+            });
         });
-        return false;
+        return true;
     });
 
     $('a.ViewReport').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        
         var href = $(this).attr("href");
         $("#orgsearchform").attr("action", href);
         $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
-        return false;
+        return true;
     });
 
     $('body').on('click', 'a.taguntag', function (ev) {
         ev.preventDefault();
-        hideDropdowns();
         var a = $(this);
         var td = $('#TagDiv').val();
         if (td > 0)
             $.post(a.attr('href'), { tagdiv: td }, function (ret) {
                 if (ret == "error")
-                    alert("unexpected error, refresh page");
+                    swal("Error!", "Unexpected error, refresh page.", "error");
                 else {
                     $(a).parent().parent().replaceWith(ret);
                     $.fmtTable();
@@ -517,7 +545,7 @@
         var a = $(this);
         $.post(a.attr('href'), { tagdiv: $('#TagDiv').val() }, function (ret) {
             if (ret == "error")
-                alert("unexpected error, refresh page");
+                swal("Error!", "Unexpected error, refresh page.", "error");
             else {
                 $(a).parent().parent().replaceWith(ret);
                 $.fmtTable();
@@ -528,24 +556,29 @@
 
     $('#checkincontrol').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        var d = $('#PanelCheckinControl');
-        d.dialog('open');
+        $('#checkin-modal').modal('show');
+        return true;
+    });
+
+    $('#checkincontrol2').click(function (ev) {
+        ev.preventDefault();
+        $('#checkin-modal').modal('hide');
+        var url = "/Reports/CheckinControl/";
+        $("#CheckinDate").val($("#checkindate").val());
+        $("#orgsearchform").attr("action", url);
+        $("#orgsearchform").submit();
         return false;
     });
 
     $('#enrollmentcontrol1').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        var d = $('#PanelEnrollmentControl');
-        d.dialog('open');
-        return false;
+        $('#enrollment-modal').modal('show');
+        return true;
     });
 
     $('#enrollmentcontrol2').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        $('div.dialog').dialog('close');
+        $('#enrollment-modal').modal('hide');
         var url = "/Reports/EnrollmentControl";
         if ($('#enrcontrolfiltertag').is(":checked"))
             url = url.appendQuery("usecurrenttag=true");
@@ -556,24 +589,11 @@
         return false;
     });
 
-    $('#checkincontrol2').click(function (ev) {
-        ev.preventDefault();
-        hideDropdowns();
-        $('div.dialog').dialog('close');
-        var url = "/Reports/CheckinControl/";
-        $("#CheckinDate").val($("#checkindate").val());
-        $("#orgsearchform").attr("action", url);
-        $("#orgsearchform").submit();
-        return false;
-    });
-
     $('#enrollmentcontrol2i').click(function (ev) {
         ev.preventDefault();
-        hideDropdowns();
-        $('div.dialog').dialog('close');
         $("#orgsearchform").attr("action", "/Reports/EnrollmentControl2a");
         $("#orgsearchform").submit();
-        return false;
+        return true;
     });
 });
 
