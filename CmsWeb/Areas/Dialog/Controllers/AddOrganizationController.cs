@@ -1,4 +1,5 @@
 using System.Web.Mvc;
+using System.Web.Routing;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
 using UtilityExtensions;
@@ -51,7 +52,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			}
 	        DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Add new org {0}".Fmt(m.org.OrganizationName));
-			return Content("<script>parent.CloseAddOrgDialog({0});</script>".Fmt(m.org.OrganizationId));
+            return Redirect("/Organization/{0}".Fmt(m.org.OrganizationId));
         }
     }
 }

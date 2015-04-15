@@ -4,7 +4,7 @@
         @Helper.LiAnchorLink("Search / Manage", "/OrgSearch/")
         @if (User.IsInRole("Edit"))
         {
-            <li class="disabled"><a href="#">Add New Organization</a>@*@Helper.JQueryIdLink("Add New Organization", "addorg")*@</li>
+            <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
             <li class="disabled"><a href="#">Manage Org Members</a></li>
             @*@Helper.LiAnchorLink("Manage Org Members", "/OrgMembers/")*@
         }

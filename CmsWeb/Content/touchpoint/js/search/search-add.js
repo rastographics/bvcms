@@ -1,4 +1,21 @@
 ﻿$(function () {
+
+    $('#addorg').click(function (e) {
+        e.preventDefault();
+        $("<div />")
+             .load('/AddOrganization', {}, function () {
+                 var div = $(this);
+                 var dialog = div.find("#new-org-modal");
+                 $('#empty-dialog').html(dialog);
+                 $('#empty-dialog').modal("show");
+                 dialog.on('hidden', function () {
+                     div.remove();
+                     dialog.remove();
+                 });
+
+             });
+    });
+    
     $("a.searchadd").on("click", function (ev) {
         ev.preventDefault();
         
