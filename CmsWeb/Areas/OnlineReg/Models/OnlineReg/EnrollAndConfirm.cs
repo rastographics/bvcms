@@ -202,7 +202,9 @@ namespace CmsWeb.Models
             {
                 var p = List[0];
                 ti.Fund = p.setting.DonationFund();
-                var goerid = p.Parent.GoerId ?? p.MissionTripGoerId;
+                var goerid = p.Parent.GoerId > 0
+                    ? p.Parent.GoerId 
+                    : p.MissionTripGoerId;
                 if (p.MissionTripSupportGoer > 0)
                 {
                     var gsa = new GoerSenderAmount
