@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			var tid = "Coupon({0:n2})".Fmt(Util.fmtcoupon(coupon));
 
             if(!pf.PayBalance)
-    			ConfirmDuePaidTransaction(ti, tid, sendmail: false);
+    			OnlineRegModel.ConfirmDuePaidTransaction(ti, tid, sendmail: false);
 			
 			var msg = "<i class='red'>Your coupon for {0:n2} has been applied, your balance is now {1:n2}</i>."
 				.Fmt(c.Amount, ti.Amtdue );

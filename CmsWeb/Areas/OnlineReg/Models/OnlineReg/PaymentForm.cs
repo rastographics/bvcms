@@ -614,10 +614,11 @@ namespace CmsWeb.Models
                     m.FinishRegistration(ti);
                 }
 
-                ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
+                OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
 
-                ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
-                return View("PayAmtDue/Confirm", ti);
+                return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti));
+                //ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
+                //return View("", ti);
             }
             catch (Exception ex)
             {

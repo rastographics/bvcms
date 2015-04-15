@@ -380,6 +380,7 @@
     <Compile Include="Areas\Org\Models\Organization\PrevMemberModel.cs" />
     <Compile Include="Areas\Org\Models\Organization\ScheduleInfo.cs" />
     <Compile Include="Areas\Org\Models\Organization\VisitorModel.cs" />
+    <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileHomeAction.cs" />
@@ -2010,11 +2011,10 @@
     <Compile Include="Areas\OnlineReg\Controllers\ConfirmTest.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\ManageVolunteers.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Coupon.cs" />
-    <Compile Include="Areas\OnlineReg\Controllers\PayDue.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\TransactionInfo.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\PaymentForm.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SetHeaders.cs" />
-    <Compile Include="Areas\OnlineReg\Controllers\Confirm.cs" />
+    <Compile Include="Areas\OnlineReg\Controllers\Payment.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\OnlineRegController.cs" />
     <Compile Include="Areas\OnlineReg\Models\ManageSubsModel.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\Helper.cs" />

@@ -260,7 +260,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return View(ret.View, ret.PaymentForm);
             }
             throw new Exception("unexpected value on CompleteRegistration");
-
         }
 
         [HttpPost]

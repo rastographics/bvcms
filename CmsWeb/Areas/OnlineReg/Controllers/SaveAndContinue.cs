@@ -1,18 +1,12 @@
-using System;
 using System.Linq;
 using System.Web.Mvc;
-using System.Web.Security;
 using CmsData;
-using CmsData.Registration;
 using CmsWeb.Models;
-using Elmah;
 using UtilityExtensions;
-using System.Collections.Generic;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
-    public partial class OnlineRegController : CmsController
+    public partial class OnlineRegController
     {
         [HttpGet]
         public ActionResult Continue(int id)
@@ -81,6 +75,31 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View(m);
         }
 
+        [HttpPost]
+        public ActionResult SaveProgressPayment(int id)
+        {
+            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            if (ed != null)
+            {
+                var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                m.HistoryAdd("saveprogress");
+                if (m.UserPeopleId == null)
+                    m.UserPeopleId = Util.UserPeopleId;
+                m.UpdateDatum();
+                return Json(new { confirm = "/OnlineReg/FinishLater/" + id });
+            }
+            return Json(new { confirm = "/OnlineReg/Unknown" });
+        }
 
+        [HttpGet]
+        public ActionResult FinishLater(int id)
+        {
+            var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
+            if (ed == null) 
+                return View("Unknown");
+            var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+            m.FinishLaterNotice();
+            return View(m);
+        }
     }
 }

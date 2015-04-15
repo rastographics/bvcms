@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Security;
 using CmsData;
 using CmsData.Codes;
+using CmsData.Registration;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -218,6 +219,89 @@ namespace CmsWeb.Models
 
             LogOutOfOnlineReg();
             return ret;
+        }
+        public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
+        {
+            var Db = DbUtil.Db;
+            var org = Db.LoadOrganizationById(ti.OrgId);
+            ti.TransactionId = transactionId;
+            if (ti.Testing == true && !ti.TransactionId.Contains("(testing)"))
+                ti.TransactionId += "(testing)";
+
+            var amt = ti.Amt;
+            foreach (var pi in ti.OriginalTrans.TransactionPeople)
+            {
+                var p = Db.LoadPersonById(pi.PeopleId);
+                if (p != null)
+                {
+                    var om = Db.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == ti.OrgId && m.PeopleId == pi.PeopleId);
+                    if (om == null)
+                        continue;
+                    Db.SubmitChanges();
+                    if (org.IsMissionTrip == true)
+                    {
+                        Db.GoerSenderAmounts.InsertOnSubmit(
+                            new GoerSenderAmount 
+                            {
+                                Amount = ti.Amt,
+                                GoerId = pi.PeopleId,
+                                Created = DateTime.Now,
+                                OrgId = org.OrganizationId,
+                                SupporterId = pi.PeopleId,
+                            });
+                        var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
+                        var fund = setting.DonationFundId;
+                        p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund, 
+                            "SupportMissionTrip: org={0}; goer={1}".Fmt(org.OrganizationId, pi.PeopleId), typecode: BundleTypeCode.Online);
+                    }
+                    var pay = amt;
+                    if (org.IsMissionTrip != true)
+                        ti.Amtdue = PaymentForm.AmountDueTrans(Db, ti);
+
+                    var sb = new StringBuilder();
+                    sb.AppendFormat("{0:g} ----------\n", Util.Now);
+                    sb.AppendFormat("{0:c} ({1} id) transaction amount\n", ti.Amt, ti.Id);
+                    sb.AppendFormat("{0:c} applied to this registrant\n", pay);
+                    sb.AppendFormat("{0:c} total due all registrants\n", ti.Amtdue);
+
+                    om.AddToMemberData(sb.ToString());
+                    var reg = p.RecRegs.Single();
+                    reg.AddToComments(sb.ToString());
+                    reg.AddToComments("{0} ({1})".Fmt(org.OrganizationName, org.OrganizationId));
+
+                    amt -= pay;
+                }
+                else
+                    Db.Email(Db.StaffEmailForOrg(org.OrganizationId),
+                        Db.PeopleFromPidString(org.NotifyIds),
+                        "missing person on payment due",
+                        "Cannot find {0} ({1}), payment due completed of {2:c} but no record".Fmt(pi.Person.Name, pi.PeopleId, pi.Amt));
+            }
+            Db.SubmitChanges();
+            var names = string.Join(", ", ti.OriginalTrans.TransactionPeople.Select(i => i.Person.Name).ToArray());
+
+            var pid = ti.FirstTransactionPeopleId();
+            var p0 = Db.LoadPersonById(pid);
+// question: should we be sending to all TransactionPeople?
+            if (sendmail)
+            {
+                if (p0 == null)
+                    Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(Db.StaffEmailForOrg(org.OrganizationId)),
+                        "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(
+                                ti.Amt, ti.Description, ti.Amtdue, names), 
+                        Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
+                else
+                {
+                    Db.Email(Db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails), 
+                        "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(
+                                ti.Amt, ti.Description, ti.Amtdue, names), false);
+                    Db.Email(p0.FromEmail,
+                        Db.PeopleFromPidString(org.NotifyIds),
+                        "payment received for " + ti.Description,
+                        "{0} paid {1:c} for {2}, balance of {3:c}\n({4})".Fmt(
+                            Transaction.FullName(ti), ti.Amt, ti.Description, ti.Amtdue, names));
+                }
+            }
         }
         public static void LogOutOfOnlineReg()
         {

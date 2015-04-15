@@ -10,6 +10,7 @@ namespace CmsWeb.Models
         public PaymentForm PaymentForm;
         public RouteValueDictionary RouteData;
         public OnlineRegModel Model;
+        public string AmtDue;
 
         public static RouteModel ViewAction(string view)
         {
@@ -67,6 +68,16 @@ namespace CmsWeb.Models
         {
             return new RouteModel() { View = "Payment/Process" };
         }
+
+        public static RouteModel AmountDue(decimal amt)
+        {
+            return new RouteModel()
+            {
+                Route = RouteType.AmtDue,
+                AmtDue = amt.ToString("C"),
+                View = "PayAmtDue/Confirm",
+            };
+        }
     }
     public enum RouteType
     {
@@ -76,5 +87,6 @@ namespace CmsWeb.Models
         Redirect,
         Terms,
         Payment,
+        AmtDue,
     }
 }
