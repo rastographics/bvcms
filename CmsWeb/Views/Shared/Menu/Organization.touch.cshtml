@@ -5,8 +5,7 @@
         @if (User.IsInRole("Edit"))
         {
             <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
-            <li class="disabled"><a href="#">Manage Org Members</a></li>
-            @*@Helper.LiAnchorLink("Manage Org Members", "/OrgMembers/")*@
+            @Helper.LiAnchorLink("Manage Org Members", "/OrgMembers/")
         }
         @Helper.LiAnchorLink("Coupons", "/Coupon/List", User.IsInRole("Coupon"))
         <li class="disabled"><a href="#">Manage Promotion</a></li>

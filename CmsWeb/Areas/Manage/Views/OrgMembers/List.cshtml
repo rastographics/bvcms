@@ -1,80 +1,134 @@
 ﻿@using CmsData
 @using CmsWeb
 @model CmsWeb.Models.OrgMembersModel
-@Html.Hidden("Sort")
-@Html.Hidden("Dir")
-<div class="roundbox floatleft">
-  <h2>Org Members Management</h2>
-  <table id="manage" cellspacing="5">
-    <tr>
-      <th>Program:</th>
-      <td>@Html.DropDownList("ProgId", Model.Programs())</td>
-      <th>Source:</th>
-      <td>@Html.DropDownList("SourceId", Model.Organizations())</td>
-    </tr>
-    <tr>
-      <th>Division:</th>
-      <td>@Html.DropDownList("DivId", Model.Divisions())</td>
-      <th>Target:</th>
-      <td>@Html.DropDownList("TargetId", Model.Organizations2())</td>
-    </tr>
-    <tr>
-      <td>Grades:</td>
-      <td>@Html.TextBox("Grades")</td>
-      <td></td>
-      <td>@Html.CheckBox("MembersOnly") Exclude Teachers</td>
-    </tr>
-    <tr>
-      <td>Sub-Group:</td>
-      <td>@Html.TextBox("SmallGroup")</td>
-      <td colspan="2"></td>
-    </tr>
-    <tr><td colspan="4">&nbsp;</td></tr>
-    <tr>
-      <td colspan="2"><b>Count: @Model.Count()</b></td>
-      <td colspan="2">
-        <button class="bt" id="refresh" name="refresh">Refresh</button>
-        <input type="submit" class="bt" id="move" name="move" value="Move" />
-        <a href="#" id="EmailNotices" class="bt">Email Room Notices(@Model.MovedCount())</a>
-        @if (User.IsInRole("Admin"))
-        {
-          <a href="#" id="ResetMoved" class="bt">Reset Moved</a>
-        }
-        @Html.CheckBox("EmailAllNotices") Email All
-      </td>
-    </tr>
-  </table>
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="well">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
+                        <label for="ProgId" class="control-label">Program</label>
+                        @Html.DropDownList("ProgId", Model.Programs(), new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
+                        <label for="DivId" class="control-label">Division</label>
+                        @Html.DropDownList("DivId", Model.Divisions(), new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
+                        <label for="Grades" class="control-label">Grades</label>
+                        @Html.TextBox("Grades", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-3 col-sm-6">
+                    <div class="form-group">
+                        <label for="SmallGroup" class="control-label">Sub-Group</label>
+                        @Html.TextBox("SmallGroup", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="SourceId" class="control-label">Source</label>
+                        @Html.DropDownList("SourceId", Model.Organizations(), new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="TargetId" class="control-label">Target</label>
+                        @Html.DropDownList("TargetId", Model.Organizations2(), new { @class = "form-control" })
+                        <label class="checkbox-inline">
+                            @Html.CheckBox("MembersOnly") Exclude teachers?
+                        </label>
+                        <label class="checkbox-inline">
+                            @Html.CheckBox("EmailAllNotices") Email all?
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-4">
+                    <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+                </div>
+                <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                    <div class="pull-right">
+                        <button class="btn btn-default" id="refresh" name="refresh">Refresh</button> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hidden-xs">
+            <div class="pull-right">
+                <div class="btn-group">
+                    <a href="#" class="btn btn-default EmailNotices"><i class="fa fa-envelope-o"></i> Email Room Notices(@Model.MovedCount())</a>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li><a href="#" class="ResetMoved">Reset Email Notices</a></li>
+                        </ul>
+                    }
+                </div>
+                <input type="submit" class="btn btn-primary" id="move" name="move" value="Move" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table id="list" class="table table-striped">
+                        <thead>
+                            <tr>
+                                <td colspan="9">
+                                    <label class="checkbox-inline"><input id="SelectAll" type="checkbox" /> Select all</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th style="width: 50px;"><a href="#" class="sort">Mixed</a></th>
+                                <th><a href="#" class="sort">Name</a></th>
+                                <th><a href="#" class="sort">Organization</a></th>
+                                <th>Type</th>
+                                <th class="text-center"><a href="#" class="sort">Gender</a></th>
+                                <th class="text-center"><a href="#" class="sort">Grade</a></th>
+                                <th>Age</th>
+                                <th><a href="#" class="sort">Date of Birth</a></th>
+                                <th>Request</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var m in Model.Members())
+                            {
+                                <tr>
+                                    <td style="width: 50px;"><input name="List" type="checkbox" @m.Checked value="@m.PeopleId.@m.OrgId" class="check" /></td>
+                                    <td><a href="/Person2/@m.PeopleId">@m.Name</a></td>
+                                    <td><a href="@Util2.Org/@m.OrgId">@m.OrgName</a></td>
+                                    <td>@m.MemberStatus</td>
+                                    <td class="text-center">@m.Gender</td>
+                                    <td class="text-center">@m.Grade</td>
+                                    <td>@m.Age</td>
+                                    <td>@m.DOB</td>
+                                    <td>@m.Request</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="visible-xs-block">
+            <input type="submit" class="btn btn-primary btn-block" id="move" name="move" value="Move" />
+            <a href="#" class="btn btn-default btn-block EmailNotices"><i class="fa fa-envelope-o"></i> Email Room Notices(@Model.MovedCount())</a>
+            <hr/>
+            @if (User.IsInRole("Admin"))
+            {
+                <a href="#" class="btn btn-default btn-block ResetMoved">Reset Email Notices</a>
+            }
+        </div>
+        @Html.Hidden("Sort")
+        @Html.Hidden("Dir")
+    </div>
 </div>
-<div class="floatclear"></div>
-<div><input id="SelectAll" type="checkbox" /> Select All</div>
-<table id="list" class="@ViewExtensions2.GridClass">
-  <thead>
-    <tr>
-      <th><a href="#" class="sort">Mixed</a></th>
-      <th class="left"><a href="#" class="sort">Name</a></th>
-      <th class="left"><a href="#" class="sort">Organization</a></th>
-      <th>Type</th>
-      <th><a href="#" class="sort">Gender</a></th>
-      <th><a href="#" class="sort">Grade</a></th>
-      <th>Age</th>
-      <th><a href="#" class="sort">DOB</a></th>
-      <th class="left">Request</th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach (var m in Model.Members())
-    {
-      <tr>
-        <td><input name="List" type="checkbox" @m.Checked value="@m.PeopleId.@m.OrgId" class="check" /></td>
-        <td><a href="/Person2/@m.PeopleId">@m.Name</a></td>
-        <td><a href="@Util2.Org/@m.OrgId">@m.OrgName</a></td>
-        <td>@m.MemberStatus</td>
-        <td class="center">@m.Gender</td>
-        <td class="center">@m.Grade</td>
-        <td>@m.Age</td>
-        <td>@m.DOB</td>
-        <td>@m.Request</td>
-      </tr>
-    }
-  </tbody>
-</table>

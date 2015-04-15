@@ -3,16 +3,6 @@
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
 
-    var extraSmallDevice = $('.device-xs').is(':visible');
-    var smallDevice = $('.device-sm').is(':visible');
-    if (extraSmallDevice || smallDevice) {
-        $('#Schedule').val($('#ScheduleIso').val());
-        $('#Schedule').attr('type', 'datetime-local');
-    }
-    else {
-        $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' }, minDate: '@DateTime.UtcNow.ToString("o")' });
-    }
-
     var currentDiv = null;
     
     CKEDITOR.replace('htmleditor', {

@@ -1,15 +1,14 @@
 ﻿@using CmsWeb
 @model CmsWeb.Models.OrgMembersModel
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "Org Members Management";
-}
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/Org/OrgMembers.js")
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Manage Organization Members";
+    ViewBag.PageHeader = "Manage Organization Members";
 }
 <form id="form" method="post" action="/OrgMembers/Move">
     @Html.Partial("List", Model)
 </form>
-
-
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/js/org/org-members.js")
+}

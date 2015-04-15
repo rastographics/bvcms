@@ -168,5 +168,17 @@
 {
     @ViewExtensions2.CKEditor()
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
-    @Fingerprint.Script("/Content/touchpoint/js/email/compose.js")    
+    @Fingerprint.Script("/Content/touchpoint/js/email/compose.js") 
+    <script type="text/javascript">
+        $(function () {
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (extraSmallDevice || smallDevice) {
+                $('#Schedule').val($('#ScheduleIso').val());
+                $('#Schedule').attr('type', 'datetime-local');
+            } else {
+                $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' }, minDate: '@DateTime.UtcNow.ToString("o")' });
+            }
+        });
+    </script>   
 }
