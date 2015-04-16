@@ -12,7 +12,6 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using CmsData;
 using CmsWeb.Code;
-using CmsWeb.Framework;
 using CmsWeb.Models;
 using Elmah;
 using StackExchange.Profiling;
@@ -34,9 +33,7 @@ namespace CmsWeb
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             RouteTable.Routes.RouteExistingFiles = true;
             HttpRuntime.Cache.Remove("BuildDate");
-            ViewEngines.Engines.Clear();
-            ViewEngines.Engines.Add(new CmsViewEngine(true));
-
+            
             MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
             MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
 

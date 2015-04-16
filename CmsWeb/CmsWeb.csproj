@@ -509,7 +509,6 @@
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
-    <Compile Include="Framework\CmsViewEngine.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
@@ -1024,7 +1023,6 @@
     <Content Include="Areas\Main\Views\Task\Row.cshtml" />
     <Content Include="Areas\Main\Views\Task\Columns.cshtml" />
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
-    <Content Include="Areas\People\Views\Person\Toolbar\Gear.touch.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\Text0.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
@@ -2329,19 +2327,9 @@
     <Content Include="Views\Home\PyScript.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Shared\NavBar.cshtml" />
-    <Content Include="Views\Shared\Menu\People.touch.cshtml" />
-    <Content Include="Views\Shared\Menu\Organization.touch.cshtml" />
-    <Content Include="Views\Shared\Menu\Reports.touch.cshtml" />
-    <Content Include="Views\Shared\Menu\Admin.touch.cshtml" />
-    <Content Include="Views\Shared\Menu\Help.touch.cshtml" />
     <Content Include="Views\Shared\PagerTop.cshtml" />
     <Content Include="Views\Shared\PagerBottom.cshtml" />
     <Content Include="Views\Shared\Pagination.cshtml" />
-    <Content Include="Views\Shared\Toolbar\Toolbar.touch.cshtml" />
-    <Content Include="Views\Shared\Toolbar\Email.touch.cshtml" />
-    <Content Include="Views\Shared\Toolbar\Reports.touch.cshtml" />
-    <Content Include="Views\Shared\Toolbar\Gear.touch.cshtml" />
-    <Content Include="Views\Shared\Toolbar\GearStandard.touch.cshtml" />
     <Content Include="Views\Shared\SearchBox.cshtml" />
     <Content Include="Views\Error\400.cshtml" />
     <Content Include="Views\Error\401.cshtml" />
@@ -2443,7 +2431,6 @@
     <Content Include="Content\touchpoint\src\less\dropdown-large.less" />
     <Content Include="Content\touchpoint\src\less\stats-panel.less" />
     <Content Include="Content\touchpoint\src\less\footers.less" />
-    <Content Include="Views\Shared\Toolbar\ToolbarMyData.touch.cshtml" />
     <None Include="Web.bvcms.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

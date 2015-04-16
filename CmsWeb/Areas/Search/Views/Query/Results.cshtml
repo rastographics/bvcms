@@ -12,7 +12,7 @@
         <h5>@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h5>
     </div>
     <div class="box-content">
-        @Html.Partial("Toolbar/Toolbar.touch")
+        @Html.Partial("Toolbar/Toolbar")
         <h4 class="visible-xs-block">@Model.Count().ToString("N0") Result@(Model.Count() == 1 ? "" : "s")&nbsp;&nbsp;<small>generated @DateTime.Now.FormatDateTm()</small></h4>
         @Html.Partial("PagerTop", Model)
         <div class="table-responsive">

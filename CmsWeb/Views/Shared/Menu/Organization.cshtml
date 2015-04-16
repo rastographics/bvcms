@@ -1,5 +1,5 @@
 ﻿<li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Organization</a>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="visible-xs-inline"><i class="fa fa-group"></i>&nbsp;&nbsp;</span><span class="hidden-lg hidden-xs">Orgs</span><span class="visible-lg-inline visible-xs-inline">Organizations</span> <span class="caret"></span></a>
     <ul class="dropdown-menu">
         @Helper.LiAnchorLink("Search / Manage", "/OrgSearch/")
         @if (User.IsInRole("Edit"))
@@ -7,12 +7,20 @@
             <li>@Helper.JQueryIdLink("Add New Organization", "addorg")</li>
             @Helper.LiAnchorLink("Manage Org Members", "/OrgMembers/")
         }
-        @Helper.LiAnchorLink("Coupons", "/Coupons/", User.IsInRole("Coupon"))
+        @Helper.LiAnchorLink("Coupons", "/Coupon/List", User.IsInRole("Coupon"))
         @Helper.LiAnchorLink("Manage Promotion", "/Promotion/", User.IsInRole("Edit"))
-        <li class="space"></li>
-        @foreach (var o in Util2.MostRecentOrgs)
+        @{
+            var recentOrgs = Util2.MostRecentOrgs;
+        }
+        @if (recentOrgs.Any())
         {
-            @Helper.LiAnchorLink(o.Name, Util2.Org + "/" + o.Id)
+            <li class="divider"></li>
+            <li class="dropdown-header">Recent</li>
+            foreach (var o in Util2.MostRecentOrgs)
+            {
+                <li class="disabled"><a href="#">@o.Name</a></li>
+                @*@Helper.LiAnchorLink(o.Name, "/Organization/" + o.Id)*@
+            }
         }
     </ul>
 </li>

@@ -140,7 +140,7 @@
     </div>
     <div class="col-sm-8 col-md-9 col-lg-10">
         <div id="toolbar-container">
-            @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar.touch", Model.Users) : Html.Partial("Toolbar/ToolbarMyData.touch", Model.Users))
+            @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
         </div>
         <div class="hidden-xs">
             @Html.Partial("Personal/Header", Model)
