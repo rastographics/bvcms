@@ -804,7 +804,7 @@
         var a = $(this);
         var f = a.closest("form");
         $.post(a.attr("href"), null, function (ret) {
-            a.parent().prepend(ret);
+            a.parent().prev().append(ret);
             $.InitFunctions.movequestions();
             $.InitFunctions.timepicker();
         });
