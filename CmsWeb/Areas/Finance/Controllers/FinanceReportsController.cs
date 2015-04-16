@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             return new EpplusResult(ep, "PledgeFulfillment2.xlsx");
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult DonorTotalSummaryOptions()
         {
             var m = new DonorTotalSummaryOptionsModel
