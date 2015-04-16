@@ -8,8 +8,7 @@
             @Helper.LiAnchorLink("Manage Org Members", "/OrgMembers/")
         }
         @Helper.LiAnchorLink("Coupons", "/Coupon/List", User.IsInRole("Coupon"))
-        <li class="disabled"><a href="#">Manage Promotion</a></li>
-        @*@Helper.LiAnchorLink("Manage Promotion", "/Promotion/", User.IsInRole("Edit"))*@
+        @Helper.LiAnchorLink("Manage Promotion", "/Promotion/", User.IsInRole("Edit"))
         @{
             var recentOrgs = Util2.MostRecentOrgs;
         }

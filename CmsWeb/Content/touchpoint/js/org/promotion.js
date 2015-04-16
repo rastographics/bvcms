@@ -1,5 +1,16 @@
 ﻿$(function () {
 
+    var lastChecked = null;
+    $(document).on("click", "input.check", null, function (e) {
+        if (e.shiftKey && lastChecked !== null) {
+            var start = $('input.check').index(this);
+            var end = $('input.check').index(lastChecked);
+            $('input.check').slice(Math.min(start, end), Math.max(start, end) + 1).prop("checked", true);
+        }
+        lastChecked = this;
+        $.UpdateTotals();
+    });
+
     $('#Promotions > thead a.sortable').click(function (ev) {
         ev.preventDefault();
         var newsort = $(this).text();
@@ -68,11 +79,40 @@
         $('#med').text(med);
         $('#low').text(low);
 
-        $('#pboys').text((boys / total * 100).toFixed(0) + '%');
-        $('#pgirls').text((girls / total * 100).toFixed(0) + '%');
-        $('#phigh').text((high / total * 100).toFixed(0) + '%');
-        $('#pmed').text((med / total * 100).toFixed(0) + '%');
-        $('#plow').text((low / total * 100).toFixed(0) + '%');
+        var pboys = (boys / total * 100).toFixed(0);
+        if (isNaN(pboys)) {
+            $('#pboys').text('0%');
+        } else {
+            $('#pboys').text(pboys + '%');
+        }
+
+        var pgirls = (girls / total * 100).toFixed(0);
+        if (isNaN(pgirls)) {
+            $('#pgirls').text('0%');
+        } else {
+            $('#pgirls').text(pgirls + '%');
+        }
+
+        var phigh = (high / total * 100).toFixed(0);
+        if (isNaN(phigh)) {
+            $('#phigh').text('0%');
+        } else {
+            $('#phigh').text(phigh + '%');
+        }
+        
+        var pmed = (med / total * 100).toFixed(0);
+        if (isNaN(pmed)) {
+            $('#pmed').text('0%');
+        } else {
+            $('#pmed').text(pmed + '%');
+        }
+
+        var plow = (low / total * 100).toFixed(0);
+        if (isNaN(plow)) {
+            $('#plow').text('0%');
+        } else {
+            $('#plow').text(plow + '%');
+        }
     }
     $.UpdateTotals();
 
