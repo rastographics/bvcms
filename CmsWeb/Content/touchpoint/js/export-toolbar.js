@@ -102,4 +102,14 @@
         return true;
     });
 
+    $('button.dropdown-toggle').click(function (e) {
+        $("li.hideAlt").hide();
+    });
+
+    $(document).keydown(function (e) {
+        if (e.keyCode == 17 && $("ul.dropdown-menu").is(':visible')) {
+            $("li.hideAlt").not(".hidy").show();
+        }
+    });
+
 });
