@@ -14,12 +14,10 @@
     if (numbers.Any())
     {
         <div class="modal-body">
-            <table>
-                <tr>
-                    <td align="right">Number:</td>
-                    <td align="left">@Html.DropDownList("newNumber", new SelectList(numbers, "Number", "Description"))</td>
-                </tr>
-            </table>
+            <div class="form-group">
+                @Html.Label("newNumber", "Number", new { @class="control-label" })
+                @Html.DropDownList("newNumber", new SelectList(numbers, "Number", "Description"), new { @class="form-control" })
+            </div>
         </div>
         <div class="modal-footer">
             <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
