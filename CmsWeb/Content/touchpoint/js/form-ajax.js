@@ -1,14 +1,16 @@
 ﻿$(function () {
 
     $.AttachFormElements = function () {
-        $("form.ajax input.ajax-typeahead").typeahead({
-            minLength: 3,
-            source: function (query, process) {
-                return $.post($("input:focus").data("link") + "?query=" + query, function (data) {
-                    return process(data);
-                });
-            }
-        });
+        if ($("form.ajax input.ajax-typeahead").length > 0) {
+            $("form.ajax input.ajax-typeahead").typeahead({
+                minLength: 3,
+                source: function (query, process) {
+                    return $.post($("input:focus").data("link") + "?query=" + query, function (data) {
+                        return process(data);
+                    });
+                }
+            });
+        }
         $.InitializeDateElements();
     };
 
@@ -279,8 +281,12 @@
                     else if ($(form).hasClass("ajax")) {
                         var q = f.serialize();
                         $.post(form.action, q, function (ret) {
-                            if (ret)
-                                swal("Error!", ret, "error");
+                            if (ret) {
+                                if (!$(form).hasClass("ignoreResult")) {
+                                    swal(ret);
+                                }
+                            }
+                                
                             if ($a.data("callback")) {
                                 $.InitFunctions[$a.data("callback")]($a);
                             }
@@ -354,16 +360,6 @@
 
     if (!$.InitFunctions)
         $.InitFunctions = {};
-
-    //$.fn.jqdatepicker = function () {
-    //    this.datepicker({
-    //        autoclose: true,
-    //        orientation: "auto",
-    //        forceParse: false,
-    //        format: $.dtoptions.format
-    //    });
-    //    return this;
-    //};
 
     $.resizeModalBackDrop = function () {
         // resize modal backdrop height.
