@@ -371,6 +371,10 @@
     <Compile Include="Areas\Org\Models\Organization\PrevMemberModel.cs" />
     <Compile Include="Areas\Org\Models\Organization\ScheduleInfo.cs" />
     <Compile Include="Areas\Org\Models\Organization\VisitorModel.cs" />
+    <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInCampus.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInInformation.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInSettingsEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileHomeAction.cs" />
@@ -501,6 +505,7 @@
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
+    <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
@@ -2137,6 +2142,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="Scripts\_references.js" />
+    <Content Include="Views\Shared\Menu\ReportsMenuCustom.xml" />
+    <Content Include="Views\Shared\Menu\ReportsMenu.xml" />
     <Content Include="Views\Shared\Pager3.cshtml" />
     <Content Include="Views\Shared\NotFound.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Boolean.cshtml" />

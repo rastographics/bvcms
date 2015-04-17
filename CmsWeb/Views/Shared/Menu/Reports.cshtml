@@ -1,21 +1,30 @@
-﻿<li class="dropdown">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports</a>
-    <ul class="dropdown-menu">
-        @Helper.LiAnchorLink("Vital Stats", "/Reports/VitalStats")
-        @Helper.LiAnchorLink("Week at a Glance", "/Reports/ChurchAttendance", target: "_blank")
-        @Helper.LiAnchorLink("Average Week at a Glance", "/Reports/ChurchAttendance2")
-        @Helper.LiAnchorLink("Weekly Decisions", "/Reports/WeeklyDecisions", true, "_blank")
-        @Helper.LiAnchorLink("Decision Summary", "/Reports/Decisions", true, "_blank")
-        <li class="space"></li>
-        @Helper.LiAnchorLink("First Time Attenders", "/Home/NthTimeAttenders/1")
-        @Helper.LiAnchorLink("Second Time Attenders", "/Home/NthTimeAttenders/2")
-        @Helper.LiAnchorLink("Third Time Attenders", "/Home/NthTimeAttenders/3")
-        <li class="space"></li>
-        @Helper.LiAnchorLink("Extra Values Summary", "/ExtraValue/Summary/People")
-        @Helper.LiAnchorLink("Extra Values Summary Family", "/ExtraValue/Summary/Family")
-	@if(Util2.UseNewOrg)
-	{
-        @Helper.LiAnchorLink("Extra Values Summary Orgs", "/ExtraValue/Summary/Organization")
-	}
-    </ul>
+﻿@using CmsWeb.Code
+@{
+  var c1 = ReportsMenuModel.CustomItems1;
+  var c2 = ReportsMenuModel.CustomItems2;
+  var c3 = ReportsMenuModel.Items;
+  var ncols = 1
+    + (c1.HasValue() ? 1 : 0)
+    + (c2.HasValue() ? 1 : 0);
+}
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports</a>
+  <ul class="dropdown-menu dropdown-div-reports-@ncols">
+    <li>
+      <div class="row-fluid">
+        @Column(c1, ncols)
+        @Column(c2, ncols)
+        @Column(c3, ncols)
+      </div>
+    </li>
+  </ul>
 </li>
+@helper Column(string c, int ncols)
+{
+  if (c.HasValue())
+  {
+    <ul class="span@(12 / ncols) unstyled pull-left">
+      @Html.Raw(c)
+    </ul>
+  }
+}

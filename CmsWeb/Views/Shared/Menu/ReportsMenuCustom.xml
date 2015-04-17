@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ReportsMenu>
+  <Column1>
+<!--
+    <Header>Statistics</Header>
+    <Report link="/Reports/VitalStats">Vital Stats</Report>
+-->
+  </Column1>
+  <Column2>
+  </Column2>
+</ReportsMenu>
