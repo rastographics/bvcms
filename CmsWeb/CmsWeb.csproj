@@ -822,7 +822,10 @@
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
     <Content Include="Content\touchpoint\js\org\org-members.js" />
+    <Content Include="Content\touchpoint\js\org\organization.js" />
+    <Content Include="Content\touchpoint\js\org\org-member-dialog.js" />
     <Content Include="Content\touchpoint\js\org\promotion.js" />
+    <Content Include="Content\touchpoint\js\org\reg-setting.js" />
     <Content Include="Content\touchpoint\js\people\contact.js" />
     <Content Include="Content\touchpoint\js\people\person.js" />
     <Content Include="Content\touchpoint\js\people\task.js" />
