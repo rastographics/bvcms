@@ -13,9 +13,7 @@
             <br/>
             @if (!string.IsNullOrWhiteSpace(Model.Error))
             {
-                <div class="alert alert-danger">
-                    @Html.Raw(Model.Error)
-                </div> 
+                @Html.Raw(Model.Error)
             }
             <div class="row">
                 <div class="col-sm-6">

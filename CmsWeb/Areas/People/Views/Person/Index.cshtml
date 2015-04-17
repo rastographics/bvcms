@@ -135,7 +135,7 @@
         <div id="toolbar-container">
             @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
         </div>
-        @Html.Partial("Personal/Header", Model)
+        <div id="profile-header">@Html.Partial("Personal/Header", Model)</div>
         <br/>
         <ul class="nav nav-tabs" id="person-tabs">
             <li class="active"><a href="#personal" aria-controls="personal" data-toggle="tab">Personal</a></li>

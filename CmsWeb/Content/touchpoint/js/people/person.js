@@ -85,7 +85,7 @@
 
     $('body').on('click', 'a.editaddr', function (ev) {
         ev.preventDefault();
-        $("<form class='validate ajax' />").load($(this).attr("href"), {}, function () {
+        $("<form class='modal-form validate ajax' />").load($(this).attr("href"), {}, function () {
             var f = $(this);
             $('#empty-dialog').html(f);
             $('#empty-dialog').modal("show");
