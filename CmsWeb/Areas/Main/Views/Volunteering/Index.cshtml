@@ -72,6 +72,12 @@
         <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>Status Code:</b></td>
         <td class="top">@(Model.V.VolApplicationStatus == null ? "Unknown" : Model.V.VolApplicationStatus.Description)</td>
     </tr>
+    <tr>
+        <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>Last MVR Check:</b></td>
+        <td class="top">@( Model.V.MVRProcessedDate != null ? Model.V.MVRProcessedDate.Value.ToString("d") : "")</td>
+        <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>MVR Status Code:</b></td>
+        <td class="top">@(Model.V.MVRStatusId == null ? "Unknown" : Model.V.StatusMvr.Description)</td>
+    </tr>
 </table>
 <br />
 <form action="/Volunteering/Edit/@Model.V.PeopleId">
