@@ -18,12 +18,14 @@
 </form>
 @helper FormAction()
 {
-  <div class="pull-right">
-    <a href="/Org/QuestionsHelpToggle/@Model.OrgId" class="btn ajax">@(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
-    @if (User.IsInRole("Edit"))
-    {
-      <a href="/Org/QuestionsEdit/@Model.OrgId" class="btn btn-primary edit ajax">Edit</a>
-    }
-  </div>
-  @Html.DivValidationMessage("Form", "inline")
+    <div class="row">
+        <div class="pull-right">
+            <a href="/Org/QuestionsHelpToggle/@Model.OrgId" class="btn ajax">@(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/QuestionsEdit/@Model.OrgId" class="btn btn-primary edit ajax">Edit</a>
+            }
+        </div>
+    </div>
+   @Html.DivValidationMessage("Form", "inline")
 }

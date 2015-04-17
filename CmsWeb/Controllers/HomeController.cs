@@ -245,20 +245,10 @@ namespace CmsWeb.Controllers
         }
 
         [HttpGet, Route("~/PyScript/{name}")]
-        public ActionResult PyScript(string name)
+        public ActionResult PyScript(string name, string p1, string p2, string v1, string v2)
         {
             try
             {
-//                var q = new QueryFunctions(DbUtil.Db);
-//                var s = q.SqlNameCountArray("test", @"
-//SELECT ms.Description Name, COUNT(*) Cnt
-//FROM dbo.People p
-//JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId
-//GROUP BY ms.Description
-//");
-//                Response.ContentType = "text/plain";
-//                return Content(s);
-
 #if DEBUG2
                 var script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
 #else
@@ -266,6 +256,10 @@ namespace CmsWeb.Controllers
 #endif
                 if (!script.HasValue())
                     return Message("no script named " + name);
+                script = script.Replace("@P1", p1 ?? "NULL")
+                    .Replace("@P2", p2 ?? "NULL")
+                    .Replace("V1", v1 ?? "None")
+                    .Replace("V2", v2 ?? "None");
                 var pe = new PythonEvents(Util.Host, script);
                 return View(pe);
             }
