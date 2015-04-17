@@ -45,6 +45,12 @@
             <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>Status Code:</b></td>
             <td class="top">@Html.DropDownList("statusId", new SelectList( s, "Id", "Description", Model.V.StatusId))</td>
         </tr>
+        <tr>
+            <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>Last MVR Check:</b></td>
+            <td class="top">@Html.TextBox("mvrDate", Model.V.MVRProcessedDate.FormatDate(), new { @class = "datepicker" })</td>
+            <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>MVR Status Code:</b></td>
+            <td class="top">@Html.DropDownList("mvrStatusId", new SelectList(s, "Id", "Description", Model.V.MVRStatusId))</td>
+        </tr>
     </table>
     <br />
     <input class="bt" type="submit" value="Save" /> <input class="bt" type="button" value="Cancel" onclick="redirect();" />
