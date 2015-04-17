@@ -193,12 +193,14 @@
                     showCancelButton: true,
                     confirmButtonClass: "btn-danger",
                     confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
+                    closeOnConfirm: true
                 },
                function () {
+                   $('#empty-dialog').modal("hide");
+                   $.block();
                    $.post(a.attr("href"), {}, function (ret) {
+                       $.unblock();
                        $("#related-families-div").html(ret);
-                       $('#empty-dialog').modal("hide");
                    });
                });
                return false;
