@@ -125,9 +125,6 @@
                 </div>
             }
         </div>
-        <div class="visible-xs-block">
-            @Html.Partial("Personal/Header", Model)
-        </div>
         <div id="sidebar">
             @Html.Partial("Family/Members", Model.FamilyModel)
             @Html.Partial("Family/Related", Model.FamilyModel)
@@ -142,9 +139,7 @@
         <div id="toolbar-container">
             @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
         </div>
-        <div class="hidden-xs">
-            @Html.Partial("Personal/Header", Model)
-        </div>
+        @Html.Partial("Personal/Header", Model)
         <br/>
         <ul class="nav nav-tabs" id="person-tabs">
             <li class="active"><a href="#personal" aria-controls="personal" data-toggle="tab">Personal</a></li>
