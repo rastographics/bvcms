@@ -129,10 +129,6 @@
             @Html.Partial("Family/Members", Model.FamilyModel)
             @Html.Partial("Family/Related", Model.FamilyModel)
             @Html.Partial("Family/Photo", Model)
-            @if (User.IsInRole("Access"))
-            {
-                @Html.Partial("Family/ExtraValues", Model)
-            }
         </div>
     </div>
     <div class="col-sm-8 col-md-9 col-lg-10">
@@ -206,9 +202,4 @@
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-typeahead/js/bootstrap3-typeahead.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/people/person.js")
-    <script type="text/javascript">
-        $(function () {
-            $("#person-tabs").tabdrop();
-        });
-    </script>
 }
