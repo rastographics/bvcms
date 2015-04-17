@@ -42,7 +42,7 @@
                             <td>@oo.FromEmail</td>
                             <td>@oo.DateX.FormatDate()</td>
                             <td>
-                                <a class="ajax btn btn-danger btn-sm" data-confirm="Are you sure you want to now receive emails from @oo.FromEmail?" href="/Person2/DeleteOptout/@oo.ToPeopleId?email=@Html.Encode(oo.FromEmail)"><i class="fa fa-trash"></i> Delete</a>
+                                <a class="ajax btn btn-danger btn-sm" data-confirm="Are you sure you want to now receive emails from @oo.FromEmail?" data-confirm-type="warning" data-confirm-btn-class="btn-danger" data-confirm-btn-text="Yes, delete!" href="/Person2/DeleteOptout/@oo.ToPeopleId?email=@Html.Encode(oo.FromEmail)"><i class="fa fa-trash"></i> Delete</a>
                             </td>
                         </tr>
                     }

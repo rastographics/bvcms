@@ -30,8 +30,8 @@
                                 @if (c.Reversable)
                                 {
                                     <td style="width: 50px;">
-                                        <a class="ajax btn btn-default btn-sm" data-confirm="Are you sure you want to reverse this change?"
-                                           href="/Person2/Reverse/@Model.Person.PeopleId/@c.pf/@c.Field?value=@c.Before"><i class="fa fa-undo"></i> Reverse</a>
+                                        <a class="ajax btn btn-default btn-sm" data-confirm="Are you sure you want to reverse this change?" data-confirm-type="warning" data-confirm-btn-class="btn-warning" data-confirm-btn-text="Yes, reverse it!"
+                                           href="/Person2/Reverse/@Model.Person.PeopleId/@c.pf/@c.Field?value=@c.Before"><i class="fa fa-undo"></i>Reverse</a>
                                     </td>
                                 }
                                 else

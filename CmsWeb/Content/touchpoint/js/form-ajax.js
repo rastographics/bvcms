@@ -91,12 +91,12 @@
         var t = $(this);
         if (t.data("confirm"))
             swal({
-                title: "Are you sure?",
-                text: t.data("confirm"),
-                type: "warning",
+                title: t.data("confirm"),
+                text: t.data("confirm-text"),
+                type: t.data("confirm-type"),
                 showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes, delete!",
+                confirmButtonClass: t.data("confirm-btn-class"),
+                confirmButtonText: t.data("confirm-btn-text"),
                 closeOnConfirm: true
             },
             function () {
@@ -130,12 +130,12 @@
         var t = $(this);
         if (t.data("confirm"))
             swal({
-                title: "Are you sure?",
-                text: t.data("confirm"),
-                type: "warning",
+                title: t.data("confirm"),
+                text: t.data("confirm-text"),
+                type: t.data("confirm-type"),
                 showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes, delete!",
+                confirmButtonClass: t.data("confirm-btn-class"),
+                confirmButtonText: t.data("confirm-btn-text"),
                 closeOnConfirm: true
             },
             function () {
@@ -292,11 +292,20 @@
                             }
                         });
                     } else {
-                        if ($a.data("confirm"))
-                            bootbox.confirm($a.data("confirm"), function (ret) {
-                                if (!ret)
-                                    form.submit();
+                        if ($a.data("confirm")) {
+                            swal({
+                                title: t.data("confirm"),
+                                text: t.data("confirm-text"),
+                                type: t.data("confirm-type"),
+                                showCancelButton: true,
+                                confirmButtonClass: t.data("confirm-btn-class"),
+                                confirmButtonText: t.data("confirm-btn-text"),
+                                closeOnConfirm: true
+                            },
+                            function () {
+                                form.submit();
                             });
+                        }
                         else
                             form.submit();
                         if ($a.data("callback")) {
