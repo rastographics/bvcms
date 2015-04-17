@@ -1,5 +1,12 @@
 ﻿$(function () {
 
+    $.fn.loadWith = function (u, f) {
+        var c = $(this);
+        $.post(u, function (d) {
+            c.replaceWith(d).ready(f);
+        });
+    };
+
     $('#addorg').click(function (e) {
         e.preventDefault();
         $("<div />")
