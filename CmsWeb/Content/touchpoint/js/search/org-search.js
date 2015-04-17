@@ -96,6 +96,7 @@
         $.post($('#search').attr('href'), q, function (ret) {
             $('#results').replaceWith(ret).ready(function () {
                 $.fmtTable();
+                $("#totalcount").text($("#totcnt").val());
                 $.unblock();
             });
         });
