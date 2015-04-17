@@ -209,10 +209,12 @@
             showCancelButton: true,
             confirmButtonClass: "btn-warning",
             confirmButtonText: "Yes, apply change!",
-            closeOnConfirm: false
+            closeOnConfirm: true
         },
         function () {
+            $.block();
             $.post('/OrgSearch/ApplyType/' + $("#TargetType").val(), q, function (ret) {
+                $.unblock();
                 if (ret !== "") {
                     if (ret === "ok")
                         $.getTable();
@@ -238,6 +240,7 @@
             $('#TagDiv').html(ret);
             $("#NewDiv").val("");
             $('#new-div-modal').modal('hide');
+            $.getTable();
         });
         return false;
     });
