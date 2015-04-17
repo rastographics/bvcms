@@ -42,24 +42,33 @@
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
-                                    <label for="usedfilter" class="control-label">Status</label>
-                                    @Html.DropDownList("usedfilter", Model.CouponStatus(), new { @class = "form-control" })
+                                    <label for="startdate" class="control-label">From Date</label>
+                                    <div class="input-group date">
+                                        @Html.TextBox("startdate", Model.startdate, new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                        @Html.Hidden("startdateIso", Model.startdate, new { disabled = "disabled" })
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-6">
                                 <div class="form-group">
-                                    <label for="SearchParameters_StartDate" class="control-label">Date</label>
+                                    <label for="enddate" class="control-label">To Date</label>
                                     <div class="input-group date">
-                                        @Html.TextBox("date", Model.date, new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                        @Html.Hidden("dateIso", Model.date, new { disabled = "disabled" })
+                                        @Html.TextBox("enddate", Model.enddate, new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                        @Html.Hidden("enddateIso", Model.enddate, new { disabled = "disabled" })
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="form-group">
+                                    <label for="usedfilter" class="control-label">Status</label>
+                                    @Html.DropDownList("usedfilter", Model.CouponStatus(), new { @class = "form-control" })
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-lg-5 col-lg-offset-7 col-md-5 col-md-offset-7 col-sm-6 col-sm-offset-6">
                                 <div class="pull-right">
-                                    <button name="submit" type="submit" class="btn btn-default"><i class="fa fa-cloud-download"></i> Download to Excel</button> <input name="submit" type="submit" class="btn btn-primary" value="Search" />
+                                     <a id="reset" href="#" class="btn btn-default">Reset</a> <button name="submit" type="submit" class="btn btn-default"><i class="fa fa-cloud-download"></i> Download to Excel</button> <input name="submit" type="submit" class="btn btn-primary" value="Search" />
                                 </div>
                             </div>
                         </div>
@@ -120,7 +129,7 @@
                                     <td style="width: 50px;">
                                         @if ((!item.Used.HasValue || item.Code.Length != 12) && !item.Canceled.HasValue)
                                         {
-                                            <a href="@Url.Action("Cancel", "Coupon", new { id = item.Code })" class="confirm btn btn-warning"><i class="fa fa-times-circle"></i> Cancel</a>
+                                            <a href="@Url.Action("Cancel", "Coupon", new { id = item.Code })" class="confirm btn btn-warning btn-sm"><i class="fa fa-times-circle"></i> Cancel</a>
                                         }
                                     </td>
                                 </tr>
@@ -155,6 +164,17 @@
                 function () {
                     document.location.href = url;
                 });
+            });
+
+            $('#reset').click(function (e) {
+                $('#name').val('');
+                $('#useridfilter').val(0);
+                $('#regidfilter').select2('val', 0);
+                $('#startdate').val('');
+                $('#startdateIso').val('');
+                $('#enddate').val('');
+                $('#enddateIso').val('');
+                $('#usedfilter').val('(not specified)');
             });
         });
     </script>
