@@ -74,7 +74,7 @@
     $('body').on('click', '#AddTasks', function (ev) {
         ev.preventDefault();
         var message = "This will add a task for all listed people.";
-        if (window.location.pathname.contains("/Person"))
+        if (window.location.pathname.indexOf("/Person") > -1)
             message = "This will add a task for this person.";
         var url = this.href;
         
@@ -85,7 +85,7 @@
             showCancelButton: true,
             confirmButtonClass: "btn-success",
             confirmButtonText: "Yes, add task!",
-            closeOnConfirm: false
+            closeOnConfirm: true
         },
         function () {
             $.block();
