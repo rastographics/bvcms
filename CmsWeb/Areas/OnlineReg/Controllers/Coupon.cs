@@ -4,8 +4,6 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
-using CmsWeb.Areas.Manage.Controllers;
-using System.Text;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {

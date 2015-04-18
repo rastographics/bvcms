@@ -65,6 +65,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("no registrants found");
             try
             {
+                OnlineRegModel.LogOutOfOnlineReg();
                 var view = m.ConfirmTransaction(transactionId);
                 m.UpdateDatum(completed: true);
                 SetHeaders(m);

@@ -548,7 +548,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
         }
-        public void ConfirmManageSubscriptions()
+        public ConfirmEnum ConfirmManageSubscriptions()
         {
             var p = List[0];
             if (p.IsNew)
@@ -568,8 +568,9 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), "Manage Your Subscriptions", message);
+            return ConfirmEnum.ConfirmAccount;
         }
-        public void ConfirmPickSlots()
+        private ConfirmEnum ConfirmPickSlots()
         {
             var p = List[0];
             if (p.IsNew)
@@ -590,8 +591,10 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
+            URL = null;
+            return ConfirmEnum.ConfirmAccount;
         }
-        public void SendLinkForPledge()
+        internal ConfirmEnum SendLinkForPledge()
         {
             var p = List[0];
             if (p.IsNew)
@@ -611,8 +614,9 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
+            return ConfirmEnum.ConfirmAccount;
         }
-        public void SendLinkToManageGiving()
+        internal ConfirmEnum SendLinkToManageGiving()
         {
             var p = List[0];
             if (p.IsNew)
@@ -632,6 +636,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
+            return ConfirmEnum.ConfirmAccount;
         }
         public int GetEntryPoint()
         {

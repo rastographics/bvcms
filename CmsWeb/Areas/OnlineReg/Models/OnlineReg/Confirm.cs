@@ -55,6 +55,7 @@ namespace CmsWeb.Models
 
             try
             {
+                LogOutOfOnlineReg();
                 var view = ConfirmTransaction(ti.TransactionId);
                 switch (view)
                 {
@@ -72,154 +73,171 @@ namespace CmsWeb.Models
             return null;
         }
 
-        public ConfirmEnum ConfirmTransaction(string transactionId)
+        public ConfirmEnum ConfirmTransaction(string TransactionReturn)
         {
             ParseSettings();
             if (List.Count == 0)
                 throw new Exception(" unexpected, no registrants found in confirmation");
-            var ret = ConfirmEnum.Confirm;
-            var managingsubs = ManagingSubscriptions();
-            var choosingslots = ChoosingSlots();
-            var t = Transaction;
-            if (t == null && !managingsubs && !choosingslots)
-            {
-                HistoryAdd("ConfirmTransaction");
-                UpdateDatum(completed: true);
-                var pf = PaymentForm.CreatePaymentForm(this);
-                t = pf.CreateTransaction(DbUtil.Db);
-                TranId = t.Id;
-            }
 
-            if (org != null && org.RegistrationTypeId == RegistrationTypeCode.CreateAccount)
-            {
-                List[0].CreateAccount();
-                ret = ConfirmEnum.ConfirmAccount;
-            }
-            else if (OnlineGiving())
-            {
-                var p = List[0];
-                if (p.IsNew)
-                    p.AddPerson(null, p.org.EntryPointId ?? 0);
+            CreateTransactionIfNeeded();
+            SetConfirmationEmailAddress();
 
-                var staff = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId)[0];
-                var text = p.setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
-                text = text.Replace("{amt}", (t.Amt ?? 0).ToString("N2"));
-                text = text.Replace("{date}", DateTime.Today.ToShortDateString());
-                text = text.Replace("{tranid}", t.Id.ToString());
-                //text = text.Replace("{name}", p.person.Name);
-                text = text.Replace("{account}", "");
-                text = text.Replace("{email}", p.person.EmailAddress);
-                text = text.Replace("{phone}", p.person.HomePhone.FmtFone());
-                text = text.Replace("{contact}", staff.Name);
-                text = text.Replace("{contactemail}", staff.EmailAddress);
-                text = text.Replace("{contactphone}", p.org.PhoneNumber.FmtFone());
-                var re = new Regex(@"(?<b>.*?)<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->(?<e>.*)", RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
-                var match = re.Match(text);
-                var b = match.Groups["b"].Value;
-                var row = match.Groups["row"].Value.Replace("{funditem}", "{0}").Replace("{itemamt}", "{1:N2}");
-                var e = match.Groups["e"].Value;
-                var sb = new StringBuilder(b);
+            if (CreatingAccount())
+                return CreateAccount();
 
-                var desc = "{0}; {1}; {2}".Fmt(
-                        p.person.Name,
-                        p.person.PrimaryAddress,
-                        p.person.PrimaryZip);
-                foreach (var g in p.FundItemsChosen())
-                {
-                    if (g.amt > 0)
-                    {
-                        sb.AppendFormat(row, g.desc, g.amt);
-                        p.person.PostUnattendedContribution(DbUtil.Db, g.amt, g.fundid, desc, tranid: t.Id);
-                    }
-                }
-                t.TransactionPeople.Add(new TransactionPerson
-                {
-                    PeopleId = p.person.PeopleId,
-                    Amt = t.Amt,
-                    OrgId = Orgid,
-                });
-                t.Financeonly = true;
-                if (t.Donate > 0)
-                {
-                    var fundname = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == p.setting.DonationFundId).FundName;
-                    sb.AppendFormat(row, fundname, t.Donate);
-                    t.Fund = p.setting.DonationFund();
-                    p.person.PostUnattendedContribution(DbUtil.Db, t.Donate ?? 0, p.setting.DonationFundId, desc, tranid: t.Id);
-                }
-                sb.Append(e);
-                if (!t.TransactionId.HasValue())
-                {
-                    t.TransactionId = transactionId;
-                    if (testing == true && !t.TransactionId.Contains("(testing)"))
-                        t.TransactionId += "(testing)";
-                }
-                var contributionemail = (from ex in p.person.PeopleExtras
-                                         where ex.Field == "ContributionEmail"
-                                         select ex.Data).SingleOrDefault();
-                if (contributionemail.HasValue())
-                    contributionemail = (contributionemail ?? "").Trim();
-                if (!Util.ValidEmail(contributionemail))
-                    contributionemail = p.person.FromEmail;
+            if (OnlineGiving())
+                return DoOnlineGiving(TransactionReturn);
 
+            if (ManagingSubscriptions())
+                return ConfirmManageSubscriptions();
 
-                var body = sb.ToString();
-                var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId));
-                var mm = new EmailReplacements(DbUtil.Db, body, from);
-                body = mm.DoReplacements(p.person);
+            if (ChoosingSlots())
+                return ConfirmPickSlots();
 
-                Util.SendMsg(Util.SysFromEmail, Util.Host, from, p.setting.Subject, body,
-                    Util.EmailAddressListFromString(contributionemail), 0, p.PeopleId);
-                DbUtil.Db.Email(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
-                    "online giving contribution received",
-                    "see contribution records for {0} ({1})".Fmt(p.person.Name, p.PeopleId));
-                if (p.CreatingAccount == true)
-                    p.CreateAccount();
-            }
-            else if (managingsubs)
-            {
-                ConfirmManageSubscriptions();
-                ret = ConfirmEnum.ConfirmAccount;
-            }
-            else if (choosingslots)
-            {
-                ConfirmPickSlots();
-                URL = null;
-                ret = ConfirmEnum.ConfirmAccount;
-            }
-            else if (OnlinePledge())
-            {
-                SendLinkForPledge();
-                ret = ConfirmEnum.ConfirmAccount;
-            }
-            else if (ManageGiving())
-            {
-                SendLinkToManageGiving();
-                ret = ConfirmEnum.ConfirmAccount;
-            }
-            else
-            {
-                if (!t.TransactionId.HasValue())
-                {
-                    t.TransactionId = transactionId;
-                    if (testing == true && !t.TransactionId.Contains("(testing)"))
-                        t.TransactionId += "(testing)";
-                }
-                EnrollAndConfirm();
-                if (List.Any(pp => pp.PeopleId == null))
-                {
-                    LogOutOfOnlineReg();
-                    throw new Exception("no person");
-                }
-                UseCoupon(t.TransactionId, t.Amt ?? 0);
-            }
-            if (IsCreateAccount() || ManagingSubscriptions())
-                email = List[0].person.EmailAddress;
-            else
-                email = List[0].EmailAddress;
+            if (OnlinePledge())
+                return SendLinkForPledge();
 
-            LogOutOfOnlineReg();
-            return ret;
+            if (ManageGiving())
+                return SendLinkToManageGiving();
+
+            SetTransactionReturn(TransactionReturn);
+            EnrollAndConfirm();
+            CheckForNoPerson();
+            UseCoupon(Transaction.TransactionId, Transaction.Amt ?? 0);
+            return ConfirmEnum.Confirm;
         }
+
+        private ConfirmEnum CreateAccount()
+        {
+            List[0].CreateAccount();
+            return ConfirmEnum.ConfirmAccount;
+        }
+
+        private bool CreatingAccount()
+        {
+            return org != null && org.RegistrationTypeId == RegistrationTypeCode.CreateAccount;
+        }
+
+        private void CheckForNoPerson()
+        {
+            if (List.Any(pp => pp.PeopleId == null))
+            {
+                LogOutOfOnlineReg();
+                throw new Exception("no person");
+            }
+        }
+
+        private void SetTransactionReturn(string TransactionReturn)
+        {
+            if (!Transaction.TransactionId.HasValue())
+            {
+                Transaction.TransactionId = TransactionReturn;
+                if (testing == true && !Transaction.TransactionId.Contains("(testing)"))
+                    Transaction.TransactionId += "(testing)";
+            }
+        }
+
+        private void SetConfirmationEmailAddress()
+        {
+            email = IsCreateAccount() || ManagingSubscriptions()
+                ? List[0].person.EmailAddress
+                : List[0].EmailAddress;
+        }
+
+        private ConfirmEnum DoOnlineGiving(string transactionReturn)
+        {
+            var p = List[0];
+            if (p.IsNew)
+                p.AddPerson(null, p.org.EntryPointId ?? 0);
+
+            var staff = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId)[0];
+            var text = p.setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
+            text = text.Replace("{amt}", (Transaction.Amt ?? 0).ToString("N2"));
+            text = text.Replace("{date}", DateTime.Today.ToShortDateString());
+            text = text.Replace("{tranid}", Transaction.Id.ToString());
+            //text = text.Replace("{name}", p.person.Name);
+            text = text.Replace("{account}", "");
+            text = text.Replace("{email}", p.person.EmailAddress);
+            text = text.Replace("{phone}", p.person.HomePhone.FmtFone());
+            text = text.Replace("{contact}", staff.Name);
+            text = text.Replace("{contactemail}", staff.EmailAddress);
+            text = text.Replace("{contactphone}", p.org.PhoneNumber.FmtFone());
+            var re = new Regex(@"(?<b>.*?)<!--ITEM\sROW\sSTART-->(?<row>.*?)\s*<!--ITEM\sROW\sEND-->(?<e>.*)",
+                RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
+            var match = re.Match(text);
+            var b = match.Groups["b"].Value;
+            var row = match.Groups["row"].Value.Replace("{funditem}", "{0}").Replace("{itemamt}", "{1:N2}");
+            var e = match.Groups["e"].Value;
+            var sb = new StringBuilder(b);
+
+            var desc = "{0}; {1}; {2}".Fmt(
+                p.person.Name,
+                p.person.PrimaryAddress,
+                p.person.PrimaryZip);
+            foreach (var g in p.FundItemsChosen())
+            {
+                if (g.amt > 0)
+                {
+                    sb.AppendFormat(row, g.desc, g.amt);
+                    p.person.PostUnattendedContribution(DbUtil.Db, g.amt, g.fundid, desc, tranid: Transaction.Id);
+                }
+            }
+            Transaction.TransactionPeople.Add(new TransactionPerson
+            {
+                PeopleId = p.person.PeopleId,
+                Amt = Transaction.Amt,
+                OrgId = Orgid,
+            });
+            Transaction.Financeonly = true;
+            if (Transaction.Donate > 0)
+            {
+                var fundname = DbUtil.Db.ContributionFunds.Single(ff => ff.FundId == p.setting.DonationFundId).FundName;
+                sb.AppendFormat(row, fundname, Transaction.Donate);
+                Transaction.Fund = p.setting.DonationFund();
+                p.person.PostUnattendedContribution(DbUtil.Db, Transaction.Donate ?? 0, p.setting.DonationFundId, desc,
+                    tranid: Transaction.Id);
+            }
+            sb.Append(e);
+            if (!Transaction.TransactionId.HasValue())
+            {
+                Transaction.TransactionId = transactionReturn;
+                if (testing == true && !Transaction.TransactionId.Contains("(testing)"))
+                    Transaction.TransactionId += "(testing)";
+            }
+            var contributionemail = (from ex in p.person.PeopleExtras
+                                     where ex.Field == "ContributionEmail"
+                                     select ex.Data).SingleOrDefault();
+            if (contributionemail.HasValue())
+                contributionemail = (contributionemail ?? "").Trim();
+            if (!Util.ValidEmail(contributionemail))
+                contributionemail = p.person.FromEmail;
+
+            var body = sb.ToString();
+            var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId));
+            var mm = new EmailReplacements(DbUtil.Db, body, @from);
+            body = mm.DoReplacements(p.person);
+
+            Util.SendMsg(Util.SysFromEmail, Util.Host, @from, p.setting.Subject, body,
+                Util.EmailAddressListFromString(contributionemail), 0, p.PeopleId);
+            DbUtil.Db.Email(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
+                "online giving contribution received",
+                "see contribution records for {0} ({1})".Fmt(p.person.Name, p.PeopleId));
+            if (p.CreatingAccount == true)
+                p.CreateAccount();
+            return ConfirmEnum.Confirm;
+        }
+
+        private void CreateTransactionIfNeeded()
+        {
+            if (Transaction != null || ManagingSubscriptions() || ChoosingSlots())
+                return;
+            HistoryAdd("ConfirmTransaction");
+            UpdateDatum(completed: true);
+            var pf = PaymentForm.CreatePaymentForm(this);
+            _transaction = pf.CreateTransaction(DbUtil.Db);
+            TranId = _transaction.Id;
+        }
+
         public static void ConfirmDuePaidTransaction(Transaction ti, string transactionId, bool sendmail)
         {
             var Db = DbUtil.Db;
@@ -241,7 +259,7 @@ namespace CmsWeb.Models
                     if (org.IsMissionTrip == true)
                     {
                         Db.GoerSenderAmounts.InsertOnSubmit(
-                            new GoerSenderAmount 
+                            new GoerSenderAmount
                             {
                                 Amount = ti.Amt,
                                 GoerId = pi.PeopleId,
@@ -251,7 +269,7 @@ namespace CmsWeb.Models
                             });
                         var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
                         var fund = setting.DonationFundId;
-                        p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund, 
+                        p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund,
                             "SupportMissionTrip: org={0}; goer={1}".Fmt(org.OrganizationId, pi.PeopleId), typecode: BundleTypeCode.Online);
                     }
                     var pay = amt;
@@ -282,17 +300,17 @@ namespace CmsWeb.Models
 
             var pid = ti.FirstTransactionPeopleId();
             var p0 = Db.LoadPersonById(pid);
-// question: should we be sending to all TransactionPeople?
+            // question: should we be sending to all TransactionPeople?
             if (sendmail)
             {
                 if (p0 == null)
                     Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(Db.StaffEmailForOrg(org.OrganizationId)),
                         "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(
-                                ti.Amt, ti.Description, ti.Amtdue, names), 
+                                ti.Amt, ti.Description, ti.Amtdue, names),
                         Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
                 else
                 {
-                    Db.Email(Db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails), 
+                    Db.Email(Db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails),
                         "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(
                                 ti.Amt, ti.Description, ti.Amtdue, names), false);
                     Db.Email(p0.FromEmail,
