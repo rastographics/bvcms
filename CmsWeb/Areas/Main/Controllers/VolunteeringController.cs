@@ -27,10 +27,10 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-        public ActionResult Update(int id, DateTime? processDate, int statusId, string comments, List<int> approvals)
+		  public ActionResult Update(int id, DateTime? processDate, int statusId, string comments, List<int> approvals, DateTime? mvrDate, int mvrStatusId)
         {
             var m = new VolunteerModel(id);
-            m.Update(processDate, statusId, comments, approvals);
+            m.Update(processDate, statusId, comments, approvals, mvrDate, mvrStatusId);
             return Redirect("/Volunteering/" + id);
         }
 
