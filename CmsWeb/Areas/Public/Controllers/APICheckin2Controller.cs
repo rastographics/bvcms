@@ -111,8 +111,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content("not authorized");
             DbUtil.LogActivity("checkin AddPerson {0} {1} ({2})".Fmt(m.first, m.last, m.dob));
 
-            var f = id > 0 
-                ? DbUtil.Db.Families.Single(fam => fam.FamilyId == id) 
+            var f = id > 0
+                ? DbUtil.Db.Families.Single(fam => fam.FamilyId == id)
                 : new CmsData.Family();
 
             var position = DbUtil.Db.ComputePositionInFamily(m.dob.Age0(), false, id) ?? 10;
@@ -144,24 +144,35 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var psb = new List<ChangeDetail>();
             var fsb = new List<ChangeDetail>();
-            var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == m.zip.Zip5());
+            var keys = Request.Form.AllKeys.ToList();
+
             if (!m.home.HasValue() && m.cell.HasValue())
                 m.home = m.cell;
 
-            var keys = Request.Form.AllKeys.ToList();
+            if (keys.Contains("zip") || keys.Contains("addr"))
+            {
+                var result = AddressVerify.LookupAddress(m.addr, null, null, null, m.zip.Zip5());
+                if (result.found != false && !result.error.HasValue())
+                {
+                    UpdateField(fsb, p.Family, "AddressLineOne", result.Line1);
+                    UpdateField(fsb, p.Family, "CityName", result.City);
+                    UpdateField(fsb, p.Family, "StateCode", result.State);
+                    UpdateField(fsb, p.Family, "ZipCode", result.Zip);
+                    var rc = DbUtil.Db.FindResCode(result.Zip, null);
+                    UpdateField(fsb, p.Family, "ResCodeId", rc.ToString());
+                }
+                else
+                {
+                    if (keys.Contains("addr"))
+                        UpdateField(fsb, p.Family, "AddressLineOne", m.addr);
+                    UpdateField(fsb, p.Family, "ZipCode", m.zip.Zip5());
+                    UpdateField(fsb, p.Family, "CityName", null);
+                    UpdateField(fsb, p.Family, "StateCode", null);
+                }
+            }
 
             if (keys.Contains("home"))
                 UpdateField(fsb, p.Family, "HomePhone", m.home.GetDigits());
-            if (keys.Contains("addr"))
-                UpdateField(fsb, p.Family, "AddressLineOne", m.addr);
-            if (keys.Contains("zip"))
-            {
-                UpdateField(fsb, p.Family, "CityName", z != null ? z.City : null);
-                UpdateField(fsb, p.Family, "StateCode", z != null ? z.State : null);
-                UpdateField(fsb, p.Family, "ZipCode", m.zip);
-                var rc = DbUtil.Db.FindResCode(m.zip, null);
-                UpdateField(fsb, p.Family, "ResCodeId", rc.ToString());
-            }
             if (keys.Contains("goesby"))
                 UpdateField(psb, p, "NickName", Trim(m.goesby));
             if (keys.Contains("first"))
@@ -229,11 +240,11 @@ namespace CmsWeb.Areas.Public.Controllers
                 foreach (var c in fsb)
                     sb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", c.Field, c.Before, c.After);
                 var np = DbUtil.Db.GetNewPeopleManagers();
-                if(np != null)
+                if (np != null)
                     DbUtil.Db.EmailRedacted(p.FromEmail, np,
                         "Basic Person Info Changed during checkin on " + Util.Host, @"
 <p><a href=""{4}"">{0} ({5})</a> changed the following information for {1} ({2}):</p>
-<table>{3}</table>".Fmt(Util.UserName, p.PreferredName, p.LastName, sb.ToString(), 
+<table>{3}</table>".Fmt(Util.UserName, p.PreferredName, p.LastName, sb.ToString(),
                             DbUtil.Db.ServerLink("/Person2/" + p.PeopleId), p.PeopleId));
             }
         }

@@ -29,6 +29,8 @@ namespace CmsData
    		
    		private EntitySet< Volunteer> _Volunteers;
 		
+   		private EntitySet< Volunteer> _StatusMvrId;
+		
     	
 	#endregion
 	
@@ -54,6 +56,8 @@ namespace CmsData
 		{
 			
 			this._Volunteers = new EntitySet< Volunteer>(new Action< Volunteer>(this.attach_Volunteers), new Action< Volunteer>(this.detach_Volunteers)); 
+			
+			this._StatusMvrId = new EntitySet< Volunteer>(new Action< Volunteer>(this.attach_StatusMvrId), new Action< Volunteer>(this.detach_StatusMvrId)); 
 			
 			
 			OnCreated();
@@ -164,6 +168,16 @@ namespace CmsData
    		}
 
 		
+   		[Association(Name="StatusMvrId__StatusMvr", Storage="_StatusMvrId", OtherKey="MVRStatusId")]
+   		public EntitySet< Volunteer> StatusMvrId
+   		{
+   		    get { return this._StatusMvrId; }
+
+			set	{ this._StatusMvrId.Assign(value); }
+
+   		}
+
+		
 	#endregion
 	
 	#region Foreign Keys
@@ -195,6 +209,19 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.VolApplicationStatus = null;
+		}
+
+		
+		private void attach_StatusMvrId(Volunteer entity)
+		{
+			this.SendPropertyChanging();
+			entity.StatusMvr = this;
+		}
+
+		private void detach_StatusMvrId(Volunteer entity)
+		{
+			this.SendPropertyChanging();
+			entity.StatusMvr = null;
 		}
 
 		
