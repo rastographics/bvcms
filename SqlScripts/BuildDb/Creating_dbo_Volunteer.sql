@@ -6,7 +6,9 @@ CREATE TABLE [dbo].[Volunteer]
 [Standard] [bit] NOT NULL CONSTRAINT [DF_Volunteer_Standard] DEFAULT ((0)),
 [Children] [bit] NOT NULL CONSTRAINT [DF_Volunteer_Children] DEFAULT ((0)),
 [Leader] [bit] NOT NULL CONSTRAINT [DF_Volunteer_Leader] DEFAULT ((0)),
-[Comments] [nvarchar] (max) NULL
+[Comments] [nvarchar] (max) NULL,
+[MVRStatusId] [int] NULL,
+[MVRProcessedDate] [datetime] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

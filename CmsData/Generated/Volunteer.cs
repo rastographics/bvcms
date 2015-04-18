@@ -32,6 +32,10 @@ namespace CmsData
 		
 		private string _Comments;
 		
+		private int? _MVRStatusId;
+		
+		private DateTime? _MVRProcessedDate;
+		
    		
    		private EntitySet< VolunteerForm> _VolunteerForms;
 		
@@ -41,6 +45,8 @@ namespace CmsData
 		private EntityRef< Person> _Person;
 		
 		private EntityRef< VolApplicationStatus> _VolApplicationStatus;
+		
+		private EntityRef< VolApplicationStatus> _StatusMvr;
 		
 	#endregion
 	
@@ -70,6 +76,12 @@ namespace CmsData
 		partial void OnCommentsChanging(string value);
 		partial void OnCommentsChanged();
 		
+		partial void OnMVRStatusIdChanging(int? value);
+		partial void OnMVRStatusIdChanged();
+		
+		partial void OnMVRProcessedDateChanging(DateTime? value);
+		partial void OnMVRProcessedDateChanged();
+		
     #endregion
 		public Volunteer()
 		{
@@ -82,6 +94,8 @@ namespace CmsData
 			this._Person = default(EntityRef< Person>); 
 			
 			this._VolApplicationStatus = default(EntityRef< VolApplicationStatus>); 
+			
+			this._StatusMvr = default(EntityRef< VolApplicationStatus>); 
 			
 			OnCreated();
 		}
@@ -251,6 +265,54 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="MVRStatusId", UpdateCheck=UpdateCheck.Never, Storage="_MVRStatusId", DbType="int")]
+		[IsForeignKey]
+		public int? MVRStatusId
+		{
+			get { return this._MVRStatusId; }
+
+			set
+			{
+				if (this._MVRStatusId != value)
+				{
+				
+					if (this._StatusMvr.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				
+                    this.OnMVRStatusIdChanging(value);
+					this.SendPropertyChanging();
+					this._MVRStatusId = value;
+					this.SendPropertyChanged("MVRStatusId");
+					this.OnMVRStatusIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="MVRProcessedDate", UpdateCheck=UpdateCheck.Never, Storage="_MVRProcessedDate", DbType="datetime")]
+		public DateTime? MVRProcessedDate
+		{
+			get { return this._MVRProcessedDate; }
+
+			set
+			{
+				if (this._MVRProcessedDate != value)
+				{
+				
+                    this.OnMVRProcessedDateChanging(value);
+					this.SendPropertyChanging();
+					this._MVRProcessedDate = value;
+					this.SendPropertyChanged("MVRProcessedDate");
+					this.OnMVRProcessedDateChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
@@ -356,6 +418,48 @@ namespace CmsData
 					}
 
 					this.SendPropertyChanged("VolApplicationStatus");
+				}
+
+			}
+
+		}
+
+		
+		[Association(Name="StatusMvrId__StatusMvr", Storage="_StatusMvr", ThisKey="MVRStatusId", IsForeignKey=true)]
+		public VolApplicationStatus StatusMvr
+		{
+			get { return this._StatusMvr.Entity; }
+
+			set
+			{
+				VolApplicationStatus previousValue = this._StatusMvr.Entity;
+				if (((previousValue != value) 
+							|| (this._StatusMvr.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._StatusMvr.Entity = null;
+						previousValue.StatusMvrId.Remove(this);
+					}
+
+					this._StatusMvr.Entity = value;
+					if (value != null)
+					{
+						value.StatusMvrId.Add(this);
+						
+						this._MVRStatusId = value.Id;
+						
+					}
+
+					else
+					{
+						
+						this._MVRStatusId = default(int?);
+						
+					}
+
+					this.SendPropertyChanged("StatusMvr");
 				}
 
 			}
