@@ -23,9 +23,9 @@
         {
             @Badge(Model.MemberStatus != status, status, "label-success")
         }
-        @Badge(Model.basic.DoNotVisitFlag, "Do Not Visit", "label-important")
-        @Badge(Model.basic.DoNotCallFlag, "Do Not Call", "label-important")
-        @Badge(Model.basic.DoNotMailFlag, "Do Not Mail", "label-important")
+        @Badge(Model.basic.DoNotVisitFlag, "Do Not Visit", "label-danger")
+        @Badge(Model.basic.DoNotCallFlag, "Do Not Call", "label-danger")
+        @Badge(Model.basic.DoNotMailFlag, "Do Not Mail", "label-danger")
     </li>
 </ul>
 @helper ShowAddress(AddressInfo a)
