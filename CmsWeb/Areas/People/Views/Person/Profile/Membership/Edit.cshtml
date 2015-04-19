@@ -8,7 +8,7 @@
     };
     var NewMemberClassLabel = DbUtil.Db.Setting("NewMemberClassLabel", "New Member Class");
 }
-<form class="ajax validate" method="post">
+<form class="ajax validate" method="post" data-init="Editable">
     @Html.HiddenFor(m => m.PeopleId)
     @Html.ValidationMessage("automation")
     @Html.Raw(ViewBag.AutomationError)
@@ -111,6 +111,9 @@
                 </div>
                 <div class="panel-body">
                     <div class="row">
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
+                        </div>
                         <div class="col-sm-12">
                             @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
                         </div>
