@@ -11,11 +11,18 @@
     $('body').on('click', '#membergroups .update-smallgroup', function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
-        var msg = "This will add or remove everybody to/from this sub-group. Are you sure?";
 
-        bootbox.confirm(msg, function (confirmed) {
-            if (confirmed)
-                $.post(href);
+        swal({
+            title: "Are you sure?",
+            text: "This will add or remove everybody to/from this sub-group.",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, update!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.post(href);
         });
         return false;
     });
@@ -32,13 +39,20 @@
         var f = $(this).closest('form');
         var q = f.serialize();
         var href = $(this).attr("href");
-        bootbox.confirm("are you sure?", function (confirmed) {
-            if (confirmed) {
-                $.post(href, q, function (ret) {
-                    f.modal("hide");
-                    RebindMemberGrids();
-                });
-            }
+
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, move member!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.post(href, q, function (ret) {
+                $('#empty-dialog').modal('hide');
+                $.RebindMemberGrids();
+            });
         });
         return false;
     });
