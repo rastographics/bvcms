@@ -335,7 +335,11 @@
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\Routing.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\WriteXml.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ReadXml.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\AddNew.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\RepopulateRegistration.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\PrepareSummaryText.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelQuestions.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineRegPerson\ValidateModelForFind.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\CompleteRegistration.cs" />

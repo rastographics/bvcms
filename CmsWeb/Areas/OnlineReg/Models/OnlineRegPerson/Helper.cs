@@ -331,9 +331,10 @@ namespace CmsWeb.Models
             return settings.Values.Any(s => s.AskItems.Any() || s.Deposit > 0);
         }
 
-        public static void CheckNotifyDiffEmails(Person person, string fromemail, string regemail, string orgname,
-            string phone)
+        public void CheckNotifyDiffEmails()
         {
+            var regemail = DbUtil.Db.StaffEmailForOrg(org.OrganizationId);
+            var orgname = org.OrganizationName;
             MailAddress ma = null;
             try
             {
@@ -591,6 +592,18 @@ namespace CmsWeb.Models
         {
             if (org != null && ShowDisplay() && ComputesOrganizationByAge())
                 classid = org.OrganizationId;
+        }
+        internal void DoGroupToJoin()
+        {
+            int grouptojoin = setting.GroupToJoin.ToInt();
+            if(!PeopleId.HasValue)
+                throw new Exception("PeopleId has no value in DoGroupToJoin");
+            if (grouptojoin > 0)
+            {
+                OrganizationMember.InsertOrgMembers(DbUtil.Db, grouptojoin, PeopleId.Value, MemberTypeCode.Member,
+                    DateTime.Now, null, false);
+                DbUtil.Db.UpdateMainFellowship(grouptojoin);
+            }
         }
     }
 

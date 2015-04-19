@@ -7,7 +7,7 @@
   <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
       <div class="pull-right">
-        @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Submit", style: "btn-primary min-width15em")
+        @Helper.OnlineRegAjaxButton("/OnlineReg/FindRecord/" + Model.Index, "Submit", style: "btn-primary min-width15em")
         @if (Model.Parent.AllowSaveProgress())
         {
           <div>
@@ -29,13 +29,13 @@ else
   <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
       <div class="pull-right">
-        @Helper.OnlineRegAjaxButton("/OnlineReg/PersonFind/" + Model.Index, "Search Again", style: "btn-primary min-width15em")
+        @Helper.OnlineRegAjaxButton("/OnlineReg/FindRecord/" + Model.Index, "Search Again", style: "btn-primary min-width15em")
 
         @* Allow Add New Profile if valid data, not memberonly, not create account mode *@
         @if (Model.IsValidForContinue && !Model.MemberOnly() && Model.orgid != Util.CreateAccountCode && (Model.Found ?? false) == false)
         {
           <div>
-            @Helper.OnlineRegAjaxButton("/OnlineReg/ShowMoreInfo/" + Model.Index,
+            @Helper.OnlineRegAjaxButton("/OnlineReg/AddressMaritalGenderForm/" + Model.Index,
                       "New Profile", style: "btn-warning min-width15em", id: "regnew")
           </div>
         }

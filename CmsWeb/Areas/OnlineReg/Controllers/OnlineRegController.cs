@@ -39,10 +39,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 : View(m);
         }
 
-        // authenticate user
         [HttpPost]
         public ActionResult Login(OnlineRegModel m)
         {
+            // they clicked the Login button on the login page
             var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
             if (ret is string)
             {
@@ -69,7 +69,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult NoLogin(OnlineRegModel m)
         {
-            // User clicked the register without logging in
+            // Clicked the register without logging in link
             m.nologin = true;
             m.CreateList();
             m.HistoryAdd("nologin");
@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult YesLogin(OnlineRegModel m)
         {
-            // Takes them to the login screen after clicking the Login Here button
+            // clicked the Login Here button
             m.HistoryAdd("yeslogin");
             m.nologin = false;
             m.List = new List<OnlineRegPersonModel>();
@@ -90,10 +90,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [HttpPost]
-        public ActionResult Register(int id, OnlineRegModel m)
+        public ActionResult RegisterFamilyMember(int id, OnlineRegModel m)
         {
-            // Click a person from the family list * Take them to the Questions page
+            // got here by clicking on a link in the Family list
             m.StartRegistrationForFamilyMember(id, ModelState);
+            // will take them to the Questions page
             return FlowList(m, "Register");
         }
 
@@ -106,25 +107,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [HttpPost]
-        public ActionResult ShowMoreInfo(int id, OnlineRegModel m)
+        public ActionResult FindRecord(int id, OnlineRegModel m)
         {
-            // Show the Address, Gender, Marital form because record is not found
-            var p = m.List[id];
-            p.ValidateModelForFind(ModelState, id);
-            p.PrepareToAddNewPerson(ModelState, id);
-            return FlowList(m, "ShowMoreInfo");
-        }
-
-        [HttpPost]
-        public ActionResult PersonFind(int id, OnlineRegModel m)
-        {
-            // Anonymous person tries to find their record
-            m.HistoryAdd("PersonFind id=" + id);
+            // Anonymous person clicks submit to find their record
+            m.HistoryAdd("FindRecord id=" + id);
             if (id >= m.List.Count)
-                return FlowList(m, "PersonFind");
+                return FlowList(m, "FindRecord");
             var p = m.List[id];
             if (p.IsValidForNew)
-                return ErrorResult(m, new Exception("Unexpected onlinereg state: IsValidForNew is true and in PersonFind"), "PersonFind, unexpected state");
+                return ErrorResult(m, new Exception("Unexpected onlinereg state: IsValidForNew is true and in FindRecord"), "FindRecord, unexpected state");
             p.ValidateModelForFind(ModelState, id);
             if (p.AnonymousReRegistrant())
                 return View("ConfirmReregister", m); // send email with link to reg-register
@@ -135,29 +126,23 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             p.SetClassId();
             p.CheckSetFee();
-            return FlowList(m, "PersonFind");
+            return FlowList(m, "FindRecord");
         }
 
-
-        private ActionResult ErrorResult(OnlineRegModel m, Exception ex, string errorDisplay)
+        [HttpPost]
+        public ActionResult AddressMaritalGenderForm(int id, OnlineRegModel m)
         {
-            try
-            {
-                m.UpdateDatum();
-            }
-            catch (Exception)
-            {
-            }
-            var ex2 = new Exception("{0}, {2}".Fmt(errorDisplay, m.DatumId, DbUtil.Db.ServerLink("/OnlineReg/RegPeople/") + m.DatumId), ex);
-            ErrorSignal.FromCurrentContext().Raise(ex2);
-            TempData["error"] = errorDisplay;
-            TempData["stack"] = ex.StackTrace;
-            return Content("/Error/");
+            // record was not found
+            var p = m.List[id];
+            p.ValidateModelForFind(ModelState, id);
+            p.PrepareToAddNewPerson(ModelState, id);
+            return FlowList(m, "AddressMaritalGenderForm");
         }
 
         [HttpPost]
         public ActionResult SubmitNew(int id, OnlineRegModel m)
         {
+            // Submit from AddressMaritalGenderForm
             ModelState.Clear();
             m.HistoryAdd("SubmitNew id=" + id);
             var p = m.List[id];
@@ -171,13 +156,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [HttpPost]
-        public ActionResult SubmitOtherInfo(int id, OnlineRegModel m)
+        public ActionResult SubmitQuestions(int id, OnlineRegModel m)
         {
             m.HistoryAdd("SubmitOtherInfo id=" + id);
             if (m.List.Count <= id)
                 return Content("<p style='color:red'>error: cannot find person on submit other info</p>");
             m.List[id].ValidateModelQuestions(ModelState, id);
-            return FlowList(m, "SubmitOtherInfo");
+            return FlowList(m, "SubmitQuestions");
         }
 
         [HttpPost]
@@ -293,5 +278,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
         }
 
+        private ActionResult ErrorResult(OnlineRegModel m, Exception ex, string errorDisplay)
+        {
+            // ReSharper disable once EmptyGeneralCatchClause
+            try { m.UpdateDatum(); }
+            catch { }
+
+            var ex2 = new Exception("{0}, {2}".Fmt(errorDisplay, m.DatumId, DbUtil.Db.ServerLink("/OnlineReg/RegPeople/") + m.DatumId), ex);
+            ErrorSignal.FromCurrentContext().Raise(ex2);
+            TempData["error"] = errorDisplay;
+            TempData["stack"] = ex.StackTrace;
+            return Content("/Error/");
+        }
     }
 }

@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Content("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
             }
             if (m.OnlineGiving())
-                return Register(Util.UserPeopleId.Value, m);
+                return RegisterFamilyMember(Util.UserPeopleId.Value, m);
 
             return null;
         }

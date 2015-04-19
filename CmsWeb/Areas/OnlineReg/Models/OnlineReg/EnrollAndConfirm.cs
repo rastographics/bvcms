@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Linq;
 using System.Linq;
 using System.Web;
 using CmsData;
 using System.Text;
-using CmsData.Codes;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
+using CmsData.Registration;
 
 namespace CmsWeb.Models
 {
@@ -16,321 +15,75 @@ namespace CmsWeb.Models
     {
         private Regex donationtext = new Regex(@"\{donation(?<text>.*)donation\}", RegexOptions.Singleline | RegexOptions.Multiline);
 
-        public void EnrollAndConfirm()
+        public bool EnrollAndConfirm()
         {
+            ExpireRegisterTag();
+            AddPeopleToTransaction();
+
             if (masterorgid.HasValue)
-            {
-                EnrollAndConfirm2();
-                return;
-            }
-            var Db = DbUtil.Db;
-            var ti = Transaction;
-            // make a list of email addresses
-            var elist = new List<MailAddress>();
-            if (UserPeopleId.HasValue)
-            {
-                if (user.SendEmailAddress1 ?? true)
-                    Util.AddGoodAddress(elist, user.FromEmail);
-                if (user.SendEmailAddress2 ?? false)
-                    Util.AddGoodAddress(elist, user.FromEmail2);
-            }
-            if (registertag.HasValue())
-            {
-                var guid = registertag.ToGuid();
-                var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
-                ot.Used = true;
-            }
-            var participants = new StringBuilder();
-            for (var i = 0; i < List.Count; i++)
-            {
-                var p = List[i];
-                if (p.IsNew)
-                {
-                    Person uperson = null;
-                    switch (p.whatfamily)
-                    {
-                        case 1:
-                            uperson = Db.LoadPersonById(UserPeopleId.Value);
-                            break;
-                        case 2:
-                            if (i > 0)
-                                uperson = List[i - 1].person;
-                            break;
-                    }
-                    p.AddPerson(uperson, p.org.EntryPointId ?? 0);
-                }
+                return EnrollAndConfirmMultipleOrgs();
 
-                Util.AddGoodAddress(elist, p.fromemail);
-                participants.Append(p.ToString());
-            }
-            var p0 = List[0].person;
-            if (this.user != null)
-                p0 = user;
-
-            //var emails = string.Join(",", elist.ToArray());
-            string paylink = string.Empty;
-            var amtpaid = ti.Amt ?? 0;
-            var amtdue = ti.Amtdue;
-
-            var pids2 = new List<TransactionPerson>();
-            foreach (var p in List)
-            {
-                if (p.PeopleId == null)
-                    return;
-                if (pids2.Any(pp => pp.PeopleId == p.PeopleId))
-                    continue;
-                pids2.Add(new TransactionPerson
-                {
-                    PeopleId = p.PeopleId.Value,
-                    Amt = p.TotalAmount(),
-                    OrgId = Orgid,
-                });
-            }
-
-            if (SupportMissionTrip && GoerId == _list[0].PeopleId)
-            {
-                // reload transaction because it is not in this context
-                var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == GoerId && mm.OrganizationId == Orgid);
-                if(om != null && om.TranId.HasValue)
-                    ti.OriginalId = om.TranId;
-            }
-            else
-            {
-                ti.OriginalTrans.TransactionPeople.AddRange(pids2);
-            }
-
-            ti.Emails = Util.EmailAddressListToString(elist);
-            ti.Participants = participants.ToString();
-            ti.TransactionDate = DateTime.Now;
-
-            if (org.IsMissionTrip == true)
-            {
-                paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
-            }
-            else
-            {
-                var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
-                paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
-            }
-            var pids = pids2.Select(pp => pp.PeopleId);
-
-            for (var i = 0; i < List.Count; i++)
-            {
-                var p = List[i];
-
-                var q = from pp in Db.People
-                        where pids.Contains(pp.PeopleId)
-                        where pp.PeopleId != p.PeopleId
-                        select pp.Name;
-                var others = string.Join(",", q.ToArray());
-
-                var om = p.Enroll(ti, paylink, testing, others);
-                om.RegisterEmail = p.EmailAddress;
-
-                if(om.TranId == null)
-                    om.TranId = ti.OriginalId;
-
-                int grouptojoin = p.setting.GroupToJoin.ToInt();
-                if (grouptojoin > 0)
-                {
-                    OrganizationMember.InsertOrgMembers(Db, grouptojoin, p.PeopleId.Value, MemberTypeCode.Member, DateTime.Now, null, false);
-                    DbUtil.Db.UpdateMainFellowship(grouptojoin);
-                }
-
-                OnlineRegPersonModel.CheckNotifyDiffEmails(p.person,
-                    Db.StaffEmailForOrg(p.org.OrganizationId),
-                    p.fromemail,
-                    p.org.OrganizationName,
-                    p.org.PhoneNumber);
-                if (p.IsCreateAccount())
-                    p.CreateAccount();
-            }
-            Db.SubmitChanges();
-
-            var details = new StringBuilder("<table cellpadding='4'>");
-            if (ti.Amt > 0)
-                details.AppendFormat(@"
-<tr><td colspan='2'>
-    <table cellpadding='4'>
-        <tr><td>Total Paid</td><td>Total Due</td></tr>
-        <tr><td align='right'>{0:c}</td><td align='right'>{1:c}</td></tr>
-    </table>
-    </td>
-</tr>
-", amtpaid, amtdue);
-
-            for (var i = 0; i < List.Count; i++)
-            {
-                var p = List[i];
-                details.AppendFormat(@"
-<tr><td colspan='2'><hr/></td></tr>
-<tr><th valign='top'>{0}</th><td>
-{1}
-</td></tr>", i + 1, p.PrepareSummaryText(ti));
-            }
-            details.Append("\n</table>\n");
-
-            var DivisionName = org.DivisionName;
-
-            var os = settings[Orgid.Value];
-            var EmailSubject = Util.PickFirst(os.Subject, "no subject");
-            var EmailMessage = Util.PickFirst(os.Body, "no body");
-
-            bool usedAdmins;
-            var NotifyIds = Db.StaffPeopleForOrg(org.OrganizationId, out usedAdmins);
-
-            var Location = org.Location;
-
-            var subject = Util.PickFirst(EmailSubject, "no subject");
-            var message = Util.PickFirst(EmailMessage, "no message");
-
-            message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p0, DivisionName, org.OrganizationName, Location, message);
-            subject = subject.Replace("{org}", Header);
-
-            message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
-                .Replace("{tickets}", List[0].ntickets.ToString())
-                .Replace("{details}", details.ToString())
-                .Replace("{paid}", amtpaid.ToString("c"))
-                .Replace("{sessiontotal}", amtpaid.ToString("c"))
-                .Replace("{participants}", details.ToString());
-            if (amtdue > 0)
-                message = message.Replace("{paylink}", "<a href='{0}'>Click this link to make a payment on your balance of {1:C}</a>.".Fmt(paylink, amtdue));
-            else
-                message = message.Replace("{paylink}", "You have a zero balance.");
+            var message = DoEnrollments();
 
             if (SupportMissionTrip && TotalAmount() > 0)
-            {
-                var p = List[0];
-                ti.Fund = p.setting.DonationFund();
-                var goerid = p.Parent.GoerId > 0
-                    ? p.Parent.GoerId 
-                    : p.MissionTripGoerId;
-                if (p.MissionTripSupportGoer > 0)
-                {
-                    var gsa = new GoerSenderAmount
-                    {
-                        Amount = p.MissionTripSupportGoer.Value,
-                        Created = DateTime.Now,
-                        OrgId = p.orgid.Value,
-                        SupporterId = p.PeopleId.Value,
-                        NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
-                    };
-                    if(goerid > 0)
-                        gsa.GoerId = goerid;
-                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(gsa);
-                    if (p.Parent.GoerSupporterId.HasValue)
-                    {
-                        var gs = DbUtil.Db.GoerSupporters.Single(gg => gg.Id == p.Parent.GoerSupporterId);
-                        if (!gs.SupporterId.HasValue)
-                            gs.SupporterId = p.PeopleId;
-                    }
-                    if (!ti.TransactionId.StartsWith("Coupon"))
-                    {
-                        p.person.PostUnattendedContribution(DbUtil.Db,
-                            p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
-                            "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid), tranid: ti.Id);
-                        // send notices
-                        if (goerid > 0 && !p.MissionTripNoNoticeToGoer)
-                        {
-                            var goer = DbUtil.Db.LoadPersonById(goerid.Value);
-                            Db.Email(NotifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
-                                "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value,
-                                    Transaction.FullName(ti)));
-                        }
-                    }
-                }
-                if (p.MissionTripSupportGeneral > 0)
-                {
-                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                        new GoerSenderAmount
-                        {
-                            Amount = p.MissionTripSupportGeneral.Value,
-                            Created = DateTime.Now,
-                            OrgId = p.orgid.Value,
-                            SupporterId = p.PeopleId.Value
-                        });
-                    if (!ti.TransactionId.StartsWith("Coupon"))
-                    {
-                        p.person.PostUnattendedContribution(DbUtil.Db,
-                            p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
-                            "SupportMissionTrip: org={0}".Fmt(p.orgid), tranid: ti.Id);
-                    }
-                }
-                var notifyids = Db.NotifyIds(org.GiftNotifyIds);
-                Db.Email(NotifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
-                    "${0:N2} donation received from {1}".Fmt(ti.Amt, Transaction.FullName(ti)));
+                return DoMissionTripSupporter();
 
-                var senderSubject = os.SenderSubject ?? "NO SUBJECT SET";
-                var senderBody = os.SenderBody ?? "NO SENDEREMAIL MESSAGE HAS BEEN SET";
-                senderBody = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person, DivisionName, org.OrganizationName, Location, senderBody);
-                senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
-                senderBody = senderBody.Replace("{paid}", ti.Amt.ToString2("c"));
-
-                ti.Description = "Mission Trip Giving";
-                Db.Email(notifyids[0].FromEmail, p.person, elist, senderSubject, senderBody, false);
-                Db.SubmitChanges();
-                return;
-            }
-
-            if (!SupportMissionTrip && org != null && org.IsMissionTrip == true && ti.Amt > 0)
-            {
-                var p = List[0];
-                ti.Fund = p.setting.DonationFund();
-
-                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                    new GoerSenderAmount
-                    {
-                        Amount = ti.Amt,
-                        GoerId = p.PeopleId,
-                        Created = DateTime.Now,
-                        OrgId = p.orgid.Value,
-                        SupporterId = p.PeopleId.Value
-                    });
-                if (!ti.TransactionId.StartsWith("Coupon"))
-                {
-                    p.person.PostUnattendedContribution(DbUtil.Db,
-                        ti.Amt.Value, p.setting.DonationFundId,
-                        "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId), tranid: ti.Id);
-                    ti.Description = "Mission Trip Giving";
-                }
-            }
-            else if (ti.Donate > 0)
-            {
-                var p = List[donor.Value];
-                ti.Fund = p.setting.DonationFund();
-                var desc = "{0}; {1}; {2}, {3} {4}".Fmt(
-                    p.person.Name,
-                    p.person.PrimaryAddress,
-                    p.person.PrimaryCity,
-                    p.person.PrimaryState,
-                    p.person.PrimaryZip);
-                if (!ti.TransactionId.StartsWith("Coupon"))
-                    p.person.PostUnattendedContribution(DbUtil.Db, ti.Donate.Value, p.setting.DonationFundId, desc, tranid: ti.Id);
-                var ma = donationtext.Match(message);
-                if (ma.Success)
-                {
-                    var v = ma.Groups["text"].Value;
-                    message = donationtext.Replace(message, v);
-                }
-                message = message.Replace("{donation}", ti.Donate.ToString2("N2"));
-                // send donation confirmations
-                Db.Email(NotifyIds[0].FromEmail, NotifyIds, subject + "-donation",
-                    "${0:N2} donation received from {1}".Fmt(ti.Donate, Transaction.FullName(ti)));
-            }
+            if (IsMissionTripGoerWithPayment())
+                DoMissionTripGoer();
+            else if (Transaction.Donate > 0)
+                message = DoDonationModifyMessage(message);
             else
                 message = donationtext.Replace(message, "");
 
-            DbUtil.Db.SetCurrentOrgId(Orgid);
-            // send confirmations
-            if (subject != "DO NOT SEND")
-                Db.Email(NotifyIds[0].FromEmail, p0, elist,
-                    subject, message, false);
+            SendAllConfirmations(message);
 
-            Db.SubmitChanges();
+            return true;
+        }
+
+        private bool EnrollAndConfirmMultipleOrgs()
+        {
+            var paylink = GetPayLink();
+            foreach (var p in List)
+            {
+                p.Enroll(Transaction, paylink);
+                p.DoGroupToJoin();
+                p.CheckNotifyDiffEmails();
+
+                if (p.IsCreateAccount())
+                    p.CreateAccount();
+                DbUtil.Db.SubmitChanges();
+
+                SendSingleConfirmationForOrg(p);
+            }
+            return true;
+        }
+
+        private bool IsMissionTripGoerWithPayment()
+        {
+            return org != null
+                   && Transaction.Amt > 0
+                   && org.IsMissionTrip == true
+                   && SupportMissionTrip == false;
+        }
+
+        private void SendAllConfirmations(string message)
+        {
+            DbUtil.Db.SetCurrentOrgId(org.OrganizationId);
+            var subject = GetSubject();
+            var amtpaid = Transaction.Amt ?? 0;
+
+            var firstPerson = List[0].person;
+            if (user != null)
+                firstPerson = user;
+
+            if (subject != "DO NOT SEND")
+                DbUtil.Db.Email(notifyIds[0].FromEmail, firstPerson, listMailAddress, subject, message, false);
+
+            DbUtil.Db.SubmitChanges();
             // notify the staff
             foreach (var p in List)
             {
-                Db.Email(Util.PickFirst(p.person.FromEmail, NotifyIds[0].FromEmail), NotifyIds, Header,
+                DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
                     @"{7}{0} has registered for {1}<br/>
 Total Fee for this registrant: {2:C}<br/>
 Total Fee for this registration: {3:C}<br/>
@@ -341,180 +94,393 @@ AmountDue: {5:C}<br/>
                         p.TotalAmount(),
                         TotalAmount(),
                         amtpaid,
-                        amtdue, // Amount Due
-                        p.PrepareSummaryText(ti),
-                        usedAdmins ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
-<a href='http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>" : ""));
+                        Transaction.Amtdue, 
+                        p.PrepareSummaryText(Transaction),
+                        usedAdminsForNotify
+                            ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
+<a href='http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>"
+                            : ""));
             }
+        }
+        private void SendSingleConfirmationForOrg(OnlineRegPersonModel p)
+        {
+            DbUtil.Db.SetCurrentOrgId(p.orgid);
+            var emailSubject = GetSubject(p);
+            string details = p.PrepareSummaryText(Transaction);
+            var message = GetMessage(details, p);
+
+            var NotifyIds = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId);
+            var notify = NotifyIds[0];
+
+            string location = p.org.Location;
+            if (!location.HasValue())
+                location = masterorg.Location;
+
+            message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person, 
+                masterorg.OrganizationName, p.org.OrganizationName, location, message);
+
+            var amtpaid = Transaction.Amt ?? 0;
+
+            if (Transaction.Donate > 0)
+                message = DoDonationModifyMessage(message);
+            else
+                message = donationtext.Replace(message, "");
+
+            // send confirmations
+            if (emailSubject != "DO NOT SEND")
+                DbUtil.Db.Email(notify.FromEmail, p.person, Util.EmailAddressListFromString(p.fromemail),
+                    emailSubject, message, redacted: false);
+
+            // notify the staff
+            DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notify.FromEmail),
+                NotifyIds, Header,
+                @"{0} has registered for {1}<br/>
+Feepaid for this registrant: {2:C}<br/>
+Others in this registration session: {3:C}<br/>
+Total Fee paid for this registration session: {4:C}<br/>
+<pre>{5}</pre>".Fmt(p.person.Name,
+                    Header,
+                    p.AmountToPay(),
+                    p.GetOthersInTransaction(Transaction),
+                    amtpaid,
+                    p.PrepareSummaryText(Transaction)));
+        }
+
+        private Settings _masterSettings;
+        private Settings GetMasterOrgSettings()
+        {
+            if (_masterSettings != null)
+                return _masterSettings;
+            if (masterorgid == null)
+                throw new Exception("masterorgid was null in SendConfirmation");
+            if (settings == null)
+                throw new Exception("settings was null");
+            if (!settings.ContainsKey(masterorgid.Value))
+                throw new Exception("setting not found for masterorgid " + masterorgid.Value);
+            ParseSettings();
+            return _masterSettings = settings[masterorgid.Value];
         }
 
 
-        //---------------------------------------------------------------------------------------------------
-        private void EnrollAndConfirm2()
+        private string DoDonationModifyMessage(string message)
         {
-            var Db = DbUtil.Db;
-            var ti = Transaction;
+            var p = List[donor.Value];
+            Transaction.Fund = p.setting.DonationFund();
+            var desc = "{0}; {1}; {2}, {3} {4}".Fmt(
+                p.person.Name,
+                p.person.PrimaryAddress,
+                p.person.PrimaryCity,
+                p.person.PrimaryState,
+                p.person.PrimaryZip);
+            if (!Transaction.TransactionId.StartsWith("Coupon"))
+                p.person.PostUnattendedContribution(DbUtil.Db, Transaction.Donate.Value, p.setting.DonationFundId, desc,
+                    tranid: Transaction.Id);
+            var subject = GetSubject();
+            var ma = donationtext.Match(message);
+            if (ma.Success)
+            {
+                var v = ma.Groups["text"].Value;
+                message = donationtext.Replace(message, v);
+            }
+            message = message.Replace("{donation}", Transaction.Donate.ToString2("N2"));
+            // send donation confirmations
+            DbUtil.Db.Email(notifyIds[0].FromEmail, notifyIds, subject + "-donation",
+                "${0:N2} donation received from {1}".Fmt(Transaction.Donate, Transaction.FullName(Transaction)));
+            return message;
+        }
+
+        private void DoMissionTripGoer()
+        {
+            var p = List[0];
+            Transaction.Fund = p.setting.DonationFund();
+
+            DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                new GoerSenderAmount
+                {
+                    Amount = Transaction.Amt,
+                    GoerId = p.PeopleId,
+                    Created = DateTime.Now,
+                    OrgId = p.orgid.Value,
+                    SupporterId = p.PeopleId.Value
+                });
+            if (Transaction.TransactionId.StartsWith("Coupon") || !Transaction.Amt.HasValue)
+                return;
+
+            p.person.PostUnattendedContribution(DbUtil.Db,
+                Transaction.Amt.Value, p.setting.DonationFundId,
+                "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId), tranid: Transaction.Id);
+            Transaction.Description = "Mission Trip Giving";
+        }
+
+        private bool usedAdminsForNotify;
+        private List<Person> notifyIds;
+        private List<Person> GetNotifyIds()
+        {
+            if (notifyIds != null)
+                return notifyIds;
+            return notifyIds = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId, out usedAdminsForNotify);
+        }
+
+        private bool DoMissionTripSupporter()
+        {
+            var notifyIds = GetNotifyIds();
+            var p = List[0];
+            Transaction.Fund = p.setting.DonationFund();
+            var goerid = p.Parent.GoerId > 0
+                ? p.Parent.GoerId
+                : p.MissionTripGoerId;
+            if (p.MissionTripSupportGoer > 0)
+            {
+                var gsa = new GoerSenderAmount
+                {
+                    Amount = p.MissionTripSupportGoer.Value,
+                    Created = DateTime.Now,
+                    OrgId = p.orgid.Value,
+                    SupporterId = p.PeopleId.Value,
+                    NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
+                };
+                if (goerid > 0)
+                    gsa.GoerId = goerid;
+                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(gsa);
+                if (p.Parent.GoerSupporterId.HasValue)
+                {
+                    var gs = DbUtil.Db.GoerSupporters.Single(gg => gg.Id == p.Parent.GoerSupporterId);
+                    if (!gs.SupporterId.HasValue)
+                        gs.SupporterId = p.PeopleId;
+                }
+                if (!Transaction.TransactionId.StartsWith("Coupon"))
+                {
+                    p.person.PostUnattendedContribution(DbUtil.Db,
+                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
+                        "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid), tranid: Transaction.Id);
+                    // send notices
+                    if (goerid > 0 && !p.MissionTripNoNoticeToGoer)
+                    {
+                        var goer = DbUtil.Db.LoadPersonById(goerid.Value);
+                        DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
+                            "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value,
+                                Transaction.FullName(Transaction)));
+                    }
+                }
+            }
+            if (p.MissionTripSupportGeneral > 0)
+            {
+                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                    new GoerSenderAmount
+                    {
+                        Amount = p.MissionTripSupportGeneral.Value,
+                        Created = DateTime.Now,
+                        OrgId = p.orgid.Value,
+                        SupporterId = p.PeopleId.Value
+                    });
+                if (!Transaction.TransactionId.StartsWith("Coupon"))
+                {
+                    p.person.PostUnattendedContribution(DbUtil.Db,
+                        p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
+                        "SupportMissionTrip: org={0}".Fmt(p.orgid), tranid: Transaction.Id);
+                }
+            }
+            var notifyids = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
+            DbUtil.Db.Email(notifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
+                "${0:N2} donation received from {1}".Fmt(Transaction.Amt, Transaction.FullName(Transaction)));
+
+            var orgsettings = settings[org.OrganizationId];
+            var senderSubject = orgsettings.SenderSubject ?? "NO SUBJECT SET";
+            var senderBody = orgsettings.SenderBody ?? "NO SENDEREMAIL MESSAGE HAS BEEN SET";
+            senderBody = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person,
+                org.DivisionName, org.OrganizationName, org.Location, senderBody);
+            senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
+            senderBody = senderBody.Replace("{paid}", Transaction.Amt.ToString2("c"));
+
+            Transaction.Description = "Mission Trip Giving";
+            DbUtil.Db.Email(notifyids[0].FromEmail, p.person, listMailAddress, senderSubject, senderBody, false);
+            DbUtil.Db.SubmitChanges();
+            return true;
+        }
+
+        private string GetSubject(OnlineRegPersonModel p)
+        {
+            if (p.setting.Subject.HasValue())
+                return p.setting.Subject;
+            var os = GetMasterOrgSettings();
+            return Util.PickFirst(os.Subject, "no subject");
+        }
+        private string GetMessage(OnlineRegPersonModel p)
+        {
+            if (p.setting.Body.HasValue())
+                return p.setting.Body;
+            var os = GetMasterOrgSettings();
+            return Util.PickFirst(os.Body, "no body");
+        }
+
+        private string _subject;
+        private string GetSubject()
+        {
+            if (_subject.HasValue())
+                return _subject;
+            var orgsettings = settings[org.OrganizationId];
+            _subject = Util.PickFirst(orgsettings.Subject, "no subject");
+            return _subject = _subject.Replace("{org}", Header);
+        }
+
+        private string GetMessage(string details, OnlineRegPersonModel p)
+        {
+            var amtpaid = Transaction.Amt ?? 0;
+            var paylink = GetPayLink();
+            var orgsettings = settings[org.OrganizationId];
+            var message = Util.PickFirst(orgsettings.Body, "no message");
+
+            var location = org.Location;
+            if (!location.HasValue())
+                location = masterorg.Location;
+
+            message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db,
+                p.person, org.DivisionName, org.OrganizationName, location, message);
+            message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
+                .Replace("{tickets}", p.ntickets.ToString())
+                .Replace("{details}", details)
+                .Replace("{paid}", amtpaid.ToString("c"))
+                .Replace("{sessiontotal}", amtpaid.ToString("c"))
+                .Replace("{participants}", details);
+            if (Transaction.Amtdue > 0)
+                message = message.Replace("{paylink}",
+                    "<a href='{0}'>Click this link to make a payment on your balance of {1:C}</a>.".Fmt(paylink,
+                        Transaction.Amtdue));
+            else
+                message = message.Replace("{paylink}", "You have a zero balance.");
+            return message;
+        }
+
+
+        private string DoEnrollments()
+        {
+            const string amountRowFormat = @"
+<tr><td colspan='2'>
+    <table cellpadding='4'>
+        <tr><td>Total Paid</td><td>Total Due</td></tr>
+        <tr><td align='right'>{0:c}</td><td align='right'>{1:c}</td></tr>
+    </table>
+    </td>
+</tr>
+";
+            const string summaryRow = @"
+<tr><td colspan='2'><hr/></td></tr>
+{0}
+</td></tr>";
+
+            var amtpaid = Transaction.Amt ?? 0;
+            var details = new StringBuilder("<table cellpadding='4'>");
+            if (Transaction.Amt > 0)
+                details.AppendFormat(amountRowFormat, amtpaid, Transaction.Amtdue);
+            foreach (var p in List)
+            {
+                p.Enroll(Transaction, GetPayLink());
+                p.DoGroupToJoin();
+                p.CheckNotifyDiffEmails();
+
+                if (p.IsCreateAccount())
+                    p.CreateAccount();
+                DbUtil.Db.SubmitChanges();
+
+                details.AppendFormat(summaryRow, p.PrepareSummaryText(Transaction));
+            }
+            details.Append("\n</table>\n");
+            return GetMessage(details.ToString(), List[0]);
+        }
+
+        private string _paylink;
+        private string GetPayLink()
+        {
+            if (_paylink.HasValue())
+                return _paylink;
+            if (org.IsMissionTrip == true)
+                return _paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, List[0].PeopleId));
+            var estr = HttpUtility.UrlEncode(Util.Encrypt(Transaction.OriginalId.ToString()));
+            return _paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
+        }
+
+        private List<MailAddress> listMailAddress;
+        private void AddPeopleToTransaction()
+        {
+            listMailAddress = GetEmailList();
+            var participants = GetParticipants(listMailAddress);
+            var transactionPeople = new List<TransactionPerson>();
+            foreach (var p in List)
+            {
+                if (p.PeopleId == null)
+                    throw new Exception("no PeopleId in List");
+                if (transactionPeople.Any(pp => pp.PeopleId == p.PeopleId))
+                    continue;
+                transactionPeople.Add(new TransactionPerson
+                {
+                    PeopleId = p.PeopleId.Value,
+                    Amt = p.TotalAmount(),
+                    OrgId = p.orgid ?? Orgid,
+                });
+            }
+
+            if (SupportMissionTrip && GoerId == _list[0].PeopleId)
+            {
+                // reload transaction because it is not in this context
+                var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == GoerId && mm.OrganizationId == Orgid);
+                if (om != null && om.TranId.HasValue)
+                    Transaction.OriginalId = om.TranId;
+            }
+            else
+            {
+                Transaction.OriginalTrans.TransactionPeople.AddRange(transactionPeople);
+            }
+            Transaction.Emails = listMailAddress.EmailAddressListToString();
+            Transaction.Participants = participants;
+            Transaction.TransactionDate = DateTime.Now;
+        }
+
+
+        private string GetParticipants(List<MailAddress> elist)
+        {
+            var participants = new StringBuilder();
             for (var i = 0; i < List.Count; i++)
             {
                 var p = List[i];
                 if (p.IsNew)
                 {
                     Person uperson = null;
-                    switch (p.whatfamily)
-                    {
-                        case 1:
-                            uperson = Db.LoadPersonById(UserPeopleId.Value);
-                            break;
-                        case 2:
-                            if (i > 0)
-                                uperson = List[i - 1].person;
-                            break;
-                    }
+                    if (p.whatfamily == 1)
+                        uperson = DbUtil.Db.LoadPersonById(UserPeopleId.Value);
+                    else if (p.whatfamily == 2 && i > 0)
+                        uperson = List[i - 1].person;
                     p.AddPerson(uperson, p.org.EntryPointId ?? 0);
                 }
+                Util.AddGoodAddress(elist, p.fromemail);
+                participants.Append(p.ToString());
             }
+            return participants.ToString();
+        }
 
-            var amtpaid = ti.Amt ?? 0;
-
-            var pids2 = new List<TransactionPerson>();
-            foreach (var p in List)
+        private void ExpireRegisterTag()
+        {
+            if (registertag.HasValue())
             {
-                if (p.PeopleId == null)
-                    return;
-                pids2.Add(new TransactionPerson
-                {
-                    PeopleId = p.PeopleId.Value,
-                    Amt = p.TotalAmount(),
-                    OrgId = p.orgid,
-                });
-            }
-
-            ti.TransactionDate = DateTime.Now;
-            var pids = pids2.Select(pp => pp.PeopleId);
-            ti.OriginalTrans.TransactionPeople.AddRange(pids2);
-
-            for (var i = 0; i < List.Count; i++)
-            {
-                var p = List[i];
-
-                var q = from pp in Db.People
-                        where pids.Contains(pp.PeopleId)
-                        where pp.PeopleId != p.PeopleId
-                        select pp.Name;
-                var others = string.Join(",", q.ToArray());
-
-                var om = p.Enroll(ti, null, testing, others);
-                om.RegisterEmail = p.EmailAddress;
-                om.TranId = ti.OriginalId;
-
-                int grouptojoin = p.setting.GroupToJoin.ToInt();
-                if (grouptojoin > 0)
-                    OrganizationMember.InsertOrgMembers(Db, grouptojoin, p.PeopleId.Value, MemberTypeCode.Member, DateTime.Now, null, false);
-
-                OnlineRegPersonModel.CheckNotifyDiffEmails(p.person,
-                    Db.StaffEmailForOrg(p.org.OrganizationId),
-                    p.fromemail,
-                    p.org.OrganizationName,
-                    p.org.PhoneNumber);
-                if (p.CreatingAccount == true)
-                    p.CreateAccount();
-
-                string DivisionName = masterorg.OrganizationName;
-                string OrganizationName = p.org.OrganizationName;
-
-                string emailSubject = null;
-                string message = null;
-
-                if (p.setting.Body.HasValue())
-                {
-                    emailSubject = Util.PickFirst(p.setting.Subject, "no subject");
-                    message = p.setting.Body;
-                }
-                else
-                {
-                    try
-                    {
-                        if (masterorgid.HasValue && !settings.ContainsKey(masterorgid.Value))
-                            ParseSettings();
-                        var os = settings[masterorgid.Value];
-                        emailSubject = Util.PickFirst(os.Subject, "no subject");
-                        message = Util.PickFirst(os.Body, "no body");
-                    }
-                    catch (Exception)
-                    {
-                        if (masterorgid == null)
-                            throw new Exception("masterorgid was null");
-                        if (settings == null)
-                            throw new Exception("settings was null");
-                        if (!settings.ContainsKey(masterorgid.Value))
-                            throw new Exception("setting not found for masterorgid " + masterorgid.Value);
-                        throw;
-                    }
-                }
-                var NotifyIds = Db.StaffPeopleForOrg(p.org.OrganizationId);
-
-                var notify = NotifyIds[0];
-
-                string Location = p.org.Location;
-                if (!Location.HasValue())
-                    Location = masterorg.Location;
-
-                message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person, DivisionName, OrganizationName, Location, message);
-
-                string details = p.PrepareSummaryText(ti);
-                message = message.Replace("{phone}", p.org.PhoneNumber.FmtFone7());
-                message = message.Replace("{tickets}", List[0].ntickets.ToString());
-                message = message.Replace("{details}", details);
-                message = message.Replace("{paid}", p.TotalAmount().ToString("c"));
-                message = message.Replace("{sessiontotal}", amtpaid.ToString("c"));
-                message = message.Replace("{participants}", details);
-                Db.SetCurrentOrgId(p.orgid);
-
-                if (ti.Donate > 0)
-                {
-                    var pd = List[donor.Value];
-                    ti.Fund = pd.setting.DonationFund();
-                    var desc = "{0}; {1}; {2}, {3} {4}".Fmt(
-                        pd.person.Name,
-                        pd.person.PrimaryAddress,
-                        pd.person.PrimaryCity,
-                        pd.person.PrimaryState,
-                        pd.person.PrimaryZip);
-                    if (!ti.TransactionId.StartsWith("Coupon"))
-                        pd.person.PostUnattendedContribution(DbUtil.Db, ti.Donate.Value, pd.setting.DonationFundId, desc, tranid: ti.Id);
-                    var ma = donationtext.Match(message);
-                    if (ma.Success)
-                    {
-                        var v = ma.Groups["text"].Value;
-                        message = donationtext.Replace(message, v);
-                    }
-                    message = message.Replace("{donation}", ti.Donate.ToString2("N2"));
-                    // send donation confirmations
-                    Db.Email(NotifyIds[0].FromEmail, NotifyIds, emailSubject + "-donation",
-                        "${0:N2} donation received from {1}".Fmt(ti.Donate, Transaction.FullName(ti)));
-                }
-                else
-                    message = donationtext.Replace(message, "");
-
-                // send confirmations
-                if (emailSubject != "DO NOT SEND")
-                    Db.Email(notify.FromEmail, p.person, Util.EmailAddressListFromString(p.fromemail),
-                        emailSubject, message, redacted: false);
-                // notify the staff
-                Db.Email(Util.PickFirst(p.person.FromEmail, notify.FromEmail),
-                    NotifyIds, Header,
-@"{0} has registered for {1}<br/>
-Feepaid for this registrant: {2:C}<br/>
-Others in this registration session: {3:C}<br/>
-Total Fee paid for this registration session: {4:C}<br/>
-<pre>{5}</pre>".Fmt(p.person.Name,
-               Header,
-               p.AmountToPay(),
-               others,
-               amtpaid,
-               p.PrepareSummaryText(ti)));
+                var guid = registertag.ToGuid();
+                var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
+                ot.Used = true;
             }
         }
+
+        private List<MailAddress> GetEmailList()
+        {
+            var elist = new List<MailAddress>();
+            if (UserPeopleId.HasValue)
+            {
+                if (user.SendEmailAddress1 ?? true)
+                    Util.AddGoodAddress(elist, user.FromEmail);
+                if (user.SendEmailAddress2 ?? false)
+                    Util.AddGoodAddress(elist, user.FromEmail2);
+            }
+            return elist;
+        }
+
+
         public void UseCoupon(string TransactionID, decimal AmtPaid)
         {
             string matchcoupon = @"Coupon\((?<coupon>[^)]*)\)";

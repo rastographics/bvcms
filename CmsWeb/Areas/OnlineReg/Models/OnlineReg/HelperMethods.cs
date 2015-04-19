@@ -432,7 +432,7 @@ namespace CmsWeb.Models
                 {
                     var om = org.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == id);
                     if (om != null)
-                        p.PopulateRegistrationFromDb(om);
+                        p.RepopulateRegistration(om);
                 }
             }
             return p;

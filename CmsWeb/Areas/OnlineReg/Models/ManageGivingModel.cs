@@ -147,57 +147,26 @@ namespace CmsWeb.Models
             this.orgid = orgid;
             var rg = person.ManagedGiving();
             if (rg != null)
-            {
-                RepeatPattern = rg.SemiEvery != "S" ? rg.Period : rg.SemiEvery;
-                SemiEvery = rg.SemiEvery;
-                StartWhen = rg.StartWhen;
-                StopWhen = null; //rg.StopWhen;
-                Day1 = rg.Day1;
-                Day2 = rg.Day2;
-                EveryN = rg.EveryN;
-                Period = rg.Period;
-                foreach (var ra in person.RecurringAmounts.AsEnumerable())
-                    FundItem.Add(ra.FundId, ra.Amt);
-
-                NextDate = rg.NextDate;
-            }
+                PopulateSetup(rg);
             else if (Setting.ExtraValueFeeName.HasValue())
-            {
-                var f = OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
-                // reasonable defaults
-                RepeatPattern = "M";
-                Period = "M";
-                SemiEvery = "E";
-                EveryN = 1;
-                var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
-                if (f != null && evamt > 0)
-                    FundItem.Add(f.Value.ToInt(), evamt);
-            }
+                PopulateReasonableDefaults();
 
-            var pi = person.PaymentInfo();
-            if (pi == null)
-                pi = new PaymentInfo();
-            else
-            {
-                CreditCard = pi.MaskedCard;
-                Account = pi.MaskedAccount;
-                Expires = pi.Expires;
-                Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
-                NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
-                Type = pi.PreferredGivingType;
-                if (NoCreditCardsAllowed)
-                    Type = PaymentType.Ach; // bank account only
-                else if (NoEChecksAllowed)
-                    Type = PaymentType.CreditCard; // credit card only
-                Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
+            var pi = PopulatePaymentInfo();
+            PopulateBillingName(pi);
+            PopulateBillingAddress(pi);
 
-                ClearMaskedNumbers(pi);
-            }
+        }
 
+        private void PopulateBillingName(PaymentInfo pi)
+        {
             FirstName = pi.FirstName ?? person.FirstName;
             Middle = (pi.MiddleInitial ?? person.MiddleName).Truncate(1);
             LastName = pi.LastName ?? person.LastName;
             Suffix = pi.Suffix ?? person.SuffixCode;
+        }
+
+        private void PopulateBillingAddress(PaymentInfo pi)
+        {
             Address = pi.Address ?? person.PrimaryAddress;
             Address2 = pi.Address2 ?? person.PrimaryAddress2;
             City = pi.City ?? person.PrimaryCity;
@@ -205,8 +174,58 @@ namespace CmsWeb.Models
             Country = pi.Country ?? person.PrimaryCountry;
             Zip = pi.Zip ?? person.PrimaryZip;
             Phone = pi.Phone ?? person.HomePhone ?? person.CellPhone;
+        }
 
+        private PaymentInfo PopulatePaymentInfo()
+        {
+            var pi = person.PaymentInfo();
+            if (pi == null)
+                return new PaymentInfo();
+
+            CreditCard = pi.MaskedCard;
+            Account = pi.MaskedAccount;
+            Expires = pi.Expires;
+            Routing = Util.Mask(new StringBuilder(pi.Routing), 2);
+            NoCreditCardsAllowed = DbUtil.Db.Setting("NoCreditCardGiving", "false").ToBool();
+            Type = pi.PreferredGivingType;
+            if (NoCreditCardsAllowed)
+                Type = PaymentType.Ach; // bank account only
+            else if (NoEChecksAllowed)
+                Type = PaymentType.CreditCard; // credit card only
+            Type = NoEChecksAllowed ? PaymentType.CreditCard : Type;
+            ClearMaskedNumbers(pi);
             total = FundItem.Sum(ff => ff.Value) ?? 0;
+
+            return pi;
+        }
+
+        private void PopulateReasonableDefaults()
+        {
+            var f = OnlineRegPersonModel.FullFundList().SingleOrDefault(ff => ff.Text == Setting.ExtraValueFeeName);
+            // reasonable defaults
+            RepeatPattern = "M";
+            Period = "M";
+            SemiEvery = "E";
+            EveryN = 1;
+            var evamt = person.GetExtra(Setting.ExtraValueFeeName).ToDecimal();
+            if (f != null && evamt > 0)
+                FundItem.Add(f.Value.ToInt(), evamt);
+        }
+
+        private void PopulateSetup(ManagedGiving rg)
+        {
+            RepeatPattern = rg.SemiEvery != "S" ? rg.Period : rg.SemiEvery;
+            SemiEvery = rg.SemiEvery;
+            StartWhen = rg.StartWhen;
+            StopWhen = null; //rg.StopWhen;
+            Day1 = rg.Day1;
+            Day2 = rg.Day2;
+            EveryN = rg.EveryN;
+            Period = rg.Period;
+            foreach (var ra in person.RecurringAmounts.AsEnumerable())
+                FundItem.Add(ra.FundId, ra.Amt);
+
+            NextDate = rg.NextDate;
         }
 
         private void ClearMaskedNumbers(PaymentInfo pi)
