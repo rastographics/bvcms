@@ -211,12 +211,12 @@
     $('body').on('click', 'a.membertype', function (ev) {
         ev.preventDefault();
         var $a = $(this);
-        $("<div />").load(this.href, {}, function () {
-            var d = $(this);
-            var f = d.find("form");
-            f.modal("show");
-            f.on('hidden', function () {
-                d.remove();
+        $("<form class='modal-form validate ajax' />").load(this.href, {}, function () {
+            var f = $(this);
+            $('#empty-dialog').html(f);
+            $('#empty-dialog').modal("show");
+            
+            $('#empty-dialog').on('hidden', function () {
                 f.remove();
                 $.RebindMemberGrids();
             });
