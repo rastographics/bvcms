@@ -9,7 +9,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData.Codes;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
 	public class VolunteerModel
 	{

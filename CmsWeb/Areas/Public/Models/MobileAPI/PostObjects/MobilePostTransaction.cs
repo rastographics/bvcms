@@ -1,8 +1,6 @@
-﻿using CmsWeb.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.MobileAPI
 {

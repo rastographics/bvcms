@@ -3,7 +3,7 @@ using System.Web.Mvc;
 using CmsData.Registration;
 using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {

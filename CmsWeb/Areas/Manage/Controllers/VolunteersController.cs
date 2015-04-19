@@ -5,20 +5,12 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsWeb.Areas.Manage.Models;
 using UtilityExtensions;
-using System.Web.Routing;
-using CmsWeb;
-using CmsWeb.Models;
+using CmsWeb.Areas.OnlineReg.Models;
 using CmsData;
-using System.Diagnostics;
-using System.Net.Mail;
-using System.Text;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {

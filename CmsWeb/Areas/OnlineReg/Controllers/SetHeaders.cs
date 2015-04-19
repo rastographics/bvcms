@@ -3,7 +3,7 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
-using CmsWeb.Models;
+using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {

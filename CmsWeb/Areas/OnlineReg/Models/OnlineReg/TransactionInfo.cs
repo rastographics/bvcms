@@ -1,6 +1,6 @@
 using System;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
     public class TransactionInfo

@@ -13,7 +13,7 @@ using Elmah;
 using CmsData.Codes;
 using CmsData.View;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
 	public class VolunteerRequestModel
 	{

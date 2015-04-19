@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
+using CmsWeb.Areas.OnlineReg.Models;
 using Elmah;
 using UtilityExtensions;
 using System.Collections.Generic;

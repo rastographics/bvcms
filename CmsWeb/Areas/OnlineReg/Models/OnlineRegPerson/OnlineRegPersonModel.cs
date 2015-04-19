@@ -17,7 +17,7 @@ using CmsWeb.Controllers;
 using UtilityExtensions;
 using CmsData.Codes;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
     public partial class OnlineRegPersonModel : IXmlSerializable

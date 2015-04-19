@@ -1,4 +1,4 @@
-﻿@model CmsWeb.Models.ManageGivingModel
+﻿@model CmsWeb.Areas.OnlineReg.Models.ManageGivingModel
 @using CmsData.Finance
 @using CmsWeb
 @using UtilityExtensions
@@ -7,8 +7,8 @@
   Layout = "~/Views/Shared/onlinereg2.cshtml";
   var funame = Html.NameFor2(m => m.FundItem);
   decimal? tot = 0;
-  var funds = CmsWeb.Models.OnlineRegPersonModel.FundList();
-  var specialFunds = CmsWeb.Models.OnlineRegPersonModel.SpecialFundList();
+  var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FundList();
+  var specialFunds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SpecialFundList();
 }
 @section head
 {

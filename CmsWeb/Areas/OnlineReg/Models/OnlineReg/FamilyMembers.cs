@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {

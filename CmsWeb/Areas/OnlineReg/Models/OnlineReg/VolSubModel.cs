@@ -12,7 +12,7 @@ using System.Web.Mvc;
 using CmsData.View;
 using Elmah;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public class VolSubModel
     {

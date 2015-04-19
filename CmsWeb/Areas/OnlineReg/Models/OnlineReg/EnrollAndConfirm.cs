@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Net.Mail;
 using CmsData.Registration;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {

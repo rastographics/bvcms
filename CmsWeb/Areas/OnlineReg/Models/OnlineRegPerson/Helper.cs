@@ -12,7 +12,7 @@ using System.Net.Mail;
 using CmsData.Codes;
 using Settings = CmsData.Registration.Settings;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {

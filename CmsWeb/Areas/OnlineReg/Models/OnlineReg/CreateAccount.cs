@@ -5,8 +5,9 @@ using System.Web;
 using CmsData;
 using System.Text;
 using UtilityExtensions;
+using CmsWeb.Models;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {

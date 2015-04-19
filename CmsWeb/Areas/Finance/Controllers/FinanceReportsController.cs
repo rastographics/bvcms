@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Web.Mvc;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsData;
@@ -14,6 +13,7 @@ using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
 using CmsWeb.Models;
+using CmsWeb.Areas.OnlineReg.Models;
 using TableStyles = OfficeOpenXml.Table.TableStyles;
 
 namespace CmsWeb.Areas.Finance.Controllers

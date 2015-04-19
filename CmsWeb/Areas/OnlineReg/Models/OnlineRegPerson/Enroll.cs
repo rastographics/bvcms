@@ -6,7 +6,7 @@ using UtilityExtensions;
 using System.Text;
 using CmsData.Codes;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {

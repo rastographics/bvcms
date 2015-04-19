@@ -4,7 +4,7 @@ using CmsData.Registration;
 using UtilityExtensions;
 using CmsData;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {

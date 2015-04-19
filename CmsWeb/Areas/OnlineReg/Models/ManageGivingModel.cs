@@ -10,7 +10,7 @@ using CmsData.Registration;
 using CmsWeb.Code;
 using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     [Serializable]
     public class ManageGivingModel

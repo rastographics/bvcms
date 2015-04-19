@@ -1,6 +1,6 @@
 using System.Web.Routing;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public class RouteModel
     {

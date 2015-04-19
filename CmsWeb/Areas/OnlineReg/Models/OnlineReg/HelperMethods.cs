@@ -10,7 +10,7 @@ using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {

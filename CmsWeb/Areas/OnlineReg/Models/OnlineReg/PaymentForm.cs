@@ -10,7 +10,7 @@ using CmsWeb.Code;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public class PaymentForm
     {

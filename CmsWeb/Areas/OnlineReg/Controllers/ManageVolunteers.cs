@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Models;
+using CmsWeb.Areas.OnlineReg.Models;
 using UtilityExtensions;
 using System.Collections.Generic;
 

@@ -10,7 +10,7 @@ using System.Web.Mvc;
 using System.Xml.Linq;
 using CmsData.Codes;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public class ManageSubsModel
     {

@@ -4,7 +4,7 @@ using CmsData.Codes;
 using CmsWeb.Areas.OnlineReg.Controllers;
 using UtilityExtensions;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {

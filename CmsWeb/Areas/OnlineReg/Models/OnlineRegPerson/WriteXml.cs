@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Xml;
 using CmsData.API;
 
-namespace CmsWeb.Models
+namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {

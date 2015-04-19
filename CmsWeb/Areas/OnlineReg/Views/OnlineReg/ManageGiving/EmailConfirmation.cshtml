@@ -1,4 +1,4 @@
-﻿@model CmsWeb.Models.ManageGivingModel
+﻿@model CmsWeb.Areas.OnlineReg.Models.ManageGivingModel
 @using CmsData.Finance;
 <table cellpadding="4" style="font-family: Sans-Serif">
 <tr>
@@ -6,7 +6,7 @@
     <td>
         <table class="@ViewExtensions2.GridClass" cellpadding="2">
 @{
-  var funds = CmsWeb.Models.OnlineRegPersonModel.FullFundList();
+  var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList();
   var total = 0M;
 }
 @for (var n = 0; n < funds.Length; n++)
