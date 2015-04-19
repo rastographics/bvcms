@@ -1,4 +1,5 @@
 using System.Web.Routing;
+using CmsData;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -11,6 +12,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public RouteValueDictionary RouteData;
         public OnlineRegModel Model;
         public string AmtDue;
+        public Transaction Transaction;
 
         public static RouteModel ViewAction(string view)
         {
@@ -69,12 +71,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return new RouteModel() { View = "Payment/Process" };
         }
 
-        public static RouteModel AmountDue(decimal amt)
+        public static RouteModel AmountDue(decimal amt, Transaction ti)
         {
             return new RouteModel()
             {
                 Route = RouteType.AmtDue,
                 AmtDue = amt.ToString("C"),
+                Transaction = ti,
                 View = "PayAmtDue/Confirm",
             };
         }

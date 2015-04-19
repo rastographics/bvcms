@@ -76,6 +76,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (user != null)
                 firstPerson = user;
 
+            var notifyIds = GetNotifyIds();
             if (subject != "DO NOT SEND")
                 DbUtil.Db.Email(notifyIds[0].FromEmail, firstPerson, listMailAddress, subject, message, false);
 
@@ -184,6 +185,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             }
             message = message.Replace("{donation}", Transaction.Donate.ToString2("N2"));
             // send donation confirmations
+            var notifyIds = GetNotifyIds();
             DbUtil.Db.Email(notifyIds[0].FromEmail, notifyIds, subject + "-donation",
                 "${0:N2} donation received from {1}".Fmt(Transaction.Donate, Transaction.FullName(Transaction)));
             return message;
@@ -213,12 +215,12 @@ Total Fee paid for this registration session: {4:C}<br/>
         }
 
         private bool usedAdminsForNotify;
-        private List<Person> notifyIds;
+        private List<Person> _notifyIds;
         private List<Person> GetNotifyIds()
         {
-            if (notifyIds != null)
-                return notifyIds;
-            return notifyIds = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId, out usedAdminsForNotify);
+            if (_notifyIds != null)
+                return _notifyIds;
+            return _notifyIds = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId, out usedAdminsForNotify);
         }
 
         private bool DoMissionTripSupporter()

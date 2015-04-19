@@ -26,9 +26,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == pf.DatumId);
             if (ed != null)
                 m = Util.DeSerialize<OnlineRegModel>(ed.Data);
-            var peopleId = 0;
-            if (m != null)
-                peopleId = m.UserPeopleId ?? 0;
 
 #if DEBUG
 #else
@@ -46,7 +43,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             SetHeaders(pf.OrgId ?? 0);
             var ret = pf.ProcessPayment(ModelState, m);
             if (ret.Route == RouteType.AmtDue)
+            {
                 ViewBag.amtdue = ret.AmtDue;
+                return View(ret.View, ret.Transaction);
+            }
             return View(ret.View);
         }
 

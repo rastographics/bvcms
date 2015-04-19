@@ -179,8 +179,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public OnlineRegModel(HttpRequestBase req, int? id, bool? testing, string email, bool? login, string source)
             : this()
         {
-#if DEBUG2
-            OnlineRegModel.DebugCleanUp();
+#if DEBUG
+            DebugCleanUp();
 #endif
             Orgid = id;
             if (req.Url != null)

@@ -7,7 +7,6 @@ using CmsData;
 using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Code;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -37,10 +36,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string FullName()
         {
             string n;
-            if (MiddleInitial.HasValue())
-                n = "{0} {1} {2}".Fmt(First, MiddleInitial, Last);
-            else
-                n = "{0} {1}".Fmt(First, Last);
+            n = MiddleInitial.HasValue() 
+                ? "{0} {1} {2}".Fmt(First, MiddleInitial, Last) 
+                : "{0} {1}".Fmt(First, Last);
             if (Suffix.HasValue())
                 n = n + " " + Suffix;
             return n;
@@ -616,7 +614,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
 
-                return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti));
+                return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti), ti);
                 //ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
                 //return View("", ti);
             }

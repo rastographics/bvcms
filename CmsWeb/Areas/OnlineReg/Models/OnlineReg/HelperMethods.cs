@@ -550,16 +550,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (Util.IsLocalNetworkRequest)
             {
                 var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.OrganizationId == 89539 && om.PeopleId == 828612
+                    where om.OrganizationId == 81460 && om.PeopleId == 828612
                     select om;
                 foreach (var om in q)
                     om.Drop(DbUtil.Db, DateTime.Now);
-                //        DbUtil.Db.PurgePerson(om.PeopleId);
-                //                var dr = DbUtil.Db.People.SingleOrDefault(mm => mm.Name == "David Roll");
-                //                if (dr != null)
-                //                    foreach (var mm in dr.Family.People)
-                //                        if (mm.PeopleId != dr.PeopleId)
-                //                            DbUtil.Db.PurgePerson(mm.PeopleId);
                 DbUtil.Db.SubmitChanges();
             }
         }
