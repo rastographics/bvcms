@@ -342,7 +342,7 @@
             args += "&sgprefix=" + $("#sgprefix").val();
 
         if ($('#rallymode').is(":checked"))
-            $("#orgsearchform").attr("action", "/Reports/RallyRollsheet" + args);
+            $("#orgsearchform").attr("action", "/Reports/RallyRollsheets" + args);
         else
             $("#orgsearchform").attr("action", "/Reports/Rollsheet" + args);
         $("#orgsearchform").attr("target","_blank");
