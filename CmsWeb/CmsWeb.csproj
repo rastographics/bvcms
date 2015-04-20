@@ -331,6 +331,7 @@
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
+    <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
@@ -1032,6 +1033,7 @@
     <Content Include="Areas\Main\Views\Task\Row.cshtml" />
     <Content Include="Areas\Main\Views\Task\Columns.cshtml" />
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
+    <Content Include="Areas\Finance\Views\FinanceReports\Deposits.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\Text0.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />

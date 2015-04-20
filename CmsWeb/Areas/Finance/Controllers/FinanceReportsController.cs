@@ -148,6 +148,13 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(m);
         }
 
+        [HttpGet]
+        public ActionResult Deposits(DateTime dt)
+        {
+            var m = new DepositsModel(dt);
+            return View(m);
+        }
+
         public ActionResult PledgeReport()
         {
             var fd = DateTime.Parse("1/1/1900");
