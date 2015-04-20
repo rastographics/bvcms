@@ -2200,44 +2200,9 @@
     <Compile Include="Areas\Setup\Controllers\SettingController.cs" />
     <Compile Include="Areas\Setup\Controllers\UsersCanEmailForController.cs" />
     <Compile Include="Areas\Setup\Models\PromotionModel.cs" />
-    <Compile Include="ContributionReports\TotalsByFundAgeRange.aspx.cs">
-      <DependentUpon>TotalsByFundAgeRange.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\TotalsByFundAgeRange.aspx.designer.cs">
-      <DependentUpon>TotalsByFundAgeRange.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Public\Controllers\TrackController.cs" />
     <Compile Include="Code\ViewExtensions.cs" />
-    <Compile Include="ContributionReports\Deposit.aspx.cs">
-      <DependentUpon>Deposit.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\Deposit.aspx.designer.cs">
-      <DependentUpon>Deposit.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ContributionReports\JournalDetails.aspx.cs">
-      <DependentUpon>JournalDetails.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\JournalDetails.aspx.designer.cs">
-      <DependentUpon>JournalDetails.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ContributionReports\Reports.Master.cs">
-      <DependentUpon>Reports.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\Reports.Master.designer.cs">
-      <DependentUpon>Reports.Master</DependentUpon>
-    </Compile>
-    <Compile Include="ContributionReports\TotalsByFundRange.aspx.cs">
-      <DependentUpon>TotalsByFundRange.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\TotalsByFundRange.aspx.designer.cs">
-      <DependentUpon>TotalsByFundRange.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Areas\Manage\Controllers\AccountController.cs" />
     <Compile Include="Areas\Public\Controllers\APICheckin2Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -3085,9 +3050,6 @@
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js" />
     <Content Include="Content\images\loading.gif" />
     <Content Include="Content\images\navigation-shadow.png" />
-    <Content Include="ContributionReports\Deposit.aspx" />
-    <Content Include="ContributionReports\JournalDetails.aspx" />
-    <Content Include="ContributionReports\TotalsByFundRange.aspx" />
     <Content Include="Content\images\1pix.gif" />
     <Content Include="Content\images\adobe.png" />
     <Content Include="Content\images\arrow_left.gif" />
@@ -3131,8 +3093,6 @@
     <Content Include="Scripts\jQuery\jquery.cookie.js" />
     <Content Include="Content\images\star.png" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.js" />
-    <Content Include="ContributionReports\TotalsByFundAgeRange.aspx" />
-    <Content Include="ContributionReports\Reports.Master" />
     <Content Include="Areas\Setup\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
