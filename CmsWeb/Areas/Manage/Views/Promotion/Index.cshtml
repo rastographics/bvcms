@@ -11,7 +11,7 @@
             <div class="box box-responsive">
                 <div class="box-title-btn">
                     <div class="box-tools">
-                        <input type="submit" class="btn btn-primary" name="submit" value="Assign to Class" />
+                        <a class="btn btn-default" href="/Promotion/Export/@Model.PromotionId"><i class="fa fa-cloud-download"></i> Promotion Export</a> <input type="submit" class="btn btn-primary" name="submit" value="Assign to Class" />
                     </div>
                 </div>
                 <div class="box-content">
@@ -63,6 +63,7 @@
                     </div>
                     <div class="visible-xs-block">
                         <input type="submit" class="btn btn-primary btn-block" name="submit" value="Assign to Class" />
+                        <a class="btn btn-default btn-block" href="/Promotion/Export/@Model.PromotionId"><i class="fa fa-cloud-download"></i> Promotion Export</a> 
                     </div>
                     @Html.Hidden("Sort", Model.Sort)
                     @Html.Hidden("Dir", Model.Dir)
@@ -130,9 +131,7 @@
             </div>
         </div>
     </div>
-    
 </form>
-<a href="/Promotion/Export/@Model.PromotionId">Promotion Export</a>
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/js/org/promotion.js")

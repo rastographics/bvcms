@@ -58,9 +58,11 @@
     }
 
     $.RefreshList = function () {
+        $.block();
         var q = $('#form').serialize();
         $.post('/Promotion/List/', q, function (ret) {
             $('#Promotions > tbody').html(ret);
+            $.unblock();
         });
     }
 
@@ -118,8 +120,8 @@
 
     $('#PromotionId').change($.RefreshPage);
     $('#ScheduleId').change($.RefreshPage);
-    $('#FilterUnassigned').click($.RefreshPage);
-    $('#NormalMembersOnly').click($.RefreshPage);
+    $('#FilterUnassigned').click($.RefreshList);
+    $('#NormalMembersOnly').click($.RefreshList);
     $('body').on('click', 'input.check', $.UpdateTotals);
 });
 
