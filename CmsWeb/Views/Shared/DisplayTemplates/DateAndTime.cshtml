@@ -1,7 +1,7 @@
 ﻿@model DateTime?
 <dl>
     <dt>@Html.DisplayNameFor(m => m)</dt>
-    <dd>@Model.FormatDate()</dd>
+    <dd>@Model.FormatDateTm()</dd>
     @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
     {
         <dd>
