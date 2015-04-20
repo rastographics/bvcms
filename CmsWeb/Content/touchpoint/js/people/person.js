@@ -360,7 +360,7 @@
 
     $.InitFunctions.Editable = function () {
         $("a.editable").editable();
-        $("a.editable-bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
+        $("a.editable-bit").editable({ type: 'select', mode: 'popup', source : "[{ value: 'True', text: 'True' },{ value: 'False', text: 'False' }]" });
     };
 
     $('body').on('click', 'a.click-pencil', function (e) {
