@@ -11,7 +11,7 @@
             <ul id="ultoolbar">
                 <li class="dropdown-header">Administrative</li>
                 <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="text-success">Put in New Family</span></a></li>
-                <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId"><span class="text-success">Merge this duplicate</span></a></li>
+                <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId?displaySkipSearch=false"><span class="text-success">Merge this duplicate</span></a></li>
                 @if (User.IsInRole("Delete"))
                 {
                     <li><a id="deletePerson" href="/Person2/Delete/@ViewBag.PeopleId"><span class="text-success">Delete this record</span></a></li>
