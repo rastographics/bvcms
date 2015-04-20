@@ -1616,7 +1616,6 @@
     <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
     <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RegistrationSummary.cshtml" />
-    <Content Include="Areas\People\Views\Person\Giving\GivingLinks.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactorSummary.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactSummary.cshtml" />
     <Content Include="Content\less\typeahead.js-bootstrap.less" />
