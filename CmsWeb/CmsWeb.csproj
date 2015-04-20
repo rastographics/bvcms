@@ -2442,6 +2442,7 @@
     <Content Include="Content\touchpoint\src\less\dropdown-large.less" />
     <Content Include="Content\touchpoint\src\less\stats-panel.less" />
     <Content Include="Content\touchpoint\src\less\footers.less" />
+    <Content Include="Views\Error\UnderConstruction.cshtml" />
     <None Include="Web.bvcms.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

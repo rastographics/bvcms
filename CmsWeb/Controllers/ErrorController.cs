@@ -104,5 +104,15 @@ namespace CmsWeb.Controllers
         {
             return View();
         }
+
+        /// <summary>
+        /// This is a temp view for the new user interface feature.
+        /// TODO:// removed this action and view once we go to production.
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult UnderConstruction()
+        {
+            return View();
+        }
     }
 }
