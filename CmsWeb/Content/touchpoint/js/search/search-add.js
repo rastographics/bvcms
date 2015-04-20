@@ -23,7 +23,7 @@
              });
     });
     
-    $("a.searchadd").on("click", function (ev) {
+    $('body').on('click', 'a.searchadd', function (ev) {
         ev.preventDefault();
         
         $("<form id='search-add' class='modal-form validate ajax' />")

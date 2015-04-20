@@ -437,12 +437,3 @@ function AddSelected(ret) {
             break;
     }
 }
-
-function RebindUserInfoGrid() {
-    $.updateTable($('#user-tab form'));
-    $("#memberDialog").dialog('close');
-}
-
-function dialogError(arg) {
-    return arg;
-}
