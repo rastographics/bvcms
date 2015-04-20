@@ -11,9 +11,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
     public class AddOrganizationController : CmsStaffController
     {
         [Route("~/AddOrganization")]
-        public ActionResult Index()
+        public ActionResult Index(bool displayCopySettings = false)
         {
-			var m = new NewOrganizationModel(Util2.CurrentOrgId);
+			var m = new NewOrganizationModel(Util2.CurrentOrgId, displayCopySettings);
 			m.org.OrganizationName = "";
 			m.org.Location = "";
         	return View(m);

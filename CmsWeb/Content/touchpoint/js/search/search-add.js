@@ -9,18 +9,22 @@
 
     $('#addorg').click(function (e) {
         e.preventDefault();
-        $("<div />")
-             .load('/AddOrganization', {}, function () {
-                 var div = $(this);
-                 var dialog = div.find("#new-org-modal");
-                 $('#empty-dialog').html(dialog);
-                 $('#empty-dialog').modal("show");
-                 dialog.on('hidden', function () {
-                     div.remove();
-                     dialog.remove();
-                 });
+        var url = '/AddOrganization';
+        if ($('#OrganizationId').length > 0) {
+            url = url + '?displayCopySettings=true';
+        }
 
-             });
+        $("<div />").load(url, {}, function () {
+            var div = $(this);
+            var dialog = div.find("#new-org-modal");
+            $('#empty-dialog').html(dialog);
+            $('#empty-dialog').modal("show");
+            dialog.on('hidden', function () {
+                div.remove();
+                dialog.remove();
+            });
+
+        });
     });
     
     $('body').on('click', 'a.searchadd', function (ev) {

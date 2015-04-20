@@ -20,19 +20,13 @@
                             @Html.TextBox("org.Location", "", new { @class = "form-control" })
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label for="org_CampusId" class="control-label">Campus</label>
                             @Html.DropDownList("org.CampusId", Model.CampusList(), new { @class = "form-control" })
                         </div>
                     </div>
-                    <div class="col-sm-4">
-                        <div class="form-group">
-                            <label for="org_SecurityTypeId" class="control-label">Security Type</label>
-                            @Html.DropDownList("org.SecurityTypeId", Model.SecurityTypeList(), new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
+                    <div class="col-sm-6">
                         <div class="form-group">
                             <label for="org_LeaderMemberTypeId" class="control-label">Leader Type</label>
                             @Html.DropDownList("org.LeaderMemberTypeId", Model.LeaderTypeList(), new { @class = "form-control" })
@@ -43,9 +37,12 @@
                             <label class="checkbox-inline">
                                 @Html.CheckBox("org.IsBibleFellowshipOrg") Main fellowship?
                             </label>
-                            <label class="checkbox-inline">
-                                @Html.CheckBox("copysettings") Copy settings?
-                            </label>
+                            @if (Model.DisplayCopySettings)
+                            {
+                                <label class="checkbox-inline">
+                                    @Html.CheckBox("copysettings") Copy settings?
+                                </label>
+                            }
                         </div>
                     </div>
                 </div>
