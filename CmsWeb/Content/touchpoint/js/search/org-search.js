@@ -451,7 +451,7 @@
             ev2.preventDefault();
             $('#meetings-month-modal').modal('hide');
             var args = "?dt1=" + $('#monthdt1').val();
-            $("#orgsearchform").attr("action", action + args);
+            $("#orgsearchform").attr("action",  $('#meetings-month-action').val() + args);
             $("#orgsearchform").submit();
             return false;
         });
