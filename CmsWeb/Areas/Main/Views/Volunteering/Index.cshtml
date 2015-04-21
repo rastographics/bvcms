@@ -185,7 +185,7 @@
 {
     <b>Volunteer Credit Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">Create New</a>)<br />
     <table width="100%" style="border: thin solid #777777;">
-        @if (credit != null && credit.Count() == 0)
+        @if (credit != null && !credit.Any())
         {
             <tr>
                 <td>No Credit Checks</td>
@@ -217,7 +217,7 @@
                         @if (check.ReportLabelID > 0)
                         {
                             <a href="#" class="showEditDialog" cid="@check.Id">
-                                @labels.Where(e => e.Id == check.ReportLabelID).SingleOrDefault().Description
+                                @labels.SingleOrDefault(e => e.Id == check.ReportLabelID).Description
                             </a>
                         }
                         else
@@ -297,7 +297,7 @@
                 </form>
             </td>
         }
-        @if (i.Count() == 0)
+        @if (!i.Any())
         {
             <td class="center">No Documents Uploaded</td>
         }

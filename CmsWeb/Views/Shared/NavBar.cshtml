@@ -4,6 +4,9 @@
     var finance = User.IsInRole("Finance");
     var targetperson = Util2.TargetLinkPeople;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
+
+    var customHeaderImage = CustomHeader.HeaderImage("~/Content/touchpoint/img/logo.png");
+    var customSmallHeaderImage = CustomHeader.SmallHeaderImage("~/Content/touchpoint/img/logo_sm.png");
 }
 <style>
     #thumbnail-picture {
@@ -14,25 +17,28 @@
         margin-left: 25px;
         width: 243px;
         height: 50px;
-        background-size: 233px 50px;
+        background-size: auto @customHeaderImage.Height;
         background-repeat: no-repeat;
-        background-image: url(@Url.Content("~/Content/touchpoint/img/logo.png"));
+        background-position: left;
+        background-image: url(@Url.Content(customHeaderImage.Url));
     }
 
     .logo-md {
         width: 70px;
         height: 50px;
-        background-size: 60px 50px;
+        background-size: auto @customSmallHeaderImage.Height;
         background-repeat: no-repeat;
-        background-image: url(@Url.Content("~/Content/touchpoint/img/logo_sm.png"));
+        background-position: left;
+        background-image: url(@Url.Content(customSmallHeaderImage.Url));
     }
 
     .logo-lg {
         width: 243px;
         height: 50px;
-        background-size: 233px 50px;
+        background-size: auto @customHeaderImage.Height;
         background-repeat: no-repeat;
-        background-image: url(@Url.Content("~/Content/touchpoint/img/logo.png"));
+        background-position: left;
+        background-image: url(@Url.Content(customHeaderImage.Url));
     }
 </style>
 <nav class="navbar navbar-default navbar-fixed-top hidden-print">
