@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var f = new VolunteerForm
                         {
                             UploaderId = Util.UserId1,
-                            PeopleId = vol.V.PeopleId,
+                            PeopleId = vol.Volunteer.PeopleId,
                             Name = name.Truncate(100),
                             AppDate = Util.Now,
                         };
@@ -96,9 +96,9 @@ namespace CmsWeb.Areas.Main.Controllers
 
             DbUtil.Db.VolunteerForms.InsertOnSubmit(f);
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.V.Person.Name));
+            DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.Volunteer.Person.Name));
 
-            return Redirect("/Volunteering/" + vol.V.PeopleId);
+            return Redirect("/Volunteering/" + vol.Volunteer.PeopleId);
         }
 
         public ActionResult Delete(int id, int peopleId)

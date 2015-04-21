@@ -14,18 +14,18 @@
     var checkEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
 
     var i = from e in DbUtil.Db.VolunteerForms
-            where e.PeopleId == Model.V.PeopleId
+            where e.PeopleId == Model.Volunteer.PeopleId
             select e;
 
     if (checkEnabled)
     {
         bg = from e in DbUtil.Db.BackgroundChecks
-             where e.PeopleID == Model.V.PeopleId
+             where e.PeopleID == Model.Volunteer.PeopleId
              where e.ReportTypeID == ProtectMyMinistryHelper.TYPE_BACKGROUND
              select e;
 
         credit = from e in DbUtil.Db.BackgroundChecks
-                 where e.PeopleID == Model.V.PeopleId
+                 where e.PeopleID == Model.Volunteer.PeopleId
                  where e.ReportTypeID == ProtectMyMinistryHelper.TYPE_CREDIT
                  select e;
 
@@ -34,7 +34,7 @@
             labels = from e in DbUtil.Db.BackgroundCheckLabels
                      select e;
         }
-    }    
+    }
 }
 @section head
 {
@@ -48,7 +48,7 @@
 {
     @Fingerprint.Script("/Scripts/Volunteer/volunteering.js")
 }
-<a href="/Person2/@Model.V.PeopleId">@Model.V.Person.Name</a><br />
+<a href="/Person2/@Model.Volunteer.PeopleId">@Model.Volunteer.Person.Name</a><br />
 <br />
 <b>Volunteer Application Information</b>
 <table width="100%" style="border: thin solid #777777;">
@@ -63,30 +63,30 @@
         </td>
         <td class="right top" style="background-color: #EFF3FB;"><b>Comments:</b></td>
         <td class="top" width="50%">
-            <textarea rows="4" cols="50" readonly="readonly">@Model.V.Comments</textarea>
+            <textarea rows="4" cols="50" readonly="readonly">@Model.Volunteer.Comments</textarea>
         </td>
     </tr>
     <tr>
         <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>Last Background Check:</b></td>
-        <td class="top">@( Model.V.ProcessedDate != null ? Model.V.ProcessedDate.Value.ToString("d") : "")</td>
+        <td class="top">@( Model.Volunteer.ProcessedDate != null ? Model.Volunteer.ProcessedDate.Value.ToString("d") : "")</td>
         <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>Status Code:</b></td>
-        <td class="top">@(Model.V.VolApplicationStatus == null ? "Unknown" : Model.V.VolApplicationStatus.Description)</td>
+        <td class="top">@(Model.Volunteer.VolApplicationStatus == null ? "Unknown" : Model.Volunteer.VolApplicationStatus.Description)</td>
     </tr>
     <tr>
         <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>Last MVR Check:</b></td>
-        <td class="top">@( Model.V.MVRProcessedDate != null ? Model.V.MVRProcessedDate.Value.ToString("d") : "")</td>
+        <td class="top">@( Model.Volunteer.MVRProcessedDate != null ? Model.Volunteer.MVRProcessedDate.Value.ToString("d") : "")</td>
         <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>MVR Status Code:</b></td>
-        <td class="top">@(Model.V.MVRStatusId == null ? "Unknown" : Model.V.StatusMvr.Description)</td>
+        <td class="top">@(Model.Volunteer.MVRStatusId == null ? "Unknown" : Model.Volunteer.StatusMvr.Description)</td>
     </tr>
 </table>
 <br />
-<form action="/Volunteering/Edit/@Model.V.PeopleId">
+<form action="/Volunteering/Edit/@Model.Volunteer.PeopleId">
     <input type="submit" class="bt" value="Edit" /></form>
 <br />
 <br />
 @if (ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("BackgroundCheck"))
 {
-    <b>Volunteer Background Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">Create New</a>)<br />
+    <b>Volunteer Background Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.Volunteer.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">Create New</a>)<br />
     <table width="100%" style="border: thin solid #777777;">
         @if (bg != null && !bg.Any())
         {
@@ -183,7 +183,7 @@
 }
 @if (ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("CreditCheck"))
 {
-    <b>Volunteer Credit Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">Create New</a>)<br />
+    <b>Volunteer Credit Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.Volunteer.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">Create New</a>)<br />
     <table width="100%" style="border: thin solid #777777;">
         @if (credit != null && !credit.Any())
         {
@@ -292,7 +292,7 @@
                 </div>
                 <form action="/Volunteering/Delete" method="post" onsubmit="return confirmDelete();">
                     <input type="hidden" name="id" value="@form.Id" />
-                    <input type="hidden" name="PeopleID" value="@Model.V.PeopleId" />
+                    <input type="hidden" name="PeopleID" value="@Model.Volunteer.PeopleId" />
                     <input type="submit" class="bt" value="Delete" />
                 </form>
             </td>
@@ -304,8 +304,8 @@
     </tr>
 </table>
 <br />
-<form action="/Volunteering/Upload/@Model.V.PeopleId" method="post" enctype="multipart/form-data">
-    @Html.Hidden("PeopleID", @Model.V.PeopleId)
+<form action="/Volunteering/Upload/@Model.Volunteer.PeopleId" method="post" enctype="multipart/form-data">
+    @Html.Hidden("PeopleID", @Model.Volunteer.PeopleId)
     <input type="file" name="file" id="file" />
     <input type="submit" class="bt" value="Upload" />
 </form>

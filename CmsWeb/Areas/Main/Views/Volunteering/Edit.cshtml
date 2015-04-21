@@ -16,14 +16,14 @@
             $(".datepicker").jqdatepicker();
         });
         function redirect() {
-            window.location = "/Volunteering/@Model.V.PeopleId";
+            window.location = "/Volunteering/@Model.Volunteer.PeopleId";
         }
     </script>
 }
-<a href="/Person2/@Model.V.PeopleId">@Model.V.Person.Name</a><br />
+<a href="/Person2/@Model.Volunteer.PeopleId">@Model.Volunteer.Person.Name</a><br />
 <br />
 <form action="/Volunteering/Update" method="post">
-    @Html.Hidden("Id", Model.V.PeopleId)
+    @Html.Hidden("Id", Model.Volunteer.PeopleId)
     <table width="100%" style="border:thin solid #777777;">
         <tr>
             <td class="right top" style="background-color:#EFF3FB;"><b>Approvals:</b></td>
@@ -36,20 +36,20 @@
             </td>
             <td class="right top" style="background-color:#EFF3FB;"><b>Comments:</b></td>
             <td class="top" width="50%">
-                <textarea name="comments" rows="4" cols="50">@Model.V.Comments</textarea>
+                <textarea name="comments" rows="4" cols="50">@Model.Volunteer.Comments</textarea>
             </td>
         </tr>
         <tr>
             <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>Last Background Check:</b></td>
-            <td class="top">@Html.TextBox("processDate", Model.V.ProcessedDate.FormatDate(), new { @class = "datepicker" })</td>
+            <td class="top">@Html.TextBox("processDate", Model.Volunteer.ProcessedDate.FormatDate(), new { @class = "datepicker" })</td>
             <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>Status Code:</b></td>
-            <td class="top">@Html.DropDownList("statusId", new SelectList( s, "Id", "Description", Model.V.StatusId))</td>
+            <td class="top">@Html.DropDownList("statusId", new SelectList( s, "Id", "Description", Model.Volunteer.StatusId))</td>
         </tr>
         <tr>
             <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>Last MVR Check:</b></td>
-            <td class="top">@Html.TextBox("mvrDate", Model.V.MVRProcessedDate.FormatDate(), new { @class = "datepicker" })</td>
+            <td class="top">@Html.TextBox("mvrDate", Model.Volunteer.MVRProcessedDate.FormatDate(), new { @class = "datepicker" })</td>
             <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>MVR Status Code:</b></td>
-            <td class="top">@Html.DropDownList("mvrStatusId", new SelectList(s, "Id", "Description", Model.V.MVRStatusId))</td>
+            <td class="top">@Html.DropDownList("mvrStatusId", new SelectList(s, "Id", "Description", Model.Volunteer.MVRStatusId))</td>
         </tr>
     </table>
     <br />
