@@ -220,7 +220,7 @@ namespace CmsData
 
         public static bool UseNewOrg
         {
-            get { return DbUtil.Db.UserPreference("UseNewOrg", "false").ToBool(); }
+            get { return DbUtil.Db.UserPreference("UseNewOrg", "true").ToBool(); }
         }
         public static string Org
         {
