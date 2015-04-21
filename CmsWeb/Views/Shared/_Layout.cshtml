@@ -26,6 +26,10 @@
             <div id="page-header">
                 <div class="container-fluid">
                     <h2>@ViewBag.PageHeader</h2>
+                    @if (!string.IsNullOrWhiteSpace(ViewBag.PageSubHeader))
+                    {
+                        <h4>@ViewBag.PageSubHeader</h4>
+                    }
                 </div>
             </div>
         }
