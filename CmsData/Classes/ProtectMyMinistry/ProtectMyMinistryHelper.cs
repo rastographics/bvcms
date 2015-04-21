@@ -399,7 +399,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 		public string sReportLink = "";
 	}
 
-    internal class CheckType
+    public class CheckType
 	{
 		public string code { get; set; }
 		public string label { get; set; }
