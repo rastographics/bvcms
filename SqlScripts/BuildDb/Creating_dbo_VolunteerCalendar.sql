@@ -24,12 +24,14 @@ RETURN
 			FROM dbo.OrgMemMemTags omm
 			JOIN dbo.MemberTags mt ON mt.Id = omm.MemberTagId
 			WHERE mt.OrgId = om.OrganizationId 
+			AND omm.PeopleId = om.PeopleId
 			AND @sg1 = mt.Name))
 	AND (@sg2 IS NULL OR @sg2 = '(not specified)'
 		OR EXISTS(SELECT NULL 
 			FROM dbo.OrgMemMemTags omm
 			JOIN dbo.MemberTags mt ON mt.Id = omm.MemberTagId
 			WHERE mt.OrgId = om.OrganizationId 
+			AND omm.PeopleId = om.PeopleId
 			AND @sg2 = mt.Name))
 )
 GO
