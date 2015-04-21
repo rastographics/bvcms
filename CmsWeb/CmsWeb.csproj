@@ -505,6 +505,7 @@
     <Compile Include="Areas\Search\Controllers\RegistrationSearchController.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
+    <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
