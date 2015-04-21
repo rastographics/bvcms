@@ -11,7 +11,7 @@
     var showtip = !DbUtil.Db.UserPreference("hide-tip-person", "false").ToBool() && inaccess;
     var mydatashowtip = !DbUtil.Db.UserPreference("hide-tip-mydata", "false").ToBool() && !inaccess;
     var gender = Model.Person.Gender.Code;
-    var portraitUrl = gender == "M" ? Model.Picture.MediumMaleUrl : gender == "F" ? Model.Picture.MediumFemaleUrl : Model.Picture.MediumUrl;
+    var portraitUrl = gender == "M" ? Model.Picture.LargeMaleUrl : gender == "F" ? Model.Picture.LargeFemaleUrl : Model.Picture.LargeUrl;
 }
 @section head
 {
