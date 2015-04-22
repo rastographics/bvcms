@@ -65,10 +65,6 @@
         }
     </style>
 }
-@section scripts
-{
-    @Fingerprint.Script("/Content/touchpoint/js/people/volunteering.js")
-}
 <a href="/Person2/@Model.Volunteer.PeopleId">@Model.Volunteer.Person.Name</a><br />
 <br />
 
@@ -440,3 +436,23 @@
 </div>
 
 <div id="dialogHolder"></div>
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/js/people/volunteering.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    <script type="text/javascript">
+        $('#volunteer-tabs').tabdrop();
+
+        var hash = document.location.hash;
+        var prefix = 'tab_';
+        if (hash) {
+            $('.nav-tabs a[href=' + hash.replace(prefix, '') + ']').tab('show');
+        }
+
+        // Change hash for page-reload
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            window.location.hash = e.target.hash.replace('#', '#' + prefix);
+        });
+    </script>
+}
