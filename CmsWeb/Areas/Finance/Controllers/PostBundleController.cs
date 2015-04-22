@@ -122,12 +122,6 @@ namespace CmsWeb.Areas.Finance.Controllers
                     enc = new System.Text.UnicodeEncoding();
                     s = enc.GetString(buffer, 2, buffer.Length - 2);
                 }
-                // BOM (byte-order mark)
-                else if (buffer[0] == 0xEF && buffer[1] == 0xBB)
-                {
-                    enc = new System.Text.UTF8Encoding();
-                    s = enc.GetString(buffer);
-                }
                 else
                 {
                     enc = new System.Text.ASCIIEncoding();

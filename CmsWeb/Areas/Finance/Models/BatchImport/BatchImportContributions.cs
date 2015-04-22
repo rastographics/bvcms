@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
                 return new ChaseImporter().RunImport(text, date, fundid, fromFile);
 
-            if (text.StartsWith("TransmissionDate,Name,CapturedDate,Acc_No,textbox21,textbox10,DepositStatus,textbox18,SourceLocation,textbox11,textbox12,textbox13"))
+            if (text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Contains("TransmissionDate,Name,CapturedDate,Acc_No,textbox21,textbox10,DepositStatus,textbox18,SourceLocation,textbox11,textbox12,textbox13"))
                 return new CapitalCityImporter().RunImport(text, date, fundid, fromFile);
 
             if (text.StartsWith("1") && text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Length == 94)
