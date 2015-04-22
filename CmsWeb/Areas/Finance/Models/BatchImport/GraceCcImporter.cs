@@ -7,7 +7,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using CmsData;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
@@ -19,16 +18,11 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             using (var csv = new CsvReader(new StringReader(text), true))
-                return BatchProcessGraceCC(csv, date, fundid);
+                return BatchProcessGraceCc(csv, date, fundid);
         }
 
-        private static int? BatchProcessGraceCC(CsvReader csv, DateTime date, int? fundid)
+        private static int? BatchProcessGraceCc(CsvReader csv, DateTime date, int? fundid)
         {
-            var fundList = (from f in DbUtil.Db.ContributionFunds
-                            orderby f.FundId
-                            select f.FundId).ToList();
-
-            var cols = csv.GetFieldHeaders();
             BundleHeader bh = null;
             var fid = fundid ?? BatchImportContributions.FirstFundId();
 

@@ -15,7 +15,7 @@ BEGIN
 		SELECT @Result = MetroMarginalCode 
 		FROM dbo.Zips 
 		WHERE ZipCode = @z5
-		AND (@country IS NULL OR @country = '' OR @country in ('United States', 'USA, Not Validated'))
+		AND (@country IS NULL OR @country = '' OR @country in ('US', 'USA', 'United States', 'USA, Not Validated'))
 
 		IF @Result IS NULL
 			SELECT @Result = 30

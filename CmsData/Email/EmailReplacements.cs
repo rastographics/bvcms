@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
@@ -50,7 +51,7 @@ namespace CmsData
             this.from = from;
             if (text == null)
                 text = "(no content)";
-            string pattern = @"({{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9})".Fmt(
+            string pattern = @"(<style.*?</style>|{{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9})".Fmt(
                 RegisterLinkRe, RegisterTagRe, RsvpLinkRe,RegisterHrefRe,
                 SendLinkRe, SupportLinkRe, VolReqLinkRe, 
                 VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
@@ -59,8 +60,10 @@ namespace CmsData
 
         public List<MailAddress> ListAddresses { get; set; }
 
+        private Person person;
         public string DoReplacements(Person p, EmailQueueTo emailqueueto)
         {
+            person = p;
             var pi = emailqueueto.OrgId.HasValue
                 ? (from m in db.OrganizationMembers
                    let ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == m.TranId && tt.PeopleId == m.PeopleId)
@@ -129,6 +132,8 @@ namespace CmsData
 
         private string DoReplaceCode(string code, Person p, PayInfo pi = null, EmailQueueTo emailqueueto = null)
         {
+            if (code.StartsWith("<style"))
+                return code;
             switch (code.ToLower())
             {
                 case "{address}":
@@ -492,7 +497,7 @@ namespace CmsData
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
             HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml;
+            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
             Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var id = GetId(d, "RegisterLink");
@@ -561,7 +566,7 @@ namespace CmsData
                 code = HttpUtility.HtmlDecode(code);
             doc.LoadHtml(code);
             HtmlNode ele = doc.DocumentNode.FirstChild;
-            string inside = ele.InnerHtml;
+            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
             var id = ele.Id.ToInt();
             string url = RegisterLinkUrl(db, id, emailqueueto.PeopleId, emailqueueto.Id, "registerlink");
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
@@ -575,7 +580,7 @@ namespace CmsData
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
             HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml;
+            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
             Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             string msg = "Thank you for responding.";
@@ -624,7 +629,7 @@ namespace CmsData
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
             HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml;
+            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
             Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var id = GetId(d, "SendLink");
@@ -697,7 +702,7 @@ namespace CmsData
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
             HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml;
+            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
             Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var oid = GetId(d, "SupportLink");
@@ -735,7 +740,7 @@ namespace CmsData
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
             HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml;
+            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
             Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             string qs = "{0},{1},{2},{3}"
@@ -766,7 +771,7 @@ namespace CmsData
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
             HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml;
+            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
             Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             string qs = "{0},{1},{2},{3}"
@@ -798,7 +803,7 @@ namespace CmsData
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
             HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml;
+            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
             Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             string msg = "Thank you for responding.";

@@ -107,7 +107,7 @@ RETURN
 		OR (ISNULL(LEN(@sgfilter), 0) > 0 AND @sgfilter NOT LIKE 'ALL:%' AND @sgfilter <> 'NONE' 
 			AND NOT EXISTS(SELECT NULL FROM split(Groups, CHAR(10)) mt
 			    WHERE EXISTS(SELECT NULL FROM split(@sgfilter, ';') pf 
-					WHERE pf.value LIKE '-%' AND mt.Value LIKE SUBSTRING(pf.Value,2,200)
+					WHERE pf.value LIKE '-%' AND mt.Value LIKE SUBSTRING(REPLACE(pf.Value, '*', '%'),2,200)
 				)
 			)
 		)
