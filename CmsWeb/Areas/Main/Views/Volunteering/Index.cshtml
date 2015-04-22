@@ -174,19 +174,19 @@
                                     else
                                     {
                                         <thead>
-                                            <tr>
-                                                <th style="width: 7%">Updated</th>
-                                                @if (labelEnabled)
-                                                {
-                                                    <th style="width: 22%">Label</th>
-                                                }
-                                                <th style="width: 16%">Service</th>
-                                                <th style="width: 10%">Status</th>
-                                                <th style="width: 6%">Report ID</th>
-                                                <th style="width: 4%">Issues</th>
-                                                <th style="white-space: nowrap;">Report Link/Error</th>
-                                                <th style="width: 8%">Action</th>
-                                            </tr>
+                                        <tr>
+                                            <th style="width: 7%">Updated</th>
+                                            @if (labelEnabled)
+                                            {
+                                                <th style="width: 22%">Label</th>
+                                            }
+                                            <th style="width: 16%">Service</th>
+                                            <th style="width: 10%">Status</th>
+                                            <th style="width: 6%">Report ID</th>
+                                            <th style="width: 4%">Issues</th>
+                                            <th style="white-space: nowrap;">Report Link/Error</th>
+                                            <th style="width: 8%">Action</th>
+                                        </tr>
                                         </thead>
                                     }
                                     @foreach (var check in bg)
@@ -222,7 +222,7 @@
                                                         break;
 
                                                     case 3:
-                                                    <a href="@check.ReportLink" target="_blank">Click here for the report</a>
+                                                        <a href="@check.ReportLink" target="_blank">Click here for the report</a>
                                                         break;
                                                 }
                                             </td>
@@ -268,6 +268,9 @@
                                     }
                                 </table>
                             </div>
+                            <a href="#" id="newcheck" class="showCreateDialog btn btn-success visible-xs-block" data-pid="@Model.Volunteer.PeopleId" data-ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">
+                                <i class="fa fa-plus-circle"></i> Create New
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -391,6 +394,9 @@
                                     }
                                 </table>
                             </div>
+                            <a href="#" id="newcheck" class="showCreateDialog btn btn-success visible-xs-block" data-pid="@Model.Volunteer.PeopleId" data-ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">
+                                <i class="fa fa-plus-circle"></i> Create New
+                            </a>
                         </div>
                     </div>
                 </div>
