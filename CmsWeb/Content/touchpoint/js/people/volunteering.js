@@ -2,8 +2,6 @@
 
     var submitDialog;
 
-    $('.bt').button();
-
     $('.showSubmitDialog').click(function (ev) {
         ev.preventDefault();
         var id = $(this).attr('data-cid');
@@ -45,12 +43,10 @@
         });
     });
 
-    $('span.editable').editable('/Volunteering/Edit/', {
-        indicator: "<img src='/Content/images/loading.gif'>",
-        tooltip: 'Click to edit...',
-        style: 'display: inline',
-        width: '200px',
-        height: 25
+    $('a.editable').editable({
+        mode: 'inline',
+        type: 'text',
+        url: '/Volunteering/Edit/'
     });
 
     $('#closeSubmitDialog').on('click', function (ev) {

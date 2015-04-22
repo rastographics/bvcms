@@ -47,6 +47,7 @@
 }
 @section head
 {
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     <style>
         dt {
             font-weight: normal;
@@ -62,6 +63,10 @@
 
         .btn-success {
             color: white !important;
+        }
+
+        .name {
+            padding: 5px 0;
         }
     </style>
 }
@@ -400,7 +405,7 @@
                                     <img src="/Content/images/adobe.png" style="border: thin solid #000000;">
                                 </a>
                                 <div class="name">
-                                    <span id="n.@form.Id" class="editable">@form.Name</span>
+                                    <a id="n.@form.Id" data-pk="@form.Id" class="editable editable-click">@form.Name</a>
                                 </div>
                                 <form action="/Volunteering/Delete" method="post" onsubmit="return confirmDelete();">
                                     <input type="hidden" name="id" value="@form.Id" />
@@ -441,6 +446,7 @@
     @Fingerprint.Script("/Content/touchpoint/js/people/volunteering.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
         $('#volunteer-tabs').tabdrop();
 

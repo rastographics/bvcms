@@ -246,12 +246,10 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-        public ContentResult Edit(string id, string value)
+        public ContentResult Edit(int pk, string value)
         {
-            var iid = id.Substring(2).ToInt();
-            var f = DbUtil.Db.VolunteerForms.Single(m => m.Id == iid);
-            if (id.StartsWith("n"))
-                f.Name = value.Truncate(100);
+            var f = DbUtil.Db.VolunteerForms.Single(m => m.Id == pk);
+            f.Name = value.Truncate(100);
             DbUtil.Db.SubmitChanges();
             var c = new ContentResult();
             c.Content = value;
