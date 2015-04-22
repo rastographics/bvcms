@@ -42,25 +42,8 @@
             </div>
             <div class="col-md-6 col-lg-3">
                 @(User.IsInRole("Membership") || User.IsInRole("Admin")
-                  ? @Html.EditorFor(m => m.DeceasedDate)
-                  : @Html.DisplayFor(m => m.DeceasedDate))
-            </div>
-        </div>
-    </div>
-    <h4>Employment / School</h4>
-    <div class="well">
-        <div class="row">
-            <div class="col-md-6 col-lg-4">
-                @Html.EditorFor(m => m.OccupationOther, "Typeahead", new { link = "/Person2/Occupations" })
-            </div>
-            <div class="col-md-6 col-lg-4">
-                @Html.EditorFor(m => m.EmployerOther, "Typeahead", new { link = "/Person2/Employers" })
-            </div>
-            <div class="col-md-10 col-lg-3">
-                @Html.EditorFor(m => m.SchoolOther, "Typeahead", new { link = "/Person2/Schools" })
-            </div>
-            <div class="col-md-2 col-lg-1">
-                @Html.EditorFor(m => m.Grade)
+                      ? @Html.EditorFor(m => m.DeceasedDate)
+                      : @Html.DisplayFor(m => m.DeceasedDate))
             </div>
         </div>
     </div>
@@ -97,6 +80,23 @@
                         @Html.CheckBoxFor(m => m.DoNotPublishPhones) Do not publish phone numbers
                     </label>
                 </div>
+            </div>
+        </div>
+    </div>
+    <h4>Employment / School</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6 col-lg-4">
+                @Html.EditorFor(m => m.OccupationOther, "Typeahead", new { link = "/Person2/Occupations" })
+            </div>
+            <div class="col-md-6 col-lg-4">
+                @Html.EditorFor(m => m.EmployerOther, "Typeahead", new { link = "/Person2/Employers" })
+            </div>
+            <div class="col-md-10 col-lg-3">
+                @Html.EditorFor(m => m.SchoolOther, "Typeahead", new { link = "/Person2/Schools" })
+            </div>
+            <div class="col-md-2 col-lg-1">
+                @Html.EditorFor(m => m.Grade)
             </div>
         </div>
     </div>
