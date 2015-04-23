@@ -4,35 +4,89 @@
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowFeesHelp") == "true";
   ViewBag.FalseValue = "";
 }
-<form class="form form-horizontal non-modal ajax span12">
-  <br />
-  @FormAction()
-  <div>
-    @Html.DisplayFor(m => m.Fee)
-    @Html.DisplayFor(m => m.Deposit)
-    @Html.DisplayFor(m => m.IncludeOtherFeesWithDeposit)
-    @Html.DisplayFor(m => m.ExtraFee)
-    @Html.DisplayFor(m => m.LastDayBeforeExtra)
-    @Html.DisplayFor(m => m.MaximumFee)
-    @Html.DisplayFor(m => m.ApplyMaxToOtherFees)
-    @Html.DisplayFor(m => m.AskDonation)
-    @Html.DisplayFor(m => m.DonationFundId)
-    @Html.DisplayFor(m => m.DonationLabel)
-    @Html.DisplayFor(m => m.OrgFees)
-    @Html.DisplayFor(m => m.OtherFeesAddedToOrgFee)
-    @Html.DisplayFor(m => m.AccountingCode)
-    @Html.DisplayFor(m => m.ExtraValueFeeName)
-  </div>
-  @FormAction()
+<form class="ajax">
+    @FormAction()
+    <h4>Basic Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-3 col-md-4">
+                @Html.DisplayFor(m => m.Fee)
+            </div>
+            <div class="col-sm-3 col-md-4">
+                @Html.DisplayFor(m => m.Deposit)
+            </div>
+            <div class="col-sm-6 col-md-4">
+                @Html.DisplayFor(m => m.IncludeOtherFeesWithDeposit, new { FalseValue = "N/A" })
+            </div>
+            <div class="col-sm-6 col-md-3">
+                @Html.DisplayFor(m => m.MaximumFee)
+            </div>
+            <div class="col-sm-6 col-md-3">
+                @Html.DisplayFor(m => m.ApplyMaxToOtherFees, new { FalseValue = "N/A" })
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.ExtraFee)
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.LastDayBeforeExtra)
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.ExtraValueFeeName)
+            </div>
+            <div class="col-sm-6 col-md-6">
+                @Html.DisplayFor(m => m.AccountingCode)
+            </div>
+            <div class="col-sm-6 col-md-6">
+                @Html.DisplayFor(m => m.OtherFeesAddedToOrgFee, new { FalseValue = "N/A" })
+            </div>
+        </div>
+    </div>
+    <h4>Org Fees</h4>
+    <div class="well">
+        @Html.DisplayFor(m => m.OrgFees)
+    </div>
+    <h4>Donation Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-6">
+                @Html.DisplayFor(m => m.AskDonation, new { FalseValue = "N/A" })
+            </div>
+            <div class="col-sm-6 col-md-6">
+                @Html.DisplayFor(m => m.DonationFundId)
+            </div>
+            <div class="col-sm-12 col-md-12">
+                @Html.DisplayFor(m => m.DonationLabel)
+            </div>
+        </div>
+    </div>
+    @FormAction()
+    @FormAction(true)   
+    <br/>
 </form>
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
-  <div class="pull-right">
-    <a href="/Org/FeesHelpToggle/@Model.Id" class="btn ajax">@(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
-    @if (User.IsInRole("Edit"))
+    if (xs)
     {
-      <a href="/Org/FeesEdit/@Model.Id" class="btn edit btn-primary ajax">Edit</a>
+        <div class="visible-xs-block">
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/FeesEdit/@Model.Id" class="btn edit ajax btn-default btn-block"><i class="fa fa-pencil"></i> Edit</a>
+            }
+            <a href="/Org/FeesHelpToggle/@Model.Id" class="btn btn-default btn-block ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+        </div>
     }
-  </div>
-  @Html.DivValidationMessage("Form", "inline")
+    else
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/Org/FeesHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a> 
+                    @if (User.IsInRole("Edit"))
+                    {
+                        <a href="/Org/FeesEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
 }

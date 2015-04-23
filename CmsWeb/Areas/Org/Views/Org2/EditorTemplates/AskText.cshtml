@@ -2,29 +2,34 @@
 @using CmsData.Registration
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-  var listname = Html.NameFor2(m => m.list);
-  <div class="movable type-@Model.Type table not-wide w100 padded grey-box">
-    @Html.Raw(ci.hiddenindex)
-    @Html.HiddenFor(m => m.Type)
-    <label class="ask-question">
-      Multiline Text 
-      @Html.Partial("EditorTemplates/QuestionsMenu")
-    </label>
-    @if (ViewBag.ShowHelp != false)
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
-    }
-    <div id="Dropdown" class="movable-list sort">
-      @foreach (var item in Model.list)
-      {
-        item.Name = listname;
-        @Html.EditorFor(m => item)
-      }
+    var listname = Html.NameFor2(m => m.list);
+    <div class="movable type-@Model.Type well">
+        @Html.Raw(ci.hiddenindex)
+        @Html.HiddenFor(m => m.Type)
+        <div class="row">
+            <div class="col-sm-12">
+                @Html.Partial("EditorTemplates/QuestionsMenu")
+                <label class="ask-question">Multiline Text</label>
+            </div>
+        </div>
+        @if (ViewBag.ShowHelp != false)
+        {
+            <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
+        }
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="pull-right newitem">
+                    <a href="/Org/NewText/@listname" class="btn btn-success btn-sm" data-dest="#ask-texts"><i class="fa fa-plus-circle"></i> Add Item</a>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div id="ask-texts" class="movable-list sort">
+            @foreach (var item in Model.list)
+            {
+                item.Name = listname;
+                @Html.EditorFor(m => item)
+            }
+        </div>
     </div>
-    <div class="newitem">
-      <a href="/Org/NewText/@listname">
-        <img src="/Content/images/plus1.png" alt="" /> Add Item
-      </a>
-    </div>
-  </div>
 }

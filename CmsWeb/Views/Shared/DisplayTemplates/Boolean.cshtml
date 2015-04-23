@@ -5,10 +5,9 @@
 <dl>
     <dt>@Html.DisplayNameFor(m => m)</dt>
     <dd>@t</dd>
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-    {
-        <dd>
-            <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-        </dd>
-    }
+    
 </dl>
+@if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+{
+    <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+}

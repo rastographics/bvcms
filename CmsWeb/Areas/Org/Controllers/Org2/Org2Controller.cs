@@ -17,10 +17,6 @@ namespace CmsWeb.Areas.Org2.Controllers
         [HttpGet, Route("~/Org/{id:int}")]
         public ActionResult Index(int id)
         {
-            //TODO: Remove this line of code once the new UI is done.
-            return Redirect("/Error/UnderConstruction");
-
-
             if(!Util2.UseNewOrg)
                 return Redirect("/Organization/" + id);
             var db = DbUtil.Db;

@@ -1,25 +1,26 @@
 ﻿@using UtilityExtensions
 @model IEnumerable<CmsData.Registration.Settings.OrgFee>
-<div class="control-group">
-  <label class="control-label">Org Fees</label>
-  <div class="controls">
-    <table class="table table-condensed not-wide">
-      <thead>
-        <tr>
-          <th>Org Id</th>
-          <th class="right">Fee</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var f in Model)
+<div class="form-group">
+    <div class="controls">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Org Id</th>
+                        <th class="text-right">Fee</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var f in Model)
+                    {
+                        <tr><td>@f.OrgId</td><td class="text-right">@f.Fee.ToString2("c")</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
         {
-          <tr><td>@f.OrgId</td><td class="right">@f.Fee.ToString2("c")</td></tr>
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
         }
-      </tbody>
-    </table>
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-    }
-  </div>
+    </div>
 </div>

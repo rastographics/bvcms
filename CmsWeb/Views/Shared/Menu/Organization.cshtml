@@ -18,8 +18,7 @@
             <li class="dropdown-header">Recent</li>
             foreach (var o in Util2.MostRecentOrgs)
             {
-                <li class="disabled"><a href="#">@o.Name</a></li>
-                @*@Helper.LiAnchorLink(o.Name, "/Organization/" + o.Id)*@
+                @Helper.LiAnchorLink(o.Name, "/Organization/" + o.Id)
             }
         }
     </ul>

@@ -20,9 +20,6 @@ namespace CmsWeb.Areas.Org.Controllers
         [Route("~/Organization/{id:int}")]
         public ActionResult Index(int id)
         {       
-            //TODO: Remove this line of code once the new UI is done.
-            return Redirect("/Error/UnderConstruction");
-
             if(Util2.UseNewOrg)
                 return Redirect("/Org/" + id);
             if (Util2.CurrentOrgId != id)

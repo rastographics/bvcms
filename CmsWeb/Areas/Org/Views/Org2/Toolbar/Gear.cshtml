@@ -9,53 +9,51 @@
   var model = (OrganizationModel)ViewBag.model;
   var o = model.Org;
 }
-<ul class="dropdown-menu dropdown-div-gear">
-  <li>
-    <div>
-      <ul id="ultoolbar" class="span6 unstyled pull-left">
-        <li class="header">Administrative</li>
-        @if (admin || manager)
-        {
-          <li><a href="/OrgGroups/@oid">Sub-Group Management</a></li>
-          <li class="hideAlt"><a href="/RegSettings/@oid">View Registration Document</a></li>
-        }
-        <li><a href="/OrgContent/@oid" target="_blank">Members Only Page</a></li>
-        <li><a id="tryreg" href="#TryRegDialog" data-toggle="modal">Try Registration</a> </li>
-        @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-        {
-          <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar">Volunteer Calendar</a></li>
-        }
-        @if (edit)
-        {
-          <li><a href="/Org/CopySettings/@oid">Copy Settings</a></li>
-          <li><a href="/OrgChildren/@oid">Child Organization Management</a></li>
-        }
-        @if (o.IsMissionTrip == true && User.IsInRole("MissionGiving"))
-        {
-          <li><a href="/Reports/MissionTripFunding/@oid">Mission Trip Funding</a></li>
-          <li><a href="/Reports/MissionTripSenders/@oid">Mission Trip Senders Export</a></li>
-        }
-        @if (admin)
-        {
-          if (delete)
-          {
-            <li><a id="deleteorg" href="/Org/Delete/@oid">Delete Organization</a></li>
-          }
-          else
-          {
-            <li><a href="http://docs.touchpointsoftware.com/Organizations/DeleteOrganization.html" target="_blank">Delete Organization</a></li>
-          }
-          <li><a href="/RepairTransactions/@oid" class="longrunop">Repair Transactions</a></li>
-        }
-        @if (User.IsInRole("ministrEspace"))
-        {
-          <li><a id="addMESEvent" href="#" orgid="@oid">Add ministrEspace Event</a></li>
-        }
-        <li><a href="/Reports/CustomColumns/@oid">Custom Columns</a></li>
-      </ul>
-      <ul class="unstyled pull-left span6">
+<ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+    <li class="col-sm-6">
+        <ul id="ultoolbar">
+            <li class="dropdown-header">Administrative</li>
+            @if (admin || manager)
+            {
+                <li><a href="/OrgGroups/@oid"><span class="text-success">Sub-Group Management</span></a></li>
+                <li class="hideAlt"><a href="/RegSettings/@oid"><span class="text-success">View Registration Document</span></a></li>
+            }
+            <li><a href="/OrgContent/@oid" target="_blank"><span class="text-success">Members Only Page</span></a></li>
+            <li><a id="tryreg" href="#TryRegDialog" data-toggle="modal"><span class="text-success">Try Registration</span></a></li>
+            @if (model.IsVolunteerLeader && o.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
+            {
+                <li><a id="VolunteerCalendar" href="/Volunteers/Calendar/@oid" target="calendar"><span class="text-success">Volunteer Calendar</span></a></li>
+            }
+            @if (edit)
+            {
+                <li><a href="/Org/CopySettings/@oid"><span class="text-success">Copy Settings</span></a></li>
+                <li><a href="/OrgChildren/@oid"><span class="text-success">Child Organization Management</span></a></li>
+            }
+            @if (o.IsMissionTrip == true && User.IsInRole("MissionGiving"))
+            {
+                <li><a href="/Reports/MissionTripFunding/@oid"><span class="text-success">Mission Trip Funding</span></a></li>
+                <li><a href="/Reports/MissionTripSenders/@oid"><span class="text-success">Mission Trip Senders Export</span></a></li>
+            }
+            @if (admin)
+            {
+                if (delete)
+                {
+                    <li><a id="deleteorg" href="/Org/Delete/@oid"><span class="text-success">Delete Organization</span></a></li>
+                }
+                else
+                {
+                    <li><a href="http://docs.touchpointsoftware.com/Organizations/DeleteOrganization.html" target="_blank"><span class="text-success">Delete Organization</span></a></li>
+                }
+                <li><a href="/RepairTransactions/@oid" class="longrunop"><span class="text-success">Repair Transactions</span></a></li>
+            }
+            @if (User.IsInRole("ministrEspace"))
+            {
+                <li><a id="addMESEvent" href="#" orgid="@oid"><span class="text-success">Add ministrEspace Event</span></a></li>
+            }
+            <li><a href="/Reports/CustomColumns/@oid"><span class="text-success">Custom Columns</span></a></li>
+        </ul>
+    </li>
+    <li class="col-sm-6">
         @Html.Partial("Toolbar/GearStandard")
-      </ul>
-    </div>
-  </li>
+    </li>
 </ul>

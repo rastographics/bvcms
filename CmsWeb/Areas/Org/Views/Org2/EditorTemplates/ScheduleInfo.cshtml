@@ -2,20 +2,18 @@
 @model CmsWeb.Areas.Org2.Models.ScheduleInfo
 @using (var ci = Html.BeginCollectionItem("schedules")) 
 {
-  <div class="well">
-    @Html.Raw(ci.hiddenindex)
-    @Html.HiddenFor(m => m.Id, new {@class = "renumberMe"})
-    <div class="control-group">
-      <label class="control-label">Schedule Number</label>
-        <div class="controls">
-          <p>
-            <span class="large">@Model.Id</span>
-            <a href="#" class="delete-well pull-right btn btn-mini btn-danger">delete</a>
-          </p>
+    <div class="col-sm-6 col-md-4">
+        <div class="well">
+            @Html.Raw(ci.hiddenindex)
+            @Html.HiddenFor(m => m.Id, new { @class = "renumberMe" })
+            <dl>
+                <dt>Schedule Number</dt>
+                <dd>@Model.Id</dd>
+            </dl>
+            @Html.EditorFor(m => m.SchedDay)
+            @Html.EditorFor(m => m.Time, "Time")
+            @Html.EditorFor(m => m.AttendCredit)
+            <a href="#" class="delete-well btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
         </div>
     </div>
-    @Html.EditorFor(m => m.SchedDay)
-    @Html.EditorFor(m => m.Time, "Time")
-    @Html.EditorFor(m => m.AttendCredit) 
-  </div>
 }

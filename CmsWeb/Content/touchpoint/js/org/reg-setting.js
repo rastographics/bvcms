@@ -25,27 +25,20 @@
         var name = $(this).attr("tb");
         ev.preventDefault();
         CKEDITOR.instances['editor'].setData($("#" + name).val());
-        dimOn();
-        $("#EditorDialog").center().show();
-        $("#saveedit").off("click").on("click", function (ev) {
+        
+        $('#editor-modal').modal('show');
+        $("#save-edit").off("click").on("click", function (ev) {
             ev.preventDefault();
             var v = CKEDITOR.instances['editor'].getData();
             $("#" + name).val(v);
             $("#" + name + "_ro").html(v);
             CKEDITOR.instances['editor'].setData('');
-            $('#EditorDialog').hide("close");
-            dimOff();
+            $('#editor-modal').modal('hide');
             return false;
         });
         return false;
     });
 
-    $('body').on('click', '#canceledit', function (ev) {
-        ev.preventDefault();
-        $('#EditorDialog').hide("close");
-        dimOff();
-        return false;
-    });
 });
 
 CKEDITOR.on('dialogDefinition', function (ev) {

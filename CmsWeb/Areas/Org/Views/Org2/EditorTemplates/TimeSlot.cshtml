@@ -5,7 +5,7 @@
     @Html.Raw(ci.hiddenindex)
     <label class="ask-question">
       TimeSlot
-      @Html.Partial("EditorTemplates/QuestionsMenu", new { ConfirmDelete = false })
+      @Html.Partial("EditorTemplates/QuestionsMenu", new ViewDataDictionary {{ "ConfirmDelete", false }})
     </label>
     @Html.EditorFor(m => m.Description)
     @Html.EditorFor(m => m.DayOfWeek)
