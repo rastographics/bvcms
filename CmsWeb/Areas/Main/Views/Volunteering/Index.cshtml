@@ -3,6 +3,7 @@
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
 @{
     ViewBag.Title = "Volunteer";
+    ViewBag.PageHeader = "Manage Volunteer";
     Layout = ViewExtensions2.TouchPointLayout();
 
     IQueryable<BackgroundCheck> bg = null;
@@ -10,13 +11,13 @@
     IQueryable<BackgroundCheckLabel> labels = null;
 
     var labelEnabled = ViewExtensions2.DbSetting("EnableBackgroundLabels", "false") == "true";
-    var checkEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
+    var areBackgroundChecksEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
 
     var i = from e in DbUtil.Db.VolunteerForms
             where e.PeopleId == Model.Volunteer.PeopleId
             select e;
 
-    if (checkEnabled)
+    if (areBackgroundChecksEnabled)
     {
         bg = from e in DbUtil.Db.BackgroundChecks
              where e.PeopleID == Model.Volunteer.PeopleId
@@ -34,8 +35,6 @@
                      select e;
         }
     }
-
-    var areBackgroundChecksEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
 
     var shouldShowBackgroundChecks = areBackgroundChecksEnabled && User.IsInRole("BackgroundCheck");
     var shouldShowCreditChecks = areBackgroundChecksEnabled && User.IsInRole("CreditCheck");
@@ -104,7 +103,7 @@
                         <div class="col-sm-12">
                             <div class="table-responsive">
                                 <table class="table table-striped table-responsive">
-                                    @if (bg != null && !bg.Any())
+                                    @if (!bg.Any())
                                     {
                                         <tr>
                                             <td>No Background Checks</td>
@@ -230,7 +229,7 @@
                         <div class="col-sm-12">
                             <div class="table-responsive">
                                 <table class="table table-striped table-responsive">
-                                    @if (credit != null && !credit.Any())
+                                    @if (!credit.Any())
                                     {
                                         <tr>
                                             <td>No Credit Checks</td>
