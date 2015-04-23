@@ -1652,7 +1652,6 @@
     <Content Include="Content\font-awesome-4.0.3\scss\_stacked.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_variables.scss" />
     <Content Include="Areas\Search\Views\Query\SaveAs.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\WeeklyAttendance.cshtml" />
     <Content Include="Content\images\computer_error.ogg" />
     <Content Include="Content\images\glass.ogg" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents1.cshtml" />
