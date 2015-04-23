@@ -2463,6 +2463,19 @@ namespace CmsData
                 );
 		}
 
+		[Function(Name="dbo.GetContributionTotalsBothIfJoint", IsComposable = true)]
+		public IQueryable< View.GetContributionTotalsBothIfJoint > GetContributionTotalsBothIfJoint(
+            [Parameter(DbType="datetime")] DateTime? startdt,
+            [Parameter(DbType="datetime")] DateTime? enddt
+            )
+		{
+			return this.CreateMethodCallQuery< View.GetContributionTotalsBothIfJoint>(this, 
+			    ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                startdt,
+                enddt
+                );
+		}
+
 		[Function(Name="dbo.GetTodaysMeetingHours", IsComposable = true)]
 		public IQueryable< View.GetTodaysMeetingHour > GetTodaysMeetingHours(
             [Parameter(DbType="int")] int? orgid,
@@ -4863,6 +4876,16 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.CreateForeignKeys", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string CreateForeignKeys(
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.StatusFlag", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string StatusFlag(
@@ -4872,6 +4895,16 @@ namespace CmsData
 			return ((string)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.DropForeignKeys", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string DropForeignKeys(
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod()))
                 ).ReturnValue));
 		}
 

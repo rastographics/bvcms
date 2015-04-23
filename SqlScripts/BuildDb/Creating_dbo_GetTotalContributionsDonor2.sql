@@ -11,7 +11,7 @@ RETURNS TABLE
 AS
 RETURN 
 (
-	SELECT tt.*, ISNULL(o.OrganizationName, '') MainFellowship, ms.Description MemberStatus, p.JoinDate
+	SELECT tt.*, ISNULL(o.OrganizationName, '') MainFellowship, ms.Description MemberStatus, p.JoinDate, p.SpouseId
 	FROM
 	(
 	SELECT 

@@ -34,6 +34,8 @@ namespace CmsData.View
 		
 		private DateTime? _JoinDate;
 		
+		private int? _SpouseId;
+		
 		
 		public GetTotalContributionsDonor2()
 		{
@@ -189,6 +191,23 @@ namespace CmsData.View
 			{
 				if (this._JoinDate != value)
 					this._JoinDate = value;
+			}
+
+		}
+
+		
+		[Column(Name="SpouseId", Storage="_SpouseId", DbType="int")]
+		public int? SpouseId
+		{
+			get
+			{
+				return this._SpouseId;
+			}
+
+			set
+			{
+				if (this._SpouseId != value)
+					this._SpouseId = value;
 			}
 
 		}

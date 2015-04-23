@@ -7,8 +7,6 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
-using IronPython.Modules;
 using UtilityExtensions;
 using CmsData.Codes;
 
@@ -268,6 +266,71 @@ namespace CmsData
             var fund = Quarters.ToInt();
             var amt = decimal.Parse(TextValue);
             return RecentContributionAmount2(Days, fund, amt, taxnontax: false);
+        }
+        internal Expression RecentContributionAmountBothJoint()
+        {
+            if (!db.FromBatch)
+                if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
+                    return AlwaysFalse();
+            var amt = decimal.Parse(TextValue);
+            var now = DateTime.Now;
+            var dt = now.AddDays(-Days);
+            IQueryable<int> q = null;
+            switch (op)
+            {
+                case CompareType.Greater:
+                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                        group c by c.PeopleId into g
+                        where g.Sum(cc => cc.Amount) > amt
+                        select g.Key ?? 0;
+                    break;
+                case CompareType.GreaterEqual:
+                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                        group c by c.PeopleId into g
+                        where g.Sum(cc => cc.Amount) >= amt
+                        select g.Key ?? 0;
+                    break;
+                case CompareType.Less:
+                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                        where c.Amount > 0
+                        group c by c.PeopleId into g
+                        where g.Sum(cc => cc.Amount) <= amt
+                        select g.Key ?? 0;
+                    break;
+                case CompareType.LessEqual:
+                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                        where c.Amount > 0
+                        group c by c.PeopleId into g
+                        where g.Sum(cc => cc.Amount) <= amt
+                        select g.Key ?? 0;
+                    break;
+                case CompareType.Equal:
+                    if (amt == 0) // This is a very special case, use different approach
+                    {
+                        q = from pid in db.Contributions0(dt, now, 0, 0, false, false, true)
+                            select pid.PeopleId;
+                        Expression<Func<Person, bool>> pred0 = p => q.Contains(p.PeopleId);
+                        Expression expr0 = Expression.Invoke(pred0, parm);
+                        return expr0;
+                    }
+                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                        where c.Amount > 0
+                        group c by c.PeopleId into g
+                        where g.Sum(cc => cc.Amount) == amt
+                        select g.Key ?? 0;
+                    break;
+                case CompareType.NotEqual:
+                    q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
+                        where c.Amount > 0
+                        group c by c.PeopleId into g
+                        where g.Sum(cc => cc.Amount) != amt
+                        select g.Key ?? 0;
+                    break;
+            }
+            var tag = db.PopulateTemporaryTag(q);
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
         }
         internal Expression RecentNonTaxDedCount()
         {
