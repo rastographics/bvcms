@@ -102,7 +102,7 @@ namespace CmsWeb.Models
         }
         public IEnumerable<NewsInfo> BVCMSNews()
         {
-            var feedurl = "http://feeds.feedburner.com/BvcmsBlog";
+            var feedurl = "http://blog.touchpointsoftware.com/feed/";
 
             var wr = new WebClient();
             var feed = DbUtil.Db.RssFeeds.FirstOrDefault(r => r.Url == feedurl);
@@ -403,11 +403,11 @@ namespace CmsWeb.Models
             list.AddRange(roTake);
             if (roTake.Count > 0)
                 list.Add(new SearchInfo() { id = 0 });
-            list.AddRange(new List<SearchInfo>() 
-            { 
-                new SearchInfo() { id = -1, line1 = "People Search"  }, 
-                new SearchInfo() { id = -2, line1 = "Last Search" }, 
-                new SearchInfo() { id = -3, line1 = "Organization Search" }, 
+            list.AddRange(new List<SearchInfo>()
+            {
+                new SearchInfo() { id = -1, line1 = "People Search"  },
+                new SearchInfo() { id = -2, line1 = "Last Search" },
+                new SearchInfo() { id = -3, line1 = "Organization Search" },
             });
             return list;
         }
@@ -430,14 +430,14 @@ namespace CmsWeb.Models
                             url = "/Query/" + c.QueryId,
                             line1 = c.Name,
                         }).Take(3).ToList();
-            list.InsertRange(0, new List<SearchInfo22>() 
+            list.InsertRange(0, new List<SearchInfo22>()
             {
-                new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  }, 
-                new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
-                new SearchInfo22() { url = "/Query", line1 = "Last Search" }, 
-                new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" }, 
-                new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search", 
-                    addmargin = true }, 
+                new SearchInfo22() { url = "/PeopleSearch", line1 = "Find Person"  },
+                new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" },
+                new SearchInfo22() { url = "/Query", line1 = "Last Search" },
+                new SearchInfo22() { url = "/SavedQueryList", line1 = "Saved Searches" },
+                new SearchInfo22() { url = "/Query/NewQuery", line1 = "New Search",
+                    addmargin = true },
             });
             return list;
         }
@@ -571,11 +571,11 @@ namespace CmsWeb.Models
             list.AddRange(roTake);
             if (roTake.Count > 0)
                 list[list.Count - 1].addmargin = true;
-            list.AddRange(new List<SearchInfo22>() 
+            list.AddRange(new List<SearchInfo22>()
             {
-                new SearchInfo22() { url = "/PeopleSearch/{0}".Fmt(text), line1 = "Find Person"  }, 
-                new SearchInfo22() { url = "/Query", line1 = "Search Builder" }, 
-                new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" }, 
+                new SearchInfo22() { url = "/PeopleSearch/{0}".Fmt(text), line1 = "Find Person"  },
+                new SearchInfo22() { url = "/Query", line1 = "Search Builder" },
+                new SearchInfo22() { url = "/OrgSearch", line1 = "Organization Search" },
             });
             return list;
         }
