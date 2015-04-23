@@ -1,4 +1,16 @@
-﻿@model IEnumerable<CmsData.User>
+﻿@using CmsData
+@model IEnumerable<User>
+@helper Roles(User user) {
+    var roles = string.Join(", ", user.Roles);
+    if (string.IsNullOrWhiteSpace(roles))
+    {
+        @:MyData User
+    }
+    else
+    {
+        @roles
+    }
+}
 <form class="ajax" method="post">
     @FormAction()
     <h4>Manage Users</h4>
@@ -25,7 +37,7 @@
                                 @u.Username
                             }
                         </td>
-                        <td>@string.Join(", ", u.Roles)</td>
+                        <td>@Roles(u)</td>
                         <td style="width: 50px;">
                             @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
                             {
