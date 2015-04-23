@@ -159,91 +159,91 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <h2>
 	<em>Where nothing is real</em></h2>
 ', '2009-04-17 20:42:09.213', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (2, N'ShellDefault', N'Defalt Online Reg Shell', N'<html> 
-<head> 
-<title>Online Registration</title> 
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (2, N'ShellDefault', N'Defalt Online Reg Shell', N'<html>
+<head>
+<title>Online Registration</title>
 <!--FORM CSS-->
-</head> 
-<body> 
+</head>
+<body>
 <!--FORM START-->
-    <h2>Registration Form</h2> 
+    <h2>Registration Form</h2>
 <!--FORM END-->
-</body> 
+</body>
 </html>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (3, N'ShellIFrame', N'Plain Online Reg Shell for iFrame use', N'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html> 
-<head> 
-<title>Online Registration</title> 
- 
-<meta http-equiv=''Content-Type'' content=''text/html; charset=iso-8859-1'' /> 
-<link href=''/Content/Site2.css?v=4'' rel=''stylesheet'' type=''text/css'' /> 
- 
-</head> 
-<body> 
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (3, N'ShellIFrame', N'Plain Online Reg Shell for iFrame use', N'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Online Registration</title>
+
+<meta http-equiv=''Content-Type'' content=''text/html; charset=iso-8859-1'' />
+<link href=''/Content/Site2.css?v=4'' rel=''stylesheet'' type=''text/css'' />
+
+</head>
+<body>
 <!--FORM START-->
-    <h2>Registration Form</h2> 
-    
-    <form class="DisplayEdit" action="/OnlineReg/CompleteRegistration/" method="post"> 
-    <input id="m_divid" name="m.divid" type="hidden" value="" /> 
-<input id="m_orgid" name="m.orgid" type="hidden" value="114" /> 
-<input id="m_testing" name="m.testing" type="hidden" value="" /> 
-<table cellpadding="0" cellspacing="2" width="100%"> 
- 
-<tr><td class="alt0"> 
-<input id="m_List_index" name="m.List.index" type="hidden" value="0" /> 
-<input name="m.List[0].orgid" type="hidden" value="114"></input> 
-<input name="m.List[0].divid" type="hidden" value=""></input> 
-<input name="m.List[0].ShowAddress" type="hidden" value="False"></input> 
- 
-<table cellspacing="6"> 
- 
-    <tr> 
-        <td><label for="first">First Name</label></td> 
-        <td><input type="text" name="m.List[0].first" value="" /> 
-        </td> 
-        <td> </td> 
-    </tr> 
-    <tr> 
-        <td><label for="last">Last Name</label></td> 
-        <td><input type="text" name="m.List[0].last" value="" /></td> 
-        <td>suffix:<input type="text" name="m.List[0].suffix" class="short" value="" /> 
-        </td> 
-    </tr> 
-     <tr> 
-        <td><label for="dob">Date of Birth</label></td> 
-        <td><input type="text" name="m.List[0].dob" value="" class="dob" title="m/d/y, mmddyy, mmddyyyy" /></td> 
-        <td><span id="age">2009</span> (m/d/y) </td> 
-    </tr> 
-    <tr> 
-        <td><label for="phone">Phone</label></td> 
-        <td><input type="text" name="m.List[0].phone" value="" /></td> 
-        <td><input type="radio" name="m.List[0].homecell" value="h"  /> Home<br /> 
+    <h2>Registration Form</h2>
+
+    <form class="DisplayEdit" action="/OnlineReg/CompleteRegistration/" method="post">
+    <input id="m_divid" name="m.divid" type="hidden" value="" />
+<input id="m_orgid" name="m.orgid" type="hidden" value="114" />
+<input id="m_testing" name="m.testing" type="hidden" value="" />
+<table cellpadding="0" cellspacing="2" width="100%">
+
+<tr><td class="alt0">
+<input id="m_List_index" name="m.List.index" type="hidden" value="0" />
+<input name="m.List[0].orgid" type="hidden" value="114"></input>
+<input name="m.List[0].divid" type="hidden" value=""></input>
+<input name="m.List[0].ShowAddress" type="hidden" value="False"></input>
+
+<table cellspacing="6">
+
+    <tr>
+        <td><label for="first">First Name</label></td>
+        <td><input type="text" name="m.List[0].first" value="" />
+        </td>
+        <td> </td>
+    </tr>
+    <tr>
+        <td><label for="last">Last Name</label></td>
+        <td><input type="text" name="m.List[0].last" value="" /></td>
+        <td>suffix:<input type="text" name="m.List[0].suffix" class="short" value="" />
+        </td>
+    </tr>
+     <tr>
+        <td><label for="dob">Date of Birth</label></td>
+        <td><input type="text" name="m.List[0].dob" value="" class="dob" title="m/d/y, mmddyy, mmddyyyy" /></td>
+        <td><span id="age">2009</span> (m/d/y) </td>
+    </tr>
+    <tr>
+        <td><label for="phone">Phone</label></td>
+        <td><input type="text" name="m.List[0].phone" value="" /></td>
+        <td><input type="radio" name="m.List[0].homecell" value="h"  /> Home<br />
         <input type="radio" name="m.List[0].homecell" value="c"  /> Cell
-        </td> 
-    </tr> 
-    <tr> 
-        <td><label for="email">Contact Email</label></td> 
-        <td><input type="text" name="m.List[0].email" value="" /></td> 
-        <td></td> 
-    </tr> 
-    
-    <tr><td></td> 
-        <td> 
-        
-            <a href="/OnlineReg/PersonFind/0" class="submitbutton">Find Record</a> 
-        
-        </td> 
-    </tr> 
-    
-</table> 
- 
-</td></tr> 
- 
-</table> 
-    </form> 
+        </td>
+    </tr>
+    <tr>
+        <td><label for="email">Contact Email</label></td>
+        <td><input type="text" name="m.List[0].email" value="" /></td>
+        <td></td>
+    </tr>
+
+    <tr><td></td>
+        <td>
+
+            <a href="/OnlineReg/PersonFind/0" class="submitbutton">Find Record</a>
+
+        </td>
+    </tr>
+
+</table>
+
+</td></tr>
+
+</table>
+    </form>
 <!--FORM END-->
- 
-</body> 
+
+</body>
 </html>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (4, N'StatementHeader', N'Contribution Statement Header', N'<h1>Sample Church</h1>
 <h2>105 Highway 151 | Ventura, TN 34773 | 615.232.3432</h2>', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
@@ -293,7 +293,7 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <p>
 	Expand the outline below and select the area(s) in which you would like to serve by clicking the check boxes and then click &quot;Submit&quot; when you are done. You will receive an email confirmation when you register. If you need to give us additional information or preferences, please hit Reply to that email and give us that information.</p>
 <div id="treecontrol">
-	<a href="#" title="Collapse the entire tree below">Collapse All</a> <a href="#" title="Expand the entire tree 
+	<a href="#" title="Collapse the entire tree below">Collapse All</a> <a href="#" title="Expand the entire tree
 
 below">Expand All</a></div>
 <p>
@@ -369,7 +369,7 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 <p>
 	&nbsp;</p>
 ', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (11, N''MemberProfileAutomation'', N''MemberProfileAutomation'', N'' 
+EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (11, N''MemberProfileAutomation'', N''MemberProfileAutomation'', N''
 # this is an IronPython script for MembershipAutomation in BVCMS
 # the variable p has been passed in and is the person that we are saving Member Profile information for
 
@@ -428,7 +428,7 @@ def CheckJoinStatus(p):
             if p.NewMemberClassDate != None:
                  if p.NewMemberClassDate > p.BaptismDate:
                     SetJoinDate(p, "NewMember", p.NewMemberClassDate)
-                 else: 
+                 else:
                     SetJoinDate(p, "Baptism", p.BaptismDate)
             else:
                  SetJoinDate(p, "Baptism", p.BaptismDate)
@@ -699,8 +699,8 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 The bvCMS Team</p>', '2011-10-18 20:10:48.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (60, N'ExistingAccountConfirmation', N'ExistingAccountConfirmation', N'Hi {name},
 <p>We noticed you already have an account in our church database.</p>
-<p>You can login at <a href="{host}">{host}</a>. 
-And if you can''t remember your password or username, click the forgot password link when you get there. 
+<p>You can login at <a href="{host}">{host}</a>.
+And if you can''t remember your password or username, click the forgot password link when you get there.
 Note: you will need to know your username for this to work. If you do not know your username, then please click forgot username first.
 This will send you a link you can use to reset your password.</p>
 <p>You can use your account to help us maintain your correct address, email and phone numbers.
@@ -733,10 +733,10 @@ Just login to {host} and you will be taken to your record where you can make cor
 </table></blockquote>
 <p>Thank You</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (63, N'OneTimeConfirmation', N'OneTimeConfirmation', N'Hi {name},
-<p>Here is your <a href="{url}">link</a> to manage your subscriptions. 
+<p>Here is your <a href="{url}">link</a> to manage your subscriptions.
 (note: it will only work once for security reasons)</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (64, N'OneTimeConfirmationPledge', N'OneTimeConfirmationPledge', N'Hi {name},
-<p>Here is your <a href="{url}">link</a> to manage your pledge. 
+<p>Here is your <a href="{url}">link</a> to manage your pledge.
 (note: it will only work once for security reasons)</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (65, N'DiffEmailMessage', N'DiffEmailMessage', N'<html>
 	<head>
@@ -813,7 +813,7 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 EXEC(N'INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (69, N''Basic Newsletter Template'', N''Basic Newsletter Template'', N''<html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        
+
         <title>Our Newsletter</title>
 		<style type="text/css">
 			#outlook a{padding:0;}
@@ -1037,7 +1037,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
                         <table border="0" cellpadding="10" cellspacing="0" width="600" id="templatePreheader">
                             <tr>
                                 <td valign="top" class="preheaderContent">
-                                	
+
                                     <table border="0" cellpadding="10" cellspacing="0" width="100%">
                                     	<tr>
                                         	<td valign="top">
@@ -1052,7 +1052,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
                                             </td>
                                         </tr>
                                     </table>
-                                
+
                                 </td>
                             </tr>
                         </table>
@@ -1065,7 +1065,7 @@ EXEC(N'UPDATE [dbo].[Content] SET [Body].WRITE(N''nd-color:#FFFFFF;
                                                 <img src="http://www.bvcms.com/content/images/placeholder_600.gif" style="max-width:160px;" />
                                             </td>
                                         </tr>
-                                    </table> 
+                                    </table>
                                 </td>
                             </tr>
                         	<tr>
@@ -1138,7 +1138,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''r>
 						                                                                <strong>Getting started:</strong> Customize your template by clicking on the style editor tabs up above. Set your fonts, colors, and styles. After setting your styling is all done you can click here in this area, delete the text, and start adding your own awesome content!
 						                                                                <br />
 						                                                                <br />
-						                                                                After you enter your content, highlight the text you want to style and select the options you set in the style editor in the "styles" drop down box. 
+						                                                                After you enter your content, highlight the text you want to style and select the options you set in the style editor in the "styles" drop down box.
 						                                                            </div>
                                                                                 </td>
                                                                             </tr>
@@ -1160,7 +1160,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''r>
           '',NULL,NULL) WHERE [Id]=69
 UPDATE [dbo].[Content] SET [Body].WRITE(N''                                                                          <div bvedit>
                                                                                         <h4>Heading 4</h4>
-                                                                                        <strong>Content blocks:</strong> Put all the great things you want to say here 
+                                                                                        <strong>Content blocks:</strong> Put all the great things you want to say here
                                                                                         and format it like you want it.
 																					</div>
                                                                                 </td>
@@ -1174,7 +1174,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''                                     
                                                                                     <img src="http://www.bvcms.com/content/images/placeholder_160.gif" style="max-width:160px;" />
                                                                                     <div bvedit>
                                                                                         <h4>Heading 4</h4>
-                                                                                        <strong>Content blocks:</strong> Put all the great things you want to say here 
+                                                                                        <strong>Content blocks:</strong> Put all the great things you want to say here
                                                                                         and format it like you want it.</div>
                                                                                 </td>
                                                                             </tr>
@@ -1184,7 +1184,7 @@ UPDATE [dbo].[Content] SET [Body].WRITE(N''                                     
                                                             </table>
                                                         </td>
                                                     </tr>
-                                                </table>                                                
+                                                </table>
                                             </td>
                                         </tr>
                                     </table>
@@ -1519,7 +1519,7 @@ To set your password, click your username below:</p>
 <p>Thanks,<br />
 The BVCMS Team</p>
 ', '2013-09-09 23:32:15.190', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (72, N'ForgotPasswordBadEmail', N'ForgotPasswordBadEmail', N'<p>Someone recently requested a new password for this email address {email}.  
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (72, N'ForgotPasswordBadEmail', N'ForgotPasswordBadEmail', N'<p>Someone recently requested a new password for this email address {email}.
 However, we could not find an account associated with this email address.
 You may try a different email address, or contact the church.</p>
 <p>If this is a mistake, please disregard this message, your password will not be changed.</p>
@@ -1724,7 +1724,7 @@ SET IDENTITY_INSERT [dbo].[Roles] OFF
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminCoupon', N'itsasecret')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'AdminMail', N'david@bvcms.com')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogAppUrl', N'http://blog.touchpointsoftware.com')
-INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogFeedUrl', N'http://feeds.feedburner.com/BvcmsBlog')
+INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'BlogFeedUrl', N'http://blog.touchpointsoftware.com/feed/')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'ChangePasswordDays', N'360')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'CheckRemoteAccessRole', N'false ')
 INSERT INTO [dbo].[Setting] ([Id], [Setting]) VALUES (N'DbConvertedDate', N'5/19/2011')
