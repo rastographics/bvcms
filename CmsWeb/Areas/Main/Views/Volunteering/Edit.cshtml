@@ -1,57 +1,82 @@
-﻿@using CmsData;
-@using CmsWeb
+﻿@using CmsData
 @using UtilityExtensions
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
 @{
-    ViewBag.Title = "Edit Volunteer";
-    Layout = ViewExtensions2.TouchPointLayout();
     var s = from e in DbUtil.Db.VolApplicationStatuses
             select e;
 }
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            $(".bt").button();
-            $(".datepicker").jqdatepicker();
-        });
-        function redirect() {
-            window.location = "/Volunteering/@Model.Volunteer.PeopleId";
-        }
-    </script>
-}
-<a href="/Person2/@Model.Volunteer.PeopleId">@Model.Volunteer.Person.Name</a><br />
-<br />
-<form action="/Volunteering/Update" method="post">
-    @Html.Hidden("Id", Model.Volunteer.PeopleId)
-    <table width="100%" style="border:thin solid #777777;">
-        <tr>
-            <td class="right top" style="background-color:#EFF3FB;"><b>Approvals:</b></td>
-            <td class="top" width="30%">
+
+<form class="ajax" method="post">
+    <div class="row hidden-xs">
+        <div class="col-sm-12">
+            <div class="pull-right">
+                <a href="/Volunteering/Display/@Model.Volunteer.PeopleId" class="edit-basic btn btn-default ajax">Cancel</a>
+                <a href="/Volunteering/Update/@Model.Volunteer.PeopleId" class="edit-basic btn btn-primary ajax">Save Changes</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-4">
+            Approvals
             @foreach (var ck in Model.ApprovalList)
             {
-                <input type="checkbox" name="approvals" @(ck.Approved ? "checked='checked'" : "") value="@ck.Id"/>
-                @ck.Description<br />
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") />
+                        @ck.Description<br />
+                    </label>
+                </div>
             }
-            </td>
-            <td class="right top" style="background-color:#EFF3FB;"><b>Comments:</b></td>
-            <td class="top" width="50%">
-                <textarea name="comments" rows="4" cols="50">@Model.Volunteer.Comments</textarea>
-            </td>
-        </tr>
-        <tr>
-            <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>Last Background Check:</b></td>
-            <td class="top">@Html.TextBox("processDate", Model.Volunteer.ProcessedDate.FormatDate(), new { @class = "datepicker" })</td>
-            <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>Status Code:</b></td>
-            <td class="top">@Html.DropDownList("statusId", new SelectList( s, "Id", "Description", Model.Volunteer.StatusId))</td>
-        </tr>
-        <tr>
-            <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>Last MVR Check:</b></td>
-            <td class="top">@Html.TextBox("mvrDate", Model.Volunteer.MVRProcessedDate.FormatDate(), new { @class = "datepicker" })</td>
-            <td class="right top" style="background-color:#EFF3FB;" nowrap="nowrap"><b>MVR Status Code:</b></td>
-            <td class="top">@Html.DropDownList("mvrStatusId", new SelectList(s, "Id", "Description", Model.Volunteer.MVRStatusId))</td>
-        </tr>
-    </table>
-    <br />
-    <input class="bt" type="submit" value="Save" /> <input class="bt" type="button" value="Cancel" onclick="redirect();" />
+        </div>
+        <div class="col-md-6 col-lg-8">
+            <div class="form-group">
+                <label for="comments">Comments</label>
+                <div class="controls">
+                    <textarea name="comments" id="comments" rows="4" class="form-control" style="height: 75px;">@Model.Volunteer.Comments</textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-lg-3">
+            <div class="form-group">
+                <label for="processDate">Last Background Check</label>
+                <div class="controls">
+                    <div class="input-group date">
+                        @Html.TextBox("processDate", Model.Volunteer.ProcessedDate.FormatDate(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="form-group">
+                <label for="statusId">Status Code</label>
+                <div class="controls">
+                    @Html.DropDownList("statusId", new SelectList(s, "Id", "Description", Model.Volunteer.StatusId), new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="form-group">
+                <label for="mvrDate">Last MVR Check</label>
+                <div class="controls">
+                    <div class="input-group date">
+                        @Html.TextBox("mvrDate", Model.Volunteer.MVRProcessedDate.FormatDate(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="form-group">
+                <label for="mvrStatusId">MVC Status Code</label>
+                <div class="controls">
+                    @Html.DropDownList("mvrStatusId", new SelectList(s, "Id", "Description", Model.Volunteer.MVRStatusId), new { @class = "form-control"})
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="visible-xs-block">
+        <a href="/Volunteering/Update/@Model.Volunteer.PeopleId" class="edit-basic btn btn-block btn-primary ajax">Save Changes</a>
+        <a href="/Volunteering/Display/@Model.Volunteer.PeopleId" class="edit-basic btn btn-block btn-default ajax">Cancel</a>
+    </div>
 </form>
