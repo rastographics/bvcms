@@ -1,27 +1,36 @@
 ﻿@using System.Text
 @using CmsWeb
+@using UtilityExtensions
 @{
-  ViewBag.Title = "RegSetting";
-  Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Registration Settings";
+    ViewBag.PageHeader = "Registration Settings";
+    ViewBag.PageSubHeader = "<a href=\"/Org/{0}\">{1}</a>".Fmt(ViewData["OrganizationId"], ViewData["orgname"]);
+    Layout = ViewExtensions2.TouchPointLayout();
+    var sb = new StringBuilder();
+    var lines = (string[])ViewData["lines"];
+    for (var i = 0; i < lines.Length; i++)
+    {
+        sb.AppendFormat("  {0,3}\t{1}\n", i + 1, lines[i]);
+    }
 }
-<div class="roundbox cell">
-  <h2>Registration Settings for <a href="/Org/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
-  <form action="/RegSettings/Edit/@ViewData["OrganizationId"]" method="post">
-    <input id="edit" type="submit" class="bt" value="Edit Text" />
-    <a href="/RegSettings/ConvertFromMdy/@ViewBag.OrganizationId" class="bt">Convert From MDY</a>
-    <a href="/RegSettings/ConvertFromDmy/@ViewBag.OrganizationId" class="bt">Convert From DMY</a>
-    @{ var lines = (string[])ViewData["lines"]; }
-    <input type="hidden" name="regsetting" value="@ViewData["regsetting"]" />
-  </form>
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                @if (TempData["error"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["error"]
+                    </div>
+                }
+                <pre>@sb.ToString()</pre>
+                <form action="/RegSettings/Edit/@ViewData["OrganizationId"]" method="post">
+                    <button id="edit" type="submit" class="btn btn-default" value="Edit Text"><i class="fa fa-pencil"></i> Edit Text</button>
+                    <a href="/RegSettings/ConvertFromMdy/@ViewBag.OrganizationId" class="btn btn-default">Convert From MDY</a>
+                    <a href="/RegSettings/ConvertFromDmy/@ViewBag.OrganizationId" class="btn btn-default">Convert From DMY</a>
+                    <input type="hidden" name="regsetting" value="@ViewData["regsetting"]" />
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-<p style="color: red">@TempData["error"]</p>
-@{
-  var sb = new StringBuilder();
-  for (var i = 0; i < lines.Length; i++)
-  {
-    sb.AppendFormat("  {0,3}\t{1}\n", i + 1, lines[i]);
-  }
-}
-<pre>
-@sb.ToString()
-</pre>

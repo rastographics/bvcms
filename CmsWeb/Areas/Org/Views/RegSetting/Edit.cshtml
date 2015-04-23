@@ -1,24 +1,46 @@
 ﻿@using UtilityExtensions
 @using CmsWeb
 @{
-    ViewBag.Title = "EditRegSetting";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Registration Settings";
+    ViewBag.PageHeader = "Registration Settings";
+    ViewBag.PageSubHeader = "<a href=\"/Org/{0}\">{1}</a>".Fmt(ViewData["OrganizationId"], ViewData["orgname"]);
+    Layout = ViewExtensions2.TouchPointLayout();
 }
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                @if (TempData["error"] != null)
+                {
+                    <div class="alert alert-danger">
+                        @TempData["error"]
+                    </div>
+                }
+                <form action="/RegSettings/Update/@ViewData["OrganizationId"]" method="post">
+                    <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@ViewData["Text"]</div>
+                    <input type="hidden" id="text" name="text"/>
+                    <br/>
+                    <a href="/RegSettings/@ViewData["OrganizationId"]" class="btn btn-default">Cancel</a> 
+                    <a href="#" id="save" class="btn btn-primary">Save Changes</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
     <script type="text/javascript">
         $(function () {
-            $("textarea").css("height", this.scrollHeight + "px");
-            $("textarea").tabby();
-            $(".bt").button();
+            var editor = ace.edit("editor");
+            editor.getSession().setMode("ace/mode/text");
+            editor.setShowPrintMargin(false);
+
+            $("#save").click(function (ev) {
+                ev.preventDefault();
+                $("#text").val(editor.getValue());
+                $("form").submit();
+            });
         });
     </script>
 }
-<h2>
-    Editing Registration Settings for <a href="/Org/@ViewData["OrganizationId"]">@ViewData["orgname"]</a></h2>
-<form action="/RegSettings/Update/@ViewData["OrganizationId"]" method="post">
-<a href="/RegSettings/@ViewData["OrganizationId"]" class="bt">Cancel</a>
-<input type="submit" class="bt blue" value="Save Changes" />
-<p style="color: red">@TempData["error"]</p>
-@Html.TextArea("text", new { rows = "40", style = "width:90%", wrap="off" })
-</form>
