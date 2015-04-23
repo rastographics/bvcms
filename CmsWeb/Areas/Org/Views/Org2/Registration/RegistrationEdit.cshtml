@@ -3,46 +3,145 @@
 @{
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";
 }
-<form class="form form-horizontal non-modal ajax span12">
-  <br />
-  @FormAction()
-  @Html.EditorFor(m => m.RegistrationType)
-  @Html.EditorFor(m => m.RegistrationTitle)
-  @Html.EditorFor(m => m.ClassFilled)
-  @Html.EditorFor(m => m.RegistrationClosed)
-  @Html.EditorFor(m => m.RegStart)
-  @Html.EditorFor(m => m.RegEnd)
-
-  @Html.EditorFor(m => m.Limit)
-  @Html.EditorFor(m => m.VaidateOrgs)
-  @Html.EditorFor(m => m.AgeGroups)
-  @Html.EditorFor(m => m.AllowOnlyOne)
-  @Html.EditorFor(m => m.AddAsProspect)
-  @Html.EditorFor(m => m.AllowReRegister)
-  @Html.EditorFor(m => m.AllowSaveProgress)
-  @Html.EditorFor(m => m.GroupToJoin)
-  @Html.EditorFor(m => m.NoReqBirthYear)
-  @Html.EditorFor(m => m.NotReqDOB)
-  @Html.EditorFor(m => m.NotReqAddr)
-  @Html.EditorFor(m => m.NotReqZip)
-  @Html.EditorFor(m => m.NotReqPhone)
-  @Html.EditorFor(m => m.NotReqGender)
-  @Html.EditorFor(m => m.NotReqMarital)
-  @Html.EditorFor(m => m.ShellBs)
-  @Html.EditorFor(m => m.SpecialScript)
-  @Html.EditorFor(m => m.MemberOnly)
-  @if (User.IsInRole("Admin"))
-  {
-    @Html.EditorFor(m => m.AddToSmallGroupScript)
-  }
-  @FormAction()
-</form>
-
-@helper FormAction()
-{
-    <div class="pull-right">
-        <a href="/Org/Registration/@Model.Id" class="btn ajax">Cancel</a>
-        <a href="/Org/RegistrationUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
+<form class="ajax">
+    @if (!Html.ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @Html.ValidationMessage("Form")
+        </div>
+    }
+    @FormAction()
+    <h4>Basic Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-6">
+                @Html.EditorFor(m => m.RegistrationType)
+            </div>
+            <div class="col-sm-6 col-md-6">
+                @Html.EditorFor(m => m.RegistrationTitle)
+            </div>
+            <div class="col-sm-5 col-md-5">
+                @Html.EditorFor(m => m.RegStart)
+            </div>
+            <div class="col-sm-5 col-md-5">
+                @Html.EditorFor(m => m.RegEnd)
+            </div>
+            <div class="col-sm-2 col-md-2">
+                @Html.EditorFor(m => m.Limit)
+            </div>
+            <div class="col-sm-12 col-md-12">
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.RegistrationClosed) Registration closed
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.AllowSaveProgress) Allow save progress
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.AllowOnlyOne) Allow only one
+                </label>
+            </div>
+        </div>
     </div>
-    <div class="formerror">@Html.ValidationMessage("Form")</div>
+    <h4>Join Type</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.GroupToJoin)
+            </div>
+            <div class="col-sm-8 col-md-8">
+                <br class="hidden-xs"/>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.AddAsProspect) Add as prospect
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.AllowReRegister) Allow re-register
+                </label>
+            </div>
+        </div>
+    </div>
+    <h4>Age Groups</h4>
+    @Html.EditorFor(m => m.AgeGroups)
+    <h4>Advanced Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.VaidateOrgs)
+            </div>
+            <div class="col-sm-8 col-md-8">
+                <br class="hidden-xs"/>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.ClassFilled) Class filled
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.MemberOnly) Member only
+                </label>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.ShellBs)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.SpecialScript)
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-sm-4 col-md-4">
+                    @Html.EditorFor(m => m.AddToSmallGroupScript)
+                </div>
+            }
+            
+        </div>
+    </div>
+    <h4>Relaxed Requirements</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-12 col-md-12">
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.NoReqBirthYear) Birth year not required
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.NotReqDOB) Date of birth not required
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.NotReqAddr) Address not required
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.NotReqZip) Zipcode not required
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.NotReqPhone) Phone number not required
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.NotReqGender) Gender not required
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.NotReqMarital) Marital status not required
+                </label>
+            </div>
+        </div>
+    </div>
+    @FormAction()
+    @FormAction(true)
+    <br/>
+</form>
+@helper FormAction(bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            <a href="/Org/RegistrationUpdate/@Model.Id" class="btn btn-primary btn-block ajax">Save</a>
+            <a href="/Org/Registration/@Model.Id" class="btn btn-default btn-block ajax">Cancel</a>
+        </div>
+    }
+    else
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/Org/Registration/@Model.Id" class="btn btn-default ajax">Cancel</a>
+                    <a href="/Org/RegistrationUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
+                </div>
+            </div>
+        </div>
+    }
 }

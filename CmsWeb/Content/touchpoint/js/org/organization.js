@@ -1,4 +1,6 @@
 ﻿$(function () {
+    $('#organization-tabs').tabdrop();
+    
     $('a[data-toggle="tab"]').on('shown', function (e) {
         e.preventDefault();
         var tab = $(e.target).attr('href').replace("#", "#tab-");
@@ -241,19 +243,32 @@
     $('#sendreminders').click(function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
-        if (confirm('Are you sure you want to send reminders?')) {
-            $.block("sending reminders");
+
+        swal({
+            title: "Are you sure you want to send reminders?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, send reminders!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.block();
             $.post(href, null, function (ret) {
                 if (ret != "ok") {
                     $.unblock();
-                    $.growlUI("error", ret);
+                    swal("Error!", ret, "error");
                 }
                 else {
                     $.unblock();
-                    $.growlUI("Email", "Reminders Sent");
+                    swal({
+                        title: "Reminders Sent!",
+                        type: "success"
+                    });
                 }
             });
-        }
+        });
+
     });
 
     $('#reminderemails').click(function (ev) {
@@ -305,12 +320,13 @@
 
     $('body').on('click', 'a.membertype', function (ev) {
         ev.preventDefault();
-        $("<div />").load(this.href, {}, function () {
-            var d = $(this);
-            var f = d.find("form");
-            f.modal("show");
-            f.on('hidden', function () {
-                d.remove();
+        var $a = $(this);
+        $("<form class='modal-form validate ajax' />").load(this.href, {}, function () {
+            var f = $(this);
+            $('#empty-dialog').html(f);
+            $('#empty-dialog').modal("show");
+
+            $('#empty-dialog').on('hidden', function () {
                 f.remove();
                 RebindMemberGrids();
             });
@@ -373,12 +389,17 @@
         var a = $(this);
         $("<div />").load(a.attr("href"), {}, function () {
             var d = $(this);
+            var dialog = d.find('div.modal-dialog');
             var f = d.find("form");
-            f.modal("show");
-            f.on('hidden', function () {
-                a.load(a.data("refresh"), {});
+            $('#empty-dialog').html(dialog);
+            $('#empty-dialog').modal("show");
+            dialog.on('hidden', function () {
                 d.remove();
-                f.remove();
+                dialog.remove();
+            });
+            dialog.on("click", "#select-div-ok", function () {
+                $('#empty-dialog').modal("hide");
+                a.load(a.data("refresh"), {});
             });
             f.on("change", "input:checkbox", function () {
                 $("input[name='TargetDivision']", f).val($(this).val());
@@ -410,34 +431,16 @@
     };
 
     $.InitFunctions.popovers = function (f) {
-        $('[data-toggle="popover"]').popover({ html: true, placement: 'bottom' });
-
-        $('body').on('click', function (e) {
-            $('[data-toggle="popover"]').each(function () {
-                //the 'is' for buttons that trigger popups
-                //the 'has' for icons within a button that triggers a popup
-                if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
-                    $(this).popover('hide');
-                }
-            });
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
+            ev.preventDefault();
         });
     };
 
     $.InitFunctions.popovers();
 
     $.InitFunctions.timepicker = function (f) {
-        $(".timepicker").datetimepicker({
-            format: "H:ii P",
-            showMeridian: true,
-            autoclose: true,
-            todayBtn: false,
-            pickerPosition: "bottom-left",
-            startView: 1,
-            minView: 0,
-            maxView: 1
-        });
-
-        $(".datetimepicker-hours table thead, .datetimepicker-minutes table thead").attr('style', 'display:block; overflow:hidden; height:0;');
+        $.InitializeDateElements();
     };
 
     $.InitFunctions.ReloadMeetings = function (f) {
@@ -445,6 +448,7 @@
     }
 
     $.InitFunctions.showHideRegTypes = function (f) {
+        $('#Reg-tab').show();
         $("#Fees-tab").show();
         $("#Questions-tab").show();
         $("#Messages-tab").show();
@@ -453,6 +457,7 @@
         $("#TimeSlotsList").hide();
         switch ($("#RegistrationType_Value").val()) {
             case "0":
+                $('#Reg-tab').hide();
                 $("#Fees-tab").hide();
                 $("#Questions-tab").hide();
                 $("#Messages-tab").hide();
@@ -541,8 +546,14 @@
 
     $('body').on('click', 'a.taguntag', function (ev) {
         ev.preventDefault();
+        $.block();
+        var a = $(this);
         $.post('/Org/ToggleTag/' + $(this).attr('pid'), null, function (ret) {
-            $(ev.target).text(ret);
+            var link = $(ev.target).closest('a');
+            link.removeClass('btn-default').removeClass('btn-success');
+            link.addClass(ret == "Remove" ? "btn-default" : "btn-success");
+            link.html(ret == "Remove" ? "<i class='fa fa-tag'></i> Remove" : "<i class='fa fa-tag'></i> Add");
+            $.unblock();
         });
         return false;
     });
@@ -617,7 +628,7 @@
 
     $('body').on('click', 'a.delete-well', function (ev) {
         ev.preventDefault();
-        $(this).closest("div.well").remove();
+        $(this).closest("div.well").parent().remove();
         $.renumberListItems();
     });
 
@@ -745,7 +756,8 @@
         var a = $(this);
         var f = a.closest("form");
         $.post(a.attr("href"), null, function (ret) {
-            a.parent().prepend(ret);
+            var dest = a.data('dest');
+            $(dest).append(ret);
             $.InitFunctions.movequestions();
             $.InitFunctions.timepicker();
         });
@@ -761,8 +773,10 @@
 
     function initializeCutPaste() {
         $('div.movable-list').each(function () {
-            if ($(this).children('div.movable').length <= 1) {
+            if ($(this).children('div.movable').length < 3) {
                 $(this).children('div.movable').find('div a.cut').addClass('disabled');
+            } else {
+                $(this).children('div.movable').find('div a.cut').removeClass('disabled');
             }
             $(this).children('div.movable').find('div a.paste').addClass('disabled');
         });
@@ -831,9 +845,25 @@
             case 'delconfirm':
                 if (!$(a).attr("href"))
                     return false;
-                if (!confirm("are you sure?")) {
-                    return false;
-                }
+
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: true
+                },
+                function (isConfirm) {
+                    if (isConfirm) {
+                        $(liToMove).remove();
+                        $.InitFunctions.updateQuestionList();
+                        $.InitFunctions.movequestions();
+                    } else {
+                        return false;
+                    }
+                });
+                return false;
                 break;
             case 'delete':
                 if (!$(a).attr("href"))

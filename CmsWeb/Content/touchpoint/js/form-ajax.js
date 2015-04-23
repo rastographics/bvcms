@@ -331,10 +331,13 @@
         var data = {};
         if ($(this).data("post"))
             data = $(this).closest("form").serializeArray();
-        $('<form class="modal form-horizontal ajax validate fade hide" />').load(this.href, data, function () {
+        $('<form class="modal-form ajax validate" />').load(this.href, data, function () {
             var f = $(this);
             var callback = $("#callback", f).val();
-            f.modal("show");
+
+            $('#empty-dialog').html(f);
+            $('#empty-dialog').modal("show");
+
             var tm = 250; // initial timeout
             f.on('hidden', function () {
                 tm = 0;

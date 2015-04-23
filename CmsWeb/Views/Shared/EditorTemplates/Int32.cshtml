@@ -7,7 +7,7 @@
         @Html.ValidationMessageLabelFor(m => m)
         @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
         {
-            <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
         }
     </div>
 </div>

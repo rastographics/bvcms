@@ -4,34 +4,86 @@
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowGeneralHelp") == "true";
   ViewBag.FalseValue = "";
 }
-<form class="form form-horizontal non-modal ajax span12 margin-top">
-  @Html.Hidden("Id", Model.Id)
-  @FormAction()
-  @Html.DisplayFor(m => m.Location)
-  @Html.DisplayFor(m => m.PendingLoc)
-  @Html.DisplayFor(m => m.Description, "Html")
-  @Html.DisplayFor(m => m.EntryPoint)
-  @Html.DisplayFor(m => m.PublishDirectory)
-  @Html.DisplayFor(m => m.GradeAgeStart)
-  @Html.DisplayFor(m => m.Gender)
-  @Html.DisplayFor(m => m.PhoneNumber)
-  @Html.DisplayFor(m => m.IsRecreationTeam)
-  @Html.DisplayFor(m => m.IsMissionTrip)
-  @Html.DisplayFor(m => m.NoCreditCards)
-  @if (User.IsInRole("Admin"))
-  {
-    @Html.DisplayFor(m => m.LimitToRole)
-  }
-  @FormAction()
+<form class="ajax">
+    @FormAction()
+    <h4>Basic Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.Location)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.PendingLoc)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.EntryPoint)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.GradeAgeStart)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.Gender)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.PhoneNumber)
+            </div>
+            <div class="col-sm-12 col-md-12">
+                @Html.DisplayFor(m => m.Description, "Html")
+            </div>
+        </div>
+    </div>
+    <h4>Advanced Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-7 col-md-5 col-lg-3">
+                @Html.DisplayFor(m => m.PublishDirectory)
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-sm-5 col-md-4 col-lg-3">
+                    @Html.DisplayFor(m => m.LimitToRole)
+                </div>
+            }
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.IsMissionTrip, new { FalseValue = "N/A" })
+            </div>
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.NoCreditCards, new { FalseValue = "N/A" })
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.IsRecreationTeam, new { FalseValue = "N/A" })
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("Id", Model.Id)
+    @FormAction()
+    @FormAction(true)
+    <br/>
 </form>
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
-  <div class="pull-right">
-    <a href="/Org/GeneralHelpToggle/@Model.Id" class="btn ajax">@(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
-    @if (User.IsInRole("Edit"))
+    if (xs)
     {
-      <a href="/Org/GeneralEdit" class="btn ajax btn-primary">Edit</a>
+        <div class="visible-xs-block">
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/GeneralEdit" class="btn ajax btn-default btn-block"><i class="fa fa-pencil"></i> Edit</a>
+            }
+            <a href="/Org/GeneralHelpToggle/@Model.Id" class="btn btn-default btn-block ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a> 
+        </div>
     }
-  </div>
-  @Html.DivValidationMessage("Form", "inline")
+    else
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/Org/GeneralHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a> 
+                    @if (User.IsInRole("Edit"))
+                    {
+                        <a href="/Org/GeneralEdit" class="btn ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                    }
+                </div>
+            </div>
+        </div>
+    }
 }

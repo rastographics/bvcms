@@ -3,74 +3,100 @@
 @{
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowQuestionsHelp") == "true";
 }
-<form class="form form-horizontal non-modal ajax span12">
-  <br />
-  @FormAction()
-  <i class="blue">Re-order items by using the blue gear.</i>
-  <div class="movable-list enablesort sort edit" id="QuestionList" style="list-style: none; margin-left: 5px;">
-    @foreach (var ask in Model.AskItems)
+<form class="ajax">
+    @if (!Html.ViewData.ModelState.IsValid)
     {
-      ask.Name = Html.NameFor2(m => m.AskItems);
-      @Html.EditorFor(m => ask)
+        <div class="alert alert-danger">
+            @Html.ValidationMessage("Form")
+        </div>
     }
-  </div>
-  @Html.EditorFor(m => m.TimeSlots)
-  @FormAction()
-  <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-</form>
-<div id="addQuestions" class="modal hide fade" tabindex="-1">
-  <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal">×</button>
-    <h3>Add Question</h3>
-  </div>
-  <div class="modal-body container">
-    <div id="selectquestions" class="row">
-      <div class="span2">
-        <ul style="list-style: none; margin: 0;">
-          <li class="AskAllergies">Allergies</li>
-          <li class="AnswersNotRequired">Answers Not Required</li>
-          <li class="AskCheckboxes">Checkboxes</li>
-          <li class="AskChurch">Church</li>
-          <li class="AskCoaching">Coaching</li>
-          <li class="AskDoctor">Doctor</li>
-          <li class="AskDropdown">Dropdown</li>
-          <li class="AskEmContact">Emerg Contact</li>
-        </ul>
-      </div>
-      <div class="span2">
-        <ul style="list-style: none; margin: 0;">
-          <li class="AskExtraQuestions">Extra Questions</li>
-          <li class="AskText">Multiline Text</li>
-          <li class="AskGradeOptions">Grade Options</li>
-          <li class="AskHeader">Header</li>
-          <li class="AskInstruction">Instruction</li>
-          <li class="AskInsurance">Insurance</li>
-          <li class="AskMenu">Menu Choices</li>
-          <li class="AskParents">Parents</li>
-        </ul>
-      </div>
-      <div class="span2">
-        <ul style="list-style: none; margin: 0;">
-          <li class="AskRequest">Request</li>
-          <li class="AskSize">Shirt Size</li>
-          <li class="AskSMS">SMS Opt-in</li>
-          <li class="AskSuggestedFee">Suggested Fee</li>
-          <li class="AskTickets">Tickets</li>
-          <li class="AskTylenolEtc">Tylenol Etc</li>
-          <li class="AskYesNoQuestions">Yes/No Questions</li>
-        </ul>
-      </div>
+    @FormAction()
+    <i class="blue">Re-order items by using the blue gear.</i>
+    <div class="movable-list enablesort sort edit" id="QuestionList" style="list-style: none; margin-left: 5px;">
+        @foreach (var ask in Model.AskItems)
+        {
+            ask.Name = Html.NameFor2(m => m.AskItems);
+            @Html.EditorFor(m => ask)
+        }
     </div>
-  </div>
-</div>
-@helper FormAction()
-{
-    <div class="row">
-        <div class="pull-right">
-            <a href="/Org/Questions/@Model.OrgId" class="btn ajax">Cancel</a>
-            <a href="#addQuestions" class="btn btn-success" data-toggle="modal">Add Question Item</a>
-            <a href="/Org/QuestionsUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+    @*@Html.EditorFor(m => m.TimeSlots)*@
+    @FormAction()
+    @FormAction(true)
+    <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+</form>
+<div class="modal fade" id="addQuestions">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add Question</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row" id="selectquestions">
+                    <div class="col-sm-4">
+                        <ul style="list-style: none; margin: 0;">
+                            <li class="AskAllergies">Allergies</li>
+                            <li class="AnswersNotRequired">Answers Not Required</li>
+                            <li class="AskCheckboxes">Checkboxes</li>
+                            <li class="AskChurch">Church</li>
+                            <li class="AskCoaching">Coaching</li>
+                            <li class="AskDoctor">Doctor</li>
+                            <li class="AskDropdown">Dropdown</li>
+                            <li class="AskEmContact">Emerg Contact</li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+                        <ul style="list-style: none; margin: 0;">
+                            <li class="AskExtraQuestions">Extra Questions</li>
+                            <li class="AskText">Multiline Text</li>
+                            <li class="AskGradeOptions">Grade Options</li>
+                            <li class="AskHeader">Header</li>
+                            <li class="AskInstruction">Instruction</li>
+                            <li class="AskInsurance">Insurance</li>
+                            <li class="AskMenu">Menu Choices</li>
+                            <li class="AskParents">Parents</li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-4">
+                        <ul style="list-style: none; margin: 0;">
+                            <li class="AskRequest">Request</li>
+                            <li class="AskSize">Shirt Size</li>
+                            <li class="AskSMS">SMS Opt-in</li>
+                            <li class="AskSuggestedFee">Suggested Fee</li>
+                            <li class="AskTickets">Tickets</li>
+                            <li class="AskTylenolEtc">Tylenol Etc</li>
+                            <li class="AskYesNoQuestions">Yes/No Questions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <input type="submit" class="btn btn-primary" value="OK" />
+            </div>
         </div>
     </div>
-    <div class="formerror">@Html.ValidationMessage("Form")</div>
+</div>
+@helper FormAction(bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            <a href="/Org/QuestionsUpdate/@Model.OrgId" class="btn btn-primary btn-block ajax">Save</a>
+            <a href="#addQuestions" class="btn btn-success btn-block" data-toggle="modal"><i class="fa fa-plus-circle"></i> Add Question</a>
+            <a href="/Org/Questions/@Model.OrgId" class="btn btn-default btn-block ajax">Cancel</a>
+        </div>
+    }
+    else
+    {
+        <div class="row hidden-xs">
+            <div class="col-sm-12">
+                <div class="pull-right">
+                    <a href="/Org/Questions/@Model.OrgId" class="btn btn-default ajax">Cancel</a>
+                    <a href="#addQuestions" class="btn btn-success" data-toggle="modal"><i class="fa fa-plus-circle"></i> Add Question</a>
+                    <a href="/Org/QuestionsUpdate/@Model.OrgId" class="btn btn-primary ajax">Save</a>
+                </div>
+            </div>
+        </div>
+    }
 }

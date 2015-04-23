@@ -1,35 +1,51 @@
 ﻿@model CmsWeb.Areas.Org2.Models.OrgMain
-<div class="container">
-  <div class="span8">
-    <form class="form form-horizontal non-modal ajax border-bottom well well-small">
-      <fieldset class="no-padding-margin">
-        <legend>
-          @Model.OrganizationName@(Model.Org.LeaderId.HasValue ? "," : "")
-          <small>@Model.LeaderName</small>
-        </legend>
-        <div class="row-fluid">
-          @Html.HiddenFor(m => m.Id)
-          @Html.EditorFor(m => m.OrganizationName)
-          <div class="inline display align-top">
-            @Html.EditorFor(m => m.Campus)
-            @Html.EditorFor(m => m.LeaderMemberType)
-          </div>
-          <div class="inline display align-top">
-            @Html.EditorFor(m => m.OrganizationType)
-            @Html.EditorFor(m => m.OrganizationStatus)
-            @Html.EditorFor(m => m.IsBibleFellowshipOrg)
-          </div>
-        </div>
-        @if (User.IsInRole("Edit"))
-        {
-          <div class="row-fluid">
-            <div class="text-right">
-              <a class="ajax btn" href="/Org/Main/@Model.Id" data-callback="popovers">Cancel</a>
-              <a href="/Org/MainUpdate/@Model.Id" class="ajax btn btn-primary" data-callback="popovers">Save Changes</a>
+<form class="ajax">
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-3 col-lg-3">
+                @Html.HiddenFor(m => m.Id)
+                @Html.EditorFor(m => m.OrganizationName)
             </div>
-          </div>
+            <div class="col-sm-6 col-md-3 col-lg-3">
+                @Html.EditorFor(m => m.OrganizationType)
+            </div>
+            <div class="col-sm-4 col-md-3 col-lg-3">
+                @Html.EditorFor(m => m.Campus)
+            </div>
+            <div class="col-sm-4 col-md-3 col-lg-3">
+                @Html.EditorFor(m => m.LeaderMemberType)
+            </div>
+            <div class="col-sm-4 col-md-3 col-lg-3">
+                @Html.EditorFor(m => m.OrganizationStatus)
+            </div>
+            <div class="col-sm-4 col-md-3 col-lg-3">
+                <br class="hidden-xs hidden-sm" />
+                @Html.EditorFor(m => m.IsBibleFellowshipOrg)
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                @FormAction()
+                @FormAction(true)
+            </div>
+        </div>
+    </div>
+</form>
+@helper FormAction(bool xs = false)
+{
+    if (User.IsInRole("Edit"))
+    {
+        if (xs)
+        {
+            <div class="visible-xs-block">
+                <a href="/Org/MainUpdate/@Model.Id" class="ajax btn btn-block btn-primary" data-callback="popovers">Save Changes</a>
+                <a class="ajax btn btn-block btn-default" href="/Org/Main/@Model.Id" data-callback="popovers">Cancel</a>
+            </div>
         }
-      </fieldset>
-    </form>
-  </div>
-</div>
+        else
+        {
+            <div class="pull-right hidden-xs">
+                <a class="ajax btn btn-default" href="/Org/Main/@Model.Id" data-callback="popovers">Cancel</a> 
+                <a href="/Org/MainUpdate/@Model.Id" class="ajax btn btn-primary" data-callback="popovers">Save Changes</a>
+            </div>
+        }
+    }
+}
