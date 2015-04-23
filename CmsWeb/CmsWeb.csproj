@@ -1516,7 +1516,6 @@
     <Content Include="Areas\Main\Views\Volunteering\DialogSubmit.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Address.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsEmail.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenMeta.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenSearch.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenPeople.cshtml" />
@@ -2979,8 +2978,6 @@
     <Content Include="Areas\Org\Views\Meeting\ExtrasGrid.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Duplicates\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Reports\Views\Reports\ExtraValues.cshtml">
     </Content>
     <Content Include="Content\images\UpdatePeople.xls" />
     <Content Include="Content\images\MucketyTemplate.xls" />
