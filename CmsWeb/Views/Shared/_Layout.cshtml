@@ -28,7 +28,7 @@
                     <h2>@ViewBag.PageHeader</h2>
                     @if (!string.IsNullOrWhiteSpace(ViewBag.PageSubHeader))
                     {
-                        <h4>@ViewBag.PageSubHeader</h4>
+                        <h4>@Html.Raw(ViewBag.PageSubHeader)</h4>
                     }
                 </div>
             </div>
