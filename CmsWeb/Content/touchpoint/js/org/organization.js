@@ -222,21 +222,33 @@
     $('#deleteorg').click(function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
-        if (confirm('Are you sure you want to delete?')) {
-            $.block("deleting org");
+        swal({
+            title: "Are you sure you want to delete?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete organization!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.block();
             $.post(href, null, function (ret) {
                 if (ret != "ok") {
+                    $.unblock();
                     window.location = ret;
                 }
                 else {
-                    $.block("org deleted");
-                    $('.blockOverlay').attr('title', 'Click to unblock').click(function () {
-                        $.unblock();
+                    $.unblock();
+                    swal({
+                        title: "Organization Deleted!",
+                        type: "success"
+                    },
+                    function () {
                         window.location = "/";
                     });
                 }
             });
-        }
+        });
         return false;
     });
 
@@ -269,37 +281,6 @@
             });
         });
 
-    });
-
-    $('#reminderemails').click(function (ev) {
-        ev.preventDefault();
-        var href = $(this).attr("href");
-        if (confirm('Are you sure you want to send reminders?')) {
-            $.block("sending reminders");
-            $.post(href, null, function (ret) {
-                if (ret != "ok") {
-                    $.block(ret);
-                    $('.blockOverlay').attr('title', 'Click to unblock').click($.unblock);
-                }
-                else {
-                    $.block("org deleted");
-                    $('.blockOverlay').attr('title', 'Click to unblock').click(function () {
-                        $.unblock();
-                        window.location = "/";
-                    });
-                }
-            });
-        }
-        return false;
-    });
-
-    $(".CreateAndGo").click(function (ev) {
-        ev.preventDefault();
-        if (confirm($(this).attr("confirm")))
-            $.post($(this).attr("href"), null, function (ret) {
-                window.location = ret;
-            });
-        return false;
     });
 
     $('body').on('click', 'a.members-dialog', function (ev) {
@@ -682,16 +663,24 @@
     $('body').on('click', 'a.joinlink', function (ev) {
         ev.preventDefault();
         var a = $(this);
-        bootbox.confirm(a.attr("confirm"), function (result) {
-            if (result) {
-                $.post(a[0].href, function (ret) {
-                    if (ret === "ok")
-                        RebindMemberGrids();
-                    else
-                        alert(ret);
-                });
-            }
+
+        swal({
+            title: a.attr("confirm"),
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, continue!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post(a[0].href, function (ret) {
+                if (ret === "ok")
+                    RebindMemberGrids();
+                else
+                    swal("Error!", ret, "error");
+            });
         });
+        
         return false;
     });
 
@@ -718,15 +707,25 @@
 
     $('body').on('click', 'a.deleteextra', function (ev) {
         ev.preventDefault();
-        if (confirm("are you sure?"))
-            $.post("/Organization/DeleteExtra/" + $("#OrganizationId").val(), { field: $(this).attr("field") }, function (ret) {
+        var a = $(this);
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post("/Organization/DeleteExtra/" + $("#OrganizationId").val(), { field: $(a).attr("field") }, function (ret) {
                 if (ret.startsWith("error"))
-                    alert(ret);
+                    swal("Error!", ret, "error");
                 else {
                     $("#extras > tbody").html(ret);
                     $.extraEditable();
                 }
             });
+        });
         return false;
     });
 
