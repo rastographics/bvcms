@@ -29,7 +29,7 @@
                 <li class="dropdown-header current-list pending-list orgcontext">Org Members Export</li>
                 <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' title="Includes Org Member info" class="qid">Member Export</a></li>
                 <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' title="Includes Org Member and Small Group columns" class="qid">Groups Export</a></li>
-                <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge" class="qid">Promotion Export</a></li>
+                <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge"><span class="text-success">Promotion Export</span></a></li>
             }
             <li class="divider"></li>
             <li class="dropdown-header">Other Exports</li>
@@ -101,10 +101,10 @@
             @if (((bool?)ViewBag.OrganizationContext) == true)
             {
                 <li class="divider"></li>
-                <li class="dropdown-header current-list pending-list orgcontext">Org Attendance</li>
-                <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank">Recent Absents Report</a></li>
-                <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank">Recent Attendance Report</a></li>
-                <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid">Attendance Percentages</a></li>
+                <li class="dropdown-header current-list pending-list orgcontext"><span class="text-success">Org Attendance</span></li>
+                <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank"><span class="text-success">Recent Absents Report</span></a></li>
+                <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank"><span class="text-success">Recent Attendance Report</span></a></li>
+                <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid"><span class="text-success">Attendance Percentages</span></a></li>
             }
             @if (custom.Count > 0)
             {
