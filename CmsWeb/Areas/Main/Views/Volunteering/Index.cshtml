@@ -4,6 +4,7 @@
 @{
     ViewBag.Title = "Volunteer";
     ViewBag.PageHeader = "Manage Volunteer";
+    ViewBag.PageSubHeader = "<a href=\"/Person2/" + Model.Volunteer.PeopleId + "\">" + Model.Volunteer.Person.Name + "</a>";
     Layout = ViewExtensions2.TouchPointLayout();
 
     IQueryable<BackgroundCheck> bg = null;
@@ -64,22 +65,20 @@
         }
     </style>
 }
-<a href="/Person2/@Model.Volunteer.PeopleId">@Model.Volunteer.Person.Name</a><br />
-<br />
 
 <div class="row">
     <div class="col-md-9" id="volunteer">
         <ul class="nav nav-tabs" id="volunteer-tabs">
-            <li class="active"><a href="#applicationInformation" aria-controls="applicationInformation" data-toggle="tab">Volunteer Application Information</a></li>
+            <li class="active"><a href="#applicationInformation" aria-controls="applicationInformation" data-toggle="tab">Application Information</a></li>
             @if (shouldShowBackgroundChecks)
             {
-                <li><a href="#backgroundChecks" aria-controls="backgroundChecks" data-toggle="tab">Volunteer Background Checks</a></li>
+                <li><a href="#backgroundChecks" aria-controls="backgroundChecks" data-toggle="tab">Background Checks</a></li>
             }
             @if (shouldShowCreditChecks)
             {
-                <li><a href="#creditChecks" aria-controls="creditChecks" data-toggle="tab">Volunteer Credit Checks</a></li>
+                <li><a href="#creditChecks" aria-controls="creditChecks" data-toggle="tab">Credit Checks</a></li>
             }
-            <li><a href="#documents" aria-controls="documents" data-toggle="tab">Volunteer Documents</a></li>
+            <li><a href="#documents" aria-controls="documents" data-toggle="tab">Documents</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade in active" id="applicationInformation">
@@ -169,13 +168,13 @@
                                                 {
                                                     case 0:
                                                         <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
-                                                            <i class="fa fa-arrow-right"></i> Resubmit
+                                                            Resubmit
                                                         </button>
                                                         break;
 
                                                     case 1:
                                                         <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
-                                                            <i class="fa fa-arrow-right"></i> Submit
+                                                            Submit
                                                         </button>
                                                         <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
                                                             <i class="fa fa-trash"></i> Delete
@@ -295,13 +294,13 @@
                                                 {
                                                     case 0:
                                                         <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
-                                                            <i class="fa fa-arrow-right"></i> Resubmit
+                                                            Resubmit
                                                         </button>
                                                         break;
 
                                                     case 1:
                                                         <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
-                                                            <i class="fa fa-arrow-right"></i> Submit
+                                                            Submit
                                                         </button>
                                                         <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
                                                             <i class="fa fa-trash"></i> Delete
