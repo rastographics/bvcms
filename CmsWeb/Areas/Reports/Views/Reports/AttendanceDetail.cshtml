@@ -3,35 +3,38 @@
 @model CmsWeb.Areas.Reports.Models.AttendanceDetailModel
 
 @{
-  ViewBag.Title = "AttendanceDetail";
-  Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Attendance Detail";
+    ViewBag.ReportPageHeader = "Attendance Detail";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-
-<h2>AttendanceDetail</h2>
-
-<table class="@ViewExtensions2.GridClass">
-  <thead>
-    <tr>
-      <th class="left">OrgName</th>
-      <th class="left">Leader</th>
-      <th class="left">Date</th>
-      <th class="right">Present</th>
-      <th class="right">Guests</th>
-      <th class="right">OutTowners</th>
-    </tr>
-  </thead>
-  <tbody>
-    @foreach (var m in Model.FetchMeetings())
-    {
-      <tr>
-        <td>@m.OrgName</td>
-        <td>@m.Leader</td>
-        <td>@(m.DateTime == DateTime.MinValue ? "" : @m.DateTime.FormatDateTm())</td>
-        <td class="right">@m.Present.ToString("N0")</td>
-        <td class="right">@m.Visitors.ToString("N0")</td>
-        <td class="right">@m.OutTowners.ToString("N0")</td>
-      </tr>
-    }
-  </tbody>
-</table>
-
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table id="Attendances" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Organization Name</th>
+                        <th>Leader</th>
+                        <th>Date</th>
+                        <th class="text-right">Present</th>
+                        <th class="text-right">Guests</th>
+                        <th class="text-right">Out of Towners</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var m in Model.FetchMeetings())
+                    {
+                        <tr class="@(m.OrgName =="Total" ? "totals-row" : "")">
+                            <td>@m.OrgName</td>
+                            <td>@m.Leader</td>
+                            <td>@(m.DateTime == DateTime.MinValue ? "" : @m.DateTime.FormatDateTm())</td>
+                            <td class="text-right">@m.Present.ToString("N0")</td>
+                            <td class="text-right">@m.Visitors.ToString("N0")</td>
+                            <td class="text-right">@m.OutTowners.ToString("N0")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
