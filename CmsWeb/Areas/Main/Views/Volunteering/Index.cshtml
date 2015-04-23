@@ -35,11 +35,6 @@
         }
     }
 
-    var lastBackgroundCheck = Model.Volunteer.ProcessedDate != null ? Model.Volunteer.ProcessedDate.Value.ToString("d") : "";
-    var statusCode = Model.Volunteer.VolApplicationStatus == null ? "Unknown" : Model.Volunteer.VolApplicationStatus.Description;
-    var lastMvrCheck = Model.Volunteer.MVRProcessedDate != null ? Model.Volunteer.MVRProcessedDate.Value.ToString("d") : "";
-    var mvrStatusCode = Model.Volunteer.MVRStatusId == null ? "Unknown" : Model.Volunteer.StatusMvr.Description;
-
     var areBackgroundChecksEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
 
     var shouldShowBackgroundChecks = areBackgroundChecksEnabled && User.IsInRole("BackgroundCheck");
@@ -77,77 +72,21 @@
     <div class="col-md-9" id="volunteer">
         <ul class="nav nav-tabs" id="volunteer-tabs">
             <li class="active"><a href="#applicationInformation" aria-controls="applicationInformation" data-toggle="tab">Volunteer Application Information</a></li>
-            <li><a href="#backgroundChecks" aria-controls="backgroundChecks" data-toggle="tab">Volunteer Background Checks</a></li>
-            <li><a href="#creditChecks" aria-controls="creditChecks" data-toggle="tab">Volunteer Credit Checks</a></li>
+            @if (shouldShowBackgroundChecks)
+            {
+                <li><a href="#backgroundChecks" aria-controls="backgroundChecks" data-toggle="tab">Volunteer Background Checks</a></li>
+            }
+            @if (shouldShowCreditChecks)
+            {
+                <li><a href="#creditChecks" aria-controls="creditChecks" data-toggle="tab">Volunteer Credit Checks</a></li>
+            }
             <li><a href="#documents" aria-controls="documents" data-toggle="tab">Volunteer Documents</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade in active" id="applicationInformation">
                 <div class="well">
-                    <form action="/Volunteering/Edit/@Model.Volunteer.PeopleId">
-                        <div class="row hidden-xs">
-                            <div class="col-sm-12">
-                                <div class="pull-right">
-                                    <button type="submit" class="btn btn-default">
-                                        <i class="fa fa-pencil"></i> Edit
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-lg-4">
-                                Approvals
-                                @foreach (var ck in Model.ApprovalList)
-                                {
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled" />
-                                            @ck.Description<br />
-                                        </label>
-                                    </div>
-                                }
-                            </div>
-                            <div class="col-md-6 col-lg-8">
-                                <dl>
-                                    <dt>Comments</dt>
-                                    <dd style="height: 75px;">@Model.Volunteer.Comments</dd>
-                                </dl>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 col-lg-3">
-                                <dl>
-                                    <dt>Last Background Check</dt>
-                                    <dd>@lastBackgroundCheck</dd>
-                                </dl>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <dl>
-                                    <dt>Status Code</dt>
-                                    <dd>@statusCode</dd>
-                                </dl>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <dl>
-                                    <dt>Last MVR Check</dt>
-                                    <dd>@lastMvrCheck</dd>
-                                </dl>
-                            </div>
-                            <div class="col-md-6 col-lg-3">
-                                <dl>
-                                    <dt>MVR Status Code</dt>
-                                    <dd>@mvrStatusCode</dd>
-                                </dl>
-                            </div>
-                        </div>
-                        <div class="visible-xs-block">
-                            <button type="submit" class="btn btn-block btn-default">
-                                <i class="fa fa-pencil"></i> Edit
-                            </button>
-                        </div>
-                    </form>
+                    @Html.Partial("Display", Model)
                 </div>
-
             </div>
             @if (shouldShowBackgroundChecks)
             {
@@ -230,13 +169,13 @@
                                                 @switch (check.StatusID)
                                                 {
                                                     case 0:
-                                                        <button class="showSubmitDialog btn btn-sm" data-cid="@check.Id">
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
                                                             <i class="fa fa-arrow-right"></i> Resubmit
                                                         </button>
                                                         break;
 
                                                     case 1:
-                                                        <button class="showSubmitDialog btn btn-sm" data-cid="@check.Id">
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
                                                             <i class="fa fa-arrow-right"></i> Submit
                                                         </button>
                                                         <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
@@ -245,7 +184,7 @@
                                                         break;
 
                                                     case 2:
-                                                        <button class="btn btn-default" disabled="disabled">Waiting</button>
+                                                        <button class="btn btn-default btn-sm" disabled="disabled">Waiting</button>
                                                         break;
 
                                                     case 3:
@@ -257,7 +196,7 @@
                                                         }
                                                         else
                                                         {
-                                                            <button class="btn btn-success" disabled="disabled">
+                                                            <button class="btn btn-success btn-sm" disabled="disabled">
                                                                 <i class="fa fa-check"></i> Complete
                                                             </button>
                                                         }
@@ -356,13 +295,13 @@
                                                 @switch (check.StatusID)
                                                 {
                                                     case 0:
-                                                        <button class="showSubmitDialog btn btn-sm" data-cid="@check.Id">
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
                                                             <i class="fa fa-arrow-right"></i> Resubmit
                                                         </button>
                                                         break;
 
                                                     case 1:
-                                                        <button class="showSubmitDialog btn btn-sm" data-cid="@check.Id">
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
                                                             <i class="fa fa-arrow-right"></i> Submit
                                                         </button>
                                                         <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
@@ -371,7 +310,7 @@
                                                         break;
 
                                                     case 2:
-                                                        <button class="btn btn-default" disabled="disabled">Waiting</button>
+                                                        <button class="btn btn-default btn-sm" disabled="disabled">Waiting</button>
                                                         break;
 
                                                     case 3:
@@ -383,7 +322,7 @@
                                                         }
                                                         else
                                                         {
-                                                            <button class="btn btn-success" disabled="disabled">
+                                                            <button class="btn btn-success btn-sm" disabled="disabled">
                                                                 <i class="fa fa-check"></i> Complete
                                                             </button>
                                                         }

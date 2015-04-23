@@ -46,7 +46,7 @@
     $('a.editable').editable({
         mode: 'inline',
         type: 'text',
-        url: '/Volunteering/Edit/'
+        url: '/Volunteering/EditForm/'
     });
 
     $('#closeSubmitDialog').on('click', function (ev) {

@@ -20,6 +20,14 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(vol);
         }
 
+        [HttpPost]
+        public ActionResult Display(int id)
+        {
+            var vol = new VolunteerModel(id);
+            return View(vol);
+        }
+
+        [HttpPost]
         public ActionResult Edit(int id)
         {
             var vol = new VolunteerModel(id);
@@ -31,7 +39,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var m = new VolunteerModel(id);
             m.Update(processDate, statusId, comments, approvals, mvrDate, mvrStatusId);
-            return Redirect("/Volunteering/" + id);
+            return View("Display", m);
         }
 
         [HttpPost]
@@ -114,7 +122,6 @@ namespace CmsWeb.Areas.Main.Controllers
 
             return Redirect("/Volunteering/" + peopleId);
         }
-
 
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
@@ -246,7 +253,7 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-        public ContentResult Edit(int pk, string value)
+        public ContentResult EditForm(int pk, string value)
         {
             var f = DbUtil.Db.VolunteerForms.Single(m => m.Id == pk);
             f.Name = value.Truncate(100);
