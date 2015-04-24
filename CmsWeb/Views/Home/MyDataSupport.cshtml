@@ -1,62 +1,86 @@
 ﻿@{
     ViewBag.Title = "Support";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = "Get Help";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head
-{
-    <style>
-        #needhelp td {
-            padding: 5px;
-        }
+<div class="row">
+    <div class="col-lg-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div id="success" class="alert alert-success">
+                    <strong>Success!</strong> Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.
+                </div>
+                <div id="supportForm">
+                    <form id="requestform">
+                        <div class="form-group">
+                            <textarea name="body" id="body" class="form-control"></textarea>
+                        </div>
+                        <p>
+                            <input id="sendSupport" type="button" class="btn btn-primary btn-lg" value="Submit Request">
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    Hosting & Support @(Util.IsHosted ? "Provided by" : "Available at")
+                </h4>
+            </div>
+            <div class="panel-body text-center">
+                <a href="http://touchpointsoftware.com" target="_blank">
+                    <img src="/Content/images/tps_full_logo.png" width="225" /><br />
+                    http://touchpointsoftware.com
+                </a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    Built with the Open Source Project
+                </h4>
+            </div>
+            <div class="panel-body text-center">
+                <a href="https://github.com/bvcms/bvcms" target="_blank">
+                    <img src="/Content/images/bvcms150.png" /><br />
+                    https://github.com/bvcms/bvcms
+                </a>
+            </div>
+        </div>
 
-        #needhelp b {
-            font-size: 120%;
-        }
-
-        #success {
-            background-color: lightcoral !important;
-        }
-
-            #success td {
-                color: white;
-                font-size: 130%;
-            }
-    </style>
-}
+    </div>
+</div>
 @section scripts
 {
     @ViewExtensions2.CKEditor()
-    @Fingerprint.Script("/Scripts/js/MyDataSupport.js")
+    <script type="text/javascript">
+        $(function () {
+            $("#body").val("");
+            $("#success").hide();
+            CKEDITOR.replace('body', {
+                height: 200,
+                fullPage: false,
+                allowedContent: true,
+                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+            });
+
+
+            $('body').on('click', '#sendSupport', function (e) {
+                $.post("/Support/MyDataSendRequest", {
+                    body: CKEDITOR.instances["body"].getData()
+                }, function (data) {
+                    if (data == "OK") {
+                        $("#success").show();
+                        $("#supportForm").hide();
+                    }
+                    else {
+                        swal("Error!", "There was an error submitting your support request, please try again.", "error");
+                    }
+                });
+            });
+        });
+    </script>
 }
-<h2>Get Help</h2>
-<form id="requestform">
-    <table id="supportForm" class="center" style="width:700px">
-        <tr>
-            <td>
-                <textarea name="body" id="body"></textarea>
-                <input id="sendSupport" type="button" class="bt blue" value="Submit Request">
-            </td>
-        </tr>
-    </table>
-</form>
-<table id="about" class="roundbox center">
-    <tr>
-        <td class="center">
-            <h2>
-                @if (Util.IsHosted)
-                {
-                    <text>Open Source Software,<br />Hosting and Support Provided By</text>
-                }
-                else
-                {
-                    <text>Open Source Software Provided By</text>
-                }
-            </h2>
-            <br /><br />
-            <span class="center"><a href="http://www.touchpointsoftware.com"><img src="/Content/images/bvcms150.png" /></a></span>
-        </td>
-    </tr>
-</table>
-<table id="success" class="roundbox center" width="500">
-    <tr><td>Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.</td></tr>
-</table>
