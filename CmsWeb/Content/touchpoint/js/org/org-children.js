@@ -18,7 +18,7 @@
         $.loadTable();
     });
 
-    $("#groupsform").delegate("#memtype", "change", $.loadTable);
+    $('body').on('change', '#memtype', $.loadTable);
 
     $("#namesearch").keypress(function (ev) {
         if (ev.keyCode == '13') {
