@@ -43,14 +43,14 @@
                             @if (Model.IsAnOwner)
                             {
                                 <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
                                 <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
                             }
                             @if (Model.IsOwner)
                             {
                                 <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
-                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
                             }
                         </ul>
                     </div>
@@ -168,14 +168,14 @@
                             @if (Model.IsAnOwner)
                             {
                                 <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskabout/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-user-plus fa-fw"></i>&nbsp;&nbsp;Change Regarding</a></li>
                                 <li><a href="/Task/Edit/@Model.Id"><i class="fa fa-pencil fa-fw"></i>&nbsp;&nbsp;Edit Task</a></li>
                             }
                             @if (Model.IsOwner)
                             {
                                 <li class="divider"></li>
-                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
-                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskowner/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-share-square-o fa-fw"></i>&nbsp;&nbsp;Transfer Ownership</a></li>
+                                <li><a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id?displaySkipSearch=false" class="searchadd"><i class="fa fa-users fa-fw"></i>&nbsp;&nbsp;Delegate Task</a></li>
                             }
                         </ul>
                     </div>
