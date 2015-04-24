@@ -3019,7 +3019,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Finance\Views\QuickBooks\Index.cshtml" />
-    <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults.cshtml" />
     <Content Include="App_Code\Helper.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults2.cshtml" />
