@@ -3,30 +3,27 @@ RETURNS TABLE
 AS
 RETURN 
 (
-	SELECT 
-		PeopleId, 
-		Name, 
-		tt.Amount, 
-		CASE WHEN CreditGiverId = PeopleId THEN 1 ELSE 0 END CreditedGiver  
-	FROM
+	SELECT
+		p.FamilyId,
+		tt.PeopleId, 
+		p.Name2 Name,
+		tt.Amount
+
+	FROM 
 	(
-		SELECT 
+		SELECT
 			CreditGiverId PeopleId, 
-			HeadName Name, 
-			Amount, 
-			CreditGiverId
-		FROM dbo.GetTotalContributionsDonor2(@startdt, @enddt, 0, 0, 1) 
+			Amount
+		FROM dbo.GetTotalContributionsDonor2(@startdt, @enddt, 0, 0, 1)
 
 		UNION
-
-		SELECT 
-			SpouseId PeopleId, 
-			SpouseName Name, 
-			Amount, 
-			CreditGiverId
-		FROM dbo.GetTotalContributionsDonor2('1/1/14', '12/31/14', 0, 0, 1) 
-		WHERE SpouseId IS NOT NULL AND SpouseId <> CreditGiverId
+		SELECT
+			CreditGiverId2 PeopleId, 
+			Amount
+		FROM dbo.GetTotalContributionsDonor2(@startdt, @enddt, 0, 0, 1)
+		WHERE CreditGiverId2 IS NOT NULL
 	) tt
+	JOIN dbo.People p ON p.PeopleId = tt.PeopleId
 )
 
 
