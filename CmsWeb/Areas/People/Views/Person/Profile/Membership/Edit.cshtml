@@ -15,8 +15,14 @@
     <h3>Member Profile</h3>
     <div class="row">
         <div class="col-lg-8">
-            @FormAction()
-            <h4>Church Management</h4>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Church Membership</h4>
+                </div>
+                <div class="col-sm-6">
+                    @FormAction()
+                </div>
+            </div>
             <div class="well">
                 <div class="row">
                     <div class="col-md-4 col-lg-4">
@@ -138,13 +144,9 @@
     }
     else
     {
-        <div class="row hidden-xs">
-            <div class="col-sm-12">
-                <div class="pull-right">
-                    <a href="/Person2/Membership/@Model.PeopleId" class="edit-basic btn btn-default ajax">Cancel</a>
-                    <a href="/Person2/MembershipUpdate" class="edit-basic btn btn-primary ajax validate">Save</a>
-                </div>
-            </div>
+        <div class="pull-right hidden-xs">
+            <a href="/Person2/Membership/@Model.PeopleId" class="edit-basic btn btn-default ajax">Cancel</a>
+            <a href="/Person2/MembershipUpdate" class="edit-basic btn btn-primary ajax validate">Save</a>
         </div>
     }
 }

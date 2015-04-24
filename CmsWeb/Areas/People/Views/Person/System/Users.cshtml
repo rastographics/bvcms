@@ -12,8 +12,14 @@
     }
 }
 <form class="ajax" method="post">
-    @FormAction()
-    <h4>Manage Users</h4>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Manage Users</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -63,12 +69,8 @@
         }
         else
         {
-            <div class="row hidden-xs">
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <a class="ajax btn btn-success" href="/Person2/UserEdit"><i class="fa fa-plus-circle"></i> Add User</a>
-                    </div>
-                </div>
+            <div class="pull-right hidden-xs">
+                <a class="ajax btn btn-success" href="/Person2/UserEdit"><i class="fa fa-plus-circle"></i> Add User</a>
             </div>
         }
     }

@@ -1,7 +1,13 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
-@FormAction()
-<h4>Volunteer Approvals</h4>
+<div class="row">
+    <div class="col-sm-6">
+        <h4>Volunteer Approvals</h4>
+    </div>
+    <div class="col-sm-6">
+        @FormAction()
+    </div>
+</div>
 <div class="table-responsive">
     <table class="table table-striped">
         <tr>
@@ -34,12 +40,8 @@
         }
         else
         {
-            <div class="row hidden-xs">
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <a href="/Volunteering/@Model.Volunteer.PeopleId" class="btn btn-default">Manage</a>
-                    </div>
-                </div>
+            <div class="pull-right hidden-xs">
+                <a href="/Volunteering/@Model.Volunteer.PeopleId" class="btn btn-default">Manage</a>
             </div>
         }
     }

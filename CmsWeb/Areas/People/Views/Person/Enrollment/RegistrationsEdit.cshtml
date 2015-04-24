@@ -2,8 +2,14 @@
 @model CmsWeb.Areas.People.Models.RegistrationsModel
 <form class="ajax" method="post">
     <h3>Registration History</h3>
-    @FormActions()
-    <h4>General</h4>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>General</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormActions()
+        </div>
+    </div>
     <div class="well">
         <div class="row">
             <div class="col-md-5 col-lg-5">
@@ -86,7 +92,7 @@
     <br />
     @FormActions()
     @FormActions(true)
-    <br/>
+    <br/><br/>
     @Html.HiddenFor2(m => m.PeopleId)
 </form>
 @helper FormActions(bool xs = false)
@@ -102,13 +108,9 @@
         }
         else
         {
-            <div class="row hidden-xs">
-                <div class="col-sm-12">
-                    <div class="pull-right">
-                        <a href="/Person2/Registrations/@Model.Person.PeopleId" class="btn btn-default ajax">Cancel</a>
-                        <a href="/Person2/RegistrationsUpdate" class="btn btn-primary ajax">Save</a>
-                    </div>
-                </div>
+            <div class="pull-right hidden-xs">
+                <a href="/Person2/Registrations/@Model.Person.PeopleId" class="btn btn-default ajax">Cancel</a>
+                <a href="/Person2/RegistrationsUpdate" class="btn btn-primary ajax">Save</a>
             </div>
         }
     }
