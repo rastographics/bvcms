@@ -2288,7 +2288,6 @@
     <Content Include="Views\ExtraValue\NewAdHoc.cshtml" />
     <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
     <Content Include="Views\Shared\SiteLayout2c.cshtml" />
-    <Content Include="Views\Home\TestTypeahead.cshtml" />
     <Content Include="Views\Shared\CustomHeader.cshtml" />
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
     <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
@@ -2997,12 +2996,6 @@
     <Content Include="Views\Shared\Pager.cshtml">
     </Content>
     <Content Include="Views\Shared\Pager2.cshtml">
-    </Content>
-    <Content Include="Views\Home\About.cshtml">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="Views\Home\BatchTag.cshtml">
-      <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Home\ShowError.cshtml">
       <SubType>Code</SubType>
