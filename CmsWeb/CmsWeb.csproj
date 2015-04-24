@@ -833,6 +833,7 @@
     <Content Include="Content\touchpoint\js\org\org-members.js" />
     <Content Include="Content\touchpoint\js\org\organization.js" />
     <Content Include="Content\touchpoint\js\org\org-member-dialog.js" />
+    <Content Include="Content\touchpoint\js\org\org-children.js" />
     <Content Include="Content\touchpoint\js\org\promotion.js" />
     <Content Include="Content\touchpoint\js\org\reg-setting.js" />
     <Content Include="Content\touchpoint\js\people\contact.js" />
