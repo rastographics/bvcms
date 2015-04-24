@@ -3,10 +3,10 @@
 <div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label" })
     <div class="controls @ViewBag.AddClass">
+        <a href="#" class="editor btn btn-default btn-xs" tb="@ViewData.TemplateInfo.HtmlFieldPrefix"><span class="fa fa-pencil"></span> Edit</a>
         <div id="@(ViewData.TemplateInfo.HtmlFieldPrefix)_ro" class="display block border">
             @Html.Raw(Model)
         </div>
-        <a href="#" class="editor btn btn-default btn-xs" tb="@ViewData.TemplateInfo.HtmlFieldPrefix"><span class="fa fa-pencil"></span> Edit</a>
         @Html.TextAreaFor(m => m, new { @class = "html form-control" })
         @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
         {
