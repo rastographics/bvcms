@@ -367,7 +367,7 @@
                 return false;
             });
         });
-        return false;
+        return true;
     });
 
     if (!$.InitFunctions)
