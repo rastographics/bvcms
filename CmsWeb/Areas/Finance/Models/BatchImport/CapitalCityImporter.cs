@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using CmsData;
 using LumenWorks.Framework.IO.Csv;
@@ -19,6 +20,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             BundleHeader bundleHeader = null;
             var fid = fundid ?? BatchImportContributions.FirstFundId();
 
+            var details = new List<BundleDetail>();
+            var bundleCount = 0;
+
             while (csv.ReadNextRecord())
             {
                 var batchDate = csv[0].ToDate();
@@ -34,8 +38,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 if (bundleHeader == null)
                     bundleHeader = BatchImportContributions.GetBundleHeader(batchDate.Value, DateTime.Now);
 
-                var bd = BatchImportContributions.AddContributionDetail(date, fid, amount, checkNumber, routingNumber, accountNumber);
+                details.Add(BatchImportContributions.AddContributionDetail(date, fid, amount, checkNumber, routingNumber, accountNumber));
+            }
 
+            details.Reverse();
+            foreach (var bd in details)
+            {
                 bundleHeader.BundleDetails.Add(bd);
             }
 

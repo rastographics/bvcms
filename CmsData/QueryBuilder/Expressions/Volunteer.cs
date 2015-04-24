@@ -53,6 +53,25 @@ namespace CmsData
             var right = Expression.Constant(months, typeof(int?));
             return Compare(parm, left, op, right);
         }
+        internal Expression MVRStatusCode()
+        {
+            Expression<Func<Person, bool>> pred = p =>
+                p.Volunteers.Any(v => CodeIntIds.Contains(v.MVRStatusId ?? 0));
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression MVRProcessedDateMonthsAgo()
+        {
+            var dt = DateTime.Parse("1/1/1900");
+            var months = TextValue.ToInt();
+            Expression<Func<Person, int?>> pred = p =>
+                SqlMethods.DateDiffMonth(p.Volunteers.Max(v => v.MVRProcessedDate) ?? dt, Util.Now);
+            Expression left = Expression.Invoke(pred, parm);
+            var right = Expression.Constant(months, typeof(int?));
+            return Compare(parm, left, op, right);
+        }
         internal Expression BackgroundCheckStatus()
         {
             var labels = Tags; 

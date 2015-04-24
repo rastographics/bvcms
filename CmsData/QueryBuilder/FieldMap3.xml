@@ -417,9 +417,15 @@
     <VolAppStatusCode Title="Volunteer App Status Code" Type="Code" DataSource="VolApplicationStatusCodes" DataValueField="IdCode">
       Select Volunteer Application Status from the list.
     </VolAppStatusCode>
-    <VolunteerProcessedDateMonthsAgo Title="Volunteer Approved months ago" Type="NullInteger">
-      Enter the number of months to look back for approval.
+    <VolunteerProcessedDateMonthsAgo Title="Volunteer Processed months ago" Type="NullInteger">
+      Enter the number of months to look back for process date.
     </VolunteerProcessedDateMonthsAgo>
+    <MVRProcessedDateMonthsAgo Title="MVR Processed months ago" Type="NullInteger">
+      Enter the number of months to look back for process date.
+    </MVRProcessedDateMonthsAgo>
+    <MVRStatusCode Title="MVR Status Code" Type="Code" DataSource="VolApplicationStatusCodes" DataValueField="IdCode">
+      Select Volunteer Application Status from the list.
+    </MVRStatusCode>
     <PmmBackgroundCheckStatus Title="PMM Background Check" Type="CodeStr" DisplayAs="PmmBackgroundCheckStatus({0}, {1})" QuartersLabel="Username or PeopleId" Params="Quarters,PmmLabels" DataValueField="IdCode" DataSource="BackgroundStatuses">
       Select the Protect My Ministry status from the list, select the Label from the list, if you use Labels and enter the username or People ID number of the person making the background check.
     </PmmBackgroundCheckStatus>
@@ -513,6 +519,10 @@
     <RecentContributionAmount Title="Recent Contribution Amount" Type="Number" DisplayAs="RecentContributionAmount({0},{1})" QuartersLabel="Fund Id (or null for all)" Params="Days,Quarters">
       Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentContributionAmount>
+    <RecentContributionAmountBothJoint Title="Recent Contribution Amount With Both Joint" Type="Number" DisplayAs="RecentContributionAmountBothJoint({0})" Params="Days">
+      Enter a number and select Comparison for the Contribution Amount, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
+      This will include both Husband and Wife in results if they give jointly.
+    </RecentContributionAmountBothJoint>
     <RecentNonTaxDedCount Title="Recent NonTaxDed Count" Type="Integer" QuartersLabel="Fund Id (or null for all)" DisplayAs="RecentNonTaxDedCount({0},{1})" Params="Days,Quarters">
       Enter a number and select Comparison for the number of NonTaxDeds, enter the number of days to look back, enter a Fund ID (or leave blank for all funds).
     </RecentNonTaxDedCount>

@@ -22,7 +22,15 @@ SELECT
 		THEN sp.PeopleId 
 		ELSE c.PeopleId 
 	END AS CreditGiverId,
-	
+
+    CASE WHEN ISNULL(sp.ContributionOptionsId, CASE WHEN sp.MaritalStatusId = 20 THEN 2 ELSE 1 END) = 1
+			OR ISNULL(p.ContributionOptionsId, CASE WHEN p.MaritalStatusId = 20 THEN 2 ELSE 1 END) = 1
+		THEN NULL
+		WHEN fa.HeadOfHouseholdId = sp.PeopleId
+		THEN c.PeopleId
+		ELSE sp.PeopleId
+	END AS CreditGiverId2,
+
     CASE WHEN fa.HeadOfHouseholdId = sp.PeopleId
 		THEN p.PeopleId 
 		ELSE sp.PeopleId 
