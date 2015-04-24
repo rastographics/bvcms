@@ -151,7 +151,7 @@ namespace CmsWeb.Areas.Org2.Models
         }
         private List<Settings.AgeGroup> ageGroups;
 
-        [Reg, Display(Description = GroupToJoinDescription)]
+        [Reg, Display(Name="Other Org Id to Join", Description = GroupToJoinDescription)]
         public string GroupToJoin { get; set; }
 
         [Reg, Display(Description = AllowOnlyOneDescription)]
