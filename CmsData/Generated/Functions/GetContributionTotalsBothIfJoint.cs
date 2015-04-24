@@ -16,13 +16,13 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
+		private int _FamilyId;
+		
 		private int? _PeopleId;
 		
 		private string _Name;
 		
 		private decimal? _Amount;
-		
-		private int _CreditedGiver;
 		
 		
 		public GetContributionTotalsBothIfJoint()
@@ -30,6 +30,23 @@ namespace CmsData.View
 		}
 
 		
+		
+		[Column(Name="FamilyId", Storage="_FamilyId", DbType="int NOT NULL")]
+		public int FamilyId
+		{
+			get
+			{
+				return this._FamilyId;
+			}
+
+			set
+			{
+				if (this._FamilyId != value)
+					this._FamilyId = value;
+			}
+
+		}
+
 		
 		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
 		public int? PeopleId
@@ -77,23 +94,6 @@ namespace CmsData.View
 			{
 				if (this._Amount != value)
 					this._Amount = value;
-			}
-
-		}
-
-		
-		[Column(Name="CreditedGiver", Storage="_CreditedGiver", DbType="int NOT NULL")]
-		public int CreditedGiver
-		{
-			get
-			{
-				return this._CreditedGiver;
-			}
-
-			set
-			{
-				if (this._CreditedGiver != value)
-					this._CreditedGiver = value;
 			}
 
 		}

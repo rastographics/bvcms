@@ -18,6 +18,8 @@ namespace CmsData.View
 		
 		private int? _CreditGiverId;
 		
+		private int? _CreditGiverId2;
+		
 		private string _HeadName;
 		
 		private string _SpouseName;
@@ -35,6 +37,8 @@ namespace CmsData.View
 		private DateTime? _JoinDate;
 		
 		private int? _SpouseId;
+		
+		private int? _ContributionOptionsId;
 		
 		
 		public GetTotalContributionsDonor2()
@@ -55,6 +59,23 @@ namespace CmsData.View
 			{
 				if (this._CreditGiverId != value)
 					this._CreditGiverId = value;
+			}
+
+		}
+
+		
+		[Column(Name="CreditGiverId2", Storage="_CreditGiverId2", DbType="int")]
+		public int? CreditGiverId2
+		{
+			get
+			{
+				return this._CreditGiverId2;
+			}
+
+			set
+			{
+				if (this._CreditGiverId2 != value)
+					this._CreditGiverId2 = value;
 			}
 
 		}
@@ -208,6 +229,23 @@ namespace CmsData.View
 			{
 				if (this._SpouseId != value)
 					this._SpouseId = value;
+			}
+
+		}
+
+		
+		[Column(Name="ContributionOptionsId", Storage="_ContributionOptionsId", DbType="int")]
+		public int? ContributionOptionsId
+		{
+			get
+			{
+				return this._ContributionOptionsId;
+			}
+
+			set
+			{
+				if (this._ContributionOptionsId != value)
+					this._ContributionOptionsId = value;
 			}
 
 		}

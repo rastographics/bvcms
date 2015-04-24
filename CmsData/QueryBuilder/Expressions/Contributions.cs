@@ -280,29 +280,25 @@ namespace CmsData
             {
                 case CompareType.Greater:
                     q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
-                        group c by c.PeopleId into g
-                        where g.Sum(cc => cc.Amount) > amt
-                        select g.Key ?? 0;
+                        where c.Amount > amt
+                        select c.PeopleId.Value;
                     break;
                 case CompareType.GreaterEqual:
                     q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
-                        group c by c.PeopleId into g
-                        where g.Sum(cc => cc.Amount) >= amt
-                        select g.Key ?? 0;
+                        where c.Amount >= amt
+                        select c.PeopleId.Value;
                     break;
                 case CompareType.Less:
                     q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
                         where c.Amount > 0
-                        group c by c.PeopleId into g
-                        where g.Sum(cc => cc.Amount) <= amt
-                        select g.Key ?? 0;
+                        where c.Amount <= amt
+                        select c.PeopleId.Value;
                     break;
                 case CompareType.LessEqual:
                     q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
                         where c.Amount > 0
-                        group c by c.PeopleId into g
-                        where g.Sum(cc => cc.Amount) <= amt
-                        select g.Key ?? 0;
+                        where c.Amount <= amt
+                        select c.PeopleId.Value;
                     break;
                 case CompareType.Equal:
                     if (amt == 0) // This is a very special case, use different approach
@@ -315,16 +311,14 @@ namespace CmsData
                     }
                     q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
                         where c.Amount > 0
-                        group c by c.PeopleId into g
-                        where g.Sum(cc => cc.Amount) == amt
-                        select g.Key ?? 0;
+                        where c.Amount == amt
+                        select c.PeopleId.Value;
                     break;
                 case CompareType.NotEqual:
                     q = from c in db.GetContributionTotalsBothIfJoint(dt, now)
                         where c.Amount > 0
-                        group c by c.PeopleId into g
-                        where g.Sum(cc => cc.Amount) != amt
-                        select g.Key ?? 0;
+                        where c.Amount != amt
+                        select c.PeopleId.Value;
                     break;
             }
             var tag = db.PopulateTemporaryTag(q);
