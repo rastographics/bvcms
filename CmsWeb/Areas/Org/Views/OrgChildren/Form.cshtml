@@ -2,31 +2,33 @@
 @using CmsWeb
 @model CmsWeb.Areas.Org.Models.OrgChildrenModel
 @Html.Hidden("orgid")
-<div class="roundbox floatleft">
-<h2>Manage Child Organizations</h2>
-<h3>for <a href="@Util2.Org/@Model.org.OrganizationId">@Model.org.OrganizationName</a></h3>
-@if(Model.parentorg != null)
-{
-@:Parent Org: <a href="/OrgChildren/@Model.parentorg.OrganizationId">@Model.parentorg.OrganizationName</a>
-}
-Name: @Html.TextBox("namesearch", Model.namesearch, new { title = "OrganizationId, Location or part of Name (organization, leader, division)" })
-<a id="filter" href="#" class="bt">Refresh</a>
+<div class="well">
+    <label for="namesearch">Name</label>
+    <div class="row">
+        <div class="col-sm-12 form-inline">
+            <div class="input-group col-xs-12 col-sm-6">
+               @Html.TextBox("namesearch", Model.namesearch, new { title = "OrganizationId, Location or part of Name (organization, leader, division)", @class="form-control" })
+            </div>
+            <div class="input-group">
+                <a id="filter" href="#" class="btn btn-primary">Filter</a>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="floatclear"></div>
-<hr />
-<div>
-<table class="@ViewExtensions2.GridClass">
-    <thead>
-	<tr>
-		<th>Select</th>
-		<td>Name</td>
-        <td>Leader</td>
-        <td>Location</td>
-        <td>ParentOrg</td>
-	</tr>
-	</thead>
-	<tbody>
- @Html.Partial("Rows", Model) 
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-striped" id="table-results">
+        <thead>
+            <tr>
+                <th style="width: 10px;"></th>
+                <th>Name</th>
+                <th>Leader</th>
+                <th>Location</th>
+                <th>Parent Org</th>
+            </tr>
+        </thead>
+        <tbody>
+            @Html.Partial("Rows", Model)
+        </tbody>
+    </table>
 </div>
+
