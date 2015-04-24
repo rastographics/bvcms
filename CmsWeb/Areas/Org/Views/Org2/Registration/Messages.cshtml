@@ -5,8 +5,14 @@
   ViewBag.FalseValue = "";
 }
 <form class="ajax">
-    @FormAction()
-    <h4>Basic Setup</h4>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Basic Setup</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
     <div class="well">
         <div class="row">
             <div class="col-md-12">
@@ -89,7 +95,7 @@
     }
     @FormAction()
     @FormAction(true)
-    <br/>
+    <br/><br/>
 </form>
 @helper FormAction(bool xs = false)
 {
@@ -105,16 +111,12 @@
     }
     else
     {
-        <div class="row hidden-xs">
-            <div class="col-sm-12">
-                <div class="pull-right">
-                    <a href="/Org/MessagesHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a> 
-                    @if (User.IsInRole("Edit"))
-                    {
-                        <a href="/Org/MessagesEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
-                    }
-                </div>
-            </div>
+        <div class="pull-right hidden-xs">
+            <a href="/Org/MessagesHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/MessagesEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+            }
         </div>
     }
 }

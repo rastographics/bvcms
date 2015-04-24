@@ -10,8 +10,14 @@
             @Html.ValidationMessage("Form")
         </div>
     }
-    @FormAction()
-    <h4>Basic Setup</h4>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Basic Setup</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
     <div class="well">
         <div class="row">
             <div class="col-md-12">
@@ -94,7 +100,7 @@
     }
     @FormAction()
     @FormAction(true)
-    <br />
+    <br /><br/>
 </form>
 @helper FormAction(bool xs = false)
 {
@@ -107,13 +113,9 @@
     }
     else
     {
-        <div class="row hidden-xs">
-            <div class="col-sm-12">
-                <div class="pull-right">
-                    <a href="/Org/Messages/@Model.Id" class="btn btn-default ajax">Cancel</a>
-                    <a href="/Org/MessagesUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
-                </div>
-            </div>
+        <div class="pull-right hidden-xs">
+            <a href="/Org/Messages/@Model.Id" class="btn btn-default ajax">Cancel</a>
+            <a href="/Org/MessagesUpdate/@Model.Id" class="btn btn-primary ajax">Save</a>
         </div>
     }
 }

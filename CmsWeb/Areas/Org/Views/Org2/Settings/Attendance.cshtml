@@ -5,8 +5,14 @@
   ViewBag.FalseValue = "";
 }
 <form class="ajax" data-init="timepicker">
-    @FormAction()
-    <h4>Schedules</h4>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Schedules</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
     <div class="well">
         @Html.DisplayFor(m => m.Schedules, "Schedules")
     </div>
@@ -72,7 +78,7 @@
     </div>
     @FormAction()
     @FormAction(true)
-    <br />
+    <br /><br/>
 </form>
 @helper FormAction(bool xs = false)
 {
@@ -88,16 +94,12 @@
     }
     else
     {
-        <div class="row hidden-xs">
-            <div class="col-sm-12">
-                <div class="pull-right">
-                    <a href="/Org/AttendanceHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a> 
-                    @if (User.IsInRole("Edit"))
-                    {
-                        <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
-                    }
-                </div>
-            </div>
+        <div class="pull-right hidden-xs">
+            <a href="/Org/AttendanceHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+            }
         </div>
     }
 }
