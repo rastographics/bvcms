@@ -782,7 +782,7 @@ namespace CmsWeb
         }
         public static HtmlString CKEditor()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.4.1/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.4.7/standard/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
         public static HtmlString jQuery()
         {
