@@ -2,9 +2,10 @@
 @model CodeInfo
 @{
     var attributes = ViewData["PlainSelect"] != null ? new { plain = "true", @class = "form-control" } : null;
+    var labelText = ViewData["LabelText"] != null ? ViewData["LabelText"].ToString() : null;
 }
 <div class="form-group">
-    @Html.LabelFor(m => m, new { @class = "control-label" })
+    @(!string.IsNullOrEmpty(labelText) ? Html.LabelFor(m => m, labelText, new {@class = "control-label"}) : Html.LabelFor(m => m, new {@class = "control-label"}))
     <div class="controls code-dropdown">
         @if (attributes != null)
         {

@@ -10,7 +10,7 @@
                 <dt>Schedule Number</dt>
                 <dd>@Model.Id</dd>
             </dl>
-            @Html.EditorFor(m => m.SchedDay)
+            @Html.EditorFor(m => m.SchedDay, new { LabelText = "Day" })
             @Html.EditorFor(m => m.Time, "Time")
             @Html.EditorFor(m => m.AttendCredit)
             <a href="#" class="delete-well btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
