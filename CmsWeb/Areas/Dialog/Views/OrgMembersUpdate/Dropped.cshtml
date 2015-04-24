@@ -9,3 +9,19 @@
 <div class="modal-footer">
     <a data-dismiss="modal" class="btn close btn-success">Close</a>
 </div>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4>@Model.OrgName</h4>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-success">
+                <strong>Success!</strong> Dropped @Model.Count from @Model.Group in @Model.OrgName.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <a data-dismiss="modal" class="btn close btn-default">Close</a>
+        </div>
+    </div>
+</div>

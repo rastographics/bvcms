@@ -286,13 +286,12 @@
     $('body').on('click', 'a.members-dialog', function (ev) {
         var $a = $(this);
         ev.preventDefault();
-        $("<div />").load(this.href, {}, function () {
-            var d = $(this);
-            var f = d.find("form");
-            f.modal("show");
-            $.DatePickersAndChosen();
-            f.on('hidden', function () {
-                d.remove();
+        $("<form class='ajax modal-form' />").load(this.href, {}, function () {
+            var f = $(this);
+            $('#empty-dialog').html(f);
+            $('#empty-dialog').modal("show");
+
+            $('#empty-dialog').on('hidden', function () {
                 f.remove();
                 RebindMemberGrids();
             });
