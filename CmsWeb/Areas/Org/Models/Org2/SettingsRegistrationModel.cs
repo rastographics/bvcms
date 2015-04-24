@@ -160,7 +160,7 @@ namespace CmsWeb.Areas.Org2.Models
         [Reg, Display(Description = AddAsProspectDescription)]
         public bool AddAsProspect { get; set; }
 
-        [Reg, Display(Name = "Allow re-Register", Description = AllowReRegisterDescription)]
+        [Reg, Display(Name = "Allow Re-Register", Description = AllowReRegisterDescription)]
         public bool AllowReRegister { get; set; }
 
         [Reg, Display(Description = AllowSaveProgressDescription)]
