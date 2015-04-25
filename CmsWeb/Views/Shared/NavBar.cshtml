@@ -22,7 +22,7 @@
     }
 
     .logo-sm {
-        margin-left: 25px;
+        margin-left: 15px;
         width: 243px;
         height: 50px;
         background-size: auto @customHeaderImage.Height;
@@ -47,6 +47,19 @@
         background-repeat: no-repeat;
         background-position: left;
         background-image: url(@Url.Content(customHeaderImage.Url));
+    }
+
+    @@media (max-width: 330px) {
+        .logo-lg {
+            display: none !important;
+        }
+        .logo-sm {
+            display: none !important;
+        }
+        .logo-md {
+            margin-left: 15px;
+            display: block !important;
+        }
     }
 </style>
 <nav class="navbar navbar-default navbar-fixed-top hidden-print">
