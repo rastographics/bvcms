@@ -1,80 +1,149 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrgGroupsModel
+@using CmsData
 @using CmsWeb
+@using UtilityExtensions
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "OrgGroups";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Manage Groups";
+    ViewBag.PageHeader = "Manage Groups";
+    ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>".Fmt(Util2.Org, Model.orgid, Model.OrgName);
 }           
 @section head
 {
-<style>
-    td.wide100 * 
-    {
-        width: 98%;
-    }
-
-    #scoreTracker {
-        position:fixed;
-        top:80px;
-        right:225px;
-        width:200px;
-        background-color: #F8F8F8;
-        border: 1px solid #808183;
-        border-radius: 0 0 10px 10px;
-        padding: 1%;
-    }
-</style>
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
 }
+<div class="row">
+    <div class="col-md-9">
+        <ul class="nav nav-tabs" id="org-group-tabs">
+            <li class="active"><a href="#groupMembers" aria-controls="groupMembers" data-toggle="tab" id="group-members-tab"><i class="fa fa-users"></i>&nbsp;&nbsp;Group Members</a></li>
+            <li><a href="#manageGroup" aria-controls="manageGroup" data-toggle="tab"><i class="fa fa-cog"></i>&nbsp;&nbsp;Manage Groups</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="groupMembers">
+                <form id="groupsform" action="/OrgGroups/Update" method="post">
+                    @Html.Partial("Form", Model)
+                </form>
+            </div>
+            <div class="tab-pane fade" id="manageGroup">
+                <form id="groupForm" action="/OrgGroups/DeleteGroups/@Model.orgid" method="post">
+                    @Html.HiddenFor(m => m.orgid)
+                    <input type="hidden" id="groupid" name="groupid" class="delete-group-id" />
+                    @Html.Partial("Management", Model)
+                </form>
+                <div class="modal fade" id="new-group-modal">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <form action="/OrgGroups/MakeNewGroup/@Model.orgid" method="post">
+                                @Html.HiddenFor(m => m.orgid)
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Create New Group</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="GroupName" class="control-label">Group Name</label>
+                                        <input type="text" id="GroupName" name="GroupName" class="form-control new-group-name" />
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                                    <a href="#" class="btn btn-primary" id="submit-new-group">Submit</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="rename-group-modal">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                            <form action="/OrgGroups/RenameGroup/@Model.orgid" method="post">
+                                @Html.HiddenFor(m => m.orgid)
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title">Rename Group</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="GroupName" class="control-label">Group Name</label>
+                                        <input type="text" id="GroupName" name="GroupName" class="form-control rename-group-name" />
+                                        <input type="hidden" id="groupid" name="groupid" class="rename-group-id"/>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                                    <a href="#" class="btn btn-primary" id="submit-rename-group">Submit</a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        @if (Model.isRecreationTeam)
+        {
+            <div class="box box-primary" style="background-color: #fff; display:none;" id="scoreTracker">
+                <div class="box-title">
+                    <h5>Team Score</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <td>Players</td>
+                            <td class="text-right"><span id="playerCount">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>Last Score</td>
+                            <td class="text-right"><span id="lastScore">0</span></td>
+                        </tr>
+                        <tr>
+                            <td>Average Score</td>
+                            <td class="text-right"><span id="avgScore">0</span></td>
+                        </tr>
+                        <tr class="totals-row">
+                            <td>Total Score</td>
+                            <td class="text-right"><span id="totalScore">0</span></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="box-content">
+                    <button id="swapPlayers" type="button" class="btn btn-default btn-block" style="margin-top:7px; display:none;"><i class="fa fa-random"></i> Swap Players</button>
+                </div>                
+            </div>
+            <div class="modal fade" id="scoreUploadDialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <form id="scoreUploadForm">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                <h4 class="modal-title">Upload Player Scores</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="form-group">
+                                            <textarea id="scoreUploadData" name="data" cols="80" rows="30" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                                <button type="button" class="btn btn-primary" id="scoreUploadSubmit"><i class="fa fa-cloud-upload"></i> Upload</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Org/OrgGroups.js")
-}
-<form id="groupsform" action="/OrgGroups/Update" method="post">
-@Html.Partial("Form", Model)
-</form>
-@if( Model.isRecreationTeam ) {
-<div id="scoreTracker" style="display:none; text-align:center;">
-    <div>
-        <b>Team Score</b>
-        <hr />
-    </div>
-    <table>
-        <tr>
-            <td width="40%" class="right"><span id="playerCount">0</span></td>
-            <td class="left"> &nbsp; Players</td>
-        </tr>
-        <tr>
-            <td class="right"><span id="lastScore">0</span></td>
-            <td class="left"> &nbsp; Last Score</td>
-        </tr>
-        <tr>
-            <td class="right"><span id="avgScore">0</span></td>
-            <td class="left"> &nbsp; Average Score</td>
-        </tr>
-        <tr>
-            <td class="right"><span id="totalScore">0</span></td>
-            <td class="left"> &nbsp; Total Score</td>
-        </tr>
-    </table>
-    <input id="swapPlayers" type="button" class="bt" style="margin-top:7px; display:none;" value="Swap Players" />
-</div>
-<div id="scoreUploadDialog" style="display:none;">
-    <form id="scoreUploadForm">
-        <input type="hidden" name="orgID" value="@Model.orgid" />
-        <table>
-            <tr>
-                <td colspan="2">
-                    <textarea id="scoreUploadData" name="data" cols="80" rows="30"></textarea><br />
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="button" class="bt" id="scoreUploadSubmit" value="Upload" />
-                </td>
-                <td class="right">
-                    <input type="button" class="bt" id="scoreUploadDismiss" value="Cancel" />
-                </td>
-            </tr>
-        </table>
-    </form>
-</div>
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/js/org/org-groups.js")
 }

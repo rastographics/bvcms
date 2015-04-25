@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.Org.Controllers
             }
             m.groupid = group.Id;
             ViewData["newgid"] = group.Id;
-            return View("Form", m);
+            return Redirect("/OrgGroups/Management/" + m.orgid);
         }
         [HttpPost]
         public ActionResult RenameGroup(OrgGroupsModel m)
@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 group.Name = m.GroupName;
             DbUtil.Db.SubmitChanges();
             m.GroupName = null;
-            return View("Form", m);
+            return Redirect("/OrgGroups/Management/" + m.orgid);
         }
         [HttpPost]
         public ActionResult DeleteGroup(OrgGroupsModel m)
@@ -98,7 +98,7 @@ namespace CmsWeb.Areas.Org.Controllers
                              select v.Value).FirstOrDefault().ToInt();
                 ViewData["groupid"] = m.groupid.ToString();
             }
-            return View("Form", m);
+            return Redirect("/OrgGroups/Management/" + m.orgid);
         }
 
         public ActionResult DeleteGroups(int id, int[] groups)
