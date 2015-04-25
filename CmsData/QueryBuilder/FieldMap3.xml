@@ -148,6 +148,9 @@
     <PrimaryBadAddrFlag Title="Bad Address Flag" Type="Bit" DataValueField="IdCode">
       Select True or False.
     </PrimaryBadAddrFlag>
+    <HasZipPlus4 Title="Has Zip Plus 4" Type="Bit" DataValueField="IdCode">
+      Select True or False.
+    </HasZipPlus4>
   </Address>
   <ContactInfo Title="Contact Info">
     <HomePhone Type="String">

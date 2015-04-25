@@ -88,6 +88,7 @@ namespace CmsData
         HasIncompleteTask,
         HasInvalidEmailAddress,
         HasLowerName,
+        HasZipPlus4,
         HasMyTag,
         HasManagedGiving,
         HasMemberDocs,
