@@ -11,7 +11,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 {
     public partial class DialogController
     {
-        [HttpPost, Route("ForNewMeeting/{orgid:int}")]
+        [HttpGet, Route("ForNewMeeting/{orgid:int}")]
         public ActionResult ForNewMeeting(int orgid)
         {
             var oi = new SettingsAttendanceModel() { Id = orgid };
