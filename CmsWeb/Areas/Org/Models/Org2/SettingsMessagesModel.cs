@@ -101,7 +101,7 @@ namespace CmsWeb.Areas.Org2.Models
         [Reg]
         public string ReminderBody { get; set; }
 
-        [Reg, Display(Description = GiftNotifyIdsDescription)]
+        [Org, Display(Description = GiftNotifyIdsDescription)]
         [DisplayName("Notify Persons for Gift")]
         public string GiftNotifyIds { get; set; }
 
