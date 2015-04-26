@@ -148,7 +148,7 @@ namespace CmsWeb.Areas.People.Models
         {
             var results = new List<ValidationResult>();
 
-            if (Ministry.Value == "0")
+            if (DbUtil.Db.Ministries.Any() && Ministry.Value == "0")
                 results.Add(ModelError("Ministry is required", "MinistryId"));
 
             if (ContactType.Value == "0")

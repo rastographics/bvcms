@@ -112,4 +112,33 @@
         }
     });
 
+    $('.toolbar-custom-reports a[data-action="delete"]').click(function (e) {
+        e.preventDefault();
+
+        var $reportNode = $(this).parent().parent();
+        var reportToDelete = $reportNode.text().trim();
+
+        swal({
+            title: "Are you sure you want to delete this report? (" + reportToDelete + ")",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post('@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports"})', { reportName: reportToDelete }).done(function (data) {
+                if (data === 'success') {
+                    swal({
+                        title: "Deleted!",
+                        type: "success"
+                    },
+                        function () {
+                            $reportNode.remove();
+                        });
+                }
+            });
+        });
+    });
+
 });

@@ -1,6 +1,15 @@
 ﻿@model int?
 <dl>
-    <dt>@Html.DisplayNameFor(m => m)</dt>
+    <dt>
+        @if (ViewBag.label != null)
+        {
+            @ViewBag.label.ToString()
+        }
+        else
+        {
+            @Html.DisplayNameFor(m => m)
+        }
+    </dt>
     <dd>@ViewData.TemplateInfo.FormattedModelValue</dd>
 </dl>
 @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())

@@ -70,6 +70,7 @@ namespace CmsData
                 { QueryType.HasIncompleteTask, HasIncompleteTask },
                 { QueryType.HasInvalidEmailAddress, HasInvalidEmailAddress },
                 { QueryType.HasLowerName, HasLowerName },
+                { QueryType.HasZipPlus4, HasZipPlus4 },
                 { QueryType.HasManagedGiving, HasManagedGiving },
                 { QueryType.HasMemberDocs, HasMemberDocs },
                 { QueryType.HasMyTag, HasMyTag },
