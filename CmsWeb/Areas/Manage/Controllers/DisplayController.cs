@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             string deleteList = String.Join(",", draftID);
             DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id IN(" + deleteList + ")", "");
-            return RedirectToAction("Index", "Display");
+            return Redirect("/Display#tab_savedDrafts");
         }
 
         public ActionResult RedirectEdit(Content cContent)

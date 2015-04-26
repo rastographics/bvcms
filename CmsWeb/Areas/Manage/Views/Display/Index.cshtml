@@ -136,7 +136,7 @@
                         </div>
                     </div>
                 </div>
-                <form id="savedDrafts" action="/Display/ContentDeleteDrafts">
+                <form id="savedDraftsForm" action="/Display/ContentDeleteDrafts">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="table-responsive">
@@ -384,10 +384,11 @@
                     showCancelButton: true,
                     confirmButtonClass: "btn-danger",
                     confirmButtonText: "Yes, delete draft(s)!",
-                    closeOnConfirm: false
+                    closeOnConfirm: true
                 },
                 function () {
-                    $("#savedDrafts").submit();
+                    $.block();
+                    $("#savedDraftsForm").submit();
                 });
             });
 
