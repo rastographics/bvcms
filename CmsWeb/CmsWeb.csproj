@@ -830,6 +830,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
+    <Content Include="Content\touchpoint\js\meeting\meeting.js" />
     <Content Include="Content\touchpoint\js\org\org-members.js" />
     <Content Include="Content\touchpoint\js\org\organization.js" />
     <Content Include="Content\touchpoint\js\org\org-member-dialog.js" />
