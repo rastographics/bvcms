@@ -10,6 +10,13 @@
     </div>
   </div>
   <div class="modal-body">
+    @if (ViewBag.numberadded != null)
+    {
+      <div class="alert alert-success">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        @ViewBag.numberadded
+      </div>
+    }
     <fieldset id="membergroups" class="display">
       <div class="well">
         @{

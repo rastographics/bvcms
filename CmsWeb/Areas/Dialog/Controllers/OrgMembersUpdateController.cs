@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("AddSmallGroup/{sgid:int}")]
         public ActionResult AddSmallGroup(int sgid, OrgMembersUpdate m)
         {
-            m.AddSmallGroup(sgid);
+            ViewBag.numberadded = m.AddSmallGroup(sgid);
             return View("SmallGroups", m);
         }
         [HttpPost, Route("RemoveSmallGroup/{sgid:int}")]
