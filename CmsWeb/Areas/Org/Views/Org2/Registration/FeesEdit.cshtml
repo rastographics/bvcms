@@ -20,38 +20,36 @@
     </div>
     <div class="well">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 @Html.EditorFor(m => m.Fee)
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 @Html.EditorFor(m => m.Deposit)
+                <label class="checkbox-inline control-label" style="margin-top: -15px;">
+                    @Html.CheckBoxFor(m => m.IncludeOtherFeesWithDeposit) Include other fees with deposit
+                </label>
             </div>
-            <div class="col-md-4">
-                @Html.EditorFor(m => m.IncludeOtherFeesWithDeposit)
-            </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
                 @Html.EditorFor(m => m.MaximumFee)
-            </div>
-            <div class="col-md-4">
-                @Html.EditorFor(m => m.ApplyMaxToOtherFees)
+                <label class="checkbox-inline control-label" style="margin-top: -15px;">
+                    @Html.CheckBoxFor(m => m.ApplyMaxToOtherFees) Apply max to other fees
+                </label>
             </div>
             <div class="col-md-3">
                 @Html.EditorFor(m => m.ExtraFee)
+                <label class="checkbox-inline control-label" style="margin-top: -15px;">
+                    @Html.CheckBoxFor(m => m.OtherFeesAddedToOrgFee) Other fees added to org fee
+                </label>
             </div>
-            <div class="col-md-3">
+            <div class="clearfix"></div>
+            <div class="col-md-4">
                 @Html.EditorFor(m => m.LastDayBeforeExtra)
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 @Html.EditorFor(m => m.ExtraValueFeeName)
             </div>
             <div class="col-sm-4 col-md-4">
                 @Html.EditorFor(m => m.AccountingCode)
-            </div>
-            <div class="col-sm-8 col-md-8">
-                <br class="hidden-xs" />
-                <label class="checkbox-inline control-label">
-                    @Html.CheckBoxFor(m => m.OtherFeesAddedToOrgFee) Other fees added to org fee
-                </label>
             </div>
         </div>
     </div>
