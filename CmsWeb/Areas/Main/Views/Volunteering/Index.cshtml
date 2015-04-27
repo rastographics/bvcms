@@ -285,7 +285,7 @@
                                                         break;
 
                                                     case 3:
-                                                    <a href="@check.ReportLink" target="_blank">Click here for the report</a>
+                                                        <a href="@check.ReportLink" target="_blank">Click here for the report</a>
                                                         break;
                                                 }
                                             </td>
@@ -383,7 +383,12 @@
     </div>
 </div>
 
-<div id="dialogHolder"></div>
+<div class="modal fade" id="dialogHolder" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/js/people/volunteering.js")

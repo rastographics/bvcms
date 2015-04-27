@@ -27,7 +27,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 		public static readonly string[] CREDIT_TYPES_LABELS = { "Credit History" };
 		public static readonly string[] CREDIT_TYPES = { "Credit" };
 
-		public static void create(int iPeopleID, string sServiceCode, int iType, int iLabel)
+	    public static void Create(int iPeopleID, string sServiceCode, int iType, int iLabel)
 		{
 			var bcNew = new BackgroundCheck();
 
@@ -44,7 +44,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 			DbUtil.Db.SubmitChanges();
 		}
 
-		public static bool submit(int iRequestID, string sSSN, string sDLN, string sResponseURL, int iStateID, string sUser, string sPassword, string sPlusCounty, string sPlusState)
+	    public static bool Submit(int iRequestID, string sSSN, string sDLN, string sResponseURL, int iStateID, string sUser, string sPassword, string sPlusCounty, string sPlusState)
 		{
 			if (sUser == null || sPassword == null) return false;
 
@@ -92,7 +92,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 		    using (var msRequest = new MemoryStream())
             using (var xwWriter = XmlWriter.Create(msRequest, xws))
 		    {
-		        xmlCreate(xwWriter, sb);
+		        XmlCreate(xwWriter, sb);
 		        sXML = Encoding.UTF8.GetString(msRequest.ToArray()).Substring(1);
 		    }
 
@@ -107,7 +107,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 		        response = Encoding.UTF8.GetString(wc.UploadValues(PMM_URL, "POST", fields));
 		    }
 
-		    var rbResponse = processResponse(response);
+		    var rbResponse = ProcessResponse(response);
 
 			if (rbResponse.bHasErrors)
 			{
@@ -135,7 +135,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 			return true;
 		}
 
-	    private static void xmlCreate(XmlWriter xwWriter, SubmitBundle sb)
+	    private static void XmlCreate(XmlWriter xwWriter, SubmitBundle sb)
 		{
 			// Get Person Information
 			var pPerson = (from e in DbUtil.Db.People
@@ -143,9 +143,9 @@ namespace CmsData.Classes.ProtectMyMinistry
 								select e).FirstOrDefault();
 
 			// Compile Birthday per requested format
-			int iBirthMonth = pPerson.BirthMonth ?? 0;
-			int iBirthDay = pPerson.BirthDay ?? 0;
-			int iBirthYear = pPerson.BirthYear ?? 0;
+			var iBirthMonth = pPerson.BirthMonth ?? 0;
+			var iBirthDay = pPerson.BirthDay ?? 0;
+			var iBirthYear = pPerson.BirthYear ?? 0;
 			var sDOB = iBirthMonth.ToString("D2") + "/" + iBirthDay.ToString("D2") + "/" + iBirthYear.ToString("D4");
 
 			// Create OrderId
@@ -276,7 +276,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 			xwWriter.Flush();
 		}
 
-	    private static ResponseBundle processResponse(string sResponse)
+	    private static ResponseBundle ProcessResponse(string sResponse)
 		{
 			var rbReturn = new ResponseBundle();
 
@@ -339,13 +339,13 @@ namespace CmsData.Classes.ProtectMyMinistry
 			return "";
 		}
 
-		public static List<CheckType> getCheckTypes(int category)
+		public static List<CheckType> GetCheckTypes(int category)
 		{
 			var types = new List<CheckType>();
 
 			if (category == TYPE_BACKGROUND)
 			{
-				for (int iX = 0; iX < BACKGROUND_TYPES.Length; iX++)
+				for (var iX = 0; iX < BACKGROUND_TYPES.Length; iX++)
 				{
 					var item = new CheckType { code = BACKGROUND_TYPES[iX], label = BACKGROUND_TYPES_LABELS[iX] };
 					types.Add(item);
@@ -354,7 +354,7 @@ namespace CmsData.Classes.ProtectMyMinistry
 
 			if (category == TYPE_CREDIT)
 			{
-				for (int iX = 0; iX < CREDIT_TYPES.Length; iX++)
+				for (var iX = 0; iX < CREDIT_TYPES.Length; iX++)
 				{
 					var item = new CheckType { code = CREDIT_TYPES[iX], label = CREDIT_TYPES_LABELS[iX] };
 					types.Add(item);

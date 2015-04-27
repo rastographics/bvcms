@@ -125,7 +125,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
-            ProtectMyMinistryHelper.create(id, code, type, label);
+            ProtectMyMinistryHelper.Create(id, code, type, label);
             return Redirect("/Volunteering/" + id);
         }
 
@@ -142,20 +142,17 @@ namespace CmsWeb.Areas.Main.Controllers
             return Redirect("/Volunteering/" + bc.PeopleID);
         }
 
+        [HttpPost]
         public ActionResult DeleteCheck(int id)
         {
-            var peopleId = 0;
-
             var bc = (from e in DbUtil.Db.BackgroundChecks
                       where e.Id == id
                       select e).Single();
 
-            peopleId = bc.PeopleID;
-
             DbUtil.Db.BackgroundChecks.DeleteOnSubmit(bc);
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/" + peopleId);
+            return new EmptyResult();
         }
 
         public ActionResult SubmitCheck(int id, int iPeopleID, string sSSN, string sDLN, string sUser = "", string sPassword = "", int iStateID = 0, string sPlusCounty = "", string sPlusState = "")
@@ -201,7 +198,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            ProtectMyMinistryHelper.submit(id, sSSN, sDLN, responseUrl, iStateID, sUser, sPassword, sPlusCounty, sPlusState);
+            ProtectMyMinistryHelper.Submit(id, sSSN, sDLN, responseUrl, iStateID, sUser, sPassword, sPlusCounty, sPlusState);
 
             var bc = (from e in DbUtil.Db.BackgroundChecks
                       where e.Id == id
@@ -233,12 +230,6 @@ namespace CmsWeb.Areas.Main.Controllers
                       select e).Single();
 
             return View(bc);
-        }
-
-        public ActionResult DialogDelete(int id)
-        {
-            ViewBag.ID = id;
-            return View();
         }
 
         public ActionResult DialogType(int id, int type)

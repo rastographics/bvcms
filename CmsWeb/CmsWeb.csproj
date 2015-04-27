@@ -2629,7 +2629,6 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Display.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\OrganizationStructure.cshtml" />
-    <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />
     <Content Include="Content\less\accordion.less" />
     <Content Include="Content\less\alerts.less" />
     <Content Include="Content\less\breadcrumbs.less" />

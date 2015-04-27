@@ -1,14 +1,16 @@
 ﻿$(function () {
 
-    var submitDialog;
+    var getSubmitDialog = function() {
+        return $('#dialogHolder');
+    };
 
     $('.showSubmitDialog').click(function (ev) {
         ev.preventDefault();
         var id = $(this).attr('data-cid');
-        submitDialog = $('#dialogHolder');
+        var submitDialog = getSubmitDialog();
         $.post('/Volunteering/DialogSubmit/' + id, null, function (data) {
-            submitDialog.html(data).dialog({ modal: true, width: 'auto', title: 'Submit Check' }).dialog('open');
-            $('.bt').button();
+            $('.modal-content', submitDialog).html(data);
+            submitDialog.modal();
         });
     });
 
@@ -16,30 +18,50 @@
         ev.preventDefault();
         var id = $(this).attr('data-pid');
         var type = $(this).attr('data-ctype');
-        submitDialog = $('#dialogHolder');
+        var submitDialog = getSubmitDialog();
         $.post('/Volunteering/DialogType/' + id + '?type=' + type, null, function (data) {
-            submitDialog.html(data).dialog({ modal: true, width: 'auto', title: 'Select Check Type' }).dialog('open');
-            $('.bt').button();
+            $('.modal-content', submitDialog).html(data);
+            $('.modal-title', submitDialog).text('Select Check Type');
+            submitDialog.modal();
         });
     });
 
     $('.showEditDialog').click(function (ev) {
         ev.preventDefault();
         var id = $(this).attr('data-cid');
-        submitDialog = $('#dialogHolder');
+        var submitDialog = getSubmitDialog();
         $.post('/Volunteering/DialogEdit/' + id, null, function (data) {
-            submitDialog.html(data).dialog({ modal: true, width: 'auto', title: 'Edit Check' }).dialog('open');
-            $('.bt').button();
+            $('.modal-content', submitDialog).html(data);
+            submitDialog.modal();
         });
     });
 
     $('.showDeleteDialog').click(function (ev) {
         ev.preventDefault();
         var id = $(this).attr('data-cid');
-        submitDialog = $('#dialogHolder');
-        $.post('/Volunteering/DialogDelete/' + id, null, function (data) {
-            submitDialog.html(data).dialog({ modal: true, width: 'auto', title: 'Delete Check' }).dialog('open');
-            $('.bt').button();
+
+        swal({
+            title: 'Delete Check',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonClass: 'btn-danger',
+            confirmButtonText: 'Yes, delete it!',
+            closeOnConfirm: false
+        },
+        function() {
+            $.post('/Volunteering/DeleteCheck/' + id, null, function(ret) {
+                if (ret && ret.error)
+                    swal('Error!', ret.error, 'error');
+                else {
+                    swal({
+                        title: 'Deleted!',
+                        type: 'success'
+                    },
+                    function () {
+                        document.location.reload();
+                    });
+                }
+            });
         });
     });
 
@@ -48,13 +70,4 @@
         type: 'text',
         url: '/Volunteering/EditForm/'
     });
-
-    $('#closeSubmitDialog').on('click', function (ev) {
-        ev.preventDefault();
-        $(submitDialog).dialog('close');
-    });
 });
-
-function confirmDelete() {
-    return confirm('Are you sure you want to delete this file?');
-}
