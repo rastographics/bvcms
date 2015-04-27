@@ -117,7 +117,7 @@
         CKEDITOR.env.isCompatible = true;
 
         CKEDITOR.replace('htmleditor', {
-            height: 400,
+            height: 200,
             autoParagraph: false,
             fullPage: false,
             allowedContent: true,
