@@ -1045,7 +1045,7 @@
     <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\Deposits.cshtml" />
     <Content Include="Areas\People\Views\Person\Toolbar\GearStandard.cshtml" />
-    <None Include="Areas\Main\Views\Volunteering\Display.cshtml" />
+    <Content Include="Areas\Main\Views\Volunteering\Display.cshtml" />
     <Content Include="Areas\Org\Views\MissionTripEmail\EmailBody.cshtml" />
     <Content Include="Content\touchpoint\src\less\twitter-typeahead\twitter-typeahead.less" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
@@ -3156,7 +3156,7 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
