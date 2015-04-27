@@ -59,11 +59,8 @@
         ev.preventDefault();
         var f = $('#new-tag-form');
         var q = f.serialize();
-        $.post("/Tags/NewTag", q, function(ret) {
-            $("#new-modal").modal("hide");
-            $("#tag").replaceWith(ret);
-            $.getTable();
-            $("#tagname").val("");
+        $.post("/Tags/NewTag", q, function (ret) {
+            document.location.href = "/Home/SwitchTag?tag=" + $("#tagname").val();
         });
         return false;
     });
@@ -168,13 +165,6 @@
             });
         }
     });
-
-    //$('a.ShareLink').on("click", function (e) {
-    //    e.preventDefault();
-    //    var d = $('#usersDialog');
-    //    $('iframe', d).attr("src", this.href);
-    //    d.dialog("open");
-    //});
     
 });
 
