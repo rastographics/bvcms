@@ -10,7 +10,7 @@
         autoParagraph: false,
         fullPage: false,
         allowedContent: true,
-        customConfig: '/scripts/js/ckeditorconfig.js'
+        customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
 
     CKEDITOR.on('dialogDefinition', function (ev) {

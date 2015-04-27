@@ -19,6 +19,17 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new MissionTripEmailer {PeopleId = pid, OrgId = oid};
             return View(m);
         }
+
+        [HttpGet, Route("MissionTripEmail2/EmailBody/{oid}/{pid}")]
+        public ActionResult EmailBody(int oid, int pid)
+        {
+            if (Util.UserPeopleId != pid && !User.IsInRole("MissionGiving"))
+                return Content("not authorized");
+
+            var m = new MissionTripEmailer { PeopleId = pid, OrgId = oid };
+            return View(m);
+        }
+
         [HttpGet, Route("MissionTripEmail2/Sent")]
         public ActionResult Sent()
         {
