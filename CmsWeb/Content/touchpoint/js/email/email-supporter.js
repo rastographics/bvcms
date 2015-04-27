@@ -98,6 +98,8 @@
         customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
 
+    CKEDITOR.env.isCompatible = true;
+
     $.clearFunction = undefined;
     $.addFunction = undefined;
 

@@ -4,6 +4,8 @@
         height: 200,
         customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
+
+    CKEDITOR.env.isCompatible = true;
     
     $.InitFunctions.SettingFormsInit = function (f) {
         $('a.notifylist').SearchUsers({

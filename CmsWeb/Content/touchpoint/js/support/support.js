@@ -36,6 +36,8 @@
             allowedContent: true,
             customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
         });
+
+        CKEDITOR.env.isCompatible = true;
     });
 
     $('body').on('click', '#sendSupport', function (e) {

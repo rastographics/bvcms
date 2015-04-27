@@ -17,6 +17,8 @@
         customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
 
+    CKEDITOR.env.isCompatible = true;
+
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                                     '<i class="fa fa-fw fa-check"></i>' +
                                 '</button>' +

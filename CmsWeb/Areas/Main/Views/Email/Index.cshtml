@@ -128,6 +128,8 @@
                 customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
             });
 
+            CKEDITOR.env.isCompatible = true;
+
             $("#insertvotelink").click(function (ev) {
                 ev.preventDefault();
                 var id = prompt("id");
