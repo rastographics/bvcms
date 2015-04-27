@@ -60,7 +60,7 @@
         var f = $('#new-tag-form');
         var q = f.serialize();
         $.post("/Tags/NewTag", q, function (ret) {
-            document.location.href = "/Home/SwitchTag?tag=" + $("#tagname").val();
+            document.location.href = "/Home/SwitchTag?tag=" + encodeURIComponent($("#tagname").val());
         });
         return false;
     });
