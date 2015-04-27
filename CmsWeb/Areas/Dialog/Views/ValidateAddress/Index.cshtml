@@ -1,31 +1,35 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.ValidateAddress
-<div class="modal-header">
-  <a class="close" data-dismiss="modal">x</a>
-  <h3>Validate Addresses For a Tag/Query</h3>
-</div>
-<div class="modal-body">
-  @Html.HiddenFor(m => m.Id)
-  @if (Model.TagHasBeenSelected)
-  {
-    @Html.EditorFor(m => m.Tag, "HiddenCodeInfo")
-    @Html.DisplayFor(m => m.Tag)
-    @Html.DisplayFor(m => m.Count, new { label = "Number of Family Addresses to Validate" })
-    @Html.HiddenFor(m => m.Count)
-  }
-  else
-  {
-    @Html.EditorFor(m => m.Tag)
-  }
-</div>
-<div class="modal-footer">
-  @Html.SpanIf(Model.TagHasBeenSelected, "Are you sure you want to add?", null)
-  <a href="#" class="btn btn-success" data-dismiss="modal">Cancel</a>
-  @if (Model.TagHasBeenSelected)
-  {
-    <a href="/ValidateAddress/Process" class="btn btn-primary ajaxreloader">Validate Addresses</a>
-  }
-  else
-  {
-    <a href="/ValidateAddress/Process" class="btn btn-primary ajax">Select Tag</a>
-  }
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Validate Addresses For a Tag/Query</h4>
+        </div>
+        <div class="modal-body">
+            @Html.HiddenFor(m => m.Id)
+            @if (Model.TagHasBeenSelected)
+            {
+                @Html.EditorFor(m => m.Tag, "HiddenCodeInfo")
+                @Html.DisplayFor(m => m.Tag)
+                @Html.DisplayFor(m => m.Count, new { label = "Number of Family Addresses to Validate" })
+                @Html.HiddenFor(m => m.Count)
+            }
+            else
+            {
+                @Html.EditorFor(m => m.Tag)
+            }  
+        </div>
+        <div class="modal-footer">
+            @Html.SpanIf(Model.TagHasBeenSelected, "Are you sure you want to add?", null)
+            <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+            @if (Model.TagHasBeenSelected)
+            {
+                <a href="/ValidateAddress/Process" class="btn btn-primary ajaxreloader">Validate Addresses</a>
+            }
+            else
+            {
+                <a href="/ValidateAddress/Process" class="btn btn-primary ajax">Select Tag</a>
+            }
+        </div>
+    </div>
 </div>
