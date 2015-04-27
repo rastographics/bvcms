@@ -90,16 +90,6 @@
 
     var currentDiv = null;
 
-    CKEDITOR.env.isCompatible = true;
-
-    CKEDITOR.replace('htmleditor', {
-        height: 400,
-        autoParagraph: false,
-        fullPage: false,
-        allowedContent: true,
-        customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-    });
-
     $.clearFunction = undefined;
     $.addFunction = undefined;
 
@@ -121,6 +111,19 @@
     };
 
     $('#editor-modal').on('shown.bs.modal', function () {
+        if (CKEDITOR.instances['htmleditor'])
+            CKEDITOR.instances['htmleditor'].destroy();
+
+        CKEDITOR.env.isCompatible = true;
+
+        CKEDITOR.replace('htmleditor', {
+            height: 400,
+            autoParagraph: false,
+            fullPage: false,
+            allowedContent: true,
+            customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+        });
+
         var html = $(currentDiv).html();
         if (html !== "Click here to edit content") {
             CKEDITOR.instances['htmleditor'].setData(html);

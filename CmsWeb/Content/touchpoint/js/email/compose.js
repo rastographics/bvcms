@@ -5,44 +5,6 @@
 
     var currentDiv = null;
     
-    CKEDITOR.env.isCompatible = true;
-
-    CKEDITOR.replace('htmleditor', {
-        height: 400,
-        autoParagraph: false,
-        fullPage: false,
-        allowedContent: true,
-        customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-    });
-
-    CKEDITOR.on('dialogDefinition', function (ev) {
-        var dialogName = ev.data.name;
-        var dialogDefinition = ev.data.definition;
-        if (dialogName == 'link') {
-            var advancedTab = dialogDefinition.getContents('advanced');
-            advancedTab.label = "SpecialLinks";
-            advancedTab.remove('advCSSClasses');
-            advancedTab.remove('advCharset');
-            advancedTab.remove('advContentType');
-            advancedTab.remove('advStyles');
-            advancedTab.remove('advAccessKey');
-            advancedTab.remove('advName');
-            advancedTab.remove('advId');
-            advancedTab.remove('advTabIndex');
-
-            var relField = advancedTab.get('advRel');
-            relField.label = "SmallGroup";
-            var titleField = advancedTab.get('advTitle');
-            titleField.label = "Message";
-            var idField = advancedTab.get('advLangCode');
-            idField.label = "OrgId/MeetingId";
-            var langdirField = advancedTab.get('advLangDir');
-            langdirField.label = "Confirmation";
-            langdirField.items[1][0] = "Yes, send confirmation";
-            langdirField.items[2][0] = "No, do not send confirmation";
-        }
-    });
-
     $.clearFunction = undefined;
     $.addFunction = undefined;
 
@@ -64,6 +26,48 @@
     };
 
     $('#editor-modal').on('shown.bs.modal', function () {
+        if (CKEDITOR.instances['htmleditor'])
+            CKEDITOR.instances['htmleditor'].destroy();
+
+        CKEDITOR.env.isCompatible = true;
+
+        CKEDITOR.replace('htmleditor', {
+            height: 400,
+            autoParagraph: false,
+            fullPage: false,
+            allowedContent: true,
+            customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+        });
+
+        CKEDITOR.on('dialogDefinition', function (ev) {
+            var dialogName = ev.data.name;
+            var dialogDefinition = ev.data.definition;
+            if (dialogName == 'link') {
+                var advancedTab = dialogDefinition.getContents('advanced');
+                advancedTab.label = "SpecialLinks";
+                advancedTab.remove('advCSSClasses');
+                advancedTab.remove('advCharset');
+                advancedTab.remove('advContentType');
+                advancedTab.remove('advStyles');
+                advancedTab.remove('advAccessKey');
+                advancedTab.remove('advName');
+                advancedTab.remove('advId');
+                advancedTab.remove('advTabIndex');
+
+                var relField = advancedTab.get('advRel');
+                relField.label = "SmallGroup";
+                var titleField = advancedTab.get('advTitle');
+                titleField.label = "Message";
+                var idField = advancedTab.get('advLangCode');
+                idField.label = "OrgId/MeetingId";
+                var langdirField = advancedTab.get('advLangDir');
+                langdirField.label = "Confirmation";
+                langdirField.items[1][0] = "Yes, send confirmation";
+                langdirField.items[2][0] = "No, do not send confirmation";
+            }
+        });
+
+
         var html = $(currentDiv).html();
         if (html !== "Click here to edit content") {
             CKEDITOR.instances['htmleditor'].setData(html);

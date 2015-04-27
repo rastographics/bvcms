@@ -1,11 +1,5 @@
 ﻿$(function () {
-    CKEDITOR.env.isCompatible = true;
-
-    CKEDITOR.replace('editor', {
-        height: 200,
-        customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-    });
-
+    
     $.InitFunctions.SettingFormsInit = function (f) {
         $('a.notifylist').SearchUsers({
             UpdateShared: function (topid, topid0, ele) {
@@ -25,6 +19,17 @@
             return false;
         var name = $(this).attr("tb");
         ev.preventDefault();
+
+        if (CKEDITOR.instances['editor'])
+            CKEDITOR.instances['editor'].destroy();
+
+        CKEDITOR.env.isCompatible = true;
+
+        CKEDITOR.replace('editor', {
+            height: 200,
+            customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+        });
+        
         CKEDITOR.instances['editor'].setData($("#" + name).val());
         
         $('#editor-modal').modal('show');

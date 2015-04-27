@@ -12,13 +12,6 @@
 
     initializePopovers();
 
-    CKEDITOR.env.isCompatible = true;
-
-    CKEDITOR.replace('editor', {
-        height: 200,
-        customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-    });
-
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                                     '<i class="fa fa-fw fa-check"></i>' +
                                 '</button>' +
@@ -175,6 +168,17 @@
     $.descredit = function($a) {
         if ($a.text() === "edit")
             $a.html('');
+
+        if (CKEDITOR.instances['editor'])
+            CKEDITOR.instances['editor'].destroy();
+
+        CKEDITOR.env.isCompatible = true;
+
+        CKEDITOR.replace('editor', {
+            height: 200,
+            customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+        });
+
         CKEDITOR.instances['editor'].setData($a.html());
 
         $('#editor-modal').modal('show');
