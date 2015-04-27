@@ -37,6 +37,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("Drop")]
         public ActionResult Drop(OrgMembersUpdate m)
         {
+            m.Update();
             m.Drop();
             return View("Dropped", m);
         }
