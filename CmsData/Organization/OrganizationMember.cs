@@ -127,6 +127,25 @@ namespace CmsData
             int? n = null;
             AddToGroup(Db, name, n);
         }
+        public int AddToGroup(CMSDataContext Db, int n)
+        {
+            var omt = Db.OrgMemMemTags.SingleOrDefault(t =>
+                                                       t.PeopleId == PeopleId
+                                                       && t.MemberTagId == n
+                                                       && t.OrgId == OrganizationId);
+            if (omt == null)
+            {
+                Db.OrgMemMemTags.InsertOnSubmit(new OrgMemMemTag
+                                     {
+                                         PeopleId = PeopleId,
+                                         OrgId = OrganizationId,
+                                         MemberTagId = n
+                                     });
+                Db.SubmitChanges();
+                return 1;
+            }
+            return 0;
+        }
 
         public void AddToGroup(CMSDataContext Db, string name, int? n)
         {
@@ -248,7 +267,7 @@ namespace CmsData
         private TransactionSummary transactionSummary;
         public TransactionSummary TransactionSummary(CMSDataContext db)
         {
-            if(transactionSummaryLoaded)
+            if (transactionSummaryLoaded)
                 return transactionSummary;
             transactionSummary = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
             transactionSummaryLoaded = true;

@@ -230,9 +230,10 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 
 		[HttpPost]
-		public ActionResult TaskProgress(int id)
+		public ActionResult TaskProgress(string id)
 		{
-			var queue = SetProgressInfo(id);
+		    var idi = id.ToInt();
+			var queue = SetProgressInfo(idi);
 			if (queue == null)
                 return Json(new { error = "No queue." });
 

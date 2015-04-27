@@ -7,6 +7,13 @@
             <h4>Add/Remove people to/from Sub-Groups in @Model.OrgName</h4>
         </div>
         <div class="modal-body">
+            @if (ViewBag.numberadded != null)
+            {
+                <div class="alert alert-success">
+                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                    @ViewBag.numberadded
+                </div>
+            }
             @Html.HiddenFor(m => m.Id)
             <div class="alert alert-warning">
                 Each button will add or remove @Model.Count people for the indicated sub-group.

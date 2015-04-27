@@ -37,13 +37,14 @@ namespace CmsWeb.Areas.Dialog.Controllers
         [HttpPost, Route("Drop")]
         public ActionResult Drop(OrgMembersUpdate m)
         {
+            m.Update();
             m.Drop();
             return View("Dropped", m);
         }
         [HttpPost, Route("AddSmallGroup/{sgid:int}")]
         public ActionResult AddSmallGroup(int sgid, OrgMembersUpdate m)
         {
-            m.AddSmallGroup(sgid);
+            ViewBag.numberadded = m.AddSmallGroup(sgid);
             return View("SmallGroups", m);
         }
         [HttpPost, Route("RemoveSmallGroup/{sgid:int}")]

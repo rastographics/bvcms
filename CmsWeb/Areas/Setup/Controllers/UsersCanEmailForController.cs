@@ -28,10 +28,11 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             if (id > 0)
             {
-                var q = from cf in DbUtil.Db.PeopleCanEmailFors
-                        where cf.CanEmail == id
-                        select cf.OnBehalfOf;
-                t.PersonTags.Add(new TagPerson { PeopleId = id });
+                var q = (from cf in DbUtil.Db.PeopleCanEmailFors
+                         where cf.CanEmail == id
+                         select cf.OnBehalfOf).ToList();
+                if (!q.Contains(id))
+                    t.PersonTags.Add(new TagPerson { PeopleId = id });
                 foreach (var pid in q)
                     t.PersonTags.Add(new TagPerson { PeopleId = pid });
                 DbUtil.Db.SubmitChanges();
@@ -55,10 +56,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             {
                 var cn = new SqlConnection(Util.ConnectionString);
                 cn.Open();
-                cn.Execute("delete PeopleCanEmailFor where CanEmail = @id", new {id});
+                cn.Execute("delete PeopleCanEmailFor where CanEmail = @id", new { id });
             }
-            foreach(var pid in selected_pids)
-                DbUtil.Db.PeopleCanEmailFors.InsertOnSubmit(new PeopleCanEmailFor{ CanEmail = id, OnBehalfOf = pid});
+            foreach (var pid in selected_pids)
+                DbUtil.Db.PeopleCanEmailFors.InsertOnSubmit(new PeopleCanEmailFor { CanEmail = id, OnBehalfOf = pid });
             DbUtil.Db.SubmitChanges();
             return Content("ok");
         }

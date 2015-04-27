@@ -160,17 +160,19 @@ namespace CmsWeb.Areas.Dialog.Models
             }
         }
 
-        public void AddSmallGroup(int sgtagid)
+        public string AddSmallGroup(int sgtagid)
         {
             var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
+            var n = 0;
+            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == Id).Name;
             foreach (var pid in pids)
             {
                 DbUtil.DbDispose();
                 DbUtil.Db = new CMSDataContext(Util.ConnectionString);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
-                om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = sgtagid });
-                DbUtil.Db.SubmitChanges();
+                n += om.AddToGroup(DbUtil.Db, sgtagid);
             }
+            return "{0} added to sub-group {1}".Fmt(n, name);
         }
 
         public void RemoveSmallGroup(int sgtagid)
