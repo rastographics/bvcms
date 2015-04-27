@@ -90,6 +90,8 @@
 
     var currentDiv = null;
 
+    CKEDITOR.env.isCompatible = true;
+
     CKEDITOR.replace('htmleditor', {
         height: 400,
         autoParagraph: false,
@@ -97,8 +99,6 @@
         allowedContent: true,
         customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
-
-    CKEDITOR.env.isCompatible = true;
 
     $.clearFunction = undefined;
     $.addFunction = undefined;

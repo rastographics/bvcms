@@ -80,6 +80,8 @@
                 });
             });
 
+            CKEDITOR.env.isCompatible = true;
+
             CKEDITOR.replace('body', {
                 height: 400,
                 allowedContent: true,
@@ -88,8 +90,6 @@
                 customConfig: "/content/touchpoint/lib/ckeditor/js/ckeditorconfig.js"
             });
 
-            CKEDITOR.env.isCompatible = true;
-                
             $("#snippet").change(function () {
                 var checked = this.checked;
                 swal({

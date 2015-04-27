@@ -12,12 +12,12 @@
 
     initializePopovers();
 
+    CKEDITOR.env.isCompatible = true;
+
     CKEDITOR.replace('editor', {
         height: 200,
         customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
-
-    CKEDITOR.env.isCompatible = true;
 
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                                     '<i class="fa fa-fw fa-check"></i>' +

@@ -121,14 +121,14 @@
     @Fingerprint.Script("/Content/touchpoint/js/email/email.js")
     <script type="text/javascript">
         $(function () {
+            CKEDITOR.env.isCompatible = true;
+
             CKEDITOR.replace('Body', {
                 height: 400,
                 fullPage: false,
                 allowedContent: true,
                 customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
             });
-
-            CKEDITOR.env.isCompatible = true;
 
             $("#insertvotelink").click(function (ev) {
                 ev.preventDefault();

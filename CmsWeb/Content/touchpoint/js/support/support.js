@@ -30,14 +30,14 @@
             CKEDITOR.instances["body"].destroy();
         }
 
+        CKEDITOR.env.isCompatible = true;
+
         CKEDITOR.replace('body', {
             height: 200,
             fullPage: false,
             allowedContent: true,
             customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
         });
-
-        CKEDITOR.env.isCompatible = true;
     });
 
     $('body').on('click', '#sendSupport', function (e) {

@@ -1,12 +1,11 @@
 ﻿$(function () {
+    CKEDITOR.env.isCompatible = true;
 
     CKEDITOR.replace('editor', {
         height: 200,
         customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
 
-    CKEDITOR.env.isCompatible = true;
-    
     $.InitFunctions.SettingFormsInit = function (f) {
         $('a.notifylist').SearchUsers({
             UpdateShared: function (topid, topid0, ele) {

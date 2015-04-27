@@ -72,6 +72,8 @@
                 });
             });
 
+            CKEDITOR.env.isCompatible = true;
+
             CKEDITOR.on('dialogDefinition', function (ev) {
                 var dialogName = ev.data.name;
                 var dialogDefinition = ev.data.definition;
@@ -99,6 +101,7 @@
                     langdirField.items[2][0] = "No, do not send confirmation";
                 }
             });
+
             CKEDITOR.replace('body', {
                 height: 400,
                 fullPage: true,
@@ -106,7 +109,6 @@
                 customConfig: '/content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
             });
 
-            CKEDITOR.env.isCompatible = true;
         });
     </script>
 }

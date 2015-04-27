@@ -5,6 +5,8 @@
 
     var currentDiv = null;
     
+    CKEDITOR.env.isCompatible = true;
+
     CKEDITOR.replace('htmleditor', {
         height: 400,
         autoParagraph: false,
@@ -12,8 +14,6 @@
         allowedContent: true,
         customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
     });
-
-    CKEDITOR.env.isCompatible = true;
 
     CKEDITOR.on('dialogDefinition', function (ev) {
         var dialogName = ev.data.name;

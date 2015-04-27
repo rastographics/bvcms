@@ -61,6 +61,8 @@
             $("#body").val("");
             $("#success").hide();
 
+            CKEDITOR.env.isCompatible = true;
+
             CKEDITOR.replace('body', {
                 height: 200,
                 fullPage: false,
@@ -68,8 +70,6 @@
                 customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
             });
 
-            CKEDITOR.env.isCompatible = true;
-            
             $('body').on('click', '#sendSupport', function (e) {
                 $.post("/Support/MyDataSendRequest", {
                     body: CKEDITOR.instances["body"].getData()
