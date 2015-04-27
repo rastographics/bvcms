@@ -460,6 +460,7 @@
             $.InitFunctions.updateQuestionList();
             $.InitFunctions.popovers();
             $.InitFunctions.movequestions();
+            $('#QuestionList').children().last().effect("highlight", { color: '#fcf8e3' }, 2000);
         });
         return false;
     });
@@ -600,6 +601,7 @@
                 $("#schedules").append(ret).ready(function () {
                     $.InitFunctions.timepicker();
                     $.renumberListItems();
+                    $('#schedules').children().last().children().first().effect("highlight", { color: '#fcf8e3' }, 2000);
                 });
             });
         }
@@ -758,6 +760,7 @@
             $(dest).append(ret);
             $.InitFunctions.movequestions();
             $.InitFunctions.timepicker();
+            $(dest).children().last().children().first().effect("highlight", { color: '#fcf8e3' }, 2000);
         });
     });
 
