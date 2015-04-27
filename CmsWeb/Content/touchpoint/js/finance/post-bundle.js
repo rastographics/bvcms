@@ -115,6 +115,13 @@
         }
     });
 
+    $('#notes').keydown(function (event) {
+        if (event.keyCode == 9) {
+            event.preventDefault();
+            $.PostRow({ scroll: false });
+        }
+    });
+
     $('#pid').keydown(function (event) {
         if (event.keyCode == 13) {
             event.preventDefault();
@@ -156,6 +163,10 @@
             $('#notes').focus();
         }
     });
+
+    //$("body").on("focus", 'a.update', function(ev) {
+        
+    //});
 
     $('a.update').click(function (event) {
         event.preventDefault();
