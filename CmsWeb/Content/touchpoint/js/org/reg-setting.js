@@ -14,31 +14,53 @@
         });
     };
 
+    var xsDevice = $('.device-xs').is(':visible');
+    var smDevice = $('.device-sm').is(':visible');
+
     $('body').on('click', 'a.editor', function (ev) {
         if (!$(this).attr("href"))
             return false;
         var name = $(this).attr("tb");
         ev.preventDefault();
 
-        if (CKEDITOR.instances['editor'])
-            CKEDITOR.instances['editor'].destroy();
+        if (!xsDevice && !smDevice) {
+            if (CKEDITOR.instances['editor'])
+                CKEDITOR.instances['editor'].destroy();
 
-        CKEDITOR.env.isCompatible = true;
+            CKEDITOR.env.isCompatible = true;
 
-        CKEDITOR.replace('editor', {
-            height: 200,
-            customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-        });
-        
-        CKEDITOR.instances['editor'].setData($("#" + name).val());
+            CKEDITOR.replace('editor', {
+                height: 200,
+                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+            });
+        }
+        if (xsDevice || smDevice) {
+            $('#editor').val($("#" + name).val());
+        } else {
+            CKEDITOR.instances['editor'].setData($("#" + name).val());
+        }
         
         $('#editor-modal').modal('show');
+
         $("#save-edit").off("click").on("click", function (ev) {
             ev.preventDefault();
-            var v = CKEDITOR.instances['editor'].getData();
+
+            var v;
+            if (xsDevice || smDevice) {
+                v = $('#editor').val();
+            } else {
+                v = CKEDITOR.instances['editor'].getData();
+            }
+
             $("#" + name).val(v);
             $("#" + name + "_ro").html(v);
-            CKEDITOR.instances['editor'].setData('');
+
+            if (xsDevice || smDevice) {
+                $('#editor').val('');
+            } else {
+                CKEDITOR.instances['editor'].setData('');
+            }
+
             $('#editor-modal').modal('hide');
             return false;
         });

@@ -165,30 +165,51 @@
         return $.descredit($(this).prev());
     });
 
+    var xsDevice = $('.device-xs').is(':visible');
+    var smDevice = $('.device-sm').is(':visible');
+
     $.descredit = function($a) {
         if ($a.text() === "edit")
             $a.html('');
 
-        if (CKEDITOR.instances['editor'])
-            CKEDITOR.instances['editor'].destroy();
+        if (!xsDevice && !smDevice) {
+            if (CKEDITOR.instances['editor'])
+                CKEDITOR.instances['editor'].destroy();
 
-        CKEDITOR.env.isCompatible = true;
+            CKEDITOR.env.isCompatible = true;
 
-        CKEDITOR.replace('editor', {
-            height: 200,
-            customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-        });
-
-        CKEDITOR.instances['editor'].setData($a.html());
-
+            CKEDITOR.replace('editor', {
+                height: 200,
+                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+            });
+        }
+        if (xsDevice || smDevice) {
+            $('#editor').val($a.html());
+        } else {
+            CKEDITOR.instances['editor'].setData($a.html());
+        }
+        
         $('#editor-modal').modal('show');
+
         $("#save-edit").off("click").on("click", function (ev) {
             ev.preventDefault();
-            var v = CKEDITOR.instances['editor'].getData();
+            var v;
+            if (xsDevice || smDevice) {
+                v = $('#editor').val();
+            } else {
+                v = CKEDITOR.instances['editor'].getData();
+            }
+
             $a.html(v);
             var id = $a.attr("id");
             $.post("/OrgSearch/SetDescription", { id: id, description: v });
-            CKEDITOR.instances['editor'].setData('');
+
+            if (xsDevice || smDevice) {
+                $('#editor').val('');
+            } else {
+                CKEDITOR.instances['editor'].setData('');
+            }
+            
             $('#editor-modal').modal('hide');
             return false;
         });
