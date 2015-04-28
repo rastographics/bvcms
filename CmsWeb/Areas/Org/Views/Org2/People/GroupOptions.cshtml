@@ -5,17 +5,17 @@
     <span class="caret"></span>
   </button>
   <ul class="dropdown-menu">
-    <li>
-      <a id="multigroup" href="#" class="grp2 @Model.MultiSelectActive">Select Multiple</a>
-    </li>
-    <li>
-      <a id="showhide" href="#" class="grp2 @Model.ShowHiddenActive">Show Hidden</a>
-    </li>
-    <li>
-      <a id="ministryinfo" href="#" class="grp2 @Model.ShowMinistryInfoActive">Ministry Info</a>
-    </li>
-    <li>
-      <a id="showaddress" href="#" class="grp2 @Model.ShowAddressActive">Show Address</a>
-    </li>
+      <li class="@Model.MultiSelectActive">
+          <a id="multigroup" href="#" class="grp2 @Model.MultiSelectActive">Select Multiple</a>
+      </li>
+      <li class="@Model.ShowHiddenActive">
+          <a id="showhide" href="#" class="grp2 @Model.ShowHiddenActive">Show Hidden</a>
+      </li>
+      <li class="@Model.ShowMinistryInfoActive">
+          <a id="ministryinfo" href="#" class="grp2 @Model.ShowMinistryInfoActive">Ministry Info</a>
+      </li>
+      <li class="@Model.ShowAddressActive">
+          <a id="showaddress" href="#" class="grp2 @Model.ShowAddressActive">Show Address</a>
+      </li>
   </ul>
 </div>
