@@ -454,7 +454,6 @@
     $('body').on('click', '#selectquestions a', function (ev) {
         ev.preventDefault();
         $.post('/Org/NewAsk/', { id: 'AskItems', type: $(this).attr("type") }, function (ret) {
-            $('#addQuestions').modal('hide');
             $('html, body').animate({ scrollTop: $("body").height() }, 800);
             var newli = $("#QuestionList").append(ret);
             $.InitFunctions.updateQuestionList();
