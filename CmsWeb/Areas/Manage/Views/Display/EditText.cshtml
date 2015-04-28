@@ -16,7 +16,7 @@
                                 <div class="navbar-header">
                                     <span class="navbar-brand"><i class="fa fa-cogs"></i></span>
                                 </div>
-                                <div class="navbar-form navbar-left hidden-xs" style="padding:0;">
+                                <div class="navbar-form navbar-left hidden-xs hidden-sm" style="padding:0;">
                                     <div class="btn-group" data-toggle="buttons">
                                         <label class="btn btn-default">
                                             <input type="radio" name="editor-mode" id="text" value="text" autocomplete="off">Text
@@ -38,6 +38,7 @@
                             </div>
                         </nav>
                         <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Body</div>
+                        <textarea id="mobile-body" name="mobile-body" class="form-control" rows="15" style="display:none; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">@Model.Body</textarea>
                         @Html.HiddenFor(m => m.Body)
                     </div>
                     <a href="/Display/#tab_textContent" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <a href="#" class="btn btn-primary save">Save Content</a>
@@ -54,6 +55,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
     <script type="text/javascript">
         $(function () {
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (extraSmallDevice || smallDevice) {
+                $('#editor').hide();
+                $('#mobile-body').show();
+            } else {
+                var editor = ace.edit("editor");
+                editor.setShowPrintMargin(false);
+                setInitialEditorMode();
+            }
 
             function setInitialEditorMode() {
                 var ele = $("#text");
@@ -61,12 +72,7 @@
                 $(ele).prop("checked", true);
                 $(ele).closest('label').addClass('active');
             }
-
-            var editor = ace.edit("editor");
-            editor.setShowPrintMargin(false);
-
-            setInitialEditorMode();
-
+            
             $("input[name='editor-mode']").change(function () {
                 var mode = $(this).val();
                 editor.getSession().setMode("ace/mode/" + mode);
@@ -74,7 +80,11 @@
 
             $("a.save").click(function(ev) {
                 ev.preventDefault();
-                $("#Body").val(editor.getValue());
+                if (extraSmallDevice || smallDevice) {
+                    $("#Body").val($('#mobile-body').val());
+                } else {
+                    $("#Body").val(editor.getValue());
+                }
                 $("form").submit();
             });
 

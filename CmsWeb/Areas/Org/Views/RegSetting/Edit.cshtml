@@ -18,6 +18,7 @@
                 }
                 <form action="/RegSettings/Update/@ViewData["OrganizationId"]" method="post">
                     <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@ViewData["Text"]</div>
+                    <textarea id="mobile-text" name="mobile-text" class="form-control" rows="15" style="display:none; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">@ViewData["Text"]</textarea>
                     <input type="hidden" id="text" name="text"/>
                     <br/>
                     <a href="/RegSettings/@ViewData["OrganizationId"]" class="btn btn-default">Cancel</a> 
@@ -32,13 +33,24 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
     <script type="text/javascript">
         $(function () {
-            var editor = ace.edit("editor");
-            editor.getSession().setMode("ace/mode/text");
-            editor.setShowPrintMargin(false);
-
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (extraSmallDevice || smallDevice) {
+                $('#editor').hide();
+                $('#mobile-text').show();
+            } else {
+                var editor = ace.edit("editor");
+                editor.getSession().setMode("ace/mode/text");
+                editor.setShowPrintMargin(false);
+            }
+            
             $("#save").click(function (ev) {
                 ev.preventDefault();
-                $("#text").val(editor.getValue());
+                if (extraSmallDevice || smallDevice) {
+                    $("#text").val($('#mobile-text').val());
+                } else {
+                    $("#text").val(editor.getValue());
+                }
                 $("form").submit();
             });
         });
