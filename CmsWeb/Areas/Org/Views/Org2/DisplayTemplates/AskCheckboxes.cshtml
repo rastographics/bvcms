@@ -1,26 +1,48 @@
 ﻿@model AskCheckboxes
 @using CmsData.Registration
 @using UtilityExtensions
-<div class="table not-wide w100">
-  <label>
-    Checkboxes
-  </label>
-  @if (ViewBag.ShowHelp != false)
-  {
-    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
-  }
-  @Html.DisplayFor(m => m.Label)
-  @Html.DisplayFor(m => m.Minimum)
-  @Html.DisplayFor(m => m.Maximum)
-  @Html.DisplayFor(m => m.Columns)
-  @foreach (var i in Model.list)
-  {
-    <div class="well not-wide margin-left-wide">
-      @Html.DisplayFor(m => i.Description)
-      @Html.DisplayForIf(m => i.SmallGroup, i.SmallGroup != i.Description)
-      @Html.DisplayForIf(m => i.Fee, i.Fee > 0)
-      @Html.DisplayForIf(m => i.Limit, i.Limit > 0)
-      @Html.DisplayForIf(m => i.MeetingTimeString, i.MeetingTimeString.HasValue())
+<div class="well">
+    <label>
+        Checkboxes
+    </label>
+    @if (ViewBag.ShowHelp != false)
+    {
+        <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
+    }
+    <div class="row">
+        <div class="col-sm-3">
+            @Html.DisplayFor(m => m.Label)
+        </div>
+        <div class="col-sm-3">
+            @Html.DisplayFor(m => m.Minimum)
+        </div>
+        <div class="col-sm-3">
+            @Html.DisplayFor(m => m.Maximum)
+        </div>
+        <div class="col-sm-3">
+            @Html.DisplayFor(m => m.Columns)
+        </div>
     </div>
-  }
+    @foreach (var i in Model.list)
+    {
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-6">
+                    @Html.DisplayFor(m => i.Description)
+                </div>
+                <div class="col-sm-6">
+                    @Html.DisplayForIf(m => i.SmallGroup, i.SmallGroup != i.Description)
+                </div>
+                <div class="col-sm-4">
+                    @Html.DisplayForIf(m => i.Fee, i.Fee > 0)
+                </div>
+                <div class="col-sm-4">
+                    @Html.DisplayForIf(m => i.Limit, i.Limit > 0)
+                </div>
+                <div class="col-sm-4">
+                    @Html.DisplayForIf(m => i.MeetingTimeString, i.MeetingTimeString.HasValue())
+                </div>
+            </div>          
+        </div>
+    }
 </div>

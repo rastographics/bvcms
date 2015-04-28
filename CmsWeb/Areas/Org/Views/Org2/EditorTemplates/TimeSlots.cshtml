@@ -1,24 +1,35 @@
 ﻿@model CmsData.Registration.TimeSlots
 @using CmsWeb
 @using UtilityExtensions
-<div id="TimeSlotsList" class="control-group">
-  <label class="control-label">Time Slots</label>
-  <div class="controls">
-    <div class="table not-wide w80">
-      @Html.EditorFor(m => m.TimeSlotLockDays)
-      @{ var listname = Html.NameFor2(m => m.list); }
-      <div class="movable-list">
-      @foreach (var f in Model.list)
-      {
-        f.Name = listname;
-        @Html.EditorFor(m => f)
-      }
-      </div>
-      <div class="newitem"><a href="/Org/NewTimeSlot/@listname"><img src="/Content/images/plus1.png" /> Add Time Slot</a></div>
+<div class="well" id="TimeSlotsList">
+    <div class="row">
+        <div class="col-sm-12">
+            <label class="ask-question">Time Slots</label>
+        </div>
     </div>
+    @{ var listname = Html.NameFor2(m => m.list); }
     @if (ViewBag.ShowHelp != false)
     {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+        <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
     }
-  </div>
+    <div class="row">
+        <div class="col-sm-4">
+            @Html.EditorFor(m => m.TimeSlotLockDays)
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="pull-right newitem">
+                <a href="/Org/NewTimeSlot/@listname" class="btn btn-success btn-sm" data-dest="#time-slots"><i class="fa fa-plus-circle"></i> Add Time Slot</a>
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="time-slots" class="movable-list">
+       @foreach (var f in Model.list)
+       {
+           f.Name = listname;
+        @Html.EditorFor(m => f)
+       }
+    </div>
 </div>

@@ -437,7 +437,6 @@
         $("#TimeSlotsList").hide();
         switch ($("#RegistrationType_Value").val()) {
             case "0":
-                $('#Reg-tab').hide();
                 $("#Fees-tab").hide();
                 $("#Questions-tab").hide();
                 $("#Messages-tab").hide();

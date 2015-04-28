@@ -11,7 +11,7 @@
         </div>
     }
     @FormAction()
-    <i class="blue">Re-order items by using the blue gear.</i>
+    <br/>
     <div class="movable-list enablesort sort edit" id="QuestionList" style="list-style: none; margin-left: 5px;">
         @foreach (var ask in Model.AskItems)
         {
@@ -19,7 +19,7 @@
             @Html.EditorFor(m => ask)
         }
     </div>
-    @*@Html.EditorFor(m => m.TimeSlots)*@
+    @Html.EditorFor(m => m.TimeSlots)
     @FormAction()
     @FormAction(true)
     <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
