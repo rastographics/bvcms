@@ -152,6 +152,17 @@ namespace UtilityExtensions
             }
         }
 
+        public static string SimSunFont
+        {
+            get
+            {
+                var path = ConfigurationManager.AppSettings["SimSunFont"];
+                if(path != null)
+                    path = path.Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+                return path;
+            }
+        }
+
         public static string UrgentMessage
         {
             get

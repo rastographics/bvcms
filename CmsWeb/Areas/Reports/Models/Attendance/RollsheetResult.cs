@@ -7,7 +7,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Web;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;
@@ -150,7 +152,7 @@ namespace CmsWeb.Areas.Reports.Models
                     if (q.Any())
                         StartPageSet(o);
                     foreach (var m in q)
-                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
 
                 }
                 else if(co.GroupSelect == GroupSelectCode.Member)
@@ -183,7 +185,7 @@ namespace CmsWeb.Areas.Reports.Models
                     if (q.Any())
                         StartPageSet(o);
                     foreach (var m in q)
-                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
                 }
                 else
                 {
@@ -209,7 +211,7 @@ namespace CmsWeb.Areas.Reports.Models
                     if (q.Any())
                         StartPageSet(o);
                     foreach (var m in q)
-                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china : font));
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
                 }
                 if ((OrgSearchModel != null && NewMeetingInfo.ByGroup == false)
                    || (co != null 
@@ -283,17 +285,27 @@ namespace CmsWeb.Areas.Reports.Models
         private PdfContentByte dc;
 
 
+        public Font CreateChineseFont()
+        {
+            var simsunfont = Util.SimSunFont;
+            if (simsunfont == null)
+                return null;
+            if (simsunfont.StartsWith("~"))
+                simsunfont = HttpContext.Current.Server.MapPath(Util.SimSunFont);
+            if (!File.Exists(simsunfont))
+                return null;
+            BaseFont baseFont = BaseFont.CreateFont(
+                simsunfont,
+                BaseFont.IDENTITY_H,
+                BaseFont.EMBEDDED); 
+            return new Font(baseFont);
+        }
         private void StartPageSet(OrgInfo o)
         {
             doc.NewPage();
             pageSetStarted = true;
-//            if (altnames == true)
-//            {
-//                BaseFont.AddToResourceSearch(HttpContext.Current.Server.MapPath("/Content/iTextAsian.dll"));
-//                var bfchina = BaseFont.CreateFont("MHei-Medium",
-//                    "UniCNS-UCS2-H", BaseFont.EMBEDDED);
-//                china = new Font(bfchina, 12, Font.NORMAL);
-//            }
+            if (NewMeetingInfo.UseAltNames)
+                china = CreateChineseFont();
             pageEvents.StartPageSet(
                                     "{0}: {1}, {2} ({3})".Fmt(o.Division, o.Name, o.Location, o.Teacher),
                                     "{0:f} ({1})".Fmt(NewMeetingInfo.MeetingDate, o.OrgId),
