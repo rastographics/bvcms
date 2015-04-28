@@ -86,7 +86,7 @@
                         <tr>
                             @for (var c = 1; c < Model.FieldCount; c++)
                             {
-                                <th><a href="/Reports/ExtraValuesGrid2/@(ViewBag.queryid + "?sort=" + Model.GetName(c))">@Model.GetName(c)</a></th>
+                                <th><a href="/ExtraValue/Grid2/@(ViewBag.queryid + "?sort=" + Model.GetName(c))">@Model.GetName(c)</a></th>
                             }
                         </tr>
                     </thead>
