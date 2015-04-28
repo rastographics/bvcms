@@ -14,7 +14,10 @@
         }
     </div>
     @Html.DisplayFor(m => m.TimeSlots)
-    @FormAction()
+    @if (Model.AskItems.Any())
+    {
+        @FormAction()
+    }
     @FormAction(true)
     <br/>
 </form>
