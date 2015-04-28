@@ -181,10 +181,13 @@
                 }
             </tbody>
         </table>
+        <br/><br/><br/><br/><br/><br/>
     </div>
-    @Html.Partial("PagerBottom", Model.Pager)
-    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
-    @Html.Hidden("Page", Model.Pager.Page)
-    @Html.Hidden("Sort", Model.Pager.Sort)
-    @Html.Hidden("Direction", Model.Pager.Direction)
+    <div style="margin-top: -120px;">
+        @Html.Partial("PagerBottom", Model.Pager)
+        @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+        @Html.Hidden("Page", Model.Pager.Page)
+        @Html.Hidden("Sort", Model.Pager.Sort)
+        @Html.Hidden("Direction", Model.Pager.Direction)
+    </div>
 </div>
