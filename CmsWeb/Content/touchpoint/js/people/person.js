@@ -431,8 +431,29 @@
     });
 
     $('body').on('click', '#myDataUserRole', function (ev) {
-        $('#role-list input[name="role"]').prop('checked', false);
-        $('#myDataUserRole').prop('checked', true);
+        var anyRolesChecked = $('#role-list input[name="role"]').is(':checked');
+        if (anyRolesChecked) {
+            swal({
+                title: "Are you sure?",
+                text: "This will uncheck all other roles for this user.",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-warning",
+                confirmButtonText: "Yes, continue!",
+                closeOnConfirm: true
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $('#role-list input[name="role"]').prop('checked', false);
+                    
+                } else {
+                    $('#myDataUserRole').prop('checked', false);
+                }
+            });
+        } else {
+            $('#role-list input[name="role"]').prop('checked', false);
+            $('#myDataUserRole').prop('checked', true);
+        }
     });
 
 });
