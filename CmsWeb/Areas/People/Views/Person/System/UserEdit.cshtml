@@ -59,7 +59,11 @@
         </div>
     </div>
     <h4>Roles</h4>
-    <div class="well">
+    <div class="well" id="role-list">
+        <label class="checkbox-inline control-label">
+            <input name="myDataUserRole" id="myDataUserRole" value="myDataUserRole" type="checkbox" @(!Model.Roles.Any() ? "checked='checked'" : "") /> My Data
+        </label>
+        <br/><br/>
         <strong>Basic Level 1</strong>
         <div class="row">
             <div class="col-sm-12">

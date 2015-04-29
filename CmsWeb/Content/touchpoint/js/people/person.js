@@ -420,6 +420,21 @@
         $("a.refresh-current").click();
         $("a.refresh-pending").click();
     };
+
+    $('body').on('click', '#role-list input[name="role"]', function(ev) {
+        var anyRolesChecked = $('#role-list input[name="role"]').is(':checked');
+        if (anyRolesChecked) {
+            $('#myDataUserRole').prop('checked', false);
+        } else {
+            $('#myDataUserRole').prop('checked', true);
+        }
+    });
+
+    $('body').on('click', '#myDataUserRole', function (ev) {
+        $('#role-list input[name="role"]').prop('checked', false);
+        $('#myDataUserRole').prop('checked', true);
+    });
+
 });
 
 function AddSelected(ret) {
