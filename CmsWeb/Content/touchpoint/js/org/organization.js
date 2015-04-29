@@ -494,7 +494,7 @@
             var text = $(this).text();
             if (!text)
                 text = type;
-            if ($.inArray(type, $.exceptions) >= 0 || $("li.type-" + type).length == 0)
+            if ($.inArray(type, $.exceptions) >= 0 || $("div.type-" + type).length == 0)
                 $(this).html("<a href='#' type='" + type + "'>" + text + "</a>");
             else
                 $(this).html("<span style='text-decoration: line-through;'>" + text + "</span>");
