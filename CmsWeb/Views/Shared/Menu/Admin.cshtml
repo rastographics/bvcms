@@ -73,6 +73,20 @@
 }
 @helper AdminList1(bool admin, bool design, bool managetrans, bool edit, bool manageemails, bool finance, bool developer)
 {
+    if (admin)
+    {
+        <li class="dropdown-header">Batch Actions</li>
+        @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find", admin)
+        @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds", admin)
+        @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields", admin)
+        @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg", admin)
+        @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags", admin)
+        if (User.IsInRole("developer"))
+        {
+            <li><a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a></li>
+        }
+        <li class="divider"></li>
+    }
     if (admin || finance || design)
     {
         <li class="dropdown-header">Setup</li>
@@ -125,19 +139,5 @@
         @Helper.LiAnchorLink("Checkin Activity", "/CheckinTimes/", admin || edit)
         @Helper.LiAnchorLink("Checkin Labels", "/CheckinLabels", admin)
         @Helper.LiAnchorLink("Users", "/Users/", admin)
-    }
-    if (admin)
-    {
-        <li class="divider"></li>
-        <li class="dropdown-header">Batch Actions</li>
-    }
-    @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find", admin)
-    @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds", admin)
-    @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields", admin)
-    @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg", admin)   
-    @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags", admin)
-    if (User.IsInRole("developer"))
-    {
-      <li><a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a></li>
     }
 }
