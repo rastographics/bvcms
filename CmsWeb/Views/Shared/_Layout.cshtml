@@ -9,7 +9,7 @@
     <title>@ViewBag.Title</title>
     @ViewExtensions2.GoogleFonts()
     @ViewExtensions2.FontAwesome()
-    @ViewExtensions2.jQueryUICss()
+    @Fingerprint.Css("/Content/touchpoint/lib/jquery-ui/css/jquery-ui.min.css")
     @Fingerprint.Css("/Content/touchpoint/css/app.css")
     <link href="@Url.Content("~/Content/touchpoint/css/print.css")" media="print" rel="stylesheet">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -35,7 +35,7 @@
         @ViewExtensions2.jQuery()
         @ViewExtensions2.LoDash()
         @ViewExtensions2.Bootstrap3()
-        @ViewExtensions2.jQueryUI()
+        @Fingerprint.Script("/Content/touchpoint/lib/jquery-ui/js/jquery-ui.min.js")
         @ViewExtensions2.Velocity()
         @ViewExtensions2.Moment()
         @ViewExtensions2.jQueryValidation()

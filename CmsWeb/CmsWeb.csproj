@@ -895,6 +895,8 @@
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.cultures.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\globalize.js" />
     <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
+    <Content Include="Content\touchpoint\lib\jquery-ui\css\jquery-ui.min.css" />
+    <Content Include="Content\touchpoint\lib\jquery-ui\js\jquery-ui.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-validate-globalize\js\jquery.validate.globalize.js" />
     <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
     <Content Include="Content\touchpoint\lib\select2\css\select2-bootstrap.css" />
