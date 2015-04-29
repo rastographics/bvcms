@@ -2427,6 +2427,8 @@
     <Content Include="Content\touchpoint\src\less\stats-panel.less" />
     <Content Include="Content\touchpoint\src\less\footers.less" />
     <Content Include="Views\Error\UnderConstruction.cshtml" />
+    <Content Include="Views\Shared\PageHeader.cshtml" />
+    <Content Include="Views\Shared\PageFooter.cshtml" />
     <None Include="Web.bvcms.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
