@@ -7,28 +7,28 @@
         switch (Model.error)
         {
             case MeetingController.ScanTicketInfo.Error.none:
-                <h1>Successfully Marked Present</h1>
+                <strong>Success!</strong> <text>Successfully marked present.</text>
                 break;
             case MeetingController.ScanTicketInfo.Error.noperson:
-            <h1>Person not found</h1>
+                <strong>Error!</strong> <text>Person not found.</text>
                 break;
             case MeetingController.ScanTicketInfo.Error.notmember:
-            <h1>Not a member of this organization</h1>
+                <strong>Error!</strong> <text>Not a member of this organization.</text>
                 break;
             case MeetingController.ScanTicketInfo.Error.notregistered:
-            <h1>Not registered</h1>
+                <strong>Error!</strong> <text>Not registered.</text>
                 break;
             case MeetingController.ScanTicketInfo.Error.alreadymarked:
-            <h1>Already marked present</h1>
+                <strong>Error!</strong> <text>Already marked present.</text>
                 break;
             case MeetingController.ScanTicketInfo.Error.alreadymarkedelsewhere:
-            <h1>Already marked present elsewhere</h1>
+                <strong>Error!</strong> <text>Already marked present elsewhere.</text>
                 break;
             case MeetingController.ScanTicketInfo.Error.noorg:
-            <h1>No Organization</h1>
+                <strong>Error!</strong> <text>No organization.</text>
                 break;
             case MeetingController.ScanTicketInfo.Error.nomeeting:
-            <h1>No Meeting</h1>
+                <strong>Error!</strong> <text>No meeting.</text>
                 break;
         }
     }
@@ -43,9 +43,9 @@
     }
     @if (Model.person != null)
     {
-        <table cellpadding="5">
+        <table class="table">
             <tr>
-                <td class="center">
+                <td class="text-center">
                     <input type="checkbox" pid="@Model.person.PeopleId" checked="checked" class="atck" />
                 </td>
                 <td>@Model.person.Name (@Model.person.Age)</td>
@@ -66,7 +66,7 @@
             @foreach (var m in Model.family ?? new List<MeetingController.FamilyMemberInfo>())
             {
             <tr>
-                <td class="center">
+                <td class="text-center">
                     <input type="checkbox" pid="@m.PeopleId" @(m.attended ? "checked=checked" : "") class="atck" />
                 </td>
                 <td class="name">@m.person.Name (@m.person.Age)</td>
@@ -74,7 +74,7 @@
             </tr>
             }
         </table>
-        <table class="@ViewExtensions2.GridClass">
+        <table class="table">
             <tbody></tbody>
         </table>
     }

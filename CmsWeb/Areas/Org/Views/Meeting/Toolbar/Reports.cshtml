@@ -1,22 +1,20 @@
-﻿<ul class="dropdown-menu dropdown-div-reports">
-  <li>
-    <div>
-      <ul class="span12 unstyled pull-left">
-        <li class="header">Reports</li>
-        @if (Model.meeting.MeetingDate >= DateTime.Today)
-        {
-          <li><a href="/Reports/RollsheetForMeeting/@Model.meeting.MeetingId" target="_blank">Rollsheet Report</a></li>
-        }
-        <li><a href="/Reports/PastAttendee/@Model.meeting.OrganizationId" target="_blank">Recent Attendance Report</a></li>
-        <li><a href="/Reports/Attendee/@Model.meeting.MeetingId" target="_blank">Attendee Report</a></li>
-        <li><a href="/Reports/VisitsAbsents/@Model.meeting.MeetingId" target="_blank">Guests/Absentees Report</a></li>
-        <li><a href="/Reports/VisitsAbsents2/@Model.meeting.MeetingId" target="_blank">Guests/Absentees Contact Report</a></li>
-        <li><a href="/Meeting/AttendanceByGroups/@Model.meeting.MeetingId" target="_blank">AttendanceByGroups</a></li>
+﻿<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
+    <li class="col-sm-12">
+        <ul>
+            <li class="dropdown-header">Reports</li>
+            @if (Model.meeting.MeetingDate >= DateTime.Today)
+            {
+                <li><a href="/Reports/RollsheetForMeeting/@Model.meeting.MeetingId" target="_blank"><span class="text-success">Rollsheet Report</span></a></li>
+            }
+            <li><a href="/Reports/PastAttendee/@Model.meeting.OrganizationId" target="_blank"><span class="text-success">Recent Attendance Report</span></a></li>
+            <li><a href="/Reports/Attendee/@Model.meeting.MeetingId" target="_blank"><span class="text-success">Attendee Report</span></a></li>
+            <li><a href="/Reports/VisitsAbsents/@Model.meeting.MeetingId" target="_blank"><span class="text-success">Guests/Absentees Report</span></a></li>
+            <li><a href="/Reports/VisitsAbsents2/@Model.meeting.MeetingId" target="_blank"><span class="text-success">Guests/Absentees Contact Report</span></a></li>
+            <li><a href="/Meeting/AttendanceByGroups/@Model.meeting.MeetingId" target="_blank"><span class="text-success">Attendance By Groups</span></a></li>
 
-        <li class="header">Special Pages</li>
-        <li><a href="/Meeting/iPad/@Model.meeting.MeetingId">iPad Attendance</a></li>
-        <li><a href="/Meeting/tickets/@Model.meeting.MeetingId">Ticketing Attendance</a></li>
-      </ul>
-    </div>
-  </li>
+            <li class="dropdown-header">Special Pages</li>
+            <li><a href="/Meeting/iPad/@Model.meeting.MeetingId"><span class="text-success">iPad Attendance</span></a></li>
+            <li><a href="/Meeting/tickets/@Model.meeting.MeetingId"><span class="text-success">Ticketing Attendance</span></a></li>
+        </ul>
+    </li>
 </ul>

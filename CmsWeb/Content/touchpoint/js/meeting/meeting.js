@@ -1,38 +1,50 @@
 ﻿$(function () {
 
-    $('#AddFromTag').dialog({
-        title: 'Add From Tag',
-        bgiframe: true,
-        autoOpen: false,
-        width: 750,
-        height: 650,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            window.location.reload();
-        }
-    });
+    $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                    '<i class="fa fa-fw fa-check"></i>' +
+                                '</button>' +
+                                '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                    '<i class="fa fa-fw fa-times"></i>' +
+                                '</button>';
 
-    //$("a.trigger-dropdown").dropdown2();
+    //$('#AddFromTag').dialog({
+    //    title: 'Add From Tag',
+    //    bgiframe: true,
+    //    autoOpen: false,
+    //    width: 750,
+    //    height: 650,
+    //    modal: true,
+    //    overlay: {
+    //        opacity: 0.5,
+    //        background: "black"
+    //    }, close: function () {
+    //        window.location.reload();
+    //    }
+    //});
 
-    $('body').on("click", 'a.addfromtag', function (e) {
-        e.preventDefault();
-        var d = $('#AddFromTag');
-        $('iframe', d).attr("src", this.href);
-        d.dialog("option", "title", "Add Attendees From Tag");
-        d.dialog("open");
-    });
+    //$('body').on("click", 'a.addfromtag', function (e) {
 
-    $(".clickSelectG").editable("/Meeting/EditGroup/", {
-        indicator: '<img src="/Content/images/loading.gif">',
-        loadurl: "/Meeting/MeetingTypes/",
-        loadtype: "POST",
-        type: "select",
-        submit: "OK",
-        style: 'display: inline',
-        tooltip: 'Click to edit...',
+    //    e.preventDefault();
+    //    var d = $('#AddFromTag');
+    //    $('iframe', d).attr("src", this.href);
+    //    d.dialog("option", "title", "Add Attendees From Tag");
+    //    d.dialog("open");
+    //});
+
+    $(".clickSelectG").editable({
+        mode: 'popup',
+        type: 'select',
+        url: "/Meeting/EditGroup/",
+        source: "/Meeting/MeetingTypes/",
+        sourceOptions: {
+            type: 'post'
+        },
+        params: function (params) {
+            var data = {};
+            data['id'] = params.pk;
+            data['value'] = params.value;
+            return data;
+        },
         callback: function (value, settings) {
             if (value == 'Group (headcount)')
                 $(".headcount").editable("enable");
@@ -41,87 +53,71 @@
         }
     });
 
-    $(".clickSelectC").editable("/Meeting/EditAttendCredit/", {
-        indicator: '<img src="/Content/images/loading.gif">',
-        loadurl: "/Meeting/AttendCredits/",
-        loadtype: "POST",
-        type: "select",
-        submit: "OK",
-        tooltip: 'Click to edit...',
-        style: 'display: inline'
+    $(".clickSelectC").editable({
+        mode: 'popup',
+        type: 'select',
+        url: "/Meeting/EditAttendCredit/",
+        source: "/Meeting/AttendCredits/",
+        sourceOptions: {
+            type: 'post'
+        },
+        params: function (params) {
+            var data = {};
+            data['id'] = params.pk;
+            data['value'] = params.value;
+            return data;
+        }
     });
 
-    $(".headcount").editable("/Meeting/Edit/", {
-        tooltip: "Click to edit...",
-        placeholder: "edit",
-        style: 'display: inline',
-        width: '40px',
-        height: 25,
-        submit: 'OK',
-        data: function (value, settings) {
-            if (value === '0')
-                return '';
-            return value;
-        },
+    $(".headcount").editable({
+        mode: 'popup',
+        type: 'text',
+        url: "/Meeting/Edit/",
         callback: function (value) {
             if (value.startsWith("error:"))
-                alert(value);
+                swal("Error!", value, "error");
             value = "";
+        },
+        params: function (params) {
+            var data = {};
+            data['id'] = params.pk;
+            data['value'] = params.value;
+            return data;
         }
     });
 
-    $(".clickEdit").editable("/Meeting/Edit/", {
-        indicator: "<img src='/Content/images/loading.gif'>",
-        tooltip: "Click to edit...",
-        style: 'display: inline',
-        width: '300px',
-        height: 25,
-        submit: 'OK',
-        data: function (value, settings) {
-            if (value === '0')
-                return '';
-            return value;
-        },
+    $(".clickEdit").editable({
+        mode: 'popup',
+        type: 'text',
+        url: "/Meeting/Edit/",
         callback: function (value) {
             if (value.startsWith("error:"))
-                alert(value);
+                swal("Error!", value, "error");
             value = "";
+        },
+        params: function (params) {
+            var data = {};
+            data['id'] = params.pk;
+            data['value'] = params.value;
+            return data;
         }
     });
 
-    $('#visitorDialog').dialog({
-        title: 'Add Guests Dialog',
-        bgiframe: true,
-        autoOpen: false,
-        width: 750,
-        height: 700,
-        modal: true,
-        overlay: {
-            opacity: 0.5,
-            background: "black"
-        }, close: function () {
-            $('iframe', this).attr("src", "");
-        }
-    });
-
-    $('#addvisitor,#addregistered').click(function (e) {
-        e.preventDefault();
-        if (e.shiftKey) {
-            $("#addallguests").click();
-        }
-        else {
-            var d = $('#visitorDialog');
-            $('iframe', d).attr("src", this.href);
-            d.dialog("open");
-        }
-    });
     $('#a' +
         'ddallguests').click(function (e) {
-        if (confirm("Are you sure you want to join all guests to org?")) {
-            $.post("/Meeting/JoinAllVisitors/" + $("#meetingid").val(), {}, function (ret) {
-                alert(ret);
+            swal({
+                title: "Are you sure you want to join all guests to org?",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-warning",
+                confirmButtonText: "Yes, continue!",
+                closeOnConfirm: true
+            },
+            function () {
+                $.post("/Meeting/JoinAllVisitors/" + $("#meetingid").val(), {}, function (ret) {
+                    swal(ret);
+                });
             });
-        }
         });
 
     if ($("#showbuttons input[name=show]:checked").val() == "attends") {
@@ -132,38 +128,25 @@
 
     $('#showbuttons input:radio').change(function () {
         var r = $(this);
-        $.blockUI({
-            overlayCSS: { opacity: 0 },
-            css: {
-                border: 'none',
-                padding: '15px',
-                backgroundColor: '#000',
-                '-webkit-border-radius': '10px',
-                '-moz-border-radius': '10px',
-                opacity: .5,
-                color: '#fff'
-            },
-            onBlock: function () {
-                $("#attends > tbody > tr").hide().removeClass("alt");
-                switch (r.val()) {
-                    case "attends":
-                        $(".atck:checked").parent().parent().show();
-                        break;
-                    case "absents":
-                        $(".atck:not(:checked)").parent().parent().show();
-                        break;
-                    case "reg":
-                        $(".commitment:not(:contains('Uncommitted'))").parent().parent().show();
-                        $(".atck:checked").parent().parent().show();
-                        break;
-                    case "all":
-                        $("#attends > tbody > tr").show();
-                        break;
-                }
-                $("#attends > tbody > tr:visible:even").addClass("alt");
-                $.unblock();
-            }
-        });
+        $.block();
+
+        $("#attends > tbody > tr").hide();
+        switch (r.val()) {
+            case "attends":
+                $(".atck:checked").parent().parent().show();
+                break;
+            case "absents":
+                $(".atck:not(:checked)").parent().parent().show();
+                break;
+            case "reg":
+                $(".commitment:not(:contains('Uncommitted'))").parent().parent().show();
+                $(".atck:checked").parent().parent().show();
+                break;
+            case "all":
+                $("#attends > tbody > tr").show();
+                break;
+        }
+        $.unblock();
     });
 
     $('#currmembers').change(function () {
@@ -226,13 +209,20 @@
     $('#attends').bind('mousedown', function (e) {
         if ($.atckenabled) {
             if ($(e.target).hasClass("rgck")) {
-                $(e.target).editable("/Meeting/EditCommitment/", {
-                    indicator: '<img src="/Content/images/loading.gif">',
-                    loadtype: 'post',
-                    loadurl: "/Meeting/AttendCommitments/",
-                    type: "select",
-                    submit: "OK",
-                    style: 'display: inline'
+                $(e.target).editable({
+                    mode: 'popup',
+                    type: 'select',
+                    url: "/Meeting/EditCommitment/",
+                    source: "/Meeting/AttendCommitments/",
+                    sourceOptions: {
+                        type: 'post'
+                    },
+                    params: function (params) {
+                        var data = {};
+                        data['id'] = params.pk;
+                        data['value'] = params.value;
+                        return data;
+                    }
                 });
             }
             if ($(e.target).hasClass("atck")) {
@@ -253,7 +243,7 @@
         }, function (ret) {
             if (ret.error) {
                 ck.attr("checked", !ck.is(':checked'));
-                alert(ret.error);
+                swal("Error!", ret.error, "error");
             } else {
                 tr.effect("highlight", {}, 3000);
                 for (var i in ret) {
@@ -275,7 +265,7 @@
         if (text.substring(2, 0) === "M.") {
             $.post("/Meeting/CreateMeeting/", { id: text }, function (ret) {
                 if (ret.substring(5, 0) === "error")
-                    alert(ret);
+                    swal("Error!", ret, "error");
                 else
                     window.location = ret;
             });
@@ -291,71 +281,87 @@
     $("#wandtarget").focus();
 
     $.extraEditable = function () {
-        $('.editarea').editable('/Meeting/EditExtra/', {
+        $(".editarea").editable({
+            mode: 'popup',
             type: 'textarea',
-            submit: 'OK',
-            rows: 5,
-            width: 200,
-            indicator: '<img src="/Content/images/loading.gif">',
-            tooltip: 'Click to edit...'
+            url: "/Meeting/EditExtra/",
+            params: function (params) {
+                var data = {};
+                data['id'] = params.pk;
+                data['value'] = params.value;
+                return data;
+            }
         });
-        $(".editline").editable("/Meeting/EditExtra/", {
-            indicator: "<img src='/Content/images/loading.gif'>",
-            tooltip: "Click to edit...",
-            style: 'display: inline',
-            width: 200,
-            height: 25,
-            submit: 'OK'
+
+        $(".editline").editable({
+            mode: 'popup',
+            type: 'text',
+            url: "/Meeting/EditExtra/",
+            params: function (params) {
+                var data = {};
+                data['id'] = params.pk;
+                data['value'] = params.value;
+                return data;
+            }
         });
     };
 
-    $("#newvalueform").dialog({
-        autoOpen: false,
-        buttons: {
-            "Ok": function () {
-                var ck = $("#multiline").is(':checked');
-                var fn = $("#fieldname").val();
-                var v = $("#fieldvalue").val();
-                if (fn)
-                    $.post("/Meeting/NewExtraValue/" + $("#meetingid").val(), { field: fn, value: v, multiline: ck }, function (ret) {
-                        if (ret.startsWith("error"))
-                            alert(ret);
-                        else {
-                            $("#extras > tbody").html(ret);
-                            $.extraEditable();
-                        }
-                        $("#fieldname").val("");
-                    });
-                $(this).dialog("close");
-            }
-        }
-    });
-
     $("body").on("click", '#newextravalue', function (ev) {
         ev.preventDefault();
-        var d = $('#newvalueform');
-        d.dialog("open");
+        $('#newvalueform').modal("show");
+    });
+
+    $('#newvalueform').on('shown.bs.modal', function(e) {
+        $("#fieldname").val("").focus();
+    });
+
+    $("body").on("click", '#extra-value-submit', function (ev) {
+        ev.preventDefault();
+        var ck = $("#multiline").is(':checked');
+        var fn = $("#fieldname").val();
+        var v = $("#fieldvalue").val();
+        if (fn)
+            $.post("/Meeting/NewExtraValue/" + $("#meetingid").val(), { field: fn, value: v, multiline: ck }, function (ret) {
+                if (ret.startsWith("error"))
+                    swal("Error!", ret, "error");
+                else {
+                    $("#extras > tbody").html(ret);
+                    $.extraEditable();
+                }
+                $("#fieldname").val("");
+            });
+        $('#newvalueform').modal("hide");
     });
 
     $("body").on("click", 'a.deleteextra', function (ev) {
         ev.preventDefault();
-        if (confirm("are you sure?"))
-            $.post("/Meeting/DeleteExtra/" + $("#meetingid").val(), { field: $(this).attr("field") }, function (ret) {
+        var field = $(this).attr("field");
+
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.post("/Meeting/DeleteExtra/" + $("#meetingid").val(), { field: field }, function (ret) {
                 if (ret.startsWith("error"))
-                    alert(ret);
+                    swal("Error!", ret, "error");
                 else {
                     $("#extras > tbody").html(ret);
                     $.extraEditable();
                 }
             });
+        });
         return false;
     });
 });
 
 function AddSelected(ret) {
-    $('#visitorDialog').dialog("close");
     if (ret.error)
-        alert(ret.error);
+        swal("Error!", ret.error, "error");
 
     window.location.reload(true);
 }
