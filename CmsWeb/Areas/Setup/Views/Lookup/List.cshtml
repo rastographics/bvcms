@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Setup.Controllers.LookupController.Row>
 @{
     Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Lookups";
-    ViewBag.PageHeader = "Lookup Lists";
+    ViewBag.Title = "Lookup Codes";
+    ViewBag.PageHeader = "Lookup Codes";
 }
 @if (!User.IsInRole("Admin"))
 {
@@ -34,6 +34,7 @@ else
                         <li><a href="/Lookup/AddressType">Address Type</a></li>
                         <li><a href="/Lookup/FamilyPosition">Family Position</a></li>
                         <li><a href="/Lookup/Gender">Gender</a></li>
+                        <li><a href="/Lookup/InterestPoint">Interest Point</a></li>
                         <li><a href="/Lookup/MaritalStatus">Marital Status</a></li>
                         <li><a href="/Lookup/ResidentCode">Resident Code</a></li>
                     </ul>
@@ -49,7 +50,6 @@ else
                         <li><a href="/Lookup/AttendType">Attend Type</a></li>
                         <li><a href="/Lookup/Campus">Campus</a></li>
                         <li><a href="/Lookup/EntryPoint">Entry Point</a></li>
-                        <li><a href="/Lookup/InterestPoint">Interest Point</a></li>
                         <li><a href="/MemberType">Member Types</a></li>
                         <li><a href="/Lookup/OrganizationStatus">Organization Status</a></li>
                         <li><a href="/Lookup/OrganizationType">Organization Type</a></li>
