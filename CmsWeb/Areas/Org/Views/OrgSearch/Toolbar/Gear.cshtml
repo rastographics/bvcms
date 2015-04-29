@@ -1,14 +1,14 @@
 ﻿<ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-1" role="menu">
     <li class="col-sm-12">
         <ul>
-            <li><a id="newmeetings" href='#'><span class="text-success">Create Meetings</span></a></li>
+            <li><a id="newmeetings" href='#'><span class="org-context">Create Meetings</span></a></li>
             @if (Session["OrgCopySettings"] != null)
             {
-                <li><a id="PasteSettings" href="/OrgSearch/PasteSettings"><span class="text-success">Paste Settings</span></a></li>
+                <li><a id="PasteSettings" href="/OrgSearch/PasteSettings"><span class="org-context">Paste Settings</span></a></li>
             }
             @if (User.IsInRole("Admin"))
             {
-                <li><a id="RepairTransactions" href="/OrgSearch/RepairTransactions"><span class="text-success">Repair Transactions</span></a></li>
+                <li><a id="RepairTransactions" href="/OrgSearch/RepairTransactions"><span class="org-context">Repair Transactions</span></a></li>
             }
         </ul>
     </li>

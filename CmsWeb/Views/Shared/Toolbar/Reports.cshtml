@@ -10,7 +10,7 @@
     @if (((bool?)ViewBag.OrganizationContext) == true)
     {
         <li class="col-sm-12 text-center">
-            <i>The <span class="text-success">green menu items</span> apply to the organization, the rest apply to the filtered list of people.</i>
+            <i>The <span class="org-context">green menu items</span> apply to the organization, the rest apply to the filtered list of people.</i>
         </li>
     }
     <li class="col-sm-4">
@@ -29,7 +29,7 @@
                 <li class="dropdown-header current-list pending-list orgcontext">Org Members Export</li>
                 <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' title="Includes Org Member info" class="qid">Member Export</a></li>
                 <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' title="Includes Org Member and Small Group columns" class="qid">Groups Export</a></li>
-                <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge"><span class="text-success">Promotion Export</span></a></li>
+                <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge"><span class="org-context">Promotion Export</span></a></li>
             }
             <li class="divider"></li>
             <li class="dropdown-header">Other Exports</li>
@@ -66,11 +66,11 @@
             {
                 <li class="divider"></li>
                 <li class="dropdown-header">Org Members Reports</li>
-                <li><a id="RollsheetLink" href='#' title="Rollsheet Report"><span class="text-success">Rollsheet Report</span></a></li>
-                <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report"><span class="text-success">Rally Rollsheet</span></a></li>
-                <li><a href='/Reports/Roster1/@qid?oid=@oid' target="report"><span class="text-success">Roster Report</span></a></li>
-                <li><a href='/Reports/Roster/@qid?oid=@oid' target="report"><span class="text-success">Extended Roster</span></a></li>
-                <li><a href='/Reports/Registration/@qid?oid=@oid' target="_blank"><span class="text-success">Registration Report</span></a></li>
+                <li><a id="RollsheetLink" href='#' title="Rollsheet Report"><span class="org-context">Rollsheet Report</span></a></li>
+                <li><a id="RallyRollsheetLink" href='#' title="Rally Rollsheet Report"><span class="org-context">Rally Rollsheet</span></a></li>
+                <li><a href='/Reports/Roster1/@qid?oid=@oid' target="report"><span class="org-context">Roster Report</span></a></li>
+                <li><a href='/Reports/Roster/@qid?oid=@oid' target="report"><span class="org-context">Extended Roster</span></a></li>
+                <li><a href='/Reports/Registration/@qid?oid=@oid' target="_blank"><span class="org-context">Registration Report</span></a></li>
             }
             else
             {
@@ -101,10 +101,10 @@
             @if (((bool?)ViewBag.OrganizationContext) == true)
             {
                 <li class="divider"></li>
-                <li class="dropdown-header current-list pending-list orgcontext"><span class="text-success">Org Attendance</span></li>
-                <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank"><span class="text-success">Recent Absents Report</span></a></li>
-                <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank"><span class="text-success">Recent Attendance Report</span></a></li>
-                <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid"><span class="text-success">Attendance Percentages</span></a></li>
+                <li class="dropdown-header current-list pending-list orgcontext">Org Attendance</li>
+                <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank"><span class="org-context">Recent Absents Report</span></a></li>
+                <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank"><span class="org-context">Recent Attendance Report</span></a></li>
+                <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid"><span class="org-context">Attendance Percentages</span></a></li>
             }
             @if (custom.Count > 0)
             {

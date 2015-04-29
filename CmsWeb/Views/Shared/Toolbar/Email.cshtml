@@ -15,8 +15,8 @@
             @if ((bool?)ViewBag.ParentOrgContext == true)
             {
                 <li class="divider"></li>
-                <li><a href='/Email/@ViewBag.leadersqid'><span class="text-success">Leaders under this org</span></a></li>
-                <li><a href='/Email/@ViewBag.membersqid'><span class="text-success">Members under this org</span></a></li>
+                <li><a href='/Email/@ViewBag.leadersqid'><span class="org-context">Leaders under this org</span></a></li>
+                <li><a href='/Email/@ViewBag.membersqid'><span class="org-context">Members under this org</span></a></li>
             }
             <li class="divider"></li>
             <li class="dropdown-header">SMS</li>

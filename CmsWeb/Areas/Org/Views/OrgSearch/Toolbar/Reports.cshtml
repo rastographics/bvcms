@@ -2,42 +2,42 @@
     <li class="col-sm-4">
         <ul>
             <li class="dropdown-header">Export Excel</li>
-            <li><a id="ExportExcel" href="#"><span class="text-success">Export Organizations</span></a></li>
-            <li><a id="ExportMembersExcel" href="#"><span class="text-success">Export Members</span></a></li>
-            <li><a class="StartEndReport" href='/Export2/MeetingsAttendance'><span class="text-success">Meetings/Attendance (date range)</span></a></li>
-            <li class="hideAlt"><a class="StartEndReport" href='/Export2/MeetingsForDateRange'><span class="text-success">Meetings for Date Range</span></a></li>
-            <li><a id="weeklyattendance" href='#'><span class="text-success">Weekly Attendance Pct Export</span></a></li>
+            <li><a id="ExportExcel" href="#"><span class="org-context">Export Organizations</span></a></li>
+            <li><a id="ExportMembersExcel" href="#"><span class="org-context">Export Members</span></a></li>
+            <li><a class="StartEndReport" href='/Export2/MeetingsAttendance'><span class="org-context">Meetings/Attendance (date range)</span></a></li>
+            <li class="hideAlt"><a class="StartEndReport" href='/Export2/MeetingsForDateRange'><span class="org-context">Meetings for Date Range</span></a></li>
+            <li><a id="weeklyattendance" href='#'><span class="org-context">Weekly Attendance Pct Export</span></a></li>
         </ul>
     </li>
     <li class="col-sm-4">
         <ul>
             <li class="dropdown-header">Reports</li>
-            <li><a id="rollsheet1" href='#'><span class="text-success">Roll Sheet(s)</span></a></li>
-            <li><a id="RecentAbsents" href="/Reports/RecentAbsents/"><span class="text-success">Recent Absents</span></a></li>
-            <li><a class="ViewReport" href="/Reports/Roster1"><span class="text-success">Roster</span></a></li>
-            <li><a class="ViewReport" href="/Reports/Roster"><span class="text-success">Roster extended</span></a></li>
-            <li><a class="ViewReport" href="/Reports/OrgLeaders/"><span class="text-success">Leaders</span></a></li>
-            <li><a id="Meetings" href="#"><span class="text-success">Meetings</span></a></li>
-            <li><a class="StartEndReport" href='/Reports/AttendanceDetail'><span class="text-success">Meetings/Attendance (date range)</span></a></li>
-            <li><a class="MonthReport" href='/Reports/MeetingsForMonth'><span class="text-success">Meetings For Month</span></a></li>
+            <li><a id="rollsheet1" href='#'><span class="org-context">Roll Sheet(s)</span></a></li>
+            <li><a id="RecentAbsents" href="/Reports/RecentAbsents/"><span class="org-context">Recent Absents</span></a></li>
+            <li><a class="ViewReport" href="/Reports/Roster1"><span class="org-context">Roster</span></a></li>
+            <li><a class="ViewReport" href="/Reports/Roster"><span class="org-context">Roster extended</span></a></li>
+            <li><a class="ViewReport" href="/Reports/OrgLeaders/"><span class="org-context">Leaders</span></a></li>
+            <li><a id="Meetings" href="#"><span class="org-context">Meetings</span></a></li>
+            <li><a class="StartEndReport" href='/Reports/AttendanceDetail'><span class="org-context">Meetings/Attendance (date range)</span></a></li>
+            <li><a class="MonthReport" href='/Reports/MeetingsForMonth'><span class="org-context">Meetings For Month</span></a></li>
         </ul>
     </li>
     <li class="col-sm-4">
         <ul>
             <li class="dropdown-header">Special Reports</li>
-            <li><a class="ViewReport" href="/Reports/ClassList/"><span class="text-success">Class List</span></a></li>
-            <li><a class="ViewReport" href="/Reports/ShirtSizes"><span class="text-success">Shirt Sizes</span></a></li>
-            <li><a id="checkincontrol" href='#'><span class="text-success">Checkin Control Report</span></a></li>
-            <li><a id="enrollmentcontrol1" href='#'><span class="text-success">Enrollment Control Report</span></a></li>
-            <li><a id="enrollmentcontrol2i" href='#'><span class="text-success">Enrollment Control iPhone/iPad</span></a></li>
+            <li><a class="ViewReport" href="/Reports/ClassList/"><span class="org-context">Class List</span></a></li>
+            <li><a class="ViewReport" href="/Reports/ShirtSizes"><span class="org-context">Shirt Sizes</span></a></li>
+            <li><a id="checkincontrol" href='#'><span class="org-context">Checkin Control Report</span></a></li>
+            <li><a id="enrollmentcontrol1" href='#'><span class="org-context">Enrollment Control Report</span></a></li>
+            <li><a id="enrollmentcontrol2i" href='#'><span class="org-context">Enrollment Control iPhone/iPad</span></a></li>
             @if (User.IsInRole("MissionGiving"))
             {
-                <li><a class="ViewReport" href='/Reports/MissionTripFunding'><span class="text-success">Mission Trip Funding</span></a></li>
-                <li><a class="ViewReport" href="/Reports/MissionTripSenders"><span class="text-success">Mission Trip Senders Export</span></a></li>
-                <li><a class="ViewReport" href='/Export2/MissionTripFunding'><span class="text-success">Mission Trip Funding Export</span></a></li>
+                <li><a class="ViewReport" href='/Reports/MissionTripFunding'><span class="org-context">Mission Trip Funding</span></a></li>
+                <li><a class="ViewReport" href="/Reports/MissionTripSenders"><span class="org-context">Mission Trip Senders Export</span></a></li>
+                <li><a class="ViewReport" href='/Export2/MissionTripFunding'><span class="org-context">Mission Trip Funding Export</span></a></li>
             }
-            <li class="hideAlt"><a class="ViewReport" href='/Reports/SgMap'><span class="text-success">Small Group Pin Map</span></a></li>
-            <li><a id="Structure" href='#'><span class="text-success">Prog/Div/Org Hierarchy Report</span></a></li>
+            <li class="hideAlt"><a class="ViewReport" href='/Reports/SgMap'><span class="org-context">Small Group Pin Map</span></a></li>
+            <li><a id="Structure" href='#'><span class="org-context">Prog/Div/Org Hierarchy Report</span></a></li>
         </ul>
     </li>
 </ul>
