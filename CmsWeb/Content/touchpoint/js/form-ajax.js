@@ -339,12 +339,14 @@
             $('#empty-dialog').modal("show");
 
             var tm = 250; // initial timeout
-            f.on('hidden', function () {
+            $('#empty-dialog').on('hidden.bs.modal', function (e) {
                 tm = 0;
                 f.remove();
-                if (callback)
+                if (callback) {
                     $.InitFunctions[callback]();
+                }
             });
+
             f.on("click", "a.ajaxreloader", function (event) {
                 event.preventDefault();
                 var href = this.href;
