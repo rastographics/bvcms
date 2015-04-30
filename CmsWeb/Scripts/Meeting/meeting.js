@@ -334,6 +334,9 @@
             });
         return false;
     });
+    $.InitFunctions.ReloadPeople = function () {
+        window.location.reload(true);
+    };
 });
 function AddSelected(ret) {
     $('#visitorDialog').dialog("close");
