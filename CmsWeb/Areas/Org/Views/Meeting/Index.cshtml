@@ -190,7 +190,7 @@
                         <tr>
                             <td class="text-right">HeadCount:</td>
                             <td id="HeadCount" class="text-right">
-                                @if (User.IsInRole("Attendance") && CanEditHeadCount)
+                                @if (User.IsInRole("Attendance"))
                                 {
                                     <a id="h=@Model.meeting.MeetingId" class="headcount" data-pk="h=@Model.meeting.MeetingId" data-title="Head Count">@Model.meeting.HeadCount.ToStringNoZero()</a>
                                 }
@@ -291,4 +291,12 @@
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/meeting/meeting.js")
+    @if (User.IsInRole("Attendance") && !CanEditHeadCount)
+    {
+        <script type="text/javascript">
+            $(function () {
+                $(".headcount").editable("disable");
+            });
+        </script>
+    }
 }

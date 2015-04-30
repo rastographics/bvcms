@@ -21,11 +21,12 @@
             data['value'] = params.value;
             return data;
         },
-        callback: function (value, settings) {
-            if (value == 'Group (headcount)')
+        success: function (response, newValue) {
+            if (newValue == 'True') {
                 $(".headcount").editable("enable");
-            else
+            } else {
                 $(".headcount").editable($("#RegularMeetingHeadCount").val());
+            }
         }
     });
 
@@ -49,10 +50,15 @@
         mode: 'popup',
         type: 'text',
         url: "/Meeting/Edit/",
-        callback: function (value) {
-            if (value.startsWith("error:"))
-                swal("Error!", value, "error");
-            value = "";
+        success: function (response, newValue) {
+            if (newValue.startsWith("error:"))
+                swal("Error!", newValue, "error");
+            newValue = "";
+        },
+        error: function (response, newValue) {
+            if (newValue.startsWith("error:"))
+                swal("Error!", newValue, "error");
+            newValue = "";
         },
         params: function (params) {
             var data = {};
@@ -66,10 +72,15 @@
         mode: 'popup',
         type: 'text',
         url: "/Meeting/Edit/",
-        callback: function (value) {
-            if (value.startsWith("error:"))
-                swal("Error!", value, "error");
-            value = "";
+        success: function (response, newValue) {
+            if (newValue.startsWith("error:"))
+                swal("Error!", newValue, "error");
+            newValue = "";
+        },
+        error: function (response, newValue) {
+            if (newValue.startsWith("error:"))
+                swal("Error!", newValue, "error");
+            newValue = "";
         },
         params: function (params) {
             var data = {};
