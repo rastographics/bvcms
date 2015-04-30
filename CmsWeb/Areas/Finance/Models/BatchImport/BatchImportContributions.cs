@@ -84,6 +84,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.StartsWith("1") && text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Length == 94)
                 return new AchImporter().RunImport(text, date, fundid, fromFile);
 
+            if (text.Contains("ProfileID"))
+                return new ServiceUImporter().RunImport(text, date, fundid, fromFile);
+
             throw new Exception("unsupported import file");
         }
 

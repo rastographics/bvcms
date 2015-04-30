@@ -316,6 +316,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\FirstStateImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\ServiceU.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SunTrustImporter.cs">
       <SubType>Code</SubType>
     </Compile>
