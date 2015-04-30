@@ -7,30 +7,6 @@
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
 
-    //$('#AddFromTag').dialog({
-    //    title: 'Add From Tag',
-    //    bgiframe: true,
-    //    autoOpen: false,
-    //    width: 750,
-    //    height: 650,
-    //    modal: true,
-    //    overlay: {
-    //        opacity: 0.5,
-    //        background: "black"
-    //    }, close: function () {
-    //        window.location.reload();
-    //    }
-    //});
-
-    //$('body').on("click", 'a.addfromtag', function (e) {
-
-    //    e.preventDefault();
-    //    var d = $('#AddFromTag');
-    //    $('iframe', d).attr("src", this.href);
-    //    d.dialog("option", "title", "Add Attendees From Tag");
-    //    d.dialog("open");
-    //});
-
     $(".clickSelectG").editable({
         mode: 'popup',
         type: 'select',
