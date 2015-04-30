@@ -234,8 +234,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
-    <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
@@ -251,6 +251,7 @@
     <Compile Include="Areas\Dialog\Controllers\SearchOrgsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchUsersController.cs" />
     <Compile Include="Areas\Dialog\Controllers\TransactionHistoryController.cs" />
+    <Compile Include="Areas\Dialog\Models\AddAttendeesFromTag.cs" />
     <Compile Include="Areas\Dialog\Models\AddToOrgFromTag.cs" />
     <Compile Include="Areas\Dialog\Models\DeleteMeeting.cs" />
     <Compile Include="Areas\Dialog\Models\NewMeetingInfo.cs" />
@@ -1611,8 +1612,6 @@
     <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Reports.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Toolbar.cshtml" />
     <Content Include="Areas\Dialog\Views\Web.config" />
-    <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Index.cshtml" />
-    <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Progress.cshtml" />
     <Content Include="Areas\Dialog\Views\AddOrganization\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Progress.cshtml" />
@@ -1764,6 +1763,8 @@
     <Content Include="Areas\Org\Views\Org2\DisplayTemplates\TimeSlot.cshtml" />
     <Content Include="Areas\Dialog\Views\ValidateAddress\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\ValidateAddress\Process.cshtml" />
+    <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Process.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
