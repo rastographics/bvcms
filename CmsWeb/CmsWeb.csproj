@@ -1573,7 +1573,6 @@
     <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
     <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
@@ -1627,7 +1626,6 @@
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Summary.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Grid.cshtml" />
-    <Content Include="Views\ExtraValue\Reports\Grid2.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
     <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Reports\Views\Export\FamilyMembers.cshtml" />
@@ -2544,8 +2542,6 @@
     </Content>
     <Content Include="Areas\Manage\Views\Account\Error.cshtml">
     </Content>
-    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid.cshtml">
-    </Content>
     <Content Include="Areas\Manage\Views\Account\SetPassword.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\LinkUsed.cshtml">
@@ -2638,7 +2634,6 @@
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodesDropdown.cshtml" />
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
-    <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogEdit.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Options.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Send.cshtml" />
@@ -2797,8 +2792,6 @@
     <Content Include="Areas\Finance\Views\Statements\Progress.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Areas\Finance\Views\FinanceReports\ContributionYears.cshtml">
-    </Content>
     <Content Include="Areas\Manage\Views\Account\ChangePassword.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\ChangePasswordSuccess.cshtml">
@@ -2828,8 +2821,6 @@
     <Content Include="Areas\Manage\Views\Display\EditHTML.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Display\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Manage\Views\Display\OrgContent.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\OrgMembers\Index.cshtml">
       <SubType>Code</SubType>
