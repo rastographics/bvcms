@@ -950,9 +950,6 @@
     <Content Include="Errors\DatabaseNotInitialized.aspx" />
     <Content Include="Errors\DatabaseServerNotFound.aspx" />
     <Content Include="gulpfile.js" />
-    <Content Include="minify.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Scripts\Admin\UpdateFields.js" />
@@ -3175,10 +3172,6 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
-  <Import Project="minify.xml" />
-  <Target Name="BeforeBuild" Condition="'$(Configuration)'!='Debug'">
-    <CallTarget Targets="Minify" />
-  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
