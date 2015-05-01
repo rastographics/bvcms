@@ -955,9 +955,6 @@
     <Content Include="CustomColumns.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Errors\DatabaseCreationError.aspx" />
-    <Content Include="Errors\DatabaseNotInitialized.aspx" />
-    <Content Include="Errors\DatabaseServerNotFound.aspx" />
     <Content Include="gulpfile.js" />
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
@@ -2482,14 +2479,12 @@
     <Content Include="Content\constants.py" />
     <Content Include="Content\Tutorials\_Home_Index_Menu.cshtml" />
     <Content Include="Content\Tutorials\_Home_Index.cshtml" />
-    <Content Include="Errors\DatabaseNotFound.aspx" />
     <Content Include="Errors\SiteDisabled.htm" />
     <Content Include="Content\images\arrowdnup.png" />
     <Content Include="Content\images\deliveredbybvcms.gif" />
     <Content Include="Content\images\draggable-icon.png" />
     <Content Include="Content\images\dropdown.gif" />
     <Content Include="Content\images\linkselect_bkgrd.png" />
-    <Content Include="Errors\SessionTimeout.htm" />
     <Content Include="favicon.ico" />
     <Content Include="Scripts\jQuery\jquery.mousewheel.js" />
     <Content Include="Content\images\magnifier.png" />
@@ -2528,7 +2523,6 @@
     <Content Include="Scripts\Org\RegSettings.js" />
     <Content Include="Scripts\Dialog\SearchUsers.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment.js" />
-    <Content Include="Errors\AccessDenied.htm" />
     <Content Include="Global.asax" />
     <Content Include="Content\images\bvcms120.png" />
     <Content Include="Content\images\bvcms130.png" />
@@ -3059,9 +3053,6 @@
     <Content Include="Views\Shared\Notices.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Errors\Error.aspx" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Content\images\12-em-cross.png" />
     <Content Include="Content\images\border-2.gif" />
     <Content Include="Content\images\border.gif" />
@@ -3140,7 +3131,6 @@
     <Content Include="Scripts\Org\OrgSearch.js" />
     <Content Include="Scripts\Dialog\SearchAdd.js" />
     <Content Include="Scripts\Dialog\OrgMemberDialog.js" />
-    <Content Include="Errors\PageNotFound.aspx" />
     <Content Include="Scripts\js\CheckIn.js" />
     <Content Include="Scripts\js\Event.js" />
     <Content Include="Scripts\js\Pager.js" />

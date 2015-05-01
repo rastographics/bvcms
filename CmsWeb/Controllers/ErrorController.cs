@@ -48,12 +48,6 @@ namespace CmsWeb.Controllers
         public ActionResult UnAuthorized()
         {
             Response.TrySkipIisCustomErrors = true;
-
-            if (!Request.IsAjaxRequest())
-            {
-                Response.StatusCode = 401;
-            }
-
             return View();
         }
 
