@@ -3,6 +3,7 @@ using System.Text;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
+using UtilityExtensions;
 
 public class Fingerprint
 {
