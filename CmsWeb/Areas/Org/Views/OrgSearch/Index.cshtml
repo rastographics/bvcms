@@ -47,6 +47,7 @@
                     </div>
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Organization Type" data-content="At the top of the list are pseudo org types. The are actually attributes of an organization. These are followed by specific Org Types you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="TypeId" class="control-label">Organization Type</label>
                             @Html.DropDownList("TypeId", OrgSearchModel.OrgTypeFilters(), new { @class = "form-control" })
                         </div>
@@ -147,6 +148,7 @@
                             <hr/>
                             <div class="row">
                                 <div class="col-md-8 col-lg-6">
+                                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Target Type" data-content="These are specific Org Types that you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a>&nbsp;
                                     <label for="TargetType" class="control-label">Target Type</label>
                                     <div class="form-inline">
                                         <div class="input-group  col-xs-12 col-sm-7 col-md-7 col-lg-8">
