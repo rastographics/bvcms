@@ -324,8 +324,8 @@ namespace CmsWeb.Models
                         cid,
                         totalitems = bh.BundleDetails.Sum(d =>
                             d.Contribution.ContributionAmount).ToString2("C2"),
-                        diff = ((bh.TotalCash + bh.TotalChecks + bh.TotalEnvelopes) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount)),
-                        difference = ((bh.TotalCash + bh.TotalChecks + bh.TotalEnvelopes) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount)).ToString2("C2"),
+                        diff = ((bh.TotalCash.GetValueOrDefault() + bh.TotalChecks.GetValueOrDefault() + bh.TotalEnvelopes.GetValueOrDefault()) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount.GetValueOrDefault())),
+                        difference = ((bh.TotalCash.GetValueOrDefault() + bh.TotalChecks.GetValueOrDefault() + bh.TotalEnvelopes.GetValueOrDefault()) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount)).ToString2("C2"),
                         itemcount = bh.BundleDetails.Count(),
                         othersplitamt = othersplitamt.ToString2("N2")
                     };
@@ -448,7 +448,7 @@ namespace CmsWeb.Models
             }
 
             var totalItems = bundle.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
-            var diff = (bundle.TotalCash + bundle.TotalChecks + bundle.TotalEnvelopes) - totalItems;
+            var diff = (bundle.TotalCash.GetValueOrDefault() + bundle.TotalChecks.GetValueOrDefault() + bundle.TotalEnvelopes.GetValueOrDefault()) - totalItems;
             return new
             {
                 totalitems = totalItems.ToString2("C2"),

@@ -13,7 +13,7 @@
 @Html.Hidden("fundispledge", Model.FundName)
 @{
     var b = Model.bundle;
-    var bundleTotal = b.TotalCash + b.TotalChecks + b.TotalEnvelopes;
+    var bundleTotal = b.TotalCash.GetValueOrDefault() + b.TotalChecks.GetValueOrDefault() + b.TotalEnvelopes.GetValueOrDefault();
     var difference = bundleTotal - Model.TotalItems;
 }
 @section head {
@@ -52,7 +52,7 @@
                         <div class="stat-panel-inner-container">
                             <div class="stat-panel">
                                 <span class="stat-title">BUNDLE TOTAL</span>
-                                <span class="stat-figure">@(bundleTotal.GetValueOrDefault().ToString("C2"))</span>
+                                <span class="stat-figure">@(bundleTotal.ToString("C2"))</span>
                             </div>
                             <div class="stat-panel">
                                 <span class="stat-title">ITEMS TOTAL</span>
@@ -173,15 +173,15 @@
                     <tfoot>
                         <tr class="totals-row">
                             <td class="text-left">Bundle Total</td>
-                            <td class="text-right">@(bundleTotal.GetValueOrDefault().ToString("C2"))</td>
+                            <td class="text-right">@(bundleTotal.ToString("C2"))</td>
                         </tr>
-                        <tr class="diffRow" @(difference.GetValueOrDefault() == 0 ? "style=display:none;" : "")>
+                        <tr class="diffRow" @(difference == 0 ? "style=display:none;" : "")>
                             <td class="text-left">Items Total</td>
                             <td class="text-right totalitems">@Model.TotalItems.ToString("C2")</td>
                         </tr>
-                        <tr class="totals-row warning diffRow" @(difference.GetValueOrDefault() == 0 ? "style=display:none;" : "")>
+                        <tr class="totals-row warning diffRow" @(difference == 0 ? "style=display:none;" : "")>
                             <td class="text-left">Difference</td>
-                            <td class="text-right difference">@difference.GetValueOrDefault().ToString("C2")</td>
+                            <td class="text-right difference">@difference.ToString("C2")</td>
                         </tr>
                     </tfoot>
                 </table>
