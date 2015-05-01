@@ -14,7 +14,7 @@ BEGIN
 	DECLARE @is_not_trusted BIT;
 	DECLARE @delete_referential_action TINYINT;
 	DECLARE @update_referential_action TINYINT;
-	DECLARE @tsql2 NVARCHAR(4000);
+	DECLARE @tsql2 VARCHAR(MAX);
 	DECLARE @fkCol sysname;
 	DECLARE @pkCol sysname;
 	DECLARE @col1 BIT;
@@ -114,22 +114,22 @@ BEGIN
                       WHEN 1 THEN ' NOT FOR REPLICATION '
                       ELSE ''
                     END + ';';
+	    --PRINT @tsql;
+
+	    SET @tsql = @tsql + CHAR(13) + CHAR(10) + 'ALTER TABLE ' + QUOTENAME(@schema_name) + '.'
+	        + QUOTENAME(@table_name) + CASE @is_disabled
+	                                     WHEN 0 THEN ' CHECK '
+	                                     ELSE ' NOCHECK '
+	                                   END + 'CONSTRAINT '
+	        + QUOTENAME(@constraint_name) + ';';
+	    --PRINT @tsql;
+
+	    FETCH NEXT FROM FKcursor INTO @schema_name, @table_name, @constraint_name,
+	        @referenced_object_name, @constraint_object_id, @is_disabled,
+	        @is_not_for_replication, @is_not_trusted, @delete_referential_action,
+	        @update_referential_action, @referenced_schema_name;
     END;
 
-    --PRINT @tsql;
-
-    SET @tsql = @tsql + CHAR(13) + CHAR(10) + 'ALTER TABLE ' + QUOTENAME(@schema_name) + '.'
-        + QUOTENAME(@table_name) + CASE @is_disabled
-                                     WHEN 0 THEN ' CHECK '
-                                     ELSE ' NOCHECK '
-                                   END + 'CONSTRAINT '
-        + QUOTENAME(@constraint_name) + ';';
-    --PRINT @tsql;
-
-    FETCH NEXT FROM FKcursor INTO @schema_name, @table_name, @constraint_name,
-        @referenced_object_name, @constraint_object_id, @is_disabled,
-        @is_not_for_replication, @is_not_trusted, @delete_referential_action,
-        @update_referential_action, @referenced_schema_name;
 
 	CLOSE FKcursor;
 	DEALLOCATE FKcursor;

@@ -6,7 +6,8 @@ CREATE TABLE [dbo].[LongRunningOp]
 [count] [int] NULL,
 [processed] [int] NULL,
 [completed] [datetime] NULL,
-[ElapsedTime] AS (substring(CONVERT([varchar],[completed]-[started],(121)),(12),(20)))
+[ElapsedTime] AS (substring(CONVERT([varchar],[completed]-[started],(121)),(12),(20))),
+[CustomMessage] [nvarchar] (80) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
