@@ -835,6 +835,7 @@
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\block_styles.min.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\char_counter.min.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\colors.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\custom_links.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\file_upload.min.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\font_family.min.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\font_size.min.js" />
