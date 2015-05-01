@@ -3622,6 +3622,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.ElapsedTime", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string ElapsedTime(
+            [Parameter(Name = "start", DbType="datetime")] DateTime? start,
+            [Parameter(Name = "end", DbType="datetime")] DateTime? end
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                start,
+                end
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.AttendDesc", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string AttendDesc(

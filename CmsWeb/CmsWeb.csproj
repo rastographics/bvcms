@@ -236,6 +236,7 @@
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
@@ -257,6 +258,7 @@
     <Compile Include="Areas\Dialog\Models\DeleteMeeting.cs" />
     <Compile Include="Areas\Dialog\Models\NewMeetingInfo.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
+    <Compile Include="Areas\Dialog\Models\OrgSearchDrop.cs" />
     <Compile Include="Areas\Dialog\Models\OrgDrop.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembers.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembersDialogModel.cs" />
@@ -1768,6 +1770,8 @@
     <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Process.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgDrop\Process.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgDrop\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgSearchDrop\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgSearchDrop\Process.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
