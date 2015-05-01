@@ -22,7 +22,7 @@
             {
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") />
+                        <input type="checkbox" name="approvals" @(ck.Approved ? "checked='checked'" : "") value="@ck.Id" />
                         @ck.Description<br />
                     </label>
                 </div>
