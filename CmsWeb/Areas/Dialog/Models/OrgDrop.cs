@@ -97,13 +97,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     om.Drop(db);
                 db.SubmitChanges();
                 if (RemoveFromEnrollmentHistory)
-                {
-                    db.Dispose();
-                    db = new CMSDataContext(Util.ConnectionString);
-                    var q = db.EnrollmentTransactions.Where(tt => tt.OrganizationId == Id && tt.PeopleId == pid);
-                    db.EnrollmentTransactions.DeleteAllOnSubmit(q);
-                    db.SubmitChanges();
-                }
+                    db.ExecuteCommand("DELETE dbo.EnrollmentTransaction WHERE PeopleId = {0} AND OrganizationId = {1}", pid, Id);
                 lop = FetchLongRunningOp(db, model.Id, Op);
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
