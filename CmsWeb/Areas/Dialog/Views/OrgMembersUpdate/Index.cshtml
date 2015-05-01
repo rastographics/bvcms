@@ -41,9 +41,6 @@
         </ul>
       </div>
     }
-    <a href="/OrgMembersUpdate/ShowDrop" class="btn btn-warning ajax">
-      Drop
-    </a>
     @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member && (admin || manager))
     {
     <a href="/OrgMembersUpdate/SmallGroups" class="btn btn-warning ajax">
