@@ -475,17 +475,17 @@ namespace CmsWeb.Models
             var task = DbUtil.Db.Tasks.SingleOrDefault(t => t.Id == TaskId);
             if (task == null)
                 return;
-            if (HttpContext.Current.User.IsInRole("Admin"))
-            {
-                DbUtil.Db.Tasks.DeleteOnSubmit(task);
-                DbUtil.Db.SubmitChanges();
-            }
-            else if (task.OwnerId == PeopleId)
+            if (task.OwnerId == PeopleId)
             {
                 if (task.CoOwnerId != null)
                     DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner,
                         "Task Deleted by " + task.Owner.Name,
                         task.Description + "<br/>\n" + task.AboutName);
+                DbUtil.Db.Tasks.DeleteOnSubmit(task);
+                DbUtil.Db.SubmitChanges();
+            }
+            else if (HttpContext.Current.User.IsInRole("Admin"))
+            {
                 DbUtil.Db.Tasks.DeleteOnSubmit(task);
                 DbUtil.Db.SubmitChanges();
             }
