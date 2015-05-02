@@ -236,6 +236,8 @@
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
     <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
@@ -256,6 +258,8 @@
     <Compile Include="Areas\Dialog\Models\DeleteMeeting.cs" />
     <Compile Include="Areas\Dialog\Models\NewMeetingInfo.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
+    <Compile Include="Areas\Dialog\Models\OrgSearchDrop.cs" />
+    <Compile Include="Areas\Dialog\Models\OrgDrop.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembers.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembersUpdate.cs" />
@@ -1728,8 +1732,6 @@
     <Content Include="Areas\Dialog\Views\RepairTransactions\Process.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Toolbar\Email.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Toolbar\Gear.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Dropped.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMembersUpdate\ShowDrop.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Updated.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\SmallGroups.cshtml" />
     <Content Include="Areas\Org\Views\Web.config">
@@ -1766,6 +1768,10 @@
     <Content Include="Areas\Dialog\Views\ValidateAddress\Process.cshtml" />
     <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Process.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgDrop\Process.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgDrop\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgSearchDrop\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgSearchDrop\Process.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
