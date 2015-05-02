@@ -19,14 +19,23 @@
                         var topid0 = $("#topid0").val();
                         if (opts.UpdateShared)
                             opts.UpdateShared(topid, topid0, $this);
+                        if (opts.Select)
+                            opts.Select(topid, topid0, $this);
+                        $('#empty-dialog').modal("hide");
+                        return false;
+                    });
+                    $(f).on("click", "a.select", function (ev2) {
+                        ev2.preventDefault();
+                        if (opts.Select)
+                            opts.Select($(this).attr("value"));
                         $('#empty-dialog').modal("hide");
                         return false;
                     });
                     $(f).off("keypress", "#searchname");
                     $(f).on("keypress", "#searchname", function (e) {
-                        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                        if (e.keyCode === 13) {
                             e.preventDefault();
-                            $('a.search').click();
+                            $('.search', $(f)).click();
                             return false;
                         }
                         return true;

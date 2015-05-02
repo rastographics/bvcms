@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 DbUtil.Db.SubmitChanges();
                 return Redirect("/SearchUsers?ordered=true&topid=" + id);
             }
-            return Redirect("/SearchUsers?ordered=true");
+            return Redirect("/SearchUsers?singlemode=true");
         }
 
         [HttpPost]

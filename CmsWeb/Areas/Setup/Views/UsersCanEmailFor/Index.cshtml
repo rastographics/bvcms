@@ -13,7 +13,8 @@
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
-                    <a href="/PersonCanEmailForList/0" class="btn btn-success editcanemail"><i class="fa fa-plus-circle"></i> Add New People</a>
+                    <a href="/PersonCanEmailForList/0" class="btn btn-success editcanemail"><i class="fa fa-plus-circle"></i> Add New User who Can Email</a>
+                    <a id="new-canemail" class="editcanemail" href=""> </a>
                 </div>
             </div>
             <div class="box-content">
@@ -30,7 +31,7 @@
                             {
                                 <tr>
                                     <td>
-                                        <a class="editcanemail" href="/PersonCanEmailForList/@item.CanEmail">@item.PersonCanEmail.Name</a>
+                                        <a class="editcanemail" id="canemail-@item.CanEmail" href="/PersonCanEmailForList/@item.CanEmail">@item.PersonCanEmail.Name</a>
                                     </td>
                                     <td>
                                         @item.OnBehalfOfPerson.Name
@@ -40,7 +41,7 @@
                         </tbody>
                     </table>
                 </div>
-                <a href="/PersonCanEmailForList/0" class="btn btn-success visible-xs-block btn-block editcanemail"><i class="fa fa-plus-circle"></i> Add New People</a>
+                <a href="/PersonCanEmailForList/0" class="btn btn-success visible-xs-block btn-block editcanemail"><i class="fa fa-plus-circle"></i> Add New User who Can Email</a>
             </div>
         </div>
     </div>
@@ -48,15 +49,5 @@
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/js/dialog/search-users.js")
-    <script type="text/javascript">
-        $(function () {
-            $("a.editcanemail").SearchUsers({
-                UpdateShared: function (topid, topid0) {
-                    $.post("/UpdatePersonCanEmailForList/" + topid, { topid0: topid0 }, function (ret) {
-                        window.location.reload();
-                    });
-                }
-            });
-        });
-    </script>
+    @Fingerprint.Script("/Content/touchpoint/js/admin/users-email-for.js")
 }
