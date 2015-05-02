@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var i = id.Substring(2).ToInt();
             var m = new MeetingModel(i);
-            m.meeting.GroupMeetingFlag = value == "true";
+            m.meeting.GroupMeetingFlag = value == "True";
             DbUtil.Db.SubmitChanges();
             if (m.meeting.GroupMeetingFlag)
                 return Content("Group (headcount)");

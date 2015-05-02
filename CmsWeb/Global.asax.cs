@@ -81,7 +81,7 @@ namespace CmsWeb
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
             var url = Request.Url.OriginalString;
-            if (url.Contains("/Errors/") || url.Contains("/Error/") || url.Contains("healthcheck.txt"))
+            if (url.Contains("/Error/") || url.Contains("/Content/touchpoint/") || url.Contains("healthcheck.txt"))
                 return;
 
             if (Util.AppOffline)

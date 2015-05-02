@@ -425,6 +425,7 @@
         var anyRolesChecked = $('#role-list input[name="role"]').is(':checked');
         if (anyRolesChecked) {
             $('#myDataUserRole').prop('checked', false);
+            $('#role-list input[value="Access"]').prop('checked', true);
         } else {
             $('#myDataUserRole').prop('checked', true);
         }

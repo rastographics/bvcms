@@ -22,7 +22,7 @@
             mode: 'popup',
             type: 'text',
             url: "/OrgGroups/UpdateScore",
-            callback: updateScore,
+            success: updateScore,
             params: function (params) {
                 var data = {};
                 data['id'] = params.pk;
@@ -128,9 +128,9 @@
 
     var scoreTrackerShowing = false;
 
-    function updateScore(value, settings) {
+    function updateScore(response, newValue) {
         var checkID = $(this).attr("peopleID");
-        $("#" + checkID).attr("score", value);
+        $("#" + checkID).attr("score", newValue);
         checkChanged();
     }
 

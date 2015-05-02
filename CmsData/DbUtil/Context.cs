@@ -1112,7 +1112,7 @@ namespace CmsData
         }
         [Function(Name = "dbo.TrackClick")]
         public int TrackClick([Parameter(DbType = "VarChar(50)")] string hash,
-            [Parameter(DbType = "VarChar(500)")] ref string link)
+            [Parameter(DbType = "VarChar(2000)")] ref string link)
         {
             IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
             link = ((string)(result.GetParameterValue(1)));

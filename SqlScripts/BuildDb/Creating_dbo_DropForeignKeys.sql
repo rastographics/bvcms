@@ -14,7 +14,6 @@ BEGIN
 	DECLARE @is_not_trusted BIT;
 	DECLARE @delete_referential_action TINYINT;
 	DECLARE @update_referential_action TINYINT;
-	DECLARE @tsql2 NVARCHAR(4000);
 	DECLARE @fkCol sysname;
 	DECLARE @pkCol sysname;
 	DECLARE @col1 BIT;
@@ -58,6 +57,8 @@ BEGIN
 	        @is_not_for_replication, @is_not_trusted, @delete_referential_action,
 	        @update_referential_action, @referenced_schema_name;
 	END
+	CLOSE FKcursor;
+	DEALLOCATE FKcursor;
 
 	RETURN @tsql;
 

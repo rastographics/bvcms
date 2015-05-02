@@ -45,12 +45,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(new ContentModel());
         }
 
-        public ActionResult ContentView(int id)
-        {
-            var content = DbUtil.ContentFromID(id);
-            return View(content);
-        }
-
         public ActionResult ContentEdit(int? id, bool? snippet)
         {
             if (!id.HasValue)
@@ -168,36 +162,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View("Index");
         }
 
-        public ActionResult OrgContent(int id, string what, bool? div)
-        {
-            var org = DbUtil.Db.LoadOrganizationById(id);
-            if (div == true && org.Division == null)
-                return Content("no main division");
-
-            switch (what)
-            {
-                case "message":
-                    if (div == true)
-                    {
-                        ViewData["html"] = org.Division.EmailMessage;
-                        ViewData["title"] = org.Division.EmailSubject;
-                    }
-                    break;
-                case "instructions":
-                    if (div == true)
-                        ViewData["html"] = org.Division.Instructions;
-                    ViewData["title"] = "Instructions";
-                    break;
-                case "terms":
-                    if (div == true)
-                        ViewData["html"] = org.Division.Terms;
-                    ViewData["title"] = "Terms";
-                    break;
-            }
-            ViewData["id"] = id;
-            return View();
-        }
-
         [HttpPost]
         public ActionResult RunSqlScript(string body, string parameter)
         {
@@ -215,33 +179,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
-        [HttpPost]
-        public ActionResult UpdateOrgContent(int id, bool? div, string what, string title, string html)
-        {
-            var org = DbUtil.Db.LoadOrganizationById(id);
-
-            switch (what)
-            {
-                case "message":
-                    if (div == true)
-                    {
-                        org.Division.EmailMessage = html;
-                        org.Division.EmailSubject = title;
-                    }
-                    break;
-                case "instructions":
-                    if (div == true)
-                        org.Division.Instructions = html;
-                    break;
-                case "terms":
-                    if (div == true)
-                        org.Division.Terms = html;
-                    break;
-            }
-            DbUtil.Db.SubmitChanges();
-            return Redirect(Util2.Org + "/" + id);
-        }
-
+        
         public static byte[] CaptureWebPageBytes(string body, int width, int height)
         {
             bool bDone = false;

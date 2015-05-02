@@ -39,6 +39,8 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             var m = new VolunteerModel(id);
             m.Update(processDate, statusId, comments, approvals, mvrDate, mvrStatusId);
+
+            m = new VolunteerModel(id);
             return View("Display", m);
         }
 

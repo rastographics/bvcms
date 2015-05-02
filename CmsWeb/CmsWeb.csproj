@@ -223,14 +223,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
-    <Reference Include="Yahoo.Yui.Compressor, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YUICompressor.NET.MSBuild.2.5.0.0\lib\NET20\Yahoo.Yui.Compressor.dll</HintPath>
-    </Reference>
-    <Reference Include="Yahoo.Yui.Compressor.Build.MsBuild, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YUICompressor.NET.MSBuild.2.5.0.0\lib\NET20\Yahoo.Yui.Compressor.Build.MsBuild.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
@@ -823,8 +815,9 @@
     <Content Include="Content\touchpoint\img\spinner.gif" />
     <Content Include="Content\touchpoint\img\unknown.png" />
     <Content Include="Content\touchpoint\js\admin\divisions.js" />
-    <Content Include="Content\touchpoint\js\admin\users.js" />
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
+    <Content Include="Content\touchpoint\js\admin\users.js" />
+    <Content Include="Content\touchpoint\js\app.min.js" />
     <Content Include="Content\touchpoint\js\dialog\search-users.js" />
     <Content Include="Content\touchpoint\js\email\compose.js" />
     <Content Include="Content\touchpoint\js\email\email.js" />
@@ -836,6 +829,24 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\css\custom-theme.css" />
+    <Content Include="Content\touchpoint\lib\froala-editor\css\froala_editor.min.css" />
+    <Content Include="Content\touchpoint\lib\froala-editor\css\froala_style.min.css" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\froala_editor.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\block_styles.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\char_counter.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\colors.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\custom_links.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\file_upload.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\font_family.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\font_size.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\fullscreen.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\inline_styles.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\lists.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\media_manager.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\tables.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\urls.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\video.min.js" />
     <Content Include="Content\touchpoint\lib\ion-sound\js\ion.sound.min.js" />
     <Content Include="Content\touchpoint\js\meeting\meeting-ticket.js" />
     <Content Include="Content\touchpoint\js\meeting\meeting.js" />
@@ -898,8 +909,21 @@
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.cultures.js" />
     <Content Include="Content\touchpoint\lib\jquery-globalize\js\globalize.js" />
     <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
-    <Content Include="Content\touchpoint\lib\jquery-ui\css\jquery-ui.min.css" />
-    <Content Include="Content\touchpoint\lib\jquery-ui\js\jquery-ui.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\jquery-ui.min.css" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\js\jquery-ui.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-validate-globalize\js\jquery.validate.globalize.js" />
     <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
     <Content Include="Content\touchpoint\lib\select2\css\select2-bootstrap.css" />
@@ -934,13 +958,7 @@
     <Content Include="CustomColumns.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Errors\DatabaseCreationError.aspx" />
-    <Content Include="Errors\DatabaseNotInitialized.aspx" />
-    <Content Include="Errors\DatabaseServerNotFound.aspx" />
     <Content Include="gulpfile.js" />
-    <Content Include="minify.xml">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Scripts\Admin\UpdateFields.js" />
@@ -1561,7 +1579,6 @@
     <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
     <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
@@ -1615,7 +1632,6 @@
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Summary.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Grid.cshtml" />
-    <Content Include="Views\ExtraValue\Reports\Grid2.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
     <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Reports\Views\Export\FamilyMembers.cshtml" />
@@ -2466,14 +2482,12 @@
     <Content Include="Content\constants.py" />
     <Content Include="Content\Tutorials\_Home_Index_Menu.cshtml" />
     <Content Include="Content\Tutorials\_Home_Index.cshtml" />
-    <Content Include="Errors\DatabaseNotFound.aspx" />
     <Content Include="Errors\SiteDisabled.htm" />
     <Content Include="Content\images\arrowdnup.png" />
     <Content Include="Content\images\deliveredbybvcms.gif" />
     <Content Include="Content\images\draggable-icon.png" />
     <Content Include="Content\images\dropdown.gif" />
     <Content Include="Content\images\linkselect_bkgrd.png" />
-    <Content Include="Errors\SessionTimeout.htm" />
     <Content Include="favicon.ico" />
     <Content Include="Scripts\jQuery\jquery.mousewheel.js" />
     <Content Include="Content\images\magnifier.png" />
@@ -2512,7 +2526,6 @@
     <Content Include="Scripts\Org\RegSettings.js" />
     <Content Include="Scripts\Dialog\SearchUsers.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment.js" />
-    <Content Include="Errors\AccessDenied.htm" />
     <Content Include="Global.asax" />
     <Content Include="Content\images\bvcms120.png" />
     <Content Include="Content\images\bvcms130.png" />
@@ -2531,8 +2544,6 @@
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\TimeSlot.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\Error.cshtml">
-    </Content>
-    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\SetPassword.cshtml">
     </Content>
@@ -2626,7 +2637,6 @@
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodesDropdown.cshtml" />
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
-    <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogEdit.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Options.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Send.cshtml" />
@@ -2785,8 +2795,6 @@
     <Content Include="Areas\Finance\Views\Statements\Progress.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Areas\Finance\Views\FinanceReports\ContributionYears.cshtml">
-    </Content>
     <Content Include="Areas\Manage\Views\Account\ChangePassword.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\ChangePasswordSuccess.cshtml">
@@ -2816,8 +2824,6 @@
     <Content Include="Areas\Manage\Views\Display\EditHTML.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Display\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Manage\Views\Display\OrgContent.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\OrgMembers\Index.cshtml">
       <SubType>Code</SubType>
@@ -3050,9 +3056,6 @@
     <Content Include="Views\Shared\Notices.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Errors\Error.aspx" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Content\images\12-em-cross.png" />
     <Content Include="Content\images\border-2.gif" />
     <Content Include="Content\images\border.gif" />
@@ -3131,7 +3134,6 @@
     <Content Include="Scripts\Org\OrgSearch.js" />
     <Content Include="Scripts\Dialog\SearchAdd.js" />
     <Content Include="Scripts\Dialog\OrgMemberDialog.js" />
-    <Content Include="Errors\PageNotFound.aspx" />
     <Content Include="Scripts\js\CheckIn.js" />
     <Content Include="Scripts\js\Event.js" />
     <Content Include="Scripts\js\Pager.js" />
@@ -3172,10 +3174,6 @@
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
-  <Import Project="minify.xml" />
-  <Target Name="BeforeBuild" Condition="'$(Configuration)'!='Debug'">
-    <CallTarget Targets="Minify" />
-  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">

@@ -164,10 +164,6 @@
         }
     });
 
-    //$("body").on("focus", 'a.update', function(ev) {
-        
-    //});
-
     $('a.update').click(function (event) {
         event.preventDefault();
         $.PostRow({ scroll: true });

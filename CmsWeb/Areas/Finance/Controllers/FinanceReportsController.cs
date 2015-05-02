@@ -22,12 +22,6 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
-        public ActionResult ContributionYears(int id)
-        {
-            var m = new ContributionModel(id);
-            return View(m);
-        }
-
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
             DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));

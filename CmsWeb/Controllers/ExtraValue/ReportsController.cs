@@ -41,14 +41,6 @@ namespace CmsWeb.Controllers
             return View("Reports/Grid", rdr);
         }
 
-        [HttpGet, Route("ExtraValue/Grid2/{id}")]
-        public ActionResult Grid2(Guid id, string sort)
-        {
-            var rdr = ReportsModel.Grid2Reader(id, sort);
-            ViewBag.queryid = id;
-            return View("Reports/Grid2", rdr);
-        }
-
         [HttpGet, Route("ExtraValue/QueryCodes")]
         public ActionResult QueryCodes(string field, string value)
         {
