@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
@@ -14,16 +15,16 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(OrgSearchModel m)
         {
             var model = new OrgSearchDrop(m);
-            model.RemoveExistingLop(DbUtil.Db, Util.UserPeopleId ?? 0, OrgSearchDrop.Op);
+            model.RemoveExistingLop(DbUtil.Db, model.Id, OrgSearchDrop.Op);
             return View(model);
         }
         [HttpPost]
         public ActionResult Process(OrgSearchDrop model)
         {
-            model.UpdateLongRunningOp(DbUtil.Db, OrgDrop.Op);
+            model.UpdateLongRunningOp(DbUtil.Db, OrgSearchDrop.Op);
             if (!model.Started.HasValue)
             { 
-                DbUtil.LogActivity("Drop Memers from Org {0}".Fmt(Session["ActiveOrganization"]));
+                DbUtil.LogActivity("OrgSearchDrop {0} Members from {1} Orgs".Fmt(model.Count, model.OrgCount));
                 model.Process(DbUtil.Db);
             }
 			return View(model);

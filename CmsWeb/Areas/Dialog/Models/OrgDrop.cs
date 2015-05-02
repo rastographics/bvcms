@@ -63,9 +63,10 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             // running has not started yet, start it on a separate thread
             pids = (from p in People(db.CurrentOrg) select p.PeopleId).ToList();
+            Started = DateTime.Now;
             var lop = new LongRunningOp()
             {
-                Started = DateTime.Now,
+                Started = Started,
                 Count = pids.Count,
                 Processed = 0,
                 Id = Id,
