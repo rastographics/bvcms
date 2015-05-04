@@ -108,7 +108,7 @@
     var keyallowed = true;
 
     $('#notes').keypress(function (event) {
-        if (keyallowed && (event.keyCode == 9 || event.keyCode == 13) && !event.shiftKey) {
+        if (keyallowed && event.keyCode == 13 && !event.shiftKey) {
             event.preventDefault();
             keyallowed = false;
             $.PostRow({ scroll: false });
@@ -116,8 +116,9 @@
     });
 
     $('#notes').keydown(function (event) {
-        if (event.keyCode == 9) {
+        if (keyallowed && event.keyCode == 9) {
             event.preventDefault();
+            keyallowed = false;
             $.PostRow({ scroll: false });
         }
     });
@@ -337,7 +338,7 @@
             if (!ret)
                 return;
             if (ret.error) {
-                alert(ret.error);
+                swal("Error!", ret.error, "error");
                 return;
             }
             showHideDiffRow(ret.diff);
