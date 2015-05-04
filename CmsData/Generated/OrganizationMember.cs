@@ -74,11 +74,17 @@ namespace CmsData
 		
 		private bool? _SkipInsertTriggerProcessing;
 		
+		private int? _RegistrationDataId;
+		
+		private string _OnlineRegData;
+		
    		
    		private EntitySet< OrgMemMemTag> _OrgMemMemTags;
 		
     	
 		private EntityRef< MemberType> _MemberType;
+		
+		private EntityRef< RegistrationDatum> _RegistrationDatum;
 		
 		private EntityRef< Transaction> _Transaction;
 		
@@ -177,6 +183,12 @@ namespace CmsData
 		partial void OnSkipInsertTriggerProcessingChanging(bool? value);
 		partial void OnSkipInsertTriggerProcessingChanged();
 		
+		partial void OnRegistrationDataIdChanging(int? value);
+		partial void OnRegistrationDataIdChanged();
+		
+		partial void OnOnlineRegDataChanging(string value);
+		partial void OnOnlineRegDataChanged();
+		
     #endregion
 		public OrganizationMember()
 		{
@@ -185,6 +197,8 @@ namespace CmsData
 			
 			
 			this._MemberType = default(EntityRef< MemberType>); 
+			
+			this._RegistrationDatum = default(EntityRef< RegistrationDatum>); 
 			
 			this._Transaction = default(EntityRef< Transaction>); 
 			
@@ -830,6 +844,54 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="RegistrationDataId", UpdateCheck=UpdateCheck.Never, Storage="_RegistrationDataId", DbType="int")]
+		[IsForeignKey]
+		public int? RegistrationDataId
+		{
+			get { return this._RegistrationDataId; }
+
+			set
+			{
+				if (this._RegistrationDataId != value)
+				{
+				
+					if (this._RegistrationDatum.HasLoadedOrAssignedValue)
+						throw new System.Data.Linq.ForeignKeyReferenceAlreadyHasValueException();
+				
+                    this.OnRegistrationDataIdChanging(value);
+					this.SendPropertyChanging();
+					this._RegistrationDataId = value;
+					this.SendPropertyChanged("RegistrationDataId");
+					this.OnRegistrationDataIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="OnlineRegData", UpdateCheck=UpdateCheck.Never, Storage="_OnlineRegData", DbType="xml")]
+		public string OnlineRegData
+		{
+			get { return this._OnlineRegData; }
+
+			set
+			{
+				if (this._OnlineRegData != value)
+				{
+				
+                    this.OnOnlineRegDataChanging(value);
+					this.SendPropertyChanging();
+					this._OnlineRegData = value;
+					this.SendPropertyChanged("OnlineRegData");
+					this.OnOnlineRegDataChanged();
+				}
+
+			}
+
+		}
+
+		
     #endregion
         
     #region Foreign Key Tables
@@ -883,6 +945,48 @@ namespace CmsData
 					}
 
 					this.SendPropertyChanged("MemberType");
+				}
+
+			}
+
+		}
+
+		
+		[Association(Name="FK_OrganizationMembers_RegistrationData", Storage="_RegistrationDatum", ThisKey="RegistrationDataId", IsForeignKey=true)]
+		public RegistrationDatum RegistrationDatum
+		{
+			get { return this._RegistrationDatum.Entity; }
+
+			set
+			{
+				RegistrationDatum previousValue = this._RegistrationDatum.Entity;
+				if (((previousValue != value) 
+							|| (this._RegistrationDatum.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if (previousValue != null)
+					{
+						this._RegistrationDatum.Entity = null;
+						previousValue.OrganizationMembers.Remove(this);
+					}
+
+					this._RegistrationDatum.Entity = value;
+					if (value != null)
+					{
+						value.OrganizationMembers.Add(this);
+						
+						this._RegistrationDataId = value.Id;
+						
+					}
+
+					else
+					{
+						
+						this._RegistrationDataId = default(int?);
+						
+					}
+
+					this.SendPropertyChanged("RegistrationDatum");
 				}
 
 			}
