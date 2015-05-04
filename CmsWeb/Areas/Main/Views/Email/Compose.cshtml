@@ -12,6 +12,9 @@
 }
 @section head
 {
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_style.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/custom-theme.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
     <style>
@@ -104,6 +107,11 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
+                            <div id="brian">test this out!!!</div>        
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
                             <iframe src="/Email/EmailBody/@tid" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
                         </div>
                     </div>
@@ -150,24 +158,15 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="editor-modal">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-body">
-                <form>
-                    <textarea id="htmleditor" name="htmleditor" class="form-control" rows="15"></textarea>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
-            </div>
-        </div>
-    </div>
-</div>
 @section scripts
 {
-    @ViewExtensions2.CKEditor()
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js")
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/email/compose.js") 
     <script type="text/javascript">

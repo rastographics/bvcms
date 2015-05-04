@@ -5,6 +5,11 @@
     ViewBag.PageHeader = "Edit Template";
     Layout = ViewExtensions2.TouchPointLayout();
 }
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_style.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/custom-theme.css")
+}
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
     <div class="row">
@@ -39,11 +44,15 @@
 }
 @section scripts
 {
-    @ViewExtensions2.CKEditor()
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js")
     <script type="text/javascript">
-
         $(function () {
-
             $("a.delete").click(function (ev) {
                 ev.preventDefault();
 
@@ -72,43 +81,13 @@
                 });
             });
 
-            CKEDITOR.env.isCompatible = true;
-
-            CKEDITOR.on('dialogDefinition', function (ev) {
-                var dialogName = ev.data.name;
-                var dialogDefinition = ev.data.definition;
-                if (dialogName == 'link') {
-                    var advancedTab = dialogDefinition.getContents('advanced');
-                    advancedTab.label = "SpecialLinks";
-                    advancedTab.remove('advCSSClasses');
-                    advancedTab.remove('advCharset');
-                    advancedTab.remove('advContentType');
-                    advancedTab.remove('advStyles');
-                    advancedTab.remove('advAccessKey');
-                    advancedTab.remove('advName');
-                    advancedTab.remove('advId');
-                    advancedTab.remove('advTabIndex');
-
-                    var relField = advancedTab.get('advRel');
-                    relField.label = "Sub-Group";
-                    var titleField = advancedTab.get('advTitle');
-                    titleField.label = "Message";
-                    var idField = advancedTab.get('advLangCode');
-                    idField.label = "OrgId/MeetingId";
-                    var langdirField = advancedTab.get('advLangDir');
-                    langdirField.label = "Confirmation";
-                    langdirField.items[1][0] = "Yes, send confirmation";
-                    langdirField.items[2][0] = "No, do not send confirmation";
-                }
-            });
-
-            CKEDITOR.replace('body', {
+            $('#body').editable({
+                inlineMode: false,
                 height: 400,
-                fullPage: true,
-                allowedContent: true,
-                customConfig: '/content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+                theme: 'custom',
+                buttons: ['bold', 'italic', 'underline', 'fontFamily', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
+                imageUploadURL: '/Account/FroalaUpload'
             });
-
         });
     </script>
 }

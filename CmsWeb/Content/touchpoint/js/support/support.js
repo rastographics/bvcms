@@ -26,17 +26,12 @@
         $("#body").val("");
         $("#success").hide();
 
-        if (CKEDITOR.instances["body"]) {
-            CKEDITOR.instances["body"].destroy();
-        }
-
-        CKEDITOR.env.isCompatible = true;
-
-        CKEDITOR.replace('body', {
+        $('#body').editable({
+            inlineMode: false,
             height: 200,
-            fullPage: false,
-            allowedContent: true,
-            customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+            theme: 'custom',
+            buttons: ['bold', 'italic', 'underline', 'fontFamily', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'table', 'html', 'fullscreen'],
+            imageUploadURL: '/Account/FroalaUpload'
         });
     });
 
