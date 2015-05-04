@@ -63,7 +63,7 @@
                                                                 @field.Description
                                                             </td>
                                                             <td class="text-right">
-                                                                <a href="http://docs.touchpointsoftware.com/SearchBuilder/QB-@(field.Name).html" target="help" class="help btn btn-default"><i class="fa fa-question-circle"></i> Help<span class="hidden-xs"> Article</span></a>
+                                                                @GetHelpArticleButton(field.Name)
                                                             </td>
                                                         </tr>
                                                     }
@@ -100,7 +100,7 @@
                                                         @field.Description
                                                     </td>
                                                     <td class="text-right">
-                                                        <a href="http://docs.touchpointsoftware.com/SearchBuilder/QB-@(field.Name).html" target="help" class="help btn btn-default"><i class="fa fa-question-circle"></i> Help<span class="hidden-xs"> Article</span></a>
+                                                        @GetHelpArticleButton(field.Name)
                                                     </td>
                                                 </tr>
                                             }
@@ -115,3 +115,15 @@
         </div>
     </div>
 </div>
+@helper GetHelpArticleButton(string fieldName)
+{
+    switch (fieldName)
+    {
+        case "DaysAfterNthVisitAsOf":
+            <a href="http://docs.touchpointsoftware.com/SearchBuilder/QB-DaysAfterNthVisitDateRange.html" target="help" class="help btn btn-default"><i class="fa fa-question-circle"></i> Help<span class="hidden-xs"> Article</span></a>
+            break;
+        default:
+            <a href="http://docs.touchpointsoftware.com/SearchBuilder/QB-@(fieldName).html" target="help" class="help btn btn-default"><i class="fa fa-question-circle"></i> Help<span class="hidden-xs"> Article</span></a>
+            break;
+    }
+}
