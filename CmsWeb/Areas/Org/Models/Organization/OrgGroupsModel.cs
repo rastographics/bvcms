@@ -275,7 +275,7 @@ namespace CmsWeb.Areas.Org.Models
             public bool ischecked { get; set; }
             public HtmlString IsInGroup()
             {
-                var s = ischecked ? "style='color:blue;'" : "";
+                var s = ischecked ? "class='info'" : "";
                 return new HtmlString(s);
             }
             public string ToolTip
