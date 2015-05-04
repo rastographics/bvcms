@@ -676,7 +676,7 @@
             showCancelButton: true,
             confirmButtonClass: "btn-warning",
             confirmButtonText: "Yes, continue!",
-            closeOnConfirm: false
+            closeOnConfirm: true
         },
         function () {
             $.post(a[0].href, function (ret) {
