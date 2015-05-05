@@ -353,7 +353,6 @@
                 var postdata = f.serialize() || {};
                 var myloop = function () {
                     $.post(href, postdata, function (ret) {
-                        postdata = f.serialize();
                         f.html(ret);
                         if ($("#finished", f).val())
                             tm = 0;
@@ -363,6 +362,7 @@
                                 tm = 3000;
                             setTimeout(myloop, tm);
                         }
+                        postdata = f.serialize();
                     });
                 }
                 setTimeout(myloop, tm);

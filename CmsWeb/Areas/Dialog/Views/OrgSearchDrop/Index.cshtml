@@ -1,0 +1,27 @@
+﻿@model CmsWeb.Areas.Dialog.Models.OrgSearchDrop
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Drop Multiple Organizations</h4>
+        </div>
+        <div class="modal-body">
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.Orgs)
+            @Html.HiddenFor(m => m.OrgCount)
+            @Html.HiddenFor(m => m.Count)
+            @Html.Hidden("callback", "ReloadPeople")
+            <div class="alert alert-danger">
+                <strong>Warning!</strong> This will Drop @Model.Count Current Members from @Model.OrgCount Organizations.
+            </div>
+            @Html.EditorFor(m => m.DropDate, new { help = "Leave Blank for Current Date/Time" })
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+            <a href="/OrgSearchDrop/Process" class="btn btn-danger ajaxreloader"
+               data-confirm="Are you sure you want to drop @Model.Count Current Members from @Model.OrgCount Organizations?">
+                Drop
+            </a>
+        </div>
+    </div>
+</div>

@@ -1873,6 +1873,12 @@ namespace CmsData
 
 	    }
 
+	    public Table< View.OnlineRegQA> ViewOnlineRegQAs
+	    {
+		    get { return this.GetTable< View.OnlineRegQA>(); }
+
+	    }
+
 	    public Table< View.OrganizationLeader> ViewOrganizationLeaders
 	    {
 		    get { return this.GetTable< View.OrganizationLeader>(); }
@@ -3622,6 +3628,20 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.ElapsedTime", IsComposable = true)]
+		[return: Parameter(DbType = "varchar")]
+		public string ElapsedTime(
+            [Parameter(Name = "start", DbType="datetime")] DateTime? start,
+            [Parameter(Name = "end", DbType="datetime")] DateTime? end
+            )
+		{
+			return ((string)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                start,
+                end
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.AttendDesc", IsComposable = true)]
 		[return: Parameter(DbType = "nvarchar")]
 		public string AttendDesc(
@@ -3842,6 +3862,26 @@ namespace CmsData
                 ).ReturnValue));
 		}
 
+		[Function(Name="dbo.FindPerson0", IsComposable = true)]
+		[return: Parameter(DbType = "int")]
+		public int? FindPerson0(
+            [Parameter(Name = "first", DbType="nvarchar")] string first,
+            [Parameter(Name = "last", DbType="nvarchar")] string last,
+            [Parameter(Name = "dob", DbType="datetime")] DateTime? dob,
+            [Parameter(Name = "email", DbType="nvarchar")] string email,
+            [Parameter(Name = "phone", DbType="nvarchar")] string phone
+            )
+		{
+			return ((int?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                first,
+                last,
+                dob,
+                email,
+                phone
+                ).ReturnValue));
+		}
+
 		[Function(Name="dbo.Birthday", IsComposable = true)]
 		[return: Parameter(DbType = "datetime")]
 		public DateTime? Birthday(
@@ -3851,6 +3891,18 @@ namespace CmsData
 			return ((DateTime?)(this.ExecuteMethodCall(this, 
                 ((MethodInfo)(MethodInfo.GetCurrentMethod())),
                 pid
+                ).ReturnValue));
+		}
+
+		[Function(Name="dbo.ParseDate", IsComposable = true)]
+		[return: Parameter(DbType = "datetime")]
+		public DateTime? ParseDate(
+            [Parameter(Name = "dtin", DbType="varchar")] string dtin
+            )
+		{
+			return ((DateTime?)(this.ExecuteMethodCall(this, 
+                ((MethodInfo)(MethodInfo.GetCurrentMethod())),
+                dtin
                 ).ReturnValue));
 		}
 

@@ -124,7 +124,7 @@ namespace CmsData
                     var m = new EmailReplacements(db, body, from);
                     body = m.DoReplacements(Person);
                     Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,
-                                 Util.ToMailAddressList(contributionemail), 0, null);
+                                 Util.ToMailAddressList(contributionemail), 0, Person.PeopleId);
                 }
             }
             else
@@ -144,12 +144,12 @@ Please contact the Finance office at the church." };
 
                 var adminEmail = db.Setting("AdminMail", systemEmail);
                 Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,
-                        Util.ToMailAddressList(contributionemail), 0, null);
+                        Util.ToMailAddressList(contributionemail), 0, Person.PeopleId);
                 foreach (var p in db.RecurringGivingNotifyPersons())
                     Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(adminEmail),
                         "Recurring Giving Failed on " + db.CmsHost,
                         "<a href='{0}/Transactions/{2}'>message: {1}, tranid:{2}</a>".Fmt(db.CmsHost, ret.Message, t.Id),
-                        Util.ToMailAddressList(p.EmailAddress), 0, null);
+                        Util.ToMailAddressList(p.EmailAddress), 0, Person.PeopleId);
             }
             return 1;
         }

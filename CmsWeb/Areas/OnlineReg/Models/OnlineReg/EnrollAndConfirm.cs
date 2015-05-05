@@ -125,6 +125,7 @@ namespace CmsWeb.Models
                 var others = string.Join(",", q.ToArray());
 
                 var om = p.Enroll(ti, paylink, testing, others);
+                om.RegistrationDataId = DatumId;
                 om.RegisterEmail = p.EmailAddress;
 
                 if(om.TranId == null)

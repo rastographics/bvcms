@@ -98,6 +98,10 @@
         return false;
     };
 
+    $.InitFunctions.ReloadPeople = function () {
+        $.getTable();
+    };
+
     $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
         ev.preventDefault();
         var newsort = $(this).text();

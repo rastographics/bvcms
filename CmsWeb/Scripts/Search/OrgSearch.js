@@ -48,6 +48,9 @@
         });
         return false;
     };
+    $.InitFunctions.ReloadPeople = function () {
+        $.getTable();
+    };
     $(".datepicker").jqdatepicker();
     $.editable.addInputType('datepicker', {
         element: function (settings, original) {

@@ -6,6 +6,7 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Text;
 using CmsData.Codes;
+using CmsData.View;
 
 namespace CmsWeb.Models
 {
@@ -18,6 +19,8 @@ namespace CmsWeb.Models
                 membertype = MemberTypeCode.Prospect;
             var om = OrganizationMember.InsertOrgMembers(DbUtil.Db, org.OrganizationId, person.PeopleId,
                 membertype, DateTime.Now, null, false);
+
+            om.OnlineRegData = Util.Serialize(this);
 
             var reg = person.RecRegs.SingleOrDefault();
             if (reg == null)
@@ -38,12 +41,6 @@ namespace CmsWeb.Models
                 return om;
             }
             om.Amount = TotalAmount();
-            //om.AmountPaid = ti.Amt;
-//            if (ti.Id != ti.OriginalId)
-//            {
-//                var ti0 = DbUtil.Db.Transactions.Single(tt => tt.Id == ti.OriginalId);
-//                om.AmountPaid += ti0.Amt;
-//            }
             foreach (var ask in setting.AskItems)
             {
                 switch (ask.Type)
@@ -123,27 +120,6 @@ namespace CmsWeb.Models
                                 i.AddToSmallGroup(DbUtil.Db, om, PythonEvents);
                         }
                         break;
-                    case "AskExtraQuestions":
-                        foreach (var g in ExtraQuestion[ask.UniqueId])
-                            if (g.Value.HasValue())
-                                if (setting.TargetExtraValues)
-                                    person.AddEditExtraData(g.Key, g.Value);
-                                else
-                                    om.AddToMemberData("{0}: {1}".Fmt(g.Key, g.Value));
-                        break;
-                    case "AskText":
-                        foreach (var g in Text[ask.UniqueId])
-                            if (g.Value.HasValue())
-                                if (setting.TargetExtraValues)
-                                    person.AddEditExtraData(g.Key, g.Value);
-                                else
-                                {
-                                    om.AddToMemberData("{0}:".Fmt(g.Key)); 
-                                    var lines = g.Value.SplitLines();
-                                    foreach(var line in lines)
-                                        om.AddToMemberData("\t{0}".Fmt(line));
-                                }
-                        break;
                     case "AskMenu":
                         foreach (var i in MenuItem[ask.UniqueId])
                             om.AddToGroup(DbUtil.Db, i.Key, i.Value);
@@ -151,13 +127,13 @@ namespace CmsWeb.Models
                             var menulabel = ((AskMenu)ask).Label;
                             foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                             {
-                                om.AddToMemberData(menulabel);
+                                om.AddToMemberDataBelowComments(menulabel);
                                 string desc;
                                 if (i.amt > 0)
                                     desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
                                 else
                                     desc = "{0} {1}".Fmt(i.number, i.desc);
-                                om.AddToMemberData(desc);
+                                om.AddToMemberDataBelowComments(desc);
                                 menulabel = string.Empty;
                             }
                         }
@@ -225,8 +201,7 @@ namespace CmsWeb.Models
                 if (others.HasValue())
                     sb.AppendFormat("Others: {0}\n", others);
             }
-            om.AddToMemberData(sb.ToString());
-
+            om.AddToMemberDataBelowComments(sb.ToString());
 
             var sbreg = new StringBuilder();
             sbreg.AppendFormat("{0}\n".Fmt(org.OrganizationName));
@@ -326,7 +301,7 @@ namespace CmsWeb.Models
             {
                 //var omemb = new OrgMemberModel(om.OrganizationId, om.PeopleId);
                 var ts = om.TransactionSummary(DbUtil.Db);
-                if(ts != null)
+                if (ts != null)
                     sb.AppendFormat(@"
 <tr><td colspan='2'> 
 <table cellpadding=4>
@@ -342,7 +317,7 @@ namespace CmsWeb.Models
     </tr>
 </table>
 </td></tr>
-    ",             ts.IndAmt.ToString2("c"),
+    ", ts.IndAmt.ToString2("c"),
                    om.TotalPaid(DbUtil.Db).ToString("c"),
                    om.AmountDue(DbUtil.Db).ToString("c"));
             }
@@ -515,6 +490,12 @@ namespace CmsWeb.Models
                 reg = new RecReg();
                 person.RecRegs.Add(reg);
             }
+            List<OnlineRegQA> qlist = null;
+            if (setting.Has("ExtraQuestion") || setting.Has("Text"))
+                qlist = (from qu in DbUtil.Db.ViewOnlineRegQAs
+                         where qu.PeopleId == om.PeopleId
+                         where qu.OrganizationId == om.OrganizationId
+                         select qu).ToList();
             foreach (var ask in setting.AskItems)
             {
                 switch (ask.Type)
@@ -550,9 +531,6 @@ namespace CmsWeb.Models
                     case "AskCoaching":
                         coaching = reg.Coaching;
                         break;
-                    //                    case "AskSMS":
-                    //                        sms = person.ReceiveSMS;
-                    //                        break;
                     case "AskInsurance":
                         insurance = reg.Insurance;
                         policy = reg.Policy;
@@ -597,7 +575,6 @@ namespace CmsWeb.Models
                             ExtraQuestion = new List<Dictionary<string, string>>();
                         var eq = new Dictionary<string, string>();
                         ExtraQuestion.Add(eq);
-                        var lines = (om.UserData ?? "").Split('\n');
                         foreach (var q in ((AskExtraQuestions)ask).list)
                         {
                             if (setting.TargetExtraValues)
@@ -608,11 +585,9 @@ namespace CmsWeb.Models
                             }
                             else
                             {
-                                var v = (from li in lines
-                                         where li.StartsWith(q.Question + ": ")
-                                         select li.Substring(q.Question.Length + 2)).FirstOrDefault();
-                                if (v.HasValue())
-                                    eq[q.Question] = v;
+                                var v = qlist.SingleOrDefault(qq => qq.Question == q.Question && qq.Type == "question");
+                                if (v != null)
+                                    eq[q.Question] = v.Answer;
                             }
                         }
                         break;
@@ -621,7 +596,6 @@ namespace CmsWeb.Models
                             Text = new List<Dictionary<string, string>>();
                         var tx = new Dictionary<string, string>();
                         Text.Add(tx);
-                        lines = (om.UserData ?? "").Split('\n');
                         foreach (var q in ((AskText)ask).list)
                         {
                             if (setting.TargetExtraValues)
@@ -632,40 +606,14 @@ namespace CmsWeb.Models
                             }
                             else
                             {
-                                var sb = new StringBuilder();
-                                var i = 0;
-                                for(; i < lines.Length;i++)
-                                    if (lines[i] == q.Question + ":")
-                                        break;
-                                for (i++; i < lines.Length; i++)
-                                {
-                                    if (lines[i].Length == 0 || lines[i][0] != '\t')
-                                        break;
-                                    sb.AppendLine(lines[i].Substring(1));
-                                }
-                                if (sb.Length > 0)
-                                    tx[q.Question] = sb.ToString();
+                                var v = qlist.SingleOrDefault(qq => qq.Question == q.Question && qq.Type == "text");
+                                if (v != null)
+                                    tx[q.Question] = v.Answer;
                             }
                         }
                         break;
 
                     case "AskMenu":
-                        //                        foreach (var i in MenuItem)
-                        //                            om.AddToGroup(DbUtil.Db, i.Key, i.Value);
-                        //                        {
-                        //                            var menulabel = "Menu Items";
-                        //                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem))
-                        //                            {
-                        //                                om.AddToMemberData(menulabel);
-                        //                                string desc;
-                        //                                if (i.amt > 0)
-                        //                                    desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
-                        //                                else
-                        //                                    desc = "{0} {1}".Fmt(i.number, i.desc);
-                        //                                om.AddToMemberData(desc);
-                        //                                menulabel = string.Empty;
-                        //                            }
-                        //                        }
                         break;
                     case "AskDropdown":
                         if (option == null)
@@ -688,20 +636,6 @@ namespace CmsWeb.Models
                         break;
                 }
             }
-            //            if (setting.TargetExtraValues)
-            //            {
-            //                foreach (var ag in setting.AgeGroups)
-            //                    person.RemoveExtraValue(DbUtil.Db, ag.SmallGroup);
-            //                if (setting.AgeGroups.Count > 0)
-            //                    person.AddEditExtraValue(AgeGroup(), "true");
-            //            }
-            //            else
-            //            {
-            //                foreach (var ag in setting.AgeGroups)
-            //                    om.RemoveFromGroup(DbUtil.Db, ag.SmallGroup);
-            //                if (setting.AgeGroups.Count > 0)
-            //                    om.AddToGroup(DbUtil.Db, AgeGroup());
-            //            }
         }
     }
 }
