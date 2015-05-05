@@ -167,6 +167,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public string ShirtSize { get; set; }
 
+        // this is populated via reflection using the CopyPropertiesFrom method using the OrganizationMember class
         [DisplayName("Extra Member Info")]
         public string UserData { get; set; }
 
