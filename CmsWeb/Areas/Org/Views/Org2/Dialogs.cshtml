@@ -24,22 +24,3 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="editor-modal">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Edit Description</h4>
-            </div>
-            <div class="modal-body">
-                <form>
-                    @Html.TextArea("editor", "", new { @class = "editor form-control", rows = "15" })
-                </form>
-            </div>
-            <div class="modal-footer">
-                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-                <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
-            </div>
-        </div>
-    </div>
-</div>

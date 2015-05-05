@@ -431,15 +431,20 @@
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js")
+    <script type="text/javascript">
+        // must alias froala editor because it conflicts with the same function name with bootstrap-editable.
+        $.fn.froalaEditable = $.fn.editable;
+        delete $.fn.editable;
+    </script>
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/js/search/org-search.js")
     @if (User.IsInRole("Edit"))
     {

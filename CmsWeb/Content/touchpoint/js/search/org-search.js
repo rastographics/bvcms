@@ -173,23 +173,23 @@
         if ($a.text() === "edit")
             $a.html('');
 
-       $('#editor').editable({
+        $('#editor').froalaEditable({
             inlineMode: false,
             height: 200,
             theme: 'custom',
             buttons: ['bold', 'italic', 'underline', 'fontFamily', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'table', 'html', 'fullscreen'],
             imageUploadURL: '/Account/FroalaUpload'
         });
-        $('#editor').editable('setHTML', $a.html());
+        $('#editor').froalaEditable('setHTML', $a.html());
         $('#editor-modal').modal('show');
 
         $("#save-edit").off("click").on("click", function (ev) {
             ev.preventDefault();
-            var v = $('#editor').editable('getHTML');
+            var v = $('#editor').froalaEditable('getHTML');
             $a.html(v);
             var id = $a.attr("id");
             $.post("/OrgSearch/SetDescription", { id: id, description: v });
-            $('#editor').editable('setHTML', '');
+            $('#editor').froalaEditable('setHTML', '');
             $('#editor-modal').modal('hide');
             return false;
         });

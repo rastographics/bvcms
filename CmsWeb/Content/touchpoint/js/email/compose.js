@@ -4,7 +4,6 @@
    
     $.clearFunction = undefined;
     $.addFunction = undefined;
-    $.distroyHtmlEditor = undefined;
 
     $.clearTemplateClass = function () {
         if (typeof $.clearFunction != 'undefined') {
@@ -18,11 +17,30 @@
         }
     };
 
-    $.distroyEditor = function() {
-        if (typeof $.distroyHtmlEditor != 'undefined') {
-            $.distroyHtmlEditor();
-        }
+    $.distroyEditor = function () {
+        $('#email-body').contents().find('div[bvedit],div.bvedit').each(function (index) {
+            var div = this;
+            if ($(div).data('fa.editable')) {
+                $(div).editable('destroy');
+            }
+        });
     }
+
+    window.displayEditor = function (div) {
+        if (!$(div).data('fa.editable')) {
+            $(div).editable({
+                inlineMode: false,
+                theme: 'custom',
+                buttons: ['bold', 'italic', 'underline', 'fontFamily', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
+                imageUploadURL: '/Account/FroalaUpload'
+            });
+
+            var html = $(div).editable('getHTML');
+            if (html == "Click here to edit content") {
+                $(div).editable('setHTML', '');
+            }
+        }
+    };
 
     $("#Send").click(function () {
         $.block();
@@ -74,6 +92,7 @@
             $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
+            $.distroyEditor();
             $("#body").val($('#email-body').contents().find('#tempateBody').html());
             $("#name").val($("#newName").val());
             $.addTemplateClass();
@@ -89,6 +108,7 @@
 
     $("#SaveDraftButton").click(function () {
         $.clearTemplateClass();
+        $.distroyEditor();
         $("#body").val($('#email-body').contents().find('#tempateBody').html());
         $("#name").val($("#newName").val());
         $.addTemplateClass();
@@ -101,6 +121,7 @@
         $.block();
 
         $.clearTemplateClass();
+        $.distroyEditor();
         $("#body").val($('#email-body').contents().find('#tempateBody').html());
         $.addTemplateClass();
 
