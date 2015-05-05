@@ -82,7 +82,7 @@
           <a href="mailto:@p.EmailAddress">@p.EmailAddress</a>
         </td>
         <td>
-          <a href="">@p.AttPct.ToString2("N1")%</a>
+          @p.AttPct.ToString2("N1")%
         </td>
         <td>
           @ShowDateLink(p.LastAttended, "/Org/GotoMeetingForDate/{0}/{1}".Fmt(Model.Id, p.LastAttendedTicks), "Last")
