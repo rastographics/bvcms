@@ -46,6 +46,7 @@ namespace CmsWeb.Models
                 var q2 = from p in q
                          let recreg = p.RecRegs.FirstOrDefault()
                          orderby p.Name2, p.PeopleId
+                         where p.DeceasedDate == null
                          select new SearchInfo2
                          {
                              cell = p.CellPhone,
