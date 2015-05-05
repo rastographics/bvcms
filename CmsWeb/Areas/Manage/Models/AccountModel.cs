@@ -357,14 +357,6 @@ namespace CmsWeb.Models
 				}
 			}
 
-            // bwl:  this code needs to be removed once we roll out the new ui!!!
-            // validate the user has the admin role.
-            //TODO:: The following if statement must be removed before going to production!!!!!
-		    if (!user.Roles.Contains("Admin"))
-		    {
-                return UserValidationResult.Invalid(UserValidationStatus.UserNotInRole, "Must have admin access.");
-		    }
-
 			return UserValidationResult.Valid(user);
 		}
 
