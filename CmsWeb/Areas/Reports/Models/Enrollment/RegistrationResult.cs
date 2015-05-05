@@ -220,14 +220,15 @@ namespace CmsWeb.Areas.Reports.Models
             pageEvents.EndPageSet();
             doc.Close();
         }
-        private bool SettingVisible(Settings setting, string name)
+
+        private static bool SettingVisible(Settings setting, string name)
         {
             if (setting != null)
                 return setting.AskVisible(name);
             return false;
         }
 
-        private RecReg GetRecRegOrTemp(Person p)
+        private static RecReg GetRecRegOrTemp(Person p)
         {
             var rr = p.RecRegs.SingleOrDefault();
             if (rr == null)
