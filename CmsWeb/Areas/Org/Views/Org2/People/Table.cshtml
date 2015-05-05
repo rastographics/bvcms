@@ -1,7 +1,11 @@
-﻿@using CmsData.Codes
+﻿@using CmsData
+@using CmsData.Codes
 @using CmsData.View
 @using UtilityExtensions
 @model CmsWeb.Areas.Org2.Models.OrgPeopleModel
+@{
+    var target = Util2.TargetLinkPeople ? "target='people'" : "";
+}
 <table class="table table-striped">
   <thead>
     <tr>
@@ -58,7 +62,7 @@
                 <td>@p.Tab</td>
             }
             <td>
-                <a href="/Person2/@p.PeopleId">@p.Name</a>
+                <a href="/Person2/@p.PeopleId" class="target" @target>@p.Name</a>
                 @if (Model.ShowAddress)
                 {
                     @p.AddressBlock
