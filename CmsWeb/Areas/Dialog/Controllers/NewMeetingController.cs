@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             ViewBag.Method = "POST";
             return View("MeetingInfo", m);
         }
-        [HttpPost, Route("ForNewRollsheet/{orgid:int}")]
+        [HttpGet, Route("ForNewRollsheet/{orgid:int}")]
         public ActionResult ForNewRollsheet(int orgid)
         {
             var oi = new SettingsAttendanceModel() { Id = orgid };
@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             ViewBag.Method = "POST";
             return View("MeetingInfo", m);
         }
-        [HttpPost, Route("ForNewRallyRollsheet/{orgid:int}")]
+        [HttpGet, Route("ForNewRallyRollsheet/{orgid:int}")]
         public ActionResult ForNewRallyRollsheet(int orgid)
         {
             var oi = new SettingsAttendanceModel { Id = orgid };
