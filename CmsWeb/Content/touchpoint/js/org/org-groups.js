@@ -92,7 +92,7 @@
             return false;
         }
         $.block();
-        var q = $('form').serialize();
+        var q = $('#groupsform').serialize();
         $.post(action, q, function (ret) {
             $("#members tbody").html(ret).ready($.fmtTable);
             $.unblock();

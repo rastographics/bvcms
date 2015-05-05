@@ -8,7 +8,7 @@
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
     
-    $('a[data-toggle="tab"]').on('shown', function (e) {
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         e.preventDefault();
         var tab = $(e.target).attr('href').replace("#", "#tab-");
         window.location.hash = tab;
@@ -21,13 +21,13 @@
         lastTab = window.location.hash;
     }
 
-    $("a[href='#Settings-tab']").on('shown', function (e) {
+    $("a[href='#Settings-tab']").on('shown.bs.tab', function (e) {
         if ($("#SettingsOrg").length < 2) {
             $("a[href='#SettingsOrg']").click().tab("show");
         }
     });
 
-    $("#tab-area > ul.nav-tabs > li > a").on('shown', function (e) {
+    $("#tab-area > ul.nav-tabs > li > a").on('shown.bs.tab', function (e) {
         switch ($(this).text()) {
             case "People":
                 $("#bluetoolbarstop li > a.qid").parent().removeClass("hidy");
@@ -676,7 +676,7 @@
             showCancelButton: true,
             confirmButtonClass: "btn-warning",
             confirmButtonText: "Yes, continue!",
-            closeOnConfirm: false
+            closeOnConfirm: true
         },
         function () {
             $.post(a[0].href, function (ret) {

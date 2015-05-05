@@ -149,7 +149,7 @@ namespace CmsData
 
         public void AddToGroup(CMSDataContext Db, string name, int? n)
         {
-            if (!name.HasValue())
+            if (!Util.HasValue(name))
                 return;
             var mt = Db.MemberTags.SingleOrDefault(t => t.Name == name.Trim() && t.OrgId == OrganizationId);
             if (mt == null)
@@ -189,8 +189,16 @@ namespace CmsData
 
         public void AddToMemberData(string s)
         {
-            if (UserData.HasValue())
+            if (Util.HasValue(UserData))
                 UserData += "\n";
+            UserData += s;
+        }
+        public void AddToMemberDataBelowComments(string s)
+        {
+            if (Util.HasValue(UserData))
+                UserData += "\n";
+            else
+                UserData = "--Add comments above this line--\n";
             UserData += s;
         }
 

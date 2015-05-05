@@ -290,7 +290,7 @@ namespace CmsWeb.Models
             }
         }
 
-        private string GetAttr(XElement e, string name)
+        private static string GetAttr(XElement e, string name)
         {
             var a = e.Attribute(name);
             return a != null ? a.Value : string.Empty;
@@ -302,7 +302,7 @@ namespace CmsWeb.Models
             var checkoxesAdded = false;
             var w = new APIWriter(writer);
 
-            foreach (PropertyInfo pi in typeof(OnlineRegPersonModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            foreach (var pi in typeof(OnlineRegPersonModel).GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(vv => vv.CanRead && vv.CanWrite))
             {
                 switch (pi.Name)

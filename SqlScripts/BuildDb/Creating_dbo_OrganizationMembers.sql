@@ -27,7 +27,9 @@ CREATE TABLE [dbo].[OrganizationMembers]
 [Score] [int] NOT NULL CONSTRAINT [DF_OrganizationMembers_Score] DEFAULT ((0)),
 [DatumId] [int] NULL,
 [Hidden] [bit] NULL,
-[SkipInsertTriggerProcessing] [bit] NULL
+[SkipInsertTriggerProcessing] [bit] NULL,
+[RegistrationDataId] [int] NULL,
+[OnlineRegData] [xml] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

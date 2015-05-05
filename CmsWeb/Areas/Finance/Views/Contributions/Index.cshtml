@@ -56,8 +56,8 @@
                             <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Start Date" data-content="Use only start date to look at a single day."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="SearchInfo_StartDate" class="control-label">Start Date</label>
                             <div class="input-group date">
-                                @Html.TextBox("SearchInfo_StartDate", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                @Html.Hidden("SearchInfo_StartDateIso", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                                @Html.TextBox("SearchInfo.StartDate", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("SearchInfo.StartDateIso", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
                             </div>
                         </div>
                     </div>
@@ -65,8 +65,8 @@
                         <div class="form-group">
                             <label for="SearchInfo_EndDate" class="control-label">End Date</label>
                             <div class="input-group date">
-                                @Html.TextBox("SearchInfo_EndDate", Model.SearchInfo.EndDate.HasValue ? Model.SearchInfo.EndDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                @Html.Hidden("SearchInfo_EndDateIso", Model.SearchInfo.EndDate.HasValue ? Model.SearchInfo.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                                @Html.TextBox("SearchInfo.EndDate", Model.SearchInfo.EndDate.HasValue ? Model.SearchInfo.EndDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("SearchInfo.EndDateIso", Model.SearchInfo.EndDate.HasValue ? Model.SearchInfo.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
                             </div>
                         </div>
                     </div>

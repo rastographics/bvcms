@@ -97,7 +97,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     sb.AppendFormat("{0:c} applied to this registrant\n", pay);
                     sb.AppendFormat("{0:c} total due all registrants\n", ti.Amtdue);
 
-                    om.AddToMemberData(sb.ToString());
+                    om.AddToMemberDataBelowComments(sb.ToString());
                     var reg = p.RecRegs.Single();
                     reg.AddToComments(sb.ToString());
                     reg.AddToComments("{0} ({1})".Fmt(org.OrganizationName, org.OrganizationId));

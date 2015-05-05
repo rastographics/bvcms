@@ -1,0 +1,36 @@
+﻿@{
+    ViewBag.Title = "Other Developer Actions";
+    ViewBag.PageHeader = "Other Developer Actions";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+@{
+    var admin = User.IsInRole("Admin");
+    var developer = User.IsInRole("Developer");
+    var manageemails = User.IsInRole("ManageEmails");
+    var managetrans = User.IsInRole("ManageTransactions");
+    var edit = User.IsInRole("Edit");
+    var design = User.IsInRole("Design");
+    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
+    var quickbooks = ViewExtensions2.DbSetting("ShowQuickBooksMenu", "false") == "true";
+}
+<div class="row">
+    <div class="col-sm-4 col-md-4 col-lg-3">
+        <div class="box">
+            <div class="box-title">
+                <h5>Batch Actions</h5>
+            </div>
+            <div class="box-content">
+                <ul class="nav nav-pills nav-stacked">
+                    @Helper.LiAnchorLink("Extra Values from People Ids", "/Batch/ExtraValuesFromPeopleIds", admin)
+                    @Helper.LiAnchorLink("Find Tag Emails", "/Batch/FindTagEmail", edit)
+                    @Helper.LiAnchorLink("Find Tag People", "/Batch/FindTagPeople", edit)
+                    @Helper.LiAnchorLink("Batch Grade", "/Batch/Grade", true)
+                    @Helper.LiAnchorLink("Move & Delete People", "/Batch/MoveAndDelete", admin)
+                    @Helper.LiAnchorLink("Registration Mail", "/Batch/RegistrationMail", admin)
+                    @Helper.LiAnchorLink("Sql View", "/Batch/SqlView", admin)
+                    @Helper.LiAnchorLink("Test Script", "/Batch/TestScript", true)
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

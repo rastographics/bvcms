@@ -14,7 +14,9 @@
             <h4>@Model.OrgName</h4>
         </div>
         <div class="modal-body">
-            <div class="alert alert-warning">This will update information on @Model.Count @Model.Group</div>
+            <div class="alert alert-warning">
+                This will update information on @Model.Count @Model.Group
+            </div>
             @Html.HiddenFor(m => m.Id)
             @Html.EditorFor(m => m.MemberType)
             @Html.EditorFor(m => m.MakeMemberTypeOriginal)
@@ -40,9 +42,6 @@
                     </ul>
                 </div>
             }
-            <a href="/OrgMembersUpdate/ShowDrop" class="btn btn-danger ajax">
-                Drop
-            </a>
             @if (DbUtil.Db.CurrentOrg.GroupSelect == GroupSelectCode.Member && (admin || manager))
             {
                 <a href="/OrgMembersUpdate/SmallGroups" class="btn btn-default ajax">

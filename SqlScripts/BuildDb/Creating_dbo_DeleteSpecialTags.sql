@@ -1,4 +1,3 @@
-
 CREATE PROCEDURE [dbo].[DeleteSpecialTags](@pid INT = null)
 AS
 BEGIN
@@ -17,6 +16,12 @@ AND (t.PeopleId = @pid OR @pid IS NULL)
 DELETE FROM dbo.Tag
 WHERE TypeId >= 3 AND TypeId < 100 
 AND (PeopleId = @pid OR @pid IS NULL)
+
+DELETE dbo.TagShare
+FROM dbo.TagShare s
+JOIN dbo.Tag t ON s.TagId = t.Id
+WHERE Name LIKE '.temp email tag%'
+AND (t.PeopleId = @pid OR @pid IS NULL)
 
 DELETE dbo.TagPerson
 FROM dbo.TagPerson tp

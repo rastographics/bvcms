@@ -105,6 +105,8 @@ namespace CmsWeb.Areas.Dialog.Models
             om2.Request = om1.Request;
             om2.Amount = om1.Amount;
             om2.UserData = om1.UserData;
+            om2.OnlineRegData = om1.OnlineRegData;
+            om2.RegistrationDataId = om1.RegistrationDataId;
             om1.Drop(DbUtil.Db);
             DbUtil.Db.SubmitChanges();
             return "moved";
