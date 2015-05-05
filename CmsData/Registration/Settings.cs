@@ -797,19 +797,19 @@ namespace CmsData.Registration
 			AddValueNoCk(1, sb, "SenderSubject", SenderSubject);
 			AddSingleOrMultiLine(1, sb, "SenderBody", SenderBody);
 		}
-		private void AddSingleOrMultiLine(int n, StringBuilder sb, string Section, string ht)
+		private static void AddSingleOrMultiLine(int n, StringBuilder sb, string section, string ht)
 		{
 			if (ht == null)
 				return;
 			if (ht.Contains("\n"))
 			{
-				AddValueCk(n, sb, Section, "<<");
+				AddValueCk(n, sb, section, "<<");
 				sb.AppendLine("----------");
 				sb.AppendLine(ht.Trim());
 				sb.AppendLine("----------");
 			}
 			else
-				AddValueNoCk(n, sb, Section, ht);
+				AddValueNoCk(n, sb, section, ht);
 		}
 		private void AddInstructions(StringBuilder sb)
 		{

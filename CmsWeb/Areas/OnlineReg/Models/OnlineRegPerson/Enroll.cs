@@ -5,6 +5,7 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using System.Text;
+using System.Xml.Linq;
 using CmsData.Codes;
 using CmsData.View;
 
@@ -92,7 +93,7 @@ namespace CmsWeb.Models
                     case "AskYesNoQuestions":
                         if (setting.TargetExtraValues == false)
                         {
-                            foreach (var yn in ((AskYesNoQuestions)ask).list)
+                            foreach (var yn in ((AskYesNoQuestions) ask).list)
                             {
                                 om.RemoveFromGroup(DbUtil.Db, "Yes:" + yn.SmallGroup);
                                 om.RemoveFromGroup(DbUtil.Db, "No:" + yn.SmallGroup);
@@ -107,25 +108,26 @@ namespace CmsWeb.Models
                     case "AskCheckboxes":
                         if (setting.TargetExtraValues)
                         {
-                            foreach (var ck in ((AskCheckboxes)ask).list)
+                            foreach (var ck in ((AskCheckboxes) ask).list)
                                 person.RemoveExtraValue(DbUtil.Db, ck.SmallGroup);
-                            foreach (var g in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
+                            foreach (var g in ((AskCheckboxes) ask).CheckboxItemsChosen(Checkbox))
                                 person.AddEditExtraBool(g.SmallGroup, true);
                         }
                         else
                         {
-                            foreach (var ck in ((AskCheckboxes)ask).list)
+                            foreach (var ck in ((AskCheckboxes) ask).list)
                                 ck.RemoveFromSmallGroup(DbUtil.Db, om);
-                            foreach (var i in ((AskCheckboxes)ask).CheckboxItemsChosen(Checkbox))
+                            foreach (var i in ((AskCheckboxes) ask).CheckboxItemsChosen(Checkbox))
                                 i.AddToSmallGroup(DbUtil.Db, om, PythonEvents);
                         }
                         break;
                     case "AskMenu":
-                        foreach (var i in MenuItem[ask.UniqueId])
-                            om.AddToGroup(DbUtil.Db, i.Key, i.Value);
                         {
-                            var menulabel = ((AskMenu)ask).Label;
-                            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
+                            foreach (var i in MenuItem[ask.UniqueId])
+                                om.AddToGroup(DbUtil.Db, i.Key, i.Value);
+
+                            var menulabel = ((AskMenu) ask).Label;
+                            foreach (var i in ((AskMenu) ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                             {
                                 om.AddToMemberDataBelowComments(menulabel);
                                 string desc;
@@ -141,15 +143,15 @@ namespace CmsWeb.Models
                     case "AskDropdown":
                         if (setting.TargetExtraValues)
                         {
-                            foreach (var op in ((AskDropdown)ask).list)
+                            foreach (var op in ((AskDropdown) ask).list)
                                 person.RemoveExtraValue(DbUtil.Db, op.SmallGroup);
-                            person.AddEditExtraValue(((AskDropdown)ask).SmallGroupChoice(option).SmallGroup, "true");
+                            person.AddEditExtraValue(((AskDropdown) ask).SmallGroupChoice(option).SmallGroup, "true");
                         }
                         else
                         {
-                            foreach (var op in ((AskDropdown)ask).list)
+                            foreach (var op in ((AskDropdown) ask).list)
                                 op.RemoveFromSmallGroup(DbUtil.Db, om);
-                            ((AskDropdown)ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonEvents);
+                            ((AskDropdown) ask).SmallGroupChoice(option).AddToSmallGroup(DbUtil.Db, om, PythonEvents);
                         }
                         break;
                     case "AskGradeOptions":
@@ -288,7 +290,7 @@ namespace CmsWeb.Models
             }
         }
 
-        public string PrepareSummaryText(Transaction ti)
+        internal string PrepareSummaryText(Transaction ti)
         {
             var om = GetOrgMember();
             var sb = new StringBuilder();
@@ -475,6 +477,7 @@ namespace CmsWeb.Models
 
             return sb.ToString();
         }
+
         private string AgeGroup()
         {
             foreach (var i in setting.AgeGroups)
@@ -482,6 +485,7 @@ namespace CmsWeb.Models
                     return i.SmallGroup;
             return string.Empty;
         }
+
         public void PopulateRegistrationFromDb(OrganizationMember om)
         {
             var reg = person.RecRegs.SingleOrDefault();

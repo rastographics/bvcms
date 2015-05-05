@@ -347,12 +347,14 @@ namespace UtilityExtensions
 
         public static string Serialize<T>(T m)
         {
-            var sw = new StringWriter();
-            var ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            var slz = new XmlSerializer(typeof(T));
-            slz.Serialize(sw, m, ns);
-            return sw.ToString();
+            using (var sw = new StringWriter())
+            {
+                var ns = new XmlSerializerNamespaces();
+                ns.Add("", "");
+                var slz = new XmlSerializer(typeof (T));
+                slz.Serialize(sw, m, ns);
+                return sw.ToString();
+            }
         }
 
         public static T DeSerialize<T>(string s) where T : class
