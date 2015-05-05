@@ -1,11 +1,22 @@
 ﻿@using CmsWeb
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "RegistrationMail";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Registration Mail";
+    ViewBag.PageHeader = "Registration Mail";
 }
-<h2>RegistrationMail</h2>
-@using(Html.BeginForm())
-{ 
-    @Html.TextArea("text", new { rows = "20", cols = "100", wrap = "off", style = "width:90%" })<br />
-    <input type="submit" class="bt" value="Submit" />
-} 
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="alert alert-info">
+                    Please paste data, tab delimited (copied from Excel), no headers, fromid(tab)toid, one set per row.
+                </div>
+                @using (Html.BeginForm())
+                {
+                    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", @class = "form-control" })<br />
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                }
+            </div>
+        </div>
+    </div>
+</div>

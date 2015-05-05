@@ -1081,6 +1081,7 @@
     <Content Include="Content\touchpoint\src\less\twitter-typeahead\twitter-typeahead.less" />
     <Content Include="Content\touchpoint\lib\ion-sound\sounds\glass.ogg" />
     <Content Include="Content\touchpoint\lib\ion-sound\sounds\computer_error.ogg" />
+    <Content Include="Areas\Manage\Views\Batch\OtherDeveloperActions.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Dialogs.cshtml" />
@@ -2341,7 +2342,6 @@
     <Content Include="Views\Home\MyDataSupport.cshtml" />
     <Content Include="Views\Home\TestScript.cshtml" />
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
-    <Content Include="Areas\Manage\Views\Batch\Info.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineBoolean.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
@@ -2478,8 +2478,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Manage\Views\Batch\UpdatePeople.cshtml">
-    </Content>
     <Content Include="Content\images\bvcms132x55.png" />
     <Content Include="Scripts\jQuery\jquery.sortElements.js" />
     <Content Include="Scripts\jQuery\jquery.textarea.js" />
@@ -2610,7 +2608,6 @@
     <Content Include="Areas\Main\Views\Volunteering\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolunteerSlots.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\TicketMeeting.cshtml" />
-    <Content Include="Areas\Manage\Views\Batch\SQLSelect.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\SQLView.cshtml" />
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\TimeSlots.cshtml" />
     <Content Include="Areas\Finance\Views\Bundles\Index.cshtml" />
@@ -2825,8 +2822,6 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\UpdateOrg.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\Batch\UploadPeople.cshtml">
-    </Content>
     <Content Include="Areas\Manage\Views\Display\EditHTML.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Display\Index.cshtml">
@@ -2935,8 +2930,6 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\FindTagPeople0.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\Batch\FindTagPeople.cshtml">
-    </Content>
     <Content Include="Areas\Search\Views\PeopleSearch\Index.cshtml">
     </Content>
     <Content Include="Areas\Search\Views\PeopleSearch\Results.cshtml">
@@ -2958,8 +2951,6 @@
     <Content Include="Areas\Public\Views\SGMap\popup.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\SGMap\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Manage\Views\Batch\Test.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\OrgContent\Index.cshtml">
     </Content>

@@ -1,12 +1,29 @@
 ﻿@using CmsWeb
 @{
-    ViewBag.Title = "ExtraValuesFromPeopleIds";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Extra ValuesFrom PeopleIds";
+    ViewBag.PageHeader = "Tag People Ids";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>Tag PeopleIds</h2>
-<em>One row per PeopleId, Value (separated by a tab)</em>
-<form action="/Batch/ExtraValuesFromPeopleIds" method="post">
-    <label>Extra Value Field: </label> @Html.TextBox("field")
-    <input type="submit" class="bt" value="Submit" />
-    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", style = "width:90%" })<br />
-</form>
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="alert alert-info">
+                    One row per PeopleId, Value (separated by a tab)
+                </div>
+                <form action="/Batch/ExtraValuesFromPeopleIds" method="post">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label for="field">Extra Value Field</label>
+                                @Html.TextBox("field", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", @class="form-control" })<br />
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
