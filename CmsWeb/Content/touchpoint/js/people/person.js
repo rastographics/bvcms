@@ -223,11 +223,106 @@
         });
     });
 
+    var subLink = null;
+
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         e.preventDefault();
         var tab = $(e.target).attr('href').replace("#", "#tab-");
         window.location.hash = tab;
         $.cookie('lasttab', tab);
+
+        switch (tab) {
+            case '#tab-enrollment':
+                if (subLink) {
+                    if (subLink.attr("href") !== '#') {
+                        $.cookie('lasttab', tlink.attr("href"));
+                        subLink.click().tab("show");
+                        subLink = null;
+                    }
+                } else {
+                    var id = "#current";
+                    if ($(id).length < 2) {
+                        $("a[href='" + id + "']").click().tab("show");
+                        $.cookie('lasttab', id);
+                    }
+                }
+                break;
+            case '#tab-profile':
+                if (subLink) {
+                    if (subLink.attr("href") !== '#') {
+                        $.cookie('lasttab', tlink.attr("href"));
+                        subLink.click().tab("show");
+                        subLink = null;
+                    }
+                } else {
+                    var id = "#memberstatus";
+                    if ($(id).length < 2) {
+                        $("a[href='" + id + "']").click().tab("show");
+                        $.cookie('lasttab', id);
+                    }
+                }
+                break;
+            case '#tab-ministry':
+                if (subLink) {
+                    if (subLink.attr("href") !== '#') {
+                        $.cookie('lasttab', tlink.attr("href"));
+                        subLink.click().tab("show");
+                        subLink = null;
+                    }
+                } else {
+                    var id = "#contactsreceived";
+                    if ($(id).length < 2) {
+                        $("a[href='" + id + "']").click().tab("show");
+                        $.cookie('lasttab', id);
+                    }
+                }
+                break;
+            case '#tab-giving':
+                if (subLink) {
+                    if (subLink.attr("href") !== '#') {
+                        $.cookie('lasttab', tlink.attr("href"));
+                        subLink.click().tab("show");
+                        subLink = null;
+                    }
+                } else {
+                    var id = "#contributions";
+                    if ($(id).length < 2) {
+                        $("a[href='" + id + "']").click().tab("show");
+                        $.cookie('lasttab', id);
+                    }
+                }
+                break;
+            case '#tab-emails':
+                if (subLink) {
+                    if (subLink.attr("href") !== '#') {
+                        $.cookie('lasttab', tlink.attr("href"));
+                        subLink.click().tab("show");
+                        subLink = null;
+                    }
+                } else {
+                    var id = "#receivedemails";
+                    if ($(id).length < 2) {
+                        $("a[href='" + id + "']").click().tab("show");
+                        $.cookie('lasttab', id);
+                    }
+                }
+                break;
+            case '#tab-system':
+                if (subLink) {
+                    if (subLink.attr("href") !== '#') {
+                        $.cookie('lasttab', tlink.attr("href"));
+                        subLink.click().tab("show");
+                        subLink = null;
+                    }
+                } else {
+                    var id = "#user";
+                    if ($(id).length < 2) {
+                        $("a[href='" + id + "']").click().tab("show");
+                        $.cookie('lasttab', id);
+                    }
+                }
+                break;
+        }
         return false;
     });
 
@@ -239,59 +334,15 @@
         var tlink = $("a[href='" + lastTab.replace("tab-", "") + "']");
         var tabparent = tlink.closest("ul").data("tabparent");
         if (tabparent) {
+            subLink = tlink;
             $("a[href='#" + tabparent + "']").click().tab("show");
-        }
-        if (tlink.attr("href") !== '#') {
-            $.cookie('lasttab', tlink.attr("href"));
-            tlink.click().tab("show");
+        } else {
+            if (tlink.attr("href") !== '#') {
+                $.cookie('lasttab', tlink.attr("href"));
+                tlink.click().tab("show");
+            }
         }
     }
-
-    $("a[href='#enrollment']").on('shown.bs.tab', function (e) {
-        if ($("#current").length < 2) {
-            $("a[href='#current']").click().tab("show");
-        }
-    });
-
-    $("a[href='#profile']").on('shown.bs.tab', function (e) {
-        var id = "#memberstatus";
-        if ($(id).length < 2) {
-            $("a[href='" + id + "']").click().tab("show");
-            $.cookie('lasttab', id);
-        }
-    });
-
-    $("a[href='#ministry']").on('shown.bs.tab', function (e) {
-        var id = "#contactsreceived";
-        if ($(id).length < 2) {
-            $("a[href='" + id + "']").click().tab("show");
-            $.cookie('lasttab', id);
-        }
-    });
-
-    $("a[href='#giving']").on('shown.bs.tab', function (e) {
-        var id = "#contributions";
-        if ($(id).length < 2) {
-            $("a[href='" + id + "']").click().tab("show");
-            $.cookie('lasttab', id);
-        }
-    });
-
-    $("a[href='#emails']").on('shown.bs.tab', function (e) {
-        var id = "#receivedemails";
-        if ($(id).length < 2) {
-            $("a[href='" + id + "']").click().tab("show");
-            $.cookie('lasttab', id);
-        }
-    });
-
-    $("a[href='#system']").on('shown.bs.tab', function (e) {
-        var id = "#user";
-        if ($(id).length < 2) {
-            $("a[href='" + id + "']").click().tab("show");
-            $.cookie('lasttab', id);
-        }
-    });
 
     $('body').on('click', '#future', function (ev) {
         ev.preventDefault();
