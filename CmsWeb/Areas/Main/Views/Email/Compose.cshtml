@@ -12,6 +12,9 @@
 }
 @section head
 {
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_style.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/custom-theme.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
     <style>
@@ -146,6 +149,21 @@
             <div class="modal-footer">
                 <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
                 <input id="SaveDraftButton" type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editor-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form>
+                    <textarea id="htmleditor" name="htmleditor" class="form-control" rows="15"></textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
             </div>
         </div>
     </div>

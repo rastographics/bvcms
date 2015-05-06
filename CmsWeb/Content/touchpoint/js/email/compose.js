@@ -1,6 +1,8 @@
 ﻿$(function () {
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
+
+    var currentDiv = null;
    
     $.clearFunction = undefined;
     $.addFunction = undefined;
@@ -17,34 +19,33 @@
         }
     };
 
-    $.distroyEditor = function () {
-        $('#email-body').contents().find('div[bvedit],div.bvedit').each(function (index) {
-            var div = this;
-            if ($(div).data('fa.editable')) {
-                $(div).editable('destroy');
-            }
-        });
-    }
-
     window.displayEditor = function (div) {
-        if (!$(div).data('fa.editable')) {
-            $(div).editable({
-                inlineMode: false,
-                theme: 'custom',
-                buttons: ['bold', 'italic', 'underline', 'fontFamily', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
-                imageUploadURL: '/Account/FroalaUpload'
-            });
-
-            var html = $(div).editable('getHTML');
-            if (html == "Click here to edit content") {
-                $(div).editable('setHTML', '');
-            }
-        }
+        currentDiv = div;
+        $('#editor-modal').modal('show');
     };
+
+    $('#editor-modal').on('shown.bs.modal', function () {
+        $('#htmleditor').editable({
+            inlineMode: false,
+            height: 200,
+            theme: 'custom',
+            buttons: ['bold', 'italic', 'underline', 'fontFamily', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
+            imageUploadURL: '/Account/FroalaUpload'
+        });
+        var html = $(currentDiv).html();
+        if (html !== "Click here to edit content") {
+            $('#htmleditor').editable('setHTML', html);
+        }
+    });
+
+    $('#editor-modal').on('click', '#save-edit', function () {
+        var h = $('#htmleditor').editable('getHTML');
+        $(currentDiv).html(h);
+        $('#editor-modal').modal('hide');
+    });
 
     $("#Send").click(function () {
         $.block();
-        $.distroyEditor();
         $('#body').val($('#email-body').contents().find('#tempateBody').html());
         var q = $("#SendEmail").serialize();
 
@@ -92,7 +93,6 @@
             $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
-            $.distroyEditor();
             $("#body").val($('#email-body').contents().find('#tempateBody').html());
             $("#name").val($("#newName").val());
             $.addTemplateClass();
@@ -108,7 +108,6 @@
 
     $("#SaveDraftButton").click(function () {
         $.clearTemplateClass();
-        $.distroyEditor();
         $("#body").val($('#email-body').contents().find('#tempateBody').html());
         $("#name").val($("#newName").val());
         $.addTemplateClass();
@@ -121,7 +120,6 @@
         $.block();
 
         $.clearTemplateClass();
-        $.distroyEditor();
         $("#body").val($('#email-body').contents().find('#tempateBody').html());
         $.addTemplateClass();
 

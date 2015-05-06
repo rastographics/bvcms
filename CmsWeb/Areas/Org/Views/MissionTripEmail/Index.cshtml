@@ -5,6 +5,11 @@
     ViewBag.PageHeader = "Compose Email";
     Layout = ViewExtensions2.TouchPointLayout();
 }
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_style.min.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/custom-theme.css")
+}
 <div class="row">
     <div class="col-md-push-9 col-md-3 col-lg-push-8 col-lg-4">
         <div class="panel panel-default">
@@ -79,6 +84,21 @@
                     </div>
                     <br/>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editor-modal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form>
+                    <textarea id="htmleditor" name="htmleditor" class="form-control" rows="15"></textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
             </div>
         </div>
     </div>
