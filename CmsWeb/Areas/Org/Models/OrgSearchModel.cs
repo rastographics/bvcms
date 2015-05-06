@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Search.Models
             return d;
         }
 
-        private IQueryable<CmsData.Organization> organizations;
+        private IQueryable<OrgSearch> organizations;
         public IEnumerable<OrganizationInfo> OrganizationList()
         {
             organizations = FetchOrgs();
@@ -180,7 +180,7 @@ namespace CmsWeb.Areas.Search.Models
             return _count.Value;
         }
 
-        public IQueryable<CmsData.Organization> FetchOrgs()
+        public IQueryable<OrgSearch> FetchOrgs()
         {
             var me = Util.UserPeopleId;
 
@@ -351,7 +351,7 @@ namespace CmsWeb.Areas.Search.Models
 
             return organizations;
         }
-        public IQueryable<CmsData.Organization> ApplySort(IQueryable<CmsData.Organization> query)
+        public IQueryable<OrgSearch> ApplySort(IQueryable<OrgSearch> query)
         {
             var regdt = DateTime.Today.AddYears(5);
             if (Pager.Direction == "asc")
@@ -365,8 +365,7 @@ namespace CmsWeb.Areas.Search.Models
                     case "Division":
                     case "Program/Division":
                         query = from o in query
-                                orderby o.Division.Program.Name, o.Division.Name,
-                                o.OrganizationName
+                                orderby o.Program, o.Division, o.OrganizationName
                                 select o;
                         break;
                     case "Name":
@@ -381,8 +380,7 @@ namespace CmsWeb.Areas.Search.Models
                         break;
                     case "Schedule":
                         query = from o in query
-                                let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                                orderby sc.ScheduleId
+                                orderby o.Schedule
                                 select o;
                         break;
                     case "Self CheckIn":
@@ -454,7 +452,7 @@ namespace CmsWeb.Areas.Search.Models
                     case "Program/Division":
                     case "Division":
                         query = from o in query
-                                orderby o.Division.Program.Name descending, o.Division.Name descending,
+                                orderby o.Program descending, o.Division descending,
                                 o.OrganizationName descending
                                 select o;
                         break;
@@ -470,8 +468,7 @@ namespace CmsWeb.Areas.Search.Models
                         break;
                     case "Schedule":
                         query = from o in query
-                                let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                                orderby sc.ScheduleId descending
+                                orderby o.Schedule descending
                                 select o;
                         break;
                     case "Self CheckIn":

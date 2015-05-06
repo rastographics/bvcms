@@ -170,6 +170,10 @@ namespace CmsData
 		
 		private string _RegistrationTitle;
 		
+		private int? _PrevMemberCount;
+		
+		private int? _ProspectCount;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -446,6 +450,12 @@ namespace CmsData
 		
 		partial void OnRegistrationTitleChanging(string value);
 		partial void OnRegistrationTitleChanged();
+		
+		partial void OnPrevMemberCountChanging(int? value);
+		partial void OnPrevMemberCountChanged();
+		
+		partial void OnProspectCountChanging(int? value);
+		partial void OnProspectCountChanged();
 		
     #endregion
 		public Organization()
@@ -2191,6 +2201,50 @@ namespace CmsData
 					this._RegistrationTitle = value;
 					this.SendPropertyChanged("RegistrationTitle");
 					this.OnRegistrationTitleChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="PrevMemberCount", UpdateCheck=UpdateCheck.Never, Storage="_PrevMemberCount", DbType="int")]
+		public int? PrevMemberCount
+		{
+			get { return this._PrevMemberCount; }
+
+			set
+			{
+				if (this._PrevMemberCount != value)
+				{
+				
+                    this.OnPrevMemberCountChanging(value);
+					this.SendPropertyChanging();
+					this._PrevMemberCount = value;
+					this.SendPropertyChanged("PrevMemberCount");
+					this.OnPrevMemberCountChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ProspectCount", UpdateCheck=UpdateCheck.Never, Storage="_ProspectCount", DbType="int")]
+		public int? ProspectCount
+		{
+			get { return this._ProspectCount; }
+
+			set
+			{
+				if (this._ProspectCount != value)
+				{
+				
+                    this.OnProspectCountChanging(value);
+					this.SendPropertyChanging();
+					this._ProspectCount = value;
+					this.SendPropertyChanged("ProspectCount");
+					this.OnProspectCountChanged();
 				}
 
 			}
