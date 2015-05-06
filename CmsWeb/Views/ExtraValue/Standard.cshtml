@@ -35,7 +35,7 @@
         </table>
     </div>
     @FormAction(true)
-    <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@Model.Table/Standard/">@Model.Id" />
+    <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@Model.Table/Standard/@Model.Id" />
 </form>
 @helper FormAction(bool xs = false)
 {
