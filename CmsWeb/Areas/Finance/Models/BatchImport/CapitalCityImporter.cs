@@ -21,7 +21,6 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var fid = fundid ?? BatchImportContributions.FirstFundId();
 
             var details = new List<BundleDetail>();
-            var bundleCount = 0;
 
             while (csv.ReadNextRecord())
             {
