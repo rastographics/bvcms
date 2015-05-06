@@ -29,6 +29,10 @@ else
             @if (Model != null && Model.Any())
             {
                 <select class="form-control" id="NewValue" name="NewValue">
+                    @if (ViewBag.FieldName == "Campus")
+                    {
+                        <option value="none">(not specified)</option>
+                    }
                     @foreach (var code in Model)
                     {
                         <option value="@(ViewBag.UseCode ? code.Code : code.Id.ToString())">@code.Value</option>
