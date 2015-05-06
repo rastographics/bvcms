@@ -46,6 +46,8 @@
 {
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js")
@@ -85,7 +87,7 @@
                 inlineMode: false,
                 height: 400,
                 theme: 'custom',
-                buttons: ['bold', 'italic', 'underline', 'fontFamily', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
+                buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
                 imageUploadURL: '/Account/FroalaUpload'
             });
         });
