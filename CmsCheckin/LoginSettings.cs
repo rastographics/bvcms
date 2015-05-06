@@ -63,6 +63,8 @@ namespace CmsCheckin
 			AdminPIN.Enter += onTextboxEnter;
 			AdminPINTimeout.Enter += onTextboxEnter;
 
+			keyboard = new CommonKeyboard(this);
+
 			updateDisplay();
 		}
 
@@ -71,7 +73,6 @@ namespace CmsCheckin
 			this.CenterToScreen();
 			this.Location = new Point(this.Location.X, this.Location.Y / 2);
 
-			keyboard = new CommonKeyboard(this);
 			keyboard.Show();
 			attachKeyboard();
 
@@ -135,6 +136,7 @@ namespace CmsCheckin
 		private void onStartClick(object sender, EventArgs e)
 		{
 			updateSettings();
+			Program.settings.save();
 
 			if (Program.settings.buildingMode == true) {
 				try {
@@ -177,6 +179,8 @@ namespace CmsCheckin
 			if (CancelClose == false) {
 				DialogResult = DialogResult.OK;
 				this.Hide();
+			} else {
+				CancelClose = false;
 			}
 		}
 
@@ -280,11 +284,33 @@ namespace CmsCheckin
 				PrintKiosks.Enabled = true;
 				KiosksToPrintForLabel.Enabled = true;
 
+				advancedPrinterOptionsGroup.Enabled = true;
+				Printer.Enabled = true;
+				PrinterLabel.Enabled = true;
+				KioskName.Enabled = true;
+				KioskNameLabel.Enabled = true;
+				labelOptionsGroup.Enabled = true;
+
 				mainOptionsGroup.Enabled = false;
 				buildingOptionsGroup.Enabled = false;
 				askForOptioonsGroup.Enabled = false;
 				otherOptionsGroup.Enabled = false;
 				adminOptionsGroup.Enabled = false;
+			} else if (PrintMode.SelectedIndex == 3) {
+				advancedPrinterOptionsGroup.Enabled = false;
+				PrintKiosks.Enabled = false;
+				KiosksToPrintForLabel.Enabled = false;
+				Printer.Enabled = false;
+				PrinterLabel.Enabled = false;
+				KioskName.Enabled = false;
+				KioskNameLabel.Enabled = false;
+				labelOptionsGroup.Enabled = false;
+
+				mainOptionsGroup.Enabled = true;
+				buildingOptionsGroup.Enabled = true;
+				askForOptioonsGroup.Enabled = true;
+				otherOptionsGroup.Enabled = true;
+				adminOptionsGroup.Enabled = true;
 			} else {
 				PrintKiosks.Enabled = false;
 				KiosksToPrintForLabel.Enabled = false;
@@ -295,6 +321,13 @@ namespace CmsCheckin
 				askForOptioonsGroup.Enabled = true;
 				otherOptionsGroup.Enabled = true;
 				adminOptionsGroup.Enabled = true;
+
+				advancedPrinterOptionsGroup.Enabled = true;
+				Printer.Enabled = true;
+				PrinterLabel.Enabled = true;
+				KioskName.Enabled = true;
+				KioskNameLabel.Enabled = true;
+				labelOptionsGroup.Enabled = true;
 			}
 		}
 
@@ -369,8 +402,13 @@ namespace CmsCheckin
 		private void updateSettings()
 		{
 			// First Column
-			Program.settings.campusID = ((CheckInCampus)Program.campusList[CampusCombo.SelectedIndex]).id;
-			Program.settings.campus = ((CheckInCampus)Program.campusList[CampusCombo.SelectedIndex]).name;
+			if (CampusCombo.SelectedIndex >= 0) {
+				Program.settings.campusID = ((CheckInCampus)Program.campusList[CampusCombo.SelectedIndex]).id;
+				Program.settings.campus = ((CheckInCampus)Program.campusList[CampusCombo.SelectedIndex]).name;
+			} else {
+				Program.settings.campusID = "0";
+			}
+			
 			Program.settings.dayOfWeek = DayOfWeekCombo.SelectedIndex;
 
 			int.TryParse(EarlyHours.Text, out Program.settings.earlyHours);
@@ -413,10 +451,6 @@ namespace CmsCheckin
 		{
 			// First Column
 			CampusCombo.SelectedIndex = CampusCombo.FindStringExact(Program.settings.campus);
-
-			if (CampusCombo.SelectedIndex == -1) {
-				CampusCombo.SelectedIndex = 0;
-			}
 
 			DayOfWeekCombo.Text = Program.settings.dayOfWeek.ToString();
 

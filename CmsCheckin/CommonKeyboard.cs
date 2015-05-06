@@ -70,7 +70,7 @@ namespace CmsCheckin
 
 			bbs.Click += onBackspaceClick;
 
-			TopMost = true;
+			//TopMost = true;
 		}
 
 		public CommonKeyboard(KeyboardInterface listener)

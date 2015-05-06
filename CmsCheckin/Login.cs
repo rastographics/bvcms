@@ -23,6 +23,8 @@ namespace CmsCheckin
 			username.Enter += onTextboxEnter;
 			password.Enter += onTextboxEnter;
 			URL.Enter += onTextboxEnter;
+
+			keyboard = new CommonKeyboard(this);
 		}
 
 		private void onLoginLoad(object sender, EventArgs e)
@@ -40,11 +42,12 @@ namespace CmsCheckin
 			//	Program.settings.setPopupForVersion(1);
 			//}
 
-			keyboard = new CommonKeyboard(this);
 			keyboard.Show();
 			attachKeyboard();
 
-			URL.Text = Program.settings.subdomain;
+			this.Focus();
+
+			URL.Text = Program.settings.subdomain.Replace(".tpsdb.com", "").Replace(".bvcms.com", "");
 			username.Text = Program.settings.user;
 
 			if (username.Text.Length > 0) {
@@ -135,7 +138,11 @@ namespace CmsCheckin
 						}
 
 					} else {
-						MessageBox.Show("Error: " + bm.error, "Server Error");
+						if (bm.error == -6) {
+							MessageBox.Show("Your username or password was incorrect, please try again.", "Server Error");
+						} else {
+							MessageBox.Show("Error: " + bm.error, "Server Error");
+						}
 					}
 				}
 			} catch (WebException) {

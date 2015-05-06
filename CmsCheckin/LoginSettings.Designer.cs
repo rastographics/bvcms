@@ -31,7 +31,7 @@
 			this.KiosksToPrintForLabel = new System.Windows.Forms.Label();
 			this.PrintMode = new System.Windows.Forms.ComboBox();
 			this.Printer = new System.Windows.Forms.ComboBox();
-			this.label4 = new System.Windows.Forms.Label();
+			this.PrinterLabel = new System.Windows.Forms.Label();
 			this.DisableLocationLabels = new System.Windows.Forms.CheckBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.BuildingAccessMode = new System.Windows.Forms.CheckBox();
@@ -62,7 +62,7 @@
 			this.AskFriend = new System.Windows.Forms.CheckBox();
 			this.SecurityLabelPerChild = new System.Windows.Forms.CheckBox();
 			this.KioskName = new System.Windows.Forms.TextBox();
-			this.label6 = new System.Windows.Forms.Label();
+			this.KioskNameLabel = new System.Windows.Forms.Label();
 			this.LateMinutes = new System.Windows.Forms.ComboBox();
 			this.label7 = new System.Windows.Forms.Label();
 			this.EarlyHours = new System.Windows.Forms.ComboBox();
@@ -146,16 +146,16 @@
 			this.Printer.TabIndex = 8;
 			this.Printer.SelectedIndexChanged += new System.EventHandler(this.onPrinterChanged);
 			// 
-			// label4
+			// PrinterLabel
 			// 
-			this.label4.AutoSize = true;
-			this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label4.Location = new System.Drawing.Point(11, 128);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(49, 16);
-			this.label4.TabIndex = 120;
-			this.label4.Text = "Printer:";
-			this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.PrinterLabel.AutoSize = true;
+			this.PrinterLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.PrinterLabel.Location = new System.Drawing.Point(11, 128);
+			this.PrinterLabel.Name = "PrinterLabel";
+			this.PrinterLabel.Size = new System.Drawing.Size(49, 16);
+			this.PrinterLabel.TabIndex = 120;
+			this.PrinterLabel.Text = "Printer:";
+			this.PrinterLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// DisableLocationLabels
 			// 
@@ -487,16 +487,16 @@
 			this.KioskName.Size = new System.Drawing.Size(233, 22);
 			this.KioskName.TabIndex = 173;
 			// 
-			// label6
+			// KioskNameLabel
 			// 
-			this.label6.AutoSize = true;
-			this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.label6.Location = new System.Drawing.Point(11, 180);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(84, 16);
-			this.label6.TabIndex = 172;
-			this.label6.Text = "Kiosk Name:";
-			this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.KioskNameLabel.AutoSize = true;
+			this.KioskNameLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.KioskNameLabel.Location = new System.Drawing.Point(11, 180);
+			this.KioskNameLabel.Name = "KioskNameLabel";
+			this.KioskNameLabel.Size = new System.Drawing.Size(84, 16);
+			this.KioskNameLabel.TabIndex = 172;
+			this.KioskNameLabel.Text = "Kiosk Name:";
+			this.KioskNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// LateMinutes
 			// 
@@ -545,8 +545,7 @@
             "10",
             "11",
             "12",
-            "24",
-            "36"});
+            "24"});
 			this.EarlyHours.Location = new System.Drawing.Point(14, 147);
 			this.EarlyHours.Name = "EarlyHours";
 			this.EarlyHours.Size = new System.Drawing.Size(210, 24);
@@ -715,9 +714,9 @@
 			this.printerOptionsGroup.Controls.Add(this.PrintKiosks);
 			this.printerOptionsGroup.Controls.Add(this.KiosksToPrintForLabel);
 			this.printerOptionsGroup.Controls.Add(this.Printer);
-			this.printerOptionsGroup.Controls.Add(this.label4);
+			this.printerOptionsGroup.Controls.Add(this.PrinterLabel);
 			this.printerOptionsGroup.Controls.Add(this.KioskName);
-			this.printerOptionsGroup.Controls.Add(this.label6);
+			this.printerOptionsGroup.Controls.Add(this.KioskNameLabel);
 			this.printerOptionsGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.printerOptionsGroup.Location = new System.Drawing.Point(253, 12);
 			this.printerOptionsGroup.Name = "printerOptionsGroup";
@@ -875,7 +874,7 @@
 		private System.Windows.Forms.Label KiosksToPrintForLabel;
 		public System.Windows.Forms.ComboBox PrintMode;
 		public System.Windows.Forms.ComboBox Printer;
-		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label PrinterLabel;
 		public System.Windows.Forms.CheckBox DisableLocationLabels;
 		private System.Windows.Forms.Label label2;
 		public System.Windows.Forms.CheckBox BuildingAccessMode;
@@ -906,7 +905,7 @@
 		public System.Windows.Forms.CheckBox AskFriend;
 		public System.Windows.Forms.CheckBox SecurityLabelPerChild;
 		public System.Windows.Forms.TextBox KioskName;
-		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label KioskNameLabel;
 		public System.Windows.Forms.ComboBox LateMinutes;
 		private System.Windows.Forms.Label label7;
 		public System.Windows.Forms.ComboBox EarlyHours;

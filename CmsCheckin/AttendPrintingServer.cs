@@ -7,16 +7,17 @@ namespace CmsCheckin
 {
 	public partial class AttendPrintingServer : Form
 	{
-		// 360 tries of 10 seconds = 1 Hour
-		//private const int MAX_TRIES = 360;
+		private const int TIME_BETWEEN_TRIES = 5;
+		private const int TIMEOUT_IN_MINUTES = 120;
+		private const int SECONDS_IN_A_MINUTE = 60;
 
-		// For testing only
-		private const int MAX_TRIES = 360;
+		private const int MAX_TRIES = (SECONDS_IN_A_MINUTE / TIME_BETWEEN_TRIES) * TIMEOUT_IN_MINUTES;
 
 		private DateTime dtLastPrint;
-		private const int INT_count = 5;
 
 		private int triesLeft;
+		private int count = 0;
+		private Timer timer;
 
 		public AttendPrintingServer()
 		{
@@ -32,11 +33,11 @@ namespace CmsCheckin
 		{
 			triesLeft = MAX_TRIES;
 
-			timer1 = new Timer();
-			timer1.Interval = 1000;
-			timer1.Tick += new EventHandler(timer1_Tick);
-			count = INT_count;
-			timer1.Start();
+			timer = new Timer();
+			timer.Interval = 1000;
+			timer.Tick += new EventHandler(Timer_Tick);
+			count = TIME_BETWEEN_TRIES;
+			timer.Start();
 		}
 
 		private void CheckNow_Click(object sender, EventArgs e)
@@ -51,7 +52,7 @@ namespace CmsCheckin
 		{
 			int iLabelSize = PrinterHelper.getPageHeight(Program.settings.printer);
 
-			timer1.Stop();
+			timer.Stop();
 			Countdown.Text = "Checking...";
 			Refresh();
 
@@ -72,17 +73,15 @@ namespace CmsCheckin
 				triesLeft--;
 			}
 
-			count = INT_count;
-			timer1.Start();
+			count = TIME_BETWEEN_TRIES;
+			timer.Start();
 		}
-		int count = 0;
-		Timer timer1;
 
-		void timer1_Tick(object sender, EventArgs e)
+		void Timer_Tick(object sender, EventArgs e)
 		{
 			if (triesLeft <= 0) {
-				timer1.Stop();
-				timer1.Dispose();
+				timer.Stop();
+				timer.Dispose();
 
 				Countdown.Text = "-- IDLE --\nClick \"Check Now\" to resume";
 
