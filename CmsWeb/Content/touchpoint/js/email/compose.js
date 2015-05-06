@@ -1,4 +1,6 @@
 ﻿$(function () {
+    $.Editable.DEFAULTS.key = 'IGLGTD1DMJf1BWLb1PO==';
+
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
 
@@ -25,8 +27,12 @@
     };
 
     $('#editor-modal').on('shown.bs.modal', function () {
+        if ($('#htmleditor').data('fa.editable')) {
+            $('#htmleditor').editable('destroy');
+        }
         $('#htmleditor').editable({
             inlineMode: false,
+            zIndex: 2501,
             height: 200,
             theme: 'custom',
             buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],

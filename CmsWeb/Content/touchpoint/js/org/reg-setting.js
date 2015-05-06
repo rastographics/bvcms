@@ -20,8 +20,12 @@
         var name = $(this).attr("tb");
         ev.preventDefault();
 
+        if ($('#editor').data('fa.editable')) {
+            $('#editor').froalaEditable('destroy');
+        }
         $('#editor').froalaEditable({
             inlineMode: false,
+            zIndex: 2501,
             height: 200,
             theme: 'custom',
             buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],

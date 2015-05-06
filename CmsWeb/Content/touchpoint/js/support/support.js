@@ -1,4 +1,5 @@
 ﻿$(function () {
+    $.Editable.DEFAULTS.key = 'IGLGTD1DMJf1BWLb1PO==';
     $('#support-tabs').tabdrop();
     $('#cse-search-input-box-id').focus();
 
