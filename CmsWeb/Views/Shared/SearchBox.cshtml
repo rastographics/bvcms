@@ -167,6 +167,7 @@
 
         Mousetrap.bind('/', function () {
             $('#search-box').modal();
+            return false;
         });
 
         $('.search-box-input').on('keyup', _.debounce(function (e) {
