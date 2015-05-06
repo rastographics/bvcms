@@ -58,7 +58,16 @@
             </div>
         </div>
     </div>
-    <h4>Roles</h4>
+    <div class="row">
+        <div class="col-xs-9">
+            <h4>Roles</h4>
+        </div>
+        <div class="col-xs-3">
+            <div class="pull-right">
+                <a href="http://docs.touchpointsoftware.com/Administration/Roles_Index.html" target="_blank" class="btn btn-default"><i class="fa fa-question-circle"></i> Help</a>
+            </div>
+        </div>
+    </div>
     <div class="well" id="role-list">
         <label class="checkbox-inline control-label">
             <input name="myDataUserRole" id="myDataUserRole" value="myDataUserRole" type="checkbox" @(!Model.Roles.Any() ? "checked='checked'" : "") /> MyData
