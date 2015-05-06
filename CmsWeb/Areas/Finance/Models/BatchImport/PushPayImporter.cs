@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using CmsData;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
-    internal class CapitalCityImporter : IContributionBatchImporter
+    internal class PushPayImporter : IContributionBatchImporter
     {
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
@@ -24,20 +25,30 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             while (csv.ReadNextRecord())
             {
-                var batchDate = csv[0].ToDate();
-                var amount = csv[10];
-                var totalBatchAmount = csv[4];
-                if (!amount.HasValue() || !batchDate.HasValue || amount == totalBatchAmount)
-                    continue;
+                var batchDate = csv[2].ToDate();
+                var amount = csv[5];
 
-                var routingNumber = csv[7];
-                var accountNumber = csv[9];
-                var checkNumber = csv[11];
+                var paymentMethod = csv[7];
+                var payerName = csv[8];
 
                 if (bundleHeader == null)
                     bundleHeader = BatchImportContributions.GetBundleHeader(batchDate.Value, DateTime.Now);
 
-                details.Add(BatchImportContributions.AddContributionDetail(date, fid, amount, checkNumber, routingNumber, accountNumber));
+                var bd = BatchImportContributions.NewBundleDetail(date, fid, amount);
+
+                var eac = Util.Encrypt(paymentMethod);
+                var q = from kc in DbUtil.Db.CardIdentifiers
+                        where kc.Id == eac
+                        select kc.PeopleId;
+
+                var pid = q.SingleOrDefault();
+                if (pid != null)
+                    bd.Contribution.PeopleId = pid;
+
+                bd.Contribution.BankAccount = paymentMethod;
+                bd.Contribution.ContributionDesc = payerName;
+
+                details.Add(bd);
             }
 
             details.Reverse();

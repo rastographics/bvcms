@@ -305,6 +305,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\KindredImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\PushPayImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\RedeemerImporter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -889,6 +890,8 @@
     <Content Include="Content\touchpoint\lib\bootstrap-typeahead\js\bootstrap3-typeahead.min.js" />
     <Content Include="Content\touchpoint\lib\ion-sound\sounds\computer_error.mp3" />
     <Content Include="Content\touchpoint\lib\ion-sound\sounds\glass.mp3" />
+    <Content Include="Content\touchpoint\lib\jcrop\css\jcrop.min.css" />
+    <Content Include="Content\touchpoint\lib\jcrop\js\jcrop.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-blockUI\js\jquery.blockUI.js" />
     <Content Include="Content\touchpoint\lib\jquery-chosen\js\chosen.jquery.min.js" />
     <Content Include="Content\touchpoint\lib\jquery-cookie\js\jquery.cookie.js" />
