@@ -8,9 +8,7 @@
     ViewBag.PageHeader = "Organization Search / Manage";
 }
 @section head{
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_style.min.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/custom-theme.css")
+    @ViewExtensions2.FroalaEditorCss()
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
     <style>
@@ -431,20 +429,7 @@
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js")
-    <script type="text/javascript">
-        // must alias froala editor because it conflicts with the same function name with bootstrap-editable.
-        $.fn.froalaEditable = $.fn.editable;
-        delete $.fn.editable;
-        $.froalaEditable.DEFAULTS.key = 'IGLGTD1DMJf1BWLb1PO==';
-    </script>
+    @ViewExtensions2.FroalaEditorScripts()
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")

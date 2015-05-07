@@ -1,6 +1,4 @@
 ﻿$(function () {
-    $.Editable.DEFAULTS.key = 'IGLGTD1DMJf1BWLb1PO==';
-
     $('#supportsearch').typeahead({
         name: 'supsearch',
         valueKey: "line1",
@@ -114,9 +112,9 @@
 
     $('#editor-modal').on('shown.bs.modal', function () {
         if ($('#htmleditor').data('fa.editable')) {
-            $('#htmleditor').editable('destroy');
+            $('#htmleditor').froalaEditable('destroy');
         }
-        $('#htmleditor').editable({
+        $('#htmleditor').froalaEditable({
             inlineMode: false,
             zIndex: 2501,
             height: 200,
@@ -126,12 +124,12 @@
         });
         var html = $(currentDiv).html();
         if (html !== "Click here to edit content") {
-            $('#htmleditor').editable('setHTML', html);
+            $('#htmleditor').froalaEditable('setHTML', html);
         }
     });
 
     $('#editor-modal').on('click', '#save-edit', function () {
-        var h = $('#htmleditor').editable('getHTML');
+        var h = $('#htmleditor').froalaEditable('getHTML');
         $(currentDiv).html(h);
         $('#editor-modal').modal('hide');
     });

@@ -6,9 +6,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head{
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_style.min.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/custom-theme.css")
+    @ViewExtensions2.FroalaEditorCss()
 }
 <div class="row">
     <div class="col-md-push-9 col-md-3 col-lg-push-8 col-lg-4">
@@ -105,14 +103,7 @@
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js")
+    @ViewExtensions2.FroalaEditorScripts()
     @Fingerprint.Script("/Content/touchpoint/lib/twitter-typeahead/js/typeahead.js")
     @Fingerprint.Script("/Content/touchpoint/js/email/email-supporter.js")
 

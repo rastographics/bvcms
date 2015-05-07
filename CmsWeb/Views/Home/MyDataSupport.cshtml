@@ -4,9 +4,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head{
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/froala_style.min.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/froala-editor/css/custom-theme.css")
+    @ViewExtensions2.FroalaEditorCss()
 }
 <div class="row">
     <div class="col-lg-9">
@@ -60,21 +58,13 @@
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js")
+    @ViewExtensions2.FroalaEditorScripts()
     <script type="text/javascript">
         $(function () {
             $("#body").val("");
             $("#success").hide();
 
-            $.Editable.DEFAULTS.key = 'IGLGTD1DMJf1BWLb1PO==';
-            $('#body').editable({
+            $('#body').froalaEditable({
                 inlineMode: false,
                 height: 200,
                 theme: 'custom',
@@ -84,7 +74,7 @@
 
             $('body').on('click', '#sendSupport', function (e) {
                 $.post("/Support/MyDataSendRequest", {
-                    body: CKEDITOR.instances["body"].getData()
+                    body: $('#body').froalaEditable('getHTML')
                 }, function (data) {
                     if (data == "OK") {
                         $("#success").show();

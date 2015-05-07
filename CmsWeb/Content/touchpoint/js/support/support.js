@@ -1,5 +1,4 @@
 ﻿$(function () {
-    $.Editable.DEFAULTS.key = 'IGLGTD1DMJf1BWLb1PO==';
     $('#support-tabs').tabdrop();
     $('#cse-search-input-box-id').focus();
 
@@ -27,7 +26,7 @@
         $("#body").val("");
         $("#success").hide();
 
-        $('#body').editable({
+        $('#body').froalaEditable({
             inlineMode: false,
             height: 200,
             theme: 'custom',
@@ -44,7 +43,7 @@
         }
 
         var postdata = {
-            body: CKEDITOR.instances["body"].getData(),
+            body: $('#body').froalaEditable('getHTML'),
             cc: $("#cc").val(),
             urgency: $("#urgency").val(),
             lastsearch: $("#last-search").val()
