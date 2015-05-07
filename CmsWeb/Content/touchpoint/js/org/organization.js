@@ -1,6 +1,30 @@
 ﻿$(function () {
     $('#organization-tabs').tabdrop();
 
+    var xs = $('.device-xs').is(':visible');
+    if (xs) {
+        $('#org-main-section').collapse('hide');
+    } else {
+        $('#org-main-section').collapse('show');
+    }
+
+    $('#org-main-section').on('show.bs.collapse', function () {
+        toggleIcons($('#org-main-collapse i'), true);
+    });
+
+    $('#org-main-section').on('hide.bs.collapse', function () {
+        toggleIcons($('#org-main-collapse i'), false);
+    });
+
+    function toggleIcons(ele, expand) {
+        if (expand) {
+            $(ele).removeClass("fa-chevron-circle-right").addClass('fa-chevron-circle-down');
+        } else {
+            $(ele).removeClass("fa-chevron-circle-down").addClass('fa-chevron-circle-right');
+        }
+    }
+
+
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                                     '<i class="fa fa-fw fa-check"></i>' +
                                 '</button>' +
