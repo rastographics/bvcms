@@ -1083,7 +1083,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public override string ToString()
         {
-            return Name + "(" + PeopleId + ")";
+            return Name + " (" + PeopleId + ")";
         }
         public void SetExtra(string field, string value)
         {
