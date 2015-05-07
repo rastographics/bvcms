@@ -18,55 +18,65 @@ namespace CmsData.View
 		
 		private int _OrganizationId;
 		
+		private string _OrganizationName;
+		
 		private int _OrganizationStatusId;
 		
-		private string _OrganizationName;
+		private string _Program;
+		
+		private int? _ProgramId;
+		
+		private string _Division;
+		
+		private string _Divisions;
+		
+		private string _ScheduleDescription;
+		
+		private int? _ScheduleId;
+		
+		private DateTime? _SchedTime;
+		
+		private string _Campus;
+		
+		private string _LeaderType;
 		
 		private string _LeaderName;
 		
-		private int? _LeaderId;
-		
-		private int? _MemberCount;
-		
-		private int? _PrevMemberCount;
-		
-		private int? _ProspectCount;
+		private string _Location;
 		
 		private bool? _ClassFilled;
 		
 		private bool? _RegistrationClosed;
 		
-		private int? _RegistrationTypeId;
-		
-		private string _Description;
-		
 		private string _AppCategory;
-		
-		private string _PublicSortOrder;
-		
-		private bool? _UseRegisterLink2;
-		
-		private string _Program;
-		
-		private int _ProgramId;
-		
-		private string _Division;
-		
-		private int _DivisionId;
-		
-		private DateTime? _FirstMeetingDate;
-		
-		private DateTime? _LastMeetingDate;
 		
 		private DateTime? _RegStart;
 		
 		private DateTime? _RegEnd;
 		
-		private string _Schedule;
+		private string _PublicSortOrder;
 		
-		private string _Location;
+		private DateTime? _FirstMeetingDate;
+		
+		private DateTime? _LastMeetingDate;
+		
+		private int? _MemberCount;
+		
+		private int? _RegistrationTypeId;
 		
 		private bool? _CanSelfCheckin;
+		
+		private int? _LeaderId;
+		
+		private int? _PrevMemberCount;
+		
+		private int? _ProspectCount;
+		
+		private string _Description;
+		
+		private bool? _UseRegisterLink2;
+		
+		private int? _DivisionId;
 		
 		private DateTime? _BirthDayStart;
 		
@@ -100,6 +110,23 @@ namespace CmsData.View
 		}
 
 		
+		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
+		public string OrganizationName
+		{
+			get
+			{
+				return this._OrganizationName;
+			}
+
+			set
+			{
+				if (this._OrganizationName != value)
+					this._OrganizationName = value;
+			}
+
+		}
+
+		
 		[Column(Name="OrganizationStatusId", Storage="_OrganizationStatusId", DbType="int NOT NULL")]
 		public int OrganizationStatusId
 		{
@@ -117,18 +144,154 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
-		public string OrganizationName
+		[Column(Name="Program", Storage="_Program", DbType="nvarchar(50)")]
+		public string Program
 		{
 			get
 			{
-				return this._OrganizationName;
+				return this._Program;
 			}
 
 			set
 			{
-				if (this._OrganizationName != value)
-					this._OrganizationName = value;
+				if (this._Program != value)
+					this._Program = value;
+			}
+
+		}
+
+		
+		[Column(Name="ProgramId", Storage="_ProgramId", DbType="int")]
+		public int? ProgramId
+		{
+			get
+			{
+				return this._ProgramId;
+			}
+
+			set
+			{
+				if (this._ProgramId != value)
+					this._ProgramId = value;
+			}
+
+		}
+
+		
+		[Column(Name="Division", Storage="_Division", DbType="nvarchar(50)")]
+		public string Division
+		{
+			get
+			{
+				return this._Division;
+			}
+
+			set
+			{
+				if (this._Division != value)
+					this._Division = value;
+			}
+
+		}
+
+		
+		[Column(Name="Divisions", Storage="_Divisions", DbType="nvarchar")]
+		public string Divisions
+		{
+			get
+			{
+				return this._Divisions;
+			}
+
+			set
+			{
+				if (this._Divisions != value)
+					this._Divisions = value;
+			}
+
+		}
+
+		
+		[Column(Name="ScheduleDescription", Storage="_ScheduleDescription", DbType="nvarchar(20)")]
+		public string ScheduleDescription
+		{
+			get
+			{
+				return this._ScheduleDescription;
+			}
+
+			set
+			{
+				if (this._ScheduleDescription != value)
+					this._ScheduleDescription = value;
+			}
+
+		}
+
+		
+		[Column(Name="ScheduleId", Storage="_ScheduleId", DbType="int")]
+		public int? ScheduleId
+		{
+			get
+			{
+				return this._ScheduleId;
+			}
+
+			set
+			{
+				if (this._ScheduleId != value)
+					this._ScheduleId = value;
+			}
+
+		}
+
+		
+		[Column(Name="SchedTime", Storage="_SchedTime", DbType="datetime")]
+		public DateTime? SchedTime
+		{
+			get
+			{
+				return this._SchedTime;
+			}
+
+			set
+			{
+				if (this._SchedTime != value)
+					this._SchedTime = value;
+			}
+
+		}
+
+		
+		[Column(Name="Campus", Storage="_Campus", DbType="nvarchar(100)")]
+		public string Campus
+		{
+			get
+			{
+				return this._Campus;
+			}
+
+			set
+			{
+				if (this._Campus != value)
+					this._Campus = value;
+			}
+
+		}
+
+		
+		[Column(Name="LeaderType", Storage="_LeaderType", DbType="nvarchar(100)")]
+		public string LeaderType
+		{
+			get
+			{
+				return this._LeaderType;
+			}
+
+			set
+			{
+				if (this._LeaderType != value)
+					this._LeaderType = value;
 			}
 
 		}
@@ -151,69 +314,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="LeaderId", Storage="_LeaderId", DbType="int")]
-		public int? LeaderId
+		[Column(Name="Location", Storage="_Location", DbType="nvarchar(200)")]
+		public string Location
 		{
 			get
 			{
-				return this._LeaderId;
+				return this._Location;
 			}
 
 			set
 			{
-				if (this._LeaderId != value)
-					this._LeaderId = value;
-			}
-
-		}
-
-		
-		[Column(Name="MemberCount", Storage="_MemberCount", DbType="int")]
-		public int? MemberCount
-		{
-			get
-			{
-				return this._MemberCount;
-			}
-
-			set
-			{
-				if (this._MemberCount != value)
-					this._MemberCount = value;
-			}
-
-		}
-
-		
-		[Column(Name="PrevMemberCount", Storage="_PrevMemberCount", DbType="int")]
-		public int? PrevMemberCount
-		{
-			get
-			{
-				return this._PrevMemberCount;
-			}
-
-			set
-			{
-				if (this._PrevMemberCount != value)
-					this._PrevMemberCount = value;
-			}
-
-		}
-
-		
-		[Column(Name="ProspectCount", Storage="_ProspectCount", DbType="int")]
-		public int? ProspectCount
-		{
-			get
-			{
-				return this._ProspectCount;
-			}
-
-			set
-			{
-				if (this._ProspectCount != value)
-					this._ProspectCount = value;
+				if (this._Location != value)
+					this._Location = value;
 			}
 
 		}
@@ -253,40 +365,6 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="RegistrationTypeId", Storage="_RegistrationTypeId", DbType="int")]
-		public int? RegistrationTypeId
-		{
-			get
-			{
-				return this._RegistrationTypeId;
-			}
-
-			set
-			{
-				if (this._RegistrationTypeId != value)
-					this._RegistrationTypeId = value;
-			}
-
-		}
-
-		
-		[Column(Name="Description", Storage="_Description", DbType="nvarchar")]
-		public string Description
-		{
-			get
-			{
-				return this._Description;
-			}
-
-			set
-			{
-				if (this._Description != value)
-					this._Description = value;
-			}
-
-		}
-
-		
 		[Column(Name="AppCategory", Storage="_AppCategory", DbType="varchar(15)")]
 		public string AppCategory
 		{
@@ -299,142 +377,6 @@ namespace CmsData.View
 			{
 				if (this._AppCategory != value)
 					this._AppCategory = value;
-			}
-
-		}
-
-		
-		[Column(Name="PublicSortOrder", Storage="_PublicSortOrder", DbType="varchar(15)")]
-		public string PublicSortOrder
-		{
-			get
-			{
-				return this._PublicSortOrder;
-			}
-
-			set
-			{
-				if (this._PublicSortOrder != value)
-					this._PublicSortOrder = value;
-			}
-
-		}
-
-		
-		[Column(Name="UseRegisterLink2", Storage="_UseRegisterLink2", DbType="bit")]
-		public bool? UseRegisterLink2
-		{
-			get
-			{
-				return this._UseRegisterLink2;
-			}
-
-			set
-			{
-				if (this._UseRegisterLink2 != value)
-					this._UseRegisterLink2 = value;
-			}
-
-		}
-
-		
-		[Column(Name="Program", Storage="_Program", DbType="nvarchar(50)")]
-		public string Program
-		{
-			get
-			{
-				return this._Program;
-			}
-
-			set
-			{
-				if (this._Program != value)
-					this._Program = value;
-			}
-
-		}
-
-		
-		[Column(Name="ProgramId", Storage="_ProgramId", DbType="int NOT NULL")]
-		public int ProgramId
-		{
-			get
-			{
-				return this._ProgramId;
-			}
-
-			set
-			{
-				if (this._ProgramId != value)
-					this._ProgramId = value;
-			}
-
-		}
-
-		
-		[Column(Name="Division", Storage="_Division", DbType="nvarchar(50)")]
-		public string Division
-		{
-			get
-			{
-				return this._Division;
-			}
-
-			set
-			{
-				if (this._Division != value)
-					this._Division = value;
-			}
-
-		}
-
-		
-		[Column(Name="DivisionId", Storage="_DivisionId", DbType="int NOT NULL")]
-		public int DivisionId
-		{
-			get
-			{
-				return this._DivisionId;
-			}
-
-			set
-			{
-				if (this._DivisionId != value)
-					this._DivisionId = value;
-			}
-
-		}
-
-		
-		[Column(Name="FirstMeetingDate", Storage="_FirstMeetingDate", DbType="datetime")]
-		public DateTime? FirstMeetingDate
-		{
-			get
-			{
-				return this._FirstMeetingDate;
-			}
-
-			set
-			{
-				if (this._FirstMeetingDate != value)
-					this._FirstMeetingDate = value;
-			}
-
-		}
-
-		
-		[Column(Name="LastMeetingDate", Storage="_LastMeetingDate", DbType="datetime")]
-		public DateTime? LastMeetingDate
-		{
-			get
-			{
-				return this._LastMeetingDate;
-			}
-
-			set
-			{
-				if (this._LastMeetingDate != value)
-					this._LastMeetingDate = value;
 			}
 
 		}
@@ -474,35 +416,86 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Schedule", Storage="_Schedule", DbType="nvarchar(20)")]
-		public string Schedule
+		[Column(Name="PublicSortOrder", Storage="_PublicSortOrder", DbType="varchar(15)")]
+		public string PublicSortOrder
 		{
 			get
 			{
-				return this._Schedule;
+				return this._PublicSortOrder;
 			}
 
 			set
 			{
-				if (this._Schedule != value)
-					this._Schedule = value;
+				if (this._PublicSortOrder != value)
+					this._PublicSortOrder = value;
 			}
 
 		}
 
 		
-		[Column(Name="Location", Storage="_Location", DbType="nvarchar(200)")]
-		public string Location
+		[Column(Name="FirstMeetingDate", Storage="_FirstMeetingDate", DbType="datetime")]
+		public DateTime? FirstMeetingDate
 		{
 			get
 			{
-				return this._Location;
+				return this._FirstMeetingDate;
 			}
 
 			set
 			{
-				if (this._Location != value)
-					this._Location = value;
+				if (this._FirstMeetingDate != value)
+					this._FirstMeetingDate = value;
+			}
+
+		}
+
+		
+		[Column(Name="LastMeetingDate", Storage="_LastMeetingDate", DbType="datetime")]
+		public DateTime? LastMeetingDate
+		{
+			get
+			{
+				return this._LastMeetingDate;
+			}
+
+			set
+			{
+				if (this._LastMeetingDate != value)
+					this._LastMeetingDate = value;
+			}
+
+		}
+
+		
+		[Column(Name="MemberCount", Storage="_MemberCount", DbType="int")]
+		public int? MemberCount
+		{
+			get
+			{
+				return this._MemberCount;
+			}
+
+			set
+			{
+				if (this._MemberCount != value)
+					this._MemberCount = value;
+			}
+
+		}
+
+		
+		[Column(Name="RegistrationTypeId", Storage="_RegistrationTypeId", DbType="int")]
+		public int? RegistrationTypeId
+		{
+			get
+			{
+				return this._RegistrationTypeId;
+			}
+
+			set
+			{
+				if (this._RegistrationTypeId != value)
+					this._RegistrationTypeId = value;
 			}
 
 		}
@@ -520,6 +513,108 @@ namespace CmsData.View
 			{
 				if (this._CanSelfCheckin != value)
 					this._CanSelfCheckin = value;
+			}
+
+		}
+
+		
+		[Column(Name="LeaderId", Storage="_LeaderId", DbType="int")]
+		public int? LeaderId
+		{
+			get
+			{
+				return this._LeaderId;
+			}
+
+			set
+			{
+				if (this._LeaderId != value)
+					this._LeaderId = value;
+			}
+
+		}
+
+		
+		[Column(Name="PrevMemberCount", Storage="_PrevMemberCount", DbType="int")]
+		public int? PrevMemberCount
+		{
+			get
+			{
+				return this._PrevMemberCount;
+			}
+
+			set
+			{
+				if (this._PrevMemberCount != value)
+					this._PrevMemberCount = value;
+			}
+
+		}
+
+		
+		[Column(Name="ProspectCount", Storage="_ProspectCount", DbType="int")]
+		public int? ProspectCount
+		{
+			get
+			{
+				return this._ProspectCount;
+			}
+
+			set
+			{
+				if (this._ProspectCount != value)
+					this._ProspectCount = value;
+			}
+
+		}
+
+		
+		[Column(Name="Description", Storage="_Description", DbType="nvarchar")]
+		public string Description
+		{
+			get
+			{
+				return this._Description;
+			}
+
+			set
+			{
+				if (this._Description != value)
+					this._Description = value;
+			}
+
+		}
+
+		
+		[Column(Name="UseRegisterLink2", Storage="_UseRegisterLink2", DbType="bit")]
+		public bool? UseRegisterLink2
+		{
+			get
+			{
+				return this._UseRegisterLink2;
+			}
+
+			set
+			{
+				if (this._UseRegisterLink2 != value)
+					this._UseRegisterLink2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="DivisionId", Storage="_DivisionId", DbType="int")]
+		public int? DivisionId
+		{
+			get
+			{
+				return this._DivisionId;
+			}
+
+			set
+			{
+				if (this._DivisionId != value)
+					this._DivisionId = value;
 			}
 
 		}

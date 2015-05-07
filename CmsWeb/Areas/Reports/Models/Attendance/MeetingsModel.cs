@@ -35,11 +35,10 @@ namespace CmsWeb.Areas.Reports.Models
                         join m in DbUtil.Db.Meetings on o.OrganizationId equals m.OrganizationId into mr
                         from m in mr.Where(m => m.MeetingDate >= Dt1 && m.MeetingDate <= Dt2).DefaultIfEmpty()
                         where (m != null && m.MaxCount > 0) || NoZero == false
-                        let div = o.Division
                         select new MeetingInfo
                         {
-                            Program = div.Program.Name,
-                            Division = div.Name,
+                            Program = o.Program,
+                            Division = o.Division,
                             OrganizationId = o.OrganizationId,
                             Organization = o.OrganizationName,
                             MeetingId = m.MeetingId,

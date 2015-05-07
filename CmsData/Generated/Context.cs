@@ -2321,6 +2321,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.FilterOnlineReg", IsComposable = true)]
+        public IQueryable< View.FilterOnlineReg > FilterOnlineReg(
+            [Parameter(DbType="int")] int? onlinereg
+            )
+        {
+            return CreateMethodCallQuery< View.FilterOnlineReg>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    onlinereg
+                );
+        }
+
         [Function(Name="dbo.FindPerson", IsComposable = true)]
         public IQueryable< View.FindPerson > FindPerson(
             [Parameter(DbType="nvarchar")] string first,
@@ -2957,8 +2968,6 @@ namespace CmsData
             [Parameter(DbType="int")] int? sched,
             [Parameter(DbType="int")] int? status,
             [Parameter(DbType="int")] int? onlinereg,
-            [Parameter(DbType="bit")] bool? mainfellowship,
-            [Parameter(DbType="bit")] bool? parentorg,
             [Parameter(DbType="int")] int? UserId,
             [Parameter(DbType="int")] int? targetDiv
             )
@@ -2973,8 +2982,6 @@ namespace CmsData
                     sched,
                     status,
                     onlinereg,
-                    mainfellowship,
-                    parentorg,
                     UserId,
                     targetDiv
                 );

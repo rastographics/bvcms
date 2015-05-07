@@ -78,8 +78,13 @@ namespace CmsWeb.Areas.Search.Controllers
                 return Content("");
             var ot = DbUtil.Db.OrganizationTypes.SingleOrDefault(tt => tt.Id == id);
             if (t.HasValue || ot != null)
-                foreach (var o in m.FetchOrgs())
+            {
+                var q = from o in DbUtil.Db.Organizations
+                    join os in m.FetchOrgs() on o.OrganizationId equals os.OrganizationId
+                    select o;
+                foreach (var o in q)
                     o.OrganizationTypeId = t;
+            }
             else
                 return Content("error: missing type");
             DbUtil.Db.SubmitChanges();
@@ -207,7 +212,10 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult PasteSettings(OrgSearchModel m)
         {
             var frorg = (int)Session["OrgCopySettings"];
-            foreach (var o in m.FetchOrgs())
+            var orgs = from os in m.FetchOrgs()
+                join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
+                select o;
+            foreach (var o in orgs)
                 o.CopySettings(DbUtil.Db, frorg);
             return new EmptyResult();
         }

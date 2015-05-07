@@ -35,7 +35,6 @@ namespace CmsWeb.Areas.Search.Models
         public int? TypeId { get; set; }
         public string tagstr { get; set; }
         public int? OnlineReg { get; set; }
-        public bool? MainFellowship { get; set; }
         public bool FromWeekAtAGlance { get; set; }
         public bool PublicView { get; set; }
 
@@ -62,77 +61,70 @@ namespace CmsWeb.Areas.Search.Models
             organizations = ApplySort(organizations).Skip(Pager.StartRow).Take(Pager.PageSize);
             return OrganizationList(organizations, TagProgramId, TagDiv);
         }
-        public static IEnumerable<OrganizationInfo> OrganizationList(IQueryable<CmsData.Organization> query, int? TagProgramId, int? TagDiv)
+        public static IEnumerable<OrganizationInfo> OrganizationList(IQueryable<OrgSearch> query, int? TagProgramId, int? TagDiv)
         {
-            var q = from o in query
-                    join v in DbUtil.Db.ViewPreviousMemberCounts on o.OrganizationId equals v.OrganizationId into j
-                    from v in j.DefaultIfEmpty()
-                    join r in DbUtil.Db.ViewProspectCounts on o.OrganizationId equals r.OrganizationId into g
-                    from r in g.DefaultIfEmpty()
-                    let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+            var q = from os in query
                     select new OrganizationInfo
                     {
-                        Id = o.OrganizationId,
-                        OrganizationStatus = o.OrganizationStatusId,
-                        OrganizationName = o.OrganizationName,
-                        LeaderName = o.LeaderName,
-                        LeaderId = o.LeaderId,
-                        MemberCount = o.MemberCount,
-                        PrevMemberCount = v.Prevcount ?? 0,
-                        ProspectCount = r.Prospectcount ?? 0,
-                        ClassFilled = o.ClassFilled ?? false,
-                        RegClosed = o.RegistrationClosed ?? false,
-                        RegTypeId = o.RegistrationTypeId,
-                        Description = o.Description,
-                        AppCategory = o.AppCategory ?? "Other",
-                        PublicSortOrder = o.PublicSortOrder,
-                        UseRegisterLink2 = o.UseRegisterLink2,
-                        ProgramName = o.Division.Program.Name,
-                        ProgramId = o.Division.ProgId,
-                        DivisionId = o.DivisionId,
-                        DivisionName = o.Division.Name,
-                        Divisions = string.Join(",", o.DivOrgs.Select(d => "{0} ({1})".Fmt(d.Division.Name, d.DivId)).ToArray()),
-                        FirstMeetingDate = o.FirstMeetingDate.FormatDate(),
-                        LastMeetingDate = o.LastMeetingDate.FormatDate(),
-                        RegStart = o.RegStart.FormatDate(),
-                        RegEnd = o.RegEnd.FormatDate(),
-                        Schedule = DbUtil.Db.GetScheduleDesc(sc.MeetingTime),
-                        Location = o.Location,
-                        AllowSelfCheckIn = o.CanSelfCheckin ?? false,
-                        BDayStart = o.BirthDayStart.FormatDate("na"),
-                        BDayEnd = o.BirthDayEnd.FormatDate("na"),
-                        Tag = (TagDiv ?? 0) == 0 ? "" : o.DivOrgs.Any(ot => ot.DivId == TagDiv) ? "Remove" : "Add",
-                        ChangeMain = (o.DivisionId == null || o.DivisionId != TagDiv) && o.DivOrgs.Any(d => d.DivId == TagDiv),
+                        Id = os.OrganizationId,
+                        OrganizationName = os.OrganizationName,
+                        LeaderName = os.LeaderName,
+                        OrganizationStatus = os.OrganizationStatusId,
+                        MemberCount = os.MemberCount,
+                        RegClosed = os.RegistrationClosed ?? false,
+                        RegTypeId = os.RegistrationTypeId,
+                        ClassFilled = os.ClassFilled ?? false,
+                        AppCategory = os.AppCategory ?? "Other",
+                        PublicSortOrder = os.PublicSortOrder,
+                        ProgramName = os.Program,
+                        ProgramId = os.ProgramId,
+                        DivisionName = os.Division,
+                        Divisions = os.Divisions,
+                        FirstMeetingDate = os.FirstMeetingDate.FormatDate(),
+                        LastMeetingDate = os.LastMeetingDate.FormatDate(),
+                        RegStart = os.RegStart.FormatDate(),
+                        RegEnd = os.RegEnd.FormatDate(),
+                        Schedule = os.ScheduleDescription,
+                        Location = os.Location,
+                        AllowSelfCheckIn = os.CanSelfCheckin ?? false,
+                        Tag = os.Tag,
+                        ChangeMain = os.ChangeMain == 1,
+                        LeaderId = os.LeaderId,
+                        PrevMemberCount = os.PrevMemberCount ?? 0,
+                        ProspectCount = os.ProspectCount ?? 0,
+                        Description = os.Description,
+                        UseRegisterLink2 = os.UseRegisterLink2,
+                        DivisionId = os.DivisionId,
+                        BDayStart = os.BirthDayStart.FormatDate("na"),
+                        BDayEnd = os.BirthDayEnd.FormatDate("na"),
                     };
             return q;
         }
         public EpplusResult OrganizationExcelList()
         {
             var q = FetchOrgs();
-            var q2 = from o in q
-                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                     let lt = DbUtil.Db.MemberTypes.SingleOrDefault(ttt => ttt.Id == o.LeaderMemberTypeId)
-                     select new
-                     {
-                         OrgId = o.OrganizationId,
-                         Name = o.OrganizationName,
-                         o.Description,
-                         Leader = o.LeaderName,
-                         Members = o.MemberCount ?? 0,
-                         Division = o.Division.Name,
-                         FirstMeeting = o.FirstMeetingDate.FormatDate(),
-                         LastMeeting = o.LastMeetingDate.FormatDate(),
-                         Schedule = DbUtil.Db.GetScheduleDesc(sc.MeetingTime),
-                         Campus = o.Campu.Description ?? "",
-                         SecurityType = o.SecurityTypeId == 0 ? "None" : o.SecurityTypeId == 2 ? "LeadersOnly" : "UnShared",
-                         o.Location,
-                         RegStart = o.RegStart.FormatDate(),
-                         RegEnd = o.RegEnd.FormatDate(),
+            var q2 = from os in q
+                    join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
+                    select new
+                    {
+                         OrgId = os.OrganizationId,
+                         Name = os.OrganizationName,
+                         os.Description,
+                         Leader = os.LeaderName,
+                         Members = os.MemberCount ?? 0,
+                         Division = os.Division,
+                         FirstMeeting = os.FirstMeetingDate.FormatDate(),
+                         LastMeeting = os.LastMeetingDate.FormatDate(),
+                         Schedule = os.ScheduleDescription,
+                         os.Campus,
+                         os.Location,
+                         RegStart = os.RegStart.FormatDate(),
+                         RegEnd = os.RegEnd.FormatDate(),
                          RollSheetVisitorWks = o.RollSheetVisitorWks ?? 0,
                          Limit = o.Limit.ToString(),
-                         CanSelfCheckin = o.CanSelfCheckin ?? false,
-                         BirthDayStart = o.BirthDayStart.FormatDate(),
-                         BirthDayEnd = o.BirthDayEnd.FormatDate(),
+                         CanSelfCheckin = os.CanSelfCheckin ?? false,
+                         BirthDayStart = os.BirthDayStart.FormatDate(),
+                         BirthDayEnd = os.BirthDayEnd.FormatDate(),
                          Gender = o.Gender.Description,
                          GradeAgeStart = o.GradeAgeStart ?? 0,
                          LastDayBeforeExtra = o.LastDayBeforeExtra.FormatDate(),
@@ -142,10 +134,10 @@ namespace CmsWeb.Areas.Search.Models
                          o.PhoneNumber,
                          MainFellowshipOrg = o.IsBibleFellowshipOrg ?? false,
                          EntryPoint = o.EntryPoint.Description,
-                         LeaderType = lt == null ? "" : lt.Description,
-                         o.OrganizationStatusId,
-                         o.AppCategory,
-                         o.PublicSortOrder,
+                         os.LeaderType,
+                         os.OrganizationStatusId,
+                         os.AppCategory,
+                         os.PublicSortOrder,
                      };
             return q2.ToDataTable().ToExcel("Organizations.xlsx");
         }
@@ -182,174 +174,14 @@ namespace CmsWeb.Areas.Search.Models
 
         public IQueryable<OrgSearch> FetchOrgs()
         {
-            var me = Util.UserPeopleId;
-
             if (organizations != null)
                 return organizations;
-
-            var u = DbUtil.Db.CurrentUser;
-
-            var roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
-            organizations = from o in DbUtil.Db.Organizations
-                            where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                            select o;
-
-            if (Util2.OrgLeadersOnly)
-            {
-                var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
-                organizations = DbUtil.Db.Organizations.Where(o => oids.Contains(o.OrganizationId));
-            }
-
-            if (Name.HasValue())
-            {
-                if (Name.AllDigits())
-                    organizations = from o in organizations
-                                    where o.OrganizationId == Name.ToInt()
-                                    select o;
-                else if (Name.ToInt() < 0)
-                {
-                    var loc = Name.GetDigits();
-                    organizations = from o in organizations
-                                    where o.Location == loc
-                                    select o;
-                }
-                else if (Name.StartsWith("ev:"))
-                {
-                    organizations = from o in organizations
-                                    where o.OrganizationExtras.Any(ee => ee.Field.StartsWith(Name.Substring(3)))
-                                    select o;
-                }
-                else if (Name.StartsWith("-ev:"))
-                {
-                    organizations = from o in organizations
-                                    where !o.OrganizationExtras.Any(ee => ee.Field.StartsWith(Name.Substring(4)))
-                                    select o;
-                }
-                else
-                    organizations = from o in organizations
-                                    where o.OrganizationName.Contains(Name)
-                                          || o.LeaderName.Contains(Name)
-                                          || o.Location == Name
-                                          || o.PendingLoc == Name
-                                          || o.DivOrgs.Any(t => t.Division.Name.Contains(Name))
-                                    select o;
-            }
-            if (DivisionId > 0)
-                organizations = from o in organizations
-                                where o.DivOrgs.Any(t => t.DivId == DivisionId)
-                                select o;
-            else if (ProgramId > 0)
-                if (FromWeekAtAGlance)
-                    organizations = from o in organizations
-                                    where o.DivOrgs.Any(d => d.Division.ProgDivs.Any(p => p.ProgId == ProgramId
-                                        && p.Division.ReportLine > 0))
-                                    || (o.Division.ProgId == ProgramId && o.Division.ReportLine > 0)
-                                    select o;
-                else
-                    organizations = from o in organizations
-                                    where o.DivOrgs.Any(d => d.Division.ProgDivs.Any(p => p.ProgId == ProgramId))
-                                    || o.Division.ProgId == ProgramId
-                                    select o;
-
-            if (ScheduleId > 0)
-                organizations = from o in organizations
-                                where o.OrgSchedules.Any(os => os.ScheduleId == ScheduleId)
-                                select o;
-            if (ScheduleId == -1)
-                organizations = from o in organizations
-                                where !o.OrgSchedules.Any()
-                                select o;
-
-            if (StatusId > 0)
-                organizations = from o in organizations
-                                where o.OrganizationStatusId == StatusId
-                                select o;
-
-            if (TypeId > 0)
-                organizations = from o in organizations
-                                where o.OrganizationTypeId == TypeId
-                                select o;
-            else if (TypeId == OrgType.NoOrgType)
-                organizations = from o in organizations
-                                where o.OrganizationTypeId == null
-                                select o;
-            else if (TypeId == OrgType.MainFellowship)
-                organizations = from o in organizations
-                                where o.IsBibleFellowshipOrg == true
-                                select o;
-            else if (TypeId == OrgType.NotMainFellowship)
-                organizations = from o in organizations
-                                where (o.IsBibleFellowshipOrg ?? false) == false
-                                select o;
-            else if (TypeId == OrgType.SuspendedCheckin)
-                organizations = from o in organizations
-                                where (o.SuspendCheckin ?? false)
-                                select o;
-            else if (TypeId == OrgType.ParentOrg)
-                organizations = from o in organizations
-                                where o.ChildOrgs.Any()
-                                select o;
-            else if (TypeId == OrgType.ChildOrg)
-                organizations = from o in organizations
-                                where o.ParentOrgId != null
-                                select o;
-            else if (TypeId == OrgType.Fees)
-                organizations = from o in organizations
-                                join f in DbUtil.Db.ViewOrgsWithFees on o.OrganizationId equals f.OrganizationId
-                                select o;
-            else if (TypeId == OrgType.NoFees)
-                organizations = from o in organizations
-                                join f in DbUtil.Db.ViewOrgsWithoutFees on o.OrganizationId equals f.OrganizationId
-                                select o;
-
-
-            if (CampusId > 0)
-                organizations = from o in organizations
-                                where o.CampusId == CampusId
-                                select o;
-            else if (CampusId == -1)
-                organizations = from o in organizations
-                                where o.CampusId == null
-                                select o;
-
-            if (OnlineReg == RegistrationClassification.AnyOnlineReg99)
-                organizations = from o in organizations
-                                where o.RegistrationTypeId > 0
-                                select o;
-            else if (OnlineReg == RegistrationClassification.AnyOnlineRegMissionTrip98)
-                organizations = from o in organizations
-                                where o.RegistrationTypeId > 0 && o.IsMissionTrip == true
-                                select o;
-            else if (OnlineReg == RegistrationClassification.AnyOnlineRegNonPicklist97)
-                organizations = from o in organizations
-                                join p in DbUtil.Db.ViewMasterOrgs on o.OrganizationId equals p.PickListOrgId into j
-                                from p in j.DefaultIfEmpty()
-                                where p.PickListOrgId == null
-                                where o.RegistrationTypeId > 0
-                                select o;
-            else if (OnlineReg == RegistrationClassification.AnyOnlineRegActive96)
-                organizations = from o in organizations
-                                join a in DbUtil.Db.ViewActiveRegistrations on o.OrganizationId equals a.OrganizationId
-                                select o;
-            else if (OnlineReg == RegistrationClassification.AnyOnlineRegNotOnApp95)
-                organizations = from o in organizations
-                                join ac in DbUtil.Db.ViewActiveRegistrations on o.OrganizationId equals ac.OrganizationId
-                                where DbUtil.Db.ViewAppRegistrations.All(ap => ap.OrganizationId != o.OrganizationId)
-                                select o;
-            else if (OnlineReg == RegistrationClassification.AnyOnlineRegOnApp94)
-                organizations = from o in organizations
-                                join a in DbUtil.Db.ViewAppRegistrations on o.OrganizationId equals a.OrganizationId
-                                select o;
-            else if (OnlineReg > 0)
-                organizations = from o in organizations
-                                where o.RegistrationTypeId == OnlineReg
-                                select o;
-            else if (OnlineReg == 0)
-                organizations = from o in organizations
-                                where (o.RegistrationTypeId ?? 0) == 0
-                                select o;
-
-            return organizations;
+            return DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
+                DbUtil.Db.CurrentUser.UserId, TagDiv);
+        }
+        public static IQueryable<OrgSearch> FetchOrgs(int orgId)
+        {
+            return DbUtil.Db.OrgSearch(orgId.ToString(), null, null, null, null, null, null, null, null, null);
         }
         public IQueryable<OrgSearch> ApplySort(IQueryable<OrgSearch> query)
         {
@@ -380,7 +212,7 @@ namespace CmsWeb.Areas.Search.Models
                         break;
                     case "Schedule":
                         query = from o in query
-                                orderby o.Schedule
+                                orderby o.ScheduleId
                                 select o;
                         break;
                     case "Self CheckIn":
@@ -468,7 +300,7 @@ namespace CmsWeb.Areas.Search.Models
                         break;
                     case "Schedule":
                         query = from o in query
-                                orderby o.Schedule descending
+                                orderby o.ScheduleId descending
                                 select o;
                         break;
                     case "Self CheckIn":
