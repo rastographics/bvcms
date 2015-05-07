@@ -15,7 +15,7 @@
                     <tr>
                         <th>Organization Name</th>
                         <th>Leader</th>
-                        <th>Date</th>
+                        <th style="width: 160px;">Date</th>
                         <th class="text-right">Present</th>
                         <th class="text-right">Guests</th>
                         <th class="text-right">Out of Towners</th>
@@ -27,7 +27,7 @@
                         <tr class="@(m.OrgName =="Total" ? "totals-row" : "")">
                             <td>@m.OrgName</td>
                             <td>@m.Leader</td>
-                            <td>@(m.DateTime == DateTime.MinValue ? "" : @m.DateTime.FormatDateTm())</td>
+                            <td style="width: 160px;">@(m.DateTime == DateTime.MinValue ? "" : @m.DateTime.FormatDateTm())</td>
                             <td class="text-right">@m.Present.ToString("N0")</td>
                             <td class="text-right">@m.Visitors.ToString("N0")</td>
                             <td class="text-right">@m.OutTowners.ToString("N0")</td>
