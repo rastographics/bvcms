@@ -41,175 +41,278 @@
     <div class="col-sm-4">
         <div class="box">
             <div class="box-title">
-                <h5><a href="Tags?tag=TrackBirthdays">Birthdays</a></h5>
+                <h5><a id="birthdays-collapse" class="visible-xs-inline" data-toggle="collapse" href="#birthdays-section" aria-expanded="true" aria-controls="birthdays-section"><i class="fa fa-chevron-circle-right"></i></a>&nbsp;&nbsp;<a href="Tags?tag=TrackBirthdays">Birthdays</a></h5>
             </div>
-            @{
-                var birthdays = Model.Birthdays().ToList();
-            }
-            @if (birthdays.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var birthday in birthdays)
-                    {
-                        <li class="list-group-item"><a href="@birthday.Url">@birthday.Name (@birthday.Birthday.ToString("m"))</a></li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="box-content"></div>
-            }
-        </div>
-        <div class="box">
-            <div class="box-title">
-                <h5><a href="@Model.UserUrl">My Involvement</a></h5>
-            </div>
-            @{
-                var involvements = Model.MyInvolvements().ToList();
-                var currentOrgType = "Other";
-            }
-            @if (involvements.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var involvement in involvements)
-                    {
-                        if (involvement.OrgType != currentOrgType)
+            <div class="collapse in" id="birthdays-section">
+                @{
+                    var birthdays = Model.Birthdays().ToList();
+                }
+                @if (birthdays.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var birthday in birthdays)
                         {
-                            currentOrgType = involvement.OrgType;
-                            <li class="list-group-item section">@involvement.OrgType</li>
+                            <li class="list-group-item"><a href="@birthday.Url">@birthday.Name (@birthday.Birthday.ToString("m"))</a></li>
                         }
-                        <li class="list-group-item indent"><a href="@Util2.Org/@involvement.OrgId">@involvement.Name</a></li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="box-content"></div>
-            }
+                    </ul>
+                }
+                else
+                {
+                    <div class="box-content"></div>
+                }
+            </div>
         </div>
         <div class="box">
             <div class="box-title">
-                <h5><a href="/Query">My Searches</a></h5>
+                <h5><a id="involvements-collapse" class="visible-xs-inline" data-toggle="collapse" href="#involvements-section" aria-expanded="true" aria-controls="involvements-section"><i class="fa fa-chevron-circle-right"></i></a>&nbsp;&nbsp;<a href="@Model.UserUrl">My Involvement</a></h5>
             </div>
-            @{
-                var searches = Model.MyQueries().ToList();
-            }
-            @if (searches.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var search in searches)
-                    {
-                        <li class="list-group-item"><a href="@search.Url">@search.Name</a></li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="box-content"></div>
-            }
+            <div class="collapse in" id="involvements-section">
+                @{
+                    var involvements = Model.MyInvolvements().ToList();
+                    var currentOrgType = "Other";
+                }
+                @if (involvements.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var involvement in involvements)
+                        {
+                            if (involvement.OrgType != currentOrgType)
+                            {
+                                currentOrgType = involvement.OrgType;
+                                <li class="list-group-item section">@involvement.OrgType</li>
+                            }
+                            <li class="list-group-item indent"><a href="@Util2.Org/@involvement.OrgId">@involvement.Name</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="box-content"></div>
+                }
+            </div>
+        </div>
+        <div class="box">
+            <div class="box-title">
+                <h5><a id="searches-collapse" class="visible-xs-inline" data-toggle="collapse" href="#searches-section" aria-expanded="true" aria-controls="searches-section"><i class="fa fa-chevron-circle-right"></i></a>&nbsp;&nbsp;<a href="/Query">My Searches</a></h5>
+            </div>
+            <div class="collapse in" id="searches-section">
+                @{
+                    var searches = Model.MyQueries().ToList();
+                }
+                @if (searches.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var search in searches)
+                        {
+                            <li class="list-group-item"><a href="@search.Url">@search.Name</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="box-content"></div>
+                }
+            </div>
         </div>
     </div>
     <div class="col-sm-4">
         <div class="box">
             <div class="box-title">
-                <h5><a href="@Model.BlogAppUrl">TouchPoint News</a></h5>
+                <h5><a id="news-collapse" class="visible-xs-inline" data-toggle="collapse" href="#news-section" aria-expanded="true" aria-controls="news-section"><i class="fa fa-chevron-circle-right"></i></a>&nbsp;&nbsp;<a href="@Model.BlogAppUrl">TouchPoint News</a></h5>
             </div>
-            @{
-                var touchPointNews = Model.BVCMSNews().ToList();
-            }
-            @if (touchPointNews.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var article in touchPointNews)
-                    {
-                        var daysOld = (int)Math.Ceiling(DateTime.Now.Subtract(article.Published).TotalDays);
-                        <li class="list-group-item">
-                            @if (daysOld < 8)
-                            {
-                                <span class="label label-danger">New</span>
-                            }
-                            <a href="@article.Url" target="news">@article.Title</a>
+            <div class="collapse in" id="news-section">
+                @{
+                    var touchPointNews = Model.BVCMSNews().ToList();
+                }
+                @if (touchPointNews.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var article in touchPointNews)
+                        {
+                            var daysOld = (int)Math.Ceiling(DateTime.Now.Subtract(article.Published).TotalDays);
+                            <li class="list-group-item">
+                                @if (daysOld < 8)
+                                {
+                                    <span class="label label-danger">New</span>
+                                }
+                                <a href="@article.Url" target="news">@article.Title</a>
 
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="box-content"></div>
-            }
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="box-content"></div>
+                }
+            </div>
+           
         </div>
         <div class="box">
             <div class="box-title">
-                <h5><a href="@Model.ChurchBlogUrl">Church News</a></h5>
+                <h5><a id="church-news-collapse" class="visible-xs-inline" data-toggle="collapse" href="#church-news-section" aria-expanded="true" aria-controls="church-news-section"><i class="fa fa-chevron-circle-right"></i></a>&nbsp;&nbsp;<a href="@Model.ChurchBlogUrl">Church News</a></h5>
             </div>
-            @{
-                var churchNews = Model.ChurchNews().ToList();
-            }
-            @if (churchNews.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var article in churchNews)
-                    {
-                        var daysOld = (int)Math.Ceiling(DateTime.Now.Subtract(article.Published).TotalDays);
-                        <li class="list-group-item">
-                            <a href="@article.Url" target="news">@article.Title</a>
-                            @if (daysOld < 8)
-                            {
-                                <span class="label label-danger pull-right">New</span>
-                            }
-                        </li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="box-content"></div>
-            }
+            <div class="collapse in" id="church-news-section">
+                @{
+                    var churchNews = Model.ChurchNews().ToList();
+                }
+                @if (churchNews.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var article in churchNews)
+                        {
+                            var daysOld = (int)Math.Ceiling(DateTime.Now.Subtract(article.Published).TotalDays);
+                            <li class="list-group-item">
+                                <a href="@article.Url" target="news">@article.Title</a>
+                                @if (daysOld < 8)
+                                {
+                                    <span class="label label-danger pull-right">New</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="box-content"></div>
+                }
+            </div>
         </div>
     </div>
     <div class="col-sm-4">
         <div class="box">
             <div class="box-title">
-                <h5><a href="/Tags">My Tags</a></h5>
+                <h5><a id="tags-collapse" class="visible-xs-inline" data-toggle="collapse" href="#tags-section" aria-expanded="true" aria-controls="tags-section"><i class="fa fa-chevron-circle-right"></i></a>&nbsp;&nbsp;<a href="/Tags">My Tags</a></h5>
             </div>
-            @{
-                var tags = Model.Tags().ToList();
-            }
-            @if (tags.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var tag in tags)
-                    {
-                        <li class="list-group-item"><a href="/Tags?tag=@Server.UrlEncode(tag.Code)">@tag.Value</a></li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="box-content"></div>
-            }
+            <div class="collapse in" id="tags-section">
+                @{
+                    var tags = Model.Tags().ToList();
+                }
+                @if (tags.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var tag in tags)
+                        {
+                            <li class="list-group-item"><a href="/Tags?tag=@Server.UrlEncode(tag.Code)">@tag.Value</a></li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="box-content"></div>
+                }
+            </div>
         </div>
         <div class="box">
             <div class="box-title">
-                <h5><a href="/Task/List">My Tasks</a></h5>
+                <h5><a id="tasks-collapse" class="visible-xs-inline" data-toggle="collapse" href="#tasks-section" aria-expanded="true" aria-controls="tasks-section"><i class="fa fa-chevron-circle-right"></i></a>&nbsp;&nbsp;<a href="/Task/List">My Tasks</a></h5>
             </div>
-            @{
-                var tasks = Model.Tasks().ToList();
-            }
-            @if (tasks.Any())
-            {
-                <ul class="list-group">
-                    @foreach (var task in tasks)
-                    {
-                        <li class="list-group-item"><a href="/Task/Detail/@task.TaskId">@task.Description</a> (<a href="@task.Url">@task.Who</a>)</li>
-                    }
-                </ul>
-            }
-            else
-            {
-                <div class="box-content"></div>
-            }
+            <div class="collapse in" id="tasks-section">
+                @{
+                    var tasks = Model.Tasks().ToList();
+                }
+                @if (tasks.Any())
+                {
+                    <ul class="list-group">
+                        @foreach (var task in tasks)
+                        {
+                            <li class="list-group-item"><a href="/Task/Detail/@task.TaskId">@task.Description</a> (<a href="@task.Url">@task.Who</a>)</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div class="box-content"></div>
+                }
+            </div>
         </div>
     </div>
 </div>
+@section scripts {
+    <script type="text/javascript">
+        $(function () {
+            var xs = $('.device-xs').is(':visible');
+            if (xs) {
+                $('#birthdays-section').collapse('hide');
+                $('#involvements-section').collapse('hide');
+                $('#searches-section').collapse('hide');
+                $('#news-section').collapse('hide');
+                $('#church-news-section').collapse('hide');
+                $('#tags-section').collapse('hide');
+                $('#tasks-section').collapse('hide');
+            } else {
+                $('#birthdays-section').collapse('show');
+                $('#involvements-section').collapse('show');
+                $('#searches-section').collapse('show');
+                $('#news-section').collapse('show');
+                $('#church-news-section').collapse('show');
+                $('#tags-section').collapse('show');
+                $('#tasks-section').collapse('show');
+            }
+
+            $('#birthdays-section').on('show.bs.collapse', function () {
+                toggleIcons($('#birthdays-collapse i'), true);
+            });
+
+            $('#birthdays-section').on('hide.bs.collapse', function () {
+                toggleIcons($('#birthdays-collapse i'), false);
+            });
+
+            $('#involvements-section').on('show.bs.collapse', function () {
+                toggleIcons($('#involvements-collapse i'), true);
+            });
+
+            $('#involvements-section').on('hide.bs.collapse', function () {
+                toggleIcons($('#involvements-collapse i'), false);
+            });
+
+            $('#searches-section').on('show.bs.collapse', function () {
+                toggleIcons($('#searches-collapse i'), true);
+            });
+
+            $('#searches-section').on('hide.bs.collapse', function () {
+                toggleIcons($('#searches-collapse i'), false);
+            });
+
+            $('#news-section').on('show.bs.collapse', function () {
+                toggleIcons($('#news-collapse i'), true);
+            });
+
+            $('#news-section').on('hide.bs.collapse', function () {
+                toggleIcons($('#news-collapse i'), false);
+            });
+
+            $('#church-news-section').on('show.bs.collapse', function () {
+                toggleIcons($('#church-news-collapse i'), true);
+            });
+
+            $('#church-news-section').on('hide.bs.collapse', function () {
+                toggleIcons($('#church-news-collapse i'), false);
+            });
+
+            $('#tags-section').on('show.bs.collapse', function () {
+                toggleIcons($('#tags-collapse i'), true);
+            });
+
+            $('#tags-section').on('hide.bs.collapse', function () {
+                toggleIcons($('#tags-collapse i'), false);
+            });
+
+            $('#tasks-section').on('show.bs.collapse', function () {
+                toggleIcons($('#tasks-collapse i'), true);
+            });
+
+            $('#tasks-section').on('hide.bs.collapse', function () {
+                toggleIcons($('#tasks-collapse i'), false);
+            });
+
+            function toggleIcons(ele, expand) {
+                if (expand) {
+                    $(ele).removeClass("fa-chevron-circle-right").addClass('fa-chevron-circle-down');
+                } else {
+                    $(ele).removeClass("fa-chevron-circle-down").addClass('fa-chevron-circle-right');
+                }
+            }
+        });
+</script>
+}
