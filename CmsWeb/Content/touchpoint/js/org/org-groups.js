@@ -81,11 +81,6 @@
         checkChanged();
     });
 
-    $("form").submit(function (ev) {
-        ev.preventDefault();
-        return false;
-    });
-
     $.performAction = function (action) {
         if ($('#groupid').val() <= 0) {
             swal("Error!", 'Must select a target group first.', "error");
@@ -233,6 +228,10 @@
 
     $(document).on("click", "#deleteGroups", function (e) {
         e.preventDefault();
+        var f = $(this).closest('form');
+        var q = f.serialize();
+        console.log(f);
+        var url = f.attr('action');
         swal({
             title: "Are you sure you want to delete these groups?",
             type: "warning",
@@ -242,7 +241,13 @@
             closeOnConfirm: true
         },
         function () {
-            $('#groupForm').submit();
+            $.block();
+            $.post(url, q, function (ret) {
+                $.unblock();
+                if (ret.substring(0, 5) != "error") {
+                    $('#groupForm').html(ret);
+                }
+            });
         });
     });
 
@@ -298,7 +303,6 @@
         var f = $(this).closest('form');
         var q = f.serialize();
         var url = $(this).attr('href');
-
         swal({
             title: "Are you sure you want to delete this group?",
             type: "warning",
@@ -310,12 +314,13 @@
         function () {
             $.post(url, q, function (ret) {
                 if (ret.substring(0, 5) != "error") {
-                    f.html(ret).ready(function () {
+                    $('#groupForm').html(ret).ready(function() {
                         swal({
-                            title: "Deleted!",
-                            type: "success"
+                            title: 'Deleted!',
+                            type: 'success'
                         });
                     });
+                    
                 }
             });
         });

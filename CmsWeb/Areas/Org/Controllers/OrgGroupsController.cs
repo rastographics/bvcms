@@ -100,7 +100,8 @@ namespace CmsWeb.Areas.Org.Controllers
             }
             return Redirect("/OrgGroups/Management/" + m.orgid);
         }
-
+        
+        [HttpPost]
         public ActionResult DeleteGroups(int id, int[] groups)
         {
             var groupList = DbUtil.Db.MemberTags.Where(t => groups.Contains( t.Id ));
