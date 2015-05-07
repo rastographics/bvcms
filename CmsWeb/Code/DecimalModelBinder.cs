@@ -16,8 +16,7 @@ namespace CmsWeb
             try
             {
                 //Check if this is a nullable decimal and a null or empty string has been passed
-                var isNullableAndNull = (bindingContext.ModelMetadata.IsNullableValueType &&
-                                         string.IsNullOrEmpty(valueResult.AttemptedValue));
+                var isNullableAndNull = (bindingContext.ModelMetadata.IsNullableValueType && (valueResult == null || string.IsNullOrEmpty(valueResult.AttemptedValue)));
 
                 //If not nullable and null then we should try and parse the decimal
                 if (!isNullableAndNull)
