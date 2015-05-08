@@ -9,32 +9,28 @@
         #home {
             padding-top: 10px;
         }
-
         ul.list-group {
             max-height: 215px;
             overflow-y: auto;
             margin-bottom: 0;
         }
-
         @@media (max-width: 767px) {
             ul.list-group {
                 max-height: none !important;
                 overflow-y: visible !important;
             }
         }
-
         ul.list-group li {
+            border-left: none;
+            border-right: none;
             padding-left: 20px;
         }
-
-            ul.list-group li.section {
-                font-weight: bold;
-            }
-
-            ul.list-group li.indent {
-                padding-left: 25px;
-            }
-
+        ul.list-group li.section {
+            font-weight: bold;
+        }
+        ul.list-group li.indent {
+            padding-left: 25px;
+        }
         .list-group-item > .label {
             float: right;
         }
@@ -52,12 +48,14 @@
             <a class="visible-xs-block" id="birthdays-collapse" data-toggle="collapse" href="#birthdays-section" aria-expanded="true" aria-controls="birthdays-section">
                 <div class="box-title">
                     <h5>
-                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;Birthdays&nbsp;&nbsp;
-                        @if (birthdays.Any())
-                        {
-                            <span class="badge">@birthdays.Count()</span>
-                        }
+                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;Birthdays
                     </h5>
+                    @if (birthdays.Any())
+                    {
+                        <div class="pull-right">
+                            <span class="badge badge-primary">@birthdays.Count()</span>
+                        </div>
+                    }
                 </div>
             </a>
             <div class="collapse in" id="birthdays-section">
@@ -87,12 +85,15 @@
             <a class="visible-xs-block" id="involvements-collapse" data-toggle="collapse" href="#involvements-section" aria-expanded="true" aria-controls="involvements-section">
                 <div class="box-title">
                     <h5>
-                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Involvement&nbsp;&nbsp;
-                        @if (involvements.Any())
-                        {
-                            <span class="badge">@involvements.Count()</span>
-                        }
+                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Involvement
                     </h5>
+                    @if (involvements.Any())
+                    {
+                        <div class="pull-right">
+                            <span class="badge badge-primary">@involvements.Count()</span>
+                        </div>
+
+                    }
                 </div>
             </a>
             <div class="collapse in" id="involvements-section">
@@ -126,12 +127,14 @@
             <a class="visible-xs-block" id="searches-collapse" data-toggle="collapse" href="#searches-section" aria-expanded="true" aria-controls="searches-section">
                 <div class="box-title">
                     <h5>
-                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Searches&nbsp;&nbsp;
-                        @if (searches.Any())
-                        {
-                            <span class="badge">@searches.Count()</span>
-                        }
+                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Searches
                     </h5>
+                    @if (searches.Any())
+                    {
+                        <div class="pull-right">
+                            <span class="badge badge-primary">@searches.Count()</span>
+                        </div>
+                    }
                 </div>
             </a>
             <div class="collapse in" id="searches-section">
@@ -264,12 +267,14 @@
             <a class="visible-xs-block" id="tasks-collapse" data-toggle="collapse" href="#tasks-section" aria-expanded="true" aria-controls="tasks-section">
                 <div class="box-title">
                     <h5>
-                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Tasks&nbsp;&nbsp;
-                        @if (tasks.Any())
-                        {
-                            <span class="badge">@tasks.Count()</span>
-                        }
+                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Tasks
                     </h5>
+                    @if (tasks.Any())
+                    {
+                        <div class="pull-right">
+                            <span class="badge badge-primary">@tasks.Count()</span>
+                        </div>
+                    }
                 </div>
             </a>
             <div class="collapse in" id="tasks-section">
