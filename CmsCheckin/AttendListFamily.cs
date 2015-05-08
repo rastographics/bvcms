@@ -26,30 +26,30 @@ namespace CmsCheckin
 			if ((msg.Msg == WM_KEYDOWN) || (msg.Msg == WM_SYSKEYDOWN)) {
 				switch (keyData) {
 					case Keys.PageUp:
-						if (pgup.Visible)
-							ShowPage(page - 1);
-						return true;
+					if (pgup.Visible)
+						ShowPage(page - 1);
+					return true;
 					case Keys.PageDown:
-						if (pgdn.Visible)
-							ShowPage(page + 1);
-						return true;
+					if (pgdn.Visible)
+						ShowPage(page + 1);
+					return true;
 					case Keys.Escape:
-						Program.TimerStop();
-						this.GoHome(string.Empty);
-						return true;
+					Program.TimerStop();
+					this.GoHome(string.Empty);
+					return true;
 					case Keys.Return:
-						Program.TimerStop();
-						DoPrinting(null, null);
-						this.GoHome(string.Empty);
-						return true;
+					Program.TimerStop();
+					DoPrinting(null, null);
+					this.GoHome(string.Empty);
+					return true;
 					case Keys.S | Keys.Alt:
-						Program.TimerReset();
-						Program.CursorShow();
-						foreach (var c in sucontrols) {
-							c.Enabled = true;
-							c.BackColor = Color.Coral;
-						}
-						return true;
+					Program.TimerReset();
+					Program.CursorShow();
+					foreach (var c in sucontrols) {
+						c.Enabled = true;
+						c.BackColor = Color.Coral;
+					}
+					return true;
 				}
 			}
 			return base.ProcessCmdKey(ref msg, keyData);
@@ -407,8 +407,23 @@ namespace CmsCheckin
 				parents = c.parents
 			};
 
-			IEnumerable<LabelInfo> liList = new[] { li };
-			PrinterHelper.doPrinting(liList, true);
+			//			IEnumerable<LabelInfo> liList = new[] { li };
+			//			PrinterHelper.doPrinting(liList, true);
+
+			if (!Program.settings.useOldDatamaxFormat) {
+				IEnumerable<LabelInfo> liList = new[] { li };
+				PrinterHelper.doPrinting(liList, true);
+			} else {
+				int iLabelSize = PrinterHelper.getPageHeight(Program.settings.printer);
+
+				using (var ms = new MemoryStream()) {
+					if (iLabelSize >= 170 && iLabelSize <= 230)
+						ms.LabelKiosk2(li);
+					else
+						ms.LabelKiosk(li);
+					PrintRawHelper.SendDocToPrinter(Program.settings.printer, ms);
+				}
+			}
 
 			RemoveMenu();
 		}
@@ -660,7 +675,22 @@ namespace CmsCheckin
 				return;
 			}
 
-			PrinterHelper.doPrinting(q);
+
+			if (!Program.settings.useOldDatamaxFormat) {
+				PrinterHelper.doPrinting(q);
+			} else {
+				DoPrinting doprint = new DoPrinting();
+				int iLabelSize = PrinterHelper.getPageHeight(Program.settings.printer);
+
+				using (var ms = new MemoryStream()) {
+					if (iLabelSize >= 170 && iLabelSize <= 230)
+						doprint.PrintLabels2(ms, q);
+					else
+						doprint.PrintLabels(ms, q);
+
+					doprint.FinishUp(ms);
+				}
+			}
 		}
 
 		private void PrintingCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -676,22 +706,6 @@ namespace CmsCheckin
 			classlist = new List<ClassInfo>();
 
 			PrintAll.Text = string.Empty;
-
-			/*
-			if (Program.AskLabels)
-			{
-				var f = new DidItWork();
-				var ret = f.ShowDialog();
-				f.Hide();
-				f.Dispose();
-				if (ret == DialogResult.No)
-				{
-					Util.ReportPrinterProblem();
-					var fa = new AdminLogin();
-					fa.ShowDialog();
-				}
-			}
-			*/
 
 			this.GoHome(string.Empty);
 		}

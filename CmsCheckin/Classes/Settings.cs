@@ -59,6 +59,7 @@ namespace CmsCheckin
 		public bool disableLocationLabels = false;
 		public bool securityLabelPerChild = false;
 		public bool extraLabel = false;
+		public bool useOldDatamaxFormat = false;
 
 		public bool buildingMode = false;
 		public string building = "";
@@ -156,6 +157,7 @@ namespace CmsCheckin
 			disableLocationLabels = Settings1.Default.DisableLocationLabels;
 			extraLabel = Settings1.Default.ExtraBlankLabel;
 			securityLabelPerChild = Settings1.Default.SecurityLabelPerChild;
+			useOldDatamaxFormat = Settings1.Default.OldLabels;
 
 			askFriend = Settings1.Default.AskEmFriend;
 			askChurch = Settings1.Default.AskChurch;
@@ -203,6 +205,7 @@ namespace CmsCheckin
 			Settings1.Default.DisableLocationLabels = disableLocationLabels;
 			Settings1.Default.ExtraBlankLabel = extraLabel;
 			Settings1.Default.SecurityLabelPerChild = securityLabelPerChild;
+			Settings1.Default.OldLabels = useOldDatamaxFormat;
 
 			Settings1.Default.AskEmFriend = askFriend;
 			Settings1.Default.AskChurch = askChurch;
@@ -254,6 +257,7 @@ namespace CmsCheckin
 			disableLocationLabels = settings.disableLocationLabels;
 			extraLabel = settings.extraLabel;
 			securityLabelPerChild = settings.securityLabelPerChild;
+			useOldDatamaxFormat = settings.useOldDatamaxFormat;
 
 			askFriend = settings.askFriend;
 			askChurch = settings.askChurch;

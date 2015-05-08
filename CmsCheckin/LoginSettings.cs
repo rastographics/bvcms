@@ -232,6 +232,13 @@ namespace CmsCheckin
 		private void onPrinterChanged(object sender, EventArgs e)
 		{
 			LabelPrinterSize.Text = "Label Size: " + PrinterHelper.getPrinterWidth(Printer.Text) + " X " + PrinterHelper.getPrinterHeight(Printer.Text);
+
+			if (Printer.Text.Contains("Datamax")) {
+				UseOldDatamaxFormat.Enabled = true;
+			} else {
+				UseOldDatamaxFormat.Enabled = false;
+				UseOldDatamaxFormat.Checked = false;
+			}
 		}
 
 		private void onLabelListChanged(object sender, EventArgs e)
@@ -408,7 +415,7 @@ namespace CmsCheckin
 			} else {
 				Program.settings.campusID = "0";
 			}
-			
+
 			Program.settings.dayOfWeek = DayOfWeekCombo.SelectedIndex;
 
 			int.TryParse(EarlyHours.Text, out Program.settings.earlyHours);
@@ -431,6 +438,7 @@ namespace CmsCheckin
 			Program.settings.disableLocationLabels = DisableLocationLabels.Checked;
 			Program.settings.extraLabel = ExtraBlankLabel.Checked;
 			Program.settings.securityLabelPerChild = SecurityLabelPerChild.Checked;
+			Program.settings.useOldDatamaxFormat = UseOldDatamaxFormat.Checked;
 
 			Program.settings.askFriend = AskFriend.Checked;
 			Program.settings.askChurch = AskChurch.Checked;
@@ -474,6 +482,7 @@ namespace CmsCheckin
 			DisableLocationLabels.Checked = Program.settings.disableLocationLabels;
 			ExtraBlankLabel.Checked = Program.settings.extraLabel;
 			SecurityLabelPerChild.Checked = Program.settings.securityLabelPerChild;
+			UseOldDatamaxFormat.Checked = Program.settings.useOldDatamaxFormat;
 
 			AskFriend.Checked = Program.settings.askFriend;
 			AskChurch.Checked = Program.settings.askChurch;

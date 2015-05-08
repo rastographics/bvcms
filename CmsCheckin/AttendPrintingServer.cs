@@ -65,7 +65,20 @@ namespace CmsCheckin
 					Program.SecurityCode = j.securitycode;
 
 					foreach (var e in j.list) { e.securitycode = Program.SecurityCode; }
-					PrinterHelper.doPrinting(j.list);
+
+					if (!Program.settings.useOldDatamaxFormat) {
+						PrinterHelper.doPrinting(j.list);
+					} else {
+						var doprint = new DoPrinting();
+						var ms = new MemoryStream();
+
+						if (iLabelSize >= 170 && iLabelSize <= 230)
+							doprint.PrintLabels2(ms, j.list);
+						else
+							doprint.PrintLabels(ms, j.list);
+						doprint.FinishUp(ms);
+					}
+
 				}
 
 				triesLeft = MAX_TRIES;
@@ -106,8 +119,8 @@ namespace CmsCheckin
 				switch (keyData) {
 					case Keys.Space:
 					case Keys.Return:
-						CheckServer();
-						break;
+					CheckServer();
+					break;
 				}
 			}
 			return base.ProcessCmdKey(ref msg, keyData);

@@ -87,6 +87,7 @@
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			this.button2 = new System.Windows.Forms.Button();
 			this.SettingsCombo = new System.Windows.Forms.ComboBox();
+			this.UseOldDatamaxFormat = new System.Windows.Forms.CheckBox();
 			this.askForOptioonsGroup.SuspendLayout();
 			this.otherOptionsGroup.SuspendLayout();
 			this.adminOptionsGroup.SuspendLayout();
@@ -161,7 +162,7 @@
 			// 
 			this.DisableLocationLabels.AutoSize = true;
 			this.DisableLocationLabels.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.DisableLocationLabels.Location = new System.Drawing.Point(16, 22);
+			this.DisableLocationLabels.Location = new System.Drawing.Point(16, 21);
 			this.DisableLocationLabels.Name = "DisableLocationLabels";
 			this.DisableLocationLabels.Size = new System.Drawing.Size(172, 20);
 			this.DisableLocationLabels.TabIndex = 14;
@@ -413,7 +414,7 @@
 			// 
 			this.ExtraBlankLabel.AutoSize = true;
 			this.ExtraBlankLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.ExtraBlankLabel.Location = new System.Drawing.Point(16, 48);
+			this.ExtraBlankLabel.Location = new System.Drawing.Point(16, 52);
 			this.ExtraBlankLabel.Name = "ExtraBlankLabel";
 			this.ExtraBlankLabel.Size = new System.Drawing.Size(160, 20);
 			this.ExtraBlankLabel.TabIndex = 157;
@@ -425,7 +426,7 @@
 			// 
 			this.AskChurchName.AutoSize = true;
 			this.AskChurchName.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AskChurchName.Location = new System.Drawing.Point(16, 73);
+			this.AskChurchName.Location = new System.Drawing.Point(99, 52);
 			this.AskChurchName.Name = "AskChurchName";
 			this.AskChurchName.Size = new System.Drawing.Size(108, 20);
 			this.AskChurchName.TabIndex = 160;
@@ -436,7 +437,7 @@
 			// 
 			this.AskChurch.AutoSize = true;
 			this.AskChurch.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AskChurch.Location = new System.Drawing.Point(16, 47);
+			this.AskChurch.Location = new System.Drawing.Point(16, 52);
 			this.AskChurch.Name = "AskChurch";
 			this.AskChurch.Size = new System.Drawing.Size(68, 20);
 			this.AskChurch.TabIndex = 161;
@@ -447,7 +448,7 @@
 			// 
 			this.AskGrade.AutoSize = true;
 			this.AskGrade.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AskGrade.Location = new System.Drawing.Point(16, 99);
+			this.AskGrade.Location = new System.Drawing.Point(16, 21);
 			this.AskGrade.Name = "AskGrade";
 			this.AskGrade.Size = new System.Drawing.Size(65, 20);
 			this.AskGrade.TabIndex = 159;
@@ -460,7 +461,7 @@
 			this.AskFriend.Checked = true;
 			this.AskFriend.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.AskFriend.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.AskFriend.Location = new System.Drawing.Point(16, 21);
+			this.AskFriend.Location = new System.Drawing.Point(99, 21);
 			this.AskFriend.Name = "AskFriend";
 			this.AskFriend.Size = new System.Drawing.Size(137, 20);
 			this.AskFriend.TabIndex = 158;
@@ -471,7 +472,7 @@
 			// 
 			this.SecurityLabelPerChild.AutoSize = true;
 			this.SecurityLabelPerChild.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.SecurityLabelPerChild.Location = new System.Drawing.Point(16, 74);
+			this.SecurityLabelPerChild.Location = new System.Drawing.Point(16, 83);
 			this.SecurityLabelPerChild.Name = "SecurityLabelPerChild";
 			this.SecurityLabelPerChild.Size = new System.Drawing.Size(221, 20);
 			this.SecurityLabelPerChild.TabIndex = 175;
@@ -611,9 +612,9 @@
 			this.askForOptioonsGroup.Controls.Add(this.AskChurchName);
 			this.askForOptioonsGroup.Controls.Add(this.AskFriend);
 			this.askForOptioonsGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.askForOptioonsGroup.Location = new System.Drawing.Point(518, 123);
+			this.askForOptioonsGroup.Location = new System.Drawing.Point(518, 164);
 			this.askForOptioonsGroup.Name = "askForOptioonsGroup";
-			this.askForOptioonsGroup.Size = new System.Drawing.Size(242, 128);
+			this.askForOptioonsGroup.Size = new System.Drawing.Size(242, 87);
 			this.askForOptioonsGroup.TabIndex = 176;
 			this.askForOptioonsGroup.TabStop = false;
 			this.askForOptioonsGroup.Text = "Ask For Options";
@@ -743,13 +744,14 @@
 			// 
 			// labelOptionsGroup
 			// 
+			this.labelOptionsGroup.Controls.Add(this.UseOldDatamaxFormat);
 			this.labelOptionsGroup.Controls.Add(this.DisableLocationLabels);
 			this.labelOptionsGroup.Controls.Add(this.ExtraBlankLabel);
 			this.labelOptionsGroup.Controls.Add(this.SecurityLabelPerChild);
 			this.labelOptionsGroup.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelOptionsGroup.Location = new System.Drawing.Point(518, 12);
 			this.labelOptionsGroup.Name = "labelOptionsGroup";
-			this.labelOptionsGroup.Size = new System.Drawing.Size(242, 105);
+			this.labelOptionsGroup.Size = new System.Drawing.Size(242, 144);
 			this.labelOptionsGroup.TabIndex = 182;
 			this.labelOptionsGroup.TabStop = false;
 			this.labelOptionsGroup.Text = "Label Options";
@@ -814,6 +816,17 @@
 			this.SettingsCombo.Size = new System.Drawing.Size(148, 24);
 			this.SettingsCombo.TabIndex = 0;
 			this.SettingsCombo.SelectedIndexChanged += new System.EventHandler(this.onSettingsNameChanged);
+			// 
+			// UseOldDatamaxFormat
+			// 
+			this.UseOldDatamaxFormat.AutoSize = true;
+			this.UseOldDatamaxFormat.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.UseOldDatamaxFormat.Location = new System.Drawing.Point(16, 114);
+			this.UseOldDatamaxFormat.Name = "UseOldDatamaxFormat";
+			this.UseOldDatamaxFormat.Size = new System.Drawing.Size(178, 20);
+			this.UseOldDatamaxFormat.TabIndex = 176;
+			this.UseOldDatamaxFormat.Text = "Use Old Datamax Format";
+			this.UseOldDatamaxFormat.UseVisualStyleBackColor = true;
 			// 
 			// LoginSettings
 			// 
@@ -930,5 +943,6 @@
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.ComboBox SettingsCombo;
+		private System.Windows.Forms.CheckBox UseOldDatamaxFormat;
 	}
 }
