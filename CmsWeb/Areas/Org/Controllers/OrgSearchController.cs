@@ -222,8 +222,8 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult RepairTransactions(OrgSearchModel m)
         {
-            foreach (var o in m.FetchOrgs())
-                DbUtil.Db.PopulateComputedEnrollmentTransactions(o.OrganizationId);
+            foreach (var oid in m.FetchOrgs().Select(oo => oo.OrganizationId))
+                DbUtil.Db.PopulateComputedEnrollmentTransactions(oid);
             return new EmptyResult();
         }
         [HttpPost]

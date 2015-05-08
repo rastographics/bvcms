@@ -52,16 +52,16 @@ namespace CmsWeb.Areas.Search.Models
             return d;
         }
 
-        private IQueryable<OrgSearch> organizations;
+        private List<OrgSearch> organizations;
         public IEnumerable<OrganizationInfo> OrganizationList()
         {
-            organizations = FetchOrgs();
+            organizations = FetchOrgsList();
             if (!_count.HasValue)
-                _count = organizations.Count();
-            organizations = ApplySort(organizations).Skip(Pager.StartRow).Take(Pager.PageSize);
+                _count = organizations.Count;
+            organizations = ApplySort(organizations).Skip(Pager.StartRow).Take(Pager.PageSize).ToList();
             return OrganizationList(organizations, TagProgramId, TagDiv);
         }
-        public static IEnumerable<OrganizationInfo> OrganizationList(IQueryable<OrgSearch> query, int? TagProgramId, int? TagDiv)
+        public static IEnumerable<OrganizationInfo> OrganizationList(List<OrgSearch> query, int? TagProgramId, int? TagDiv)
         {
             var q = from os in query
                     select new OrganizationInfo
@@ -112,7 +112,7 @@ namespace CmsWeb.Areas.Search.Models
                          os.Description,
                          Leader = os.LeaderName,
                          Members = os.MemberCount ?? 0,
-                         Division = os.Division,
+                         os.Division,
                          FirstMeeting = os.FirstMeetingDate.FormatDate(),
                          LastMeeting = os.LastMeetingDate.FormatDate(),
                          Schedule = os.ScheduleDescription,
@@ -168,107 +168,113 @@ namespace CmsWeb.Areas.Search.Models
         public int Count()
         {
             if (!_count.HasValue)
-                _count = FetchOrgs().Count();
+                _count = FetchOrgsList().Count;
             return _count.Value;
         }
 
+        private List<OrgSearch> FetchOrgsList()
+        {
+            if (organizations == null)
+                organizations = DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
+                    DbUtil.Db.CurrentUser.UserId, TagDiv).ToList();
+            return organizations;
+        }
         public IQueryable<OrgSearch> FetchOrgs()
         {
-            if (organizations != null)
-                return organizations;
             return DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
-                DbUtil.Db.CurrentUser.UserId, TagDiv);
+                    DbUtil.Db.CurrentUser.UserId, TagDiv);
         }
         public static IQueryable<OrgSearch> FetchOrgs(int orgId)
         {
             return DbUtil.Db.OrgSearch(orgId.ToString(), null, null, null, null, null, null, null, null, null);
         }
-        public IQueryable<OrgSearch> ApplySort(IQueryable<OrgSearch> query)
+        public List<OrgSearch> ApplySort(List<OrgSearch> query)
         {
             var regdt = DateTime.Today.AddYears(5);
+            IEnumerable<OrgSearch> list = query;
             if (Pager.Direction == "asc")
                 switch (Pager.Sort)
                 {
                     case "ID":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.OrganizationId
                                 select o;
                         break;
                     case "Division":
                     case "Program/Division":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.Program, o.Division, o.OrganizationName
                                 select o;
                         break;
                     case "Name":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.OrganizationName
                                 select o;
                         break;
                     case "Location":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.Location
                                 select o;
                         break;
                     case "Schedule":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.ScheduleId
                                 select o;
                         break;
                     case "Self CheckIn":
-                        query = from o in query
+                        list = from o in query
                                 orderby (o.CanSelfCheckin ?? false)
                                 select o;
                         break;
                     case "Leader":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.LeaderName,
                                 o.OrganizationName
                                 select o;
                         break;
                     case "Filled":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.ClassFilled, o.OrganizationName
                                 select o;
                         break;
                     case "Closed":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.RegistrationClosed, o.OrganizationName
                                 select o;
                         break;
                     case "RegType":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.RegistrationTypeId, o.OrganizationName
                                 select o;
                         break;
                     case "Category":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.AppCategory ?? "zzz", o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
                         break;
                     case "Members":
                     case "Curr":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.MemberCount, o.OrganizationName
                                 select o;
                         break;
                     case "FirstDate":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.FirstMeetingDate, o.LastMeetingDate
                                 select o;
                         break;
                     case "RegStart":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.RegStart ?? regdt
                                 select o;
                         break;
                     case "RegEnd":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.RegEnd ?? regdt
                                 select o;
                         break;
                     case "LastMeetingDate":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.LastMeetingDate, o.FirstMeetingDate
                                 select o;
                         break;
@@ -277,97 +283,97 @@ namespace CmsWeb.Areas.Search.Models
                 switch (Pager.Sort)
                 {
                     case "ID":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.OrganizationId descending
                                 select o;
                         break;
                     case "Program/Division":
                     case "Division":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.Program descending, o.Division descending,
                                 o.OrganizationName descending
                                 select o;
                         break;
                     case "Name":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.OrganizationName descending
                                 select o;
                         break;
                     case "Location":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.Location descending
                                 select o;
                         break;
                     case "Schedule":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.ScheduleId descending
                                 select o;
                         break;
                     case "Self CheckIn":
-                        query = from o in query
+                        list = from o in query
                                 orderby (o.CanSelfCheckin ?? false) descending
                                 select o;
                         break;
                     case "Leader":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.LeaderName descending,
                                 o.OrganizationName descending
                                 select o;
                         break;
                     case "Filled":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.ClassFilled descending,
                                 o.OrganizationName descending
                                 select o;
                         break;
                     case "Closed":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.RegistrationClosed descending,
                                 o.OrganizationName descending
                                 select o;
                         break;
                     case "RegType":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.RegistrationTypeId descending,
                                 o.OrganizationName descending
                                 select o;
                         break;
                     case "Category":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.AppCategory ?? "zzz", o.PublicSortOrder ?? "zzz", o.OrganizationName
                                 select o;
                         break;
                     case "Members":
                     case "Curr":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.MemberCount descending,
                                 o.OrganizationName descending
                                 select o;
                         break;
                     case "FirstDate":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.FirstMeetingDate descending,
                                 o.LastMeetingDate descending
                                 select o;
                         break;
                     case "RegStart":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.RegStart descending 
                                 select o;
                         break;
                     case "RegEnd":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.RegEnd descending 
                                 select o;
                         break;
                     case "LastMeetingDate":
-                        query = from o in query
+                        list = from o in query
                                 orderby o.LastMeetingDate descending,
                                 o.FirstMeetingDate descending
                                 select o;
                         break;
                 }
-            return query;
+            return list.ToList();
         }
 
         public static IEnumerable<SelectListItem> StatusIds()
