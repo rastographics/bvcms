@@ -800,6 +800,7 @@ namespace CmsWeb
 <script type=""text/javascript"">
     //froala key
     $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
+    $.Editable.DEFAULTS.allowedAttrs = '[""bvedit""], [""bveditadd""], [""bvrepeat""], [""bvrepeatadd""]';
 
     // must alias froala editor because it could conflict with the same function name with bootstrap-editable.
     $.fn.froalaEditable = $.fn.editable;
