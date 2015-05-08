@@ -234,7 +234,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Groups", Storage="_Groups", DbType="nvarchar(2000)")]
+		[Column(Name="Groups", Storage="_Groups", DbType="nvarchar(500)")]
 		public string Groups
 		{
 			get
