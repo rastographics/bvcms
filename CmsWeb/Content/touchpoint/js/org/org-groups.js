@@ -230,7 +230,6 @@
         e.preventDefault();
         var f = $(this).closest('form');
         var q = f.serialize();
-        console.log(f);
         var url = f.attr('action');
         swal({
             title: "Are you sure you want to delete these groups?",
