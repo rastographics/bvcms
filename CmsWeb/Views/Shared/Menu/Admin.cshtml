@@ -101,4 +101,8 @@ l                        </ul>
     @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields", admin)
     @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags", admin)
     @Helper.LiAnchorLink("Tag PeopleIds", "/Batch/TagPeopleIds", admin)
+    if (User.IsInRole("developer"))
+    {
+      <li><a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a></li>
+    }
 }

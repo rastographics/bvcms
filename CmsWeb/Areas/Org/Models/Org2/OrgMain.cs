@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
 using CmsWeb.Code;
@@ -38,6 +40,7 @@ namespace CmsWeb.Areas.Org2.Models
         public CodeInfo OrganizationType { get; set; }
         public CodeInfo SecurityType { get; set; }
         public CodeInfo OrganizationStatus { get; set; }
+        [DisplayName("Main Fellowship")]
         public bool IsBibleFellowshipOrg { get; set; }
 
         private string _schedule;

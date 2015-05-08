@@ -32,6 +32,8 @@ namespace CmsData
 		
 		private string _ElapsedTime;
 		
+		private string _CustomMessage;
+		
    		
     	
 	#endregion
@@ -61,6 +63,9 @@ namespace CmsData
 		
 		partial void OnElapsedTimeChanging(string value);
 		partial void OnElapsedTimeChanged();
+		
+		partial void OnCustomMessageChanging(string value);
+		partial void OnCustomMessageChanged();
 		
     #endregion
 		public LongRunningOp()
@@ -220,6 +225,28 @@ namespace CmsData
 					this._ElapsedTime = value;
 					this.SendPropertyChanged("ElapsedTime");
 					this.OnElapsedTimeChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="CustomMessage", UpdateCheck=UpdateCheck.Never, Storage="_CustomMessage", DbType="nvarchar(80)")]
+		public string CustomMessage
+		{
+			get { return this._CustomMessage; }
+
+			set
+			{
+				if (this._CustomMessage != value)
+				{
+				
+                    this.OnCustomMessageChanging(value);
+					this.SendPropertyChanging();
+					this._CustomMessage = value;
+					this.SendPropertyChanged("CustomMessage");
+					this.OnCustomMessageChanged();
 				}
 
 			}

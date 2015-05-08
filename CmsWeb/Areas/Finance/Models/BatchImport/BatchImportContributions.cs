@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -78,8 +78,17 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
                 return new ChaseImporter().RunImport(text, date, fundid, fromFile);
 
+            if (text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Contains("TransmissionDate,Name,CapturedDate,Acc_No,textbox21,textbox10,DepositStatus,textbox18,SourceLocation,textbox11,textbox12,textbox13"))
+                return new CapitalCityImporter().RunImport(text, date, fundid, fromFile);
+
             if (text.StartsWith("1") && text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Length == 94)
                 return new AchImporter().RunImport(text, date, fundid, fromFile);
+
+            if (text.Contains("ProfileID"))
+                return new ServiceUImporter().RunImport(text, date, fundid, fromFile);
+
+            if (text.StartsWith("Id,Recipient,Date,Time,Currency,Amount,Status,Payment Method,Payer Name,Email address,Mobile Number,Source,Method,Full name,Email,Giving Type"))
+                return new PushPayImporter().RunImport(text, date, fundid, fromFile);
 
             throw new Exception("unsupported import file");
         }
@@ -121,21 +130,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         internal static BundleDetail AddContributionDetail(DateTime date, int fundid,
             string amount, string checkno, string routing, string account)
         {
-            var bd = new BundleDetail
-            {
-                CreatedBy = Util.UserId,
-                CreatedDate = DateTime.Now
-            };
-            bd.Contribution = new Contribution
-            {
-                CreatedBy = Util.UserId,
-                CreatedDate = DateTime.Now,
-                ContributionDate = date,
-                FundId = fundid,
-                ContributionStatusId = 0,
-                ContributionTypeId = ContributionTypeCode.CheckCash
-            };
-            bd.Contribution.ContributionAmount = amount.GetAmount();
+            var bd = NewBundleDetail(date, fundid, amount);
             bd.Contribution.CheckNo = checkno;
             var eac = Util.Encrypt(routing + "|" + account);
             var q = from kc in DbUtil.Db.CardIdentifiers
@@ -151,6 +146,14 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         internal static BundleDetail AddContributionDetail(DateTime date, int fundid,
             string amount, string checkno, string routing, int peopleid)
         {
+            var bd = NewBundleDetail(date, fundid, amount);
+            bd.Contribution.CheckNo = checkno;
+            bd.Contribution.PeopleId = peopleid;
+            return bd;
+        }
+
+        internal static BundleDetail NewBundleDetail(DateTime date, int fundid, string amount)
+        {
             var bd = new BundleDetail
             {
                 CreatedBy = Util.UserId,
@@ -163,11 +166,9 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 ContributionDate = date,
                 FundId = fundid,
                 ContributionStatusId = 0,
-                ContributionTypeId = ContributionTypeCode.CheckCash
+                ContributionTypeId = ContributionTypeCode.CheckCash,
+                ContributionAmount = amount.GetAmount()
             };
-            bd.Contribution.ContributionAmount = amount.GetAmount();
-            bd.Contribution.CheckNo = checkno;
-            bd.Contribution.PeopleId = peopleid;
             return bd;
         }
     }

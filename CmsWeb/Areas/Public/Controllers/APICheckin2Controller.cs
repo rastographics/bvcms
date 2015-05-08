@@ -151,13 +151,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (keys.Contains("zip") || keys.Contains("addr"))
             {
-                var result = AddressVerify.LookupAddress(m.addr, null, null, null, m.zip.Zip5());
-                if (result.found != false && !result.error.HasValue())
+                var result = AddressVerify.LookupAddress(m.addr, p.PrimaryAddress2, null, null, m.zip.Zip5());
+                if (result.found != false && !result.error.HasValue() && result.Line1 != "error")
                 {
                     UpdateField(fsb, p.Family, "AddressLineOne", result.Line1);
+                    UpdateField(fsb, p.Family, "AddressLineTwo", result.Line2);
                     UpdateField(fsb, p.Family, "CityName", result.City);
                     UpdateField(fsb, p.Family, "StateCode", result.State);
-                    UpdateField(fsb, p.Family, "ZipCode", result.Zip);
+                    UpdateField(fsb, p.Family, "ZipCode", result.Zip.GetDigits());
                     var rc = DbUtil.Db.FindResCode(result.Zip, null);
                     UpdateField(fsb, p.Family, "ResCodeId", rc.ToString());
                 }

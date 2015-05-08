@@ -564,7 +564,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get { return _pythonEvents ?? (_pythonEvents = HttpContext.Current.Items["PythonEvents"] as PythonEvents); }
         }
 
-        private readonly Dictionary<string, string> NameLookup = new Dictionary<string, string>()
+        private readonly Dictionary<string, string> _nameLookup = new Dictionary<string, string>()
         {
             {"first", "FirstName"},
             {"middle", "MiddleName"},
@@ -585,7 +585,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string TranslateName(string name)
         {
-            return NameLookup.ContainsKey(name) ? NameLookup[name] : name;
+            return _nameLookup.ContainsKey(name) ? _nameLookup[name] : name;
         }
 
         public void SetClassId()

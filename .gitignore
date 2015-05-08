@@ -53,6 +53,9 @@ _ReSharper*/
 #NuGet
 packages/
 
+#Node Modules
+node_modules/
+
 #other
 secrets.config
 CmsWeb/ProdConnectionStrings.config
@@ -69,3 +72,4 @@ CmsDataSqlClr_.*.sqlproj
 /PythonApplication1/TextFile1.txt
 /CmsWeb/Properties/PublishProfiles/test2.pubxml
 /CmsWeb/Properties/PublishProfiles/test3.pubxml
+/CmsWeb/SimSun.ttf

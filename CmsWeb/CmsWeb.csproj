@@ -234,8 +234,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
-    <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\AddAttendeesFromTagController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\OrgSearchDropController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\OrgDropController.cs" />
+    <Compile Include="Areas\Dialog\Controllers\ValidateAddressController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddToOrgPrevFromTagController.cs" />
     <Compile Include="Areas\Dialog\Controllers\DeleteMeetingController.cs" />
@@ -250,10 +253,13 @@
     <Compile Include="Areas\Dialog\Controllers\SearchOrgsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\SearchUsersController.cs" />
     <Compile Include="Areas\Dialog\Controllers\TransactionHistoryController.cs" />
+    <Compile Include="Areas\Dialog\Models\AddAttendeesFromTag.cs" />
     <Compile Include="Areas\Dialog\Models\AddToOrgFromTag.cs" />
     <Compile Include="Areas\Dialog\Models\DeleteMeeting.cs" />
     <Compile Include="Areas\Dialog\Models\NewMeetingInfo.cs" />
     <Compile Include="Areas\Dialog\Models\OrganizationModel.cs" />
+    <Compile Include="Areas\Dialog\Models\OrgSearchDrop.cs" />
+    <Compile Include="Areas\Dialog\Models\OrgDrop.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembers.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembersUpdate.cs" />
@@ -262,6 +268,7 @@
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberMoveModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberTransactionModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMoveInfo.cs" />
+    <Compile Include="Areas\Dialog\Models\ValidateAddress.cs" />
     <Compile Include="Areas\Dialog\Models\RepairTransactions.cs" />
     <Compile Include="Areas\Dialog\Models\RepairTransactionsOrgs.cs" />
     <Compile Include="Areas\Dialog\Models\SearchDivisionsModel.cs">
@@ -271,6 +278,7 @@
     <Compile Include="Areas\Dialog\Models\SearchUsersModel.cs" />
     <Compile Include="Areas\Dialog\Models\TransactionHistoryModel.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\AchImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\CapitalCityImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\DepositRecord.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\EnonImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\HollyCreekImporter.cs" />
@@ -305,6 +313,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\KindredImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\PushPayImporter.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\RedeemerImporter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -312,6 +321,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\Finance\Models\BatchImport\FirstStateImporter.cs" />
+    <Compile Include="Areas\Finance\Models\BatchImport\ServiceU.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\SunTrustImporter.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1620,8 +1630,6 @@
     <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Reports.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Toolbar.cshtml" />
     <Content Include="Areas\Dialog\Views\Web.config" />
-    <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Index.cshtml" />
-    <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Progress.cshtml" />
     <Content Include="Areas\Dialog\Views\AddOrganization\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\AddToOrgPrevFromTag\Progress.cshtml" />
@@ -1737,8 +1745,6 @@
     <Content Include="Areas\Dialog\Views\RepairTransactions\Process.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Toolbar\Email.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Toolbar\Gear.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Dropped.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMembersUpdate\ShowDrop.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\Updated.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\SmallGroups.cshtml" />
     <Content Include="Areas\Org\Views\Web.config">
@@ -1771,6 +1777,14 @@
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddTransactionDone.cshtml" />
     <Content Include="Areas\Org\Views\Org2\DisplayTemplates\TimeSlots.cshtml" />
     <Content Include="Areas\Org\Views\Org2\DisplayTemplates\TimeSlot.cshtml" />
+    <Content Include="Areas\Dialog\Views\ValidateAddress\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\ValidateAddress\Process.cshtml" />
+    <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\AddAttendeesFromTag\Process.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgDrop\Process.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgDrop\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgSearchDrop\Index.cshtml" />
+    <Content Include="Areas\Dialog\Views\OrgSearchDrop\Process.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>
@@ -2268,7 +2282,6 @@
     <Content Include="Content\images\sfs_icon_facebook.png" />
     <Content Include="Content\images\Up-down.png" />
     <Content Include="Content\images\visa.jpg" />
-    <Content Include="Content\iTextAsian.dll" />
     <Content Include="Scripts\Volunteer\Calendar.js" />
     <Content Include="Scripts\js\CheckinActivity.js" />
     <Content Include="Scripts\Search\ContactSearch.js" />

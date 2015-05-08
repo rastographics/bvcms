@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using CmsData;
-using DocumentFormat.OpenXml.Drawing.Charts;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
@@ -14,6 +15,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         private BundleHeader _bundleHeader;
         private DateTime _batchDate;
         private int _fundId;
+
+        private readonly List<EntryDetail> _details = new List<EntryDetail>();
         
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
@@ -28,8 +31,26 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 }
             }
 
+            AddSortedContributions();
+
             BatchImportContributions.FinishBundle(_bundleHeader);
             return _bundleHeader.BundleHeaderId;
+        }
+
+        private void AddSortedContributions()
+        {
+            foreach (var record in _details.OrderByDescending(x => x.Name).ToList())
+            {
+                var detail = BatchImportContributions.AddContributionDetail(_batchDate, _fundId, record.Amount,
+                    record.IndividualIdNumber,
+                    record.RoutingNumber,
+                    record.AccountNumber);
+
+                if (!detail.Contribution.PeopleId.HasValue)
+                    detail.Contribution.ContributionDesc = record.Name;
+
+                _bundleHeader.BundleDetails.Add(detail);
+            }
         }
 
         private void HandleRecord(string line)
@@ -77,15 +98,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             var amount = string.Format("{0}.{1}", dollars, cents);
 
-            var detail = BatchImportContributions.AddContributionDetail(_batchDate, _fundId, amount,
-                individualIdNumber,
-                routingNumber,
-                accountNumber);
-
-            if (!detail.Contribution.PeopleId.HasValue)
-                detail.Contribution.ContributionDesc = name;
-
-            _bundleHeader.BundleDetails.Add(detail);
+            _details.Add(new EntryDetail(amount, individualIdNumber, routingNumber, accountNumber, name));
         }
 
         private static void ParseBatchControlTotal(string line)
@@ -105,6 +118,24 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             EntryDetailAddendum = 7,
             BatchControlTotal = 8,
             FileControlRecord = 9
+        }
+
+        private class EntryDetail
+        {
+            public string Amount { get; private set; }
+            public string IndividualIdNumber { get; private set; }
+            public string RoutingNumber { get; private set; }
+            public string AccountNumber { get; private set; }
+            public string Name { get; private set; }
+
+            public EntryDetail(string amount, string individualIdNumber, string routingNumber, string accountNumber, string name)
+            {
+                Amount = amount;
+                IndividualIdNumber = individualIdNumber;
+                RoutingNumber = routingNumber;
+                AccountNumber = accountNumber;
+                Name = name;
+            }
         }
     }
 }

@@ -164,7 +164,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="Link", UpdateCheck=UpdateCheck.Never, Storage="_Link", DbType="nvarchar(500)")]
+		[Column(Name="Link", UpdateCheck=UpdateCheck.Never, Storage="_Link", DbType="nvarchar(2000)")]
 		public string Link
 		{
 			get { return this._Link; }

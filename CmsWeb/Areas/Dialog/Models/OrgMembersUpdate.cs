@@ -86,9 +86,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? EnrollmentDate { get; set; }
         public bool MakeMemberTypeOriginal { get; set; }
         public bool Pending { get; set; }
-        public bool RemoveFromEnrollmentHistory { get; set; }
         public bool RemoveInactiveDate { get; set; }
-        public DateTime? DropDate { get; set; }
         public string NewGroup { get; set; }
 
         public IQueryable<OrgPerson> People(ICurrentOrg co)
@@ -101,29 +99,6 @@ namespace CmsWeb.Areas.Dialog.Models
             return q;
         }
 
-        public void Drop()
-        {
-            var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
-            foreach (var pid in pids)
-            {
-                DbUtil.DbDispose();
-                DbUtil.Db = new CMSDataContext(Util.ConnectionString);
-                var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
-                if (DropDate.HasValue)
-                    om.Drop(DbUtil.Db, DropDate.Value);
-                else
-                    om.Drop(DbUtil.Db);
-                DbUtil.Db.SubmitChanges();
-                if (RemoveFromEnrollmentHistory)
-                {
-                    DbUtil.DbDispose();
-                    DbUtil.Db = new CMSDataContext(Util.ConnectionString);
-                    var q = DbUtil.Db.EnrollmentTransactions.Where(tt => tt.OrganizationId == Id && tt.PeopleId == pid);
-                    DbUtil.Db.EnrollmentTransactions.DeleteAllOnSubmit(q);
-                    DbUtil.Db.SubmitChanges();
-                }
-            }
-        }
         public void Update()
         {
             var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
@@ -160,17 +135,19 @@ namespace CmsWeb.Areas.Dialog.Models
             }
         }
 
-        public void AddSmallGroup(int sgtagid)
+        public string AddSmallGroup(int sgtagid)
         {
             var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
+            var n = 0;
+            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == Id).Name;
             foreach (var pid in pids)
             {
                 DbUtil.DbDispose();
                 DbUtil.Db = new CMSDataContext(Util.ConnectionString);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
-                om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = sgtagid });
-                DbUtil.Db.SubmitChanges();
+                n += om.AddToGroup(DbUtil.Db, sgtagid);
             }
+            return "{0} added to sub-group {1}".Fmt(n, name);
         }
 
         public void RemoveSmallGroup(int sgtagid)

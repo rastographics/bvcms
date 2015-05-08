@@ -24,26 +24,15 @@ namespace CmsWeb.Areas.Dialog.Controllers
             m.Update();
             return View("Updated", m);
         }
-        [HttpPost, Route("ShowDrop")]
-        public ActionResult ShowDrop(OrgMembersUpdate m)
-        {
-            return View(m);
-        }
         [HttpPost, Route("SmallGroups")]
         public ActionResult SmallGroups(OrgMembersUpdate m)
         {
             return View(m);
         }
-        [HttpPost, Route("Drop")]
-        public ActionResult Drop(OrgMembersUpdate m)
-        {
-            m.Drop();
-            return View("Dropped", m);
-        }
         [HttpPost, Route("AddSmallGroup/{sgid:int}")]
         public ActionResult AddSmallGroup(int sgid, OrgMembersUpdate m)
         {
-            m.AddSmallGroup(sgid);
+            ViewBag.numberadded = m.AddSmallGroup(sgid);
             return View("SmallGroups", m);
         }
         [HttpPost, Route("RemoveSmallGroup/{sgid:int}")]

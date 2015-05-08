@@ -1426,6 +1426,18 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return bt.Id;
         }
+        public static int FetchOrCreateMaritalStatus(CMSDataContext Db, string type)
+        {
+            var ms = Db.MaritalStatuses.SingleOrDefault(m => m.Description == type);
+            if (ms == null)
+            {
+                var max = Db.BaptismTypes.Max(mm => mm.Id) + 10;
+                ms = new MaritalStatus() { Id = max, Code = "ms" + max, Description = type };
+                Db.MaritalStatuses.InsertOnSubmit(ms);
+                Db.SubmitChanges();
+            }
+            return ms.Id;
+        }
         public static int FetchOrCreateDecisionType(CMSDataContext Db, string type)
         {
             var dt = Db.DecisionTypes.SingleOrDefault(m => m.Description == type);

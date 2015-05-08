@@ -1,4 +1,3 @@
-
 CREATE FUNCTION [dbo].[GetTotalContributionsDonor2]
 (
 	@fd DATETIME, 
@@ -11,18 +10,25 @@ RETURNS TABLE
 AS
 RETURN 
 (
-	SELECT tt.*, ISNULL(o.OrganizationName, '') MainFellowship, ms.Description MemberStatus, p.JoinDate
+	SELECT 
+		tt.*, 
+		ISNULL(o.OrganizationName, '') MainFellowship, 
+		ms.Description MemberStatus, 
+		p.JoinDate, 
+		p.SpouseId, 
+		p.ContributionOptionsId
 	FROM
 	(
 	SELECT 
 		CreditGiverId, 
+		CreditGiverId2,
 		HeadName, 
 		SpouseName, 
 		COUNT(*) AS [Count], 
 		SUM(Amount) AS Amount, 
 		SUM(PledgeAmount) AS PledgeAmount
 	FROM dbo.Contributions2(@fd, @td, @campusid, NULL, @nontaxded, @includeUnclosed)
-	GROUP BY CreditGiverId, HeadName, SpouseName
+	GROUP BY CreditGiverId, CreditGiverId2, HeadName, SpouseName
 	) tt 
 	JOIN dbo.People p ON p.PeopleId = tt.CreditGiverId
 	JOIN lookup.MemberStatus ms ON p.MemberStatusId = ms.Id

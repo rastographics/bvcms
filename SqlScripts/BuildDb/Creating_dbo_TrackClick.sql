@@ -1,7 +1,7 @@
 
 CREATE PROCEDURE [dbo].[TrackClick]
 	@hash VARCHAR(50), 
-	@link VARCHAR(500) OUTPUT
+	@link VARCHAR(2000) OUTPUT
 AS
 BEGIN
 	SELECT @link = [Link] FROM dbo.EmailLinks WHERE [Hash] = @hash

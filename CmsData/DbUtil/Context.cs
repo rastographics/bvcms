@@ -14,6 +14,7 @@ using System.Data.Linq.Mapping;
 using System.Data.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CmsData.Codes;
 using System.Text.RegularExpressions;
 
@@ -23,7 +24,7 @@ namespace CmsData
     {
         const string STR_System = "System";
 
-        private int nextTagId = 10;
+        private int nextTagId = 11;
 
         public int NextTagId
         {
@@ -387,6 +388,7 @@ namespace CmsData
         public Tag PopulateTemporaryTag(IQueryable<int> q)
         {
             var tag = FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, NextTagId);
+            Debug.Assert(NextTagId != 10, "got a 10");
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             var cmd = GetCommand(q);
             var s = cmd.CommandText;
@@ -1110,7 +1112,7 @@ namespace CmsData
         }
         [Function(Name = "dbo.TrackClick")]
         public int TrackClick([Parameter(DbType = "VarChar(50)")] string hash,
-            [Parameter(DbType = "VarChar(500)")] ref string link)
+            [Parameter(DbType = "VarChar(2000)")] ref string link)
         {
             IExecuteResult result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), hash, link);
             link = ((string)(result.GetParameterValue(1)));

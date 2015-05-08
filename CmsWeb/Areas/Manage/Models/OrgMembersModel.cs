@@ -294,6 +294,8 @@ namespace CmsWeb.Models
                 tom.Request = om.Request;
                 tom.Amount = om.Amount;
                 tom.UserData = om.UserData;
+                tom.OnlineRegData = om.OnlineRegData;
+                tom.RegistrationDataId = om.RegistrationDataId;
                 tom.Grade = om.Grade;
                 tom.RegisterEmail = om.RegisterEmail;
                 tom.MemberTypeId = om.MemberTypeId;

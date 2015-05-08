@@ -41,7 +41,10 @@ namespace CmsWeb.Areas.Org2.Controllers
                     return NotAllowed("You must be a leader of this organization", m.Org.OrganizationName);
                 var sgleader = DbUtil.Db.SmallGroupLeader(id, Util.UserPeopleId);
                 if (sgleader.HasValue())
+                {
                     db.CurrentOrg.SgFilter = sgleader;
+                    m.SgFilter = sgleader;
+                }
             }
             if (m.Org.LimitToRole.HasValue())
                 if (!User.IsInRole(m.Org.LimitToRole))

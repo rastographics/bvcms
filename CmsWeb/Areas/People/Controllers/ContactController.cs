@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpPost]
         public ActionResult ContactUpdate(int cid, ContactModel c)
         {
-            if (!ModelState.IsValid)
+            if (!User.IsInRole("Admin") && !ModelState.IsValid)
                 return View("ContactEdit", c);
             c.UpdateContact();
             return View("ContactDisplay", c);

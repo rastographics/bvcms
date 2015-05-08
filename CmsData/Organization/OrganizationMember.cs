@@ -127,10 +127,29 @@ namespace CmsData
             int? n = null;
             AddToGroup(Db, name, n);
         }
+        public int AddToGroup(CMSDataContext Db, int n)
+        {
+            var omt = Db.OrgMemMemTags.SingleOrDefault(t =>
+                                                       t.PeopleId == PeopleId
+                                                       && t.MemberTagId == n
+                                                       && t.OrgId == OrganizationId);
+            if (omt == null)
+            {
+                Db.OrgMemMemTags.InsertOnSubmit(new OrgMemMemTag
+                                     {
+                                         PeopleId = PeopleId,
+                                         OrgId = OrganizationId,
+                                         MemberTagId = n
+                                     });
+                Db.SubmitChanges();
+                return 1;
+            }
+            return 0;
+        }
 
         public void AddToGroup(CMSDataContext Db, string name, int? n)
         {
-            if (!name.HasValue())
+            if (!Util.HasValue(name))
                 return;
             var mt = Db.MemberTags.SingleOrDefault(t => t.Name == name.Trim() && t.OrgId == OrganizationId);
             if (mt == null)
@@ -170,8 +189,16 @@ namespace CmsData
 
         public void AddToMemberData(string s)
         {
-            if (UserData.HasValue())
+            if (Util.HasValue(UserData))
                 UserData += "\n";
+            UserData += s;
+        }
+        public void AddToMemberDataBelowComments(string s)
+        {
+            if (Util.HasValue(UserData))
+                UserData += "\n";
+            else
+                UserData = "--Add comments above this line--\n";
             UserData += s;
         }
 
@@ -248,7 +275,7 @@ namespace CmsData
         private TransactionSummary transactionSummary;
         public TransactionSummary TransactionSummary(CMSDataContext db)
         {
-            if(transactionSummaryLoaded)
+            if (transactionSummaryLoaded)
                 return transactionSummary;
             transactionSummary = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == TranId && tt.PeopleId == PeopleId);
             transactionSummaryLoaded = true;
