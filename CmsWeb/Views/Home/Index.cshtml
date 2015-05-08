@@ -6,9 +6,10 @@
 @section head
 {
     <style>
-         #home {
-             padding-top: 10px;
-         }
+        #home {
+            padding-top: 10px;
+        }
+
         ul.list-group {
             max-height: 215px;
             overflow-y: auto;
@@ -26,14 +27,15 @@
             padding-left: 20px;
         }
 
-        ul.list-group li.section {
-            font-weight: bold;
-        }
+            ul.list-group li.section {
+                font-weight: bold;
+            }
 
-        ul.list-group li.indent {
-            padding-left: 25px;
-        }
-        .list-group-item>.label {
+            ul.list-group li.indent {
+                padding-left: 25px;
+            }
+
+        .list-group-item > .label {
             float: right;
         }
     </style>
@@ -41,18 +43,24 @@
 <div id="home" class="row">
     <div class="col-sm-4">
         <div class="box">
+            @{
+                var birthdays = Model.Birthdays().ToList();
+            }
             <div class="box-title hidden-xs">
                 <h5><a href="Tags?tag=TrackBirthdays">Birthdays</a></h5>
             </div>
             <a class="visible-xs-block" id="birthdays-collapse" data-toggle="collapse" href="#birthdays-section" aria-expanded="true" aria-controls="birthdays-section">
                 <div class="box-title">
-                    <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;Birthdays</h5>
+                    <h5>
+                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;Birthdays&nbsp;&nbsp;
+                        @if (birthdays.Any())
+                        {
+                            <span class="badge">@birthdays.Count()</span>
+                        }
+                    </h5>
                 </div>
             </a>
             <div class="collapse in" id="birthdays-section">
-                @{
-                    var birthdays = Model.Birthdays().ToList();
-                }
                 @if (birthdays.Any())
                 {
                     <ul class="list-group">
@@ -69,19 +77,25 @@
             </div>
         </div>
         <div class="box">
+            @{
+                var involvements = Model.MyInvolvements().ToList();
+                var currentOrgType = "Other";
+            }
             <div class="box-title hidden-xs">
                 <h5><a href="@Model.UserUrl#enrollment">My Involvement</a></h5>
             </div>
             <a class="visible-xs-block" id="involvements-collapse" data-toggle="collapse" href="#involvements-section" aria-expanded="true" aria-controls="involvements-section">
                 <div class="box-title">
-                    <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Involvement</h5>
+                    <h5>
+                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Involvement&nbsp;&nbsp;
+                        @if (involvements.Any())
+                        {
+                            <span class="badge">@involvements.Count()</span>
+                        }
+                    </h5>
                 </div>
             </a>
             <div class="collapse in" id="involvements-section">
-                @{
-                    var involvements = Model.MyInvolvements().ToList();
-                    var currentOrgType = "Other";
-                }
                 @if (involvements.Any())
                 {
                     <ul class="list-group">
@@ -103,18 +117,24 @@
             </div>
         </div>
         <div class="box">
+            @{
+                var searches = Model.MyQueries().ToList();
+            }
             <div class="box-title hidden-xs">
-                <h5><a href="/Query">My Searches</a></h5>
+                <h5><a href="/SavedQueryList">My Searches</a></h5>
             </div>
             <a class="visible-xs-block" id="searches-collapse" data-toggle="collapse" href="#searches-section" aria-expanded="true" aria-controls="searches-section">
                 <div class="box-title">
-                    <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Searches</h5>
+                    <h5>
+                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Searches&nbsp;&nbsp;
+                        @if (searches.Any())
+                        {
+                            <span class="badge">@searches.Count()</span>
+                        }
+                    </h5>
                 </div>
             </a>
             <div class="collapse in" id="searches-section">
-                @{
-                    var searches = Model.MyQueries().ToList();
-                }
                 @if (searches.Any())
                 {
                     <ul class="list-group">
@@ -167,7 +187,7 @@
                     <div class="box-content"></div>
                 }
             </div>
-           
+
         </div>
         <div class="box">
             <div class="box-title hidden-xs">
@@ -235,18 +255,24 @@
             </div>
         </div>
         <div class="box">
+            @{
+                var tasks = Model.Tasks().ToList();
+            }
             <div class="box-title hidden-xs">
                 <h5><a href="/Task/List">My Tasks</a></h5>
             </div>
             <a class="visible-xs-block" id="tasks-collapse" data-toggle="collapse" href="#tasks-section" aria-expanded="true" aria-controls="tasks-section">
                 <div class="box-title">
-                    <h5><i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Tasks</h5>
+                    <h5>
+                        <i class="fa fa-chevron-circle-right"></i>&nbsp;&nbsp;My Tasks&nbsp;&nbsp;
+                        @if (tasks.Any())
+                        {
+                            <span class="badge">@tasks.Count()</span>
+                        }
+                    </h5>
                 </div>
             </a>
             <div class="collapse in" id="tasks-section">
-                @{
-                    var tasks = Model.Tasks().ToList();
-                }
                 @if (tasks.Any())
                 {
                     <ul class="list-group">
@@ -350,5 +376,5 @@
                 }
             }
         });
-</script>
+    </script>
 }

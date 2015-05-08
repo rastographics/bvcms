@@ -27,8 +27,6 @@
             </div>
             <div class="tab-pane fade" id="manageGroup">
                 <form id="groupForm" action="/OrgGroups/DeleteGroups/@Model.orgid" method="post">
-                    @Html.HiddenFor(m => m.orgid)
-                    <input type="hidden" id="groupid" name="groupid" class="delete-group-id" />
                     @Html.Partial("Management", Model)
                 </form>
                 <div class="modal fade" id="new-group-modal">
