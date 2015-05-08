@@ -3,12 +3,14 @@ using System.Linq;
 using System.Text;
 using CmsData;
 using CmsData.Registration;
+using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
+        private List<OnlineRegQA> qlist = null;
         public void RepopulateRegistration(OrganizationMember om)
         {
             var reg = person.RecRegs.SingleOrDefault();
@@ -96,24 +98,33 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 option = new List<string>();
             if (setting.TargetExtraValues)
             {
-                foreach (var dd in ((AskDropdown) ask).list)
+                foreach (var dd in ((AskDropdown)ask).list)
                     if (person.GetExtra(dd.SmallGroup) == "true")
                         option.Add(dd.SmallGroup);
             }
             else
-                foreach (var dd in ((AskDropdown) ask).list)
+                foreach (var dd in ((AskDropdown)ask).list)
                     if (om.IsInGroup(dd.SmallGroup))
                         option.Add(dd.SmallGroup);
         }
 
+        private void FetchQuestionsAnswersList(OrganizationMember om)
+        {
+            if (qlist == null)
+                qlist = (from qu in DbUtil.Db.ViewOnlineRegQAs
+                         where qu.PeopleId == om.PeopleId
+                         where qu.OrganizationId == om.OrganizationId
+                         select qu).ToList();
+        }
         private void PopulateTextAnswers(OrganizationMember om, Ask ask)
         {
+            FetchQuestionsAnswersList(om);
+
             if (Text == null)
                 Text = new List<Dictionary<string, string>>();
             var tx = new Dictionary<string, string>();
             Text.Add(tx);
-            var lines = (om.UserData ?? "").Split('\n');
-            foreach (var q in ((AskText) ask).list)
+            foreach (var q in ((AskText)ask).list)
             {
                 if (setting.TargetExtraValues)
                 {
@@ -123,31 +134,23 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
                 else
                 {
-                    var sb = new StringBuilder();
-                    var i = 0;
-                    for (; i < lines.Length; i++)
-                        if (lines[i] == q.Question + ":")
-                            break;
-                    for (i++; i < lines.Length; i++)
-                    {
-                        if (lines[i].Length == 0 || lines[i][0] != '\t')
-                            break;
-                        sb.AppendLine(lines[i].Substring(1));
-                    }
-                    if (sb.Length > 0)
-                        tx[q.Question] = sb.ToString();
+                    var v = qlist.SingleOrDefault(qq => qq.Question == q.Question && qq.Type == "text");
+                    if (v != null)
+                        tx[q.Question] = v.Answer;
                 }
             }
         }
 
         private void PopulateExtraAnswers(OrganizationMember om, Ask ask)
         {
+            FetchQuestionsAnswersList(om);
+
             if (ExtraQuestion == null)
                 ExtraQuestion = new List<Dictionary<string, string>>();
             var eq = new Dictionary<string, string>();
             ExtraQuestion.Add(eq);
-            var lines = (om.UserData ?? "").Split('\n');
-            foreach (var q in ((AskExtraQuestions) ask).list)
+
+            foreach (var q in ((AskExtraQuestions)ask).list)
             {
                 if (setting.TargetExtraValues)
                 {
@@ -157,11 +160,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
                 else
                 {
-                    var v = (from li in lines
-                        where li.StartsWith(q.Question + ": ")
-                        select li.Substring(q.Question.Length + 2)).FirstOrDefault();
-                    if (v.HasValue())
-                        eq[q.Question] = v;
+                    var v = qlist.SingleOrDefault(qq => qq.Question == q.Question && qq.Type == "question");
+                    if (v != null)
+                        eq[q.Question] = v.Answer;
                 }
             }
         }
@@ -170,12 +171,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (setting.TargetExtraValues)
             {
-                foreach (var ck in ((AskCheckboxes) ask).list)
+                foreach (var ck in ((AskCheckboxes)ask).list)
                     if (person.GetExtra(ck.SmallGroup).ToBool())
                         Checkbox.Add(ck.SmallGroup);
             }
             else
-                foreach (var ck in ((AskCheckboxes) ask).list)
+                foreach (var ck in ((AskCheckboxes)ask).list)
                     if (om.IsInGroup(ck.SmallGroup))
                         Checkbox.Add(ck.SmallGroup);
         }
@@ -183,7 +184,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void PopulateYesNoChoices(OrganizationMember om, Ask ask)
         {
             if (setting.TargetExtraValues == false)
-                foreach (var yn in ((AskYesNoQuestions) ask).list)
+                foreach (var yn in ((AskYesNoQuestions)ask).list)
                 {
                     {
                         if (om.IsInGroup("Yes:" + yn.SmallGroup))
@@ -193,7 +194,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     }
                 }
             else
-                foreach (var yn in ((AskYesNoQuestions) ask).list)
+                foreach (var yn in ((AskYesNoQuestions)ask).list)
                 {
                     if (person.GetExtra(yn.SmallGroup) == "Yes")
                         YesNoQuestion[yn.SmallGroup] = true;

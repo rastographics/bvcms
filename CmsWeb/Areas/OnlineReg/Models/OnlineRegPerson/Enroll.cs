@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (others.HasValue())
                     sb.AppendFormat("Others: {0}\n", others);
             }
-            om.AddToMemberData(sb.ToString());
+            om.AddToMemberDataBelowComments(sb.ToString());
 
             var sbreg = new StringBuilder();
             sbreg.AppendFormat("{0}\n".Fmt(org.OrganizationName));
@@ -106,7 +106,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private void SaveAnswers(OrganizationMember om)
-        {
+        {            
+            om.OnlineRegData = Util.Serialize(this); // saves all answers
+
             var reg = person.SetRecReg();
             foreach (var ask in setting.AskItems)
                 switch (ask.Type)
@@ -161,10 +163,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         SaveCheckboxChoices(om, ask);
                         break;
                     case "AskExtraQuestions":
-                        SaveExtraAnswers(om, ask);
-                        break;
                     case "AskText":
-                        SaveTextAnswers(om, ask);
+                        // skip these, they show up in OrganizationMember.OnlineRegData xml
                         break;
                     case "AskMenu":
                         SaveMenuChoices(om, ask);
@@ -219,41 +219,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 var menulabel = ((AskMenu) ask).Label;
                 foreach (var i in ((AskMenu) ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
                 {
-                    om.AddToMemberData(menulabel);
+                    om.AddToMemberDataBelowComments(menulabel);
                     string desc;
                     if (i.amt > 0)
                         desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
                     else
                         desc = "{0} {1}".Fmt(i.number, i.desc);
-                    om.AddToMemberData(desc);
+                    om.AddToMemberDataBelowComments(desc);
                     menulabel = string.Empty;
                 }
             }
-        }
-
-        private void SaveTextAnswers(OrganizationMember om, Ask ask)
-        {
-            foreach (var g in Text[ask.UniqueId])
-                if (g.Value.HasValue())
-                    if (setting.TargetExtraValues)
-                        person.AddEditExtraData(g.Key, g.Value);
-                    else
-                    {
-                        om.AddToMemberData("{0}:".Fmt(g.Key));
-                        var lines = g.Value.SplitLines();
-                        foreach (var line in lines)
-                            om.AddToMemberData("\t{0}".Fmt(line));
-                    }
-        }
-
-        private void SaveExtraAnswers(OrganizationMember om, Ask ask)
-        {
-            foreach (var g in ExtraQuestion[ask.UniqueId])
-                if (g.Value.HasValue())
-                    if (setting.TargetExtraValues)
-                        person.AddEditExtraData(g.Key, g.Value);
-                    else
-                        om.AddToMemberData("{0}: {1}".Fmt(g.Key, g.Value));
         }
 
         private void SaveCheckboxChoices(OrganizationMember om, Ask ask)
@@ -299,6 +274,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (om.TranId == null)
                 om.TranId = transaction.OriginalId;
             om.RegisterEmail = EmailAddress;
+            om.RegistrationDataId = Parent.DatumId;
             return om;
         }
 
