@@ -7,6 +7,7 @@
 }
 <form class="non-modal ajax">
     @FormAction(giving, vaultDisabled)
+    @FormAction(giving, vaultDisabled, true)
     <div class="row">
         <div class="col-sm-12">
             @Html.Partial("PagerTop", Model)
@@ -48,7 +49,6 @@
             @Html.HiddenFor2(m => m.PeopleId)
         </div>
     </div>
-    @FormAction(giving, vaultDisabled, true)
 </form>
 @helper FormAction(bool giving, bool vaultDisabled, bool sm = false)
 {
