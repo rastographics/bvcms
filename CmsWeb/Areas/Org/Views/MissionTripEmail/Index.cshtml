@@ -61,7 +61,17 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <iframe src="/MissionTripEmail2/EmailBody/@Model.OrgId/@Model.PeopleId" frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                            <script type="text/javascript">
+                                function iframeLoaded() {
+                                    var iFrameID = document.getElementById('email-body');
+                                    if (iFrameID) {
+                                        // here you can make the height, I delete it first, then I make it again
+                                        iFrameID.height = "";
+                                        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
+                                    }
+                                }
+                            </script>
+                            <iframe src="/MissionTripEmail2/EmailBody/@Model.OrgId/@Model.PeopleId" onload="iframeLoaded()" frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
                         </div>
                     </div>
                     <div class="form-group">
