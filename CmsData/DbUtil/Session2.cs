@@ -66,7 +66,7 @@ namespace CmsData
                 if (!defaultHost.HasValue() && HttpContext.Current != null)
                 {
                     var request = HttpContext.Current.Request;
-                    defaultHost = Util.URLCombine(Util.Scheme() + "://" + request.Url.Authority, "");
+                    defaultHost = Util.URLCombine(Scheme() + "://" + request.Url.Authority, "");
                 }
 
                 // finally, try the "cmshost" setting
@@ -80,11 +80,34 @@ namespace CmsData
             }
         }
 
+        private string Scheme()
+        {
+            if (HttpContext.Current != null)
+            {
+                var Request = HttpContext.Current.Request;
+                var scheme = Request.Url.Scheme;
+                if (Request.Headers["X-Forwarded-Proto"] == "https")
+                    scheme = "https";
+                return scheme;
+            }
+            return "http";
+        }
         public string ServerLink(string path = "")
         {
+#if DEBUG2                    
             var request = HttpContext.Current.Request;
             return Util.URLCombine(Util.Scheme() + "://" + request.Url.Authority, path);
+#else
+            return Util.URLCombine(CmsHost, path);
+#endif
+
         }
+
+//        public string ServerLink(string path = "")
+//        {
+//            var request = HttpContext.Current.Request;
+//            return Util.URLCombine(Util.Scheme() + "://" + request.Url.Authority, path);
+//        }
 
         public void CopySession()
         {
