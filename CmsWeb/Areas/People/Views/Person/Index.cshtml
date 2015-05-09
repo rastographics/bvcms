@@ -137,7 +137,7 @@
 }
 <br/>
 <div class="row">
-    <div class="col-sm-4 col-md-3 col-lg-2">
+    <div class="col-sm-4 col-md-3 col-lg-2 hidden-print">
         <div class="profile-block">
             <div class="profile-photo">
                 @if (Model.Person.CanUserEditBasic)
@@ -163,7 +163,7 @@
         </div>
     </div>
     <div class="col-sm-8 col-md-9 col-lg-10">
-        <div id="toolbar-container">
+        <div id="toolbar-container" class="hidden-print">
             @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
         </div>
         <div id="profile-header">@Html.Partial("Personal/Header", Model)</div>
