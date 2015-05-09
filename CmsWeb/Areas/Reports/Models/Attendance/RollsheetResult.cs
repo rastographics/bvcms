@@ -358,17 +358,14 @@ namespace CmsWeb.Areas.Reports.Models
         private IEnumerable<OrgInfo> ReportList()
         {
             var orgs = OrgSearchModel == null
-                ? DbUtil.Db.Organizations.AsQueryable()
+                ? OrgSearchModel.FetchOrgs(orgid ?? 0)
                 : OrgSearchModel.FetchOrgs();
-            var roles = DbUtil.Db.CurrentRoles();
             var q = from o in orgs
-                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.OrganizationId == orgid || (orgid ?? 0) == 0
-                    orderby o.Division.Name, o.OrganizationName
+                    orderby o.Division, o.OrganizationName
                     select new OrgInfo
                     {
                         OrgId = o.OrganizationId,
-                        Division = o.Division.Name,
+                        Division = o.Division,
                         Name = o.OrganizationName,
                         Teacher = o.LeaderName,
                         Location = o.Location,
@@ -379,14 +376,12 @@ namespace CmsWeb.Areas.Reports.Models
         private IEnumerable<OrgInfo> ReportList2()
         {
             var orgs = OrgSearchModel == null
-                ? DbUtil.Db.Organizations.AsQueryable()
+                ? OrgSearchModel.FetchOrgs(orgid ?? 0)
                 : OrgSearchModel.FetchOrgs();
-            var roles = DbUtil.Db.CurrentRoles();
             var q = from o in orgs
-                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    from sg in o.MemberTags
+                    from sg in DbUtil.Db.MemberTags
+                    where sg.OrgId == o.OrganizationId
                     where (NewMeetingInfo.GroupFilterPrefix ?? "") == "" || sg.Name.StartsWith(NewMeetingInfo.GroupFilterPrefix)
-                    where o.OrganizationId == orgid || (orgid ?? 0) == 0
                     select new OrgInfo
                     {
                         OrgId = o.OrganizationId,

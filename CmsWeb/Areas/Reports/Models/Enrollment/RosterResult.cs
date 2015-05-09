@@ -154,15 +154,12 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var orgs = org == null
                 ? model.FetchOrgs()
-                : DbUtil.Db.Organizations.AsQueryable();
-        	var roles = DbUtil.Db.CurrentRoles();
+                : OrgSearchModel.FetchOrgs(org.Value);
             var q = from o in orgs
-        	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.OrganizationId == org || (org ?? 0) == 0
                     select new OrgInfo
                     {
                         OrgId = o.OrganizationId,
-                        Division = o.Division.Name,
+                        Division = o.Division,
                         Name = o.OrganizationName,
                         Teacher = o.LeaderName,
                         Location = o.Location,

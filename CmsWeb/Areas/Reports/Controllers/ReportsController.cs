@@ -625,7 +625,9 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult ShirtSizes(string org, OrgSearchModel m)
         {
             int? orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null;
-            IQueryable<Organization> orgs = m.FetchOrgs();
+            var orgs = orgid.HasValue
+                ? OrgSearchModel.FetchOrgs(orgid.Value)
+                : m.FetchOrgs();
             IQueryable<ShirtSizeInfo> q = from om in DbUtil.Db.OrganizationMembers
                                           join o in orgs on om.OrganizationId equals o.OrganizationId
                                           where o.OrganizationId == orgid || (orgid ?? 0) == 0
