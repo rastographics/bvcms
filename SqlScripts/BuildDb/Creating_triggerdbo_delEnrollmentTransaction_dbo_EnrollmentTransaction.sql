@@ -3,8 +3,8 @@
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-CREATE TRIGGER dbo.delEnrollmentTransaction
-   ON  dbo.EnrollmentTransaction
+CREATE TRIGGER [dbo].[delEnrollmentTransaction]
+   ON  [dbo].[EnrollmentTransaction]
    AFTER DELETE
 AS 
 BEGIN
@@ -30,11 +30,16 @@ BEGIN
 		UPDATE dbo.EnrollmentTransaction
 		SET NextTranChangeDate = NULL
 		WHERE TransactionId = @tid
-		
+
 		FETCH NEXT FROM det INTO @oid, @pid
 	END
 	CLOSE det
 	DEALLOCATE det
+
+	UPDATE dbo.Organizations
+	SET PrevMemberCount = dbo.OrganizationPrevCount(o.OrganizationId)
+	FROM dbo.Organizations o
+	JOIN deleted i ON i.OrganizationId = o.OrganizationId
 
 END
 GO

@@ -82,13 +82,8 @@ namespace CmsData
 
         public string ServerLink(string path = "")
         {
-#if DEBUG                    
             var request = HttpContext.Current.Request;
             return Util.URLCombine(Util.Scheme() + "://" + request.Url.Authority, path);
-#else
-            return Util.URLCombine(CmsHost, path);
-#endif
-
         }
 
         public void CopySession()
