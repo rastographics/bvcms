@@ -256,7 +256,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #if DEBUG2
 				 CreditCard = "4111111111111111",
 				 CVV = "123",
-				 Expires = "1015",
+				 Expires = "1017",
 				 Routing = "056008849",
 				 Account = "12345678901234"
 #else
@@ -452,7 +452,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void CheckStoreInVault(ModelStateDictionary modelState, int peopleid)
         {
-            if (IsLoggedIn.GetValueOrDefault() && SavePayInfo)
+            if (!IsLoggedIn.GetValueOrDefault() || !SavePayInfo) 
                 return;
 
             var gateway = DbUtil.Db.Gateway(testing);

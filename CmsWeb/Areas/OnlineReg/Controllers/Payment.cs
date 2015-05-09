@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ViewBag.amtdue = ret.AmtDue;
                 return View(ret.View, ret.Transaction);
             }
-            return View(ret.View);
+            return View(ret.View, pf);
         }
 
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)
