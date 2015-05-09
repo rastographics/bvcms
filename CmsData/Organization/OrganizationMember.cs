@@ -151,10 +151,11 @@ namespace CmsData
         {
             if (!Util.HasValue(name))
                 return;
-            var mt = Db.MemberTags.SingleOrDefault(t => t.Name == name.Trim() && t.OrgId == OrganizationId);
+            var name2 = name.Trim().Truncate(200);
+            var mt = Db.MemberTags.SingleOrDefault(t => t.Name == name2 && t.OrgId == OrganizationId);
             if (mt == null)
             {
-                mt = new MemberTag { Name = name.Trim(), OrgId = OrganizationId };
+                mt = new MemberTag { Name = name2, OrgId = OrganizationId };
                 Db.MemberTags.InsertOnSubmit(mt);
                 Db.SubmitChanges();
             }
