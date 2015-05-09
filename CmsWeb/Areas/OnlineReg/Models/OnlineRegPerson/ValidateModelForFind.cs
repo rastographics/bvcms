@@ -28,6 +28,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void ValidateModelForFind(bool selectFromFamily = false)
         {
             IsValidForContinue = true; // true till proven false
+            IsValidForExisting = true; // true till proven false
 
             if (NeedsUserSelection()) return;
 
@@ -48,20 +49,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
 
             if (!UniquePerson(foundname))
+            {
+                IsValidForExisting = false;
                 return;
+            }
 
             PopulateExistingInformation();
             if (AlreadyPendingRegistrant(foundname)) return;
             if (EmailRequiredForThisRegistration(foundname)) return;
             if (NoAppropriateOrgFound(selectFromFamily)) return;
             if (MustBeChurchMember(foundname)) return;
-            if (org == null) return;
+            if (org == null) 
+                return;
             if (NotValidForCreateAccountRegistration(foundname)) return;
             if (AllowSenderToBecomeGoerToo()) return;
             if (AlreadyRegisteredNotAllowed(foundname)) return;
-            if (setting.ValidateOrgIds.Count <= 0 || Parent.SupportMissionTrip) return;
             if (MustBeMemberOfAnotherOrgToRegister(foundname)) return;
             if (MustNotBeMemberOfAnotherOrg(foundname)) return;
+            ValidateBirthdayRange();
         }
         private bool NeedsUserSelection()
         {
@@ -144,6 +149,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     || (org.BirthDayEnd.HasValue && birthday > org.BirthDayEnd))
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday outside age allowed range");
             }
+            IsValidForContinue = modelState.IsValid;
         }
         private bool UniquePerson(string foundname)
         {
@@ -293,6 +299,8 @@ Please call the church to resolve this before we can complete your account.
         }
         private bool MustBeMemberOfAnotherOrgToRegister(string foundname)
         {
+            if (setting.ValidateOrgIds.Count <= 0 || Parent.SupportMissionTrip) 
+                return false;
             var reqmemberids = setting.ValidateOrgIds.Where(ii => ii > 0).ToList();
             if (reqmemberids.Count <= 0) 
                 return false;
@@ -306,6 +314,8 @@ Please call the church to resolve this before we can complete your account.
         }
         private bool MustNotBeMemberOfAnotherOrg(string foundname)
         {
+            if (setting.ValidateOrgIds.Count <= 0 || Parent.SupportMissionTrip) 
+                return false;
             var reqnomemberids = setting.ValidateOrgIds.Where(ii => ii < 0).ToList();
             if (reqnomemberids.Count <= 0) 
                 return false;

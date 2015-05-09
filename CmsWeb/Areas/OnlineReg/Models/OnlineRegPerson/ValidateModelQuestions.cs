@@ -13,12 +13,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Index = i;
             if (Parent.SupportMissionTrip)
             {
-                OtherOK = modelState.IsValid;
+                QuestionsOK = modelState.IsValid;
                 return;
             }
             if (RecordFamilyAttendance())
             {
-                OtherOK = true;
+                QuestionsOK = true;
                 return;
             }
             foreach (var ask in setting.AskItems)
@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskYesNoQuestions": ValidateAskYesNoQuestions(ask); break;
                 }
             ValidatePaymentOption();
-            OtherOK = modelState.IsValid;
+            QuestionsOK = modelState.IsValid;
         }
 
         private void ValidateAskCoaching()

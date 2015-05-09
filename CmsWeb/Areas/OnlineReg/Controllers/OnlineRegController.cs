@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return View("ConfirmReregister", m); // send email with link to reg-register
             p.FillPriorInfo();
             if (p.IsSpecialReg())
-                p.OtherOK = true;
+                p.QuestionsOK = true;
             else if (p.RegistrationFull())
                 ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             p.SetClassId();

@@ -38,8 +38,8 @@ else
   </div>
 
   //show the buttons if we are ready to move on
-  if (Model.last != null && Model.last.OtherOK && Model.last.ShowDisplay())
+  if (Model.RegistrantComplete)
   {
-    @Html.Partial("Flow2/Buttons", Model)
+    @Html.Partial("Flow2/RegistrantComplete", Model)
   }
 }

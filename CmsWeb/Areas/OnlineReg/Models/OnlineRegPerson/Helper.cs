@@ -162,7 +162,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool RegistrationFull()
         {
-            if (org == null) 
+            if (org == null)
                 return false;
             if (!Parent.SupportMissionTrip)
                 IsFilled = org.RegLimitCount(DbUtil.Db) >= org.Limit;
@@ -302,7 +302,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool Finished()
         {
-            return ShowDisplay() && OtherOK;
+            return FinishedFindingOrAddingRegistrant && QuestionsOK;
         }
 
         public bool NotFirst()
@@ -310,18 +310,39 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return Index > 0;
         }
 
-        public bool ShowDisplay()
+        public bool ShowLogin
         {
-            if (Found == true && IsValidForExisting)
+            get
+            {
+                if (Parent.List.Count != 1) // must be on first person
+                    return false;
+                if (IsNew) // must not be a new person
+                    return false;
+                if (Found == true) // must not already have been found
+                    return false;
+                if (LoggedIn) // must not already be logged in
+                    return false;
+                if (QuestionsOK) // must not already be done with questions
+                    return false;
                 return true;
-            if (org == null || IsFilled)
-                return false;
-            if (IsFamily)
-                return IsValidForExisting;
-            return IsNew && IsValidForNew;
+            }
         }
 
-        public bool AnyOtherInfo()
+        public bool FinishedFindingOrAddingRegistrant
+        {
+            get
+            {
+                if (Found == true && IsValidForExisting)
+                    return true;
+                if (org == null || IsFilled)
+                    return false;
+                if (IsFamily)
+                    return IsValidForExisting;
+                return IsNew && IsValidForNew;
+            }
+        }
+
+        public bool HasQuestions()
         {
             if (org != null)
                 if (org.RegistrationTypeId == RegistrationTypeCode.CreateAccount)
@@ -590,13 +611,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void SetClassId()
         {
-            if (org != null && ShowDisplay() && ComputesOrganizationByAge())
+            if (org != null && FinishedFindingOrAddingRegistrant && ComputesOrganizationByAge())
                 classid = org.OrganizationId;
         }
         internal void DoGroupToJoin()
         {
             int grouptojoin = setting.GroupToJoin.ToInt();
-            if(!PeopleId.HasValue)
+            if (!PeopleId.HasValue)
                 throw new Exception("PeopleId has no value in DoGroupToJoin");
             if (grouptojoin > 0)
             {

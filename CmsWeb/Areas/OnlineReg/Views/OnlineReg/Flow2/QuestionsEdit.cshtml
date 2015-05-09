@@ -47,7 +47,7 @@
     @SubmitButton()
     return;
 }
-@if (Model.AnyOtherInfo())
+@if (Model.HasQuestions())
 {
     if (Model.Index > 0 && Model.NeedsCopyFromPrevious())
     {

@@ -28,12 +28,12 @@
         </address>
     </div>
 </div>
-@if (Model.OtherOK)
+@if (Model.QuestionsOK)
 {
     @Html.Partial("Flow2/OtherHidden", Model)
-    @Html.Partial("Flow2/OtherDisplay", Model)
+    @Html.Partial("Flow2/QuestionsDisplay", Model)
 }
 else
 {
-    @Html.Partial("Flow2/OtherEdit", Model)
+    @Html.Partial("Flow2/QuestionsEdit", Model)
 }

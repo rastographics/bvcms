@@ -3,7 +3,7 @@
 @{
   bool? loginShown = null;
 }
-@if (!Model.ShowDisplay())
+@if (!Model.FinishedFindingOrAddingRegistrant)
 {
   if (Model.LastItem() && !Model.Finished() && Model.NotFirst())
   {
@@ -27,7 +27,7 @@
   
   // otherwise if this is the first registrant, not logged in, and we are about to search for a person
   // then give them the option to login
-  else if (Model.Parent.List.Count == 1 && !Model.IsNew && Model.Found != true && !Model.LoggedIn && !Model.OtherOK)
+  else if (Model.ShowLogin)
   {
     loginShown = true;
     <div class="form-group">
@@ -72,7 +72,7 @@
       }
       @Html.Partial("Flow2/PersonMetaHidden", Model)
 
-      @if (Model.ShowDisplay())
+      @if (Model.FinishedFindingOrAddingRegistrant)
       {
         @Html.Partial("Flow2/PersonHidden", Model)
         @Html.Partial("Flow2/PersonDisplay", Model)

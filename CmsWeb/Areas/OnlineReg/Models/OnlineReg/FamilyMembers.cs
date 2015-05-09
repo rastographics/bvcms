@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (p.org == null && p.ComputesOrganizationByAge())
                 modelState.AddModelError(this.GetNameFor(mm => mm.List[id].Found), p.NoAppropriateOrgError);
-            if (p.ShowDisplay() && p.org != null && p.ComputesOrganizationByAge())
+            if (p.FinishedFindingOrAddingRegistrant && p.org != null && p.ComputesOrganizationByAge())
                 p.classid = p.org.OrganizationId;
         }
     }
