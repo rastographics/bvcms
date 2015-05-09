@@ -323,14 +323,6 @@ namespace UtilityExtensions
                 : originalUrl;
         }
 
-        public static string Scheme()
-        {
-            var Request = HttpContext.Current.Request;
-            var scheme = Request.Url.Scheme;
-            if (Request.Headers["X-Forwarded-Proto"] == "https")
-                scheme = "https";
-            return scheme;
-        }
 
         public static string PickFirst(params string[] args)
         {
