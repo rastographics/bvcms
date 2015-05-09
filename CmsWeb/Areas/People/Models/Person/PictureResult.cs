@@ -58,6 +58,21 @@ namespace CmsWeb.Areas.People.Models
                 context.HttpContext.Response.ContentType = "image/jpeg";
                 context.HttpContext.Response.BinaryWrite(NoFemalePic());
             }
+            else if (id == -6)
+            {
+                context.HttpContext.Response.ContentType = "image/png";
+                context.HttpContext.Response.BinaryWrite(NoPic2Sm());
+            }
+            else if (id == -7)
+            {
+                context.HttpContext.Response.ContentType = "image/jpeg";
+                context.HttpContext.Response.BinaryWrite(NoMalePicSm());
+            }
+            else if (id == -8)
+            {
+                context.HttpContext.Response.ContentType = "image/jpeg";
+                context.HttpContext.Response.BinaryWrite(NoFemalePicSm());
+            }
             else
             {
                 ImageData.Image i = null;
@@ -110,6 +125,17 @@ namespace CmsWeb.Areas.People.Models
             if (u == null)
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/unknown.png"));
+                HttpRuntime.Cache.Insert("unknownimage", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
+            }
+            return u;
+        }
+
+        private static byte[] NoPic2Sm()
+        {
+            var u = HttpRuntime.Cache["unknownimagesm"] as byte[];
+            if (u == null)
+            {
+                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/unknown_sm.png"));
                 HttpRuntime.Cache.Insert("unknownimagesm", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
             }
             return u;
@@ -126,6 +152,17 @@ namespace CmsWeb.Areas.People.Models
             return u;
         }
 
+        private static byte[] NoMalePicSm()
+        {
+            var u = HttpRuntime.Cache["nomalepicsm"] as byte[];
+            if (u == null)
+            {
+                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/male_sm.png"));
+                HttpRuntime.Cache.Insert("nomalepicsm", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
+            }
+            return u;
+        }
+
         private static byte[] NoFemalePic()
         {
             var u = HttpRuntime.Cache["nofemalepic"] as byte[];
@@ -133,6 +170,17 @@ namespace CmsWeb.Areas.People.Models
             {
                 u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/female.png"));
                 HttpRuntime.Cache.Insert("nofemalepic", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
+            }
+            return u;
+        }
+
+        private static byte[] NoFemalePicSm()
+        {
+            var u = HttpRuntime.Cache["nofemalepicsm"] as byte[];
+            if (u == null)
+            {
+                u = File.ReadAllBytes(HttpContext.Current.Server.MapPath("/Content/touchpoint/img/female_sm.png"));
+                HttpRuntime.Cache.Insert("nofemalepicsm", u, null, DateTime.Now.AddMinutes(100), Cache.NoSlidingExpiration);
             }
             return u;
         }

@@ -21,17 +21,17 @@ namespace CmsData
 
         public string SmallUrl
         {
-            get { return "/Portrait/{0}?v={1}".Fmt(SmallId ?? -2, CreatedDate.HasValue ? CreatedDate.Value.Ticks : 0); }
+            get { return "/Portrait/{0}?v={1}".Fmt(SmallId ?? -6, CreatedDate.HasValue ? CreatedDate.Value.Ticks : 0); }
         }
 
         public string SmallMaleUrl
         {
-            get { return "/Portrait/{0}?v={1}".Fmt(SmallId ?? -4, CreatedDate.HasValue ? CreatedDate.Value.Ticks : 0); }
+            get { return "/Portrait/{0}?v={1}".Fmt(SmallId ?? -7, CreatedDate.HasValue ? CreatedDate.Value.Ticks : 0); }
         }
 
         public string SmallFemaleUrl
         {
-            get { return "/Portrait/{0}?v={1}".Fmt(SmallId ?? -5, CreatedDate.HasValue ? CreatedDate.Value.Ticks : 0); }
+            get { return "/Portrait/{0}?v={1}".Fmt(SmallId ?? -8, CreatedDate.HasValue ? CreatedDate.Value.Ticks : 0); }
         }
 
         public string MediumUrl

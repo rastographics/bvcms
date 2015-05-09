@@ -32,6 +32,10 @@ namespace CmsData
 		
 		private int? _ThumbId;
 		
+		private int? _X;
+		
+		private int? _Y;
+		
    		
    		private EntitySet< Family> _Families;
 		
@@ -65,6 +69,12 @@ namespace CmsData
 		
 		partial void OnThumbIdChanging(int? value);
 		partial void OnThumbIdChanged();
+		
+		partial void OnXChanging(int? value);
+		partial void OnXChanged();
+		
+		partial void OnYChanging(int? value);
+		partial void OnYChanged();
 		
     #endregion
 		public Picture()
@@ -228,6 +238,50 @@ namespace CmsData
 					this._ThumbId = value;
 					this.SendPropertyChanged("ThumbId");
 					this.OnThumbIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="X", UpdateCheck=UpdateCheck.Never, Storage="_X", DbType="int")]
+		public int? X
+		{
+			get { return this._X; }
+
+			set
+			{
+				if (this._X != value)
+				{
+				
+                    this.OnXChanging(value);
+					this.SendPropertyChanging();
+					this._X = value;
+					this.SendPropertyChanged("X");
+					this.OnXChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Y", UpdateCheck=UpdateCheck.Never, Storage="_Y", DbType="int")]
+		public int? Y
+		{
+			get { return this._Y; }
+
+			set
+			{
+				if (this._Y != value)
+				{
+				
+                    this.OnYChanging(value);
+					this.SendPropertyChanging();
+					this._Y = value;
+					this.SendPropertyChanged("Y");
+					this.OnYChanged();
 				}
 
 			}

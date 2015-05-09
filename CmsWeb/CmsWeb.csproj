@@ -802,6 +802,7 @@
     <Content Include="Content\touchpoint\css\print.css" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\touchpoint\img\female.png" />
+    <Content Include="Content\touchpoint\img\female_sm.png" />
     <Content Include="Content\touchpoint\img\hexagon.png" />
     <Content Include="Content\touchpoint\img\image_not_found.png" />
     <Content Include="Content\touchpoint\img\logo.png" />
@@ -816,9 +817,11 @@
     <Content Include="Content\select2-3.5.2\select2.css" />
     <Content Include="Content\select2-3.5.2\select2.png" />
     <Content Include="Content\select2-3.5.2\select2x2.png" />
+    <Content Include="Content\touchpoint\img\male_sm.png" />
     <Content Include="Content\touchpoint\img\powered-by.png" />
     <Content Include="Content\touchpoint\img\spinner.gif" />
     <Content Include="Content\touchpoint\img\unknown.png" />
+    <Content Include="Content\touchpoint\img\unknown_sm.png" />
     <Content Include="Content\touchpoint\js\admin\divisions.js" />
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />

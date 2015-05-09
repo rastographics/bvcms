@@ -27,9 +27,10 @@
                     var ifdeceased = !active.HasValue() && m.isDeceased ? "alert alert-danger" : "";
                     var gender = m.Gender;
                     var portraitUrl = gender == "M" ? m.Pictures.SmallMaleUrl : gender == "F" ? m.Pictures.SmallFemaleUrl : m.Pictures.SmallUrl;
+                    var portraitBgPos = m.Pictures.X.HasValue || m.Pictures.Y.HasValue ? string.Format("{0}% {1}%", m.Pictures.X.GetValueOrDefault(), m.Pictures.Y.GetValueOrDefault()) : "top";
                     <li class="@active @ifdeceased" style="font-size: 0.85em;">
                         <a href="/Person2/@m.Id">
-                            <div class="headshot" style="background-image:url(@portraitUrl);"></div>
+                            <div class="headshot" style="background-image:url(@portraitUrl); background-position: @portraitBgPos"></div>
                             <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span><br/>
                             <span class="meta">
                                 <span class="age">@m.Age</span>
