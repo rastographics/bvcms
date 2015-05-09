@@ -37,10 +37,17 @@ BEGIN
 	WHILE @@FETCH_STATUS = 0
 	BEGIN
 		EXEC dbo.LinkEnrollmentTransaction @tid, @trandt, @typeid, @orgid, @pid
+		
 		FETCH NEXT FROM cet INTO @tid, @trandt, @typeid, @orgid, @pid
 	END
 	CLOSE cet
 	DEALLOCATE cet
+
+	UPDATE dbo.Organizations
+	SET PrevMemberCount = dbo.OrganizationPrevCount(o.OrganizationId)
+	FROM dbo.Organizations o
+	JOIN Inserted i ON i.OrganizationId = o.OrganizationId
+
 END
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

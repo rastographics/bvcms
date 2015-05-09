@@ -13,6 +13,7 @@ using CmsData;
 using UtilityExtensions;
 using System.Text;
 using System.Web.Mvc;
+using CmsData.View;
 using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
@@ -160,15 +161,14 @@ namespace CmsWeb.Areas.Reports.Models
 
         private IEnumerable<OrgInfo> ReportList()
         {
-            var orgs = model.FetchOrgs();
-        	var roles = DbUtil.Db.CurrentRoles();
+            var orgs = orgid.HasValue
+                ? OrgSearchModel.FetchOrgs(orgid.Value)
+                : model.FetchOrgs();
             var q = from o in orgs
-        	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.OrganizationId == orgid || (orgid ?? 0) == 0
                     select new OrgInfo
                     {
                         OrgId = o.OrganizationId,
-                        Division = o.Division.Name,
+                        Division = o.Division,
                         Name = o.OrganizationName,
                         Teacher = o.LeaderName,
                         Location = o.Location,

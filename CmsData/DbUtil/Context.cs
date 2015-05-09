@@ -1378,12 +1378,30 @@ namespace CmsData
             FromActiveRecords = false;
             return n;
         }
-        public int ActiveRecords0(DateTime dt)
+        public int ActiveRecordsdt(DateTime dt)
         {
             Condition cc = ScratchPadCondition();
             cc.Reset(this);
             cc.SetComparisonType(CompareType.AnyTrue);
             var clause = cc.AddNewClause(QueryType.AttendCntHistory, CompareType.GreaterEqual, "1");
+            clause.StartDate = dt.AddDays(-365);
+            clause.EndDate = dt;
+            clause = cc.AddNewClause(QueryType.HadIndContributions, CompareType.Equal, "1,T");
+            clause.StartDate = dt.AddDays(-365);
+            clause.EndDate = dt;
+            cc.AddNewClause(QueryType.IncludeDeceased, CompareType.Equal, "1,T");
+            cc.Save(this);
+            FromActiveRecords = true;
+            var n = PeopleQuery(cc.Id).Count();
+            FromActiveRecords = false;
+            return n;
+        }
+        public int ActiveRecords2dt(DateTime dt)
+        {
+            Condition cc = ScratchPadCondition();
+            cc.Reset(this);
+            cc.SetComparisonType(CompareType.AnyTrue);
+            var clause = cc.AddNewClause(QueryType.AttendCntHistory, CompareType.Greater, "1");
             clause.StartDate = dt.AddDays(-365);
             clause.EndDate = dt;
             clause = cc.AddNewClause(QueryType.HadIndContributions, CompareType.Equal, "1,T");

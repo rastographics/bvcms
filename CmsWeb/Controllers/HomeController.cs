@@ -120,9 +120,15 @@ namespace CmsWeb.Controllers
         public ActionResult ActiveRecords(DateTime? dt)
         {
             if (dt.HasValue)
-                TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords0(dt.Value);
+            {
+                TempData["ActiveRecords"] = DbUtil.Db.ActiveRecordsdt(dt.Value);
+                TempData["ActiveRecords2"] = DbUtil.Db.ActiveRecords2dt(dt.Value);
+            }
             else
+            {
                 TempData["ActiveRecords"] = DbUtil.Db.ActiveRecords();
+                TempData["ActiveRecords2"] = DbUtil.Db.ActiveRecords2();
+            }
             return View("Support2");
         }
 

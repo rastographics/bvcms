@@ -144,14 +144,11 @@ namespace CmsWeb.Areas.Reports.Models
         private IEnumerable<OrgInfo> ReportList()
         {
             var orgs = model.FetchOrgs();
-        	var roles = DbUtil.Db.CurrentRoles();
             var q = from o in orgs
-        	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    where o.OrganizationId == orgid || (orgid ?? 0) == 0
                     select new OrgInfo
                     {
                         OrgId = o.OrganizationId,
-                        Division = o.Division.Name,
+                        Division = o.Division,
                         Name = o.OrganizationName,
                         Teacher = o.LeaderName,
                         Location = o.Location,

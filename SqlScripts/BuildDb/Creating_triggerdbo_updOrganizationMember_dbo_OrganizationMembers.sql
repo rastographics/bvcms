@@ -7,14 +7,15 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
-	IF UPDATE(Pending)
+	IF UPDATE(Pending) OR UPDATE(MemberTypeId) OR UPDATE(EnrollmentDate)
 	BEGIN
 		UPDATE dbo.People
 		SET Grade = ISNULL(dbo.SchoolGrade(PeopleId), Grade)
 		WHERE PeopleId IN (SELECT PeopleId FROM INSERTED)
 
 		UPDATE dbo.Organizations
-		SET MemberCount = dbo.OrganizationMemberCount(OrganizationId)
+		SET MemberCount = dbo.OrganizationMemberCount(OrganizationId),
+			ProspectCount = dbo.OrganizationProspectCount(OrganizationId)
 		WHERE OrganizationId IN 
 		(SELECT OrganizationId FROM INSERTED GROUP BY OrganizationId)
 	END
