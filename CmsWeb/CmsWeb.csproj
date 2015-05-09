@@ -877,8 +877,6 @@
     <Content Include="Content\touchpoint\js\support\support.js" />
     <Content Include="Content\touchpoint\js\tags.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-bootbox\js\bootbox.min.js" />
-    <Content Include="Content\touchpoint\lib\bootstrap-datepicker\css\datepicker3.css" />
-    <Content Include="Content\touchpoint\lib\bootstrap-datepicker\js\bootstrap-datepicker.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-datetimepicker\js\bootstrap-datetimepicker.min.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-editable\css\bootstrap-editable.css" />
     <Content Include="Content\touchpoint\lib\bootstrap-editable\img\clear.png" />

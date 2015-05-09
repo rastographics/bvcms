@@ -4,6 +4,7 @@
     ViewBag.PageHeader = "Need help using this software?";
     Layout = ViewExtensions2.TouchPointLayout();
     var active = TempData["ActiveRecords"].ToInt();
+    var active2 = TempData["ActiveRecords2"].ToInt();
     var googlehelp = @"
         The following uses a Google Custom Search Engine.
         Enter a word or two relating to the process you need help with and click the Search button.
@@ -91,7 +92,8 @@
                                     <div>
                                         @if (active > 0)
                                         {
-                                            @:Active Records: @active.ToString("N0")
+                                            @:Active Records: @active.ToString("N0")<br />
+                                            @:Active Records V2: @active2.ToString("N0")
                                         }
                                         else if (User.IsInRole("Admin"))
                                         {

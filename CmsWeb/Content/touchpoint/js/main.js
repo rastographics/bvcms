@@ -189,8 +189,8 @@ $.InitializeDateElements = function () {
         });
     }
     else {
-        $(".input-group.date").datetimepicker({ format: 'MM/DD/YYYY', widgetPositioning: { horizontal: 'left' } });
-        $(".input-group.datetime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' } });
+        $(".input-group.date").datetimepicker({ format: 'MM/DD/YYYY', extraFormats: ['MM/DD/YY'], widgetPositioning: { horizontal: 'left' } });
+        $(".input-group.datetime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', extraFormats: ['MM/DD/YY h:mm A'], widgetPositioning: { horizontal: 'left' } });
         $(".input-group.time").datetimepicker({ format: 'h:mm A', widgetPositioning: { horizontal: 'left' } });
     }
 }

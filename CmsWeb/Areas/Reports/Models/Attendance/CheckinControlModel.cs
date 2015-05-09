@@ -30,10 +30,9 @@ namespace CmsWeb.Areas.Reports.Models
             var orgs = FetchOrgs();
             var q = from a in DbUtil.Db.Attends
                     join o in orgs on a.Meeting.OrganizationId equals o.OrganizationId
-                    let sched = o.OrgSchedules.SingleOrDefault(ss => ss.ScheduleId == ScheduleId)
                     where a.MeetingDate.Date == CheckinDate
                     where a.AttendanceFlag
-                    where ScheduleId == null || a.MeetingDate.TimeOfDay == sched.SchedTime.Value.TimeOfDay
+                    where ScheduleId == null || a.MeetingDate.TimeOfDay == o.SchedTime.Value.TimeOfDay
                     select a;
             var q2 = from a in q
                      orderby a.Person.Name2
