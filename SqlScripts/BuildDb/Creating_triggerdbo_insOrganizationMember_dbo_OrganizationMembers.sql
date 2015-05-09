@@ -18,7 +18,8 @@ BEGIN
 		RETURN
 
 	UPDATE dbo.Organizations
-	SET MemberCount = dbo.OrganizationMemberCount(OrganizationId)
+	SET MemberCount = dbo.OrganizationMemberCount(OrganizationId),
+		ProspectCount = dbo.OrganizationProspectCount(OrganizationId)
 	WHERE OrganizationId IN 
 	(SELECT OrganizationId FROM INSERTED)
 

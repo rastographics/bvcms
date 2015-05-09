@@ -6,7 +6,9 @@ CREATE TABLE [dbo].[Picture]
 [LargeId] [int] NULL,
 [MediumId] [int] NULL,
 [SmallId] [int] NULL,
-[ThumbId] [int] NULL
+[ThumbId] [int] NULL,
+[X] [int] NULL,
+[Y] [int] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
