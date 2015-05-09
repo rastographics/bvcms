@@ -5,7 +5,7 @@
                 icon: "fa fa-cog",
                 callback: function() {
                     this.insertSpecialLink();
-                    this.$special_link_wrapper.find('input[type="text"].f-lu').first().focus();
+                    this.$special_link_wrapper.find('select').first().focus();
                 },
                 undo: true
             }
