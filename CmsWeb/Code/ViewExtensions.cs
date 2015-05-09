@@ -18,6 +18,7 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using CmsData;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing.ChartDrawing;
 using Elmah;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -800,7 +801,14 @@ namespace CmsWeb
 <script type=""text/javascript"">
     //froala key
     $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
-    $.Editable.DEFAULTS.allowedAttrs = '[""bvedit""], [""bveditadd""], [""bvrepeat""], [""bvrepeatadd""]';
+    $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
+    $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
+    $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
+    $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
+    $.Editable.DEFAULTS.allowedTags.push('html');
+    $.Editable.DEFAULTS.allowedTags.push('head');
+    $.Editable.DEFAULTS.allowedTags.push('style');
+    $.Editable.DEFAULTS.allowedTags.push('body');
 
     // must alias froala editor because it could conflict with the same function name with bootstrap-editable.
     $.fn.froalaEditable = $.fn.editable;
