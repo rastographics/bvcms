@@ -131,6 +131,75 @@
                     dialog.remove();
                 });
 
+                $('#edit-thumbnail').Jcrop({
+                    applyFilters: ['constrain', 'extent', 'backoff', 'ratio', 'round'],
+                    aspectRatio: 1,
+                    setSelect: [0, 0, 999, 999],
+                    dragbars: [ ],
+                    borders: [],
+                    allowSelect: false,
+                    canDelete: false,
+                    canDrag: true,
+                    canResize: false
+                }, function() {
+                    interface_load(this);
+                });
+
+                function interface_load(jcropApi) {
+                    $('#edit-thumbnail').on('load', function () {
+                        var s = jcropApi.getSelection();
+                        var w = this.width;
+                        var h = this.height;
+                        var x = $('#xPos').val();
+                        var y = $('#yPos').val();
+                        var xPos = 0;
+                        var yPos = 0;
+
+                        if (x === '' && y === '') {
+                            xPos = (w - s.w) * 50 / 100;
+                        } else {
+                            xPos = (w - s.w) * x / 100;
+                            yPos = (h - s.h) * y / 100;
+                        }
+                        jcropApi.animateTo([xPos, yPos, 999, 999]);
+                    });
+                }
+
+                $('button.jcrop-box').click(function(e) {
+                    e.preventDefault();
+                });
+
+                var container = $('#edit-thumbnail').Jcrop('api').container;
+                container.on('cropstart', function() {
+                    $('#save-crop').show();
+                });
+
+                container.on('cropend', function (e, s, c) {
+                    e.preventDefault();
+                    var imgWidth = $('#edit-thumbnail').width();
+                    var imgHeight = $('#edit-thumbnail').height();
+                    var xPos = (c.x / (imgWidth - c.w)) * 100;
+                    var yPos = (c.y / (imgHeight - c.h)) * 100;
+
+                    if (isNaN(xPos)) {
+                        xPos = 0;
+                    }
+                    if (isNaN(yPos)) {
+                        yPos = 0;
+                    }
+                    $('#xPos').val(Math.round(xPos));
+                    $('#yPos').val(Math.round(yPos));
+                    return false;
+                });
+
+                $('#save-crop').click(function(ev) {
+                    ev.preventDefault();
+                    var a = this;
+                    f.attr("action", a.href);
+                    f.submit();
+                    return false;
+                });
+
                 $("#delete-picture").click(function (ev) {
                     ev.preventDefault();
                     var a = this;
@@ -158,7 +227,7 @@
                     f.submit();
                     return false;
                 });
-            });
+        });
     });
 
     $('body').on('click', '#family_related a.edit', function (ev) {

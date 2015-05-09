@@ -1,6 +1,8 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
 @{
     var canedit = Model.Person.CanUserEditFamilyAddress;
+    var gender = Model.Person.Gender.Code;
+    var portraitUrl = gender == "M" ? Model.Picture.SmallMaleUrl : gender == "F" ? Model.Picture.SmallFemaleUrl : Model.Picture.SmallUrl;
 }
 <div class="modal-dialog">
     <div class="modal-content">
@@ -12,30 +14,39 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-sm-3">
-                        <div class="text-center">
-                            <a href="@Model.Picture.LargeUrl" target="_blank"><img src="@Model.Picture.SmallUrl" alt="" class="img-thumbnail"></a>
-                        </div>
+                        <img src="@portraitUrl" alt="" id="edit-thumbnail">
+                        <input type="hidden" id="xPos" name="xPos" value="@Model.Picture.X" />
+                        <input type="hidden" id="yPos" name="yPos" value="@Model.Picture.Y" />
+                        <input type="hidden" id="pictureId" name="pictureId" value="@Model.Picture.PictureId" />
                     </div>
-                    <div class="col-sm-4">
-                        <a class="btn btn-default btn-block" href="@Model.Picture.LargeUrl" target="_blank"><i class="fa fa-picture-o"></i>&nbsp;&nbsp;View Full Image</a>
+                    <div class="col-sm-3">
+                        <a class="btn btn-default btn-sm btn-block" href="@Model.Picture.LargeUrl" target="_blank"><i class="fa fa-picture-o"></i> View Image</a>
                         @if (User.IsInRole("Admin"))
                         {
-                            <a id="refresh-thumbnail" href="/Person2/RefreshThumbnail/@Model.PeopleId" data-dismiss="modal" class="btn btn-default btn-block"><i class="fa fa-refresh"></i>&nbsp;&nbsp;Refresh Thumbnail</a>
+                            <a id="refresh-thumbnail" href="/Person2/RefreshThumbnail/@Model.PeopleId" data-dismiss="modal" class="btn btn-default btn-sm btn-block"><i class="fa fa-refresh"></i> Refresh</a>
                         }
-                        <a id="delete-picture" href="/Person2/DeletePicture/@Model.PeopleId" class="btn btn-danger btn-block"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a>
+                        <a id="delete-picture" href="/Person2/DeletePicture/@Model.PeopleId" class="btn btn-danger btn-sm btn-block"><i class="fa fa-trash"></i> Delete</a>
+                        <a href="/Person2/UpdateCropPosition/@Model.PeopleId" class="btn btn-sm btn-primary btn-block" id="save-crop" style="display: none;"><i class="fa fa-crop"></i> Save Crop</a>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-sm-12">
-                        <hr/>
-                        <label for="picture">Upload new photo</label>
-                        <input type="file" name="picture" class="form-control">
+                        <label for="picture" class="control-label">Upload new photo</label>
+                    </div>
+                    <div class="col-sm-12 form-inline">
+                        <div class="input-group col-sm-9 col-xs-12">
+                            <input type="file" name="picture" class="form-control">
+                        </div>
+                        <div class="input-group">
+                            <div class="pull-right">
+                                <button type="submit" class="btn btn-default"><i class="fa fa-cloud-upload"></i> Upload</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
-                <input type="submit" class="btn btn-primary" value="Upload" />
+                <a href="#" class="btn btn-default" data-dismiss="modal">Close</a>
             </div>
         </form>
     </div>

@@ -415,8 +415,13 @@ namespace CmsWeb.Models
 				Util.UserId = i.u.UserId;
 				Util.UserPeopleId = i.u.PeopleId;
 
-                if (i.u.Person != null && i.u.Person.Picture != null)
-                    Util.UserThumbPictureUrl = i.u.Person.Picture.ThumbUrl;
+			    Util.UserThumbPictureBgPosition = "top";
+			    if (i.u.Person != null && i.u.Person.Picture != null)
+			    {
+			        var picture = i.u.Person.Picture;
+			        Util.UserThumbPictureUrl = picture.ThumbUrl;
+                    Util.UserThumbPictureBgPosition = picture.X.HasValue || picture.Y.HasValue ? "{0}% {1}%".Fmt(picture.X.GetValueOrDefault(), picture.Y.GetValueOrDefault()) : "top";
+			    }
 				
                 Util.UserEmail = i.u.EmailAddress;
 				Util2.CurrentPeopleId = i.u.PeopleId.Value;
