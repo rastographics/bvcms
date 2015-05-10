@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             return amt;
         }
-        public void CheckSetFee()
+        public void SetSpecialFee()
         {
             if (OnlineGiving() && setting.ExtraValueFeeName.HasValue())
             {

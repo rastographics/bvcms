@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     ModelState.AddModelError(m.GetNameFor(mm => mm.List[0].Found), "Sorry, but registration is closed.");
                 if (p.Found == true)
                     p.FillPriorInfo();
-                p.CheckSetFee();
+                p.SetSpecialFee();
                 m.HistoryAdd("index, pid={0}, !showfamily, p.org, found=true".Fmt(pid));
                 return View(m);
             }

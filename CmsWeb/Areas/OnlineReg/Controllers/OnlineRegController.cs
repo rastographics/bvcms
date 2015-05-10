@@ -126,7 +126,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             else if (p.RegistrationFull())
                 ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             p.SetClassId();
-            p.CheckSetFee();
+            p.SetSpecialFee();
             return FlowList(m, "FindRecord");
         }
 

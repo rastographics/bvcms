@@ -11,6 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             modelState = modelstate;
             Index = i;
+            IsValidForNew = true; // Assume true until proven false
 
             ValidateBasic();
             ValidateBirthdate();
