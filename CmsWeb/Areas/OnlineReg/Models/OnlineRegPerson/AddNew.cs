@@ -27,11 +27,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     FillPriorInfo();
                 return true;
             }
-            if (!whatfamily.HasValue && (id > 0 || LoggedIn == true))
-            {
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].whatfamily), "Choose a family option");
-                return true;
-            }
+//            if (!whatfamily.HasValue && (id > 0 || Parent.UserPeopleId > 0 ))
+//            {
+//                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].whatfamily), "Choose a family option");
+//                return true;
+//            }
             switch (whatfamily)
             {
                 case 1:
@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     ZipCode = pb.ZipCode;
                     break;
                 default:
-#if DEBUG
+#if DEBUG2
                     AddressLineOne = "235 Riveredge Cv.";
                     City = "Cordova";
                     State = "TN";
@@ -61,6 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #endif
                     break;
             }
+            whatfamily = 3;
             ShowAddress = true;
             return false;
         }

@@ -421,7 +421,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 masterorgid = masterorgid,
                 classid = classid,
                 IsFamily = true,
-                LoggedIn = true,
                 Found = true,
                 IsValidForExisting = true,
             };
@@ -568,7 +567,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     orgid = Orgid,
                     masterorgid = masterorgid,
-                    LoggedIn = UserPeopleId.HasValue,
 #if DEBUG
                     FirstName = "Another",
                     LastName = "Child",

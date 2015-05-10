@@ -27,10 +27,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if(selectFromFamily == false)
                 PeopleId = null; // not found yet
-            ValidateModelForFind(selectFromFamily);
-        }
-        private void ValidateModelForFind(bool selectFromFamily = false)
-        {
+
             IsValidForContinue = true; // true till proven false
             IsValidForExisting = true; // true till proven false
 
@@ -52,7 +49,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            if (!UniquePerson(foundname))
+            //UniquePerson(foundname);
+            if(count != 1)
             {
                 IsValidForExisting = false;
                 return;

@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool? Found { get; set; }
         public bool IsNew { get; set; }
         public bool QuestionsOK { get; set; }
-        public bool LoggedIn { get; set; }
+        public bool LoggedIn { get { return Parent.UserPeopleId > 0; } }
         public bool IsValidForExisting { get; set; }
         public bool ShowAddress { get; set; }
         public bool ShowCountry { get; set; }

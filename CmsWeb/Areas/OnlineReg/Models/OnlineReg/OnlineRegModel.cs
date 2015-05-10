@@ -368,13 +368,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         {
                             orgid = Orgid,
                             masterorgid = masterorgid,
-                            LoggedIn = false,
 #if DEBUG
-                            FirstName = "David",
-                            LastName = "Carroll", // + DateTime.Now.Millisecond,
-                            DateOfBirth = "5/30/52",
-                            EmailAddress = "david@touchpointsoftware.com",
-                            Phone = "",
+                            FirstName = "Otis",
+                            LastName = "Sukamotis-" + DateTime.Now.Millisecond,
+                            DateOfBirth = "5/30/55",
+                            EmailAddress = "otis@nowhere.com",
+                            Phone = "901-758-1862",
 #endif
                         }
                 };

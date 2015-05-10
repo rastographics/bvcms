@@ -1,4 +1,9 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+@{
+  var phonePlaceHolder = Model.RequiredPhone() ? "" : "optional";
+  var addrPlaceHolder = Model.RequiredAddr() ? "" : "optional";
+  var zipPlaceHolder = Model.RequiredZip() ? "" : "optional";
+}
 <div class="form-group">
     <label class="control-label col-sm-3">Gender</label>
     <div class="col-sm-9">
@@ -17,12 +22,12 @@
 </div>
 @if (Model.whatfamily == 3)
 {
-    @Html.EditorFor(m => m.HomePhone)
-    @Html.EditorFor(m => m.AddressLineOne)
-    @Html.EditorFor(m => m.AddressLineTwo)
-    @Html.EditorFor(m => m.City)
-    @Html.EditorFor(m => m.State)
-    @Html.EditorFor(m => m.ZipCode)
+    @Html.EditorFor(m => m.HomePhone, new { placeholder = phonePlaceHolder })
+    @Html.EditorFor(m => m.AddressLineOne, new { placeholder = addrPlaceHolder })
+    @Html.EditorFor(m => m.AddressLineTwo, new { placeholder = addrPlaceHolder })
+    @Html.EditorFor(m => m.City, new { placeholder = zipPlaceHolder })
+    @Html.EditorFor(m => m.State, new { placeholder = zipPlaceHolder })
+    @Html.EditorFor(m => m.ZipCode, new { placeholder = zipPlaceHolder })
     if (Model.ShowCountry)
     {
         @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries() })

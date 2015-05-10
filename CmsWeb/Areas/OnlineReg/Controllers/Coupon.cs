@@ -133,35 +133,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (c.Amount.HasValue)
                 Amount = c.Amount.Value;
 
-
-
-//            var ti = pf.CreateTransaction(DbUtil.Db, c.Amount);
-//			if (m != null) // Start this transaction in the chain
-//			{
-//			    m.TranId = ti.OriginalId;
-//			    ed.Data = Util.Serialize<OnlineRegModel>(m);
-//			}
-//			var tid = "Coupon({0:n2})".Fmt(Util.fmtcoupon(coupon));
-//
-//            if(!pf.PayBalance)
-//    			ConfirmDuePaidTransaction(ti, tid, sendmail: false);
-//			
-//			var msg = "<i class='red'>Your coupon for {0:n2} has been applied, your balance is now {1:n2}</i>."
-//				.Fmt(c.Amount, ti.Amtdue );
-//			if(ti.Amt < pf.AmtToPay)
-//				msg += "You still must complete this transaction with a payment";
-//				
-//			if (m != null)
-//				m.UseCoupon(ti.TransactionId, ti.Amt ?? 0);
-//			else
-//				c.UseCoupon(ti.FirstTransactionPeopleId(), ti.Amt ?? 0);
-//            DbUtil.Db.SubmitChanges();
-//
-//			if (pf.PayBalance)
-//                return Json(new { confirm = "/onlinereg/ConfirmDuePaid/{0}?TransactionID=Coupon({1})&Amount={2}".Fmt(ti.Id, Util.fmtcoupon(coupon), ti.Amt) });
-//
-
-
             return Json(new
             {
                 confirm = "/onlinereg/ConfirmDuePaid/{0}?TransactionID=Coupon({1})&Amount={2}"

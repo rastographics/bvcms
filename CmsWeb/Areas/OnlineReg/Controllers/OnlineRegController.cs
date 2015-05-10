@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             //if (m.UserSelectsOrganization())
             m.List[0].ValidateModelForFind(ModelState, 0);
 
-            m.List[0].LoggedIn = true;
+            m.UserPeopleId = Util.UserPeopleId;
             m.HistoryAdd("login");
             return FlowList(m, "Login");
         }
@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #if DEBUG
             m.username = "trecord";
 #endif
-            return FlowList(m, "NoLogin");
+            return FlowList(m, "YesLogin");
         }
 
         [HttpPost]
@@ -113,7 +113,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (id >= m.List.Count)
                 return FlowList(m, "FindRecord");
             var p = m.List[id];
+
             p.ValidateModelForFind(ModelState, id);
+
             if (p.AnonymousReRegistrant())
                 return View("ConfirmReregister", m); // send email with link to reg-register
             p.FillPriorInfo();
@@ -123,17 +125,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             p.SetClassId();
             p.SetSpecialFee();
-            return FlowList(m, "FindRecord");
-        }
 
-        [HttpPost]
-        public ActionResult AddressMaritalGenderForm(int id, OnlineRegModel m)
-        {
-            // record was not found
-            var p = m.List[id];
-            p.ValidateModelForFind(ModelState, id);
-            p.PrepareToAddNewPerson(ModelState, id);
-            return FlowList(m, "AddressMaritalGenderForm");
+            if (ModelState.IsValid && p.count != 1) 
+            {
+                // not found, so show AddressGenderMarital Form
+                p.Found = false;
+                p.ValidateModelForFind(ModelState, id);
+                p.PrepareToAddNewPerson(ModelState, id);
+            }
+
+            return FlowList(m, "FindRecord");
         }
 
         [HttpPost]
@@ -191,7 +192,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
-                LoggedIn = m.UserPeopleId.HasValue,
             });
 #endif
             return FlowList(m, "AddAnotherPerson");

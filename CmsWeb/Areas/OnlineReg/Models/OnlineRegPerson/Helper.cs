@@ -322,6 +322,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return false;
                 if (LoggedIn) // must not already be logged in
                     return false;
+                if (Util.UserPeopleId > 0)
+                    return false;
                 if (QuestionsOK) // must not already be done with questions
                     return false;
                 return true;

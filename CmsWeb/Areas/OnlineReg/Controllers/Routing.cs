@@ -23,7 +23,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 // No need to pick family, so prepare first registrant ready to answer questions
                 p = m.LoadExistingPerson(pid, 0);
                 p.ValidateModelForFind(ModelState, 0);
-                p.LoggedIn = true;
                 if (m.masterorg == null)
                 {
                     if (m.List.Count == 0)

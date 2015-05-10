@@ -27,9 +27,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool RequiredZip()
         {
-            return org != null 
+            var req = org != null 
                        ? setting.NotReqZip == false 
                        : settings == null || !settings.Values.Any(o => o.NotReqZip);
+            return req;
         }
 
         public bool RequiredMarital()

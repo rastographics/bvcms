@@ -36,6 +36,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (!AddressLineOne.HasValue() && RequiredAddr())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].AddressLineOne), "address required.");
+            if(RequiredZip() && !ZipCode.HasValue() && !RequiredAddr())
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ZipCode), "zip required.");
+
             if (!RequiredZip() || !AddressLineOne.HasValue())
                 return true;
 
@@ -56,7 +59,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ZipCode),
                     r.address + ", to skip address check, Change the country to USA, Not Validated");
-                ShowCountry = true;
+                ShowCountry = RequiredAddr();
                 return false;
             }
 
