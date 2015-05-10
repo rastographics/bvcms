@@ -77,6 +77,12 @@ namespace CmsWeb.Areas.People.Controllers
             picture.X = xPos;
             picture.Y = yPos;
             DbUtil.Db.SubmitChanges();
+
+            // if we are updating the current user update their thumbnail pic position in session also.
+            if (Util.UserPeopleId == id)
+            {
+                Util.UserThumbPictureBgPosition = "{0}% {1}%".Fmt(xPos, yPos);
+            }
             return Redirect("/Person2/" + id);
         }
 
