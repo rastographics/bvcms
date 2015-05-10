@@ -24,6 +24,7 @@
       <ul class="nav nav-tabs">
         <li class="active"><a href="#memberdata" data-toggle="tab">Member Data</a></li>
         <li><a href="#membergroups" data-toggle="tab">Groups</a></li>
+        <li><a href="#regquestions" data-toggle="tab">Questions</a></li>
         <li><a href="#membernotes" data-toggle="tab">Notes</a></li>
       </ul>
       <div class="tab-content">
@@ -114,6 +115,15 @@
               </div>
             }
           </div>
+        </div>
+        <div id="regquestions" class="tab-pane">
+          <dl>
+          @foreach (var q in Model.RegQuestions())
+          {
+            <dt>@q.Question</dt>
+            <dd class="pre-wrap">@q.Answer</dd>
+          }
+          </dl>
         </div>
         <div id="membernotes" class="tab-pane">
           @Html.DisplayFor(m => m.UserData, "TextArea", new { AddClass = "scroll150" })
