@@ -6,6 +6,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
 using CmsWeb.Code;
+using MarkdownDeep;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org2.Models
@@ -44,6 +45,20 @@ namespace CmsWeb.Areas.Org2.Models
                 Org.OrgPickList = null;
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
             var os = new Settings(RegSettings.ToString(), DbUtil.Db, Id);
+            if (Org.RegistrationTypeId > 0)
+            {
+                if (!os.Subject.HasValue())
+                    os.Subject = "Confirmation for " + (Org.RegistrationTitle ?? Org.OrganizationName);
+                if (!os.Body.HasValue())
+                {
+                    var md = new Markdown();
+                    os.Body = md.Transform(
+                        DbUtil.Db.ContentHtml("DefaultConfirmation", 
+                            Resource1.SettingsRegistrationModel_DefaulConfirmation));
+                }
+                if (!Org.NotifyIds.HasValue())
+                    Org.NotifyIds = Util.UserPeopleId.ToString();
+            }
             Org.RegSetting = os.ToString();
             DbUtil.Db.SubmitChanges();
         }
@@ -67,7 +82,7 @@ namespace CmsWeb.Areas.Org2.Models
 
         public List<OrgPickInfo> OrganizationsFromIdString()
         {
-           return OrganizationsFromIdString(Org); 
+            return OrganizationsFromIdString(Org);
         }
         public static List<OrgPickInfo> OrganizationsFromIdString(Organization Org)
         {
@@ -113,16 +128,16 @@ namespace CmsWeb.Areas.Org2.Models
         {
             get
             {
-                if (masterOrg != null) 
+                if (masterOrg != null)
                     return masterOrg;
 
                 var q = from o in DbUtil.Db.ViewMasterOrgs
-                    where o.PickListOrgId == Id
-                    select new MasterOrgInfo
-                    {
-                        Id = o.OrganizationId,
-                        Name = o.OrganizationName
-                    };
+                        where o.PickListOrgId == Id
+                        select new MasterOrgInfo
+                        {
+                            Id = o.OrganizationId,
+                            Name = o.OrganizationName
+                        };
                 return masterOrg = q.FirstOrDefault() ?? new MasterOrgInfo();
             }
         }

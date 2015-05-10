@@ -351,13 +351,14 @@ namespace CmsWeb {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;ReportsMenu&gt;
-        ///  &lt;Report id=&quot;VS&quot; link=&quot;/Reports/VitalStats&quot;&gt;Vital Stats&lt;/Report&gt;
-        ///  &lt;Report id=&quot;CA&quot; link=&quot;/Reports/ChurchAttendance&quot; target=&quot;_blank&quot;&gt;Church Attendance&lt;/Report&gt;
-        ///  &lt;Report id=&quot;WD&quot; link=&quot;/Reports/WeeklyDecisions&quot; target=&quot;_blank&quot;&gt;Weekly Decisions&lt;/Report&gt;
-        ///  &lt;Report id=&quot;DS&quot; link=&quot;/Reports/Decisions&quot; target=&quot;_blank&quot;&gt;Decision Summary&lt;/Report&gt;
-        ///  &lt;Space/&gt;
-        ///  &lt;Report id=&quot;FTA&quot; link=&quot;/Home/NthTimeAttenders/1&quot;&gt;First Time Attenders&lt;/Report&gt;
-        ///  &lt;Report id=&quot;STA&quot; li [rest of string was truncated]&quot;;.
+        ///  &lt;Header&gt;Statistics&lt;/Header&gt;
+        ///  &lt;Report link=&quot;/Reports/VitalStats&quot;&gt;Vital Stats&lt;/Report&gt;
+        ///  &lt;Header&gt;Attendance Summary&lt;/Header&gt;
+        ///  &lt;Report link=&quot;/Reports/ChurchAttendance&quot; target=&quot;_blank&quot;&gt;Week at a Glance&lt;/Report&gt;
+        ///  &lt;Report link=&quot;/Reports/ChurchAttendance2&quot; target=&quot;_blank&quot;&gt;Average Week at a Glance&lt;/Report&gt;
+        ///  &lt;Header&gt;Decisions&lt;/Header&gt;
+        ///  &lt;Report link=&quot;/Reports/WeeklyDecisions&quot; target=&quot;_blank&quot;&gt;Weekly Decisions&lt;/Report&gt;
+        ///  &lt;Report link=&quot;/Reports/Decisio [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string ReportsMenu {
             get {
@@ -368,20 +369,38 @@ namespace CmsWeb {
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;ReportsMenu&gt;
-        ///  &lt;Header&gt;Vital Stats&lt;/Header&gt;
-        ///  &lt;Report id=&quot;VitalStats&quot;&gt;Main Report&lt;/Report&gt;
-        ///  &lt;Custom link=&quot;/Reports/VitalStats&quot;&gt;Report Two&lt;/Custom&gt;
-        ///  &lt;Header&gt;Attendance Summary&lt;/Header&gt;
-        ///  &lt;Report id=&quot;WeekAtAGlance&quot;&gt;Week at a Glance&lt;/Report&gt;
-        ///  &lt;Report id=&quot;AverageWeekAtAGlance&quot;&gt;Average Week at a Glance&lt;/Report&gt;
-        ///  &lt;Header&gt;Decisions&lt;/Header&gt;
-        ///  &lt;Report id=&quot;WeeklyDecisions&quot;&gt;Weekly Decisions&lt;/Report&gt;
-        ///  &lt;Report id=&quot;DecisionSummary&quot;&gt;Decision Summary&lt;/Report&gt;
-        ///  &lt;Head [rest of string was truncated]&quot;;.
+        ///  &lt;Column1&gt;
+        ///&lt;!--
+        ///    &lt;Header&gt;Statistics&lt;/Header&gt;
+        ///    &lt;Report link=&quot;/Reports/VitalStats&quot;&gt;Vital Stats&lt;/Report&gt;
+        ///--&gt;
+        ///  &lt;/Column1&gt;
+        ///  &lt;Column2&gt;
+        ///  &lt;/Column2&gt;
+        ///&lt;/ReportsMenu&gt;
+        ///.
         /// </summary>
         internal static string ReportsMenuCustom {
             get {
                 return ResourceManager.GetString("ReportsMenuCustom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///Hi {first}
+        ///
+        ///Here is your confirmation for {org}.
+        ///
+        ///DETAILS: 
+        ///{details}
+        ///
+        ///Your Minsitry Team for {org}
+        ///.
+        /// </summary>
+        internal static string SettingsRegistrationModel_DefaulConfirmation {
+            get {
+                return ResourceManager.GetString("SettingsRegistrationModel_DefaulConfirmation", resourceCulture);
             }
         }
         
