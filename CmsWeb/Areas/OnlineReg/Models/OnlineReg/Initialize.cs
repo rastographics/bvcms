@@ -59,6 +59,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 var a = ot.Querystring.Split(',');
                 pid = a[1].ToInt();
             }
+
+            // handle if they are already logged in
             else if (HttpContext.Current.User.Identity.IsAuthenticated)
                 pid = Util.UserPeopleId ?? 0;
 

@@ -208,14 +208,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             this.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
 
+            // the email passed in is valid or they did not specify login
             if (Util.ValidEmail(email) || login != true)
                 nologin = true;
 
             if (nologin)
-                CreateList();
+                CreateAnonymousList();
             else
                 List = new List<OnlineRegPersonModel>();
 
+            // prepopulate their email address they passed in
             if (Util.ValidEmail(email))
                 List[0].EmailAddress = email;
 
@@ -358,7 +360,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return _meeting;
         }
 
-        public void CreateList()
+        public void CreateAnonymousList()
         {
             List = new List<OnlineRegPersonModel>
                 {

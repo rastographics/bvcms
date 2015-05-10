@@ -65,10 +65,13 @@
   </div>
   <div id="collapse@(Model.Index)" class="panel-collapse collapse @(Model.Finished() ? "" : "in")">
     <div class="panel-body">
-      @Html.ValidationSummary()
       @if (!Model.ShowAddress && Model.RegistrantProblem.HasValue())
       {
         @Html.DivAlertBox(Html.Markdown(Model.RegistrantProblem).ToString())
+      }
+      else
+      {
+        @Html.ValidationSummary()
       }
       @Html.Partial("Flow2/PersonMetaHidden", Model)
 

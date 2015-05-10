@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				return Content("bad link");
 			VolunteerModel m = null;
 
-			var td = TempData["ps"];
+			var td = TempData["PeopleId"];
 			if (td != null)
 			{
 				m = new VolunteerModel(orgId: id.ToInt(), peopleId: td.ToInt());

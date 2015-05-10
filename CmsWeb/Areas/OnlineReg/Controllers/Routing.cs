@@ -3,7 +3,6 @@ using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
 using UtilityExtensions;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -11,16 +10,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     {
         private ActionResult RouteRegistration(OnlineRegModel m, int pid, bool? showfamily)
         {
-            var existingRegistration = m.GetExistingRegistration(pid);
-            if (existingRegistration != null)
-            {
-                TempData["er"] = m.UserPeopleId;
-                return Redirect("/OnlineReg/Existing/" + existingRegistration.DatumId);
-            }
+            if(pid == 0)
+                return View(m);
+
+            var link = RouteExistingRegistration(m, pid);
+            if (link.HasValue())
+                return Redirect(link);
 
             OnlineRegPersonModel p = null;
             if (showfamily != true)
             {
+                // No need to pick family, so prepare first registrant ready to answer questions
                 p = m.LoadExistingPerson(pid, 0);
                 p.ValidateModelForFind(ModelState, 0);
                 p.LoggedIn = true;
@@ -35,78 +35,72 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!ModelState.IsValid)
                 return View(m);
 
-            if (m.masterorg != null && m.masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2)
-            {
-                TempData["ms"] = m.UserPeopleId;
-                return Redirect("/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid));
-            }
-            if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
-            {
-                TempData["mg"] = m.UserPeopleId;
-                return ManageGiving(m.Orgid.ToString(), m.testing);
-            }
-            if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge)
-            {
-                TempData["mp"] = m.UserPeopleId;
-                return Redirect("/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid));
-            }
-            if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-            {
-                TempData["ps"] = m.UserPeopleId;
-                return Redirect("/OnlineReg/ManageVolunteer/{0}".Fmt(m.Orgid));
-            }
-            if (showfamily != true && p.org != null && p.Found == true)
-            {
-                if (!m.SupportMissionTrip)
-                    p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
-                if (p.IsFilled)
-                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[0].Found), "Sorry, but registration is closed.");
-                if (p.Found == true)
-                    p.FillPriorInfo();
-                p.SetSpecialFee();
-                m.HistoryAdd("index, pid={0}, !showfamily, p.org, found=true".Fmt(pid));
+
+            link = RouteManageGivingSubscriptionsPledgeVolunteer(m);
+            if(link.HasValue())
+                if (m.ManageGiving()) // use Direct ActionResult instead of redirect
+                    return ManageGiving(m.Orgid.ToString(), m.testing);
+                else
+                    return Redirect(link);
+
+            // check for forcing show family, master org, or not found
+            if (showfamily == true || p.org == null || p.Found != true) 
                 return View(m);
-            }
+
+            // ready to answer questions, make sure registration is ok to go
+            if (!m.SupportMissionTrip)
+                p.IsFilled = p.org.RegLimitCount(DbUtil.Db) >= p.org.Limit;
+            if (p.IsFilled)
+                ModelState.AddModelError(m.GetNameFor(mm => mm.List[0].Found), "Sorry, but registration is closed.");
+
+            p.FillPriorInfo();
+            p.SetSpecialFee();
+
+            m.HistoryAdd("index, pid={0}, !showfamily, p.org, found=true".Fmt(pid));
             return View(m);
         }
 
+        private string RouteManageGivingSubscriptionsPledgeVolunteer(OnlineRegModel m)
+        {
+            TempData["PeopleId"] = Util.UserPeopleId;
+            if (m.ManageGiving())
+                return "/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid);
+            if (m.ManagingSubscriptions())
+                return "/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid);
+            if (m.OnlinePledge())
+                return "/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid);
+            if (m.ChoosingSlots())
+                return "/OnlineReg/ManageVolunteer/{0}".Fmt(m.Orgid);
+            TempData.Remove("PeopleId");
+            return null;
+        }
+
+        private string RouteExistingRegistration(OnlineRegModel m, int? pid = null)
+        {
+            var existingRegistration = m.GetExistingRegistration(pid ?? Util.UserPeopleId ?? 0);
+            if (existingRegistration == null) 
+                return null;
+            TempData["PeopleId"] = m.UserPeopleId = Util.UserPeopleId;
+            return "/OnlineReg/Existing/" + existingRegistration.DatumId;
+        }
         private ActionResult RouteSpecialLogin(OnlineRegModel m)
         {
             if (Util.UserPeopleId == null)
                 throw new Exception("Util.UserPeopleId is null on login");
 
-            var existingRegistration = m.GetExistingRegistration(Util.UserPeopleId.Value);
-            if (existingRegistration != null)
-            {
-                TempData["er"] = m.UserPeopleId = Util.UserPeopleId;
-                return Content("/OnlineReg/Existing/" + existingRegistration.DatumId);
-            }
+            var link = RouteExistingRegistration(m);
+            if(link.HasValue())
+                return Content(link);
 
-            m.CreateList();
+            m.CreateAnonymousList();
             m.UserPeopleId = Util.UserPeopleId;
 
-            if (m.ManagingSubscriptions())
-            {
-                TempData["ms"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid));
-            }
-            if (m.ChoosingSlots())
-            {
-                TempData["ps"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManageVolunteer/{0}".Fmt(m.Orgid));
-            }
-            if (m.OnlinePledge())
-            {
-                TempData["mp"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid));
-            }
-            if (m.ManageGiving())
-            {
-                TempData["mg"] = Util.UserPeopleId;
-                return Content("/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid));
-            }
             if (m.OnlineGiving())
                 return RegisterFamilyMember(Util.UserPeopleId.Value, m);
+
+            link = RouteManageGivingSubscriptionsPledgeVolunteer(m);
+            if (link.HasValue())
+                return Content(link); // this will be used for a redirect in javascript
 
             return null;
         }

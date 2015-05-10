@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult StartOver(int id)
         {
-            var pid = (int)TempData["er"];
+            var pid = (int)TempData["PeopleId"];
             if (pid == 0)
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult Existing(int id)
         {
-            var pid = (int)TempData["er"];
+            var pid = (int)TempData["PeopleId"];
             if (pid == 0)
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message("no existing registration available");
             if (m.UserPeopleId != m.Datum.UserPeopleId)
                 return Message("incorrect user");
-            TempData["er"] = pid;
+            TempData["PeopleId"] = pid;
             return View(m);
         }
 

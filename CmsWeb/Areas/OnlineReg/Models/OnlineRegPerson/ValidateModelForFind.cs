@@ -13,6 +13,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void ValidateModelForFind(ModelStateDictionary modelstate, int i, bool selectFromFamily = false)
         {
+            if (IsValidForNew) // This should never be the case
+                throw new Exception("Unexpected onlinereg state: IsValidForNew is true and in ValidateModelForFind");
+
             DbUtil.Db.SetNoLock();
             modelState = modelstate;
             Index = i;
@@ -22,7 +25,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Parent.classid = classid;
                 orgid = classid;
             }
-            PeopleId = null; // not found yet
+            if(selectFromFamily == false)
+                PeopleId = null; // not found yet
             ValidateModelForFind(selectFromFamily);
         }
         private void ValidateModelForFind(bool selectFromFamily = false)
@@ -59,14 +63,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (EmailRequiredForThisRegistration(foundname)) return;
             if (NoAppropriateOrgFound(selectFromFamily)) return;
             if (MustBeChurchMember(foundname)) return;
-            if (org == null) 
-                return;
-            if (NotValidForCreateAccountRegistration(foundname)) return;
-            if (AllowSenderToBecomeGoerToo()) return;
-            if (AlreadyRegisteredNotAllowed(foundname)) return;
-            if (MustBeMemberOfAnotherOrgToRegister(foundname)) return;
-            if (MustNotBeMemberOfAnotherOrg(foundname)) return;
-            ValidateBirthdayRange();
+
+            if (org != null)
+            {
+                if (NotValidForCreateAccountRegistration(foundname)) return;
+                if (AllowSenderToBecomeGoerToo()) return;
+                if (AlreadyRegisteredNotAllowed(foundname)) return;
+                if (MustBeMemberOfAnotherOrgToRegister(foundname)) return;
+                if (MustNotBeMemberOfAnotherOrg(foundname)) return;
+                ValidateBirthdayRange();
+            }
         }
         private bool NeedsUserSelection()
         {
@@ -86,9 +92,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         private void ValidateBasic()
         {
-            if (!PeopleId.HasValue)
-                return;
-
             if (!FirstName.HasValue())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].FirstName), "first name required");
 

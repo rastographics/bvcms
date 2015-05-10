@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using CmsData;
-using CmsData.Registration;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
+using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers

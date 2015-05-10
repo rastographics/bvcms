@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			if (!id.HasValue())
 				return Content("bad link");
 			ManageSubsModel m;
-			var td = TempData["ms"];
+			var td = TempData["PeopleId"];
 			if (td != null)
 				m = new ManageSubsModel(td.ToInt(), id.ToInt());
 			else

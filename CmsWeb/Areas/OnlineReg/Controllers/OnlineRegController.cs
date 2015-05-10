@@ -35,9 +35,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var pid = m.CheckRegisterLink(registertag);
 
-            return pid > 0
-                ? RouteRegistration(m, pid, showfamily)
-                : View(m);
+            return RouteRegistration(m, pid, showfamily);
         }
 
         [HttpPost]
@@ -53,14 +51,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Session["OnlineRegLogin"] = true;
 
             if (m.Orgid == Util.CreateAccountCode)
-                return Content("/Person2/" + Util.UserPeopleId);
+                return Content("/Person2/" + Util.UserPeopleId); // they already have an account, so take them to their page
 
             var route = RouteSpecialLogin(m);
             if (route != null)
                 return route;
 
-            if (m.UserSelectsOrganization())
-                m.List[0].ValidateModelForFind(ModelState, 0);
+            //if (m.UserSelectsOrganization())
+            m.List[0].ValidateModelForFind(ModelState, 0);
 
             m.List[0].LoggedIn = true;
             m.HistoryAdd("login");
@@ -72,7 +70,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             // Clicked the register without logging in link
             m.nologin = true;
-            m.CreateList();
+            m.CreateAnonymousList();
             m.HistoryAdd("nologin");
             return FlowList(m, "NoLogin");
         }
@@ -115,8 +113,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (id >= m.List.Count)
                 return FlowList(m, "FindRecord");
             var p = m.List[id];
-            if (p.IsValidForNew)
-                return ErrorResult(m, new Exception("Unexpected onlinereg state: IsValidForNew is true and in FindRecord"), "FindRecord, unexpected state");
             p.ValidateModelForFind(ModelState, id);
             if (p.AnonymousReRegistrant())
                 return View("ConfirmReregister", m); // send email with link to reg-register
