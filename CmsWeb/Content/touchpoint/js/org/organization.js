@@ -124,14 +124,14 @@
         ev.preventDefault();
         $(this).toggleClass("active");
         $("#ShowHidden").val($(this).hasClass("active"));
-        RebindMemberGrids();
+        $.RebindMemberGrids();
         return false;
     });
 
     $('body').on('click', 'a.setfilter', function (ev) {
         ev.preventDefault();
         $("#FilterIndividuals").val(!$("#filter-ind").hasClass("active"));
-        RebindMemberGrids();
+        $.RebindMemberGrids();
         return false;
     });
 
@@ -139,7 +139,7 @@
         ev.preventDefault();
         $(this).toggleClass("active");
         $("#FilterIndividuals").val($(this).hasClass("active"));
-        RebindMemberGrids();
+        $.RebindMemberGrids();
         return false;
     });
 
@@ -147,7 +147,7 @@
         ev.preventDefault();
         $(this).toggleClass("active");
         $("#FilterTag").val($(this).hasClass("active"));
-        RebindMemberGrids();
+        $.RebindMemberGrids();
         return false;
     });
 
@@ -157,14 +157,14 @@
         $("textarea[name='nameFilter']").val('');
         $("#FilterTag").val(false);
         $("#FilterIndividuals").val(false);
-        RebindMemberGrids();
+        $.RebindMemberGrids();
     });
 
     $('body').on('click', '#ministryinfo', function (ev) {
         ev.preventDefault();
         $(this).toggleClass("active");
         $("#ShowMinistryInfo").val($(this).hasClass("active"));
-        RebindMemberGrids();
+        $.RebindMemberGrids();
         return false;
     });
 
@@ -172,7 +172,7 @@
         ev.preventDefault();
         $(this).toggleClass("active");
         $("#ShowAddress").val($(this).hasClass("active"));
-        RebindMemberGrids();
+        $.RebindMemberGrids();
         return false;
     });
 
@@ -193,7 +193,7 @@
             $("#showhide").removeClass("active");
             $("#ShowHidden").val($("#showhide").hasClass("active"));
         }
-        RebindMemberGrids();
+        $.RebindMemberGrids();
         return false;
     });
 
@@ -226,7 +226,7 @@
             return false;
         }
         $("#GroupSelect").val($a);
-        RebindMemberGrids();
+        $.RebindMemberGrids();
         return false;
     });
 
@@ -324,7 +324,7 @@
 
             $('#empty-dialog').on('hidden', function () {
                 f.remove();
-                RebindMemberGrids();
+                $.RebindMemberGrids();
             });
         });
     });
@@ -339,7 +339,7 @@
 
             $('#empty-dialog').on('hidden', function () {
                 f.remove();
-                RebindMemberGrids();
+                $.RebindMemberGrids();
             });
         });
     });
@@ -616,7 +616,7 @@
     $('body').on('keypress', '#nameFilter,#sgFilter', function (e) {
         if ((e.keyCode || e.which) === 13) {
             e.preventDefault();
-            RebindMemberGrids();
+            $.RebindMemberGrids();
         }
         return true;
     });
@@ -705,7 +705,7 @@
         function () {
             $.post(a[0].href, function (ret) {
                 if (ret === "ok")
-                    RebindMemberGrids();
+                    $.RebindMemberGrids();
                 else
                     swal("Error!", ret, "error");
             });
@@ -769,7 +769,7 @@
     };
 
     $.InitFunctions.ReloadPeople = function () {
-        RebindMemberGrids();
+        $.RebindMemberGrids();
     };
 
     $('body').on('change', '#Schedule_Value', function () {
@@ -949,12 +949,12 @@
 
 });
 
-function RebindMemberGrids() {
+$.RebindMemberGrids = function() { 
     $.formAjaxClick($("a.setfilter"));
 }
 
 function AddSelected() {
-    RebindMemberGrids();
+    $.RebindMemberGrids();
 }
 
 function CloseAddDialog(from) {

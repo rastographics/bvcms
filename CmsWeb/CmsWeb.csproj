@@ -1889,7 +1889,6 @@
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\AddTransaction.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\AddTransactionDone.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Display.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Dropped.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Edit.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\MissionSupport.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\MissionSupportDone.cshtml" />
