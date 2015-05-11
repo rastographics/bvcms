@@ -69,6 +69,28 @@
         };
         a.Editable.prototype.createSpecialLink = function() {
             this.$special_link_wrapper = a(this.specialLinkHTML()), this.$popup_editor.append(this.$special_link_wrapper);
+
+            this.addListener("hidePopups", a.proxy(function () {
+                this.hideSpecialLinkWrapper();
+            }), this);
+
+
+            // Stop event propagation in link.
+            this.$special_link_wrapper.on('mouseup touchend', $.proxy(function (e) {
+                if (!this.isResizing()) {
+                    e.stopPropagation();
+                    //this.$special_link_wrapper.trigger('hideLinkList');
+                }
+            }, this));
+
+            this.$special_link_wrapper.on('click', function (e) {
+                e.stopPropagation();
+            });
+
+            this.$special_link_wrapper.on('click', '*', function (e) {
+                e.stopPropagation();
+            });
+
             this.$special_link_wrapper.on(this.mouseup, "#f-special-link-submit-" + this._id, a.proxy(function(a) {
                 a.stopPropagation();
                 a.preventDefault();
@@ -89,9 +111,7 @@
                 this.focus();
                 this.hide();
             }, this));
-            this.addListener("hidePopups", a.proxy(function() {
-                this.hideSpecialLinkWrapper();
-            }), this);
+            
         },
         a.Editable.prototype.buildSpecialLink = function() {
             var b = this;
