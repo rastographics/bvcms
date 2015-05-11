@@ -19,7 +19,11 @@
     var opens = Model.queue.EmailResponses.Count();
     var notOpened = Model.CountOfNotOpenedRecipients;
     var failed = Model.CountOfFailedRecipients;
-    var percentage = !Model.queue.Sent.HasValue && Model.queue.SendWhen.HasValue ? 0 : Math.Round(((decimal)all - (decimal)failed) / (decimal)all * 100);
+    decimal percentage = 0;
+    if (all > 0)
+    {
+        percentage = !Model.queue.Sent.HasValue && Model.queue.SendWhen.HasValue ? 0 : Math.Round((all - (decimal) failed)/all*100);
+    }
 }
 @section head{
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
@@ -167,13 +171,13 @@
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
-                    <a href="/Emails" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> 
+                    <a href="/Emails" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                     <div class="btn-group">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             Actions <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            @if (Model.CanDelete() && !Model.queue.Sent.HasValue)  
+                            @if (Model.CanDelete() && !Model.queue.Sent.HasValue)
                             {
                                 <li><a href="/Manage/Emails/DeleteQueued/@Model.queue.Id"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
                             }
