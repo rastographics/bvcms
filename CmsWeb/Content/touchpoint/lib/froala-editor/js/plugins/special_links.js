@@ -79,7 +79,6 @@
             this.$special_link_wrapper.on('mouseup touchend', $.proxy(function (e) {
                 if (!this.isResizing()) {
                     e.stopPropagation();
-                    //this.$special_link_wrapper.trigger('hideLinkList');
                 }
             }, this));
 
