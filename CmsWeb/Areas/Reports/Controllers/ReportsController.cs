@@ -595,26 +595,6 @@ namespace CmsWeb.Areas.Reports.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("CustomColumns/{orgid?}")]
-        public ActionResult CustomColumns(int? orgid)
-        {
-            try
-            {
-                Response.ContentType = "text/plain";
-                var m = new CustomReportsModel(DbUtil.Db, orgid);
-                var s = m.StandardColumns(includeRoot: false).ToString();
-                foreach (var line in s.SplitLines())
-                    Response.Write("  {0}\n".Fmt(line));
-                Response.Write("\n");
-                return new EmptyResult();
-            }
-            catch (Exception ex)
-            {
-                return Message(ex.Message);
-            }
-        }
-
         [HttpPost]
         public ActionResult SGMap(OrgSearchModel m)
         {
@@ -624,20 +604,20 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult ShirtSizes(string org, OrgSearchModel m)
         {
-            int? orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null;
+            var orgid = org == "curr" ? DbUtil.Db.CurrentOrg.Id : null;
             var orgs = orgid.HasValue
                 ? OrgSearchModel.FetchOrgs(orgid.Value)
                 : m.FetchOrgs();
-            IQueryable<ShirtSizeInfo> q = from om in DbUtil.Db.OrganizationMembers
-                                          join o in orgs on om.OrganizationId equals o.OrganizationId
-                                          where o.OrganizationId == orgid || (orgid ?? 0) == 0
-                                          group 1 by om.ShirtSize
-                                              into g
-                                              select new ShirtSizeInfo
-                                              {
-                                                  Size = g.Key,
-                                                  Count = g.Count(),
-                                              };
+            var q = from om in DbUtil.Db.OrganizationMembers
+                    join o in orgs on om.OrganizationId equals o.OrganizationId
+                    where o.OrganizationId == orgid || (orgid ?? 0) == 0
+                    group 1 by om.ShirtSize
+                    into g
+                    select new ShirtSizeInfo
+                    {
+                        Size = g.Key,
+                        Count = g.Count(),
+                    };
             return View(q);
         }
 
