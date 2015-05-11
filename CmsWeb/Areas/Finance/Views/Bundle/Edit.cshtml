@@ -68,7 +68,7 @@
                         <div class="col-sm-3">
                             <div class="form-group">
                                 <label for="Status" class="control-label">Bundle Status</label>
-                                <select name="Status" id="Status" class="form-control" @(!Model.CanChangeStatus ? "disabled='disabled'" : "")><option value="Open">Open</option><option value="Closed">Closed</option></select>
+                                <select name="Status" id="Status" class="form-control" @(!Model.CanChangeStatus ? "disabled='disabled'" : "")><option value="Open" @(Model.IsOpen ? "selected" : "")>Open</option><option value="Closed" @(!Model.IsOpen ? "selected" : "")>Closed</option></select>
                                 @if (Model.CanChangeStatus)
                                 {
                                     @Html.HiddenFor(m => m.IsOpen)
