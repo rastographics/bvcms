@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Code;
@@ -192,6 +193,20 @@ namespace CmsWeb.Areas.Dialog.Models
                 if (om == null)
                     om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
                 return payLink = om.PayLink2(DbUtil.Db);
+            }
+        }
+        private string supportLink;
+        public string SupportLink
+        {
+            get
+            {
+                if (supportLink.HasValue())
+                    return supportLink;
+                if (om == null)
+                    om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+                if(IsMissionTrip && om.MemberTypeId == MemberTypeCode.Member)
+                    return supportLink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(OrgId, PeopleId));
+                return null;
             }
         }
 

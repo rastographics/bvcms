@@ -86,6 +86,10 @@
                     {
                       <a href="@Model.PayLink" style="margin-left: 2em;" target="_blank">PayLink</a>
                     }
+                    @if (Model.SupportLink.HasValue())
+                    {
+                      <a href="@Model.SupportLink" style="margin-left: 2em;" target="_blank">Support Link</a>
+                    }
                   </p>
                 </div>
               </div>
