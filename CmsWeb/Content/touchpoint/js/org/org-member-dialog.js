@@ -8,6 +8,30 @@
         return true;
     });
 
+    $('body').on('click', '#org-member-drop', function (ev) {
+        ev.preventDefault();
+        var f = $(this).closest('form');
+        var q = f.serialize();
+        var href = $(this).attr("href");
+
+        $('#empty-dialog').modal('hide');
+        $.block();
+        $.post(href, q, function (ret) {
+            $.unblock();
+            if (ret == "Done") {
+                swal({
+                    title: "Member Dropped!",
+                    type: "success"
+                });
+            } else {
+                swal("Error!", 'An error occurred attempting to drop the member.', "error");
+            }
+            $.RebindMemberGrids();
+        });
+
+        return false;
+    });
+
     $('body').on('click', '#membergroups .update-smallgroup', function (ev) {
         ev.preventDefault();
         var href = $(this).attr("href");
