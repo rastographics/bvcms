@@ -155,8 +155,10 @@ namespace CmsWeb.Areas.Manage.Controllers
                     return View("EditPythonScript", cContent);
 
                 case ContentTypeCode.TypeEmailTemplate:
-                case ContentTypeCode.TypeSavedDraft:
                     return View("EditTemplate", cContent);
+
+                case ContentTypeCode.TypeSavedDraft:
+                    return View("EditDraft", cContent);
             }
 
             return View("Index");

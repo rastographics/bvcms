@@ -1,0 +1,86 @@
+﻿@using CmsWeb.Models
+@model CmsData.Content
+@{
+    ViewBag.Title = "Edit Draft";
+    ViewBag.PageHeader = "Edit Draft";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+@section head{
+    @ViewExtensions2.FroalaEditorCss()
+}
+@using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-9">
+            <div class="box box-responsive">
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="name" class="control-label">Name</label>
+                                @Html.TextBox("name", Model.Name, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label for="title" class="control-label">Title</label>
+                                @Html.TextBox("title", Model.Title, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label for="role" class="control-label">Role</label>
+                                @Html.DropDownList("roleid", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.TextArea("body", new { @class = "form-control", rows = "26" })
+                    </div>
+                    <a href="/Display/#tab_savedDrafts" class="btn btn-default">Cancel</a> <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <input type="submit" class="btn btn-primary" value="Save Draft" />
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("id");
+}
+@section scripts
+{
+    @ViewExtensions2.FroalaEditorScripts()
+    <script type="text/javascript">
+        $(function () {
+            $("a.delete").click(function (ev) {
+                ev.preventDefault();
+
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Manage/Display/#tab_savedDrafts";
+                            });
+                        }
+                    });
+                });
+            });
+
+            $('#body').froalaEditable({
+                inlineMode: false,
+                allowStyle: true,
+                minHeight: 400,
+                theme: 'custom',
+                buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
+                imageUploadURL: '/Account/FroalaUpload'
+            });
+        });
+    </script>
+}
