@@ -25,6 +25,7 @@
         }
         $('#editor').froalaEditable({
             inlineMode: false,
+            spellcheck: true,
             zIndex: 2501,
             height: 200,
             theme: 'custom',
