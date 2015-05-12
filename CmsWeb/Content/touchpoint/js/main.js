@@ -150,9 +150,17 @@ String.prototype.startsWith = function (t, i) {
 };
 
 $.DateValid = function (d, displayError) {
+    var extraSmallDevice = $('.device-xs').is(':visible');
+    var smallDevice = $('.device-sm').is(':visible');
+
     var reDate = /^(0?[1-9]|1[012])[\/-](0?[1-9]|[12][0-9]|3[01])[\/-]((19|20)?[0-9]{2})$/i;
     if ($.dateFormat.startsWith('d'))
         reDate = /^(0?[1-9]|[12][0-9]|3[01])[\/-](0?[1-9]|1[012])[\/-]((19|20)?[0-9]{2})$/i;
+
+    if (extraSmallDevice || smallDevice) {
+        reDate = /(\d{4})-(\d{2})-(\d{2})/;
+    }
+    
     var v = true;
     if (!reDate.test(d)) {
         if (displayError == true)
