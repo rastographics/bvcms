@@ -601,7 +601,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         public List<Duplicate> PossibleDuplicates()
         {
             var fone = Util.GetDigits(Util.PickFirst(CellPhone, HomePhone));
-            using (var ctx = new CMSDataContext(Util.ConnectionString))
+            using (var ctx = CMSDataContext.Create(Util.ConnectionString))
             {
                 ctx.SetNoLock();
                 string street = GetStreet(ctx) ?? "--";
@@ -687,7 +687,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public List<Duplicate> PossibleDuplicates2()
         {
-            using (var ctx = new CMSDataContext(Util.ConnectionString))
+            using (var ctx = CMSDataContext.Create(Util.ConnectionString))
             {
                 ctx.SetNoLock();
                 string street = GetStreet(ctx) ?? "--";

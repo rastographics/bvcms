@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public static void DoWork(ValidateAddress model)
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-            var db = new CMSDataContext(Util.GetConnectionString(model.host));
+            var db = CMSDataContext.Create(Util.GetConnectionString(model.host));
             db.Host = model.host;
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
@@ -64,7 +64,7 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 db.Dispose();
                 var fsb = new List<ChangeDetail>();
-                db = new CMSDataContext(Util.GetConnectionString(model.host));
+                db = CMSDataContext.Create(Util.GetConnectionString(model.host));
                 var f = db.LoadFamilyByPersonId(pid); 
                 var ret = AddressVerify.LookupAddress(f.AddressLineOne, f.AddressLineTwo, f.CityName, f.StateCode, f.ZipCode);
                 if (ret.found != false && !ret.error.HasValue() && ret.Line1 != "error")

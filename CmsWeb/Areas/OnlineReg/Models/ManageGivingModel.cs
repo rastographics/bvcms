@@ -278,7 +278,7 @@ namespace CmsWeb.Models
 
             var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(orgid));
             var mm = new EmailReplacements(DbUtil.Db, text, from);
-            text = mm.DoReplacements(person);
+            text = mm.DoReplacements(DbUtil.Db, person);
 
             Util.SendMsg(Util.SysFromEmail, Util.Host, from, Setting.Subject, text,
                     Util.EmailAddressListFromString(contributionEmail), 0, pid);

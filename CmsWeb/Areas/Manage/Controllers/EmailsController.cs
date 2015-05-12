@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 				try
 				{
-					var Db = new CMSDataContext(Util.GetConnectionString(host));
+					var Db = CMSDataContext.Create(Util.GetConnectionString(host));
 					Db.Host = host;
 					var cul = Db.Setting("Culture", "en-US");
 					Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
@@ -136,7 +136,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 					ErrorLog errorLog = ErrorLog.GetDefault(null);
 					errorLog.Log(new Error(ex2));
 
-					var Db = new CMSDataContext(Util.GetConnectionString(host));
+					var Db = CMSDataContext.Create(Util.GetConnectionString(host));
 					Db.Host = host;
 					var equeue = Db.EmailQueues.Single(ee => ee.Id == id);
 					equeue.Error = ex.Message.Truncate(200);

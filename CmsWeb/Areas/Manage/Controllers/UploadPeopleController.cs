@@ -34,14 +34,14 @@ namespace CmsWeb.Areas.Manage.Controllers
 			Alias.Task.Factory.StartNew(() =>
 			{
 				Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-				var Db = new CMSDataContext(cs);
+				var Db = CMSDataContext.Create(cs);
 			    Db.Host = host;
 				try
 				{
 					var m = new UploadPeopleModel(Db, pid ?? 0, noupdate, cs);
 					m.DoUpload(text, testing: true);
 					Db.Dispose();
-    				Db = new CMSDataContext(cs);
+    				Db = CMSDataContext.Create(cs);
     			    Db.Host = host;
 
         			runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 				catch (Exception ex)
 				{
 					Db.Dispose();
-    				Db = new CMSDataContext(cs);
+    				Db = CMSDataContext.Create(cs);
     			    Db.Host = host;
 
 				    var q = from r in Db.UploadPeopleRuns

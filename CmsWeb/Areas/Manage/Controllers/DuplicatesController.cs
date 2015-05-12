@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             Alias.Task.Factory.StartNew(() =>
             {
 				Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-                var Db = new CMSDataContext(Util.GetConnectionString(host));
+                var Db = CMSDataContext.Create(Util.GetConnectionString(host));
 				var rt = Db.DuplicatesRuns.OrderByDescending(mm => mm.Id).First();
                 Db.ExecuteCommand("delete duplicate");
 				var q = from p in Db.People

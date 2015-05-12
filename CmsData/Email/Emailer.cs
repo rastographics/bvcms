@@ -355,7 +355,7 @@ namespace CmsData
                 var p = LoadPersonById(emailqueueto.PeopleId);
                 var body = DoClickTracking(emailqueue);
                 var m = new EmailReplacements(this, body, from);
-                var text = m.DoReplacements(p, emailqueueto);
+                var text = m.DoReplacements(emailqueueto.PeopleId, emailqueueto);
                 var aa = m.ListAddresses;
 
                 if (Setting("sendemail", "true") != "false")
@@ -469,8 +469,7 @@ namespace CmsData
                 try
                 {
 #endif
-                var p = LoadPersonById(To.PeopleId);
-                var text = m.DoReplacements(p, To);
+                var text = m.DoReplacements(To.PeopleId, To);
                 var aa = m.ListAddresses;
 
                 if (Setting("sendemail", "true") != "false")
@@ -478,7 +477,6 @@ namespace CmsData
                     Util.SendMsg(sysFromEmail, CmsHost, from,
                         emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId);
                     To.Sent = DateTime.Now;
-
                     SubmitChanges();
                 }
 #if DEBUG

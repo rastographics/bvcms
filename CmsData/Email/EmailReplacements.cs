@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
@@ -40,20 +41,20 @@ namespace CmsData
         private const string VoteLinkRe = "<a[^>]*?href=\"https{0,1}://votelink/{0,1}\"[^>]*>.*?</a>";
         private readonly Regex voteLinkRe = new Regex(VoteLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
-        private readonly CMSDataContext db;
-
         private readonly string[] stringlist;
         private readonly MailAddress from;
+        private string connStr;
+        private CMSDataContext db;
 
-        public EmailReplacements(CMSDataContext db, string text, MailAddress from)
+        public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from)
         {
-            this.db = db;
+            connStr = callingContext.ConnectionString;
             this.from = from;
             if (text == null)
                 text = "(no content)";
             string pattern = @"(<style.*?</style>|{{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9})".Fmt(
-                RegisterLinkRe, RegisterTagRe, RsvpLinkRe,RegisterHrefRe,
-                SendLinkRe, SupportLinkRe, VolReqLinkRe, 
+                RegisterLinkRe, RegisterTagRe, RsvpLinkRe, RegisterHrefRe,
+                SendLinkRe, SupportLinkRe, VolReqLinkRe,
                 VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
@@ -61,48 +62,60 @@ namespace CmsData
         public List<MailAddress> ListAddresses { get; set; }
 
         private Person person;
-        public string DoReplacements(Person p, EmailQueueTo emailqueueto)
+
+        // this will run replacements in a new dataContext
+        //
+        public string DoReplacements(int pid, EmailQueueTo emailqueueto)
         {
-            person = p;
-            var pi = emailqueueto.OrgId.HasValue
-                ? (from m in db.OrganizationMembers
-                   let ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == m.TranId && tt.PeopleId == m.PeopleId)
-                   where m.PeopleId == emailqueueto.PeopleId && m.OrganizationId == emailqueueto.OrgId
-                   select new PayInfo
-                   {
-                       PayLink = m.PayLink2(db),
-                       Amount = ts.IndAmt,
-                       AmountPaid = ts.IndPaid,
-                       AmountDue = ts.IndDue,
-                       RegisterMail = m.RegisterEmail
-                   }).SingleOrDefault()
-                : null;
+            using (db = CMSDataContext.Create(connStr))
+            {
+                var p = db.LoadPersonById(pid);
+                person = p;
+                var pi = emailqueueto.OrgId.HasValue
+                    ? (from m in db.OrganizationMembers
+                       let ts = db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == m.TranId && tt.PeopleId == m.PeopleId)
+                       where m.PeopleId == emailqueueto.PeopleId && m.OrganizationId == emailqueueto.OrgId
+                       select new PayInfo
+                       {
+                           PayLink = m.PayLink2(db),
+                           Amount = ts.IndAmt,
+                           AmountPaid = ts.IndPaid,
+                           AmountDue = ts.IndDue,
+                           RegisterMail = m.RegisterEmail
+                       }).SingleOrDefault()
+                    : null;
 
-            var aa = db.GetAddressList(p);
-            if (emailqueueto.EmailQueue.CCParents ?? false)
-                aa.AddRange(db.GetCcList(p, emailqueueto));
+                var aa = db.GetAddressList(p);
+                if (emailqueueto.EmailQueue.CCParents ?? false)
+                    aa.AddRange(db.GetCcList(p, emailqueueto));
 
-            if (emailqueueto.AddEmail.HasValue())
-                foreach (string ad in emailqueueto.AddEmail.SplitStr(","))
-                    Util.AddGoodAddress(aa, ad);
+                if (emailqueueto.AddEmail.HasValue())
+                    foreach (string ad in emailqueueto.AddEmail.SplitStr(","))
+                        Util.AddGoodAddress(aa, ad);
 
-            if (emailqueueto.OrgId.HasValue && pi != null)
-                Util.AddGoodAddress(aa, Util.FullEmail(pi.RegisterMail, p.Name));
+                if (emailqueueto.OrgId.HasValue && pi != null)
+                    Util.AddGoodAddress(aa, Util.FullEmail(pi.RegisterMail, p.Name));
 
-            ListAddresses = aa.DistinctEmails();
+                ListAddresses = aa.DistinctEmails();
 
-            var noreplacements = emailqueueto.EmailQueue.NoReplacements ?? false;
-            var texta = new List<string>(stringlist);
-            for (var i = 1; i < texta.Count; i += 2)
-                if (noreplacements)
-                    texta[i] = "";
-                else
-                texta[i] = DoReplaceCode(texta[i], p, pi, emailqueueto);
+                var noreplacements = emailqueueto.EmailQueue.NoReplacements ?? false;
+                var texta = new List<string>(stringlist);
+                for (var i = 1; i < texta.Count; i += 2)
+                    if (noreplacements)
+                        texta[i] = "";
+                    else
+                        texta[i] = DoReplaceCode(texta[i], p, pi, emailqueueto);
 
-            return string.Join("", texta);
+                db.SubmitChanges();
+                return string.Join("", texta);
+            }
         }
-        public string DoReplacements(Person p)
+
+        // this will run replacements in the same dataContext as the calling method
+        //
+        public string DoReplacements(CMSDataContext callingContext, Person p)
         {
+            db = callingContext;
             var aa = db.GetAddressList(p);
 
             ListAddresses = aa.DistinctEmails();
@@ -119,7 +132,7 @@ namespace CmsData
             public string Name { get; set; }
             public string Count { get; set; }
         }
-        private Dictionary<int,OrgInfo> orgcount = new Dictionary<int, OrgInfo>();
+        private Dictionary<int, OrgInfo> orgcount = new Dictionary<int, OrgInfo>();
 
         private class PayInfo
         {
@@ -178,7 +191,7 @@ namespace CmsData
                     return p.PrimaryCountry;
 
                 case "{createaccount}":
-                    if(emailqueueto != null)
+                    if (emailqueueto != null)
                         return CreateUserTag(emailqueueto);
                     break;
 
@@ -186,7 +199,7 @@ namespace CmsData
                     return db.ServerLink();
 
                 case "{emailhref}":
-                    if(emailqueueto != null)
+                    if (emailqueueto != null)
                         return db.ServerLink("/EmailView/" + emailqueueto.Id);
                     break;
 
@@ -206,11 +219,11 @@ namespace CmsData
                     return p.Name.Contains("?") || p.Name.Contains("unknown", true) ? "" : p.Name;
 
                 case "{nextmeetingtime}":
-                    if(emailqueueto != null)
+                    if (emailqueueto != null)
                         return NextMeetingDate(code, emailqueueto);
                     break;
                 case "{nextmeetingtime0}":
-                    if(emailqueueto != null)
+                    if (emailqueueto != null)
                         return NextMeetingDate0(code, emailqueueto);
                     break;
 
@@ -298,7 +311,7 @@ namespace CmsData
                         return SmallGroup(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroups", StringComparison.OrdinalIgnoreCase))
-                        return SmallGroups(code, emailqueueto); 
+                        return SmallGroups(code, emailqueueto);
 
                     if (supportLinkRe.IsMatch(code))
                         return SupportLink(code, emailqueueto);
@@ -326,12 +339,12 @@ namespace CmsData
                 if (!orgcount.ContainsKey(emailqueueto.OrgId.Value))
                 {
                     var q = from i in db.Organizations
-                        where i.OrganizationId == emailqueueto.OrgId.Value
-                        select new OrgInfo()
-                        {
-                            Name = i.OrganizationName,
-                            Count = i.OrganizationMembers.Count().ToString()
-                        };
+                            where i.OrganizationId == emailqueueto.OrgId.Value
+                            select new OrgInfo()
+                            {
+                                Name = i.OrganizationName,
+                                Count = i.OrganizationMembers.Count().ToString()
+                            };
                     oi = q.SingleOrDefault();
                     orgcount.Add(emailqueueto.OrgId.Value, oi);
                 }
@@ -521,7 +534,7 @@ namespace CmsData
             string url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
             if (showfamily)
                 url += "?showfamily=true";
-            if(d.ContainsKey("style"))
+            if (d.ContainsKey("style"))
                 return @"<a href=""{0}"" style=""{1}"">{2}</a>".Fmt(url, d["style"], inside);
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
@@ -914,7 +927,7 @@ namespace CmsData
 
         public static string CreateRegisterLink(int? orgid, string text)
         {
-            if(!orgid.HasValue)
+            if (!orgid.HasValue)
                 throw new ArgumentException("null not allowed on GetRegisterLink", "orgid");
             return "<a href=\"http://registerlink\" lang=\"{0}\">{1}</a>".Fmt(orgid, text);
         }
