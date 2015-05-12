@@ -1,0 +1,42 @@
+﻿@model CmsData.Content
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, maximum-scale=1.0">
+        <title></title>
+        @ViewExtensions2.FontAwesome()
+        @ViewExtensions2.FroalaEditorCss()
+    </head>
+    <body style="margin: 0;">
+        <div id="editor-body">
+            @Html.Raw(Model.Body)
+        </div>
+        @ViewExtensions2.jQuery()
+        @ViewExtensions2.FroalaEditorScripts()
+        <script type="text/javascript">
+            $(function() {
+                $.Editable.DEFAULTS.allowedTags.push('style');
+                $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
+                $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
+                $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
+                $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
+
+                $('#editor-body').froalaEditable({
+                    inlineMode: false,
+                    allowStyle: true,
+                    fullPage: true,
+                    minHeight: 400,
+                    theme: 'custom',
+                    buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'table', 'html', 'fullscreen'],
+                    imageUploadURL: '/Account/FroalaUpload'
+                });
+
+            });
+        </script>
+    </body>
+</html>
