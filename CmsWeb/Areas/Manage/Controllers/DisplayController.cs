@@ -164,6 +164,12 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View("Index");
         }
 
+        public ActionResult EmailBody(int id)
+        {
+            var content = DbUtil.ContentFromID(id);
+            return View(content);
+        }
+
         [HttpPost]
         public ActionResult RunSqlScript(string body, string parameter)
         {

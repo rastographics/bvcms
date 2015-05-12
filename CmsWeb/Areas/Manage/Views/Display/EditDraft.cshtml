@@ -31,9 +31,20 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        @Html.TextArea("body", new { @class = "form-control", rows = "26" })
+                        <script type="text/javascript">
+                            function iframeLoaded() {
+                                var iFrameID = document.getElementById('email-body');
+                                if (iFrameID) {
+                                    // here you can make the height, I delete it first, then I make it again
+                                    iFrameID.height = "";
+                                    iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 160 + "px";
+                                }
+                            }
+                        </script>
+                        <iframe src="/Display/EmailBody/@Model.Id" frameborder="0" onload="iframeLoaded()" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                        <input type="hidden" id="body" name="body" />
                     </div>
-                    <a href="/Display/#tab_savedDrafts" class="btn btn-default">Cancel</a> <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <input type="submit" class="btn btn-primary" value="Save Draft" />
+                    <a href="/Display/#tab_savedDrafts" class="btn btn-default">Cancel</a> <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <a class="btn btn-primary save">Save Draft</a>
                 </div>
             </div>
         </div>
@@ -45,6 +56,33 @@
     @ViewExtensions2.FroalaEditorScripts()
     <script type="text/javascript">
         $(function () {
+            $.Editable.DEFAULTS.allowedTags.push('style');
+            $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
+            $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
+            $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
+            $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
+
+            $('#email-body').load(function () {
+                $(this).contents().find('#editor-body').froalaEditable({
+                    inlineMode: false,
+                    allowStyle: true,
+                    spellcheck: true,
+                    fullPage: true,
+                    minHeight: 100,
+                    theme: 'custom',
+                    buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
+                    imageUploadURL: '/Account/FroalaUpload',
+                    fileUploadURL: '/Account/FroalaUpload'
+                });
+            });
+
+            $("a.save").click(function (ev) {
+                ev.preventDefault();
+                var emailHtml = $('#email-body').contents().find('#editor-body').froalaEditable('getHTML');
+                $('#body').val(emailHtml);
+                $(this).closest('form').submit();
+            });
+
             $("a.delete").click(function (ev) {
                 ev.preventDefault();
 
@@ -71,17 +109,6 @@
                         }
                     });
                 });
-            });
-
-            $('#body').froalaEditable({
-                inlineMode: false,
-                allowStyle: true,
-                spellcheck: true,
-                minHeight: 400,
-                theme: 'custom',
-                buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
-                imageUploadURL: '/Account/FroalaUpload',
-                fileUploadURL: '/Account/FroalaUpload'
             });
         });
     </script>
