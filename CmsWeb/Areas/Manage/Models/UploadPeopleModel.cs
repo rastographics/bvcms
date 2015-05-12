@@ -25,7 +25,7 @@ namespace CmsWeb.Models
         public UploadPeopleModel(CMSDataContext Db, int PeopleId, bool noupdate, string connectionstring)
         {
             this.Db = Db;
-            Db2 = new CMSDataContext(connectionstring);
+            Db2 = CMSDataContext.Create(connectionstring);
             this.PeopleId = PeopleId;
             this.noupdate = noupdate;
         }

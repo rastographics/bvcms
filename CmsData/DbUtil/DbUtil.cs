@@ -38,10 +38,10 @@ namespace CmsData
             get
             {
                 if (HttpContext.Current == null)
-                    return new CMSDataContext(Util.ConnectionString);
+                    return CMSDataContext.Create(Util.ConnectionString);
                 if (InternalDb == null)
                 {
-                    InternalDb = new CMSDataContext(Util.ConnectionString);
+                    InternalDb = CMSDataContext.Create(Util.ConnectionString);
                     InternalDb.CommandTimeout = 1200;
                 }
                 return InternalDb;
@@ -55,12 +55,12 @@ namespace CmsData
         {
             get
             {
-                return new CMSDataContext(Util.ConnectionStringReadOnly);
+                return CMSDataContext.Create(Util.ConnectionStringReadOnly);
             }
         }
         public static void LogActivity(string activity, string name = null, int? orgid = null, int? pid = null)
         {
-            var db = new CMSDataContext(Util.ConnectionString);
+            var db = CMSDataContext.Create(Util.ConnectionString);
             int? uid = Util.UserId;
             if (uid == 0)
                 uid = null;

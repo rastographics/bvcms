@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public CMSDataContext Db { get; set; }
         public void DoWork()
         {
-            Db = new CMSDataContext(Util.GetConnectionString(Host));
+            Db = CMSDataContext.Create(Util.GetConnectionString(Host));
             Db.Host = Host;
             Db.CommandTimeout = 1200;
 

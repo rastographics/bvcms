@@ -31,6 +31,11 @@ namespace CmsData
             get { return nextTagId++; }
         }
 
+        internal string ConnectionString;
+        public static CMSDataContext Create(string connStr)
+        {
+            return new CMSDataContext(connStr) {ConnectionString = connStr};
+        }
         partial void OnCreated()
         {
 #if DEBUG

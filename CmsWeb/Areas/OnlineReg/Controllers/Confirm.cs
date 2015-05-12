@@ -426,7 +426,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 var body = sb.ToString();
                 var from = Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(p.org.OrganizationId));
-                var mm = new EmailReplacements(Util.ConnectionString, body, from );
+                var mm = new EmailReplacements(DbUtil.Db, body, from );
                 body = mm.DoReplacements(DbUtil.Db, p.person);
 
                 Util.SendMsg(Util.SysFromEmail, Util.Host, from, p.setting.Subject, body,

@@ -352,7 +352,7 @@ namespace CmsData
             {
                 var p = LoadPersonById(emailqueueto.PeopleId);
                 var body = DoClickTracking(emailqueue);
-                var m = new EmailReplacements(Connection.ConnectionString, body, from);
+                var m = new EmailReplacements(this, body, from);
                 var text = m.DoReplacements(emailqueueto.PeopleId, emailqueueto);
                 var aa = m.ListAddresses;
 
@@ -427,7 +427,7 @@ namespace CmsData
             }
 
             var body = DoClickTracking(emailqueue);
-            var m = new EmailReplacements(Connection.ConnectionString, body, from);
+            var m = new EmailReplacements(this, body, from);
             emailqueue.Started = DateTime.Now;
             SubmitChanges();
 

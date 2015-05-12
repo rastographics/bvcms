@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
@@ -42,12 +43,12 @@ namespace CmsData
 
         private readonly string[] stringlist;
         private readonly MailAddress from;
-        private readonly string connStr;
+        private string connStr;
         private CMSDataContext db;
 
-        public EmailReplacements(string connStr, string text, MailAddress from)
+        public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from)
         {
-            this.connStr = connStr;
+            connStr = callingContext.ConnectionString;
             this.from = from;
             if (text == null)
                 text = "(no content)";
@@ -66,7 +67,7 @@ namespace CmsData
         //
         public string DoReplacements(int pid, EmailQueueTo emailqueueto)
         {
-            using (db = new CMSDataContext(connStr))
+            using (db = CMSDataContext.Create(connStr))
             {
                 var p = db.LoadPersonById(pid);
                 person = p;
@@ -112,9 +113,9 @@ namespace CmsData
 
         // this will run replacements in the same dataContext as the calling method
         //
-        public string DoReplacements(CMSDataContext db2, Person p)
+        public string DoReplacements(CMSDataContext callingContext, Person p)
         {
-            db = db2;
+            db = callingContext;
             var aa = db.GetAddressList(p);
 
             ListAddresses = aa.DistinctEmails();

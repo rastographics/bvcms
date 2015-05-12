@@ -105,7 +105,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in pids)
             {
                 DbUtil.DbDispose();
-                DbUtil.Db = new CMSDataContext(Util.ConnectionString);
+                DbUtil.Db = CMSDataContext.Create(Util.ConnectionString);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
 
                 if (InactiveDate.HasValue)
@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in pids)
             {
                 DbUtil.DbDispose();
-                DbUtil.Db = new CMSDataContext(Util.ConnectionString);
+                DbUtil.Db = CMSDataContext.Create(Util.ConnectionString);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
                 n += om.AddToGroup(DbUtil.Db, sgtagid);
             }
@@ -156,14 +156,14 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in pids)
             {
                 DbUtil.DbDispose();
-                DbUtil.Db = new CMSDataContext(Util.ConnectionString);
+                DbUtil.Db = CMSDataContext.Create(Util.ConnectionString);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
                 var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
                 if (mt != null)
                     DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
                 DbUtil.Db.SubmitChanges();
             }
-            DbUtil.Db = new CMSDataContext(Util.ConnectionString);
+            DbUtil.Db = CMSDataContext.Create(Util.ConnectionString);
             DbUtil.Db.ExecuteCommand(@"
 DELETE dbo.MemberTags 
 WHERE Id = {1} AND OrgId = {0} 
@@ -188,7 +188,7 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
             var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
             foreach (var pid in pids)
             {
-                var db = new CMSDataContext(Util.ConnectionString);
+                var db = CMSDataContext.Create(Util.ConnectionString);
                 var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
                 var ts = db.ViewTransactionSummaries.SingleOrDefault(
                         tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);
