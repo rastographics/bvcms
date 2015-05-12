@@ -15,7 +15,7 @@ namespace CmsData
 
         public QueryFunctions(string dbname = "bellevue")
         {
-            db = new CMSDataContext("Data Source=.;Initial Catalog=CMS_{0};Integrated Security=True".Fmt(dbname));
+            db = CMSDataContext.Create("Data Source=.;Initial Catalog=CMS_{0};Integrated Security=True".Fmt(dbname));
         }
 
         public QueryFunctions(CMSDataContext Db)

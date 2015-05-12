@@ -23,7 +23,7 @@ namespace CmsData.API
 
         public APIFunctions()
         {
-            Db = new CMSDataContext("Data Source=.;Initial Catalog=CMS_bellevue;Integrated Security=True");
+            Db = CMSDataContext.Create("Data Source=.;Initial Catalog=CMS_bellevue;Integrated Security=True");
         }
         public APIFunctions(CMSDataContext Db)
         {

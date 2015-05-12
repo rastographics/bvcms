@@ -122,7 +122,7 @@ namespace CmsData
                     var body = msg.Body.Replace("{total}", "${0:N2}".Fmt(tot));
                     var from = Util.TryGetMailAddress(contributionemail);
                     var m = new EmailReplacements(db, body, from);
-                    body = m.DoReplacements(Person);
+                    body = m.DoReplacements(db, Person);
                     Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,
                                  Util.ToMailAddressList(contributionemail), 0, Person.PeopleId);
                 }
@@ -140,7 +140,7 @@ Please contact the Finance office at the church." };
                     .Replace("{message}", ret.Message);
                 var from = Util.TryGetMailAddress(contributionemail);
                 var m = new EmailReplacements(db, body, from);
-                body = m.DoReplacements(Person);
+                body = m.DoReplacements(db, Person);
 
                 var adminEmail = db.Setting("AdminMail", systemEmail);
                 Util.SendMsg(systemEmail, db.CmsHost, from, subject, body,

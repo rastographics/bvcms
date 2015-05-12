@@ -229,7 +229,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             if (RemoveFromEnrollmentHistory)
             {
                 DbUtil.DbDispose();
-                DbUtil.Db = new CMSDataContext(Util.ConnectionString);
+                DbUtil.Db = CMSDataContext.Create(Util.ConnectionString);
                 var q = DbUtil.Db.EnrollmentTransactions.Where(tt => tt.OrganizationId == OrgId && tt.PeopleId == PeopleId);
                 DbUtil.Db.EnrollmentTransactions.DeleteAllOnSubmit(q);
                 DbUtil.Db.SubmitChanges();

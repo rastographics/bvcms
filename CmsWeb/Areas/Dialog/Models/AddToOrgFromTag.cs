@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private static void DoWork(AddToOrgFromTag model)
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-            var db = new CMSDataContext(Util.GetConnectionString(model.host));
+            var db = CMSDataContext.Create(Util.GetConnectionString(model.host));
             db.Host = model.host;
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in model.pids)
             {
                 db.Dispose();
-                db = new CMSDataContext(Util.GetConnectionString(model.host));
+                db = CMSDataContext.Create(Util.GetConnectionString(model.host));
                 switch (model.Group)
                 {
                     case GroupSelectCode.Member:

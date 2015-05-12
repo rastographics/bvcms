@@ -94,7 +94,7 @@ namespace CmsData.Classes.Twilio
 
                 try
                 {
-                    var Db = new CMSDataContext(Util.GetConnectionString(sHost));
+                    var Db = CMSDataContext.Create(Util.GetConnectionString(sHost));
                     Db.Host = sHost;
 
                     var smsList = (from e in Db.SMSLists
