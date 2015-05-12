@@ -5,6 +5,9 @@
     Layout = ViewExtensions2.TouchPointLayout();
     
 }
+@section head{
+    @ViewExtensions2.FroalaEditorCss()
+}
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
     <div class="row">
@@ -39,7 +42,7 @@
 }
 @section scripts
 {
-    @ViewExtensions2.CKEditor()
+    @ViewExtensions2.FroalaEditorScripts()
     <script type="text/javascript">
         
         function getParameterByName(name) {
@@ -80,14 +83,13 @@
                 });
             });
 
-            CKEDITOR.env.isCompatible = true;
-
-            CKEDITOR.replace('body', {
-                height: 400,
-                allowedContent: true,
-                autoParagraph: false,
-                fullPage: !$("#snippet").prop("checked"),
-                customConfig: "/content/touchpoint/lib/ckeditor/js/ckeditorconfig.js"
+            $('#body').froalaEditable({
+                inlineMode: false,
+                allowStyle: true,
+                minHeight: 400,
+                theme: 'custom',
+                buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'table', 'html', 'fullscreen'],
+                imageUploadURL: '/Account/FroalaUpload'
             });
 
             $("#snippet").change(function () {

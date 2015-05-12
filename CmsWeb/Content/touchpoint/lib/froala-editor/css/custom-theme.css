@@ -85,6 +85,7 @@
 }
 .custom-theme.froala-box .froala-element.f-basic a {
   color: inherit;
+  text-decoration: underline !important;
 }
 .custom-theme.froala-box .froala-element table td {
   border: solid 1px #cccccc;

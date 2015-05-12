@@ -889,7 +889,6 @@
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\bootstrap-tabdrop.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\extensions_bootstrap-tabdrop.js" />
     <Content Include="Content\touchpoint\lib\bootstrap-typeahead\js\bootstrap3-typeahead.min.js" />
-    <Content Include="Content\touchpoint\lib\ckeditor\js\ckeditorconfig.js" />
     <Content Include="Content\touchpoint\lib\ion-sound\sounds\computer_error.mp3" />
     <Content Include="Content\touchpoint\lib\ion-sound\sounds\glass.mp3" />
     <Content Include="Content\touchpoint\lib\jcrop\css\jcrop.min.css" />

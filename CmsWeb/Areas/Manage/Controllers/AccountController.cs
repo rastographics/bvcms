@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
@@ -24,6 +25,46 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return Content("alive");
         }
+
+        public ActionResult FroalaUpload(HttpPostedFileBase file)
+        {
+            var m = new AccountModel();
+            string baseurl = null;
+
+            var fn = "{0}.{1:yyMMddHHmm}.{2}".Fmt(DbUtil.Db.Host, DateTime.Now,
+                m.CleanFileName(Path.GetFileName(file.FileName)));
+            var error = string.Empty;
+            var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
+
+            if (rackspacecdn.HasValue())
+            {
+                baseurl = rackspacecdn;
+                var username = ConfigurationManager.AppSettings["RackspaceUser"];
+                var key = ConfigurationManager.AppSettings["RackspaceKey"];
+                var cloudIdentity = new CloudIdentity() { APIKey = key, Username = username };
+                var cloudFilesProvider = new CloudFilesProvider(cloudIdentity);
+                cloudFilesProvider.CreateObject("AllFiles", file.InputStream, fn);
+            }
+            else // local server
+            {
+                baseurl = "{0}://{1}/Upload/".Fmt(Request.Url.Scheme, Request.Url.Authority);
+                try
+                {
+                    string path = Server.MapPath("/Upload/");
+                    path += fn;
+
+                    path = m.GetNewFileName(path);
+                    file.SaveAs(path);
+                }
+                catch (Exception ex)
+                {
+                    error = ex.Message;
+                    baseurl = string.Empty;
+                }
+            }
+            return Json(new { link = baseurl + fn, error = error }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost, MyRequireHttps]
         public ActionResult CKEditorUpload(string CKEditorFuncNum)
         {

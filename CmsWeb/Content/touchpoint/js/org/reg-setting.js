@@ -14,85 +14,39 @@
         });
     };
 
-    var xsDevice = $('.device-xs').is(':visible');
-    var smDevice = $('.device-sm').is(':visible');
-
     $('body').on('click', 'a.editor', function (ev) {
         if (!$(this).attr("href"))
             return false;
         var name = $(this).attr("tb");
         ev.preventDefault();
 
-        if (!xsDevice && !smDevice) {
-            if (CKEDITOR.instances['editor'])
-                CKEDITOR.instances['editor'].destroy();
-
-            CKEDITOR.env.isCompatible = true;
-
-            CKEDITOR.replace('editor', {
-                height: 200,
-                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-            });
+        if ($('#editor').data('fa.editable')) {
+            $('#editor').froalaEditable('destroy');
         }
-        if (xsDevice || smDevice) {
-            $('#editor').val($("#" + name).val());
-        } else {
-            CKEDITOR.instances['editor'].setData($("#" + name).val());
-        }
+        $('#editor').froalaEditable({
+            inlineMode: false,
+            zIndex: 2501,
+            height: 200,
+            theme: 'custom',
+            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
+            imageUploadURL: '/Account/FroalaUpload'
+        });
         
+        $('#editor').froalaEditable('setHTML', $("#" + name).val());
         $('#editor-modal').modal('show');
 
         $("#save-edit").off("click").on("click", function (ev) {
             ev.preventDefault();
 
-            var v;
-            if (xsDevice || smDevice) {
-                v = $('#editor').val();
-            } else {
-                v = CKEDITOR.instances['editor'].getData();
-            }
-
+            var v = $('#editor').froalaEditable('getHTML');
             $("#" + name).val(v);
             $("#" + name + "_ro").html(v);
 
-            if (xsDevice || smDevice) {
-                $('#editor').val('');
-            } else {
-                CKEDITOR.instances['editor'].setData('');
-            }
-
+            $('#editor').froalaEditable('setHTML', '');
             $('#editor-modal').modal('hide');
             return false;
         });
         return false;
     });
 
-});
-
-CKEDITOR.on('dialogDefinition', function (ev) {
-    var dialogName = ev.data.name;
-    var dialogDefinition = ev.data.definition;
-    if (dialogName == 'link') {
-        var advancedTab = dialogDefinition.getContents('advanced');
-	    advancedTab.label = "SpecialLinks";
-        advancedTab.remove('advCSSClasses');
-        advancedTab.remove('advCharset');
-        advancedTab.remove('advContentType');
-        advancedTab.remove('advStyles');
-        advancedTab.remove('advAccessKey');
-        advancedTab.remove('advName');
-        advancedTab.remove('advId');
-        advancedTab.remove('advTabIndex');
-
-        var relField = advancedTab.get('advRel');
-        relField.label = "Sub-Group";
-        var titleField = advancedTab.get('advTitle');
-        titleField.label = "Message";
-        var idField = advancedTab.get('advLangCode');
-        idField.label = "OrgId/MeetingId";
-        var langdirField = advancedTab.get('advLangDir');
-        langdirField.label = "Confirmation";
-	    langdirField.items[1][0] = "Yes, send confirmation";
-	    langdirField.items[2][0] = "No, do not send confirmation";
-    }
 });

@@ -8,6 +8,7 @@
 }
 @section head
 {
+    @ViewExtensions2.FroalaEditorCss()
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
     @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
     <style>
@@ -117,40 +118,7 @@
 </div>
 @section scripts
 {
-    @ViewExtensions2.CKEditor()
+    @ViewExtensions2.FroalaEditorScripts()
     @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
     @Fingerprint.Script("/Content/touchpoint/js/email/email.js")
-    <script type="text/javascript">
-        $(function () {
-            CKEDITOR.env.isCompatible = true;
-
-            CKEDITOR.replace('Body', {
-                height: 400,
-                fullPage: false,
-                allowedContent: true,
-                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-            });
-
-            $("#insertvotelink").click(function (ev) {
-                ev.preventDefault();
-                var id = prompt("id");
-                var editor = CKEDITOR.instances["Body"];
-                var link = editor.document.createElement('a');
-                link.setAttribute('href', 'http://votelink');
-                link.setAttribute('id', id);
-                var selection = editor.getSelection();
-                if (selection.getType() == CKEDITOR.SELECTION_ELEMENT)
-                    link.setHtml(selection.getSelectedElement().$.outerHTML);
-                else if (selection.getType() == CKEDITOR.SELECTION_TEXT) {
-                    if (CKEDITOR.env.ie) {
-                        selection.unlock(true);
-                        link.setText(selection.getNative().createRange().text);
-                    } else
-                        link.setText(selection.getNative());
-                }
-                editor.insertElement(link);
-                return false;
-            });
-        });
-    </script>
 }

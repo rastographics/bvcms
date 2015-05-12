@@ -1,10 +1,9 @@
 ﻿$(function () {
-
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
 
     var currentDiv = null;
-    
+   
     $.clearFunction = undefined;
     $.addFunction = undefined;
 
@@ -25,69 +24,26 @@
         $('#editor-modal').modal('show');
     };
 
-    var xsDevice = $('.device-xs').is(':visible');
-    var smDevice = $('.device-sm').is(':visible');
-    
     $('#editor-modal').on('shown.bs.modal', function () {
-        if (!xsDevice && !smDevice) {
-            if (CKEDITOR.instances['htmleditor'])
-                CKEDITOR.instances['htmleditor'].destroy();
-
-            CKEDITOR.env.isCompatible = true;
-
-            CKEDITOR.replace('htmleditor', {
-                height: 200,
-                autoParagraph: false,
-                fullPage: false,
-                allowedContent: true,
-                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-            });
-
-            CKEDITOR.on('dialogDefinition', function (ev) {
-                var dialogName = ev.data.name;
-                var dialogDefinition = ev.data.definition;
-                if (dialogName == 'link') {
-                    var advancedTab = dialogDefinition.getContents('advanced');
-                    advancedTab.label = "SpecialLinks";
-                    advancedTab.remove('advCSSClasses');
-                    advancedTab.remove('advCharset');
-                    advancedTab.remove('advContentType');
-                    advancedTab.remove('advStyles');
-                    advancedTab.remove('advAccessKey');
-                    advancedTab.remove('advName');
-                    advancedTab.remove('advId');
-                    advancedTab.remove('advTabIndex');
-
-                    var relField = advancedTab.get('advRel');
-                    relField.label = "SmallGroup";
-                    var titleField = advancedTab.get('advTitle');
-                    titleField.label = "Message";
-                    var idField = advancedTab.get('advLangCode');
-                    idField.label = "OrgId/MeetingId";
-                    var langdirField = advancedTab.get('advLangDir');
-                    langdirField.label = "Confirmation";
-                    langdirField.items[1][0] = "Yes, send confirmation";
-                    langdirField.items[2][0] = "No, do not send confirmation";
-                }
-            });           
+        if ($('#htmleditor').data('fa.editable')) {
+            $('#htmleditor').froalaEditable('destroy');
         }
+        $('#htmleditor').froalaEditable({
+            inlineMode: false,
+            zIndex: 2501,
+            height: 200,
+            theme: 'custom',
+            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
+            imageUploadURL: '/Account/FroalaUpload'
+        });
         var html = $(currentDiv).html();
         if (html !== "Click here to edit content") {
-            if (xsDevice || smDevice) {
-                $('#htmleditor').val(html);
-            } else {
-                CKEDITOR.instances['htmleditor'].setData(html);
-            }
+            $('#htmleditor').froalaEditable('setHTML', html);
         }
     });
 
     $('#editor-modal').on('click', '#save-edit', function () {
-        var h;
-        if (xsDevice || smDevice) {
-            h = $('#htmleditor').val();           
-        } else {
-            h = CKEDITOR.instances['htmleditor'].getData();
-        }
+        var h = $('#htmleditor').froalaEditable('getHTML');
         $(currentDiv).html(h);
         $('#editor-modal').modal('hide');
     });

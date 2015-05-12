@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -17,6 +18,7 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using CmsData;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing.ChartDrawing;
 using Elmah;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -775,6 +777,44 @@ namespace CmsWeb
 <link rel=""stylesheet"" href=""/Content/css/OnlineReg2.css"">
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
+        }
+        public static HtmlString FroalaEditorCss()
+        {
+            return new HtmlString(@"
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_style.min.css"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css"">
+");
+        }
+        public static HtmlString FroalaEditorScripts()
+        {
+            return new HtmlString(@"
+<script src=""/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js""></script>
+<script type=""text/javascript"">
+    //froala key
+    $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
+    $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
+    $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
+    $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
+    $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
+    $.Editable.DEFAULTS.allowedTags.push('html');
+    $.Editable.DEFAULTS.allowedTags.push('head');
+    $.Editable.DEFAULTS.allowedTags.push('style');
+    $.Editable.DEFAULTS.allowedTags.push('body');
+
+    // must alias froala editor because it could conflict with the same function name with bootstrap-editable.
+    $.fn.froalaEditable = $.fn.editable;
+    delete $.fn.editable;   
+</script>
+");
         }
         public static HtmlString FontAwesome()
         {

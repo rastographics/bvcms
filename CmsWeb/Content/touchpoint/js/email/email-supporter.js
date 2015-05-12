@@ -110,42 +110,26 @@
         $('#editor-modal').modal('show');
     };
 
-    var xsDevice = $('.device-xs').is(':visible');
-    var smDevice = $('.device-sm').is(':visible');
-
     $('#editor-modal').on('shown.bs.modal', function () {
-        if (!xsDevice && !smDevice) {
-            if (CKEDITOR.instances['htmleditor'])
-                CKEDITOR.instances['htmleditor'].destroy();
-
-            CKEDITOR.env.isCompatible = true;
-
-            CKEDITOR.replace('htmleditor', {
-                height: 200,
-                autoParagraph: false,
-                fullPage: false,
-                allowedContent: true,
-                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
-            });
+        if ($('#htmleditor').data('fa.editable')) {
+            $('#htmleditor').froalaEditable('destroy');
         }
-
+        $('#htmleditor').froalaEditable({
+            inlineMode: false,
+            zIndex: 2501,
+            height: 200,
+            theme: 'custom',
+            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'table', 'html', 'fullscreen'],
+            imageUploadURL: '/Account/FroalaUpload'
+        });
         var html = $(currentDiv).html();
         if (html !== "Click here to edit content") {
-            if (xsDevice || smDevice) {
-                $('#htmleditor').val(html);
-            } else {
-                CKEDITOR.instances['htmleditor'].setData(html);
-            }
+            $('#htmleditor').froalaEditable('setHTML', html);
         }
     });
 
     $('#editor-modal').on('click', '#save-edit', function () {
-        var h;
-        if (xsDevice || smDevice) {
-            h = $('#htmleditor').val();
-        } else {
-            h = CKEDITOR.instances['htmleditor'].getData();
-        }
+        var h = $('#htmleditor').froalaEditable('getHTML');
         $(currentDiv).html(h);
         $('#editor-modal').modal('hide');
     });

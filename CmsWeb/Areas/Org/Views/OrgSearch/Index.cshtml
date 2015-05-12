@@ -8,6 +8,7 @@
     ViewBag.PageHeader = "Organization Search / Manage";
 }
 @section head{
+    @ViewExtensions2.FroalaEditorCss()
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
     <style>
@@ -216,7 +217,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="editor-modal">
+<div class="modal fade" id="editor-modal" style="overflow-y: hidden !important;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
@@ -428,10 +429,10 @@
 </div>
 @section scripts
 {
+    @ViewExtensions2.FroalaEditorScripts()
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-    @ViewExtensions2.CKEditor()
     @Fingerprint.Script("/Content/touchpoint/js/search/org-search.js")
     @if (User.IsInRole("Edit"))
     {

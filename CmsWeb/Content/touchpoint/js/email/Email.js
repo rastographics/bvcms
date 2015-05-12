@@ -2,9 +2,17 @@
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
 
+    $('#Body').froalaEditable({
+        inlineMode: false,
+        height: 400,
+        theme: 'custom',
+        buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'table', 'html', 'fullscreen'],
+        imageUploadURL: '/Account/FroalaUpload'
+    });
+
     $("#Send").click(function () {
         $.block();
-        $('#Body').text(CKEDITOR.instances["Body"].getData());
+        $('#Body').text($('#Body').froalaEditable('getHTML'));
         var q = $(this).closest('form').serialize();
 
         $.post('/Email/QueueEmails', q, function (ret) {
@@ -48,7 +56,7 @@
 
     $("#TestSend").click(function () {
         $.block();
-        $('#Body').text(CKEDITOR.instances["Body"].getData());
+        $('#Body').text($('#Body').froalaEditable('getHTML'));
         var q = $(this).closest('form').serialize();
 
         $.post('/Email/TestEmail', q, function (ret) {
@@ -64,43 +72,4 @@
             }
         });
     });
-    
-    $('body').on('click', '#CreateVoteTag', function (ev) {
-        ev.preventDefault();
-        CKEDITOR.instances["votetagcontent"].updateElement();
-        var q = $(this).closest('form').serialize();
-        $.post('/Email/CreateVoteTag', q, function (ret) {
-            CKEDITOR.instances["votetagcontent"].setData(ret, function () {
-                CKEDITOR.instances["votetagcontent"].setMode("source");
-            });
-        });
-    });
-});
-
-CKEDITOR.on('dialogDefinition', function (ev) {
-    var dialogName = ev.data.name;
-    var dialogDefinition = ev.data.definition;
-    if (dialogName == 'link') {
-        var advancedTab = dialogDefinition.getContents('advanced');
-        advancedTab.label = "SpecialLinks";
-        advancedTab.remove('advCSSClasses');
-        advancedTab.remove('advCharset');
-        advancedTab.remove('advContentType');
-        advancedTab.remove('advStyles');
-        advancedTab.remove('advAccessKey');
-        advancedTab.remove('advName');
-        advancedTab.remove('advId');
-        advancedTab.remove('advTabIndex');
-
-        var relField = advancedTab.get('advRel');
-        relField.label = "SmallGroup";
-        var titleField = advancedTab.get('advTitle');
-        titleField.label = "Message";
-        var idField = advancedTab.get('advLangCode');
-        idField.label = "OrgId/MeetingId";
-        var langdirField = advancedTab.get('advLangDir');
-        langdirField.label = "Confirmation";
-        langdirField.items[1][0] = "Yes, send confirmation";
-        langdirField.items[2][0] = "No, do not send confirmation";
-    }
 });

@@ -5,6 +5,9 @@
     ViewBag.PageHeader = "Compose Email";
     Layout = ViewExtensions2.TouchPointLayout();
 }
+@section head{
+    @ViewExtensions2.FroalaEditorCss()
+}
 <div class="row">
     <div class="col-md-push-9 col-md-3 col-lg-push-8 col-lg-4">
         <div class="panel panel-default">
@@ -58,7 +61,17 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-10">
-                            <iframe src="/MissionTripEmail2/EmailBody/@Model.OrgId/@Model.PeopleId" height="600" frameborder="0" style="width: 100%; height: 600px;" id="email-body" name="email-body"></iframe>
+                            <script type="text/javascript">
+                                function iframeLoaded() {
+                                    var iFrameID = document.getElementById('email-body');
+                                    if (iFrameID) {
+                                        // here you can make the height, I delete it first, then I make it again
+                                        iFrameID.height = "";
+                                        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
+                                    }
+                                }
+                            </script>
+                            <iframe src="/MissionTripEmail2/EmailBody/@Model.OrgId/@Model.PeopleId" onload="iframeLoaded()" frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
                         </div>
                     </div>
                     <div class="form-group">
@@ -83,7 +96,7 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="editor-modal">
+<div class="modal fade" id="editor-modal" style="overflow-y: hidden !important;">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-body">
@@ -100,7 +113,7 @@
 </div>
 @section scripts
 {
-    @ViewExtensions2.CKEditor()
+    @ViewExtensions2.FroalaEditorScripts()
     @Fingerprint.Script("/Content/touchpoint/lib/twitter-typeahead/js/typeahead.js")
     @Fingerprint.Script("/Content/touchpoint/js/email/email-supporter.js")
 

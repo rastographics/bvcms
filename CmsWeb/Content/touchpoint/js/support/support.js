@@ -26,17 +26,12 @@
         $("#body").val("");
         $("#success").hide();
 
-        if (CKEDITOR.instances["body"]) {
-            CKEDITOR.instances["body"].destroy();
-        }
-
-        CKEDITOR.env.isCompatible = true;
-
-        CKEDITOR.replace('body', {
+        $('#body').froalaEditable({
+            inlineMode: false,
             height: 200,
-            fullPage: false,
-            allowedContent: true,
-            customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+            theme: 'custom',
+            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'table', 'html', 'fullscreen'],
+            imageUploadURL: '/Account/FroalaUpload'
         });
     });
 
@@ -48,7 +43,7 @@
         }
 
         var postdata = {
-            body: CKEDITOR.instances["body"].getData(),
+            body: $('#body').froalaEditable('getHTML'),
             cc: $("#cc").val(),
             urgency: $("#urgency").val(),
             lastsearch: $("#last-search").val()
