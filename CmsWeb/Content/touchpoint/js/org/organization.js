@@ -680,11 +680,11 @@
         var t = $('#NewMeetingTime').val();
         var v = true;
         if (!reTime.test(t)) {
-            $.growlUI("error", "enter valid time");
+            swal("Error!", "Enter valid time.", "error");
             v = false;
         }
         if (!$.DateValid(d)) {
-            $.growlUI("error", "enter valid date");
+            swal("Error!", "Enter valid time.", "error");
             v = false;
         }
         return { date: d, time: t, valid: v };
