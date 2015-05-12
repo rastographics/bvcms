@@ -796,6 +796,7 @@ namespace CmsWeb
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js""></script>
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js""></script>
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/file_upload.min.js""></script>
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js""></script>
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js""></script>
 <script type=""text/javascript"">

@@ -119,8 +119,9 @@
             zIndex: 2501,
             height: 200,
             theme: 'custom',
-            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'table', 'html', 'fullscreen'],
-            imageUploadURL: '/Account/FroalaUpload'
+            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'html', 'fullscreen'],
+            imageUploadURL: '/Account/FroalaUpload',
+            fileUploadURL: '/Account/FroalaUpload'
         });
         var html = $(currentDiv).html();
         if (html !== "Click here to edit content") {
