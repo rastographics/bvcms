@@ -173,6 +173,10 @@ namespace CmsWeb.Areas.Reports.Models
                                     .Where(aa => aa.PeopleId == a.PeopleId && aa.AttendanceFlag == true)
                                     .Where(aa => aa.MeetingId != mtgid)
                                     .Max(aa => aa.MeetingDate)
+                    let memberType = a.Meeting.Organization.OrganizationMembers
+                                    .Where(aa => aa.PeopleId == a.PeopleId)
+                                    .Select(aa => aa.MemberTypeId)
+                                    .SingleOrDefault()
                     let attendpct = a.Meeting.Organization.OrganizationMembers
                                     .Where(aa => aa.PeopleId == a.PeopleId)
                                     .Select(aa => aa.AttendPct)
@@ -181,6 +185,7 @@ namespace CmsWeb.Areas.Reports.Models
                                     .Where(aa => aa.PeopleId == a.PeopleId)
                                     .Select(aa => aa.AttendStr)
                                     .SingleOrDefault()
+                    where memberType != 230 && memberType != 311
                     orderby a.EffAttendFlag descending, a.Person.Name2
                     select new AttendInfo
                     {
