@@ -25,7 +25,7 @@
                             <label for="Dt1" class="control-label">From Date</label>
                             <div class="input-group date">
                                 @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                                @Html.Hidden("Dt1Iso", Model.Dt1.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
                             </div>
                         </div>
                     </div>
