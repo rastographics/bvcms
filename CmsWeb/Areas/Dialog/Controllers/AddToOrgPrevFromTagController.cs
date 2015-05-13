@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			System.Threading.Tasks.Task.Factory.StartNew(() =>
 			{
 				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-				var Db = CMSDataContext.Create(Util.GetConnectionString(host));
+				var Db = DbUtil.Create(host);
 			    var cul = Db.Setting("Culture", "en-US");
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
                 Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -56,7 +56,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 				foreach (var pid in pids)
 				{
 					Db.Dispose();
-					Db = CMSDataContext.Create(Util.GetConnectionString(host));
+					Db = DbUtil.Create(host);
 					OrganizationMember.InsertOrgMembers(Db,
 						orgid, pid, MemberTypeCode.Member, DateTime.Now, null, false);
 					var r = Db.AddToOrgFromTagRuns.Where(mm => mm.Orgid == orgid).OrderByDescending(mm => mm.Id).First();

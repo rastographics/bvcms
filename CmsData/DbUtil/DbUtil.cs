@@ -38,10 +38,10 @@ namespace CmsData
             get
             {
                 if (HttpContext.Current == null)
-                    return CMSDataContext.Create(Util.ConnectionString);
+                    return CMSDataContext.Create(Util.ConnectionString, Util.Host);
                 if (InternalDb == null)
                 {
-                    InternalDb = CMSDataContext.Create(Util.ConnectionString);
+                    InternalDb = CMSDataContext.Create(Util.ConnectionString, Util.Host);
                     InternalDb.CommandTimeout = 1200;
                 }
                 return InternalDb;
@@ -55,12 +55,17 @@ namespace CmsData
         {
             get
             {
-                return CMSDataContext.Create(Util.ConnectionStringReadOnly);
+                return CMSDataContext.Create(Util.ConnectionStringReadOnly, Util.Host);
             }
+        }
+
+        public static CMSDataContext Create(string host)
+        {
+            return CMSDataContext.Create(Util.GetConnectionString(host), host);
         }
         public static void LogActivity(string activity, string name = null, int? orgid = null, int? pid = null)
         {
-            var db = CMSDataContext.Create(Util.ConnectionString);
+            var db = Create(Util.Host);
             int? uid = Util.UserId;
             if (uid == 0)
                 uid = null;
@@ -69,7 +74,7 @@ namespace CmsData
                 ActivityDate = Util.Now,
                 UserId = uid,
                 Activity = activity,
-                Machine = System.Environment.MachineName,
+                Machine = Environment.MachineName,
                 OrgId = orgid,
                 PeopleId = pid,
             };

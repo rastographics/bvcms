@@ -333,7 +333,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             var message = Util.PickFirst(orgsettings.Body, "no message");
 
             var location = org.Location;
-            if (!location.HasValue())
+            if (!location.HasValue() && masterorg != null)
                 location = masterorg.Location;
 
             message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db,

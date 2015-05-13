@@ -27,7 +27,7 @@ namespace CmsWeb.Models
 			this.waslocked = waslocked;
 			if (fid > 0)
 			{
-				var db = CMSDataContext.Create(Util.ConnectionString);
+				var db = DbUtil.Create(Util.Host);
 				var lockf = db.FamilyCheckinLocks.SingleOrDefault(f => f.FamilyId == fid);
 				if (lockf == null)
 				{

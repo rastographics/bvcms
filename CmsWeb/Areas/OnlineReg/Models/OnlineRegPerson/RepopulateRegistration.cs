@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (v.HasValue())
                         tx[q.Question] = v;
                 }
-                else
+                else if (qlist != null)
                 {
                     var v = qlist.SingleOrDefault(qq => qq.Question == q.Question && qq.Type == "text");
                     if (v != null)
@@ -158,7 +158,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (v.HasValue())
                         eq[q.Question] = v;
                 }
-                else
+                else if (qlist != null)
                 {
                     var v = qlist.SingleOrDefault(qq => qq.Question == q.Question && qq.Type == "question");
                     if (v != null)

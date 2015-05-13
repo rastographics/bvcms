@@ -213,8 +213,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
                 try
                 {
-                    var db = CMSDataContext.Create(Util.GetConnectionString(host));
-                    db.Host = host;
+                    var db = DbUtil.Create(host);
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;
@@ -226,8 +225,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
                     ErrorLog errorLog = ErrorLog.GetDefault(null);
                     errorLog.Log(new Error(ex2));
 
-                    var db = CMSDataContext.Create(Util.GetConnectionString(host));
-                    db.Host = host;
+                    var db = DbUtil.Create(host);
                     // set these again inside thread local storage
                     Util.UserEmail = useremail;
                     Util.IsInRoleEmailTest = isinroleemailtest;

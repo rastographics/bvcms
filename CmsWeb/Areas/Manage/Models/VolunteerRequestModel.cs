@@ -238,8 +238,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 				try
 				{
-					var db = CMSDataContext.Create(Util.GetConnectionString(host));
-					db.Host = host;
+					var db = DbUtil.Create(host);
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;
@@ -251,8 +250,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 					ErrorLog errorLog = ErrorLog.GetDefault(null);
 					errorLog.Log(new Error(ex2));
 
-					var db = CMSDataContext.Create(Util.GetConnectionString(host));
-					db.Host = host;
+					var db = DbUtil.Create(host);
 					// set these again inside thread local storage
 					Util.UserEmail = useremail;
 					Util.IsInRoleEmailTest = isinroleemailtest;
