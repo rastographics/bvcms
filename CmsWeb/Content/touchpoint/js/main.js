@@ -200,6 +200,16 @@ $.InitializeDateElements = function () {
         $(".input-group.date").datetimepicker({ format: 'MM/DD/YYYY', extraFormats: ['MM/DD/YY'], widgetPositioning: { horizontal: 'left' } });
         $(".input-group.datetime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', extraFormats: ['MM/DD/YY h:mm A'], widgetPositioning: { horizontal: 'left' } });
         $(".input-group.time").datetimepicker({ format: 'h:mm A', widgetPositioning: { horizontal: 'left' } });
+
+        $('.input-group.birthdate span.input-group-addon').click(function () {
+            var inputGroup = $(this).parent();
+            $(inputGroup).datetimepicker({ format: 'MM/DD/YYYY', extraFormats: ['MM/DD/YY'], widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
+            $(inputGroup).data("DateTimePicker").show();
+        });
+
+        $('.input-group.birthdate').on("dp.hide", function (e) {
+            $(this).data("DateTimePicker").destroy();
+        });
     }
 }
 
