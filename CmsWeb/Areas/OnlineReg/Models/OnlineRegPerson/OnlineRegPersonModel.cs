@@ -2,17 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Data.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
 using System.Web;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Schema;
 using System.Xml.Serialization;
-using CmsData;
-using CmsData.API;
 using CmsWeb.Controllers;
 using UtilityExtensions;
 using CmsData.Codes;
@@ -42,43 +33,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool CreatingAccount { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        internal int? bmon, byear, bday;
-
-        public string DateOfBirth
-        {
-            get
-            {
-                return Util.FormatBirthday(byear, bmon, bday);
-            }
-            set
-            {
-                bday = null;
-                bmon = null;
-                byear = null;
-                DateTime dt;
-                if (DateTime.TryParse(value, out dt))
-                {
-                    bday = dt.Day;
-                    bmon = dt.Month;
-                    if (Regex.IsMatch(value, @"\d+/\d+/\d+"))
-                        byear = dt.Year;
-                }
-                else
-                {
-                    int n;
-                    if (int.TryParse(value, out n))
-                        if (n >= 1 && n <= 12)
-                            bmon = n;
-                        else
-                            byear = n;
-                }
-            }
-        }
-
-        public bool DateValid()
-        {
-            return bmon.HasValue && byear.HasValue && bday.HasValue;
-        }
 
         public string Phone
         {
@@ -176,50 +130,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public List<string> Checkbox { get; set; }
         public List<Dictionary<string, int?>> MenuItem { get; set; }
 
-
-
         public OnlineRegPersonModel()
         {
             YesNoQuestion = new Dictionary<string, bool?>();
             FundItem = new Dictionary<int, decimal?>();
             Parent = HttpContext.Current.Items["OnlineRegModel"] as OnlineRegModel;
-        }
-        private void AfterSettingConstructor()
-        {
-            if (_setting == null)
-                return;
-            var ndd = setting.AskItems.Count(aa => aa.Type == "AskDropdown");
-            if (ndd > 0 && option == null)
-                option = new string[ndd].ToList();
-
-            var neqsets = setting.AskItems.Count(aa => aa.Type == "AskExtraQuestions");
-            if (neqsets > 0 && ExtraQuestion == null)
-            {
-                ExtraQuestion = new List<Dictionary<string, string>>();
-                for (var i = 0; i < neqsets; i++)
-                    ExtraQuestion.Add(new Dictionary<string, string>());
-            }
-            var ntxsets = setting.AskItems.Count(aa => aa.Type == "AskText");
-            if (ntxsets > 0 && Text == null)
-            {
-                Text = new List<Dictionary<string, string>>();
-                for (var i = 0; i < ntxsets; i++)
-                    Text.Add(new Dictionary<string, string>());
-            }
-            var nmi = setting.AskItems.Count(aa => aa.Type == "AskMenu");
-            if (nmi > 0 && MenuItem == null)
-            {
-                MenuItem = new List<Dictionary<string, int?>>();
-                for (var i = 0; i < nmi; i++)
-                    MenuItem.Add(new Dictionary<string, int?>());
-            }
-
-            var ncb = setting.AskItems.Count(aa => aa.Type == "AskCheckboxes");
-            if (ncb > 0 && Checkbox == null)
-                Checkbox = new List<string>();
-
-            if (!Suggestedfee.HasValue && setting.AskVisible("AskSuggestedFee"))
-                Suggestedfee = setting.Fee;
         }
 
         public OnlineRegModel Parent;
@@ -238,7 +153,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool SawExistingAccount;
         public bool CannotCreateAccount;
         public bool CreatedAccount;
-
 
         public string EmailAddress { get; set; }
         public string fromemail
@@ -260,94 +174,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return null;
         }
 
-        private DateTime _Birthday;
-        public DateTime? birthday
-        {
-            get
-            {
-                if (_Birthday == DateTime.MinValue)
-                    Util.BirthDateValid(bmon, bday, byear, out _Birthday);
-                return _Birthday == DateTime.MinValue ? (DateTime?)null : _Birthday;
-            }
-        }
-        public int GetAge(DateTime bd)
-        {
-            int y = bd.Year;
-            if (y == Util.SignalNoYear)
-                return 0;
-            if (y < 1000)
-                if (y < 50)
-                    y = y + 2000;
-                else y = y + 1900;
-            var dt = DateTime.Today;
-            int age = dt.Year - y;
-            if (dt.Month < bd.Month || (dt.Month == bd.Month && dt.Day < bd.Day))
-                age--;
-            return age;
-        }
         public string RegistrantProblem;
         public string CancelText = "Cancel this person";
         internal int count;
 
-        private Person _person;
         private string phone;
         private string homephone;
 
-        public Person person
-        {
-            get
-            {
-                if (_person == null)
-                    if (PeopleId.HasValue)
-                    {
-                        _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
-                        count = 1;
-                    }
-                    else
-                    {
-                        //_Person = SearchPeopleModel.FindPerson(first, last, birthday, email, phone, out count);
-
-                        var list = DbUtil.Db.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
-                        count = list.Count;
-                        if (count == 1)
-                            _person = DbUtil.Db.LoadPersonById(list[0].PeopleId.Value);
-                        if (_person != null)
-                            PeopleId = _person.PeopleId;
-                    }
-                return _person;
-            }
-        }
-        public void AddPerson(Person p, int entrypoint)
-        {
-            Family f;
-            if (p == null)
-                f = new Family
-                {
-                    AddressLineOne = AddressLineOne,
-                    AddressLineTwo = AddressLineTwo,
-                    CityName = City,
-                    StateCode = State,
-                    ZipCode = ZipCode,
-                    CountryName = Country,
-                    HomePhone = HomePhone,
-                };
-            else
-                f = p.Family;
-
-            var position = DbUtil.Db.ComputePositionInFamily(age, false, f.FamilyId) ?? 10;
-            _person = Person.Add(f, position,
-                null, FirstName.Trim(), null, LastName.Trim(), DateOfBirth, married == 20, gender ?? 0,
-                    OriginCode.Enrollment, entrypoint);
-            person.EmailAddress = EmailAddress.Trim();
-            person.SendEmailAddress1 = true;
-            person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
-            person.CellPhone = Phone.GetDigits();
-
-            DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("OnlineReg AddPerson {0}".Fmt(person.PeopleId));
-            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
-            PeopleId = person.PeopleId;
-        }
         public bool IsCreateAccount()
         {
             if (org != null)
@@ -363,21 +196,5 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             return org != null && (org.IsMissionTrip ?? false);
         }
-
-        public XmlSchema GetSchema()
-        {
-            throw new System.NotImplementedException("The method or operation is not implemented.");
-        }
-        internal string GetOthersInTransaction(Transaction transaction)
-        {
-            var TransactionPeopleIds = transaction.OriginalTrans.TransactionPeople.Select(tt => tt.PeopleId);
-            var q = from pp in DbUtil.Db.People
-                where TransactionPeopleIds.Contains(pp.PeopleId)
-                where pp.PeopleId != PeopleId
-                select pp.Name;
-            var others = string.Join(",", q.ToArray());
-            return others;
-        }
-
     }
 }

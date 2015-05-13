@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Linq;
 using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
@@ -111,6 +112,37 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Parent.ConfirmReregister();
             DbUtil.Db.SubmitChanges();
             return true;
+        }
+        public void AddPerson(Person p, int entrypoint)
+        {
+            Family f;
+            if (p == null)
+                f = new Family
+                {
+                    AddressLineOne = AddressLineOne,
+                    AddressLineTwo = AddressLineTwo,
+                    CityName = City,
+                    StateCode = State,
+                    ZipCode = ZipCode,
+                    CountryName = Country,
+                    HomePhone = HomePhone,
+                };
+            else
+                f = p.Family;
+
+            var position = DbUtil.Db.ComputePositionInFamily(age, false, f.FamilyId) ?? 10;
+            _person = Person.Add(f, position,
+                null, FirstName.Trim(), null, LastName.Trim(), DateOfBirth, married == 20, gender ?? 0,
+                    OriginCode.Enrollment, entrypoint);
+            person.EmailAddress = EmailAddress.Trim();
+            person.SendEmailAddress1 = true;
+            person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
+            person.CellPhone = Phone.GetDigits();
+
+            DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("OnlineReg AddPerson {0}".Fmt(person.PeopleId));
+            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
+            PeopleId = person.PeopleId;
         }
     }
 }

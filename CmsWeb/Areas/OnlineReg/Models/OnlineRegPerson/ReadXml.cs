@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -169,6 +170,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var a = e.Attribute(name);
             return a != null ? a.Value : string.Empty;
+        }
+        public XmlSchema GetSchema()
+        {
+            throw new System.NotImplementedException("The method or operation is not implemented.");
         }
     }
 }

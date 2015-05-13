@@ -88,6 +88,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                    where o.DivOrgs.Any(di => di.DivId == divid)
                    select o;
         }
+        public bool UserSelectsOrganization()
+        {
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
+        }
+
+        public bool ComputesOrganizationByAge()
+        {
+            return masterorgid.HasValue &&
+                   masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2;
+        }
+
 
         private bool RegistrationType(int typ)
         {
@@ -105,17 +116,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return false;
             // Show the Cancel link because we have either found the record or this is a new record
             return Found.HasValue || IsNew;
-        }
-
-        public bool UserSelectsOrganization()
-        {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
-        }
-
-        public bool ComputesOrganizationByAge()
-        {
-            return masterorgid.HasValue &&
-                   masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2;
         }
 
         public bool ManageSubscriptions()
@@ -625,6 +625,43 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     DateTime.Now, null, false);
                 DbUtil.Db.UpdateMainFellowship(grouptojoin);
             }
+        }
+        private void AfterSettingConstructor()
+        {
+            if (_setting == null)
+                return;
+            var ndd = setting.AskItems.Count(aa => aa.Type == "AskDropdown");
+            if (ndd > 0 && option == null)
+                option = new string[ndd].ToList();
+
+            var neqsets = setting.AskItems.Count(aa => aa.Type == "AskExtraQuestions");
+            if (neqsets > 0 && ExtraQuestion == null)
+            {
+                ExtraQuestion = new List<Dictionary<string, string>>();
+                for (var i = 0; i < neqsets; i++)
+                    ExtraQuestion.Add(new Dictionary<string, string>());
+            }
+            var ntxsets = setting.AskItems.Count(aa => aa.Type == "AskText");
+            if (ntxsets > 0 && Text == null)
+            {
+                Text = new List<Dictionary<string, string>>();
+                for (var i = 0; i < ntxsets; i++)
+                    Text.Add(new Dictionary<string, string>());
+            }
+            var nmi = setting.AskItems.Count(aa => aa.Type == "AskMenu");
+            if (nmi > 0 && MenuItem == null)
+            {
+                MenuItem = new List<Dictionary<string, int?>>();
+                for (var i = 0; i < nmi; i++)
+                    MenuItem.Add(new Dictionary<string, int?>());
+            }
+
+            var ncb = setting.AskItems.Count(aa => aa.Type == "AskCheckboxes");
+            if (ncb > 0 && Checkbox == null)
+                Checkbox = new List<string>();
+
+            if (!Suggestedfee.HasValue && setting.AskVisible("AskSuggestedFee"))
+                Suggestedfee = setting.Fee;
         }
     }
 

@@ -125,5 +125,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     FundItem[f.Value.ToInt()] = evamt;
             }
         }
+        internal string GetOthersInTransaction(Transaction transaction)
+        {
+            var TransactionPeopleIds = transaction.OriginalTrans.TransactionPeople.Select(tt => tt.PeopleId);
+            var q = from pp in DbUtil.Db.People
+                where TransactionPeopleIds.Contains(pp.PeopleId)
+                where pp.PeopleId != PeopleId
+                select pp.Name;
+            var others = string.Join(",", q.ToArray());
+            return others;
+        }
     }
 }
