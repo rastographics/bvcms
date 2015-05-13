@@ -139,6 +139,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     .Fmt(id, Util.fmtcoupon(coupon), Amount)
             });
         }
+
+        // todo: I hope we can get rid of this method
         [HttpPost]
         public ActionResult PayWithCouponOld(int id, string Coupon, decimal Amount)
         {
