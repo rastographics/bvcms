@@ -38,8 +38,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public CMSDataContext Db { get; set; }
         public void DoWork()
         {
-            Db = CMSDataContext.Create(Util.GetConnectionString(Host));
-            Db.Host = Host;
+            Db = DbUtil.Create(Host);
             Db.CommandTimeout = 1200;
 
             var noaddressok = Db.Setting("RequireAddressOnStatement", "true") == "false";

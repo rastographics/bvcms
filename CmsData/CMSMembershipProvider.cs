@@ -35,7 +35,7 @@ namespace CmsData
 
         CMSDataContext GetDb()
         {
-            return CMSDataContext.Create(Util.ConnectionString);
+            return DbUtil.Create(Util.Host);
         }
         public override void Initialize(string name, NameValueCollection config)
         {

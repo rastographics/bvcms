@@ -44,11 +44,13 @@ namespace CmsData
         private readonly string[] stringlist;
         private readonly MailAddress from;
         private string connStr;
+        private string host;
         private CMSDataContext db;
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from)
         {
             connStr = callingContext.ConnectionString;
+            host = callingContext.Host;
             this.from = from;
             if (text == null)
                 text = "(no content)";
@@ -67,7 +69,7 @@ namespace CmsData
         //
         public string DoReplacements(int pid, EmailQueueTo emailqueueto)
         {
-            using (db = CMSDataContext.Create(connStr))
+            using (db = CMSDataContext.Create(connStr, host))
             {
                 var p = db.LoadPersonById(pid);
                 person = p;

@@ -16,10 +16,6 @@ namespace CmsData.API
     {
         private CMSDataContext Db;
 
-        public APIOrganization()
-        {
-            Db = CMSDataContext.Create("Data Source=.;Initial Catalog=CMS_bellevue;Integrated Security=True");
-        }
         public APIOrganization(CMSDataContext Db)
         {
             this.Db = Db;

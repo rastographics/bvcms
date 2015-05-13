@@ -22,10 +22,10 @@ namespace CmsWeb.Models
         private int PeopleId;
         private bool noupdate;
 
-        public UploadPeopleModel(CMSDataContext Db, int PeopleId, bool noupdate, string connectionstring)
+        public UploadPeopleModel(CMSDataContext Db, int PeopleId, bool noupdate)
         {
             this.Db = Db;
-            Db2 = CMSDataContext.Create(connectionstring);
+            Db2 = DbUtil.Create(Db.Host);
             this.PeopleId = PeopleId;
             this.noupdate = noupdate;
         }

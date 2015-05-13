@@ -480,7 +480,7 @@ namespace CmsWeb.Models
             first = first.Trim();
             last = last.Trim();
             var fone = Util.GetDigits(phone);
-            var ctx = CMSDataContext.Create(Util.ConnectionString);
+            var ctx = DbUtil.Create(Util.Host);
             ctx.SetNoLock();
             var q = from p in ctx.People
                     where (p.FirstName == first || p.NickName == first || p.MiddleName == first)

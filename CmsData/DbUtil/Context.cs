@@ -32,9 +32,9 @@ namespace CmsData
         }
 
         internal string ConnectionString;
-        public static CMSDataContext Create(string connStr)
+        public static CMSDataContext Create(string connStr, string host)
         {
-            return new CMSDataContext(connStr) {ConnectionString = connStr};
+            return new CMSDataContext(connStr) {ConnectionString = connStr, Host = host};
         }
         partial void OnCreated()
         {
@@ -43,7 +43,6 @@ namespace CmsData
 #else
             CommandTimeout = 1200;
 #endif
-            Host = Util.Host;
         }
         private string _LogFile;
         public string LogFile
