@@ -33,7 +33,6 @@
                                 if (iFrameID) {
                                     // here you can make the height, I delete it first, then I make it again
                                     iFrameID.height = "";
-                                    console.log(iFrameID.contentWindow.document.body.scrollHeight);
                                     iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
                                 }
                             }
@@ -74,6 +73,7 @@
                     inlineMode: false,
                     allowStyle: true,
                     spellcheck: true,
+                    useFileName: false,
                     fullPage: true,
                     minHeight: 100,
                     theme: 'custom',

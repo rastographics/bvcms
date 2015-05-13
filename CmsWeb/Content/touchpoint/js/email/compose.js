@@ -31,6 +31,7 @@
         $('#htmleditor').froalaEditable({
             inlineMode: false,
             spellcheck: true,
+            useFileName: false,
             zIndex: 2501,
             height: 200,
             theme: 'custom',
