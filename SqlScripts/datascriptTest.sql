@@ -1662,6 +1662,37 @@ INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (14, N'
 INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (15, N'Extra', 100, '1,1,0,Arial,20,first,0.004,0.02,1,1~1,1,0,Arial,16,last,0.010,0.28,1,1~1,1,0,Arial,10,extra,0.015,0.5,1,1~1,1,0,Arial,10,allergies,0.97,0.5,3,1~1,1,0,Arial,10,location,0.026,0.82,1,3~1,1,0,Arial,10,time,0.43,0.82,1,3~1,1,0,Arial,10,date,0.97,0.82,3,3~1,1,0,Arial,10,org,0.05,0.97,1,3~1,1,0,Arial,16,securitycode,0.97,0.28,3,1')
 INSERT INTO [dbo].[LabelFormats] ([Id], [Name], [Size], [Format]) VALUES (16, N'Extra', 200, '1,1,0,Arial,20,first,0.010,0.01,1,1~1,1,0,Arial,16,last,0.016,0.14,1,1~1,1,0,Arial,12,extra,0.021,0.29,1,1~1,1,0,Arial,12,allergies,0.98,0.29,3,1~1,1,0,Arial,16,securitycode,0.98,0.14,3,1~1,1,0,Arial,12,location,0.026,0.42,1,1~1,1,0,Arial,12,time,0.43,0.42,1,1~1,1,0,Arial,12,date,0.98,0.42,3,1~1,1,0,Arial,10,org,0.056,.51,1,1~3,1,0,pid,0.5,0.96,200,25,2,3')
 SET IDENTITY_INSERT [dbo].[LabelFormats] OFF
+SET IDENTITY_INSERT [dbo].[MobileAppActions] ON
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles]) VALUES (1, 1, N'Giving', 0, N'', 1, 0, 1, N'')
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles]) VALUES (2, 9, N'Registrations', 0, N'', 2, 1, 1, N'')
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles]) VALUES (3, 6, N'People Search', 0, N'', 3, 1, 1, N'Access')
+INSERT INTO [dbo].[MobileAppActions] ([id], [type], [title], [option], [data], [order], [loginType], [enabled], [roles]) VALUES (4, 7, N'Attendance', 0, N'', 4, 1, 1, N'Access, Attendance')
+SET IDENTITY_INSERT [dbo].[MobileAppActions] OFF
+SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] ON
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (1, N'Giving', 2)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (2, N'Events', 0)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (3, N'Audio', 0)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (4, N'Video', 0)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (5, N'Maps', 0)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (6, N'People Search', 1)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (7, N'Attendance', 1)
+INSERT INTO [dbo].[MobileAppActionTypes] ([id], [name], [loginType]) VALUES (8, N'Custom', 0)
+SET IDENTITY_INSERT [dbo].[MobileAppActionTypes] OFF
+SET IDENTITY_INSERT [dbo].[MobileAppAudioTypes] ON
+INSERT INTO [dbo].[MobileAppAudioTypes] ([id], [name]) VALUES (1, N'SoundCloud')
+SET IDENTITY_INSERT [dbo].[MobileAppAudioTypes] OFF
+SET IDENTITY_INSERT [dbo].[MobileAppIcons] ON
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (1, 1, 1, N'http://files.bvcms.com/touchpoint/giving.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (2, 1, 2, N'http://files.bvcms.com/touchpoint/registrations.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (3, 1, 3, N'http://files.bvcms.com/touchpoint/search.png')
+INSERT INTO [dbo].[MobileAppIcons] ([id], [setID], [actionID], [url]) VALUES (4, 1, 4, N'http://files.bvcms.com/touchpoint/attendance.png')
+SET IDENTITY_INSERT [dbo].[MobileAppIcons] OFF
+SET IDENTITY_INSERT [dbo].[MobileAppIconSets] ON
+INSERT INTO [dbo].[MobileAppIconSets] ([id], [name], [active]) VALUES (1, N'Standard', 1)
+SET IDENTITY_INSERT [dbo].[MobileAppIconSets] OFF
+SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] ON
+INSERT INTO [dbo].[MobileAppVideoTypes] ([id], [name]) VALUES (1, N'YouTube')
+SET IDENTITY_INSERT [dbo].[MobileAppVideoTypes] OFF
 SET IDENTITY_INSERT [dbo].[Program] ON
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (1, N'Worship', N'1', 1, 24)
 INSERT INTO [dbo].[Program] ([Id], [Name], [RptGroup], [StartHoursOffset], [EndHoursOffset]) VALUES (2, N'Small Groups', N'2', 1, 24)
