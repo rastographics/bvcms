@@ -22,15 +22,12 @@ namespace CmsData
                 return;
             var dbname = db.Host;
             db.Dispose();
-            db = CMSDataContext.Create(Util.GetConnectionString(dbname));
-            db.Host = dbname;
+            db = DbUtil.Create(dbname);
         }
 
         public PythonEvents(string dbname, string classname, string script)
         {
-            var cs = Util.GetConnectionString(dbname);
-            db = CMSDataContext.Create(cs);
-            db.Host = dbname;
+            db = DbUtil.Create(dbname);
             var engine = Python.CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script);
 
@@ -46,8 +43,7 @@ namespace CmsData
 
         public PythonEvents(string dbname)
         {
-            db = CMSDataContext.Create(Util.GetConnectionString(dbname));
-            db.Host = dbname;
+            db = DbUtil.Create(dbname);
         }
 
         public string Script { get; set; } // set this in the python code for javascript on the output page
@@ -64,8 +60,7 @@ namespace CmsData
             var sc = engine.CreateScriptSourceFromString(script);
             var code = sc.Compile();
             var scope = engine.CreateScope();
-            db = CMSDataContext.Create(Util.GetConnectionString(dbname));
-            db.Host = dbname;
+            db = DbUtil.Create(dbname);
             scope.SetVariable("model", this);
             var qf = new QueryFunctions(db);
             scope.SetVariable("q", qf);

@@ -29,33 +29,29 @@ namespace CmsWeb.Areas.Manage.Controllers
 			DbUtil.Db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
 			DbUtil.Db.SubmitChanges();
 			var pid = Util.UserPeopleId;
-		    var cs = Util.GetConnectionString(host);
 
 			Alias.Task.Factory.StartNew(() =>
 			{
 				Thread.CurrentThread.Priority = ThreadPriority.Lowest;
-				var Db = CMSDataContext.Create(cs);
-			    Db.Host = host;
+				var Db = DbUtil.Create(host);
 				try
 				{
-					var m = new UploadPeopleModel(Db, pid ?? 0, noupdate, cs);
+					var m = new UploadPeopleModel(Db, pid ?? 0, noupdate);
 					m.DoUpload(text, testing: true);
 					Db.Dispose();
-    				Db = CMSDataContext.Create(cs);
-    			    Db.Host = host;
+    				Db = DbUtil.Create(host);
 
         			runningtotals = new UploadPeopleRun { Started = DateTime.Now, Count = 0, Processed = 0 };
         			Db.UploadPeopleRuns.InsertOnSubmit(runningtotals);
         			Db.SubmitChanges();
 
-					m = new UploadPeopleModel(Db, pid ?? 0, noupdate, cs);
+					m = new UploadPeopleModel(Db, pid ?? 0, noupdate);
 					m.DoUpload(text);
 				}
 				catch (Exception ex)
 				{
 					Db.Dispose();
-    				Db = CMSDataContext.Create(cs);
-    			    Db.Host = host;
+    				Db = DbUtil.Create(host);
 
 				    var q = from r in Db.UploadPeopleRuns
 				            where r.Id == Db.UploadPeopleRuns.Max(rr => rr.Id)

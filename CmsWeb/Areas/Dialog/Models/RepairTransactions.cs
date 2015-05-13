@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public static void DoWork(string host, int id)
         {
-            var db = CMSDataContext.Create(Util.GetConnectionString(host));
+            var db = DbUtil.Create(host);
             db.RepairTransactions(id);
             // finished
             var lop = FetchLongRunningOp(db, id, Op);

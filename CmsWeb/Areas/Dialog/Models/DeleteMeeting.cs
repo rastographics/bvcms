@@ -47,8 +47,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private static void DoWork(DeleteMeeting model)
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-            var db = CMSDataContext.Create(Util.GetConnectionString(model.host));
-            db.Host = model.host;
+            var db = DbUtil.Create(model.host);
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
@@ -57,7 +56,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in model.pids)
             {
                 db.Dispose();
-                db = CMSDataContext.Create(Util.GetConnectionString(model.host));
+                db = DbUtil.Create(model.host);
                 Attend.RecordAttendance(db, pid, model.Id, false);
                 lop = FetchLongRunningOp(db, model.Id, Op);
                 Debug.Assert(lop != null, "r != null");
