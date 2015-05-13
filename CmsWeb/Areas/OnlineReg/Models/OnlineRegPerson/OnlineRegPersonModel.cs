@@ -41,9 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool ShowCountry { get; set; }
         public bool CreatingAccount { get; set; }
         public string FirstName { get; set; }
-        public string MiddleName { get; set; }
         public string LastName { get; set; }
-        public string Suffix { get; set; }
         internal int? bmon, byear, bday;
 
         public string DateOfBirth
@@ -156,11 +154,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string request { get; set; }
         public string grade { get; set; }
         public int? ntickets { get; set; }
-        public int? whatfamily { get; set; }
-
-        public const int MyFamily = 1;
-        public const int PreviousFamily = 2;
-        public const int NewFamily = 3;
 
         public string gradeoption { get; set; }
         public bool IsFamily { get; set; }
@@ -347,11 +340,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     OriginCode.Enrollment, entrypoint);
             person.EmailAddress = EmailAddress.Trim();
             person.SendEmailAddress1 = true;
-            person.SuffixCode = Suffix;
-            person.MiddleName = MiddleName;
+//            person.SuffixCode = Suffix;
+//            person.MiddleName = MiddleName;
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
-            //            if (person.Age >= 18)
-            //                person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
             person.CellPhone = Phone.GetDigits();
 
             DbUtil.Db.SubmitChanges();

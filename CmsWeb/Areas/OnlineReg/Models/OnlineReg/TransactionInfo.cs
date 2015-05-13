@@ -81,7 +81,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (FirstRegistrant.org == null || !FirstRegistrant.setting.AskVisible("AskParents")) 
                 return;
 
-            FirstRegistrant.Suffix = "";
             var a = (FirstRegistrant.fname ?? FirstRegistrant.mname ?? "").Trim().Split(' ');
             if (a.Length > 1)
             {
@@ -106,11 +105,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             else
             {
 			    r.Email = FirstRegistrant.EmailAddress;
-			    r.Suffix = FirstRegistrant.Suffix;
                 r.First = FirstRegistrant.FirstName;
-                r.Middle = FirstRegistrant.MiddleName;
                 r.Last = FirstRegistrant.LastName;
-                r.Suffix = FirstRegistrant.Suffix;
                 r.Phone = FirstRegistrant.HomePhone ?? FirstRegistrant.Phone;
             } 
         }

@@ -5,40 +5,31 @@
   var zipPlaceHolder = Model.RequiredZip() ? "" : "optional";
 }
 <div class="form-group">
-    <label class="control-label col-sm-3">Gender</label>
-    <div class="col-sm-9">
-        <label class="radio-inline"> @Html.RadioButtonFor(m => m.gender, "1") Male </label>
-        <label class="radio-inline"> @Html.RadioButtonFor(m => m.gender, "2") Female </label>
-        <div>@Html.ValidationMessageFor(m => m.gender)</div>
-    </div>
+  <label class="control-label col-sm-3">Gender</label>
+  <div class="col-sm-9">
+    <label class="radio-inline"> @Html.RadioButtonFor(m => m.gender, "1") Male </label>
+    <label class="radio-inline"> @Html.RadioButtonFor(m => m.gender, "2") Female </label>
+    <div>@Html.ValidationMessageFor(m => m.gender)</div>
+  </div>
 </div>
 <div class="form-group">
-    <label class="control-label col-sm-3">Marital</label>
-    <div class="col-sm-9">
-        <label class="radio-inline"> @Html.RadioButtonFor(m => m.married, "10") Single </label>
-        <label class="radio-inline"> @Html.RadioButtonFor(m => m.married, "20") Married </label>
-        <div>@Html.ValidationMessageFor(m => m.married)</div>
-    </div>
+  <label class="control-label col-sm-3">Marital</label>
+  <div class="col-sm-9">
+    <label class="radio-inline"> @Html.RadioButtonFor(m => m.married, "10") Single </label>
+    <label class="radio-inline"> @Html.RadioButtonFor(m => m.married, "20") Married </label>
+    <div>@Html.ValidationMessageFor(m => m.married)</div>
+  </div>
 </div>
-@if (Model.whatfamily == 3)
+@if (Model.Found == false)
 {
-    @Html.EditorFor(m => m.HomePhone, new { placeholder = phonePlaceHolder })
-    @Html.EditorFor(m => m.AddressLineOne, new { placeholder = addrPlaceHolder })
-    @Html.EditorFor(m => m.AddressLineTwo, new { placeholder = addrPlaceHolder })
-    @Html.EditorFor(m => m.City, new { placeholder = zipPlaceHolder })
-    @Html.EditorFor(m => m.State, new { placeholder = zipPlaceHolder })
-    @Html.EditorFor(m => m.ZipCode, new { placeholder = zipPlaceHolder })
-    if (Model.ShowCountry)
-    {
-        @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries() })
-    }
+  @Html.EditorFor(m => m.HomePhone, new { placeholder = phonePlaceHolder })
+  @Html.EditorFor(m => m.AddressLineOne, new { placeholder = addrPlaceHolder })
+  @Html.EditorFor(m => m.AddressLineTwo, new { placeholder = "Optional" })
+  @Html.EditorFor(m => m.City, new { placeholder = "Optional" })
+  @Html.EditorFor(m => m.State, new { placeholder = "Optional" })
+  @Html.EditorFor(m => m.ZipCode, new { placeholder = zipPlaceHolder })
+  if (Model.ShowCountry)
+  {
+    @Html.EditorFor(m => m.Country, "Dropdown", new { items = Model.Countries() })
+  }
 }
-else
-{
-    @Html.HiddenFor(m => m.AddressLineOne)
-    @Html.HiddenFor(m => m.AddressLineTwo)
-    @Html.HiddenFor(m => m.City)
-    @Html.HiddenFor(m => m.State)
-    @Html.HiddenFor(m => m.ZipCode)
-}
-@Html.HiddenFor(m => m.whatfamily)

@@ -10,9 +10,7 @@
         @Html.Partial("Flow2/FinishedHeader", Model)
     </address>
     
-    <div class="alert alert-info">Please provide additional information for a new profile</div>
-    @Html.EditorFor(m => m.MiddleName, new { classes = "narrow" })
-    @Html.EditorFor(m => m.Suffix, new { classes = "narrow" } )
+    <div class="alert alert-info">Please provide additional information</div>
     if (Model.RequiredDOB() && !Model.DateOfBirth.HasValue())
     {
         @Html.EditorFor(m => m.DateOfBirth, new { placeholder = "M/D/YY" })

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
@@ -27,41 +28,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     FillPriorInfo();
                 return true;
             }
-//            if (!whatfamily.HasValue && (id > 0 || Parent.UserPeopleId > 0 ))
-//            {
-//                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].whatfamily), "Choose a family option");
-//                return true;
-//            }
-            switch (whatfamily)
+            if (id > 0)
             {
-                case 1:
-                    Debug.Assert(Parent.UserPeopleId != null);
-                    var u = DbUtil.Db.LoadPersonById(Parent.UserPeopleId.Value);
-                    AddressLineOne = u.PrimaryAddress;
-                    City = u.PrimaryCity;
-                    State = u.PrimaryState;
-                    ZipCode = u.PrimaryZip.FmtZip();
-                    break;
-                case 2:
-                    var pb = Parent.List[id - 1];
-                    AddressLineOne = pb.AddressLineOne;
-                    City = pb.City;
-                    State = pb.State;
-                    ZipCode = pb.ZipCode;
-                    break;
-                default:
-#if DEBUG2
-                    AddressLineOne = "235 Riveredge Cv.";
-                    City = "Cordova";
-                    State = "TN";
-                    ZipCode = "38018";
-                    gender = 1;
-                    married = 10;
-                    HomePhone = "9017581862";
-#endif
-                    break;
+                // copy address because probably in same family
+                var pp = Parent.List[id - 1];
+                AddressLineOne = pp.AddressLineOne;
+                AddressLineTwo = pp.AddressLineTwo;
+                City = pp.City;
+                State = pp.State;
+                ZipCode = pp.ZipCode;
+                Country = pp.Country;
             }
-            whatfamily = 3;
             ShowAddress = true;
             return false;
         }

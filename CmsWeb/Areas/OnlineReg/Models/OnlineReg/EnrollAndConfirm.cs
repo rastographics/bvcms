@@ -447,10 +447,11 @@ Total Fee paid for this registration session: {4:C}<br/>
                 if (p.IsNew)
                 {
                     Person uperson = null;
-                    if (p.whatfamily == 1)
-                        uperson = DbUtil.Db.LoadPersonById(UserPeopleId.Value);
-                    else if (p.whatfamily == 2 && i > 0)
-                        uperson = List[i - 1].person;
+                    if (i > 0)
+                    {
+                        if(List[i].AddressLineOne.HasValue() && List[i].AddressLineOne == List[i-1].AddressLineOne)
+                            uperson = List[i - 1].person; // add to previous family
+                    }
                     p.AddPerson(uperson, p.org.EntryPointId ?? 0);
                 }
                 Util.AddGoodAddress(elist, p.fromemail);

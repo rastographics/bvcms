@@ -12,6 +12,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             modelState = modelstate;
             Index = i;
             IsValidForNew = true; // Assume true until proven false
+            IsValidForContinue = true; // Assume true until proven false
 
             ValidateBasic();
             ValidateBirthdate();
@@ -20,8 +21,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ValidateBirthdayRange();
             ValidatePhone();
             ValidateEmailForNew();
-            if (!CanProceedWithThisAddress()) 
+            if (!CanProceedWithThisAddress())
+            {
+                IsValidForContinue = false;
                 return;
+            }
             ValidateGender();
             ValidateMarital();
             ValidateMembership();
@@ -30,10 +34,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool CanProceedWithThisAddress()
         {
-            var isnewfamily = whatfamily == 3;
-            if (!isnewfamily)
-                return true;
-
             if (!AddressLineOne.HasValue() && RequiredAddr())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].AddressLineOne), "address required.");
             if(RequiredZip() && !ZipCode.HasValue() && !RequiredAddr())
@@ -46,24 +46,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!hasCityStateOrZip)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ZipCode), "zip required (or \"na\")");
 
+            if (!modelState.IsValid)
+                return false;
 
             var countryIsOK = modelState.IsValid && AddressLineOne.HasValue() && (Country == "United States" || !Country.HasValue());
             if (!countryIsOK)
-                return false;
+                return true; // not going to validate address
 
             var r = AddressVerify.LookupAddress(AddressLineOne, AddressLineTwo, City, State, ZipCode);
             if (r.Line1 == "error") 
                 return true; // Address Validator is not available, skip check
 
             if (r.found == false)
-            {
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ZipCode),
-                    r.address + ", to skip address check, Change the country to USA, Not Validated");
-                ShowCountry = RequiredAddr();
-                return false;
-            }
+                return true; // not going to bother them to ask for better address
 
-            // populdate Address corrections
+            // populate Address corrections
             if (r.Line1 != AddressLineOne)
                 AddressLineOne = r.Line1;
             if (r.Line2 != (AddressLineTwo ?? ""))
@@ -75,7 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (r.Zip != (ZipCode ?? ""))
                 ZipCode = r.Zip;
 
-            return true;
+            return true; 
         }
 
         private void ValidateMarital()
