@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
                         var fromid = csv[0].ToInt();
                         var toid = csv[1].ToInt();
-                        var Db = new CMSDataContext(Util.GetConnectionString(host));
+                        var Db = CMSDataContext.Create(Util.GetConnectionString(host));
                         var p = Db.LoadPersonById(fromid);
 
                         if (p == null)

@@ -1,6 +1,3 @@
-
-
-
 CREATE VIEW [dbo].[OnlineRegQA]
 AS
 
@@ -21,7 +18,7 @@ questions AS (
 		om.OrganizationId,
 		om.PeopleId,
 		pref.value('(@question)[1]', 'varchar(500)') AS Question,
-		pref.value('(text())[1]', 'varchar(500)') AS Answer
+		pref.value('(text())[1]', 'varchar(max)') AS Answer
 	FROM  
 	      dbo.OrganizationMembers om CROSS APPLY
 	      OnlineRegData.nodes('/OnlineRegPersonModel/Text') AS Question(pref)
@@ -94,8 +91,6 @@ SELECT
 	Answer
 FROM results
 JOIN dbo.People p ON p.PeopleId = results.PeopleId
-
-
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

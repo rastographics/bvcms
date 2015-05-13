@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private void DoWork(OrgSearchDrop model)
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-            var db = new CMSDataContext(Util.GetConnectionString(model.host));
+            var db = CMSDataContext.Create(Util.GetConnectionString(model.host));
             db.Host = model.host;
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 {
                     n++;
                     db.Dispose();
-                    db = new CMSDataContext(Util.GetConnectionString(model.host));
+                    db = CMSDataContext.Create(Util.GetConnectionString(model.host));
                     var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == orginfo.Id);
                     if (DropDate.HasValue)
                         om.Drop(db, DropDate.Value);

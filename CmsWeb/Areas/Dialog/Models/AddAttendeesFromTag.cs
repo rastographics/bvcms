@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.Dialog.Models
         private static void DoWork(AddAttendeesFromTag model)
         {
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-            var db = new CMSDataContext(Util.GetConnectionString(model.host));
+            var db = CMSDataContext.Create(Util.GetConnectionString(model.host));
             db.Host = model.host;
             var cul = db.Setting("Culture", "en-US");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.Dialog.Models
             foreach (var pid in model.pids)
             {
                 db.Dispose();
-                db = new CMSDataContext(Util.GetConnectionString(model.host));
+                db = CMSDataContext.Create(Util.GetConnectionString(model.host));
 				if (model.AddAsMembers)
 					OrganizationMember.InsertOrgMembers(db, model.OrgId, pid, 
                         MemberTypeCode.Member, model.JoinDate, null, false);

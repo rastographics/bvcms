@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
+using CmsData.View;
 using CmsWeb.Code;
 using UtilityExtensions;
 
@@ -40,18 +43,18 @@ namespace CmsWeb.Areas.Dialog.Models
                     return;
             }
             var i = (from mm in DbUtil.Db.OrganizationMembers
-                where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
-                select new
-                {
-                    mm,
-                    mm.Person.Name,
-                    mm.Organization.OrganizationName,
-                    mm.Organization.RegSetting,
-                    mm.Organization,
-                    mm.OrgMemMemTags,
-                    mm.Organization.IsMissionTrip,
-                    ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
-                }).SingleOrDefault();
+                     where mm.OrganizationId == OrgId && mm.PeopleId == PeopleId
+                     select new
+                     {
+                         mm,
+                         mm.Person.Name,
+                         mm.Organization.OrganizationName,
+                         mm.Organization.RegSetting,
+                         mm.Organization,
+                         mm.OrgMemMemTags,
+                         mm.Organization.IsMissionTrip,
+                         ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
+                     }).SingleOrDefault();
             if (i == null)
                 throw new Exception("missing OrgMember at oid={0}, pid={1}".Fmt(OrgId, PeopleId));
             om = i.mm;
@@ -143,19 +146,19 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             get
             {
-                if(transactionsLink.HasValue())
+                if (transactionsLink.HasValue())
                     return transactionsLink;
 
-                if(om == null)
+                if (om == null)
                     om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
 
-                if (!IsMissionTrip) 
+                if (!IsMissionTrip)
                     return transactionsLink = om.TranId.HasValue ? "/Transactions/{0}".Fmt(om.TranId) : null;
 
-                if(om.IsInGroup("Goer") && om.IsInGroup("Sender"))
+                if (om.IsInGroup("Goer") && om.IsInGroup("Sender"))
                     return transactionsLink = om.TranId.HasValue ? "/Transactions/{0}?goerid={1}&senderid={1}".Fmt(om.TranId, om.PeopleId) : null;
 
-                if(om.IsInGroup("Goer"))
+                if (om.IsInGroup("Goer"))
                     return transactionsLink = om.TranId.HasValue ? "/Transactions/{0}?goerid={1}".Fmt(om.TranId, om.PeopleId) : null;
 
                 if (om.IsInGroup("Sender"))
@@ -173,7 +176,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public void UpdateModel()
         {
-            if(om == null)
+            if (om == null)
                 om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
             this.CopyPropertiesTo(om);
             DbUtil.Db.SubmitChanges();
@@ -187,9 +190,23 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 if (payLink.HasValue())
                     return payLink;
-                if(om == null)
+                if (om == null)
                     om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
                 return payLink = om.PayLink2(DbUtil.Db);
+            }
+        }
+        private string supportLink;
+        public string SupportLink
+        {
+            get
+            {
+                if (supportLink.HasValue())
+                    return supportLink;
+                if (om == null)
+                    om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+                if(IsMissionTrip && om.MemberTypeId == MemberTypeCode.Member)
+                    return supportLink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(OrgId, PeopleId));
+                return null;
             }
         }
 
@@ -202,17 +219,17 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
 
         public void Drop()
         {
-            if(om == null)
+            if (om == null)
                 om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
-            if(DropDate.HasValue)
-    			om.Drop(DbUtil.Db, DropDate.Value);
+            if (DropDate.HasValue)
+                om.Drop(DbUtil.Db, DropDate.Value);
             else
-    			om.Drop(DbUtil.Db);
+                om.Drop(DbUtil.Db);
             DbUtil.Db.SubmitChanges();
             if (RemoveFromEnrollmentHistory)
             {
                 DbUtil.DbDispose();
-                DbUtil.Db = new CMSDataContext(Util.ConnectionString);
+                DbUtil.Db = CMSDataContext.Create(Util.ConnectionString);
                 var q = DbUtil.Db.EnrollmentTransactions.Where(tt => tt.OrganizationId == OrgId && tt.PeopleId == PeopleId);
                 DbUtil.Db.EnrollmentTransactions.DeleteAllOnSubmit(q);
                 DbUtil.Db.SubmitChanges();
@@ -220,13 +237,13 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
         }
         public string SmallGroupChanged(int sgtagid, bool ck)
         {
-            if(om == null)
+            if (om == null)
                 om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
 
             if (om == null)
                 return "error";
             if (ck)
-                om.OrgMemMemTags.Add(new OrgMemMemTag {MemberTagId = sgtagid});
+                om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = sgtagid });
             else
             {
                 var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
@@ -236,6 +253,15 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             }
             DbUtil.Db.SubmitChanges();
             return "ok";
+        }
+
+        public IEnumerable<OnlineRegQA> RegQuestions()
+        {
+            return from qa in DbUtil.Db.ViewOnlineRegQAs
+                   where qa.OrganizationId == OrgId
+                   where qa.PeopleId == PeopleId
+                   where qa.Type == "question" || qa.Type == "text"
+                   select qa;
         }
     }
 }
