@@ -139,6 +139,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
             person.CellPhone = Phone.GetDigits();
 
+            if (count == 0)
+                person.Comments = "Added during online registration because record was not found";
+            else if(count > 1)
+                person.Comments = "Added during online registration because there was more than 1 match";
+
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("OnlineReg AddPerson {0}".Fmt(person.PeopleId));
             DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);

@@ -1596,7 +1596,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FindOrNewButtons.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonMetaHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonHidden.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\OtherHidden.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\QuestionsHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\ModelHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SubmitNewButtons.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FinishedHeader.cshtml" />
