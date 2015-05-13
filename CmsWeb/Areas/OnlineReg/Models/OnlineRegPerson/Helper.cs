@@ -590,9 +590,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private readonly Dictionary<string, string> _nameLookup = new Dictionary<string, string>()
         {
             {"first", "FirstName"},
-            {"middle", "MiddleName"},
             {"last", "LastName"},
-            {"suffix", "Suffix"},
             {"dob", "DateOfBirth"},
             {"phone", "Phone"},
             {"email", "EmailAddress"},

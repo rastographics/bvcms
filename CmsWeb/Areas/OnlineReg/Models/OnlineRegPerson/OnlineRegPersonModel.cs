@@ -340,8 +340,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     OriginCode.Enrollment, entrypoint);
             person.EmailAddress = EmailAddress.Trim();
             person.SendEmailAddress1 = true;
-//            person.SuffixCode = Suffix;
-//            person.MiddleName = MiddleName;
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
             person.CellPhone = Phone.GetDigits();
 

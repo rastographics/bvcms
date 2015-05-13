@@ -48,7 +48,7 @@
             @Html.Partial("Flow2/OtherHidden", p, viewdata)
             if(Model.List.Count > 1)
             {
-                <input type="radio" name="donor" value="@i" /> @(p.FirstName + " " + p.LastName + " " + p.Suffix) @:(@p.age)<br />
+                <input type="radio" name="donor" value="@i" /> @(p.FirstName + " " + p.LastName) @:(@p.age)<br />
             }
             else if(Model.List.Count == 1)
             {
