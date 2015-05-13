@@ -3,40 +3,43 @@
 @model CmsWeb.Models.ExtraValues.Value
 @if (Model.UserCanView(DbUtil.Db))
 {
-    var well = Model.Type == "Text2" ? "well" : "";
-    <div style="display:table-row">
-        @if (Model.Type == "Header")
-        {
-            <div class="cell"><b>@Html.Raw(Model.Name)</b></div>
-        }
-        else if (Model.Type == "Link")
-        {
-          <div class="nowrap cell width120 right"><span class="bold size11"></span></div>
-          <div class="margin-left @well">@Model.HyperLink()</div>
-        }
-        else
-        {
-            <div class="nowrap cell width120 right"><span class="bold size11">@Model.DisplayName</span></div>
-            if (Model.UserCanEdit())
+    if (Model.Type == "Header")
+    {
+        @Html.Raw(Model.Name)
+    }
+    else if (Model.Type == "Link")
+    {
+        <div class="col-sm-6">
+            @Model.HyperLink()
+        </div>
+    }
+    else
+    {
+        <div class="col-sm-6">
+            @if (Model.UserCanEdit())
             {
                 var dv = Model.DataValue;
                 var ds = Model.DataSource;
-                <div class="margin-left @well">
-                    <a href="#"
-                       data-pk="@Model.Id"
-                       data-name="@Model.DataName"
-                       class="@Model.EditableClass"
-                       data-inputclass="@(Model.Type == "Text2" ? "width500" : "input-large")"
-                       data-url="@Model.EditUrl"
-                       @if (dv.HasValue()) { <text> data-value="@dv" </text>    }
-                       @if (ds.HasValue()) {  <text> data-source="@ds" </text>   }
-                       >@Html.Raw(Model)</a>
+                <div class="form-group">
+                    <label class="control-label">@Model.DisplayName</label>
+                    <div class="controls">
+                        <a href="#"
+                           data-pk="@Model.Id"
+                           data-name="@Model.DataName"
+                           class="@Model.EditableClass"
+                           data-url="@Model.EditUrl"
+                           @if (dv.HasValue()) { <text> data-value="@dv" </text>        }
+                           @if (ds.HasValue()) {  <text> data-source="@ds" </text>       }>@Html.Raw(Model)</a>
+                    </div>
                 </div>
             }
             else
             {
-                <div class="cell pad-left">@Html.Raw(Model)</div>
+                <dl>
+                    <dt>@Model.DisplayName</dt>
+                    <dd>@Html.Raw(Model)</dd>
+                </dl>
             }
-        }
-    </div>
+        </div>
+    }
 }

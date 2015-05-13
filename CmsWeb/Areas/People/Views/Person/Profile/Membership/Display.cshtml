@@ -118,31 +118,42 @@
             </div>
             @FormAction(true)
             <hr />
-            <h4>@ExtraMembershipDataLabel</h4>
+            <h3>@ExtraMembershipDataLabel</h3>
             @ExtraDataFormAction(evmodel)
-            <br />
-            <div class="table">
-                @{
-                    var list = evmodel.GetExtraValues().ToList();
-                }
-                @foreach (var f in list)
+            @{
+                var firstHeader = true;
+                var list = evmodel.GetExtraValues().ToList();
+            }
+            @foreach (var f in list)
+            {
+                if (f.Type == "Header")
                 {
-                    if (f.Type == "Header" || f == list[0]) // if this is a header or the first item, start the well
+                    if (firstHeader)
                     {
-                        if (f != list[0]) // if not on the first item, close the previous well
-                        {
-                            @Html.Raw("</div>")
-                        }
+                        <h4>@Html.EditorFor(m => f)</h4>
                         @Html.Raw("<div class='well'>")
+                        @Html.Raw("<div class='row'>")
+                        firstHeader = false;
                     }
-                    @Html.EditorFor(m => f)
-
-                    if (f == list.Last()) // if this was the last item, close the well
+                    else
                     {
                         @Html.Raw("</div>")
+                        @Html.Raw("</div>")
+                        <h4>@Html.EditorFor(m => f)</h4>
+                        @Html.Raw("<div class='well'>")
+                        @Html.Raw("<div class='row'>")
                     }
                 }
-            </div>
+                else
+                {
+                    @Html.EditorFor(m => f)
+                }
+                if (f == list.Last()) // if this was the last item, close the well
+                {
+                    @Html.Raw("</div>")
+                    @Html.Raw("</div>")
+                }
+            }
             @ExtraDataFormAction(evmodel, true)
             <input type="hidden" id="StandardExtraValueReload" value="/ExtraValue/Display/@evmodel.Table/Membership/@evmodel.Id" />
         </div>
