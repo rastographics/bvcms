@@ -45,9 +45,19 @@
         }
     });
 
+    function adjustIframe() {
+        var iFrameID = document.getElementById('email-body');
+        if (iFrameID) {
+            // here you can make the height, I delete it first, then I make it again
+            iFrameID.height = "";
+            iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
+        }
+    }
+
     $('#editor-modal').on('click', '#save-edit', function () {
         var h = $('#htmleditor').froalaEditable('getHTML');
         $(currentDiv).html(h);
+        adjustIframe();
         $('#editor-modal').modal('hide');
     });
 
