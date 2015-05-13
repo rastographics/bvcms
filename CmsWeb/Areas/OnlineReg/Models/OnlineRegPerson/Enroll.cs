@@ -495,7 +495,7 @@ namespace CmsWeb.Models
                 person.RecRegs.Add(reg);
             }
             List<OnlineRegQA> qlist = null;
-            if (setting.Has("ExtraQuestion") || setting.Has("Text"))
+            if (setting.Has("AskExtraQuestions") || setting.Has("AskText"))
                 qlist = (from qu in DbUtil.Db.ViewOnlineRegQAs
                          where qu.PeopleId == om.PeopleId
                          where qu.OrganizationId == om.OrganizationId
@@ -587,7 +587,7 @@ namespace CmsWeb.Models
                                 if (v.HasValue())
                                     eq[q.Question] = v;
                             }
-                            else
+                            else if (qlist != null)
                             {
                                 var v = qlist.SingleOrDefault(qq => qq.Question == q.Question && qq.Type == "question");
                                 if (v != null)
