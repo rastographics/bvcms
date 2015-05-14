@@ -192,7 +192,7 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
                 var om = db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
                 var ts = db.ViewTransactionSummaries.SingleOrDefault(
                         tt => tt.RegId == om.TranId && tt.PeopleId == om.PeopleId);
-                var reason = ts == null ? "Inital Tran" : "Adjustment";
+                var reason = ts == null ? "Initial Tran" : "Adjustment";
                 om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee);
                 db.SubmitChanges();
             }

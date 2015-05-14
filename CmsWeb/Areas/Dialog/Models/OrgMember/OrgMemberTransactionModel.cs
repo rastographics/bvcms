@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 return;
 
             var reason = TransactionSummary == null
-                ? "Inital Tran"
+                ? "Initial Tran"
                 : "Adjustment";
             if (isMissionTrip)
             {
