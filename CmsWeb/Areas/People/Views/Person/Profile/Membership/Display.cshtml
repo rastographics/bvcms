@@ -121,19 +121,19 @@
             <h3>@ExtraMembershipDataLabel</h3>
             @ExtraDataFormAction(evmodel)
             @{
-                var firstHeader = true;
+                var firstTime = true;
                 var list = evmodel.GetExtraValues().ToList();
             }
             @foreach (var f in list)
             {
                 if (f.Type == "Header")
                 {
-                    if (firstHeader)
+                    if (firstTime)
                     {
                         <h4>@Html.EditorFor(m => f)</h4>
                         @Html.Raw("<div class='well'>")
                         @Html.Raw("<div class='row'>")
-                        firstHeader = false;
+                        firstTime = false;
                     }
                     else
                     {
@@ -146,6 +146,13 @@
                 }
                 else
                 {
+                    if (firstTime)
+                    {
+                        @Html.Raw("<br/>")
+                        @Html.Raw("<div class='well'>")
+                        @Html.Raw("<div class='row'>")
+                        firstTime = false;
+                    }
                     @Html.EditorFor(m => f)
                 }
                 if (f == list.Last()) // if this was the last item, close the well
