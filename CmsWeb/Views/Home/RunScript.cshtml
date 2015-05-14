@@ -25,7 +25,7 @@
                         <tr>
                             @for (var i = 0; i < Model.FieldCount; i++)
                             {
-                                <td>@Model[i].ToString()</td>
+                                <td>@Html.Raw(Model[i].ToString())</td>
                                 count++;
                             }
                         </tr>
