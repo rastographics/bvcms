@@ -21,13 +21,13 @@
                 @foreach (var p in Model.Recipients)
                 {
                     <tr>
-                        <td><a href="/Manage/Emails/SentTo/@p.peopleid">@p.name</a></td>
-                        <td>@p.address</td>
-                        <td class="text-right">@p.nopens</td>
+                        <td><a href="/Manage/Emails/SentTo/@p.PeopleId">@p.Name</a></td>
+                        <td>@p.EmailAddress</td>
+                        <td class="text-right">@p.NumberOpened</td>
                         @if (Model.queue.CCParents == true)
                         {
-                            <td>@p.parent1name</td>
-                            <td>@p.parent2name</td>
+                            <td>@p.Parent1</td>
+                            <td>@p.Parent2</td>
                         }
                     </tr>
                 }
