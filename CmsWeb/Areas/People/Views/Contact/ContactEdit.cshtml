@@ -17,10 +17,16 @@
                     @Html.EditorFor(m => m.Ministry)
                     @Html.EditorFor(m => m.ContactType)
                     @Html.EditorFor(m => m.ContactReason)
-                    @Html.EditorFor(m => m.LimitToRole)
+
+                    <div class="form-group">
+                        <label for="LimitToRole" class="control-label">Limit to Role</label>
+                        <div class="controls">
+                            @Html.DropDownList("LimitToRole", new SelectList(Model.Roles(), "Value", "Text"), new { @class = "form-control" })
+                        </div>
+                    </div>
                 </div>
                 <div class="col-sm-6">
-                    
+
                     @Html.EditorFor(m => m.NotAtHome)
                     @Html.EditorFor(m => m.LeftDoorHanger)
                     @Html.EditorFor(m => m.LeftMessage)

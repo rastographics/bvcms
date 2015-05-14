@@ -4,6 +4,7 @@
     ViewBag.PageHeader = "Contact";
     Layout = ViewExtensions2.TouchPointLayout();
 }
+
 @Html.Hidden("Id")
 <div class="row">
     <div class="col-sm-12 col-md-9 col-lg-7">
@@ -32,7 +33,7 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade" id="contactees">  
+            <div class="tab-pane fade" id="contactees">
                 @if (Model.CanViewComments)
                 {
                     <div class="row hidden-xs">
