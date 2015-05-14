@@ -356,12 +356,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void CheckNotifyDiffEmails()
         {
-            var regemail = DbUtil.Db.StaffEmailForOrg(org.OrganizationId);
             var orgname = org.OrganizationName;
             MailAddress ma = null;
             try
             {
-                ma = new MailAddress(regemail);
+                ma = new MailAddress(EmailAddress);
             }
             catch (Exception)
             {
@@ -406,7 +405,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     .Replace("{org}", orgname, ignoreCase: true)
                     .Replace("{phone}", phone, ignoreCase: true);
                 var subj = "{0}, different email address than one on record".Fmt(orgname);
-                DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(regemail), subj, msg, false);
+                DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
             }
             else
             {
@@ -416,7 +415,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     .Replace("{org}", orgname, ignoreCase: true)
                     .Replace("{phone}", phone.FmtFone(), ignoreCase: true);
                 var subj = "{0}, no email on your record".Fmt(orgname);
-                DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(regemail), subj, msg, false);
+                DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
             }
         }
 
