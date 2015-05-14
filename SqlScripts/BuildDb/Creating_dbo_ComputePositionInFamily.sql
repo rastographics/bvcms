@@ -59,8 +59,8 @@ BEGIN
 	AND @married = married 
 	AND (childadult = 
 		 CASE 
-			WHEN ISNULL(@age, @noage) > 18 THEN @adult 
 			WHEN ISNULL(@age, @noage) = @noage THEN @noage 
+			WHEN ISNULL(@age, @noage) > 18 THEN @adult 
 			ELSE 0 
 		 END 
 		)

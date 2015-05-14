@@ -23,51 +23,6 @@ RETURN
 		JOIN dbo.Users u ON u.UserId = ur.UserId
 		WHERE @UserId = u.UserId 
 	),
-	filterNames AS (
-		SELECT OrganizationId oid
-		FROM dbo.Organizations o
-		WHERE ( 
-			o.OrganizationName LIKE '%' + @name + '%' 
-			OR o.OrganizationId = TRY_CONVERT(INT, @name)
-			OR o.Location LIKE '%' + @name + '%'
-			OR o.PendingLoc LIKE '%' + @name + '%'
-			OR o.LeaderName LIKE '%' + @name + '%'
-			OR EXISTS(
-				SELECT NULL
-				FROM dbo.DivOrg dd
-				JOIN dbo.Division d ON d.Id = dd.DivId
-				WHERE d.Name LIKE '%' + @name + '%'
-				AND dd.OrgId = o.OrganizationId
-			)
-		)
-	),
-	filterHasExtraValue AS (
-		SELECT OrganizationId oid
-		FROM dbo.Organizations o
-		WHERE EXISTS(
-			SELECT NULL
-			FROM OrganizationExtra e
-			WHERE e.OrganizationId = o.OrganizationId
-			AND e.Field LIKE SUBSTRING(@name, 4, 50) + '%'
-		)
-	),
-	filterNotHasExtraValue AS (
-		SELECT OrganizationId oid
-		FROM dbo.Organizations o
-		WHERE NOT EXISTS(
-			SELECT NULL
-			FROM OrganizationExtra e
-			WHERE e.OrganizationId = o.OrganizationId
-			AND e.Field LIKE SUBSTRING(@name, 5, 50) + '%'
-		)
-	),
-	filterName AS (
-		SELECT OrganizationId oid
-		FROM dbo.Organizations o
-		WHERE (@name LIKE 'ev:%' AND o.OrganizationId IN (SELECT oid FROM filterHasExtraValue)) 
-		OR (@name LIKE '-ev:%' AND o.OrganizationId IN (SELECT oid FROM filterNotHasExtraValue)) 
-		OR (o.OrganizationId IN (SELECT oid FROM filterNames)) 
-	),
 	filterLeaders1 AS ( 
 		SELECT o.OrganizationId oid, o.ParentOrgId
 		FROM dbo.Organizations o
@@ -192,6 +147,10 @@ RETURN
 				FOR XML PATH(''), TYPE
 			).value('text()[1]','nvarchar(max)'),1,2,N'')
 		FROM dbo.Organizations o
+	),
+	filterName AS (
+		SELECT oid
+		FROM dbo.FilterOrgSearchName(@name)
 	),
 	filterReg AS (
 		SELECT oid

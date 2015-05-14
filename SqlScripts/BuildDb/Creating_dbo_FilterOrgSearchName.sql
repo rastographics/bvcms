@@ -1,0 +1,71 @@
+CREATE FUNCTION [dbo].[FilterOrgSearchName](@name VARCHAR(100))
+RETURNS 
+@t TABLE ( oid INT )
+AS
+BEGIN
+
+	DECLARE @oid INT = TRY_CONVERT(INT, @name)
+	IF (@oid IS NOT NULL 
+		AND EXISTS(
+			SELECT NULL 
+			FROM dbo.Organizations 
+			WHERE OrganizationId = @oid
+		)
+	)
+	BEGIN
+		INSERT @t SELECT @oid
+		RETURN
+	END
+        
+	;WITH filterNames AS (
+		SELECT OrganizationId oid
+		FROM dbo.Organizations o
+		WHERE ( 
+			o.OrganizationName LIKE '%' + @name + '%' 
+			OR o.Location LIKE '%' + @name + '%'
+			OR o.PendingLoc LIKE '%' + @name + '%'
+			OR o.LeaderName LIKE '%' + @name + '%'
+			OR EXISTS(
+				SELECT NULL
+				FROM dbo.DivOrg dd
+				JOIN dbo.Division d ON d.Id = dd.DivId
+				WHERE d.Name LIKE '%' + @name + '%'
+				AND dd.OrgId = o.OrganizationId
+			)
+		)
+	),
+	filterHasExtraValue AS (
+		SELECT OrganizationId oid
+		FROM dbo.Organizations o
+		WHERE EXISTS(
+			SELECT NULL
+			FROM OrganizationExtra e
+			WHERE e.OrganizationId = o.OrganizationId
+			AND e.Field LIKE SUBSTRING(@name, 4, 50) + '%'
+		)
+	),
+	filterNotHasExtraValue AS (
+		SELECT OrganizationId oid
+		FROM dbo.Organizations o
+		WHERE NOT EXISTS(
+			SELECT NULL
+			FROM OrganizationExtra e
+			WHERE e.OrganizationId = o.OrganizationId
+			AND e.Field LIKE SUBSTRING(@name, 5, 50) + '%'
+		)
+	),
+	filterName AS (
+		SELECT OrganizationId oid
+		FROM dbo.Organizations o
+		WHERE (@name LIKE 'ev:%' AND o.OrganizationId IN (SELECT oid FROM filterHasExtraValue)) 
+		OR (@name LIKE '-ev:%' AND o.OrganizationId IN (SELECT oid FROM filterNotHasExtraValue)) 
+		OR (o.OrganizationId IN (SELECT oid FROM filterNames)) 
+	)
+	INSERT @t SELECT oid FROM filterName
+	RETURN 
+END
+GO
+IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
+GO
+IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+GO
