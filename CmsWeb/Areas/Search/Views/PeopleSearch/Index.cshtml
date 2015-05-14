@@ -7,10 +7,6 @@
     ViewBag.PageHeader = "People Search";
     Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head 
-{
-    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-multiselect/css/bootstrap-multiselect.css")
-}
 <div class="box box-responsive">
     <div class="box-content">
         <form method="post" action="/PeopleSearch">
@@ -106,6 +102,5 @@
 </div>
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
     @Fingerprint.Script("/Content/touchpoint/js/search/people-search.js")
 }

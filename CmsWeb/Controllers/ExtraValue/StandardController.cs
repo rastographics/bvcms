@@ -56,7 +56,7 @@ namespace CmsWeb.Controllers
         {
             try
             {
-                if(ModelState.IsValid)
+                if (ModelState.IsValid)
                     m.AddAsNewStandard();
                 else
                     ViewBag.Error = "not saved, errors in form";

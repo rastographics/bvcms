@@ -19,7 +19,12 @@
             @Html.HiddenFor(m => m.ExtraValueLocation)
             @Html.EditorFor(m => m.ExtraValueType, new { PlainSelect = true })
             @Html.EditorFor(m => m.ExtraValueName)
-            @Html.EditorFor(m => m.VisibilityRoles, new { help = "Comma separated roles, blank is visible to all, except for MyData users" })
+            <div class="form-group">
+                <label for="VisibilityRolesList" class="control-label">Limit to Roles</label>
+                <div class="controls">
+                    @Html.DropDownList("VisibilityRolesList", new SelectList(Model.Roles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
+                </div>
+            </div>
             @Html.EditorFor(m => m.ExtraValueBitPrefix, new { hide = "hide", help = "Short (2-3 letter) abbreviation to prepend to each checkbox name" })
             @Html.EditorFor(m => m.ExtraValueCodes, "TextArea", new { hide = "hide", help = "Each code should be a short name on a separate line" })
             @Html.EditorFor(m => m.ExtraValueCheckboxes, "TextArea", new { hide = "hide", help = "Short names of each checkbox on separate lines. These will be prepended with the prefix and a -" })

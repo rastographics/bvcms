@@ -7,7 +7,6 @@
     ViewBag.PageHeader = "Search Builder";
 }
 @section head {
-    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-multiselect/css/bootstrap-multiselect.css")
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
 }
 <div class="row">
@@ -68,9 +67,8 @@
 @Html.Partial("SelectCondition", Model)
 @section scripts
 {
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
     @Fingerprint.Script("/Content/touchpoint/lib/jquery-scrollintoview/js/jquery.scrollintoview.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-    @Fingerprint.Script("/Content/touchpoint/js/search/query.js")   
+    @Fingerprint.Script("/Content/touchpoint/js/search/query.js")
 }

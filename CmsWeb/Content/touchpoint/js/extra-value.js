@@ -10,7 +10,7 @@
                 var form = $(this);
                 $('#empty-dialog').html(form);
                 $('#empty-dialog').modal("show");
-                
+
                 $.AttachFormElements();
                 $(this).validate({
                     highlight: function (element) {

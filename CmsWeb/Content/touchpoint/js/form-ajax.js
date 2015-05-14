@@ -11,6 +11,11 @@
                 }
             });
         }
+        if ($('.multi-select').length > 0) {
+            $('.multi-select').multiselect({
+                maxHeight: 200
+            });
+        }
         $.InitializeDateElements();
     };
 
@@ -266,7 +271,7 @@
 
             $('#empty-dialog').html(dlg);
             $('#empty-dialog').modal("show");
-            
+
             f.on('hidden', function () {
                 div.remove();
                 dlg.remove();
@@ -286,7 +291,7 @@
                                     swal(ret);
                                 }
                             }
-                                
+
                             if ($a.data("callback")) {
                                 $.InitFunctions[$a.data("callback")]($a);
                             }

@@ -22,7 +22,12 @@
             @Html.HiddenFor(m => m.ExtraValueType.Value)
             @Html.DisplayFor(m => m.ExtraValueType)
             @Html.DisplayFor(m => m.ExtraValueName)
-            @Html.EditorFor(m => m.VisibilityRoles, new { help = "Comma separated roles, blank is visible to all, execpt for MyData users" })
+            <div class="form-group">
+                <label for="VisibilityRolesList" class="control-label">Limit to Roles</label>
+                <div class="controls">
+                    @Html.DropDownList("VisibilityRolesList", new SelectList(Model.Roles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control multi-select" })
+                </div>
+            </div>
             @switch (Model.ExtraValueType.Value)
             {
                 case "Bits":
