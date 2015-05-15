@@ -52,7 +52,12 @@
             @if (User.IsInRole("Admin"))
             {
                 <div class="col-sm-6 col-md-4">
-                    @Html.EditorFor(m => m.LimitToRole)
+                    <div class="form-group">
+                        <label for="LimitToRole" class="control-label">Limit to Role</label>
+                        <div class="controls">
+                            @Html.DropDownList("LimitToRole", new SelectList(Model.Roles(), "Value", "Text"), new { @class = "form-control" })
+                        </div>
+                    </div>
                 </div>
             }
             <div class="col-sm-12 col-md-12">
@@ -79,7 +84,7 @@
     {
         <div class="visible-xs-block">
             <a href="/Org/GeneralUpdate/@Model.Id" class="btn btn-primary btn-block ajax">Save</a>
-            <a href="/Org/General/@Model.Id" class="btn btn-default btn-block ajax">Cancel</a> 
+            <a href="/Org/General/@Model.Id" class="btn btn-default btn-block ajax">Cancel</a>
         </div>
     }
     else
