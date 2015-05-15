@@ -45,10 +45,12 @@ namespace CmsData
         private readonly MailAddress from;
         private string connStr;
         private string host;
+        private int? currentOrgId;
         private CMSDataContext db;
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from)
         {
+            currentOrgId = db.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             this.from = from;
@@ -71,6 +73,8 @@ namespace CmsData
         {
             using (db = CMSDataContext.Create(connStr, host))
             {
+                if(currentOrgId.HasValue)
+                    db.SetCurrentOrgId(currentOrgId);
                 var p = db.LoadPersonById(pid);
                 person = p;
                 var pi = emailqueueto.OrgId.HasValue
