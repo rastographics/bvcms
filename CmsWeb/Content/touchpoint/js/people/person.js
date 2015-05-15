@@ -116,7 +116,7 @@
         });
     });
 
-    $('body').on('click', 'a.personal-picture, a.family-picture', function (ev) {
+    $('body').on('click', 'a.personal-picture', function (ev) {
         ev.preventDefault();
         $("<div />")
             .load($(this).attr("href"), {}, function () {
@@ -210,7 +210,7 @@
                         showCancelButton: true,
                         confirmButtonClass: "btn-danger",
                         confirmButtonText: "Yes, delete it!",
-                        closeOnConfirm: false
+                        closeOnConfirm: true
                     },
                     function () {
                         f.attr("action", a.href);
@@ -228,6 +228,51 @@
                     return false;
                 });
         });
+    });
+
+    $('body').on('click', 'a.family-picture', function (ev) {
+        ev.preventDefault();
+        $("<div />")
+            .load($(this).attr("href"), {}, function () {
+                var div = $(this);
+                var dialog = div.find("div.modal-dialog");
+                var f = div.find("form");
+
+                $('#empty-dialog').html(dialog);
+                $('#empty-dialog').modal("show");
+                dialog.on('hidden', function () {
+                    div.remove();
+                    dialog.remove();
+                });
+
+                $("#delete-picture").click(function (ev) {
+                    ev.preventDefault();
+                    var a = this;
+
+                    swal({
+                        title: "Are you sure?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: true
+                    },
+                    function () {
+                        f.attr("action", a.href);
+                        f.submit();
+                    });
+
+                    return false;
+                });
+
+                $("#refresh-thumbnail").click(function (ev) {
+                    ev.preventDefault();
+                    var a = this;
+                    f.attr("action", a.href);
+                    f.submit();
+                    return false;
+                });
+            });
     });
 
     $('body').on('click', '#family_related a.edit', function (ev) {
