@@ -59,7 +59,7 @@ JOIN lookup.AttendType at ON at.Id = mt.AttendanceTypeId
 WHERE consecutive >= ISNULL(ConsecutiveAbsentsThreshold, 2)
 AND m.MeetingDate IS NOT NULL
 AND at.Id NOT IN (70, 100) --inservice and homebound
-AND om.MemberTypeId NOT IN (230,311) --inactive
+AND om.MemberTypeId != 230 --inactive
 		AND (tt.OrganizationId = @orgid OR @orgid IS NULL)
 		AND (@divid IS NULL 
 			OR EXISTS(SELECT NULL 

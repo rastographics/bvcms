@@ -50,7 +50,7 @@ namespace CmsData
 
         public EmailReplacements(CMSDataContext callingContext, string text, MailAddress from)
         {
-            currentOrgId = db.CurrentOrgId;
+            currentOrgId = callingContext.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             this.from = from;
