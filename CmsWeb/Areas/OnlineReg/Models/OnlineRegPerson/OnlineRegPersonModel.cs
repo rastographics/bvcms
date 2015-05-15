@@ -34,15 +34,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
+        // used for both cell and home phone (when a new family is created), otherwise just cell
         public string Phone
         {
             get { return phone.FmtFone(); }
             set { phone = value; }
-        }
-        public string HomePhone
-        {
-            get { return homephone.FmtFone(); }
-            set { homephone = value; }
         }
 
         public string AddressLineOne { get; set; }

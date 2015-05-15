@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        public int age
+        public int? age
         {
             get
             {
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return GetAge(_person.BirthDate.Value);
                 if (birthday.HasValue)
                     return GetAge(birthday.Value);
-                return 0;
+                return null;
             }
         }
 

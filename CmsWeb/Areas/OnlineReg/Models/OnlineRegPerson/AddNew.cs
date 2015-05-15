@@ -125,10 +125,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     StateCode = State,
                     ZipCode = ZipCode,
                     CountryName = Country,
-                    HomePhone = HomePhone,
+                    HomePhone = Phone,
                 };
             else
                 f = p.Family;
+            DbUtil.Db.SubmitChanges();
 
             var position = DbUtil.Db.ComputePositionInFamily(age, married == 20 , f.FamilyId) ?? 10;
             _person = Person.Add(f, position,

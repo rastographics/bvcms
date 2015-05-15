@@ -1561,14 +1561,13 @@
     <Content Include="Areas\Manage\Views\Batch\FindTagEmail.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\TestScript.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\SeeHtml.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\AddressEdit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\RegistrantComplete.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\List.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Login.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\QuestionsDisplay.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\QuestionsEdit.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonDisplay.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonEdit.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonFind.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Registrant.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTrip.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Birthday.cshtml" />
@@ -1790,6 +1789,7 @@
     <Content Include="Areas\Dialog\Views\OrgDrop\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgSearchDrop\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgSearchDrop\Process.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\EnterAddress.cshtml" />
     <None Include="Properties\PublishProfiles\production.pubxml">
       <SubType>Designer</SubType>
     </None>

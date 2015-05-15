@@ -107,7 +107,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 			    r.Email = FirstRegistrant.EmailAddress;
                 r.First = FirstRegistrant.FirstName;
                 r.Last = FirstRegistrant.LastName;
-                r.Phone = FirstRegistrant.HomePhone ?? FirstRegistrant.Phone;
+                r.Phone = FirstRegistrant.Phone;
             } 
         }
     }

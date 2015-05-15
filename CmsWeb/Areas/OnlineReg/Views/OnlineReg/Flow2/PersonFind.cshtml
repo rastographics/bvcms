@@ -1,0 +1,21 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+<input type="hidden" id="personedit"/>
+@Html.EditorFor(m => m.FirstName)
+@Html.EditorFor(m => m.LastName)
+@Html.EditorFor(m => m.DateOfBirth, new {placeholder = "M/D/YY"})
+@Html.EditorFor(m => m.Phone)
+@Html.EditorFor(m => m.EmailAddress)
+<div class="form-group">
+  <div class="col-sm-offset-3 col-sm-9">
+    <div class="pull-right">
+      @Helper.OnlineRegAjaxButton("/OnlineReg/FindRecord/" + Model.Index, "Submit", style: "btn-primary min-width15em")
+      @if (Model.Parent.AllowSaveProgress())
+      {
+        <div>
+          @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning pull-right min-width15em")
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -127,14 +127,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var n = 0;
             if (Phone.HasValue() && Phone.GetDigits().Length >= 10)
                 n++;
-            if (ShowAddress && HomePhone.HasValue() && HomePhone.GetDigits().Length >= 10)
-                n++;
 
             if (RequiredPhone() && n == 0)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Phone), "cell or home phone required");
-
-            if (HomePhone.HasValue() && HomePhone.GetDigits().Length > 20)
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].HomePhone), "homephone too long");
         }
         private void ValidateEmailForNew()
         {

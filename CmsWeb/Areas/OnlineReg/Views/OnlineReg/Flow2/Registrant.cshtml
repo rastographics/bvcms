@@ -85,17 +85,24 @@
         // Show next person to register, because still taking registrations
         if (!Model.Parent.IsEnded())
         {
-          // Already found, display only
+          // A family member is always already found, display only
           if (Model.IsFamily)
           {
             @Html.Partial("Flow2/PersonHidden", Model)
             @Html.Partial("Flow2/PersonDisplay", Model)
           }
-          // Find or Add New Registrant
+          // Find Person in Database
           else
           {
             Model.Parent.ShowFindInstructions = true;
-            @Html.Partial("Flow2/PersonEdit", Model)
+            if (Model.Found == null) // have not searched yet
+            {
+              @Html.Partial("Flow2/PersonFind", Model)
+            }
+            else
+            {
+              @Html.Partial("Flow2/PersonFind", Model)
+            }
           }
         }
       }
