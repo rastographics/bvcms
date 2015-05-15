@@ -773,9 +773,34 @@
 
     $('body').on('change', '#Schedule_Value', function () {
         var ss = $(this).val().split(',');
-        $(".modal #MeetingDate").val(ss[0]);
+        var meetingDate = ss[0];
+        if ($('.modal #MeetingDate').parent().data("DateTimePicker")) {
+            $('.modal #MeetingDate').parent().data("DateTimePicker").date(meetingDate);
+        } else {
+            var meetingDateIso = getMeetingISODateTime(new Date(meetingDate));
+            $('.modal #MeetingDate').val(meetingDateIso);
+        }
         $(".modal #AttendCredit_Value").val(ss[1]);
     });
+
+    function getMeetingISODateTime(d) {
+        // padding function
+        var s = function (p) {
+            return ('' + p).length < 2 ? '0' + p : '' + p;
+        };
+
+        // default parameter
+        if (typeof d === 'undefined') {
+            var d = new Date();
+        };
+
+        // return ISO datetime
+        return d.getFullYear() + '-' +
+            s(d.getMonth() + 1) + '-' +
+            s(d.getDate()) + 'T' +
+            s(d.getHours()) + ':' +
+            s(d.getMinutes());
+    }
 
     $("body").on("click", 'div.newitem > a', function (ev) {
         if (!$(this).attr("href"))
