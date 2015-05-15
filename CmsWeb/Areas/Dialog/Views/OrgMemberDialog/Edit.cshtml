@@ -38,6 +38,10 @@
         {
             @Html.EditorFor(m => m.ShirtSize)
         }
+        @if (User.IsInRole("Developer"))
+        {
+            @Html.EditorFor(m => m.TranId)
+        }
         @Html.EditorFor(m => m.UserData, "TextArea")
     </fieldset>
 </div>
