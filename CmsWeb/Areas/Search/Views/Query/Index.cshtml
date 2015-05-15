@@ -12,8 +12,9 @@
 <div class="row">
     <div class="col-md-4">
         <div class="box box-responsive">
+            @Html.Hidden("SaveToDescription")
+            <h4 class="visible-xs-block">@(Model.SaveToDescription.HasValue() && Model.SaveToDescription != Model.Description ? "Copied from: " + Model.SaveToDescription : Model.SaveToDescription)</h4>
             <div class="box-title-btn">
-                @Html.Hidden("SaveToDescription")
                 <h5>@(Model.SaveToDescription.HasValue() && Model.SaveToDescription != Model.Description ? "Copied from: " + Model.SaveToDescription : Model.SaveToDescription)</h5>
                 <div class="box-tools">
                     <div class="btn-group">
