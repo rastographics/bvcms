@@ -72,7 +72,7 @@ namespace CmsWeb.Models.ExtraValues
         [DisplayName("Limit to Roles")]
         public string VisibilityRoles
         {
-            get { return string.Join(", ", VisibilityRolesList); }
+            get { return string.Join(", ", VisibilityRolesList ?? new string[0]); }
             set { VisibilityRolesList = value.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray(); }
         }
 
