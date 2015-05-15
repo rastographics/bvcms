@@ -2,7 +2,7 @@
     a.Editable.commands = a.extend(a.Editable.commands, {
             specialLink: {
                 title: "Special Link",
-                icon: "fa fa-cog",
+                icon: "fa fa-link tp-gold",
                 callback: function() {
                     this.insertSpecialLink();
                     this.$special_link_wrapper.find('select').first().focus();

@@ -798,7 +798,7 @@ namespace CmsWeb
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js""></script>
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/file_upload.min.js?v=1.2.7""></script>
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js?v=1.1.0""></script>
 <script type=""text/javascript"">
     //froala key
     $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
