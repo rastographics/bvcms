@@ -2,14 +2,13 @@
 @model CmsWeb.Areas.Org.Models.MissionTripEmailer
 @{
     ViewBag.Title = "Mission Trip Emailer";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.PageHeader = "Mission Trip Emailer";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<div class="container">
-    <h2>Mission Trip Emailer</h2>
-    <div  class="row-fluid">
-        <div class="span9">
-            <h3>Email Sent!</h3>
-            <a href="/" class="btn btn-success">Click here to go back to your home page</a>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="alert alert-success">
+            <strong>Success!</strong> Your email was successfully sent. Click <a href="/" style="text-decoration: underline">here</a> to return to the home page.
         </div>
     </div>
 </div>

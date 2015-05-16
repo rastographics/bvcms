@@ -1,64 +1,47 @@
-﻿@using CmsWeb
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @model CmsWeb.Models.ContributionSearchModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Bundle Totals";
+    ViewBag.ReportPageHeader = Model.FundName ?? "Total All Funds";
 }
-
-<table class="@ViewExtensions2.GridClass">
-    <thead>
-        <tr><td colspan="4">
-                <div class="roundbox">
-                    <h2>@(Model.FundName ?? "Total All Funds")</h2>
-                    <table>
-                        <tr>
-                            <td class="right">Start Date:</td>
-                            <td>@Model.SearchInfo.StartDate.FormatDate()</td>
-                        </tr>
-                        <tr>
-                            <td class="right">End Date:</td>
-                            <td>@Model.SearchInfo.EndDate.FormatDate()</td>
-                        </tr>
-                        <tr>
-                            <td class="right">Campus:</td>
-                            <td>@Model.Campus</td>
-                        </tr>
-                        <tr>
-                            <td class="right">Online/Not online:</td>
-                            <td>@Model.Online</td>
-                        </tr>
-                        <tr>
-                            <td class="right">Tax Ded/Non Tax:</td>
-                            <td>@Model.TaxDedNonTax</td>
-                        </tr>
-                    </table>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <th>Bundle Id</th>
-            <th>Date</th>
-            <th class="right">Total</th>
-            <th class="right">Count</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var t in Model.BundlesList())
-        {
-            <tr>
-                <td><a href="/Bundle/@t.Id" target="bundle">@t.Id</a></td>
-                <td>@t.Date.ToShortDateString()</td>
-                <td class="right">@t.Total.ToString("c")</td>
-                <td class="right">@t.Count.ToString("n0")</td>
-            </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr style="border-top: 1px solid black">
-            <td colspan="2">Total</td>
-            <td class="right">@Model.Total.ToString2("c")</td>
-            <td class="right">@Model.Count.ToString2("n0")</td>
-        </tr>
-    </tfoot>
-</table>
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="text-center">
+            <strong>Start Date:</strong> @Model.SearchInfo.StartDate.FormatDate()<br />
+            <strong>End Date:</strong> @Model.SearchInfo.EndDate.FormatDate()<br />
+            <strong>Campus:</strong> @Model.Campus<br />
+            <strong>Online/Not Online:</strong> @Model.Online<br />
+            <strong>Tax Ded / Non Tax:</strong> @Model.TaxDedNonTax
+        </div>
+        <br />
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Bundle Id</th>
+                    <th>Date</th>
+                    <th class="text-right">Total</th>
+                    <th class="text-right">Count</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.BundlesList())
+                {
+                    <tr>
+                        <td><a href="/Bundle/@t.Id" target="bundle">@t.Id</a></td>
+                        <td>@t.Date.ToShortDateString()</td>
+                        <td class="text-right">@t.Total.ToString("c")</td>
+                        <td class="text-right">@t.Count.ToString("n0")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr class="totals-row">
+                    <td colspan="2">Total</td>
+                    <td class="text-right">@Model.Total.ToString2("c")</td>
+                    <td class="text-right">@Model.Count.ToString2("n0")</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

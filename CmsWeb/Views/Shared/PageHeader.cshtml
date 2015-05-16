@@ -1,0 +1,24 @@
+﻿@if (!string.IsNullOrWhiteSpace(ViewBag.PageHeader))
+{
+    <div id="page-header">
+        <div class="container-fluid">
+            <h2>@ViewBag.PageHeader</h2>
+            @if (!string.IsNullOrWhiteSpace(ViewBag.PageSubHeader))
+            {
+                <h4>@Html.Raw(ViewBag.PageSubHeader)</h4>
+            }
+        </div>
+    </div>
+}
+@if (!string.IsNullOrWhiteSpace(ViewBag.ReportPageHeader))
+{
+    <div id="page-header" class="text-center">
+        <div class="container-fluid">
+            <h2>@ViewBag.ReportPageHeader</h2>
+            @if (!string.IsNullOrWhiteSpace(ViewBag.ReportPageSubHeader))
+            {
+                <h4>@Html.Raw(ViewBag.ReportPageSubHeader)</h4>
+            }
+        </div>
+    </div>
+}

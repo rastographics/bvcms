@@ -4,19 +4,29 @@
     <td>
         <a href="/Query/@Model.QueryId">@Model.Name</a>
     </td>
-    <td>@Model.Owner</td>
-    <td>@(Model.Ispublic ? "public" : "private") </td>
-    <td>@Model.LastRun.FormatDateTm()</td>
-    <td class="right">@Model.RunCount.ToString("N0")</td>
+    <td>
+        @Model.Owner
+    </td>
+    <td class="text-center">
+        @if (Model.Ispublic)
+        {
+            <i class="fa fa-check"></i>
+        }
+    </td>
+    <td>
+        @Model.LastRun.FormatDateTm()
+    </td>
+    <td class="text-right">
+        @Model.RunCount.ToString("N0")
+    </td>
     @if (Model.CanDelete)
     {
-        <td><a class="edit-saved-query" href="/SavedQuery/Edit/@Model.QueryId"><i class="fa fa-pencil"></i></a></td>
-        <td><a class="delete-saved-query" href="/SavedQuery/Delete/@Model.QueryId"><i class="fa fa-times"></i></a></td>
+        <td style="width: 50px;"><a class="edit-saved-query btn btn-default btn-sm" href="/SavedQuery/Edit/@Model.QueryId"><i class="fa fa-pencil"></i> Edit</a></td>
+        <td style="width: 50px;"><a class="delete-saved-query btn btn-danger btn-sm" href="/SavedQuery/Delete/@Model.QueryId"><i class="fa fa-trash"></i> Delete</a></td>
     }
     else
     {
         <td></td>
         <td></td>
     }
-
 </tr>

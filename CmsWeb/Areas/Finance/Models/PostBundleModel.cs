@@ -135,18 +135,7 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public IEnumerable Funds2()
-        {
-            var q = from f in DbUtil.Db.ContributionFunds
-                    where f.FundStatusId == 1
-                    orderby f.FundId
-                    select new
-                    {
-                        Code = f.FundId.ToString(),
-                        Value = "{0} - {1}".Fmt(f.FundId, f.FundName),
-                    };
-            return q.ToDictionary(k => k.Code, v => v.Value);
-        }
+        
         public object GetNamePidFromId()
         {
             IEnumerable<object> q;
@@ -334,7 +323,9 @@ namespace CmsWeb.Models
                         amt = c.ContributionAmount.ToString2("N2"),
                         cid,
                         totalitems = bh.BundleDetails.Sum(d =>
-                            d.Contribution.ContributionAmount).ToString2("N2"),
+                            d.Contribution.ContributionAmount).ToString2("C2"),
+                        diff = ((bh.TotalCash.GetValueOrDefault() + bh.TotalChecks.GetValueOrDefault() + bh.TotalEnvelopes.GetValueOrDefault()) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount.GetValueOrDefault())),
+                        difference = ((bh.TotalCash.GetValueOrDefault() + bh.TotalChecks.GetValueOrDefault() + bh.TotalEnvelopes.GetValueOrDefault()) - bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount)).ToString2("C2"),
                         itemcount = bh.BundleDetails.Count(),
                         othersplitamt = othersplitamt.ToString2("N2")
                     };
@@ -455,16 +446,20 @@ namespace CmsWeb.Models
                 DbUtil.Db.Contributions.DeleteOnSubmit(c);
                 DbUtil.Db.SubmitChanges();
             }
+
+            var totalItems = bundle.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
+            var diff = (bundle.TotalCash.GetValueOrDefault() + bundle.TotalChecks.GetValueOrDefault() + bundle.TotalEnvelopes.GetValueOrDefault()) - totalItems;
             return new
             {
-                totalitems = bundle.BundleDetails.Sum(d =>
-                    d.Contribution.ContributionAmount).ToString2("N2"),
+                totalitems = totalItems.ToString2("C2"),
+                diff = diff,
+                difference = diff.ToString2("C2"),
                 itemcount = bundle.BundleDetails.Count(),
             };
         }
         public static string Tip(int? pid, int? age, string memstatus, string address, string city, string state, string zip)
         {
-            return "PeopleId: {0}|Age: {1}|{2}|{3}|{4}".Fmt(pid, age, memstatus, address, Util.FormatCSZ(city, state, zip));
+            return "<label>People Id:</label> {0}<br/><label>Age:</label> {1}<br/>{2}<br/>{3}<br/>{4}".Fmt(pid, age, memstatus, address, Util.FormatCSZ(city, state, zip));
         }
 
         public decimal TotalItems

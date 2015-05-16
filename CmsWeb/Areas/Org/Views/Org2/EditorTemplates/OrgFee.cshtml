@@ -1,14 +1,12 @@
 ﻿@model CmsData.Registration.Settings.OrgFee
 @using (var ci = Html.BeginCollectionItem("orgfees"))
 {
-  <div class="well">
-    @Html.Raw(ci.hiddenindex)
-    <div class="control-group">
-      <div class="controls">
-          <a href="#" class="delete-well pull-right btn btn-mini btn-danger">delete</a><br/>
-      </div>
+    <div class="col-sm-4 col-md-3">
+        <div class="well">
+            @Html.Raw(ci.hiddenindex)
+            @Html.EditorFor(m => m.OrgId)
+            @Html.EditorFor(m => m.Fee)
+            <a href="#" class="delete-well btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+        </div>
     </div>
-    @Html.EditorFor(m => m.OrgId)
-    @Html.EditorFor(m => m.Fee)
-  </div>
 }

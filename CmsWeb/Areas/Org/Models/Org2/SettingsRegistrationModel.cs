@@ -166,7 +166,7 @@ namespace CmsWeb.Areas.Org2.Models
         }
         private List<Settings.AgeGroup> ageGroups;
 
-        [Reg, Display(Description = GroupToJoinDescription)]
+        [Reg, Display(Name="Other Org Id to Join", Description = GroupToJoinDescription)]
         public string GroupToJoin { get; set; }
 
         [Reg, Display(Description = AllowOnlyOneDescription)]
@@ -175,7 +175,7 @@ namespace CmsWeb.Areas.Org2.Models
         [Reg, Display(Description = AddAsProspectDescription)]
         public bool AddAsProspect { get; set; }
 
-        [Reg, Display(Name = "Allow re-Register", Description = AllowReRegisterDescription)]
+        [Reg, Display(Name = "Allow Re-Register", Description = AllowReRegisterDescription)]
         public bool AllowReRegister { get; set; }
 
         [Reg, Display(Description = AllowSaveProgressDescription)]

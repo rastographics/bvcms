@@ -1,4 +1,5 @@
 using System.Web.Mvc;
+using System.Web.Routing;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
 using UtilityExtensions;
@@ -10,9 +11,9 @@ namespace CmsWeb.Areas.Dialog.Controllers
     public class AddOrganizationController : CmsStaffController
     {
         [Route("~/AddOrganization")]
-        public ActionResult Index()
+        public ActionResult Index(bool displayCopySettings = false)
         {
-			var m = new NewOrganizationModel(Util2.CurrentOrgId);
+			var m = new NewOrganizationModel(DbUtil.Db.CurrentOrgId0, displayCopySettings);
 			m.org.OrganizationName = "";
 			m.org.Location = "";
         	return View(m);
@@ -51,7 +52,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			}
 	        DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Add new org {0}".Fmt(m.org.OrganizationName));
-			return Content("<script>parent.CloseAddOrgDialog({0});</script>".Fmt(m.org.OrganizationId));
+            return Redirect("/Organization/{0}".Fmt(m.org.OrganizationId));
         }
     }
 }

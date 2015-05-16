@@ -1,105 +1,276 @@
-﻿@using CmsWeb
+﻿@using System.Globalization
 @model CmsWeb.Models.ContributionSearchModel
 @{
     ViewBag.Title = "Contributions";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = "Contributions";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head
-{
-    <style type="text/css">
-        .PLNT {
-            font-style: italic;
-            font-weight: bold;
-        }
-    </style>
-}
+<div class="box box-responsive">
+    <div class="box-content">
+        <form action="" id="form" method="POST">
+            <div class="well">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="All or part of full name, or people id."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="SearchInfo_Name" class="control-label">Name</label>
+                            @if (Model.SearchInfo.PeopleId.HasValue)
+                            {
+                                <div>
+                                    <h4><a href="/Person2/@Model.SearchInfo.PeopleId" style="text-decoration: underline;">@Model.Name</a></h4>
+                                </div>
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(vv => vv.SearchInfo.Name, new { @class = "form-control" })
+                            }
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Notes" data-content="Check # or phrase or contribution id."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="SearchInfo_Comments" class="control-label">Notes</label>
+                            @Html.TextBoxFor(vv => vv.SearchInfo.Comments, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="SearchInfo_MinAmt" class="control-label">Amount From</label>
+                            <div class="input-group">
+                                <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(vv => vv.SearchInfo.MinAmt, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="SearchInfo_MaxAmt" class="control-label">Amount To</label>
+                            <div class="input-group">
+                                <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(vv => vv.SearchInfo.MaxAmt, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Start Date" data-content="Use only start date to look at a single day."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="SearchInfo_StartDate" class="control-label">Start Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("SearchInfo.StartDate", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("SearchInfo.StartDateIso", Model.SearchInfo.StartDate.HasValue ? Model.SearchInfo.StartDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_EndDate" class="control-label">End Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("SearchInfo.EndDate", Model.SearchInfo.EndDate.HasValue ? Model.SearchInfo.EndDate.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("SearchInfo.EndDateIso", Model.SearchInfo.EndDate.HasValue ? Model.SearchInfo.EndDate.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_CampusId" class="control-label">Campus</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.CampusId, Model.Campuses(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_Type" class="control-label">Fund</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.FundId, Model.Funds(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_Online" class="control-label">Source</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.Online, Model.OnlineOptions(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_Status" class="control-label">Status</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.Status, Model.ContributionStatuses(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_TaxNonTax" class="control-label">Tax Status</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.TaxNonTax, Model.TaxTypes(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_Year" class="control-label">Year</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.Year, Model.Years(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_Type" class="control-label">Contribution Type</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.Type, Model.ContributionTypes(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <label for="SearchInfo_BundleType" class="control-label">Bundle Type</label>
+                            @Html.DropDownListFor(vv => vv.SearchInfo.BundleType, Model.BundleTypes(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBoxFor(vv => vv.SearchInfo.IncludeUnclosedBundles) Include unclosed bundles?
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBoxFor(vv => vv.SearchInfo.Mobile) From mobile application?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                    </div>
+                    <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                        <div class="pull-right">
+                            <a id="NewSearch" href="#" class="btn btn-default">Clear</a>
+                            <div class="btn-group">
+                                <a href="#" id="filter" class="btn btn-primary">Filter</a>
+                                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a id="export" href="#"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Export</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.HiddenFor(vv => vv.SearchInfo.PeopleId)
+            @Html.Partial("Results", Model)
+        </form>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Finance/Contributions.js")
-}
+    <script type="text/javascript">
+        $(function () {
 
-<form action="" id="form" method="POST">
-    @Html.HiddenFor(vv => vv.SearchInfo.PeopleId)
-    <div class="roundbox floatleft">
-        <table cellspacing="5">
-            <tbody>
-                <tr>
-                    <td colspan="4">
-                        <h2>Contributions</h2>
-                    </td>
-                </tr>
-                @if (Model.SearchInfo.PeopleId.HasValue)
-                {
-                    <tr>
-                        <th class="right">Name:</th>
-                        <td colspan="3"><a href="/Person2/@Model.SearchInfo.PeopleId">@Model.Name</a></td>
-                    </tr>
-                }
+            function initializePopovers() {
+                $('[data-toggle="popover"]').popover({ html: true });
+                $('[data-toggle="popover"]').click(function (ev) {
+                    ev.preventDefault();
+                });
+            }
+
+            $("#filter").click(function (ev) {
+                ev.preventDefault();
+                $.getTable();
+                return false;
+            });
+
+            $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
+                ev.preventDefault();
+                var newsort = $(this).text();
+                var sort = $("#Sort");
+                var dir = $("#Direction");
+                if ($(sort).val() == newsort && $(dir).val() == 'asc')
+                    $(dir).val('desc');
                 else
-                {
-                    <tr>
-                        <th class="right">Name:</th>
-                        <td colspan="3">@Html.TextBoxFor(vv => vv.SearchInfo.Name)
-                            <em>All or part of full name, or PeopleId</em></td>
-                    </tr>
+                    $(dir).val('asc');
+                $(sort).val(newsort);
+
+                $.getTable();
+                return false;
+            });
+
+            $.gotoPage = function (ev, pg) {
+                $("#Page").val(pg);
+                $.getTable();
+                return false;
+            };
+
+            $.setPageSize = function (ev) {
+                $('#Page').val(1);
+                $("#PageSize").val($(ev).val());
+                return $.getTable();
+            };
+
+            $.getTable = function () {
+                var f = $('#results').closest('form');
+                var q = f.serialize();
+                $.block();
+                $.post('/Contributions/Results', q, function (ret) {
+                    $('#results').replaceWith(ret);
+                    initializePopovers();
+                    $.unblock();
+                });
+            };
+
+            $("#NewSearch").click(function () {
+                form.reset();
+            });
+
+            $("#export").click(function (ev) {
+                var f = $(this).closest('form');
+                f.attr("action", "/Contributions/Export");
+                f.submit();
+            });
+
+            $("body").on("click", 'a.returnit', function (ev) {
+                ev.preventDefault();
+                var url = $(this)[0].href;
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-warning",
+                    confirmButtonText: "Yes, return it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    var f = $("#form");
+                    f.attr("action", url);
+                    f.submit();
+                });
+                return false;
+            });
+
+            $("body").on("click", 'a.reverseit', function (ev) {
+                ev.preventDefault();
+                var url = $(this)[0].href;
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-warning",
+                    confirmButtonText: "Yes, reverse it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    var f = $("#form");
+                    f.attr("action", url);
+                    f.submit();
+                });
+                return false;
+            });
+
+            $("form").on("keypress", 'input', function (e) {
+                if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+                    $('#filter').click();
+                    return false;
                 }
-                <tr>
-                    <th class="right">Min Amt:</th>
-                    <td>@Html.TextBoxFor(vv => vv.SearchInfo.MinAmt) </td>
-                    <th class="right">Start Date:</th>
-                    <td>@Html.EditorFor(vv => vv.SearchInfo.StartDate, "datepicker") </td>
-                </tr>
-                <tr>
-                    <th class="right">Max Amt:</th>
-                    <td>@Html.TextBoxFor(vv => vv.SearchInfo.MaxAmt)</td>
-                    <th class="right">End Date:</th>
-                    <td>@Html.EditorFor(vv => vv.SearchInfo.EndDate, "datepicker")</td>
-                </tr>
-                <tr>
-                    <th class="right">Notes:</th>
-                    <td colspan="3">@Html.TextBoxFor(vv => vv.SearchInfo.Comments)
-                        <em>Check # or phrase or ContributionId</em></td>
-                </tr>
-                <tr>
-                    <th class="right">Bundle Type:</th>
-                    <td class="nowrap">@Html.DropDownListFor(vv => vv.SearchInfo.BundleType, Model.BundleTypes())</td> 
-                    <td colspan="2">Include Unclosed Bundles:
-                        @Html.CheckBoxFor(vv => vv.SearchInfo.IncludeUnclosedBundles) </td>
-                </tr>
-                <tr>
-                    <th class="right">Contribution Type:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Type, Model.ContributionTypes())</td>
-                    <th class="right">Campus:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.CampusId, Model.Campuses())</td>
-                </tr>
-                <tr>
-                    <th class="right">Fund:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.FundId, Model.Funds())</td>
-                    <th class="right">Source:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Online, Model.OnlineOptions())</td>
-                </tr>
-                <tr>
-                    <th class="right">Status:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Status, Model.ContributionStatuses())</td>
-                    <th class="right">Tax Status:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.TaxNonTax, Model.TaxTypes())</td>
-                </tr>
-                <tr>
-                    <th class="right">Year:</th>
-                    <td>@Html.DropDownListFor(vv => vv.SearchInfo.Year, Model.Years())</td>
-                    <td colspan="2">From Mobile App:
-                        @Html.CheckBoxFor(vv => vv.SearchInfo.Mobile) </td>
-                </tr>
-                <tr>
-                    <td colspan="4" class="right">
-                        <a id="NewSearch" class="bt">Clear</a>
-                        <a id="export" class="bt">Export</a>
-                        <a id="search" class="bt blue">Search</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="floatclear"></div>
-    @Html.Partial("Results", Model)
-</form>
+                return true;
+            });
+
+            initializePopovers();
+        });
+    </script>
+}

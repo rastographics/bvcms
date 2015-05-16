@@ -63,7 +63,7 @@ namespace CmsWeb.Models
 		{
 			var q = from r in DbUtil.Db.Roles
 			        orderby r.RoleName
-			        select new SelectListItem()
+			        select new SelectListItem
 			        {
 						Value = r.RoleId.ToString(),
 						Text = r.RoleName
@@ -91,18 +91,18 @@ namespace CmsWeb.Models
 			if (Role != null && Role.Length > 0)
 			{
 				var rids = Role.Select(rr => rr.ToInt()).ToArray();
-				_users = from u in _users 
+				_users = from u in _users
 				         /* below we use a trick for match all
 					 * if they select more than role to match on
 					 * then we get a count of the number of roles that match
 					 * and that count should equal the length of the array.
 					 * We also look for not specified (-1) and not assigned (0)
 					 */
-				         let rc = u.UserRoles.Count(ur => rids.Contains(ur.RoleId)) 
+				         let rc = u.UserRoles.Count(ur => rids.Contains(ur.RoleId))
 				         where rc == Role.Length || rids[0] <= 0
 				         where !u.UserRoles.Any() || rids[0] != -1
 				         select u;
-				
+
 			}
 			return _users;
 		}
@@ -143,27 +143,27 @@ namespace CmsWeb.Models
 				{
 					case "User":
 						q = from u in q
-						    orderby u.Username descending 
+						    orderby u.Username descending
 						    select u;
 						break;
 					case "Name":
 						q = from u in q
-						    orderby u.Person.Name descending 
+						    orderby u.Person.Name descending
 						    select u;
 						break;
 					case "Online":
 						q = from u in q
-						    orderby u.Person.Name descending 
+						    orderby u.Person.Name descending
 						    select u;
 						break;
 					case "Email":
 						q = from u in q
-						    orderby u.EmailAddress descending 
+						    orderby u.EmailAddress descending
 						    select u;
 						break;
 					case "Activity":
 						q = from u in q
-						    orderby u.LastActivityDate descending 
+						    orderby u.LastActivityDate descending
 						    select u;
 						break;
 				}

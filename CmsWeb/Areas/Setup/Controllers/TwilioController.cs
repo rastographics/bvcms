@@ -115,10 +115,10 @@ namespace CmsWeb.Areas.Setup.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult Dialog( int id = 0, string name = "" )
+        public ActionResult Dialog(int id = 0, string viewName = "")
         {
             ViewBag.ID = id;
-            return View(name);
+            return View(viewName);
         }
     }
 }

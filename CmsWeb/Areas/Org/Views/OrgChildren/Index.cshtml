@@ -1,28 +1,29 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrgChildrenModel
+@using CmsData
 @using CmsWeb
+@using UtilityExtensions
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "OrgChildren";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Manage Child Organizations";
+    ViewBag.PageHeader = "Manage Child Organizations";
+    ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>{3}".Fmt(Util2.Org, Model.org.OrganizationId, Model.org.OrganizationName, Model.parentorg != null ? " (Parent Org: <a href=\"/OrgChildren/{0}\">{1}</a>)".Fmt(Model.parentorg.OrganizationId, Model.parentorg.OrganizationName) : "");
 }
-@section head
-{
-<style>
-    td.wide100 * 
-    {
-        width: 98%;
-    }
-</style>
-}
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                @if (Model.canedit)
+                {
+                    @Html.Hidden("canedit", "true")
+                }
+                <form id="groupsform" action="/OrgChildren/Update" method="post">
+                    @Html.Partial("Form", Model)
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Org/orgChildren.js")
+    @Fingerprint.Script("/Content/touchpoint/js/org/org-children.js")
 }
-@if (Model.canedit)
-{
-@Html.Hidden("canedit", "true")
-}
-<form id="groupsform" action="/OrgChildren/Update" method="post">
-@Html.Partial("Form", Model)
-</form>
-
-

@@ -1,31 +1,31 @@
 ﻿@model System.Data.SqlClient.SqlDataReader
-
 @{
-    Layout = null;
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Sql View";
+    ViewBag.PageHeader = "Sql View";
 }
-
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <title>title</title>
-    </head>
-    <body>
-        <div>
-            <table>
-                @{ var read = Model.Read();}
-                @while (read)
-                {
-                    <tr>
-                        @for (var i = 0; i < Model.FieldCount; i++)
-                        {
-                            <td>@Model[i].ToString()</td>
-                        }
-                    </tr>
-                   read = Model.Read();
-                }
-            </table>
-              
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tbody>
+                            @{ var read = Model.Read();}
+                            @while (read)
+                            {
+                                <tr>
+                                    @for (var i = 0; i < Model.FieldCount; i++)
+                                    {
+                                        <td>@Model[i].ToString()</td>
+                                    }
+                                </tr>
+                                    read = Model.Read();
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-    </body>
-</html>
+    </div>
+</div>

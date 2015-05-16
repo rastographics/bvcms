@@ -1,8 +1,11 @@
 ﻿@{
-Layout = "~/Views/Shared/Site3.cshtml";
-ViewBag.Title = "ForgotUsername";
+Layout = "_Layout.cshtml";
+ViewBag.Title = "Password Link Expired";
 }
-<h2>Set Password Link already used or expired.</h2>
-<p>You can <a href="/Account/ForgotPassword">request another Set Password Link by clicking this.</a></p>
-
-
+<h1 class="form-header">Set Password</h1>
+<div class="alert alert-danger" role="alert">
+    <strong>Link expired.</strong> Your set password link was already used or has expired.
+</div>
+<div class="panel">
+    <a href="/Account/ForgotPassword" class="btn btn-primary btn-lg active btn-block">Request Password</a>
+</div>

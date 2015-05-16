@@ -1,63 +1,56 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.NewOrganizationModel
-@using CmsWeb
-@using UtilityExtensions
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>Add Organization</title>
-    @ViewExtensions2.NewStyles()
-    @ViewExtensions2.jQueryUICss()
-    @Fingerprint.Css("/content/styles/siteblue.css")
-    @ViewExtensions2.OldStyles()
-    @ViewExtensions2.FontAwesome()
-    @ViewExtensions2.FixupsCss()
-    @ViewExtensions2.jQuery()
-    @ViewExtensions2.Bootstrap()
-    @ViewExtensions2.jQueryUI()
-    @ViewExtensions2.jqueryGlobalize()
-    @Fingerprint.Script("/Scripts/bundle.main2c.js")
-    @Html.Partial("DatePickerDefaults2")
-</head>
-<body>
-<form action="/AddOrganization/Submit/@Model.OrganizationId" method="post">
-<table id="orginfoedit" class="roundbox" style="margin-bottom: 10px" cellspacing="5" width="100%">
-    <tr><td colspan="2" class="right top">
-        <a class="helplink" target="_blank" href='@Util.HelpLink(Util.Helpfile)'>help</a></td>
-    </tr>
-    <tr>
-        <td colspan="2"><h2>Add New Organization</h2></td>
-    </tr>
-    <tr>
-        <th class="right">Name:</th>
-        <td>@Html.TextBox("org.OrganizationName", Model.org.OrganizationName, new { style = "width:100%" })</td>
-    </tr>
-    <tr>
-        <th class="right">Location:</th>
-        <td>@Html.TextBox("org.Location")</td>
-    </tr>
-    <tr>
-        <th class="right">Campus:</th>
-        <td>@Html.DropDownList("org.CampusId", Model.CampusList())</td>
-    </tr>
-    <tr>
-        <th class="right">Security Type:</th>
-        <td>@Html.DropDownList("org.SecurityTypeId", Model.SecurityTypeList())</td>
-    </tr>
-    <tr>
-        <th class="right">Leader Type:</th>
-        <td>@Html.DropDownList("org.LeaderMemberTypeId", Model.LeaderTypeList())</td>
-    </tr>
-    <tr>
-        <th class="right">Main Fellowship:</th>
-        <td>@Html.CheckBox("org.IsBibleFellowshipOrg")</td>
-    </tr>
-    <tr>
-        <th class="right">Copy Settings</th>
-        <td>@Html.CheckBox("copysettings")</td>
-    </tr>
-    <tr><td colspan="2" class="right">
-        <input type="submit" class="bt blue" name="Submit" value="Submit" /></td>
-    </tr>
-</table>
-</form>
-</body>
-</html>
+<div class="modal-dialog modal-lg" id="new-org-modal">
+    <div class="modal-content">
+        <form action="/AddOrganization/Submit/@Model.OrganizationId" method="post">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Add New Organization</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="org_OrganizationName" class="control-label">Name</label>
+                            @Html.TextBox("org.OrganizationName", Model.org.OrganizationName, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="org_Location" class="control-label">Location</label>
+                            @Html.TextBox("org.Location", "", new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="org_CampusId" class="control-label">Campus</label>
+                            @Html.DropDownList("org.CampusId", Model.CampusList(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="org_LeaderMemberTypeId" class="control-label">Leader Type</label>
+                            @Html.DropDownList("org.LeaderMemberTypeId", Model.LeaderTypeList(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label class="checkbox-inline">
+                                @Html.CheckBox("org.IsBibleFellowshipOrg") Main fellowship?
+                            </label>
+                            @if (Model.DisplayCopySettings)
+                            {
+                                <label class="checkbox-inline">
+                                    @Html.CheckBox("copysettings") Copy settings from current organization?
+                                </label>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <input type="submit" class="btn btn-primary" value="Submit" />
+            </div>
+        </form>
+    </div>
+</div>

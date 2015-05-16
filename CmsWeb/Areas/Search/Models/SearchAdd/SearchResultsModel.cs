@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool UsersOnly { get { return usersOnlyContextTypes.Contains(AddContext.ToLower()); } }
 
         public SearchResultsModel()
-            : base(null, null)
+            : base(null, null, true)
         {
             ShowPageSize = false;
         }

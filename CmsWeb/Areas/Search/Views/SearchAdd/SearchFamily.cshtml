@@ -1,19 +1,31 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
-<div class="modal-header">
-    <a class="close" data-dismiss="modal">×</a>
-    <h3>Search for Family</h3>
-</div>
-<div class="modal-body">
-    <fieldset class="display">
-        @Html.EditorFor(m => m, "HiddenMeta")
-        @Html.EditorFor(m => m, "HiddenPeople")
-        @Html.EditorFor(m => m.Name, new { help = "<i>Starting letters of Last Name" })
-        @Html.EditorFor(m => m.Phone, new { help = "<i>Any part of any Phone or Email</i>" })
-        @Html.EditorFor(m => m.Address, new { help = "<i>Any part of the Street Address, City or Zip</i>" })
-    </fieldset>
-</div>
-<div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-    <a href="/SearchAdd2/SearchPerson" class="btn ajax">Go Back to Individual Search</a>
-    <a href="/SearchAdd2/ResultsFamily" class="btn btn-primary ajax">Search</a>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search for Family</h4>
+        </div>
+        <div class="modal-body">
+            @Html.EditorFor(m => m, "HiddenMeta")
+            @Html.EditorFor(m => m, "HiddenPeople")
+            <div class="row">
+                <div class="col-sm-6">
+                    @Html.EditorFor(m => m.Name, new { help = "Starting letters of Last Name" })
+                </div>
+                <div class="col-sm-6">
+                    @Html.EditorFor(m => m.Phone, new { help = "Any part of any Phone or Email" })
+                </div>
+                <div class="col-sm-12">
+                    @Html.EditorFor(m => m.Address, new { help = "Any part of the Street Address, City or Zip" })
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="pull-left">
+                <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+            </div>
+            <a href="/SearchAdd2/SearchPerson" class="btn btn-default ajax"><i class="fa fa-arrow-circle-left"></i> Return to Individual Search</a>
+            <a href="/SearchAdd2/ResultsFamily" class="btn btn-primary ajax">Search</a>
+        </div>
+    </div>
 </div>

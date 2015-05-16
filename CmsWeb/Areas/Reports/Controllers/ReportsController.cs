@@ -258,12 +258,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         }
 
         [HttpGet]
-        public ActionResult ExtraValuesGrid2(Guid id, string sort, bool alternate = false)
-        {
-            return RunExtraValuesGrid(id, sort, alternate);
-        }
-
-        [HttpGet]
         public ActionResult Family(Guid id)
         {
             return new FamilyResult(id);
@@ -545,30 +539,6 @@ namespace CmsWeb.Areas.Reports.Controllers
         public ActionResult Roster1(OrgSearchModel m)
         {
             return new RosterResult(m);
-        }
-
-        private ActionResult RunExtraValuesGrid(Guid id, string sort, bool alternate)
-        {
-            var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
-            var xml = XDocument.Parse(DbUtil.Db.Content("StandardExtraValues2", "<Fields/>"));
-            var fields = (from ff in xml.Root.Descendants("Value")
-                                          let vroles = ff.Attribute("VisibilityRoles")
-                                          where vroles != null && (vroles.Value.Split(',').All(rr => !roles.Contains(rr)))
-                                          select ff.Attribute("Name").Value);
-            var nodisplaycols = string.Join("|", fields);
-
-            var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_ExtraValues);
-            var cmd = new SqlCommand("dbo.ExtraValues @p1, @p2, @p3");
-            cmd.Parameters.AddWithValue("@p1", tag.Id);
-            cmd.Parameters.AddWithValue("@p2", sort ?? "");
-            cmd.Parameters.AddWithValue("@p3", nodisplaycols);
-            cmd.Connection = new SqlConnection(Util.ConnectionString);
-            cmd.Connection.Open();
-            var rdr = cmd.ExecuteReader();
-            ViewBag.queryid = id;
-            if (alternate)
-                return View("ExtraValuesGrid2", rdr);
-            return View("ExtraValuesGrid", rdr);
         }
 
         [HttpGet]

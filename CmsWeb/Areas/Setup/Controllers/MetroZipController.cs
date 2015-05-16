@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
 using CmsData;
+using System.Linq;
+using System.Web.Mvc;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -24,13 +20,13 @@ namespace CmsWeb.Areas.Setup.Controllers
         public ActionResult Create(string zipcode)
         {
             var zip = DbUtil.Db.Zips.SingleOrDefault(mz => mz.ZipCode == zipcode);
-            if (zip != null)
-                return Content(Util.EndShowMessage("Zipcode already exists", "/MetroZips", "Go back"));
-
-            var m = new Zip { ZipCode = zipcode };
-            DbUtil.Db.Zips.InsertOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/MetroZips/");
+            if (zip == null)
+            {
+                var m = new Zip { ZipCode = zipcode };
+                DbUtil.Db.Zips.InsertOnSubmit(m);
+                DbUtil.Db.SubmitChanges();
+            }
+            return Redirect("/MetroZips/#{0}".Fmt(zipcode));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -56,22 +52,24 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
+
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult UpdateMetroZips()
         {
             DbUtil.Db.UpdateResCodes();
-            return Redirect("/MetroZips?msg=Updated%20all%20Codes");
+            return Content("All addresses were updated.");
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+
         public JsonResult ResidentCodes()
         {
             var q = from c in DbUtil.Db.ResidentCodes
                     select new
                     {
-                        Code = c.Id.ToString(),
-                        Value = c.Description,
+                        value = c.Id,
+                        text = c.Description,
                     };
-            return Json(q.ToDictionary(k => k.Code, v => v.Value));
+
+           return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -1,74 +1,139 @@
 ﻿@model CmsWeb.Models.PromotionModel
 @using CmsWeb
 @{
-  Layout = ViewExtensions2.Layout();
-  ViewBag.Title = "Promotion";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Promotion";
+    ViewBag.PageHeader = "Promotion";
 }
+<form id="form" method="post" action="/Promotion/AssignPending">
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a class="btn btn-default" href="/Promotion/Export/@Model.PromotionId"><i class="fa fa-cloud-download"></i> Promotion Export</a> <input type="submit" class="btn btn-primary" name="submit" value="Assign to Class" />
+                    </div>
+                </div>
+                <div class="box-content">
+                    <div class="well">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="PromotionId" class="control-label">Promotion</label>
+                                    @Html.DropDownList("PromotionId", Model.Promotions(), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="ScheduleId" class="control-label">Schedule</label>
+                                    @Html.DropDownList("ScheduleId", Model.Schedules(), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="TargetClassId" class="control-label">Target Class</label>
+                                    @Html.DropDownList("TargetClassId", Model.TargetClasses(), new { @class = "form-control" })
+                                    <label class="checkbox-inline">
+                                        @Html.CheckBox("FilterUnassigned") Unassigned only?
+                                    </label>
+                                    <label class="checkbox-inline">
+                                        @Html.CheckBox("NormalMembersOnly") Exclude teachers?
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="Promotions" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th style="width: 50px;"><a href="#" class="sortable">Mixed</a></th>
+                                    <th class="text-center"><a href="#" class="sortable">Gender</a></th>
+                                    <th colspan="2"><a href="#" class="sortable">Attendance</a></th>
+                                    <th><a href="#" class="sortable">Name</a></th>
+                                    <th><a href="#" class="sortable">Current Class</a></th>
+                                    <th><a href="#" class="sortable">Pending Class</a></th>
+                                    <th><a href="#" class="sortable">Birthday</a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @Html.Partial("List", Model)
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="visible-xs-block">
+                        <input type="submit" class="btn btn-primary btn-block" name="submit" value="Assign to Class" />
+                        <a class="btn btn-default btn-block" href="/Promotion/Export/@Model.PromotionId"><i class="fa fa-cloud-download"></i> Promotion Export</a> 
+                    </div>
+                    @Html.Hidden("Sort", Model.Sort)
+                    @Html.Hidden("Dir", Model.Dir)
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3">
+            <div class="box box-primary" style="background-color: #fff;">
+                <div class="box-title">
+                    <h5>Promotion Totals</h5>
+                </div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th colspan="2">Checked</th>
+                            <th colspan="2">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Girls</td>
+                            <td id="girls"></td>
+                            <td id="pgirls"></td>
+                            <td id="tgirls"></td>
+                            <td id="tpgirls"></td>
+                        </tr>
+                        <tr>
+                            <td>Boys</td>
+                            <td id="boys"></td>
+                            <td id="pboys"></td>
+                            <td id="tboys"></td>
+                            <td id="tpboys"></td>
+                        </tr>
+                        <tr>
+                            <td>High</td>
+                            <td id="high"></td>
+                            <td id="phigh"></td>
+                            <td id="thigh"></td>
+                            <td id="tphigh"></td>
+                        </tr>
+                        <tr>
+                            <td>Medium</td>
+                            <td id="med"></td>
+                            <td id="pmed"></td>
+                            <td id="tmed"></td>
+                            <td id="tpmed"></td>
+                        </tr>
+                        <tr>
+                            <td>Low</td>
+                            <td id="low"></td>
+                            <td id="plow"></td>
+                            <td id="tlow"></td>
+                            <td id="tplow"></td>
+                        </tr>
+                        <tr class="totals-row">
+                            <td>Total</td>
+                            <td id="total"></td>
+                            <td></td>
+                            <td id="ttotal"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
 @section scripts
 {
-  @Fingerprint.Script("/Scripts/js/Promotion.js")
+    @Fingerprint.Script("/Content/touchpoint/js/org/promotion.js")
 }
-@section head {
-  <style type="text/css">
-    #float_box {
-      position: absolute;
-      top: 90px;
-      right: 0;
-      z-index: 1000;
-      background: #ffc;
-      padding: 5px;
-      border: 1px solid #CCCCCC;
-      width: 200px;
-    }
-
-    #close_float {
-      float: right;
-      cursor: pointer;
-    }
-  </style>
-}
-<div id="float_box">
-  <img id="close_float" src="/Content/images/12-em-cross.png" />
-  <table>
-    <tr><td></td><th colspan="2">Checked</th><th colspan="2">Total</th></tr>
-    <tr><td>Girls</td><td id="girls"></td><td id="pgirls"></td><td id="tgirls"></td><td id="tpgirls"></td></tr>
-    <tr><td>Boys</td><td id="boys"></td><td id="pboys"></td><td id="tboys"></td><td id="tpboys"></td></tr>
-    <tr><td colspan="5"><hr /></td></tr>
-    <tr><td>High</td><td id="high"></td><td id="phigh"></td><td id="thigh"></td><td id="tphigh"></td></tr>
-    <tr><td>Medium</td><td id="med"></td><td id="pmed"></td><td id="tmed"></td><td id="tpmed"></td></tr>
-    <tr><td>Low</td><td id="low"></td><td id="plow"></td><td id="tlow"></td><td id="tplow"></td></tr>
-    <tr><td colspan="5"><hr /></td></tr>
-    <tr><td>Total</td><td id="total"></td><td></td><td id="ttotal"></td><td></td></tr>
-  </table>
-</div>
-<form id="form" method="post" action="/Promotion/AssignPending">
-  <div class="modalPopup">
-    Promotion: @Html.DropDownList("PromotionId", Model.Promotions())
-    Schedule: @Html.DropDownList("ScheduleId", Model.Schedules())&nbsp;&nbsp;&nbsp;
-    @Html.CheckBox("FilterUnassigned") Unassigned Only
-    @Html.CheckBox("NormalMembersOnly") Exclude Teachers<br />
-    Target Class: @Html.DropDownList("TargetClassId", Model.TargetClasses())
-    <input type="submit" class="bt" name="submit" value="Assign to Class" />
-    @Html.Hidden("Sort", Model.Sort)
-    @Html.Hidden("Dir", Model.Dir)
-  </div>
-  <table id="Promotions" class="@ViewExtensions2.GridClass">
-    <thead>
-      <tr>
-        <th><a href="#" class="sortable">Mixed</a></th>
-        <th><a href="#" class="sortable">Gender</a></th>
-        <th colspan="2"><a href="#" class="sortable">Attendance</a></th>
-        <th><a href="#" class="sortable">Name</a></th>
-        <th><a href="#" class="sortable">CurrentClass</a></th>
-        <th><a href="#" class="sortable">PendingClass</a></th>
-        <th><a href="#" class="sortable">Birthday</a></th>
-      </tr>
-    </thead>
-    <tbody>
-      @Html.Partial("List", Model)
-    </tbody>
-  </table>
-</form>
-<a href="/Promotion/Export/@Model.PromotionId">Promotion Export</a>
-
 

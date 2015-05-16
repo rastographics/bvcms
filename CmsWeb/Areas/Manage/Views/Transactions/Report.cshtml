@@ -1,37 +1,49 @@
 ﻿@model CmsWeb.Models.TransactionsModel
-@using CmsWeb
 @using UtilityExtensions
 @{
     var tt = Model.TotalTransactions();
 }
-    @if (tt == null)
-    {
-        <tr><td colspan="3">Nothing to report</td></tr>
-    }
-    else
-    {
-	<thead>
-		<tr><td class="right" colspan="4">Total:</td>
-			<td class="right">@tt.Amt.ToString("N2")</td>
-		</tr>
-        <tr><td colspan="5"><hr/></td></tr>
-		<tr><td>BatchRef</td>
-			<td>Settled</td>
-			<td>Type</td>
-            <td class="right">Count</td>
-			<td class="right">Total</td>
-        </tr>
-	</thead>
-   <tbody>
-		@foreach (var r in Model.FetchBatchTransactions())
-		{
-			<tr>
-				<td><a href="#" class="filterbatch">@r.BatchRef</a></td>
-				<td>@r.batchdate.FormatDate()</td>
-				<td>@r.BatchType</td>
-				<td class="right">@r.count</td>
-				<td class="right">@r.Total.ToString("N2")</td>
-			</tr>
-		}
-	</tbody>
-    }
+@if (tt != null)
+{
+    <div class="stat-panel-container">
+        <div class="stat-panel-inner-container">
+            <div class="stat-panel">
+                <span class="stat-title">TOTAL AMOUNT</span>
+                <span class="stat-figure">@tt.Amt.ToString("C2")</span>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+}
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Batch Reference #</th>
+                <th>Settled</th>
+                <th>Type</th>
+                <th class="text-right">Count</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (tt == null)
+            {
+                <tr><td colspan="5">Nothing to report</td></tr>
+            }
+            else
+            {
+                foreach (var r in Model.FetchBatchTransactions())
+                {
+                    <tr>
+                        <td><a href="/Transactions/?reference=@r.BatchRef" target="batchfilter">@r.BatchRef</a></td>
+                        <td>@r.batchdate.FormatDate()</td>
+                        <td>@r.BatchType</td>
+                        <td class="text-right">@r.count</td>
+                        <td class="text-right">@r.Total.ToString("N2")</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

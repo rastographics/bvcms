@@ -1,15 +1,19 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.OrgMembersUpdate
-<div class="modal-header">
-    <a class="close" data-dismiss="modal">x</a>
-    <h4>@Model.OrgName</h4>
-</div>
-<div class="modal-body">
-    @Html.HiddenFor(m => m.Id)
-    @Html.HiddenFor(m => m.AdjustFee)
-    @Html.EditorFor(m => m.Payment, new { label = "Fee Adjustment", help = "a negative number increases balance" })
-    @Html.EditorFor(m => m.Description)
-</div>
-<div class="modal-footer">
-    <a href="/OrgMembersUpdate/@Model.Id" class="btn ajax">Cancel</a>
-    <a id="add-mission-support" href="/OrgMembersUpdate/PostTransactions" class="btn ajax btn-primary">Add Transaction</a>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4>@Model.OrgName</h4>
+        </div>
+        <div class="modal-body">
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.AdjustFee)
+            @Html.EditorFor(m => m.Payment, new { label = "Fee Adjustment", help = "a negative number increases balance" })
+            @Html.EditorFor(m => m.Description)
+        </div>
+        <div class="modal-footer">
+            <a href="/OrgMembersUpdate/@Model.Id" class="btn btn-default ajax">Cancel</a>
+            <a id="add-mission-support" href="/OrgMembersUpdate/PostTransactions" class="btn ajax btn-primary">Add Transaction</a>
+        </div>
+    </div>
 </div>

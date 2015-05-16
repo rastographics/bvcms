@@ -40,7 +40,7 @@
         });
         return false;
     });
-    $.gotoPage = function(e, pg) {
+    $.gotoPage = function (e, pg) {
         $("#Page").val(pg);
         $.getTable();
         return false;

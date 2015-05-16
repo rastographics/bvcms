@@ -1,7 +1,11 @@
 ﻿@{
-    ViewBag.Title = "Show Error";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Error Message";
+    ViewBag.PageHeader = "Error Message";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>ShowError</h2>
-<span class="error">@ViewData["error"]</span><br />
-@ViewData["url"]
+<div class="alert alert-danger">
+    <p>
+        @ViewData["error"]
+    </p>
+    <small>@ViewData["url"]</small>
+</div>

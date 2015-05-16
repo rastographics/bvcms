@@ -1,0 +1,48 @@
+﻿@model CmsWeb.Models.DepositsModel
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Contributions Bank Deposit Report";
+    ViewBag.ReportPageHeader = "Contributions Bank Deposit Report";
+}
+<div class="report box box-responsive">
+    <div class="box-content">
+        <h4 class="text-center">@Model.Dt1.ToShortDateString()</h4>
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Bundle Id</th>
+                        <th class="text-right">Total</th>
+                        <th class="text-right">Checks</th>
+                        <th class="text-right">Cash</th>
+                        <th class="text-right">Coins</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var deposits = Model.GetDeposits().ToList();
+                    }
+                    @if (deposits.Any())
+                    {
+                        foreach (var deposit in deposits)
+                        {
+                            <tr class="@(deposit.BundleId == "TOTALS" ? "totals-row": "")">
+                                <td>@(deposit.BundleId == "TOTALS" ? "Totals" : deposit.BundleId)</td>
+                                <td class="text-right">@deposit.Total.ToString("C2")</td>
+                                <td class="text-right">@deposit.Checks.ToString("C2")</td>
+                                <td class="text-right">@deposit.Cash.ToString("C2")</td>
+                                <td class="text-right">@deposit.Coins.ToString("C2")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="5">No data was returned.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

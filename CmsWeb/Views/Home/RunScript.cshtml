@@ -1,22 +1,38 @@
 ﻿@model System.Data.IDataReader
-@using CmsWeb 
-@using CmsWeb.Areas.Manage.Controllers
 @{
     ViewBag.Title = "Test Script";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = ViewBag.Name;
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/js/TestScript.js")
-}
-@section head
-{
-    <style>
-        textarea {
-            font-family: Courier New;
-        }
-    </style>
-}
-
-<h2>@ViewBag.Name</h2>
-@Html.Raw(GridResult.Table(Model))
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        @for (var i = 0; i < Model.FieldCount; i++)
+                        {
+                            <th>@Model.GetName(i)</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var count = 0;
+                    }
+                    @while (Model.Read())
+                    {
+                        <tr>
+                            @for (var i = 0; i < Model.FieldCount; i++)
+                            {
+                                <td>@Html.Raw(Model[i].ToString())</td>
+                                count++;
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <strong>Total Count</strong> <span class="badge">@count.ToString("N0")</span>
+        </div>
+    </div>
+</div>

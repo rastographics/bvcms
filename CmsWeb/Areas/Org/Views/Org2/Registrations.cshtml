@@ -1,29 +1,27 @@
 ﻿@model CmsWeb.Areas.Org2.Models.OrganizationModel
-<ul class="nav nav-tabs subnav" data-tabparent="Registrations-tab">
-  <li class="active">
-    <a href="#Registration" data-toggle="tab" class="ajax">Registration</a>
-  </li>
-  <li id="Fees-tab">
-    <a href="#Fees" data-toggle="tab" class="ajax">Fees</a>
-  </li>
-  <li id="Questions-tab">
-    <a href="#Questions" data-toggle="tab" class="ajax">Questions</a>
-  </li>
-  <li id="Messages-tab">
-    <a href="#Messages" data-toggle="tab" class="ajax">Messages</a>
-  </li>
+<ul class="nav nav-pills subnav hidden-xs" data-tabparent="Registrations-tab">
+    <li id="Reg-tab" class="active"><a href="#Registration" data-toggle="tab" class="ajax">Registration</a></li>
+    <li id="Fees-tab"><a href="#Fees" data-toggle="tab" class="ajax">Fees</a></li>
+    <li id="Questions-tab"><a href="#Questions" data-toggle="tab" class="ajax">Questions</a></li>
+    <li id="Messages-tab"><a href="#Messages" data-toggle="tab" class="ajax">Messages</a></li>
 </ul>
-<div class="tab-content">
-  <div id="Registration" class="tab-pane settings active" data-link="/Org/Registration">
-    @Html.Partial("Registration/Registration", Model.SettingsRegistrationModel)
-  </div>
-  <div id="Fees" class="tab-pane settings" data-link="/Org/Fees">
-    @Helper.HiddenId("Id", Model.Id)
-  </div>
-  <div id="Questions" class="tab-pane settings" data-link="/Org/Questions">
-    @Helper.HiddenId("Id", Model.Id)
-  </div>
-  <div id="Messages" class="tab-pane settings no0" data-link="/Org/Messages">
-    @Helper.HiddenId("Id", Model.Id)
-  </div>
+<select class="form-control visible-xs-block nav-select-pills" id="Registrations-select">
+    <option value="#Registration">Registration</option>
+    <option value="#Fees">Fees</option>
+    <option value="#Questions">Questions</option>
+    <option value="#Messages">Messages</option>
+</select>
+<div class="tab-content" style="border: none;">
+    <div class="tab-pane settings active" id="Registration" data-link="/Org/Registration">
+        @Html.Partial("Registration/Registration", Model.SettingsRegistrationModel)
+    </div>
+    <div class="tab-pane settings" id="Fees" data-link="/Org/Fees">
+        @Helper.HiddenId("Id", Model.Id)
+    </div>
+    <div class="tab-pane settings" id="Questions" data-link="/Org/Questions">
+        @Helper.HiddenId("Id", Model.Id)
+    </div>
+    <div class="tab-pane settings no0" id="Messages" data-link="/Org/Messages">
+        @Helper.HiddenId("Id", Model.Id)
+    </div>
 </div>

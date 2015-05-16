@@ -3,46 +3,31 @@
 @using CmsWeb.Areas.People.Models
 @using UtilityExtensions
 @model PersonModel
-@if (Model.Person.CanUserEditBasic)
-{
-    <a class="personal-picture" href="/Person2/PictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">@Picture()</a>
-}
-else
-{
-    <a href="@Model.Picture.LargeUrl" title="Click to see larger version" target="_blank">@Picture()</a>
-}
-<div class="profile">
-    <h2 id="nameline" class="span8 @(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">
-        @Model.Name
-    </h2>
-    <div class="span4 pull-right" id="profile-actions">
-        @(User.IsInRole("Access") ? Html.Partial("Toolbar/Toolbar", Model.Users) : Html.Partial("Toolbar/ToolbarMyData", Model.Users))
-    </div>
-    <ul class="meta unstyled">
-        <li class="role">
-            @ShowAddress(Model.PrimaryAddr)
-            @ShowAddress(Model.OtherAddr)
-            @ContactLine()
-        </li>
-        <li class="badges">
-            @if (Model.basic.Campus.Items.Count() > 1)
-            {
+ <h1 id="nameline" class="@(Model.Person.IsDeceased == true ? "alert alert-danger" : "")">
+    @Model.Name
+</h1>
+<ul class="meta list-unstyled">
+    <li class="role">
+        @ShowAddress(Model.PrimaryAddr)
+        @ShowAddress(Model.OtherAddr)
+        @ContactLine()
+    </li>
+    <li class="badges">
+        @if (Model.basic.Campus.Items.Count() > 1)
+        {
             @Html.DisplayFor(m => m.basic.Campus, "InlineCode")
-            }
-            @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
-            @Badge(true, @Model.MemberStatus, "label-success")
-            @foreach (var status in Model.StatusFlags)
-            {
-                @Badge(Model.MemberStatus != status, status, "label-success")
-            }
-            @Badge(Model.basic.DoNotVisitFlag, "Do Not Visit", "label-important")
-            @Badge(Model.basic.DoNotCallFlag, "Do Not Call", "label-important")
-            @Badge(Model.basic.DoNotMailFlag, "Do Not Mail", "label-important")
-        </li>
-    </ul>
-</div>
-@*@Html.Partial("Personal/PictureUpload", Model)*@
-
+        }
+        @Html.DisplayFor(m => m.basic.PositionInFamily, "InlineCode")
+        @Badge(true, @Model.MemberStatus, "label-success")
+        @foreach (var status in Model.StatusFlags)
+        {
+            @Badge(Model.MemberStatus != status, status, "label-success")
+        }
+        @Badge(Model.basic.DoNotVisitFlag, "Do Not Visit", "label-danger")
+        @Badge(Model.basic.DoNotCallFlag, "Do Not Call", "label-danger")
+        @Badge(Model.basic.DoNotMailFlag, "Do Not Mail", "label-danger")
+    </li>
+</ul>
 @helper ShowAddress(AddressInfo a)
 {
     var editHide = Model.Person.CanUserEditFamilyAddress ? "" : "hide";
@@ -52,9 +37,9 @@ else
         var addr = a.AddrCityStateZipLine();
         var start = DbUtil.StartAddress;
         <div class="dropdown">
-        <i class="fa @icon fa-fw"></i>
-        <a href="#" class="dropdown-toggle @a.BadAddressClass" data-toggle="dropdown">@addr</a>
-            <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr editable-click @editHide">&nbsp;&nbsp;<i class="fa fa-pencil"></i></a>
+            <i class="fa @icon fa-fw"></i>
+            <a href="#" class="dropdown-toggle @a.BadAddressClass" data-toggle="dropdown">@addr</a>&nbsp;&nbsp;
+            <a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr @editHide"><i class="fa fa-pencil"></i></a>
             <ul class="dropdown-menu">
                 <li class="@editHide"><a href="/Address/Edit/@a.Name/@Model.PeopleId" class="editaddr">Edit Address</a></li>
                 <li><a href="http://www.google.com/maps?q=@addr" target="_blank">Google Map</a></li>
@@ -73,7 +58,7 @@ else
     sb.AppendNext(bull, Model.HomePhone);
     if (sb.Length > 0)
     {
-        <i class="fa fa-comment-o fa-fw"></i>
+        <i class="fa fa-envelope fa-fw"></i>
         <span id="contactline">@Html.Raw(sb)</span>
     }
 }
@@ -83,8 +68,4 @@ else
     {
         <span class="label @labeltype">@badge</span>
     }
-}
-@helper Picture()
-{
-    <div class="portrait" style="background-image: url(@Model.Picture.SmallUrl);"></div>
 }

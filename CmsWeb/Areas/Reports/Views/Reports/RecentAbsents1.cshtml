@@ -3,52 +3,58 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-    ViewBag.Title = "RecentAbsents";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Recent Absents";
+    ViewBag.ReportPageHeader = "Recent Absents";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>Recent Absents</h2>
-<table class="@ViewExtensions2.GridClass">
-    <thead>
-        @if (Model.DefaultWorshipId > 0 && Model.OrgId != Model.DefaultWorshipId)
-        {
-            <tr>
-                <td colspan="6" class="left border-bottom">
-                    View <a href="/Reports/RecentAbsents1/@Model.DefaultWorshipId/@Model.OrgId">@Model.DefaultWorshipName</a> recent absents.
-                </td>
-            </tr>
-        }
-        <tr>
-            <th colspan="6" class="left border-bottom">
-                @if (Model.OrgFilterId > 0)
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    @if (Model.DefaultWorshipId > 0 && Model.OrgId != Model.DefaultWorshipId)
+                    {
+                        <tr>
+                            <td colspan="6">
+                                <h2>View <a href="/Reports/RecentAbsents1/@Model.DefaultWorshipId/@Model.OrgId">@Model.DefaultWorshipName</a> recent absents.</h2>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <th colspan="6" class="text-center">
+                            @if (Model.OrgFilterId > 0)
+                            {
+                                <h3>Members of the <a href="@Util2.Org/@Model.OrgFilterId">@Model.OrgFilterName</a> @(string.IsNullOrEmpty(Model.OrgFilterLeaderName) ? "" : string.Format("({0})", Model.OrgFilterLeaderName)) Class</h3>
+                                <em>With @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate() in <a href="@Util2.Org/@Model.OrgId">@Model.OrganizationName</a></em>
+                            }
+                            else
+                            {
+                                <h3><a href="@Util2.Org/@Model.OrgId">@Model.OrganizationName</a> @(string.IsNullOrEmpty(Model.OrganizationLeader) ? "" : string.Format("({0})", Model.OrganizationLeader))</h3>
+                                <em>Members with @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate()</em>
+                            }
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th class="text-right">Absent</th>
+                        <th class="text-right">Last Attend</th>
+                        <th>Home Phone</th>
+                        <th>Cell Phone</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                @foreach (var item in Model.FetchAbsents())
                 {
-                    <div>Members of the <a href="@Util2.Org/@Model.OrgFilterId">@Model.OrgFilterName</a> (@Model.OrgFilterLeaderName) Class</div>
-                    <div>With @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate() in <a href="@Util2.Org/@Model.OrgId">@Model.OrganizationName</a></div>
+                    <tr>
+                        <td><a href="/Person2/@item.PeopleId" target="person">@item.Name2</a></td>
+                        <td class="text-right"> @item.consecutive times </td>
+                        <td class="text-right"> @Util.FormatDate(item.lastattend)</td>
+                        <td>@Util.FmtFone(item.HomePhone, prefix: "H")</td>
+                        <td>@Util.FmtFone(item.CellPhone, prefix: "C")</td>
+                        <td><a href="mailto:@item.EmailAddress">@item.EmailAddress</a></td>
+                    </tr>
                 }
-                else
-                {
-                    <div><a href="@Util2.Org/@Model.OrgId">@Model.OrganizationName</a> (@Model.OrganizationLeader) </div>
-                    <div>Members with @Model.ConsecutiveAbsentsThreshold or more consecutive absents on and before @Model.LastMeeting.FormatDate()</div>
-                }
-            </th>
-        </tr>
-        <tr>
-            <th></th>
-            <th class="right">Absent</th>
-            <th class="right">Last Attend</th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    @foreach (var item in Model.FetchAbsents())
-    {
-        <tr>
-            <td><a href="/Person2/@item.PeopleId" target="person">@item.Name2</a></td>
-            <td class="right"> @item.consecutive times </td>
-            <td class="right"> @Util.FormatDate(item.lastattend)</td>
-            <td>@Util.FmtFone(item.HomePhone, prefix: "H")</td>
-            <td>@Util.FmtFone(item.CellPhone, prefix: "C")</td>
-            <td><a href="mailto:@item.EmailAddress">@item.EmailAddress</a></td>
-        </tr>
-    }
-</table>
+            </table>
+        </div>
+    </div>
+</div>

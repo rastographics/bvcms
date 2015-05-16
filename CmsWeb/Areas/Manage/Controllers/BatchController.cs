@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web.Mvc;
 using System.Threading;
+using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text;
 using CmsData;
@@ -138,14 +139,18 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             return Content("done");
         }
+
         [Authorize(Roles = "Admin")]
+        public ActionResult UpdateOrg()
+        {
+            ViewData["text"] = "";
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
         public ActionResult UpdateOrg(string text)
         {
-            if (Request.HttpMethod.ToUpper() == "GET")
-            {
-                ViewData["text"] = "";
-                return View();
-            } 
             var csv = new CsvReader(new StringReader(text), hasHeaders: true, delimiter: '\t');
             var cols = csv.GetFieldHeaders();
 
@@ -221,7 +226,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.FirstMeetingDate = val.ToDate();
                             break;
                         case "Gender":
-                            o.GenderId = val.Equal("Male") ? (int?) 1 : val.Equal("Female") ? (int?) 2 : null;
+                            o.GenderId = val.Equal("Male") ? (int?)1 : val.Equal("Female") ? (int?)2 : null;
                             break;
                         case "GradeAgeStart":
                             o.GradeAgeStart = val.ToInt2();
@@ -260,7 +265,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.NumWorkerCheckInLabels = val.ToInt2();
                             break;
                         case "OnLineCatalogSort":
-                            o.OnLineCatalogSort = val == "0" ? (int?) null : val.ToInt2();
+                            o.OnLineCatalogSort = val == "0" ? (int?)null : val.ToInt2();
                             break;
                         case "OrganizationStatusId":
                             o.OrganizationStatusId = val.ToInt();
@@ -272,11 +277,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.Description = val;
                             break;
                         case "RollSheetVisitorWks":
-                            o.RollSheetVisitorWks = val == "0" ? (int?) null : val.ToInt2();
+                            o.RollSheetVisitorWks = val == "0" ? (int?)null : val.ToInt2();
                             break;
 
                         default:
-                            if(name.EndsWith(".ev"))
+                            if (name.EndsWith(".ev"))
                                 if (val.HasValue())
                                 {
                                     var a = name.Substring(0, name.Length - 3);
@@ -287,7 +292,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     DbUtil.Db.SubmitChanges();
                 }
             }
-            return Redirect("/");
+            return Content("Organizations were successfully updated.");
         }
 
         [HttpGet]
@@ -299,6 +304,99 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (success.HasValue())
                 ViewData["success"] = success;
             ViewData["text"] = "";
+            return View(m);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateLookupValueSelection(string field)
+        {
+            IEnumerable<CodeValueItem> m = null;
+            var lookups = new CodeValueModel();
+            switch (field)
+            {
+                case "Approval Codes":
+                    m = lookups.VolunteerCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Baptism Status":
+                    m = lookups.BaptismStatusList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Baptism Type":
+                    m = lookups.BaptismTypeList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Bad Address Flag":
+                    m = UpdateFieldsModel.BadAddressFlag();
+                    ViewBag.UseCode = true;
+                    break;
+                case "Campus":
+                    m = lookups.AllCampuses();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Statement Options":
+                    m = lookups.EnvelopeOptionList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Electronic Statement":
+                    m = UpdateFieldsModel.ElectronicStatement();
+                    ViewBag.UseCode = true;
+                    break;
+                case "Decision Type":
+                    m = lookups.DecisionTypeList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Do Not Mail":
+                    m = UpdateFieldsModel.DoNotMail();
+                    ViewBag.UseCode = true;
+                    break;
+                case "Drop Type":
+                    m = lookups.DropTypeList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Envelope Options":
+                    m = lookups.EnvelopeOptionList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Entry Point":
+                    m = lookups.EntryPoints();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Family Position":
+                    m = lookups.FamilyPositionCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Gender":
+                    m = lookups.GenderCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Grade":
+                    m = UpdateFieldsModel.Grades();
+                    ViewBag.UseCode = true;
+                    break;
+                case "Join Type":
+                    m = lookups.JoinTypeList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Marital Status":
+                    m = lookups.MaritalStatusCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "Member Status":
+                    m = lookups.MemberStatusCodes();
+                    ViewBag.UseCode = false;
+                    break;
+                case "New Member Class":
+                    m = lookups.NewMemberClassStatusList();
+                    ViewBag.UseCode = false;
+                    break;
+                case "ReceiveSMS":
+                    m = UpdateFieldsModel.ReceiveSMS();
+                    ViewBag.UseCode = true;
+                    break;
+            }
+            ViewBag.FieldName = field;
             return View(m);
         }
 
@@ -318,43 +416,16 @@ namespace CmsWeb.Areas.Manage.Controllers
             var q = m.People();
             return Content(q.Count().ToString());
         }
-        [HttpPost]
-        public ActionResult UpdateWarning(UpdateFieldsModel m)
-        {
-            if(m.Field == "Drop All Enrollments")
-                return Content(@"
-Important! Drop All Enrollments will make all the selected people previous members
-of every organization in which they are enrolled.
-There is no Undo button.");
-            return new EmptyResult();
-        }
-
-//        [Authorize(Roles = "Admin")]
-//        public ActionResult UpdatePeople()
-//        {
-//            if (Request.HttpMethod.ToUpper() == "GET")
-//            {
-//                ViewData["text"] = "";
-//                return View();
-//            }
-//            var file = Request.Files[0];
-//            if (file.ContentLength == 0)
-//                return Content("empty file");
-//            var path = Server.MapPath("/Upload/" + Guid.NewGuid().ToCode() + ".xls");
-//            file.SaveAs(path);
-//            try
-//            {
-//                UpdatePeopleModel.UpdatePeople(path, Util.Host, Util.UserPeopleId.Value);
-//            }
-//            finally
-//            {
-//                System.IO.File.Delete(path);
-//            }
-//            return Content("<div>done <a href='/'>go home</a><div>");
-//        }
-
+        
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateStatusFlags()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateStatusFlags(FormCollection formCollection)
         {
             DbUtil.Db.DeleteQueryBitTags();
             var qbits = DbUtil.Db.StatusFlags().ToList();
@@ -366,7 +437,7 @@ There is no Undo button.");
                     continue;
                 DbUtil.Db.TagAll2(qq, t);
             }
-            return View();
+            return Content("Status flags were successfully updated.");
         }
 
         public class FindInfo
@@ -603,6 +674,13 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
                 return Content(e.Message);
             }
             return Content("done");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Developer")]
+        public ActionResult OtherDeveloperActions()
+        {
+            return View();
         }
     }
 }

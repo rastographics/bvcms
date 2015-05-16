@@ -1,181 +1,144 @@
-﻿@using UtilityExtensions
-@using CmsWeb.Areas.Reports.Models
+﻿@using CmsWeb.Areas.Reports.Models
 @{
-  var qid = ViewBag.queryid;
-  var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
-  var oid = ViewBag.oid;
-  var custom = (new CustomReportsModel(DbUtil.Db, oid)).ReportList().ToList();
-  var isAdmin = User.IsInRole("Admin") || User.IsInRole("Design");
+    var qid = ViewBag.queryid;
+    var wid = ViewExtensions2.DbSetting("WorshipId", "0").ToInt();
+    var oid = ViewBag.oid;
+    var custom = (new CustomReportsModel(DbUtil.Db, oid)).ReportList().ToList();
+    var isAdmin = User.IsInRole("Admin") || User.IsInRole("Design");
 }
-<ul class="dropdown-menu dropdown-div-reports">
-  <li>
+<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-3">
     @if (((bool?)ViewBag.OrganizationContext) == true)
     {
-      <div class="row text-center">
-        <i>The <a class="qid">blue links</a> apply to the filtered list of people, the <a>green links</a> apply to the organization.</i>
-      </div>
+        <li class="col-sm-12 text-center">
+            <i>The <span class="org-context">green menu items</span> apply to the organization, the rest apply to the filtered list of people.</i>
+        </li>
     }
-    <div class="row">
-      <ul class="span4 unstyled">
-        <li class="header">Export Excel</li>
-        <li><a href='/Export2/Excel/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat">Standard</a></li>
-        <li><a href='/Export2/Csv/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Mailing / Bulk (csv)</a></li>
-        <li class="space"></li>
-        <li><a href='/Export2/Excel/AllFamily/@qid' class="qid">Family</a></li>
-        <li><a href='/Export2/Excel/IndividualPicture/@qid' class="qid">Pictures</a></li>
-        @* <li><a href='/Export/UpdatePeople/@qid' title="For Doing a Mass Update">Excel Update</a></li> *@
-        <li><a href='/Export2/ExtraValues/@qid' class="qid">Extra Values</a></li>
-        <li><a href='/Export2/StatusFlags/@qid' class="qid">Status Flags</a></li>
-
-        @if (((bool?)ViewBag.OrganizationContext) == true)
-        {
-          <li class="header current-list pending-list orgcontext">Org Members Export</li>
-          <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' class="qid" title="Includes Org Member info">Member Export</a></li>
-          <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' class="qid" title="Includes Org Member and Sub-Group columns">Sub-Groups Export</a></li>
-          <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge">Promotion Export</a></li>
-        }
-
-        <li class="header">Other Exports</li>
-        <li><a href='/Export2/Excel/Attend/@qid' class="qid">Attendance (Main Fellowship)</a></li>
-        <li><a href='/Export2/Excel/Children/@qid' class="qid">Children</a></li>
-        <li><a href='/Export2/Excel/Involvement/@qid' class="qid">Involvement</a></li>
-        <li><a href='/Export2/Excel/Library/@qid' class="qid">Library</a></li>
-        <li><a href='/Export2/Excel/Church/@qid' class="qid">Other Churches</a></li>
-        <li><a href='/Export2/MembershipInfo/@qid' class="qid">Membership Info export</a></li>
-        @if (wid > 0)
-        {
-          <li><a href='/Export2/WorshipAttendance/@qid' class="qid">Worship Attendance</a></li>
-        }
-      </ul>
-      <ul class="span4 unstyled">
-        <li class="header">Reports</li>
-        @if ((bool?)ViewBag.OrganizationContext == true)
-        {
-          <li><a href='/Reports/Contacts/@qid?orgname=@ViewBag.orgname' target="_blank" title="Report for Robo-calling Contacts" class="qid">Contact Report</a></li>
-          <li><a href='/Reports/Contacts/@qid?sortAddress=true&orgname=@ViewBag.orgname' target="_blank" class="qid">Contact Report (by addr)</a></li>
-        }
-        else
-        {
-          <li><a href='/Reports/Contacts/@qid' target="_blank" title="Report for Robo-calling Contacts" class="qid">Contact Report</a></li>
-          <li><a href='/Reports/Contacts/@qid?sortAddress=true' target="_blank" class="qid">Contact Report (Sorted by Address)</a></li>
-        }
-        <li><a href='/Reports/Family/@qid' target="_blank" class="qid">Family Report</a></li>
-        <li><a href='/Reports/Prospect/@qid' target="_blank" class="qid">Inreach/Outreach</a></li>
-        <li><a href='/Reports/Prospect/@qid?Form=true' target="_blank" class="qid">Inreach/Outreach with Form</a></li>
-        <li><a href='/Reports/WeeklyAttendance/@qid' target="_blank" title="General Attendance Stats" class="qid">Weekly Attend</a></li>
-        @if ((bool?)ViewBag.OrganizationContext == true)
-        {
-          <li class="header">Org Members Reports</li>
-          <li><a href='/Reports/RollsheetForOrg' class="dialog-options qid" data-target="/Dialog/ForNewRollsheet/@oid">Rollsheet</a></li>
-          <li><a href='/Reports/RallyRollsheetForOrg' class="dialog-options" data-target="/Dialog/ForNewRallyRollsheet/@oid">Rally Rollsheet</a></li>
-          <li><a href='/Reports/Roster1/@qid?oid=@oid' target="report">Roster Report</a></li>
-          <li><a href='/Reports/Roster/@qid?oid=@oid' target="report">Extended Roster</a></li>
-          <li><a href='/Reports/Registration/@qid?oid=@oid' target="_blank">Registration Report</a></li>
-        }
-        else
-        {
-          <li><a href='/Reports/Registration/@qid' target="_blank" class="qid">Registration Rpt</a></li>
-        }
-
-        <li class="header">Directories</li>
-        <li><a href="/Reports/FamilyDirectoryCompact/@qid" class="qid">Compact Directory</a></li>
-        <li><a href="/Reports/FamilyDirectory/@qid" class="qid">Family Directory</a></li>
-        <li><a href="/Reports/PictureDirectory/@qid" class="qid">Picture Directory</a></li>
-        <li><a href="/Reports/CompactPictureDirectory/@qid" class="qid">Compact Picture Directory</a></li>
-        <li class="hideAlt"><a href="/Reports/CompactPictureDirectory2/@qid" class="qid">Compact Picture Directory 2</a></li>
-        <li class="hideAlt2"><a href="/Reports/FamilyPictureDirectory/@qid" class="qid">Family Picture Directory</a></li>
-
-      </ul>
-      <ul class="span4 unstyled">
-        <li class="header"> Address Labels </li>
-        <li><a href='/Reports/AveryAddress/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Address (pdf)</a></li>
-        <li><a href='/Reports/AveryAddressWord/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Avery Addr (word)</a></li>
-        <li><a target="_blank" href="/Reports/EmployerAddress/@qid" class="qid">Employer</a></li>
-        <li><a href='/Reports/RollLabels/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Continous Roll Labels</a></li>
-
-        <li class="header">Other Labels </li>
-        <li><a target="_blank" href='/Reports/BarCodeLabels/@qid' class="qid">Barcode / Name</a></li>
-        <li><a target="_blank" href='/Reports/NameLabels/@qid' class="qid">Name</a></li>
-        <li><a target="_blank" href='/Reports/Avery/@qid' class="qid">Name (with Phone Number)</a></li>
-
-        @if (((bool?)ViewBag.OrganizationContext) == true)
-        {
-          <li class="header current-list pending-list orgcontext">Org Attendance</li>
-          <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank">Recent Absents Report</a></li>
-          <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank">Recent Attendance Report</a></li>
-          <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid">Attendance Percentages</a></li>
-        }
-        @if (custom.Count > 0)
-        {
-          <li class="header">Custom Reports</li>
-          if (isAdmin)
-          {
-            foreach (var r in custom)
+    <li class="col-sm-4">
+        <ul>
+            <li class="dropdown-header">Export Excel</li>
+            <li><a href='/Export2/Excel/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat">Standard</a></li>
+            <li><a href='/Export2/Csv/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Mailing / Bulk (csv)</a></li>
+            <li class="divider"></li>
+            <li><a href='/Export2/Excel/AllFamily/@qid' class="qid">Family</a></li>
+            <li><a href='/Export2/Excel/IndividualPicture/@qid' class="qid">Pictures</a></li>
+            <li><a href='/Export2/ExtraValues/@qid' class="qid">Extra Values</a></li>
+            <li><a href='/Export2/StatusFlags/@qid' class="qid">Status Flags</a></li>
+            @if (((bool?)ViewBag.OrganizationContext) == true)
             {
-              <li>
-                <div class="toolbar-custom-reports">
-                  <a class="run-custom-report" target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a>
-                  @if (r != "AllColumns")
-                  {
-                    <span>
-                      <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid, queryId = qid})"><i class="fa fa-pencil"></i></a>
-                      <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-trash-o"></i></a>
-                    </span>
-                  }
-                </div>
-              </li>
-              <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+                <li class="divider"></li>
+                <li class="dropdown-header current-list pending-list orgcontext">Org Members Export</li>
+                <li class="current-list orgcontext"><a href='/Export2/Excel/OrgMembers/@qid' title="Includes Org Member info" class="qid">Member Export</a></li>
+                <li class="current-list orgcontext"><a href='/Export2/Excel/Groups/@qid' title="Includes Org Member and Small Group columns" class="qid">Groups Export</a></li>
+                <li class="pending-list orgcontext"><a href='/Export2/Excel/Promotion/@qid' title="Just for Promotion Mail Merge"><span class="org-context">Promotion Export</span></a></li>
             }
-            <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new { Area = "Reports", orgId = oid, queryId = qid }, null)</li>
-          }
-          else
-          {
-            foreach (var r in custom)
+            <li class="divider"></li>
+            <li class="dropdown-header">Other Exports</li>
+            <li><a href='/Export2/Excel/Attend/@qid' class="qid">Attendance (Main Fellowship)</a></li>
+            <li><a href='/Export2/Excel/Children/@qid' class="qid">Children</a></li>
+            <li><a href='/Export2/Excel/Involvement/@qid' class="qid">Involvement</a></li>
+            <li><a href='/Export2/Excel/Library/@qid' class="qid">Library</a></li>
+            <li><a href='/Export2/Excel/Church/@qid' class="qid">Other Churches</a></li>
+            <li><a href='/Export2/MembershipInfo/@qid' class="qid">Membership Info export</a></li>
+            @if (wid > 0)
             {
-              <li><a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a></li>
-              <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+                <li><a href='/Export2/WorshipAttendance/@qid' class="qid">Worship Attendance</a></li>
             }
-          }
-        }
-      </ul>
-    </div>
-  </li>
+        </ul>
+    </li>
+    <li class="col-sm-4">
+        <ul>
+            <li class="dropdown-header">Reports</li>
+            @if ((bool?)ViewBag.OrganizationContext == true)
+            {
+                <li><a href='/Reports/Contacts/@qid?orgname=@ViewBag.orgname' target="_blank" title="Report for Robo-calling Contacts" class="qid">Contact Report</a></li>
+                <li><a href='/Reports/Contacts/@qid?sortAddress=true&orgname=@ViewBag.orgname' target="_blank" class="qid">Contact Report (by addr)</a></li>
+            }
+            else
+            {
+                <li><a href='/Reports/Contacts/@qid' target="_blank" title="Report for Robo-calling Contacts" class="qid">Contact Report</a></li>
+                <li><a href='/Reports/Contacts/@qid?sortAddress=true' target="_blank" class="qid">Contact Report (Sorted by Address)</a></li>
+            }
+            <li><a href='/Reports/Family/@qid' target="_blank" class="qid">Family Report</a></li>
+            <li><a href='/Reports/Prospect/@qid' target="_blank" class="qid">Inreach/Outreach</a></li>
+            <li><a href='/Reports/Prospect/@qid?Form=true' target="_blank" class="qid">Inreach/Outreach with Form</a></li>
+            <li><a href='/Reports/WeeklyAttendance/@qid' target="_blank" title="General Attendance Stats" class="qid">Weekly Attend</a></li>
+            @if ((bool?)ViewBag.OrganizationContext == true)
+            {
+                <li class="divider"></li>
+                <li class="dropdown-header">Org Members Reports</li>
+                <li><a href='/Reports/RollsheetForOrg' class="dialog-options qid" data-target="/Dialog/ForNewRollsheet/@oid">Rollsheet</a></li>
+                <li><a href='/Reports/RallyRollsheetForOrg' class="dialog-options" data-target="/Dialog/ForNewRallyRollsheet/@oid"><span class="org-context">Rally Rollsheet</span></a></li>
+                <li><a href='/Reports/Roster1/@qid?oid=@oid' target="report"><span class="org-context">Roster Report</span></a></li>
+                <li><a href='/Reports/Roster/@qid?oid=@oid' target="report"><span class="org-context">Extended Roster</span></a></li>
+                <li><a href='/Reports/Registration/@qid?oid=@oid' target="_blank"><span class="org-context">Registration Report</span></a></li>
+            }
+            else
+            {
+                <li><a href='/Reports/Registration/@qid' target="_blank" class="qid">Registration Rpt</a></li>
+            }
+            <li class="divider"></li>
+            <li class="dropdown-header">Directories</li>
+            <li><a href="/Reports/FamilyDirectoryCompact/@qid" class="qid">Compact Directory</a></li>
+            <li><a href="/Reports/FamilyDirectory/@qid" class="qid">Family Directory</a></li>
+            <li><a href="/Reports/PictureDirectory/@qid" class="qid">Picture Directory</a></li>
+            <li><a href="/Reports/CompactPictureDirectory/@qid" class="qid">Compact Picture Directory</a></li>
+            <li class="hideAlt"><a href="/Reports/CompactPictureDirectory2/@qid" class="qid">Compact Picture Directory 2</a></li>
+            <li class="hideAlt2"><a href="/Reports/FamilyPictureDirectory/@qid" class="qid">Family Picture Directory</a></li>
+        </ul>
+    </li>
+    <li class="col-sm-4">
+        <ul>
+            <li class="dropdown-header"> Address Labels </li>
+            <li><a href='/Reports/AveryAddress/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Address (pdf)</a></li>
+            <li><a href='/Reports/AveryAddressWord/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Avery Addr (word)</a></li>
+            <li><a target="_blank" href="/Reports/EmployerAddress/@qid" class="qid">Employer</a></li>
+            <li><a href='/Reports/RollLabels/@qid' class="dialog-options qid" data-target="/Dialog/ChooseFormat/useMailFlags">Continous Roll Labels</a></li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Other Labels </li>
+            <li><a target="_blank" href='/Reports/BarCodeLabels/@qid' class="qid">Barcode / Name</a></li>
+            <li><a target="_blank" href='/Reports/NameLabels/@qid' class="qid">Name</a></li>
+            <li><a target="_blank" href='/Reports/Avery/@qid' class="qid">Name (with Phone Number)</a></li>
+            @if (((bool?)ViewBag.OrganizationContext) == true)
+            {
+                <li class="divider"></li>
+                <li class="dropdown-header current-list pending-list orgcontext">Org Attendance</li>
+                <li><a id="RecentAbsents" href="/Reports/RecentAbsents1/@oid" target="_blank"><span class="org-context">Recent Absents Report</span></a></li>
+                <li><a id="RecentAttendRpt" href="/Reports/PastAttendee/@oid" target="_blank"><span class="org-context">Recent Attendance Report</span></a></li>
+                <li><a id="AttendanceRpt" href="/Reports/Attendance/@oid"><span class="org-context">Attendance Percentages</span></a></li>
+            }
+            @if (custom.Count > 0)
+            {
+                <li class="divider"></li>
+                <li class="dropdown-header">Custom Reports</li>
+                if (isAdmin)
+                {
+                    foreach (var r in custom)
+                    {
+                        <li>
+                            <div class="toolbar-custom-reports">
+                                <a class="run-custom-report" target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a>
+                                @if (r != "AllColumns")
+                                {
+                                    <span>
+                                        <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid, queryId = qid})"><i class="fa fa-pencil"></i></a>
+                                        <a href="#" data-action="delete" data-action-url="@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid})"><i class="fa fa-trash-o"></i></a>
+                                    </span>
+                                }
+                            </div>
+                        </li>
+                        <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+                    }
+                    <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new { Area = "Reports", orgId = oid, queryId = qid }, null)</li>
+                }
+                else
+                {
+                    foreach (var r in custom)
+                    {
+                        <li><a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a></li>
+                        <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+                    }
+                }
+            }
+        </ul>
+    </li>
 </ul>
-
-
-<style>
-  .toolbar-custom-reports {
-    padding: 0 20px;
-  }
-
-    .toolbar-custom-reports > .run-custom-report {
-      display: inline-block;
-      white-space: nowrap;
-      width: 80%;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .toolbar-custom-reports span {
-      float: right;
-    }
-</style>
-
-<script type="text/javascript">
-  $('.toolbar-custom-reports a[data-action="delete"]').click(function (e) {
-    e.preventDefault();
-
-    var $reportNode = $(this).parent().parent();
-    var reportToDelete = $reportNode.text().trim();
-
-    bootbox.confirm('Are you sure you want to delete this report? (' + reportToDelete + ')', function (result) {
-      if (result) {
-        $.post('@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports"})', { reportName: reportToDelete }).done(function (data) {
-          if (data === 'success') {
-            $reportNode.remove();
-          }
-        });
-      }
-    });
-  });
-</script>

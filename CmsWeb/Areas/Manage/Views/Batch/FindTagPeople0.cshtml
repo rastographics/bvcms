@@ -1,13 +1,29 @@
 ﻿@using CmsWeb
 @{
-    ViewBag.Title = "FindTagPeople";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Find Tag People";
+    ViewBag.PageHeader = "Find Tag People";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>FindTagPeople</h2>
-<em>One row each, tab separated columns with First, Last, Birthday, CellPhone, HomePhone, Email</em>
-<em>First row should have the column headings First, Last, Birthday, CellPhone, HomePhone, Email</em>
-<form action="/Batch/FindTagPeople" method="post">
-    <label>Tag name: </label> @Html.TextBox("tagname")
-    <input type="submit" class="bt" value="Submit" />
-    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", style = "width:90%" })<br />
-</form>
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="alert alert-info">
+                    One row each, tab separated columns with First, Last, Birthday, CellPhone, HomePhone, Email. First row should have the column headings First, Last, Birthday, CellPhone, HomePhone, Email.
+                </div>
+                <form action="/Batch/FindTagPeople" method="post">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label for="tagname">Tag Name</label>
+                                @Html.TextBox("tagname", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", @class = "form-control" })<br />
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

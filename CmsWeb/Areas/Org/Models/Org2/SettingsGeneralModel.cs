@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 
@@ -8,7 +11,7 @@ namespace CmsWeb.Areas.Org2.Models
     {
         public Organization Org;
 
-        public int Id 
+        public int Id
         {
             get { return Org != null ? Org.OrganizationId : 0; }
             set
@@ -19,6 +22,8 @@ namespace CmsWeb.Areas.Org2.Models
         }
         public void Update()
         {
+            if (LimitToRole == "0")
+                LimitToRole = null;
             if (Gender.Value == "99")
                 Gender.Value = null;
             this.CopyPropertiesTo(Org);
@@ -33,7 +38,18 @@ namespace CmsWeb.Areas.Org2.Models
 
         public SettingsGeneralModel()
         {
-            
+        }
+        public IEnumerable<SelectListItem> Roles()
+        {
+            var list = DbUtil.Db.Roles.OrderBy(r => r.RoleName).ToList().Select(x => new SelectListItem
+            {
+                Value = x.RoleName,
+                Text = x.RoleName,
+                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole.Contains(x.RoleName)
+            }).ToList();
+
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true});
+            return list;
         }
 
         [Display(Description = LocationDescription)]
@@ -69,7 +85,7 @@ namespace CmsWeb.Areas.Org2.Models
         [Display(Description = NoCreditCardsDescription)]
         public bool NoCreditCards { get; set; }
 
-        [Display(Name = "Security Role", Description = LimitToRoleDescription)]
+        [Display(Name = "Limit to Role", Description = LimitToRoleDescription)]
         public string LimitToRole { get; set; }
 
         #region Description
@@ -92,7 +108,7 @@ This makes available an accessible directory for any member of this organization
         private const string GradeAgeStartDescription = @"
 Used during promotion to assign a grade to a student who joins this class.
 
-Must be a integer number, not a range, 
+Must be a integer number, not a range,
 **Do Not Use** something like 7-10.
 Only effective for graded classes.
 
@@ -101,15 +117,15 @@ This facility keeps you from having to maintain grades once a year.
         private const string GenderDescription = @"
 For the 'Compute Org by Birthday/Gender' Registration Type.
 
-Commonly used for recreation sports leagues 
-where each league is a Division (in TouchPoint vernacular) 
+Commonly used for recreation sports leagues
+where each league is a Division (in TouchPoint vernacular)
 and each division within the league is an Organization.
 ";
         private const string PhoneNumberDescription = @"
 Used to display a number to call in a confirmation email with {phone}.
 
-If you doing a registration with more than one org, 
-allows you to specify a different number for each org 
+If you doing a registration with more than one org,
+allows you to specify a different number for each org
 and have only one confirmation #.
 ";
         private const string IsRecreationTeamDescription = @"
@@ -126,8 +142,8 @@ Disallow Credit Cards on this org.
         private const string LimitToRoleDescription = @"
 This organization will be visible to only users in this role.
 
-**Warning**, if no one has this role, 
-you will never be able to get back here 
+**Warning**, if no one has this role,
+you will never be able to get back here
 unless you create the role and assign it to somebody.
 ";
 

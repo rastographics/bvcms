@@ -91,11 +91,11 @@ namespace CmsWeb.Code
                         tb.InnerHtml = a.ToString();
                         break;
                     case "Header":
-                        tb.AddCssClass("header");
+                        tb.AddCssClass("dropdown-header");
                         tb.SetInnerText(e.Value);
                         break;
                     case "Space":
-                        tb.AddCssClass("space");
+                        tb.AddCssClass("divider");
                         break;
                 }
                 sb.AppendLine(tb.ToString());

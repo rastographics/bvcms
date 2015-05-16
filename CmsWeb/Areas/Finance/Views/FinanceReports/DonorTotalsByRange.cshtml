@@ -1,39 +1,113 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
 @using UtilityExtensions
-@using CmsWeb
-@using CmsData
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Donor Totals By Range";
+    ViewBag.ReportPageHeader = "Donor Totals By Range";
 }
-@section head
-{
-    <style type="text/css" media="print">
-        input.noPrint { display: none; }
-        span.noPrint { display: none; }
-    </style>
-}
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="well hidden-print" style="max-width: 850px; margin: auto;">
+            <form id="totals">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="CampusId" class="control-label">Campus</label>
+                            <div class="input-group">
+                                @Html.DropDownList("CampusId", Model.Campuses(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="dt1" class="control-label">From Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("Dt1", Model.Dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("Dt1Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="dt2" class="control-label">To Date</label>
+                            <div class="input-group date">
+                                @Html.TextBox("Dt2", Model.Dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("Dt2Iso", Model.Dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-9">
+                        <div class="form-group">
+                            <ul class="list-inline">
+                                <li>
+                                    <div class="checkbox">
+                                        <label class="control-label">
+                                            @Html.CheckBox("NonTaxDeductible") Include non-tax deductible?
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="checkbox">
+                                        <label class="control-label">
+                                            @Html.CheckBox("IncUnclosedBundles") Include unclosed bundles?
+                                        </label>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="pull-right">
+                            <button type="submit" class="btn btn-primary" id="run">Run</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="visible-print-block text-center">
+            @{
+                var campus = Model.Campuses().FirstOrDefault(c => c.Value == Model.CampusId.ToString());
+                var campusName = campus != null ? campus.Text : "";
+            }
+            <strong>Campus:</strong> <span id="campusName">@campusName</span><br />
+            <strong>From Date:</strong> <span id="fromDate">@Model.Dt1.GetValueOrDefault().ToShortDateString()</span><br />
+            <strong>To Date:</strong> <span id="toDate">@Model.Dt2.GetValueOrDefault().ToShortDateString()</span><br />
+            <strong>Non tax deductible?:</strong> <span id="nontaxDed">@Model.NonTaxDeductible</span><br />
+            <strong>Pledges?:</strong> <span id="pledge">@Model.Pledges</span><br />
+            <strong>Include unclosed bundles?:</strong> <span id="includeUnClosedBundles">@Model.IncUnclosedBundles</span>
+        </div>
+        <div id="results" style="margin-top: 25px;"></div>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Finance/TotalsByRange.js")
+    <script type="text/javascript">
+        $(function () {
+            $("#run").click(function (ev) {
+                ev.preventDefault();
+                if (!$.DateValid($("#Dt1").val(), true))
+                    return;
+                if (!$.DateValid($("#Dt2").val(), true))
+                    return;
+                $.block();
+
+                // set hidden print form elements
+                $('#campusName').text($("#CampusId option:selected").text());
+                $('#fromDate').text($("#Dt1").val());
+                $('#toDate').text($("#Dt2").val());
+                $('#nontaxDed').text($("#NonTaxDeductible").prop('checked'));
+                $('#pledge').text($("#Pledges").prop('checked'));
+                $('#includeUnClosedBundles').text($("#IncUnclosedBundles").prop('checked'));
+                
+                var f = $(this).closest('form');
+                var q = f.serialize();
+                $.post("/FinanceReports/DonorTotalsByRangeResults", q, function (ret) {
+                    $.unblock();
+                    $("#results").html(ret);
+                });
+            });
+        });
+    </script>
 }
-<div class="roundbox floatleft">
-    <h2>Donor Totals By Range</h2>
-    <form id="totals">
-        Campus: @Html.DropDownList("CampusId", Model.Campuses())
-        Start Date: @Html.TextBox("Dt1", Model.Dt1.ToString2("d"), new { style = "width: 100px; font-size: 110%", @class = "datepicker" })
-        End Date: @Html.TextBox("Dt2", Model.Dt2.ToString2("d"), new { style = "width: 100px; font-size: 110%", @class = "datepicker" })
-        <div style="color: Red">@Html.ValidationMessage("dates")</div>
-        Non Tax Deductible:@Html.CheckBox("NonTaxDeductible")
-        Pledges:@Html.CheckBox("Pledges")
-        Include Unclosed Bundles:@Html.CheckBox("IncUnclosedBundles")
-        <p>
-            <input id="run" type="submit" value="Run Report" class="bt" />
-        </p>
-        <hr />
-    </form>
-</div>
-<div style="clear: both"></div>
-<div id="results">
-	
-</div>

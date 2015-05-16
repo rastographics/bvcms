@@ -1,31 +1,32 @@
 ﻿@using CmsData;
 @using CmsData.Classes.ProtectMyMinistry
-@using CmsWeb
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
 @{
     ViewBag.Title = "Volunteer";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = "Manage Volunteer";
+    ViewBag.PageSubHeader = "<a href=\"/Person2/" + Model.Volunteer.PeopleId + "\">" + Model.Volunteer.Person.Name + "</a>";
+    Layout = ViewExtensions2.TouchPointLayout();
 
     IQueryable<BackgroundCheck> bg = null;
     IQueryable<BackgroundCheck> credit = null;
     IQueryable<BackgroundCheckLabel> labels = null;
 
     var labelEnabled = ViewExtensions2.DbSetting("EnableBackgroundLabels", "false") == "true";
-    var checkEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
+    var areBackgroundChecksEnabled = ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true";
 
     var i = from e in DbUtil.Db.VolunteerForms
-            where e.PeopleId == Model.V.PeopleId
+            where e.PeopleId == Model.Volunteer.PeopleId
             select e;
 
-    if (checkEnabled)
+    if (areBackgroundChecksEnabled)
     {
         bg = from e in DbUtil.Db.BackgroundChecks
-             where e.PeopleID == Model.V.PeopleId
+             where e.PeopleID == Model.Volunteer.PeopleId
              where e.ReportTypeID == ProtectMyMinistryHelper.TYPE_BACKGROUND
              select e;
 
         credit = from e in DbUtil.Db.BackgroundChecks
-                 where e.PeopleID == Model.V.PeopleId
+                 where e.PeopleID == Model.Volunteer.PeopleId
                  where e.ReportTypeID == ProtectMyMinistryHelper.TYPE_CREDIT
                  select e;
 
@@ -34,279 +35,378 @@
             labels = from e in DbUtil.Db.BackgroundCheckLabels
                      select e;
         }
-    }    
+    }
+
+    var shouldShowBackgroundChecks = areBackgroundChecksEnabled && User.IsInRole("BackgroundCheck");
+    var shouldShowCreditChecks = areBackgroundChecksEnabled && User.IsInRole("CreditCheck");
 }
 @section head
 {
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
     <style>
-        div.name {
-            padding: 1em;
+        dt {
+            font-weight: normal;
+            color: #808080;
+        }
+
+        dd {
+            font-weight: 600;
+            padding: 5px;
+            border: solid 1px #eee;
+            min-height: 32px;
+        }
+
+        .btn-success {
+            color: white !important;
+        }
+
+        .name {
+            padding: 5px 0;
         }
     </style>
 }
+
+<div class="row">
+    <div class="col-md-9" id="volunteer">
+        <ul class="nav nav-tabs" id="volunteer-tabs">
+            <li class="active"><a href="#applicationInformation" aria-controls="applicationInformation" data-toggle="tab">Application Information</a></li>
+            @if (shouldShowBackgroundChecks)
+            {
+                <li><a href="#backgroundChecks" aria-controls="backgroundChecks" data-toggle="tab">Background Checks</a></li>
+            }
+            @if (shouldShowCreditChecks)
+            {
+                <li><a href="#creditChecks" aria-controls="creditChecks" data-toggle="tab">Credit Checks</a></li>
+            }
+            <li><a href="#documents" aria-controls="documents" data-toggle="tab">Documents</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="applicationInformation">
+                <div class="well">
+                    @Html.Partial("Display", Model)
+                </div>
+            </div>
+            @if (shouldShowBackgroundChecks)
+            {
+                <div class="tab-pane fade" id="backgroundChecks">
+                    <div class="row hidden-xs">
+                        <div class="col-sm-12">
+                            <div class="pull-right">
+                                <a href="#" id="newcheck" class="showCreateDialog btn btn-success" data-pid="@Model.Volunteer.PeopleId" data-ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">
+                                    <i class="fa fa-plus-circle"></i> Create New
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-responsive">
+                                    @if (!bg.Any())
+                                    {
+                                        <tr>
+                                            <td>No Background Checks</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 7%">Updated</th>
+                                            @if (labelEnabled)
+                                            {
+                                                <th style="width: 22%">Label</th>
+                                            }
+                                            <th style="width: 16%">Service</th>
+                                            <th style="width: 10%">Status</th>
+                                            <th style="width: 6%">Report ID</th>
+                                            <th style="width: 4%">Issues</th>
+                                            <th style="white-space: nowrap;">Report Link/Error</th>
+                                            <th style="width: 8%">Action</th>
+                                        </tr>
+                                        </thead>
+                                    }
+                                    @foreach (var check in bg)
+                                    {
+                                        <tr>
+                                            <td class="center" style="white-space: nowrap;">@check.Updated.ToString("d")</td>
+                                            @if (labelEnabled)
+                                            {
+                                                <td class="center" style="white-space: nowrap;">
+                                                    @if (check.ReportLabelID > 0)
+                                                    {
+                                                        <a href="#" class="showEditDialog" data-cid="@check.Id">
+                                                            @(labels.Where(e => e.Id == check.ReportLabelID).Select(e => e.Description).SingleOrDefault() ?? check.ReportLabelID.ToString())
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="#" id="showEditDialog" data-cid="@check.Id">
+                                                            Assign Label
+                                                        </a>
+                                                    }
+                                                </td>
+                                            }
+                                            <td class="center">@ProtectMyMinistryHelper.getDescription(check.ServiceCode)</td>
+                                            <td class="center" style="white-space: nowrap;">@ProtectMyMinistryHelper.getStatus(check.StatusID)</td>
+                                            <td class="center">@(check.ReportID > 0 ? check.ReportID.ToString() : "")</td>
+                                            <td class="center">@(check.IssueCount > 0 ? "Yes" : "No")</td>
+                                            <td class="center">
+                                                @switch (check.StatusID)
+                                                {
+                                                    case 0:
+                                                        <span style="color: red;">@Html.Raw(check.ErrorMessages)</span>
+                                                        break;
+
+                                                    case 3:
+                                                        <a href="@check.ReportLink" target="_blank">Click here for the report</a>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td class="center" nowrap="nowrap">
+                                                @switch (check.StatusID)
+                                                {
+                                                    case 0:
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
+                                                            Resubmit
+                                                        </button>
+                                                        break;
+
+                                                    case 1:
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
+                                                            Submit
+                                                        </button>
+                                                        <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
+                                                            <i class="fa fa-trash"></i> Delete
+                                                        </button>
+                                                        break;
+
+                                                    case 2:
+                                                        <button class="btn btn-default btn-sm" disabled="disabled">Waiting</button>
+                                                        break;
+
+                                                    case 3:
+                                                        if (check.IssueCount > 0)
+                                                        {
+                                                            <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
+                                                                <i class="fa fa-trash"></i> Delete
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-success btn-sm" disabled="disabled">
+                                                                <i class="fa fa-check"></i> Complete
+                                                            </button>
+                                                        }
+                                                        break;
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            <a href="#" id="newcheck" class="showCreateDialog btn btn-success visible-xs-block" data-pid="@Model.Volunteer.PeopleId" data-ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">
+                                <i class="fa fa-plus-circle"></i> Create New
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (shouldShowCreditChecks)
+            {
+                <div class="tab-pane fade" id="creditChecks">
+                    <div class="row hidden-xs">
+                        <div class="col-sm-12">
+                            <div class="pull-right">
+                                <a href="#" id="newcheck" class="showCreateDialog btn btn-success" data-pid="@Model.Volunteer.PeopleId" data-ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">
+                                    <i class="fa fa-plus-circle"></i> Create New
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-responsive">
+                                    @if (!credit.Any())
+                                    {
+                                        <tr>
+                                            <td>No Credit Checks</td>
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 7%">Created</th>
+                                                @if (labelEnabled)
+                                                {
+                                                    <th style="width: 22%">Label</th>
+                                                }
+                                                <th style="width: 16%">Service</th>
+                                                <th style="width: 10%">Status</th>
+                                                <th style="width: 6%">Report ID</th>
+                                                <th style="width: 4%">Issues</th>
+                                                <th style="white-space: nowrap;">Report Link/Error</th>
+                                                <th style="width: 8%">Action</th>
+                                            </tr>
+                                        </thead>
+                                    }
+                                    @foreach (var check in credit)
+                                    {
+                                        <tr>
+                                            <td class="center" style="white-space: nowrap;">@check.Created.ToString("d")</td>
+                                            @if (labelEnabled)
+                                            {
+                                                <td class="center" style="white-space: nowrap;">
+                                                    @if (check.ReportLabelID > 0)
+                                                    {
+                                                        <a href="#" class="showEditDialog" data-cid="@check.Id">
+                                                            @labels.SingleOrDefault(e => e.Id == check.ReportLabelID).Description
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="#" class="showEditDialog" data-cid="@check.Id">
+                                                            Assign Label
+                                                        </a>
+                                                    }
+                                                </td>
+                                            }
+                                            <td class="center">@ProtectMyMinistryHelper.getDescription(check.ServiceCode)</td>
+                                            <td class="center" style="white-space: nowrap;">@ProtectMyMinistryHelper.getStatus(check.StatusID)</td>
+                                            <td class="center">@( check.ReportID > 0 ? check.ReportID.ToString() : "")</td>
+                                            <td class="center">@( check.IssueCount > 0 ? "Yes" : "No")</td>
+                                            <td class="center">
+                                                @switch (check.StatusID)
+                                                {
+                                                    case 0:
+                                                        <span style="color: red;">@Html.Raw(check.ErrorMessages)</span>
+                                                        break;
+
+                                                    case 3:
+                                                        <a href="@check.ReportLink" target="_blank">Click here for the report</a>
+                                                        break;
+                                                }
+                                            </td>
+                                            <td class="center" nowrap="nowrap">
+                                                @switch (check.StatusID)
+                                                {
+                                                    case 0:
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
+                                                            Resubmit
+                                                        </button>
+                                                        break;
+
+                                                    case 1:
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
+                                                            Submit
+                                                        </button>
+                                                        <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
+                                                            <i class="fa fa-trash"></i> Delete
+                                                        </button>
+                                                        break;
+
+                                                    case 2:
+                                                        <button class="btn btn-default btn-sm" disabled="disabled">Waiting</button>
+                                                        break;
+
+                                                    case 3:
+                                                        if (check.IssueCount > 0)
+                                                        {
+                                                            <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
+                                                                <i class="fa fa-trash"></i> Delete
+                                                            </button>
+                                                        }
+                                                        else
+                                                        {
+                                                            <button class="btn btn-success btn-sm" disabled="disabled">
+                                                                <i class="fa fa-check"></i> Complete
+                                                            </button>
+                                                        }
+                                                        break;
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            </div>
+                            <a href="#" id="newcheck" class="showCreateDialog btn btn-success visible-xs-block" data-pid="@Model.Volunteer.PeopleId" data-ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">
+                                <i class="fa fa-plus-circle"></i> Create New
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div class="tab-pane fade" id="documents">
+                <div class="row">
+                    <div class="col-sm-12">
+                        @foreach (var form in i)
+                        {
+                            <div class="col-xs-4">
+                                <a href="/Image/@form.MediumId">
+                                    <img src="/Content/images/adobe.png" style="border: thin solid #000000;">
+                                </a>
+                                <div class="name">
+                                    <a id="n.@form.Id" data-pk="@form.Id" class="editable editable-click">@form.Name</a>
+                                </div>
+                                <form action="/Volunteering/Delete" method="post" onsubmit="return confirmDelete();">
+                                    <input type="hidden" name="id" value="@form.Id" />
+                                    <input type="hidden" name="PeopleID" value="@Model.Volunteer.PeopleId" />
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </div>
+                        }
+                        @if (!i.Any())
+                        {
+                            @:No Documents Uploaded
+                        }
+                    </div>
+                </div>
+                <br/>
+                <div class="form-inline">
+                    <form action="/Volunteering/Upload/@Model.Volunteer.PeopleId" method="post" enctype="multipart/form-data">
+                        <div class="input-group">
+                            @Html.Hidden("PeopleID", @Model.Volunteer.PeopleId)
+                            <input type="file" name="file" id="file" class="form-control" />
+                        </div>
+                        <div class="input-group">
+                            <input type="submit" class="btn btn-primary" value="Upload" />
+                        </div>
+                    </form>
+                </div>
+                <br/>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="dialogHolder" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content"></div>
+    </div>
+</div>
+
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Volunteer/volunteering.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/people/volunteering.js")
+    <script type="text/javascript">
+        $('#volunteer-tabs').tabdrop();
+
+        var hash = document.location.hash;
+        var prefix = 'tab_';
+        if (hash) {
+            $('.nav-tabs a[href=' + hash.replace(prefix, '') + ']').tab('show');
+        }
+
+        // Change hash for page-reload
+        $('.nav-tabs a').on('shown.bs.tab', function (e) {
+            window.location.hash = e.target.hash.replace('#', '#' + prefix);
+        });
+    </script>
 }
-<a href="/Person2/@Model.V.PeopleId">@Model.V.Person.Name</a><br />
-<br />
-<b>Volunteer Application Information</b>
-<table width="100%" style="border: thin solid #777777;">
-    <tr>
-        <td class="right top" style="background-color: #EFF3FB;"><b>Approvals:</b></td>
-        <td class="top" width="30%">
-            @foreach (var ck in Model.ApprovalList)
-            {
-                <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled"/>
-                @ck.Description<br />
-            }
-        </td>
-        <td class="right top" style="background-color: #EFF3FB;"><b>Comments:</b></td>
-        <td class="top" width="50%">
-            <textarea rows="4" cols="50" readonly="readonly">@Model.V.Comments</textarea>
-        </td>
-    </tr>
-    <tr>
-        <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>Last Background Check:</b></td>
-        <td class="top">@( Model.V.ProcessedDate != null ? Model.V.ProcessedDate.Value.ToString("d") : "")</td>
-        <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>Status Code:</b></td>
-        <td class="top">@(Model.V.VolApplicationStatus == null ? "Unknown" : Model.V.VolApplicationStatus.Description)</td>
-    </tr>
-    <tr>
-        <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>Last MVR Check:</b></td>
-        <td class="top">@( Model.V.MVRProcessedDate != null ? Model.V.MVRProcessedDate.Value.ToString("d") : "")</td>
-        <td class="right top" style="background-color: #EFF3FB;" nowrap="nowrap"><b>MVR Status Code:</b></td>
-        <td class="top">@(Model.V.MVRStatusId == null ? "Unknown" : Model.V.StatusMvr.Description)</td>
-    </tr>
-</table>
-<br />
-<form action="/Volunteering/Edit/@Model.V.PeopleId">
-    <input type="submit" class="bt" value="Edit" /></form>
-<br />
-<br />
-@if (ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("BackgroundCheck"))
-{
-    <b>Volunteer Background Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">Create New</a>)<br />
-    <table width="100%" style="border: thin solid #777777;">
-        @if (bg != null && !bg.Any())
-        {
-            <tr>
-                <td>No Background Checks</td>
-            </tr>
-        }
-        else
-        {
-            <tr>
-                <th width="7%" style="background-color: #EFF3FB;"><b>Updated</b></th>
-                @if (labelEnabled)
-                {
-                    <th width="22%" style="background-color: #EFF3FB;"><b>Label</b></th>
-                }
-                <th style="background-color: #EFF3FB;width:16%"><b>Service</b></th>
-                <th style="background-color: #EFF3FB;width:10%"><b>Status</b></th>
-                <th style="background-color: #EFF3FB;width:6%"><b>Report ID</b></th>
-                <th style="background-color: #EFF3FB;width:4%"><b>Issues</b></th>
-                <th style="background-color: #EFF3FB;white-space: nowrap;"><b>Report Link/Error</b></th>
-                <th style="background-color: #EFF3FB;width:8%"><b>Action</b></th>
-            </tr>
-        }
-        @foreach (var check in bg)
-        {
-            <tr>
-                <td class="center" style="white-space: nowrap;">@check.Updated.ToString("d")</td>
-                @if (labelEnabled)
-                {
-                    <td class="center" style="white-space: nowrap;">
-                        @if (check.ReportLabelID > 0)
-                        {
-                            <a href="#" class="showEditDialog" cid="@check.Id">
-                                @(labels.Where(e => e.Id == check.ReportLabelID).Select(e => e.Description).SingleOrDefault() ?? check.ReportLabelID.ToString())
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="#" id="showEditDialog" cid="@check.Id">Assign Label
-                            </a>
-                        }
-                    </td>
-                }
-                <td class="center">@ProtectMyMinistryHelper.getDescription( check.ServiceCode )</td>
-                <td class="center" style="white-space: nowrap;">@ProtectMyMinistryHelper.getStatus(check.StatusID)</td>
-                <td class="center">@( check.ReportID > 0 ? check.ReportID.ToString() : "")</td>
-                <td class="center">@( check.IssueCount > 0 ? "Yes" : "No")</td>
-                <td class="center">
-                    @switch (check.StatusID)
-                    {
-                        case 0:
-                        <span style="color: red;">@Html.Raw(check.ErrorMessages)</span>
-                            break;
-
-                        case 3:
-                        <a href="@check.ReportLink" target="_blank">Click here for the report</a>
-                            break;
-                    }
-                </td>
-                <td class="center" nowrap="nowrap">
-                    @switch (check.StatusID)
-                    {
-                        case 0:
-                        <input type="button" value="Resubmit" style="width:75px;" class="showSubmitDialog" cid="@check.Id"/>
-                            break;
-
-                        case 1:
-                        <input type="button" value="Submit" style="width:75px;" class="showSubmitDialog" cid="@check.Id" />
-                        <input type="button" value="Delete" style="width:75px;" class="showDeleteDialog" cid="@check.Id" />
-                            break;
-
-                        case 2:
-                        <input type="button" value="Waiting" disabled="disabled" style="width: 75px;" />
-                            break;
-
-                        case 3:
-                            if (check.IssueCount > 0)
-                            {
-                                <input type="button" value="Delete" style="width:75px;" class="showDeleteDialog" cid="@check.Id" />
-                            }
-                            else
-                            {
-                                <input type="button" value="Complete" disabled="disabled" style="width: 75px;" />
-                            }
-                            break;
-                    }
-                </td>
-            </tr>
-        }
-
-    </table>
-    <br />
-    <br />
-}
-@if (ViewExtensions2.DbSetting("EnableBackgroundChecks", "false") == "true" && User.IsInRole("CreditCheck"))
-{
-    <b>Volunteer Credit Checks</b> @:(<a href="#" id="newcheck" class="showCreateDialog" pid="@Model.V.PeopleId" ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">Create New</a>)<br />
-    <table width="100%" style="border: thin solid #777777;">
-        @if (credit != null && credit.Count() == 0)
-        {
-            <tr>
-                <td>No Credit Checks</td>
-            </tr>
-        }
-        else
-        {
-            <tr>
-                <th width="7%" style="background-color: #EFF3FB;"><b>Created</b></th>
-                @if (labelEnabled)
-                {
-                    <th width="22%" style="background-color: #EFF3FB;"><b>Label</b></th>
-                }
-                <th width="16%" style="background-color: #EFF3FB;"><b>Service</b></th>
-                <th width="10%" style="background-color: #EFF3FB;"><b>Status</b></th>
-                <th width="6%" style="background-color: #EFF3FB;"><b>Report ID</b></th>
-                <th width="4%" style="background-color: #EFF3FB;"><b>Issues</b></th>
-                <th style="background-color: #EFF3FB; white-space: nowrap;"><b>Report Link/Error</b></th>
-                <th width="8%" style="background-color: #EFF3FB;"><b>Action</b></th>
-            </tr>
-        }
-        @foreach (var check in credit)
-        {
-            <tr>
-                <td class="center" style="white-space: nowrap;">@check.Created.ToString("d")</td>
-                @if (labelEnabled)
-                {
-                    <td class="center" style="white-space: nowrap;">
-                        @if (check.ReportLabelID > 0)
-                        {
-                            <a href="#" class="showEditDialog" cid="@check.Id">
-                                @labels.Where(e => e.Id == check.ReportLabelID).SingleOrDefault().Description
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="#" class="showEditDialog" cid="@check.Id">Assign Label
-                            </a>
-                        }
-                    </td>
-                }
-                <td class="center">@ProtectMyMinistryHelper.getDescription( check.ServiceCode )</td>
-                <td class="center" style="white-space: nowrap;">@ProtectMyMinistryHelper.getStatus(check.StatusID)</td>
-                <td class="center">@( check.ReportID > 0 ? check.ReportID.ToString() : "")</td>
-                <td class="center">@( check.IssueCount > 0 ? "Yes" : "No")</td>
-                <td class="center">
-                    @switch (check.StatusID)
-                    {
-                        case 0:
-                        <span style="color: red;">@Html.Raw(check.ErrorMessages)</span>
-                            break;
-
-                        case 3:
-                        <a href="@check.ReportLink" target="_blank">Click here for the report</a>
-                            break;
-                    }
-                </td>
-                <td class="center" nowrap="nowrap">
-                    @switch (check.StatusID)
-                    {
-                        case 0:
-                        <input type="button" value="Resubmit" style="width:75px;" class="showSubmitDialog" cid="@check.Id" />
-                            break;
-
-                        case 1:
-                        <input type="button" value="Submit" style="width:75px;" class="showSubmitDialog" cid="@check.Id" />
-                        <input type="button" value="Delete" style="width:75px;" class="showDeleteDialog" cid="@check.Id" />
-                            break;
-
-                        case 2:
-                        <input type="button" value="Waiting" disabled="disabled" style="width: 75px;" />
-                            break;
-
-                        case 3:
-                            if (check.IssueCount > 0)
-                            {
-                                <input type="button" value="Delete" style="width:75px;" class="showDeleteDialog" cid="@check.Id" />
-                            }
-                            else
-                            {
-                                <input type="button" value="Complete" disabled="disabled" style="width: 75px;" />
-                            }
-                            break;
-                    }
-                </td>
-            </tr>
-        }
-
-    </table>
-    <br />
-    <br />
-}
-<b>Volunteer Documents</b>
-<table style="border: thin solid #777777;">
-    <tr>
-        @foreach (var form in i)
-        {
-            <td class="center" style="padding: 7px;">
-                <a href="/Image/@form.MediumId">
-                    <img src="/Content/images/adobe.png" style="border: thin solid #000000;">
-                </a>
-                <div class="name">
-                    <span id="n.@form.Id" class="editable">@form.Name</span>
-                </div>
-                <form action="/Volunteering/Delete" method="post" onsubmit="return confirmDelete();">
-                    <input type="hidden" name="id" value="@form.Id" />
-                    <input type="hidden" name="PeopleID" value="@Model.V.PeopleId" />
-                    <input type="submit" class="bt" value="Delete" />
-                </form>
-            </td>
-        }
-        @if (i.Count() == 0)
-        {
-            <td class="center">No Documents Uploaded</td>
-        }
-    </tr>
-</table>
-<br />
-<form action="/Volunteering/Upload/@Model.V.PeopleId" method="post" enctype="multipart/form-data">
-    @Html.Hidden("PeopleID", @Model.V.PeopleId)
-    <input type="file" name="file" id="file" />
-    <input type="submit" class="bt" value="Upload" />
-</form>
-<div id="dialogHolder"></div>

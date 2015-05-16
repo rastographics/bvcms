@@ -4,18 +4,18 @@
 @using UtilityExtensions
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-  <div class="movable type-@Model.Type padded grey-box table med-width">
-    <div>
-      @Html.Raw(ci.hiddenindex)
-      @Html.HiddenFor(m => m.Type)
-      <label class="ask-question">
-        @Model.Type.SpaceCamelCase()
-        @Html.Partial("EditorTemplates/QuestionsMenu")
-      </label>
+    <div class="movable type-@Model.Type well">
+        @Html.Raw(ci.hiddenindex)
+        @Html.HiddenFor(m => m.Type)
+        <div class="row">
+            <div class="col-sm-12">
+                @Html.Partial("EditorTemplates/QuestionsMenu")
+                <label class="ask-question">@Model.Type.SpaceCamelCase()</label>
+            </div>
+        </div>
+        @if (ViewBag.ShowHelp != false)
+        {
+            <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
+        }
     </div>
-    @if (ViewBag.ShowHelp != false)
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
-    }
-  </div>
 }

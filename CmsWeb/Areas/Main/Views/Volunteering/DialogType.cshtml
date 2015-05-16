@@ -1,8 +1,8 @@
 ﻿@using CmsData;
 @using CmsData.Classes.ProtectMyMinistry
-@using CmsWeb
-@model CmsData.Person
+@model Person
 @{
+    // type must be either ProtectMyMinistryHelper.TYPE_BACKGROUND or ProtectMyMinistryHelper.TYPE_CREDIT
     int type = ViewBag.dialogType;
 
     var labels = from e in DbUtil.Db.BackgroundCheckLabels
@@ -11,69 +11,31 @@
 
     var labelEnabled = ViewExtensions2.DbSetting("EnableBackgroundLabels", "false") == "true";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <title>DialogType</title>
-</head>
-<body>
-    @switch( type )
-    {
-        case ProtectMyMinistryHelper.TYPE_BACKGROUND:
+<form action="/Volunteering/CreateCheck/@Model.PeopleId" method="post">
+    <input type="hidden" name="type" value="@type" />
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title"></h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Person</label>
+            <span class="form-control">@Model.Name</span>
+        </div>
+        <div class="form-group">
+            <label for="code">Type</label>
+            @Html.DropDownList("code", new SelectList(ProtectMyMinistryHelper.GetCheckTypes(type), "code", "label"), new { @class = "form-control" })
+        </div>
+        @if (labelEnabled)
         {
-            <form action="/Volunteering/CreateCheck/@Model.PeopleId" method="post">
-                <input type="hidden" name="type" value="@type" />
-                <table>
-                    <tr>
-                        <td class="right top"><b>Person:</b></td>
-                        <td class="top">@Model.Name</td>
-                    </tr>
-                    <tr>
-                        <td align="right top"><b>Type:</b></td>
-                        <td class="top">@Html.DropDownList("code",  new SelectList( ProtectMyMinistryHelper.getCheckTypes( ProtectMyMinistryHelper.TYPE_BACKGROUND ), "code", "label" ) )</td>
-                    </tr>
-                    @if( labelEnabled ) {
-                    <tr>
-                        <td class="right top"><b>Label:</b></td>
-                        <td class="top">@Html.DropDownList("label",  new SelectList( labels, "ID", "Description" ) )</td>
-                    </tr>
-                    }
-                    <tr><td>&nbsp;</td></tr>
-                    <tr>
-                        <td colspan="2" class="center"><input class="bt" type="submit" value="Submit" /> &nbsp;&nbsp; <input class="bt" id="closeSubmitDialog" type="button" value="Cancel" /></td>
-                    </tr>
-                </table>
-            </form>
-            break;
+            <div class="form-group">
+                <label for="label">Label</label>
+                @Html.DropDownList("label", new SelectList(labels, "ID", "Description"), new { @class = "form-control" })
+            </div>
         }
-
-        case ProtectMyMinistryHelper.TYPE_CREDIT:
-        {
-            <form action="/Volunteering/CreateCheck/@Model.PeopleId" method="post">
-                <input type="hidden" name="type" value="@type" />
-                <table>
-                    <tr>
-                        <td class="right top"><b>Person:</b></td>
-                        <td class="top">@Model.Name</td>
-                    </tr>
-                    <tr>
-                        <td class="right top"><b>Type:</b></td>
-                        <td class="top">@Html.DropDownList("code",  new SelectList( ProtectMyMinistryHelper.getCheckTypes( ProtectMyMinistryHelper.TYPE_CREDIT ), "code", "label" ) )</td>
-                    </tr>
-                    @if( labelEnabled ) {
-                    <tr>
-                        <td class="right top"><b>Label:</b></td>
-                        <td class="top">@Html.DropDownList("label",  new SelectList( labels, "ID", "Description" ) )</td>
-                    </tr>
-                    }
-                    <tr><td>&nbsp;</td></tr>
-                    <tr>
-                        <td colspan="2" class="center"><input class="bt" type="submit" value="Submit" /> &nbsp;&nbsp; <input class="bt" id="closeSubmitDialog" type="button" value="Cancel" /></td>
-                    </tr>
-                </table>
-            </form>
-            break;
-        }
-    }
-</body>
-</html>
+    </div>
+    <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+        <input type="submit" value="Submit" class="btn btn-primary" />
+    </div>
+</form>

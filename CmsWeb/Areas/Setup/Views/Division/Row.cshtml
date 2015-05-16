@@ -1,27 +1,32 @@
 ﻿@model CmsWeb.Models.DivisionInfo
 <tr>
-    <td class="tip" title="@Model.ToolTip"><img src="/Content/images/group.png" /></td>
+    <td class="text-center">
+        <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@Model.Name"
+           data-content="
+        <label>Orgs:</label> @Model.OrgCount<br/>
+        <label>Division Orgs:</label> @Model.DivOrgsCount<br />
+        <label>Meetings:</label> @Model.MeetingCount<br/>
+        <label>Programs:</label> @string.Join("|", Model.Programs)
+        "><i class="fa fa-info-circle"></i></a>
+    </td>
     <td><a href="/OrgSearch/@Model.ProgId/@Model.Id">@Model.Id</a></td>
     <td>
-        <span id='n@(Model.Id)' 
-            class='clickEdit'>@Model.Name</span>
+        <span id="n@(Model.Id)" data-pk="n@(Model.Id)" class="clickEdit">@Model.Name</span>
     </td>
     <td>@(Model.ProgId == null ? "(not set)" : Model.Program)</td>
     <td>
-        <span id='r@(Model.Id)' 
-            class='clickEdit'>@Model.ReportLine</span>
+        <span id="r@(Model.Id)" data-pk="r@(Model.Id)" class="clickEdit">@Model.ReportLine</span>
     </td>
     <td>
-        <span id='z@(Model.Id)' 
-            class='yesno'>@Model.NoDisplayZero</span>
+        <span id="z@(Model.Id)" class="yesno" data-value="@(Model.NoDisplayZero == "no" ? 0 : 1)" data-pk="z@(Model.Id)">@Model.NoDisplayZero</span>
     </td>
     <td><a href="/Division/ToggleProg/@Model.Id" class="taguntag" title="Add to/Remove from Target Program">@Model.Tag</a></td>
     <td><a href="/Division/MainProg/@Model.Id" class="mainprog" title="Make Target Main Program">@(Model.ChangeMain == true ? "Make Main" : "")</a></td>
     <td>
-@if (Model.CanDelete)
-{ 
-        <a data-pk='@Model.Id' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
-} 
+        @if (Model.CanDelete)
+        { 
+            <a id="@Model.Id" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
+        } 
     </td>
 </tr>
 

@@ -1,60 +1,69 @@
 ﻿@model CmsWeb.Areas.People.Models.ContactModel
 @{
     ViewBag.Title = "Contact";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.PageHeader = "Contact";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head
-{
-    <style>
-        textarea {
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            box-sizing: border-box;
-            width: 100%;
-            height: 120px;
-        }
 
-        div.display textarea {
-            border: none;
-            cursor: text;
-            height: auto;
-        }
-    </style>
-}
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/People/contact2.js")
-    @Fingerprint.Script("/Scripts/Bootstrap/jquery.bootstrap-growl.js")
-    @if (ViewBag.edit == true)
-    {
-        <script> $(function () { $("#edit").click(); }); </script>
-    }
-}
 @Html.Hidden("Id")
-<div class="container">
-    <div class="table not-wide">
+<div class="row">
+    <div class="col-sm-12 col-md-9 col-lg-7">
         @Html.Partial("ContactDisplay", Model)
-        <div class="table center not-wide">
-            <fieldset class="inline align-top">
-                <legend>Ministry Team @Add("Contactor")</legend>
-                <form id="contactors" action="/Contact2/Contactors/@Model.ContactId" class="min-width15em" method="post">
-                    @Html.Partial("Contactors", Model.Ministers)
-                </form>
-            </fieldset>
-            <fieldset class="inline align-top left-gutter">
-                <legend>Those Contacted @Add("Contactee")</legend>
-                <form id="contactees" action="/Contact2/Contactees/@Model.ContactId" class="min-width15em" method="post">
-                    @Html.Partial("Contactees", Model.MinisteredTo)
-                </form>
-            </fieldset>
+        <ul class="nav nav-tabs" id="special-content-tabs">
+            <li class="active"><a href="#ministry-team" aria-controls="ministry-team" data-toggle="tab">Ministry Team</a></li>
+            <li><a href="#contactees" aria-controls="contactees" data-toggle="tab">Those Contacted</a></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade in active" id="ministry-team">
+                @if (Model.CanViewComments)
+                {
+                    <div class="row hidden-xs">
+                        <div class="col-sm-12">
+                            <div class="pull-right">
+                                <a href="/SearchAdd2/Dialog/Contactor/@Model.ContactId" class="btn btn-success searchadd"><i class="fa fa-plus-circle"></i> Add Team Member</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form id="contactors" action="/Contact2/Contactors/@Model.ContactId" method="post">
+                            @Html.Partial("Contactors", Model.Ministers)
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="contactees">
+                @if (Model.CanViewComments)
+                {
+                    <div class="row hidden-xs">
+                        <div class="col-sm-12">
+                            <div class="pull-right">
+                                <a href="/SearchAdd2/Dialog/Contactee/@Model.ContactId" class="btn btn-success searchadd"><i class="fa fa-plus-circle"></i> Add Contactee</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form id="contactees" action="/Contact2/Contactees/@Model.ContactId" method="post">
+                            @Html.Partial("Contactees", Model.MinisteredTo)
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-
-@helper Add(string type)
+@section scripts
 {
-    if (Model.CanViewComments)
+    @Fingerprint.Script("/Content/touchpoint/js/people/contact.js")
+    @if (ViewBag.edit == true)
     {
-    <a href="/SearchAdd2/Dialog/@type/@Model.ContactId" class="searchadd pull-right in"><i class="fa fa-plus"></i></a>
+        <script>
+            $(function() {
+                $("#edit").click();
+            });
+        </script>
     }
 }

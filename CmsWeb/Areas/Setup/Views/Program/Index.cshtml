@@ -1,80 +1,147 @@
 ﻿@model IEnumerable<CmsData.Program>
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "Program";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Programs";
+    ViewBag.PageHeader = "Programs";
 }
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+}
+<div class="row">
+    <div class="col-md-9">
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            Hours offset from Sunday 12:00 AM.
+        </div>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    @using (Html.BeginForm("Create", "Program"))
+                    {
+                        <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Program</button>
+                    }
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tr>
+                            <th style="width: 300px;">Program Id</th>
+                            <th style="width: 300px;">Program Name</th>
+                            <th style="width: 300px;">Report Group</th>
+                            <th style="width: 300px;">Start</th>
+                            <th style="width: 300px;">End</th>
+                            <th style="width: 100px;">Action</th>
+                        </tr>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width: 300px;">@item.Id<a href="#" id="@item.Id"></a></td>
+                                <td style="width: 300px;">
+                                    <a id="ProgramName.@item.Id" data-pk="ProgramName.@item.Id" class="clickEdit">@item.Name</a>
+                                </td>
+                                <td style="width: 300px;">
+                                    <a id="RptGroup.@item.Id" data-pk="RptGroup.@item.Id" class="clickEdit">@item.RptGroup</a>
+                                </td>
+                                <td style="width: 300px;">
+                                    <a id="StartHours.@item.Id" data-pk="StartHours.@item.Id" class="clickEdit">@item.StartHoursOffset</a>
+                                </td>
+                                <td style="width: 300px;">
+                                    <a id="EndHours.@item.Id" data-pk="EndHours.@item.Id" class="clickEdit">@item.EndHoursOffset</a>
+                                </td>
+                                <td style="width: 100px;">
+                                    <a id="d@(item.Id)" href="#" data-pk="d@(item.Id)" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div class="visible-xs-block">
+                    @using (Html.BeginForm("Create", "Program"))
+                    {
+                        <button type="submit" class="btn btn-success btn-block"><i class="fa fa-plus-circle"></i> Add Program</button>
+                    }
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
-        $(function() {
-            $(".clickEdit").editable("/Program/Edit/", {
-                indicator: "<img src='/Content/images/loading.gif'>",
-                tooltip: "Click to edit...",
-                style: 'display: inline',
-                onblur: 'submit',
-                width: '200px',
-                height: 25
+        $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+
+            $(".clickEdit").editable({
+                mode: 'inline',
+                type: 'text',
+                url: "/Program/Edit/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
             });
-            $("a.delete").click(function(ev) {
-                if (confirm("are you sure?"))
-                    $.post("/Program/Delete/" + $(this).attr("id"), null, function(ret) {
-                        window.location = "/Programs/";
-                    });
-            });
-            $('.clickEdit').bind('keydown', function(event) {
+
+            $('.clickEdit').bind('keydown', function (event) {
                 if (event.keyCode == 9) {
                     $(this).find("input").blur();
                     var i = $('.clickEdit').index(this);
                     $(".clickEdit:eq(" + (i + 4) + ")").click();
                     return false;
                 }
+                return null;
             });
-            $(".bt").button();
+
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/Program/Delete/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Programs/";
+                            });
+                        }
+                    });
+                });
+            });
+
+            // positions scrollbar and highlights new setting.
+            var hash = document.location.hash;
+            if (hash) {
+                var offset = $(hash).offset();
+                offset.top -= 80;
+                $('body').animate({ scrollTop: offset.top }, 500);
+
+                var row = $(hash).closest('tr');
+                var bgColor = $(row).css('background-color');
+                $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                    $(row).animate({ backgroundColor: bgColor }, 1000);
+                });
+            }
         });
     </script>
 }
-<h2>Programs</h2>
-<table class="@ViewExtensions2.GridClass">
-    <tr>
-        <th colspan="3"></th>
-        <th colspan="2">Hours offset from Sunday 12:00 AM</th>
-        <th></th>
-    </tr>
-    <tr>
-        <th>ProgramId</th>
-        <th>ProgramName</th>
-        <th>RptGroup</th>
-        <th>Start</th>
-        <th>End</th>
-        <th></th>
-    </tr>
-@foreach (var item in Model) 
-{ 
-    <tr>
-        <td>@item.Id</td>
-        <td>
-            <span id='ProgramName.@item.Id' 
-                class='clickEdit'>@item.Name</span>
-        </td>
-        <td>
-            <span id='RptGroup.@item.Id' 
-                class='clickEdit'>@item.RptGroup</span>
-        </td>
-        <td>
-            <span id='StartHours.@item.Id' 
-                class='clickEdit'>@item.StartHoursOffset</span>
-        </td>
-        <td>
-            <span id='EndHours.@item.Id' 
-                class='clickEdit'>@item.EndHoursOffset</span>
-        </td>
-        <td>
-            <a id='d@(item.Id)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
-        </td>
-    </tr>
-}
-</table>
-@using (Html.BeginForm("Create", "Program"))
-{ 
-<p><input type="submit" class="bt" value="Create" /></p>
-} 

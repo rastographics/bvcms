@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsWeb.Areas.Main.Models;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using UtilityExtensions;
 using CmsData;
 using Elmah;
@@ -20,11 +22,11 @@ namespace CmsWeb.Areas.Main.Controllers
         [Route("~/Email/{id:guid}")]
 		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid)
 		{
-			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
+			if (Util.SessionTimedOut()) return Redirect("/Error/SessionTimeout");
 			if (!body.HasValue())
 				body = TempData["body"] as string;
 
-			if (!subj.HasValue() && templateID != 0)
+            if (!subj.HasValue() && templateID != 0)
 			{
 				if (templateID == null)
 					return View("SelectTemplate", new EmailTemplatesModel()
@@ -68,7 +70,13 @@ namespace CmsWeb.Areas.Main.Controllers
 			return View("Index", me);
 		}
 
-		[HttpPost]
+        public ActionResult EmailBody(int id)
+        {
+            ViewBag.templateID = id;
+            return View();
+        }
+        
+        [HttpPost]
 		[ValidateInput(false)]
 		public ActionResult SaveDraft(MassEmailer m, int saveid, string name, int roleid)
 		{
@@ -101,6 +109,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			ViewBag.parents = m.wantParents;
 			ViewBag.templateID = content.Id;
+            
 			return View("Compose", m);
 		}
 
@@ -120,9 +129,9 @@ namespace CmsWeb.Areas.Main.Controllers
 		public ActionResult QueueEmails(MassEmailer m)
 		{
 			if (!m.Subject.HasValue() || !m.Body.HasValue())
-				return Json(new { id = 0, content = "<h2>Both Subject and Body need some text</h2>" });
+                return Json(new { id = 0, error = "Both subject and body need some text." });
 			if (!User.IsInRole("Admin") && m.Body.Contains("{createaccount}", ignoreCase: true))
-				return Json(new { id = 0, content = "<h2>Only Admin can use {createaccount}</h2>" });
+                return Json(new { id = 0, error = "Only Admin can use {createaccount}." });
 
 			if (Util.SessionTimedOut())
 			{
@@ -133,7 +142,8 @@ namespace CmsWeb.Areas.Main.Controllers
 			DbUtil.LogActivity("Emailing people");
 
 			if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
-				return Json(new { id = 0, content = "No email address to send from" });
+                return Json(new { id = 0, error = "No email address to send from." });
+
 			m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
 
 			int id;
@@ -144,12 +154,12 @@ namespace CmsWeb.Areas.Main.Controllers
 					throw new Exception("No Emails to send (tag does not exist)");
 			    id = eq.Id;
 				if (eq.SendWhen.HasValue)
-					return Json(new { id = 0, content = "<h2>Emails Queued to be Sent</h2>" });
+					return Json(new { id = 0, content = "Emails queued to be sent." });
 			}
 			catch (Exception ex)
 			{
 				Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
-				return Json(new { id = 0, content = "<h2>Error</h2><p>{0}</p>".Fmt(ex.Message) });
+				return Json(new { id = 0, error = ex.Message });
 			}
 
 			string host = Util.Host;
@@ -190,17 +200,18 @@ namespace CmsWeb.Areas.Main.Controllers
 			if (keepdraft != "on" && saveid > 0) DbUtil.ContentDeleteFromID(saveid);
 			return Json(new { id = id });
 		}
+
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult TestEmail(MassEmailer m)
 		{
-			if (Util.SessionTimedOut())
+            if (Util.SessionTimedOut())
 			{
 				Session["massemailer"] = m;
 				return Content("timeout");
 			}
 			if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
-				return Content("No email address to send from");
+                return Json(new { error = "No email address to send from." });
 			m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
 			var From = Util.FirstAddress(m.FromAddress, m.FromName);
 			var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
@@ -211,19 +222,41 @@ namespace CmsWeb.Areas.Main.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Content("<h2>Error Email Sent</h2>" + ex.Message);
+                return Json(new { error = ex.Message });
 			}
-			return Content("<h2>Test Email Sent</h2>");
+			return Content("Test email sent.");
 		}
+
 		[HttpPost]
 		public ActionResult TaskProgress(string id)
 		{
 		    var idi = id.ToInt();
 			var queue = SetProgressInfo(idi);
 			if (queue == null)
-				return Content("no queue");
-			return View();
+                return Json(new { error = "No queue." });
+
+		    var title = string.Empty;
+		    var message = string.Empty;
+
+		    if ((bool) ViewData["finished"])
+		    {
+		        title = "Email has completed.";
+		    }
+            else if (((string) ViewData["error"]).HasValue())
+            {
+                return Json(new {error = (string) ViewData["error"]});
+            }
+            else
+            {
+                title = "Your emails have been queued and will be sent.";
+            }
+
+		    message = "Queued: {0}\nStarted: {1}\nTotal Emails: {2}\nSent: {3}\nElapsed: {4}".Fmt(ViewData["queued"],
+		        ViewData["started"], ViewData["total"], ViewData["sent"], ViewData["elapsed"]);
+
+            return Json(new {title = title, message = message});
 		}
+
 		private EmailQueue SetProgressInfo(int id)
 		{
 			var emailqueue = DbUtil.Db.EmailQueues.SingleOrDefault(e => e.Id == id);
@@ -282,6 +315,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			}
 			return CMSMembershipProvider.provider.ValidateUser(username, password);
 		}
+
 		public ActionResult CheckQueued()
 		{
 			var q = from e in DbUtil.Db.EmailQueues
@@ -293,13 +327,7 @@ namespace CmsWeb.Areas.Main.Controllers
 				DbUtil.Db.SendPeopleEmail(emailqueue.Id);
 			return Content("done");
 		}
-		public ActionResult Timeout()
-		{
-			var m = Session["massemailer"] as MassEmailer;
-			if (m == null)
-				Response.Redirect("/");
-			return View(m);
-		}
+
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult CreateVoteTag(int orgid, bool confirm, string smallgroup, string message, string text, string votetagcontent)

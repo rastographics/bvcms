@@ -1,37 +1,53 @@
 ﻿@model IEnumerable<CmsData.PeopleCanEmailFor>
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "UsersEmailFor";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "User Email Delegation";
+    ViewBag.PageHeader = "User Email Delegation";
 }
+<div class="row">
+    <div class="col-md-9">
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            Note, on the users screen, the top person in list is the person who will be able to email on behalf of others in the list. For those already listed, click their name in the left column to add or remove users that person can email for.
+        </div>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/PersonCanEmailForList/0" class="btn btn-success editcanemail"><i class="fa fa-plus-circle"></i> Add New User who Can Email</a>
+                    <a id="new-canemail" class="editcanemail" href=""> </a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Person who can Email</th>
+                                <th>On Behalf of Person</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <a class="editcanemail" id="canemail-@item.CanEmail" href="/PersonCanEmailForList/@item.CanEmail">@item.PersonCanEmail.Name</a>
+                                    </td>
+                                    <td>
+                                        @item.OnBehalfOfPerson.Name
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <a href="/PersonCanEmailForList/0" class="btn btn-success visible-xs-block btn-block editcanemail"><i class="fa fa-plus-circle"></i> Add New User who Can Email</a>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Dialog/SearchUsers.js")
-    @Fingerprint.Script("/Scripts/js/UsersEmailFor.js")
+    @Fingerprint.Script("/Content/touchpoint/js/dialog/search-users.js")
+    @Fingerprint.Script("/Content/touchpoint/js/admin/users-email-for.js")
 }
-<h2>Index</h2>
-
-    <p>
-        <label for="UserId">Add New Person who can Email for others:</label>
-        <a href="/PersonCanEmailForList/0" class="bt editcanemail">Select People</a>
-    </p>
-<p><i>Note, on the users screen, the top person in list is the person who will be able to email on behalf of others in the list</i></p>
-<br/>
-<hr/>
-<table class="@ViewExtensions2.GridClass">
-    <tr>
-        <td><b>Person who can Email</b></td>
-        <td><b>On Behalf of Person</b></td>
-    </tr>
-
-    @foreach (var item in Model)
-    { 
-        <tr>
-            <td>
-                <a class="editcanemail" href="/PersonCanEmailForList/@item.CanEmail">@item.PersonCanEmail.Name</a>
-            </td>
-            <td>
-                @item.OnBehalfOfPerson.Name
-            </td>
-        </tr>
-    }
-</table>

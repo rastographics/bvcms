@@ -1,9 +1,24 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Manage.Controllers.DuplicatesController.DuplicateInfo>
-<h2>Duplicates</h2>
-<ol>
-@foreach (var i in Model)
-{
-    // Id1 and Id2 are swapped now so that the newer record will be merged to the older record by default
-    <li><a href="/Merge/@i.d.Id2/@i.d.Id1" target="merge">@i.name (@i.d.Id2, @i.d.Id1)</a> @(i.notdup?"not a duplicate":"")</li>    
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Duplicates";
+    ViewBag.PageHeader = "Duplicates";
 }
-</ol>
+@section head{
+    <style>
+        ol li a {
+            text-decoration: underline;
+        }
+    </style>
+}
+<div class="box box-responsive">
+    <div class="box-content">
+        <ol>
+            @foreach (var i in Model)
+            {
+                // Id1 and Id2 are swapped now so that the newer record will be merged to the older record by default
+                <li><a href="/Merge/@i.d.Id2/@i.d.Id1" target="merge">@i.name (@i.d.Id2, @i.d.Id1)</a> @(i.notdup ? "not a duplicate" : "")</li>
+            }
+        </ol>
+    </div>
+</div>

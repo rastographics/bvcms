@@ -23,6 +23,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public SearchDivisionsModel()
         {
+            AjaxPager = true;
             PageSize = 10;
             ShowPageSize = false;
         }

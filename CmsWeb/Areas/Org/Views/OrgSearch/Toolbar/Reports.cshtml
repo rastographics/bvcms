@@ -1,41 +1,43 @@
-﻿<ul class="dropdown-menu dropdown-div-reports">
-  <li>
-    <div>
-      <ul class="span4 unstyled pull-left">
-        <li class="header">Export Excel</li>
-        <li><a id="ExportExcel" href="#">Export Organizations</a></li>
-        <li><a id="ExportMembersExcel" href="#">Export Members</a></li>
-        <li><a class="StartEndReport" href='/Export2/MeetingsAttendance'>Meetings/Attendance (date range)</a></li>
-        <li class="hideAlt"><a class="StartEndReport" href='/Export2/MeetingsForDateRange'>Meetings for Date Range</a></li>
-        <li><a id="weeklyattendance" href='#'>Weekly Attendance Pct Export</a></li>
-      </ul>
-      <ul class="span4 unstyled pull-left">
-        <li class="header">Reports</li>
-        <li><a id="rollsheet1" href='#'>Roll Sheet(s)</a></li>
-        <li><a id="RecentAbsents" href="/Reports/RecentAbsents/">Recent Absents</a></li>
-        <li><a class="ViewReport" href="/Reports/Roster1">Roster</a></li>
-        <li><a class="ViewReport" href="/Reports/Roster">Roster extended</a></li>
-        <li><a class="ViewReport" href="/Reports/OrgLeaders/">Leaders</a></li>
-        <li><a id="Meetings" href="#">Meetings</a></li>
-        <li><a class="StartEndReport" href='/Reports/AttendanceDetail'>Meetings/Attendance (date range)</a></li>
-        <li><a class="MonthReport" href='/Reports/MeetingsForMonth'>Meetings For Month</a></li>
-      </ul>
-      <ul class="span4 unstyled pull-left">
-        <li class="header">Special Reports</li>
-        <li><a class="ViewReport" href="/Reports/ClassList/">Class List</a></li>
-        <li><a class="ViewReport" href="/Reports/ShirtSizes">Shirt Sizes</a></li>
-        <li><a id="checkincontrol" href='#'>Checkin Control Report</a></li>
-        <li><a id="enrollmentcontrol1" href='#'>Enrollment Control Report</a></li>
-        <li><a id="enrollmentcontrol2i" href='#'>Enrollment Control iPhone/iPad</a></li>
-        @if (User.IsInRole("MissionGiving"))
-        {
-          <li><a class="ViewReport" href='/Reports/MissionTripFunding'>Mission Trip Funding</a></li>
-          <li><a class="ViewReport" href="/Reports/MissionTripSenders">Mission Trip Senders Export</a></li>
-          <li><a class="ViewReport" href='/Export2/MissionTripFunding'>Mission Trip Funding Export</a></li>
-        }
-        <li class="hideAlt"><a class="ViewReport" href='/Reports/SgMap'>Small Group Pin Map</a></li>
-        <li><a id="Structure" href='#'>Prog/Div/Org Hierarchy Report</a></li>
-      </ul>
-    </div>
-  </li>
+﻿<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-3">
+    <li class="col-sm-4">
+        <ul>
+            <li class="dropdown-header">Export Excel</li>
+            <li><a id="ExportExcel" href="#"><span class="org-context">Export Organizations</span></a></li>
+            <li><a id="ExportMembersExcel" href="#"><span class="org-context">Export Members</span></a></li>
+            <li><a class="StartEndReport" href='/Export2/MeetingsAttendance'><span class="org-context">Meetings/Attendance (date range)</span></a></li>
+            <li class="hideAlt"><a class="StartEndReport" href='/Export2/MeetingsForDateRange'><span class="org-context">Meetings for Date Range</span></a></li>
+            <li><a id="weeklyattendance" href='#'><span class="org-context">Weekly Attendance Pct Export</span></a></li>
+        </ul>
+    </li>
+    <li class="col-sm-4">
+        <ul>
+            <li class="dropdown-header">Reports</li>
+            <li><a id="rollsheet1" href='#'><span class="org-context">Roll Sheet(s)</span></a></li>
+            <li><a id="RecentAbsents" href="/Reports/RecentAbsents/"><span class="org-context">Recent Absents</span></a></li>
+            <li><a class="ViewReport" href="/Reports/Roster1"><span class="org-context">Roster</span></a></li>
+            <li><a class="ViewReport" href="/Reports/Roster"><span class="org-context">Roster extended</span></a></li>
+            <li><a class="ViewReport" href="/Reports/OrgLeaders/"><span class="org-context">Leaders</span></a></li>
+            <li><a id="Meetings" href="#"><span class="org-context">Meetings</span></a></li>
+            <li><a class="StartEndReport" href='/Reports/AttendanceDetail'><span class="org-context">Meetings/Attendance (date range)</span></a></li>
+            <li><a class="MonthReport" href='/Reports/MeetingsForMonth'><span class="org-context">Meetings For Month</span></a></li>
+        </ul>
+    </li>
+    <li class="col-sm-4">
+        <ul>
+            <li class="dropdown-header">Special Reports</li>
+            <li><a class="ViewReport" href="/Reports/ClassList/"><span class="org-context">Class List</span></a></li>
+            <li><a class="ViewReport" href="/Reports/ShirtSizes"><span class="org-context">Shirt Sizes</span></a></li>
+            <li><a id="checkincontrol" href='#'><span class="org-context">Checkin Control Report</span></a></li>
+            <li><a id="enrollmentcontrol1" href='#'><span class="org-context">Enrollment Control Report</span></a></li>
+            <li><a id="enrollmentcontrol2i" href='#'><span class="org-context">Enrollment Control iPhone/iPad</span></a></li>
+            @if (User.IsInRole("MissionGiving"))
+            {
+                <li><a class="ViewReport" href='/Reports/MissionTripFunding'><span class="org-context">Mission Trip Funding</span></a></li>
+                <li><a class="ViewReport" href="/Reports/MissionTripSenders"><span class="org-context">Mission Trip Senders Export</span></a></li>
+                <li><a class="ViewReport" href='/Export2/MissionTripFunding'><span class="org-context">Mission Trip Funding Export</span></a></li>
+            }
+            <li class="hideAlt"><a class="ViewReport" href='/Reports/SgMap'><span class="org-context">Small Group Pin Map</span></a></li>
+            <li><a id="Structure" href='#'><span class="org-context">Prog/Div/Org Hierarchy Report</span></a></li>
+        </ul>
+    </li>
 </ul>

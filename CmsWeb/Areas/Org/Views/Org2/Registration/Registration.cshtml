@@ -5,54 +5,151 @@
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowRegistrationHelp") == "true";
   ViewBag.FalseValue = "";
 }
-<form class="form form-horizontal non-modal ajax span12">
-  <br />
-  @FormAction()
-  <div>
+<form class="ajax">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Basic Setup</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-6">
+                @Html.DisplayFor(m => m.RegistrationType)
+            </div>
+            <div class="col-sm-6 col-md-6">
+                @Html.DisplayFor(m => m.RegistrationTitle)
+            </div>
+            <div class="col-sm-5 col-md-5">
+                @Html.DisplayFor(m => m.RegStart)
+            </div>
+            <div class="col-sm-5 col-md-5">
+                @Html.DisplayFor(m => m.RegEnd)
+            </div>
+            @if (Model.MasterOrg.Id > 0)
+            {
+                <div class="col-sm-2 col-md-2">
+                    @Html.DisplayForIf(m => m.MasterOrg, Model.MasterOrg.Id > 0)
+                </div>
+            }
+            <div class="col-sm-2 col-md-2">
+                @Html.DisplayFor(m => m.Limit)
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.RegistrationClosed, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.AllowSaveProgress, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.AllowOnlyOne, new { FalseValue = "n/a" })
+            </div>           
+        </div>
+    </div>
+    <h4>Join Type</h4>
+    <div class="well">
+        <div class="row">
+            @if (NotJoinOrg)
+            {
+                <div class="col-sm-4 col-md-4">
+                    @Html.DisplayForIf(m => m.PickList, NotJoinOrg)
+                </div>
+            }
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.GroupToJoin)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.AddAsProspect, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.AllowReRegister, new { FalseValue = "n/a" })
+            </div>
+        </div>
+    </div>
+    <h4>Age Groups</h4>
+    <div class="well">
+        @Html.DisplayFor(m => m.AgeGroups)
+    </div>
+    <h4>Advanced Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.VaidateOrgs)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.ClassFilled, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.MemberOnly, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.ShellBs)
+            </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.SpecialScript)
+            </div>
+            @if (User.IsInRole("Admin"))
+            {
+                <div class="col-sm-4 col-md-4">
+                    @Html.DisplayFor(m => m.AddToSmallGroupScript)
+                </div>
+            }
+        </div>
+    </div>
+    <h4>Relaxed Requirements</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.NoReqBirthYear, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.NotReqDOB, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.NotReqAddr, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.NotReqZip, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.NotReqPhone, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.NotReqGender, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-3 col-md-3">
+                @Html.DisplayFor(m => m.NotReqMarital, new { FalseValue = "n/a" })
+            </div>
+        </div>
+    </div>
     @Html.HiddenFor(m => m.Id)
-    @Html.DisplayFor(m => m.RegistrationType)
     @Html.Hidden("RegistrationType_Value", Model.RegistrationType.Value)
-    @Html.DisplayFor(m => m.RegistrationTitle)
-    @Html.DisplayFor(m => m.ClassFilled)
-    @Html.DisplayFor(m => m.RegistrationClosed)
-    @Html.DisplayFor(m => m.RegStart)
-    @Html.DisplayFor(m => m.RegEnd)
-    @Html.DisplayForIf(m => m.MasterOrg, Model.MasterOrg.Id > 0)
-    @Html.DisplayForIf(m => m.PickList, NotJoinOrg)
-
-    @Html.DisplayFor(m => m.Limit)
-    @Html.DisplayFor(m => m.VaidateOrgs)
-    @Html.DisplayFor(m => m.AgeGroups)
-    @Html.DisplayFor(m => m.AllowOnlyOne)
-    @Html.DisplayFor(m => m.AddAsProspect)
-    @Html.DisplayFor(m => m.AllowReRegister)
-    @Html.DisplayFor(m => m.AllowSaveProgress)
-    @Html.DisplayFor(m => m.GroupToJoin)
-    @Html.DisplayFor(m => m.NoReqBirthYear)
-    @Html.DisplayFor(m => m.NotReqDOB)
-    @Html.DisplayFor(m => m.NotReqAddr)
-    @Html.DisplayFor(m => m.NotReqZip)
-    @Html.DisplayFor(m => m.NotReqPhone)
-    @Html.DisplayFor(m => m.NotReqGender)
-    @Html.DisplayFor(m => m.NotReqMarital)
-    @Html.DisplayFor(m => m.ShellBs)
-    @Html.DisplayFor(m => m.SpecialScript)
-    @Html.DisplayFor(m => m.MemberOnly)
-    @if (User.IsInRole("Admin"))
-    {
-      @Html.DisplayFor(m => m.AddToSmallGroupScript)
-    }
-  </div>
-  @FormAction()
+    @FormAction()
+    @FormAction(true)
+    <br/><br/>
 </form>
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
-  <div class="pull-right">
-    <a href="/Org/RegistrationHelpToggle/@Model.Id" class="btn ajax">@(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
-    @if (User.IsInRole("Edit"))
+    if (xs)
     {
-      <a href="/Org/RegistrationEdit/@Model.Id" class="btn edit btn-primary ajax">Edit</a>
+        <div class="visible-xs-block">
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/RegistrationEdit/@Model.Id" class="btn edit ajax btn-default btn-block"><i class="fa fa-pencil"></i> Edit</a>
+            }
+            <a href="/Org/RegistrationHelpToggle/@Model.Id" class="btn btn-default btn-block ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+        </div>
     }
-  </div>
-  @Html.DivValidationMessage("Form", "inline")
+    else
+    {
+        <div class="pull-right hidden-xs">
+            <a href="/Org/RegistrationHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/RegistrationEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+            }
+        </div>
+    }
 }

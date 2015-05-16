@@ -1,0 +1,75 @@
+﻿@using System.Globalization
+@model CmsWeb.Areas.Finance.Models.BundleModel
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-10">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a class="btn btn-default" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <form id="bundleform">
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="FundDescription" class="control-label">Bundle Type</label>
+                                @Html.DropDownListFor(m => m.Bundle.BundleHeaderTypeId, Model.BundleHeaderList(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <label for="Bundle_FundId" class="control-label">Default Fund</label>
+                                @Html.DropDownListFor(m => m.Bundle.FundId, Model.ContributionFundList(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                @Html.EditorFor(m => m.Bundle.ContributionDate)
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                @Html.EditorFor(m => m.Bundle.DepositDate)
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="Bundle_TotalCash" class="control-label">Total Cash</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalCash, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="Bundle_TotalChecks" class="control-label">Total Checks</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalChecks, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="Bundle_TotalEnvelopes" class="control-label">Total Coin</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBoxFor(m => m.Bundle.TotalEnvelopes, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br />
+                    <div class="hidden-xs">
+                        <a href="/Bundle/Cancel/@Model.BundleId" class="btn btn-default displayedit">Cancel</a> <a href="/Bundle/Update/@Model.BundleId" class="btn btn-primary displayedit">Save</a>
+                    </div>
+                    <div class="visible-xs-block">
+                        <a href="/Bundle/Update/@Model.BundleId" class="btn btn-primary btn-block displayedit">Save</a>
+                        <a href="/Bundle/Cancel/@Model.BundleId" class="btn btn-default btn-block displayedit">Cancel</a>
+                        <hr/>
+                        <a class="btn btn-default btn-block" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

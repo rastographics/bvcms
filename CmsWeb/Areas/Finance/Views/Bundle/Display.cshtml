@@ -1,65 +1,159 @@
 ﻿@using CmsData.Codes
 @using UtilityExtensions
 @model CmsWeb.Areas.Finance.Models.BundleModel
-<table id="bundle" cellspacing="5">
-    <tr>
-        <th></th>
-    </tr>
-    <tr>
-        <th>Bundle Status</th>
-        <td>@Model.Status</td>
-    </tr>
-    <tr>
-        <th>Contribution Date</th>
-        <td>@Model.Bundle.ContributionDate.ToShortDateString()</td>
-    </tr>
-    <tr>
-        <th>Bundle Type</th>
-        <td>@Model.Type</td>
-    </tr>
-    <tr>
-        <th>Deposit Date</th>
-        <td>@Model.Bundle.DepositDate.FormatDate()</td>
-    </tr>
-    <tr>
-        <th>Total Cash</th>
-        <td>@Model.Bundle.TotalCash.ToString2("c")</td>
-    </tr>
-    <tr>
-        <th>Total Checks</th>
-        <td>@Model.Bundle.TotalChecks.ToString2("c")</td>
-    </tr>
-    <tr>
-        <th>Total Coin</th>
-        <td>@Model.Bundle.TotalEnvelopes.ToString2("c")</td>
-    </tr>
-    <tr>
-        <th>Default Fund</th>
-        <td><a href="/PostBundle/FundTotals/@Model.BundleId">@Model.DefaultFund</a></td>
-    </tr>
-    <tr>
-        <th>Total Header</th>
-        <td>@Model.TotalHeader().ToString("c")</td>
-    </tr>
-    <tr>
-        <th>Total Items</th>
-        <td>@Model.TotalItems().ToString("c")</td>
-    </tr>
-    <tr>
-        <th colspan="2">
-            @if (Model.IsAdmin || Model.IsOpen)
-            {
-                <a id="delete" href="/Bundle/Delete/@Model.BundleId" class="bt red">Delete</a>
-            }
-            @if(Model.CanEdit)
-            {
-            <a id="editbundle" href="/Bundle/Edit/@Model.BundleId" id="edit" class="bt displayedit">Edit Bundle Header</a>
-            }
-            @if (Model.IsOpen)
-            {
-                <a href="/PostBundle/@Model.BundleId" class="bt">PostBundle/Edit</a>
-            }
-            <a href="/Bundles/NewBundle/" class="bt">New Bundle</a>
-        </th>
-    </tr>
-</table>
+@{
+    var difference = Model.TotalHeader() - Model.TotalItems();
+}
+<div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-9">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a class="btn btn-default" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            @if (Model.IsAdmin || Model.IsOpen)
+                            {
+                                <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
+                            }
+                            @if (Model.CanEdit)
+                            {
+                                <li><a id="editbundle" href="/Bundle/Edit/@Model.BundleId"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a></li>
+                            }
+                            @if (Model.IsOpen)
+                            {
+                                <li><a href="/PostBundle/@Model.BundleId"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Post Bundle / Edit</a></li>
+                            }
+                            @if (Model.IsOpen || Model.IsAdmin || Model.CanEdit)
+                            {
+                                <li class="divider"></li>
+                            }
+                            <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="box-content">
+                <form id="bundleform" class="well">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <dl>
+                                <dt>Bundle Status</dt>
+                                <dd>@Model.Status</dd>
+                            </dl>
+                            <dl>
+                                <dt>Bundle Type</dt>
+                                <dd>@Model.Type</dd>
+                            </dl>
+                            <dl>
+                                <dt>Default Fund</dt>
+                                <dd><a href="/PostBundle/FundTotals/@Model.BundleId" style="text-decoration: underline;">@Model.DefaultFund</a></dd>
+                            </dl>
+                        </div>
+                        <div class="col-sm-6">
+                            <dl>
+                                <dt>Contribution Date</dt>
+                                <dd>@Model.Bundle.ContributionDate.ToShortDateString()</dd>
+                            </dl>
+                            <dl>
+                                <dt>Deposit Date</dt>
+                                <dd>@Model.Bundle.DepositDate.FormatDate()</dd>
+                            </dl>
+                        </div>
+                    </div>
+                </form>
+                <div class="stat-panel-container">
+                    <div class="stat-panel-inner-container">
+                        <div class="stat-panel">
+                            <span class="stat-title">BUNDLE TOTAL</span>
+                            <span class="stat-figure">@Model.TotalHeader().ToString("C2")</span>
+                        </div>
+                        <div class="stat-panel">
+                            <span class="stat-title">ITEMS TOTAL</span>
+                            <span class="stat-figure">@Model.TotalItems().ToString("C2")</span>
+                        </div>
+                        <div class="stat-panel">
+                            <span class="stat-title">ITEM COUNT</span>
+                            <span class="stat-figure">@Model.Count().ToString("N0")</span>
+                        </div>
+                        <div style="clear: both;"></div>
+                    </div>
+                </div>
+                <form id="results">
+                    @Html.Partial("Results", Model)
+                </form>
+                <div class="visible-xs-block">
+                    <div class="btn-group btn-block">
+                        <button type="button" class="btn btn-primary btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            Actions <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right btn-block">
+                            @if (Model.IsAdmin || Model.IsOpen)
+                            {
+                                <li><a id="delete" href="/Bundle/Delete/@Model.BundleId"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete</a></li>
+                            }
+                            @if (Model.CanEdit)
+                            {
+                                <li><a id="editbundle" href="/Bundle/Edit/@Model.BundleId"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit</a></li>
+                            }
+                            @if (Model.IsOpen)
+                            {
+                                <li><a href="/PostBundle/@Model.BundleId"><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Post Bundle / Edit</a></li>
+                            }
+                            @if (Model.IsOpen || Model.IsAdmin || Model.CanEdit)
+                            {
+                                <li class="divider"></li>
+                            }
+                            <li><a href="/Bundles/NewBundle/"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Create New Bundle</a></li>
+                        </ul>
+                    </div>
+                    <hr/>
+                    <a class="btn btn-default btn-block" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hidden-xs col-md-4 col-lg-3">
+        <div class="box box-primary" style="background-color: #fff;">
+            <div class="box-title">
+                <h5>Bundle Totals</h5>
+            </div>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Total Cash</td>
+                        <td class="text-right">@Model.Bundle.TotalCash.GetValueOrDefault().ToString("C2")</td>
+                    </tr>
+                    <tr>
+                        <td>Total Checks</td>
+                        <td class="text-right">@Model.Bundle.TotalChecks.GetValueOrDefault().ToString("C2")</td>
+                    </tr>
+                    <tr>
+                        <td>Total Coin</td>
+                        <td class="text-right">@Model.Bundle.TotalEnvelopes.GetValueOrDefault().ToString("C2")</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="totals-row">
+                        <td class="text-left">Bundle Total</td>
+                        <td class="text-right">@Model.TotalHeader().ToString("C2")</td>
+                    </tr>
+                    @if (difference != 0)
+                    {
+                        <tr>
+                            <td class="text-left">Items Total</td>
+                            <td class="text-right">@Model.TotalItems().ToString("C2")</td>
+                        </tr>
+                        <tr class="totals-row warning">
+                            <td class="text-left">Difference</td>
+                            <td class="text-right">@difference.ToString("C2")</td>
+                        </tr>
+                    }
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

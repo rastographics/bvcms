@@ -130,6 +130,8 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public int? Grade { get; set; }
 
+        public int? TranId { get; set; }
+
         public int? Tickets { get; set; }
 
         [DisplayName("Total Amount")]

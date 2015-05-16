@@ -1,24 +1,26 @@
 ﻿@using CmsData.Classes.Twilio
 @{ var twilio = TwilioHelper.userSendSMS(Util.UserId); }
-<ul class="dropdown-menu toolbar-email pull-left">
-  <li class="header">Email</li>
-  <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
-  <li><a href='/Email/@ViewBag.queryid?parents=true' class="qid">Parents</a></li>
-  <li><a href='/Email/@ViewBag.queryid?ccparents=true' class="qid"> Child with Parents CC'd</a></li>
-  <li>
-    <a id="singleemail" href="/Email/@ViewBag.queryid?nodups=true" class="qid"
-       data-confirm="Warning, email replacement codes will not work">
-      Single Email Addresses
-    </a>
-  </li>
-  <li class="space"></li>
-  @if ((bool?)ViewBag.ParentOrgContext == true)
-  {
-    <li><a href='/Email/@ViewBag.leadersqid'>Leaders under this org</a></li>
-    <li><a href='/Email/@ViewBag.membersqid'>Members under this org</a></li>
-  }
-  <li class="header">SMS</li>
-  <li>
-    <a href="@(twilio ? "/SMS/Options/" + @ViewBag.queryid : "http://docs.touchpointsoftware.com/EmailTexting/TextingTwilio.html")" class="qid">Send Text</a>
-  </li>
+<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-1">
+    <li class="col-sm-12">
+        <ul>
+            <li class="dropdown-header">Email</li>
+            <li><a href='/Email/@ViewBag.queryid' class="qid">Individuals</a></li>
+            <li><a href='/Email/@ViewBag.queryid?parents=true' class="qid">Parents</a></li>
+            <li><a href='/Email/@ViewBag.queryid?ccparents=true' class="qid"> Child with Parents CC'd</a></li>
+            <li>
+                <a id="singleemail" href="/Email/@ViewBag.queryid?nodups=true" class="qid">
+                    Single Email Addresses
+                </a>
+            </li>
+            @if ((bool?)ViewBag.ParentOrgContext == true)
+            {
+                <li class="divider"></li>
+                <li><a href='/Email/@ViewBag.leadersqid'><span class="org-context">Leaders under this org</span></a></li>
+                <li><a href='/Email/@ViewBag.membersqid'><span class="org-context">Members under this org</span></a></li>
+            }
+            <li class="divider"></li>
+            <li class="dropdown-header">SMS</li>
+            <li><a href="@(twilio ? "/SMS/Options/" + @ViewBag.queryid : "http://docs.touchpointsoftware.com/EmailTexting/TextingTwilio.html")" class="qid">Send Text</a></li>
+        </ul>
+    </li>
 </ul>

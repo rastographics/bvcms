@@ -1,37 +1,49 @@
 ﻿@model CmsWeb.Models.TransactionsModel
-@using CmsWeb
-@using UtilityExtensions
 @{ 
     var tt = Model.TotalTransactions(); 
 }
-    @if (tt == null)
-    {
-        <tr><td colspan="3">Nothing to report</td></tr>
-    }
-    else
-    {
-	<thead>
-		<tr><td class="right" colspan="2">Total:</td>
-			<td class="right">@tt.Amt.ToString("N2")</td>
-		</tr>
-        <tr><td colspan="3"><hr/></td></tr>
-		<tr>
-			<td>Description</td>
-			<td class="right">Count</td>
-			<td class="right">Total</td>
-		</tr>
-	</thead>
+@if (tt != null)
+{
+    <div class="stat-panel-container">
+        <div class="stat-panel-inner-container">
+            <div class="stat-panel">
+                <span class="stat-title">TOTAL AMOUNT</span>
+                <span class="stat-figure">@tt.Amt.ToString("C2")</span>
+            </div>
+            <div style="clear: both;"></div>
+        </div>
+    </div>
+}
+<div class="alert alert-info">
+    <p>
+        Totals do not include extra donation amounts if there are any.
+    </p>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th class="text-right">Count</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
         <tbody>
-            @foreach (var r in Model.FetchTransactionsByDescription())
+            @if (tt == null)
             {
-                <tr>
-                    <td><a href="#" class="filterbatchdesc">@r.Description</a></td>
-                    <td class="right">@r.count</td>
-                    <td class="right">@r.Total.ToString("N2")</td>
-                </tr>
+                <tr><td colspan="3">Nothing to report</td></tr>
+            }
+            else
+            {
+                foreach (var r in Model.FetchTransactionsByDescription())
+                {
+                    <tr>
+                        <td><a href="/Transactions/?desc=@r.Description" target="batchfilter">@r.Description</a></td>
+                        <td class="text-right">@r.count</td>
+                        <td class="text-right">@r.Total.ToString("N2")</td>
+                    </tr>
+                }
             }
         </tbody>
-        <tfoot>
-            <tr><td colspan="3"><i>Totals do not include Extra Donation amounts if any</i></td></tr>
-        </tfoot>
-    } 
+    </table>
+</div>

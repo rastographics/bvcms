@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             var i = id.Substring(2).ToInt();
             var m = new MeetingModel(i);
-            m.meeting.GroupMeetingFlag = value == "true";
+            m.meeting.GroupMeetingFlag = value == "True";
             DbUtil.Db.SubmitChanges();
             if (m.meeting.GroupMeetingFlag)
                 return Content("Group (headcount)");
@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public JsonResult MeetingTypes()
         {
-            var d = new Dictionary<string, string> { { "true", "Group (headcount)" }, { "false", "Regular" } };
+            var d = new Dictionary<string, string> { { "True", "Group (headcount)" }, { "False", "Regular" } };
             return Json(d);
         }
         [HttpPost]
@@ -210,8 +210,8 @@ namespace CmsWeb.Areas.Org.Controllers
             public string CssClass()
             {
                 if (error == Error.none)
-                    return "bgyellow";
-                return "bgred";
+                    return "alert alert-success";
+                return "alert alert-danger";
             }
             public ScanTicketInfo AddError(Error err)
             {

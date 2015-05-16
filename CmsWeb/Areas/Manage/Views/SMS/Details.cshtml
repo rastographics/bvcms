@@ -1,53 +1,61 @@
 ﻿@using CmsData
-@using CmsWeb
 @{
-    ViewBag.Title = "Details";
-    Layout = ViewExtensions2.Layout();
-
+    ViewBag.Title = "SMS Message Details";
+    ViewBag.PageHeader = "SMS Message Details";
+    Layout = ViewExtensions2.TouchPointLayout();
     int ListID = ViewBag.ListID;
     
     var l = (from e in DbUtil.Db.SMSLists
              where e.Id == ListID
              select e).Single();
 }
-<br />
-<h2>SMS Message Details</h2>
-<a href="/SMS/List">Back to list</a><br />
-<br />
-<b>Message:</b><br />
-@l.Message<br />
-<br />
-<table class="@ViewExtensions2.GridClass" cellpadding="4">
-    <thead>
-    <tr>
-        <th align="center">Person</th>
-        <th align="center">Number</th>
-        <th align="center">Sent</th>
-        <th align="center">Number</th>
-        <th align="center">Opt-In</th>
-        <th>&nbsp;</th>
-    </tr>
-    </thead>
-    <tbody>
-@foreach (var i in l.SMSItems.OrderBy(e => e.Person.Name).OrderByDescending(e => e.Sent))
-{
-    <tr>
-        <td>
-            @i.Person.Name
-        </td>
-        <td align="center" @( i.NoNumber ? "bgcolor=#FFCCCC" : "" )>
-            @i.Number
-        </td>
-        <td align="center" @( i.Sent ? "bgcolor=#CCFFCC" : "" )>
-            @( i.Sent ? "Yes" : "No" )
-        </td>
-        <td align="center" @( i.NoNumber ? "bgcolor=#FFCCCC" : "" )>
-            @( i.NoNumber ? "No" : "Yes" )
-        </td>
-        <td align="center" @( i.NoOptIn ? "bgcolor=#FFCCCC" : "" )>
-            @( i.NoOptIn ? "No" : "Yes" )
-        </td>
-    </tr>
-}
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-sm-9">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/SMS/List" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <blockquote>@l.Message</blockquote>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Person</th>
+                                <th>Number</th>
+                                <th class="text-center">Sent</th>
+                                <th class="text-center">Number</th>
+                                <th class="text-center">Opt-In</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var i in l.SMSItems.OrderBy(e => e.Person.Name).OrderByDescending(e => e.Sent))
+                            {
+                                <tr>
+                                    <td>
+                                        @i.Person.Name
+                                    </td>
+                                    <td>
+                                        @i.Number
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="label  @( i.Sent ? "label-success" : "label-danger")">@( i.Sent ? "Yes" : "No")</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="label  @( i.NoNumber ? "label-danger" : "label-success")">@( i.NoNumber ? "No" : "Yes")</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="label  @( i.NoOptIn ? "label-danger" : "label-success")">@( i.NoOptIn ? "No" : "Yes")</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <a href="/SMS/List" class="btn btn-default visible-xs-block btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>

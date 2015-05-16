@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var r = new Role { RoleName = "NEW" };
             DbUtil.Db.Roles.InsertOnSubmit(r);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Roles/");
+            return Redirect("/Roles/#{0}".Fmt(r.RoleId));
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

@@ -1,58 +1,131 @@
 ﻿@model CmsWeb.Areas.People.Models.BasicPersonInfo
-<form class="form form-horizontal ajax span12" method="post">
-    @FormAction()
-    <div class="row-fluid">
-        <div class="inline width280 align-top">
-            @Html.HiddenFor(m => m.PeopleId)
-            @Html.EditorFor(m => m.TitleCode)
-            @Html.EditorFor(m => m.FirstName)
-            @Html.EditorFor(m => m.NickName)
-            @Html.EditorFor(m => m.MiddleName)
-            @Html.EditorFor(m => m.LastName)
-            @Html.EditorFor(m => m.AltName)
-            @Html.EditorFor(m => m.MaidenName)
-            @Html.EditorFor(m => m.SuffixCode)
+<form class="ajax" method="post">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>General</h4>
         </div>
-        <div class="inline left-gutter width280 align-top">
-            @Html.EditorFor(m => m.Gender)
-            @Html.EditorFor(m => m.MaritalStatus)
-            @Html.EditorFor(m => m.DOB, "Birthday")
-            @Html.EditorFor(m => m.WeddingDate)
-            @(User.IsInRole("Membership") || User.IsInRole("Admin")
-                ? @Html.EditorFor(m => m.DeceasedDate)
-                : @Html.DisplayFor(m => m.DeceasedDate))
-            @Html.EditorFor(m => m.OccupationOther, "Typeahead", new { link = "/Person2/Occupations" })
-            @Html.EditorFor(m => m.EmployerOther, "Typeahead", new { link = "/Person2/Employers" })
-            @Html.EditorFor(m => m.SchoolOther, "Typeahead", new { link = "/Person2/Schools" })
-            @Html.EditorFor(m => m.Grade)
+        <div class="col-sm-6">
+            @FormAction()
         </div>
     </div>
-    <hr />
-    <div class="row-fluid">
-        <div class="inline width280">
-            @Html.EditorFor(m => m.EmailAddress)
-            @Html.EditorFor(m => m.EmailAddress2)
-            @Html.EditorFor(m => m.DoNotCallFlag)
-            @Html.EditorFor(m => m.DoNotMailFlag)
-            @Html.EditorFor(m => m.DoNotVisitFlag)
-        </div>
-        <div class="inline left-gutter width280 align-top">
-            @Html.EditorFor(m => m.CellPhone)
-            @Html.EditorFor(m => m.WorkPhone)
-            @Html.EditorFor(m => m.HomePhone)
-            @Html.EditorFor(m => m.DoNotPublishPhones)
+    <div class="well">
+        <div class="row">
+            <div class="col-md-2 col-lg-1">
+                @Html.EditorFor(m => m.TitleCode)
+            </div>
+            <div class="col-md-6 col-lg-3">
+                @Html.EditorFor(m => m.FirstName)
+            </div>
+            <div class="col-md-4 col-lg-2">
+                @Html.EditorFor(m => m.MiddleName)
+            </div>
+            <div class="col-md-10 col-lg-5">
+                @Html.EditorFor(m => m.LastName)
+            </div>
+            <div class="col-md-2 col-lg-1">
+                @Html.EditorFor(m => m.SuffixCode)
+            </div>
+            <div class="col-md-4 col-lg-3">
+                @Html.EditorFor(m => m.NickName)
+            </div>
+            <div class="col-md-4 col-lg-3">
+                @Html.EditorFor(m => m.AltName)
+            </div>
+            <div class="col-md-4 col-lg-3">
+                @Html.EditorFor(m => m.MaidenName)
+            </div>
+            <div class="col-md-4 col-lg-3">
+                @Html.EditorFor(m => m.Gender)
+            </div>
+            <div class="col-md-4 col-lg-3">
+                @Html.EditorFor(m => m.MaritalStatus)
+            </div>
+            <div class="col-md-4 col-lg-3">
+                @Html.EditorFor(m => m.DOB, "Birthday")
+            </div>
+            <div class="col-md-6 col-lg-3">
+                @Html.EditorFor(m => m.WeddingDate)
+            </div>
+            <div class="col-md-6 col-lg-3">
+                @(User.IsInRole("Membership") || User.IsInRole("Admin")
+                      ? @Html.EditorFor(m => m.DeceasedDate)
+                      : @Html.DisplayFor(m => m.DeceasedDate))
+            </div>
         </div>
     </div>
-    @FormAction()
+    <h4>Communication</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6 col-lg-6">
+                @Html.EditorFor(m => m.EmailAddress)
+            </div>
+            <div class="col-md-6 col-lg-6">
+                @Html.EditorFor(m => m.EmailAddress2)
+            </div>
+            <div class="col-md-4 col-lg-4">
+                @Html.EditorFor(m => m.HomePhone)
+            </div>
+            <div class="col-md-4 col-lg-4">
+                @Html.EditorFor(m => m.WorkPhone)
+            </div>
+            <div class="col-md-4 col-lg-4">
+                @Html.EditorFor(m => m.CellPhone)
+            </div>
+            <div class="col-md-12 col-lg-12">
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.DoNotCallFlag) Do not call
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.DoNotMailFlag) Do not mail
+                </label>
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.DoNotVisitFlag) Do not visit
+                </label>
+                <div>
+                    <label class="checkbox-inline control-label">
+                        @Html.CheckBoxFor(m => m.DoNotPublishPhones) Do not publish phone numbers
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h4>Employment / School</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-md-6 col-lg-4">
+                @Html.EditorFor(m => m.OccupationOther, "Typeahead", new { link = "/Person2/Occupations" })
+            </div>
+            <div class="col-md-6 col-lg-4">
+                @Html.EditorFor(m => m.EmployerOther, "Typeahead", new { link = "/Person2/Employers" })
+            </div>
+            <div class="col-md-10 col-lg-3">
+                @Html.EditorFor(m => m.SchoolOther, "Typeahead", new { link = "/Person2/Schools" })
+            </div>
+            <div class="col-md-2 col-lg-1">
+                @Html.EditorFor(m => m.Grade)
+            </div>
+        </div>
+    </div>
+    @Html.HiddenFor(m => m.PeopleId)
     @Html.HiddenFor(m => m.CreatedDate)
+    @FormAction()
+    @FormAction(true)
+    <br/><br/>
 </form>
-
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
-    <div class="form-actions">
-        <span class="pull-right">
-            <a href="/Person2/PersonalDisplay/@Model.PeopleId" class="btn ajax">Cancel</a>
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            <a href="/Person2/PersonalUpdate/@Model.PeopleId" class="btn btn-primary btn-block ajax validate">Save Changes</a>
+            <a href="/Person2/PersonalDisplay/@Model.PeopleId" class="btn btn-default btn-block ajax">Cancel</a>
+        </div>
+    }
+    else
+    {
+        <div class="pull-right hidden-xs">
+            <a href="/Person2/PersonalDisplay/@Model.PeopleId" class="btn btn-default ajax">Cancel</a>
             <a href="/Person2/PersonalUpdate/@Model.PeopleId" class="btn btn-primary ajax validate">Save Changes</a>
-        </span>
-    </div>
+        </div>
+    }
 }

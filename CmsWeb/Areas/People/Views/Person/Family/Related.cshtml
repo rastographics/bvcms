@@ -6,59 +6,75 @@
 <div id="related-families-div">
     @if (!Model.RelatedFamilies().Any())
     {
-        if (Model.Person.CanUserEditAll)
-        {
-        <div class="sidebar_title group inactive">
-            <a href="@dialog" class="searchadd"><i class="fa fa-plus"></i> Add Related Family</a>
+        <div class="row">
+            <div class="col-sm-12">
+                <h4><a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a> Related Families</h4>
+            </div>
         </div>
-        }
+        <div class="row collapse in" id="related-family-section">
+            @if (Model.Person.CanUserEditAll)
+            {
+                <div class="col-sm-12">
+                    <a href="@dialog" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Related Family</a>
+                </div>
+            }
+            <div class="col-sm-12">
+                <br />
+            </div>
+        </div>
     }
     else
     {
-        <div class="sidebar_title group">
-            <h2><a href="/Person2/RelatedFamilyQuery/@Model.Family.FamilyId">Related Families</a></h2>
+        <div class="row">
+            <div class="col-sm-12">
+                <h4><a id="related-family-collapse" data-toggle="collapse" href="#related-family-section" aria-expanded="true" aria-controls="related-family-section"><i class="fa fa-chevron-circle-down"></i></a> <a href="/Person2/RelatedFamilyQuery/@Model.Family.FamilyId">Related Families</a></h4>
+            </div>
+        </div>
+        <div class="row collapse in" id="related-family-section">
+            <div class="col-sm-12">
+                <ul id="family_related" class="list-group">
+                    @foreach (var f in Model.RelatedFamilies())
+                    {
+                        if (Model.Person.CanUserEditAll)
+                        {
+                            <li class="list-group-item relation-item">
+                                <p>
+                                    <a href="/Person2/@f.PeopleId">@f.Name</a><br />
+                                    <span class="summary relation-description">
+                                        @f.Description <a id="rf-@f.Id1-@f.Id2" href="/Person2/RelatedFamilyEdit/@Model.Person.PeopleId/@f.Id1/@f.Id2" class="edit"><i class="fa fa-pencil"></i></a>
+                                    </span>
+                                </p>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="list-group-item">
+                                <p>
+                                    @if (User.IsInRole("Access"))
+                                    {
+                                        <a href="/Person2/@f.PeopleId">@f.Name</a>
+                                    }
+                                    else
+                                    {
+                                        @f.Name
+                                    }
+                                    <br />
+                                    <span class="summary" title="Description of Relationship">@f.Description</span>
+                                </p>
+                            </li>
+                        }
+                    }
+                </ul>
+            </div>
             @if (Model.Person.CanUserEditAll)
             {
-                <div class="dropdown">
-                    <a href="@dialog" class="searchadd dropdown-toggle"><i class="fa fa-plus"></i></a>
+                <div class="col-sm-12">
+                    <a href="@dialog" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Related Family</a>
                 </div>
             }
-        </div>
-        <div class="sidebar_content">
-            <ul id="family_related" class="unstyled">
-                @foreach (var f in Model.RelatedFamilies())
-                {
-                    if (Model.Person.CanUserEditAll)
-                    {
-                    <li class="with-edit relation-item">
-                        <p>
-                            <a href="/Person2/@f.PeopleId">@f.Name</a>
-                            <span class="summary relation-description">
-                                <a id="rf-@f.Id1-@f.Id2" href="/Person2/RelatedFamilyEdit/@Model.Person.PeopleId/@f.Id1/@f.Id2" class="edit editable-click"><i class="fa fa-pencil"></i></a>
-                                @f.Description
-                            </span>
-                        </p>
-                    </li>
-                    }
-                    else
-                    {
-                    <li>
-                        <p>
-                            @if (User.IsInRole("Access"))
-                            {
-                            <a href="/Person2/@f.PeopleId">@f.Name</a>
-                            }
-                            else
-                            {
-                                @f.Name
-                            }
-                            <span class="summary" title="Description of Relationship">@f.Description </span>
-                        </p>
-                    </li>
-                    }
-                }
-            </ul>
+            <div class="col-sm-12">
+                <br />
+            </div>
         </div>
     }
 </div>
-

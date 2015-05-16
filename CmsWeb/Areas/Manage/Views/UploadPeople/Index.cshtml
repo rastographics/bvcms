@@ -1,11 +1,28 @@
 ﻿@using CmsWeb
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "UploadPeople";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Upload People";
+    ViewBag.PageHeader = "Upload People";
 }
-<h2>Upload People</h2>
-<form method="POST" action="/UploadPeople/Upload">
-    @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "30", cols = "1000", wrap = "off", style = "width:90%" })<br />
-    @Html.CheckBox("noupdate") Inserts Only
-    <input type="submit" class="bt" value="Submit" />
-</form> 
+<div class="row">
+    <div class="col-md-8">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form method="POST" action="/UploadPeople/Upload">
+                    @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "30", cols = "1000", wrap = "off", @class="form-control" })
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label for="noupdate" class="control-label">
+                                @Html.CheckBox("noupdate") Inserts only?
+                            </label>
+                        </div>
+                    </div>
+                    <br />
+                    <p>
+                        <input type="submit" class="btn btn-primary" value="Submit" />
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

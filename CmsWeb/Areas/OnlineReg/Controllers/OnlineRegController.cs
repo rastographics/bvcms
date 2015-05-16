@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var pid = m.CheckRegisterLink(registertag);
 
             return RouteRegistration(m, pid, showfamily);
-        }
+            }
 
         [HttpPost]
         public ActionResult Login(OnlineRegModel m)
@@ -94,8 +94,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // got here by clicking on a link in the Family list
             m.StartRegistrationForFamilyMember(id, ModelState);
             // will take them to the Questions page
-            return FlowList(m, "Register");
-        }
+                return FlowList(m, "Register");
+            }
 
         [HttpPost]
         public ActionResult Cancel(int id, OnlineRegModel m)
@@ -122,7 +122,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (p.IsSpecialReg())
                 p.QuestionsOK = true;
             else if (p.RegistrationFull())
-                ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
+                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             p.SetClassId();
             p.SetSpecialFee();
 
@@ -132,7 +132,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 p.Found = false;
                 p.ValidateModelForFind(ModelState, id);
                 p.PrepareToAddNewPerson(ModelState, id);
-            }
+        }
 
             return FlowList(m, "FindRecord");
         }
@@ -146,7 +146,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var p = m.List[id];
             p.ValidateModelForNew(ModelState, id);
 
-            SetHeaders(m);
+                    SetHeaders(m);
             var ret = p.AddNew(ModelState, id);
             return ret.HasValue()
                 ? View(ret, m)

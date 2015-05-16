@@ -1,5 +1,5 @@
 ﻿@model CmsWeb.Areas.People.Models.PersonModel
-<ul class="nav nav-tabs subnav" data-tabparent="emails">
+<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="emails">
     <li><a href="#receivedemails" data-toggle="tab" class="ajax"><span>Received</span></a></li>
     @if (User.IsInRole("Access"))
     {
@@ -13,7 +13,21 @@
     <li><a href="#optouts" data-toggle="tab" class="ajax"><span>Optouts</span></a></li>
     <li><a href="#failedemails" data-toggle="tab" class="ajax"><span>Failed</span></a></li>
 </ul>
-<div class="tab-content">
+<select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+    <option value="#receivedemails">Received</option>
+    @if (User.IsInRole("Access"))
+    {
+        <option value="#sentemails">Sent</option>
+    }
+    <option value="#transactional">Transactional</option>
+    @if (User.IsInRole("Access"))
+    {
+        <option value="#scheduledemails">Scheduled</option>
+    }
+    <option value="#optouts">Optouts</option>
+    <option value="#failedemails">Failed</option>
+</select>
+<div class="tab-content" style="border: none;">
   <div class="tab-pane" id="receivedemails" data-link="/Person2/ReceivedEmails">
     @Helper.HiddenId("PeopleId", Model.PeopleId)
   </div>

@@ -1,0 +1,90 @@
+@import "variables.less";
+@import "bootstrap-3.3.2/bootstrap.less";
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    text-align: center;
+    padding-top: 0;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+}
+
+body.page-404, body.page-401 {
+    background-color: @global-brand-warning;
+}
+
+body.page-500, body.page-400 {
+    background-color: @global-brand-danger;
+}
+
+body.page-info {
+    background-color: @global-brand-info;
+}
+
+.logo{
+    height: 50px;
+}
+
+.page-404 .header, .page-401 .header, .page-500 .header, .page-info .header {
+    background: #fff;
+    padding: 20px 0;
+    -webkit-box-shadow: 0 4px 0 rgba(0,0,0,.1);
+    box-shadow: 0 4px 0 rgba(0,0,0,.1);
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.page-404 .error-code, .page-401 .error-code, .page-500 .error-code, .page-info .error-code {
+    color: #fff;
+    font-size: 90px;
+    font-weight: 700;
+    line-height: 140px;
+    margin-top: 60px;
+    text-shadow: 0 4px 0 rgba(0,0,0,.1);
+}
+
+.page-404 .error-text .oops, .page-401 .error-text .oops, .page-500 .error-text .oops, .page-info .error-text .oops {
+    font-size: 50px;
+}
+
+.page-404 .error-text .hr, .page-401 .error-text .hr, .page-500 .error-text .hr, .page-info .error-text .hr {
+    background: #fff;
+    background: rgba(0,0,0,.2);
+    display: inline-block;
+    height: 5px;
+    margin: 20px 0;
+    width: 40px;
+}
+
+.page-404 .error-text, .page-401 .error-text, .page-500 .error-text, .page-info .error-text {
+    color: #fff;
+    color: rgba(0,0,0,.5);
+    font-size: 20px;
+    font-weight: 600;
+    padding: 0 20px;
+}
+
+#footer {
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    color: #fff;
+    font-size: 11px;
+    padding-top: 23px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-left: 15px;
+}
+
+#footer a {
+    color: #fff !important;
+    text-decoration: underline;
+}

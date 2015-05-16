@@ -49,8 +49,9 @@ namespace CmsWeb.Areas.Main.Controllers
             return View("Tags", m);
         }
         [HttpPost]
-        public ActionResult RenameTag(TagsModel m)
+        public ActionResult RenameTag(TagsModel m, string renamedTag = null)
         {
+            m.tagname = renamedTag;
             if (!m.tagname.HasValue())
                 return View("Tags", m);
             DbUtil.Db.TagCurrent().Name = m.tagname;

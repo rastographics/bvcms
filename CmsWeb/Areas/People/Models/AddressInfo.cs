@@ -89,10 +89,10 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
-        [DisplayName("Addr Line 1"), RemoveNA]
+        [DisplayName("Address Line 1"), RemoveNA]
         public string AddressLineOne { get; set; }
 
-        [DisplayName("Addr Line 2"), RemoveNA]
+        [DisplayName("Address Line 2"), RemoveNA]
         public string AddressLineTwo { get; set; }
 
         [RemoveNA]
@@ -372,11 +372,11 @@ namespace CmsWeb.Areas.People.Models
             if ((Country.Value == "United States"))
             {
                 Result = AddressVerify.LookupAddress(AddressLineOne, AddressLineTwo, CityName, StateCode.Value, ZipCode);
-                const string alertdiv = @" <div class=""alert"">{0}</div>";
+                const string alertdiv = @" <div class=""alert {0}"">{1}</div>";
                 if (Result.Line1 == "error")
-                    Error = alertdiv.Fmt("<h4>Network Error</h4>");
+                    Error = alertdiv.Fmt("alert-danger", "<h4>Network Error</h4>");
                 else if (ResultNotFound)
-                    Error = alertdiv.Fmt("<h4>Address Not Validated</h4><h6>{0}</h6>".Fmt(Result.error));
+                    Error = alertdiv.Fmt("alert-danger", "<h4>Address Not Validated</h4><h6>{0}</h6>".Fmt(Result.error));
                 else if (Result.Changed(AddressLineOne, AddressLineTwo, CityName, StateCode.Value, ZipCode))
                 {
                     var msg = @"<h4>Address Found and Adjusted by USPS</h4><h6>What you entered</h6>"
@@ -385,7 +385,7 @@ namespace CmsWeb.Areas.People.Models
                     var rc = DbUtil.Db.FindResCode(Result.Zip, Country.Value);
                     ResCode = new CodeInfo(rc, "ResCode");
                     SetAddressInfo();
-                    Error = alertdiv.Fmt(msg);
+                    Error = alertdiv.Fmt("alert-success", msg);
                 }
             }
             return !Error.HasValue();

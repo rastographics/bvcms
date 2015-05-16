@@ -1,14 +1,26 @@
 ﻿@using CmsWeb
 @model IEnumerable<CmsWeb.Areas.Reports.Controllers.ReportsController.ShirtSizeInfo>
 @{
-    ViewBag.Title = "ShirtSizes";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Shirt Sizes";
+    ViewBag.ReportPageHeader = "Shirt Sizes";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>ShirtSizes</h2>
-<table cellspacing="5">
-<tr><th class="left">Size</th><th class="left">Count</th></tr>
-@foreach (var ss in Model)
-{
-    <tr><td>@ss.Size</td><td>@ss.Count</td></tr>
-}
-</table>
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <tr>
+                    <th>Size</th>
+                    <th class="text-right">Count</th>
+                </tr>
+                @foreach (var ss in Model)
+                {
+                    <tr>
+                        <td>@ss.Size</td>
+                        <td class="text-right">@ss.Count</td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>

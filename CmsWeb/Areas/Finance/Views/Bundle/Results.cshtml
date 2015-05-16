@@ -1,39 +1,40 @@
 ﻿@model CmsWeb.Areas.Finance.Models.BundleModel
 @using CmsWeb
 @using UtilityExtensions
-<table class="@ViewExtensions2.GridClass">
-    <thead>
-        <tr><td colspan="8">Bundle Count: @Model.Count().ToString("N0")</td></tr>
-        <tr>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Amount</th>
-            <th>Type</th>
-            <th>Fund</th>
-            <th>Check</th>
-            <th>Notes</th>
-            <th>Posted</th>
-        </tr>
-    </thead>
-    <tbody>
-@if(Model.Count() == 0)
-{ 
-    	<tr><td colspan="8">No items yet.</td></tr>
-} 
-    @foreach (var c in Model.Contributions())
-    {
-        <tr>
-            <td><span class="@(c.ReversedReturned ? "red" : "")">@c.Status</span></td>
-            <td>@c.Date.FormatDate()</td>
-            <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
-            <td class="right">@c.Amount.ToString2("N2")</td>
-            <td>@c.Type</td>
-            <td>@c.Fund</td>
-            <td>@c.Check</td>
-            <td class="notes">@c.Notes</td>
-            <td>@c.PostingDate.FormatDate()</td>
-        </tr>
-    }
-    </tbody>
-</table>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Amount</th>
+                <th>Type</th>
+                <th>Fund</th>
+                <th>Check</th>
+                <th>Notes</th>
+                <th>Posted</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Count() == 0)
+            {
+                <tr><td colspan="9">No items yet.</td></tr>
+            }
+            @foreach (var c in Model.Contributions())
+            {
+                <tr>
+                    <td><span class="@(c.ReversedReturned ? "red" : "")">@c.Status</span></td>
+                    <td>@c.Date.FormatDate()</td>
+                    <td><a href="/Contributions/@c.PeopleId">@c.Name</a></td>
+                    <td class="right">@c.Amount.ToString2("N2")</td>
+                    <td>@c.Type</td>
+                    <td>@c.Fund</td>
+                    <td>@c.Check</td>
+                    <td class="notes">@c.Notes</td>
+                    <td>@c.PostingDate.FormatDate()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

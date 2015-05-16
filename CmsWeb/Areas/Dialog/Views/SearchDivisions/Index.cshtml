@@ -1,4 +1,18 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.SearchDivisionsModel
-<form class="modal fade hide validate ajax form-horizontal" action="/SearchDivisions/ModalDialog">
-  @Html.Partial("ModalDialog", Model)
-</form>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Select Divisions</h4>
+        </div>
+        <div class="modal-body">
+            <form class="validate ajax modal-form" action="/SearchDivisions/ModalDialog">
+                @Html.Partial("ModalDialog", Model)
+            </form>
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+            <a class="pull-right btn btn-primary" id="select-div-ok">OK</a>
+        </div>
+    </div>
+</div>

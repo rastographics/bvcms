@@ -4,34 +4,102 @@
   ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowAttendanceHelp") == "true";
   ViewBag.FalseValue = "";
 }
-<form class="form form-horizontal non-modal ajax span12" data-init="timepicker">
-  @FormAction()
-  @Html.DisplayFor(m => m.Schedules, "Schedules")
-  @Html.DisplayFor(m => m.NotWeekly)
-  @Html.DisplayFor(m => m.AllowAttendOverlap)
-  @Html.DisplayFor(m => m.CanSelfCheckin)
-  @Html.DisplayFor(m => m.SuspendCheckin)
-  @Html.DisplayFor(m => m.AllowNonCampusCheckIn)
-  @Html.DisplayFor(m => m.Offsite)
-  @Html.DisplayFor(m => m.NoSecurityLabel)
-  @Html.DisplayFor(m => m.NumCheckInLabels)
-  @Html.DisplayFor(m => m.NumWorkerCheckInLabels)
-  @Html.DisplayFor(m => m.FirstMeetingDate)
-  @Html.DisplayFor(m => m.LastMeetingDate)
-  @Html.DisplayFor(m => m.RollSheetVisitorWks)
-  @Html.DisplayFor(m => m.ConsecutiveAbsentsThreshold)
-  @Html.DisplayFor(m => m.BirthDayStart)
-  @Html.DisplayFor(m => m.BirthDayEnd)
-  @FormAction()
+<form class="ajax" data-init="timepicker">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Schedules</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
+    <div class="well">
+        @Html.DisplayFor(m => m.Schedules, "Schedules")
+    </div>
+    <h4>Basic Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-4 col-md-4 col-lg-3">
+                @Html.DisplayFor(m => m.FirstMeetingDate)
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-3">
+                @Html.DisplayFor(m => m.LastMeetingDate)
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-3">
+                @Html.DisplayFor(m => m.RollSheetVisitorWks)
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-3">
+                @Html.DisplayFor(m => m.NotWeekly, new { FalseValue = "n/a" })
+            </div>
+        </div>
+    </div>
+    <h4>Absents Control</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-9 col-md-4">
+                @Html.DisplayFor(m => m.ConsecutiveAbsentsThreshold)
+            </div>
+            <div class="col-sm-3 col-md-4">
+                @Html.DisplayFor(m => m.Offsite, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-5 col-md-4">
+                @Html.DisplayFor(m => m.AllowAttendOverlap, new { FalseValue = "n/a" })
+            </div>
+        </div>
+    </div>
+    <h4>Check-in</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                @Html.DisplayFor(m => m.NumCheckInLabels)
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                @Html.DisplayFor(m => m.NumWorkerCheckInLabels)
+            </div>
+            <div class="col-sm-6 col-md-2 col-lg-3">
+                @Html.DisplayFor(m => m.BirthDayStart)
+            </div>
+            <div class="col-sm-6 col-md-2 col-lg-3">
+                @Html.DisplayFor(m => m.BirthDayEnd)
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                @Html.DisplayFor(m => m.CanSelfCheckin, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                @Html.DisplayFor(m => m.SuspendCheckin, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                @Html.DisplayFor(m => m.NoSecurityLabel, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-6 col-md-6 col-lg-3">
+                @Html.DisplayFor(m => m.AllowNonCampusCheckIn, new { FalseValue = "n/a" })
+            </div>
+        </div>
+    </div>
+    @FormAction()
+    @FormAction(true)
+    <br /><br/>
 </form>
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
-  <div class="pull-right">
-    <a href="/Org/AttendanceHelpToggle/@Model.Id" class="btn ajax">@(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
-    @if (User.IsInRole("Edit"))
+    if (xs)
     {
-    <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-primary">Edit</a>
+        <div class="visible-xs-block">
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-block btn-default"><i class="fa fa-pencil"></i> Edit</a>
+            }
+            <a href="/Org/AttendanceHelpToggle/@Model.Id" class="btn btn-default btn-block ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+        </div>
     }
-  </div>
-  @Html.DivValidationMessage("Form", "inline")
+    else
+    {
+        <div class="pull-right hidden-xs">
+            <a href="/Org/AttendanceHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+            }
+        </div>
+    }
 }

@@ -1,6 +1,6 @@
 ﻿@model AskGradeOptions
 @using CmsData.Registration
-<div class="table not-wide w100">
+<div class="well">
   <label class="ask-question">
     Ask Grade Options
   </label>
@@ -10,9 +10,15 @@
   }
   @foreach (var i in Model.list)
   {
-    <div class="well not-wide margin-left-wide">
-      @Html.DisplayFor(m => i.Description)
-      @Html.DisplayFor(m => i.Code)
-    </div>
+      <div class="well">
+          <div class="row">
+              <div class="col-sm-6">
+                  @Html.DisplayFor(m => i.Description)
+              </div>
+              <div class="col-sm-6">
+                  @Html.DisplayFor(m => i.Code)
+              </div>
+          </div>
+      </div>
   }
 </div>

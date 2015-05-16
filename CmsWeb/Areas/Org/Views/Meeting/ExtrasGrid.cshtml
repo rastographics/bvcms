@@ -3,16 +3,22 @@
 @foreach (var c in Model.GetMeetingExtras())
 {
 <tr>
-    <td>@c.Field</td>
+    <td>
+        @c.Field
+    </td>
     @if (isedit)
     {
-    <td><span id="s-@c.Field.@c.MeetingId" class="@(c.DataType == "text" ? "editarea" : "editline")">@c.Data</span></td>
-    <td><a href="#" class="deleteextra" field="@c.Field"><img src="/Content/images/delete.gif" /></a></td>
+        <td>
+            <a id="s-@c.Field.@c.MeetingId" class="@(c.DataType == "text" ? "editarea" : "editline")" data-pk="s-@c.Field.@c.MeetingId">@c.Data</a>
+        </td>
+        <td style="width: 50px;">
+            <a href="#" class="deleteextra btn btn-danger btn-sm" field="@c.Field"><i class="fa fa-trash"></i> Delete</a>
+        </td>
     }
     else
     {
-    <td>@c.Data</td>
-    <td></td>
+        <td>@c.Data</td>
+        <td></td>
     }
 </tr>
 }

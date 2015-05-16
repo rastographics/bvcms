@@ -1,23 +1,26 @@
 ﻿@using CmsData
 @model CmsWeb.Areas.Dialog.Models.OrgDrop
-<form class="form form-horizontal modal fade hide ajax members-update" method="POST">
-  @Html.HiddenFor(mm => mm.Id)
-  @Html.Hidden("callback", "ReloadPeople")
-  <div class="modal-header">
-    <h4>Drop from @Model.OrgName</h4>
-    <div class="alert alert-danger">This will Drop @Model.Count people in @Model.Group from @Model.OrgName</div>
-  </div>
-  <div class="modal-body">
-    <fieldset class="display">
-      @Html.EditorFor(m => m.DropDate, new {help = "Leave Blank for Current Date/Time"})
-      @Html.EditorFor(m => m.RemoveFromEnrollmentHistory, new {help = "This will erase all history of this person's membership in " + Model.OrgName})
-    </fieldset>
-  </div>
-  <div class="modal-footer">
-    <a href="#" class="btn" data-dismiss="modal">Cancel</a>
-    <a href="/OrgDrop/Process" class="btn btn-danger ajaxreloader"
-       data-confirm="Are you sure you want to drop @Model.Count @Model.Group from @Model.OrgName?">
-      Drop
-    </a>
-  </div>
-</form>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Drop from @Model.OrgName</h4>
+        </div>
+        <div class="modal-body">
+            @Html.HiddenFor(mm => mm.Id)
+            @Html.Hidden("callback", "ReloadPeople")
+            <div class="alert alert-danger">
+                This will Drop @Model.Count people in @Model.Group from @Model.OrgName
+            </div>
+            @Html.EditorFor(m => m.DropDate, new { help = "Leave Blank for Current Date/Time" })
+            @Html.EditorFor(m => m.RemoveFromEnrollmentHistory, new { help = "This will erase all history of this person's membership in " + Model.OrgName })
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
+            <a href="/OrgDrop/Process" class="btn btn-danger ajaxreloader"
+                data-confirm="Are you sure you want to drop @Model.Count @Model.Group from @Model.OrgName?">
+                Drop
+            </a>
+        </div>
+    </div>
+</div>

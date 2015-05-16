@@ -1,14 +1,46 @@
 ﻿@model IEnumerable<CmsData.View.OrphanedImage>
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "OrphanedImage";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Orphaned Images";
+    ViewBag.PageHeader = "Orphaned Images";
 }
+<div class="row">
+    <div class="col-md-8">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Length</th>
+                                <th>Mimetype</th>
+                                <th style="width: 50px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr id="r@(item.Id)">
+                                    <td><a href="/Image/@item.Id" target="image">@item.Id</a> </td>
+                                    <td> @item.Length </td>
+                                    <td> @item.Mimetype </td>
+                                    <td style="width: 50px;"><a href="#" class="delete btn btn-danger btn-sm" id="d@item.Id"><i class="fa fa-trash"></i> Delete</a></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
     <script type="text/javascript">
-        $(function() {
-            $("a.delete").click(function(ev) {
-                $.post("/Setting/DeleteImage/" + $(this).attr("id"), {}, function(ret) {
+        $(function () {
+            $("a.delete").click(function (ev) {
+                $.post("/Setting/DeleteImage/" + $(this).attr("id"), {}, function (ret) {
                     $(ret).remove();
                 });
                 return false;
@@ -16,24 +48,3 @@
         });
     </script>
 }
-<h2>OrphanedImages</h2>
-<table>
-    <tr>
-        <th> Id </th>
-        <th> Length </th>
-        <th></th>
-        <th> Mimetype </th>
-    </tr>
-@foreach (var item in Model)
-{ 
-    <tr id="r@(item.Id)">
-        <td> <a href="/Image/@item.Id" target="image">@item.Id</a> </td>
-        <td> @item.Length </td>
-        <td><a href="#" class="delete" id="d@item.Id">delete</a></td>
-        <td> @item.Mimetype </td>
-    </tr>
-
-}
-</table>
-
-

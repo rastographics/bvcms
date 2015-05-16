@@ -15,6 +15,7 @@ using System.Web.UI.HtmlControls;
 using System.Windows.Forms;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Main.Models;
 using Dapper;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -42,12 +43,6 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult Index()
         {
             return View(new ContentModel());
-        }
-
-        public ActionResult ContentView(int id)
-        {
-            var content = DbUtil.ContentFromID(id);
-            return View(content);
         }
 
         public ActionResult ContentEdit(int? id, bool? snippet)
@@ -123,7 +118,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (stayaftersave == "true")
                 return RedirectEdit(content);
 
-            return RedirectToAction("Index");
+            var url = GetIndexTabUrl(content);
+            return Redirect(url);
         }
 
         public ActionResult ContentDelete(int id)
@@ -131,14 +127,15 @@ namespace CmsWeb.Areas.Manage.Controllers
             var content = DbUtil.ContentFromID(id);
             DbUtil.Db.Contents.DeleteOnSubmit(content);
             DbUtil.Db.SubmitChanges();
-            return RedirectToAction("Index", "Display");
+            var url = GetIndexTabUrl(content);
+            return Redirect(url);
         }
 
         public ActionResult ContentDeleteDrafts(string[] draftID)
         {
             string deleteList = String.Join(",", draftID);
             DbUtil.Db.ExecuteCommand("DELETE FROM dbo.Content WHERE Id IN(" + deleteList + ")", "");
-            return RedirectToAction("Index", "Display");
+            return Redirect("/Display#tab_savedDrafts");
         }
 
         public ActionResult RedirectEdit(Content cContent)
@@ -158,41 +155,19 @@ namespace CmsWeb.Areas.Manage.Controllers
                     return View("EditPythonScript", cContent);
 
                 case ContentTypeCode.TypeEmailTemplate:
-                case ContentTypeCode.TypeSavedDraft:
                     return View("EditTemplate", cContent);
+
+                case ContentTypeCode.TypeSavedDraft:
+                    return View("EditDraft", cContent);
             }
 
             return View("Index");
         }
 
-        public ActionResult OrgContent(int id, string what, bool? div)
+        public ActionResult EmailBody(int id)
         {
-            var org = DbUtil.Db.LoadOrganizationById(id);
-            if (div == true && org.Division == null)
-                return Content("no main division");
-
-            switch (what)
-            {
-                case "message":
-                    if (div == true)
-                    {
-                        ViewData["html"] = org.Division.EmailMessage;
-                        ViewData["title"] = org.Division.EmailSubject;
-                    }
-                    break;
-                case "instructions":
-                    if (div == true)
-                        ViewData["html"] = org.Division.Instructions;
-                    ViewData["title"] = "Instructions";
-                    break;
-                case "terms":
-                    if (div == true)
-                        ViewData["html"] = org.Division.Terms;
-                    ViewData["title"] = "Terms";
-                    break;
-            }
-            ViewData["id"] = id;
-            return View();
+            var content = DbUtil.ContentFromID(id);
+            return View(content);
         }
 
         [HttpPost]
@@ -212,33 +187,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
-        [HttpPost]
-        public ActionResult UpdateOrgContent(int id, bool? div, string what, string title, string html)
-        {
-            var org = DbUtil.Db.LoadOrganizationById(id);
-
-            switch (what)
-            {
-                case "message":
-                    if (div == true)
-                    {
-                        org.Division.EmailMessage = html;
-                        org.Division.EmailSubject = title;
-                    }
-                    break;
-                case "instructions":
-                    if (div == true)
-                        org.Division.Instructions = html;
-                    break;
-                case "terms":
-                    if (div == true)
-                        org.Division.Terms = html;
-                    break;
-            }
-            DbUtil.Db.SubmitChanges();
-            return Redirect(Util2.Org + "/" + id);
-        }
-
+        
         public static byte[] CaptureWebPageBytes(string body, int width, int height)
         {
             bool bDone = false;
@@ -352,6 +301,35 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return null;
         }
+
+        private string GetIndexTabUrl(Content content)
+        {
+            var url = Url.Action("Index");
+            switch (content.TypeID)
+            {
+                case ContentTypeCode.TypeHtml:
+                    url += "#tab_htmlContent";
+                    break;
+                case ContentTypeCode.TypeText:
+                    url += "#tab_textContent";
+                    break;
+                case ContentTypeCode.TypeSqlScript:
+                    url += "#tab_sqlScripts";
+                    break;
+                case ContentTypeCode.TypePythonScript:
+                    url += "#tab_pythonScripts";
+                    break;
+                case ContentTypeCode.TypeEmailTemplate:
+                    url += "#tab_emailTemplates";
+                    break;
+                case ContentTypeCode.TypeSavedDraft:
+                    url += "#tab_savedDrafts";
+                    break;
+            }
+
+            return url;
+        }
+
     }
     public class GridResult : ActionResult
     {

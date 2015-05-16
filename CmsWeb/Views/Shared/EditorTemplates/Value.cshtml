@@ -4,30 +4,29 @@
     <tr>
         @if (Model.Type == "Header")
         {
-            <td colspan="2"><h4>@Html.Raw(Model.Name)</h4></td>
+            <td colspan="3"><h4>@Html.Raw(Model.Name)</h4></td>
         }
         else if (Model.Type == "Link")
         {
-          <td class="nowrap"><span class="pad-left">@Model.DisplayName</span></td>
-          <td class="width100">@Model.HyperLink()</td>
+            <td style="width: 450px;"><span class="pad-left">@Model.DisplayName</span></td>
+            <td>@Model.HyperLink()</td>
+            <td style="width: 50px;"></td>
         }
         else
         {
-            <td class="nowrap"><span class="pad-left">@Model.DisplayName</span></td>
+            <td style="width: 450px;"><span class="pad-left">@Model.DisplayName</span></td>
             if (Model.UserCanEdit())
             {
                 var dv = Model.DataValue;
                 var ds = Model.DataSource;
-                <td class="width100">
-                    <a href="#"
-                       data-pk="@Model.Id"
+                <td>
+                    <a href="#" data-pk="@Model.Id"
                        data-name="@Model.DataName"
-                       class="@Model.EditableClass"
+                       class="@Model.EditableClass" 
+                       style="white-space: pre-line;"
                        data-url="@Model.EditUrl"
                        @if (dv.HasValue()) { <text> data-value="@dv" </text>    }
-                       @if (ds.HasValue()) {  <text> data-source="@ds" </text>   }>
-                        @Html.Raw(Model)
-                    </a>
+                       @if (ds.HasValue()) {  <text> data-source="@ds" </text>   }>@Html.Raw(Model)</a>
                 </td>
             }
             else
@@ -36,9 +35,13 @@
             }
             if (!Model.Standard && Model.UserCanEdit())
             {
-                <td>
-                    <a href="@Model.DeleteUrl" class="ajax" data-confirm="Are you sure?"><i class="fa fa-times"></i></a>
+                <td style ="width: 50px;">
+                    <a href="@Model.DeleteUrl" class="ajax btn btn-danger btn-sm" data-confirm="Are you sure?" data-confirm-type="warning" data-confirm-btn-class="btn-danger" data-confirm-btn-text="Yes, delete!"><i class="fa fa-trash"></i> Delete</a>
                 </td>
+            }
+            else
+            {
+                <td style="width: 50px;"></td>
             }
         }
     </tr>

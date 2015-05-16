@@ -1,45 +1,36 @@
 ﻿@using CmsData.Classes.Twilio
 @{
-    var numbers = TwilioHelper.getUnusedNumberList();
+    var numbers = TwilioHelper.GetUnusedNumberList();
+    int id = ViewBag.ID;
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>NumberDialog</title>
-</head>
-<body>
-    <center>
-	    <form action="/Twilio/NumberAdd" method="post">
-            <input type="hidden" name="groupID" value="@ViewBag.ID" />
-	        <table cellspacing="10">
-            @if( numbers.Any() )
-            {
-	            <tr>
-		            <td align="right">Number:</td>
-		            <td align="left">@Html.DropDownList( "newNumber", new SelectList( numbers, "Number", "Description" ) )</td>
-                </tr>
-                <tr>
-		            <td align="center" colspan="2">
-                        <br />
-			            <input type="submit" class="bt" value="Submit" /> &nbsp;&nbsp; <input type="button" class="bt" cancelbutton="dialog" value="Cancel" />
-		            </td>
-	            </tr>
-            }
-            else
-            {
-                <tr>
-		            <td align="center">There are no additional unused numbers.</td>
-                </tr>
-                <tr>
-		            <td align="center">
-                        <br />
-			            <input type="button" class="bt" cancelbutton="dialog" value="OK" />
-		            </td>
-	            </tr>
-            }
-	        </table>
-	    </form>
-	</center>
-</body>
-</html>
+
+@using (Html.BeginForm("NumberAdd", "Twilio"))
+{
+    @Html.Hidden("groupID", id)
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add New Number</h4>
+    </div>
+    if (numbers.Any())
+    {
+        <div class="modal-body">
+            <div class="form-group">
+                @Html.Label("newNumber", "Number", new { @class="control-label" })
+                @Html.DropDownList("newNumber", new SelectList(numbers, "Number", "Description"), new { @class="form-control" })
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+            <input type="submit" value="Submit" class="btn btn-primary" />
+        </div>
+    }
+    else
+    {
+        <div class="modal-body">
+            There are no additional unused numbers.
+        </div>
+        <div class="modal-footer">
+            <input type="button" value="OK" class="btn btn-default" data-dismiss="modal" />
+        </div>
+    }
+}

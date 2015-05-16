@@ -1,12 +1,26 @@
 ﻿@using CmsWeb
 @{
-    ViewBag.Title = "QB Import";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Search Builder Import";
+    ViewBag.PageHeader = "Search Builder Import";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>QB Import</h2>
-<form action="/Query/Import" method="post">
-    <label>Search Builder name: </label> @Html.TextBox("name")
-<em>Paste Exported Search Here</em>
-    <input type="submit" class="bt" value="Submit" />
-    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", style = "width:90%" })<br />
-</form>
+<div class="row">
+    <div class="col-md-8">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form action="/Query/Import" method="post">
+                    <div class="form-group">
+                        <label for="FundDescription" class="control-label">Search Builder Name</label>
+                        @Html.TextBox("name", "", new { @class = "form-control"})
+                    </div>
+                    <em>Paste Exported Search Here</em>
+                    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", @class="form-control" })
+                    <br/>
+                    <p>
+                        <input type="submit" class="btn btn-primary" value="Submit" />
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

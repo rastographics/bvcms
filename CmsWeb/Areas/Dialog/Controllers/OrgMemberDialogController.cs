@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 ? "removed enrollment history on {0} for {1}".Fmt(m.PeopleId, m.OrgId)
                 : "dropped {0} for {1}".Fmt(m.PeopleId, m.OrgId));
             m.Drop();
-            return View("Dropped", m);
+            return Content("Done");
         }
     }
 }

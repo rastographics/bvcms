@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
  */
 using System;
+using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -17,6 +18,7 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using CmsData;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing.ChartDrawing;
 using Elmah;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -568,11 +570,11 @@ namespace CmsWeb
         //        }
         public static MvcHtmlString ValidationMessageLabelFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression, string errorClass = "error")
         {
-            string elementName = ExpressionHelper.GetExpressionText(expression);
+            string elementId = html.IdFor(m => m).ToString();
             MvcHtmlString normal = html.ValidationMessageFor(expression);
             if (normal != null)
             {
-                string newValidator = Regex.Replace(normal.ToHtmlString(), @"<span([^>]*)>([^<]*)</span>", string.Format("<label for=\"{0}\" $1>$2</label>", elementName), RegexOptions.IgnoreCase);
+                string newValidator = Regex.Replace(normal.ToHtmlString(), @"<span([^>]*)>([^<]*)</span>", string.Format("<label for=\"{0}\" $1>$2</label>", elementId), RegexOptions.IgnoreCase);
                 if (!string.IsNullOrWhiteSpace(errorClass))
                     newValidator = newValidator.Replace("field-validation-error", errorClass);
                 return MvcHtmlString.Create(newValidator);
@@ -776,32 +778,99 @@ namespace CmsWeb
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
+        public static HtmlString FroalaEditorCss()
+        {
+            return new HtmlString(@"
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_style.min.css"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css"">
+");
+        }
+        public static HtmlString FroalaEditorScripts()
+        {
+            return new HtmlString(@"
+<script src=""/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/file_upload.min.js?v=1.2.7""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js?v=1.1.0""></script>
+<script type=""text/javascript"">
+    //froala key
+    $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
+        
+    // must alias froala editor because it could conflict with the same function name with bootstrap-editable.
+    $.fn.froalaEditable = $.fn.editable;
+    delete $.fn.editable;   
+</script>
+");
+        }
         public static HtmlString FontAwesome()
         {
-            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css\" rel=\"stylesheet\">\n");
+            return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
         public static HtmlString CKEditor()
         {
-            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.4.1/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.4.7/standard/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
+        public static HtmlString jQuery()
+        {
+            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
+        }
+        public static HtmlString jQueryUICss()
+        {
+            return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css\" />\n");
+        }
+        public static HtmlString jQueryUI()
+        {
+            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>");
+        }
+
+        public static HtmlString jQueryValidation()
+        {
+            return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js""></script>
+    <script src=""//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/additional-methods.min.js""></script>");
+        }
+
         public static HtmlString jqueryGlobalize()
         {
             return new HtmlString(@"
 <script src=""{0}"" type=""text/javascript""></script>
 <script src=""{1}"" type=""text/javascript""></script>
-".Fmt(Globalize,GlobalizeCulture));
+".Fmt(Globalize, GlobalizeCulture));
         }
-        public static HtmlString jQuery()
+
+        public static string jqueryGlobalizeCulture
         {
-            return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js'></script>\n");
+            get
+            {
+                //Determine culture - GUI culture for preference, user selected culture as fallback
+                var currentCulture = CultureInfo.CurrentCulture;
+                var filePattern = "/Content/touchpoint/lib/jquery-globalize/js/cultures/globalize.culture.{0}.js";
+                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
+
+                //Try to pick a more appropriate regionalisation
+                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
+                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
+
+                return regionalisedFileToUse;
+            }
         }
-        public static HtmlString jQueryUICss()
+        
+        public static HtmlString Moment()
         {
-            return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/smoothness/jquery-ui.css\" />\n");
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
         }
-        public static HtmlString jQueryUI()
+
+        public static HtmlString Velocity()
         {
-            return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js""></script>");
+            return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.min.js\" type=\"text/javascript\"></script>\n");
         }
 
         public static HtmlString Bootstrap()
@@ -811,28 +880,28 @@ namespace CmsWeb
 
         public static HtmlString Bootstrap3()
         {
-            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js""></script>");
+            return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js""></script>");
         }
 
- 
+
         public static string Globalize { get { return "/Scripts/globalize.js"; } }
-        public static string GlobalizeCulture 
-        { 
-            get 
+        public static string GlobalizeCulture
+        {
+            get
             {
                 //Determine culture - GUI culture for preference, user selected culture as fallback
                 var currentCulture = CultureInfo.CurrentCulture;
                 var filePattern = "/Scripts/globalize/globalize.culture.{0}.js";
                 var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
- 
+
                 //Try to pick a more appropriate regionalisation
                 if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
                     regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
                 else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
                     regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
- 
+
                 return regionalisedFileToUse;
-            } 
+            }
         }
 
         public static HtmlString LoDash()
@@ -858,6 +927,11 @@ namespace CmsWeb
         public static string Layout()
         {
             return "~/Views/Shared/SiteLayout2c.cshtml";
+        }
+
+        public static string TouchPointLayout()
+        {
+            return "~/Views/Shared/_Layout.cshtml";
         }
 
         public static string DbSetting(string name, string def)
@@ -903,9 +977,9 @@ namespace CmsWeb
             switch (ret)
             {
                 case DbUtil.CheckDatabaseResult.DatabaseDoesNotExist:
-                    return "/Errors/DatabaseNotFound.aspx?dbname=" + Util.Host;
+                    return "/Error/DatabaseNotFound/?dbname={0}".Fmt(Util.Host);
                 case DbUtil.CheckDatabaseResult.ServerNotFound:
-                    return "/Errors/DatabaseServerNotFound.aspx?server=" + Util.DbServer;
+                    return "/Error/DatabaseServerNotFound/?server={0}".Fmt(Util.DbServer);
                 case DbUtil.CheckDatabaseResult.DatabaseExists:
                     return null;
             }
@@ -977,5 +1051,98 @@ namespace CmsWeb
                 _templateInfo.HtmlFieldPrefix = _previousPrefix;
             }
         }
+
+        public static MvcHtmlString ValidationSummaryBootstrap(this HtmlHelper helper, bool closeable)
+        {
+            # region Equivalent view markup
+
+
+            // var errors = ViewData.ModelState.SelectMany(x => x.Value.Errors.Select(y => y.ErrorMessage));
+            //
+            // if (errors.Count() > 0)
+            // {
+            //     <div class="alert alert-danger alert-block alert-dismissable">
+            //         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            //         <strong>Validation error!</strong> Please fix the errors listed below and try again.
+            //         <ul>
+            //             @foreach (var error in errors)
+            //             {
+            //                 <li class="text-error">@error</li>
+            //             }
+            //         </ul>
+            //     </div>
+            // }
+
+
+            # endregion
+
+
+            var errors = helper.ViewContext.ViewData.ModelState.SelectMany(state => state.Value.Errors.Select(error => error.ErrorMessage));
+
+            var errorCount = errors.Count();
+
+            var div = new TagBuilder("div");
+            if (errorCount == 0)
+            {
+                div.AddCssClass("validation-summary-valid");
+                div.MergeAttribute("data-valmsg-summary", "true");
+
+                if (closeable)
+                {
+                    div.AddCssClass("alert-dismissable");
+                }
+
+                var ul = new TagBuilder("ul");
+                var li = new TagBuilder("li");
+                li.MergeAttribute("style", "display:none;");
+                ul.InnerHtml += li.ToString();
+                div.InnerHtml += ul.ToString();
+                return new MvcHtmlString(div.ToString());
+            }
+
+            div.AddCssClass("validation-summary-errors");
+            div.MergeAttribute("data-valmsg-summary", "true");
+            div.AddCssClass("alert");
+            div.AddCssClass("alert-danger");
+
+            div.AddCssClass("alert-block");
+
+            if (closeable)
+            {
+                div.AddCssClass("alert-dismissable");
+
+                var button = new TagBuilder("button");
+                button.AddCssClass("close");
+                button.MergeAttribute("type", "button");
+                button.MergeAttribute("data-dismiss", "alert");
+                button.MergeAttribute("aria-hidden", "true");
+                button.InnerHtml = "&times;";
+                div.InnerHtml += button.ToString();
+            }
+
+            div.InnerHtml += "<strong>Validation Error!</strong>&nbsp;&nbsp;Please fix the errors listed below and try again.";
+
+            if (errorCount > 0)
+            {
+                var ul = new TagBuilder("ul");
+
+                foreach (var error in errors)
+                {
+                    var li = new TagBuilder("li");
+                    li.SetInnerText(error);
+                    ul.InnerHtml += li.ToString();
+                }
+
+                div.InnerHtml += ul.ToString();
+            }
+
+            return new MvcHtmlString(div.ToString());
+        }
+        
+        public static MvcHtmlString ValidationSummaryBootstrap(this HtmlHelper helper)
+        {
+            return ValidationSummaryBootstrap(helper, true);
+        }
+
     }
 }

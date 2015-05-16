@@ -106,14 +106,15 @@ namespace CmsWeb.Areas.Finance.Controllers
             return RedirectToAction("Index");
         }
         [HttpPost]
-        public ActionResult Update(int FundId)
+        public ActionResult Update(int fundId)
         {
-            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == FundId);
+            var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == fundId);
             if (fund != null)
                 UpdateModel(fund);
             if (ModelState.IsValid)
             {
                 DbUtil.Db.SubmitChanges();
+                TempData["SuccessMessage"] = "Fund was successfully saved.";
                 return RedirectToAction("Index");
             }
             return View("Edit", fund);

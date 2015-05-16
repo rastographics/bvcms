@@ -1,82 +1,189 @@
-﻿@using CmsWeb;
+﻿@using System.Globalization
 @model CmsWeb.Models.TransactionsModel
 @{
-  Layout = ViewExtensions2.Layout();
-  ViewBag.Title = "Transactions";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Transactions";
+    ViewBag.PageHeader = "Transactions";
 }
+<div class="box box-responsive">
+    <div class="box-content">
+        <form id="form" method="post" action="/Transactions/List">
+            <div class="well">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Id / Name" data-content="This is the person making the payment, not necessarily the person registering for the event. Enter either a name or a Transaction ID#."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="name" class="control-label">Id / Name</label>
+                            @Html.TextBox("name", Model.name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Description" data-content="This is the name of the Organization (registration) for which the transaction was made."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="description" class="control-label">Description</label>
+                            @Html.TextBox("description", Model.description, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Amount From" data-content="Searches for items greater than or equal to the amount entered. Enter 0 to find all transactions with a payment."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="gtamount" class="control-label">Amount From</label>
+                            <div class="input-group">
+                                <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBox("gtamount", Model.gtamount, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Amount To" data-content="Searches for items less than or equal to the amount entered. Enter the same amount in both fields to find an exact amount."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="ltamount" class="control-label">Amount To</label>
+                            <div class="input-group">
+                                <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBox("ltamount", Model.ltamount, new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date From" data-content="If you enter only a Date From, you will find transactions for just that date."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="startdt" class="control-label">Date From</label>
+                            <div class="input-group date">
+                                @Html.TextBox("startdt", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("startdtIso", Model.startdt.HasValue ? Model.startdt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Date To" data-content="If you enter only a Date To, you will find all transactions prior to and including that date."><i class="fa fa-info-circle"></i></a>&nbsp;
+                            <label for="enddt" class="control-label">Date To</label>
+                            <div class="input-group date">
+                                @Html.TextBox("enddt", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToShortDateString() : "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("enddtIso", Model.enddt.HasValue ? Model.enddt.GetValueOrDefault().ToString("yyyy-MM-dd") : "", new { disabled = "disabled" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("usebatchdates") Use batch dates?
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("nocoupons") No coupons?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("apprtransactions") Approved transactions only?
+                                </label>
+                            </div>
+                            <div class="checkbox">
+                                <label class="control-label">
+                                    @Html.CheckBox("testtransactions") Test transactions only?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right">
+                            <a id="clear" href="/Transactions" class="btn btn-default">Clear</a>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-table"></i> Other Reports <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/Transactions/Report" class="report">Reconcile Report</a></li>
+                                    <li><a href="/Transactions/ReportByDescription" class="report">Totals by Description</a></li>
+                                    <li><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></li>
+                                </ul>
+                            </div>
+                            <div class="btn-group">
+                                <a href="#" id="filter" class="btn btn-primary">Filter</a>
+                                <button type="button" id="filter-dropdown" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Filter Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right">
+                                    <li><a id="export" href="#"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;Export Results</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("List", Model)
+        </form>
+        @if (Model.GoerId > 0 || Model.SenderId > 0)
+        {
+            @Html.Partial("GoerSupporters", Model)
+        }
+    </div>
+</div>
+
+<div class="modal fade" id="adjust-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Adjust Transaction</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="amt" class="control-label">Amount</label>
+                            <input id="amt" type="text" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+                            <label for="desc" class="control-label">Description</label>
+                            <input id="desc" type="text" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="voidurl" />
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input type="button" id="post" value="Make Adjustment" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="credit-modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Refund Transaction</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="credit-amt" class="control-label">Amount</label>
+                    <input id="credit-amt" type="text" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" id="cancel" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input type="button" id="post" value="Refund Transaction" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-  @Fingerprint.Script("/Scripts/Finance/Transactions.js")
+    @Fingerprint.Script("/Content/touchpoint/js/finance/transactions.js")
 }
-<form id="form" method="post" action="/Transactions/List">
-  <div class="roundbox floatleft">
-    <h2>Transactions</h2>
-    <table cellspacing="5">
-      <tr>
-        <td class="right">Description:</td>
-        <td>@Html.TextBox("description")</td>
-        <td class="right">Test Transactions:</td>
-        <td>@Html.CheckBox("testtransactions")</td>
-      </tr>
-      <tr>
-        <td class="right" colspan="3">Only Approved Transactions:</td>
-        <td>@Html.CheckBox("apprtransactions")</td>
-      </tr>
-      <tr>
-        <td class="right" colspan="3">No Coupons:</td>
-        <td>@Html.CheckBox("nocoupons")</td>
-      </tr>
-      <tr>
-        <td class="right">Name:</td>
-        <td>@Html.TextBox("name")</td>
-        <td></td>
-        <td>
-            Use Batch Dates: @Html.CheckBox("usebatchdates")
-        </td>
-      </tr>
-      <tr>
-        <td class="right">&gt; Amount:</td>
-        <td>@Html.TextBox("gtamount")</td>
-        <td class="right">Start Date:</td>
-        <td>@Html.DatePicker("startdt")</td>
-      </tr>
-      <tr>
-        <td class="right">&lt;= Amount:</td>
-        <td>@Html.TextBox("ltamount")</td>
-        <td class="right">End Date:</td>
-        <td>@Html.DatePicker("enddt")</td>
-      </tr>
-      <tr>
-        <td class="right" colspan="4">
-          <a id="filter" href="#" class="submitbutton bt">Filter</a>
-          <a id="export" href="#" class="submitbutton bt">Export</a>
-          <a href="/Transactions" class="bt">Clear</a>
-        </td>
-      </tr>
-        <tr>
-          <td class="right" colspan="4"><a href="/Transactions/Report" class="report">Reconcile Report</a></td>
-        </tr>
-        <tr>
-          <td class="right" colspan="4"><a href="/Transactions/ReportByDescription" class="report">Totals by Description</a></td>
-        </tr>
-        <tr>
-          <td class="right" colspan="4"><a href="/Transactions/ReportByBatchDescription" class="report">Totals by Batch/Description</a></td>
-        </tr>
-    </table>
-  </div>
-  <div class="floatclear"></div>
-  <table id="Transactions" class="@ViewExtensions2.GridClass" cellpadding="4">
-    @Html.Partial("List", Model)
-  </table>
-  @if (Model.GoerId > 0 || Model.SenderId > 0)
-  {
-    @Html.Partial("GoerSupporters", Model)
-  }
-</form>
-<div id="AdjustForm" style="display:none">
-  <p><label>Amount:</label><input id="amt" type="text" /></p>
-  <p><label>Description:</label><input id="desc" type="text" /></p>
-  <input type="button" id="post" value="Post Transaction" />
-  <input type="button" id="cancel" value="Cancel" />
-  <input type="hidden" id="voidurl" />
-</div>

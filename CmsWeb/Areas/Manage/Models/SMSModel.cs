@@ -85,6 +85,9 @@ namespace CmsWeb.Models
                     case "Exclude":
                         l = l.OrderByDescending(e => e.SentNone);
                         break;
+                    default:
+                        l = l.OrderByDescending(e => e.Created);
+                        break;
                 }
             }
 

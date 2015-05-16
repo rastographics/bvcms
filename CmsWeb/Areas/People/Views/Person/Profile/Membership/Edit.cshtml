@@ -1,73 +1,152 @@
-﻿@model CmsWeb.Areas.People.Models.MemberInfo
+﻿@using CmsData
+@model CmsWeb.Areas.People.Models.MemberInfo
 @{
     var editable = new
     {
         url = "/Person2/InlineEdit/" + Model.PeopleId,
         source = "/Person2/InlineCodes/"
     };
+    var NewMemberClassLabel = DbUtil.Db.Setting("NewMemberClassLabel", "New Member Class");
 }
-<form class="form form-horizontal ajax span12 validate" method="post">
+<form class="ajax validate" method="post" data-init="Editable">
     @Html.HiddenFor(m => m.PeopleId)
     @Html.ValidationMessage("automation")
     @Html.Raw(ViewBag.AutomationError)
-    <div class="row-fluid margin-top">
-        <fieldset class="left-gutter">
-            <legend>Member Profile @FormAction()</legend>
-            <div class="inline align-top">
-                <div class="well">
-                    <p><b>Statement/Envelope Options</b></p>
-                    @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
-                    @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+    <h3>Member Profile</h3>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>Church Membership</h4>
                 </div>
-                <div class="well">
-                    <p><b>Decision</b></p>
-                    @Html.EditorFor(m => m.DecisionType)
-                    @Html.EditorFor(m => m.DecisionDate)
-                </div>
-                <div class="well">
-                    <p><b>Baptism</b></p>
-                    @Html.EditorFor(m => m.BaptismType)
-                    @Html.EditorFor(m => m.BaptismStatus)
-                    @Html.EditorFor(m => m.BaptismDate)
-                    @Html.EditorFor(m => m.BaptismSchedDate)
-                </div>
-                <div class="well">
-                    <p><b>New Member Class</b></p>
-                    @Html.EditorFor(m => m.NewMemberClassStatus)
-                    @Html.EditorFor(m => m.NewMemberClassDate)
-                </div>
-            </div>
-            <div class="inline align-top left-gutter">
-                <div class="well">
-                    <p><b>Church Membership</b></p>
-                    @Html.EditorFor(m => m.MemberStatus)
-                    @Html.EditorFor(m => m.JoinType)
-                    @Html.EditorFor(m => m.JoinDate)
-                    @Html.EditorFor(m => m.OtherPreviousChurch)
-                </div>
-                <div class="well">
-                    <p><b>Drop</b></p>
-                    @Html.EditorFor(m => m.DropType)
-                    @Html.EditorFor(m => m.DropDate)
-                    @Html.EditorFor(m => m.OtherNewChurch)
+                <div class="col-sm-6">
+                    @FormAction()
                 </div>
             </div>
             <div class="well">
-                <p><b>Letter Status</b></p>
-                @Html.EditorFor(m => m.LetterStatus)
-                @Html.EditorFor(m => m.LetterDateRequested)
-                @Html.EditorFor(m => m.LetterDateReceived)
-                @Html.EditorFor(m => m.LetterStatusNotes)
+                <div class="row">
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.MemberStatus)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.JoinType)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.JoinDate)
+                    </div>
+                    <div class="col-md-12 col-lg-12">
+                        @Html.EditorFor(m => m.OtherPreviousChurch)
+                    </div>
+                </div>
             </div>
-            <div>@FormAction()</div>
-        </fieldset>
+            <h4>Decision</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-6 col-lg-6">
+                        @Html.EditorFor(m => m.DecisionType)
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        @Html.EditorFor(m => m.DecisionDate)
+                    </div>
+                </div>
+            </div>
+            <h4>Letter Status</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.LetterStatus)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.LetterDateRequested)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.LetterDateReceived)
+                    </div>
+                    <div class="col-md-12 col-lg-12">
+                        @Html.EditorFor(m => m.LetterStatusNotes)
+                    </div>
+                </div>
+            </div>
+            <h4>Baptism</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-6 col-lg-3">
+                        @Html.EditorFor(m => m.BaptismType)
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        @Html.EditorFor(m => m.BaptismStatus)
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        @Html.EditorFor(m => m.BaptismDate)
+                    </div>
+                    <div class="col-md-6 col-lg-3">
+                        @Html.EditorFor(m => m.BaptismSchedDate)
+                    </div>
+                </div>
+            </div>
+            <h4>@NewMemberClassLabel</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-6 col-lg-6">
+                        @Html.EditorFor(m => m.NewMemberClassStatus)
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        @Html.EditorFor(m => m.NewMemberClassDate)
+                    </div>
+                </div>
+            </div>
+            <h4>Drop</h4>
+            <div class="well">
+                <div class="row">
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.DropType)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.DropDate)
+                    </div>
+                    <div class="col-md-4 col-lg-4">
+                        @Html.EditorFor(m => m.OtherNewChurch)
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Statement/Envelope Options
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
+                        </div>
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                        </div>
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+    @FormAction(true)
 </form>
-
-@helper FormAction()
+@helper FormAction(bool xs = false)
 {
-    <span class="pull-right">
-        <a href="/Person2/Membership/@Model.PeopleId" class="edit-basic btn ajax">Cancel</a>
-        <a href="/Person2/MembershipUpdate" class="edit-basic btn btn-primary ajax validate">Save</a>
-    </span>
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            <a href="/Person2/MembershipUpdate" class="edit-basic btn btn-primary btn-block ajax validate">Save</a>
+            <a href="/Person2/Membership/@Model.PeopleId" class="edit-basic btn btn-default btn-block ajax">Cancel</a>
+        </div>
+    }
+    else
+    {
+        <div class="pull-right hidden-xs">
+            <a href="/Person2/Membership/@Model.PeopleId" class="edit-basic btn btn-default ajax">Cancel</a>
+            <a href="/Person2/MembershipUpdate" class="edit-basic btn btn-primary ajax validate">Save</a>
+        </div>
+    }
 }

@@ -2,12 +2,12 @@
 @using CmsData.Registration
 @using CmsWeb
 @using UtilityExtensions
-<div class="table not-wide no-margin">
+<div class="well">
   <label class="ask-question">
     @Model.Type.SpaceCamelCase()
   </label>
   @if (ViewBag.ShowHelp != false)
   {
-    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+    <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
   }
 </div>

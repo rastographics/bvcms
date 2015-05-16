@@ -1,33 +1,34 @@
 ﻿@model List<CmsData.Registration.Settings.AgeGroup>
 @using CmsWeb
 @using UtilityExtensions
-<div class="control-group">
-  <label class="control-label">Age Groups</label>
-  <div class="controls">
-    <table class="table table-condensed not-wide">
-      <thead>
-        <tr>
-          <th>Start Age</th>
-          <th>End Age</th>
-          <th>Sub-Group Name</th>
-          <th>Fee</th>
-        </tr>
-      </thead>
-      <tbody>
-      @foreach (var i in Model)
-      {
-        <tr>
-          <td>@i.StartAge</td>
-          <td>@i.EndAge</td>
-          <td>@i.SmallGroup</td>
-          <td>@i.Fee.ToString2("c")</td>
-        </tr>
-      }
-      </tbody>
-    </table>
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-    {
-        <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-    }
-  </div>
+<div class="form-group">
+    <div class="controls">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Start Age</th>
+                        <th>End Age</th>
+                        <th>Sub-Group Name</th>
+                        <th>Fee</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var i in Model)
+                    {
+                        <tr>
+                            <td>@i.StartAge</td>
+                            <td>@i.EndAge</td>
+                            <td>@i.SmallGroup</td>
+                            <td>@i.Fee.ToString2("c")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
+    </div>
 </div>

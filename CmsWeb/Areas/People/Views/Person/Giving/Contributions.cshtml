@@ -1,43 +1,83 @@
 ﻿@model CmsWeb.Areas.People.Models.ContributionsModel
+@using CmsData
 @using UtilityExtensions
+@{
+    var giving = UtilityExtensions.Util.UserPeopleId == Util2.CurrentPeopleId && ViewExtensions2.DbSetting("TransactionGateway", "").HasValue() && ViewExtensions2.DbSetting("OnlineGiving", "true").ToBool();
+    var vaultDisabled = DbUtil.Db.Setting("VaultDisabled", "false") == "true";
+}
 <form class="non-modal ajax">
-  <div class="pagination pagination-mini">
-    @Html.HiddenFor(m => m.PeopleId)
-    @Html.Partial("PagerHidden", Model)
-    @Html.Partial("Pager3", Model)
-  </div>
-    <table id="results" class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>@Model.SortLink("Date")</th>
-                <th class="right">@Model.SortLink("Amount")</th>
-                <th><span class="pad-left">@Model.SortLink("Fund")</span></th>
-                <th>@Model.SortLink("Type")</th>
-                <th>@Model.SortLink("CheckNo")</th>
-                @if (Model.ShowNames)
-                {
-                    <th>@Model.SortLink("Name")</th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var c in Model.ViewList())
-            {
-                <tr>
-                    <td>@c.Date.ToShortDateString()</td>
-                    <td class="right">@c.Amount.ToString("N2")</td>
-                    <td><span class="pad-left">@c.Fund</span></td>
-                    <td>@c.Type</td>
-                    <td>@c.CheckNo</td>
-                    @if (Model.ShowNames)
-                    {
-                        <td>@c.Name</td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="pagination pagination-mini">
-        @Html.Partial("Pager3", Model)
+    @FormAction(giving, vaultDisabled)
+    @FormAction(giving, vaultDisabled, true)
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Partial("PagerTop", Model)
+            <div class="table-responsive">
+                <table id="results" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Model.SortLink("Date")</th>
+                            <th class="text-right">@Model.SortLink("Amount")</th>
+                            <th><span class="pad-left">@Model.SortLink("Fund")</span></th>
+                            <th>@Model.SortLink("Type")</th>
+                            <th>@Model.SortLink("CheckNo")</th>
+                            @if (Model.ShowNames)
+                            {
+                                <th>@Model.SortLink("Name")</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.ViewList())
+                        {
+                            <tr>
+                                <td>@c.Date.ToShortDateString()</td>
+                                <td class="text-right">@c.Amount.ToString("N2")</td>
+                                <td><span class="pad-left">@c.Fund</span></td>
+                                <td>@c.Type</td>
+                                <td>@c.CheckNo</td>
+                                @if (Model.ShowNames)
+                                {
+                                    <td>@c.Name</td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            @Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+            @Html.HiddenFor2(m => m.PeopleId)
+        </div>
     </div>
 </form>
+@helper FormAction(bool giving, bool vaultDisabled, bool sm = false)
+{
+    if (giving)
+    {
+        if (sm)
+        {
+            <div class="visible-xs-block visible-sm-block">
+                @if (!vaultDisabled)
+                {
+                    <a href="/Person2/ManageGiving" class="btn btn-default btn-block"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
+                }
+                <a href="/Person2/OneTimeGift" class="btn btn-default btn-block">Make a One Time Gift</a>
+            </div>
+        }
+        else
+        {
+            <div class="row hidden-xs hidden-sm">
+                <div class="col-sm-12">
+                    <div class="pull-right">
+                        @if (!vaultDisabled)
+                        {
+                            <a href="/Person2/ManageGiving" class="btn btn-default"><i class="fa fa-clock-o"></i> Manage Your Recurring Giving</a>
+                        }
+                        <a href="/Person2/OneTimeGift" class="btn btn-default">Make a One Time Gift</a>
+                    </div>
+                </div>
+            </div>
+        }
+        <br/>
+    }
+}

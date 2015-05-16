@@ -76,34 +76,7 @@ namespace CmsWeb.Models
                 sel.Selected = true;
             return list;
         }
-        public IEnumerable<TitleItems> FetchTitleItems()
-        {
-            var Model = new CodeValueModel();
-            return new List<TitleItems>
-            {
-                new TitleItems { title = "Approval Codes", Instructions = "(negative to remove, 0 to remove all)", items = Model.VolunteerCodes() },
-                new TitleItems { title = "Baptism Status Codes", items = Model.BaptismStatusList() },
-                new TitleItems { title = "Baptism Type Codes", items = Model.BaptismTypeList() },
-                new TitleItems { title = "Bad Address Flag", items = BadAddressFlag(), UseCode = true },
-                new TitleItems { title = "Campus Codes", items = Model.AllCampuses() },
-                new TitleItems { title = "Contribution Statement Options", items = Model.EnvelopeOptionList() },
-                new TitleItems { title = "Electronic Statement", items = ElectronicStatement(), UseCode = true },
-                new TitleItems { title = "Decision Type Codes", items = Model.DecisionTypeList() },
-                new TitleItems { title = "Do Not Mail", items = DoNotMail(), UseCode = true },
-                new TitleItems { title = "Drop Type Codes", items = Model.DropTypeList() },
-                new TitleItems { title = "Envelope Options", items = Model.EnvelopeOptionList() },
-                new TitleItems { title = "Entry Point Codes", items = Model.EntryPoints() },
-                new TitleItems { title = "Family Position Codes", items = Model.FamilyPositionCodes() },
-                new TitleItems { title = "Gender Codes", items = Model.GenderCodes() },
-                new TitleItems { title = "Grades", items = Grades(), UseCode = true},
-                new TitleItems { title = "Join Type Codes", items = Model.JoinTypeList() },
-                new TitleItems { title = "Marital Status Codes", items = Model.MaritalStatusCodes() },
-                new TitleItems { title = "Member Status Codes", items = Model.MemberStatusCodes() },
-                new TitleItems { title = "New Member Class", items = Model.NewMemberClassStatusList() },
-                new TitleItems { title = "Receive SMS", items = ReceiveSMS(), UseCode = true},
-            };
-        }
-
+        
         public int? Count { get; set; }
 
         public IEnumerable<Person> People()
@@ -269,7 +242,7 @@ namespace CmsWeb.Models
 
         private bool DateValid()
         {
-            if (Util.DateValid(NewValue))
+            if (!Util.DateValid(NewValue))
                 modelState.AddModelError("NewValue", "Must be Date");
             return modelState.IsValid;
         }
@@ -324,27 +297,31 @@ namespace CmsWeb.Models
             }
         }
 
-        public class TitleItems
-        {
-            public string title { get; set; }
-            public bool UseCode { get; set; }
-            public IEnumerable<CodeValueItem> items { get; set; }
-            public string Instructions { get; set; }
-        }
         public static List<CodeValueItem> Grades()
         {
             return new List<CodeValueItem> 
 				{
 					new CodeValueItem { Code = "-1", Value = "Pre K" },
 					new CodeValueItem { Code = "0", Value = "Kindergarten" },
-					new CodeValueItem { Code = "1-12", Value = "Grade" },
+					new CodeValueItem { Code = "1", Value = "1st Grade" },
+                    new CodeValueItem { Code = "2", Value = "2nd Grade" },
+                    new CodeValueItem { Code = "3", Value = "3rd Grade" },
+                    new CodeValueItem { Code = "4", Value = "4th Grade" },
+                    new CodeValueItem { Code = "5", Value = "5th Grade" },
+                    new CodeValueItem { Code = "6", Value = "6th Grade" },
+                    new CodeValueItem { Code = "7", Value = "7th Grade" },
+                    new CodeValueItem { Code = "8", Value = "8th Grade" },
+                    new CodeValueItem { Code = "9", Value = "9th Grade" },
+                    new CodeValueItem { Code = "10", Value = "10th Grade" },
+                    new CodeValueItem { Code = "11", Value = "11th Grade" },
+                    new CodeValueItem { Code = "12", Value = "12th Grade" },
 					new CodeValueItem { Code = "13", Value = "Freshman" },
 					new CodeValueItem { Code = "14", Value = "Sophmore" },
 					new CodeValueItem { Code = "15", Value = "Junior" },
 					new CodeValueItem { Code = "16", Value = "Senior" },
 					new CodeValueItem { Code = "99", Value = "Special Class" },
 					new CodeValueItem { Code = "YYYY", Value = "Graduation Year" },
-					new CodeValueItem { Code = "+1", Value = "Add 1 to the Grade" },
+					new CodeValueItem { Code = "+1", Value = "Add 1 Grade Level" },
 				};
         }
         public static List<CodeValueItem> ReceiveSMS()

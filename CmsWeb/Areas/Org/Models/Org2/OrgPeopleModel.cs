@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.Org2.Models
     public class OrgPeopleModel : PagedTableModel<OrgPerson, OrgPerson>, ICurrentOrg
     {
         public OrgPeopleModel()
-            : base("Name", "asc")
+            : base("Name", "asc", true)
         {
         }
 

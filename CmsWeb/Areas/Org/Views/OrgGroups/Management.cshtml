@@ -1,84 +1,53 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrgGroupsModel
-@using CmsWeb
-@{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "Group Management";
-}
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            var lastChecked = null;
-            $(document).on("click", "input[name='groups']", function (e) {
-                if (e.shiftKey && lastChecked != null) {
-                    var start = $("input[name='groups']").index(this);
-                    var end = $("input[name='groups']").index(lastChecked);
-                    $("input[name='groups']").slice(Math.min(start, end), Math.max(start, end) + 1).attr('checked', lastChecked.checked);
-                }
-
-                lastChecked = this;
-
-                var checked = $("input[name='groups']:checked");
-
-                if (checked.length > 0) {
-                    $("#deleteGroups").button("option", "disabled", false).val("Delete " + checked.length + " Groups");
-                }
-                else {
-                    $("#deleteGroups").button("option", "disabled", true).val("Delete 0 Groups");
-                }
-
-            });
-
-            $(document).on("click", "#deleteGroups", function (e) {
-                var acceptDelete = confirm("Are you sure you want to delete these groups?");
-                if (!acceptDelete) e.preventDefault();
-            });
-
-            $(".bt").button();
-        });
-    </script>
-}
-<a href="/OrgGroups/@Model.orgid">Return to Sub-Group Management</a><br />
-<br />
-<b>@Model.OrgName</b><br />
-<br />
-<form id="groupForm" action="/OrgGroups/DeleteGroups/@Model.orgid" method="post">
-    <table class="@ViewExtensions2.GridClass">
+@Html.HiddenFor(m => m.orgid)
+<input type="hidden" id="groupid" name="groupid" class="delete-group-id" />
+<div class="row">
+    <div class="col-sm-12">
+        <div class="pull-right">
+            <input id="deleteGroups" type="submit" class="btn btn-danger" disabled value="Delete 0 Groups" /> <a class="create-group btn btn-success" href="/OrgGroups/MakeNewGroup/@Model.orgid"><i class="fa fa-plus-circle"></i> Create Group</a>
+        </div>
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
         <thead>
-        <tr>
-            <td>Select</td>
-            <td>Name</td>
-            <td>Members</td>
-            @if( Model.isRecreationTeam ) {
-            <td>Score Total</td>
-            <td>Score Average</td>
-            }
-        </tr>
+            <tr>
+                <th style="width: 10px;"></th>
+                <th>Name</th>
+                <th class="text-center">Members</th>
+                @if (Model.isRecreationTeam)
+                {
+                    <th class="text-center">Score Total</th>
+                    <th class="text-right">Score Average</th>
+                }
+                <th style="width: 100px;" colspan="2">Actions</th>
+            </tr>
         </thead>
-    @foreach (var g in Model.GroupsList())
-    {
-        var d = Model.GetGroupDetails(g.Id);
-        <tr>
-            <td class="center">
-                <input id="@g.Id" name="groups" type="checkbox" value="@g.Id" />
-            </td>
-             <td>
-                @g.Name
-            </td>
-             <td class="center">
-                @( d != null ? d.members : 0 )
-            </td>
-            @if( Model.isRecreationTeam ) {
-             <td class="center">
-                @( d != null ? d.total : 0 )
-            </td>
-             <td class="right">
-                @( d != null ? d.average : 0 )
-            </td>
-            }
-        </tr>
-    }
+        @foreach (var g in Model.GroupsList())
+        {
+            var d = Model.GetGroupDetails(g.Id);
+            <tr>
+                <td class="text-center" style="width: 10px;">
+                    <input id="@g.Id" name="groups" type="checkbox" value="@g.Id" />
+                </td>
+                <td>
+                    @g.Name
+                </td>
+                <td class="text-center">
+                    @( d != null ? d.members : 0)
+                </td>
+                @if (Model.isRecreationTeam)
+                {
+                    <td class="text-center">
+                        @( d != null ? d.total : 0)
+                    </td>
+                    <td class="text-right">
+                        @( d != null ? d.average : 0)
+                    </td>
+                }
+                <td style="width: 50px;"><a class="rename-group btn btn-default btn-sm" href="/OrgGroups/RenameGroup/@Model.orgid" groupId="@g.Id" groupName="@g.Name"><i class="fa fa-pencil"></i> Rename</a></td>
+                <td style="width: 50px;"><a class="delete-group btn btn-danger btn-sm" href="/OrgGroups/DeleteGroup/@Model.orgid" groupId="@g.Id"><i class="fa fa-trash"></i> Delete</a></td>
+            </tr>
+        }
     </table>
-    <br />
-    <input id="deleteGroups" type="submit" class="bt" disabled value="Delete 0 Groups" />
-</form>
+</div>

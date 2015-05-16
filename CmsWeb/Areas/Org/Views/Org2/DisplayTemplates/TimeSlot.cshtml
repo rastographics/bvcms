@@ -2,11 +2,21 @@
 @using CmsWeb
 @using (var ci = Html.BeginCollectionItem("TimeSlot"))
 {
-  <div class="well">
-    @Html.Raw(ci.hiddenindex)
-    @Html.DisplayFor(m => m.Description)
-    @Html.DisplayFor(m => m.DayOfWeek)
-    @Html.DisplayFor(m => m.Time)
-    @Html.DisplayFor(m => m.Limit)
-  </div>
+    <div class="well">
+        @Html.Raw(ci.hiddenindex)
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.Description)
+            </div>
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.DayOfWeek)
+            </div>
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.Time)
+            </div>
+            <div class="col-sm-3">
+                @Html.DisplayFor(m => m.Limit)
+            </div>
+        </div>
+    </div>
 }

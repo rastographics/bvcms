@@ -1,62 +1,66 @@
 ﻿@{
-  var admin = User.IsInRole("Admin");
-  var edit = User.IsInRole("Edit");
-  var manager2 = User.IsInRole("Manager2");
-  var manager = User.IsInRole("Manager");
+    var admin = User.IsInRole("Admin");
+    var edit = User.IsInRole("Edit");
+    var manager2 = User.IsInRole("Manager2");
+    var manager = User.IsInRole("Manager");
 }
 @if (admin)
 {
-  <ul class="dropdown-menu dropdown-div-gear">
-    <li>
-      <div>
-        <ul id="ultoolbar" class="span6 unstyled pull-left">
-          <li class="header">Administrative</li>
-          <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId">Put in New Family</a></li>
-          <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId">Merge this duplicate</a></li>
-          @if (User.IsInRole("Delete"))
-          {
-            <li><a id="deletePerson" href="/Person2/Delete/@ViewBag.PeopleId">Delete this record</a></li>
-          }
-          else
-          {
-            <li><a href="http://docs.touchpointsoftware.com/People/DeletePerson.html" target="_blank">Delete this record</a></li>
-          }
-        </ul>
-        <ul class="unstyled pull-left span6">
-          @Html.Partial("Toolbar/GearStandard")
-        </ul>
-      </div>
-    </li>
-  </ul>
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-6">
+            <ul id="ultoolbar">
+                <li class="dropdown-header">Administrative</li>
+                <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="org-context">Put in New Family</span></a></li>
+                <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId?displaySkipSearch=false"><span class="org-context">Merge this duplicate</span></a></li>
+                @if (User.IsInRole("Delete"))
+                {
+                    <li><a id="deletePerson" href="/Person2/Delete/@ViewBag.PeopleId"><span class="org-context">Delete this record</span></a></li>
+                }
+                else
+                {
+                    <li><a href="http://docs.touchpointsoftware.com/People/DeletePerson.html" target="_blank"><span class="org-context">Delete this record</span></a></li>
+                }
+            </ul>
+        </li>
+        <li class="col-sm-6">
+            @Html.Partial("Toolbar/GearStandard")
+        </li>
+    </ul>
 }
 else if (manager || manager2)
 {
-  <ul class="dropdown-menu dropdown-div-gear">
-    <li>
-      <div>
-        <ul id="ultoolbar" class="span6 unstyled pull-left">
-          <li class="header">Administrative</li>
-          <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId">Put in New Family</a></li>
-          <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId">Merge this duplicate</a></li>
-        </ul>
-        <ul class="unstyled pull-left span6">
-          @Html.Partial("Toolbar/GearStandard")
-        </ul>
-      </div>
-    </li>
-  </ul>
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-6">
+            <ul id="ultoolbar">
+                <li class="dropdown-header">Administrative</li>
+                <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="org-context">Put in New Family</span></a></li>
+                <li><a class="searchadd" href="/SearchAdd2/Dialog/MergeTo/@ViewBag.PeopleId"><span class="org-context">Merge this duplicate</span></a></li>
+            </ul>
+        </li>
+        <li class="col-sm-6">
+            @Html.Partial("Toolbar/GearStandard")
+        </li>
+    </ul>
 }
 else if (edit)
 {
-  <ul class="dropdown-menu dropdown-div-gear onecolumn">
-    @Html.Partial("Toolbar/GearStandard")
-    <li class="header">Administrative</li>
-    <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId">Put in New Family</a></li>
-  </ul>
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-4">
+            <ul id="ultoolbar">
+                <li class="dropdown-header">Administrative</li>
+                <li><a id="split" href="/Person2/Split/@ViewBag.PeopleId"><span class="org-context">Put in New Family</span></a></li>
+            </ul>
+        </li>
+        <li class="col-sm-6">
+            @Html.Partial("Toolbar/GearStandard")
+        </li>
+    </ul>
 }
 else
 {
-  <ul class="dropdown-menu dropdown-div-gear onecolumn">
-    @Html.Partial("Toolbar/GearStandard")
-  </ul>
+    <ul class="dropdown-menu dropdown-menu-large container row dropdown-menu-right bluebar-menu-col-2" role="menu">
+        <li class="col-sm-12">
+            @Html.Partial("Toolbar/GearStandard")
+        </li>
+    </ul>
 }

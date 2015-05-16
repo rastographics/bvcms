@@ -1,35 +1,34 @@
 ﻿@using UtilityExtensions
 @model DateTime?
 @{
-  var fmt = "{0:d}";
-  var s = "";
-  if (Model != null)
-  {
-    if (Model.Value.TimeOfDay.Ticks > 0)
+    var fmt = "{0:d}";
+    var s = "";
+    if (Model != null)
     {
-      s = Model.Value.FormatDateTm();
-      fmt = "{0:g}";
+        if (Model.Value.TimeOfDay.Ticks > 0)
+        {
+            s = Model.Value.FormatDateTm();
+            fmt = "{0:g}";
+
+        }
+        else
+        {
+            s = Model.FormatDate();
+        }
     }
-    else
-    {
-      s = Model.FormatDate();
-    }
-  }
 }
-<div class="control-group @ViewBag.height33 @ViewBag.hide">
-  @Html.LabelFor(m => m, new { @class = "control-label" })
-  <div class="controls">
-    <div class="input-append date dateonly">
-      @Html.TextBoxFor2(m => m,
-        useNativeUnobtrusiveAttributes: true,
-        format: @fmt,
-        htmlAttributes: new {size = "16"})<span class="add-on"><i class="icon-th"></i></span>
+<div class="form-group @ViewBag.height33 @ViewBag.hide">
+    @Html.LabelFor(m => m, new { @class = "control-label" })
+    <div class="controls">
+        <div class="input-group date">
+            @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: @fmt, htmlAttributes: new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+            @Html.Hidden("{0}{1}".Fmt(Html.IdFor(m => m), "Iso"), Model.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+        </div>
+        <span class="help-block">@Html.Raw(ViewData["help"])</span>
+        @Html.ValidationMessageLabelFor(m => m)
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
     </div>
-    <span class="help-inline">@Html.Raw(ViewData["help"])</span>
-    @Html.ValidationMessageLabelFor(m => m)
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-    }
-  </div>
 </div>

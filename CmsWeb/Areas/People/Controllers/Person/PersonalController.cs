@@ -2,6 +2,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.View;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
@@ -68,6 +69,23 @@ namespace CmsWeb.Areas.People.Controllers
             person.DeleteThumbnail(DbUtil.Db);
             return Redirect("/Person2/" + id);
         }
+
+        [HttpPost]
+        public ActionResult UpdateCropPosition(int id, int pictureId, int xPos, int yPos)
+        {
+            var picture = DbUtil.Db.Pictures.Single(pp => pp.PictureId == pictureId);
+            picture.X = xPos;
+            picture.Y = yPos;
+            DbUtil.Db.SubmitChanges();
+
+            // if we are updating the current user update their thumbnail pic position in session also.
+            if (Util.UserPeopleId == id)
+            {
+                Util.UserThumbPictureBgPosition = "{0}% {1}%".Fmt(xPos, yPos);
+            }
+            return Redirect("/Person2/" + id);
+        }
+
         [HttpPost]
         public ActionResult PostData(int pk, string name, string value)
         {

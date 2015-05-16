@@ -1,18 +1,24 @@
 ﻿@using UtilityExtensions
 @model List<CmsData.Registration.Settings.OrgFee>
-<div class="control-group">
-  <label class="control-label">Org Fees</label>
-  <div class="controls">
-    <div id="orgfees" class="table not-wide w80">
-      @foreach(var f in Model)
-      {
-        @Html.EditorFor(m => f)
-      }
-      <div class="newitem"><a href="/Org/NewOrgFee"><img src="/Content/images/plus1.png" /> Add Org Fee</a></div>
+<div class="form-group">
+    <div class="controls">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="pull-right newitem">
+                    <a href="/Org/NewOrgFee" class="btn btn-success" data-dest="#orgfees"><i class="fa fa-plus-circle"></i> Add Org Fee</a>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div id="orgfees" class="row">
+            @foreach (var f in Model)
+            {
+                @Html.EditorFor(m => f)
+            }
+        </div>
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
     </div>
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-    {
-        <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-    }
-  </div>
 </div>

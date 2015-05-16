@@ -21,6 +21,10 @@ namespace CmsWeb.Areas.People.Models
         }
         private Person _person;
 
+        public PendingEnrollments() 
+            : base ("", "", true)
+        {}
+
         override public IQueryable<OrganizationMember> DefineModelList()
         {
             var roles = DbUtil.Db.CurrentRoles();

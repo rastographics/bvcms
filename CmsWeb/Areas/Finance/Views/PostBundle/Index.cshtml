@@ -1,175 +1,291 @@
-﻿@using CmsData
+﻿@using System.Globalization
+@using CmsData
+@using DocumentFormat.OpenXml.Office2010.Word
 @using UtilityExtensions
 @using CmsWeb
 @model CmsWeb.Models.PostBundleModel
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "PostBundle";
-}
-@section head 
-{
-    <style type="text/css">
-        td.PLNT {
-            font-style: italic;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        table.roundbox th {
-            text-align: right;
-            white-space: nowrap;
-        }
-
-        table.roundbox td {
-            white-space: nowrap;
-            padding: .2em .7em;
-        }
-
-        #headerrow td {
-            font-weight: bold;
-            text-align: left;
-        }
-
-        td.notes {
-            max-width: 25em;
-        }
-    </style>
-}
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/Finance/PostBundle.js")
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Post Bundle";
+    ViewBag.PageHeader = "Post Bundle / Edit";
 }
 @Html.Hidden("fundid", Model.bundle.FundId)
 @Html.Hidden("fundispledge", Model.FundName)
-@{ var b = Model.bundle; }
+@{
+    var b = Model.bundle;
+    var bundleTotal = b.TotalCash.GetValueOrDefault() + b.TotalChecks.GetValueOrDefault() + b.TotalEnvelopes.GetValueOrDefault();
+    var difference = bundleTotal - Model.TotalItems;
+}
+@section head {
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+}
 <form id='pbform' action='/PostBundle/InsertRow' method="post">
-    <table>
-        <tr>
-            <td>
-                <table class="roundbox">
-                    <thead>
-                        <tr>
-                            <td colspan="2">
-                                <h2>Post Bundle / Edit</h2>
-                            </td>
-                        </tr>
-                    </thead>
+    <div class="row">
+        <div class="col-lg-9">
+            <div class="box box-responsive">
+                <div class="box-title-btn">
+                    <div class="box-tools">
+                        <a class="btn btn-default" href="/Bundle/@Model.id"><i class="fa fa-arrow-circle-left"></i> Back to Bundle Details</a>
+                    </div>
+                </div>
+                <div class="box-content">
+                    @Html.Hidden("id")
+                    <div class="well">
+                        <div class="row">
+                            <dl class="col-sm-6">
+                                <dt>Bundle Status</dt>
+                                <dd>@b.BundleStatusType.Description</dd>
+                                <dt>Bundle Type</dt>
+                                <dd>@b.BundleHeaderType.Description</dd>
+                                <dt>Default Fund</dt>
+                                <dd><a target="_blank" href="/PostBundle/FundTotals/@Model.id" style="text-decoration: underline;">@Model.FundName (@Model.bundle.FundId)</a></dd>
+                            </dl>
+                            <dl class="col-sm-6">
+                                <dt>Contribution Date</dt>
+                                <dd>@b.ContributionDate.ToShortDateString()</dd>
+                                <dt>Deposit Date</dt>
+                                <dd>@b.DepositDate.FormatDate()</dd>
+                            </dl>
+                        </div>
+                    </div>
+                    <div class="stat-panel-container">
+                        <div class="stat-panel-inner-container">
+                            <div class="stat-panel">
+                                <span class="stat-title">BUNDLE TOTAL</span>
+                                <span class="stat-figure">@(bundleTotal.ToString("C2"))</span>
+                            </div>
+                            <div class="stat-panel">
+                                <span class="stat-title">ITEMS TOTAL</span>
+                                <span class="stat-figure totalitems">@Model.TotalItems.ToString("C2")</span>
+                            </div>
+                            <div class="stat-panel">
+                                <span class="stat-title">ITEM COUNT</span>
+                                <span class="stat-figure itemcount">@Model.TotalCount.ToString("N0")</span>
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                    @Html.Hidden("id")
+                    @Html.Hidden("editid")
+                    <div class="table-responsive">
+                        <table id='bundle' class="table table-striped table-condensed">
+                            <thead>
+                                <tr class="hidden-print">
+                                    <td colspan="9">
+                                        <label class="control-label checkbox-inline">
+                                            @Html.CheckBox("moreresults") Deliver more information in results
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr id="headerrow">
+                                    <th>People Id</th>
+                                    <th><a href="#" data-toggle="modal" data-target="#name-search"><i class="fa fa-info-circle"></i></a> Name</th>
+                                    <th class="text-right">Amount</th>
+                                    <th class="text-center">Type</th>
+                                    <th>Fund(s)</th>
+                                    <th>Check #</th>
+                                    <th>Notes</th>
+                                    <th colspan="2"></th>
+                                </tr>
+                                <tr id="entry" class="success hidden-print">
+                                    <td>
+                                        <input id="pid" name="pid" type="text" style="width: 67px;" class="form-control input-sm" />
+                                        <input type="hidden" id="contributiondate" name="contributiondate" />
+                                    </td>
+                                    <td>
+                                        <input id="name" name="name" type="text" autocomplete="off" style="width: 14em" class="form-control input-sm" />
+                                    </td>
+                                    <td style="padding-right:0;">
+                                        <div class="pull-right">
+                                            <input id="amt" name="amt" type="text" style="width: 67px;" class="form-control input-sm" />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="pull-right">
+                                            <select id="PLNT" name="PLNT" class="form-control input-sm" style="width: 65px;">
+                                                <option value="CN" @(Model.PLNT == "CN" ? "selected='selected'" : "")>CN&nbsp;&nbsp;&nbsp;&nbsp;Tax Deductible</option>
+                                                <option value="PL" @(Model.PLNT == "PL" ? "selected='selected'" : "")>PL&nbsp;&nbsp;&nbsp;&nbsp;Pledge</option>
+                                                <option value="NT" @(Model.PLNT == "NT" ? "selected='selected'" : "")>NT&nbsp;&nbsp;&nbsp;&nbsp;Non Tax Deductible</option>
+                                                <option value="SK" @(Model.PLNT == "SK" ? "selected='selected'" : "")>SK&nbsp;&nbsp;&nbsp;&nbsp;Stock</option>
+                                                <option value="GK" @(Model.PLNT == "GK" ? "selected='selected'" : "")>GK&nbsp;&nbsp;&nbsp;&nbsp;Gift In Kind</option>
+                                            </select>
+                                        </div>
+                                    </td>
+                                    <td>@Html.DropDownList("fund", Model.Funds(), new { style = "width:15em", @class = "form-control input-sm" })</td>
+                                    <td>
+                                        <input id="checkno" name="checkno" type="text" style="width: 5em" class="form-control input-sm" />
+                                    </td>
+                                    <td>
+                                        <input id="notes" name="notes" type="text" style="width: 98%; min-width: 15em;" class="form-control input-sm" />
+                                    </td>
+                                    <td style="padding-right: 0;">
+                                        <a class="update btn btn-primary btn-sm" href='#'>Update</a> 
+                                    </td>
+                                    <td style="padding-left: 0;">
+                                        <div class="btn-group" id="gear" style="display: none;">
+                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-cog"></i> <span class="caret"></span>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                                <li><a id="showmove" href="#"><i class="fa fa-arrows"></i>&nbsp;&nbsp;Move to Another Bundle</a></li>
+                                                <li><a id="showdate" href="#"><i class="fa fa-pencil"></i>&nbsp;&nbsp;Edit Contribution Date</a></li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var c in Model.FetchContributions())
+                                {
+                                    @Html.Partial("Row", c)
+                                }
+                            </tbody>
+                        </table>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                    </div>
+                    <a class="btn btn-default visible-xs-block btn-block" href="/Bundle/@Model.id"><i class="fa fa-arrow-circle-left"></i> Back to Bundle Details</a>
+                </div>
+            </div>
+        </div>
+        <div class="hidden-xs col-lg-3">
+            <div class="box box-primary" style="background-color: #fff;">
+                <div class="box-title">
+                    <h5>Bundle Totals</h5>
+                </div>
+                <table class="table">
                     <tbody>
                         <tr>
-                            <th>BundleId:</th>
-                            <td><a class="bt" href="/Bundle/@Model.id">@Model.id@Html.Hidden("id")</a></td>
+                            <td>Total Cash</td>
+                            <td class="text-right">@b.TotalCash.GetValueOrDefault().ToString("C2")</td>
                         </tr>
                         <tr>
-                            <th>Contribution Date:</th>
-                            <td>@Model.bundle.ContributionDate.ToShortDateString()</td>
+                            <td>Total Checks</td>
+                            <td class="text-right">@b.TotalChecks.GetValueOrDefault().ToString("C2")</td>
                         </tr>
                         <tr>
-                            <th>Default Fund:</th>
-                            <td><a target="_blank" href='/PostBundle/FundTotals/@Model.id'>@Model.FundName (@Model.bundle.FundId)</a></td>
-                        </tr>
-                        <tr>
-                            <th>Total:</th>
-                            <td>@((b.TotalCash + b.TotalChecks + b.TotalEnvelopes).ToString2("N2"))</td>
-                        </tr>
-                        <tr>
-                            <th>Total Items:</th>
-                            <td><span id="totalitems">@Model.TotalItems.ToString("N2")</span></td>
-                        </tr>
-                        <tr>
-                            <th>Item Count:</th>
-                            <td><span id="itemcount">@Model.TotalCount</span></td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" class="right">
-                              @Html.RadioButton("PLNT", "CN")Tax Deductible 
-                              @Html.RadioButton("PLNT", "PL")Pledge 
-                              @Html.RadioButton("PLNT", "NT")Non Tax Ded 
-                              @Html.RadioButton("PLNT", "SK")Stock
-                              @Html.RadioButton("PLNT", "GK")Gift In Kind
-                            </td>
+                            <td>Total Coin</td>
+                            <td class="text-right">@b.TotalEnvelopes.GetValueOrDefault().ToString("C2")</td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr class="totals-row">
+                            <td class="text-left">Bundle Total</td>
+                            <td class="text-right">@(bundleTotal.ToString("C2"))</td>
+                        </tr>
+                        <tr class="diffRow" @(difference == 0 ? "style=display:none;" : "")>
+                            <td class="text-left">Items Total</td>
+                            <td class="text-right totalitems">@Model.TotalItems.ToString("C2")</td>
+                        </tr>
+                        <tr class="totals-row warning diffRow" @(difference == 0 ? "style=display:none;" : "")>
+                            <td class="text-left">Difference</td>
+                            <td class="text-right difference">@difference.ToString("C2")</td>
+                        </tr>
+                    </tfoot>
                 </table>
-            </td>
-            <td>
-                <div style="border: 1px dotted red; margin-left: 2em; padding: 1em; font-style: italic; max-width: 36em">
-                    <p>Please note: the <b>name search</b> dropdown works just like the Quick Search box up in the header.</p>
-                    <ul>
-                        <li>Search by last only</li>
-                        <li>Search first[space]last</li>
-                        <li>Partial names work including a single character</li>
-                        <li>You can search for a 7 digit phone number OR a peopleid.</li>
-                        <li>GoesBy and Maiden are included in the search too.</li>
-                    </ul>
-                    <p>
-                        @Html.CheckBox("moreresults") <span>Deliver more information in results</span>
-                    </p>
-                </div>
-            </td>
-        </tr>
-    </table>
-    @Html.Hidden("id")
-    @Html.Hidden("editid")
-    <table id='bundle' class="@ViewExtensions2.GridClass">
-        <thead>
-            <tr id="headerrow">
-                <td>PeopleId</td>
-                <td>Name</td>
-                <td style="text-align: center">Amount</td>
-                <td style="text-align: center" class="tip" title="Indicator|Pledge|Non Tax Deductible">PL/NT</td>
-                <td>Fund(s)</td>
-                <td>CheckNo</td>
-                <td>Notes</td>
-                <td colspan="3"></td>
-            </tr>
-            <tr id="entry">
-                <td>
-                    <input id="pid" name="pid" type="text" style="width: 5em;" /></td>
-                <td>
-                    <input id="name" name="name" type="text" style="width: 10em" /></td>
-                <td>
-                    <input id="amt" name="amt" type="text" style="width: 5em" /></td>
-                <td class="PLNT">@Model.PLNT</td>
-                <td>@Html.DropDownList("fund", Model.Funds(), new { style = "width:15em" })</td>
-                <td>
-                    <input id="checkno" name="checkno" type="text" style="width: 4em" /></td>
-                <td>
-                    <input id="notes" name="notes" type="text" style="width: 98%; min-width: 15em;" /></td>
-                <td colspan="2"><a class="update bt blue" href='#'>update</a></td>
-                <td>
-                    <a href="#" id="gear" class="trigger-dropdown" style="display: none">
-                        <i class="fa fa-cog fa-lg"></i>
-                    </a>
-                    <div class="dropdown2-menu has-tip">
-                        <ul>
-                            <li><a id="showmove" href="#">Move To Another Bundle</a></li>
-                            <li><a id="showdate" href="#">Edit Contribution Date</a></li>
-                        </ul>
-                    </div>
-                    <div id="movebundle" style="display:none">
-                        <p><label>BundleId:</label><input type="text" id="moveto"/></p>
-                        <p><a href="#" id="movecancel" class="bt">Cancel</a>
-                            <a href="#" id="moveit" class="bt blue">Move</a></p>
-                    </div>
-                    <div id="editdate" style="display:none; cursor: default">
-                        <p><label>Date:</label><input type="text" id="contributiondate" name="contributiondate" /></p>
-                        <p><a href="#" id="editdatedone" class="bt blue">Done</a></p>
-                    </div>
-                </td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var c in Model.FetchContributions())
-            { 
-                @Html.Partial("Row", c)
-            }
-        </tbody>
-    </table>
+            </div>
+        </div>
+    </div>
 </form>
-<div id="SearchResults2"></div>
-<div id="searchDialog">
-    <iframe style="width: 100%; height: 99%; border-width: 0px;"></iframe>
+<div class="modal fade" id="name-search">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Name Search</h4>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <p>Please note: the <b>name search</b> dropdown works just like the Quick Search up in the header.</p>
+                </div>
+                <ul>
+                    <li>Search by last only</li>
+                    <li>Search first[space]last</li>
+                    <li>Partial names work including a single character</li>
+                    <li>You can search for a 7 digit phone number OR a peopleid.</li>
+                    <li>GoesBy and Maiden are included in the search too.</li>
+                </ul>
+                <p>
+                    <div class="checkbox">
+                        
+                    </div>
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+            </div>
+        </div>
+    </div>
 </div>
-
-
-
+<div class="modal fade" id="move-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Move Bundle</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="moveto" class="control-label">Bundle Id</label>
+                    <input type="number" id="moveto" name="moveto" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <a href="#" id="moveit" name="moveit" class="btn btn-primary">Move</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edit-date-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit Contribution Date</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="contributiondate" class="control-label">Contribution Date</label>
+                    <div class="input-group date">
+                        <input type="text" id="newcontributiondate" name="newcontributiondate" class="form-control" /><span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                        <input type="hidden" id="newcontributiondateIso" name="newcontributiondateIso" disabled="disabled" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <a href="#" id="editdatedone" name="editdatedone" class="btn btn-primary">Done</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="split-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Split Contribution</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="amt-split" class="control-label">Amount to Split</label>
+                    <div class="input-group">
+                        <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span><input type="text" id="amt-split" name="amt-split" class="form-control" />
+                    </div>
+                    <input type="hidden" id="contributionId" name="contributionId" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <a href="#" id="split-submit" name="split-submit" class="btn btn-primary">Submit</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/finance/post-bundle.js")
+}

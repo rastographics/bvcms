@@ -1,58 +1,57 @@
 ﻿@using CmsWeb.Models.ExtraValues
+@using IronPython.Runtime.Operations
+@using RestSharp.Extensions
 @model ExtraValueModel
-<form id='extravalue-dialog' class='modal fade hide validate ajax form-horizontal' data-width='600'>
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
-        <h3>Edit List of Standard Values</h3>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Edit List of Standard Values</h4>
+        </div>
+        <div class="modal-body">
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.Table)
+            @Html.HiddenFor(m => m.Location)
+            <div class="table-responsive">
+                <table id="fields" class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 85px;">Order</th>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th colspan="3" style="width: 150px;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var f in Model.GetStandardExtraValues(Model.Table, Model.Location))
+                        {
+                            <tr id="ev-name-@f.Name.Replace(' ', '_')">
+                                <td style="width: 85px;"><input type="number" name="orders[@f.Name]" value="@f.Order" class="form-control" /></td>
+                                <td>@f.Name</td>
+                                <td>
+                                    @f.Type
+                                </td>
+                                <td style="width: 50px;">
+                                    @if (f.Type.StartsWith("Text"))
+                                    {
+                                        <a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name" class="ajax btn btn-default btn-sm">@f.SwitchMultiLineText</a>
+                                    }
+                                </td>
+                                <td style="width: 50px;">
+                                    <a href="/ExtraValue/EditStandard/@Model.Table?location=@Model.Location&name=@Server.UrlEncode(f.Name)" class="ajax btn btn-default btn-sm"><i class="fa fa-pencil"></i> Edit</a>
+                                </td>
+                                <td style="width: 50px;">
+                                    <a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@Server.UrlEncode(f.Name)" data-rowid="#ev-name-@f.Name.Replace(' ','_')" class="btn btn-danger btn-sm delete-extra-value" title="Delete Standard Extra Value: @f.Name"><i class="fa fa-trash"></i> Delete</a> 
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>    
+        </div>
+        <div class="modal-footer">
+            <a id="CloseListStandard" href="#" class="btn btn-default">Close</a>
+            <a href="/ExtraValue/ApplyOrder/@Model.Table/@Model.Location" class="btn btn-warning ajax">Apply Ordering</a>
+        </div>
     </div>
-    <div class="modal-body">
-        <a class="helplink pull-right" target="_blank" href='@ExtraValueModel.HelpLink("ExtraValueList")'>help</a>
-        @Html.HiddenFor(m => m.Id)
-        @Html.HiddenFor(m => m.Table)
-        @Html.HiddenFor(m => m.Location)
-        <table id="fields" class="table table-condensed not-wide table-striped">
-            <thead>
-                <tr>
-                    <th>Order</th>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var f in Model.GetStandardExtraValues(Model.Table, Model.Location))
-                {
-                    <tr id="ev-name-@f.Name">
-                        <td><input type="text" name="orders[@f.Name]" value="@f.Order" class="input-mini" /></td>
-                        <td>@f.Name</td>
-                        <td>
-                            @f.Type
-                        </td>
-                        <td>
-                            @if (f.Type.StartsWith("Text"))
-                            { 
-                                <a href="/ExtraValue/SwitchMultiline/@Model.Table/@Model.Location?name=@f.Name" class="ajax btn btn-mini">@f.SwitchMultiLineText</a>
-                            }
-                        </td>
-                        <td>
-                            <a href="/ExtraValue/EditStandard/@Model.Table?name=@Server.UrlEncode(f.Name)" class="extravalue btn btn-mini">Edit</a>
-                        </td>
-                        <td><a href="/ExtraValue/DeleteStandard/@Model.Table/@Model.Location?name=@Server.UrlEncode(f.Name)" 
-                           class="dialog-options" 
-                           data-target="/Dialog/DeleteStandardExtra"
-                           data-callback="DeleteStandardCallback"
-                           data-rowid="#ev-name-@f.Name"
-                           title="Delete Standard Extra Value: @f.Name"><i class="fa fa-times"></i></a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-    <div class="modal-footer">
-        <a id="CloseListStandard" href="#" class="btn ">Close</a>
-        <a href="/ExtraValue/ApplyOrder/@Model.Table/@Model.Location" class="btn btn-warning ajax">Apply Ordering</a>
-    </div>
-</form>
+</div>

@@ -1,0 +1,44 @@
+﻿@model CmsWeb.Models.TotalsByFundAgeRangeModel
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Range</th>
+                <th class="text-right">Donors</th>
+                <th class="text-right">Count</th>
+                <th class="text-right">%</th>
+                <th class="text-right">Amount</th>
+                <th class="text-right">%</th>
+                <th class="text-right">Average</th>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                var totalsByFundAgeRange = Model.GetTotalsByFundAgeRange();
+            }
+            @foreach (var t in totalsByFundAgeRange)
+            {
+                <tr>
+                    <td>@t.Range</td>
+                    <td class="text-right">@t.DonorCount.ToString("N0")</td>
+                    <td class="text-right">@t.Count.ToString("N0")</td>
+                    <td class="text-right">@t.PctCount.ToString("N1")</td>
+                    <td class="text-right">@t.Total.ToString("N0")</td>
+                    <td class="text-right">@t.PctTotal.ToString("N1")</td>
+                    <td class="text-right">@t.Average.GetValueOrDefault().ToString("N0")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="totals-row">
+                <td>Total</td>
+                <td class="text-right">@Model.RangeTotal.DonorCount.ToString("N0")</td>
+                <td class="text-right">@Model.RangeTotal.Count.ToString("N0")</td>
+                <td class="text-right">100.0</td>
+                <td class="text-right">@Model.RangeTotal.Total.ToString("C0")</td>
+                <td class="text-right">100.0</td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

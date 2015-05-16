@@ -67,7 +67,7 @@ namespace CmsData
         }
         private static string TaskLink0(int id)
         {
-            return "/Task/List/{0}#detail".Fmt(id);
+            return "/Task/Detail/{0}".Fmt(id);
         }
         public static string TaskLink(CMSDataContext Db, string text, int id)
         {

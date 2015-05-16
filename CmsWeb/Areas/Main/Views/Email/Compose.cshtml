@@ -4,130 +4,204 @@
 @using CmsWeb
 @model CmsWeb.Areas.Main.Models.MassEmailer
 @{
-  ViewBag.Title = "Compose";
-  Layout = ViewExtensions2.Layout();
-  int tid = ViewBag.TemplateID;
-  var c = ViewExtensions2.GetContent(tid);
+    ViewBag.Title = "Compose";
+    ViewBag.PageHeader = "Compose Email";
+    Layout = ViewExtensions2.TouchPointLayout();
+    int tid = ViewBag.TemplateID;
+    var c = ViewExtensions2.GetContent(tid);
 }
 @section head
 {
-  <style>
-    div.ti {
-      position: relative;
-      border: #0000ff dashed 1px;
-      min-height: 20px;
-    }
-
-      div.ti:hover {
-        background: #eeeeff;
-      }
-
-    div.tiAdd {
-      position: absolute;
-    }
-  </style>
+    @ViewExtensions2.FroalaEditorCss()
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
+    <style>
+        #s2id_Recipients {
+            max-height: 60px !important;
+            overflow-y: scroll !important;
+        }
+    </style>
 }
+<div class="row">
+    <div class="col-md-10 col-lg-8">
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Please Note:</strong> Your recipient list has been saved in a tag, so you can run queries in other tabs. But you should not compose two emails simultaneously as one will overwrite the other.
+        </div>
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form class="form-horizontal" id="SendEmail" method="post">
+                    @Html.Hidden("TagId")
+                    @Html.Hidden("Host")
+                    @Html.Hidden("CmsHost")
+                    @Html.Hidden("Count", Model.Count)
+                    @Html.Hidden("wantParents", Model.wantParents)
+                    @Html.Hidden("ccparents", Model.CcParents)
+                    @Html.Hidden("roleid", c.RoleID)
+                    @Html.Hidden("orgid", Model.OrgId)
+                    @Html.Hidden("noDuplicates", Model.noDuplicates)
+                    <input type="hidden" name="saveid" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : c.Id )" />
+                    <input type="hidden" id="body" name="body" />
+                    <input type="hidden" id="name" name="name" value="@c.Name" />
+                    <div class="form-group">
+                        <label for="FromAddress" class="col-sm-2 control-label">From:</label>
+                        <div class="col-sm-10">
+                            @Html.DropDownList("FromAddress", Model.EmailFroms(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
+                        <div class="col-sm-10">
+                            <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
+                                @if (Model.Recipients.Count() > 500)
+                                {
+                                    <option value="" selected="selected">@Model.Count people@(Model.wantParents ? " including parents." : ".")</option>
+                                }
+                                else
+                                {
+                                    foreach (var recipient in Model.Recipients)
+                                    {
+                                        <option value="@recipient" selected="selected">@recipient</option>
+                                    }
+                                }
+                            </select>
+                            @if (Model.Recipients.Count() <= 500)
+                            {
+                                <p class="help-block">@Model.Count @( Model.Count != 1 ? "people" : "person")@(Model.wantParents ? " including parents." : ".")</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="Subject" class="col-sm-2 control-label">Subject:</label>
+                        <div class="col-sm-10">
+                            <input name="Subject" id="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" class="form-control" />
+                        </div>
+                    </div>
+                    @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
+                    {
+                        <div class="form-group">
+                            <label for="Schedule" class="col-sm-2 control-label">Schedule:</label>
+                            <div class="col-sm-10">
+                                <div class="input-group scheduleDateTime">
+                                    @Html.TextBox("Schedule", Model.Schedule, new { @class = "form-control", placeholder = "Immediately" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                    @Html.Hidden("ScheduleIso", Model.Schedule, new { disabled = "disabled", placeholder = "Immediately" })
+                                </div>
+                                <p class="help-block">Note: Time is Central Time (CST)</p>
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <label class="checkbox-inline">
+                                @Html.CheckBox("PublicViewable") Publicly viewable?
+                            </label>
+                            @if (c.TypeID == ContentTypeCode.TypeSavedDraft)
+                            {
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" name="keepdraft" checked="checked" /> Keep draft?
+                                </label>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <script type="text/javascript">
+                                function iframeLoaded() {
+                                    var iFrameID = document.getElementById('email-body');
+                                    if (iFrameID) {
+                                        // here you can make the height, I delete it first, then I make it again
+                                        iFrameID.height = "";
+                                        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
+                                    }
+                                }
+                            </script>
+                            <iframe src="/Email/EmailBody/@tid" frameborder="0" onload="iframeLoaded()" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="pull-right">
+                                <input type="button" id="SaveDraft" class="btn btn-default" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" />
+                                <div class="btn-group" id="send-actions">
+                                    <button type="button" class="btn btn-primary" id="Send"><i class="fa fa-paper-plane"></i> Send</button>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a href="#" id="TestSend">Send Test Email (To Me)</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="draft-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">  
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Save Draft</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="newName" class="control-label">Draft Name</label>
+                    <input type="text" id="newName" name="newName" class="form-control" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input id="SaveDraftButton" type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editor-modal" style="overflow-y: hidden !important;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pull-right" style="margin-bottom: 5px;">
+                            <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <form>
+                            <textarea id="htmleditor" name="htmleditor" class="form-control" rows="15"></textarea>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-  @ViewExtensions2.CKEditor()
-  @Fingerprint.Script("/Scripts/Email/compose.js")
+    @ViewExtensions2.FroalaEditorScripts()
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/email/compose.js") 
+    <script type="text/javascript">
+        $(function () {
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (extraSmallDevice || smallDevice) {
+                $('#Schedule').val($('#ScheduleIso').val());
+                $('#Schedule').attr('type', 'datetime-local');
+            } else {
+                $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' }, minDate: '@DateTime.UtcNow.ToString("o")' });
+            }
+        });
+    </script>   
 }
-
-<h2 style="margin-bottom:5px;">Compose Email for @Model.Count @( Model.Count != 1 ? "People" : "Person") @(Model.wantParents ? " including Parents" : "")</h2>
-<em style="display:inline-block">
-  <span style="color: blue;font-size: 120%;">Please Note</span>:
-  Your recipient list has been saved in a tag, so you can run queries in other tabs. But you should not compose two emails simultaneously as one will overwrite the other.
-</em>
-<br />
-<form id="SendEmail" method="post">
-  @Html.Hidden("TagId")
-  @Html.Hidden("Host")
-  @Html.Hidden("CmsHost")
-  @Html.Hidden("Count", Model.Count)
-  @Html.Hidden("wantParents", Model.wantParents)
-  @Html.Hidden("ccparents", Model.CcParents)
-  @Html.Hidden("roleid", c.RoleID)
-  @Html.Hidden("orgid", Model.OrgId)
-  @Html.Hidden("noDuplicates", Model.noDuplicates)
-  <input type="hidden" name="saveid" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : c.Id )" />
-  <input type="hidden" id="body" name="body" />
-  <input type="hidden" id="name" name="name" value="@c.Name" />
-
-  <table cellspacing="10">
-    <tr>
-      <td colspan="3">
-        From: @Html.DropDownList("FromAddress", Model.EmailFroms())
-      </td>
-    </tr>
-    <tr>
-      <td colspan="3">
-        <label>Subject:</label>
-        <input name="Subject" size="75" value="@(c.TypeID == ContentTypeCode.TypeEmailTemplate ? "" : c.Title)" />
-        &nbsp;&nbsp; @Html.CheckBox("PublicViewable") Publicly viewable?
-      </td>
-    </tr>
-    <tr>
-      <td colspan="3">
-        <div id="tempateBody">
-          @Html.Raw(c.Body)
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td width="33%" class="top">
-        <input type="button" id="TestSend" class="bt" value="Test (Send To Yourself)" />
-      </td>
-      <td width="33%" class="top center">
-        <input type="button" id="SaveDraft" class="bt" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" />
-      </td>
-      <td width="33%" class="right">
-        <input type="button" id="Send" value="Send" class="bt" /><br />
-        <br />
-        @if (c.TypeID == ContentTypeCode.TypeSavedDraft)
-        {
-          @:Keep Draft:<input type="checkbox" name="keepdraft" checked="checked" /><br />
-  			}
-        @if ((User.IsInRole("ScheduleEmails") || User.IsInRole("Edit")) && ConfigurationManager.AppSettings["UseEmailScheduler"] == "true")
-        {
-          @:Scheduled Date and Time (Optional)<br />
-          @:(mm/dd/yy h:mm AM|PM)<br />
-          @Html.TextBox("Schedule", Model.Schedule, new { style = "width:120px" })<br />
-          @:<font color="red">Note</font>: Time is Central Time
-  			}
-      </td>
-    </tr>
-  </table>
-</form>
-<!-- public ActionResult SaveDraft( int queryid, bool parents, int saveid, string newName, string subject, string body, int roleid ) -->
-<div id="progress">
-  <h2>Working...</h2>
-</div>
-<div id="popupeditor" style="display:none;position: absolute;z-index: 2005;">
-  <form>
-    <textarea id="htmleditor"></textarea>
-    <div style="text-align: right;">
-      <a href="#" class="bt cancel">Cancel</a>
-      <a href="#" class="bt save blue">Save</a>
-    </div>
-  </form>
-</div>
-<div id="askName" style="display:none">
-  <br />
-  <center>
-    <form action="javascript:void(0)" onsubmit="javascript:$('#SaveDraftButton').click()">
-      <table cellspacing="10">
-        <tr>
-          <td class="right">Draft Name:</td>
-          <td class="left"><input id="newName" name="newName" size="25" /></td>
-        </tr>
-        <tr>
-          <td class="center" colspan="2">
-            <input id="SaveDraftButton" type="button" class="bt" value="Submit" />
-            &nbsp;&nbsp; <input type="button" class="bt" onclick="$('#askName').dialog('close')" value="Cancel" />
-          </td>
-        </tr>
-      </table>
-    </form>
-  </center>
-  <br />
-</div>

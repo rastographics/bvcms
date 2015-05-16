@@ -1,0 +1,192 @@
+﻿<div class="modal fade" id="search-box" tabindex="-1" role="dialog" aria-labelledby="search-box-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close hidden-md hidden-lg" data-dismiss="modal"><span class="fa fa-close"></span><span class="sr-only">Close</span></button>
+                <div class="row">
+                    <div class="col-xs-10 col-sm-11 col-md-12 col-lg-12">
+                        <div class="hidden-xs">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                                <input type="text" class="form-control search-box-input mousetrap" placeholder="People or organizations...">
+                            </div>
+                        </div>
+                        <div class="visible-xs-block">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                                <input type="text" class="form-control search-box-input mousetrap" placeholder="People or organizations...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body hidden-xs">
+                <div class="search-results"></div>
+            </div>
+            <div class="modal-body visible-xs-block">
+                <div class="search-results search-results-xs"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+
+        function displayResults(rawResults) {
+            var results = $.parseJSON(rawResults);
+            var list = '<ul class="nav nav-pills nav-stacked">';
+            var appendedPersonHeader = false;
+            var appendedOrganizationsHeader = false;
+            var appendedSavedSearchesHeader = false;
+            var searchBuilderCount = 0;
+            _.each(results, function (result) {
+                if (result.url.indexOf("/Person") > -1 && !appendedPersonHeader) {
+                    list += '<li class="dropdown-header">People</li>';
+                    appendedPersonHeader = true;
+                }
+                if (result.url.indexOf("/Org/") > -1 && !appendedOrganizationsHeader) {
+                    list += '<li class="dropdown-header">Organizations</li>';
+                    appendedOrganizationsHeader = true;
+                }
+                if (result.line1 === 'Find Person') {
+                    list += '<li class="dropdown-header">Options</li>';
+                }
+                if (result.line1 === 'New Search') {
+                    list += '<li class="dropdown-header">Search Builder</li>';
+                }
+                if (result.url.indexOf("/Query/") > -1 && !appendedSavedSearchesHeader) {
+                    searchBuilderCount++;
+                    if (searchBuilderCount > 1) {
+                        list += '<li class="dropdown-header">Recent Saved Searches</li>';
+                        appendedSavedSearchesHeader = true;
+                    }
+                }
+                list += '<li class="dropdown-search-result"><a href="' + result.url + '">' + result.line1;
+                if (result.line2) {
+                    list += '<br/>' + result.line2;
+                }
+                list += '</a></li>';
+            });
+            list += '</ul>';
+            $('.search-results').html(list).slideDown();
+        }
+
+        function prefetch() {
+            $.ajax({
+                type: 'GET',
+                url: '/FastSearchPrefetch',
+                success: function (results) {
+                    displayResults(results);
+                }
+            });
+        }
+
+        var selectedIndex = -1;
+        function keyboardSelectSearchResult(direction) {
+            var searchResultCount = $('.search-results:visible .dropdown-search-result').length;
+            var $lastSelected = $('.dropdown-search-result:nth(' + selectedIndex + ')');
+            $lastSelected.removeClass('dropdown-search-result-selected');
+
+            var scrollUp = direction === 'up';
+
+            if (scrollUp) {
+                selectedIndex--;
+                if (selectedIndex < 0) {
+                    selectedIndex = searchResultCount - 1;
+                }
+            }
+            else {
+                selectedIndex++;
+                if (selectedIndex >= searchResultCount) {
+                    selectedIndex = 0;
+                }
+            }
+
+            var $current = $('.dropdown-search-result:nth(' + selectedIndex + ')');
+            $current.addClass('dropdown-search-result-selected');
+
+            var $navBar = $('.search-results:visible .nav');
+
+            if (selectedIndex === 0) {
+                $navBar.scrollTop(0);
+            }
+            else if (selectedIndex === searchResultCount - 1) {
+                $navBar.scrollTop(9999);
+            }
+            else {
+                if (direction === 'up') {
+                    if ($current.position().top < ($navBar.scrollTop())) {
+                        $navBar.scrollTop($navBar.scrollTop() - $current.height() * 2);
+                    }
+                }
+                else {
+                    if (($current.position().top + $current.height()) > ($navBar.height() - $navBar.scrollTop())) {
+                        $navBar.scrollTop($navBar.scrollTop() + $current.height() * 2);
+                    }
+                }
+            }
+        }
+
+        function chooseSearchResult() {
+            var href = $('.dropdown-search-result:nth(' + selectedIndex + ') a').attr('href');
+            window.location = href;
+        }
+
+        $('#search-box').on('shown.bs.modal', function () {
+            $('.search-box-input').focus();
+            selectedIndex = -1;
+
+            Mousetrap.bind('down', function () {
+                keyboardSelectSearchResult('down');
+                return false;
+            });
+
+            Mousetrap.bind('tab', function () {
+                keyboardSelectSearchResult('down');
+                return false;
+            });
+
+            Mousetrap.bind('up', function () {
+                keyboardSelectSearchResult('up');
+                return false;
+            });
+
+            Mousetrap.bind('shift+tab', function () {
+                keyboardSelectSearchResult('up');
+                return false;
+            });
+
+            Mousetrap.bind('enter', function () {
+                chooseSearchResult();
+                return false;
+            });
+
+            // call prefetch
+            prefetch();
+        });
+
+        Mousetrap.bind('/', function () {
+            $('#search-box').modal();
+            return false;
+        });
+
+        $('.search-box-input').on('keyup', _.debounce(function (e) {
+            if (e.keyCode !== 40 && e.keyCode !== 38) {
+                var data = $(this).val();
+                if (data.length > 0) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/FastSearch',
+                        data: { q: data },
+                        success: function (results) {
+                            displayResults(results);
+                        }
+                    });
+                }
+                else {
+                    prefetch();
+                }
+            }
+        }, 180));
+    });
+</script>

@@ -1,13 +1,36 @@
-﻿@using CmsWeb
-@{
-    ViewBag.Title = "TagPeopleIds";
-    Layout = ViewExtensions2.Layout();
+﻿@{
+    ViewBag.Title = "Tag People Ids";
+    ViewBag.PageHeader = "Tag People Ids";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>Tag PeopleIds</h2>
-<em>One row per PeopleId</em>
-<form action="/Batch/TagUploadPeopleIds" method="post" enctype="multipart/form-data">
-    <label>Tag name: </label> @Html.TextBox("name")
-    <label>@Html.CheckBox("newtag")Force New Tag</label>&nbsp;&nbsp;&nbsp;
-    <input type="submit" class="bt" value="Submit" />
-    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", style = "width:90%" })<br />
-</form>
+<div class="alert alert-info alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    One row per people id.
+</div>
+<div class="box box-responsive">
+    <div class="box-content">
+        <form action="/Batch/TagUploadPeopleIds" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col-sm-4">
+                    <div class="form-group">
+                        <label for="name" class="control-label">Tag Name:</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="checkbox">
+                        <label class="control-label">
+                            @Html.CheckBox("newtag") Force new tag?
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <br />
+                    @Html.TextArea("text", "", new { rows = "20", cols = "100", wrap = "off", @class = "form-control" })
+                </div>
+            </div>
+            <br />
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>

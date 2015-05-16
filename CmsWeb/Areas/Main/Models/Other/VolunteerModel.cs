@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -48,8 +48,8 @@ namespace CmsWeb.Areas.Main.Models.Other
 						  };
 				var i = q.SingleOrDefault();
 				if (i == null) {
-					V = new Volunteer { PeopleId = peopleid };
-					DbUtil.Db.Volunteers.InsertOnSubmit(V);
+					Volunteer = new Volunteer { PeopleId = peopleid };
+					DbUtil.Db.Volunteers.InsertOnSubmit(Volunteer);
 					DbUtil.Db.SubmitChanges();
 					ApprovalList = (from n in DbUtil.Db.VolunteerCodes
 										 where n.Id > 0
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Main.Models.Other
 										 }).ToList();
 				} else {
 					ApprovalList = i.Approvals.Union(i.NonApprovals).OrderBy(aa => aa.Id).ToList();
-					V = i.v;
+					Volunteer = i.v;
 				}
 			}
 		}
@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.Main.Models.Other
 			PeopleId = id;
 		}
 
-		public Volunteer V { get; set; }
+		public Volunteer Volunteer { get; set; }
 
 		public class Approval
 		{
@@ -92,12 +92,12 @@ namespace CmsWeb.Areas.Main.Models.Other
 
 		internal void Update(DateTime? processDate, int statusId, string comments, List<int> approvals, DateTime? mvrDate, int mvrStatusId)
 		{
-			V.ProcessedDate = processDate;
-			V.StatusId = statusId;
-			V.Comments = comments;
+			Volunteer.ProcessedDate = processDate;
+			Volunteer.StatusId = statusId;
+			Volunteer.Comments = comments;
 
-			V.MVRProcessedDate = mvrDate;
-			V.MVRStatusId = mvrStatusId;
+			Volunteer.MVRProcessedDate = mvrDate;
+			Volunteer.MVRStatusId = mvrStatusId;
 
 			if (approvals == null)
 				approvals = new List<int>();
@@ -107,7 +107,7 @@ namespace CmsWeb.Areas.Main.Models.Other
 						  where v == null
 						  select a;
 			foreach (var a in adds)
-				V.VoluteerApprovalIds.Add(new VoluteerApprovalId { ApprovalId = a });
+				Volunteer.VoluteerApprovalIds.Add(new VoluteerApprovalId { ApprovalId = a });
 
 			var removes = from b in ApprovalList.Where(aa => aa.Approved)
 							  join a in approvals on b.Id equals a into j

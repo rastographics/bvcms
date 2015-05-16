@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Web;
+using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using Dapper;
@@ -41,6 +42,19 @@ namespace CmsWeb.Areas.People.Models
         public CodeInfo ContactReason { get; set; }
         public CodeInfo Ministry { get; set; }
 
+        public IEnumerable<SelectListItem> Roles()
+        {
+            var list = DbUtil.Db.Roles.OrderBy(r => r.RoleName).ToList().Select(x => new SelectListItem
+            {
+                Value = x.RoleName,
+                Text = x.RoleName,
+                Selected = !string.IsNullOrWhiteSpace(LimitToRole) && LimitToRole.Contains(x.RoleName)
+            }).ToList();
+
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)", Selected = true});
+            return list;
+        }
+
         internal Contact contact;
         private void LoadContact(int id)
         {
@@ -65,6 +79,7 @@ namespace CmsWeb.Areas.People.Models
         public ContactModel()
         {
         }
+
         public ContactModel(int id)
             : this()
         {
@@ -79,6 +94,9 @@ namespace CmsWeb.Areas.People.Models
 
         public void UpdateContact()
         {
+            if (LimitToRole == "0")
+                LimitToRole = null;
+
             LoadContact(ContactId);
             this.CopyPropertiesTo(contact);
             DbUtil.Db.SubmitChanges();

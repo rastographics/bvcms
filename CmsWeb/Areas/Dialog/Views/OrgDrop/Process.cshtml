@@ -1,28 +1,32 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.OrgDrop
-<div class="modal-header">
-  <a class="close" data-dismiss="modal">x</a>
-  <h3>Drop @Model.Count People from @Model.Group in @Model.OrgName</h3>
-</div>
-<div class="modal-body">
-  @Html.HiddenFor(m => m.Id)
-  @Html.HiddenFor(m => m.Group)
-  @Html.HiddenFor(m => m.Count)
-  @Html.HiddenFor(m => m.Started)
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Drop @Model.Count People from @Model.Group in @Model.OrgName</h4>
+        </div>
+        <div class="modal-body">
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.Group)
+            @Html.HiddenFor(m => m.Count)
+            @Html.HiddenFor(m => m.Started)
 
-  @Html.DisplayFor(m => m.Count, new { Label = "Number of People to Drop" })
-  @Html.DisplayFor(m => m.Started, "DateAndTime")
-  @Html.DisplayFor(m => m.Processed)
+            @Html.DisplayFor(m => m.Count, new { Label = "Number of People to Drop" })
+            @Html.DisplayFor(m => m.Started, "DateAndTime")
+            @Html.DisplayFor(m => m.Processed)
 
-  @if (Model.Finished)
-  {
-    @Html.DisplayFor(m => m.Completed, "DateAndTime")
-    @Html.DisplayFor(m => m.ElapsedTime)
-    @Html.Hidden("finished", "true")
-  }
-</div>
-<div class="modal-footer">
-  @if (Model.Finished)
-  {
-    <a href="#" class="btn btn-success" data-dismiss="modal">Dismiss</a>
-  }
+            @if (Model.Finished)
+            {
+                @Html.DisplayFor(m => m.Completed, "DateAndTime")
+                @Html.DisplayFor(m => m.ElapsedTime)
+                @Html.Hidden("finished", "true")
+            }
+        </div>
+        <div class="modal-footer">
+            @if (Model.Finished)
+            {
+                <a href="#" class="btn btn-success" data-dismiss="modal">Dismiss</a>
+            }
+        </div>
+    </div>
 </div>

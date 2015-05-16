@@ -1,0 +1,8 @@
+﻿@using DocumentFormat.OpenXml.Wordprocessing
+@model CmsWeb.Models.PagerModel2
+<div class="row hidden-print">
+    <div class="col-lg-4 col-md-4 col-sm-4 form-inline">
+        @Model.ShowCount()
+    </div>
+    @Html.Partial("Pagination", Model)
+</div>

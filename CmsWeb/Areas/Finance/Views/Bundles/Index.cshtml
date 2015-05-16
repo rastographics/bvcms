@@ -1,22 +1,79 @@
 ﻿@model CmsWeb.Areas.Finance.Models.BundlesModel
-@using CmsWeb
-@using UtilityExtensions
 @{
     ViewBag.Title = "Contribution Bundles";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = "Contribution Bundles";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/Bundles/NewBundle" class="btn btn-success"><i class="fa fa-plus-circle"></i> Create New Bundle</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <form id="results">
+                    @Html.Partial("Results", Model)
+                </form>
+                <br/>
+                <a href="/Bundles/NewBundle" class="btn btn-success visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> Create New Bundle</a>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Finance/Bundles.js")
+    <script type="text/javascript">
+        $(function () {
+            function initializePopovers() {
+                $('[data-toggle="popover"]').popover({ html: true });
+                $('[data-toggle="popover"]').click(function (ev) {
+                    ev.preventDefault();
+                });
+            }
+
+            $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
+                ev.preventDefault();
+                var newsort = $(this).text();
+                var sort = $("#Sort");
+                var dir = $("#Direction");
+                if ($(sort).val() == newsort && $(dir).val() == 'asc')
+                    $(dir).val('desc');
+                else
+                    $(dir).val('asc');
+                $(sort).val(newsort);
+
+                $.getTable();
+                return false;
+            });
+
+            $.gotoPage = function (e, pg) {
+                $("#Page").val(pg);
+                $.getTable();
+                return false;
+            };
+
+            $.setPageSize = function (e) {
+                $('#Page').val(1);
+                $("#PageSize").val($(e).val());
+                return $.getTable();
+            };
+
+            $.getTable = function () {
+                var f = $('#results');
+                var q = f.serialize();
+                $.block();
+                $.post("/bundles/results", q, function (ret) {
+                    $('#results').html(ret).ready(function () {
+                        $('#results > table > tbody > tr:even').addClass('alt');
+                        initializePopovers();
+                        $.unblock();
+                    });
+                });
+                return false;
+            };
+            initializePopovers();
+        });
+    </script>
 }
-<table class="roundbox">
-    <tr><td nowrap="nowrap"><h2>Contribution Bundles</h2></td></tr>
-    <tr><td class="right">
-            @Helper.AnchorLink("Create New Bundle", "/Bundles/NewBundle", style: "bt blue")
-@*                new { @class="bt blue", onclick = "return confirm('Are you sure?');" } )*@
-        </td>
-    </tr>
-</table>
-<form id="results">
-@Html.Partial("Results", Model)
-</form>

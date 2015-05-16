@@ -1,29 +1,48 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.Main.Models.Other.VolunteerModel
-<fieldset class="left-gutter margin-top">
-    <legend>Volunteer Approvals @FormAction()</legend>
-    <table class="table not-wide">
+<div class="row">
+    <div class="col-sm-6">
+        <h4>Volunteer Approvals</h4>
+    </div>
+    <div class="col-sm-6">
+        @FormAction()
+    </div>
+</div>
+<div class="table-responsive">
+    <table class="table table-striped">
         <tr>
             <th>Approvals:</th>
             <td>
                 @foreach (var ck in Model.ApprovalList)
                 {
-                    <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled"/>
+                    <input type="checkbox" @(ck.Approved ? "checked='checked'" : "") disabled="disabled" />
                     @ck.Description<br />
                 }
             </td>
         </tr>
         <tr>
             <th>Background Check:</th>
-            <td colspan="2">@Model.V.ProcessedDate.FormatDate()</td>
+            <td colspan="2">@Model.Volunteer.ProcessedDate.FormatDate()</td>
         </tr>
     </table>
-</fieldset>
-
-@helper FormAction()
+</div>
+@FormAction(true)
+<br/>
+@helper FormAction(bool xs = false)
 {
     if (User.IsInRole("ApplicationReview"))
-    { 
-    <a href="/Volunteering/@Model.V.PeopleId" class="btn pull-right">Manage</a>
+    {
+        if (xs)
+        {
+            <div class="visible-xs-block">
+                <a href="/Volunteering/@Model.Volunteer.PeopleId" class="btn btn-default btn-block">Manage</a>
+            </div>
+        }
+        else
+        {
+            <div class="pull-right hidden-xs">
+                <a href="/Volunteering/@Model.Volunteer.PeopleId" class="btn btn-default">Manage</a>
+            </div>
+        }
     }
 }

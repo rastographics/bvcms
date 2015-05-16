@@ -2,7 +2,7 @@
 @{
     var canviewmemberdocs = User.IsInRole("Membership") || User.IsInRole("Admin");
 }
-<ul class="nav nav-tabs subnav" data-tabparent="profile">
+<ul class="nav nav-pills subnav hidden-sm hidden-xs" data-tabparent="profile">
     <li><a href="#memberstatus" data-toggle="tab" class="ajax">Member</a></li>
     @if (User.IsInRole("Access"))
     {
@@ -12,12 +12,19 @@
         }
         <li><a href="#comments" data-toggle="tab" class="ajax">Comments</a></li>
         <li><a href="#extravalues" data-toggle="tab" class="ajax">Extra Values</a></li>
-        <li><a href="#familyextravalues" data-toggle="tab" class="ajax">FamilyExtra Values</a></li>
+        <li><a href="#familyextravalues" data-toggle="tab" class="ajax">Family Extra Values</a></li>
         <li><a href="#entry" data-toggle="tab" class="ajax">Entry</a></li>
     }
-    
 </ul> 
-<div class="tab-content">
+<select class="form-control visible-sm-block visible-xs-block nav-select-pills">
+    <option value="#memberstatus">Member</option>
+    <option value="#memberdocs">Documents</option>
+    <option value="#comments">Comments</option>
+    <option value="#extravalues">Extra Values</option>
+    <option value="#familyextravalues">Family Extra Values</option>
+    <option value="#entry">Entry</option>
+</select>
+<div class="tab-content" style="border: none;">
     <div class="tab-pane" id="memberstatus" data-link="/Person2/Membership/@Model.PeopleId"></div>
     @if (User.IsInRole("Access"))
     {

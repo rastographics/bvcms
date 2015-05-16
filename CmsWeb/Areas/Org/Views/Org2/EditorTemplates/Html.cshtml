@@ -1,16 +1,16 @@
 ﻿@using UtilityExtensions
 @model string
-<div class="control-group">
-  @Html.LabelFor(m => m, new { @class = "control-label" })
-  <div class="controls @ViewBag.AddClass">
-    <a href="#" class="editor btn btn-small" tb="@ViewData.TemplateInfo.HtmlFieldPrefix"><span class="fa fa-pencil"></span> Edit</a><br/>
-    <div id="@(ViewData.TemplateInfo.HtmlFieldPrefix)_ro" class="display block border">
-      @Html.Raw(Model)
+<div class="form-group">
+    @Html.LabelFor(m => m, new { @class = "control-label" })
+    <div class="controls @ViewBag.AddClass">
+        <a href="#" class="editor btn btn-default btn-xs" tb="@ViewData.TemplateInfo.HtmlFieldPrefix"><span class="fa fa-pencil"></span> Edit</a>
+        <div id="@(ViewData.TemplateInfo.HtmlFieldPrefix)_ro" class="display block border">
+            @Html.Raw(Model)
+        </div>
+        @Html.TextAreaFor(m => m, new { @class = "html form-control" })
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
     </div>
-    @Html.TextAreaFor(m => m, new { @class = "html" })
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-    }
-  </div>
 </div>

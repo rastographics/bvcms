@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [Route("~/Sms/Send/{id:Guid}")]
         public ActionResult Send(Guid id, int iSendGroup, string sTitle, string sMessage)
         {
-            TwilioHelper.QueueSMS(id, iSendGroup, sTitle, sMessage);
+            TwilioHelper.QueueSms(id, iSendGroup, sTitle, sMessage);
             ViewBag.sTitle = sTitle;
             ViewBag.sMessage = sMessage;
             return View("Send", id);

@@ -1,11 +1,41 @@
 ﻿@using CmsWeb
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "UpdateOrg";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Update Organizations";
+    ViewBag.PageHeader = "Batch Update Organizations";
 }
-<h2>Batch Update Orgs</h2>
-@using(Html.BeginForm())
-{ 
-    @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "30", cols = "1000", wrap = "off", style = "width:90%" })<br />
-    <input type="submit" class="bt" value="Submit" />
-} 
+<div class="alert alert-success alert-dismissible" style="display: none;">
+    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+    <strong>Success!</strong> <span id="success-message"></span>
+</div>
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Note:</strong> Paste into box below. Be sure to include the header row and the Org ID column.
+        </div>
+        <form id="update-orgs">
+            @Html.TextArea("text", ViewData["text"].ToString(), new { rows = "20", cols = "1000", wrap = "off", @class = "form-control" })<br />
+            <input type="submit" class="btn btn-primary" value="Submit" id="begin-update" />
+        </form>
+    </div>
+</div>
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#begin-update').click(function (ev) {
+                ev.preventDefault();
+                var f = $('#update-orgs');
+                var q = f.serialize();
+                $.block();
+                $.post('/Batch/UpdateOrg', q, function (ret) {
+                    $('#success-message').text(ret);
+                    $('div.alert-success').show();
+                    $('#text').val('');
+                    $.unblock();
+                });
+                return false;
+            });
+        });
+    </script>
+}

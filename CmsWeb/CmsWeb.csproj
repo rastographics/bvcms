@@ -223,14 +223,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
-    <Reference Include="Yahoo.Yui.Compressor, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YUICompressor.NET.MSBuild.2.5.0.0\lib\NET20\Yahoo.Yui.Compressor.dll</HintPath>
-    </Reference>
-    <Reference Include="Yahoo.Yui.Compressor.Build.MsBuild, Version=2.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\YUICompressor.NET.MSBuild.2.5.0.0\lib\NET20\Yahoo.Yui.Compressor.Build.MsBuild.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\AttributeRoutingConfig.cs" />
@@ -341,6 +333,9 @@
     <Compile Include="Areas\Finance\Models\DonorTotalsOptions.cs" />
     <Compile Include="Areas\Finance\Models\FundTotalInfo.cs" />
     <Compile Include="Areas\Finance\Models\GLExportResult.cs" />
+    <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
+    <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
+    <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
@@ -532,9 +527,12 @@
     <Compile Include="Areas\Search\Controllers\RegistrationSearchController.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
+    <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
+    <Compile Include="Code\DecimalModelBinder.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
@@ -817,6 +815,19 @@
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.css" />
     <Content Include="Content\font-awesome-4.0.3\css\font-awesome.min.css" />
     <Content Include="Content\font-awesome-4.0.3\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\touchpoint\css\account.css" />
+    <Content Include="Content\touchpoint\css\app.css" />
+    <Content Include="Content\touchpoint\css\editor.css" />
+    <Content Include="Content\touchpoint\css\error.css" />
+    <Content Include="Content\touchpoint\css\print.css" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Content\touchpoint\img\female.png" />
+    <Content Include="Content\touchpoint\img\female_sm.png" />
+    <Content Include="Content\touchpoint\img\hexagon.png" />
+    <Content Include="Content\touchpoint\img\image_not_found.png" />
+    <Content Include="Content\touchpoint\img\logo.png" />
+    <Content Include="Content\touchpoint\img\logo_sm.png" />
+    <Content Include="Content\touchpoint\img\male.png" />
     <Content Include="Content\images\tps_full_logo.png" />
     <Content Include="Content\images\tps_hosting_support.png" />
     <Content Include="Content\images\tps_hosting_support_avail.png" />
@@ -826,6 +837,129 @@
     <Content Include="Content\select2-3.5.2\select2.css" />
     <Content Include="Content\select2-3.5.2\select2.png" />
     <Content Include="Content\select2-3.5.2\select2x2.png" />
+    <Content Include="Content\touchpoint\img\male_sm.png" />
+    <Content Include="Content\touchpoint\img\powered-by.png" />
+    <Content Include="Content\touchpoint\img\spinner.gif" />
+    <Content Include="Content\touchpoint\img\unknown.png" />
+    <Content Include="Content\touchpoint\img\unknown_sm.png" />
+    <Content Include="Content\touchpoint\js\admin\divisions.js" />
+    <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
+    <Content Include="Content\touchpoint\js\admin\users.js" />
+    <Content Include="Content\touchpoint\js\app.min.js" />
+    <Content Include="Content\touchpoint\js\dialog\search-users.js" />
+    <Content Include="Content\touchpoint\js\email\compose.js" />
+    <Content Include="Content\touchpoint\js\email\email.js" />
+    <Content Include="Content\touchpoint\js\email\email-supporter.js" />
+    <Content Include="Content\touchpoint\js\export-toolbar.js" />
+    <Content Include="Content\touchpoint\js\extra-value.js" />
+    <Content Include="Content\touchpoint\js\finance\post-bundle.js" />
+    <Content Include="Content\touchpoint\js\finance\totals-by-fund.js" />
+    <Content Include="Content\touchpoint\js\finance\transactions.js" />
+    <Content Include="Content\touchpoint\js\form-ajax.js" />
+    <Content Include="Content\touchpoint\js\main.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\css\custom-theme.css" />
+    <Content Include="Content\touchpoint\lib\froala-editor\css\froala_editor.min.css" />
+    <Content Include="Content\touchpoint\lib\froala-editor\css\froala_style.min.css" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\froala_editor.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\block_styles.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\char_counter.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\colors.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\special_links.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\file_upload.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\font_family.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\font_size.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\fullscreen.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\inline_styles.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\lists.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\media_manager.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\tables.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\urls.min.js" />
+    <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\video.min.js" />
+    <Content Include="Content\touchpoint\lib\ion-sound\js\ion.sound.min.js" />
+    <Content Include="Content\touchpoint\js\meeting\meeting-ticket.js" />
+    <Content Include="Content\touchpoint\js\meeting\meeting.js" />
+    <Content Include="Content\touchpoint\js\org\org-members.js" />
+    <Content Include="Content\touchpoint\js\org\organization.js" />
+    <Content Include="Content\touchpoint\js\org\org-member-dialog.js" />
+    <Content Include="Content\touchpoint\js\org\org-groups.js" />
+    <Content Include="Content\touchpoint\js\org\org-children.js" />
+    <Content Include="Content\touchpoint\js\org\promotion.js" />
+    <Content Include="Content\touchpoint\js\org\reg-setting.js" />
+    <Content Include="Content\touchpoint\js\people\contact.js" />
+    <Content Include="Content\touchpoint\js\people\person.js" />
+    <Content Include="Content\touchpoint\js\people\task.js" />
+    <Content Include="Content\touchpoint\js\people\volunteering.js" />
+    <Content Include="Content\touchpoint\js\search\org-search.js" />
+    <Content Include="Content\touchpoint\js\search\people-search.js" />
+    <Content Include="Content\touchpoint\js\search\query.js" />
+    <Content Include="Content\touchpoint\js\search\saved-query-list.js" />
+    <Content Include="Content\touchpoint\js\search\search-add.js" />
+    <Content Include="Content\touchpoint\js\support\support.js" />
+    <Content Include="Content\touchpoint\js\tags.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-bootbox\js\bootbox.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-datetimepicker\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-editable\css\bootstrap-editable.css" />
+    <Content Include="Content\touchpoint\lib\bootstrap-editable\img\clear.png" />
+    <Content Include="Content\touchpoint\lib\bootstrap-editable\img\loading.gif" />
+    <Content Include="Content\touchpoint\lib\bootstrap-editable\js\bootstrap-editable.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-multiselect\css\bootstrap-multiselect.css" />
+    <Content Include="Content\touchpoint\lib\bootstrap-multiselect\js\bootstrap-multiselect.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-sweetalert\js\sweet-alert.min.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\css\tabdrop.css" />
+    <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\bootstrap-tabdrop.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-tabdrop\js\extensions_bootstrap-tabdrop.js" />
+    <Content Include="Content\touchpoint\lib\bootstrap-typeahead\js\bootstrap3-typeahead.min.js" />
+    <Content Include="Content\touchpoint\lib\ion-sound\sounds\computer_error.mp3" />
+    <Content Include="Content\touchpoint\lib\ion-sound\sounds\glass.mp3" />
+    <Content Include="Content\touchpoint\lib\jcrop\css\jcrop.min.css" />
+    <Content Include="Content\touchpoint\lib\jcrop\js\jcrop.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-blockUI\js\jquery.blockUI.js" />
+    <Content Include="Content\touchpoint\lib\jquery-chosen\js\chosen.jquery.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-cookie\js\jquery.cookie.js" />
+    <Content Include="Content\touchpoint\lib\jquery-easypiechart\js\jquery.easypiechart.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-029.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-AU.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-BZ.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-CA.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-GB.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-IE.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-IN.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-JM.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-MY.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-NZ.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-PH.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-SG.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-TT.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-US.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-ZA.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.culture.en-ZW.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\cultures\globalize.cultures.js" />
+    <Content Include="Content\touchpoint\lib\jquery-globalize\js\globalize.js" />
+    <Content Include="Content\touchpoint\lib\jquery-scrollintoview\js\jquery.scrollintoview.js" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\css\jquery-ui.min.css" />
+    <Content Include="Content\touchpoint\lib\jquery-ui-custom\js\jquery-ui.min.js" />
+    <Content Include="Content\touchpoint\lib\jquery-validate-globalize\js\jquery.validate.globalize.js" />
+    <Content Include="Content\touchpoint\lib\mousetrap\js\mousetrap.min.js" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2-bootstrap.css" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2-spinner.gif" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2.css" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2.png" />
+    <Content Include="Content\touchpoint\lib\select2\css\select2x2.png" />
+    <Content Include="Content\touchpoint\lib\select2\js\select2.min.js" />
+    <Content Include="Content\touchpoint\lib\twitter-typeahead\js\typeahead.js" />
     <Content Include="Content\xml.css" />
     <Content Include="Content\xml.xsl" />
     <Content Include="Content\images\brokencode.jpg" />
@@ -851,12 +985,7 @@
     <Content Include="CustomColumns.xml">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Errors\DatabaseCreationError.aspx" />
-    <Content Include="Errors\DatabaseNotInitialized.aspx" />
-    <Content Include="Errors\DatabaseServerNotFound.aspx" />
-    <Content Include="minify.xml">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="gulpfile.js" />
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Scripts\Admin\UpdateFields.js" />
@@ -932,7 +1061,54 @@
     <Content Include="Scripts\bundle.query2.js" />
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
-    <Content Include="Areas\Org\Views\Org2\EditorTemplates\Text0.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\AskText.cshtml" />
+    <Content Include="Areas\Org\Views\Organization\EditorTemplates\Text.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
+    <Content Include="Scripts\additional-methods.js" />
+    <Content Include="Scripts\additional-methods.min.js" />
+    <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
+    <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
+    <Content Include="package.json" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\touchpoint\src\less\box.less" />
+    <Content Include="Content\touchpoint\src\less\search-builder.less" />
+    <Content Include="Content\touchpoint\src\less\select2\select2-bootstrap.less" />
+    <Content Include="Content\touchpoint\src\less\pager.less" />
+    <Content Include="Content\touchpoint\src\less\charts.less" />
+    <Content Include="Areas\Manage\Views\Batch\UpdateLookupValueSelection.cshtml" />
+    <Content Include="Areas\Main\Views\Email\EmailBody.cshtml" />
+    <Content Include="Content\touchpoint\src\less\editor.less" />
+    <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundAgeRange.cshtml" />
+    <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundAgeRangeResults.cshtml" />
+    <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundRange.cshtml" />
+    <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundRangeResults.cshtml" />
+    <Content Include="Areas\Finance\Views\Bundle\Create.cshtml" />
+    <Content Include="Content\touchpoint\src\less\jquery-ui-overrides.less" />
+    <Content Include="Areas\Main\Views\Task\Rows.cshtml" />
+    <Content Include="Areas\Main\Views\Task\Row.cshtml" />
+    <Content Include="Areas\Main\Views\Task\Columns.cshtml" />
+    <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
+    <Content Include="Areas\Finance\Views\FinanceReports\Deposits.cshtml" />
+    <Content Include="Areas\People\Views\Person\Toolbar\GearStandard.cshtml" />
+    <Content Include="Areas\Main\Views\Volunteering\Display.cshtml" />
+    <Content Include="Areas\Org\Views\MissionTripEmail\EmailBody.cshtml" />
+    <Content Include="Content\touchpoint\src\less\twitter-typeahead\twitter-typeahead.less" />
+    <Content Include="Content\touchpoint\lib\ion-sound\sounds\glass.ogg" />
+    <Content Include="Content\touchpoint\lib\ion-sound\sounds\computer_error.ogg" />
+    <Content Include="Areas\Manage\Views\Batch\OtherDeveloperActions.cshtml" />
+    <Content Include="Content\touchpoint\src\less\badges.less" />
+    <Content Include="Areas\Manage\Views\Display\EditDraft.cshtml" />
+    <Content Include="Areas\Manage\Views\Display\EmailBody.cshtml" />
+    <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Dialogs.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Other\DialogAddMES.cshtml" />
@@ -1409,7 +1585,6 @@
     <Content Include="Areas\Main\Views\Volunteering\DialogSubmit.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Address.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsEmail.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValueData.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenMeta.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenSearch.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenPeople.cshtml" />
@@ -1435,7 +1610,6 @@
     <Content Include="Areas\Reports\Views\Reports\Decisions.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Pending.cshtml" />
     <Content Include="Areas\Manage\Views\CheckinLabels\Index.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid2.cshtml" />
     <Content Include="Areas\People\Views\Person\Enrollment\Attendance.cshtml" />
     <Content Include="Areas\Public\Views\ExternalServices\BVCMSSupportLink.cshtml" />
     <Content Include="Areas\Manage\Views\Emails\Tracking.cshtml" />
@@ -1489,7 +1663,6 @@
     <Content Include="Areas\People\Views\Person\Enrollment\RegistrationsEdit.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Summary.cshtml" />
     <Content Include="Views\ExtraValue\Reports\Grid.cshtml" />
-    <Content Include="Views\ExtraValue\Reports\Grid2.cshtml" />
     <Content Include="Areas\Main\Views\Export\FamilyMembers.cshtml" />
     <Content Include="Areas\Main\Views\Export\Picture.cshtml" />
     <Content Include="Areas\Reports\Views\Export\FamilyMembers.cshtml" />
@@ -1512,7 +1685,6 @@
     <Content Include="Areas\People\Views\Person\Family\PictureDialog.cshtml" />
     <Content Include="Areas\Public\Views\APITest\RunScript.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RegistrationSummary.cshtml" />
-    <Content Include="Areas\People\Views\Person\Giving\GivingLinks.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactorSummary.cshtml" />
     <Content Include="Areas\Search\Views\ContactSearch\ContactSummary.cshtml" />
     <Content Include="Content\less\typeahead.js-bootstrap.less" />
@@ -1547,7 +1719,6 @@
     <Content Include="Content\font-awesome-4.0.3\scss\_stacked.scss" />
     <Content Include="Content\font-awesome-4.0.3\scss\_variables.scss" />
     <Content Include="Areas\Search\Views\Query\SaveAs.cshtml" />
-    <Content Include="Areas\Reports\Views\Reports\WeeklyAttendance.cshtml" />
     <Content Include="Content\images\computer_error.ogg" />
     <Content Include="Content\images\glass.ogg" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents1.cshtml" />
@@ -1728,7 +1899,6 @@
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Index.cshtml" />
     <Content Include="Areas\Dialog\Views\DeleteMeeting\Process.cshtml" />
     <Content Include="Areas\Dialog\Views\Dialog\ChooseFormat.cshtml" />
-    <Content Include="Areas\Dialog\Views\Dialog\DeleteStandardExtra.cshtml" />
     <Content Include="Areas\Dialog\Views\Dialog\GetExtraValue.cshtml" />
     <Content Include="Areas\Dialog\Views\Dialog\MeetingInfo.cshtml" />
     <Content Include="Areas\Dialog\Views\Dialog\TagAll.cshtml" />
@@ -1736,7 +1906,6 @@
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\AddTransaction.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\AddTransactionDone.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Display.cshtml" />
-    <Content Include="Areas\Dialog\Views\OrgMemberDialog\Dropped.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\Edit.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\MissionSupport.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMemberDialog\MissionSupportDone.cshtml" />
@@ -1773,7 +1942,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
-    <Content Include="Areas\People\Views\Person\System\MergeHistory.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\OrgPickList2.cshtml" />
     <Content Include="Areas\Dialog\Views\OrgMembersUpdate\AddFeeAdjustment.cshtml" />
@@ -2099,44 +2267,9 @@
     <Compile Include="Areas\Setup\Controllers\SettingController.cs" />
     <Compile Include="Areas\Setup\Controllers\UsersCanEmailForController.cs" />
     <Compile Include="Areas\Setup\Models\PromotionModel.cs" />
-    <Compile Include="ContributionReports\TotalsByFundAgeRange.aspx.cs">
-      <DependentUpon>TotalsByFundAgeRange.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\TotalsByFundAgeRange.aspx.designer.cs">
-      <DependentUpon>TotalsByFundAgeRange.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Areas\Manage\Models\VolunteerCommitmentsModel.cs" />
     <Compile Include="Areas\Public\Controllers\TrackController.cs" />
     <Compile Include="Code\ViewExtensions.cs" />
-    <Compile Include="ContributionReports\Deposit.aspx.cs">
-      <DependentUpon>Deposit.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\Deposit.aspx.designer.cs">
-      <DependentUpon>Deposit.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ContributionReports\JournalDetails.aspx.cs">
-      <DependentUpon>JournalDetails.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\JournalDetails.aspx.designer.cs">
-      <DependentUpon>JournalDetails.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ContributionReports\Reports.Master.cs">
-      <DependentUpon>Reports.Master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\Reports.Master.designer.cs">
-      <DependentUpon>Reports.Master</DependentUpon>
-    </Compile>
-    <Compile Include="ContributionReports\TotalsByFundRange.aspx.cs">
-      <DependentUpon>TotalsByFundRange.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="ContributionReports\TotalsByFundRange.aspx.designer.cs">
-      <DependentUpon>TotalsByFundRange.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Areas\Manage\Controllers\AccountController.cs" />
     <Compile Include="Areas\Public\Controllers\APICheckin2Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -2221,7 +2354,6 @@
     <Content Include="Views\ExtraValue\NewAdHoc.cshtml" />
     <Content Include="Views\ExtraValue\DeleteFromQuery.cshtml" />
     <Content Include="Views\Shared\SiteLayout2c.cshtml" />
-    <Content Include="Views\Home\TestTypeahead.cshtml" />
     <Content Include="Views\Shared\CustomHeader.cshtml" />
     <Content Include="Views\Shared\MyDataFooter.cshtml" />
     <Content Include="Views\Shared\Toolbar\ToolbarMyData.cshtml" />
@@ -2231,12 +2363,123 @@
     <Content Include="Views\Home\MyDataSupport.cshtml" />
     <Content Include="Views\Home\TestScript.cshtml" />
     <Content Include="Views\Shared\OnlineReg2.cshtml" />
-    <Content Include="Areas\Manage\Views\Batch\Info.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\Hyperlink.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\InlineBoolean.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalSummaryOptions.cshtml" />
     <Content Include="Views\Shared\Message.cshtml" />
     <Content Include="Views\Home\PyScript.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\NavBar.cshtml" />
+    <Content Include="Views\Shared\PagerTop.cshtml" />
+    <Content Include="Views\Shared\PagerBottom.cshtml" />
+    <Content Include="Views\Shared\Pagination.cshtml" />
+    <Content Include="Views\Shared\SearchBox.cshtml" />
+    <Content Include="Views\Error\400.cshtml" />
+    <Content Include="Views\Error\401.cshtml" />
+    <Content Include="Views\Error\404.cshtml" />
+    <Content Include="Views\Error\500.cshtml" />
+    <Content Include="Views\Error\_Layout.cshtml" />
+    <Content Include="Views\Error\DatabaseCreationError.cshtml" />
+    <Content Include="Views\Error\DatabaseNotFound.cshtml" />
+    <Content Include="Views\Error\DatabaseNotInitialized.cshtml" />
+    <Content Include="Views\Error\DatabaseServerNotFound.cshtml" />
+    <Content Include="Views\Error\Offline.cshtml" />
+    <Content Include="Views\Error\SessionTimeout.cshtml" />
+    <Content Include="Content\touchpoint\src\less\app.less" />
+    <Content Include="Content\touchpoint\src\less\variables.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\alerts.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\badges.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\bootstrap.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\breadcrumbs.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\button-groups.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\buttons.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\carousel.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\close.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\code.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\component-animations.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\dropdowns.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\forms.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\glyphicons.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\grid.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\input-groups.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\jumbotron.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\labels.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\list-group.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\media.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\modals.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\navbar.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\navs.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\normalize.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\pager.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\pagination.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\panels.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\popovers.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\print.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\progress-bars.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\responsive-embed.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\responsive-utilities.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\scaffolding.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\tables.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\theme.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\thumbnails.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\tooltip.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\type.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\utilities.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\variables.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\wells.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\alerts.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\background-variant.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\border-radius.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\buttons.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\center-block.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\clearfix.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\forms.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\gradients.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\grid-framework.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\grid.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\hide-text.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\image.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\labels.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\list-group.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\nav-divider.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\nav-vertical-align.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\opacity.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\pagination.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\panels.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\progress-bar.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\reset-filter.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\resize.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\responsive-visibility.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\size.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\tab-focus.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\table-row.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\text-emphasis.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\text-overflow.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\mixins\vendor-prefixes.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-datetimepicker\bootstrap-datetimepicker-build.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-datetimepicker\bootstrap-datetimepicker.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert-animations.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert-combine.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-sweetalert\sweet-alert.less" />
+    <Content Include="Content\touchpoint\src\less\print.less" />
+    <Content Include="Content\touchpoint\src\less\account.less" />
+    <Content Include="Content\touchpoint\src\less\error.less" />
+    <Content Include="Content\touchpoint\src\less\main.less" />
+    <Content Include="Content\touchpoint\src\less\navbar.less" />
+    <Content Include="Content\touchpoint\src\less\tables.less" />
+    <Content Include="Content\touchpoint\src\less\search-box.less" />
+    <Content Include="Content\touchpoint\src\less\blue-toolbar.less" />
+    <Content Include="Content\touchpoint\src\less\bootstrap-overrides.less" />
+    <Content Include="Content\touchpoint\src\less\dropdown-large.less" />
+    <Content Include="Content\touchpoint\src\less\stats-panel.less" />
+    <Content Include="Content\touchpoint\src\less\footers.less" />
+    <Content Include="Views\Error\UnderConstruction.cshtml" />
+    <Content Include="Views\Shared\PageHeader.cshtml" />
+    <Content Include="Views\Shared\PageFooter.cshtml" />
+    <None Include="Web.bvcms.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
     <Content Include="Views\Shared\PagerHidden.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateAndTime.cshtml" />
@@ -2256,8 +2499,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Areas\Manage\Views\Batch\UpdatePeople.cshtml">
-    </Content>
     <Content Include="Content\images\bvcms132x55.png" />
     <Content Include="Scripts\jQuery\jquery.sortElements.js" />
     <Content Include="Scripts\jQuery\jquery.textarea.js" />
@@ -2266,14 +2507,12 @@
     <Content Include="Content\constants.py" />
     <Content Include="Content\Tutorials\_Home_Index_Menu.cshtml" />
     <Content Include="Content\Tutorials\_Home_Index.cshtml" />
-    <Content Include="Errors\DatabaseNotFound.aspx" />
     <Content Include="Errors\SiteDisabled.htm" />
     <Content Include="Content\images\arrowdnup.png" />
     <Content Include="Content\images\deliveredbybvcms.gif" />
     <Content Include="Content\images\draggable-icon.png" />
     <Content Include="Content\images\dropdown.gif" />
     <Content Include="Content\images\linkselect_bkgrd.png" />
-    <Content Include="Errors\SessionTimeout.htm" />
     <Content Include="favicon.ico" />
     <Content Include="Scripts\jQuery\jquery.mousewheel.js" />
     <Content Include="Content\images\magnifier.png" />
@@ -2312,7 +2551,6 @@
     <Content Include="Scripts\Org\RegSettings.js" />
     <Content Include="Scripts\Dialog\SearchUsers.js" />
     <Content Include="Scripts\OnlineReg\OnlineRegPayment.js" />
-    <Content Include="Errors\AccessDenied.htm" />
     <Content Include="Global.asax" />
     <Content Include="Content\images\bvcms120.png" />
     <Content Include="Content\images\bvcms130.png" />
@@ -2331,8 +2569,6 @@
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\TimeSlot.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\Error.cshtml">
-    </Content>
-    <Content Include="Areas\Reports\Views\Reports\ExtraValuesGrid.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\SetPassword.cshtml">
     </Content>
@@ -2392,7 +2628,6 @@
     <Content Include="Areas\Main\Views\Volunteering\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\VolunteerSlots.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\TicketMeeting.cshtml" />
-    <Content Include="Areas\Manage\Views\Batch\SQLSelect.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\SQLView.cshtml" />
     <Content Include="Areas\Org\Views\Org2\EditorTemplates\TimeSlots.cshtml" />
     <Content Include="Areas\Finance\Views\Bundles\Index.cshtml" />
@@ -2425,7 +2660,6 @@
     <Content Include="Areas\Search\Views\Query\EditorTemplates\CodesDropdown.cshtml" />
     <Content Include="Areas\Search\Views\Query\Divisions.cshtml" />
     <Content Include="Areas\Search\Views\Query\Organizations.cshtml" />
-    <Content Include="Areas\Manage\Views\Display\ContentView.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogEdit.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Options.cshtml" />
     <Content Include="Areas\Main\Views\SMS\Send.cshtml" />
@@ -2433,7 +2667,6 @@
     <Content Include="Areas\Manage\Views\SMS\Index.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\GroupDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\NumberDialog.cshtml" />
-    <Content Include="Areas\Setup\Views\Twilio\RemoveDialog.cshtml" />
     <Content Include="Areas\Setup\Views\Twilio\UserDialog.cshtml" />
     <Content Include="Areas\People\Views\Person\EditorTemplates\EmailInfo.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\EmailInfo.cshtml" />
@@ -2441,7 +2674,6 @@
     <Content Include="Areas\People\Views\Person\Enrollment\Current.cshtml" />
     <Content Include="Areas\People\Views\Person\Profile\Membership\Display.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\OrganizationStructure.cshtml" />
-    <Content Include="Areas\Main\Views\Volunteering\DialogDelete.cshtml" />
     <Content Include="Content\less\accordion.less" />
     <Content Include="Content\less\alerts.less" />
     <Content Include="Content\less\breadcrumbs.less" />
@@ -2503,8 +2735,6 @@
     </Content>
     <Content Include="Areas\Reports\Views\Reports\AttendanceDetail.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\Batch\LookupTable.cshtml">
-    </Content>
     <Content Include="Areas\People\Views\Person\Emails\View.cshtml">
     </Content>
     <Content Include="Views\Home\Index.cshtml">
@@ -2521,13 +2751,11 @@
     </Content>
     <Content Include="Areas\Org\Views\OrgGroups\Rows.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Email\EmailQueued.cshtml">
+    <Content Include="Areas\Dialog\Views\OrgMembersDialog\Index.cshtml">
+    </Content>
+    <Content Include="Areas\Dialog\Views\OrgMembersDialog\Rows.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Email\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Email\Progress.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Email\TaskProgress.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Coupon\Create.cshtml">
     </Content>
@@ -2559,25 +2787,11 @@
     </Content>
     <Content Include="Areas\Finance\Views\PostBundle\Index.cshtml">
     </Content>
-    <Content Include="Areas\Main\Views\Task\Columns.cshtml">
-    </Content>
     <Content Include="Areas\Main\Views\Task\Detail.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Detail2.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Task\Edit.cshtml">
     </Content>
     <Content Include="Areas\Main\Views\Task\List.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Row.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Rows.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\Tabs.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\TabsOptions.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Task\TabsOptionsRows.cshtml">
     </Content>
     <Content Include="Areas\Search\Views\SearchAdd\NewPerson.cshtml">
     </Content>
@@ -2604,8 +2818,6 @@
     <Content Include="Areas\Finance\Views\Statements\Progress.cshtml">
       <SubType>Code</SubType>
     </Content>
-    <Content Include="Areas\Finance\Views\FinanceReports\ContributionYears.cshtml">
-    </Content>
     <Content Include="Areas\Manage\Views\Account\ChangePassword.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Account\ChangePasswordSuccess.cshtml">
@@ -2630,13 +2842,9 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\UpdateOrg.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\Batch\UploadPeople.cshtml">
-    </Content>
     <Content Include="Areas\Manage\Views\Display\EditHTML.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Display\Index.cshtml">
-    </Content>
-    <Content Include="Areas\Manage\Views\Display\OrgContent.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\OrgMembers\Index.cshtml">
       <SubType>Code</SubType>
@@ -2742,8 +2950,6 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\FindTagPeople0.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\Batch\FindTagPeople.cshtml">
-    </Content>
     <Content Include="Areas\Search\Views\PeopleSearch\Index.cshtml">
     </Content>
     <Content Include="Areas\Search\Views\PeopleSearch\Results.cshtml">
@@ -2766,8 +2972,6 @@
     </Content>
     <Content Include="Areas\Public\Views\SGMap\Index.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\Batch\Test.cshtml">
-    </Content>
     <Content Include="Areas\Public\Views\OrgContent\Index.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\OrgContent\Edit.cshtml">
@@ -2779,8 +2983,6 @@
     <Content Include="Areas\Reports\Views\Reports\Meetings.cshtml">
     </Content>
     <Content Include="Areas\Reports\Views\Reports\VitalStats.cshtml">
-    </Content>
-    <Content Include="Areas\Main\Views\Email\Timeout.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Display\EditText.cshtml">
     </Content>
@@ -2820,8 +3022,6 @@
     </Content>
     <Content Include="Areas\Manage\Views\Duplicates\Index.cshtml">
     </Content>
-    <Content Include="Areas\Reports\Views\Reports\ExtraValues.cshtml">
-    </Content>
     <Content Include="Content\images\UpdatePeople.xls" />
     <Content Include="Content\images\MucketyTemplate.xls" />
     <Content Include="Areas\Main\Views\Tags\ConvertTagToExtraValue.cshtml">
@@ -2841,12 +3041,6 @@
     <Content Include="Views\Shared\Pager.cshtml">
     </Content>
     <Content Include="Views\Shared\Pager2.cshtml">
-    </Content>
-    <Content Include="Views\Home\About.cshtml">
-      <SubType>Code</SubType>
-    </Content>
-    <Content Include="Views\Home\BatchTag.cshtml">
-      <SubType>Code</SubType>
     </Content>
     <Content Include="Views\Home\ShowError.cshtml">
       <SubType>Code</SubType>
@@ -2870,7 +3064,6 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Areas\Finance\Views\QuickBooks\Index.cshtml" />
-    <Content Include="Views\Home\Test.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults.cshtml" />
     <Content Include="App_Code\Helper.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults2.cshtml" />
@@ -2878,9 +3071,6 @@
     <Content Include="Views\Shared\Dialogs.cshtml" />
     <Content Include="Views\Shared\Footer.cshtml" />
     <Content Include="Views\Shared\Notices.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Errors\Error.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\images\12-em-cross.png" />
@@ -2893,9 +3083,6 @@
     <Content Include="Scripts\jQuery\jquery.tooltip.min.js" />
     <Content Include="Content\images\loading.gif" />
     <Content Include="Content\images\navigation-shadow.png" />
-    <Content Include="ContributionReports\Deposit.aspx" />
-    <Content Include="ContributionReports\JournalDetails.aspx" />
-    <Content Include="ContributionReports\TotalsByFundRange.aspx" />
     <Content Include="Content\images\1pix.gif" />
     <Content Include="Content\images\adobe.png" />
     <Content Include="Content\images\arrow_left.gif" />
@@ -2939,8 +3126,6 @@
     <Content Include="Scripts\jQuery\jquery.cookie.js" />
     <Content Include="Content\images\star.png" />
     <Content Include="Scripts\jQuery\jquery.multiSelect.js" />
-    <Content Include="ContributionReports\TotalsByFundAgeRange.aspx" />
-    <Content Include="ContributionReports\Reports.Master" />
     <Content Include="Areas\Setup\Views\Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -2966,7 +3151,6 @@
     <Content Include="Scripts\Org\OrgSearch.js" />
     <Content Include="Scripts\Dialog\SearchAdd.js" />
     <Content Include="Scripts\Dialog\OrgMemberDialog.js" />
-    <Content Include="Errors\PageNotFound.aspx" />
     <Content Include="Scripts\js\CheckIn.js" />
     <Content Include="Scripts\js\Event.js" />
     <Content Include="Scripts\js\Pager.js" />
@@ -3003,14 +3187,10 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>-->
-  <Import Project="minify.xml" />
-  <Target Name="BeforeBuild" Condition="'$(Configuration)'!='Debug'">
-    <CallTarget Targets="Minify" />
-  </Target>
   <ProjectExtensions>
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
@@ -3029,4 +3209,8 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
 </Project>
