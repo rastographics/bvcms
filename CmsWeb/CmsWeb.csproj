@@ -837,6 +837,7 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
+    <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\css\custom-theme.css" />
     <Content Include="Content\touchpoint\lib\froala-editor\css\froala_editor.min.css" />
     <Content Include="Content\touchpoint\lib\froala-editor\css\froala_style.min.css" />
