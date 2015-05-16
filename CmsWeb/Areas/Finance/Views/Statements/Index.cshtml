@@ -44,7 +44,11 @@
                             <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Sort" data-content="Type either name or zip."><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="sort" class="control-label">Sort</label>
                             <div class="input-group">
-                                @Html.TextBox("sort", "", new { @class = "form-control" })
+                                <select id="sort" name="sort" class="form-control">
+                                    <option value="">(not specified)</option>
+                                    <option value="Name">Name</option>
+                                    <option value="Zip">Zip</option>
+                                </select>
                             </div>
                         </div>
                     </div>
