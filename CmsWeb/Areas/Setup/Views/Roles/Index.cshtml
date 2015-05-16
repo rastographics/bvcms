@@ -96,8 +96,8 @@
                 },
                 function () {
                     $.post("/Roles/Delete/" + id, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
+                        if (ret)
+                            swal("Error!", ret, "error");
                         else {
                             swal({
                                 title: "Deleted!",
