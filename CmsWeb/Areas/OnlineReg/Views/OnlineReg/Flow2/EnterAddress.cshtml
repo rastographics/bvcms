@@ -22,13 +22,13 @@ else
   @Html.HiddenFor(m => m.DateOfBirth)
 }
 
-@if (Model.RequiredPhone() && !Model.Phone.HasValue())
+@if (Model.PhoneOK)
 {
-  @Html.EditorFor(m => m.Phone)
+  @Html.HiddenFor(m => m.Phone)
 }
 else
 {
-  @Html.HiddenFor(m => m.Phone)
+  @Html.EditorFor(m => m.Phone)
 }
 
 <div class="form-group">

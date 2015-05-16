@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (!AddressLineOne.HasValue() && RequiredAddr())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].AddressLineOne), "address required.");
-            if(RequiredZip() && !ZipCode.HasValue() && !RequiredAddr())
+            if (RequiredZip() && !ZipCode.HasValue() && !RequiredAddr())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ZipCode), "zip required.");
 
             if (!RequiredZip() || !AddressLineOne.HasValue())
@@ -54,7 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return true; // not going to validate address
 
             var r = AddressVerify.LookupAddress(AddressLineOne, AddressLineTwo, City, State, ZipCode);
-            if (r.Line1 == "error") 
+            if (r.Line1 == "error")
                 return true; // Address Validator is not available, skip check
 
             if (r.found == false)
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (r.Zip != (ZipCode ?? ""))
                 ZipCode = r.Zip;
 
-            return true; 
+            return true;
         }
 
         private void ValidateMarital()
@@ -124,13 +124,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         private void ValidatePhone()
         {
-            var n = 0;
-            if (Phone.HasValue() && Phone.GetDigits().Length >= 10)
-                n++;
-
-            if (RequiredPhone() && n == 0)
+            if (!PhoneOK)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Phone), "cell or home phone required");
         }
+
+        public bool PhoneOK
+        {
+            get { return !Phone.HasValue() || Phone.GetDigits().Length >= 10; }
+        }
+
         private void ValidateEmailForNew()
         {
             if (EmailAddress.HasValue())
