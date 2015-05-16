@@ -42,6 +42,10 @@
         {
             @Html.EditorFor(m => m.TranId)
         }
+        else 
+        {
+          @Html.HiddenFor(m => m.TranId)
+        }
         @Html.EditorFor(m => m.UserData, "TextArea")
 </div>
 <div class="modal-footer">
