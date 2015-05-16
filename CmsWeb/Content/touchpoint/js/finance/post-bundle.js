@@ -86,7 +86,8 @@
     $("#name").blur(function () {
         if ($('#pid').val() == '' && $(this).val() != '') {
             $.growl("No Results!", "Name of person not found.", "warning");
-            $('#name').focus();
+            $('#name').val('');
+            $('#amt').focus();
         }
         else if ($(this).val() != $.enteredname && $.enteredname != '') {
             var q = $('#pbform').serialize();
@@ -191,7 +192,7 @@
         tr.hide();
         if (a.val() == '0.00')
             a.val('');
-        $('html,body').animate({ scrollTop: 0 }, 600);
+        $('html,body').animate({ scrollTop: 500 }, 600);
         a.focus();
         $('button.contribution-actions').prop('disabled', true);
     });
@@ -234,31 +235,27 @@
         var tr = $(this).closest("tr");
         $('#editid').val(tr.attr("cid"));
         var q = $('#pbform').serialize();
-        
+        $('#editid').val('');
         swal({
             title: "Are you sure?",
             type: "warning",
             showCancelButton: true,
             confirmButtonClass: "btn-danger",
             confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
+            closeOnConfirm: true
         },
         function () {
             $.post("/PostBundle/DeleteRow/", q, function (ret) {
                 if (ret && ret.error)
-                    swal("Error!", ret.error, "error");
+                    $.growl("Error!", ret.error, "danger");
                 else {
                     tr.remove();
                     showHideDiffRow(ret.diff);
                     $('.totalitems').text(ret.totalitems);
                     $('.difference').text(ret.difference);
                     $('.itemcount').text(ret.itemcount);
-                    
                     $('#editid').val('');
-                    swal({
-                        title: "Deleted!",
-                        type: "success"
-                    });
+                    $.growl("Deleted!", "Contribution was successfully deleted.", "success");
                 }
             });
         });
@@ -321,11 +318,11 @@
             var n = parseFloat($('#amt').val());
             var plnt = $("#PLNT").val();
             if (!n > 0 && plnt != 'GK' && plnt != 'SK') {
-                swal("Contribution Error!", "Cannot post. No amount specified.", "error");
+                $.growl("Contribution Error!", "Cannot post. No amount specified.", "danger");
                 return true;
             }
             if (!isNaN(n) && n != 0 && plnt == 'GK') {
-                swal("Contribution Error!", "Cannot post. Gift In Kind must be zero.", "error");
+                $.growl("Contribution Error!", "Cannot post. Gift In Kind must be zero.", "danger");
                 return true;
             }
             options.q = $('#pbform').serialize();
@@ -338,7 +335,7 @@
             if (!ret)
                 return;
             if (ret.error) {
-                swal("Error!", ret.error, "error");
+                $.growl("Error!", ret.error, "danger");
                 return;
             }
             showHideDiffRow(ret.diff);
@@ -404,15 +401,11 @@
                 $('.difference').text(ret.difference);
                 $('.itemcount').text(ret.itemcount);
                 keyallowed = true;
-                swal({
-                    title: "Moved!",
-                    text: "Contribution was successfully moved.",
-                    type: "success"
-                });
+                $.growl("Moved!", "Contribution was successfully moved.", "success");
                 $('button.contribution-actions').prop('disabled', false);
                 $("#gear").hide();
             } else {
-                swal("Error!", ret.error, "error");
+                $.growl("Error!", ret.error, "danger");
             }
         });
     });

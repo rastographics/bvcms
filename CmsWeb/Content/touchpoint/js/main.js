@@ -79,6 +79,9 @@ $.growl = function (title, text, type) {
     else if (type == 'warning') {
         backColor = '#eaab00';
     }
+    else if (type == 'success') {
+        backColor = '#5cb85c';
+    }
 
     $.blockUI.defaults.growlCSS = {
         width: '250px',
