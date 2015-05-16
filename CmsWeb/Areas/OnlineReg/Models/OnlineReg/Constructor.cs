@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         {
                             orgid = Orgid,
                             masterorgid = masterorgid,
-#if DEBUG
+#if DEBUG2
                             FirstName = "Otis",
                             LastName = "Sukamotis-" + DateTime.Now.Millisecond,
                             DateOfBirth = "5/30/55",

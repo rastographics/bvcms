@@ -32,7 +32,7 @@
 </tr>
                         </thead>
                         <tbody>
-                            @{ var funds = CmsWeb.Models.OnlineRegPersonModel.FullFundList(); }
+                            @{ var funds = CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.FullFundList(); }
                             @foreach (var fund in funds)
 {
                                 var amt = Model.FundItemValue(UtilityExtensions.Util.ToInt(fund.Value)) ?? 0;

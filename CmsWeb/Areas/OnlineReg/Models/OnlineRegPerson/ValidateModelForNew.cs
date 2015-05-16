@@ -130,7 +130,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool PhoneOK
         {
-            get { return !Phone.HasValue() || Phone.GetDigits().Length >= 10; }
+            get
+            {
+                var hasrequired = !RequiredPhone() || Phone.HasValue();
+                var lengthok = !Phone.HasValue() || Phone.GetDigits().Length >= 10;
+                return hasrequired && lengthok;
+            }
         }
 
         private void ValidateEmailForNew()

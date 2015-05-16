@@ -36,17 +36,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var pid = m.CheckRegisterLink(registertag);
 
             return RouteRegistration(m, pid, showfamily);
-            }
+        }
 
         [HttpPost]
         public ActionResult Login(OnlineRegModel m)
         {
+            fromMethod = "Login";
             // they clicked the Login button on the login page
             var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
             if (ret is string)
             {
                 ModelState.AddModelError("authentication", ret.ToString());
-                return FlowList(m, "Login");
+                return FlowList(m);
             }
             Session["OnlineRegLogin"] = true;
 
@@ -62,56 +63,60 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             m.UserPeopleId = Util.UserPeopleId;
             m.HistoryAdd("login");
-            return FlowList(m, "Login");
+            return FlowList(m);
         }
 
         [HttpPost]
         public ActionResult NoLogin(OnlineRegModel m)
         {
+            fromMethod = "NoLogin";
             // Clicked the register without logging in link
             m.nologin = true;
             m.CreateAnonymousList();
             m.HistoryAdd("nologin");
-            return FlowList(m, "NoLogin");
+            return FlowList(m);
         }
 
         [HttpPost]
         public ActionResult YesLogin(OnlineRegModel m)
         {
+            fromMethod = "YesLogin";
             // clicked the Login Here button
             m.HistoryAdd("yeslogin");
             m.nologin = false;
             m.List = new List<OnlineRegPersonModel>();
-#if DEBUG
-            m.username = "trecord";
-#endif
-            return FlowList(m, "YesLogin");
+            return FlowList(m);
         }
 
         [HttpPost]
         public ActionResult RegisterFamilyMember(int id, OnlineRegModel m)
         {
             // got here by clicking on a link in the Family list
+            fromMethod = "Register";
+
             m.StartRegistrationForFamilyMember(id, ModelState);
-            // will take them to the Questions page
-                return FlowList(m, "Register");
-            }
+
+            // now take them to the Questions page
+            return FlowList(m);
+        }
 
         [HttpPost]
         public ActionResult Cancel(int id, OnlineRegModel m)
         {
             // After clicking Cancel, remove a person from the completed registrants list
+            fromMethod = "Cancel";
             m.CancelRegistrant(id);
-            return FlowList(m, "Cancel");
+            return FlowList(m);
         }
 
         [HttpPost]
         public ActionResult FindRecord(int id, OnlineRegModel m)
         {
             // Anonymous person clicks submit to find their record
+            fromMethod = "FindRecord";
             m.HistoryAdd("FindRecord id=" + id);
             if (id >= m.List.Count)
-                return FlowList(m, "FindRecord");
+                return FlowList(m);
             var p = m.List[id];
 
             p.ValidateModelForFind(ModelState, id);
@@ -122,79 +127,61 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (p.IsSpecialReg())
                 p.QuestionsOK = true;
             else if (p.RegistrationFull())
-                    ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
+                ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             p.SetClassId();
             p.SetSpecialFee();
 
-            if (ModelState.IsValid && p.count != 1) 
-            {
-                // not found, so show AddressGenderMarital Form
-                p.Found = false;
-                p.ValidateModelForFind(ModelState, id);
-                p.PrepareToAddNewPerson(ModelState, id);
-        }
+            if (!ModelState.IsValid || p.count == 1)
+                return FlowList(m);
 
-            return FlowList(m, "FindRecord");
+            // form is ok but not found, so show AddressGenderMarital Form
+            p.PrepareToAddNewPerson(ModelState, id);
+            p.Found = false;
+            return FlowList(m);
         }
 
         [HttpPost]
         public ActionResult SubmitNew(int id, OnlineRegModel m)
         {
             // Submit from AddressMaritalGenderForm
+            fromMethod = "SubmitNew";
             ModelState.Clear();
             m.HistoryAdd("SubmitNew id=" + id);
             var p = m.List[id];
             p.ValidateModelForNew(ModelState, id);
 
-                    SetHeaders(m);
+            SetHeaders(m);
             var ret = p.AddNew(ModelState, id);
             return ret.HasValue()
                 ? View(ret, m)
-                : FlowList(m, "SubmitNew");
+                : FlowList(m);
         }
 
         [HttpPost]
         public ActionResult SubmitQuestions(int id, OnlineRegModel m)
         {
+            fromMethod = "SubmitQuestions";
             m.HistoryAdd("SubmitOtherInfo id=" + id);
             if (m.List.Count <= id)
                 return Content("<p style='color:red'>error: cannot find person on submit other info</p>");
             m.List[id].ValidateModelQuestions(ModelState, id);
-            return FlowList(m, "SubmitQuestions");
+            return FlowList(m);
         }
 
         [HttpPost]
         public ActionResult AddAnotherPerson(OnlineRegModel m)
         {
+            fromMethod = "AddAnotherPerson";
             m.HistoryAdd("AddAnotherPerson");
             m.ParseSettings();
             if (!ModelState.IsValid)
-                return FlowList(m, "AddAnotherPerson");
-#if DEBUG2
-            m.List.Add(new OnlineRegPersonModel
-            {
-                guid = Guid.NewGuid(),
-                divid = m.divid,
-                orgid = m.orgid,
-                masterorgid = m.masterorgid,
-                first = "Bethany",
-                last = "Carroll",
-                //bmon = 1,
-                //bday = 29,
-                //byear = 1987,
-                dob = "1/29/87",
-                email = "davcar@pobox.com",
-                phone = "9017581862".FmtFone(),
-                LoggedIn = m.UserPeopleId.HasValue,
-            });
-#else
+                return FlowList(m);
             m.List.Add(new OnlineRegPersonModel
             {
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
             });
-#endif
-            return FlowList(m, "AddAnotherPerson");
+            return FlowList(m);
         }
 
         [HttpPost]
@@ -261,7 +248,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View();
         }
 
-        private ActionResult FlowList(OnlineRegModel m, string function)
+        private string fromMethod;
+        private ActionResult FlowList(OnlineRegModel m)
         {
             try
             {
@@ -271,7 +259,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
-                return ErrorResult(m, ex, "In " + function + "<br>" + ex.Message);
+                return ErrorResult(m, ex, "In " + fromMethod + "<br>" + ex.Message);
             }
         }
 

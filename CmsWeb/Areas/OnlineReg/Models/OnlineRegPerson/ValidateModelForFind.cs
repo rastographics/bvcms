@@ -38,6 +38,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 foundname = "fammember-" + PeopleId;
 
             ValidateBasic();
+            if (!modelState.IsValid)
+                return;
+
             Found = person != null;
             ValidateAgeRequirement();
             ValidateEmail();
@@ -49,7 +52,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             }
 
-            //UniquePerson(foundname);
             if(count != 1)
             {
                 IsValidForExisting = false;
@@ -97,29 +99,29 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].LastName), "last name required");
 
             var mindate = DateTime.Parse("1/1/1753");
-            var n = 0;
+            var HasOneOfThreeRequired = false;
 
             if (birthday.HasValue && birthday < mindate)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "invalid date");
 
             if (birthday.HasValue && birthday > mindate)
-                n++;
+                HasOneOfThreeRequired = true;
 
             if (Util.ValidEmail(EmailAddress))
-                n++;
+                HasOneOfThreeRequired = true;
 
             var d = Phone.GetDigits().Length;
             if (Phone.HasValue() && d >= 10)
-                n++;
+                HasOneOfThreeRequired = true;
 
             if (d > 20)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Phone), "too many digits in phone");
 
-            if (n == 0)
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "we require one of valid birthdate, email or phone to find your record");
+            if (!HasOneOfThreeRequired)
+                modelState.AddModelError("FORM", "we require one of valid birthdate, email or phone to find an existing profile");
 
             if (!Util.ValidEmail(EmailAddress))
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress), "valid email required");
+                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress), "valid email required for registration confirmation");
 
             if (Phone.HasValue() && d < 10)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Phone), "10+ digits required");
@@ -151,31 +153,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday outside age allowed range");
             }
             IsValidForContinue = modelState.IsValid;
-        }
-        private bool UniquePerson(string foundname)
-        {
-            if (count == 1)
-                return true;
-
-            if (count > 1)
-            {
-                modelState.AddModelError(foundname, "More than one match, sorry");
-                RegistrantProblem = @"
-**MORE THAN ONE MATCH**  
-We have found more than one record that matches your information
-This is an unexpected error and we don't know which one is you.
-Please call the church to resolve this before we can complete your registration.";
-                IsValidForContinue = false;
-                return false;
-            }
-            modelState.AddModelError(foundname, "record not found");
-            RegistrantProblem = @"
-**RECORD NOT FOUND**  
-We were not able to find you in our database. Please check the information you entered.
-* If everything looks good, select ""New Profile""
-* If you make a correction, select ""Search Again""
-";
-            return false;
         }
         private void PopulateExistingInformation()
         {
