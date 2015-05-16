@@ -175,7 +175,13 @@
         ev.preventDefault();
         var tr = $(this).closest("tr");
         $('#editid').val(tr.attr("cid"));
-        $('#pid').val($.trim($("a.pid", tr).text()));
+
+        var personId = $.trim($("a.pid", tr).text());
+        if (personId == 'Select') {
+            personId = '';
+        }
+
+        $('#pid').val(personId);
         $('#name').val($("td.name span", tr).text());
         $('#contributiondate').val($(".date", tr).val());
         $("#gear").show();
@@ -192,7 +198,7 @@
         tr.hide();
         if (a.val() == '0.00')
             a.val('');
-        $('html,body').animate({ scrollTop: 500 }, 600);
+        $('html,body').animate({ scrollTop: 400 }, 600);
         a.focus();
         $('button.contribution-actions').prop('disabled', true);
     });
@@ -319,10 +325,12 @@
             var plnt = $("#PLNT").val();
             if (!n > 0 && plnt != 'GK' && plnt != 'SK') {
                 $.growl("Contribution Error!", "Cannot post. No amount specified.", "danger");
+                keyallowed = true;
                 return true;
             }
             if (!isNaN(n) && n != 0 && plnt == 'GK') {
                 $.growl("Contribution Error!", "Cannot post. Gift In Kind must be zero.", "danger");
+                keyallowed = true;
                 return true;
             }
             options.q = $('#pbform').serialize();
@@ -332,6 +340,7 @@
         if (cid)
             action = "/PostBundle/UpdateRow/";
         $.post(action, options.q, function (ret) {
+            keyallowed = true;
             if (!ret)
                 return;
             if (ret.error) {
@@ -365,7 +374,7 @@
             $('#entry input').val('');
             $('#fund').val($('#fundid').val());
             $('#pid').focus();
-            keyallowed = true;
+            
             var top = tr.offset().top - 360;
             if (options.scroll == true) {
                 $('html,body').animate({ scrollTop: top }, 1000);
