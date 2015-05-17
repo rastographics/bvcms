@@ -30,6 +30,24 @@ namespace CmsWeb.Areas.Reports.Controllers
     [RouteArea("Reports", AreaPrefix = "Reports"), Route("{action}/{id?}")]
     public class ReportsController : CmsStaffController
     {
+        [Authorize(Roles = "Elder,Admin")]
+        [HttpGet, Route("Application/{orgid:int}/{peopleid:int}/{content}")]
+        public ActionResult Application(int orgid, int peopleid, string content)
+        {
+#if DEBUG2
+            var c = System.IO.File.ReadAllText(Server.MapPath("/Application.html"));
+            var replacements = new EmailReplacements(DbUtil.Db, c, null);
+#else
+            var c = DbUtil.Db.Content(content);
+            if(c == null)
+                return Message("no content at " + content);
+            var replacements = new EmailReplacements(DbUtil.Db, c.Body, null);
+#endif
+            var p = DbUtil.Db.LoadPersonById(peopleid);
+            DbUtil.Db.SetCurrentOrgId(orgid);
+            ViewBag.html = replacements.DoReplacements(DbUtil.Db, p);
+            return View();
+        }
         [HttpGet]
         public ActionResult Attendance(int id, AttendanceModel m)
         {
