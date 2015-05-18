@@ -1,0 +1,38 @@
+﻿@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Application Report";
+    ViewBag.ReportPageHeader = "Application Report";
+}
+@section head
+{
+  <style>
+    .question {
+      text-indent:-15px;
+      margin-left: 15px;
+      margin-top: 10px;
+      font-weight: bold; 
+    }
+    .box-content {
+      max-width: 700px;
+    }
+    .question span.number {
+      width: 15px;
+    }
+    .answer { 
+      margin-top: 10px;
+      margin-left: 10px;
+      padding: 10px; 
+      border: 1px solid black; 
+    }
+    h4 {
+      margin-top: 20px;
+    }
+  </style>
+}
+<div class="report box box-responsive">
+    <div class="box-content center-block">
+      <div>
+        @Html.Raw(ViewBag.html)
+      </div>
+    </div>
+</div>

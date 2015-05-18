@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
@@ -73,7 +71,7 @@ namespace CmsData
         {
             using (db = CMSDataContext.Create(connStr, host))
             {
-                if(currentOrgId.HasValue)
+                if (currentOrgId.HasValue)
                     db.SetCurrentOrgId(currentOrgId);
                 var p = db.LoadPersonById(pid);
                 person = p;
@@ -204,6 +202,9 @@ namespace CmsData
                 case "{cmshost}":
                     return db.ServerLink();
 
+                case "{dob}":
+                    return p.DOB;
+
                 case "{emailhref}":
                     if (emailqueueto != null)
                         return db.ServerLink("/EmailView/" + emailqueueto.Id);
@@ -259,6 +260,7 @@ namespace CmsData
                 case "{state}":
                     return p.PrimaryState;
 
+                case "{email}":
                 case "{toemail}":
                     if (ListAddresses.Count > 0)
                         return ListAddresses[0].Address;
@@ -284,7 +286,11 @@ namespace CmsData
 
                 default:
                     if (emailqueueto == null)
-                        return code;
+                        emailqueueto = new EmailQueueTo()
+                        {
+                            PeopleId = p.PeopleId,
+                            OrgId = db.CurrentOrgId0
+                        };
 
                     if (code.StartsWith("{addsmallgroup:", StringComparison.OrdinalIgnoreCase))
                         return AddSmallGroup(code, emailqueueto);
@@ -315,6 +321,9 @@ namespace CmsData
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
+
+                    if (code.StartsWith("{regtext:", StringComparison.OrdinalIgnoreCase))
+                        return RegText(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroups", StringComparison.OrdinalIgnoreCase))
                         return SmallGroups(code, emailqueueto);
@@ -694,6 +703,26 @@ namespace CmsData
                 sg = def;
             return sg;
         }
+
+        const string RegTextRe = @"{reg(?<type>.*?):(?<field>.*?)}";
+        readonly Regex regTextRe = new Regex(RegTextRe, RegexOptions.Singleline);
+        private string RegText(string code, EmailQueueTo emailqueueto)
+        {
+            var match = regTextRe.Match(code);
+            if (!match.Success)
+                return code;
+            var field = match.Groups["field"].Value;
+            var type = match.Groups["type"].Value;
+            var answer = (from qa in db.ViewOnlineRegQAs
+                          where qa.Question == field
+                          where qa.Type == type
+                          where qa.PeopleId == emailqueueto.PeopleId
+                          where qa.OrganizationId == emailqueueto.OrgId
+                          select qa.Answer).SingleOrDefault();
+
+            return answer;
+        }
+
 
         private string SmallGroups(string code, EmailQueueTo emailqueueto)
         {
