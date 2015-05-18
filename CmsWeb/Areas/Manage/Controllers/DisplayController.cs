@@ -65,7 +65,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             content.Name = newName;
             content.TypeID = newType;
             content.RoleID = newRole ?? 0;
-            content.Title = content.Body = "";
+            content.Title = newName;
+            content.Body = "";
             content.DateCreated = DateTime.Now;
 
             DbUtil.Db.Contents.InsertOnSubmit(content);
@@ -79,7 +80,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var content = DbUtil.ContentFromID(id);
             content.Name = name;
-            content.Title = title;
+            content.Title = string.IsNullOrWhiteSpace(title) ? name : title;
             content.Body = body;
             content.RoleID = roleid ?? 0;
             content.Snippet = snippet;

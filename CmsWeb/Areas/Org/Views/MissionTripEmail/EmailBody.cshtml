@@ -7,12 +7,17 @@
     <meta name="viewport" content="width=device-width, maximum-scale=1.0">
     <title></title>
     @Fingerprint.Css("/Content/touchpoint/css/editor.css")
+    <style>
+        #tempateBody {
+            font-family: Arial,Helvetica;
+        }
+    </style>
 </head>
 <body>
     <div id="tempateBody">
         @if (Model.Body == "<div bvedit=\"\" style=\"max-width:600px;\">Click here to edit content</div>\r\n")
         {
-            <font face="Arial">@Html.Raw(Model.Body)</font>
+            <font face="Arial,Helvetica">@Html.Raw(Model.Body)</font>
         }
         else
         {

@@ -5,6 +5,11 @@
 }
 @section head{
     @ViewExtensions2.FroalaEditorCss()
+    <style>
+        #body {
+            font-family: Arial,Helvetica;
+        }
+    </style>
 }
 <div class="row">
     <div class="col-lg-9">
@@ -66,6 +71,7 @@
 
             $('#body').froalaEditable({
                 inlineMode: false,
+                beautifyCode: false,
                 spellcheck: true,
                 useFileName: false,
                 height: 200,

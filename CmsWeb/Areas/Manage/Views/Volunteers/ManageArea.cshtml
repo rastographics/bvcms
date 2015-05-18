@@ -7,7 +7,6 @@
 
 @Html.Hidden("OrgId", Model.OrgId)
 @Html.Hidden("SortByWeek", Model.SortByWeek)
-<h2>Volunteer Calendar for @Helper.AnchorLink(Model.OrgName, Util2.Org + "/" + Model.OrgId)</h2>
 <table>
   <tr>
     <td class="top">
@@ -100,19 +99,19 @@
             {
           <p>
             @if (User.IsInRole("Edit"))
-                    {
-            @Helper.AnchorLink("Email Reminders", Util2.Org + "/Reminders/" + Model.OrgId, id: "sendreminders", style: "bt")
-                    }
-                    else
-                    {
-                  <a enabled="false">Email Reminders</a>
-                    }
+            {
+                <a href="@Util2.Org/Reminders/@Model.OrgId" id="sendreminders" class="btn btn-default"><i class="fa fa-envelope-o"></i> Email Reminders</a>
+            }
+            else
+            {
+                <a enabled="false">Email Reminders</a>
+            }
             @Html.CheckBox("emailall") Email All (default next 7 days)
           </p>
           <p>
           Sub-Group Filters<br />
-            @Html.DropDownList("sg1", Model.SmallGroups(), new { @class = "smallgroup" })<br />
-            @Html.DropDownList("sg2", Model.SmallGroups(), new { @class = "smallgroup" })
+            @Html.DropDownList("sg1", Model.SmallGroups(), new { @class = "smallgroup form-control" })<br />
+            @Html.DropDownList("sg2", Model.SmallGroups(), new { @class = "smallgroup form-control" })
           </p>
           <div class="drop day" target="clear" week="0" time="1-1-1000" style="padding:5px;height:2em;border:2px solid black;">target here to remove commitments</div>
           <h4><em>Select header items in blue below, or a person, then click a target</em></h4>

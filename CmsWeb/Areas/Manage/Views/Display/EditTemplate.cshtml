@@ -55,8 +55,12 @@
 {
     @ViewExtensions2.FroalaEditorScripts()
     <script type="text/javascript">
-        $(function() {
+        $(function () {
+            $.Editable.DEFAULTS.allowedTags.push('html');
+            $.Editable.DEFAULTS.allowedTags.push('head');
             $.Editable.DEFAULTS.allowedTags.push('style');
+            $.Editable.DEFAULTS.allowedTags.push('body');
+            $.Editable.DEFAULTS.allowedAttrs.push('xmlns');
             $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
             $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
             $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
@@ -65,6 +69,7 @@
             $('#email-body').load(function () {
                 $(this).contents().find('#editor-body').froalaEditable({
                     inlineMode: false,
+                    beautifyCode: false,
                     allowStyle: true,
                     spellcheck: true,
                     useFileName: false,
@@ -74,6 +79,9 @@
                     buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
                     imageUploadURL: '/Account/FroalaUpload',
                     fileUploadURL: '/Account/FroalaUpload'
+                });
+                $(this).contents().find('#editor-body').on('editable.htmlHide', function (e, editor, html) {
+                    iframeLoaded();
                 });
             });
 

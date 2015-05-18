@@ -1,12 +1,12 @@
-﻿@using CmsWeb
+﻿@using CmsData
+@using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Areas.Manage.Models.VolunteerCommitmentsModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Volunteer Calendar";
-}
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/Volunteer/Calendar.js")
+    ViewBag.PageHeader = "Volunteer Calendar";
+    ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>".Fmt(Util2.Org, Model.OrgId, Model.OrgName);
 }
 @section head
 {
@@ -41,8 +41,23 @@
     .commit-3 {text-decoration: line-through;color: blue;font-size: 90%; }
     /* Substitute */
     .commit-4 { color: #008000; }
+    td.top, th.top {
+        vertical-align: top;
+    }
   </style>
 }
-<div id="managearea">
-    @Html.Partial("ManageArea", Model)
+<div class="row">
+    <div class="col-sm-12">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div id="managearea">
+                    @Html.Partial("ManageArea", Model)
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+@section scripts
+{
+    @Fingerprint.Script("/Content/touchpoint/js/volunteer/calendar.js")
+}
