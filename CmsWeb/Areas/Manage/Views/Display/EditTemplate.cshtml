@@ -55,8 +55,12 @@
 {
     @ViewExtensions2.FroalaEditorScripts()
     <script type="text/javascript">
-        $(function() {
+        $(function () {
+            $.Editable.DEFAULTS.allowedTags.push('html');
+            $.Editable.DEFAULTS.allowedTags.push('head');
             $.Editable.DEFAULTS.allowedTags.push('style');
+            $.Editable.DEFAULTS.allowedTags.push('body');
+            $.Editable.DEFAULTS.allowedAttrs.push('xmlns');
             $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
             $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
             $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
