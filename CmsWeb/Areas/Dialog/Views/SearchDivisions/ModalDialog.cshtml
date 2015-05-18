@@ -1,64 +1,61 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.SearchDivisionsModel
-<div class="modal-header">
-  <a class="close" data-dismiss="modal">x</a>
-  <h4>Select Divisions</h4>
+@Html.HiddenFor(m => m.ordered)
+@Html.HiddenFor(m => m.singlemode)
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.TargetDivision)
+@Html.HiddenFor(m => m.Adding)
+<div class="well">
+    <div class="row">
+        <div class="col-sm-10 col-md-11">
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                @Html.TextBoxFor(m => m.name, new { title = "Partial Program / Division Name", @class="form-control" })
+            </div>
+        </div>
+        <div class="col-sm-2 col-md-1">
+            <div class="pull-right">
+                <a id="search" class="btn btn-primary ajax">Search</a>
+            </div>
+        </div>
+    </div>
 </div>
-<div class="modal-body">
-  @Html.HiddenFor(m => m.ordered)
-  @Html.HiddenFor(m => m.singlemode)
-  @Html.HiddenFor(m => m.Id)
-  @Html.HiddenFor(m => m.TargetDivision)
-  @Html.HiddenFor(m => m.Adding)
-  @Html.TextBoxFor(m => m.name, new { title = "Partial Program / Division Name" })
-  <a id="search" class="btn btn-primary ajax">Search</a>
-  <div class="pagination pagination-mini">
-    @Html.Partial("PagerHidden", Model)
-    @Html.Partial("Pager3", Model)
-  </div>
-  <table class="@ViewExtensions2.GridClass">
-    <thead>
-      <tr>
-        <td colspan="3">
-          <b>showing top @Math.Min(Model.PageSize,Model.Count()) of @Model.Count().ToString("N0")</b>
-        </td>
-      </tr>
-      <tr>
-        <th></th>
-        <th>Program</th>
-        <th>Division</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      @foreach (var d in Model.ViewList())
-      {
-        <tr>
-          <td>
-            <input type="checkbox" @(d.IsChecked == true ? "checked='checked'" : "")
-                   value="@d.DivId" @(d.IsMain == true ? "disabled=disabled" : "") />
-          </td>
-          <td title="Other Programs|@d.Programs" class="tip">@d.Program</td>
-          <td title="@d.DivId" class="tip">@d.Division</td>
-          <th>
-            @if (d.IsMain == true)
+@Html.Partial("PagerTop", Model)
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Program</th>
+                <th>Division</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var d in Model.ViewList())
             {
-              <a>main division</a>
+                <tr>
+                    <td>
+                        <input type="checkbox" @(d.IsChecked == true ? "checked='checked'" : "")
+                               value="@d.DivId" @(d.IsMain == true ? "disabled=disabled" : "") />
+                    </td>
+                    <td title="Other Programs|@d.Programs" class="tip">@d.Program</td>
+                    <td title="@d.DivId" class="tip">@d.Division</td>
+                    <th>
+                        @if (d.IsMain == true)
+                        {
+                            <a>main division</a>
+                        }
+                        @if (d.IsChecked == true && d.IsMain != true)
+                        {
+                            <span class="move">
+                                <a href="#" class="move" data-moveid="@d.DivId">move to top</a>
+                            </span>
+                        }
+                    </th>
+                </tr>
             }
-            @if (d.IsChecked == true && d.IsMain != true)
-            {
-            <span class="move">
-              <a href="#" class="move" data-moveid="@d.DivId">move to top</a>
-            </span>
-            }
-          </th>
-        </tr>
-      }
-    </tbody>
-  </table>
-  <div class="pagination pagination-mini">
-    @Html.Partial("Pager3", Model)
-  </div>
+        </tbody>
+    </table>
 </div>
-<div class="modal-footer">
-  <a class="close pull-right btn btn-primary" data-dismiss="modal">OK</a>
-</div>
+@Html.Partial("PagerBottom", Model)
+@Html.Partial("PagerHidden", Model)

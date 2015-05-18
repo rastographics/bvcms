@@ -3,14 +3,14 @@
 @{
     var items = (ViewData["items"] as IEnumerable<SelectListItem> ?? new List<SelectListItem>()).ToList();
 }
-<div class="control-group">
+<div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label" })
-    <div class="controls code-dropdown">
-        <select name="@ViewData.TemplateInfo.HtmlFieldPrefix" multiple="multiple" style="display:none">
+    <div class="form-group controls">
+        <select name="@ViewData.TemplateInfo.HtmlFieldPrefix" multiple="multiple" style="display:none" class="form-control">
             @foreach (var o in items)
-                {
+            {
                 <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
-                }
+            }
         </select>
         @Html.ValidationMessageLabelFor(m => m)
     </div>

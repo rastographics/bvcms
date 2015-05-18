@@ -53,7 +53,6 @@ namespace CmsWeb.Areas.Search.Controllers
         [HttpPost]
         public ActionResult Results(OrgSearchModel m)
         {
-            UpdateModel(m.Pager);
             Session[STR_OrgSearch] = new OrgSearchInfo(m);
             return View(m);
         }

@@ -1,113 +1,119 @@
 ﻿@using CmsData;
-@using CmsWeb
 @using UtilityExtensions;
-@model CmsData.BackgroundCheck
+@model BackgroundCheck
 @{
     var s = from e in DbUtil.Db.BackgroundCheckMVRCodes
             orderby e.Description
             select e;
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Submit Background Check</title>
-</head>
-<body>
-    <form id="submitCheck" action="/Volunteering/SubmitCheck/@Model.Id" method="post">
-        <input type="hidden" name="iPeopleID" value="@Model.PeopleID" />
-        <table>
-            <tr>
-                <th colspan="2"><div style="padding-bottom:5px;"><b><u>Person Information</u></b></div></th>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">First:</td>
-                <td>@Model.Person.FirstName</td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Middle:</td>
-                <td>@Model.Person.MiddleName</td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Last:</td>
-                <td>@Model.Person.LastName</td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Generation:</td>
-                <td>@Model.Person.SuffixCode</td>
-            </tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Address:</td>
-                <td>@Model.Person.PrimaryAddress</td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">City:</td>
-                <td>@Model.Person.PrimaryCity</td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">State:</td>
-                <td>@Model.Person.PrimaryState</td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Zipcode:</td>
-                <td>@Model.Person.PrimaryZip</td>
-            </tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">DOB:</td>
-                <td>@(Model.Person.BDate != null ? Model.Person.BDate.Value.ToString("d") : "" )</td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Gender:</td>
-                <td>@Model.Person.Gender.Description</td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">SSN:</td>
-                <td><input name="sSSN" size="12" value="@( Util.getMasked( Util.Decrypt( Model.Person.Ssn, "People" ), 4, true, "XXX-XX-" ) )" /></td>
-            </tr>
-            @if( Model.ServiceCode == "MVR" ) {
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">License Number:</td>
-                <td><input name="sDLN" size="15" value="@( Util.getMasked( Util.Decrypt( Model.Person.Dln, "People" ), 4, true, "XXXXX" ) )" /></td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">State Code:</td>
-                <td>@Html.DropDownList( "iStateID", new SelectList( s, "ID", "Description", Model.Person.DLStateID ) )</td>
-            </tr>
+<form id="submitCheck" action="/Volunteering/SubmitCheck/@Model.Id" method="post" class="form-horizontal">
+    <input type="hidden" name="iPeopleID" value="@Model.PeopleID" />
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Submit Check</h4>
+    </div>
+    <div class="modal-body">
+        <h4>Person Information</h4>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">First</label>
+            <p class="form-control-static col-sm-10">@Model.Person.FirstName</p>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Last</label>
+            <p class="form-control-static col-sm-10">@Model.Person.LastName</p>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Last</label>
+            <p class="form-control-static col-sm-10">@Model.Person.LastName</p>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Generation</label>
+            <p class="form-control-static col-sm-10">@Model.Person.SuffixCode</p>
+        </div>
+        <br/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Address</label>
+            <p class="form-control-static col-sm-10">@Model.Person.PrimaryAddress</p>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">City</label>
+            <p class="form-control-static col-sm-10">@Model.Person.PrimaryCity</p>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">State</label>
+            <p class="form-control-static col-sm-10">@Model.Person.PrimaryState</p>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Zipcode</label>
+            <p class="form-control-static col-sm-10">@Model.Person.PrimaryZip</p>
+        </div>
+        <br/>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">DOB</label>
+            <p class="form-control-static col-sm-10">@(Model.Person.BDate != null ? Model.Person.BDate.Value.ToString("d") : "")</p>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">Gender</label>
+            <p class="form-control-static col-sm-10">@Model.Person.Gender.Description</p>
+        </div>
+        <div class="form-group">
+            <label for="sSSN" class="col-sm-2 control-label">SSN</label>
+            <div class="col-sm-10">
+                @Html.TextBox("sSSN", Util.getMasked(Util.Decrypt(Model.Person.Ssn, "People"), 4, true, "XXX-XX-"), new { @class = "form-control" })
+            </div>
+        </div>
+        @if (Model.ServiceCode == "MVR")
+        {
+            <div class="form-group">
+                <label for="sDLN" class="col-sm-2 control-label">License Number</label>
+                <div class="col-sm-10">
+                    @Html.TextBox("sDLN", Util.getMasked(Util.Decrypt(Model.Person.Dln, "People"), 4, true, "XXXXX"), new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="iStateID" class="col-sm-2 control-label">State Code</label>
+                <div class="col-sm-10">
+                    @Html.DropDownList("iStateID", new SelectList(s, "ID", "Description", Model.Person.DLStateID), new { @class = "form-control" })
+                </div>
+            </div>
+        }
+        @if (Model.ServiceCode == "ComboPC" || Model.ServiceCode == "ComboPS")
+        {
+            <br/>
+            <h4>Plus Package Options</h4>
+            if (Model.ServiceCode == "ComboPC")
+            {
+                <div class="form-group">
+                    <label for="sPlusCounty" class="col-sm-2 control-label">Plus County</label>
+                    <div class="col-sm-10">
+                        @Html.TextBox("sPlusCounty", "", new { @class = "form-control" })
+                    </div>
+                </div>
             }
-            @if( Model.ServiceCode == "ComboPC" || Model.ServiceCode == "ComboPS" ) {
-                <tr><td>&nbsp;</td></tr>
-                <tr>
-                    <th colspan="2"><div style="padding-bottom:5px;"><b><u>Plus Package Options</u></b></div></th>
-                </tr>
-                if( Model.ServiceCode == "ComboPC" ) {
-                    <tr>
-                        <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Plus County:</td>
-                        <td><input name="sPlusCounty" size="20" /></td>
-                    </tr>
-                }
-                <tr>
-                    <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Plus State Code:</td>
-                    <td>@Html.DropDownList( "sPlusState", new SelectList( s, "StateAbbr", "StateAbbr" ) )</td>
-                </tr>
-            }
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-                <th colspan="2"><div style="padding-bottom:5px;"><b><u>Protect My Ministry Login</u></b></div></th>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">User:</td>
-                <td><input name="sUser" size="12" value="@ViewExtensions2.DbSetting("PMMUser", "")"/></td>
-            </tr>
-            <tr>
-                <td class="right" style="background-color:#EFF3FB; font-weight:bold;">Password:</td>
-                <td><input type="password" name="sPassword" size="12" autocomplete="off" value="@ViewExtensions2.DbSetting("PMMPassword", "")"/></td>
-            </tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-                <td colspan="2" class="center"><input class="bt" type="submit" value="Submit" /> &nbsp;&nbsp; <input class="bt" id="closeSubmitDialog" type="button" value="Cancel"  /></td>
-            </tr>
-        </table>
-    </form>
-</body>
-</html>
+            <div class="form-group">
+                <label for="sPlusState" class="col-sm-2 control-label">Plus State Code</label>
+                <div class="col-sm-10">
+                    @Html.DropDownList("sPlusState", new SelectList(s, "StateAbbr", "StateAbbr"), new { @class = "form-control" })
+                </div>
+            </div>
+        }
+        <br/>
+        <h4>Protect My Ministry Login</h4>
+        <div class="form-group">
+            <label for="sUser" class="col-sm-2 control-label">User</label>
+            <div class="col-sm-10">
+                @Html.TextBox("sUser", ViewExtensions2.DbSetting("PMMUser", ""), new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="sPassword" class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+                @Html.TextBox("sPassword", ViewExtensions2.DbSetting("PMMPassword", ""), new { @class = "form-control", autocomplete = "off" })
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+        <input type="submit" value="Submit" class="btn btn-primary" />
+    </div>
+</form>

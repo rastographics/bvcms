@@ -19,7 +19,7 @@ namespace CmsWeb.Areas.Org.Controllers
 
         [Route("~/Organization/{id:int}")]
         public ActionResult Index(int id)
-        {            
+        {       
             if(Util2.UseNewOrg)
                 return Redirect("/Org/" + id);
             if (Util2.CurrentOrgId != id)

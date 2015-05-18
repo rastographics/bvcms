@@ -106,7 +106,6 @@ namespace CmsWeb.Areas.People.Controllers
                     m.UpdateEnvelopeOption(name, value.ToInt());
                     break;
                 case "ElectronicStatement":
-                    value = Request.Form["value[]"] ?? "";
                     m.UpdateElectronicStatement(value.ToBool());
                     break;
             }

@@ -1,15 +1,22 @@
-﻿<div id="bluetoolbarstop" class="btn-group btn-page-actions">
-    <div class="btn-group alpha">
-        <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="fa fa-envelope-o"></i></button>
-        @Html.Partial("Toolbar/Email")
-    </div>
-    <div class="btn-group">
-        <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="fa fa-cloud-download"></i></button>
-        @Html.Partial("Toolbar/Reports")
-    </div>
-    <div class="btn-group omega">
-        <button class="btn dropdown-toggle btn-person-action" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
-        @Html.Partial("Toolbar/Gear")
+﻿<div id="bluetoolbarstop">
+    <div id="bluebar-menu" class="btn-group pull-right">
+        <div class="btn-group btn-group-lg dropdown-large">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-envelope-o"></span>
+            </button>
+            @Html.Partial("Toolbar/Email")
+        </div>
+        <div class="btn-group btn-group-lg dropdown-large">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-cloud-download"></span>
+            </button>
+            @Html.Partial("Toolbar/Reports")
+        </div>
+        <div class="btn-group btn-group-lg dropdown-large">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                <span class="fa fa-cog"></span>
+            </button>
+            @Html.Partial("Toolbar/Gear")
+        </div>
     </div>
 </div>
-

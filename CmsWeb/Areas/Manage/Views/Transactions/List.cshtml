@@ -4,159 +4,191 @@
 @{
     var tt = Model.TotalTransactions();
 }
-<thead>
+<div id="results">
     @if (tt != null)
     {
-        <tr>
-            <td class="right" colspan="2"><strong>Count: @tt.Count.ToString("N0")</strong></td>
-            <td class="right" colspan="4"><strong>Total: </strong></td>
-            <td class="right">@((tt.Amt - tt.Donate).ToString("N"))</td>
-            <td class="right">@tt.Amtdue.ToString("N")</td>
-            @if (Model.finance)
-            {
-                <td class="right">@tt.Donate.ToString("N")</td>
-            }
-            <td colspan="2"></td>
-        </tr>
-        <tr><td colspan="10"><hr /></td></tr>
+        <div class="stat-panel-container">
+            <div class="stat-panel-inner-container">
+                <div class="stat-panel">
+                    <span class="stat-title">TOTAL TRANSACTIONS</span>
+                    <span class="stat-figure">@tt.Count.ToString("N0")</span>
+                </div>
+                <div class="stat-panel">
+                    <span class="stat-title">TOTAL AMOUNT</span>
+                    <span class="stat-figure">@((tt.Amt - tt.Donate).ToString("C2"))</span>
+                </div>
+                <div class="stat-panel">
+                    <span class="stat-title">TOTAL AMOUNT DUE</span>
+                    <span class="stat-figure">@tt.Amtdue.ToString("C2")</span>
+                </div>
+                @if (Model.finance)
+                {
+                    <div class="stat-panel">
+                        <span class="stat-title">TOTAL DONATED</span>
+                        <span class="stat-figure">@tt.Donate.ToString("C2")</span>
+                    </div>
+                }
+                <div style="clear: both;"></div>
+            </div>
+        </div>
     }
-    <tr>
-        <th><a href="#" class="sortable">Id</a></th>
-        <th><a href="#" class="sortable">Tran Id</a></th>
-        <th><a href="#" class="sortable">Appr</a></th>
-        <th>
-            <a href="#" class="sortable">Tran Date</a>
-            <br /><a href="#" class="sortable">Batch Date</a>
-        </th>
-        <th><a href="#" class="sortable">Description</a></th>
-        <th><a href="#" class="sortable">Name</a></th>
-        <th class="right"><a href="#" class="sortable">Amt</a></th>
-        <th class="right"><a href="#" class="sortable">Due</a></th>
-        @if (Model.finance)
-        {
-            <th class="right"><a href="#" class="sortable">Donate</a></th>
-        }
-        <th colspan="2"></th>
-    </tr>
-</thead>
-<tbody>
-    @foreach (var t in Model.Transactions())
-    {
-        if (t.Amt > 0 && t.Amt == t.Donate && !Model.finance)
-        {
-            continue;
-        }
-        var noadmin = Model.admin ? "" : "noadmin";
-        var bold = t.Id == t.OriginalId;
-        <tr style="@(bold ? "font-weight: bold" : "")">
-            <td nowrap="nowrap" class="tip"
-                title="TranId:@t.TransactionId|ApprovalCode:@(t.ApprovalCode ?? "na")|AuthCode:@(t.AuthCode ?? "na")|Message:@(t.Message ?? "na")|OriginalId:@t.OriginalId|Click to Filter">
-                <div class="filtertransaction" originalid="@t.OriginalId">@t.Id</div>
-            </td>
-            <td>@t.TransactionId</td>
-            <td>
-                @if (t.Approved == true)
-                {
-                    <img alt="Y" src="/Content/styles/images/checkboxtree/bg-checkbox-checked.gif" />
-                }
-            </td>
-            <td nowrap="nowrap">
-                @t.TransactionDate.FormatDateTm()
-                <div class="tip filterbatch" title="Click to filter|@t.Batchtyp|@t.Batchref">@t.Batch.FormatDate()</div>
-            </td>
-            <td>
-                @if (t.Fromsage == true)
-                {
-                    <i title="from sage"><a href="/OnlineReg/ConfirmTestXml/@t.DatumId">@t.Description</a></i>
-                }
-                else
-                {
-                  if (t.DatumId > 0)
-                  {
-                    <a href="/OnlineReg/RegPeople/@t.DatumId">@t.Description</a>
-                  }
-                  else
-                  {
-                    @t.Description
-                  }
-                }
-            </td>
-            <td>
-                @if (t.DatumId > 0)
-                {
-                    if (t.LoginPeopleId == null)
+    @Html.Partial("PagerTop", Model.Pager)
+    <div class="table-responsive">
+        <table id="resultsTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th><a href="#" class="sortable" data-sortby="Id">Id</a></th>
+                    <th><a href="#" class="sortable" data-sortby="Tran Id"><span class="hidden-xs hidden-sm hidden-md">Transaction Id</span><span class="visible-xs-inline visible-sm-inline visible-md-inline">Tran Id</span></a></th>
+                    <th class="text-center"><a href="#" class="sortable" data-sortby="Appr"><span class="hidden-xs hidden-sm hidden-md">Approved</span><span class="visible-xs-inline visible-sm-inline visible-md-inline">Appr</span></a></th>
+                    <th><a href="#" class="sortable" data-sortby="Tran Date"><span class="hidden-xs hidden-sm hidden-md">Transaction Date</span><span class="visible-xs-inline visible-sm-inline visible-md-inline">Tran Date</span></a></th>
+                    <th><a href="#" class="sortable" data-sortby="Batch Date">Batch Date</a></th>
+                    <th><a href="#" class="sortable" data-sortby="Name">Name</a></th>
+                    <th><a href="#" class="sortable" data-sortby="Description">Description</a></th>
+                    <th class="text-right"><a href="#" class="sortable" data-sortby="Amt"><span class="hidden-xs hidden-sm hidden-md">Amount</span><span class="visible-xs-inline visible-sm-inline visible-md-inline">Amt</span></a></th>
+                    <th class="text-right"><a href="#" class="sortable" data-sortby="Due"><span class="hidden-xs hidden-sm hidden-md">Amount Due</span><span class="visible-xs-inline visible-sm-inline visible-md-inline">Due</span></a></th>
+                    @if (Model.finance)
                     {
-                        @Transaction.FullName(t)
+                        <th class="text-right"><a href="#" class="sortable" data-sortby="Donate"><span class="hidden-xs hidden-sm hidden-md">Amount Donated</span><span class="visible-xs-inline visible-sm-inline visible-md-inline">Donate</span></a></th>
                     }
-                    else
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var t in Model.Transactions())
+                {
+                    if (t.Amt > 0 && t.Amt == t.Donate && !Model.finance)
                     {
-                        <a href="/Person2/@t.LoginPeopleId">@Transaction.FullName(t)</a>
+                        continue;
                     }
+                    var noadmin = Model.admin ? "" : "noadmin";
+                    <tr style="@(t.Id != t.OriginalId ? "font-style: italic;" : "")" class="@(t.Voided.GetValueOrDefault() ? "danger" : t.Credited.GetValueOrDefault() ? "warning" : "")">
+                        <td class="text-center">
+                            <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus"
+                               data-content="
+                               <label>Transation Id:</label> @t.TransactionId<br/>
+                               <label>Approval Code:</label> @(t.ApprovalCode ?? "na")<br />
+                               <label>Auth Code:</label> @(t.AuthCode ?? "na")<br/>
+                               <label>Message:</label> @(t.Message ?? "na")
+                               @if (t.OriginalId.HasValue)
+                               {
+                                   <br />
+                                   <label>Original Id:</label> <a href='#' class='filtertransaction' originalid='@t.OriginalId'>@t.OriginalId</a>
+                               }   
+                               @if (t.Batch != null)
+                               {
+                                   <hr/>
+                                   <label>Batch Type:</label> @t.Batchtyp<br/>
+                                   <label>Batch Reference:</label> @t.Batchref<br />
+                                   <label>Batch Date:</label> <a href='#' class='filterbatch'>@t.Batch.FormatDate()</a>
+                               }
+                            "><i class="fa fa-info-circle"></i></a>
+                        </td>
+                        <td title="Click to filter">
+                            <a href="#" class="filtertransaction" originalid="@t.OriginalId">@t.Id</a>
+                        </td>
+                        <td>@t.TransactionId</td>
+                        <td class="text-center">
+                            @if (t.Approved == true)
+                            {
+                                <i class="fa fa-check"></i>
+                            }
+                        </td>
+                        <td>
+                            @t.TransactionDate.FormatDateTm()
+                        </td>
+                        <td>
+                            <a href="#" class="filterbatch" title="Click to filter">@t.Batch.FormatDate()</a>
+                        </td>
+                        <td>
+                            @if (t.DatumId > 0)
+                            {
+                                if (t.LoginPeopleId == null)
+                                {
+                                    @Transaction.FullName(t)
+                                }
+                                else
+                                {
+                                    <a href="/Person2/@t.LoginPeopleId">@Transaction.FullName(t)</a>
+                                }
+                            }
+                            else
+                            {
+                                @Transaction.FullName(t)
+                            }
+                            @if (t.People.HasValue())
+                            {
+                                var ppl = t.People.Replace("\n", "<br>");
+                                if (User.IsInRole("Developer"))
+                                {
+                                    <br /><a class="setpeople" href="/Transactions/SetPeople/@t.Id">@Html.Raw(ppl)</a>
+                                }
+                                else
+                                {
+                                    <br />@Html.Raw(ppl)
+                                }
+                            }
+                        </td>
+                        <td>
+                            @if (t.Fromsage == true)
+                            {
+                                <i title="from sage"><a href="/OnlineReg/ConfirmTestXml/@t.DatumId">@t.Description</a></i>
+                            }
+                            else
+                            {
+                                if (t.DatumId > 0)
+                                {
+                                    <a href="/OnlineReg/RegPeople/@t.DatumId">@t.Description</a>
+                                }
+                                else
+                                {
+                                    @t.Description
+                                }
+                            }
+                        </td>
+                        <td class="text-right">@(t.Payment.ToString2("N"))</td>
+                        <td class="text-right">@t.TotDue.ToString2("N")</td>
+                        @if (Model.finance)
+                        {
+                            <td class="text-right">@t.Donate.ToString2("N")</td>
+                        }
+                        <td class="action">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-pencil"></i> Edit <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <li><a class="adjust @noadmin" href='/Transactions/Adjust/@t.Id'><i class="fa fa-pencil-square-o"></i>&nbsp;&nbsp;Adjust Transaction</a></li>
+                                    @if (t.CanVoid.GetValueOrDefault() || t.CanCredit.GetValueOrDefault() || User.IsInRole("Developer"))
+                                    {
+                                        <li class="divider"></li>
+                                        if (t.CanVoid ?? true)
+                                        {
+                                            <li><a class="void @noadmin" href='/Transactions/CreditVoid/@t.Id?type=Void'><i class="fa fa-times-circle"></i>&nbsp;&nbsp;Void Transaction</a></li>
+                                        }
+                                        if (t.CanCredit ?? true)
+                                        {
+                                            <li><a class="credit @noadmin" href='/Transactions/CreditVoid/@t.Id?type=Credit'><i class="fa fa-undo"></i>&nbsp;&nbsp;Credit Transaction</a></li>
+                                        }
+                                        if (User.IsInRole("Developer"))
+                                        {
+                                            <li><a class="setpar" href="/Transactions/SetParent/@t.Id/"><i class="fa fa-sitemap"></i>&nbsp;&nbsp;Set Parent</a></li>
+                                        }
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
                 }
-                else
-                {
-                    @Transaction.FullName(t)
-                }
-                @if (t.People.HasValue())
-                {
-                  var ppl = t.People.Replace("\n", "<br>");
-                  if (User.IsInRole("Developer"))
-                  {
-                    <br/><a class="setpeople" href="/Transactions/SetPeople/@t.Id">@Html.Raw(ppl)</a>
-                  }
-                  else
-                  {
-                    <br/>@Html.Raw(ppl)
-                  }
-                }
-            </td>
-            <td class="right" nowrap="nowrap">@(t.Payment.ToString2("N"))</td>
-            <td class="right">@t.TotDue.ToString2("N")</td>
-            @if (Model.finance)
-            {
-                <td class="right">@t.Donate.ToString2("N")</td>
-            }
-            <td>
-                @if (t.CanVoid ?? true)
-                {
-                    <a class="voidcredit bt @noadmin"
-                       href='/Transactions/CreditVoid/@t.Id?type=Void'>Void</a>
-                }
-                else if (t.Voided == true)
-                {
-                    <text>voided</text>
-                }
-                @if (User.IsInRole("Developer"))
-                {
-                 <a class="setpar" href="/Transactions/SetParent/@t.Id/">setpar</a> 
-                }
-            </td>
-            <td>
-                @if (t.CanCredit ?? true)
-                {
-                    <a class="voidcredit bt @noadmin"
-                       href='/Transactions/CreditVoid/@t.Id?type=Credit'>Credit</a>
-                }
-                else if (t.Credited == true)
-                {
-                    <text>credited</text>
-                }
-                else
-                {
-                    @(t.Amt < 0 ? "credit" : "")
-                }
-            </td>
-            <td>
-                <a class="adjust bt @noadmin"
-                   href='/Transactions/Adjust/@t.Id'>Adjust</a>
-            </td>
-        </tr>
-    }
-</tbody>
-<tfoot>
-    <tr>
-        <td colspan="11">
-            @Html.Partial("Pager2", Model.Pager)
-        </td>
-    </tr>
-</tfoot>
+            </tbody>
+        </table>
+        <br/><br/><br/><br/><br/><br/>
+    </div>
+    <div style="margin-top: -120px;">
+        @Html.Partial("PagerBottom", Model.Pager)
+        @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+        @Html.Hidden("Page", Model.Pager.Page)
+        @Html.Hidden("Sort", Model.Pager.Sort)
+        @Html.Hidden("Direction", Model.Pager.Direction)
+    </div>
+    <br/>
+</div>

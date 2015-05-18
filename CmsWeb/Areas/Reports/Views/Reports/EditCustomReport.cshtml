@@ -1,146 +1,138 @@
 ﻿@model CmsWeb.Areas.Reports.ViewModels.CustomReportViewModel
-
 @{
     // TODO: it would be really nice to use a _ViewStart.cshtml file instead of specifying this everywhere
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Custom Report Builder";
+    ViewBag.PageHeader = "Custom Report Builder";
 }
-
-<div class="container">
-    <h2>Custom Report Builder</h2>
-
-    @if (ViewData.ModelState.Keys.Any(k => ViewData.ModelState[k].Errors.Any()))
-    {
-        <div class="alert alert-danger">
-            <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            @Html.ValidationSummary(false, "Errors: ")
-        </div>
-    }
-
-    @if (Model.CustomReportSuccessfullySaved)
-    {
-        <div class="alert alert-success">
-            Your report was successfully saved!
-        </div>
-    }
-
-    @using (Html.BeginForm("EditCustomReport", "Reports", FormMethod.Post, new { id = "edit-custom-report-form" }))
-    {
-        <fieldset>
-            <legend>Name and Customize Your Report</legend>
-
-            <div>
-                @Html.HiddenFor(x => x.OrgId)
-                @Html.HiddenFor(x => x.OriginalReportName)
-                @Html.HiddenFor(x => x.QueryId)
-
-                @Html.LabelFor(x => x.ReportName)
-                @Html.TextBoxFor(x => x.ReportName, true, htmlAttributes: new { placeholder = "Name Your Custom Report" })
-                @Html.ValidationMessageFor(x => x.ReportName)
-
-                @if (Model.OrgId.HasValue)
+@section head{
+    <style>
+        .custom-columns label:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+}
+<div class="row">
+    <div class="col-sm-6">
+        <div class="box box-responsive">
+            <div class="box-content">
+                @if (ViewData.ModelState.Keys.Any(k => ViewData.ModelState[k].Errors.Any()))
                 {
-                    <label class="checkbox">
-                        Restrict this report to this org
-                        @Html.CheckBoxFor(x => x.RestrictToThisOrg)
-                        <span class="text-info">(@Model.OrgName)</span>
-                    </label>
-                }
-            </div>
-
-            <br />
-
-            <div class="custom-columns">
-                <span class="help-block">Choose which columns you want in your report</span>
-                @foreach (var c in Model.Columns.Select((x, i) => new { Value = x, Index = i }))
-                {
-                    <div>
-                        <label class="checkbox">
-                            @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
-                            @(c.Value.Description ?? c.Value.SmallGroup ?? c.Value.Field ?? c.Value.Name)
-                            @Html.HiddenFor(x => Model.Columns[c.Index].Name)
-                            @Html.HiddenFor(x => Model.Columns[c.Index].OrgId)
-                            @Html.HiddenFor(x => Model.Columns[c.Index].Flag)
-                            @Html.HiddenFor(x => Model.Columns[c.Index].Description)
-                            @Html.HiddenFor(x => Model.Columns[c.Index].Field)
-                            @Html.HiddenFor(x => Model.Columns[c.Index].IsDisabled)
-                            @Html.HiddenFor(x => Model.Columns[c.Index].SmallGroup)
-                            @if (c.Value.IsExtraValue)
-                            {
-                                <span class="text-info">(Extra Value)</span>
-                            }
-                            else if (c.Value.IsSmallGroup)
-                            {
-                                <span class="text-info">(Small Group)</span>
-                            }
-                            else if (c.Value.IsStatusFlag)
-                            {
-                                <span class="text-info">(Status Flag)</span>
-                            }
-                        </label>
+                    <div class="alert alert-danger">
+                        <button class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        @Html.ValidationSummary(false, "Errors: ")
                     </div>
                 }
+                @if (Model.CustomReportSuccessfullySaved)
+                {
+                    <div class="alert alert-success">
+                        Your report was successfully saved!
+                    </div>
+                }
+                @using (Html.BeginForm("EditCustomReport", "Reports", FormMethod.Post, new { id = "edit-custom-report-form" }))
+                {
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @Html.HiddenFor(x => x.OrgId)
+                            @Html.HiddenFor(x => x.OriginalReportName)
+                            @Html.HiddenFor(x => x.QueryId)
+                            <div class="form-group">
+                                @Html.LabelFor(x => x.ReportName, new { @class = "control-label" })
+                                @Html.TextBoxFor(x => x.ReportName, true, htmlAttributes: new { placeholder = "Name Your Custom Report", @class = "form-control" })
+                                @Html.ValidationMessageFor(x => x.ReportName)
+                            </div>
+                            @if (Model.OrgId.HasValue)
+                            {
+                                <label class="checkbox control-label">
+                                    Restrict this report to this org
+                                    @Html.CheckBoxFor(x => x.RestrictToThisOrg)
+                                    <span class="text-info">(@Model.OrgName)</span>
+                                </label>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="custom-columns">
+                                <span class="help-block">Choose which columns you want in your report</span>
+                                @foreach (var c in Model.Columns.Select((x, i) => new { Value = x, Index = i }))
+                                {
+                                    <div class="form-group">
+                                        <div class="checkbox">
+                                            <label class="checkbox">
+                                                @Html.CheckBoxFor(x => Model.Columns[c.Index].IsSelected)
+                                                @(c.Value.Description ?? c.Value.SmallGroup ?? c.Value.Field ?? c.Value.Name)
+                                                @Html.HiddenFor(x => Model.Columns[c.Index].Name)
+                                                @Html.HiddenFor(x => Model.Columns[c.Index].OrgId)
+                                                @Html.HiddenFor(x => Model.Columns[c.Index].Flag)
+                                                @Html.HiddenFor(x => Model.Columns[c.Index].Description)
+                                                @Html.HiddenFor(x => Model.Columns[c.Index].Field)
+                                                @Html.HiddenFor(x => Model.Columns[c.Index].IsDisabled)
+                                                @Html.HiddenFor(x => Model.Columns[c.Index].SmallGroup)
+                                                @if (c.Value.IsExtraValue)
+                                                {
+                                                    <span class="text-info">(Extra Value)</span>
+                                                }
+                                                else if (c.Value.IsSmallGroup)
+                                                {
+                                                    <span class="text-info">(Small Group)</span>
+                                                }
+                                                else if (c.Value.IsStatusFlag)
+                                                {
+                                                    <span class="text-info">(Status Flag)</span>
+                                                }
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <input type="submit" name="save-report" class="btn btn-primary" value="Save Report" />
+                            <button type="submit" id="run-report" name="run-report" class="btn btn-default"><i class="fa fa-cloud-download"></i>Export Report</button>
+                        </div>
+                    </div>
+                }
+                <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = "___"})">(hidden link used by javascript)</a>
             </div>
-        </fieldset>
-
-        <input type="submit" name="save-report" class="btn btn-primary" value="Save Report" />
-        <button type="submit" id="run-report" name="run-report" class="btn"><i class="fa fa-cloud-download"></i>Export Report</button>
-    }
-
-    <a style="display: none" id="run-report-link" href="@Url.Action("CustomReport", new {id = Model.QueryId, report = "___"})">(hidden link used by javascript)</a>
+        </div>
+    </div>
 </div>
+@section scripts{
+    <script type="text/javascript">
+        (function () {
+            var $form = $('#edit-custom-report-form');
+            $form.validate();
 
-<style>
-    .custom-columns label:hover {
-        background-color: #f5f5f5;
-    }
+            $('#ReportName').rules('add', {
+                required: true,
+                pattern: /^[A-Za-z0-9 ]+$/,
+                messages: {
+                    required: "The report name is required.",
+                    pattern: "The report name can only contain alphanumeric characters or spaces. (a-z, 0-9)"
+                }
+            });
 
-    .field-validation-error {
-        color: #b94a48;
-    }
+            var lastChecked = null;
+            $('#run-report').click(function (e) {
+                e.preventDefault();
 
-    .error {
-        display: inline;
-        padding-left: 10px;
-    }
-</style>
+                if ($form.valid()) {
+                    $.post($form.attr('action'), $form.serialize()).then(function () {
+                        $('#OriginalReportName').val($('#ReportName').val());
+                        var runLink = $('#run-report-link').attr('href').replace('___', encodeURIComponent($('#ReportName').val()));
+                        window.location = runLink;
+                    });
+                }
+            });
 
-<script>
-    (function () {
+            $('input[type="checkbox"]').click(function (e) {
+                if (e.shiftKey && lastChecked !== null) {
+                    var start = $('input[type="checkbox"]').index(this);
+                    var end = $('input[type="checkbox"]').index(lastChecked);
+                    $('input[type="checkbox"]').slice(Math.min(start, end), Math.max(start, end) + 1).prop("checked", true);
+                }
 
-        var $form = $('#edit-custom-report-form');
-        $form.validate();
-
-        $('#ReportName').rules('add', {
-            required: true,
-            pattern: /^[A-Za-z0-9 ]+$/,
-            messages: {
-                required: "The report name is required.",
-                pattern: "The report name can only contain alphanumeric characters or spaces. (a-z, 0-9)"
-            }
-        });
-
-        var lastChecked = null;
-        $('#run-report').click(function (e) {
-            e.preventDefault();
-
-            if ($form.valid()) {
-                $.post($form.attr('action'), $form.serialize()).then(function () {
-                    $('#OriginalReportName').val($('#ReportName').val());
-                    var runLink = $('#run-report-link').attr('href').replace('___', encodeURIComponent($('#ReportName').val()));
-                    window.location = runLink;
-                });
-            }
-        });
-
-        $('input[type="checkbox"]').click(function (e) {
-            if (e.shiftKey && lastChecked !== null) {
-                var start = $('input[type="checkbox"]').index(this);
-                var end = $('input[type="checkbox"]').index(lastChecked);
-                $('input[type="checkbox"]').slice(Math.min(start, end), Math.max(start, end) + 1).attr('checked', lastChecked.checked);
-            }
-
-            lastChecked = this;
-        });
-    })();
+                lastChecked = this;
+            });
+        })();
 </script>
+}

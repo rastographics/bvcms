@@ -1,29 +1,78 @@
-﻿@model IEnumerable<CmsData.User>
-<form class="form form-horizontal table not-wide non-modal ajax margin-top" method="post">
-    <fieldset class="left-gutter">
-        <legend>Manage Users 
-            @if (User.IsInRole("Admin"))
-            {
-                <a class="ajax" href="/Person2/UserEdit"><i class="fa fa-plus"></i></a>
-            }
-        </legend>
-        <table class="table no-border">
-            @foreach (var u in Model)
-            {
+﻿@using CmsData
+@model IEnumerable<User>
+@helper Roles(User user) {
+    var roles = string.Join(", ", user.Roles);
+    if (string.IsNullOrWhiteSpace(roles))
+    {
+        @:MyData User
+    }
+    else
+    {
+        @roles
+    }
+}
+<form class="ajax" method="post">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Manage Users</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
                 <tr>
-                    <td class="nowrap">
-                        @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
-                        {
-                            <a class="ajax click-pencil" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a>
-                        }
-                        else
-                        {
-                            @u.Username
-                        }
-                    </td>
-                    <td>@string.Join(", ", u.Roles)</td>
+                    <th>Username</th>
+                    <th>Roles</th>
+                    <th style="width: 50px;">Actions</th>
                 </tr>
-            }
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td class="nowrap">
+                            @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
+                            {
+                                <a class="ajax" href="/Person2/UserEdit/@u.UserId"><span>@u.Username</span></a>
+                            }
+                            else
+                            {
+                                @u.Username
+                            }
+                        </td>
+                        <td>@Roles(u)</td>
+                        <td style="width: 50px;">
+                            @if ((User.IsInRole("Admin") && !u.InRole("Developer")) || User.IsInRole("Developer"))
+                            {
+                                <a class="ajax btn btn-default btn-sm" href="/Person2/UserEdit/@u.UserId"><i class="fa fa-pencil"></i> Edit</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
         </table>
-    </fieldset>
+    </div>
+    @FormAction(true)
 </form>
+@helper FormAction(bool xs = false)
+{
+    if (User.IsInRole("Admin"))
+    {
+        if (xs)
+        {
+            <div class="visible-xs-block">
+                <a class="ajax btn btn-success btn-block" href="/Person2/UserEdit"><i class="fa fa-plus-circle"></i> Add User</a>
+            </div>
+        }
+        else
+        {
+            <div class="pull-right hidden-xs">
+                <a class="ajax btn btn-success" href="/Person2/UserEdit"><i class="fa fa-plus-circle"></i> Add User</a>
+            </div>
+        }
+    }
+
+}

@@ -5,6 +5,9 @@
             $.post("/UpdatePersonCanEmailForList/" + topid, { topid0: topid0 }, function (ret) {
                 window.location.reload();
             });
+        },
+        Select: function ($a) {
+            var v = a.attr("value");
         }
     });
 });

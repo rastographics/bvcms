@@ -1,15 +1,27 @@
 ﻿@model CmsData.Registration.TimeSlots.TimeSlot
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-  <div class="well movable">
-    @Html.Raw(ci.hiddenindex)
-    <label class="ask-question">
-      TimeSlot
-      @Html.Partial("EditorTemplates/QuestionsMenu", new { ConfirmDelete = false })
-    </label>
-    @Html.EditorFor(m => m.Description)
-    @Html.EditorFor(m => m.DayOfWeek)
-    @Html.EditorFor(m => m.Time, "Time")
-    @Html.EditorFor(m => m.Limit)
-  </div>
+    <div class="well movable">
+        @Html.Raw(ci.hiddenindex)
+        <div class="row">
+            <div class="col-sm-12">
+                @Html.Partial("EditorTemplates/QuestionsMenu", new ViewDataDictionary { { "ConfirmDelete", false } })
+                <label class="ask-question">TimeSlot</label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                @Html.EditorFor(m => m.Description)
+            </div>
+            <div class="col-sm-3">
+                @Html.EditorFor(m => m.DayOfWeek)
+            </div>
+            <div class="col-sm-3">
+               @Html.EditorFor(m => m.Time, "Time")
+            </div>
+            <div class="col-sm-3">
+                @Html.EditorFor(m => m.Limit)
+            </div>
+        </div>
+    </div>
 }

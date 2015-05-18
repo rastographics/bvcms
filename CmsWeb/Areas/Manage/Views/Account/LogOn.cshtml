@@ -2,88 +2,45 @@
 @using UtilityExtensions
 @model CmsWeb.Areas.Manage.Controllers.AccountController.AccountInfo
 @{
-  Layout = "~/Views/Shared/Site3.cshtml";
-  ViewBag.Title = "Logon to TouchPoint";
+    Layout = "_Layout.cshtml";
+    ViewBag.Title = "Logon to TouchPoint";
 }
-@section head
+<h1 class="form-header">@ViewExtensions2.DbSetting("NameOfChurch", "Name Of Church: " + Util.Host)</h1>
+@if (DbUtil.LoginNotice().HasValue())
 {
-  <meta id="viewport" name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;" />
-  <style>
-    .panel-default {
-      margin-top: 30px;
-    }
-  </style>
+    <div class="col-sm-12">
+        <div class="alert alert-danger">@Html.Raw(DbUtil.LoginNotice())</div>
+    </div>
 }
-<div class="row-fluid">
-  <div class="col-sm-8 col-sm-offset-2">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        Login
-        <h4>@ViewExtensions2.DbSetting("NameOfChurch", "Name Of Church: " + Util.Host)</h4>
-      </div>
-      <div class="panel-body">
-        <form class="form-horizontal" action="/Logon" role="form" method="POST">
-          @Html.Hidden("ReturnUrl", Model.ReturnUrl)
-          <div class="form-group">
-            <div class="col-sm-12 alert alert-block alert-danger">
-              <h2>This is an OLD version</h2>
-              Unless you were told to go here to use a older version because of a bug,
-              please use <a href="https://@(DbUtil.Db.Host).tpsdb.com">https://@(DbUtil.Db.Host).tpsdb.com</a>
-            </div>
-            <label for="inputEmail" class="col-sm-3 control-label">
-              Username or Email
-            </label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control" id="inputEmail" name="UsernameOrEmail" placeholder="Username or Email" required=required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="inputPassword" class="col-sm-3 control-label">
-              Password
-            </label>
-            <div class="col-sm-9">
-              <input id="inputPassword" type="password" class="form-control" name="Password" placeholder="Password" required=required />
-              @if (ViewBag.error != null)
-              {
-                <div class="alert alert-danger">@ViewBag.error</div>
-              }
-            </div>
-          </div>
-          <div class="form-group last">
-            <div class="col-sm-offset-3 col-sm-9">
-              <button type="submit" class="btn btn-primary">
-                Sign in
-              </button>
-              <button type="reset" class="btn btn-default">
-                Reset
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-      <div class="panel-footer">
-        Need an Account? <a href="/Account/ForgotPassword">Request a password</a>
-      </div>
-      <div class="panel-footer">
-        Forgot your Password? <a href="/Account/ForgotPassword">Get a new one</a>
-      </div>
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <strong>Logon Error!</strong>&nbsp;&nbsp;@ViewBag.error
     </div>
-  </div>
-  <div class="row-fluid">
-    <div class="col-sm-8 col-sm-offset-2 text-right">
-        <h4 id="provider">
-            <a href="http://touchpointsoftware.com">
-                @if (Util.IsHosted)
-                {
-                    <img src="/Content/images/tps_hosting_support.png" style="height: 70px;" />
-                }
-                else
-                {
-                    <img src="/Content/images/tps_hosting_support_avail.png" style="height: 70px;" />
-                }
-                
-            </a>
-        </h4>
+}
+@using (Html.BeginForm("LogOn", "Account", FormMethod.Post, new { @class = "panel" }))
+{
+    @Html.Hidden("ReturnUrl", Model.ReturnUrl)
+    <div class="form-group">
+        <input type="text" id="inputEmail" name="UsernameOrEmail" class="form-control input-lg" placeholder="username or email" required="required" autocomplete="off" autocapitalize="off" autocorrect="off" value="@Model.UsernameOrEmail">
     </div>
-  </div>
+    <div class="form-group signin-password">
+        <input type="password" id="inputPassword" name="Password" class="form-control input-lg" placeholder="password" required="required">
+        <a href="@Url.Action("ForgotPassword")" class="forgot">Forgot?</a>
+    </div>
+    <div class="form-actions">
+        <input type="submit" value="Sign In" class="btn btn-primary btn-block btn-lg">
+    </div>
+}
+<div class="signin-with">
+    <div class="header">need an account? <a href="@Url.Action("ForgotPassword")">request password</a></div>
 </div>
+@section scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            $('input:text').first().focus();
+        });
+    </script>
+}

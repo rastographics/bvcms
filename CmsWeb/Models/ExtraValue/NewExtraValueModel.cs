@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Code;
@@ -62,13 +63,38 @@ namespace CmsWeb.Models.ExtraValues
                 return "";
             }
         }
-        [DisplayNameAttribute("Codes")]
+        [DisplayName("Codes")]
         public string ExtraValueCodes { get; set; }
 
-        [DisplayNameAttribute("Checkboxes"), UIHint("Textarea")]
+        [DisplayName("Checkboxes"), UIHint("Textarea")]
         public string ExtraValueCheckboxes { get; set; }
 
-        public string VisibilityRoles { get; set; }
+        [DisplayName("Limit to Roles")]
+        public string VisibilityRoles
+        {
+            get { return string.Join(", ", VisibilityRolesList ?? new string[0]); }
+            set { VisibilityRolesList = value.Split(',').Select(x => x.Trim()).Where(x => !string.IsNullOrWhiteSpace(x)).ToArray(); }
+        }
+
+        [DisplayName("Limit to Roles")]
+        public string[] VisibilityRolesList { get; set; }
+
+		public IEnumerable<SelectListItem> Roles()
+		{
+			var q = from r in DbUtil.Db.Roles
+			        orderby r.RoleName
+			        select new SelectListItem
+			        {
+						Value = r.RoleName,
+						Text = r.RoleName
+			        };
+			var list = q.ToList();
+		    foreach (var item in list.Where(item => VisibilityRoles.Contains(item.Text)))
+		    {
+		        item.Selected = true;
+		    }
+			return list;
+		}
 
         public NewExtraValueModel(Guid id)
         {
@@ -301,8 +327,8 @@ Option 2
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
             const string sql = @"
-delete from dbo.PeopleExtra 
-where Field = @name 
+delete from dbo.PeopleExtra
+where Field = @name
 and PeopleId in (select PeopleId from TagPerson where Id = @id)
 ";
             if (RemoveAnyValue)

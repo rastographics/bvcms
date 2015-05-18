@@ -32,7 +32,8 @@ namespace CmsWeb.Models
         public int useridfilter { get; set; }
         public string regidfilter { get; set; }
         public string usedfilter { get; set; }
-        public string date { get; set; }
+        public string startdate { get; set; }
+        public string enddate { get; set; }
 
         public string Registration()
         {
@@ -62,11 +63,12 @@ namespace CmsWeb.Models
             }
             if (name.HasValue())
                 q = q.Where(c => c.Name.Contains(name) || c.Person.Name.Contains(name));
-            if (date.HasValue())
+            if (startdate.HasValue() && enddate.HasValue())
             {
                 DateTime bd;
-                if (DateTime.TryParse(date, out bd))
-                    q = q.Where(c => c.Created.Date == bd);
+                DateTime ed;
+                if (DateTime.TryParse(startdate, out bd) && DateTime.TryParse(enddate, out ed))
+                    q = q.Where(c => c.Created.Date >= bd && c.Created.Date <= ed);
             }
 
             var q2 = from c in q
@@ -111,11 +113,12 @@ namespace CmsWeb.Models
             }
             if (name.HasValue())
                 q = q.Where(c => c.Name.Contains(name) || c.Person.Name.Contains(name));
-            if (date.HasValue())
+            if (startdate.HasValue() && enddate.HasValue())
             {
                 DateTime bd;
-                if (DateTime.TryParse(date, out bd))
-                    q = q.Where(c => c.Created.Date == bd);
+                DateTime ed;
+                if (DateTime.TryParse(startdate, out bd) && DateTime.TryParse(enddate, out ed))
+                    q = q.Where(c => c.Created.Date >= bd && c.Created.Date <= ed);
             }
 
 

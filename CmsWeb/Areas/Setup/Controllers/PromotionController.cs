@@ -45,6 +45,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return c;
         }
+
         [HttpPost]
         public ContentResult EditDiv(string id, string value)
         {
@@ -68,6 +69,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 c.Content = pro.ToDivision.Name;
             return c;
         }
+
         [HttpPost]
         public EmptyResult Delete(string id)
         {
@@ -79,7 +81,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
-        [HttpPost]
+
         public JsonResult DivisionCodes(int id)
         {
             var q = from c in DbUtil.Db.Divisions
@@ -87,11 +89,12 @@ namespace CmsWeb.Areas.Setup.Controllers
                     where c.DivOrgs.Any(od => od.Organization.DivOrgs.Any(od2 => od2.Division.ProgId == id))
                     select new
                     {
-                        Code = c.Id.ToString(),
-                        Value = c.Name,
+                        value = c.Id,
+                        text = c.Name,
                     };
-            return Json(q.ToDictionary(k => k.Code, v => v.Value));
+            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
+
         [HttpPost]
         public ActionResult Promote(string id)
         {

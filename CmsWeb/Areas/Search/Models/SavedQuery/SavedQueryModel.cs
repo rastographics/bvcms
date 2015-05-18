@@ -19,8 +19,7 @@ namespace CmsWeb.Areas.Search.Models
         public bool ScratchPadsOnly { get; set; }
         public bool StatusFlagsOnly { get; set; }
 
-        public SavedQueryModel() 
-            : base("Last Run", "desc")
+        public SavedQueryModel() : base("Last Run", "desc", true)
         {
             admin = Roles.IsUserInRole("Admin");
         }

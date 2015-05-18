@@ -1,18 +1,16 @@
 ﻿@model CmsWeb.Code.CodeInfo
-<div class="control-group">
-  @Html.LabelFor(m => m, new { @class = "control-label" })
-  <div class="controls">
+<dl>
+    <dt>@Html.DisplayNameFor(m => m)</dt>
     @if (Model != null)
     {
-      <p>@Model</p>
+        <dd>@Model</dd>
     }
     else
     {
-      <p>&nbsp;</p>
+        <dd>&nbsp;</dd>
     }
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-    }
-  </div>
-</div>
+</dl>
+@if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+{
+    <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+}

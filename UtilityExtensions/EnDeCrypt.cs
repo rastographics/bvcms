@@ -17,17 +17,18 @@ namespace UtilityExtensions
         {
             return Decrypt(s, "Public");
         }
+
         public static string EncryptForUrl(string s)
         {
-            if (s == null || s.Length == 0)
+            if (string.IsNullOrEmpty(s))
                 return string.Empty;
             string result = string.Empty;
             byte[] buffer = Encoding.ASCII.GetBytes(s);
             var des = new TripleDESCryptoServiceProvider();
             var MD5 = new MD5CryptoServiceProvider();
 
-            var sSalt = getSalt( "PublicSalt" );
-            des.Key = MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes( getKey( "PublicKey" ) ) );
+            var sSalt = getSalt("PublicSalt");
+            des.Key = MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(getKey("PublicKey")));
             des.IV = sSalt.Split(' ').Select(ss => Convert.ToByte(ss, 10)).ToArray();
 
             result = HttpServerUtility.UrlTokenEncode(
@@ -37,7 +38,7 @@ namespace UtilityExtensions
 
         public static string DecryptFromUrl(string s)
         {
-            if (s == null || s.Length == 0)
+            if (string.IsNullOrEmpty(s))
                 return string.Empty;
             try
             {
@@ -46,8 +47,8 @@ namespace UtilityExtensions
                 var des = new TripleDESCryptoServiceProvider();
                 var MD5 = new MD5CryptoServiceProvider();
 
-                var sSalt = getSalt( "PublicSalt" );
-                des.Key = MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes( getKey( "PublicKey" ) ) );
+                var sSalt = getSalt("PublicSalt");
+                des.Key = MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(getKey("PublicKey")));
                 des.IV = sSalt.Split(' ').Select(ss => Convert.ToByte(ss, 10)).ToArray();
 
                 result = Encoding.ASCII.GetString(
@@ -64,7 +65,7 @@ namespace UtilityExtensions
 
         public static string Encrypt(string sText, string sPrefix)
         {
-            if (sText == null || sText.Length == 0 || sPrefix == null || sPrefix.Length == 0)
+            if (string.IsNullOrEmpty(sText) || sPrefix == null || sPrefix.Length == 0)
                 return string.Empty;
 
             string result = string.Empty;
@@ -72,19 +73,19 @@ namespace UtilityExtensions
 
             var des = new TripleDESCryptoServiceProvider();
             var MD5 = new MD5CryptoServiceProvider();
-            
-            var sSalt = getSalt( sPrefix + "Salt" );
 
-            des.Key = MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes( getKey( sPrefix + "Key" ) ) );
+            var sSalt = getSalt(sPrefix + "Salt");
+
+            des.Key = MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(getKey(sPrefix + "Key")));
             des.IV = sSalt.Split(' ').Select(s => Convert.ToByte(s, 10)).ToArray();
 
-            result = Convert.ToBase64String( des.CreateEncryptor().TransformFinalBlock(buffer, 0, buffer.Length) );
+            result = Convert.ToBase64String(des.CreateEncryptor().TransformFinalBlock(buffer, 0, buffer.Length));
             return result;
         }
 
         public static string Decrypt(string sText, string sPrefix)
         {
-            if (sText == null || sText.Length == 0 || sPrefix == null || sPrefix.Length == 0)
+            if (string.IsNullOrEmpty(sText) || sPrefix == null || sPrefix.Length == 0)
                 return string.Empty;
 
             try
@@ -95,10 +96,10 @@ namespace UtilityExtensions
                 var des = new TripleDESCryptoServiceProvider();
                 var MD5 = new MD5CryptoServiceProvider();
 
-                des.Key = MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes( getKey( sPrefix + "Key" ) ) );
+                des.Key = MD5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(getKey(sPrefix + "Key")));
                 des.IV = getSalt(sPrefix + "Salt").Split(' ').Select(s => Convert.ToByte(s, 10)).ToArray();
 
-                result = Encoding.ASCII.GetString( des.CreateDecryptor().TransformFinalBlock(buffer, 0, buffer.Length) );
+                result = Encoding.ASCII.GetString(des.CreateDecryptor().TransformFinalBlock(buffer, 0, buffer.Length));
                 return result;
             }
             catch
@@ -107,19 +108,19 @@ namespace UtilityExtensions
             }
         }
 
-        public static string getKey( string sKeyName )
+        public static string getKey(string sKeyName)
         {
             return System.Configuration.ConfigurationManager.AppSettings[sKeyName] ?? "";
         }
 
-        public static string getSalt( string sSaltName )
+        public static string getSalt(string sSaltName)
         {
             return System.Configuration.ConfigurationManager.AppSettings[sSaltName] ?? "";
         }
 
         public static string getMasked(string sText, int iCount, bool bFromRight, string sMask)
         {
-            if (sText == null || sText.Length == 0 || sText.Length < iCount) return "";
+            if (string.IsNullOrEmpty(sText) || sText.Length < iCount) return "";
 
             if (bFromRight)
                 return sMask + sText.Substring(sText.Length - iCount, iCount);

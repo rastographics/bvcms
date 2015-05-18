@@ -1,76 +1,134 @@
 ﻿@model IEnumerable<CmsWeb.Models.ExtraValues.ExtraInfo>
 @{
-    ViewBag.Title = "ExtraValues";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.Title = "Extra Values";
+    ViewBag.PageHeader = "Extra Values";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/js/ExtraValueSummary.js")
-}
-
-<div class="container">
-    <h2>Extra Values</h2>
-    <table class="table table-condensed table-striped not-wide left-gutter">
-        <tr>
-            <th>Name</th>
-            <th>Value</th>
-            <th>Type</th>
-            <th class="right">Count</th>
-            <th></th>
-            <th></th>
-        </tr>
-        @foreach (var e in Model)
-        {
-            if (!e.CanView) { continue; }
-            if (User.IsInRole("Admin"))
-            {
-                <tr>
-                    <td>
-                        <a href="@e.QueryUrl">@e.Field</a>
-                        <a class="rename" data-default="@e.Field" href="@e.RenameAllUrl">
-                            <i class="fa fa-pencil"></i>
-                        </a>
-                    </td>
-                    <td>@e.Value</td>
-                    <td>@e.TypeDisplay</td>
-                    <td class="right">@e.Count.ToString("N0")</td>
-                    <td>
-                        @if (e.Standard)
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped table-responsive">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                        <th>Data Type</th>
+                        <th class="text-right">Count</th>
+                        <th class="text-center">Standard</th>
+                        <th colspan="2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var e in Model)
+                    {
+                        if (!e.CanView) { continue; }
+                        if (User.IsInRole("Admin"))
                         {
-                            @:Standard
+                            <tr>
+                                <td>
+                                    <a href="@e.QueryUrl">@e.Field</a>
+                                </td>
+                                <td>@e.Value</td>
+                                <td>@e.TypeDisplay</td>
+                                <td class="text-right">@e.Count.ToString("N0")</td>
+                                <td class="text-center">
+                                    @if (e.Standard)
+                                    {
+                                        <i class="fa fa-check"></i>
+                                    }
+                                    else
+                                    {
+                                        <a href="@e.ConvertToStandardUrl" class="btn btn-sm btn-default"><i class="fa fa-group"></i> Standardize</a>
+                                    }
+                                </td>
+                                <td class="action">
+                                    <a class="rename btn btn-sm btn-default" data-default="@e.Field" href="@e.RenameAllUrl"><i class="fa fa-pencil"></i> Rename</a>
+                                </td>
+                                <td class="action">
+                                    <a class="delete btn btn-sm btn-danger" href="@e.DeleteAllUrl"><i class="fa fa-trash"></i> Delete</a>
+                                </td>
+                            </tr>
                         }
                         else
                         {
-                            <a href="@e.ConvertToStandardUrl" class="btn btn-mini">Convert to Standard</a>
+                            <tr>
+                                <td>
+                                    <a href="@e.QueryUrl">@e.Field</a>
+                                </td>
+                                <td>@e.Value</td>
+                                <td>@e.TypeDisplay</td>
+                                <td class="text-right">@e.Count.ToString("N0")</td>
+                                <td class="text-center">
+                                    @if (e.Standard)
+                                    {
+                                        <i class="fa fa-check"></i>
+                                    }
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
                         }
-                    </td>
-                    <td><a class="delete" href="@e.DeleteAllUrl"><i class="fa fa-times"></i></a></td>
-                </tr>
-            }
-            else
-            {
-                <tr>
-                    <td>
-                        <a href="@e.QueryUrl">@e.Field</a>
-                    </td>
-                    <td>@e.Value</td>
-                    <td>@e.TypeDisplay</td>
-                    <td class="right">@e.Count.ToString("N0")</td>
-                    <td>
-                        @if (e.Standard)
-                        {
-                            @:Standard
-                        }
-                    </td>
-                    <td></td>
-                </tr>
-
-            }
-        }
-    </table>
-    @if (User.IsInRole("Admin"))
-{
-    <a href="/Display/ContentEdit/@ViewBag.EvSpecId">Standard ExtraValues Specification</a>
-
-}
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+@if (User.IsInRole("Admin"))
+{
+    <a href="/Display/ContentEdit/@ViewBag.EvSpecId" class="btn btn-default">Standard Extra Values Specification</a>
+}
+@section scripts
+{
+    <script type="text/javascript">
+        $(function() {
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var d = $(this);
+                var url = this.href;
+                swal({
+                    title: "Are you sure?",
+                    text: "Doing so will delete all data associated with this extra value field.",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post(url, null, function () {
+                        d.closest("tr").remove();
+                        swal("Deleted!", "", "success");
+                    });
+                });
+            });
+
+            $("a.rename").click(function(ev) {
+                ev.preventDefault();
+                var url = this.href;
+                bootbox.dialog({
+                    title: 'Rename Extra Value',
+                    message: '<label for="name">Name</label><input id="name" name="name" type="text" class="form-control" value=' + $(this).data("default") + '>',
+                    buttons: {
+                        cancel: {
+                            label: "Cancel",
+                            className: "btn-default"
+                        },
+                        rename: {
+                            label: "Rename",
+                            className: "btn-primary",
+                            callback: function () {
+                                var result = $('#name').val();
+                                if (result !== null) {
+                                        $.post(url, { newname: result }, function () {
+                                            window.location.reload();
+                                        });
+                                    }
+                            }
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+}

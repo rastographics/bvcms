@@ -1,12 +1,29 @@
 ﻿@using CmsWeb
 @{
-    ViewBag.Title = "FindTagEmails";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Find Tag Emails";
+    ViewBag.PageHeader = "Find Tag Emails";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-<h2>FindTagEmail</h2>
-<em>Enter a list of email addresses, one row each</em>
-<form action="/Batch/FindTagEmail" method="post">
-    <label>Tag name: </label> @Html.TextBox("tagname")
-    <input type="submit" class="bt" value="Submit" />
-    @Html.TextArea("emails", "", new { rows = "20", cols = "100", wrap = "off", style = "width:90%" })<br />
-</form>
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <div class="alert alert-info">
+                    Enter a list of email addresses, one row each
+                </div>
+                <form action="/Batch/FindTagEmail" method="post">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <label for="tagname">Tag Name</label>
+                                @Html.TextBox("tagname", "", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    @Html.TextArea("emails", "", new { rows = "20", cols = "100", wrap = "off", @class = "form-control" })<br />
+                    <input type="submit" class="btn btn-primary" value="Submit" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

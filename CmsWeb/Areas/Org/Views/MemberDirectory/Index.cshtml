@@ -3,76 +3,66 @@
 @model CmsWeb.Areas.Org.Models.MemberDirectoryModel
 @{
     ViewBag.Title = "Member Directory";
-    Layout = "~/Views/Shared/Reports.cshtml";
+    ViewBag.PageHeader = Model.FamilyOption ? "Family Directory for {0}".Fmt(Model.OrgName) : "Member Directory for {0}".Fmt(Model.OrgName);
+    ViewBag.PageSubHeader = "<a href=\"/Person2/{0}\">{1}</a>".Fmt(Util.UserPeopleId, Util.UserFullName);
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head
-{
-    <style type="text/css">
-        #results {
-            font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
-            font-size: 12px;
-            margin: 0 45px;
-            text-align: left;
-            border-collapse: collapse;
-        }
-            #results th {
-                text-align: left;
-                font-size: 14px;
-                font-weight: normal;
-                padding: 10px 8px;
-                color: #039;
-            }
-            #results td {
-                padding: 8px;
-                color: #669;
-            }
-            #results .alt {
-                background: #e8edff;
-            }
-        div.pager {
-            display: inline-block;
-        }
-    </style>
-}
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form action="" id="form">
+                    @Html.Hidden("OrgId")
+                    <div class="well">
+                        @Html.LabelFor(vv => vv.Name, "Part of Name")
+                        <div class="row">
+                            <div class="col-sm-12 form-inline">
+                                <div class="input-group col-xs-12 col-sm-6">
+                                    @Html.TextBoxFor(vv => vv.Name, new { title = "Part of the Name", @class = "form-control" })
+                                </div>
+                                <div class="input-group">
+                                    <button id="search" class="btn btn-primary">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.Partial("Results", Model)
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
     <script type="text/javascript">
-        $(function() {
-            $(".bt").button();
-            $("#search").click(function(ev) {
+        $(function () {
+            $("#search").click(function (ev) {
                 ev.preventDefault();
                 $.getTable();
                 return false;
             });
-            $.gotoPage = function(ev, pg) {
+
+            $.gotoPage = function (ev, pg) {
                 $("#Page").val(pg);
                 $.getTable();
                 return false;
             };
-            $.setPageSize = function(ev) {
+
+            $.setPageSize = function (ev) {
                 $('#Page').val(1);
                 $("#PageSize").val($(ev).val());
                 return $.getTable();
             };
-            $.getTable = function() {
+
+            $.getTable = function () {
+                $.block();
                 var f = $('#results').closest('form');
                 var q = f.serialize();
-                $.post('/MemberDirectory/Results', q, function(ret) {
+                $.post('/MemberDirectory/Results', q, function (ret) {
                     $('#results').replaceWith(ret);
+                    $.unblock();
                 });
             };
         });
     </script>
 }
-<form action="" id="form">
-    @Html.Hidden("OrgId")
-    <div class="roundbox">
-        <p><a href="/Person2/@Util.UserPeopleId">My Profile Page</a></p>
-        <h2>@(Model.FamilyOption ? "Family" : "Member") Directory for @Model.OrgName</h2>
-        @Html.LabelFor(vv => vv.Name, "Part of Name"): 
-        @Html.TextBoxFor(vv => vv.Name, new { title = "Part of the Name" })
-        <button id="search" class="blue bt">Search</button>
-    </div>
-    <hr />
-    @Html.Partial("Results", Model)
-</form>

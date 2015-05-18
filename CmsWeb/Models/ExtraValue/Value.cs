@@ -87,7 +87,7 @@ namespace CmsWeb.Models.ExtraValues
         {
             get
             {
-                return "click-pencil click-{0}{1}".Fmt(Type, Type == "Code" && Standard ? "-Select" : "");
+                return "click-{0}{1}".Fmt(Type, Type == "Code" && Standard ? "-Select" : "");
             }
         }
         public string DataValue

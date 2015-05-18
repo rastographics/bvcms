@@ -1,50 +1,65 @@
 ﻿@model CmsWeb.Areas.Org2.Models.OrgPeopleModel
-<div class="filter">
-  <div class="form-inline">
-    <span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="@Model.NameFilterHelp" data-original-title="Name Filter"><i class="fa fa-info-circle"></i></span> &nbsp;&nbsp;
-    <textarea rows="4" id="nameFilter" name="nameFilter" placeholder="Name Filter">@Model.NameFilter</textarea> &nbsp;&nbsp;&nbsp;
-    <span style="cursor: pointer; color: blue;" data-toggle="popover" data-content="@Model.SgFilterHelp" data-original-title="Sub-Group Filter"><i class="fa fa-info-circle"></i></span>&nbsp;
-    <textarea rows="4" id="sgFilter" name="sgFilter" placeholder="Sub-Group Filter">@Model.SgFilter</textarea>
-    <div class="btn-group" style="margin-left: -4px">
-      <button class="btn dropdown-toggle" data-toggle="dropdown">
-        <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu" style="height: 200px; overflow: auto;">
-        <li>
-          <a href="#" id="excludesg">Exclude</a>
-        </li>
-        <li>
-          <a href="#" class="selectsg">Match All</a>
-        </li>
-        <li>
-          <a href="#" class="selectsg">None Assigned</a>
-        </li>
-        @foreach (var sg in Model.SmallGroups())
-        {
-          <li>
-            <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>@sg.Text</a>
-          </li>
-        }
-      </ul>
-    </div> &nbsp;
-    <div class="input-append">
-      <a class="setfilter btn">
-        Filter
-        @if (Model.IsFiltered)
-        {
-          <span style='color: red'>(filtered)</span>
-        }
-      </a>
-      <div class="btn-group">
-        <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-        <ul class="dropdown-menu">
-          <li><a href="#" id="filter-ind" class="@Model.FilterIndActive">Filter Checked Individuals</a></li>
-          <li><a href="#" id="filter-tag" class="@Model.FilterTagActive">Filter by Active Tag</a></li>
-          <li><a href="/Org/CheckAll" id="check-all" class="ajax">Check All</a></li>
-          <li><a href="/Org/CheckNone" id="check-none" class="ajax">Check None</a></li>
-        </ul>
-      </div>
+<div class="filter well hidden-print" style="margin-top: 15px;">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-inline">
+                <div class="form-group">
+                    <div class="input-group">
+                        <a class="input-group-addon" tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name Filter" data-content="@Model.NameFilterHelp"><i class="fa fa-info-circle"></i></a>
+                        <textarea rows="4" id="nameFilter" name="nameFilter" class="form-control" placeholder="Name Filter">@Model.NameFilter</textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <a class="input-group-addon" tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Sub-Group Filter" data-content="@Model.SgFilterHelp"><i class="fa fa-info-circle"></i></a>
+                        <textarea rows="4" id="sgFilter" name="sgFilter" class="form-control" placeholder="Sub-Group Filter">@Model.SgFilter</textarea>
+                        <div class="input-group-btn">
+                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="margin-top: 0;">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" style="height: 200px; overflow: auto;">
+                                <li>
+                                    <a href="#" id="excludesg">Exclude</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="selectsg">Match All</a>
+                                </li>
+                                <li>
+                                    <a href="#" class="selectsg">None Assigned</a>
+                                </li>
+                                @foreach (var sg in Model.SmallGroups())
+                                {
+                                    <li>
+                                        <a href="#" class="selectsg"><i class="fa fa-minus hide"></i>@sg.Text</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <a class="btn btn-default" id="clear-filter" href="#">Clear</a> 
+                    <div class="btn-group">
+                        <a class="btn btn-primary setfilter">Filter@(Model.IsFiltered ? " (filtered)" : "")</a>
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" id="filter-ind" class="@Model.FilterIndActive">Filter Checked Individuals</a></li>
+                            <li><a href="#" id="filter-tag" class="@Model.FilterTagActive">Filter by Active Tag</a></li>
+                            <li><a href="/Org/CheckAll" id="check-all" class="ajax">Check All</a></li>
+                            <li><a href="/Org/CheckNone" id="check-none" class="ajax">Check None</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <a class="btn" id="clear-filter" href="#">Clear</a>
-  </div>
+    <br class="hidden-xs"/>
+    <div class="row">
+        <div class="col-sm-12">
+            <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+        </div>
+    </div>
 </div>

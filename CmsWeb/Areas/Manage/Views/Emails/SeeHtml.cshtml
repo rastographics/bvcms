@@ -2,28 +2,37 @@
 @model CmsWeb.Models.EmailModel
 
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "Emails";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Email Html Source";
+    ViewBag.PageHeader = Model.queue.Subject;
 }
-@section head
+<div class="row">
+    <div class="col-sm-12">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <h5>Html Source</h5>
+                <div class="box-tools">
+                    <a href="/Manage/Emails/Details/@Model.Id" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to Details</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div id="editor" style="width: 100%; height: 600px; border: #ccc solid 1px;">@Model.queue.Body</div>
+                @Html.HiddenFor(m => m.queue.Body)
+                <br/>
+                <a href="/Manage/Emails/Details/@Model.Id" class="btn btn-default visible-xs-block btn-block"><i class="fa fa-arrow-circle-left"></i> Back to Details</a>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
 {
-    <style>
-        textarea {
-            font-family: monospace;
-            width: 100%;
-            height: 600px;
-            white-space: pre;
-            -webkit-tab-size: 4;
-            -moz-tab-size: 4;
-            -ms-tab-size: 4;
-            -o-tab-size: 4;
-            tab-size: 4;
-        }
-    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var editor = ace.edit("editor");
+            editor.setShowPrintMargin(false);
+            editor.setReadOnly(true);
+            editor.getSession().setMode("ace/mode/html");
+        });
+    </script>
 }
-
-<h2>Email Html Source</h2>
-<a href="/Manage/Emails/Details/@Model.id">Back to Details</a>
-<textarea>
-@Model.queue.Body
-</textarea>

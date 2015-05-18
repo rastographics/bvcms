@@ -4,53 +4,98 @@
 @using UtilityExtensions
 @{
     ViewBag.Title = "Contribution Bundle";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = "Contribution Bundle #{0}".Fmt(Model.BundleId);
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head 
+@if ((bool?)TempData["createbundle"] == true)
 {
-    <style type="text/css">
-        .alt {
-            background-color: #eee;
-        }
-
-        td.PLNT {
-            font-style: italic;
-            font-weight: bold;
-            text-align: center;
-        }
-        div.roundbox table th {
-            text-align: right;
-        }
-        div.roundbox table td {
-            padding: .2em .7em;
-        }
-        div.roundbox {
-            display: table;
-            white-space: nowrap;
-        }
-        td.notes {
-            max-width: 20em;
-        }
-    </style>
+    @Html.Partial("Create", Model)
+}
+else if ((bool?)TempData["editbundle"] == true)
+{
+    @Html.Partial("Edit", Model)
+}
+else
+{
+    @Html.Partial("Display", Model)
 }
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Finance/Bundle.js")
+    <script type="text/javascript">
+        $(function () {
+            $('body').on('click', '#delete', function (ev) {
+                ev.preventDefault();
+                var href = $(this).attr("href");
+
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post(href, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = ret;
+                            });
+                        }
+                    });
+                });
+                return true;
+            });
+
+            $('body').on('click', 'a.displayedit', function (ev) {
+                ev.preventDefault();
+                var f = $(this).closest('form');
+                f.validate();
+                if (f.valid()) {
+                    var q = f.serialize();
+                    $.post($(this).attr('href'), q, function (ret) {
+                        window.location = window.location;
+                    });
+                }
+                return false;
+            });
+
+            $('body').on('change', '#Status', function () {
+                if ($('#Status').val() == 'Open') {
+                    $('#IsOpen').val('True');
+                } else {
+                    $('#IsOpen').val('False');
+                }
+            });
+
+            $.validator.setDefaults({
+                highlight: function (input) {
+                    $(input).addClass("ui-state-highlight");
+                },
+                unhighlight: function (input) {
+                    $(input).removeClass("ui-state-highlight");
+                }
+            });
+
+            $.SetValidation = function () {
+                $("#bundleform").validate({
+                    rules: {
+                        "Bundle.ContributionDate": { date: true, required: true },
+                        "Bundle.DepositDate": { date: true },
+                        "Bundle.TotalCash": { number: true },
+                        "Bundle.TotalChecks": { number: true },
+                        "Bundle.TotalEnvelopes": { number: true },
+                    }
+                });
+            };
+
+            $.SetValidation();
+        });
+    </script>
 }
-<div class="roundbox">
-    <a href="/Bundles">Back to Bundle List</a>
-    <h2>Contribution Bundle #@Model.BundleId</h2>
-    <form id="bundleform">
-    @if ((bool?) TempData["createbundle"] == true)
-    {
-        @Html.Partial("Edit", Model)
-    }
-    else
-    {
-        @Html.Partial("Display", Model)
-    }
-    </form>
-</div>
-<form id="results">
-    @Html.Partial("Results", Model)
-</form>

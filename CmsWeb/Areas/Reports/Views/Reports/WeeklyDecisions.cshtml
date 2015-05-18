@@ -1,95 +1,89 @@
-﻿@using CmsWeb
-@model CmsWeb.Areas.Reports.Models.WeeklyDecisionsModel
+﻿@model CmsWeb.Areas.Reports.Models.WeeklyDecisionsModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Weekly Decisions Report";
+    ViewBag.ReportPageHeader = "Weekly Decisions Report";
 }
-@section head {
-    <style type="text/css">
-
-        .totalrow td {
-            border-top: 2px solid black;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        .headerrow th {
-            border-bottom: 2px solid black;
-            text-align: center;
-        }
-
-        input#SundayDate {
-            width: 100px;
-            font-size: 100%;
-        }
-    </style>
-}
-@section scripts
-{
-    <script type="text/javascript">
-        $(function () {
-            $(".datepicker").jqdatepicker();
-            $(".bt").button();
-        });
-    </script>
-}
-<div style="text-align: center">
-    <h1>Weekly Decisions Report</h1>
-    <form action="/Reports/WeeklyDecisions" method="GET">
-    Campus: @Html.DropDownList("Campus", Model.CampusList())<br/>
-    Sunday Date:
-        @Html.DatePicker("Sunday") <input type="submit" class="bt" value="Run"/>
-    </form>
-    <hr />
-    <table style="margin-left: auto; margin-right: auto;">
-        <tbody>
-            <tr style="vertical-align: top;">
-                <td>
-
-                    <table class="@ViewExtensions2.GridClass">
-                        <tbody>
-                            <tr class="headerrow">
-                                <th colspan="2">Decisions</th>
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="well hidden-print" style="max-width: 600px; margin: auto;">
+            <div class="row">
+                @using (Html.BeginForm("WeeklyDecisions", "Reports", FormMethod.Get))
+                {
+                    <div class="col-sm-5">
+                        <label for="Campus" class="control-label">Campus</label>
+                        <div class="input-group">
+                            @Html.DropDownList("Campus", Model.CampusList(), new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-sm-7">
+                        <label for="Sunday" class="control-label">Sunday Date</label>
+                        <div class="form-inline">
+                            <div class="input-group date">
+                                @Html.TextBox("Sunday", Model.Sunday.ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("SundayIso", Model.Sunday.ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
+                            <div class="input-group">
+                                <button type="submit" class="btn btn-primary">Run</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="visible-print-block text-center">
+            @{
+                var campus = Model.CampusList().FirstOrDefault(c => c.Value == Model.Campus.ToString());
+                var campusName = campus != null ? campus.Text : "";
+            }
+            <strong>Campus:</strong> @campusName<br />
+            <strong>Sunday Date:</strong> @Model.Sunday.ToShortDateString()
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Decisions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model.Decisions())
+                        {
+                            <tr>
+                                <td class="text-left">@r.Name</td>
+                                <td class="text-right">@r.Count</td>
                             </tr>
-                            @foreach (var r in Model.Decisions())
-                            {
-                                <tr>
-                                    <td class="left">@r.Name</td>
-                                    <td class="right">@r.Count</td>
-                                </tr>
-                            }
-                            <tr class="totalrow">
-                                <td class="left">Total </td>
-                                <td class="right">@Model.TotalDecisions.Count</td>
+                        }
+                        <tr class="totals-row">
+                            <td class="text-left">Total </td>
+                            <td class="text-right">@Model.TotalDecisions.Count</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-sm-6">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Baptisms</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var r in Model.Baptisms())
+                        {
+                            <tr>
+                                <td class="text-left">@r.Name</td>
+                                <td class="text-right">@r.Count</td>
                             </tr>
-                        </tbody>
-                    </table>
-                </td>
-                <td>&nbsp; &nbsp;
-                </td>
-                <td>
-                    <table class="@ViewExtensions2.GridClass">
-                        <tbody>
-                            <tr class="headerrow">
-                                <th colspan="2">Baptisms</th>
-                            </tr>
-                            @foreach (var r in Model.Baptisms())
-                            {
-                                <tr>
-                                    <td class="left">@r.Name</td>
-                                    <td class="right">@r.Count</td>
-                                </tr>
-                            }
-                            <tr class="totalrow">
-                                <td class="left">Total </td>
-                                <td class="right">@Model.TotalBaptisms.Count</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                        }
+                        <tr class="totals-row">
+                            <td class="text-left">Total </td>
+                            <td class="text-right">@Model.TotalBaptisms.Count</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
-
-

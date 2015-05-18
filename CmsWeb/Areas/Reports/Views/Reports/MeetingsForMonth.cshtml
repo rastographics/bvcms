@@ -1,78 +1,82 @@
 ﻿@using CmsWeb
 @using UtilityExtensions
 @model IEnumerable<dynamic>
-
 @{
     ViewBag.Title = "Meetings For Month";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.ReportPageHeader = string.Format("Meetings for {0}", ViewBag.Month);
+    Layout = ViewExtensions2.TouchPointLayout();
     var entity = (IDictionary<string, object>)Model.First();
     var cols = entity.Keys.ToList();
     var atotals = cols.ToDictionary(cc => cc, cc => 0);
     var atot = 0.0;
     var ntot = 0;
 }
-
-<h2>Meetings for @ViewBag.Month</h2>
-<table class="@ViewExtensions2.GridClass">
-    <thead>
-        <tr>
-            @foreach (var col in cols)
-            {
-                if (char.IsDigit(col[0]))
-                {
-                <th class="right">@col</th>
-                }
-                else
-                {
-                <th>@col</th>
-                }
-            }
-            <th class="right">Average</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var rr in Model.Cast<IDictionary<string, object>>())
-        {
-            var tot = 0.0;
-            var n = 0;
-            <tr>
-                @foreach (var col in cols)
-                {
-                    if (char.IsDigit(col[0]))
-                    {
-                        tot += rr[col].ToInt();
-                        atotals[col] += rr[col].ToInt();
-                        if (rr[col].ToInt2().HasValue)
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        @foreach (var col in cols)
                         {
-                            n++;
+                            if (char.IsDigit(col[0]))
+                            {
+                                <th class="text-right">@col</th>
+                            }
+                            else
+                            {
+                                <th>@col</th>
+                            }
                         }
-                        <td class="right">@rr[col]</td>
-                    }
-                    else
+                        <th class="text-right">Average</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rr in Model.Cast<IDictionary<string, object>>())
                     {
-                        <td>@rr[col]</td>
+                        var tot = 0.0;
+                        var n = 0;
+                        <tr>
+                            @foreach (var col in cols)
+                            {
+                                if (char.IsDigit(col[0]))
+                                {
+                                    tot += rr[col].ToInt();
+                                    atotals[col] += rr[col].ToInt();
+                                    if (rr[col].ToInt2().HasValue)
+                                    {
+                                        n++;
+                                    }
+                                    <td class="text-right">@rr[col]</td>
+                                }
+                                else
+                                {
+                                    <td>@rr[col]</td>
+                                }
+                            }
+                            <td class="text-right">@((tot / n).ToString("n1"))</td>
+                        </tr>
                     }
-                }
-                <td class="right">@((tot / n).ToString("n1"))</td>
-            </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr>
-            @foreach (var col in cols)
-            {
-                if (char.IsDigit(col[0]))
-                {
-                    atot += atotals[col];
-                    ntot++;
-                    <td class="right">@atotals[col]</td>
-                }
-                else if(col == "Organization")
-                {
-                    <td colspan="2" class="right">Total</td>
-                }
-            }
-                <td class="right">@((atot / ntot).ToString("n1"))</td>
-        </tr>
-    </tfoot>
-</table>
+                </tbody>
+                <tfoot>
+                    <tr class="totals-row">
+                        @foreach (var col in cols)
+                        {
+                            if (char.IsDigit(col[0]))
+                            {
+                                atot += atotals[col];
+                                ntot++;
+                                <td class="text-right">@atotals[col]</td>
+                            }
+                            else if (col == "Organization")
+                            {
+                                <td colspan="2" class="right">Total</td>
+                            }
+                        }
+                        <td class="text-right">@((atot / ntot).ToString("n1"))</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

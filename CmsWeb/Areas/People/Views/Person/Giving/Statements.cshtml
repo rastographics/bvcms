@@ -11,52 +11,67 @@
     };
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
 }
-<form class="form ajax form-horizontal span12 margin-top" method="post" data-init="Editable" data-init2="ExtraEditable">
-  <fieldset class="left-gutter margin-top">
-    <legend>Statements</legend>
-    <div class="inline left-gutter">
-      <table class="table not-wide table-condensed">
-        <thead>
-          <tr>
-            <th>Year</th>
-            <th class="right">Count</th>
-            <th class="right">Amount</th>
-          </tr>
-        </thead>
-        @foreach (var year in ContributionsModel.Statements(Model.PeopleId))
-        {
-          TotalAmount += year.Amount;
-          TotalCount += year.Count;
-          <tr>
-            <td><a href="/Person2/ContributionStatement/@Model.PeopleId/@year.StartDate.ToSortableDate()/@year.EndDate.ToSortableDate()">@year.StartDate.Year</a></td>
-            <td class="right">@year.Count.ToString("N0")</td>
-            <td class="right">
-              @if (finance)
-              {
-                <a href='/Contributions/@Model.PeopleId?year=@year.StartDate.Year'>@year.Amount.ToString("c")</a>
-              }
-              else
-              {
-                @year.Amount.ToString("c")
-              }
-            </td>
-          </tr>
-        }
-        <tfoot>
-          <tr>
-            <td>Total</td>
-            <td class="right">@TotalCount.ToString("N0")</td>
-            <td class="right">@TotalAmount.ToString("c")</td>
-          </tr>
-        </tfoot>
-      </table>
+<form class="ajax" method="post" data-init="Editable" data-init2="ExtraEditable">
+    <h4>Statements</h4>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th class="text-right">Count</th>
+                            <th class="text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    @foreach (var year in ContributionsModel.Statements(Model.PeopleId))
+                    {
+                        TotalAmount += year.Amount;
+                        TotalCount += year.Count;
+                        <tr>
+                            <td><a href="/Person2/ContributionStatement/@Model.PeopleId/@year.StartDate.ToSortableDate()/@year.EndDate.ToSortableDate()">@year.StartDate.Year</a></td>
+                            <td class="text-right">@year.Count.ToString("N0")</td>
+                            <td class="text-right">
+                                @if (finance)
+                                {
+                                    <a href='/Contributions/@Model.PeopleId?year=@year.StartDate.Year'>@year.Amount.ToString("c")</a>
+                                }
+                                else
+                                {
+                                    @year.Amount.ToString("c")
+                                }
+                            </td>
+                        </tr>
+                    }
+                    <tfoot>
+                        <tr class="totals-row">
+                            <td>Total</td>
+                            <td class="text-right">@TotalCount.ToString("N0")</td>
+                            <td class="text-right">@TotalAmount.ToString("c")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Statement/Envelope Options
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
+                        </div>
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
+                        </div>
+                        <div class="col-sm-12">
+                            @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="inline left-gutter align-top well">
-      <p><b>Statement/Envelope Options</b></p>
-      @Html.EditorFor(m => m.ElectronicStatement, "InlineBoolean", editable)
-      @Html.EditorFor(m => m.ContributionOptions, "InlineCodeInfo", editable)
-      @Html.EditorFor(m => m.EnvelopeOptions, "InlineCodeInfo", editable)
-    </div>
-  </fieldset>
 </form>
-

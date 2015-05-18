@@ -1,40 +1,51 @@
 ﻿@model CmsWeb.Areas.Search.Models.SearchAddModel
-<div class="modal-header">
-    <a class="close" data-dismiss="modal">×</a>
-    <h3>Pending List to @Model.DialogTitle</h3>
-</div>
-<div class="modal-body">
-    <a class="helplink" target="_blank" href='@Model.HelpLink("PendingList")'>help</a>
-    @Html.EditorFor(m => m, "HiddenSearch")
-    @Html.EditorFor(m => m, "HiddenMeta")
-    @Html.EditorFor(m => m, "HiddenPeople")
-    <table id="people" class="table table-condensed">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Address</th>
-                <th>CityStateZip</th>
-                <th>Age</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (var n = 0; n < Model.PendingList.Count; n++)
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Pending List to @Model.DialogTitle</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    @Html.EditorFor(m => m, "HiddenSearch")
+                    @Html.EditorFor(m => m, "HiddenMeta")
+                    @Html.EditorFor(m => m, "HiddenPeople")
+                    <div class="table-responsive">
+                        <table id="people" class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Address</th>
+                                    <th>CityStateZip</th>
+                                    <th>Age</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @for (var n = 0; n < Model.PendingList.Count; n++)
+                                {
+                                    @Html.DisplayFor(m => m.PendingList[n], "Person", new { index = n })
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="pull-left">
+                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+            </div>
+            @if (!Model.OnlyOne)
             {
-                @Html.DisplayFor(m => m.PendingList[n], "Person", new { index = n })
+                <a href="/SearchAdd2/SearchPerson" class="btn btn-default ajax">Another Search</a> @:or
+                if (Model.CanAdd)
+                {
+                    <a href="/SearchAdd2/NewPerson/@Model.PendingList[Model.PendingList.Count - 1].FamilyId" class="btn btn-default ajax">Add to Last Family</a> @:or
+                }
             }
-        </tbody>
-    </table>
-</div>
-<div class="modal-footer">
-    <a class="btn" data-dismiss="modal">Cancel</a>
-    @if (!Model.OnlyOne)
-    {
-        <a href="/SearchAdd2/SearchPerson" class="btn ajax">Another Search</a> @:or 
-        if (Model.CanAdd)
-        { 
-        <a href="/SearchAdd2/NewPerson/@Model.PendingList[Model.PendingList.Count - 1].FamilyId" class="btn ajax">Add to Last Family</a> @:or 
-        }
-    }
-    <a href="/SearchAdd2/CommitAdd" class="btn btn-primary commit">Commit and Add</a>
+            <a href="/SearchAdd2/CommitAdd" class="btn btn-primary commit">Commit and Add</a>
+        </div>
+    </div>
 </div>

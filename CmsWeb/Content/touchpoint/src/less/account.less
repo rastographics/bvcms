@@ -1,0 +1,158 @@
+@import "variables.less";
+@import "bootstrap-3.3.2/bootstrap.less";
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    padding-top: 0;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background: #f6f6f6;
+    padding-bottom: 40px;
+}
+
+input[type="text"] {
+    text-transform: lowercase;
+}
+
+.account {
+    text-align: center;
+}
+
+.account .account-header {
+    padding-left: 0;
+    text-align: center;
+}
+
+.account .account-header {
+    background: #fff;
+    padding: 16px 0 16px 0;
+    position: relative;
+    -webkit-box-shadow: 0 2px 2px rgba(0,0,0,.05),0 1px 0 rgba(0,0,0,.05);
+    box-shadow: 0 2px 2px rgba(0,0,0,.05),0 1px 0 rgba(0,0,0,.05);
+}
+
+.account .account-header .btn {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+}
+
+.account .account-header .logo {
+    color: #555;
+    font-size: 16px;
+    height: 24px;
+    line-height: 24px;
+    width: 24px;
+    opacity: 1;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+}
+
+.account .account-header .demo-logo {
+    display: inline-block;
+    height: 24px;
+    line-height: 24px;
+}
+
+.account .account-header .logo-img {
+    margin-top: -8px;
+    height: 50px;
+}
+
+.account .form-header {
+    font-size: 25px;
+    font-weight: 300;
+    text-align: center;
+    margin: 40px 0;
+}
+
+.account .bordered, .account .panel, .account .table, .account hr {
+    border-color: #e2e2e2;
+}
+
+.account .panel {
+    max-width: 360px;
+    margin: 0 auto;
+    padding: 27px;
+}
+
+.panel, .panel-default {
+    border-color: #e4e4e4;
+    margin-bottom: 22px;
+    position: relative;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.account .signin-password {
+    position: relative;
+}
+
+.account .signin-password input {
+    padding-right: 70px;
+}
+
+.account .signin-password .forgot {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    color: #555;
+    background: #f1f1f1;
+    border-radius: 2px;
+    line-height: 25px;
+    padding: 0 7px;
+    font-size: 12px;
+}
+
+.account .signin-with {
+    max-width: 360px;
+    padding: 20px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.account .signin-with .header {
+    font-size: 16px;
+    font-weight: 300;
+    text-align: center;
+    margin: 0 0 20px;
+}
+
+.account .signin-with .header a {
+    text-decoration: underline;
+}
+
+.account .alert {
+    width: 360px;
+    margin: auto;
+    margin-bottom: 20px;
+    text-align: left !important;
+}
+
+#footer {
+    text-align: left;
+    background-color: @global-dark-gray;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    color: #fff;
+    font-size: 11px;
+    border-top: 1px solid #2e343a;
+    padding-top: 23px;
+    padding-left: 15px;
+}
+
+#footer a {
+    color: #fff !important;
+    text-decoration: underline;
+}
+
+#powered-by {
+    height: 30px;
+    margin-top: -5px;
+}

@@ -1,35 +1,35 @@
 ﻿@using CmsWeb.Models.ExtraValues
 @model NewExtraValueModel
-<form id='extravalue-dialog' class='modal fade hide validate ajax form-horizontal' data-width='600'>
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
-        <h3>Delete Extra Values For List</h3>
-    </div>
-    <div class="modal-body">
-        <a class="helplink pull-right" target="_blank" href='@ExtraValueModel.HelpLink("DeleteExtraValueForQuery")'>help</a>
-        @Html.HiddenFor(m => m.Id)
-        @Html.HiddenFor(m => m.QueryId)
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Delete Extra Values For List</h4>
+        </div>
+        <div class="modal-body">
+            @if (ViewBag.Error != null)
+            {
+                <div id="ExtraValueError" class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <div>@Html.Raw(ViewBag.Error)</div>
+                </div>
+            }
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.QueryId)
 
-        @Html.EditorFor(m => m.AdhocExtraValueType, new { PlainSelect = true })
-        @Html.EditorFor(m => m.ExtraValueName)
-        @Html.EditorFor(m => m.RemoveAnyValue)
+            @Html.EditorFor(m => m.AdhocExtraValueType, new { PlainSelect = true })
+            @Html.EditorFor(m => m.ExtraValueName)
+            @Html.EditorFor(m => m.RemoveAnyValue)
 
-        @Html.EditorFor(m => m.ExtraValueTextBox, new { hide = "hide" })
-        @Html.EditorFor(m => m.ExtraValueTextArea)
-        @Html.EditorFor(m => m.ExtraValueCheckbox, new { hide = "hide" })
-        @Html.EditorFor(m => m.ExtraValueDate, new { hide = "hide" })
-        @Html.EditorFor(m => m.ExtraValueInteger, new { hide = "hide" })
-
-        @if (ViewBag.Error != null)
-        {
-            <div id="ExtraValueError" class="alert">
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-                <div>@Html.Raw(ViewBag.Error)</div>
-            </div>
-        }
+            @Html.EditorFor(m => m.ExtraValueTextBox, new { hide = "hide" })
+            @Html.EditorFor(m => m.ExtraValueTextArea)
+            @Html.EditorFor(m => m.ExtraValueCheckbox, new { hide = "hide" })
+            @Html.EditorFor(m => m.ExtraValueDate, new { hide = "hide" })
+            @Html.EditorFor(m => m.ExtraValueInteger, new { hide = "hide" })
+        </div>
+        <div class="modal-footer">
+            <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+            <a href="/ExtraValue/ExecDeleteFromQuery" class="btn btn-danger ajax" data-callback="AdhocDialogCallback">Delete</a>
+        </div>
     </div>
-    <div class="modal-footer">
-        <a class="btn" data-dismiss="modal">Cancel</a>
-        <a href="/ExtraValue/ExecDeleteFromQuery" class="btn btn-danger ajax" data-callback="AdhocDialogCallback">Delete</a>
-    </div>
-</form>
+</div>

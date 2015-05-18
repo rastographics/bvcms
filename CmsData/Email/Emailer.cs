@@ -101,11 +101,13 @@ namespace CmsData
         public List<Person> AdminPeople()
         {
             var list = (from p in CMSRoleProvider.provider.GetAdmins()
-                        where !p.EmailAddress.Contains("bvcms.com")
-                        where !p.EmailAddress.Contains("touchpointsoftware.com")
+                        where p.EmailAddress.HasValue() 
+                        && !p.EmailAddress.Contains("bvcms.com") 
+                        && !p.EmailAddress.Contains("touchpointsoftware.com")
                         select p).ToList();
             if (list.Count == 0)
                 list = (from p in CMSRoleProvider.provider.GetAdmins()
+                        where p.EmailAddress.HasValue()
                         select p).ToList();
             return list;
         }

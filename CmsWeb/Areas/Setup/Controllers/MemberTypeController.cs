@@ -42,10 +42,15 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             if (!id.HasValue)
                 return Content("need an integer id");
-            var m = new MemberType { Id = id.Value };
-            DbUtil.Db.MemberTypes.InsertOnSubmit(m);
-            DbUtil.Db.SubmitChanges();
-            return Redirect("/MemberType/");
+            
+            if (!DbUtil.Db.MemberTypes.Any(mt => mt.Id == id))
+            {
+                var m = new MemberType { Id = id.Value };
+                DbUtil.Db.MemberTypes.InsertOnSubmit(m);
+                DbUtil.Db.SubmitChanges();
+            }
+            
+            return Redirect("/MemberType/#{0}".Fmt(id));
         }
         [HttpPost]
         public ActionResult Move(int fromid, int toid)
@@ -53,6 +58,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.ExecuteCommand("UPDATE dbo.OrganizationMembers SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
             DbUtil.Db.ExecuteCommand("UPDATE dbo.EnrollmentTransaction SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
             DbUtil.Db.ExecuteCommand("UPDATE dbo.Attend SET MemberTypeId = {0} WHERE MemberTypeId = {1}", toid, fromid);
+
+            TempData["SuccessMessage"] = "Member type and associated members were successfully migrated.";
             return Redirect("/MemberType/");
         }
 
@@ -100,16 +107,17 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("done");
         }
-        [AcceptVerbs(HttpVerbs.Post)]
+        
         public JsonResult AttendTypeCodes()
         {
             var q = from c in DbUtil.Db.AttendTypes
                     select new
                     {
-                        Code = c.Id.ToString(),
-                        Value = c.Description,
+                        value = c.Id.ToString(),
+                        text = c.Description,
                     };
-            return Json(q.ToDictionary(k => k.Code, v => v.Value));
+
+            return Json(q.ToList(), JsonRequestBehavior.AllowGet);
         }
     }
 }

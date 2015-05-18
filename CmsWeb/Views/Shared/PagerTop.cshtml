@@ -1,0 +1,20 @@
+﻿@using DocumentFormat.OpenXml.Wordprocessing
+@using iTextSharp.text.pdf.qrcode
+@using iTextSharp.tool.xml.html.head
+@model CmsWeb.Models.PagerModel2
+<div class="row hidden-print">
+    <div class="col-lg-4 col-md-4 col-sm-4 form-inline">
+        @if (Model.ShowPageSize)
+        {
+            if (Model.AjaxPager)
+            {
+                <span>Show </span>@Html.DropDownList("Size", Model.PageSizeList(), new { @class = "form-control" })<span> rows</span>
+            }
+            else
+            {
+                <span>Show </span>@Html.DropDownList("PageSize", Model.PageSizeList(), new { onchange = "$.setPageSize(this)", @class = "form-control" })<span> rows</span>
+            }
+        }
+    </div>
+    @Html.Partial("Pagination", Model)
+</div>

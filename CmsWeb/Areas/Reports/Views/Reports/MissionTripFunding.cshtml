@@ -3,52 +3,44 @@
 @model List<CmsData.View.MissionTripTotal>
 
 @{
-    ViewBag.Title = "title";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Mission Trip Funding";
+    ViewBag.ReportPageHeader = "Mission Trip Funding";
+    Layout = ViewExtensions2.TouchPointLayout();
     var lastoid = 0;
 }
-@section head
-{
-    <style>
-        td.orgheader {
-            border-top: 2px solid black;
-        }
-
-        tr.total td {
-            border-top: 1px solid gray;
-        }
-    </style>
-}
-<h2>Mission Trip Funding </h2>
-<table class="@ViewExtensions2.GridClass">
-    <tbody>
-        @foreach (var r in Model)
-        {
-            if (r.OrganizationId != lastoid)
-            {
-                lastoid = r.OrganizationId;
-            <thead>
-                <tr>
-                    <td colspan="4" class="orgheader">
-                        <h4>@r.Trip</h4>
-                    </td>
-                </tr>
-                <tr>
-                    <td><b>Particpant</b></td>
-                    <td class="right"><b>Trip Cost</b></td>
-                    <td class="right"><b>Raised</b></td>
-                    <td class="right"><b>Balance</b></td>
-                </tr>
-            </thead>
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                @foreach (var r in Model)
+                {
+                    if (r.OrganizationId != lastoid)
+                    {
+                        lastoid = r.OrganizationId;
+                        <thead>
+                            <tr>
+                                <td colspan="4">
+                                    <h4>@r.Trip</h4>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th><b>Particpant</b></th>
+                                <th class="text-right"><b>Trip Cost</b></th>
+                                <th class="text-right"><b>Raised</b></th>
+                                <th class="text-right"><b>Balance</b></th>
+                            </tr>
+                        </thead>
+                    }
+                    var istotal = r.Name == "Total";
+                    var fmt = istotal ? "C" : "N2";
+                    <tr @(istotal ? "class=totals-row" : "")>
+                        <td><a href="/Person2/@r.PeopleId">@r.Name</a></td>
+                        <td class="text-right">@r.TripCost.ToString2(fmt)</td>
+                        <td class="text-right">@r.Raised.ToString2(fmt)</td>
+                        <td class="text-right">@r.Due.ToString2(fmt)</td>
+                    </tr>
                 }
-                var istotal = r.Name == "Total";
-                var fmt = istotal ? "C" : "N2";
-                <tr @(istotal ? "class=total" : "")>
-                    <td><a href="/Person2/@r.PeopleId">@r.Name</a></td>
-                    <td class="right">@r.TripCost.ToString2(fmt)</td>
-                    <td class="right">@r.Raised.ToString2(fmt)</td>
-                    <td class="right">@r.Due.ToString2(fmt)</td>
-                </tr>
-                }
-            </tbody>
-        </table>
+            </table>
+        </div>
+    </div>
+</div>

@@ -26,11 +26,13 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var m = new EmailsModel();
 			return View(m);
 		}
+
 		public ActionResult SentBy(int? id)
 		{
 			var m = new EmailsModel { senderid = id };
 			return View("Index", m);
 		}
+
 		public ActionResult SentTo(int? id)
 		{
 			var m = new EmailsModel { peopleid = id };
@@ -39,9 +41,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [Route("~/Emails/Details/{id:int}")]
         [Route("~/Manage/Emails/Details/{id:int}")]
-		public ActionResult Details(int id, string filter)
+		public ActionResult Details(int id)
 		{
-			var m = new EmailModel { id = id, filter = filter ?? "All" };
+			var m = new EmailModel(id);
 		    if (m.queue == null)
 		        return Content("no email found");
 			var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
@@ -55,9 +57,10 @@ namespace CmsWeb.Areas.Manage.Controllers
     			return View(m);
 			return Content("not authorized");
 		}
+
 		public ActionResult SeeHtml(int id)
 		{
-			var m = new EmailModel { id = id };
+			var m = new EmailModel(id);
 		    if (m.queue == null)
 		        return Content("no email found");
 			var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
@@ -71,6 +74,24 @@ namespace CmsWeb.Areas.Manage.Controllers
     			return View(m);
 			return Content("not authorized");
 		}
+
+        public ActionResult GetEmailBody(int id)
+        {
+            var m = new EmailModel(id);
+            if (m.queue == null)
+                return Content("no email found");
+            var curruser = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
+            if (curruser == null)
+                return Content("no user");
+            if (User.IsInRole("Admin")
+                || User.IsInRole("ManageEmails")
+                || m.queue.FromAddr == curruser.EmailAddress
+                || m.queue.QueuedBy == curruser.PeopleId
+                || m.queue.EmailQueueTos.Any(et => et.PeopleId == curruser.PeopleId))
+                return Content(m.queue.Body);
+            return Content("not authorized");
+        }
+
 		public ActionResult ConvertToSearch(int id)
 		{
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -122,9 +143,10 @@ namespace CmsWeb.Areas.Manage.Controllers
 			});
 			return Redirect("/Manage/Emails/Details/" + id);
 		}
+
 		public ActionResult DeleteQueued(int id)
 		{
-			var m = new EmailModel { id = id };
+			var m = new EmailModel(id);
 		    if (m.queue == null)
 		        return Redirect("/Emails");
             if (m.queue.Sent.HasValue || !m.queue.SendWhen.HasValue || !m.CanDelete())
@@ -148,12 +170,13 @@ namespace CmsWeb.Areas.Manage.Controllers
 	    [Authorize(Roles = "Admin")]
 		public ActionResult Delete(int id)
 		{
-			var m = new EmailModel { id = id };
+			var m = new EmailModel(id);
             if (!m.CanDelete())
 				return Redirect("/");
 		    DeleteEmail(id);
 			return Redirect("/Emails");
 		}
+
 		public ActionResult Resend(int id)
 		{
 			var email = (from e in DbUtil.Db.EmailQueues
@@ -166,24 +189,25 @@ namespace CmsWeb.Areas.Manage.Controllers
 		    TempData["message"] = "Mail Resent";
 			return RedirectToAction("Details", new { id });
 		}
+
 		public ActionResult MakePublic(int id)
 		{
 			var email = (from e in DbUtil.Db.EmailQueues
 						 where e.Id == id
 						 select e).Single();
-			var m = new EmailModel { id = id };
+			var m = new EmailModel(id);
 			if (!User.IsInRole("Admin") && m.queue.QueuedBy != Util.UserPeopleId)
 				return Redirect("/");
 			email.PublicX = true;
 			DbUtil.Db.SubmitChanges();
             return Redirect("/EmailView/" + id);
 		}
+
 		[HttpPost]
-		public ActionResult Recipients(int id, string filter)
+        public ActionResult Recipients(int id, FilterType filterType, int? page, int pageSize)
 		{
-			var m = new EmailModel { id = id, filter = filter };
-			UpdateModel(m.Pager);
-			return View(m);
+			var m = new EmailModel(id, filterType, page, pageSize);
+            return View(m);
 		}
 
 		public ActionResult List(EmailsModel m)
@@ -196,6 +220,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return Redirect("/EmailView/" + id);
         }
+
         [Route("~/Emails/Failed/{id?}")]
 		public ActionResult Failed(int? id, string email)
 		{
@@ -222,6 +247,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 						   };
 			return View(q.Take(300));
 		}
+
 		[Authorize(Roles = "Admin")]
 		[HttpPost]
 		public ActionResult Unblock(string email)
@@ -231,6 +257,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 			var ret = wc.DownloadString(deletebounce);
 			return Content(ret);
 		}
+
 		[Authorize(Roles = "Developer")]
 		[HttpPost]
 		public ActionResult Unspam(string email)

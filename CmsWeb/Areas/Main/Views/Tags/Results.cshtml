@@ -1,63 +1,73 @@
-﻿@using CmsWeb
-@using CmsWeb.Models
+﻿@using CmsWeb.Models
 @using CmsData
 @model TagsModel
 @{
     var target = Util2.TargetLinkPeople ? "target='people'" : "";
 }
-<table id="results" class="@ViewExtensions2.GridClass" cellspacing="5">
-<thead>
-	<tr><td colspan="6">
-    <div>
-        <b>Count: @Model.Count()</b>
-@*        <label style="margin-left: 5em;">Add Person to Tag:</label><input type="text" id="addperson" />*@
+<div id="results">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="form-group">
+                <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+            </div>
+        </div>
+    </div>      
+    @Html.Partial("PagerTop", Model)
+    <div class="table-responsive">
+        <table id="resultsTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th><a href="#" class="sortable">Name</a></th>
+                    <th><a href="#" class="sortable">Status</a>/Age<br /> - <a href="#" class="sortable">DOB</a></th>
+                    <th><a href="#" class="sortable">Address</a></th>
+                    <th><a href="#" class="sortable">Communication</a></th>
+                    <th><a href="#" class="sortable">Fellowship Leader</a></th>
+                    <th>Tag</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr><td colspan="6">No matching records.</td></tr>
+                }
+
+                @foreach (var p in Model.PeopleList())
+                {
+                    <tr>
+                        <td>
+                            <a href='/Person2/@p.PeopleId' class="target" @target>@p.Name</a>
+                        </td>
+                        <td>
+                            @p.MemberStatus<br />
+                            @p.Age - @p.BirthDate
+                        </td>
+                        <td>
+                            <a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip'>@p.Address</a>
+                            <br />
+                            @p.CityStateZip
+                        </td>
+                        <td>
+                            @foreach (var ph in p.Phones)
+                            {
+                                @ph<br />
+                            }
+                            <a href='mailto:@p.Email'>@p.Email</a>
+                        </td>
+                        <td>
+                            <a href='/Person2/@p.BFTeacherId'>@p.BFTeacher</a>
+                        </td>
+                        <td>
+                            <a href="/Tags/ToggleTag/@p.PeopleId" class="taguntag btn btn-sm @(p.HasTag ? "btn-default" : "btn-success")" title="Add to/Remove from Active Tag" value="@p.PeopleId"><i class="fa fa-tag"></i> @(p.HasTag ? "Remove" : "Add")</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-    @Html.Partial("Pager2", Model)
+    @Html.Partial("PagerBottom", Model)
     @Html.Hidden("actag", Util2.CurrentTagName)
     @Html.Hidden("shcnt", Model.SharedCount())
-</td></tr>
-	<tr>
-		<th> <a href="#" class="sortable">Name</a> </th>
-		<th> <a href="#" class="sortable">Status</a>/Age - <a href="#" class="sortable">DOB</a> </th>
-		<th> <a href="#" class="sortable">Address</a> </th>
-		<th> <a href="#" class="sortable">Communication</a> </th>
-		<th> <a href="#" class="sortable">Fellowship Leader</a> </th>
-		<th> Tag </th>
-	</tr>
-</thead>
-<tbody>
-@if(Model.Count() == 0)
-{ 
-	<tr><td colspan="5">No matching records.</td></tr>
-} 
-@foreach (var p in Model.PeopleList())
-{ 
-	<tr>
-		<td><img src="/Content/images/individual.gif" width="10px" height="12px" />
-			<a href='/Person2/@p.PeopleId' @target>@p.Name</a>
-		</td>
-		<td>
-			@p.MemberStatus<br />
-			@p.Age - @p.BirthDate
-		</td>
-		<td>
-			<a href='http://www.google.com/maps?q=@p.Address,+@p.CityStateZip'>@p.Address</a>
-			<br />
-			@p.CityStateZip
-		</td>
-		<td>
-	@foreach (var ph in p.Phones)
-	{ 
-			@ph<br />
-	} 
-			<a href='mailto:@p.Email'>@p.Email</a>
-		</td>
-		<td><a href='/Person2/@p.BFTeacherId' @target>@p.BFTeacher</a></td>
-		<td><a href="/Tags/ToggleTag/@p.PeopleId" class="taguntag" title="Add to/Remove from Active Tag" value='@p.PeopleId'>@(p.HasTag? "Remove" : "Add")</a></td>
-	</tr>
-}
-</tbody>
-<tfoot>
-<tr><td colspan="6">@Html.Partial("Pager2", Model)</td></tr>
-</tfoot>
-</table>
+    @Html.Hidden("Page", Model.Page)
+    @Html.Hidden("Sort", Model.Sort)
+    @Html.Hidden("Direction", Model.Direction)
+</div>

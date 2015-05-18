@@ -19,12 +19,15 @@ using UtilityExtensions;
 
 namespace CmsWeb
 {
-    public class MvcApplication : HttpApplication
+    public class MvcApplication : System.Web.HttpApplication
     {
+
         protected void Application_Start()
         {
             MvcHandler.DisableMvcResponseHeader = true;
             ModelBinders.Binders.DefaultBinder = new SmartBinder();
+            ModelBinders.Binders.Add(typeof(decimal), new DecimalModelBinder());
+            ModelBinders.Binders.Add(typeof(decimal?), new DecimalModelBinder());
             ModelBinders.Binders.Add(typeof(int?), new NullableIntModelBinder());
             ModelMetadataProviders.Current = new ModelViewMetadataProvider();
             RouteConfig.RegisterRoutes(RouteTable.Routes);
@@ -33,6 +36,7 @@ namespace CmsWeb
 
             MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
             MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
+
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -66,7 +70,7 @@ namespace CmsWeb
             using (var cn = new SqlConnection(cs.ConnectionString))
             {
                 cn.Open();
-                var cmd = new SqlCommand("LogBrowser", cn) {CommandType = CommandType.StoredProcedure};
+                var cmd = new SqlCommand("LogBrowser", cn) { CommandType = CommandType.StoredProcedure };
                 cmd.Parameters.AddWithValue("browser", Request.Browser.Type);
                 cmd.Parameters.AddWithValue("who", Util.UserName);
                 cmd.Parameters.AddWithValue("host", Util.Host);
@@ -77,12 +81,12 @@ namespace CmsWeb
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
             var url = Request.Url.OriginalString;
-            if (url.Contains("/Errors/") || url.Contains("healthcheck.txt"))
+            if (url.Contains("/Error/") || url.Contains("/Content/touchpoint/") || url.Contains("healthcheck.txt"))
                 return;
 
             if (Util.AppOffline)
             {
-                Response.Redirect("/Errors/AppOffline.htm");
+                Response.Redirect("/Error/Offline");
                 return;
             }
 
@@ -101,7 +105,7 @@ namespace CmsWeb
                 var ret = DbUtil.CreateDatabase();
                 if (ret.HasValue())
                 {
-                    Response.Redirect("/Errors/DatabaseCreationError.aspx?error=" + HttpUtility.UrlEncode(ret));
+                    Response.Redirect("/Error/DatabaseCreationError/?error={0}".Fmt(HttpUtility.UrlEncode(ret)));
                     return;
                 }
             }
@@ -118,7 +122,7 @@ namespace CmsWeb
             }
             catch (SqlException)
             {
-                Response.Redirect("/Errors/DatabaseNotInitialized.aspx?dbname=" + Util.Host);
+                Response.Redirect("/Error/DatabaseNotInitialized/?dbname=".Fmt(Util.Host));
             }
 
             var cul = DbUtil.Db.Setting("Culture", "en-US");
@@ -134,7 +138,7 @@ namespace CmsWeb
             if (Response.Status.StartsWith("401")
                     && Request.Url.AbsolutePath.EndsWith(".aspx"))
             {
-                var r = AccountModel.CheckAccessRole(User.Identity.Name);
+                var r = Models.AccountModel.CheckAccessRole(User.Identity.Name);
                 if (r.HasValue())
                     Response.Redirect(r);
             }
@@ -150,7 +154,7 @@ namespace CmsWeb
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
         {
-            HttpContext.Current.Items["error"] = args.Entry.Error.Exception.Message;
+            HttpContext.Current.Session["error"] = args.Entry.Error.Exception.Message;
         }
 
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)

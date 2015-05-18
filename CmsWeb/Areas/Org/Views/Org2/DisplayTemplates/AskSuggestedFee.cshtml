@@ -1,12 +1,12 @@
 ﻿@model AskSuggestedFee
 @using CmsData.Registration
-<div class="table not-wide w100">
+<div class="well">
   <label class="ask-question">
     Optional Fee 
   </label>
   @if (ViewBag.ShowHelp != false)
   {
-    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+    <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
   }
   @Html.DisplayFor(m => m.Label)
 </div>

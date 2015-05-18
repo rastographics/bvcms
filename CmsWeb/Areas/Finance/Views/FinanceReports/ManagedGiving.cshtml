@@ -1,59 +1,86 @@
-﻿@using CmsWeb
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @model System.Linq.IOrderedEnumerable<CmsData.ManagedGiving>
 
 @{
-    ViewBag.Title = "ManagedGiving";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Managed Giving";
+    ViewBag.PageHeader = "Managed Giving";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Started</th>
+                        <th>Next Date</th>
+                        <th>Repeats</th>
+                        <th>Every</th>
+                        <th>Period</th>
+                        <th>Day 1</th>
+                        <th>Day 2</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var rg in Model)
+                    {
+                        <tr>
+                            <td><a href="/FinanceReports/ManageGiving2/@rg.PeopleId">@rg.Person.Name</a></td>
+                            <td>@rg.StartWhen.FormatDate()</td>
+                            <td>@rg.NextDate.FormatDate()</td>
+                            <td>@(rg.SemiEvery == "S" ? "Twice a Month" : rg.Period == "W" ? "Weekly" : "Monthly")</td>
+                            <td>@rg.EveryN</td>
+                            <td>
+                                @if (rg.SemiEvery == "E")
+                                {
+                                    @(rg.Period == "W" ? "Week" : "Month")@(rg.EveryN > 1 ? "s" : "")
+                                }
+                            </td>
+                            <td>@(rg.SemiEvery == "S" ? rg.Day1.ToString() : "")</td>
+                            <td>@(rg.SemiEvery == "S" ? rg.Day2.ToString() : "")</td>
+                            <td>
+                                <a class="delete btn btn-sm btn-danger" href="/Vault/DeleteVaultData/@rg.PeopleId"><i class="fa fa-trash"></i> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 @section scripts
 {
     <script type="text/javascript">
-        $(function() {
-            $("a.delete").click(function(ev) {
-                ev.preventDefault();
+        $(function () {
+            $("a.delete").click(function (e) {
+                e.preventDefault();
                 var href = this.href;
-                if (confirm("are you sure?")) {
-                    debugger;
-                    $.post(href, {}, function (ret) {
-                        debugger;
-                        window.location = "/FinanceReports/ManagedGiving";
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post(href, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/FinanceReports/ManagedGiving";
+                            });
+                        }
                     });
-                }
+                });
             });
         });
     </script>
 }
-<h2>Managed Giving</h2>
-<table class="@ViewExtensions2.GridClass">
-	<thead>
-		<tr>
-			<td>Name</td>
-			<td>StartWhen</td>
-			<td>NextDate</td>
-			<td>SemiEvery</td>
-			<td>EveryN</td>
-			<td>Period</td>
-			<td>Day1</td>
-			<td>Day2</td>
-            <td></td>
-		</tr>
-	</thead>	
-	<tbody>
-	@foreach (var rg in Model)
-	{
-		<tr>
-			<td><a href="/FinanceReports/ManageGiving2/@rg.PeopleId">@rg.Person.Name</a></td>
-			<td>@rg.StartWhen.FormatDate()</td>
-			<td>@rg.NextDate.FormatDate()</td>
-			<td>@rg.SemiEvery</td>
-			<td>@rg.EveryN</td>
-			<td>@(rg.SemiEvery == "S" ? "M" : rg.Period)</td>
-			<td>@(rg.SemiEvery == "S" ? rg.Day1.ToString() : "")</td>
-			<td>@(rg.SemiEvery == "S" ? rg.Day2.ToString() : "")</td>
-			<td>
-                <a class="delete" href="/Vault/DeleteVaultData/@rg.PeopleId"><img src="/Content/images/delete.gif" /></a></td>
-		</tr>
-	}
-	</tbody>
-</table>

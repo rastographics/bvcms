@@ -1,30 +1,45 @@
-﻿@using CmsWeb;
-@using UtilityExtensions;
-@model CmsWeb.Models.UsersModel
+﻿@model CmsWeb.Models.UsersModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Users";
+    ViewBag.PageHeader = "Users";
 }
+<div class="box box-responsive">
+    <div class="box-content">
+        <form id="usersearch" method="post" action="/Users/Results">
+            <div class="well">
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="name" class="control-label">Name / Username</label>
+                            @Html.TextBox("name", Model.name, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6">
+                        <div class="form-group">
+                            <label for="Role" class="control-label">Roles</label>
+                            <div class="form-group">
+                                @Html.DropDownList("Role", new SelectList(Model.Roles(), "Value", "Text"), new { multiple = "multiple", @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4">
+                        <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+                    </div>
+                    <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+                        <div class="pull-right">
+                            <a id="clear" href="#" class="btn btn-default">Clear</a> <button type="submit" id="search" class="btn btn-primary">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @Html.Partial("Results", Model)
+        </form>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Admin/Users.js")
+    @Fingerprint.Script("/Content/touchpoint/js/admin/users.js")
 }
-@section head 
-{
-    <link href="/Content/styles/jquery.multiSelect.css" rel="stylesheet" type="text/css" />
-}
-<form id="usersearch" method="post" action="/Users">
-	<table class="roundbox" cellspacing="5">
-		<tr><td colspan="2">
-    		<h2>Users</h2>
-			</td></tr>
-		<tr><td class="right">Name/Username:</td><td>@Html.TextBox("name")</td></tr>
-		<tr><td class="right">Roles:</td><td>@Html.ListBoxFor(x => x.Role, Model.Roles(), new { style = "display: none" })</td></tr>
-	    <tr><td class="right" colspan="2">
-	            <a id="clear" href="#" class="bt">Clear</a>
-	            <a id="search" href="/Users/Results" class="submitbutton bt blue">Search</a>
-	        </td>
-	    </tr>
-	</table>
-@Html.Partial("Results", Model)
-</form>

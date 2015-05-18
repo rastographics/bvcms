@@ -1,48 +1,81 @@
-﻿@using CmsWeb
+﻿@using CmsData
+@using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting Tickets";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = "Meeting";
+    ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>".Fmt(Util2.Org, Model.meeting.OrganizationId, Model.meeting.Organization.OrganizationName);
+    Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head
 {
     <style>
-        div.bgred {
-            background-color: pink;
+        dt {
+            font-weight: normal;
+            color: #808080;
         }
-
-        div.bgyellow {
-            background-color: yellow;
-        }
+        dd {
+            font-weight: 600;
+            padding: 5px;
+            border: solid 1px #eee;
+            min-height: 32px;
+        }     
     </style>
 }
+<form id="markform" method="Post">
+    <div class="row">
+        <div class="col-md-9">
+            @Html.Partial("TicketMeeting", Model)
+            <br />
+            <div id="mark"></div>
+        </div>
+        <div class="col-md-3">
+            <div class="box box-primary" style="background-color: #fff;">
+                <div class="box-title">
+                    <h5>Attendance</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td class="text-right">HeadCount:</td>
+                                <td id="HeadCount" class="text-right">
+                                    @Model.meeting.HeadCount.ToStringNoZero()
+                                </td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Present:</td>
+                                <td class="text-right" id="NumPresent"><span>@Model.meeting.NumPresent</span></td>
+                                <td class="text-right">New Guests:</td>
+                                <td class="text-right" id="NumNewVisit"><span>@Model.meeting.NumNewVisit</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Members:</td>
+                                <td class="text-right" id="NumMembers"><span>@Model.meeting.NumMembers</span></td>
+                                <td class="text-right">Repeat Guests:</td>
+                                <td class="text-right" id="NumRepeatVst"><span>@Model.meeting.NumRepeatVst</span></td>
+                            </tr>
+                            <tr>
+                                <td class="text-right">Other Attends:</td>
+                                <td class="text-right" id="NumOtherAttends"><span>@Model.meeting.NumOtherAttends</span></td>
+                                <td class="text-right">Visiting Members:</td>
+                                <td class="text-right" id="NumVstMembers"><span>@Model.meeting.NumVstMembers</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-content">
+                    <label class="sr-only" for="wandtarget">Wand Target</label>
+                    <input type="text" id="wandtarget" name="wandtarget" placeholder="Wand Target" class="form-control" />
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
 @section scripts
 {
-    <script src="/Scripts/js/ion.sound.min.js"></script>
-    @Fingerprint.Script("/Scripts/meeting/meeting-ticket.js")
+    <script src="/Content/touchpoint/lib/ion-sound/js/ion.sound.min.js"></script>
+    @Fingerprint.Script("/Content/touchpoint/js/meeting/meeting-ticket.js")
 }
-<form id="markform" method="Post">
-    <table>
-        <tr>
-            <td id="meeting">
-                @Html.Partial("TicketMeeting", Model)
-            </td>
-            <td class="bottom">
-                <div style="margin-left: 1em;">
-                    Find Name<br />
-                    @Html.TextBox("name")
-                    <br />
-                    <br />
-                    Wand Target<br />
-                    @Html.TextBox("wandtarget")
-                </div>
-            </td>
-        </tr>
-    </table>
-</form>
-<hr />
-<div id="mark">
-</div>
-<div id="visitorDialog" title="Add Guests">
-<iframe style="width:100%;height:99%;border-width:0px;"></iframe>
-</div>

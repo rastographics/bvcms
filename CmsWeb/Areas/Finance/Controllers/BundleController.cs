@@ -1,8 +1,10 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Models;
+using DocumentFormat.OpenXml.Drawing;
 using UtilityExtensions;
 
 
@@ -20,17 +22,26 @@ namespace CmsWeb.Areas.Finance.Controllers
                 return Content("no bundle");
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Results(BundleModel m)
         {
             return View(m);
         }
-        [HttpPost]
+
         public ActionResult Edit(int id)
+        {
+            TempData["editbundle"] = true;
+            return RedirectToAction("Index", new {id = id});
+        }
+
+        [HttpPost]
+        public ActionResult Edit(int id, FormCollection formCollection)
         {
             var m = new BundleModel(id);
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Update(int id)
         {
@@ -62,12 +73,14 @@ namespace CmsWeb.Areas.Finance.Controllers
             m.BundleId = id; // refresh values
             return View("Display", m);
         }
+
         [HttpPost]
         public ActionResult Cancel(int id)
         {
             var m = new BundleModel(id);
             return View("Display", m);
         }
+
         [HttpPost]
         public ActionResult Delete(int id)
         {

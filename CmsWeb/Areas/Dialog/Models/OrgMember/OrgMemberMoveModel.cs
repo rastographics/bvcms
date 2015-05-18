@@ -26,8 +26,9 @@ namespace CmsWeb.Areas.Dialog.Models
             OrgName = i.OrganizationName;
         }
 
-        public OrgMemberMoveModel() 
+        public OrgMemberMoveModel()
         {
+            AjaxPager = true;
             pagesize = 10;
             ShowPageSize = false;
         }

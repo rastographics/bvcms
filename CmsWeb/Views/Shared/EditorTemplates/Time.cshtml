@@ -17,15 +17,12 @@
         }
     }
 }
-<div class="control-group @ViewBag.height33 @ViewBag.hide">
+<div class="form-group @ViewBag.hide">
     @Html.LabelFor(m => m, new { @class = "control-label" })
     <div class="controls">
-      <div class="input-append date timepicker" data-date='@Model.FormatTime()'>
-        @Html.TextBoxFor2(m => m,
-                useNativeUnobtrusiveAttributes: true,
-                format: @fmt,
-                htmlAttributes: new { size = "16" })<span class="add-on"><i class="icon-th"></i></span>
-      </div>
+        <div class="input-group time">
+            @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: @fmt, htmlAttributes: new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-clock-o"></i></span>
+        </div>
         @Html.ValidationMessageLabelFor(m => m)
     </div>
 </div>

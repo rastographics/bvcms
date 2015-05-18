@@ -2,41 +2,56 @@
 @using RestSharp.Extensions
 @model FamilyModel
 <div id="family-div">
-    <div class="sidebar_title group">
-        @if (User.IsInRole("Access"))
-        {
-        <h2><a href="/Person2/FamilyQuery/@Model.Family.FamilyId">Family Members</a></h2>
-        }
-        else
-        {
-            <h2><a>Family Members</a></h2>
-        }
+    <div class="row">
+        <div class="col-sm-12">
+            @if (User.IsInRole("Access"))
+            {
+                <h4>
+                    <a id="family-members-collapse" data-toggle="collapse" href="#family-members-section" aria-expanded="true" aria-controls="family-members-section"><i class="fa fa-chevron-circle-down"></i></a> <a href="/Person2/FamilyQuery/@Model.Family.FamilyId">Family Members</a>
+                </h4>
+            }
+            else
+            {
+                <h4>
+                    <a id="family-members-collapse" data-toggle="collapse" href="#family-members-section" aria-expanded="true" aria-controls="family-members-section"><i class="fa fa-chevron-circle-down"></i></a> Family Members
+                </h4>
+            }
+        </div>
+    </div>
+    <div class="row collapse in" id="family-members-section">
+        <div class="col-sm-12">
+            <ul id="family_members" class="nav nav-stacked nav-tabs nav-tabs-left" style="margin-bottom: 10px;">
+                @foreach (var m in Model.ViewList())
+                {
+                    var active = m.Id == Model.Person.PeopleId ? "active" : "";
+                    var ifdeceased = !active.HasValue() && m.isDeceased ? "alert alert-danger" : "";
+                    var gender = m.Gender;
+                    var portraitUrl = gender == "M" ? m.Pictures.SmallMaleUrl : gender == "F" ? m.Pictures.SmallFemaleUrl : m.Pictures.SmallUrl;
+                    var portraitBgPos = m.Pictures.X.HasValue || m.Pictures.Y.HasValue ? string.Format("{0}% {1}%", m.Pictures.X.GetValueOrDefault(), m.Pictures.Y.GetValueOrDefault()) : "top";
+                    <li class="@active @ifdeceased" style="font-size: 0.85em;">
+                        <a href="/Person2/@m.Id">
+                            <div class="headshot" style="background-image:url(@portraitUrl); background-position: @portraitBgPos"></div>
+                            <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span><br/>
+                            <span class="meta">
+                                <span class="age">@m.Age</span>
+                                &bull; <span class="status">@m.MemberStatus</span>
+                                &bull; <span class="role">@m.PositionInFamily</span>
+                            </span>
+                            <span class="email email_display">@m.Email</span>                          
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
         @if (Model.Person.CanUserEditAll)
         {
-            <div class="dropdown">
-                <a href="/SearchAdd2/Dialog/Family/@Model.Person.PeopleId" class="searchadd dropdown-toggle"><i class="fa fa-plus"></i></a>
+            <div class="col-sm-12">
+                <a href="/SearchAdd2/Dialog/Family/@Model.Person.PeopleId" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Family Member</a>
             </div>
+                
         }
-    </div>
-    <div class="sidebar_content">
-        <ul id="family_members" class="nav nav-stacked nav-tabs">
-            @foreach (var m in Model.ViewList())
-            {
-                var active = m.Id == Model.Person.PeopleId ? "active" : "";
-                var ifdeceased = !active.HasValue() && m.isDeceased ? "alert alert-danger" : "";
-                <li class="@active @ifdeceased">
-                    <a href="/Person2/@m.Id">
-                        <div class="headshot" style="background-image:url(@m.Pictures.ThumbUrl);"></div>
-                        <span class="name">@m.Name @Html.Raw(m.SpouseIndicator)</span>
-                        <div class="meta">
-                            <span class="age">@m.Age</span>
-                            &bull; <span class="status">@m.MemberStatus</span>
-                            &bull; <span class="role">@m.PositionInFamily</span>
-                        </div>
-                        <span class="email email_display">@m.Email</span>
-                    </a>
-                </li>
-            }
-        </ul>
+        <div class="col-sm-12">
+            <br />
+        </div>
     </div>
 </div>

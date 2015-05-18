@@ -23,9 +23,8 @@ namespace CmsWeb.Areas.People.Models
         private Person _person;
 
         protected EmailModel()
-            : base("Sent", "desc")
-        {
-        }
+            : base("Sent", "desc", true)
+        {}
 
         internal IQueryable<EmailQueue> FilterForUser(IQueryable<EmailQueue> q)
         {

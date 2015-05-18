@@ -1,8 +1,11 @@
 ﻿@{
-Layout = "~/Views/Shared/Site3.cshtml";
-ViewBag.Title = "ForgotUsername";
+    Layout = "_Layout.cshtml";
+    ViewBag.Title = " Sent";
 }
-<h2>Username Request</h2>
-<p>You should receive an email shortly with your username if you gave us your correct email.</p>
-
-
+<h1 class="form-header">Username Request</h1>
+<div class="alert alert-success" role="alert">
+    <strong>Username Sent</strong> You should receive an email shortly with your username if you gave us your correct email.
+</div>
+<div class="panel">
+    <a href="/" class="btn btn-primary btn-lg active btn-block">Return to Login</a>
+</div>

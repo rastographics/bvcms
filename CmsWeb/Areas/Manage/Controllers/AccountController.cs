@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
@@ -24,6 +25,46 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return Content("alive");
         }
+
+        public ActionResult FroalaUpload(HttpPostedFileBase file)
+        {
+            var m = new AccountModel();
+            string baseurl = null;
+
+            var fn = "{0}.{1:yyMMddHHmm}.{2}".Fmt(DbUtil.Db.Host, DateTime.Now,
+                m.CleanFileName(Path.GetFileName(file.FileName)));
+            var error = string.Empty;
+            var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
+
+            if (rackspacecdn.HasValue())
+            {
+                baseurl = rackspacecdn;
+                var username = ConfigurationManager.AppSettings["RackspaceUser"];
+                var key = ConfigurationManager.AppSettings["RackspaceKey"];
+                var cloudIdentity = new CloudIdentity() { APIKey = key, Username = username };
+                var cloudFilesProvider = new CloudFilesProvider(cloudIdentity);
+                cloudFilesProvider.CreateObject("AllFiles", file.InputStream, fn);
+            }
+            else // local server
+            {
+                baseurl = "{0}://{1}/Upload/".Fmt(Request.Url.Scheme, Request.Url.Authority);
+                try
+                {
+                    string path = Server.MapPath("/Upload/");
+                    path += fn;
+
+                    path = m.GetNewFileName(path);
+                    file.SaveAs(path);
+                }
+                catch (Exception ex)
+                {
+                    error = ex.Message;
+                    baseurl = string.Empty;
+                }
+            }
+            return Json(new { link = baseurl + fn, error = error }, JsonRequestBehavior.AllowGet);
+        }
+
         [HttpPost, MyRequireHttps]
         public ActionResult CKEditorUpload(string CKEditorFuncNum)
         {
@@ -154,20 +195,9 @@ CKEditorFuncNum, baseurl + fn, error));
                 if (!user.InRole("Developer"))
                     return Message("Site is {0}, contact {1} for help".Fmt(access, DbUtil.AdminMail));
 
-            var okchurch = DbUtil.Db.Setting("DotWorkOk", "false") == "true";
-            var devel = user.InRole("Developer");
-
-            if (!okchurch && !devel)
-            {
-                FormsAuthentication.SignOut();
-                Session.Abandon();
-                return Redirect("https://{0}.tpsdb.com".Fmt(DbUtil.Db.Host));
-            }
-
             if (!m.ReturnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
-
             if (m.ReturnUrl.HasValue())
                 return Redirect(m.ReturnUrl);
             return Redirect("/");

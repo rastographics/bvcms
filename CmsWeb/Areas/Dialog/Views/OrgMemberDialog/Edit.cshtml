@@ -1,16 +1,16 @@
 ﻿@using CmsData
 @using UtilityExtensions
 @model CmsWeb.Areas.Dialog.Models.OrgMemberModel
+<div class="modal-dialog">
+    <div class="modal-content">
 <div class="modal-header">
-    <a class="close" data-dismiss="modal">x</a>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <h4>@Model.Name</h4>
-    <h4>@Model.OrgName</h4>
+            <strong>@Model.OrgName</strong>
 </div>
 <div class="modal-body">
     <a href="/TransactionHistory/@Model.PeopleId/@Model.OrgId" target="_blank" 
             style="font-family: Courier New">Attendance</a>: @Model.AttendStr
-    <a class="helplink pull-right" target="_blank" href='@Util.HelpLink("UpdateOrgMember")'>help</a>
-    <fieldset class="display">
         @Html.HiddenFor(m => m.OrgId)
         @Html.HiddenFor(m => m.PeopleId)
         @Html.HiddenFor(m => m.Group)
@@ -42,14 +42,15 @@
         {
             @Html.EditorFor(m => m.TranId)
         }
-        else
+        else 
         {
           @Html.HiddenFor(m => m.TranId)
         }
         @Html.EditorFor(m => m.UserData, "TextArea")
-    </fieldset>
 </div>
 <div class="modal-footer">
-    <a href="/OrgMemberDialog/Display" class="btn ajax">Cancel Edit</a>
+            <a href="/OrgMemberDialog/Display" class="btn btn-default ajax">Cancel</a>
     <a href="/OrgMemberDialog/Update" class="btn btn-primary ajax">Save</a>
+</div>
+    </div>
 </div>

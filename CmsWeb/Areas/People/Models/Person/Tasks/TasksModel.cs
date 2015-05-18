@@ -18,9 +18,8 @@ namespace CmsWeb.Areas.People.Models
         public abstract string AddTask { get; }
 
         protected TasksModel()
-            : base("Completed", "desc")
-        {
-        }
+            : base("Completed", "desc", true)
+        {}
 
         public override IQueryable<Task> DefineModelSort(IQueryable<Task> q)
         {

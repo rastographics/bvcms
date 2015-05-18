@@ -1,6 +1,9 @@
 using System.Data.SqlClient;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
+using Org.BouncyCastle.Crypto.Engines;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Setup.Controllers
@@ -25,17 +28,40 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (!User.IsInRole("Admin") && string.Compare(id, "funds", ignoreCase: true) != 0)
                 return Content("must be admin");
             ViewData["type"] = id;
+            ViewData["description"] = Regex.Replace(id, "([a-z](?=[A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
             var q = DbUtil.Db.ExecuteQuery<Row>("select * from lookup." + id);
+
+            // hide the add button on appropriate views.
+            switch (id)
+            {
+                case "AddressType":
+                case "EnvelopeOption":
+                case "Gender":
+                case "OrganizationStatus":
+                case "BundleStatusTypes":
+                case "ContributionStatus":
+                    ViewData["HideAdd"] = true;
+                break;
+            }
+            
             return View(q);
         }
 
         [HttpPost]
-        public ActionResult Create(int? pk, string type)
+        public ActionResult Create(int? id, string type)
         {
-            if (!pk.HasValue)
-                return Content("need an integer id");
-            DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", pk);
-            return RedirectToAction("Index", new { id = type });
+            if (!id.HasValue)
+                TempData["ErrorMessage"] = "Id must be a number.";
+            else
+            {
+                var q = DbUtil.Db.ExecuteQuery<Row>("select * from lookup." + type + " where id = {0}", id);
+                if (!q.Any())
+                {
+                    DbUtil.Db.ExecuteCommand("insert lookup." + type + " (id, code, description) values ({0}, '', '')", id);
+                }
+            }
+
+            return Redirect("/Lookup/{0}/#{1}".Fmt(type, id));
         }
 
         [HttpPost]

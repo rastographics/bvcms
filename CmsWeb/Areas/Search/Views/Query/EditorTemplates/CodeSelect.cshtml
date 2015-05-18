@@ -1,11 +1,20 @@
 ﻿@model CmsWeb.Areas.Search.Models.QueryModel
-<select id="CodeValues" name="CodeValues" @(Model.Comparison.EndsWith("OneOf")? "multiple='multiple'" : "") style="display:none">
+<select id="CodeValues" name="CodeValues" @(Model.Comparison.EndsWith("OneOf")? "multiple='multiple'" : "") style="display:none" class="form-control">
 @if (Model.Comparison.EndsWith("OneOf"))
 {
     <option value="multiselect-all">Select all</option>
 }
 @foreach (var o in Model.GetCodeData())
 {
-    <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>@o.Text</option>
+    <option value="@o.Value" @(o.Selected ? "selected='selected'" : "")>
+        @if (string.IsNullOrWhiteSpace(o.Text))
+        {
+            <span>&nbsp;</span>
+        }
+        else
+        {
+            @o.Text
+        }
+    </option>
 }
 </select>

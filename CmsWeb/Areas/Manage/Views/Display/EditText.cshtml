@@ -1,48 +1,119 @@
-﻿@using CmsWeb
-@model CmsData.Content
+﻿@model CmsData.Content
 @{
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Edit Text Content";
+    ViewBag.PageHeader = Model.Name;
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+@using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
+{
+    <div class="row">
+        <div class="col-md-9">
+            <div class="box box-responsive">
+                <div class="box-content">
+                    <div class="form-group">
+                        <nav class="navbar navbar-inverse hidden-xs" style="margin-bottom: 0;">
+                            <div class="container-fluid">
+                                <div class="navbar-header">
+                                    <span class="navbar-brand"><i class="fa fa-cogs"></i></span>
+                                </div>
+                                <div class="navbar-form navbar-left hidden-xs hidden-sm" style="padding:0;">
+                                    <div class="btn-group" data-toggle="buttons">
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="text" value="text" autocomplete="off">Text
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="html" value="html" autocomplete="off">Html
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="xml" value="xml" autocomplete="off">Xml
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="sql" value="sql" autocomplete="off">Sql
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="editor-mode" id="python" value="python" autocomplete="off">Python
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                        <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Body</div>
+                        <textarea id="mobile-body" name="mobile-body" class="form-control" rows="15" style="display:none; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">@Model.Body</textarea>
+                        @Html.HiddenFor(m => m.Body)
+                    </div>
+                    <a href="/Display/#tab_textContent" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <a href="#" class="btn btn-primary save">Save Content</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("id")
+    @Html.Hidden("name")
+    @Html.Hidden("title")
 }
 @section scripts
 {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
     <script type="text/javascript">
         $(function () {
-            $(".bt").button();
-            $("#delete").click(function (ev) {
-                ev.preventDefault();
-                if (confirm("Are you sure you want to delete this entry?")) {
-                    $.post("/Display/ContentDelete", { id: "@Model.Id" }, function () {
-                        window.location = "/Manage/Display/";
-                    });
-                }
+            var extraSmallDevice = $('.device-xs').is(':visible');
+            var smallDevice = $('.device-sm').is(':visible');
+            if (extraSmallDevice || smallDevice) {
+                $('#editor').hide();
+                $('#mobile-body').show();
+            } else {
+                var editor = ace.edit("editor");
+                editor.setShowPrintMargin(false);
+                setInitialEditorMode();
+            }
+
+            function setInitialEditorMode() {
+                var ele = $("#text");
+                editor.getSession().setMode("ace/mode/" + $(ele).val());
+                $(ele).prop("checked", true);
+                $(ele).closest('label').addClass('active');
+            }
+            
+            $("input[name='editor-mode']").change(function () {
+                var mode = $(this).val();
+                editor.getSession().setMode("ace/mode/" + mode);
             });
-            $("textarea").tabby();
+
+            $("a.save").click(function(ev) {
+                ev.preventDefault();
+                if (extraSmallDevice || smallDevice) {
+                    $("#Body").val($('#mobile-body').val());
+                } else {
+                    $("#Body").val(editor.getValue());
+                }
+                $("form").submit();
+            });
+
+            $("a.delete").click(function (ev) {
+                ev.preventDefault();
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/Manage/Display/#tab_textContent";
+                            });
+                        }
+                    });
+                });
+            });
         });
     </script>
-}
-@section head
-{
-    <style>
-        textarea {
-            font-family: Courier New;
-        }
-    </style>
-}
-@using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
-{ 
-    <div class="blogbody">
-    <h2 class="title">@Model.Name</h2>
-    <a href="/Display">Menu of Content</a>
-    <hr />
-    @Html.Hidden("id")
-	 @Html.Hidden("name")
-	 @Html.Hidden("title")
-    <div>
-    <textarea name="body" cols="80" rows="40" wrap='off' spellcheck="false" style="width:99%">@Html.Raw(@Model.Body)</textarea>
-    </div>
-	 <br />
-		<input type="submit" class="bt" value="Save" /> &nbsp;&nbsp; 
-        <a id="cancel" href='/Manage/Display' class="bt">Cancel</a>
-        <a id="delete" href='#'><img src="/Content/images/delete.gif"/></a>
-    </div>
 }

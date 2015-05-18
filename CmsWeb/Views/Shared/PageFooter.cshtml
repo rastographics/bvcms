@@ -1,0 +1,23 @@
+﻿<div id="contact-footer">
+    <div class="texture"></div>
+    <ul class="list-inline">
+        <li>@ViewExtensions2.DbSetting("nameofchurch", "Name of Church")</li>
+        @if (!string.IsNullOrWhiteSpace(ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()))
+        {
+            <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()">@ViewExtensions2.DbSetting("ChurchPhone", "phone").FmtFone()</a></li>
+        }
+        <li><i class="fa fa-envelope"></i>&nbsp;&nbsp;<a href="mailto:@DbUtil.AdminMail">@DbUtil.AdminMail</a></li>
+    </ul>
+</div>
+<div id="footer" class="hidden-print">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-6">
+                <img id="powered-by" src="@Url.Content("~/Content/touchpoint/img/powered-by.png")" />
+            </div>
+            <div class="col-xs-6 text-right">
+                &copy; @DateTime.Today.Year TouchPoint Software, LLC.
+            </div>
+        </div>
+    </div>
+</div>

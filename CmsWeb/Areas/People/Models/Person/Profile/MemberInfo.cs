@@ -128,7 +128,7 @@ namespace CmsWeb.Areas.People.Models
                          p.Family
                      }).Single();
 
-            var changes = this.CopyPropertiesTo(i.p, excludefields: "HomePhone");
+            var changes = this.CopyPropertiesTo(i.p, excludefields: "HomePhone,ElectronicStatement");
 
             i.p.LogChanges(DbUtil.Db, changes);
 

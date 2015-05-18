@@ -6,13 +6,13 @@
         help = "<span class='help-inline'>{0}</span>".Fmt(help);
     }
 }
-<div class="control-group">
+<div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label"})
     <div class="controls">
         @Html.TextBoxFor2(m => m, 
             useNativeUnobtrusiveAttributes:true, 
             format: null, 
-            htmlAttributes:new { @class = "ajax-typeahead", data_link = ViewBag.link })@Html.Raw(help)
+            htmlAttributes:new { @class = "ajax-typeahead form-control", data_link = ViewBag.link })@Html.Raw(help)
         @Html.ValidationMessageLabelFor(m => m)
     </div>
 </div>

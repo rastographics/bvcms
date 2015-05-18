@@ -2,20 +2,33 @@
 
 @{
     ViewBag.Title = "User Preferences";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.PageHeader = "User Preferences";
+    ViewBag.PageSubHeader = "{0} ({1})".Fmt(Model.Name, Model.Username);
+    Layout = ViewExtensions2.TouchPointLayout();
     var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
 }
 
-<h2>User Preferences for @Model.Username: @Model.Name</h2>
-
-<h2>Database</h2>
-@foreach (var p in Model.Preferences)
-{
-    @p.PreferenceX@:, @p.ValueX <br/>
-}
-<h2>Session</h2>
-@foreach (var dd in d)
-{
-    @dd.Key@:, @dd.Value<br/>
-}
-
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <h2>Database</h2>
+                <dl class="dl-horizontal">
+                    @foreach (var p in Model.Preferences)
+                    {
+                        <dt>@p.PreferenceX</dt>
+                        <dd>@p.ValueX</dd>
+                    }
+                </dl>
+                <h2>Session</h2>
+                <dl class="dl-horizontal">
+                    @foreach (var dd in d)
+                    {
+                        <dt>@dd.Key</dt>
+                        <dd>@dd.Value</dd>
+                    }
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

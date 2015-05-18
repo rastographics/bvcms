@@ -3,44 +3,49 @@
 @using CmsWeb
 @using UtilityExtensions
 @{
-    ViewBag.Title = "RecentAbsents";
-    Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Recent Absents";
+    ViewBag.ReportPageHeader = "Recent Absents";
+    Layout = ViewExtensions2.TouchPointLayout();
     var prevorgid = 0;
 }
-<h2>Recent Absents</h2>
-<table class="@ViewExtensions2.GridClass">
-@foreach (var item in Model)
-{
-    var ld = item.lastmeeting as DateTime?;
-    var la = item.lastattend as DateTime?;
-    if (item.OrganizationId != prevorgid)
-    {
-        prevorgid = item.OrganizationId;
-        <thead>
-        <tr>
-            <th colspan="6" class="left"><hr/>
-                <a href="@Util2.Org/@item.OrganizationId">@item.OrganizationName</a> (@item.LeaderName) <br/>
-                Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before @Util.FormatDate(item.lastmeeting)
-                <hr/>
-            </th>
-        </tr>
-        <tr>
-            <th></th>
-            <th>Absent</th>
-            <th>Last Attend</th>
-            <th></th>
-            <th></th>
-            <th></th>
-        </tr>
-        </thead>
-    }
-    <tr>
-        <td><a href="/Person2/@item.PeopleId" target="person">@item.Name2</a></td>
-        <td class="right"> @item.consecutive times </td>
-        <td class="right"> @Util.FormatDate(item.lastattend)</td>
-        <td>@Util.FmtFone(item.HomePhone, prefix:"H")</td>
-        <td>@Util.FmtFone(item.CellPhone, prefix:"C")</td>
-        <td><a href="mailto:@item.EmailAddress">@item.EmailAddress</a></td>
-    </tr>
-}
-</table>
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                @foreach (var item in Model)
+                {
+                    var ld = item.lastmeeting as DateTime?;
+                    var la = item.lastattend as DateTime?;
+                    if (item.OrganizationId != prevorgid)
+                    {
+                        prevorgid = item.OrganizationId;
+                        <thead>
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    <h3><a href="@Util2.Org/@item.OrganizationId">@item.OrganizationName</a> @(string.IsNullOrEmpty(item.LeaderName) ? "" : string.Format("({0})", item.LeaderName))</h3>
+                                    <em>Members with @(item.ConsecutiveAbsentsThreshold ?? 2) or more consecutive absents on and before @Util.FormatDate(item.lastmeeting)</em>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Name</th>
+                                <th class="text-right">Absent</th>
+                                <th class="text-right">Last Attend</th>
+                                <th>Home Phone</th>
+                                <th>Cell Phone</th>
+                                <th>Email</th>
+                            </tr>
+                        </thead>
+                    }
+                    <tr>
+                        <td><a href="/Person2/@item.PeopleId" target="person">@item.Name2</a></td>
+                        <td class="text-right"> @item.consecutive times </td>
+                        <td class="text-right"> @Util.FormatDate(item.lastattend)</td>
+                        <td>@Util.FmtFone(item.HomePhone, prefix: "H")</td>
+                        <td>@Util.FmtFone(item.CellPhone, prefix: "C")</td>
+                        <td><a href="mailto:@item.EmailAddress">@item.EmailAddress</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>

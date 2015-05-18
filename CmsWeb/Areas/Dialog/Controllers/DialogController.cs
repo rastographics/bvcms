@@ -26,11 +26,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View();
         }
 
-        public ActionResult DeleteStandardExtra()
-        {
-            return View();
-        }
-
         public ActionResult GetExtraValue()
         {
             return View();

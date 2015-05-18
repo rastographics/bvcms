@@ -1,40 +1,50 @@
-﻿@using CmsWeb
-@using UtilityExtensions
+﻿@using UtilityExtensions
 @model CmsWeb.Models.UsersModel
-
-<table id="results" class="@ViewExtensions2.GridClass" cellpadding="4">
-    <thead>
-		<tr><td colspan="6">User Count: @Model.Count().ToString("N0")</td></tr>
-    	<tr><td colspan="6">@Html.Partial("Pager2", Model)
-            @Html.Hidden("totcnt", Model.Count().ToString("N0"))</td></tr>
-    <tr>
-        <th>UserId</th>
-        <th><a href="#" class="sortable">User</a></th>
-        <th><a href="#" class="sortable">Name</a></th>
-        <th><a href="#" class="sortable">Online</a></th>
-        <th><a href="#" class="sortable">Email</a></th>
-        <th><a href="#" class="sortable">Activity</a></th>
-        <th>Roles</th>
-    </tr>
-    </thead>
-	<tbody>
-@if(Model.Count() == 0)
-{ 
-	<tr><td colspan="6">No matching records.</td></tr>
-} 
-		@foreach (var u in Model.Users()) {
-		    <tr>
-		        <td>@u.userid</td>
-		        <td class="tip">@u.username</td>
-		        <td>@Helper.AnchorLink(@u.name, "/Person2/" + u.peopleid) </td>
-		        <td>@u.online</td>
-		        <td>@u.email</td>
-		        <td>@u.activity.FormatDateTm()</td>
-		        <td><i>@u.roles</i></td>
-		    </tr>
-		}
-	</tbody>
-    <tfoot>
-		<tr><td colspan="6">@Html.Partial("Pager2", Model)</td></tr>
-    </tfoot>
-</table>
+<div id="results">
+    @Html.Partial("PagerTop", Model)
+    <div class="table-responsive">
+        <table id="resultsTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>User Id</th>
+                    <th><a href="#" class="sortable">Username</a></th>
+                    <th>People Id</th>
+                    <th><a href="#" class="sortable">Name</a></th>
+                    <th class="text-center"><a href="#" class="sortable">Online</a></th>
+                    <th><a href="#" class="sortable">Email</a></th>
+                    <th><a href="#" class="sortable">Activity</a></th>
+                    <th style="width: 500px;">Roles</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tr><td colspan="7">No matching records.</td></tr>
+                }
+                @foreach (var u in Model.Users())
+                {
+                    <tr>
+                        <td>@u.userid</td>
+                        <td>@u.username</td>
+                        <td>@u.peopleid</td>
+                        <td>@Helper.AnchorLink(@u.name, "/Person2/" + u.peopleid) </td>
+                        <td class="text-center">
+                            @if (u.online)
+                            {
+                                <i class="fa fa-check"></i>
+                            }
+                        </td>
+                        <td>@u.email</td>
+                        <td>@u.activity.FormatDateTm()</td>
+                        <td style="width: 500px;"><i>@u.roles</i></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerBottom", Model)
+    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+    @Html.Hidden("Page", Model.Page)
+    @Html.Hidden("Sort", Model.Sort)
+    @Html.Hidden("Direction", Model.Direction)
+</div>

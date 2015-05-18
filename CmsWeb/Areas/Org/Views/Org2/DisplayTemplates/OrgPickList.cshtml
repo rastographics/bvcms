@@ -1,7 +1,7 @@
 ﻿@using CmsData
 @using UtilityExtensions
 @model CmsWeb.Areas.Org2.Models.SettingsRegistrationModel
-<div id="orgpickdiv" class="control-group">
+<div id="orgpickdiv" class="form-group">
   @Html.Label("Organization Pick List", new { @class = "control-label" })
   <div class="controls">
     <b><a id="orgpicklist" href="/Org/OrgPickList/@Model.Id">Choose Organizations</a></b>
@@ -11,7 +11,7 @@
     }
     @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
     {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+      <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
     }
   </div>
 </div>

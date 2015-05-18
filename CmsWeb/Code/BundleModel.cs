@@ -15,6 +15,7 @@ using CmsData.Codes;
 using System.Data.Linq;
 using System.ComponentModel;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 using System.Web;
 using System.Collections;
@@ -610,6 +611,7 @@ namespace CmsWeb.Models
                      where c.FundId == fundid || fundid == 0
                      where CampusId == 0 || c.Person.CampusId == CampusId
                      select c;
+
             switch (Pledges)
             {
                 case "true":
@@ -634,35 +636,39 @@ namespace CmsWeb.Models
                     break;
             }
 
-            var q = from c in q0
-                    group c by DbUtil.Db.DollarRange(c.ContributionAmount) into g
-                    orderby g.Key
-                    select new RangeInfo
-                    {
-                        RangeId = g.Key.Value,
-                        Total = g.Sum(t => t.ContributionAmount) ?? 0,
-                        Count = g.Count(),
-                        DonorCount = (from d in g
-                                      group d by d.PeopleId into gd
-                                      select gd).Count()
-                    };
-            RangeTotal = new RangeInfo
+            if (q0.Any())
             {
-                Count = q.Sum(t => t.Count),
-                Total = q.Sum(t => t.Total),
-                DonorCount = (from c in q0 group c by c.PeopleId into g select g).Count()
-            };
-            var q2 = from r in q
-                     select new RangeInfo
-                     {
-                         RangeId = r.RangeId,
-                         Total = r.Total,
-                         Count = r.Count,
-                         DonorCount = r.DonorCount,
-                         PctCount = (decimal)r.Count / RangeTotal.Count * 100,
-                         PctTotal = r.Total / RangeTotal.Total * 100,
-                     };
-            return q2;
+                var q = from c in q0
+                        group c by DbUtil.Db.DollarRange(c.ContributionAmount) into g
+                        orderby g.Key
+                        select new RangeInfo
+                        {
+                            RangeId = g.Key.Value,
+                            Total = g.Sum(t => t.ContributionAmount) ?? 0,
+                            Count = g.Count(),
+                            DonorCount = (from d in g
+                                          group d by d.PeopleId into gd
+                                          select gd).Count()
+                        };
+                RangeTotal = new RangeInfo
+                {
+                    Count = q.Sum(t => t.Count),
+                    Total = q.Sum(t => t.Total),
+                    DonorCount = (from c in q0 group c by c.PeopleId into g select g).Count()
+                };
+                var q2 = from r in q
+                         select new RangeInfo
+                         {
+                             RangeId = r.RangeId,
+                             Total = r.Total,
+                             Count = r.Count,
+                             DonorCount = r.DonorCount,
+                             PctCount = (decimal)r.Count / RangeTotal.Count * 100,
+                             PctTotal = r.Total / RangeTotal.Total * 100,
+                         };
+                return q2;
+            }
+            return new List<RangeInfo>();
         }
         [DataObjectMethod(DataObjectMethodType.Select, false)]
         public IEnumerable<AgeRangeInfo> TotalsByFundAgeRange(int fundid, DateTime dt1, DateTime dt2, string Pledges, int CampusId)

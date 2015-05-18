@@ -1,0 +1,54 @@
+﻿@model CmsWeb.Models.PagerModel2
+@if (Model.PageList().Count() > 1)
+{
+    <div class="col-lg-8 col-md-8 col-sm-8">
+        <div class="pull-right">
+            <ul class="pagination">
+                @if (Model.Page > 1)
+                {
+                    if (Model.AjaxPager)
+                    {
+                        <li>@Model.PageLink("Previous", Model.Page - 1)</li>
+                    }
+                    else
+                    {
+                        <li><a href='#' title='goto page @(Model.Page - 1)' onclick='return $.gotoPage(this,(@Model.Page -1))'>Previous</a></li>
+                    }
+                }
+                @foreach (var p in Model.PageList())
+                {
+                    if (p == 0)
+                    {
+                        <li><span class="separator">...</span></li>
+                    }
+                    if (p > 0 && Model.Page != p)
+                    {
+                        if (Model.AjaxPager)
+                        {
+                            <li>@Model.PageLink(p.ToString(), p)</li>
+                        }
+                        else
+                        {
+                            <li><a href='#' title='goto page @p' onclick='return $.gotoPage(this,@p)'>@p.ToString("N0")</a></li>
+                        }
+                    }
+                    if (Model.Page == p)
+                    {
+                        <li class="active"><span>@p.ToString("N0")</span></li>
+                    }
+                }
+                @if (Model.Page < Model.LastPage())
+                {
+                    if (Model.AjaxPager)
+                    {
+                        <li>@Model.PageLink("Next", Model.Page + 1)</li>
+                    }
+                    else
+                    {
+                        <li><a href='#' title='goto page @(Model.Page + 1)' onclick='return $.gotoPage(this,@(Model.Page + 1))'>Next</a></li>
+                    }
+                }
+            </ul>
+        </div>
+    </div>
+}

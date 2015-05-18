@@ -1,17 +1,25 @@
 ﻿@using CmsWeb.Code
 @model CodeInfo
 @{
-  object attributes = ViewData["PlainSelect"] != null ? new { plain = "true" } : null;
+    var attributes = ViewData["PlainSelect"] != null ? new { plain = "true", @class = "form-control" } : null;
+    var labelText = ViewData["LabelText"] != null ? ViewData["LabelText"].ToString() : null;
 }
-<div class="control-group">
-  @Html.LabelFor(m => m, new { @class = "control-label" })
-  <div class="controls code-dropdown">
-    @Html.DropDownListForCodeInfo(m => m, true, Model.Items, htmlAttributes: attributes)
-    @Html.ValidationMessageLabelFor(m => m)
-    @Html.HiddenFor(m => m.Name)
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
-    }
-  </div>
+<div class="form-group">
+    @(!string.IsNullOrEmpty(labelText) ? Html.LabelFor(m => m, labelText, new {@class = "control-label"}) : Html.LabelFor(m => m, new {@class = "control-label"}))
+    <div class="controls code-dropdown">
+        @if (attributes != null)
+        {
+            @Html.DropDownListForCodeInfo(m => m, true, Model.Items, htmlAttributes: attributes)
+        }
+        else
+        {
+            @Html.DropDownListForCodeInfo(m => m, true, Model.Items, null, new { @class = "form-control" })
+        }
+        @Html.ValidationMessageLabelFor(m => m)
+        @Html.HiddenFor(m => m.Name)
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
+    </div>
 </div>

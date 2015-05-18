@@ -2,140 +2,119 @@
 @model CmsWeb.Areas.Org.Models.MissionTripEmailer
 @{
     ViewBag.Title = "Mission Trip Emailer";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.PageHeader = "Compose Email";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-@section head
-{
-    @Fingerprint.Css("/Content/css/jquery-ui.effects.min.css")
-    <style>
-        div.ti {
-            position: relative;
-            border: #0000ff dashed 1px;
-            min-height: 20px;
-        }
-
-            div.ti:hover {
-                background: #eeeeff;
-            }
-
-        div.tiAdd {
-            position: absolute;
-        }
-
-        .message-area {
-            position: relative;
-            margin: 15px 0;
-            padding: 39px 19px 14px;
-            border: 1px solid #ddd;
-            -webkit-border-radius: 4px;
-            -moz-border-radius: 4px;
-            border-radius: 4px;
-        }
-
-            .message-area:after {
-                content: "Message Content";
-                position: absolute;
-                top: -1px;
-                left: -1px;
-                padding: 3px 7px;
-                font-size: 12px;
-                font-weight: bold;
-                background-color: #f5f5f5;
-                border: 1px solid #ddd;
-                color: #9da0a4;
-                -webkit-border-radius: 4px 0 4px 0;
-                -moz-border-radius: 4px 0 4px 0;
-                border-radius: 4px 0 4px 0;
-            }
-
-        #recipients td.notselected {
-            -ms-opacity: .5;
-            opacity: .5;
-            text-decoration: line-through;
-        }
-
-        #recipients a > i {
-            color: red;
-        }
-    </style>
+@section head{
+    @ViewExtensions2.FroalaEditorCss()
 }
-@section scripts
-{
-    @Fingerprint.Script("/Scripts/jQuery/jquery-ui.effects.min.js")
-    @Fingerprint.Script("/Scripts/Bootstrap/notify.js")
-    @ViewExtensions2.CKEditor()
-    @Fingerprint.Script("/Scripts/Email/EmailSupporter.js")
-
-}
-<div class="container">
-    <h2>Mission Trip Emailer <small><a href="/">Go back to your home page</a></small></h2>
-    <div class="row-fluid">
-        <div class="span9">
-            <form id="SendEmail" class="form" method="post">
-                <fieldset style="padding: 0.35em 0.625em 0.75em;">
-                    <legend>Compose your Email</legend>
-                    <div class="control-group">
-                        @Html.LabelFor(m => m.Subject, new { @class = "control-label" })
-                        <div class="controls">
-                            @Html.TextBoxFor(m => m.Subject)
-                            @Html.ValidationMessageLabelFor(m => m.Subject)
-                        </div>
-                    </div>
-                    @Html.Hidden("PeopleId")
-                    @Html.Hidden("OrgId")
-                    @Html.Hidden("Body")
-                    <div style="display: table">
-                        <div class="right">
-                            <input type="button" value="Test (Send To Yourself)" class="testsend btn btn-success" />
-                            <input type="button" value="Send" class="send btn btn-primary" /><br />
-                        </div>
-                        <div id="tempateBody" class="message-area">
-                            @Html.Raw(Model.Body)
-                        </div>
-                        <div class="pull-right">
-                            <input type="button" value="Test (Send To Yourself)" class="testsend btn btn-success" />
-                            <input type="button" value="Send" class="send btn btn-primary" /><br />
-                        </div>
-                    </div>
-                </fieldset>
-            </form>
-        </div>
-        <div class="span3">
-            <fieldset>
-                <legend>Find Supporters</legend>
-                <label class='help-block'>Enter a 10 digit phone number or an email address, then select your recipient to add them to the supporter list below.</label>
-                <div class="control-group">
-                    <label class="control-label">Find Supporter</label>
-                    <div class="controls">
-                        @Html.TextBox("supportsearch")
-                    </div>
+<div class="row">
+    <div class="col-md-push-9 col-md-3 col-lg-push-8 col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    Find Supporters
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                    @Html.TextBox("supportsearch", "", new { @class = "form-control", autocomplete = "off" })
                 </div>
-                <br />
-                <legend>
+                <span class="help-block">Enter a 10 digit phone number or an email address, then select your recipient to add them to the supporter list below.</span>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
                     Recipients
-                    <small>
-                        <a id="edit-supporters" href="/MissionTripEmail2/SupportersEdit/@Model.PeopleId" class="btn btn-small pull-right">Edit</a>
-                        <span id="editing" class="pull-right hide">
-                            <a id="cancel-editing" href="/MissionTripEmail2/Supporters/@Model.PeopleId" class="btn btn-small">Cancel</a>
-                            <a id="done-editing" href="/MissionTripEmail2/SupportersUpdate" class="btn btn-small btn-primary">Save</a>
-                        </span>
-                    </small>
-                </legend>
-                <label id="edit-help" class='help-block'>Click the edit button above to allow you to customize the greeting, change the send status, and remove a supporter.</label>
-                <label id="done-help" class='help-block hide'>Click the done button above to save your changes</label>
+                </h4>
+            </div>
+            <div class="panel-body">
+                <div class="alert alert-info">
+                    Click the edit button to allow you to customize the greeting, change the send status, and remove a supporter.
+                </div>
                 <form id="recipients">
                     @Html.Partial("Supporters", Model)
                 </form>
-            </fieldset>
+                <a id="edit-supporters" href="/MissionTripEmail2/SupportersEdit/@Model.PeopleId" class="btn btn-default">Edit</a>
+                <span id="editing" class="hide">
+                    <a id="cancel-editing" href="/MissionTripEmail2/Supporters/@Model.PeopleId" class="btn btn-default">Cancel</a>
+                    <a id="done-editing" href="/MissionTripEmail2/SupportersUpdate" class="btn btn-primary">Save</a>
+                </span>
+            </div>
         </div>
     </div>
-    <div id="popupeditor" style="display:none;position: absolute;z-index: 2005;">
-        <form>
-            <textarea id="htmleditor"></textarea>
-            <div style="text-align: right;">
-                <a href="#" class="btn cancel">Cancel</a>
-                <a href="#" class="btn btn-primary save">Save</a>
+    <div class="col-md-pull-3 col-md-9 col-lg-pull-4 col-lg-8">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form class="form-horizontal" id="SendEmail" method="post">
+                    @Html.Hidden("PeopleId")
+                    @Html.Hidden("OrgId")
+                    @Html.Hidden("Body")
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.Subject, new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10 controls">
+                            @Html.TextBoxFor(m => m.Subject, "", new { @class = "form-control" })
+                            @Html.ValidationMessageLabelFor(m => m.Subject)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <script type="text/javascript">
+                                function iframeLoaded() {
+                                    var iFrameID = document.getElementById('email-body');
+                                    if (iFrameID) {
+                                        // here you can make the height, I delete it first, then I make it again
+                                        iFrameID.height = "";
+                                        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 20 + "px";
+                                    }
+                                }
+                            </script>
+                            <iframe src="/MissionTripEmail2/EmailBody/@Model.OrgId/@Model.PeopleId" onload="iframeLoaded()" frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <div class="pull-right">
+                                <div class="btn-group" id="send-actions">
+                                    <button type="button" class="btn btn-primary send"><i class="fa fa-paper-plane"></i> Send</button>
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                        <li><a href="#" class="testsend">Send Test Email (To Me)</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br/>
+                </form>
             </div>
-        </form>
+        </div>
     </div>
 </div>
+<div class="modal fade" id="editor-modal" style="overflow-y: hidden !important;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <form>
+                    <textarea id="htmleditor" name="htmleditor" class="form-control" rows="15"></textarea>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts
+{
+    @ViewExtensions2.FroalaEditorScripts()
+    @Fingerprint.Script("/Content/touchpoint/lib/twitter-typeahead/js/typeahead.js")
+    @Fingerprint.Script("/Content/touchpoint/js/email/email-supporter.js")
+
+}

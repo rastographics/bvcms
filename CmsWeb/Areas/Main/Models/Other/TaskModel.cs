@@ -35,11 +35,8 @@ namespace CmsWeb.Models
         bool? ForceCompleteWContact { get; set; }
         int? StatusId { get; set; }
         bool? OwnerOnly { get; set; }
-        string Sort { get; set; }
-        int? Page { get; set; }
-        int? PageSize { get; set; }
     }
-    public class TaskModel : ITaskFormBindable
+    public class TaskModel : PagerModel2, ITaskFormBindable
     {
         private const string STR_InBox = "InBox";
 
@@ -81,36 +78,44 @@ namespace CmsWeb.Models
                     DbUtil.Db.SetUserPreference("tasks-owneronly", value);
             }
         }
-        public string Sort { get; set; }
 
-        private int? _Page;
-        public int? Page
+        //public string Sort { get; set; }
+
+        //private int? _Page;
+        //public int? Page
+        //{
+        //    get { return _Page ?? 1; }
+        //    set { _Page = value; }
+        //}
+        //public int StartRow
+        //{
+        //    get { return (Pager.Page.Value - 1) * PageSize.Value; }
+        //}
+        //public int? PageSize
+        //{
+        //    get { return DbUtil.Db.UserPreference("PageSize", "10").ToInt(); }
+        //    set
+        //    {
+        //        if (value.HasValue)
+        //            DbUtil.Db.SetUserPreference("PageSize", value);
+        //    }
+        //}
+        private int? _count;
+        //public int Count
+        //{
+        //    get
+        //    {
+        //        if (!count.HasValue)
+        //            count = ApplySearch().Count();
+        //        return count.Value;
+        //    }
+        //}
+
+        public int Count()
         {
-            get { return _Page ?? 1; }
-            set { _Page = value; }
-        }
-        public int StartRow
-        {
-            get { return (Page.Value - 1) * PageSize.Value; }
-        }
-        public int? PageSize
-        {
-            get { return DbUtil.Db.UserPreference("PageSize", "10").ToInt(); }
-            set
-            {
-                if (value.HasValue)
-                    DbUtil.Db.SetUserPreference("PageSize", value);
-            }
-        }
-        private int? count;
-        public int Count
-        {
-            get
-            {
-                if (!count.HasValue)
-                    count = ApplySearch().Count();
-                return count.Value;
-            }
+            if (!_count.HasValue)
+                _count = ApplySearch().Count();
+            return _count.Value;
         }
 
         private int completedcode = TaskStatusCode.Complete;
@@ -128,8 +133,12 @@ namespace CmsWeb.Models
 
         public TaskModel()
         {
+            
             if (PeopleId == 0 && Util.UserPeopleId != null)
                 PeopleId = Util.UserPeopleId.Value;
+
+            GetCount = Count;
+            Sort = "DueOrCompleted";
         }
 
         public IEnumerable<TaskListInfo> FetchTaskLists()
@@ -239,7 +248,7 @@ namespace CmsWeb.Models
                          CompletedOn = t.CompletedOn,
                          NotiPhone = !iPhone,
                      };
-            return q2.Skip(StartRow).Take(PageSize.Value);
+            return q2.Skip(StartRow).Take(PageSize);
         }
         public TaskDetail FetchTask(int id)
         {
@@ -383,7 +392,7 @@ namespace CmsWeb.Models
 
         private static string TaskLink0(int id)
         {
-            return "/Task/List/{0}#detail".Fmt(id);
+            return "/Task/Detail/{0}".Fmt(id);
         }
         private static string TaskLink(string text, int id)
         {
@@ -466,17 +475,17 @@ namespace CmsWeb.Models
             var task = DbUtil.Db.Tasks.SingleOrDefault(t => t.Id == TaskId);
             if (task == null)
                 return;
-            if (HttpContext.Current.User.IsInRole("Admin"))
-            {
-                DbUtil.Db.Tasks.DeleteOnSubmit(task);
-                DbUtil.Db.SubmitChanges();
-            }
-            else if (task.OwnerId == PeopleId)
+            if (task.OwnerId == PeopleId)
             {
                 if (task.CoOwnerId != null)
                     DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner,
                         "Task Deleted by " + task.Owner.Name,
                         task.Description + "<br/>\n" + task.AboutName);
+                DbUtil.Db.Tasks.DeleteOnSubmit(task);
+                DbUtil.Db.SubmitChanges();
+            }
+            else if (HttpContext.Current.User.IsInRole("Admin"))
+            {
                 DbUtil.Db.Tasks.DeleteOnSubmit(task);
                 DbUtil.Db.SubmitChanges();
             }
@@ -490,7 +499,7 @@ namespace CmsWeb.Models
         private IQueryable<Task> ApplySearch()
         {
             int listid = CurListId;
-            var q = DbUtil.Db.Tasks.Where(t => t.Archive == false && (t.CoOwnerId == PeopleId ? t.CoListId.Value : t.ListId) == listid);
+            var q = DbUtil.Db.Tasks.Where(t => t.Archive == false);
             if (OwnerOnly == true) // I see only my own tasks or tasks I have been delegated
 				q = q.Where(t => t.OwnerId == PeopleId || t.CoOwnerId == PeopleId || t.OrginatorId == PeopleId);
             else // I see my own tasks where I am owner or cowner plus other people's tasks where I share the list the task is in
@@ -851,18 +860,6 @@ namespace CmsWeb.Models
                 return "t" + t.ListId;
             else
                 return "t" + InBoxId(PeopleId);
-        }
-        public PagerModel pagerModel()
-        {
-            return new PagerModel
-            {
-                Page = Page.Value,
-                PageSize = PageSize.Value,
-                Action = "List",
-                Controller = "Task",
-                Count = Count,
-				ToggleTarget = false
-            };
         }
     }
 }

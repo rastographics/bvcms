@@ -3,9 +3,9 @@
     var source = ViewData["source"] + ViewData.TemplateInfo.HtmlFieldPrefix;
     var url = ViewData["url"];
 }
-<div class="control-group">
+<div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label" })
     <div class="controls">
-        <a class="editable-bit click-pencil" href="#" data-pk="1" data-name="@ViewData.TemplateInfo.HtmlFieldPrefix" data-value="@Model" data-url="@url"><span>@Model</span></a>
+        <a class="editable-bit" href="#" data-pk="1" data-name="@ViewData.TemplateInfo.HtmlFieldPrefix" data-value="@Model" data-url="@url" title="@Html.DisplayNameFor(m => m)"><span>@Model</span></a>
     </div>
 </div>

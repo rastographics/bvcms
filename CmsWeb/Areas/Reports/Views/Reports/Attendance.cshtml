@@ -1,10 +1,75 @@
 ﻿@using CmsData
 @using CmsWeb
+@using UtilityExtensions
 @model CmsWeb.Areas.Reports.Models.AttendanceModel
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "AttendanceReport";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Attendance Report";
+    ViewBag.ReportPageHeader = "Attendance Report";
+    ViewBag.ReportPageSubHeader = "<a href=\"{0}\"/{1}\">{2}</a>".Fmt(Util2.Org, Model.OrgId, Model.OrgName);
 }
+<div class="report box box-responsive">
+    <div class="box-content">
+        <div class="well hidden-print" style="max-width: 650px; margin: auto;">
+            <div class="row">
+                <form action="/Reports/Attendance" method="POST">
+                    @Html.Hidden("OrgId")
+                    @Html.Hidden("Sort", Model.Sort)
+                    @Html.Hidden("Dir", Model.Dir)
+                    <div class="col-sm-5">
+                        <label for="start" class="control-label">Start Date</label>
+                        <div class="input-group date">
+                            @Html.TextBox("start", Model.start.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                            @Html.Hidden("startIso", Model.start.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <label for="end" class="control-label">End Date</label>
+                        <div class="form-inline">
+                            <div class="input-group date">
+                                @Html.TextBox("end", Model.end.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                                @Html.Hidden("endIso", Model.end.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+                            </div>
+                            <div class="input-group">
+                                <button type="submit" class="btn btn-primary">Run</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="visible-print-block text-center">
+            <strong>Start Date:</strong> @Model.start.GetValueOrDefault().ToShortDateString()
+            <strong>End Date:</strong> @Model.end.GetValueOrDefault().ToShortDateString()
+        </div>
+        <br/>
+        <div class="table-responsive">
+            <table id="Attendances" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th><a href='#' class="sortable">Name</a></th>
+                        <th><a href='#' class="text-right sortable">Age</a></th>
+                        <th>Attendance String</th>
+                        <th><a href='#' class="text-right sortable">Percent</a></th>
+                        <th><a href='#' class="text-right sortable">Count</a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Attendances())
+                    {
+                        <tr>
+                            <td><a href="/Person2/@p.PeopleId">@p.Name</a></td>
+                            <td class="text-right">@p.Age</td>
+                            <td><span style="font-family:Courier New">@p.AttendStr</span></td>
+                            <td class="text-right">@p.AttendPct.ToString("N1")</td>
+                            <td class="text-right">@p.AttendCount</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 @section scripts
 {
     <script type="text/javascript">
@@ -29,55 +94,3 @@
         }
     </script>
 }
-<h2>Attendance for <a href="@Util2.Org/@Model.OrgId">@Model.OrgName</a></h2>
-<form action="/Reports/Attendance" method="POST">
-    @Html.Hidden("OrgId")
-    <div>
-        <fieldset>
-            <table style="empty-cells:show">
-                <col style="width: 13em; text-align:right" />
-                <col />
-                <col />
-                <tr>
-                    <td><label for="end">Start Date</label></td>
-                    <td>@Html.TextBox("start")</td>
-                    <td>@Html.ValidationMessage("start")</td>
-                </tr>
-                <tr>
-                    <td><label for="end">End Date</label></td>
-                    <td>@Html.TextBox("end")</td>
-                    <td>@Html.ValidationMessage("end")</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td><input type="submit" class="bt" value="Run" /></td>
-                </tr>
-            </table>
-        </fieldset>
-    </div>
-    @Html.Hidden("Sort", Model.Sort)
-    @Html.Hidden("Dir", Model.Dir)
-</form>
-<table id="Attendances" class="@ViewExtensions2.GridClass">
-    <thead>
-        <tr>
-        <th><a href='#' class="sortable">Name</a></th>
-        <th><a href='#' class="sortable">Age</a></th>
-        <th>Attendance String</th>
-        <th><a href='#' class="sortable">Percent</a></th>
-        <th><a href='#' class="sortable">Count</a></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var p in Model.Attendances())
-        {
-            <tr>
-                <td><a href="/Person2/@p.PeopleId">@p.Name</a></td>
-                <td class="right">@p.Age</td>
-                <td><span style="font-family:Courier New">@p.AttendStr</span></td>
-                <td class="right">@p.AttendPct.ToString("N1")</td>
-                <td class="right">@p.AttendCount</td>
-            </tr>
-        }
-    </tbody>
-</table>

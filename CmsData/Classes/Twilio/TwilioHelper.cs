@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using Twilio;
 using UtilityExtensions;
 
@@ -11,9 +10,9 @@ namespace CmsData.Classes.Twilio
 {
     public class TwilioHelper
     {
-        public const Boolean bTestMode = false;
+        private const bool TestMode = false;
 
-        public static void QueueSMS(Guid iQBID, int iSendGroupID, string sTitle, string sMessage)
+        public static void QueueSms(Guid iQBID, int iSendGroupID, string sTitle, string sMessage)
         {
             var q = DbUtil.Db.PeopleQuery(iQBID);
 
@@ -39,7 +38,7 @@ namespace CmsData.Classes.Twilio
                 item.ListID = list.Id;
                 item.PeopleID = i.PeopleId;
 
-                if (i.CellPhone != null && i.CellPhone.Length > 0)
+                if (!string.IsNullOrEmpty(i.CellPhone))
                 {
                     item.Number = i.CellPhone;
                 }
@@ -61,27 +60,11 @@ namespace CmsData.Classes.Twilio
 
             // Check for how many people have cell numbers and want to receive texts
             var qSMS = from p in q
-                where p.CellPhone != null
-                where p.ReceiveSMS == true
-                select p;
+                       where p.CellPhone != null
+                       where p.ReceiveSMS
+                       select p;
 
             var countSMS = qSMS.Count();
-
-            /*
-            if (countSMS > 0)
-            {
-                foreach (var i in qSMS)
-                {
-                    var item = new SMSItem();
-
-                    item.ListID = list.Id;
-                    item.PeopleID = i.PeopleId;
-                    item.Number = i.CellPhone;
-
-                    DbUtil.Db.SMSItems.InsertOnSubmit(item);
-                }
-            }
-            */
 
             // Add counts for SMS, e-Mail and none
             list.SentSMS = countSMS;
@@ -92,12 +75,12 @@ namespace CmsData.Classes.Twilio
             ProcessQueue(list.Id);
         }
 
-        public static void ProcessQueue( int iNewListID )
+        public static void ProcessQueue(int iNewListID)
         {
-            string sHost = Util.Host;
-            string sSID = getSID();
-            string sToken = getToken();
-            int iListID = iNewListID;
+            var sHost = Util.Host;
+            var sSID = GetSid();
+            var sToken = GetToken();
+            var iListID = iNewListID;
 
             if (sSID.Length == 0 || sToken.Length == 0) return;
 
@@ -105,10 +88,9 @@ namespace CmsData.Classes.Twilio
             {
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
-                string stSID = sSID;
-                string stToken = sToken;
-                int itListID = iListID;
-                bool btSent = false;
+                var stSID = sSID;
+                var stToken = sToken;
+                var itListID = iListID;
 
                 try
                 {
@@ -126,13 +108,13 @@ namespace CmsData.Classes.Twilio
                                     where e.GroupID == smsList.SendGroupID
                                     select e).ToList();
 
-                    int iCount = 0;
+                    var iCount = 0;
 
                     foreach (var item in smsItems)
                     {
                         if (item.NoNumber || item.NoOptIn) continue;
 
-                        btSent = sendSMS( stSID, stToken, smsGroup[iCount].Number, item.Number, smsList.Message );
+                        var btSent = SendSms(stSID, stToken, smsGroup[iCount].Number, item.Number, smsList.Message);
 
                         if (btSent)
                         {
@@ -141,9 +123,8 @@ namespace CmsData.Classes.Twilio
                         }
 
                         iCount++;
-                        if( iCount >= smsGroup.Count() ) iCount = 0;
+                        if (iCount >= smsGroup.Count()) iCount = 0;
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -152,38 +133,35 @@ namespace CmsData.Classes.Twilio
             });
         }
 
-
-        public static bool sendSMS( String sSID, String sToken, String sFrom, String sTo, String sBody )
+        private static bool SendSms(string sSID, string sToken, string sFrom, string sTo, string sBody)
         {
             // Needs API keys. Removed to keep private
 
-            if (bTestMode)
+            if (TestMode)
             {
-                Debug.WriteLine("Message sending to " + sTo + " from " + sFrom + ": " + sBody + " --- via " + sSID + " / " + sToken);
+                Debug.WriteLine("Message sending to " + sTo + " from " + sFrom + ": " + sBody + " --- via " + sSID +
+                                " / " + sToken);
                 return true;
             }
-            else
-            {
-                var twilio = new TwilioRestClient(sSID, sToken);
-                var msg = twilio.SendMessage(sFrom, sTo, sBody);
-                if (msg.Status != "failed") return true;
-                else return false;
-            }
+            var twilio = new TwilioRestClient(sSID, sToken);
+            var msg = twilio.SendMessage(sFrom, sTo, sBody);
+            if (msg.Status != "failed") return true;
+            return false;
         }
 
-        public static List<IncomingPhoneNumber> getNumberList()
+        public static List<IncomingPhoneNumber> GetNumberList()
         {
-            var twilio = new TwilioRestClient( getSID(), getToken() );
+            var twilio = new TwilioRestClient(GetSid(), GetToken());
             var numbers = twilio.ListIncomingPhoneNumbers();
 
             return numbers.IncomingPhoneNumbers;
         }
 
-        public static List<TwilioNumber> getUnusedNumberList()
+        public static List<TwilioNumber> GetUnusedNumberList()
         {
-            List<TwilioNumber> available = new List<TwilioNumber>();
+            var available = new List<TwilioNumber>();
 
-            var twilio = new TwilioRestClient(getSID(), getToken());
+            var twilio = new TwilioRestClient(GetSid(), GetToken());
             var numbers = twilio.ListIncomingPhoneNumbers();
 
             var used = (from e in DbUtil.Db.SMSNumbers
@@ -191,7 +169,7 @@ namespace CmsData.Classes.Twilio
 
             for (var iX = numbers.IncomingPhoneNumbers.Count() - 1; iX > -1; iX--)
             {
-                if (used.Where(n => n.Number == numbers.IncomingPhoneNumbers[iX].PhoneNumber).Count() > 0)
+                if (used.Any(n => n.Number == numbers.IncomingPhoneNumbers[iX].PhoneNumber))
                     numbers.IncomingPhoneNumbers.RemoveAt(iX);
             }
 
@@ -207,14 +185,14 @@ namespace CmsData.Classes.Twilio
             return available;
         }
 
-        public static List<UserRole> getUnassignedPeople(int id)
+        public static List<UserRole> GetUnassignedPeople(int id)
         {
             var role = (from e in DbUtil.Db.Roles
                         where e.RoleName == "SendSMS"
                         select e).SingleOrDefault();
 
             // If no results on the role, send back empty list
-            if( role == null ) return new List<UserRole>();
+            if (role == null) return new List<UserRole>();
 
 
             var assigned = (from e in DbUtil.Db.SMSGroupMembers
@@ -227,29 +205,29 @@ namespace CmsData.Classes.Twilio
 
             for (var iX = people.Count() - 1; iX > -1; iX--)
             {
-                if (assigned.Where(n => n.UserID == people[iX].UserId).Count() > 0)
+                if (assigned.Any(n => n.UserID == people[iX].UserId))
                     people.RemoveAt(iX);
             }
 
             return people;
         }
 
-        public static List<SMSGroup> getAvailableLists(int iUserID)
+        public static List<SMSGroup> GetAvailableLists(int iUserID)
         {
             var groups = (from e in DbUtil.Db.SMSGroups
-                          where e.SMSGroupMembers.Any( f => f.UserID == iUserID )
+                          where e.SMSGroupMembers.Any(f => f.UserID == iUserID)
                           select e).ToList();
 
             return groups;
         }
 
-        public static int getSendCount(Guid iQBID)
+        public static int GetSendCount(Guid iQBID)
         {
             var q = DbUtil.Db.PeopleQuery(iQBID);
 
             return (from p in q
                     where p.CellPhone != null
-                    where p.ReceiveSMS == true
+                    where p.ReceiveSMS
                     select p).Count();
         }
 
@@ -272,17 +250,15 @@ namespace CmsData.Classes.Twilio
                          where e.UserID == iUserID
                          select e;
 
-            if (!groups.Any()) return false;
-
-            return true;
+            return groups.Any();
         }
 
-        public static string getSID()
+        private static string GetSid()
         {
             return DbUtil.Db.Setting("TwilioSID", "");
         }
 
-        public static string getToken()
+        private static string GetToken()
         {
             return DbUtil.Db.Setting("TwilioToken", "");
         }
@@ -294,10 +270,7 @@ namespace CmsData.Classes.Twilio
 
             public string Description
             {
-                get
-                {
-                    return Name + " (" + Number + ")";
-                }
+                get { return string.Format("{0} ({1})", Name, Number); }
             }
         }
     }

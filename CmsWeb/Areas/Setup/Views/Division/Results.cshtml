@@ -1,23 +1,24 @@
 ﻿@model CmsWeb.Models.DivisionModel
-<table id="results" class="@ViewExtensions2.GridClass">
-<thead>
-    <tr>
-        <th></th>
-        <th>Id</th>
-        <th>Division</th>
-        <th>Program</th>
-        <th>RptLine</th>
-        <th>NoZero</th>
-        <th>TargetProg</th>
-        <th>MainProg</th>
-        <th></th>
-    </tr>
-</thead>
-<tbody>
-@foreach (var i in Model.DivisionList()) 
-{
-    @Html.Partial("Row", i)
-}
-</tbody>
-</table>
-
+<div class="table-responsive">
+    <table id="results" class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Id</th>
+                <th>Division</th>
+                <th>Program</th>
+                <th>Report Line</th>
+                <th>No Zero</th>
+                <th>Target Program</th>
+                <th>Main Program</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model.DivisionList())
+            {
+                @Html.Partial("Row", i)
+            }
+        </tbody>
+    </table>
+</div>

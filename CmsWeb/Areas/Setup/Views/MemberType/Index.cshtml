@@ -1,110 +1,240 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Setup.Controllers.MemberTypeController.MemberTypeInfo>
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "MemberType";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Member Type";
+    ViewBag.PageHeader = "Member Types";
 }
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+}
+<div class="row">
+    <div class="col-lg-9">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <strong>Success!</strong> @TempData["SuccessMessage"]
+            </div>
+        }
+        <div class="alert alert-warning">
+            <h4>Member Type Migration</h4>
+            <p>
+                The following allows you to globally change one member type for all organization members having that type, to another existing member type.<br />
+                There is no <strong>undo</strong>, so please be careful.
+            </p>
+            <p>
+                @using (Html.BeginForm("Move", "MemberType", FormMethod.Post, new { @class = "form-inline" }))
+                {
+                    <div class="form-group">
+                        <label class="sr-only" for="fromid">Source Member Type</label>
+                        <select id="fromid" name="fromid" class="form-control">
+                            <option value="">--Source Member Type--</option>
+                            @foreach (var item in Model)
+                            {
+                                <option value="@item.Id">@item.Description</option>
+                            }
+                        </select> to
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="toid">Destination Member Type</label>
+                        <select id="toid" name="toid" class="form-control">
+                            <option value="">--Destination Member Type--</option>
+                            @foreach (var item in Model)
+                            {
+                                <option value="@item.Id">@item.Description</option>
+                            }
+                        </select>
+                    </div>
+                    <button id="movemt" type="submit" class="btn btn-warning">Move Member Type</button>
+                }
+            </p>
+        </div>
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            Click to edit the Code or Name. The items that cannot be deleted are expected to be there by the system. The description for those can be edited as long as the meaning is the same.
+        </div>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Member Type</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 75px;">Id</th>
+                            <th style="width: 270px;">Code</th>
+                            <th style="width: 300px;">Description</th>
+                            <th style="width: 200px;">Attendance Type</th>
+                            <th style="width: 100px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width: 75px;">@item.Id<a href="#" id="@item.Id"></a></td>
+                                <td style="width: 270px;">
+                                    @if (item.Hardwired == true)
+                                    {
+                                        @item.Code
+                                    }
+                                    else
+                                    {
+                                        <a id="c@(item.Id)" class="clickEdit" data-pk="c@(item.Id)">@item.Code</a>
+                                    }
+                                </td>
+                                <td style="width: 300px;">
+                                    <a id="v@(item.Id)" class="clickEdit" data-pk="v@(item.Id)">@item.Description</a>
+                                </td>
+                                <td style="width: 200px;">
+                                    <a id="a@(item.Id)" class="clickSelect" data-value="@(item.AttendTypeId == null ? "" : item.AttendTypeId.ToString())" data-pk="a@(item.Id)">@(item.AttendTypeId == null ? "" : item.AttendType)</a>
+                                </td>
+                                <td style="width: 100px;">
+                                    @if (!item.Hardwired.GetValueOrDefault())
+                                    {
+                                        <a id="d@(item.Id)" href="#" class="delete btn btn-danger btn-sm"><i class="fa fa-trash"></i> Delete</a>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+                <a href="#" class="btn btn-success create-new visible-xs-block btn-block"><i class="fa fa-plus-circle"></i> Add Member Type</a>
+                <a href="/Lookups" class="btn btn-default visible-xs-block btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="new-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            @using (Html.BeginForm("Create", "MemberType"))
+            {
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add Member Type</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="id" class="control-label">New Member Type Id</label>
+                        <input type="number" id="id" name="id" class="form-control" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
-        //id=elements_id&value=user_edited_content
-        $(function() {
-            $(".clickEdit").editable("/MemberType/Edit/", {
-                indicator: "<img src='/Content/images/loading.gif'>",
-                tooltip: "Click to edit...",
-                style: 'display: inline',
-                width: '200px',
-                height: 25
-            });
-            $(".clickSelect").editable("/MemberType/EditAttendType/", {
-                indicator: '<img src="/Content/images/loading.gif">',
-                loadurl: "/MemberType/AttendTypeCodes/",
-                loadtype: "POST",
-                type: "select",
-                submit: "OK",
-                style: 'display: inline'
-            });
-            $("a.delete").click(function(ev) {
-                ev.preventDefault();
-                if (confirm("are you sure?"))
-                    $.post("/MemberType/Delete/" + $(this).attr("id"), null, function(ret) {
-                        if (ret == "used")
-                            alert("that member type is being used");
-                        else
-                            window.location = "/MemberType/";
-                    });
-                return false;
-            });
-            $("#movemt").click(function(ev) {
-                ev.preventDefault();
-                var f = $(this).closest("form");
-                if (confirm("are you sure?")) {
-                    f.submit();
+        $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+
+            $(".clickEdit").editable({
+                mode: 'inline',
+                type: 'text',
+                url: "/MemberType/Edit/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
                 }
             });
-            $(".bt").button();
+
+            $(".clickSelect").editable({
+                mode: 'inline',
+                type: 'select',
+                url: "/MemberType/EditAttendType/",
+                source: "/MemberType/AttendTypeCodes/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
+            });
+
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/MemberType/Delete/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/MemberType/";
+                            });
+                        }
+                    });
+                });
+            });
+
+            $("#movemt").click(function (ev) {
+                ev.preventDefault();
+                var f = $(this).closest("form");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-warning",
+                    confirmButtonText: "Yes, do migration!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    f.submit();
+                });
+            });
+
+            $("a.create-new").click(function (ev) {
+                ev.preventDefault();
+                $('#new-modal').modal();
+                return false;
+            });
+
+            $('#new-modal').on('shown.bs.modal', function () {
+                $("#id").val('').focus();
+            });
+
+            // positions scrollbar and highlights new setting.
+            var hash = document.location.hash;
+            if (hash) {
+                var offset = $(hash).offset();
+                offset.top -= 80;
+                $('body').animate({ scrollTop: offset.top }, 500);
+
+                var row = $(hash).closest('tr');
+                var bgColor = $(row).css('background-color');
+                $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                    $(row).animate({ backgroundColor: bgColor }, 1000);
+                });
+            }
         });
     </script>
-}
-<h2>Member Types</h2>
-<blockquote style="max-width:40em"><i>Click to edit the Code or Name. The items that cannot be deleted are expected to be there by the system. The description for those can be edited as long as the meaning is the same.</i></blockquote>
-<table class="@ViewExtensions2.GridClass">
-    <tr>
-        <th> Id </th>
-        <th> Code </th>
-        <th> Description </th>
-        <th> AttendType </th>
-        <th></th>
-    </tr>
-@foreach (var item in Model)
-{ 
-    <tr>
-        <td>@item.Id</td>
-        <td>
-            @if (item.Hardwired == true)
-            {
-                @item.Code   
-            }
-            else
-            {
-            <span id='c@(item.Id)' class='clickEdit'>@item.Code</span>
-            }
-        </td>
-        <td>
-            <span id='v@(item.Id)' class='clickEdit'>@item.Description</span>
-        </td>
-        <td>
-            <span id='a@(item.Id)' class='clickSelect'>@(item.AttendTypeId == null ? "" : item.AttendType)</span>
-        </td>
-        <td>
-            @if (item.Hardwired == true)
-            {
-                <i>hardwired</i>
-            }
-            else
-            {
-                <a id='d@(item.Id)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
-            }
-        </td>
-    </tr>
-}
-</table>
-@using (Html.BeginForm("Create", "MemberType"))
-{ 
-    <p>
-        New MemberTypeId: @Html.TextBox("id")
-        <input type="submit" class="bt" value="Create" />
-    </p>
-}
-<hr/>
-<p>Note: the following allows you to globally change one membertype for all organization members having that type, to a new type. 
-    The only purpose for this is to consolidate Organization MemberTypes.<br />
-    <b>THERE IS NO UNDO!</b> Please be careful.<br/>
-    You must enter the Id number, not the name of the membertype.
-</p>
-@using (Html.BeginForm("Move", "MemberType"))
-{
-     <p>
-         Change all Membertypes having Id: @Html.TextBox("fromid") to Id: @Html.TextBox("toid")
-         <input id="movemt" type="submit" class="bt" value="Move Membertypes" />
-     </p>
 }

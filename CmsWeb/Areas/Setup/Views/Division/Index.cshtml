@@ -1,20 +1,60 @@
 ﻿@model CmsWeb.Models.DivisionModel
 @{
-    Layout = ViewExtensions2.Layout();
+    Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Divisions";
+    ViewBag.PageHeader = "Divisions";
 }
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+}
+<div class="row">
+    <div class="col-md-9">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    @using (Html.BeginForm("Create", "Division", FormMethod.Post, new { id = "createForm" }))
+                    {
+                        <button type="submit" class="btn btn-success create"><i class="fa fa-plus-circle"></i> Add Division</button>
+                    }
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="well">
+                    <div class="row">
+                        <form id="progform">
+                            <div class="col-sm-3">
+                                <label for="ProgramId" class="control-label">Filter for Program</label>
+                                <div class="input-group">
+                                    @Html.DropDownList("ProgramId", Model.ProgramIds(), new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="col-sm-9">
+                                <label for="TagProgramId" class="control-label">Target Program</label>
+                                <div class="form-inline">
+                                    <div class="input-group">
+                                        @Html.DropDownList("TagProgramId", Model.ProgramIds(), new { @class = "form-control" })
+                                    </div>
+                                    <div class="input-group">
+                                        <button type="submit" class="btn btn-default" ><i class="fa fa-refresh"></i> Refresh</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                @Html.Partial("Results", Model)
+                <div class="visible-xs-block">
+                    @using (Html.BeginForm("Create", "Division", FormMethod.Post, new { id = "createForm" }))
+                    {
+                        <button type="submit" class="btn btn-success btn-block create"><i class="fa fa-plus-circle"></i> Add Division</button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Admin/Divisions.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+    @Fingerprint.Script("/Content/touchpoint/js/admin/divisions.js")
 }
-<form id="progform">
-Filter for Program: @Html.DropDownList("ProgramId", Model.ProgramIds())
-<input id="refresh" type="submit" value="Refresh" />
-Target Program: @Html.DropDownList("TagProgramId", Model.ProgramIds())
-</form>
-<h2>Divisions</h2>
-@Html.Partial("Results", Model) 
-@using (Html.BeginForm("Create", "Division"))
-{ 
-    <p><input id="create" type="submit" value="Create" /></p>
-} 

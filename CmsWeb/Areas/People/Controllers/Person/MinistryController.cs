@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no id");
             var t = p.AddTaskAbout(DbUtil.Db, Util.UserPeopleId.Value, "Please Contact");
             DbUtil.Db.SubmitChanges();
-            return Content("/Task/List/{0}".Fmt(t.Id));
+            return Content("/Task/Detail/{0}".Fmt(t.Id));
         }
         [HttpPost]
         public ActionResult TasksAssigned(TasksAssignedModel m)

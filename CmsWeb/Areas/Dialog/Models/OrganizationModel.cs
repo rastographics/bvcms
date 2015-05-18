@@ -17,8 +17,10 @@ namespace CmsWeb.Areas.Dialog.Models
         public int? OrganizationId { get; set; }
 		public bool copysettings { get; set; }
 		public bool copyregistration { get; set; }
-        public NewOrganizationModel(int? id)
+        public bool DisplayCopySettings { get; set; }
+        public NewOrganizationModel(int? id, bool displayCopySettings = false)
         {
+            DisplayCopySettings = displayCopySettings;
 			if (!id.HasValue)
 		        id = DbUtil.Db.Setting("DefaultOrgId", "0").ToInt();
 	        org = DbUtil.Db.LoadOrganizationById(id);

@@ -2,17 +2,19 @@
 @using CmsData.Registration
 @using (var ci = Html.BeginCollectionItem(Model.Name))
 {
-  <div class="movable type-@Model.Type table not-wide w100 padded grey-box">
-    @Html.Raw(ci.hiddenindex)
-    @Html.HiddenFor(m => m.Type)
-    <label class="ask-question">
-      Request
-      @Html.Partial("EditorTemplates/QuestionsMenu")
-    </label>
-    @if (ViewBag.ShowHelp != false)
-    {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
-    }
-    @Html.EditorFor(m => m.Label)
-  </div>
+    <div class="movable type-@Model.Type well">
+        @Html.Raw(ci.hiddenindex)
+        @Html.HiddenFor(m => m.Type)
+        <div class="row">
+            <div class="col-sm-12">
+                @Html.Partial("EditorTemplates/QuestionsMenu")
+                <label class="ask-question">Request</label>
+            </div>
+        </div>
+        @if (ViewBag.ShowHelp != false)
+        {
+            <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
+        }
+        @Html.EditorFor(m => m.Label)
+    </div>
 }

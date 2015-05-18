@@ -11,6 +11,9 @@ namespace CmsWeb.Areas.Org2.Models
         public int Id { get; set; }
         public bool Future { get; set; }
 
+        public MeetingsModel() 
+            : base("", "", true) { }
+            
         public override IQueryable<Meeting> DefineModelList()
         {
             var tzoffset = DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west

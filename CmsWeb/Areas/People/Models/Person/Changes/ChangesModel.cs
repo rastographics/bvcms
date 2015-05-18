@@ -23,9 +23,9 @@ namespace CmsWeb.Areas.People.Models
         public Person Person;
 
         public ChangesModel()
-            : base("Time", "desc")
-        {
-        }
+            : base("Time", "desc", true)
+        {}
+
         public void Reverse(string field, string value, string pf)
         {
             switch (pf)

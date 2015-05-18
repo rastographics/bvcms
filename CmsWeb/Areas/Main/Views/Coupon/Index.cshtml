@@ -1,60 +1,83 @@
-﻿@using CmsWeb
+﻿@using System.Globalization
+@using CmsWeb
 @model CmsWeb.Models.CouponModel
 @{
-  Layout = ViewExtensions2.Layout();
-  ViewBag.Title = "Coupon";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Create Coupon";
+    ViewBag.PageHeader = "Create Coupon";
 }
 @section head
 {
-  @Fingerprint.Css("/Content/select2-3.5.2/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2.css")
+    @Fingerprint.Css("/Content/touchpoint/lib/select2/css/select2-bootstrap.css")
 }
+<div class="row">
+    <div class="col-md-8">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="/Coupon/List" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <form action="/Coupon/Create" method="post">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="regid" class="control-label">Registration Type</label>
+                                <select name="regid" id="regid" class="form-control">
+                                    @foreach (var i in Model.OnlineRegs())
+                                    {
+                                        <option value="@i.Value">@i.Text</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="name" class="control-label">Name</label>
+                                @Html.TextBox("name", Model.name, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label for="amount" class="control-label">Amount</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon currency">@NumberFormatInfo.CurrentInfo.CurrencySymbol</span>@Html.TextBox("amount", Model.amount, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Coupon2"))
+                        {
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="couponcode" class="control-label">Coupon Code <small>(only for non-expiring coupons)</small></label>
+                                    @Html.TextBox("couponcode", Model.couponcode, new { @class = "form-control", maxlength = "12" })
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="row hidden-xs">
+                        <div class="col-sm-12">
+                            <input type="submit" class="btn btn-primary" value="Create Coupon" />
+                        </div>
+                    </div>
+                    <div class="visible-xs-block">
+                        <input type="submit" class="btn btn-primary btn-block" value="Create Coupon" />
+                        <hr/>
+                        <a href="/Coupon/List" class="btn btn-default btn-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-  @Fingerprint.Script("/Scripts/select2-3.5.2/select2.min.js")
-  <script>
-    $(function () {
-      $(".bt").button();
-      $("select").select2();
-    });
-  </script>
+    @Fingerprint.Script("/Content/touchpoint/lib/select2/js/select2.min.js")
+    <script>
+        $(function () {
+            $("select").select2();
+        });
+    </script>
 }
-<h2>Coupons</h2>
-<form action="/Coupon/Create" method="post">
-  <div>
-    <fieldset>
-      <table style="empty-cells:show" cellpadding="5">
-        <tr>
-          <td>Registration Type</td>
-          <td>
-            <select name="regid" id="regid" style="width:500px">
-              @foreach (var i in Model.OnlineRegs())
-              {
-                <option value="@i.Value">@i.Text</option>
-              }
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <td>Name</td>
-          <td>@Html.TextBox("name")</td>
-        </tr>
-        <tr>
-          <td>Amount</td>
-          <td>@Html.TextBox("amount")</td>
-        </tr>
-        @if (User.IsInRole("Admin") || User.IsInRole("Coupon2"))
-        {
-          <tr>
-            <td>Coupon Code</td>
-            <td>@Html.TextBox("couponcode")</td>
-          </tr>
-        }
-        <tr>
-          <td></td>
-          <td><input type="submit" class="bt" value="Create Coupon" /></td>
-        </tr>
-      </table>
-    </fieldset>
-  </div>
-  @Helper.AnchorLink("List", "/Coupon/List")
-</form>

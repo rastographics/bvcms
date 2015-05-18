@@ -61,6 +61,13 @@ namespace CmsWeb.Areas.Search.Models
                         return "Add as Contactor for Ministry Contact";
                     case "contributor":
                         return "Add for a Gift";
+                    case "taskdelegate":
+                    case "taskdelegate2":
+                        return "Delegate Task";
+                    case "taskowner":
+                        return "Transfer Task Ownership";
+                    case "taskabout":
+                        return "Change who Task is Regarding";
                 }
                 return "";
             }
@@ -73,15 +80,18 @@ namespace CmsWeb.Areas.Search.Models
         public int? EntryPointId { get; set; }
         public int? CampusId { get; set; }
         public int Index { get; set; }
+        public bool DisplaySkipSearch { get; set; }
         private Organization org;
 
         public SearchAddModel()
         {
             PendingList = new List<PendingPersonModel>();
+            DisplaySkipSearch = true;
         }
-        public SearchAddModel(string context, string contextid) 
+        public SearchAddModel(string context, string contextid, bool displaySkipSearch = true) 
             : this()
         {
+            DisplaySkipSearch = displaySkipSearch;
             AddContext = context;
             PrimaryKeyForContextType = contextid;
             CampusId = null;

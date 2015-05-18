@@ -1,52 +1,116 @@
-﻿@using UtilityExtensions
-@model CmsWeb.Models.UpdateFieldsModel
+﻿@model CmsWeb.Models.UpdateFieldsModel
 @{
-    ViewBag.Title = "Update Fields from a Tag/Query";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.Title = "Update Fields from a Tag / Query";
+    ViewBag.PageHeader = "Update Fields from a Tag / Query";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
+@if (ViewBag.success != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <strong>Success!</strong>&nbsp;&nbsp;@ViewBag.success
+    </div>
+}
+<div id="danger" class="alert alert-danger" style="display: none;">
+    <strong>Important!</strong>&nbsp;&nbsp;Drop All Enrollments will make all the selected people previous members of every organization in which they are enrolled. There is no undo.
+</div>
+<div id="warning" class="alert alert-warning" style="display: none;">
+    <strong>Warning!</strong>&nbsp;&nbsp;<span id="count"></span>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <div class="box box-responsive">
+            <div class="box-content">
+                <form id="uform" method="post" action="/Batch/UpdateFieldsRun">
+                    @Html.HiddenFor(m => m.Count)
+                    @Html.EditorFor(m => m.Tag, "Dropdown", new { items = Model.Tags() })
+                    @Html.EditorFor(m => m.Field, "Dropdown", new { items = Model.Fields() })
+                    <div id="lookup-value-selection"></div>
+                    <a href="#" class="btn btn-primary" id="run-update">Run Update</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section scripts
 {
-    @Fingerprint.Script("/Scripts/Admin/UpdateFields.js")
-}
-<div class="container">
-    <div class="table not-wide">
-        <form id="uform" class="form form-horizontal" method="post" action="/Batch/UpdateFieldsRun">
-            <fieldset>
-                <legend>Update Fields from a Tag/Query</legend>
-                @Html.EditorFor(m => m.Tag, "Dropdown", new { items = Model.Tags() })
-                @Html.HiddenFor(m => m.Count)
-                <div class="control-group @(Model.Count.HasValue ? "" : "hide")">
-                    <label class="control-label"></label>
-                    <div class="controls">
-                      <p class="alert alert-warning" id="count">@Model.Count records will be updated</p>
-                      <p class="alert alert-danger hide" id="warning"></p>
-                    </div>
-                </div>
-              <div class="control-group hide">
-                    <div class="controls">
-                      <p class="alert alert-danger" id="warning"></p>
-                    </div>
-                </div>
-                @Html.EditorFor(m => m.Field, "Dropdown", new { items = Model.Fields() })
-                @Html.EditorFor(m => m.NewValue)
-                <div class="control-group">
-                    <label class="control-label"></label>
-                    <div class="controls">
-                        <input type="submit" class="btn btn-primary" value="Run Update" />
-                    </div>
-                </div>
-                @if (ViewBag.success != null)
-                {
-                    <div class="alert alert-success">
-                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                      @ViewBag.success
-                    </div>
+    <script type="text/javascript">
+        $(function() {
+            $("#Tag").change(function(ev) {
+                ev.preventDefault();
+                if ($("#Tag option:selected").val() == '(not specified)') {
+                    $("#count").text('');
+                    $('#warning').hide();
+                    return false;
                 }
-            </fieldset>
-        </form>
-    </div>
-    @foreach (var ti in Model.FetchTitleItems())
-    {
-        @Html.Partial("LookupTable", ti)
-    }
-</div>
+                var f = $(this).closest("form");
+                var q = f.serialize();
+                $.post("/Batch/UpdateFieldsCount/", q, function(ret) {
+                    $("#count").text(ret + " records will be updated.");
+                    $('#warning').show();
+                });
+                return false;
+            });
+
+            $("#Field").change(function(ev) {
+                ev.preventDefault();
+
+                if ($('#Field').val() == 'Drop All Enrollments') {
+                    $('#danger').show();
+                    $('#lookup-value-selection').html('');
+                    return true;
+                } else {
+                    $('#danger').hide();
+                }
+
+                var f = $(this).closest("form");
+                var q = f.serialize();
+                $.post("/Batch/UpdateLookupValueSelection/", q, function(ret) {
+                    $('#lookup-value-selection').html(ret).ready(function() {
+                        $.InitializeDateElements();
+                    });
+                });
+                return false;
+            });
+
+            $('body').on('change', '#GradeSelection', function () {
+                var gradeSelection = $("#GradeSelection").val();
+                if (gradeSelection == 'YYYY') {
+                    $("#GraduationSection").show();
+                    $('#NewValue').val('');
+                } else {
+                    $("#GraduationSection").hide();
+                    $('#NewValue').val(gradeSelection);
+                }
+            });
+
+            $('body').on('blur', '#GraduationYear', function () {
+                $('#NewValue').val($("#GraduationYear").val());
+            });
+
+            $('#run-update').click(function(ev) {
+                ev.preventDefault();
+
+                if ($("#Tag option:selected").val() == '(not specified)' || $("#Field option:selected").val() == '(not specified)') {
+                    swal("Error!", "Both tag and field are required before running update.", "error");
+                } else {
+                    var f = $('#uform');
+                    console.log(f);
+                    swal({
+                            title: "Are you sure?",
+                            text: $("#count").text() + " There is no undo.",
+                            type: "warning",
+                            showCancelButton: true,
+                            confirmButtonClass: "btn-warning",
+                            confirmButtonText: "Yes, run update!",
+                            closeOnConfirm: true
+                        },
+                        function() {
+                            f.submit();
+                        });
+                }
+
+            });
+        });
+    </script>
+}

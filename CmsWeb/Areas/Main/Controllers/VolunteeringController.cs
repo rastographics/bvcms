@@ -10,7 +10,7 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
-    [RouteArea("Main", AreaPrefix="Volunteering"), Route("{action}/{id?}")]
+    [RouteArea("Main", AreaPrefix = "Volunteering"), Route("{action}/{id?}")]
     public class VolunteeringController : Controller
     {
         [Route("~/Volunteering/{id:int}")]
@@ -20,6 +20,14 @@ namespace CmsWeb.Areas.Main.Controllers
             return View(vol);
         }
 
+        [HttpPost]
+        public ActionResult Display(int id)
+        {
+            var vol = new VolunteerModel(id);
+            return View(vol);
+        }
+
+        [HttpPost]
         public ActionResult Edit(int id)
         {
             var vol = new VolunteerModel(id);
@@ -27,11 +35,13 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-		  public ActionResult Update(int id, DateTime? processDate, int statusId, string comments, List<int> approvals, DateTime? mvrDate, int mvrStatusId)
+        public ActionResult Update(int id, DateTime? processDate, int statusId, string comments, List<int> approvals, DateTime? mvrDate, int mvrStatusId)
         {
             var m = new VolunteerModel(id);
             m.Update(processDate, statusId, comments, approvals, mvrDate, mvrStatusId);
-            return Redirect("/Volunteering/" + id);
+
+            m = new VolunteerModel(id);
+            return View("Display", m);
         }
 
         [HttpPost]
@@ -41,13 +51,13 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Content("no file");
 
             var vol = new VolunteerModel(id);
-            var Name = System.IO.Path.GetFileName(file.FileName);
+            var name = System.IO.Path.GetFileName(file.FileName);
 
             var f = new VolunteerForm
                         {
-                            UploaderId = Util.UserId1, 
-                            PeopleId = vol.V.PeopleId, 
-                            Name = Name.Truncate(100),
+                            UploaderId = Util.UserId1,
+                            PeopleId = vol.Volunteer.PeopleId,
+                            Name = name.Truncate(100),
                             AppDate = Util.Now,
                         };
 
@@ -96,12 +106,12 @@ namespace CmsWeb.Areas.Main.Controllers
 
             DbUtil.Db.VolunteerForms.InsertOnSubmit(f);
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.V.Person.Name));
+            DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.Volunteer.Person.Name));
 
-            return Redirect("/Volunteering/" + vol.V.PeopleId);
+            return Redirect("/Volunteering/" + vol.Volunteer.PeopleId);
         }
 
-        public ActionResult Delete(int id, int PeopleID)
+        public ActionResult Delete(int id, int peopleId)
         {
             var form = DbUtil.Db.VolunteerForms.Single(f => f.Id == id);
 
@@ -112,21 +122,20 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.VolunteerForms.DeleteOnSubmit(form);
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/" + PeopleID);
+            return Redirect("/Volunteering/" + peopleId);
         }
-
 
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
-            ProtectMyMinistryHelper.create(id, code, type, label);
+            ProtectMyMinistryHelper.Create(id, code, type, label);
             return Redirect("/Volunteering/" + id);
         }
 
         public ActionResult EditCheck(int id, int label = 0)
         {
-            BackgroundCheck bc = (from e in DbUtil.Db.BackgroundChecks
-                                  where e.Id == id
-                                  select e).Single();
+            var bc = (from e in DbUtil.Db.BackgroundChecks
+                      where e.Id == id
+                      select e).Single();
 
             bc.ReportLabelID = label;
 
@@ -135,29 +144,26 @@ namespace CmsWeb.Areas.Main.Controllers
             return Redirect("/Volunteering/" + bc.PeopleID);
         }
 
+        [HttpPost]
         public ActionResult DeleteCheck(int id)
         {
-            int iPeopleID = 0;
-
-            BackgroundCheck bc = (from e in DbUtil.Db.BackgroundChecks
-                                  where e.Id == id
-                                  select e).Single();
-
-            iPeopleID = bc.PeopleID;
+            var bc = (from e in DbUtil.Db.BackgroundChecks
+                      where e.Id == id
+                      select e).Single();
 
             DbUtil.Db.BackgroundChecks.DeleteOnSubmit(bc);
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/" + iPeopleID);
+            return new EmptyResult();
         }
 
         public ActionResult SubmitCheck(int id, int iPeopleID, string sSSN, string sDLN, string sUser = "", string sPassword = "", int iStateID = 0, string sPlusCounty = "", string sPlusState = "")
         {
-            String sResponseURL = Request.Url.Scheme + "://" + Request.Url.Authority + ProtectMyMinistryHelper.PMM_Append;
+            var responseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + ProtectMyMinistryHelper.PMM_Append;
 
-            Person p = (from e in DbUtil.Db.People
-                        where e.PeopleId == iPeopleID
-                        select e).Single();
+            var p = (from e in DbUtil.Db.People
+                     where e.PeopleId == iPeopleID
+                     select e).Single();
 
             // Check for existing SSN
             if (sSSN != null && sSSN.Length > 1)
@@ -194,15 +200,15 @@ namespace CmsWeb.Areas.Main.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            ProtectMyMinistryHelper.submit(id, sSSN, sDLN, sResponseURL, iStateID, sUser, sPassword, sPlusCounty, sPlusState);
+            ProtectMyMinistryHelper.Submit(id, sSSN, sDLN, responseUrl, iStateID, sUser, sPassword, sPlusCounty, sPlusState);
 
-            BackgroundCheck bc = (from e in DbUtil.Db.BackgroundChecks
-                                  where e.Id == id
-                                  select e).Single();
+            var bc = (from e in DbUtil.Db.BackgroundChecks
+                      where e.Id == id
+                      select e).Single();
 
-            if (bc != null && (bc.ServiceCode == "Combo" || bc.ServiceCode == "ComboPC" || bc.ServiceCode == "ComboPS") )
+            if (bc != null && (bc.ServiceCode == "Combo" || bc.ServiceCode == "ComboPC" || bc.ServiceCode == "ComboPS"))
             {
-                Volunteer vol = DbUtil.Db.Volunteers.SingleOrDefault(e => e.PeopleId == iPeopleID);
+                var vol = DbUtil.Db.Volunteers.SingleOrDefault(e => e.PeopleId == iPeopleID);
                 vol.ProcessedDate = DateTime.Now;
                 DbUtil.Db.SubmitChanges();
             }
@@ -212,33 +218,27 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult DialogSubmit(int id)
         {
-            BackgroundCheck bc = (from e in DbUtil.Db.BackgroundChecks
-                                  where e.Id == id
-                                  select e).Single();
+            var bc = (from e in DbUtil.Db.BackgroundChecks
+                      where e.Id == id
+                      select e).Single();
 
             return View(bc);
         }
 
         public ActionResult DialogEdit(int id)
         {
-            BackgroundCheck bc = (from e in DbUtil.Db.BackgroundChecks
-                                  where e.Id == id
-                                  select e).Single();
+            var bc = (from e in DbUtil.Db.BackgroundChecks
+                      where e.Id == id
+                      select e).Single();
 
             return View(bc);
         }
 
-        public ActionResult DialogDelete(int id)
-        {
-            ViewBag.ID = id;
-            return View();
-        }
-
         public ActionResult DialogType(int id, int type)
         {
-            Person p = (from e in DbUtil.Db.People
-                        where e.PeopleId == id
-                        select e).Single();
+            var p = (from e in DbUtil.Db.People
+                     where e.PeopleId == id
+                     select e).Single();
 
             ViewBag.dialogType = type;
 
@@ -246,12 +246,10 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-        public ContentResult Edit(string id, string value)
+        public ContentResult EditForm(int pk, string value)
         {
-            var iid = id.Substring(2).ToInt();
-            var f = DbUtil.Db.VolunteerForms.Single(m => m.Id == iid);
-            if (id.StartsWith("n"))
-                f.Name = value.Truncate(100);
+            var f = DbUtil.Db.VolunteerForms.Single(m => m.Id == pk);
+            f.Name = value.Truncate(100);
             DbUtil.Db.SubmitChanges();
             var c = new ContentResult();
             c.Content = value;

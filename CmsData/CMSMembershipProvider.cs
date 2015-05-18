@@ -179,7 +179,7 @@ namespace CmsData
                     throw new ArgumentException("Password must contain at least {0} chars".Fmt(MinRequiredPasswordLength));
 				if (MembershipService.RequireSpecialCharacter)
 					if (newPwd.All(char.IsLetterOrDigit))
-						throw new ArgumentException("Password needs at least 1 non-alphanumeric chars");
+                        throw new ArgumentException("Password needs at least 1 non-alphanumeric character");
 				if (MembershipService.RequireOneNumber)
 					if (!newPwd.Any(char.IsDigit))
 						throw new ArgumentException("Password needs at least 1 number");

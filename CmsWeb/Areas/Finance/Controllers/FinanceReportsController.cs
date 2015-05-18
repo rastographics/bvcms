@@ -22,12 +22,6 @@ namespace CmsWeb.Areas.Finance.Controllers
     [RouteArea("Finance", AreaPrefix = "FinanceReports"), Route("{action}/{id?}")]
     public class FinanceReportsController : CmsStaffController
     {
-        public ActionResult ContributionYears(int id)
-        {
-            var m = new ContributionModel(id);
-            return View(m);
-        }
-
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
             DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
@@ -81,7 +75,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             return new EpplusResult(ep, "PledgeFulfillment2.xlsx");
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult DonorTotalSummaryOptions()
         {
             var m = new DonorTotalSummaryOptionsModel
@@ -119,6 +113,39 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             if (m.IncludeBundleType)
                 return View("TotalsByFundResults2", m);
+            return View(m);
+        }
+
+        [HttpGet]
+        public ActionResult TotalsByFundRange(string pledged)
+        {
+            var m = new TotalsByFundRangeModel{ Pledged = pledged };
+            return View(m);
+        }
+
+        [HttpPost]
+        public ActionResult TotalsByFundRangeResults(TotalsByFundRangeModel m)
+        {
+            return View(m);
+        }
+
+        [HttpGet]
+        public ActionResult TotalsByFundAgeRange()
+        {
+            var m = new TotalsByFundAgeRangeModel();
+            return View(m);
+        }
+
+        [HttpPost]
+        public ActionResult TotalsByFundAgeRangeResults(TotalsByFundAgeRangeModel m)
+        {
+            return View(m);
+        }
+
+        [HttpGet]
+        public ActionResult Deposits(DateTime dt)
+        {
+            var m = new DepositsModel(dt);
             return View(m);
         }
 

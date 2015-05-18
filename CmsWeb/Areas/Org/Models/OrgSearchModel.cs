@@ -95,8 +95,8 @@ namespace CmsWeb.Areas.Search.Models
                         Description = os.Description,
                         UseRegisterLink2 = os.UseRegisterLink2,
                         DivisionId = os.DivisionId,
-                        BDayStart = os.BirthDayStart.FormatDate("na"),
-                        BDayEnd = os.BirthDayEnd.FormatDate("na"),
+                        BDayStart = os.BirthDayStart.FormatDate(),
+                        BDayEnd = os.BirthDayEnd.FormatDate(),
                     };
             return q;
         }
@@ -484,16 +484,10 @@ namespace CmsWeb.Areas.Search.Models
             public const int NotMainFellowship = -2;
             public const int NoOrgType = -1;
         }
-        public static IEnumerable<SelectListItem> OrgTypes()
+
+        public static IEnumerable<SelectListItem> OrgTypeFilters()
         {
-            var q = from t in DbUtil.Db.OrganizationTypes
-                    orderby t.Code
-                    select new SelectListItem
-                    {
-                        Value = t.Id.ToString(),
-                        Text = t.Description
-                    };
-            var list = q.ToList();
+            var list = OrgTypes().ToList();
             list.Insert(0, new SelectListItem { Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString() });
             list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
             list.Insert(0, new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
@@ -504,6 +498,18 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem { Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString() });
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
+        }
+
+        public static IEnumerable<SelectListItem> OrgTypes()
+        {
+            var q = from t in DbUtil.Db.OrganizationTypes
+                    orderby t.Code
+                    select new SelectListItem
+                    {
+                        Value = t.Id.ToString(),
+                        Text = t.Description
+                    };
+            return q;
         }
 
         public class RegistrationClassification

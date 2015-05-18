@@ -3,17 +3,14 @@
 @model CmsWeb.Models.PromotionModel
 @foreach (var r in Model.FetchStudents())
 {   
-<tr>
-    <td><input name="selected" type="checkbox" @r.Checked value="@r.PeopleId,@r.CurrClassId" 
-    class="check" gender='@r.Gender' attend='@r.AttendIndicator' />
-    </td>
-    <td>@r.Gender</td>
-    <td>@r.AttendIndicator</td>
-    <td>@r.AttendPct.ToString2("N1")</td>
-    <td><a href="/Person2/@r.PeopleId">@r.Name</a></td>
-    <td><a href="@Util2.Org/@r.CurrClassId">@r.CurrClassName</a></td>
-    <td><a href="@Util2.Org/@r.PendingClassId">@r.PendingClassName</a></td>
-    <td>@r.Birthday</td>
-</tr>
+    <tr>
+        <td style="width: 50px;"><input name="selected" type="checkbox" @r.Checked value="@r.PeopleId,@r.CurrClassId" class="check" gender='@r.Gender' attend='@r.AttendIndicator' /></td>
+        <td class="text-center">@r.Gender</td>
+        <td>@r.AttendIndicator</td>
+        <td>@r.AttendPct.ToString2("N1")</td>
+        <td><a href="/Person2/@r.PeopleId">@r.Name</a></td>
+        <td><a href="@Util2.Org/@r.CurrClassId">@r.CurrClassName</a></td>
+        <td><a href="@Util2.Org/@r.PendingClassId">@r.PendingClassName</a></td>
+        <td>@r.Birthday</td>
+    </tr>
 }
-

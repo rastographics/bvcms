@@ -1,29 +1,50 @@
 ﻿@using CmsWeb.Areas.People.Models
 @model PersonModel
 <div id="family-photo-div">
-    @if (Model.Person.Family.PictureId.HasValue)
-    {
-        if (Model.Person.CanUserEditBasic)
+        @if (Model.Person.Family.PictureId.HasValue)
         {
-        <a class="family-picture" href="/Person2/FamilyPictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">@Picture()</a>
+            <div class="row visible-xs-block">
+                <div class="col-sm-12">
+                    <h4><a id="family-picture-collapse" data-toggle="collapse" href="#family-picture-section" aria-expanded="true" aria-controls="family-picture-section"><i class="fa fa-chevron-circle-down"></i></a> Family Photo</h4>
+                </div>
+            </div>
+            <div class="row collapse in" id="family-picture-section">
+                <div class="col-sm-12">
+                    @if (Model.Person.CanUserEditBasic)
+                    {
+                        <a class="family-picture" href="/Person2/FamilyPictureDialog/@Model.PeopleId" title="Click to see larger version or upload new">@Picture()</a>
+                    }
+                    else
+                    {
+                        <a href="@Model.FamilyPicture.LargeUrl" title="Click to see larger version" target="_blank">@Picture()</a>
+                    }
+                </div>
+            </div>
         }
         else
         {
-        <a href="@Model.FamilyPicture.LargeUrl" title="Click to see larger version" target="_blank">@Picture()</a>
+            if (Model.Person.CanUserEditBasic)
+            {
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4><a id="family-picture-collapse" data-toggle="collapse" href="#family-picture-section" aria-expanded="true" aria-controls="family-picture-section"><i class="fa fa-chevron-circle-down"></i></a> Family Photo</h4>
+                    </div>
+                </div>
+                <div class="row collapse in" id="family-picture-section">
+                    <div class="col-sm-12">
+                        <a class="family-picture btn btn-success btn-sm btn-block" href="/Person2/FamilyPictureDialog/@Model.PeopleId"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Family Photo</a>
+                        <br/>
+                    </div>
+                </div>
+            }
         }
-    }
-    else
-    {
-        if (Model.Person.CanUserEditBasic)
-        {
-            <div class="sidebar_title group inactive">
-                <a class="family-picture" href="/Person2/FamilyPictureDialog/@Model.PeopleId"><i class="fa fa-plus"></i>Add Family Photo</a>
-            </div>
-        }
-    }
 </div>
 @helper Picture()
 {
-    <div class="portrait" style="background-image: url(@Model.FamilyPicture.MediumUrl);"></div>
+    <div class="family-block">
+        <div class="family-photo">
+            <div id="family-portrait" class="img-thumbnail"></div>
+        </div>
+    </div>
 }
 

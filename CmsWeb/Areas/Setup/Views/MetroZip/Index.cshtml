@@ -1,66 +1,177 @@
 ﻿@model IEnumerable<CmsData.Zip>
 @{
-    Layout = ViewExtensions2.Layout();
-    ViewBag.Title = "MetroZip";
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Metro Zip Codes";
+    ViewBag.PageHeader = "Zip Codes";
 }
+@section head{
+    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+}
+<div class="row">
+    <div class="col-lg-8">
+        <div class="alert alert-success alert-dismissible" style="display: none;">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Success!</strong> <span id="success-message"></span>
+        </div>
+        <form id="update-metro-zips">
+            <div class="alert alert-info">
+                <h4>What about existing addresses?</h4>
+                <p>
+                    Any new addresses entered will be associated accordingly after you enter or update these zip codes. Already existing addresses can be updated with this button.
+                </p>
+                <p>
+                    <button type="submit" class="btn btn-info" id="begin-update">Update All Addresses</button>
+                </p>
+            </div>
+        </form>
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a href="#" class="btn btn-success create-new"><i class="fa fa-plus-circle"></i> Add Zip Code</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <div class="table-responsive">
+                    <table class="table table-striped table-responsive">
+                        <thead>
+                            <tr>
+                                <th style="width: 100px;">Zip Code</th>
+                                <th style="width: 500px;">Metro Marginal Code</th>
+                                <th style="width: 50px;">Action</th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="width: 100px;">@item.ZipCode<a href="#" id="@item.ZipCode"></a></td>
+                                <td style="width: 500px;">
+                                    <a id="r@(item.ZipCode)" class="clickSelect" data-value="@(item.ResidentCode == null ? "" : item.ResidentCode.Id.ToString())" data-pk="r@(item.ZipCode)">@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</a>
+                                </td>
+                                <td style="width: 50px;">
+                                    <a id="d@(item.ZipCode)" href="#" class="delete btn btn-sm btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <a href="#" class="btn btn-success btn-block visible-xs-block create-new"><i class="fa fa-plus-circle"></i> Add Zip Code</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="new-modal">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            @using (Html.BeginForm("Create", "MetroZip"))
+            {
+                @Html.Hidden("type", ViewData["type"])
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add Zip Code</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="zipcode" class="control-label">Zip Code</label>
+                        @Html.TextBox("zipcode", "", new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+                    <input type="submit" value="Submit" class="btn btn-primary" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
 @section scripts
 {
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
     <script type="text/javascript">
-    //id=elements_id&value=user_edited_content
-        $(function() {
-            $(".clickSelect").editable("/MetroZips/Edit/", {
-                indicator: '<img src="/Content/images/loading.gif">',
-                loadurl: "/MetroZips/ResidentCodes/",
-                loadtype: "POST",
-                type: "select",
-                submit: "OK",
-                style: 'display: inline'
+        $(function () {
+            $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
+                                            '<i class="fa fa-fw fa-check"></i>' +
+                                        '</button>' +
+                                        '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
+                                            '<i class="fa fa-fw fa-times"></i>' +
+                                        '</button>';
+
+            $(".clickSelect").editable({
+                mode: 'inline',
+                type: 'select',
+                url: "/MetroZips/Edit/",
+                source: "/MetroZips/ResidentCodes/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
             });
-            $("a.delete").click(function(ev) {
-                if (confirm("are you sure?"))
-                    $.post("/MetroZips/Delete/" + $(this).attr("id"), null, function(ret) {
-                        window.location = "/MetroZips/";
+
+            $("a.delete").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("id");
+                swal({
+                    title: "Are you sure?",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonClass: "btn-danger",
+                    confirmButtonText: "Yes, delete it!",
+                    closeOnConfirm: false
+                },
+                function () {
+                    $.post("/MetroZips/Delete/" + id, null, function (ret) {
+                        if (ret && ret.error)
+                            swal("Error!", ret.error, "error");
+                        else {
+                            swal({
+                                title: "Deleted!",
+                                type: "success"
+                            },
+                            function () {
+                                window.location = "/MetroZips/";
+                            });
+                        }
                     });
+                });
+            });
+
+            $("a.create-new").click(function (ev) {
+                ev.preventDefault();
+                $('#new-modal').modal();
                 return false;
             });
-            $(".bt").button();
+
+            $('#new-modal').on('shown.bs.modal', function () {
+                $("#zipcode").val('').focus();
+            });
+
+            $('#begin-update').click(function (ev) {
+                ev.preventDefault();
+                var f = $('#update-metro-zips');
+                var q = f.serialize();
+                $.block();
+                $.post('/MetroZips/UpdateMetroZips', q, function (ret) {
+                    $('#success-message').text(ret);
+                    $('div.alert-success').show();
+                    $.unblock();
+                });
+                return true;
+            });
+
+            // positions scrollbar and highlights new setting.
+            var hash = document.location.hash;
+            if (hash) {
+                var offset = $(hash).offset();
+                offset.top -= 80;
+                $('body').animate({ scrollTop: offset.top }, 500);
+
+                var row = $(hash).closest('tr');
+                var bgColor = $(row).css('background-color');
+                $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                    $(row).animate({ backgroundColor: bgColor }, 1000);
+                });
+            }
         });
     </script>
-}
-<h2>Zips</h2>
-<h3><span style="color:#008000">@ViewData["msg"]</span></h3>
-<table>
-    <tr>
-        <th> ZipCode </th>
-        <th> MetroMarginalCode </th>
-        <th></th>
-    </tr>
-@foreach (var item in Model)
-{ 
-    <tr>
-        <td>@item.ZipCode</td>
-        <td>
-            <span id='r@(item.ZipCode)' 
-                class='clickSelect'>@(item.ResidentCode == null ? "" : item.ResidentCode.Description)</span>
-        </td>
-        <td>
-            <a id='d@(item.ZipCode)' href="#" class="delete"><img border="0" src="/Content/images/delete.gif" /></a>
-        </td>
-    </tr>
-}
-</table>
-@using (Html.BeginForm("Create", "MetroZip"))
-{ 
-<p>
-    New ZipCode: @Html.TextBox("zipcode")
-    <input type="submit" class="bt" value="Create" />
-</p>
-} 
-@using (Html.BeginForm("UpdateMetroZips", "MetroZip"))
-{ 
-<p>
-    Any new addresses entered will be coded accordingly after you enter/update these zips.<br/>
-    Already existing addresses can be updated with this button<br/>
-    <input type="submit" class="bt blue" value="Update all Metro Zips" />
-</p>
 } 

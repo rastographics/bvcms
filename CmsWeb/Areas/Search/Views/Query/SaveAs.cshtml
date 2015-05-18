@@ -1,25 +1,33 @@
 ﻿@model CmsWeb.Areas.Search.Models.SavedQueryInfo
-<form id="saveas-modal" action="/Query/Save" method="post" class="modal fade hide">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">x</a>
-        <h4>Save Query As</h4>
-        <div class="alert alert-block alert-info">
-            Saving an existing query that you own with the same name will overwrite it.
-            If you are an Admin, you can overwrite another user's search.
-        </div>
+<div class="modal-dialog" id="saveas-modal">
+    <div class="modal-content">
+        <form action="/Query/Save" method="post">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Save Query As</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="alert alert-info">
+                            Saving an existing query that you own with the same name will overwrite it.
+                            If you are an Admin, you can overwrite another user's search.
+                        </div>
+                        @Html.HiddenFor(m => m.QueryId)
+                        @Html.EditorFor(m => m.Name)
+                        @(User.IsInRole("Admin") ? @Html.EditorFor(m => m.Owner) : @Html.HiddenFor(m => m.Owner))
+                        <div class="checkbox">
+                            <label class="control-label">
+                                @Html.CheckBoxFor(m => m.Ispublic) Is public?
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-default" data-dismiss="modal">Cancel</a>
+                <input type="submit" class="btn btn-primary" value="Save" />
+            </div>
+        </form>
     </div>
-    <div class="modal-body">
-        <fieldset class="display">
-            @Html.HiddenFor(m => m.QueryId)
-            @Html.EditorFor(m => m.Name)
-            @(User.IsInRole("Admin")
-                ? @Html.EditorFor(m => m.Owner)
-                : @Html.HiddenFor(m => m.Owner))
-            @Html.EditorFor(m => m.Ispublic)
-        </fieldset>
-    </div>
-    <div class="modal-footer">
-        <a class="btn" data-dismiss="modal">Cancel</a>
-        <input type="submit" class="btn btn-primary" value="Save" />
-    </div>
-</form>
+</div>

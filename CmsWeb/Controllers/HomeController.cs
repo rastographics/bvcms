@@ -178,11 +178,6 @@ namespace CmsWeb.Controllers
             return Content(JsonConvert.SerializeObject(qq));
         }
 
-        public ActionResult TestTypeahead()
-        {
-            return View();
-        }
-
         public ActionResult SwitchTag(string tag)
         {
             var m = new TagsModel {tag = tag};

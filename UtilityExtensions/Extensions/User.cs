@@ -80,6 +80,27 @@ namespace UtilityExtensions
                         HttpContext.Current.Session[STR_UserFullName] = value;
             }
         }
+
+        private const string UserFirstNameSessionKey = "UserFirstName";
+        public static string UserFirstName
+        {
+            get
+            {
+                string name = string.Empty;
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[UserFirstNameSessionKey] != null)
+                            name = HttpContext.Current.Session[UserFirstNameSessionKey] as String;
+                return name;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        HttpContext.Current.Session[UserFirstNameSessionKey] = value;
+            }
+        }
+
         public static int UserId1
         {
             get { return UserId == 0 ? 1 : UserId; }
@@ -100,6 +121,42 @@ namespace UtilityExtensions
             {
                 if (HttpContext.Current != null)
                     HttpContext.Current.Session[STR_UserPeopleId] = value;
+            }
+        }
+
+        private const string UserThumbPictureSessionKey = "UserThumbPictureUrl";
+        public static string UserThumbPictureUrl
+        {
+            get
+            {
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[UserThumbPictureSessionKey] != null)
+                            return (string)HttpContext.Current.Session[UserThumbPictureSessionKey];
+                return string.Empty;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                    HttpContext.Current.Session[UserThumbPictureSessionKey] = value;
+            }
+        }
+
+        private const string UserThumbPictureBgPosSessionKey = "UserThumbPictureBgPosition";
+        public static string UserThumbPictureBgPosition
+        {
+            get
+            {
+                if (HttpContext.Current != null)
+                    if (HttpContext.Current.Session != null)
+                        if (HttpContext.Current.Session[UserThumbPictureBgPosSessionKey] != null)
+                            return (string)HttpContext.Current.Session[UserThumbPictureBgPosSessionKey];
+                return string.Empty;
+            }
+            set
+            {
+                if (HttpContext.Current != null)
+                    HttpContext.Current.Session[UserThumbPictureBgPosSessionKey] = value;
             }
         }
 

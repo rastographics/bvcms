@@ -1,31 +1,27 @@
 ﻿@using CmsData;
-@model CmsData.BackgroundCheck
+@model BackgroundCheck
 @{
     var labels = from e in DbUtil.Db.BackgroundCheckLabels
                  orderby e.Description
                  select e;
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <title>DialogType</title>
-</head>
-<body>
-    <form action="/Volunteering/EditCheck/@Model.Id" method="post">
-        <table>
-            <tr>
-                <td align="right" valign="top"><b>Check For:</b></td>
-                <td valign="top">@Model.Person.Name</td>
-            </tr>
-            <tr>
-                <td align="right" valign="top"><b>Label:</b></td>
-                <td valign="top">@Html.DropDownList("label",  new SelectList( labels, "ID", "Description", @Model.ReportLabelID ) )</td>
-            </tr>
-            <tr><td>&nbsp;</td></tr>
-            <tr>
-                <td colspan="2" align="center"><input class="bt" type="submit" value="Submit" /> &nbsp;&nbsp; <input class="bt" id="closeSubmitDialog" type="button" value="Cancel" /></td>
-            </tr>
-        </table>
-    </form>
-</body>
-</html>
+<form action="/Volunteering/EditCheck/@Model.Id" method="post">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Edit Check</h4>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Check For</label>
+            <span class="form-control">@Model.Person.Name</span>
+        </div>
+        <div class="form-group">
+            <label>Label</label>
+            @Html.DropDownList("label",  new SelectList( labels, "ID", "Description", @Model.ReportLabelID), new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+        <input type="submit" value="Submit" class="btn btn-primary" />
+    </div>
+</form>

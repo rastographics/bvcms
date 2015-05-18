@@ -2,37 +2,241 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
     public class EmailModel
     {
-        public int id { get; set; }
-        public string filter { get; set; }
+        public int Id { get; set; }
         private EmailQueue _Queue;
         public EmailQueue queue
         {
             get
             {
                 if (_Queue == null)
-                    _Queue = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == id);
+                    _Queue = DbUtil.Db.EmailQueues.SingleOrDefault(ee => ee.Id == Id);
                 return _Queue;
             }
         }
+
+        private bool? _hasTracking;
+        public bool HasTracking
+        {
+            get
+            {
+                if (!_hasTracking.HasValue)
+                {
+                    _hasTracking = _Queue.Body.Contains("{track}");
+                }
+                return _hasTracking.Value;
+            }
+        }
+
+        private bool? _hasTrackLinks;
+        public bool HasTrackLinks
+        {
+            get
+            {
+                if (!_hasTrackLinks.HasValue)
+                {
+                    _hasTrackLinks = _Queue.Body.Contains("{tracklinks}");
+                }
+                return _hasTrackLinks.Value;
+            }
+        }
+
+        public FilterType FilterType { get; private set; }
+
+        public int CountOfAllRecipients { get; private set; }
+
+        public int CountOfOpenedRecipients { get; private set; }
+
+        public int CountOfNotOpenedRecipients { get; private set; }
+
+        public int CountOfFailedRecipients { get; private set; }
+
+        public IEnumerable<RecipientInfo> Recipients { get; private set; }
+
         public PagerModel2 Pager { get; set; }
-        int? _count;
+
+        int _count;
         public int Count()
         {
-            if (!_count.HasValue)
-                _count = GetEmailTos().Count();
-            return _count.Value;
+            return _count;
         }
-        public EmailModel()
+        
+        public EmailModel(int id)
+        {
+            Id = id;
+            FilterType = FilterType.All;
+            LoadRecipients();
+        }
+
+        public EmailModel(int id, FilterType filterType, int? page, int pageSize)
+        {
+            Id = id;
+            FilterType = filterType;
+            LoadRecipients(page, pageSize);
+        }
+
+        private void LoadRecipients(int? page = null, int? pageSize = null)
+        {
+            var cn = DbUtil.Db.Connection;
+            dynamic counts = cn.Query(@"
+SELECT 
+	COUNT(*) AS Total
+	,(SELECT COUNT(DISTINCT PeopleId) FROM dbo.EmailResponses WHERE EmailQueueId = @emailQueueId) AS NumberOpened
+	,(SELECT COUNT(*) FROM dbo.EmailQueueToFail WHERE Id = @emailQueueId) AS NumberFailed
+FROM dbo.EmailQueueTo eqt
+WHERE eqt.Id = @emailQueueId
+", new { emailQueueId = Id }).Single();
+
+            CountOfAllRecipients = counts.Total;
+            CountOfOpenedRecipients = counts.NumberOpened;
+            CountOfFailedRecipients = counts.NumberFailed;
+            CountOfNotOpenedRecipients = CountOfAllRecipients - CountOfOpenedRecipients;
+
+            switch (FilterType)
+            {
+                case FilterType.All:
+                    _count = CountOfAllRecipients;
+                    break;
+                case FilterType.Opened:
+                    _count = CountOfOpenedRecipients;
+                    break;
+                case FilterType.NotOpened:
+                    _count = CountOfNotOpenedRecipients;
+                    break;
+                case FilterType.Failed:
+                    _count = CountOfFailedRecipients;
+                    break;
+                default:
+                    _count = CountOfAllRecipients;
+                    Pager = new PagerModel2(Count);
+                    break;
+            }
+
+            SetPager(page, pageSize);
+            Recipients = GetRecipients();
+        }
+
+        private void SetPager(int? page, int? pageSize)
         {
             Pager = new PagerModel2(Count);
-            filter = "All";
+            if (pageSize.HasValue)
+                Pager.PageSize = pageSize.Value;
+            Pager.Page = page; 
         }
+
+        private IEnumerable<RecipientInfo> GetRecipients()
+        {
+            const string sql = @"
+;WITH Emails AS (
+	SELECT 
+		p.Name
+		,p.PeopleId
+		,p.EmailAddress
+		,p.Name2
+		,eqt.Id
+		,eqt.Parent1
+		,eqt.Parent2
+	FROM dbo.EmailQueueTo eqt
+	JOIN dbo.People p ON p.PeopleId = eqt.PeopleId
+	WHERE eqt.Id = @emailQueueId
+)
+,Responses AS (
+	SELECT
+		Id
+		,PeopleId
+	FROM dbo.EmailResponses
+	WHERE EmailQueueId = @emailQueueId
+)
+,AllEmails AS (
+	SELECT 
+		e.PeopleId
+		,e.Name
+		,e.Name2
+		,e.EmailAddress
+		,COUNT(r.Id) AS NumberOpened
+		,p1.Name AS Parent1
+		,p2.Name AS Parent2
+		,(CASE WHEN ef.Id IS NULL THEN 0 ELSE 1 END) AS Failed
+	FROM Emails e
+	LEFT JOIN Responses r ON r.PeopleId = e.PeopleId
+	LEFT JOIN dbo.People p1 ON p1.PeopleId = e.Parent1
+	LEFT JOIN dbo.People p2 ON p2.PeopleId = e.Parent2
+	LEFT JOIN dbo.EmailQueueToFail ef ON ef.Id = e.Id AND ef.PeopleId = e.PeopleId
+	WHERE 
+		@currentPeopleId = (
+			CASE 
+				WHEN @isAdmin = 1 THEN @currentPeopleId
+				WHEN (SELECT QueuedBy FROM dbo.EmailQueue WHERE Id = @emailQueueId) = @currentPeopleId THEN @currentPeopleId
+				ELSE e.PeopleId
+			END	
+		)
+	GROUP BY 
+		e.PeopleId
+		,e.Name
+		,e.Name2
+		,e.EmailAddress
+		,p1.Name
+		,p2.Name
+		,ef.Id
+)
+SELECT 
+	PeopleId
+	,Name
+	,EmailAddress
+	,NumberOpened
+	,Parent1
+	,Parent2
+	,Failed
+FROM AllEmails
+WHERE 
+	(((CASE 
+		WHEN @filter = 'failed' AND Failed = 1 THEN 1
+		WHEN @filter = 'opened' AND NumberOpened > 0 THEN 1
+		WHEN @filter = 'unopened' AND NumberOpened = 0 THEN 1
+		ELSE 0
+	END) = 1) OR (@filter = 'all'))
+ORDER BY Name2
+OFFSET @currentPage ROWS FETCH NEXT @pageSize ROWS ONLY
+";
+            var roles = DbUtil.Db.CurrentRoles();
+            var isAdmin = roles.Contains("Admin") || roles.Contains("ManageEmails");
+            string filter;
+
+            switch (FilterType)
+            {
+                case FilterType.All:
+                    filter = "all";
+                    break;
+                case FilterType.Failed:
+                    filter = "failed";
+                    break;
+                case FilterType.NotOpened:
+                    filter = "unopened";
+                    break;
+                default:
+                    filter = "opened";
+                    break;
+            }
+
+            var args = new
+            {
+                emailQueueId = Id,
+                currentPage = Pager.Page,
+                pageSize = Pager.PageSize,
+                isAdmin,
+                currentPeopleId = Util.UserPeopleId,
+                filter
+            };
+
+            return DbUtil.Db.Connection.Query<RecipientInfo>(sql, args);
+        }
+
         public bool CanDelete()
         {
             if (HttpContext.Current.User.IsInRole("Admin"))
@@ -40,83 +244,43 @@ namespace CmsWeb.Models
             if (queue.QueuedBy == Util.UserPeopleId)
                 return true;
             var u = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
-            if (queue.FromAddr == u.EmailAddress)
-                return true;
-            return false;
+            return queue.FromAddr == u.EmailAddress;
         }
 
         public string SendFromOrgName { get; set; }
+
         public bool SendFromOrg
         {
             get
             {
-                var sendfromorg = queue.SendFromOrgId.HasValue && !GetEmailTos().Any();
-                if (sendfromorg)
+                var sendFromOrg = queue.SendFromOrgId.HasValue && !Recipients.Any();
+                if (sendFromOrg)
                 {
                     var i = from o in DbUtil.Db.Organizations
                             where o.OrganizationId == queue.SendFromOrgId
                             select o.OrganizationName;
                     SendFromOrgName = i.Single();
                 }
-                return sendfromorg;
+                return sendFromOrg;
             }
         }
-        public IEnumerable<RecipientInfo> Recipients()
-        {
-            var q = GetEmailTos();
-            var q2 = queue.CCParents == true
-                ? from e in q.OrderBy(ee => ee.Person.Name2).Skip(Pager.StartRow).Take(Pager.PageSize)
-                  let p1 = DbUtil.Db.People.Where(pp => pp.PeopleId == e.Parent1).Select(pp => pp.Name).SingleOrDefault()
-                  let p2 = DbUtil.Db.People.Where(pp => pp.PeopleId == e.Parent2).Select(pp => pp.Name).SingleOrDefault()
-                  select new RecipientInfo
-                  {
-                      peopleid = e.PeopleId,
-                      name = e.Person.Name,
-                      address = e.Person.EmailAddress,
-                      nopens = e.Person.EmailResponses.Count(er => er.EmailQueueId == e.Id),
-                      parent1name = p1,
-                      parent2name = p2,
-                  }
-                : from e in q.OrderBy(ee => ee.Person.Name2).Skip(Pager.StartRow).Take(Pager.PageSize)
-                  select new RecipientInfo
-                  {
-                      peopleid = e.PeopleId,
-                      name = e.Person.Name,
-                      address = e.Person.EmailAddress,
-                      nopens = e.Person.EmailResponses.Count(er => er.EmailQueueId == e.Id),
-                  };
-
-            return q2;
-        }
-        public IQueryable<EmailQueueTo> GetEmailTos()
-        {
-            var q = from t in DbUtil.Db.EmailQueueTos
-                    let opened = t.Person.EmailResponses.Any(er => er.EmailQueueId == t.Id)
-                    let fail = DbUtil.Db.EmailQueueToFails.FirstOrDefault(ff => ff.Id == t.Id && ff.PeopleId == t.PeopleId)
-                    where t.Id == id
-                    where filter == "All"
-                    || (opened == true && filter == "Opened")
-                    || (opened == false && filter == "Not Opened")
-                    || (filter == "Failed" && fail != null)
-                    select t;
-
-            var roles = DbUtil.Db.CurrentRoles();
-            var isadmin = roles.Contains("Admin") || roles.Contains("ManageEmails");
-            if (isadmin || queue.QueuedBy == Util.UserPeopleId)
-                return q;
-            return q.Where(ee => ee.PeopleId == Util.UserPeopleId);
-        }
     }
+
     public class RecipientInfo
     {
-        public string name { get; set; }
-        public int peopleid { get; set; }
-        public string address { get; set; }
-        public int nopens { get; set; }
-        public string failtype { get; set; }
-        public int? parent1id { get; set; }
-        public int? parent2id { get; set; }
-        public string parent1name { get; set; }
-        public string parent2name { get; set; }
+        public string Name { get; set; }
+        public int PeopleId { get; set; }
+        public string EmailAddress { get; set; }
+        public int NumberOpened { get; set; }
+        public string Parent1 { get; set; }
+        public string Parent2 { get; set; }
+    }
+
+    public enum FilterType
+    {
+        All = 0,
+        Opened = 1,
+        NotOpened = 2,
+        Failed = 3
     }
 }

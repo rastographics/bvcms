@@ -1,14 +1,17 @@
 ﻿@using UtilityExtensions
 @model decimal?
-<div class="control-group">
-  @(ViewBag.label != null
-        ? Html.Label(ViewBag.label as string, new { @class = "control-label" })
-        : Html.LabelFor(m => m, new { @class = "control-label" }))
-  <div class="controls">
-    <p>@Model.ToString2("N2")</p>
-    @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+<dl>
+    @if (ViewBag.label != null)
     {
-      <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        <dt>@ViewBag.label</dt>
     }
-  </div>
-</div>
+    else
+    {
+        <dt>@Html.DisplayNameFor(m => m)</dt>
+    }
+    <dd>@Model.ToString2("N2")</dd>
+</dl>
+@if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+{
+    <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+}

@@ -10,6 +10,7 @@ using System.Text;
 using System.Web;
 using System.Web.Security;
 using System.Web.SessionState;
+using System.Windows.Forms.Design;
 using CmsData;
 using CmsData.API;
 using CmsWeb.Areas.Manage.Models;
@@ -413,10 +414,20 @@ namespace CmsWeb.Models
 			{
 				Util.UserId = i.u.UserId;
 				Util.UserPeopleId = i.u.PeopleId;
-				Util.UserEmail = i.u.EmailAddress;
+
+			    Util.UserThumbPictureBgPosition = "top";
+			    if (i.u.Person != null && i.u.Person.Picture != null)
+			    {
+			        var picture = i.u.Person.Picture;
+			        Util.UserThumbPictureUrl = picture.ThumbUrl;
+                    Util.UserThumbPictureBgPosition = picture.X.HasValue || picture.Y.HasValue ? "{0}% {1}%".Fmt(picture.X.GetValueOrDefault(), picture.Y.GetValueOrDefault()) : "top";
+			    }
+				
+                Util.UserEmail = i.u.EmailAddress;
 				Util2.CurrentPeopleId = i.u.PeopleId.Value;
 				Util.UserPreferredName = i.PreferredName;
 				Util.UserFullName = i.u.Name;
+                Util.UserFirstName = i.u.Person.FirstName;
 			}
 			return i.u;
 		}
@@ -431,7 +442,7 @@ namespace CmsWeb.Models
 				if (name.HasValue())
 					DbUtil.LogActivity("user {0} loggedin without a role ".Fmt(name));
 				FormsAuthentication.SignOut();
-				return "/Errors/AccessDenied.htm";
+			    return "/Error/401";
 			}
 
 			if (Roles.IsUserInRole(name, "NoRemoteAccess") && DbUtil.CheckRemoteAccessRole)

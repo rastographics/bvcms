@@ -1,12 +1,4 @@
 ﻿@model CmsWeb.Models.TaskInfo
 <tr id="r@(Model.Id)">
-@if (ViewData.Model.IsSelected)
-{
-    @Html.Partial("Detail", Model.GetDetail())
-}
-else
-{
     @Html.Partial("Columns", Model)
-}
 </tr>
-

@@ -1,31 +1,27 @@
 ﻿@model IEnumerable<CmsWeb.Areas.Search.Models.ContactorSummaryInfo>
-
 @{
-    ViewBag.Title = "ContactorSummary";
-    Layout = "~/Views/Shared/SiteLayout2.cshtml";
+    ViewBag.Title = "Contactor Summary";
+    ViewBag.PageHeader = "Contractor Summary";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
-
-<div class="container">
-<h2>Contactor Summary</h2>
-
-    <table class="table table-condensed table-striped not-wide">
+<div class="table-responsive">
+    <table class="table table-striped">
         <thead>
             <tr>
-                <th> Name </th>
-                <th> ContactType </th>
-                <th> Ministry </th>
-                <th> Count </th>
+                <th>Name </th>
+                <th>Contact Type </th>
+                <th>Ministry</th>
+                <th>Count</th>
             </tr>
         </thead>
         <tbody>
-
             @foreach (var item in Model)
             {
                 <tr>
-                    <td> @item.Name </td>
-                    <td> @item.ContactType </td>
-                    <td> @item.Ministry </td>
-                    <td> @item.Count </td>
+                    <td>@item.Name</td>
+                    <td>@item.ContactType</td>
+                    <td>@item.Ministry</td>
+                    <td>@item.Count</td>
                 </tr>
             }
         </tbody>

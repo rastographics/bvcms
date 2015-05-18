@@ -28,10 +28,11 @@ namespace CmsWeb.Areas.People.Models
 
         public string email;
         public string email2;
+
         public FailedMailModel()
-            : base("Time", "desc")
-        {
-        }
+            : base("Time", "desc", true)
+        {}
+
         public override IQueryable<EmailQueueToFail> DefineModelList()
         {
             return from e in DbUtil.Db.EmailQueueToFails

@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     }
                 }
             }
-            if (Request.Url != null) m.URL = Request.Url.OriginalString;
+            if (Request.Url != null) m.URL = Request.Url.AbsoluteUri;
 
             SetHeaders(m);
 

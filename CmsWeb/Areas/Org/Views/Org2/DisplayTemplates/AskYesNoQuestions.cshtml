@@ -1,16 +1,16 @@
 ﻿@model AskYesNoQuestions
 @using CmsData.Registration
-<div class="table not-wide w100">
+<div class="well">
   <label class="ask-question">
     Yes / No Questions
   </label>
   @if (ViewBag.ShowHelp != false)
   {
-    <div class="alert alert-info maxWidthMedium margin-top">@Html.Markdown(Model.Help)</div>
+    <div class="alert alert-info">@Html.Markdown(Model.Help)</div>
   }
   @foreach (var i in Model.list)
   {
-    <div class="well not-wide margin-left-wide">
+    <div class="well">
       @Html.DisplayFor(m => i.Question)
     </div>
   }

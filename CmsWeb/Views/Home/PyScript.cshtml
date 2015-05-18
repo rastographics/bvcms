@@ -1,12 +1,15 @@
 ﻿@model PythonEvents
 @{
-  ViewBag.Title = "Test Script";
-  Layout = ViewExtensions2.Layout();
+    ViewBag.Title = "Test Script";
+    ViewBag.PageHeader = Model.Header;
+    Layout = ViewExtensions2.TouchPointLayout();
 }
+<div class="box box-responsive">
+    <div class="box-content">
+        @Html.Raw(Model.Output)
+    </div>
+</div>
 @section scripts
 {
-  @Html.Raw(Model.Script)
+    @Html.Raw(Model.Script)
 }
-
-<h2>@Model.Header</h2>
-@Html.Raw(Model.Output)

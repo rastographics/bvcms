@@ -3,18 +3,30 @@
 @{
     Model.Recipients = Model.GetRecipients().ToList();
 }
-<table class="table table-condensed table-striped">
-    @for(var i = 0; i < Model.Recipients.Count; i++)
-    {
-        var r = Model.Recipients[i];
-        <tr>
-            <td>
-                @Html.HiddenFor(m => m.Recipients[i].Id)
-                @Html.CheckBoxFor(m => m.Recipients[i].Active)
-                <a>@r.NameOrEmail</a>
-                <a class="remove pull-right" href="/MissionTripEmail2/RemoveSupporter/@Model.PeopleId/@r.Id"><i class="fa fa-minus-circle"></i></a><br />
-                @Html.TextBoxFor(m => m.Recipients[i].Salutation, new { @class = "input-medium" })
-            </td>
-        </tr>
-    }
-</table>
+<div class="table-responsive">
+    <table class="table table-condensed table-striped">
+        <tbody>
+            @for (var i = 0; i < Model.Recipients.Count; i++)
+            {
+                var r = Model.Recipients[i];
+                <tr>
+                    <td style="width: 10px;">
+                        @Html.HiddenFor(m => m.Recipients[i].Id)
+                        @Html.CheckBoxFor(m => m.Recipients[i].Active)                        
+                    </td>
+                    <td>
+                        <a>@r.NameOrEmail</a>
+                        <div class="form-inline">
+                            <div class="input-group col-sm-9">
+                                @Html.TextBoxFor(m => m.Recipients[i].Salutation, new { @class = "input-sm form-control" })
+                            </div>
+                            <div class="input-group">
+                                <a class="remove btn btn-danger btn-sm" href="/MissionTripEmail2/RemoveSupporter/@Model.PeopleId/@r.Id"><i class="fa fa-trash"></i> Remove</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table> 
+</div>

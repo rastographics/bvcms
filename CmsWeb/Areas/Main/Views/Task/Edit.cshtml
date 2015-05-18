@@ -1,89 +1,100 @@
 ﻿@using CmsWeb
 @using CmsData
+@using ImageResizer.Caching
+@using UtilityExtensions
 @model CmsWeb.Models.TaskDetail
-    <td colspan="7"><a name="select" />
-    <form id="Edit" action="/Task/Update/">
-        <table class="Design2" style="border: 3px solid black">
-            <tr>
-                <th>Task</th>
-                <td>
-                    @Html.Hidden("TaskId", Model.Id)
-                    @Html.TextBox("Description", Model.Description)
-                </td>
-            </tr>
-            <tr>
-                <th>Created</th>
-                <td>
-                    <span style="font-size: smaller; color: Gray">@Model.CreatedOn.ToString("f")</span>
-                </td>
-            </tr>
-            <tr>
-                <th>Owner</th>
-                <td>
-                    <a href="mailto:@(Model.OwnerEmail)?subject=@(Model.Description)&body=@Server.UrlEncode(ViewExtensions2.CmsHost + "/Task/List/" + Model.Id + "#detail#select")">@Model.Owner</a>
-@if (Model.IsOwner)
-{
-                    <a href="/SearchAdd2/Dialog/taskowner/@Model.Id" class="searchadd">(transfer)</a>
-} 
-                </td>
-            </tr>
-            <tr>
-                <th>Delegated To:</th>
-                <td>
-@if (Model.CoOwnerId.HasValue) 
-{ 
-                    <a href="mailto:@(Model.CoOwnerEmail)">@Model.CoOwner</a>
-} 
-@if (Model.IsOwner)
-{
-                    <a href="/SearchAdd2/Dialog/taskdelegate/@Model.Id" class="searchadd">@Model.ChangeCoOwner</a>
-                    @Html.CheckBox("ForceCompleteWContact") <text>Complete With Contact</text>
+@{
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Edit Task";
+    ViewBag.PageHeader = "Edit Task";
 }
-                </td>
-            </tr>
-            <tr>
-                <th>Due</th>
-                <td>
-                    @Html.TextBox("Due", Model.Due, new { @class = "datepicker" })
-                </td>
-            </tr>
-            <tr>
-                <th>Status:</th>
-                <td>
-                    @Html.DropDownList("StatusId", Model.StatusList())
-                </td>
-            </tr>
-@if (Model.ShowLocation)
-{ 
-            <tr>
-                <th>Project:</th>
-                <td>@Model.Project
-                </td>
-            </tr>
-} 
-            <tr>
-                <th>Regarding Person:</th>
-                <td>@Model.Who</td>
-            </tr>
-@if (Model.ShowLocation)
-{ 
-            <tr>
-                <th>Location:</th>
-                <td>@Model.Location</td>
-            </tr>
-} 
-            <tr>
-                <th>Notes:<br /></th>
-                <td>
-                    @(Html.TextArea("Notes", new { style = "width: 30em" }))
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" class="center">
-                    <input type="button" value="Update" class="update" />
-                    <input type="button" value="Cancel" class="deselect" />
-                </td>
-            </tr>
-        </table>
-    </form>
-    </td>
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-7">
+        <div class="box box-responsive">
+            <div class="box-title-btn">
+                <div class="box-tools">
+                    <a class="btn btn-default" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                </div>
+            </div>
+            <div class="box-content">
+                <form id="Edit" action="/Task/Update/@Model.Id" method="POST">
+                    @Html.Hidden("TaskId", Model.Id)
+                    @if (Model.WhoId.HasValue)
+                    {
+                        <div class="well">
+                            <strong><a href="@Model.PersonUrl" style="font-size: 1.5em;">@Model.Who</a></strong>
+                            <br />
+                            <a href="@Model.ProspectReportLink()" target="_blank">Prospect Report</a>
+                            <div>
+                                <ul class="list-inline" style="margin-bottom: 0;">
+                                    <li><i class="fa fa-map-marker"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?q=@Model.WhoAddrCityStateZip" target="_blank">@Model.WhoAddress</a></li>
+                                    <li><i class="fa fa-car"></i>&nbsp;&nbsp;<a href="http://www.google.com/maps?f=d&saddr=@DbUtil.StartAddress&pw=2&daddr=@Model.WhoAddrCityStateZip" target="_blank">Driving Directions</a></li>
+                                </ul>
+                                @if (!string.IsNullOrWhiteSpace(Model.WhoEmail2) && !string.IsNullOrWhiteSpace(Model.WhoPhone))
+                                {
+                                    <ul class="list-inline">
+                                        <li><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;<a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a></li>
+                                        <li><i class="fa fa-phone"></i>&nbsp;&nbsp;<a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a></li>
+                                    </ul>
+                                }
+                                else
+                                {
+                                    if (!string.IsNullOrWhiteSpace(Model.WhoEmail2))
+                                    {
+                                        <i class="fa fa-envelope-o"></i><text>&nbsp;&nbsp;</text><a href="mailto:@Model.WhoEmail">@Model.WhoEmail2</a>
+                                    }
+                                    if (!string.IsNullOrWhiteSpace(Model.WhoPhone))
+                                    {
+                                        <i class="fa fa-phone"></i><text>&nbsp;&nbsp;</text><a href="tel:+@Model.WhoPhone">@Model.WhoPhone</a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="Description" class="control-label">Task</label>
+                                @Html.TextBox("Description", Model.Description, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                @Html.EditorFor(m => m.Due)
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="StatusId" class="control-label">Status</label>
+                                @Html.DropDownList("StatusId", Model.StatusList(), new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label for="Notes" class="control-label">Notes</label>
+                                @Html.TextArea("Notes", Model.Notes, new { @class = "form-control" })
+                                @if (Model.IsOwner)
+                                {
+                                    <div class="checkbox">
+                                        <label class="control-label">
+                                            @Html.CheckBox("ForceCompleteWContact") Complete with contact?
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="hidden-xs">
+                        <a href="/Task/Detail/@Model.Id" class="btn btn-default">Cancel</a> <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                    <div class="visible-xs-block">
+                        <button type="submit" class="btn btn-primary btn-block">Save</button>
+                        <a href="/Task/Detail/@Model.Id" class="btn btn-default btn-block">Cancel</a>
+                        <hr/>
+                        <a class="btn btn-default btn-block" href="/Task/List"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
