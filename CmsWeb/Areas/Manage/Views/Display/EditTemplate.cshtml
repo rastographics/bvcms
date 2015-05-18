@@ -79,6 +79,9 @@
                     imageUploadURL: '/Account/FroalaUpload',
                     fileUploadURL: '/Account/FroalaUpload'
                 });
+                $(this).contents().find('#editor-body').on('editable.htmlHide', function (e, editor, html) {
+                    iframeLoaded();
+                });
             });
 
             $("a.save").click(function(ev) {
