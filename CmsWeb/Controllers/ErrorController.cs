@@ -6,9 +6,9 @@ namespace CmsWeb.Controllers
     /// <summary>
     /// NOTE:  All of the HTTP 4* and 5* errors below are decorated as accepting any of the allowable HTTP verbs
     /// (see the full list at http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol). The reason for this is
-    /// that our error handling performs a Server.TransferRequest so that users can just hit F5 to refresh any 
-    /// pages with errors instead of being redirected. This is fine unless the user just performed an HTTP POST 
-    /// to the server - the transfer request also transfers the verb action, so MVC has to accept any potential 
+    /// that our error handling performs a Server.TransferRequest so that users can just hit F5 to refresh any
+    /// pages with errors instead of being redirected. This is fine unless the user just performed an HTTP POST
+    /// to the server - the transfer request also transfers the verb action, so MVC has to accept any potential
     /// HTTP verb here so that the error can correctly propagate back to the user instead of receiving an HTTP 404.
     /// </summary>
     public class ErrorController : Controller
@@ -16,7 +16,7 @@ namespace CmsWeb.Controllers
 
         [AcceptVerbs("HEAD", "GET", "POST", "PUT", "DELETE", "TRACE", "OPTIONS", "CONNECT", "PATCH")]
         [ActionName("500")]
-        public ActionResult Index(string errorMessage)
+        public ActionResult Index()
         {
             Response.TrySkipIisCustomErrors = true;
 
@@ -25,7 +25,12 @@ namespace CmsWeb.Controllers
                 Response.StatusCode = 500;
             }
 
-            ViewBag.ErrorMessage = errorMessage;
+            var sessionError = string.Empty;
+            if (System.Web.HttpContext.Current.Session["error"] != null)
+                sessionError = System.Web.HttpContext.Current.Session["error"].ToString();
+
+            ViewBag.ErrorMessage = sessionError;
+            System.Web.HttpContext.Current.Session.Remove("error");
             return View();
         }
 

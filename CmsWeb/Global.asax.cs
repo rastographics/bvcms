@@ -33,7 +33,7 @@ namespace CmsWeb
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             RouteTable.Routes.RouteExistingFiles = true;
             HttpRuntime.Cache.Remove("BuildDate");
-            
+
             MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
             MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
 
@@ -154,7 +154,7 @@ namespace CmsWeb
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
         {
-            HttpContext.Current.Items["error"] = args.Entry.Error.Exception.Message;
+            HttpContext.Current.Session["error"] = args.Entry.Error.Exception.Message;
         }
 
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)
