@@ -25,12 +25,11 @@
         <form class="form-horizontal" action="/Logon" role="form" method="POST">
           @Html.Hidden("ReturnUrl", Model.ReturnUrl)
           <div class="form-group">
-            @if (DbUtil.LoginNotice().HasValue())
-            {
-              <div class="col-sm-12">
-                <div class="alert alert-danger">@Html.Raw(DbUtil.LoginNotice())</div>
-              </div>
-            }
+            <div class="col-sm-12 alert alert-block alert-danger">
+              <h2>This is an OLD version</h2>
+              Unless you were told to go here to use a older version because of a bug,
+              please use <a href="https://@(DbUtil.Db.Host).tpsdb.com">https://@(DbUtil.Db.Host).tpsdb.com</a>
+            </div>
             <label for="inputEmail" class="col-sm-3 control-label">
               Username or Email
             </label>

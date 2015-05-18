@@ -154,9 +154,20 @@ CKEditorFuncNum, baseurl + fn, error));
                 if (!user.InRole("Developer"))
                     return Message("Site is {0}, contact {1} for help".Fmt(access, DbUtil.AdminMail));
 
+            var okchurch = DbUtil.Db.Setting("DotWorkOk", "false") == "true";
+            var devel = user.InRole("Developer");
+
+            if (!okchurch && !devel)
+            {
+                FormsAuthentication.SignOut();
+                Session.Abandon();
+                return Redirect("https://{0}.tpsdb.com".Fmt(DbUtil.Db.Host));
+            }
+
             if (!m.ReturnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
+
             if (m.ReturnUrl.HasValue())
                 return Redirect(m.ReturnUrl);
             return Redirect("/");
