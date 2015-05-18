@@ -4,6 +4,7 @@
 
     $('#Body').froalaEditable({
         inlineMode: false,
+        beautifyCode: false,
         spellcheck: true,
         useFileName: false,
         height: 400,

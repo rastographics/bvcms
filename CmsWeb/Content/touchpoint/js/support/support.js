@@ -28,6 +28,7 @@
 
         $('#body').froalaEditable({
             inlineMode: false,
+            beautifyCode: false,
             spellcheck: true,
             useFileName: false,
             height: 200,
