@@ -157,6 +157,13 @@ namespace CmsWeb
             HttpContext.Current.Session["error"] = args.Entry.Error.Exception.Message;
         }
 
+        protected void Application_Error()
+        {
+            var unhandledException = Server.GetLastError();
+            if (unhandledException != null)
+                HttpContext.Current.Session["error"] = unhandledException.Message;
+        }
+
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)
         {
             var ex = e.Exception.GetBaseException();
