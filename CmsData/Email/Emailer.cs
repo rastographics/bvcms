@@ -124,7 +124,7 @@ namespace CmsData
             {
                 var notifyids = (from o in Organizations
                                  where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
-                                 select o.NotifyIds).SingleOrDefault();
+                                 select o.NotifyIds).FirstOrDefault();
                 if (notifyids.HasValue())
                     return PeopleFromPidString(notifyids).ToList();
             }
