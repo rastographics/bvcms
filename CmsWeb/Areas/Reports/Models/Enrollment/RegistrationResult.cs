@@ -189,6 +189,7 @@ namespace CmsWeb.Areas.Reports.Models
                         {
                             var qlist = from qu in DbUtil.Db.ViewOnlineRegQAs
                                         where qu.OrganizationId == i.m.OrganizationId
+                                        where qu.Type == "question" || qu.Type == "text"
                                         where qu.PeopleId == i.m.PeopleId
                                         select qu;
                             foreach (var qu in qlist)
