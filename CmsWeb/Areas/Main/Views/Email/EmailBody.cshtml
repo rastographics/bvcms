@@ -1,6 +1,6 @@
-﻿@{
-    int tid = ViewBag.TemplateID;
-    var c = ViewExtensions2.GetContent(tid);
+﻿@using CmsData
+@{
+  var c = ViewBag.content as Content;
 }
 <!DOCTYPE html>
 <html>
