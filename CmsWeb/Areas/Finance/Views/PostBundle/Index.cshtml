@@ -89,34 +89,34 @@
                                 </tr>
                                 <tr id="entry" class="success hidden-print">
                                     <td>
-                                        <input id="pid" name="pid" type="text" style="width: 67px;" class="form-control input-sm" />
+                                        <input id="pid" name="pid" type="text" style="width: 67px; font-size: 14px; padding: 5px;" class="form-control input-sm" />
                                         <input type="hidden" id="contributiondate" name="contributiondate" />
                                     </td>
                                     <td>
-                                        <input id="name" name="name" type="text" autocomplete="off" style="width: 14em" class="form-control input-sm" />
+                                        <input id="name" name="name" type="text" autocomplete="off" style="width: 14em; font-size: 14px; padding: 5px;" class="form-control input-sm" />
                                     </td>
                                     <td style="padding-right:0;">
                                         <div class="pull-right">
-                                            <input id="amt" name="amt" type="text" style="width: 67px;" class="form-control input-sm" />
+                                            <input id="amt" name="amt" type="text" style="width: 67px; font-size: 14px; padding: 5px;" class="form-control input-sm" />
                                         </div>
                                     </td>
                                     <td>
                                         <div class="pull-right">
-                                            <select id="PLNT" name="PLNT" class="form-control input-sm" style="width: 65px;">
-                                                <option value="CN" @(Model.PLNT == "CN" ? "selected='selected'" : "")>CN&nbsp;&nbsp;&nbsp;&nbsp;Tax Deductible</option>
-                                                <option value="PL" @(Model.PLNT == "PL" ? "selected='selected'" : "")>PL&nbsp;&nbsp;&nbsp;&nbsp;Pledge</option>
-                                                <option value="NT" @(Model.PLNT == "NT" ? "selected='selected'" : "")>NT&nbsp;&nbsp;&nbsp;&nbsp;Non Tax Deductible</option>
-                                                <option value="SK" @(Model.PLNT == "SK" ? "selected='selected'" : "")>SK&nbsp;&nbsp;&nbsp;&nbsp;Stock</option>
-                                                <option value="GK" @(Model.PLNT == "GK" ? "selected='selected'" : "")>GK&nbsp;&nbsp;&nbsp;&nbsp;Gift In Kind</option>
+                                            <select id="PLNT" name="PLNT" class="form-control input-sm" style="width: 65px; font-size: 14px; padding: 0;">
+                                                <option value="CN" @(Model.PLNT == "CN" ? "selected='selected'" : "")>CN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Tax Deductible</option>
+                                                <option value="PL" @(Model.PLNT == "PL" ? "selected='selected'" : "")>PL&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pledge</option>
+                                                <option value="NT" @(Model.PLNT == "NT" ? "selected='selected'" : "")>NT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Non Tax Deductible</option>
+                                                <option value="SK" @(Model.PLNT == "SK" ? "selected='selected'" : "")>SK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Stock</option>
+                                                <option value="GK" @(Model.PLNT == "GK" ? "selected='selected'" : "")>GK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Gift In Kind</option>
                                             </select>
                                         </div>
                                     </td>
-                                    <td>@Html.DropDownList("fund", Model.Funds(), new { style = "width:15em", @class = "form-control input-sm" })</td>
+                                    <td>@Html.DropDownList("fund", Model.Funds(), new { style = "width:15em; font-size: 14px; padding: 0;", @class = "form-control input-sm" })</td>
                                     <td>
-                                        <input id="checkno" name="checkno" type="text" style="width: 5em" class="form-control input-sm" />
+                                        <input id="checkno" name="checkno" type="text" style="width: 5em; font-size: 14px; padding: 5px;" class="form-control input-sm" />
                                     </td>
                                     <td>
-                                        <input id="notes" name="notes" type="text" style="width: 98%; min-width: 15em;" class="form-control input-sm" />
+                                        <input id="notes" name="notes" type="text" style="width: 98%; min-width: 15em; font-size: 14px; padding: 5px;" class="form-control input-sm" />
                                     </td>
                                     <td style="padding-right: 0;">
                                         <a class="update btn btn-primary btn-sm" href='#'>Update</a> 
