@@ -159,12 +159,37 @@ namespace CmsWeb.Areas.Finance.Controllers
             return View(q);
         }
 
-        public ActionResult ManagedGiving()
+        public ActionResult ManagedGiving(string sortBy, string sortDir)
         {
-            var q = from rg in DbUtil.Db.ManagedGivings.ToList()
-                    orderby rg.NextDate
-                    select rg;
-            return View(q);
+            if (sortBy == "name")
+            {
+                if (string.IsNullOrEmpty(sortDir) || sortDir == "desc")
+                {
+                    var q = from rg in DbUtil.Db.ManagedGivings.ToList()
+                        orderby rg.Person.LastName ascending, rg.Person.FirstName ascending 
+                        select rg;
+
+                    ViewBag.SortDir = "asc";
+                    return View(q);
+                }
+                else
+                {
+                    var q = from rg in DbUtil.Db.ManagedGivings.ToList()
+                            orderby rg.Person.LastName descending , rg.Person.FirstName descending 
+                            select rg;
+
+                    ViewBag.SortDir = "desc";
+                    return View(q);
+                }
+                
+            }
+            else
+            {
+                var q = from rg in DbUtil.Db.ManagedGivings.ToList()
+                        orderby rg.NextDate
+                        select rg;
+                return View(q);
+            }
         }
 
         [HttpGet]
