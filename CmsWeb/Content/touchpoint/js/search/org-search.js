@@ -183,7 +183,7 @@
             zIndex: 2501,
             height: 200,
             theme: 'custom',
-            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'uploadFile', 'insertImage', 'table', 'undo', 'redo', 'html', 'fullscreen'],
+            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'uploadFile', 'insertImage', 'table', 'undo', 'redo', 'html', 'fullscreen'],
             imageUploadURL: '/Account/FroalaUpload',
             fileUploadURL: '/Account/FroalaUpload'
         });
