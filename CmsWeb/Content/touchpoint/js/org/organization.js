@@ -345,14 +345,13 @@
 
     $('body').on('click', '#orgpicklist', function (ev) {
         ev.preventDefault();
-        $("<div />").load(this.href, {}, function () {
-            var d = $(this);
-            var f = d.find("form");
-            f.modal("show");
+        $("<form id='select-orgs' class='modal-form validate ajax' />").load(this.href, {}, function () {
+            var f = $(this);
+            $('#empty-dialog').html(f);
+            $('#empty-dialog').modal("show");
             $.initializeSelectOrgsDialog(f);
 
-            f.on('hidden', function () {
-                d.remove();
+            $('#empty-dialog').on('hidden', function () {
                 f.remove();
             });
         });
@@ -361,7 +360,7 @@
     function UpdateSelectedOrgs(list, f) {
         $.post("/Org/UpdateOrgIds", { id: $("#OrganizationId").val(), list: list }, function (ret) {
             $("#orgpickdiv").replaceWith(ret);
-            f.modal("hide");
+            $('#empty-dialog').modal("hide");
         });
     }
 
