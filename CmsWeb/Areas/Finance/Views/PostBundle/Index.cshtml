@@ -7,7 +7,7 @@
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Post Bundle";
-    ViewBag.PageHeader = "Post Bundle / Edit";
+    ViewBag.PageHeader = "Contribution Bundle #{0}".Fmt(Model.id);
 }
 @Html.Hidden("fundid", Model.bundle.FundId)
 @Html.Hidden("fundispledge", Model.FundName)
