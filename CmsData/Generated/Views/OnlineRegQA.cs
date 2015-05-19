@@ -101,7 +101,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Answer", Storage="_Answer", DbType="varchar(500)")]
+		[Column(Name="Answer", Storage="_Answer", DbType="varchar")]
 		public string Answer
 		{
 			get

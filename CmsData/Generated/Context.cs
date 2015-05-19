@@ -2332,6 +2332,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.FilterOrgSearchName", IsComposable = true)]
+        public IQueryable< View.FilterOrgSearchName > FilterOrgSearchName(
+            [Parameter(DbType="varchar")] string name
+            )
+        {
+            return CreateMethodCallQuery< View.FilterOrgSearchName>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    name
+                );
+        }
+
         [Function(Name="dbo.FindPerson", IsComposable = true)]
         public IQueryable< View.FindPerson > FindPerson(
             [Parameter(DbType="nvarchar")] string first,
@@ -3389,6 +3400,17 @@ namespace CmsData
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     dt,
                     n
+                );
+        }
+
+        [Function(Name="dbo.VisitsAbsents", IsComposable = true)]
+        public IQueryable< View.VisitsAbsent > VisitsAbsents(
+            [Parameter(DbType="int")] int? meetingid
+            )
+        {
+            return CreateMethodCallQuery< View.VisitsAbsent>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    meetingid
                 );
         }
 

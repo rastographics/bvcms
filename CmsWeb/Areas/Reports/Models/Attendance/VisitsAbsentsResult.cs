@@ -142,11 +142,11 @@ namespace CmsWeb.Areas.Reports.Models
                     t.Add(p.Status, font);
                     t.CompleteRow();
 
-                    if (!p.Status.StartsWith("Visit"))
+                    if (p.Status == null || !p.Status.StartsWith("Visit"))
                     {
                         t.Add("", font);
                         t.Add("{0}           {1:n1}{2}"
-                            .Fmt(p.AttendStr,p.AttendPct, p.AttendPct.HasValue ? "%" : ""), 5, monofont);
+                            .Fmt(p.AttendStr, p.AttendPct, p.AttendPct.HasValue ? "%" : ""), 5, monofont);
                     }
 
                     mt.AddCell(t);
@@ -157,51 +157,23 @@ namespace CmsWeb.Areas.Reports.Models
         }
         public IEnumerable<AttendInfo> VisitsAbsents(int mtgid)
         {
-            var visitors = new int[] 
-            { 
-                AttendTypeCode.VisitingMember, 
-                AttendTypeCode.RecentVisitor, 
-                AttendTypeCode.NewVisitor 
-            };
-            var q = from a in DbUtil.Db.Attends
-                    where a.MeetingId == mtgid
-                    where (a.EffAttendFlag == true && visitors.Contains(a.AttendanceTypeId.Value))
-                        || a.EffAttendFlag == false
-                    let p = a.Person
-                    let status = a.EffAttendFlag == false ? a.MemberType.Description : a.AttendType.Description
-                    let lastattend = a.Meeting.Organization.Attends
-                                    .Where(aa => aa.PeopleId == a.PeopleId && aa.AttendanceFlag == true)
-                                    .Where(aa => aa.MeetingId != mtgid)
-                                    .Max(aa => aa.MeetingDate)
-                    let memberType = a.Meeting.Organization.OrganizationMembers
-                                    .Where(aa => aa.PeopleId == a.PeopleId)
-                                    .Select(aa => aa.MemberTypeId)
-                                    .SingleOrDefault()
-                    let attendpct = a.Meeting.Organization.OrganizationMembers
-                                    .Where(aa => aa.PeopleId == a.PeopleId)
-                                    .Select(aa => aa.AttendPct)
-                                    .SingleOrDefault()
-                    let attendstr = a.Meeting.Organization.OrganizationMembers
-                                    .Where(aa => aa.PeopleId == a.PeopleId)
-                                    .Select(aa => aa.AttendStr)
-                                    .SingleOrDefault()
-                    where memberType != 230 && memberType != 311
-                    orderby a.EffAttendFlag descending, a.Person.Name2
+            var q = from va in DbUtil.Db.VisitsAbsents(mtgid)
+                    orderby va.AttendanceFlag descending, va.Name
                     select new AttendInfo
                     {
-                        PeopleId = p.PeopleId,
-                        Name = p.Name,
-                        Address = p.PrimaryAddress,
-                        Birthday = p.DOB.ToDate().ToString2("m"),
-                        Email = p.EmailAddress,
-                        HomePhone = p.HomePhone,
-                        CellPhone = p.CellPhone,
-                        CSZ = Util.FormatCSZ4(p.PrimaryCity, p.PrimaryState, p.PrimaryZip),
-                        Status = status,
-                        LastAttend = lastattend,
-                        AttendPct = attendpct,
-                        AttendStr = attendstr,
-                        visitor = a.EffAttendFlag == true
+                        PeopleId = va.PeopleId,
+                        Name = va.Name,
+                        Address = va.PrimaryAddress,
+                        Birthday = va.Birthday.ToString2("m"),
+                        Email = va.EmailAddress,
+                        HomePhone = va.HomePhone,
+                        CellPhone = va.CellPhone,
+                        CSZ = Util.FormatCSZ4(va.PrimaryCity, va.PrimaryState, va.PrimaryZip),
+                        Status = va.Status,
+                        LastAttend = va.LastAttended,
+                        AttendPct = va.AttendPct,
+                        AttendStr = va.AttendStr,
+                        visitor = va.AttendanceFlag == true
                     };
             return q;
         }
