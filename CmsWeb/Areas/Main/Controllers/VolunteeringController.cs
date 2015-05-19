@@ -108,7 +108,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.Volunteer.Person.Name));
 
-            return Redirect("/Volunteering/" + vol.Volunteer.PeopleId);
+            return Redirect("/Volunteering/{0}#tab_documents".Fmt(vol.Volunteer.PeopleId));
         }
 
         public ActionResult Delete(int id, int peopleId)
@@ -122,13 +122,13 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.VolunteerForms.DeleteOnSubmit(form);
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/" + peopleId);
+            return Redirect("/Volunteering/{0}#tab_documents".Fmt(peopleId));
         }
 
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
             ProtectMyMinistryHelper.Create(id, code, type, label);
-            return Redirect("/Volunteering/" + id);
+            return Redirect("/Volunteering/{0}#tab_creditChecks".Fmt(id));
         }
 
         public ActionResult EditCheck(int id, int label = 0)
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/" + bc.PeopleID);
+            return Redirect("/Volunteering/{0}#tab_creditChecks".Fmt(bc.PeopleID));
         }
 
         [HttpPost]
@@ -213,7 +213,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.SubmitChanges();
             }
 
-            return Redirect("/Volunteering/" + iPeopleID);
+            return Redirect("/Volunteering/{0}#tab_backgroundChecks".Fmt(iPeopleID));
         }
 
         public ActionResult DialogSubmit(int id)
