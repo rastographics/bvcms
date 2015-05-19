@@ -70,9 +70,14 @@ namespace CmsWeb.Areas.Main.Controllers
 			return View("Index", me);
 		}
 
-        public ActionResult EmailBody(int id)
+        public ActionResult EmailBody(string id)
         {
-            ViewBag.templateID = id;
+            var i = id.ToInt();
+            var c = ViewExtensions2.GetContent(i);
+            if(c == null)
+                return new EmptyResult();
+
+            ViewBag.content = c;
             return View();
         }
         
