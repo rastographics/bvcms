@@ -32,7 +32,7 @@
                     $.unblock();
                     swal("Success!", ret.content, "success");
                 } else {
-                    $("#send-actions").remove();
+                    $("#Send").remove();
                     var intervalid = window.setInterval(function () {
                         $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
                             $.unblock();
