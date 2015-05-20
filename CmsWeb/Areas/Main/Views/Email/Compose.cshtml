@@ -118,14 +118,19 @@
                             <iframe src="/Email/EmailBody/@tid" frameborder="0" onload="iframeLoaded()" style="width: 100%;" id="email-body" name="email-body"></iframe>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hidden-xs">
                         <div class="col-sm-offset-2 col-sm-10">
                             <div class="pull-right">
-                                <input type="button" id="SaveDraft" class="btn btn-default" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" /> 
-                                <a href="#" id="TestSend" class="btn btn-default">Send Test Email (To Me)</a> 
-                                <button type="button" class="btn btn-primary" id="Send"><i class="fa fa-paper-plane"></i> Send</button>
+                                <input type="button" class="btn btn-default SaveDraft" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" /> 
+                                <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a> 
+                                <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="visible-xs-block">
+                        <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
+                        <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
+                        <input type="button" class="btn btn-default btn-block SaveDraft" savetype="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? 0 : 1 )" value="@( c.TypeID == ContentTypeCode.TypeEmailTemplate ? "Save As Draft" : "Save Current Draft" )" />
                     </div>
                     <br/>
                 </form>

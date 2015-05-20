@@ -61,7 +61,7 @@
         $('#editor-modal').modal('hide');
     });
 
-    $("#Send").click(function () {
+    $(".Send").click(function () {
         $.block();
         $('#body').val($('#email-body').contents().find('#tempateBody').html());
         var q = $("#SendEmail").serialize();
@@ -80,7 +80,7 @@
                     $.unblock();
                     swal("Success!", ret.content, "success");
                 } else {
-                    $('#Send').remove();
+                    $('.Send').remove();
                     var intervalid = window.setInterval(function () {
                         $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
                             $.unblock();
@@ -105,7 +105,7 @@
         });
     });
 
-    $("#SaveDraft").click(function () {
+    $(".SaveDraft").click(function () {
         if ($(this).attr("saveType") == "0") {
             $('#draft-modal').modal('show');
         } else {
@@ -133,7 +133,7 @@
         $("#SendEmail").submit();
     });
 
-    $("#TestSend").click(function () {
+    $(".TestSend").click(function () {
         $.block();
 
         $.clearTemplateClass();
