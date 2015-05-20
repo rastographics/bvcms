@@ -55,6 +55,9 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var q = from om in DbUtil.Db.OrganizationMembers
                     where om.OrganizationId == OrgId
+                    where om.MemberTypeId != 230
+                    where om.MemberTypeId != 311
+                    where (om.Pending ?? false) == false
                     let attstr = GetAttendStr(om.PeopleId, om.OrganizationId)
                     let attpct = GetAttendPct(attstr)
                     select new AttendInfo
