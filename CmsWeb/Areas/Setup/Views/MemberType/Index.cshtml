@@ -181,8 +181,8 @@
                 },
                 function () {
                     $.post("/MemberType/Delete/" + id, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
+                        if (ret == "used")
+                            swal("Error!", "That member type is being used.", "error");
                         else {
                             swal({
                                 title: "Deleted!",
