@@ -2,11 +2,14 @@
 @using UtilityExtensions;
 @model BackgroundCheck
 @{
+    // type must be either ProtectMyMinistryHelper.TYPE_BACKGROUND or ProtectMyMinistryHelper.TYPE_CREDIT
+    int type = ViewBag.dialogType;
     var s = from e in DbUtil.Db.BackgroundCheckMVRCodes
             orderby e.Description
             select e;
 }
 <form id="submitCheck" action="/Volunteering/SubmitCheck/@Model.Id" method="post" class="form-horizontal">
+    <input type="hidden" name="type" value="@type" />
     <input type="hidden" name="iPeopleID" value="@Model.PeopleID" />
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

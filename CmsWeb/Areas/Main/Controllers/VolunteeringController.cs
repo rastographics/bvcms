@@ -127,21 +127,21 @@ namespace CmsWeb.Areas.Main.Controllers
 
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
+            var tabName = type == 1 ? "tab_backgroundChecks" : "tab_creditChecks";
             ProtectMyMinistryHelper.Create(id, code, type, label);
-            return Redirect("/Volunteering/{0}#tab_creditChecks".Fmt(id));
+            return Redirect("/Volunteering/{0}#{1}".Fmt(id, tabName));
         }
 
-        public ActionResult EditCheck(int id, int label = 0)
+        public ActionResult EditCheck(int id, int type, int label = 0)
         {
+            var tabName = type == 1 ? "tab_backgroundChecks" : "tab_creditChecks";
             var bc = (from e in DbUtil.Db.BackgroundChecks
                       where e.Id == id
                       select e).Single();
 
             bc.ReportLabelID = label;
-
             DbUtil.Db.SubmitChanges();
-
-            return Redirect("/Volunteering/{0}#tab_creditChecks".Fmt(bc.PeopleID));
+            return Redirect("/Volunteering/{0}#{1}".Fmt(bc.PeopleID, tabName));
         }
 
         [HttpPost]
@@ -157,8 +157,9 @@ namespace CmsWeb.Areas.Main.Controllers
             return new EmptyResult();
         }
 
-        public ActionResult SubmitCheck(int id, int iPeopleID, string sSSN, string sDLN, string sUser = "", string sPassword = "", int iStateID = 0, string sPlusCounty = "", string sPlusState = "")
+        public ActionResult SubmitCheck(int id, int type, int iPeopleID, string sSSN, string sDLN, string sUser = "", string sPassword = "", int iStateID = 0, string sPlusCounty = "", string sPlusState = "")
         {
+            var tabName = type == 1 ? "tab_backgroundChecks" : "tab_creditChecks";
             var responseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + ProtectMyMinistryHelper.PMM_Append;
 
             var p = (from e in DbUtil.Db.People
@@ -213,23 +214,27 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.SubmitChanges();
             }
 
-            return Redirect("/Volunteering/{0}#tab_backgroundChecks".Fmt(iPeopleID));
+            return Redirect("/Volunteering/{0}#{1}".Fmt(iPeopleID, tabName));
         }
 
-        public ActionResult DialogSubmit(int id)
+        public ActionResult DialogSubmit(int id, int type)
         {
             var bc = (from e in DbUtil.Db.BackgroundChecks
                       where e.Id == id
                       select e).Single();
+
+            ViewBag.dialogType = type;
 
             return View(bc);
         }
 
-        public ActionResult DialogEdit(int id)
+        public ActionResult DialogEdit(int id, int type)
         {
             var bc = (from e in DbUtil.Db.BackgroundChecks
                       where e.Id == id
                       select e).Single();
+
+            ViewBag.dialogType = type;
 
             return View(bc);
         }

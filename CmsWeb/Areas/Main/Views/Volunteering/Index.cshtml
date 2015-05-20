@@ -98,6 +98,7 @@
                             </div>
                         </div>
                     </div>
+                    <br/>
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="table-responsive">
@@ -135,13 +136,13 @@
                                                 <td class="center" style="white-space: nowrap;">
                                                     @if (check.ReportLabelID > 0)
                                                     {
-                                                        <a href="#" class="showEditDialog" data-cid="@check.Id">
+                                                        <a href="#" class="showEditDialog" data-cid="@check.Id" data-ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">
                                                             @(labels.Where(e => e.Id == check.ReportLabelID).Select(e => e.Description).SingleOrDefault() ?? check.ReportLabelID.ToString())
                                                         </a>
                                                     }
                                                     else
                                                     {
-                                                        <a href="#" id="showEditDialog" data-cid="@check.Id">
+                                                        <a href="#" id="showEditDialog" data-cid="@check.Id" data-ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">
                                                             Assign Label
                                                         </a>
                                                     }
@@ -167,13 +168,13 @@
                                                 @switch (check.StatusID)
                                                 {
                                                     case 0:
-                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id" data-ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">
                                                             Resubmit
                                                         </button>
                                                         break;
 
                                                     case 1:
-                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id" data-ctype="@ProtectMyMinistryHelper.TYPE_BACKGROUND">
                                                             Submit
                                                         </button>
                                                         <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
@@ -224,6 +225,7 @@
                             </div>
                         </div>
                     </div>
+                    <br/>
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="table-responsive">
@@ -261,13 +263,13 @@
                                                 <td class="center" style="white-space: nowrap;">
                                                     @if (check.ReportLabelID > 0)
                                                     {
-                                                        <a href="#" class="showEditDialog" data-cid="@check.Id">
+                                                        <a href="#" class="showEditDialog" data-cid="@check.Id" data-ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">
                                                             @labels.SingleOrDefault(e => e.Id == check.ReportLabelID).Description
                                                         </a>
                                                     }
                                                     else
                                                     {
-                                                        <a href="#" class="showEditDialog" data-cid="@check.Id">
+                                                        <a href="#" class="showEditDialog" data-cid="@check.Id" data-ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">
                                                             Assign Label
                                                         </a>
                                                     }
@@ -293,13 +295,13 @@
                                                 @switch (check.StatusID)
                                                 {
                                                     case 0:
-                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id" data-ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">
                                                             Resubmit
                                                         </button>
                                                         break;
 
                                                     case 1:
-                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id">
+                                                        <button class="showSubmitDialog btn btn-primary btn-sm" data-cid="@check.Id" data-ctype="@ProtectMyMinistryHelper.TYPE_CREDIT">
                                                             Submit
                                                         </button>
                                                         <button class="showDeleteDialog btn btn-sm btn-danger" data-cid="@check.Id">
