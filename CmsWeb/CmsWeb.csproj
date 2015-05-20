@@ -513,7 +513,6 @@
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Code\DecimalModelBinder.cs" />
-    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
@@ -967,6 +966,14 @@
     <Content Include="CustomColumns.xml">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Errors\AccessDenied.htm" />
+    <Content Include="Errors\DatabaseCreationError.aspx" />
+    <Content Include="Errors\DatabaseNotFound.aspx" />
+    <Content Include="Errors\DatabaseNotInitialized.aspx" />
+    <Content Include="Errors\DatabaseServerNotFound.aspx" />
+    <Content Include="Errors\Error.aspx" />
+    <Content Include="Errors\PageNotFound.aspx" />
+    <Content Include="Errors\SessionTimeout.htm" />
     <Content Include="gulpfile.js" />
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
@@ -2361,17 +2368,6 @@
     <Content Include="Views\Shared\PagerBottom.cshtml" />
     <Content Include="Views\Shared\Pagination.cshtml" />
     <Content Include="Views\Shared\SearchBox.cshtml" />
-    <Content Include="Views\Error\400.cshtml" />
-    <Content Include="Views\Error\401.cshtml" />
-    <Content Include="Views\Error\404.cshtml" />
-    <Content Include="Views\Error\500.cshtml" />
-    <Content Include="Views\Error\_Layout.cshtml" />
-    <Content Include="Views\Error\DatabaseCreationError.cshtml" />
-    <Content Include="Views\Error\DatabaseNotFound.cshtml" />
-    <Content Include="Views\Error\DatabaseNotInitialized.cshtml" />
-    <Content Include="Views\Error\DatabaseServerNotFound.cshtml" />
-    <Content Include="Views\Error\Offline.cshtml" />
-    <Content Include="Views\Error\SessionTimeout.cshtml" />
     <Content Include="Content\touchpoint\src\less\app.less" />
     <Content Include="Content\touchpoint\src\less\variables.less" />
     <Content Include="Content\touchpoint\src\less\bootstrap-3.3.2\alerts.less" />
@@ -2461,7 +2457,6 @@
     <Content Include="Content\touchpoint\src\less\dropdown-large.less" />
     <Content Include="Content\touchpoint\src\less\stats-panel.less" />
     <Content Include="Content\touchpoint\src\less\footers.less" />
-    <Content Include="Views\Error\UnderConstruction.cshtml" />
     <Content Include="Views\Shared\PageHeader.cshtml" />
     <Content Include="Views\Shared\PageFooter.cshtml" />
     <None Include="Web.bvcms.config">

@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [Route("~/Email/{id:guid}")]
 		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid)
 		{
-			if (Util.SessionTimedOut()) return Redirect("/Error/SessionTimeout");
+			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
 			if (!body.HasValue())
 				body = TempData["body"] as string;
 
