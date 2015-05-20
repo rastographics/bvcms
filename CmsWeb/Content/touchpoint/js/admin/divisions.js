@@ -15,7 +15,7 @@
                                            '<i class="fa fa-fw fa-times"></i>' +
                                        '</button>';
 
-    
+
     $("button.create").click(function(ev) {
         ev.preventDefault();
         if ($("#TagProgramId").val() === "0") {
@@ -30,7 +30,7 @@
 
             var row = $('#results tbody').children('tr:first');
             var bgColor = $(row).css('background-color');
-            $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+            $(row).animate({ backgroundColor: '#eaab00' }, 1000, function () {
                 $(row).animate({ backgroundColor: bgColor }, 1000);
             });
             $.initializeTable();

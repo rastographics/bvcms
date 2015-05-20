@@ -15,7 +15,7 @@
                     @using (Html.BeginForm("Create", "Ministry"))
                     {
                         <a href="/Lookups" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i> Back to List</a> <button type="submit" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add Ministry</button>
-                    } 
+                    }
                 </div>
             </div>
             <div class="box-content">
@@ -118,7 +118,7 @@
 
                 var row = $(hash).closest('tr');
                 var bgColor = $(row).css('background-color');
-                $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                $(row).animate({ backgroundColor: '#eaab00' }, 1000, function () {
                     $(row).animate({ backgroundColor: bgColor }, 1000);
                 });
             }

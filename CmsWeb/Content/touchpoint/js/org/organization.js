@@ -23,14 +23,14 @@
     } else {
         $('#org-main-section').collapse('show');
     }
-    
+
     $.fn.editableform.buttons = '<button type="submit" class="btn btn-primary btn-sm editable-submit">' +
                                     '<i class="fa fa-fw fa-check"></i>' +
                                 '</button>' +
                                 '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
-    
+
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         e.preventDefault();
         var tab = $(e.target).attr('href').replace("#", "#tab-");
@@ -487,7 +487,7 @@
             $.InitFunctions.updateQuestionList();
             $.InitFunctions.popovers();
             $.InitFunctions.movequestions();
-            $('#QuestionList').children().last().effect("highlight", { color: '#fcf8e3' }, 2000);
+            $('#QuestionList').children().last().effect("highlight", { color: '#eaab00' }, 2000);
         });
         return false;
     });
@@ -628,7 +628,7 @@
                 $("#schedules").append(ret).ready(function () {
                     $.InitFunctions.timepicker();
                     $.renumberListItems();
-                    $('#schedules').children().last().children().first().effect("highlight", { color: '#fcf8e3' }, 2000);
+                    $('#schedules').children().last().children().first().effect("highlight", { color: '#eaab00' }, 2000);
                 });
             });
         }
@@ -648,7 +648,7 @@
             i++;
         });
     };
-    
+
     $("#ScheduleListPrev").change(function () {
         var a = $(this).val().split(",");
         $("#PrevMeetingDate").val(a[0]);
@@ -708,7 +708,7 @@
                     swal("Error!", ret, "error");
             });
         });
-        
+
         return false;
     });
 
@@ -793,7 +793,7 @@
             $(dest).append(ret);
             $.InitFunctions.movequestions();
             $.InitFunctions.timepicker();
-            $(dest).children().last().children().first().effect("highlight", { color: '#fcf8e3' }, 2000);
+            $(dest).children().last().children().first().effect("highlight", { color: '#eaab00' }, 2000);
         });
     });
 
@@ -953,7 +953,7 @@
 
 });
 
-$.RebindMemberGrids = function() { 
+$.RebindMemberGrids = function() {
     $.formAjaxClick($("a.setfilter"));
 }
 

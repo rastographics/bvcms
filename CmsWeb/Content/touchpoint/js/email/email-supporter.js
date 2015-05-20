@@ -32,7 +32,7 @@
         $.post(datum.url, {}, function(ret) {
             $("#recipients").html(ret).ready(function() {
                 $("#supportsearch").val("");
-                $("#recipients .newsupporter").effect("highlight", { color: '#fcf8e3' }, 2000);
+                $("#recipients .newsupporter").effect("highlight", { color: '#eaab00' }, 2000);
             });
         });
     });
