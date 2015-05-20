@@ -1,30 +1,30 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Models.PostBundleModel
 @{
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Fund Totals For Bundle Id {0} {1}".Fmt(Model.bundle.BundleHeaderId, Model.bundle.ContributionDate.ToShortDateString());
-    ViewBag.ReportPageHeader = "Fund Totals For Bundle Id {0} {1}".Fmt(Model.bundle.BundleHeaderId, Model.bundle.ContributionDate.ToShortDateString());
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Fund Totals For Bundle Id {0} {1}".Fmt(Model.bundle.BundleHeaderId, Model.bundle.ContributionDate.ToShortDateString());
+  ViewBag.ReportPageHeader = "Fund Totals For Bundle Id {0} {1}".Fmt(Model.bundle.BundleHeaderId, Model.bundle.ContributionDate.ToShortDateString());
 }
 <div class="report box box-responsive">
-    <div class="box-content">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Fund Name</th>
-                        <th class="text-right">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var f in Model.TotalsByFund())
-                    {
-                        <tr>
-                            <td>@f.Name (@f.FundId)</td>
-                            <td class="text-right">@f.Total.ToString2("N2")</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+  <div class="box-content">
+    <div class="table-responsive">
+      <table class="table table-striped" style="font-size: 1.3em">
+        <thead>
+          <tr>
+            <th>Fund Name</th>
+            <th class="text-right">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach (var f in Model.TotalsByFund())
+          {
+            <tr>
+              <td>@f.Name (@f.FundId)</td>
+              <td class="text-right">@f.Total.ToString2("N2")</td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
+  </div>
 </div>
