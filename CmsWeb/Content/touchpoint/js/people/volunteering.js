@@ -7,8 +7,9 @@
     $('.showSubmitDialog').click(function (ev) {
         ev.preventDefault();
         var id = $(this).attr('data-cid');
+        var type = $(this).attr('data-ctype');
         var submitDialog = getSubmitDialog();
-        $.post('/Volunteering/DialogSubmit/' + id, null, function (data) {
+        $.post('/Volunteering/DialogSubmit/' + id + '?type=' + type, null, function (data) {
             $('.modal-content', submitDialog).html(data);
             submitDialog.modal();
         });
@@ -29,8 +30,9 @@
     $('.showEditDialog').click(function (ev) {
         ev.preventDefault();
         var id = $(this).attr('data-cid');
+        var type = $(this).attr('data-ctype');
         var submitDialog = getSubmitDialog();
-        $.post('/Volunteering/DialogEdit/' + id, null, function (data) {
+        $.post('/Volunteering/DialogEdit/' + id + '?type=' + type, null, function (data) {
             $('.modal-content', submitDialog).html(data);
             submitDialog.modal();
         });
