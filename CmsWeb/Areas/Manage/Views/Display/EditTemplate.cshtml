@@ -31,17 +31,7 @@
                         <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
                     </div>
                     <div class="form-group">
-                        <script type="text/javascript">
-                            function iframeLoaded() {
-                                var iFrameID = document.getElementById('email-body');
-                                if (iFrameID) {
-                                    // here you can make the height, I delete it first, then I make it again
-                                    iFrameID.height = "";
-                                    iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
-                                }
-                            }
-                        </script>
-                        <iframe src="/Display/EmailBody/@Model.Id" frameborder="0" onload="iframeLoaded()" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                        <iframe frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
                         <input type="hidden" id="body" name="body"/>
                     </div>
                     <a href="/Display/#tab_emailTemplates" class="btn btn-default">Cancel</a> <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <a class="btn btn-primary save">Save Template</a>
@@ -56,6 +46,17 @@
     @ViewExtensions2.FroalaEditorScripts()
     <script type="text/javascript">
         $(function () {
+            function iframeLoaded() {
+                var iFrameID = document.getElementById('email-body');
+                if (iFrameID) {
+                    // here you can make the height, I delete it first, then I make it again
+                    iFrameID.height = "";
+                    iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
+                }
+            }
+
+            var iframeSource = "/Display/EmailBody/@Model.Id";
+
             $.Editable.DEFAULTS.allowedTags.push('html');
             $.Editable.DEFAULTS.allowedTags.push('head');
             $.Editable.DEFAULTS.allowedTags.push('style');
@@ -66,7 +67,9 @@
             $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
             $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
             
-            $('#email-body').load(function () {
+            var $emailBody = $('#email-body');
+            $emailBody.attr('src', iframeSource);
+            $emailBody.load(function () {
                 $(this).contents().find('#editor-body').froalaEditable({
                     inlineMode: false,
                     allowStyle: true,
@@ -79,6 +82,7 @@
                     imageUploadURL: '/Account/FroalaUpload',
                     fileUploadURL: '/Account/FroalaUpload'
                 });
+                iframeLoaded();
                 $(this).contents().find('#editor-body').on('editable.htmlHide', function (e, editor, html) {
                     iframeLoaded();
                 });

@@ -27,17 +27,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <script type="text/javascript">
-                            function iframeLoaded() {
-                                var iFrameID = document.getElementById('email-body');
-                                if (iFrameID) {
-                                    // here you can make the height, I delete it first, then I make it again
-                                    iFrameID.height = "";
-                                    iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
-                                }
-                            }
-                        </script>
-                        <iframe frameborder="0" onload="iframeLoaded()" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                        <iframe frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
                         <input type="hidden" id="body" name="body" />
                     </div>
                     <a href="/Display/#tab_htmlContent" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <a class="btn btn-primary save">Save Content</a>
@@ -52,6 +42,14 @@
 {
     @ViewExtensions2.FroalaEditorScripts()
     <script type="text/javascript">
+        function iframeLoaded() {
+            var iFrameID = document.getElementById('email-body');
+            if (iFrameID) {
+                // here you can make the height, I delete it first, then I make it again
+                iFrameID.height = "";
+                iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
+            }
+        }
 
         function getParameterByName(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -88,6 +86,7 @@
                     imageUploadURL: '/Account/FroalaUpload',
                     fileUploadURL: '/Account/FroalaUpload'
                 });
+                iframeLoaded();
                 $(this).contents().find('#editor-body').on('editable.htmlHide', function (e, editor, html) {
                     iframeLoaded();
                 });
@@ -105,46 +104,46 @@
                 var href = this.href;
 
                 swal({
-                    title: "Are you sure?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                },
-                function () {
-                    $.post(href, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
-                        else {
-                            swal({
-                                title: "Deleted!",
-                                type: "success"
-                            },
-                            function () {
-                                window.location = "/Manage/Display/#tab_htmlContent";
-                            });
-                        }
+                        title: "Are you sure?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: false
+                    },
+                    function () {
+                        $.post(href, null, function (ret) {
+                            if (ret && ret.error)
+                                swal("Error!", ret.error, "error");
+                            else {
+                                swal({
+                                        title: "Deleted!",
+                                        type: "success"
+                                    },
+                                    function () {
+                                        window.location = "/Manage/Display/#tab_htmlContent";
+                                    });
+                            }
+                        });
                     });
-                });
             });
 
             $("#snippet").change(function () {
                 var checked = this.checked;
                 swal({
-                    title: "Reload page?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-warning",
-                    confirmButtonText: "Yes!",
-                    closeOnConfirm: false
-                },
-                function () {
-                    if (checked)
-                        window.location.href = window.location.pathname + '?snippet=true';
-                    else
-                        window.location.href = window.location.pathname;
-                });
+                        title: "Reload page?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-warning",
+                        confirmButtonText: "Yes!",
+                        closeOnConfirm: false
+                    },
+                    function () {
+                        if (checked)
+                            window.location.href = window.location.pathname + '?snippet=true';
+                        else
+                            window.location.href = window.location.pathname;
+                    });
 
             });
         });
