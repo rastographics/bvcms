@@ -219,9 +219,7 @@
         $("#amt-split").val('').focus();
     });
 
-    $("#split-submit").click(function (ev) {
-        ev.preventDefault();
-
+    function splitSubmit() {
         var newamt = $("#amt-split").val();
         newamt = parseFloat(newamt);
         if (isNaN(newamt))
@@ -240,6 +238,18 @@
         };
         $.PostRow({ scroll: true, q: q });
         $('#split-modal').modal('hide');
+    }
+
+    $("#split-submit").click(function (ev) {
+        ev.preventDefault();
+
+        splitSubmit();
+    });
+
+    $('#amt-split').keydown(function(e) {
+        if (e.keyCode === keys.enter) {
+            splitSubmit();
+        }
     });
 
     $("body").on("click", 'a.delete', function (ev) {
