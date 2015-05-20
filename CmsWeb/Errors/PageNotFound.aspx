@@ -26,7 +26,6 @@
     <div class="error-code">404</div>
     <div class="error-text">
         <span class="oops">PAGE NOT FOUND</span><br/>
-        URL: <%=Request.QueryString["aspxerrorpath"] %><br/>
         <span class="hr"></span>
         <br>
         SOMETHING WENT WRONG, OR THAT PAGE DOESN'T EXIST... YET
