@@ -1,8 +1,8 @@
 ﻿/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Data.SqlClient;
@@ -28,13 +28,13 @@ namespace CmsData
     public partial class Person : ITableWithExtraValues
     {
         public static int[] DiscClassStatusCompletedCodes = new int[]
-        { 
-            NewMemberClassStatusCode.AdminApproval, 
-            NewMemberClassStatusCode.Attended, 
-            NewMemberClassStatusCode.ExemptedChild 
+        {
+            NewMemberClassStatusCode.AdminApproval,
+            NewMemberClassStatusCode.Attended,
+            NewMemberClassStatusCode.ExemptedChild
         };
-        public static int[] DropCodesThatDrop = new int[] 
-        { 
+        public static int[] DropCodesThatDrop = new int[]
+        {
             DropTypeCode.Administrative,
             DropTypeCode.AnotherDenomination,
             DropTypeCode.LetteredOut,
@@ -203,9 +203,9 @@ namespace CmsData
                 foreach (var tp in tplist)
                     db.TransactionPeople.InsertOnSubmit(new TransactionPerson
                     {
-                        OrgId = tp.OrgId, 
-                        Amt = tp.Amt, 
-                        Id = tp.Id, 
+                        OrgId = tp.OrgId,
+                        Amt = tp.Amt,
+                        Id = tp.Id,
                         PeopleId = targetid
                     });
                 TrySubmit(db, "Add TransactionPeople");
@@ -1628,11 +1628,6 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 db.SubmitChanges();
             }
             return rf;
-        }
-
-        public static void TryExtraValueIntegrity(CMSDataContext Db, string type, string newfield, List<string> BitCodes)
-        {
-            const string nameAlreadyExistsAsADifferentType = "name already exists as a different type";
         }
 
         public bool CanViewStatementFor(CMSDataContext Db, int id)

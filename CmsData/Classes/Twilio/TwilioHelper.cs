@@ -10,8 +10,6 @@ namespace CmsData.Classes.Twilio
 {
     public class TwilioHelper
     {
-        private const bool TestMode = false;
-
         public static void QueueSms(Guid iQBID, int iSendGroupID, string sTitle, string sMessage)
         {
             var q = DbUtil.Db.PeopleQuery(iQBID);
@@ -137,12 +135,6 @@ namespace CmsData.Classes.Twilio
         {
             // Needs API keys. Removed to keep private
 
-            if (TestMode)
-            {
-                Debug.WriteLine("Message sending to " + sTo + " from " + sFrom + ": " + sBody + " --- via " + sSID +
-                                " / " + sToken);
-                return true;
-            }
             var twilio = new TwilioRestClient(sSID, sToken);
             var msg = twilio.SendMessage(sFrom, sTo, sBody);
             if (msg.Status != "failed") return true;
