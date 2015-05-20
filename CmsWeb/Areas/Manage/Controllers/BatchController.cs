@@ -595,7 +595,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 p.AddEditExtraValue(field, a[1]);
                 DbUtil.Db.SubmitChanges();
             }
-            return Redirect("/Reports/ExtraValues");
+            return Redirect("/ExtraValue/Summary/People");
         }
         [HttpGet]
         public ActionResult TestScript()
