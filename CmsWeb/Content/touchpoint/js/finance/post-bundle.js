@@ -1,5 +1,10 @@
 ﻿$(function () {
 
+    var keys = {
+        enter: 13,
+        tab: 9
+    };
+
     function initializePopovers() {
         $('[data-toggle="popover"]').popover({ html: true });
         $('[data-toggle="popover"]').click(function (ev) {
@@ -10,9 +15,10 @@
 
     $('#pid').blur(function () {
         var tr, pid;
-        if ($(this).val() == '')
+        if ($(this).val() === '') {
             return false;
-        if ($(this).val() == 'd') {
+        }
+        if ($(this).val() === 'd') {
             tr = $('#bundle > tbody > tr:first');
             pid = $("a.pid", tr).text();
             $('#name').val($("td.name", tr).text());
@@ -25,7 +31,7 @@
 
         var q = $('#pbform').serialize();
         $.post("/PostBundle/GetNamePid/", q, function (ret) {
-            if (ret.error == 'not found') {
+            if (ret.error === 'not found') {
 
                 $.growl("No Results!", "Person id not found.", "warning");
                 $('#name').focus();
@@ -84,7 +90,7 @@
     };
 
     $("#name").blur(function () {
-        if ($('#pid').val() == '' && $(this).val() != '') {
+        if ($('#pid').val() === '' && $(this).val() !== '') {
             $.growl("No Results!", "Name of person not found.", "warning");
             $('#name').val('');
             $('#amt').focus();
@@ -92,7 +98,7 @@
         else if ($(this).val() != $.enteredname && $.enteredname != '') {
             var q = $('#pbform').serialize();
             $.post("/PostBundle/GetNamePid/", q, function (ret) {
-                if (ret.error == 'not found') {
+                if (ret.error === 'not found') {
                     $.growl("No Results!", "Person id not found.", "warning");
                     $('#name').focus();
                     $('#pid').val('');
@@ -109,7 +115,7 @@
     var keyallowed = true;
 
     $('#notes').keypress(function (event) {
-        if (keyallowed && event.keyCode == 13 && !event.shiftKey) {
+        if (keyallowed && event.keyCode === keys.enter && !event.shiftKey) {
             event.preventDefault();
             keyallowed = false;
             $.PostRow({ scroll: false });
@@ -117,7 +123,7 @@
     });
 
     $('#notes').keydown(function (event) {
-        if (keyallowed && event.keyCode == 9) {
+        if (keyallowed && event.keyCode === keys.tab) {
             event.preventDefault();
             keyallowed = false;
             $.PostRow({ scroll: false });
@@ -125,42 +131,42 @@
     });
 
     $('#pid').keydown(function (event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode === keys.enter) {
             event.preventDefault();
             $('#name').focus();
         }
     });
 
     $('#name').keydown(function (event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode === keys.enter) {
             event.preventDefault();
             $('#amt').focus();
         }
     });
 
     $('#amt').keydown(function (event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode === keys.enter) {
             event.preventDefault();
             $('#PLNT').focus();
         }
     });
 
     $('#PLNT').keydown(function (event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode === keys.enter) {
             event.preventDefault();
             $('#fund').focus();
         }
     });
 
     $('#fund').keydown(function (event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode === keys.enter) {
             event.preventDefault();
             $('#checkno').focus();
         }
     });
 
     $('#checkno').keydown(function (event) {
-        if (event.keyCode == 13) {
+        if (event.keyCode === keys.enter) {
             event.preventDefault();
             $('#notes').focus();
         }
@@ -177,7 +183,7 @@
         $('#editid').val(tr.attr("cid"));
 
         var personId = $.trim($("a.pid", tr).text());
-        if (personId == 'Select') {
+        if (personId === 'Select') {
             personId = '';
         }
 
@@ -190,13 +196,13 @@
         var plnt = $("td.PLNT span", tr).text();
         plnt = plnt || "CN";
         $('#PLNT').val(plnt);
-        
+
         var a = $('#amt');
         a.val($("td.amt", tr).attr("val"));
         $('#checkno').val($("td.checkno span", tr).text());
         $('#notes').val($("td.notes span", tr).text());
         tr.hide();
-        if (a.val() == '0.00')
+        if (a.val() === '0.00')
             a.val('');
         $('html,body').animate({ scrollTop: 400 }, 600);
         a.focus();
@@ -268,7 +274,7 @@
     });
 
     function showHideDiffRow(diff) {
-        if (diff == 0) {
+        if (diff === 0) {
             $('tr.diffRow').hide();
         } else {
             $('tr.diffRow').show();
@@ -328,7 +334,7 @@
                 keyallowed = true;
                 return true;
             }
-            if (!isNaN(n) && n != 0 && plnt == 'GK') {
+            if (!isNaN(n) && n != 0 && plnt === 'GK') {
                 $.growl("Contribution Error!", "Cannot post. Gift In Kind must be zero.", "danger");
                 keyallowed = true;
                 return true;
@@ -374,9 +380,9 @@
             $('#entry input').val('');
             $('#fund').val($('#fundid').val());
             $('#pid').focus();
-            
+
             var top = tr.offset().top - 360;
-            if (options.scroll == true) {
+            if (options.scroll) {
                 $('html,body').animate({ scrollTop: top }, 1000);
             }
             $(tr).children('td').effect("highlight", { color: '#fcf8e3' }, 3000);
@@ -385,7 +391,7 @@
             initializeEditable();
         });
     };
-    
+
 
     $("#showmove").click(function (ev) {
         ev.preventDefault();
