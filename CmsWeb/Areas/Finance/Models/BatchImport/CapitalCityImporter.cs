@@ -25,14 +25,14 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             while (csv.ReadNextRecord())
             {
                 var batchDate = csv[0].ToDate();
-                var amount = csv[10];
+                var amount = csv[14];
                 var totalBatchAmount = csv[4];
                 if (!amount.HasValue() || !batchDate.HasValue || amount == totalBatchAmount)
                     continue;
 
-                var routingNumber = csv[7];
-                var accountNumber = csv[9];
-                var checkNumber = csv[11];
+                var routingNumber = csv[17];
+                var accountNumber = csv[16];
+                var checkNumber = csv[14];
 
                 if (bundleHeader == null)
                     bundleHeader = BatchImportContributions.GetBundleHeader(batchDate.Value, DateTime.Now);

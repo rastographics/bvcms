@@ -78,7 +78,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
                 return new ChaseImporter().RunImport(text, date, fundid, fromFile);
 
-            if (text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Contains("TransmissionDate,Name,CapturedDate,Acc_No,textbox21,textbox10,DepositStatus,textbox18,SourceLocation,textbox11,textbox12,textbox13"))
+            if (text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Contains("TransmissionDate,MerchantName,DepositDate,Account,DepositTotal,DebitCount,DepositStatus,TrackingNo,SourceLocation,CreatedBy,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,AccountNo,RoutingNumber,AnalysisStatus,OverrideIndicator"))
                 return new CapitalCityImporter().RunImport(text, date, fundid, fromFile);
 
             if (text.StartsWith("1") && text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Length == 94)
