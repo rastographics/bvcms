@@ -20,10 +20,16 @@
         }
         if ($(this).val() === 'd') {
             tr = $('#bundle > tbody > tr:first');
-            pid = $("a.pid", tr).text();
-            $('#name').val($("td.name", tr).text());
-            $('#checkno').val($("td.checkno", tr).text());
-            $('#notes').val($("td.notes", tr).text());
+
+            var personId = $.trim($("a.pid", tr).text());
+            if (personId === 'Select') {
+                personId = '';
+            }
+            pid = personId;
+
+            $('#name').val($("td.name span", tr).text());
+            $('#checkno').val($("td.checkno span", tr).text());
+            $('#notes').val($("td.notes span", tr).text());
             $('#amt').focus();
             $(this).val($.trim(pid));
             return true;
