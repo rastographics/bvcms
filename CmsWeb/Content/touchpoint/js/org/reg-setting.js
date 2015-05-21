@@ -23,14 +23,23 @@
         if ($('#editor').data('fa.editable')) {
             $('#editor').froalaEditable('destroy');
         }
+
+        var extraSmallDevice = $('.device-xs').is(':visible');
+        var editorButtons = ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'];
+        var editorHeight = 400;
+        if (extraSmallDevice) {
+            editorButtons = ['bold', 'createLink', 'specialLink', 'insertImage', 'html', 'fullscreen'];
+            editorHeight = 200;
+        }
+
         $('#editor').froalaEditable({
             inlineMode: false,
             spellcheck: true,
             useFileName: false,
             zIndex: 2501,
-            height: 200,
+            height: editorHeight,
             theme: 'custom',
-            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
+            buttons: editorButtons,
             imageUploadURL: '/Account/FroalaUpload',
             fileUploadURL: '/Account/FroalaUpload'
         });
