@@ -129,7 +129,7 @@
     });
 
     $('#notes').keydown(function (event) {
-        if (keyallowed && event.keyCode === keys.tab) {
+        if (keyallowed && event.keyCode === keys.tab && !event.shiftKey) {
             event.preventDefault();
             keyallowed = false;
             $.PostRow({ scroll: false });
