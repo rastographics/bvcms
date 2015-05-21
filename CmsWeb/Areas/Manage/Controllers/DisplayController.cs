@@ -30,6 +30,7 @@ using System.Web;
 using CmsWeb.Code;
 using Elmah;
 using Encoder = System.Drawing.Imaging.Encoder;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -97,8 +98,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                 }
                 catch (Exception ex)
                 {
-					var errorLog = ErrorLog.GetDefault(null);
-					errorLog.Log(new Error(ex));
+                    var errorLog = ErrorLog.GetDefault(null);
+                    errorLog.Log(new Error(ex));
                 }
             }
             DbUtil.Db.SubmitChanges();
@@ -188,7 +189,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
-        
+
         public static byte[] CaptureWebPageBytes(string body, int width, int height)
         {
             bool bDone = false;
@@ -343,21 +344,61 @@ namespace CmsWeb.Areas.Manage.Controllers
         public static HtmlTable HtmlTable(IDataReader rd)
         {
             var t = new HtmlTable();
-            t.Attributes.Add("class", "table not-wide");
+            t.Attributes.Add("class", "table table-striped");
             var h = new HtmlTableRow();
             for (var i = 0; i < rd.FieldCount; i++)
-                h.Cells.Add(new HtmlTableCell {InnerText = rd.GetName(i)});
+            {
+                var typ = rd.GetDataTypeName(i);
+                string align = null;
+                switch (typ.ToLower())
+                {
+                    case "decimal":
+                        align = "right";
+                        break;
+                    case "int":
+                        align = "right";
+                        break;
+                }
+                h.Cells.Add(new HtmlTableCell
+                {
+                    InnerText = rd.GetName(i),
+                    Align = align
+                });
+            }
             t.Rows.Add(h);
             while (rd.Read())
             {
                 var r = new HtmlTableRow();
                 for (var i = 0; i < rd.FieldCount; i++)
-                    r.Cells.Add(new HtmlTableCell() { InnerText = rd[i].ToString() });
+                {
+                    var typ = rd.GetDataTypeName(i);
+                    string s;
+                    string align = null;
+                    switch (typ.ToLower())
+                    {
+                        case "decimal":
+                            s = Convert.ToDecimal(rd[i]).ToString("c");
+                            align = "right";
+                            break;
+                        case "int":
+                            s = rd[i].ToInt().ToString("N0");
+                            align = "right";
+                            break;
+                        default:
+                            s = rd[i].ToString();
+                            break;
+                    }
+                    r.Cells.Add(new HtmlTableCell()
+                    {
+                        InnerText = s,
+                        Align = align
+                    });
+                }
                 t.Rows.Add(r);
             }
             var tc = new HtmlTableCell
             {
-                ColSpan = rd.FieldCount, 
+                ColSpan = rd.FieldCount,
                 InnerText = "Count = {0} rows".Fmt(t.Rows.Count - 1)
             };
             var tr = new HtmlTableRow();
