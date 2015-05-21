@@ -6,6 +6,7 @@
         inlineMode: false,
         spellcheck: true,
         useFileName: false,
+        useClasses: false,
         height: 400,
         theme: 'custom',
         buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],

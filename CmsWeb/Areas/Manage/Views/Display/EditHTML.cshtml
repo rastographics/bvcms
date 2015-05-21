@@ -79,6 +79,7 @@
                     allowStyle: true,
                     spellcheck: true,
                     useFileName: false,
+                    useClasses: false,
                     fullPage: true,
                     minHeight: 100,
                     theme: 'custom',
@@ -86,6 +87,11 @@
                     imageUploadURL: '/Account/FroalaUpload',
                     fileUploadURL: '/Account/FroalaUpload'
                 });
+
+                // reset the html... it's strange but resetting the html here causes the editor to retain any html, head, body tags that might be in the html.
+                var fullHtml = $(this).contents().find('#hiddenHtml').val();
+                $(this).contents().find('#editor-body').froalaEditable('setHTML', fullHtml, true);
+
                 iframeLoaded();
                 $(this).contents().find('#editor-body').on('editable.htmlHide', function (e, editor, html) {
                     iframeLoaded();

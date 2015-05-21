@@ -41,6 +41,7 @@
             inlineMode: false,
             spellcheck: true,
             useFileName: false,
+            useClasses: false,
             zIndex: 2501,
             height: editorHeight,
             theme: 'custom',
