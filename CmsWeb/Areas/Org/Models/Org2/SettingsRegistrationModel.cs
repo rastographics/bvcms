@@ -140,7 +140,7 @@ namespace CmsWeb.Areas.Org2.Models
         [Org, Display(Description = TitleDescription)]
         public string RegistrationTitle { get; set; }
 
-        [Reg, Display(Description = VaidateOrgsDescription)]
+        [Reg, Display(Name= "Validate Orgs", Description = VaidateOrgsDescription)]
         public string VaidateOrgs { get; set; }
 
         [Reg, Display(Description = AgeGroupsDescription), UIHint("AgeGroups")]
