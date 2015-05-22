@@ -12,7 +12,7 @@
     $('body').on('click', '#singleemail', function (ev) {
         ev.preventDefault();
         var t = $(this);
-        
+
         swal({
             title: "Are you sure?",
             text: "Warning, email replacement codes will not work.",
@@ -77,7 +77,7 @@
         if (window.location.pathname.indexOf("/Person") > -1)
             message = "This will add a task for this person.";
         var url = this.href;
-        
+
         swal({
             title: "Are you sure?",
             text: message,
@@ -118,6 +118,8 @@
         var $reportNode = $(this).parent().parent();
         var reportToDelete = $reportNode.text().trim();
 
+        var deleteUrl = $(this).attr('data-action-url');
+
         swal({
             title: "Are you sure you want to delete this report? (" + reportToDelete + ")",
             type: "warning",
@@ -127,7 +129,7 @@
             closeOnConfirm: false
         },
         function () {
-            $.post('@Url.Action("DeleteCustomReport", "Reports", new {Area = "Reports"})', { reportName: reportToDelete }).done(function (data) {
+            $.post(deleteUrl).done(function (data) {
                 if (data === 'success') {
                     swal({
                         title: "Deleted!",
