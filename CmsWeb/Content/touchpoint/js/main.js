@@ -221,7 +221,11 @@ $.InitializeDateElements = function () {
 
         $('.input-group.birthdate span.input-group-addon').click(function () {
             var inputGroup = $(this).parent();
-            $(inputGroup).datetimepicker({ format: 'MM/DD/YYYY', extraFormats: ['MM/DD/YY'], widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
+            if ($.cultureDateFormatAlt != '') {
+                $(inputGroup).datetimepicker({ format: $.cultureDateFormat, extraFormats: [$.cultureDateFormatAlt], widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
+            } else {
+                $(inputGroup).datetimepicker({ format: $.cultureDateFormat, widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
+            }
             $(inputGroup).data("DateTimePicker").show();
         });
 
