@@ -78,6 +78,10 @@ namespace CmsData
         {
             return StandardQuery("MatchNothing", QueryType.MatchNothing);
         }
+        public Query QueryIsCurrentUser()
+        {
+            return StandardQuery("IsCurrentUser", QueryType.IsCurrentUser);
+        }
         public Query QueryIsCurrentPerson()
         {
             return StandardQuery("IsCurrentPerson", QueryType.IsCurrentPerson);

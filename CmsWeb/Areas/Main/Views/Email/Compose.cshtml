@@ -95,12 +95,6 @@
                             <label class="checkbox-inline">
                                 @Html.CheckBox("PublicViewable") Publicly viewable?
                             </label>
-                            @if (c.TypeID == ContentTypeCode.TypeSavedDraft)
-                            {
-                                <label class="checkbox-inline">
-                                    <input type="checkbox" name="keepdraft" checked="checked" /> Keep draft?
-                                </label>
-                            }
                         </div>
                     </div>
                     <div class="form-group">
