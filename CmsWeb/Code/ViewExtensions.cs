@@ -781,24 +781,24 @@ namespace CmsWeb
         public static HtmlString FroalaEditorCss()
         {
             return new HtmlString(@"
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css"">
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_style.min.css"">
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css?v=1.2.7"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_style.min.css?v=1.2.7"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css?v=1.2.7"">
 ");
         }
         public static HtmlString FroalaEditorScripts()
         {
             return new HtmlString(@"
-<script src=""/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js?v=1.2.7""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js?v=1.2.7""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js?v=1.2.7""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js?v=1.2.7""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js?v=1.2.7""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js?v=1.2.7""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js?v=1.2.7""></script>
 <script src=""/Content/touchpoint/lib/froala-editor/js/plugins/file_upload.min.js?v=1.2.7""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js?v=1.1.0""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js?v=1.2.7""></script>
+<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js?v=1.2.7""></script>
 <script type=""text/javascript"">
     //froala key
     $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
