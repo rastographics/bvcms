@@ -34,16 +34,6 @@ namespace CmsWeb.Models
             ws.Cells["A2"].LoadFromCollection(list);
             return FormatResult(ws, count, cols, ep);
         }
-        public static EpplusResult Export(int id)
-        {
-            var q = ExportInvolvements.OrgMemberList(id);
-            var cols = typeof(CurrOrgMember).GetProperties();
-            var count = q.Count();
-            var ep = new ExcelPackage();
-            var ws = ep.Workbook.Worksheets.Add("Sheet1");
-            ws.Cells["A2"].LoadFromCollection(q);
-            return FormatResult(ws, count, cols, ep);
-        }
 
         private static EpplusResult FormatResult(ExcelWorksheet ws, int count, PropertyInfo[] cols, ExcelPackage ep)
         {
