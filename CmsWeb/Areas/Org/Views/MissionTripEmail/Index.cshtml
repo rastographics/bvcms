@@ -38,7 +38,7 @@
                     @Html.Partial("Supporters", Model)
                 </form>
                 <a id="edit-supporters" href="/MissionTripEmail2/SupportersEdit/@Model.PeopleId" class="btn btn-default">Edit</a>
-                <span id="editing" class="hide">
+                <span id="editing" style="display:none;">
                     <a id="cancel-editing" href="/MissionTripEmail2/Supporters/@Model.PeopleId" class="btn btn-default">Cancel</a>
                     <a id="done-editing" href="/MissionTripEmail2/SupportersUpdate" class="btn btn-primary">Save</a>
                 </span>
