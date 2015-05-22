@@ -61,6 +61,16 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression IsCurrentUser()
+        {
+            var tf = CodeIds == "1";
+            Expression<Func<Person, bool>> pred = p =>
+                p.PeopleId == Util.UserPeopleId;
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression DuplicateEmails()
         {
             var tf = CodeIds == "1";
