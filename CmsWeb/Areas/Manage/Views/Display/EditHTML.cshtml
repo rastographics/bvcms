@@ -3,7 +3,7 @@
     ViewBag.Title = "Edit Html Content";
     ViewBag.PageHeader = Model.Title;
     Layout = ViewExtensions2.TouchPointLayout();
-    
+
 }
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
@@ -27,17 +27,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <script type="text/javascript">
-                            function iframeLoaded() {
-                                var iFrameID = document.getElementById('email-body');
-                                if (iFrameID) {
-                                    // here you can make the height, I delete it first, then I make it again
-                                    iFrameID.height = "";
-                                    iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
-                                }
-                            }
-                        </script>
-                        <iframe src="/Display/EmailBody/@Model.Id" frameborder="0" onload="iframeLoaded()" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                        <iframe frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
                         <input type="hidden" id="body" name="body" />
                     </div>
                     <a href="/Display/#tab_htmlContent" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> <a class="btn btn-primary save">Save Content</a>
@@ -52,7 +42,15 @@
 {
     @ViewExtensions2.FroalaEditorScripts()
     <script type="text/javascript">
-        
+        function iframeLoaded() {
+            var iFrameID = document.getElementById('email-body');
+            if (iFrameID) {
+                // here you can make the height, I delete it first, then I make it again
+                iFrameID.height = "";
+                iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
+            }
+        }
+
         function getParameterByName(name) {
             name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
             var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
@@ -61,6 +59,7 @@
         }
 
         $(function () {
+            var iframeSource = "/Display/EmailBody/@Model.Id";
 
             $.Editable.DEFAULTS.allowedTags.push('html');
             $.Editable.DEFAULTS.allowedTags.push('head');
@@ -72,20 +71,28 @@
             $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
             $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
 
-            $('#email-body').load(function () {
+            var $emailBody = $('#email-body');
+            $emailBody.attr('src', iframeSource);
+            $emailBody.load(function () {
                 $(this).contents().find('#editor-body').froalaEditable({
                     inlineMode: false,
-                    beautifyCode: false,
                     allowStyle: true,
                     spellcheck: true,
                     useFileName: false,
+                    useClasses: false,
                     fullPage: true,
                     minHeight: 100,
                     theme: 'custom',
-                    buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
+                    buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
                     imageUploadURL: '/Account/FroalaUpload',
                     fileUploadURL: '/Account/FroalaUpload'
                 });
+
+                // reset the html... it's strange but resetting the html here causes the editor to retain any html, head, body tags that might be in the html.
+                var fullHtml = $(this).contents().find('#hiddenHtml').val();
+                $(this).contents().find('#editor-body').froalaEditable('setHTML', fullHtml, true);
+
+                iframeLoaded();
                 $(this).contents().find('#editor-body').on('editable.htmlHide', function (e, editor, html) {
                     iframeLoaded();
                 });
@@ -119,9 +126,9 @@
                                 title: "Deleted!",
                                 type: "success"
                             },
-                            function () {
-                                window.location = "/Manage/Display/#tab_htmlContent";
-                            });
+                                function () {
+                                    window.location = "/Manage/Display/#tab_htmlContent";
+                                });
                         }
                     });
                 });
@@ -139,9 +146,9 @@
                 },
                 function () {
                     if (checked)
-                        window.location.href = window.location.pathname + '?snippet=true';
+                        window.location = "/Display/ContentEdit/@Model.Id/?snippet=true";
                     else
-                        window.location.href = window.location.pathname;
+                        window.location = "/Display/ContentEdit/@Model.Id/?snippet=true";
                 });
 
             });

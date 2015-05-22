@@ -199,7 +199,7 @@ namespace CmsData
             if (setting != null)
                 Settings.DeleteOnSubmit(setting);
         }
-        public void Log(string s)
+        public new void Log(string s)
         {
             var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
             output = output + "\\log-{0}-{1}.txt".Fmt(Host, DateTime.Today.ToSortableDate());

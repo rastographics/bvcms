@@ -977,9 +977,9 @@ namespace CmsWeb
             switch (ret)
             {
                 case DbUtil.CheckDatabaseResult.DatabaseDoesNotExist:
-                    return "/Error/DatabaseNotFound/?dbname={0}".Fmt(Util.Host);
+                    return "/Errors/DatabaseNotFound.aspx?dbname={0}".Fmt(Util.Host);
                 case DbUtil.CheckDatabaseResult.ServerNotFound:
-                    return "/Error/DatabaseServerNotFound/?server={0}".Fmt(Util.DbServer);
+                    return "/Errors/DatabaseServerNotFound.aspx?server={0}".Fmt(Util.DbServer);
                 case DbUtil.CheckDatabaseResult.DatabaseExists:
                     return null;
             }

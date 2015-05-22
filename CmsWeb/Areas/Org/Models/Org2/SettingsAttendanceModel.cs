@@ -60,7 +60,7 @@ namespace CmsWeb.Areas.Org2.Models
                 if (sc != null && sc.SchedTime != null && sc.SchedDay < 9)
                 {
 					var dt = Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
-			        if (dt >= Util.Now.Date)
+			        if (dt >= Util.Now)
 			            dt = dt.AddDays(-7);
                     return dt.Add(sc.SchedTime.Value.TimeOfDay); 
                 }

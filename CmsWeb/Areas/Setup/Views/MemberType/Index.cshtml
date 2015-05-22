@@ -181,8 +181,8 @@
                 },
                 function () {
                     $.post("/MemberType/Delete/" + id, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
+                        if (ret == "used")
+                            swal("Error!", "That member type is being used.", "error");
                         else {
                             swal({
                                 title: "Deleted!",
@@ -231,7 +231,7 @@
 
                 var row = $(hash).closest('tr');
                 var bgColor = $(row).css('background-color');
-                $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                $(row).animate({ backgroundColor: '#eaab00' }, 1000, function () {
                     $(row).animate({ backgroundColor: bgColor }, 1000);
                 });
             }

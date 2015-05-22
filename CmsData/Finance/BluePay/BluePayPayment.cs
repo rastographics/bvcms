@@ -9,11 +9,11 @@
  * If you do make modifications that are useful, Bluepay would love it if you donated
  * them back to us!
  *
- * 
+ *
  * Documentation for Transactions: http://www.bluepay.com/sites/default/files/documentation/BluePay_bp10emu/BluePay%201-0%20Emulator.txt
- * 
+ *
  * Documentation for Reporting: http://www.bluepay.com/sites/default/files/documentation/BluePay_bpdailyreport2/dailyreport2.txt
- * 
+ *
  *
  */
 
@@ -29,20 +29,26 @@ using System.Text.RegularExpressions;
 using System.Web;
 using CsvHelper;
 
+// ReSharper disable CheckNamespace
+// ReSharper disable UnusedAutoPropertyAccessor.Local
+// ReSharper disable ParameterHidesMember
+// ReSharper disable ArrangeThisQualifier
+// ReSharper disable InconsistentNaming
+
 namespace BPCSharp
 {
     ///<summary>
     ///Transaction Object
     /// </summary>
-    /// 
+    ///
     internal class Transaction
     {
 
-        public string invoice_id;
-        public string trans_type;
-        public string payment_type;
-        public string name1;
-        public string name2;
+        public string invoice_id = null;
+        public string trans_type = null;
+        public string payment_type = null;
+        public string name1 = null;
+        public string name2 = null;
 
         public string id { get; private set; }
 
@@ -64,11 +70,12 @@ namespace BPCSharp
     ///<summary>
     ///BluePay Reporting Object
     /// </summary>
-    /// 
+    ///
     internal class BluePayReport
     {
         public IEnumerable<Transaction> Transactions { get; private set; }
-        private string _csvResponse;
+        private readonly string _csvResponse;
+
         public BluePayReport(string csvResponse)
         {
             _csvResponse = csvResponse;
@@ -92,10 +99,10 @@ namespace BPCSharp
     internal class BluePayPayment
     {
         // required for every transaction
-        public string accountID = "";
+        public string accountID;
         public string URL = "";
-        public string secretKey = "";
-        public string ServiceMode = "";
+        public string secretKey;
+        public string ServiceMode;
 
         // required for auth or sale
         public string paymentAccount = "";
@@ -194,7 +201,7 @@ namespace BPCSharp
         /// <summary>
         /// Sets all transaction info for a credit card transaction
         /// </summary>
-        /// 
+        ///
         public void setupCCTransaction(int peopleId, string cardnumber, string expires, string description, int? tranid, string cardcode, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
             this.setCCInformation(cardnumber, expires, cardcode);
@@ -210,7 +217,7 @@ namespace BPCSharp
         /// <summary>
         /// Sets all transaction info for an ACH transaction
         /// </summary>
-        /// 
+        ///
         public void setupACHTransaction(int peopleId, string routing, string account, string description, int? tranid, string email, string first, string last, string addr, string city, string state, string zip, string phone)
         {
             this.setACHInformation(routing, account, "C", "WEB");
@@ -241,6 +248,7 @@ namespace BPCSharp
         /// <param name="city"></param>
         /// <param name="state"></param>
         /// <param name="zip"></param>
+        /// <param name="peopleId"></param>
         public void setCustomerInformation(string name1, string name2, string addr1, string addr2, string city, string state, string zip, int? peopleId)
         {
             this.name1 = name1;
@@ -266,6 +274,7 @@ namespace BPCSharp
         /// <param name="state"></param>
         /// <param name="zip"></param>
         /// <param name="country"></param>
+        /// <param name="peopleId"></param>
         public void setCustomerInformation(string name1, string name2, string addr1, string addr2, string city, string state, string zip, string country, int? peopleId)
         {
             setCustomerInformation(name1, name2, addr1, addr2, city, state, zip, peopleId);
@@ -295,7 +304,7 @@ namespace BPCSharp
         /// <summary>
         /// Sets Swipe Information Using Either Both Track 1 2, Or Just Track 2
         /// </summary>
-        /// <param name="swipe"></param> 
+        /// <param name="swipe"></param>
         public void swipe(string swipe)
         {
             this.paymentType = "CREDIT";
@@ -385,7 +394,7 @@ namespace BPCSharp
         }
 
         /// <summary>
-        /// Gets Report of Transaction Data 
+        /// Gets Report of Transaction Data
         /// </summary>
         /// <param name="reportStart"></param>
         /// <param name="reportEnd"></param>
@@ -472,7 +481,7 @@ namespace BPCSharp
         /// <param name="reportEnd"></param>
         /// <param name="subaccountsSearched"></param>
         /// <param name="doNotEscape"></param>
-        /// <param name="includeErrors"></param>
+        /// <param name="excludeErrors"></param>
         public void getTransactionSettledReport(DateTime reportStart, DateTime reportEnd, bool subaccountsSearched,
                 bool doNotEscape, bool excludeErrors)
         {
@@ -755,11 +764,6 @@ namespace BPCSharp
             this.email = Email;
         }
 
-        public void Set_Param(string Name, string Value)
-        {
-            Name = Value;
-        }
-
         /// <summary>
         /// Calculates TAMPER_PROOF_SEAL for bp20post API
         /// </summary>
@@ -994,7 +998,7 @@ namespace BPCSharp
             postdata.Write(data, 0, data.Length);
             postdata.Close();
 
-            //get response    
+            //get response
             try
             {
                 HttpWebResponse httpResponse = (HttpWebResponse)request.GetResponse();
@@ -1034,16 +1038,16 @@ namespace BPCSharp
 
         public string responseParams(HttpWebResponse httpResponse)
         {
-            Stream receiveStream = httpResponse.GetResponseStream();
-            Encoding encode = Encoding.GetEncoding("utf-8");
-            // Pipes the stream to a higher level stream reader with the required encoding format. 
-            StreamReader readStream = new StreamReader(receiveStream, encode);
-            Char[] read = new Char[512];
-            int count = readStream.Read(read, 0, 512);
+            var receiveStream = httpResponse.GetResponseStream();
+            var encode = Encoding.GetEncoding("utf-8");
+            // Pipes the stream to a higher level stream reader with the required encoding format.
+            var readStream = new StreamReader(receiveStream, encode);
+            var read = new char[512];
+            var count = readStream.Read(read, 0, 512);
             while (count > 0)
             {
                 // Dumps the 256 characters on a string and displays the string to the console.
-                String str = new String(read, 0, count);
+                var str = new string(read, 0, count);
                 response = response + HttpUtility.UrlDecode(str);
                 count = readStream.Read(read, 0, 512);
             }

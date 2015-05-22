@@ -201,7 +201,7 @@ namespace CmsWeb
 				{
 					string sessionCookie = context.Request.Headers["Cookie"];
 					if ((sessionCookie != null) && (sessionCookie.IndexOf("ASP.NET_SessionId") >= 0))
-						filterContext.Result = new RedirectResult("/Error/SessionTimeout");
+						filterContext.Result = new RedirectResult("/Errors/SessionTimeout.htm");
 				}
 #endif
             base.OnActionExecuting(filterContext);

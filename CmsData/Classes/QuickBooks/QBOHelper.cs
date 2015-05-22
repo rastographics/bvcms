@@ -60,7 +60,7 @@ namespace CmsData.Classes.QuickBooks
             return jel;
         }
 
-        public int CommitJournalEntries(string sDescription, List<QBJournalEntryLine> jelEntries)
+        public new int CommitJournalEntries(string sDescription, List<QBJournalEntryLine> jelEntries)
         {
             if (jelEntries == null) return 0;
             if (jelEntries.Count() == 0) return 0;

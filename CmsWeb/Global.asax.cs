@@ -81,12 +81,12 @@ namespace CmsWeb
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
             var url = Request.Url.OriginalString;
-            if (url.Contains("/Error/") || url.Contains("/Content/touchpoint/") || url.Contains("healthcheck.txt"))
+            if (url.Contains("/Errors/") || url.Contains("/Content/touchpoint/") || url.Contains("healthcheck.txt"))
                 return;
 
             if (Util.AppOffline)
             {
-                Response.Redirect("/Error/Offline");
+                Response.Redirect("/Errors/AppOffline.htm");
                 return;
             }
 
@@ -105,7 +105,7 @@ namespace CmsWeb
                 var ret = DbUtil.CreateDatabase();
                 if (ret.HasValue())
                 {
-                    Response.Redirect("/Error/DatabaseCreationError/?error={0}".Fmt(HttpUtility.UrlEncode(ret)));
+                    Response.Redirect("/Errors/DatabaseCreationError.aspx?error={0}".Fmt(HttpUtility.UrlEncode(ret)));
                     return;
                 }
             }
@@ -122,7 +122,7 @@ namespace CmsWeb
             }
             catch (SqlException)
             {
-                Response.Redirect("/Error/DatabaseNotInitialized/?dbname=".Fmt(Util.Host));
+                Response.Redirect("/Errors/DatabaseNotInitialized.aspx?dbname=".Fmt(Util.Host));
             }
 
             var cul = DbUtil.Db.Setting("Culture", "en-US");
@@ -154,7 +154,7 @@ namespace CmsWeb
 
         public void ErrorLog_Logged(object sender, ErrorLoggedEventArgs args)
         {
-            HttpContext.Current.Session["error"] = args.Entry.Error.Exception.Message;
+            HttpContext.Current.Items["error"] = args.Entry.Error.Exception.Message;
         }
 
         public void ErrorMail_Filtering(object sender, ExceptionFilterEventArgs e)

@@ -146,6 +146,8 @@
 
     $("body").on("click", 'a.credit', function (ev) {
         ev.preventDefault();
+        var a = $(this);
+        $("#crediturl").val(a.attr("href"));
         $('#credit-modal').modal();
         return false;
     });
@@ -166,7 +168,7 @@
             return false;
         q += "&amt=" + amt;
 
-        $.post(a.attr("href"), q, function (ret) {
+        $.post($("#crediturl").val(), q, function (ret) {
             $.unblock();
             if (ret.substring(5, 0) == "error")
                 swal("Error!", ret, "error");

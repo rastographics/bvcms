@@ -27,8 +27,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         {
             var prevbundle = -1;
             var curbundle = 0;
-
-            var bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
+            BundleHeader bh = null;
 
             var fieldCount = csv.FieldCount;
             var cols = csv.GetFieldHeaders();
@@ -63,7 +62,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                             curbundle = csv[c].ToInt();
                             if (curbundle != prevbundle)
                             {
-                                BatchImportContributions.FinishBundle(bh);
+                                if(bh != null)
+                                    BatchImportContributions.FinishBundle(bh);
                                 bh = BatchImportContributions.GetBundleHeader(date, DateTime.Now);
                                 prevbundle = curbundle;
                             }

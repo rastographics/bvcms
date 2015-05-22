@@ -72,7 +72,7 @@
                 }
                 <a href="/Lookups" class="btn btn-default btn-block visible-xs-block"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
             </div>
-        </div>       
+        </div>
     </div>
 </div>
 <div class="modal fade" id="new-modal">
@@ -115,7 +115,7 @@
                 mode: 'inline',
                 type: 'text',
                 url: "/Lookup/Edit/",
-                params: function (params) {  
+                params: function (params) {
                     var data = {};
                     data['id'] = params.pk;
                     data['value'] = params.value;
@@ -171,7 +171,7 @@
 
                 var row = $(hash).closest('tr');
                 var bgColor = $(row).css('background-color');
-                $(row).animate({ backgroundColor: '#fcf8e3' }, 1000, function () {
+                $(row).animate({ backgroundColor: '#eaab00' }, 1000, function () {
                     $(row).animate({ backgroundColor: bgColor }, 1000);
                 });
             }

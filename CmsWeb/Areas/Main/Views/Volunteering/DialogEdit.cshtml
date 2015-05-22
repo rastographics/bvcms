@@ -1,11 +1,14 @@
 ﻿@using CmsData;
 @model BackgroundCheck
 @{
+    // type must be either ProtectMyMinistryHelper.TYPE_BACKGROUND or ProtectMyMinistryHelper.TYPE_CREDIT
+    int type = ViewBag.dialogType;
     var labels = from e in DbUtil.Db.BackgroundCheckLabels
                  orderby e.Description
                  select e;
 }
 <form action="/Volunteering/EditCheck/@Model.Id" method="post">
+    <input type="hidden" name="type" value="@type" />
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title">Edit Check</h4>

@@ -468,6 +468,7 @@
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\CurrOrgMembers2.cs" />
     <Compile Include="Generated\Functions\FilterOnlineReg.cs" />
+    <Compile Include="Generated\Functions\FilterOrgSearchName.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
     <Compile Include="Generated\Functions\GetContributionTotalsBothIfJoint.cs" />
     <Compile Include="Generated\Functions\GetTotalContributionsAgeRange.cs" />
@@ -492,6 +493,7 @@
     <Compile Include="Generated\Functions\RollList.cs" />
     <Compile Include="Generated\Functions\RollListHighlight.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
+    <Compile Include="Generated\Functions\VisitsAbsent.cs" />
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />
     <Compile Include="Generated\MergeHistory.cs" />

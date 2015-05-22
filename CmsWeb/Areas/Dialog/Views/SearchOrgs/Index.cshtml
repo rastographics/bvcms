@@ -1,29 +1,38 @@
 ﻿@model CmsWeb.Areas.Dialog.Models.SearchOrgsModel
-<form name="form1" id="select-orgs" class="form form-horizontal modal fade hide validate ajax">
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">×</a>
-        <h3>Select Orgs Dialog</h3>
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Select Orgs Dialog</h4>
+        </div>
+        <div class="modal-body">
+            @Html.Hidden("ordered", Model.ordered)
+            @Html.Hidden("singlemode", Model.singlemode)
+            @Html.Hidden("id", Model.id)
+            <div class="well">
+                <div class="row">
+                    <div class="col-sm-8 col-md-8">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
+                            <input id="name" name="name" title="Partial Division / Organization Name" type="text" value="" class="form-control" placeholder="Name / ID#" />
+                        </div>
+                    </div>
+                    <div class="col-sm-4 col-md-4">
+                        <div class="pull-right">
+                            <button type="reset" class="btn btn-default">Clear</button> 
+                            <a href="/SearchOrgs/Results" id="search" class="btn btn-primary default formlink blue ajax">Search</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    @Html.Partial("Results", Model)
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="button" class="btn btn-default" value="Update Selected" id="UpdateSelected" />
+        </div>
     </div>
-    <div class="modal-body">
-        @Html.Hidden("ordered", Model.ordered)
-        @Html.Hidden("singlemode", Model.singlemode)
-        @Html.Hidden("id", Model.id)
-        <table id="searchvalues" class="roundbox" cellspacing="5">
-            <tr>
-                <th class="right"> Name/ID#: </th>
-                <td><input id="name" name="name" title="Partial Division / Organization Name" type="text" value="" /></td>
-            </tr>
-            <tr>
-                <td>
-                    <input type="button" class="btn" value="Update Selected" id="UpdateSelected" />
-                </td>
-                <td class="right">
-                    <button type="reset" class="btn">Clear</button>
-                    <a href="/SearchOrgs/Results" id="search" class="btn btn-primary default formlink blue ajax">Search</a>
-                </td>
-            </tr>
-        </table>
-        <br/>
-        @Html.Partial("Results", Model)
-    </div>
-</form>
+</div>

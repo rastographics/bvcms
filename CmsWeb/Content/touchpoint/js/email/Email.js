@@ -4,17 +4,17 @@
 
     $('#Body').froalaEditable({
         inlineMode: false,
-        beautifyCode: false,
         spellcheck: true,
         useFileName: false,
+        useClasses: false,
         height: 400,
         theme: 'custom',
-        buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
+        buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
         imageUploadURL: '/Account/FroalaUpload',
         fileUploadURL: '/Account/FroalaUpload'
     });
 
-    $("#Send").click(function () {
+    $(".Send").click(function () {
         $.block();
         $('#Body').text($('#Body').froalaEditable('getHTML'));
         var q = $(this).closest('form').serialize();
@@ -33,7 +33,7 @@
                     $.unblock();
                     swal("Success!", ret.content, "success");
                 } else {
-                    $("#send-actions").remove();
+                    $(".Send").remove();
                     var intervalid = window.setInterval(function () {
                         $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
                             $.unblock();
@@ -58,7 +58,7 @@
         });
     });
 
-    $("#TestSend").click(function () {
+    $(".TestSend").click(function () {
         $.block();
         $('#Body').text($('#Body').froalaEditable('getHTML'));
         var q = $(this).closest('form').serialize();

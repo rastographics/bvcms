@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Main.Controllers
         [Route("~/Email/{id:guid}")]
 		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid)
 		{
-			if (Util.SessionTimedOut()) return Redirect("/Error/SessionTimeout");
+			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
 			if (!body.HasValue())
 				body = TempData["body"] as string;
 
@@ -70,9 +70,14 @@ namespace CmsWeb.Areas.Main.Controllers
 			return View("Index", me);
 		}
 
-        public ActionResult EmailBody(int id)
+        public ActionResult EmailBody(string id)
         {
-            ViewBag.templateID = id;
+            var i = id.ToInt();
+            var c = ViewExtensions2.GetContent(i);
+            if(c == null)
+                return new EmptyResult();
+
+            ViewBag.content = c;
             return View();
         }
         

@@ -32,7 +32,7 @@
         $.post(datum.url, {}, function(ret) {
             $("#recipients").html(ret).ready(function() {
                 $("#supportsearch").val("");
-                $("#recipients .newsupporter").effect("highlight", { color: '#fcf8e3' }, 2000);
+                $("#recipients .newsupporter").effect("highlight", { color: '#eaab00' }, 2000);
             });
         });
     });
@@ -114,15 +114,24 @@
         if ($('#htmleditor').data('fa.editable')) {
             $('#htmleditor').froalaEditable('destroy');
         }
+
+        var extraSmallDevice = $('.device-xs').is(':visible');
+        var editorButtons = ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'];
+        var editorHeight = 400;
+        if (extraSmallDevice) {
+            editorButtons = ['bold', 'createLink', 'specialLink', 'insertImage', 'html', 'fullscreen'];
+            editorHeight = 200;
+        }
+
         $('#htmleditor').froalaEditable({
             inlineMode: false,
-            beautifyCode: false,
             spellcheck: true,
             useFileName: false,
+            useClasses: false,
             zIndex: 2501,
-            height: 200,
+            height: editorHeight,
             theme: 'custom',
-            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
+            buttons: editorButtons,
             imageUploadURL: '/Account/FroalaUpload',
             fileUploadURL: '/Account/FroalaUpload'
         });

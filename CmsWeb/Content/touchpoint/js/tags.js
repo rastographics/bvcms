@@ -55,6 +55,14 @@
         return true;
     });
 
+    $("#tagname").keypress(function (e) {
+        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            $('#new-tag').click();
+            return false;
+        }
+        return true;
+    });
+
     $("#new-tag").click(function(ev) {
         ev.preventDefault();
         var f = $('#new-tag-form');
@@ -72,6 +80,14 @@
     $("a.rename").click(function (ev) {
         ev.preventDefault();
         $("#rename-modal").modal();
+        return true;
+    });
+
+    $("#renamedTag").keypress(function (e) {
+        if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13)) {
+            $('#rename-tag').click();
+            return false;
+        }
         return true;
     });
 

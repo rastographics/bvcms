@@ -100,21 +100,17 @@
                             @Html.TextArea("Body", Model.Body, new { @class = "form-control" })
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group hidden-xs">
                         <div class="col-sm-offset-2 col-sm-10">
                             <div class="pull-right">
-                                <div class="btn-group" id="send-actions">
-                                    <button type="button" class="btn btn-primary" id="Send"><i class="fa fa-paper-plane"></i> Send</button>
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <span class="caret"></span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a href="#" id="TestSend">Send Test Email (To Me)</a></li>
-                                    </ul>
-                                </div>
+                                <a href="#" class="btn btn-default TestSend">Send Test Email (To Me)</a> 
+                                <button type="button" class="btn btn-primary Send"><i class="fa fa-paper-plane"></i> Send</button>
                             </div>
                         </div>
+                    </div>
+                    <div class="visible-xs-block">
+                        <button type="button" class="btn btn-primary btn-block Send"><i class="fa fa-paper-plane"></i> Send</button>
+                        <a href="#" class="btn btn-default btn-block TestSend">Send Test Email (To Me)</a>
                     </div>
                     <br/>
                 }

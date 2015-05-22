@@ -16,6 +16,7 @@ namespace CmsData.Registration
 This is a group of checkboxes where you can check more than one.
 You can specify a minumum number they must check.
 And you can specify a maximum number they can check.
+The Columns is only used when you need a grid of time slots and days (advanced).
 
 For each checkbox, you can specify the following:
 

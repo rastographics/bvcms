@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Web;
@@ -21,6 +21,7 @@ namespace UtilityExtensions
                 return ConfigurationManager.AppSettings["TestName"];
             }
         }
+
         private const string STR_UserId = "UserId";
         public static int UserId
         {
@@ -42,6 +43,7 @@ namespace UtilityExtensions
                         HttpContext.Current.Session[STR_UserId] = value;
             }
         }
+
         private const string STR_UserPreferredName = "UserPreferredName";
         public static string UserPreferredName
         {
@@ -61,6 +63,7 @@ namespace UtilityExtensions
                         HttpContext.Current.Session[STR_UserPreferredName] = value;
             }
         }
+
         private const string STR_UserFullName = "UserFullName";
         public static string UserFullName
         {
@@ -86,7 +89,7 @@ namespace UtilityExtensions
         {
             get
             {
-                string name = string.Empty;
+                var name = string.Empty;
                 if (HttpContext.Current != null)
                     if (HttpContext.Current.Session != null)
                         if (HttpContext.Current.Session[UserFirstNameSessionKey] != null)
@@ -105,6 +108,7 @@ namespace UtilityExtensions
         {
             get { return UserId == 0 ? 1 : UserId; }
         }
+
         private const string STR_UserPeopleId = "UserPeopleId";
         public static int? UserPeopleId
         {
@@ -168,28 +172,6 @@ namespace UtilityExtensions
             if (a.Length == 2)
                 return a[1];
             return a[0];
-        }
-        public const string STR_Preferences = "Preferences";
-        public const string STR_PageSize = "PageSize";
-        public static void SetPageSizeCookie(int value)
-        {
-            var cookie = new HttpCookie(STR_Preferences);
-            cookie.Values[STR_PageSize] = value.ToString();
-            cookie.Expires = DateTime.MaxValue;
-            HttpContext.Current.Response.AppendCookie(cookie);
-        }
-        public static int GetPageSizeCookie()
-        {
-            HttpRequest r = null;
-            if (HttpContext.Current != null)
-                r = HttpContext.Current.Request;
-            if (r != null && r.Cookies[STR_Preferences] != null)
-            {
-                var cookie = r.Cookies[STR_Preferences];
-                if (cookie != null && cookie.Values[STR_PageSize] != null)
-                    return cookie.Values[STR_PageSize].ToInt();
-            }
-            return 10;
         }
     }
 }

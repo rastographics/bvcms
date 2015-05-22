@@ -28,15 +28,24 @@
         if ($('#htmleditor').data('fa.editable')) {
             $('#htmleditor').froalaEditable('destroy');
         }
+
+        var extraSmallDevice = $('.device-xs').is(':visible');
+        var editorButtons = ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'];
+        var editorHeight = 400;
+        if (extraSmallDevice) {
+            editorButtons = ['bold', 'createLink', 'specialLink', 'insertImage', 'html', 'fullscreen'];
+            editorHeight = 200;
+        }
+
         $('#htmleditor').froalaEditable({
             inlineMode: false,
-            beautifyCode: false,
             spellcheck: true,
             useFileName: false,
+            useClasses: false,
             zIndex: 2501,
-            height: 200,
+            height: editorHeight,
             theme: 'custom',
-            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
+            buttons: editorButtons,
             imageUploadURL: '/Account/FroalaUpload',
             fileUploadURL: '/Account/FroalaUpload'
         });
@@ -62,7 +71,7 @@
         $('#editor-modal').modal('hide');
     });
 
-    $("#Send").click(function () {
+    $(".Send").click(function () {
         $.block();
         $('#body').val($('#email-body').contents().find('#tempateBody').html());
         var q = $("#SendEmail").serialize();
@@ -81,7 +90,7 @@
                     $.unblock();
                     swal("Success!", ret.content, "success");
                 } else {
-                    $("#send-actions").remove();
+                    $('.Send').remove();
                     var intervalid = window.setInterval(function () {
                         $.post('/Email/TaskProgress/' + taskid, null, function (ret) {
                             $.unblock();
@@ -106,7 +115,7 @@
         });
     });
 
-    $("#SaveDraft").click(function () {
+    $(".SaveDraft").click(function () {
         if ($(this).attr("saveType") == "0") {
             $('#draft-modal').modal('show');
         } else {
@@ -134,7 +143,7 @@
         $("#SendEmail").submit();
     });
 
-    $("#TestSend").click(function () {
+    $(".TestSend").click(function () {
         $.block();
 
         $.clearTemplateClass();
