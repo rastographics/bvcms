@@ -1,11 +1,13 @@
 @using CmsWeb.Areas.Search.Models
 <script type="text/javascript">
-  $.dtoptions = {
-    format: '@Util.jQueryDateFormat2',
-    formatTime: '@Util.jQueryDateFormat2WithTime',
-    cul: '@Util.Culture'
-  };
-  $.dateFormat = '@Util.jQueryDateFormat';    
-  Globalize.culture('@UtilityExtensions.Util.Culture');
-  $.ClipboardHasCondition = '1' === '@(QueryModel.ClipboardHasCondition() ? "1" : "0")';
+    $.cultureDateFormat = '@Util.CultureDateFormat';
+    $.cultureDateFormatAlt = '@Util.CultureDateFormatAlt';
+    $.dtoptions = {
+        format: '@Util.jQueryDateFormat2',
+        formatTime: '@Util.jQueryDateFormat2WithTime',
+        cul: '@Util.Culture'
+    };
+    $.dateFormat = '@Util.jQueryDateFormat';    
+    Globalize.culture('@UtilityExtensions.Util.Culture');
+    $.ClipboardHasCondition = '1' === '@(QueryModel.ClipboardHasCondition() ? "1" : "0")';
 </script>

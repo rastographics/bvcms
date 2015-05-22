@@ -22,51 +22,51 @@ else
 @section scripts
 {
     <script type="text/javascript">
-        $(function () {
-            $('body').on('click', '#delete', function (ev) {
+        $(function() {
+            $('body').on('click', '#delete', function(ev) {
                 ev.preventDefault();
                 var href = $(this).attr("href");
 
                 swal({
-                    title: "Are you sure?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonClass: "btn-danger",
-                    confirmButtonText: "Yes, delete it!",
-                    closeOnConfirm: false
-                },
-                function () {
-                    $.post(href, null, function (ret) {
-                        if (ret && ret.error)
-                            swal("Error!", ret.error, "error");
-                        else {
-                            swal({
-                                title: "Deleted!",
-                                type: "success"
-                            },
-                            function () {
-                                window.location = ret;
-                            });
-                        }
+                        title: "Are you sure?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: false
+                    },
+                    function() {
+                        $.post(href, null, function(ret) {
+                            if (ret && ret.error)
+                                swal("Error!", ret.error, "error");
+                            else {
+                                swal({
+                                        title: "Deleted!",
+                                        type: "success"
+                                    },
+                                    function() {
+                                        window.location = ret;
+                                    });
+                            }
+                        });
                     });
-                });
                 return true;
             });
 
-            $('body').on('click', 'a.displayedit', function (ev) {
+            $('body').on('click', 'a.displayedit', function(ev) {
                 ev.preventDefault();
                 var f = $(this).closest('form');
                 f.validate();
                 if (f.valid()) {
                     var q = f.serialize();
-                    $.post($(this).attr('href'), q, function (ret) {
+                    $.post($(this).attr('href'), q, function(ret) {
                         window.location = window.location;
                     });
                 }
                 return false;
             });
 
-            $('body').on('change', '#Status', function () {
+            $('body').on('change', '#Status', function() {
                 if ($('#Status').val() == 'Open') {
                     $('#IsOpen').val('True');
                 } else {
@@ -75,24 +75,38 @@ else
             });
 
             $.validator.setDefaults({
-                highlight: function (input) {
+                highlight: function(input) {
                     $(input).addClass("ui-state-highlight");
                 },
-                unhighlight: function (input) {
+                unhighlight: function(input) {
                     $(input).removeClass("ui-state-highlight");
                 }
             });
 
-            $.SetValidation = function () {
-                $("#bundleform").validate({
-                    rules: {
-                        "Bundle.ContributionDate": { date: true, required: true },
-                        "Bundle.DepositDate": { date: true },
-                        "Bundle.TotalCash": { number: true },
-                        "Bundle.TotalChecks": { number: true },
-                        "Bundle.TotalEnvelopes": { number: true },
-                    }
-                });
+            $.SetValidation = function() {
+                var extraSmallDevice = $('.device-xs').is(':visible');
+                var smallDevice = $('.device-sm').is(':visible');
+                if (extraSmallDevice || smallDevice) {
+                    $("#bundleform").validate({
+                        rules: {
+                            "Bundle.ContributionDate": { required: true },
+                            "Bundle.TotalCash": { number: true },
+                            "Bundle.TotalChecks": { number: true },
+                            "Bundle.TotalEnvelopes": { number: true },
+                        }
+                    });
+                } else {
+                    $("#bundleform").validate({
+                        rules: {
+                            "Bundle.ContributionDate": { date: true, required: true },
+                            "Bundle.DepositDate": { date: true },
+                            "Bundle.TotalCash": { number: true },
+                            "Bundle.TotalChecks": { number: true },
+                            "Bundle.TotalEnvelopes": { number: true },
+                        }
+                    });
+                }
+                
             };
 
             $.SetValidation();

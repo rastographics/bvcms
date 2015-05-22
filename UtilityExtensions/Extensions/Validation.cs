@@ -83,6 +83,34 @@ namespace UtilityExtensions
                 HttpContext.Current.Items[STR_Culture] = value;
             }
         }
+
+        public static string CultureDateFormat
+        {
+            get
+            {
+                var cultureDateFormat = "MM/DD/YYYY";
+                if (Culture != "en-US")
+                {
+                    var c = new CultureInfo(Culture);
+                    cultureDateFormat = c.DateTimeFormat.ShortDatePattern.ToUpper();
+                }
+                return cultureDateFormat;
+            }
+        }
+
+        public static string CultureDateFormatAlt
+        {
+            get
+            {
+                var cultureDateFormat = "MM/DD/YY";
+                if (Culture != "en-US")
+                {
+                    cultureDateFormat = string.Empty;
+                }
+                return cultureDateFormat;
+            }
+        }
+
         public static string jQueryDateFormat
         {
             get
