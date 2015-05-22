@@ -2,12 +2,14 @@
 <script type="text/javascript">
     $.cultureDateFormat = '@Util.CultureDateFormat';
     $.cultureDateFormatAlt = '@Util.CultureDateFormatAlt';
+    $.cultureDateTimeFormat = '@Util.CultureDateTimeFormat';
+    $.cultureDateTimeFormatAlt = '@Util.CultureDateTimeFormatAlt';
     $.dtoptions = {
         format: '@Util.jQueryDateFormat2',
         formatTime: '@Util.jQueryDateFormat2WithTime',
         cul: '@Util.Culture'
     };
-    $.dateFormat = '@Util.jQueryDateFormat';    
+    $.dateFormat = '@Util.jQueryDateFormat';
     Globalize.culture('@UtilityExtensions.Util.Culture');
     $.ClipboardHasCondition = '1' === '@(QueryModel.ClipboardHasCondition() ? "1" : "0")';
 </script>

@@ -97,7 +97,7 @@ namespace UtilityExtensions
                 return cultureDateFormat;
             }
         }
-
+        // h:mm A
         public static string CultureDateFormatAlt
         {
             get
@@ -108,6 +108,30 @@ namespace UtilityExtensions
                     cultureDateFormat = string.Empty;
                 }
                 return cultureDateFormat;
+            }
+        }
+
+        public static string CultureDateTimeFormat
+        {
+            get
+            {
+                return "{0} {1}".Fmt(CultureDateFormat, "h:mm A");
+            }
+        }
+
+        public static string CultureDateTimeFormatAlt
+        {
+            get
+            {
+                var cultureDateTimeFormat = "MM/DD/YY";
+                if (Culture != "en-US")
+                {
+                    cultureDateTimeFormat = string.Empty;
+                }
+                if (!string.IsNullOrEmpty(cultureDateTimeFormat))
+                    cultureDateTimeFormat = "{0} {1}".Fmt(cultureDateTimeFormat, "h:mm A");
+
+                return cultureDateTimeFormat;
             }
         }
 

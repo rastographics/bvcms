@@ -211,8 +211,12 @@ $.InitializeDateElements = function () {
         } else {
             $(".input-group.date").datetimepicker({ format: $.cultureDateFormat, widgetPositioning: { horizontal: 'left' } });
         }
+        if ($.cultureDateTimeFormatAlt != '') {
+            $(".input-group.datetime").datetimepicker({ format: $.cultureDateTimeFormat, extraFormats: [$.cultureDateTimeFormatAlt], widgetPositioning: { horizontal: 'left' } });
+        } else {
+            $(".input-group.datetime").datetimepicker({ format: $.cultureDateTimeFormat, widgetPositioning: { horizontal: 'left' } });
+        }
         
-        $(".input-group.datetime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', extraFormats: ['MM/DD/YY h:mm A'], widgetPositioning: { horizontal: 'left' } });
         $(".input-group.time").datetimepicker({ format: 'h:mm A', widgetPositioning: { horizontal: 'left' } });
 
         $('.input-group.birthdate span.input-group-addon').click(function () {
