@@ -1,216 +1,217 @@
 ﻿@using CmsWeb
 @model CmsWeb.Areas.Reports.Models.DecisionSummaryModel
 @{
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Decision Summary Report";
-    ViewBag.ReportPageHeader = "Decision Summary Report";
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Decision Summary Report";
+  ViewBag.ReportPageHeader = "Decision Summary Report";
+  var r = "/Reports/DecisionsToQuery";
 }
 <div class="report box box-responsive">
-    <div class="box-content">
-        <div class="well hidden-print" style="max-width: 850px; margin: auto;">
-            <div class="row">
-                @using (Html.BeginForm("Decisions", "Reports", FormMethod.Get, new { id = "form" }))
-                {
-                    <div class="col-sm-3">
-                        <label for="Campus" class="control-label">Campus</label>
-                        <div class="input-group">
-                            @Html.DropDownList("Campus", Model.CampusList(), new { @class = "form-control" })
-                        </div>
-                    </div>
-                    <div class="col-sm-4">
-                        <label for="dt1" class="control-label">From Date</label>
-                        <div class="input-group date">
-                            @Html.TextBox("dt1", Model.dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                            @Html.Hidden("dt1Iso", Model.dt1.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
-                        </div>
-                    </div>
-                    <div class="col-sm-5">
-                        <label for="dt2" class="control-label">To Date</label>
-                        <div class="form-inline">
-                            <div class="input-group date">
-                                @Html.TextBox("dt2", Model.dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                                @Html.Hidden("dt2Iso", Model.dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
-                            </div>
-                            <div class="input-group">
-                                <button type="submit" class="btn btn-primary">Run</button>
-                            </div>
-                        </div>
-                    </div>
-                }
+  <div class="box-content">
+    <div class="well hidden-print" style="max-width: 850px; margin: auto;">
+      <div class="row">
+        @using (Html.BeginForm("Decisions", "Reports", FormMethod.Get, new { id = "form", target="reports" }))
+        {
+          <div class="col-sm-3">
+            <label for="Campus" class="control-label">Campus</label>
+            <div class="input-group">
+              @Html.DropDownList("Campus", Model.CampusList(), new { @class = "form-control" })
             </div>
-        </div>
-        <div class="visible-print-block text-center">
-            @{
-                var campus = Model.CampusList().FirstOrDefault(c => c.Value == Model.Campus.ToString());
-                var campusName = campus != null ? campus.Text : "";
-            }
-            <strong>Campus:</strong> @campusName<br />
-            <strong>From Date:</strong> @Model.dt1.GetValueOrDefault().ToShortDateString()<br />
-            <strong>To Date:</strong> @Model.dt2.GetValueOrDefault().ToShortDateString()
-        </div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th colspan="2">Decisions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var r in Model.DecisionsByType())
-                {
-                    <tr>
-                        <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForDecisionType/@r.Id">@r.Desc</a></td>
-                        <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForDecisionType/@r.Id">@r.Count</a></td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr class="totals-row">
-                    <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForDecisionType/All">Total</a></td>
-                    <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForDecisionType/All">@Model.DecisionsCount</a></td>
-                </tr>
-                @foreach (var r in Model.DecisionsByType2())
-                {
-                    <tr>
-                        <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForDecisionType/@r.Id">@r.Desc</a></td>
-                        <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForDecisionType/@r.Id">@r.Count</a></td>
-                    </tr>
-                }
-            </tfoot>
-        </table>
-        <div class="row">
-            <div class="col-sm-6">
-                <table class="table table-striped pull-right">
-                    <thead>
-                        <tr>
-                            <th colspan="2">Baptisms By Age</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var r in Model.BaptismsByAge())
-                        {
-                            <tr>
-                                <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismAge/@r.Id">@r.Desc</a></td>
-                                <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismAge/@r.Id">@r.Count</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr class="totals-row">
-                            <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismType/All">Total</a></td>
-                            <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismType/All">@Model.BaptismsCount</a></td>
-                        </tr>
-                    </tfoot>
-                </table>
+          </div>
+          <div class="col-sm-4">
+            <label for="dt1" class="control-label">From Date</label>
+            <div class="input-group date">
+              @Html.TextBox("dt1", Model.dt1.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+              @Html.Hidden("dt1Iso", Model.dt1.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
             </div>
-            <div class="col-sm-6">
-                <table class="table table-striped pull-left">
-                    <thead>
-                        <tr>
-                            <th colspan="2">Baptisms By Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var r in Model.BaptismsByType())
-                        {
-                            <tr>
-                                <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismType/@r.Id">@r.Desc</a></td>
-                                <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismType/@r.Id">@r.Count</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr class="totals-row">
-                            <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismType/All">Total</a></td>
-                            <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForBaptismType/All">@Model.BaptismsCount</a></td>
-                        </tr>
-                    </tfoot>
-                </table>
+          </div>
+          <div class="col-sm-5">
+            <label for="dt2" class="control-label">To Date</label>
+            <div class="form-inline">
+              <div class="input-group date">
+                @Html.TextBox("dt2", Model.dt2.GetValueOrDefault().ToShortDateString(), new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                @Html.Hidden("dt2Iso", Model.dt2.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+              </div>
+              <div class="input-group">
+                <button type="submit" class="btn btn-primary">Run</button>
+              </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <table class="table table-striped pull-right">
-                    <thead>
-                        <tr>
-                            <th colspan="2">New Member by Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var r in Model.NewMemberByType())
-                        {
-                            <tr>
-                                <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForNewMemberType/@r.Id">@r.Desc</a></td>
-                                <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForNewMemberType/@r.Id">@r.Count</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr class="totals-row">
-                            <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForNewMemberType/All">Total</a></td>
-                            <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForNewMemberType/All">@Model.NewMembersCount</a></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-            <div class="col-sm-6">
-                <table class="table table-striped pull-left">
-                    <thead>
-                        <tr>
-                            <th colspan="2">Dropped Members by Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var r in Model.DroppedMemberByType())
-                        {
-                            <tr>
-                                <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/ForDropType/@r.Id">@r.Desc</a></td>
-                                <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/ForDropType/@r.Id">@r.Count</a></td>
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr class="totals-row">
-                            <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/DroppedForChurch/All">Total</a></td>
-                            <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/DroppedForChurch/All">@Model.DroppedMembersCount</a></td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th colspan="2">Dropped Members by Church</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var r in Model.DroppedMemberByChurch())
-                {
-                    <tr>
-                        <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/DroppedForChurch/@r.Desc">@r.Desc</a></td>
-                        <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/DroppedForChurch/@r.Desc">@r.Count</a></td>
-                    </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr class="totals-row">
-                    <td class="text-left"><a class="query" href="/Reports/DecisionsToQuery/DroppedForChurch/All">Total</a></td>
-                    <td class="text-right"><a class="query" href="/Reports/DecisionsToQuery/DroppedForChurch/All">@Model.DroppedMembersCount</a></td>
-                </tr>
-            </tfoot>
-        </table>
+          </div>
+        }
+      </div>
     </div>
+    <div class="visible-print-block text-center">
+      @{
+        var campus = Model.CampusList().FirstOrDefault(c => c.Value == Model.Campus.ToString());
+        var campusName = campus != null ? campus.Text : "";
+      }
+      <strong>Campus:</strong> @campusName<br />
+      <strong>From Date:</strong> @Model.dt1.GetValueOrDefault().ToShortDateString()<br />
+      <strong>To Date:</strong> @Model.dt2.GetValueOrDefault().ToShortDateString()
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th colspan="2">Decisions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var ro in Model.DecisionsByType())
+        {
+          <tr>
+            <td class="text-left"><a class="query" href="@r/ForDecisionType/@ro.Id">@ro.Desc</a></td>
+            <td class="text-right"><a class="query" href="@r/ForDecisionType/@ro.Id">@ro.Count</a></td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr class="totals-row">
+          <td class="text-left"><a class="query" href="@r/ForDecisionType/All">Total</a></td>
+          <td class="text-right"><a class="query" href="@r/ForDecisionType/All">@Model.DecisionsCount</a></td>
+        </tr>
+        @foreach (var ro in Model.DecisionsByType2())
+        {
+          <tr>
+            <td class="text-left"><a class="query" href="@r/ForDecisionType/@ro.Id">@ro.Desc</a></td>
+            <td class="text-right"><a class="query" href="@r/ForDecisionType/@ro.Id">@ro.Count</a></td>
+          </tr>
+        }
+      </tfoot>
+    </table>
+    <div class="row">
+      <div class="col-sm-6">
+        <table class="table table-striped pull-right">
+          <thead>
+            <tr>
+              <th colspan="2">Baptisms By Age</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var ro in Model.BaptismsByAge())
+            {
+              <tr>
+                <td class="text-left"><a class="query" href="@r/ForBaptismAge/@ro.Id">@ro.Desc</a></td>
+                <td class="text-right"><a class="query" href="@r/ForBaptismAge/@ro.Id">@ro.Count</a></td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td class="text-left"><a class="query" href="@r/ForBaptismType/All">Total</a></td>
+              <td class="text-right"><a class="query" href="@r/ForBaptismType/All">@Model.BaptismsCount</a></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="col-sm-6">
+        <table class="table table-striped pull-left">
+          <thead>
+            <tr>
+              <th colspan="2">Baptisms By Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var ro in Model.BaptismsByType())
+            {
+              <tr>
+                <td class="text-left"><a class="query" href="@r/ForBaptismType/@ro.Id">@ro.Desc</a></td>
+                <td class="text-right"><a class="query" href="@r/ForBaptismType/@ro.Id">@ro.Count</a></td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td class="text-left"><a class="query" href="@r/ForBaptismType/All">Total</a></td>
+              <td class="text-right"><a class="query" href="@r/ForBaptismType/All">@Model.BaptismsCount</a></td>
+            </tr>@r
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <table class="table table-striped pull-right">
+          <thead>
+            <tr>
+              <th colspan="2">New Member by Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var ro in Model.NewMemberByType())
+            {
+              <tr>
+                <td class="text-left"><a class="query" href="@r/ForNewMemberType/@ro.Id">@ro.Desc</a></td>
+                <td class="text-right"><a class="query" href="@r/ForNewMemberType/@ro.Id">@ro.Count</a></td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td class="text-left"><a class="query" href="@r/ForNewMemberType/All">Total</a></td>
+              <td class="text-right"><a class="query" href="@r/ForNewMemberType/All">@Model.NewMembersCount</a></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="col-sm-6">
+        <table class="table table-striped pull-left">
+          <thead>
+            <tr>
+              <th colspan="2">Dropped Members by Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach (var ro in Model.DroppedMemberByType())
+            {
+              <tr>
+                <td class="text-left"><a class="query" href="@r/ForDropType/@ro.Id">@ro.Desc</a></td>
+                <td class="text-right"><a class="query" href="@r/ForDropType/@ro.Id">@ro.Count</a></td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="totals-row">
+              <td class="text-left"><a class="query" href="@r/DroppedForChurch/All">Total</a></td>
+              <td class="text-right"><a class="query" href="@r/DroppedForChurch/All">@Model.DroppedMembersCount</a></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th colspan="2">Dropped Members by Church</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var ro in Model.DroppedMemberByChurch())
+        {
+          <tr>
+            <td class="text-left"><a class="query" href="@r/DroppedForChurch/@ro.Desc">@ro.Desc</a></td>
+            <td class="text-right"><a class="query" href="@r/DroppedForChurch/@ro.Desc">@ro.Count</a></td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr class="totals-row">
+          <td class="text-left"><a class="query" href="@r/DroppedForChurch/All">Total</a></td>
+          <td class="text-right"><a class="query" href="@r/DroppedForChurch/All">@Model.DroppedMembersCount</a></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 </div>
 @section scripts
 {
-    <script type="text/javascript">
-        $(function () {
-            $("a.query").click(function (ev) {
-                ev.preventDefault();
-                var f = $("#form");
-                f.attr("action", $(this)[0].href);
-                f.submit();
-            });
-        });
-    </script>
+  <script type="text/javascript">
+    $(function () {
+      $("a.query").click(function (ev) {
+        ev.preventDefault();
+        var f = $("#form");
+        f.attr("action", $(this)[0].href);
+        f.submit();
+      });
+    });
+  </script>
 }

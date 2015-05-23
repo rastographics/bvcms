@@ -1,6 +1,6 @@
 ﻿@using StackExchange.Profiling
 <!DOCTYPE html>
-<html lang="en">
+<html lang="@System.Globalization.CultureInfo.CurrentUICulture.Name">
 <head>
     <link rel="shortcut icon" href="@Url.Content("~/favicon.ico?v=2")">
     <meta charset="utf-8">
@@ -20,33 +20,33 @@
     <![endif]-->
     @RenderSection("head", false)
 </head>
-    <body>
-        @Html.Partial("NavBar")
-        @Html.Partial("PageHeader")
-        <div class="container-fluid" id="main">
-            @RenderBody()
-        </div>
-        @Html.Partial("PageFooter")
-        <div class="device-lg visible-lg-block"></div>
-        <div class="device-md visible-md-block"></div>
-        <div class="device-sm visible-sm-block"></div>
-        <div class="device-xs visible-xs-block"></div>
-        <div class="device-2xs"></div>
-        <div class="modal fade" id="empty-dialog" data-keyboard="false" data-backdrop="static"></div>
-        @ViewExtensions2.jQuery()
-        @ViewExtensions2.LoDash()
-        @ViewExtensions2.Bootstrap3()
-        @Fingerprint.Script("/Content/touchpoint/lib/jquery-ui-custom/js/jquery-ui.min.js")
-        @ViewExtensions2.Velocity()
-        @ViewExtensions2.Moment()
-        @ViewExtensions2.jQueryValidation()
-        @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
-        <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
-        @Fingerprint.Script("/Content/touchpoint/js/app.min.js")
-        @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
-        @Html.Partial("DatePickerDefaults")
-        @RenderSection("scripts", false)
-        @Html.Partial("SearchBox")
-        @MiniProfiler.RenderIncludes()
-    </body>
+<body>
+    @Html.Partial("NavBar")
+    @Html.Partial("PageHeader")
+    <div class="container-fluid" id="main">
+        @RenderBody()
+    </div>
+    @Html.Partial("PageFooter")
+    <div class="device-lg visible-lg-block"></div>
+    <div class="device-md visible-md-block"></div>
+    <div class="device-sm visible-sm-block"></div>
+    <div class="device-xs visible-xs-block"></div>
+    <div class="device-2xs"></div>
+    <div class="modal fade" id="empty-dialog" data-keyboard="false" data-backdrop="static"></div>
+    @ViewExtensions2.jQuery()
+    @ViewExtensions2.LoDash()
+    @ViewExtensions2.Bootstrap3()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-ui-custom/js/jquery-ui.min.js")
+    @ViewExtensions2.Velocity()
+    @ViewExtensions2.Moment()
+    @Fingerprint.Script("/Content/touchpoint/lib/jquery-globalize/js/globalize.js")
+    <script src="@Url.Content(ViewExtensions2.jqueryGlobalizeCulture)" type="text/javascript"></script>
+    @ViewExtensions2.jQueryValidation()
+    @Html.Partial("DatePickerDefaults2")
+    @Fingerprint.Script("/Content/touchpoint/js/app.min.js")
+    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-multiselect/js/bootstrap-multiselect.js")
+    @RenderSection("scripts", false)
+    @Html.Partial("SearchBox")
+    @MiniProfiler.RenderIncludes()
+</body>
 </html>

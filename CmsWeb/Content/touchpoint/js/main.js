@@ -190,23 +190,42 @@ $.InitializeDateElements = function () {
         $(".input-group.date input[type=text]").each(function (index) {
             var isoSelector = '#' + $(this).attr('id') + 'Iso';
             $(this).val($(isoSelector).val());
+            if ($(this).data("rule-date")) {
+                $(this).data('rule-date', false);
+            }
             $(this).attr('type', 'date');
         });
 
         $(".input-group.datetime input[type=text]").each(function (index) {
             var isoSelector = '#' + $(this).attr('id') + 'Iso';
             $(this).val($(isoSelector).val());
+            if ($(this).data("rule-date")) {
+                $(this).data('rule-date', false);
+            }
             $(this).attr('type', 'datetime-local');
         });
     }
     else {
-        $(".input-group.date").datetimepicker({ format: 'MM/DD/YYYY', extraFormats: ['MM/DD/YY'], widgetPositioning: { horizontal: 'left' } });
-        $(".input-group.datetime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', extraFormats: ['MM/DD/YY h:mm A'], widgetPositioning: { horizontal: 'left' } });
+        if ($.cultureDateFormatAlt != '') {
+            $(".input-group.date").datetimepicker({ format: $.cultureDateFormat, extraFormats: [$.cultureDateFormatAlt], widgetPositioning: { horizontal: 'left' } });
+        } else {
+            $(".input-group.date").datetimepicker({ format: $.cultureDateFormat, widgetPositioning: { horizontal: 'left' } });
+        }
+        if ($.cultureDateTimeFormatAlt != '') {
+            $(".input-group.datetime").datetimepicker({ format: $.cultureDateTimeFormat, extraFormats: [$.cultureDateTimeFormatAlt], widgetPositioning: { horizontal: 'left' } });
+        } else {
+            $(".input-group.datetime").datetimepicker({ format: $.cultureDateTimeFormat, widgetPositioning: { horizontal: 'left' } });
+        }
+        
         $(".input-group.time").datetimepicker({ format: 'h:mm A', widgetPositioning: { horizontal: 'left' } });
 
         $('.input-group.birthdate span.input-group-addon').click(function () {
             var inputGroup = $(this).parent();
-            $(inputGroup).datetimepicker({ format: 'MM/DD/YYYY', extraFormats: ['MM/DD/YY'], widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
+            if ($.cultureDateFormatAlt != '') {
+                $(inputGroup).datetimepicker({ format: $.cultureDateFormat, extraFormats: [$.cultureDateFormatAlt], widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
+            } else {
+                $(inputGroup).datetimepicker({ format: $.cultureDateFormat, widgetPositioning: { horizontal: 'left' }, keepInvalid: true });
+            }
             $(inputGroup).data("DateTimePicker").show();
         });
 

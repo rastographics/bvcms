@@ -101,7 +101,6 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     bd.Contribution.PeopleId = pid;
                 bd.Contribution.BankAccount = eac;
                 bd.Contribution.CheckNo = ck;
-                bd.Contribution.ContributionDesc = "Deposit Id: " + curbundle;
                 bh.BundleDetails.Add(bd);
             }
             BatchImportContributions.FinishBundle(bh);

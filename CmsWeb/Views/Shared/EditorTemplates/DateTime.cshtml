@@ -22,7 +22,7 @@
     <div class="controls">
         <div class="input-group date">
             @Html.TextBoxFor2(m => m, useNativeUnobtrusiveAttributes: true, format: @fmt, htmlAttributes: new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-            @Html.Hidden("{0}{1}".Fmt(Html.IdFor(m => m), "Iso"), Model.GetValueOrDefault().ToString("yyyy-MM-dd"), new { disabled = "disabled" })
+            <input type="hidden" id="@Html.IdForModel()Iso" disabled="disabled" value="@(Model.HasValue ? Model.GetValueOrDefault().ToString("yyyy-MM-dd") : "")" />
         </div>
         <span class="help-block">@Html.Raw(ViewData["help"])</span>
         @Html.ValidationMessageLabelFor(m => m)

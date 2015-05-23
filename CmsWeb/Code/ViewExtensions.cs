@@ -781,24 +781,25 @@ namespace CmsWeb
         public static HtmlString FroalaEditorCss()
         {
             return new HtmlString(@"
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css"">
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_style.min.css"">
-<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_editor.min.css?v=1.2.7"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/froala_style.min.css?v=1.2.7"">
+<link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css?v=1.2.7"">
 ");
         }
         public static HtmlString FroalaEditorScripts()
         {
-            return new HtmlString(@"
-<script src=""/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/file_upload.min.js?v=1.2.7""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js""></script>
-<script src=""/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js?v=1.1.0""></script>
+            var sb = new StringBuilder();
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/froala_editor.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/font_family.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/font_size.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/colors.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/fullscreen.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/lists.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/tables.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/file_upload.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/urls.min.js"));
+            sb.Append(Fingerprint.ScriptStr("/Content/touchpoint/lib/froala-editor/js/plugins/special_links.js"));
+            sb.Append(@"
 <script type=""text/javascript"">
     //froala key
     $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
@@ -808,6 +809,7 @@ namespace CmsWeb
     delete $.fn.editable;   
 </script>
 ");
+            return new HtmlString(sb.ToString());
         }
         public static HtmlString FontAwesome()
         {

@@ -45,4 +45,8 @@ public class Fingerprint
     {
         return Include(path);
     }
+    public static string ScriptStr(string path)
+    {
+        return Include(path).ToString();
+    }
 }
