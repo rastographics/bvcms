@@ -1,17 +1,6 @@
 ﻿$(function () {
-
-    CKEDITOR.replace('editor', {
-        height: 200,
-        customConfig: '/scripts/js/ckeditorconfig.js'
-    });
     
-
     $.InitFunctions.SettingFormsInit = function (f) {
-//        $(".noedit input", f).attr("disabled", "disabled");
-//        $(".noedit select", f).attr("disabled", "disabled");
-//        $(".noedit a", f).not('[target="otherorg"]').removeAttr("href");
-//        $(".noedit a", f).not('[target="otherorg"]').css("color", "grey");
-//        $(".noedit a", f).not('[target="otherorg"]').unbind("click");
         $('a.notifylist').SearchUsers({
             UpdateShared: function (topid, topid0, ele) {
                 $.post("/Org/UpdateNotifyIds", {
@@ -24,39 +13,68 @@
             }
         });
     };
-    $("a.editor").live("click", function (ev) {
+
+    var xsDevice = $('.device-xs').is(':visible');
+    var smDevice = $('.device-sm').is(':visible');
+
+    $('body').on('click', 'a.editor', function (ev) {
         if (!$(this).attr("href"))
             return false;
         var name = $(this).attr("tb");
         ev.preventDefault();
-        CKEDITOR.instances['editor'].setData($("#" + name).val());
-        dimOn();
-        $("#EditorDialog").center().show();
-        $("#saveedit").off("click").on("click", function (ev) {
+
+        if (!xsDevice && !smDevice) {
+            if (CKEDITOR.instances['editor'])
+                CKEDITOR.instances['editor'].destroy();
+
+            CKEDITOR.env.isCompatible = true;
+
+            CKEDITOR.replace('editor', {
+                height: 200,
+                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+            });
+        }
+        if (xsDevice || smDevice) {
+            $('#editor').val($("#" + name).val());
+        } else {
+            CKEDITOR.instances['editor'].setData($("#" + name).val());
+        }
+        
+        $('#editor-modal').modal('show');
+
+        $("#save-edit").off("click").on("click", function (ev) {
             ev.preventDefault();
-            var v = CKEDITOR.instances['editor'].getData();
+
+            var v;
+            if (xsDevice || smDevice) {
+                v = $('#editor').val();
+            } else {
+                v = CKEDITOR.instances['editor'].getData();
+            }
+
             $("#" + name).val(v);
             $("#" + name + "_ro").html(v);
-            CKEDITOR.instances['editor'].setData('');
-            $('#EditorDialog').hide("close");
-            dimOff();
+
+            if (xsDevice || smDevice) {
+                $('#editor').val('');
+            } else {
+                CKEDITOR.instances['editor'].setData('');
+            }
+
+            $('#editor-modal').modal('hide');
             return false;
         });
         return false;
     });
-    $("#canceledit").live("click", function (ev) {
-        ev.preventDefault();
-        $('#EditorDialog').hide("close");
-        dimOff();
-        return false;
-    });
+
 });
+
 CKEDITOR.on('dialogDefinition', function (ev) {
     var dialogName = ev.data.name;
     var dialogDefinition = ev.data.definition;
     if (dialogName == 'link') {
         var advancedTab = dialogDefinition.getContents('advanced');
-	advancedTab.label = "SpecialLinks";
+	    advancedTab.label = "SpecialLinks";
         advancedTab.remove('advCSSClasses');
         advancedTab.remove('advCharset');
         advancedTab.remove('advContentType');
@@ -74,7 +92,7 @@ CKEDITOR.on('dialogDefinition', function (ev) {
         idField.label = "OrgId/MeetingId";
         var langdirField = advancedTab.get('advLangDir');
         langdirField.label = "Confirmation";
-	langdirField.items[1][0] = "Yes, send confirmation";
-	langdirField.items[2][0] = "No, do not send confirmation";
+	    langdirField.items[1][0] = "Yes, send confirmation";
+	    langdirField.items[2][0] = "No, do not send confirmation";
     }
 });

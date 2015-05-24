@@ -933,7 +933,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="DbUtil\ReportsMenu.xml" />
     <Content Include="QueryBuilder\FieldMap3.xml">
       <SubType>Designer</SubType>
     </Content>

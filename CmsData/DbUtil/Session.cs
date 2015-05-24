@@ -217,6 +217,13 @@ namespace CmsData
                 return DbUtil.Db.UserPreference("TargetLinkPeople", "true").ToBool();
             }
         }
+        public static bool UseNewEditor
+        {
+            get
+            {
+                return DbUtil.Db.UserPreference("UseNewEditor", "false").ToBool();
+            }
+        }
 
         public static bool UseNewOrg
         {

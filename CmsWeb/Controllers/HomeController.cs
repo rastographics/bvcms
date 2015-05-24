@@ -148,9 +148,9 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
-        public ActionResult UseNewOrg(bool id)
+        public ActionResult UseNewEditor(bool id)
         {
-            DbUtil.Db.SetUserPreference("UseNewOrg", id ? "false" : "true");
+            DbUtil.Db.SetUserPreference("UseNewEditor", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);
