@@ -19,6 +19,9 @@
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
     
+    $.InitFunctions.ReloadPeople = function () {
+        $.getTable();
+    };
     $("#clear").click(function (ev) {
         ev.preventDefault();
         $("#PublicView").val(false);
@@ -96,10 +99,6 @@
             });
         });
         return false;
-    };
-
-    $.InitFunctions.ReloadPeople = function () {
-        $.getTable();
     };
 
     $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {

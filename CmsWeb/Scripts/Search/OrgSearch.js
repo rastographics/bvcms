@@ -18,6 +18,9 @@
                                 '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
+    $.InitFunctions.ReloadPeople = function () {
+        $.getTable();
+    };
 
     $("#clear").click(function (ev) {
         ev.preventDefault();
