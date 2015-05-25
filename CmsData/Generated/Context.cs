@@ -4763,6 +4763,26 @@ namespace CmsData
                 ).ReturnValue));
         }
 
+        [Function(Name="dbo.FindPerson0", IsComposable = true)]
+        [return: Parameter(DbType = "int")]
+        public int? FindPerson0(
+            [Parameter(Name = "first", DbType="nvarchar")] string first,
+            [Parameter(Name = "last", DbType="nvarchar")] string last,
+            [Parameter(Name = "dob", DbType="datetime")] DateTime? dob,
+            [Parameter(Name = "email", DbType="nvarchar")] string email,
+            [Parameter(Name = "phone", DbType="nvarchar")] string phone
+            )
+        {
+            return ((int?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    first,
+                    last,
+                    dob,
+                    email,
+                    phone
+                ).ReturnValue));
+        }
+
         [Function(Name="dbo.FirstMeetingDateLastLear", IsComposable = true)]
         [return: Parameter(DbType = "nvarchar")]
         public string FirstMeetingDateLastLear(
@@ -4772,6 +4792,18 @@ namespace CmsData
             return ((string)(ExecuteMethodCall(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     pid
+                ).ReturnValue));
+        }
+
+        [Function(Name="dbo.ParseDate", IsComposable = true)]
+        [return: Parameter(DbType = "datetime")]
+        public DateTime? ParseDate(
+            [Parameter(Name = "dtin", DbType="varchar")] string dtin
+            )
+        {
+            return ((DateTime?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    dtin
                 ).ReturnValue));
         }
 
@@ -4857,6 +4889,18 @@ namespace CmsData
                 ).ReturnValue));
         }
 
+        [Function(Name="dbo.OrganizationProspectCount", IsComposable = true)]
+        [return: Parameter(DbType = "int")]
+        public int? OrganizationProspectCount(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+        {
+            return ((int?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    oid
+                ).ReturnValue));
+        }
+
         [Function(Name="dbo.IsSmallGroupLeaderOnly", IsComposable = true)]
         [return: Parameter(DbType = "int")]
         public int? IsSmallGroupLeaderOnly(
@@ -4868,6 +4912,18 @@ namespace CmsData
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     oid,
                     pid
+                ).ReturnValue));
+        }
+
+        [Function(Name="dbo.OrganizationPrevCount", IsComposable = true)]
+        [return: Parameter(DbType = "int")]
+        public int? OrganizationPrevCount(
+            [Parameter(Name = "oid", DbType="int")] int? oid
+            )
+        {
+            return ((int?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    oid
                 ).ReturnValue));
         }
 
@@ -4901,26 +4957,6 @@ namespace CmsData
                 ).ReturnValue));
         }
 
-        [Function(Name="dbo.FindPerson0", IsComposable = true)]
-        [return: Parameter(DbType = "int")]
-        public int? FindPerson0(
-            [Parameter(Name = "first", DbType="nvarchar")] string first,
-            [Parameter(Name = "last", DbType="nvarchar")] string last,
-            [Parameter(Name = "dob", DbType="datetime")] DateTime? dob,
-            [Parameter(Name = "email", DbType="nvarchar")] string email,
-            [Parameter(Name = "phone", DbType="nvarchar")] string phone
-            )
-        {
-            return ((int?)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    first,
-                    last,
-                    dob,
-                    email,
-                    phone
-                ).ReturnValue));
-        }
-
         [Function(Name="dbo.GetDigits", IsComposable = true)]
         [return: Parameter(DbType = "nvarchar")]
         public string GetDigits(
@@ -4930,18 +4966,6 @@ namespace CmsData
             return ((string)(ExecuteMethodCall(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     Str
-                ).ReturnValue));
-        }
-
-        [Function(Name="dbo.ParseDate", IsComposable = true)]
-        [return: Parameter(DbType = "datetime")]
-        public DateTime? ParseDate(
-            [Parameter(Name = "dtin", DbType="varchar")] string dtin
-            )
-        {
-            return ((DateTime?)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    dtin
                 ).ReturnValue));
         }
 
@@ -4969,18 +4993,6 @@ namespace CmsData
                 ).ReturnValue));
         }
 
-        [Function(Name="dbo.OrganizationProspectCount", IsComposable = true)]
-        [return: Parameter(DbType = "int")]
-        public int? OrganizationProspectCount(
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-        {
-            return ((int?)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    oid
-                ).ReturnValue));
-        }
-
         [Function(Name="dbo.TotalPaid", IsComposable = true)]
         [return: Parameter(DbType = "money")]
         public decimal? TotalPaid(
@@ -4992,18 +5004,6 @@ namespace CmsData
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     oid,
                     pid
-                ).ReturnValue));
-        }
-
-        [Function(Name="dbo.OrganizationPrevCount", IsComposable = true)]
-        [return: Parameter(DbType = "int")]
-        public int? OrganizationPrevCount(
-            [Parameter(Name = "oid", DbType="int")] int? oid
-            )
-        {
-            return ((int?)(ExecuteMethodCall(this,
-                ((MethodInfo)(MethodBase.GetCurrentMethod())),
-                    oid
                 ).ReturnValue));
         }
 

@@ -68,7 +68,12 @@ namespace CmsWeb.Models
 
                 var colrange = ws.Cells[1, col, count + 2, col];
 
-                if (!name.ToLower().EndsWith("id") && type == typeof (int))
+                if (name == "MemberInfo" || name == "Questions")
+                {
+                    colrange.Style.WrapText = true;
+                    ws.Column(col).Width = 40.0;
+                }
+                else if (!name.ToLower().EndsWith("id") && type == typeof (int))
                 {
                     colrange.Style.Numberformat.Format = "#,##0";
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;

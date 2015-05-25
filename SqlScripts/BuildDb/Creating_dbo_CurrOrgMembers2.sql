@@ -30,6 +30,7 @@ RETURNS @tt TABLE
 		AttendStr nvarchar(200),
 		MemberType nvarchar(100),
 		UserData NVARCHAR(MAX),
+		Questions NVARCHAR(MAX),
 		InactiveDate datetime,
 		Medical nvarchar(1000),
 		PeopleId int NOT NULL,
@@ -79,6 +80,16 @@ BEGIN
 	om.AttendStr,
 	mt.Description MemberType,
 	om.UserData,
+
+	(SELECT STUFF((
+		SELECT CHAR(13) + '    ' + Question + ': ' + Answer
+		FROM dbo.OnlineRegQA
+		WHERE type IN ('text', 'question')
+		AND OrganizationId = om.OrganizationId
+		AND PeopleId = om.PeopleId
+		FOR XML PATH(''), TYPE
+	).value('.', 'varchar(max)'), 1, 1, '')),
+
 	om.InactiveDate,
 	rr.MedicalDescription Medical,
 	p.PeopleId,
