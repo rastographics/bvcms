@@ -387,7 +387,7 @@
     $('#createmeetings').click(function (ev) {
         ev.preventDefault();
         var dt = getISODateTime(new Date($('#NewMeetingDate').val() + " " + $('#NewMeetingTime').val()));
-        var args = "?dt=" + dt;
+        var args = "?dt=" + dt + "&noautoabsents=" + ($("#NoAbsenteeRecords").is(":checked") ? "true" : "false");
         var q = $("#orgsearchform").serialize();
         $.post("/OrgSearch/CreateMeetings" + args, q, function () {
             var args2 = "?dt1=" + dt + "&dt2=" + dt;
