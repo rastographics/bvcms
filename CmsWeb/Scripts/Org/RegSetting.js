@@ -31,7 +31,7 @@
 
             CKEDITOR.replace('editor', {
                 height: 200,
-                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
+                customConfig: '/scripts/js/ckeditorconfig.js'
             });
         }
         if (xsDevice || smDevice) {
