@@ -37,18 +37,20 @@ WHERE EXISTS(SELECT NULL FROM dbo.Attend a
 			 JOIN dbo.Organizations o ON m.OrganizationId = o.OrganizationId
 			 WHERE a.PeopleId = p.PeopleId AND m.OrganizationId = @orgid
 			 AND (a.AttendanceFlag = 1 OR a.Commitment IN (1, 4))
-			 AND a.MeetingDate >= DATEADD(day, ISNULL(o.RollSheetVisitorWks, 3) * -7, @meetingdt)
+			 AND a.MeetingDate >= DATEADD(DAY, ISNULL(o.RollSheetVisitorWks, 3) * -7, @meetingdt)
 			 AND a.MeetingDate <= @meetingdt
 			 AND (a.MeetingDate > o.FirstMeetingDate OR o.FirstMeetingDate IS NULL)
 			 AND a.AttendanceTypeId IN (40,50,60,110)
-			 )
+		)
+AND EXISTS(SELECT NULL FROM dbo.OrgPeopleGuests(@orgid, 0) WHERE PeopleId = p.PeopleId)
 AND  (@NoCurrentMembers = 0 
 		OR NOT EXISTS(
 			SELECT NULL FROM dbo.OrganizationMembers om 
 			WHERE om.OrganizationId = @orgid 
 			AND om.PeopleId = p.PeopleId
 			AND om.MemberTypeId <> 311 -- prospect
-	  ))
+		)
+	)
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
