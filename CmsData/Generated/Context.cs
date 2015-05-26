@@ -1804,6 +1804,12 @@ namespace CmsData
 
         }
 
+        public Table< View.IncompleteTask> ViewIncompleteTasks
+        {
+            get { return GetTable< View.IncompleteTask>(); }
+
+        }
+
         public Table< View.LastName> ViewLastNames
         {
             get { return GetTable< View.LastName>(); }
