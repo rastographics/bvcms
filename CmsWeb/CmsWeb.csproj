@@ -1953,6 +1953,7 @@
     <Content Include="Scripts\Search\SearchTypeahead.js" />
     <Content Include="Scripts\Search\searchtour.js" />
     <Content Include="Scripts\select2-3.5.2\select2.min.js" />
+    <Content Include="Scripts\SpecContent\EditHtml.js" />
     <Content Include="Views\ExtraValue\AdHoc.cshtml" />
     <Content Include="Areas\People\Views\Person\System\UserEdit.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Photo.cshtml" />
