@@ -293,6 +293,13 @@ namespace CmsWeb.Areas.Search.Controllers
             m.SendNotices(this);
             return Content("ok");
         }
+        [HttpPost]
+        [Authorize(Roles = "Attendance")]
+        public ActionResult DisplayAttendanceNotices(OrgSearchModel m)
+        {
+            var leaders = m.NoticesToSend(this);
+            return View(leaders);
+        }
 
         public ActionResult OrganizationStructure(bool? active, OrgSearchModel m)
         {

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<CmsWeb.Areas.Manage.Controllers.BatchController.FindInfo>
+@using UtilityExtensions
+@{
+    ViewBag.Title = "FindTagPeople";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<h2>FindTagPeople</h2>
+
+<table class="table table-striped">
+    <tr>
+        <th> PeopleId </th>
+        <th> Found </th>
+        <th> First </th>
+        <th> Last </th>
+        <th> Email </th>
+        <th> CellPhone </th>
+        <th> HomePhone </th>
+        <th> Birthday </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td> <a href="/Person/Index/@item.PeopleId" target="person">@item.PeopleId</a> </td>
+        <td> @item.Found </td>
+        <td> @item.First </td>
+        <td> @item.Last </td>
+        <td> @item.Email </td>
+        <td> @item.CellPhone </td>
+        <td> @item.HomePhone </td>
+        <td> @item.Birthday.FormatDate() </td>
+    </tr>
+}
+
+</table>
+

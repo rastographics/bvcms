@@ -311,6 +311,13 @@
         return true;
     });
 
+    $('#ViewAttNotices').click(function (ev) {
+        ev.preventDefault();
+        $("#orgsearchform").attr("action", "/OrgSearch/DisplayAttendanceNotices");
+        $.block();
+        $("#orgsearchform").submit();
+        return true;
+    });
     $('#AttNotices').click(function (ev) {
         ev.preventDefault();
         var did = $('#DivisionId').val();
