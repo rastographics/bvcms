@@ -62,7 +62,14 @@ namespace CmsData
                 db.EnrollmentTransactions.InsertOnSubmit(droptrans);
                 db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
                 db.OrganizationMembers.DeleteOnSubmit(this);
-                db.ExecuteCommand("DELETE FROM dbo.SubRequest WHERE EXISTS(SELECT NULL FROM Attend a WHERE a.AttendId = AttendId AND a.OrganizationId = {0} AND a.MeetingDate > {1} AND a.PeopleId = {2})", OrganizationId, Util.Now, PeopleId);
+                db.ExecuteCommand(@"
+DELETE dbo.SubRequest 
+FROM dbo.SubRequest sr
+JOIN dbo.Attend a ON a.AttendId = sr.AttendId
+WHERE a.OrganizationId = {0}
+AND a.MeetingDate > {1} 
+AND a.PeopleId = {2}
+", OrganizationId, Util.Now, PeopleId);
                 db.ExecuteCommand("DELETE dbo.Attend WHERE OrganizationId = {0} AND MeetingDate > {1} AND PeopleId = {2} AND ISNULL(Commitment, 1) = 1", OrganizationId, Util.Now, PeopleId);
                 db.ExecuteCommand("UPDATE dbo.GoerSenderAmounts SET InActive = 1 WHERE OrgId = {0} AND (GoerId = {1} OR SupporterId = {1})", OrganizationId, PeopleId);
                 return droptrans;
