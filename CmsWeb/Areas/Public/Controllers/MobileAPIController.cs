@@ -311,9 +311,9 @@ namespace CmsWeb.Areas.Public.Controllers
                 categories.Add(code, text);
                 line = line.NextMatch();
             }
-            if(!categories.ContainsKey("Other"))
+            if (!categories.ContainsKey("Other"))
                 categories.Add("Other", "Registrations");
-            if(val.HasValue())
+            if (val.HasValue())
                 categories.Add("selected", val);
             return Json(categories);
         }
@@ -342,7 +342,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 categories.Add(line.Groups[1].Value, line.Groups[2].Value.TrimEnd());
                 line = line.NextMatch();
             }
-            if(!categories.ContainsKey("Other"))
+            if (!categories.ContainsKey("Other"))
                 categories.Add("Other", "Registrations");
             var list = new List<MobileRegistrationCategory>();
             var dt = Util.Now;
@@ -567,7 +567,7 @@ namespace CmsWeb.Areas.Public.Controllers
             {
                 q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-                    let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                    //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where (o.OrganizationMembers.Any(om => om.PeopleId == pid // either a leader, who is not pending / inactive
                                        && (om.Pending ?? false) == false
                                        && (om.MemberTypeId != MemberTypeCode.InActive)
@@ -579,13 +579,15 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             var orgs = from o in q
-                       let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                       //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                       join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                       orderby sch.SchedDay, sch.SchedTime
                        select new OrganizationInfo
                        {
                            id = o.OrganizationId,
                            name = o.OrganizationName,
-                           time = sc.SchedTime ?? dt,
-                           day = sc.SchedDay ?? 0
+                           time = sch.SchedTime ?? dt,
+                           day = sch.SchedDay ?? 0
                        };
 
             BaseMessage br = new BaseMessage();
@@ -594,20 +596,21 @@ namespace CmsWeb.Areas.Public.Controllers
             br.error = 0;
             br.count = orgs.Count();
 
-				int tzOffset = 0;
-				int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+            int tzOffset = 0;
+            int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
 
-				foreach (var item in orgs)
-				{
-					MobileOrganization org = new MobileOrganization().populate(item);
+            foreach (var item in orgs)
+            {
+                MobileOrganization org = new MobileOrganization().populate(item);
 
-					// Initial release version
-					if (dataIn.version == 2 && tzOffset != 0) {
-						org.changeHourOffset(tzOffset);
-					}
+                // Initial release version
+                if (dataIn.version == 2 && tzOffset != 0)
+                {
+                    org.changeHourOffset(tzOffset);
+                }
 
-					mo.Add(org);
-				}
+                mo.Add(org);
+            }
 
             br.data = JsonConvert.SerializeObject(mo);
             return br;
@@ -628,15 +631,16 @@ namespace CmsWeb.Areas.Public.Controllers
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-				if (dataIn.version == 2)
-				{
-					int tzOffset = 0;
-					int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+            if (dataIn.version == 2)
+            {
+                int tzOffset = 0;
+                int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
 
-					if (tzOffset != 0) {
-						mprl.changeHourOffset(tzOffset * -1);
-					}
-				}
+                if (tzOffset != 0)
+                {
+                    mprl.changeHourOffset(tzOffset * -1);
+                }
+            }
 
             var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
             var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime);
@@ -677,15 +681,16 @@ namespace CmsWeb.Areas.Public.Controllers
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
-				if (dataIn.version == 2)
-				{
-					int tzOffset = 0;
-					int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+            if (dataIn.version == 2)
+            {
+                int tzOffset = 0;
+                int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
 
-					if (tzOffset != 0) {
-						mpa.changeHourOffset(tzOffset * -1);
-					}
-				}
+                if (tzOffset != 0)
+                {
+                    mpa.changeHourOffset(tzOffset * -1);
+                }
+            }
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
 
@@ -740,15 +745,16 @@ namespace CmsWeb.Areas.Public.Controllers
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
 
-				if (dataIn.version == 2)
-				{
-					int tzOffset = 0;
-					int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+            if (dataIn.version == 2)
+            {
+                int tzOffset = 0;
+                int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
 
-					if (tzOffset != 0) {
-						mph.changeHourOffset(tzOffset * -1);
-					}
-				}
+                if (tzOffset != 0)
+                {
+                    mph.changeHourOffset(tzOffset * -1);
+                }
+            }
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mph.orgID && m.MeetingDate == mph.datetime);
             meeting.HeadCount = mph.headcount;
