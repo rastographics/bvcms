@@ -80,5 +80,6 @@
   </div>
   <div style="clear: both"></div>
   <hr />
-  <input type="Submit" name="submit" value="Send Emails" />
+  <input type="submit" name="submit" value="Send Emails" 
+    onclick=" this.disabled = true;this.value = 'Sending, please wait...';this.form.submit(); "/>
 </form>

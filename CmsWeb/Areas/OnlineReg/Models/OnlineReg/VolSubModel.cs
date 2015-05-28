@@ -95,7 +95,7 @@ Yes, I can sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 
             subject = "Volunteer substitute request for {0}".Fmt(org.OrganizationName);
-            message = DbUtil.Db.ContentHtml("VolunteerSubRequest", Resource1.VolSubModel_ComposeMessage_Body);
+            message = Db.ContentHtml("VolunteerSubRequest", Resource1.VolSubModel_ComposeMessage_Body);
             message = message.Replace("{org}", org.OrganizationName)
                 .Replace("{meetingdate}", attend.MeetingDate.ToString("dddd, MMM d"))
                 .Replace("{meetingtime}", attend.MeetingDate.ToString("h:mm tt"))
@@ -174,14 +174,15 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
                 };
                 attend.SubRequests.Add(vr);
             }
+            Db.SubmitChanges();
 
             var qb = Db.ScratchPadCondition();
             qb.Reset(Db);
             qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, "{0},temp".Fmt(tag.Id));
             attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
-            qb.Save(DbUtil.Db);
+            qb.Save(Db);
 
-            var rurl = DbUtil.Db.ServerLink("/OnlineReg/VolSubReport/{0}/{1}/{2}".Fmt(attend.AttendId, person.PeopleId, dt.Ticks));
+            var rurl = Db.ServerLink("/OnlineReg/VolSubReport/{0}/{1}/{2}".Fmt(attend.AttendId, person.PeopleId, dt.Ticks));
             var reportlink = @"<a href=""{0}"">Substitute Status Report</a>".Fmt(rurl);
             var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
             //list.Insert(0, person);
@@ -328,7 +329,7 @@ See you there!</p>".Fmt(r.Substitute.Name, r.Requestor.Name,
         private Settings setting;
         public Settings Setting
         {
-            get { return setting ?? (setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId)); }
+            get { return setting ?? (setting = new Settings(org.RegSetting, Db, org.OrganizationId)); }
         }
     }
 }
