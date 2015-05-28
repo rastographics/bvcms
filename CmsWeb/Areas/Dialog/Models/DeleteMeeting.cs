@@ -68,7 +68,7 @@ DELETE dbo.SubRequest
 FROM dbo.SubRequest sr
 JOIN dbo.Attend a ON a.AttendId = sr.AttendId
 WHERE a.MeetingId = {0}
-)", model.Id);
+", model.Id);
             db.ExecuteCommand("DELETE dbo.VolRequest WHERE MeetingId = {0}", model.Id);
             db.ExecuteCommand("DELETE dbo.attend WHERE MeetingId = {0}", model.Id);
             db.ExecuteCommand("DELETE dbo.MeetingExtra WHERE MeetingId = {0}", model.Id);
