@@ -2805,6 +2805,19 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.OrgMemberQuestions", IsComposable = true)]
+        public IQueryable< View.OrgMemberQuestion > OrgMemberQuestions(
+            [Parameter(DbType="int")] int? oid,
+            [Parameter(DbType="int")] int? pid
+            )
+        {
+            return CreateMethodCallQuery< View.OrgMemberQuestion>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    oid,
+                    pid
+                );
+        }
+
         [Function(Name="dbo.OrgMembersAsOfDate", IsComposable = true)]
         public IQueryable< View.OrgMembersAsOfDate > OrgMembersAsOfDate(
             [Parameter(DbType="int")] int? orgid,

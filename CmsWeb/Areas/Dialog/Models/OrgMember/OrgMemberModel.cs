@@ -257,13 +257,10 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             return "ok";
         }
 
-        public IEnumerable<OnlineRegQA> RegQuestions()
+        public IEnumerable<OrgMemberQuestion> RegQuestions()
         {
-            return from qa in DbUtil.Db.ViewOnlineRegQAs
-                   where qa.OrganizationId == OrgId
-                   where qa.PeopleId == PeopleId
-                   where qa.Type == "question" || qa.Type == "text"
-                   select qa;
+            var q = DbUtil.Db.OrgMemberQuestions(OrgId, PeopleId);
+            return q;
         }
     }
 }

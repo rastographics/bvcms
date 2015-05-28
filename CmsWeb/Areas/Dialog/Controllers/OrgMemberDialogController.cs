@@ -35,6 +35,14 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View(m);
         }
         [HttpPost]
+        public ActionResult EditQuestion(string id, string value)
+        {
+            var a = id.Split(',');
+            DbUtil.Db.UpdateQuestion(a[0].ToInt(), a[1].ToInt(), a[2].ToInt(), value);
+            var c = Content(value);
+            return c;
+        }
+        [HttpPost]
         public ActionResult Update(OrgMemberModel m)
         {
             try

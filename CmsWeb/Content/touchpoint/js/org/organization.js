@@ -335,6 +335,19 @@
             var f = $(this);
             $('#empty-dialog').html(f);
             $('#empty-dialog').modal("show");
+            
+            $(".clickEdit", f).editable({
+                mode: 'popup',
+                type: 'textarea',
+                url: "/OrgMemberDialog/EditQuestion/",
+                params: function (params) {
+                    var data = {};
+                    data['id'] = params.pk;
+                    data['value'] = params.value;
+                    return data;
+                }
+            });
+
 
             $('#empty-dialog').on('hidden', function () {
                 f.remove();

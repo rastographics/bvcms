@@ -1146,6 +1146,16 @@ namespace CmsData
             var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), t1, t2);
             return ((int)(result.ReturnValue));
         }
+        [Function(Name = "dbo.UpdateQuestion")]
+        public int UpdateQuestion(
+            [Parameter(DbType = "Int")] int? oid, 
+            [Parameter(DbType = "Int")] int? pid, 
+            [Parameter(DbType = "Int")] int? n,
+            [Parameter(DbType = "VARCHAR(1000)")] string answer)
+        {
+            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), oid, pid, n, answer);
+            return ((int)(result.ReturnValue));
+        }
         public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
 	    {
 	        return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
