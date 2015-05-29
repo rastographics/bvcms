@@ -4,7 +4,7 @@ AS
 RETURN 
 (
 	SELECT om.PeopleId, 
-		   p.Name,
+		   p.Name2 AS Name,
 	       commits = CAST(CASE WHEN EXISTS(SELECT NULL FROM dbo.Attend a
 				                WHERE a.MeetingDate > GETDATE()
 				                AND a.OrganizationId = om.OrganizationId
