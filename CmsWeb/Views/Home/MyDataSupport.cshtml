@@ -1,99 +1,98 @@
 ﻿@{
-    ViewBag.Title = "Support";
-    ViewBag.PageHeader = "Get Help";
-    Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Support";
+  ViewBag.PageHeader = "Get Help";
+  Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head{
-    @ViewExtensions2.FroalaEditorCss()
-    <style>
-        #body {
-            font-family: Arial,Helvetica;
-        }
-    </style>
+  @ViewExtensions2.FroalaEditorCss()
+  <style>
+    #body {
+      font-family: Arial,Helvetica;
+    }
+  </style>
 }
 <div class="row">
-    <div class="col-lg-9">
-        <div class="box box-responsive">
-            <div class="box-content">
-                <div id="success" class="alert alert-success">
-                    <strong>Success!</strong> Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.
-                </div>
-                <div id="supportForm">
-                    <form id="requestform">
-                        <div class="form-group">
-                            <textarea name="body" id="body" class="form-control"></textarea>
-                        </div>
-                        <p>
-                            <input id="sendSupport" type="button" class="btn btn-primary btn-lg" value="Submit Request">
-                        </p>
-                    </form>
-                </div>
-            </div>
+  <div class="col-lg-9">
+    <div class="box box-responsive">
+      <div class="box-content">
+        <div id="success" class="alert alert-success">
+          <strong>Success!</strong> Your support request has been submitted. Thank you for contacting us. We will get back to you as soon as possible.
         </div>
+        <div id="supportForm">
+          <form id="requestform">
+            <div class="form-group">
+              <textarea name="body" id="body" class="form-control"></textarea>
+            </div>
+            <p>
+              <input id="sendSupport" type="button" class="btn btn-primary btn-lg" value="Submit Request">
+            </p>
+          </form>
+        </div>
+      </div>
     </div>
-    <div class="col-lg-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    Hosting & Support @(Util.IsHosted ? "Provided by" : "Available at")
-                </h4>
-            </div>
-            <div class="panel-body text-center">
-                <a href="http://touchpointsoftware.com" target="_blank">
-                    <img src="/Content/images/tps_full_logo.png" width="225" /><br />
-                    http://touchpointsoftware.com
-                </a>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    Built with the Open Source Project
-                </h4>
-            </div>
-            <div class="panel-body text-center">
-                <a href="https://github.com/bvcms/bvcms" target="_blank">
-                    <img src="/Content/images/bvcms150.png" /><br />
-                    https://github.com/bvcms/bvcms
-                </a>
-            </div>
-        </div>
+  </div>
+  <div class="col-lg-3">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          Hosting & Support @(Util.IsHosted ? "Provided by" : "Available at")
+        </h4>
+      </div>
+      <div class="panel-body text-center">
+        <a href="http://touchpointsoftware.com" target="_blank">
+          <img src="/Content/images/tps_full_logo.png" width="225" /><br />
+          http://touchpointsoftware.com
+        </a>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          Built with the Open Source Project
+        </h4>
+      </div>
+      <div class="panel-body text-center">
+        <a href="https://github.com/bvcms/bvcms" target="_blank">
+          <img src="/Content/images/bvcms150.png" /><br />
+          https://github.com/bvcms/bvcms
+        </a>
+      </div>
+    </div>
 
-    </div>
+  </div>
 </div>
 @section scripts
 {
-    @ViewExtensions2.FroalaEditorScripts()
-    <script type="text/javascript">
-        $(function () {
-            $("#body").val("");
-            $("#success").hide();
+  @ViewExtensions2.FroalaEditorScripts()
+  <script type="text/javascript">
+    $(function () {
+      $("#body").val("");
+      $("#success").hide();
 
-            $('#body').froalaEditable({
-                inlineMode: false,
-                spellcheck: true,
-                useFileName: false,
-                useClasses: false,
-                height: 200,
-                theme: 'custom',
-                buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
-                imageUploadURL: '/Account/FroalaUpload',
-                fileUploadURL: '/Account/FroalaUpload'
-            });
+      $('#body').froalaEditable({
+        inlineMode: false,
+        spellcheck: true,
+        useFileName: false,
+        useClasses: false,
+        height: 200,
+        theme: 'custom',
+        buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
+        imageUploadURL: '/Account/FroalaUpload',
+        fileUploadURL: '/Account/FroalaUpload'
+      });
 
-            $('body').on('click', '#sendSupport', function (e) {
-                $.post("/Support/MyDataSendRequest", {
-                    body: $('#body').froalaEditable('getHTML')
-                }, function (data) {
-                    if (data == "OK") {
-                        $("#success").show();
-                        $("#supportForm").hide();
-                    }
-                    else {
-                        swal("Error!", "There was an error submitting your support request, please try again.", "error");
-                    }
-                });
-            });
+      $('body').on('click', '#sendSupport', function (e) {
+        $.post("/Support/MyDataSendRequest", {
+          body: $('#body').froalaEditable('getHTML')
+        }, function (data) {
+          if (data == "OK") {
+            $("#success").show();
+            $("#supportForm").hide();
+          } else {
+            swal("Error!", "There was an error submitting your support request, please try again.", "error");
+          }
         });
-    </script>
+      });
+    });
+  </script>
 }

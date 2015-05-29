@@ -1,96 +1,104 @@
 ﻿@using System.Web.Mvc.Html
+@using CmsData
 @using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.Org2.Models.OrganizationModel
 @{
-    Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Organization";
-    ViewBag.PageHeader = Model.OrgMain.OrganizationName;
-    ViewBag.PageSubHeader = Model.OrgMain.LeaderId.HasValue ? Model.OrgMain.LeaderName : "";
-    ViewBag.OrgMemberContext = true;
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Organization";
+  ViewBag.PageHeader = Model.OrgMain.OrganizationName;
+  ViewBag.PageSubHeader = Model.OrgMain.LeaderId.HasValue ? Model.OrgMain.LeaderName : "";
+  ViewBag.OrgMemberContext = true;
 }
 @section head
 {
-    @ViewExtensions2.FroalaEditorCss()
-    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
-    @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
-    <style>
-        div.cutting {
-            border: dashed 1px #717171;
-            opacity: 0.5;
-        }
+  @ViewExtensions2.FroalaEditorCss()
+  @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
+  @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
+  <style>
+    div.cutting {
+      border: dashed 1px #717171;
+      opacity: 0.5;
+    }
 
-        .disabled {
-            color: #999 !important;
-        }
+    .disabled {
+      color: #999 !important;
+    }
 
-        .datetimepicker table tr td span {
-            width: 30%;
-        }
+    .datetimepicker table tr td span {
+      width: 30%;
+    }
 
-        #sgFilter, #nameFilter {
-            height: 34px;
-            overflow: hidden;
-        }
+    #sgFilter, #nameFilter {
+      height: 34px;
+      overflow: hidden;
+    }
 
-        dt {
-            font-weight: normal;
-            color: #808080;
-        }
-        dd {
-            font-weight: 600;
-            padding: 5px;
-            border: solid 1px #eee;
-            min-height: 32px;
-        }
-        textarea.html {
-            display: none;
-        }
-        #editor {
-            font-family: Arial,Helvetica;
-        }
-    </style>
+    dt {
+      font-weight: normal;
+      color: #808080;
+    }
+
+    dd {
+      font-weight: 600;
+      padding: 5px;
+      border: solid 1px #eee;
+      min-height: 32px;
+    }
+
+    textarea.html {
+      display: none;
+    }
+
+    #editor {
+      font-family: Arial,Helvetica;
+    }
+  </style>
 }
 <div class="row">
-    <div class="col-lg-10">
-        <div class="box box-responsive">
-            <div class="box-content">
-                @Html.Partial("Toolbar/Toolbar")
-                @Html.Partial("Settings/Main", Model.OrgMain)
-                <ul class="nav nav-tabs" id="organization-tabs">
-                    <li class="active"><a href="#Members-tab" aria-controls="Members-tab" class="ajax" data-toggle="tab">People</a></li>
-                    <li><a href="#Meetings-tab" aria-controls="Meetings-tab" class="ajax" data-toggle="tab">Meetings</a></li>
-                    <li><a href="#Settings-tab" aria-controls="Settings-tab" class="ajax" data-toggle="tab">Settings</a></li>
-                    <li><a href="#Registrations-tab" aria-controls="Registrations-tab" class="ajax" data-toggle="tab">Registration</a></li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade in active" id="Members-tab" data-link="/Org/People">
-                        @Html.Partial("People", Model)
-                    </div>
-                    <div class="tab-pane fade" id="Meetings-tab" data-link="/Org/Meetings">
-                        @Helper.HiddenId("Id", Model.Id)
-                    </div>
-                    <div class="tab-pane fade" id="Settings-tab" data-link="/Org/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
-                    </div>
-                    <div class="tab-pane fade" id="Registrations-tab" data-link="/Org/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
-                    </div>
-                </div>
-            </div>
+  <div class="col-lg-10">
+    <div class="box box-responsive">
+      <div class="box-content">
+        @Html.Partial("Toolbar/Toolbar")
+        @Html.Partial("Settings/Main", Model.OrgMain)
+        <ul class="nav nav-tabs" id="organization-tabs">
+          <li class="active"><a href="#Members-tab" aria-controls="Members-tab" class="ajax" data-toggle="tab">People</a></li>
+          <li><a href="#Meetings-tab" aria-controls="Meetings-tab" class="ajax" data-toggle="tab">Meetings</a></li>
+          <li><a href="#Settings-tab" aria-controls="Settings-tab" class="ajax" data-toggle="tab">Settings</a></li>
+          <li><a href="#Registrations-tab" aria-controls="Registrations-tab" class="ajax" data-toggle="tab">Registration</a></li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade in active" id="Members-tab" data-link="/Org/People">
+            @Html.Partial("People", Model)
+          </div>
+          <div class="tab-pane fade" id="Meetings-tab" data-link="/Org/Meetings">
+            @Helper.HiddenId("Id", Model.Id)
+          </div>
+          <div class="tab-pane fade" id="Settings-tab" data-link="/Org/Settings/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+          </div>
+          <div class="tab-pane fade" id="Registrations-tab" data-link="/Org/Registrations/@Model.Id" data-init="showHideRegTypes" data-init2="SettingFormsInit">
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 @Html.Hidden("refreshed", "no")
 @Html.Hidden("OrganizationId", Model.Id)
 @Html.Partial("Dialogs", Model)
 @section scripts
 {
-    @ViewExtensions2.FroalaEditorScripts()
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
-    @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
-    @Fingerprint.Script("/Content/touchpoint/js/dialog/search-users.js")
-    @Fingerprint.Script("/Content/touchpoint/js/org/org-member-dialog.js")
-    @Fingerprint.Script("/Content/touchpoint/js/org/reg-setting.js")
-    @Fingerprint.Script("/Content/touchpoint/js/org/organization.js")
+  @(Util2.UseNewEditor 
+    ? ViewExtensions2.FroalaEditorScripts() 
+    : ViewExtensions2.CKEditor())
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/jquery-cookie/js/jquery.cookie.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
+  @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")
+  @Fingerprint.Script("/Content/touchpoint/js/dialog/search-users.js")
+  @Fingerprint.Script("/Content/touchpoint/js/org/org-member-dialog.js")
+  @Fingerprint.Script("/Content/touchpoint/js/org/organization.js")
+  @(Util2.UseNewEditor 
+    ? Fingerprint.Script("/Content/touchpoint/js/org/reg-setting.js")
+    : Fingerprint.Script("/scripts/org/RegSetting.js"))
 }

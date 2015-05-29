@@ -1,0 +1,25 @@
+﻿@model Dictionary<CmsData.Person,string>
+@{
+  ViewBag.Title = "Attendance Notices";
+  Layout = ViewExtensions2.TouchPointLayout();
+}
+@section head
+{
+  <style>
+    div.rpt {
+      margin-left: 2em;
+    }
+    div.rpt h2 {
+      font-size: 14pt;
+    }
+  </style>
+}
+<h2>@ViewBag.Title</h2>
+
+@foreach (var leader in Model)
+{
+  <h3>@leader.Key.Name</h3>
+  <div class="rpt">
+    @Html.Raw(leader.Value)
+  </div>
+}

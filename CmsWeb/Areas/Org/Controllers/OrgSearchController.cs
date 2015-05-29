@@ -274,26 +274,14 @@ namespace CmsWeb.Areas.Search.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateMeetings(DateTime dt, OrgSearchModel model)
+        public ActionResult CreateMeetings(DateTime dt, bool noautoabsents, OrgSearchModel model)
         {
-            foreach (var o in model.FetchOrgs())
+            var orgIds = model.FetchOrgs().Select(oo => oo.OrganizationId).ToList();
+            foreach (var oid in orgIds)
             {
-                var mt = DbUtil.Db.Meetings.SingleOrDefault(m => m.MeetingDate == dt
-                        && m.OrganizationId == o.OrganizationId);
-
-                if (mt != null)
-                    continue;
-
-                mt = new CmsData.Meeting
-                {
-                    CreatedDate = Util.Now,
-                    CreatedBy = Util.UserId1,
-                    OrganizationId = o.OrganizationId,
-                    Location = o.Location,
-                    MeetingDate = dt,
-                };
-                DbUtil.Db.Meetings.InsertOnSubmit(mt);
-                DbUtil.Db.SubmitChanges();
+				var db = DbUtil.Create(Util.Host);
+                Meeting.FetchOrCreateMeeting(db, oid, dt, noautoabsents);
+                db.Dispose();
             }
             DbUtil.LogActivity("Creating new meetings from OrgSearch");
             return Content("done");
@@ -304,6 +292,13 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             m.SendNotices(this);
             return Content("ok");
+        }
+        [HttpPost]
+        [Authorize(Roles = "Attendance")]
+        public ActionResult DisplayAttendanceNotices(OrgSearchModel m)
+        {
+            var leaders = m.NoticesToSend(this);
+            return View(leaders);
         }
 
         public ActionResult OrganizationStructure(bool? active, OrgSearchModel m)

@@ -18,10 +18,7 @@
                                 '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
-    $.InitFunctions.ReloadPeople = function () {
-        $.getTable();
-    };
-
+    
     $("#clear").click(function (ev) {
         ev.preventDefault();
         $("#PublicView").val(false);
@@ -65,7 +62,7 @@
     $("#search").click(function (ev) {
         ev.preventDefault();
         var name = $('#Name').val();
-        if (name.startsWith("M.")) {
+        if (name.startsWith("M."))  {
             $('#Name').val("");
             var f = $('#resultsTable').closest('form');
             f.attr("action", "/OrgSearch/CreateMeeting/" + name);
@@ -171,7 +168,7 @@
     var xsDevice = $('.device-xs').is(':visible');
     var smDevice = $('.device-sm').is(':visible');
 
-    $.descredit = function ($a) {
+    $.descredit = function($a) {
         if ($a.text() === "edit")
             $a.html('');
 
@@ -183,7 +180,7 @@
 
             CKEDITOR.replace('editor', {
                 height: 200,
-                customConfig: '/scripts/js/ckeditorconfig.js'
+                customConfig: '/Content/touchpoint/lib/ckeditor/js/ckeditorconfig.js'
             });
         }
         if (xsDevice || smDevice) {
@@ -191,7 +188,7 @@
         } else {
             CKEDITOR.instances['editor'].setData($a.html());
         }
-
+        
         $('#editor-modal').modal('show');
 
         $("#save-edit").off("click").on("click", function (ev) {
@@ -212,14 +209,14 @@
             } else {
                 CKEDITOR.instances['editor'].setData('');
             }
-
+            
             $('#editor-modal').modal('hide');
             return false;
         });
         return false;
     };
 
-    $.fmtTable();
+    $.fmtTable(); 
 
     $('#ProgramId').change(function () {
         $.post('/OrgSearch/DivisionIds/' + $(this).val(), null, function (ret) {
@@ -318,13 +315,6 @@
         return true;
     });
 
-    $('#ViewAttNotices').click(function (ev) {
-        ev.preventDefault();
-        $("#orgsearchform").attr("action", "/OrgSearch/DisplayAttendanceNotices");
-        $.block();
-        $("#orgsearchform").submit();
-        return true;
-    });
     $('#AttNotices').click(function (ev) {
         ev.preventDefault();
         var did = $('#DivisionId').val();
@@ -350,7 +340,7 @@
                 });
             });
         });
-
+        
         return true;
     });
 
@@ -382,7 +372,7 @@
             $("#orgsearchform").attr("action", "/Reports/RallyRollsheets" + args);
         else
             $("#orgsearchform").attr("action", "/Reports/Rollsheet" + args);
-        $("#orgsearchform").attr("target", "_blank");
+        $("#orgsearchform").attr("target","_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
         return false;
@@ -401,7 +391,7 @@
     $('#createmeetings').click(function (ev) {
         ev.preventDefault();
         var dt = getISODateTime(new Date($('#NewMeetingDate').val() + " " + $('#NewMeetingTime').val()));
-        var args = "?dt=" + dt + "&noautoabsents=" + ($("#NoAbsenteeRecords").is(":checked") ? "true" : "false");
+        var args = "?dt=" + dt;
         var q = $("#orgsearchform").serialize();
         $.post("/OrgSearch/CreateMeetings" + args, q, function () {
             var args2 = "?dt1=" + dt + "&dt2=" + dt;
@@ -472,11 +462,11 @@
         });
     });
 
-    $('#meetings-daterange-modal').on('hidden.bs.modal', function () {
+    $('#meetings-daterange-modal').on('hidden.bs.modal', function() {
         $("#attdetail2").off("click");
     });
-
-    $(".MonthReport").click(function (ev) {
+    
+    $(".MonthReport").click(function(ev) {
         ev.preventDefault();
         $('#meetings-month-action').val(this.href);
         $('#meetings-month-modal').modal('show');
@@ -488,7 +478,7 @@
             ev2.preventDefault();
             $('#meetings-month-modal').modal('hide');
             var args = "?dt1=" + $('#monthdt1').val();
-            $("#orgsearchform").attr("action", $('#meetings-month-action').val() + args);
+            $("#orgsearchform").attr("action",  $('#meetings-month-action').val() + args);
             $("#orgsearchform").submit();
             return false;
         });

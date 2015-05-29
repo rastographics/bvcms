@@ -59,8 +59,17 @@ JOIN
 			CAST(om.AttendPct AS nvarchar(12)) AS AttendPct,
 			om.AttendStr,
 			mt.Description AS MemberType,
-			REPLACE(om.UserData, ''
-'', ''<br/>'') AS MemberInfo,
+			om.UserData AS MemberInfo, 
+
+	(SELECT STUFF((
+		SELECT CHAR(13) + ''    '' + Question + '': '' + Answer
+		FROM dbo.OnlineRegQA
+		WHERE type IN (''text'', ''question'')
+		AND OrganizationId = om.OrganizationId
+		AND PeopleId = om.PeopleId
+		FOR XML PATH(''''), TYPE
+	).value(''.'', ''varchar(MAX)''), 1, 1, '''')) Questions,
+
 			CONVERT(nvarchar(12), om.EnrollmentDate, 101) AS EnrollDate,
 			p.PeopleId
 	from People p

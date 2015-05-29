@@ -306,12 +306,26 @@ namespace CmsWeb.Areas.Manage.Models
 		}
 		private void DropFromMeeting(int meetingid, int peopleid)
 		{
-			DbUtil.Db.ExecuteCommand("DELETE FROM dbo.SubRequest WHERE EXISTS(SELECT NULL FROM Attend a WHERE a.AttendId = AttendId AND a.MeetingId = {0} AND a.PeopleId = {1})", meetingid, peopleid);
+			DbUtil.Db.ExecuteCommand(@"
+DELETE dbo.SubRequest 
+FROM dbo.SubRequest sr
+JOIN dbo.Attend a ON a.AttendId = sr.AttendId
+WHERE a.MeetingId = {0}
+AND a.PeopleId = {1}
+", meetingid, peopleid);
 			DbUtil.Db.ExecuteCommand("DELETE dbo.Attend WHERE MeetingId = {0} AND PeopleId = {1}", meetingid, peopleid);
 		}
 		private void DropFromAll(int peopleid)
 		{
-			DbUtil.Db.ExecuteCommand("DELETE FROM dbo.SubRequest WHERE EXISTS(SELECT NULL FROM Attend a WHERE ISNULL(Commitment, 1) = 1 AND a.AttendId = AttendId AND a.OrganizationId = {0} AND a.MeetingDate > {1} AND a.PeopleId = {2})", OrgId, Sunday, peopleid);
+			DbUtil.Db.ExecuteCommand(@"
+DELETE dbo.SubRequest 
+FROM dbo.SubRequest sr
+JOIN dbo.Attend a ON a.AttendId = sr.AttendId
+WHERE a.OrganizationId = {0}
+AND a.MeetingDate > {1}
+AND a.PeopleId = {2}
+", OrgId, Sunday, peopleid);
+
 			DbUtil.Db.ExecuteCommand("DELETE dbo.Attend WHERE OrganizationId = {0} AND MeetingDate > {1} AND PeopleId = {2} AND ISNULL(Commitment, 1) = 1", OrgId, Sunday, peopleid);
 		}
 	}

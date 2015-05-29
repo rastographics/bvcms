@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Hosting;
 using System.Web.Script.Serialization;
+using iTextSharp.tool.xml.html;
 using ExpressionHelper = System.Web.Mvc.ExpressionHelper;
 using MarkdownDeep;
 
@@ -817,7 +818,7 @@ namespace CmsWeb
         }
         public static HtmlString CKEditor()
         {
-            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.4.7/standard/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.4.7/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
         public static HtmlString jQuery()
         {

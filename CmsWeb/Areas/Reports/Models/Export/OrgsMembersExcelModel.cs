@@ -28,7 +28,7 @@ namespace CmsWeb.Models
             if(count == 0)
                 return new EpplusResult("EmptyResult.xlsx");
 
-            var cols = typeof(CurrOrgMember).GetProperties();
+            var cols = typeof(CurrOrgMembers2).GetProperties();
             var ep = new ExcelPackage();
             var ws = ep.Workbook.Worksheets.Add("Sheet1");
             ws.Cells["A2"].LoadFromCollection(list);
@@ -43,6 +43,7 @@ namespace CmsWeb.Models
             table.TableStyle = TableStyles.Light9;
             int userdatacol = 1;
             int groupcol = 1;
+            int questionscol = 1;
             for (var i = 0; i < cols.Length; i++)
             {
                 var col = i + 1;
@@ -56,20 +57,29 @@ namespace CmsWeb.Models
                     colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                     ws.Column(col).Width = 12;
                 }
-                if (name == "UserData")
+                switch (name)
                 {
-                    colrange.Style.WrapText = true;
-                    userdatacol = col;
-                }
-                if (name == "Groups")
-                {
-                    colrange.Style.WrapText = true;
-                    groupcol = col;
+                    case "UserData":
+                        colrange.Style.WrapText = true;
+                        userdatacol = col;
+                        break;
+                    case "Groups":
+                        colrange.Style.WrapText = true;
+                        groupcol = col;
+                        break;
+                    case "Questions":
+                        colrange.Style.WrapText = true;
+                        questionscol = col;
+                        break;
                 }
             }
             ws.Cells[ws.Dimension.Address].AutoFitColumns();
-            ws.Column(userdatacol).Width = 40.0;
-            ws.Column(groupcol).Width = 60.0;
+            if(userdatacol > 1)
+                ws.Column(userdatacol).Width = 40.0;
+            if(groupcol > 1)
+                ws.Column(groupcol).Width = 60.0;
+            if(questionscol > 1)
+                ws.Column(questionscol).Width = 40.0;
             return new EpplusResult(ep, "OrgMember.xlsx");
         }
     }

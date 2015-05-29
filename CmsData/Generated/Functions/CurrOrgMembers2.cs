@@ -68,6 +68,8 @@ namespace CmsData.View
 		
 		private string _UserData;
 		
+		private string _Questions;
+		
 		private DateTime? _InactiveDate;
 		
 		private string _Medical;
@@ -522,6 +524,23 @@ namespace CmsData.View
 			{
 				if (this._UserData != value)
 					this._UserData = value;
+			}
+
+		}
+
+		
+		[Column(Name="Questions", Storage="_Questions", DbType="nvarchar")]
+		public string Questions
+		{
+			get
+			{
+				return this._Questions;
+			}
+
+			set
+			{
+				if (this._Questions != value)
+					this._Questions = value;
 			}
 
 		}

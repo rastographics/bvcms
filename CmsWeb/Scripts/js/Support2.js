@@ -1,44 +1,37 @@
 ﻿$(function () {
-    $(".bt").button();
+    $('#support-tabs').tabdrop();
+    $('#cse-search-input-box-id').focus();
+
     var cx = '012864427410831580707:fj9oufx9opi';
     var gcse = document.createElement('script'); gcse.type = 'text/javascript'; gcse.async = true;
     gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//www.google.com/cse/cse.js?cx=' + cx;
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(gcse, s);
-    $("#body").val("");
-    $("#success").hide();
+
     $("#csearch").click(function () {
         var input = document.getElementById('cse-search-input-box-id');
         var $searchresults = google.search.cse.element.getElement('searchresults-only0');
-        $("#success").hide();
-        $("#about").hide();
         if (input.value == '') {
             $searchresults.clearAllResults();
         } else {
+            $('#last-search').val(input.value);
             $("#contactsupport").prop("disabled", false).css("opacity", 1);
             $searchresults.execute(input.value);
         }
         return false;
     });
-    $("#cse-search-input-box-id").keyup(function (e) {
-        if (e.keyCode == 13) {
-            $("#success").hide();
-            $("#contactsupport").prop("disabled", false).css("opacity", 1);
-            $("#about").hide();
-        }
-    });
-    $("#contactsupport").click(function (e) {
-        var $searchresults = google.search.cse.element.getElement('searchresults-only0');
+
+    $('#supportRequestTab').on('shown.bs.tab', function (e) {
         e.preventDefault();
-        $searchresults.clearAllResults();
-        $("#supportForm").show();
+        $("#body").val("");
         $("#success").hide();
-        $("#about").hide();
-        $("#examples").accordion({
-            active: 10,
-            collapsible: true,
-            heightStyle: "content"
-        });
+
+        if (CKEDITOR.instances["body"]) {
+            CKEDITOR.instances["body"].destroy();
+        }
+
+        CKEDITOR.env.isCompatible = true;
+
         CKEDITOR.replace('body', {
             height: 200,
             fullPage: false,
@@ -46,10 +39,11 @@
             customConfig: '/scripts/js/ckeditorconfig.js'
         });
     });
-    $("#sendSupport").live("click", function (e) {
+
+    $('body').on('click', '#sendSupport', function (e) {
         e.preventDefault();
         if ($("#urgency").val() == 0) {
-            alert("Please select an urgency before submitting your support request");
+            swal("Error!", "Please select an priority before submitting your support request.", "error");
             return;
         }
 
@@ -57,7 +51,7 @@
             body: CKEDITOR.instances["body"].getData(),
             cc: $("#cc").val(),
             urgency: $("#urgency").val(),
-            lastsearch: $("#cse-search-input-box-id").val()
+            lastsearch: $("#last-search").val()
         };
         $.post("/Support/SendRequest", postdata, function (data) {
             if (data == "OK") {
@@ -65,9 +59,8 @@
                 $("#supportForm").hide();
             }
             else {
-                alert("There was an error submitting your support request, please try again.");
+                swal("Error!", "There was an error submitting your support request, please try again.", "error");
             }
         });
     });
-    $("#supportForm").hide();
 });

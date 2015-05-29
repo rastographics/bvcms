@@ -19,6 +19,9 @@
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
     
+    $.InitFunctions.ReloadPeople = function () {
+        $.getTable();
+    };
     $("#clear").click(function (ev) {
         ev.preventDefault();
         $("#PublicView").val(false);
@@ -96,10 +99,6 @@
             });
         });
         return false;
-    };
-
-    $.InitFunctions.ReloadPeople = function () {
-        $.getTable();
     };
 
     $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
@@ -312,6 +311,13 @@
         return true;
     });
 
+    $('#ViewAttNotices').click(function (ev) {
+        ev.preventDefault();
+        $("#orgsearchform").attr("action", "/OrgSearch/DisplayAttendanceNotices");
+        $.block();
+        $("#orgsearchform").submit();
+        return true;
+    });
     $('#AttNotices').click(function (ev) {
         ev.preventDefault();
         var did = $('#DivisionId').val();
@@ -388,7 +394,7 @@
     $('#createmeetings').click(function (ev) {
         ev.preventDefault();
         var dt = getISODateTime(new Date($('#NewMeetingDate').val() + " " + $('#NewMeetingTime').val()));
-        var args = "?dt=" + dt;
+        var args = "?dt=" + dt + "&noautoabsents=" + ($("#NoAbsenteeRecords").is(":checked") ? "true" : "false");
         var q = $("#orgsearchform").serialize();
         $.post("/OrgSearch/CreateMeetings" + args, q, function () {
             var args2 = "?dt1=" + dt + "&dt2=" + dt;

@@ -594,8 +594,12 @@ namespace CmsWeb.Areas.Search.Models
                     select p;
             return ViewExtensions2.RenderPartialViewToString(c, "RecentVisitsEmail", q);
         }
-        public void SendNotices(OrgSearchController c)
+
+        internal string noticelist;
+        public Dictionary<Person, string> NoticesToSend(OrgSearchController c)
         {
+            var leaderNotices = new Dictionary<Person, string>();
+
             const int days = 36;
 
             var olist = FetchOrgs().Select(oo => oo.OrganizationId).ToList();
@@ -617,7 +621,7 @@ namespace CmsWeb.Areas.Search.Models
             foreach (var p in plist)
             {
                 var sb = new StringBuilder("The following meetings are ready to be viewed:<br/>\n");
-                var orgids = p.Select(vv => vv).ToList();
+                var orgids = p.ToList();
                 var meetings = mlist.Where(m => orgids.Contains(m.OrganizationId)).ToList();
                 var leader = DbUtil.Db.LoadPersonById(p.Key);
                 foreach (var m in meetings)
@@ -636,12 +640,22 @@ namespace CmsWeb.Areas.Search.Models
                     sb.Append(RecentAbsentsEmail(c, absents));
                     sb.Append(RecentVisitsEmail(c, vlist));
                 }
-                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, leader, null,
-                                DbUtil.Db.Setting("SubjectAttendanceNotices", "Attendance reports are ready for viewing"), sb.ToString(), false);
+                leaderNotices.Add(leader, sb.ToString());
             }
             sb2.Append("</table>\n");
+            noticelist = sb2.ToString();
+            return leaderNotices;
+        }
+        public void SendNotices(OrgSearchController c)
+        {
+            var leaders = NoticesToSend(c);
+            foreach (var leader in leaders)
+            {
+                DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, leader.Key, null,
+                                DbUtil.Db.Setting("SubjectAttendanceNotices", "Attendance reports are ready for viewing"), leader.Value , false);
+            }
             DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, DbUtil.Db.CurrentUser.Person, null,
-                            "Attendance emails sent", sb2.ToString(), false);
+                            "Attendance emails sent", noticelist, false);
         }
 
         public class OrganizationInfo

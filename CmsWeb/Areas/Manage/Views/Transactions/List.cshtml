@@ -17,10 +17,6 @@
                     <span class="stat-title">TOTAL AMOUNT</span>
                     <span class="stat-figure">@((tt.Amt - tt.Donate).ToString("C2"))</span>
                 </div>
-                <div class="stat-panel">
-                    <span class="stat-title">TOTAL AMOUNT DUE</span>
-                    <span class="stat-figure">@tt.Amtdue.ToString("C2")</span>
-                </div>
                 @if (Model.finance)
                 {
                     <div class="stat-panel">

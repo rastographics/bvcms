@@ -14,6 +14,8 @@ namespace CmsData.Registration
             { return @"
 These are questions that will force a yes or no answer. 
 The results will be in sub-groups with a Yes- or No- prepended to the name, so make sure to keep the question text very short.
+
+If you need a longer explanation, use InstructionalText above the question so you can keep it short
 "; 
             }
 	    }

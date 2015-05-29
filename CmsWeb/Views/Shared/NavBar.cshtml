@@ -3,6 +3,7 @@
     var access = User.IsInRole("Access");
     var finance = User.IsInRole("Finance");
     var targetperson = Util2.TargetLinkPeople;
+    var useneweditor = Util2.UseNewEditor;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 
     var customHeaderImage = CustomHeader.HeaderImage("~/Content/touchpoint/img/logo.png");
@@ -129,7 +130,20 @@
                             @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
                             <li class="divider"></li>
                             <li>
-                                <a href="/Home/TargetPerson/@Html.Raw(targetperson)">
+                                <a href="/Home/UseNewEditor/@Html.Raw(useneweditor)">
+                                    @if (useneweditor)
+                                    {
+                                        <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="dropdown-icon fa fa-toggle-off"></i>
+                                    }
+                                    <span>&nbsp;&nbsp;Use New Editor</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/Home/UseNewEdtitor/@Html.Raw(targetperson)">
                                     @if (targetperson)
                                     {
                                         <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
