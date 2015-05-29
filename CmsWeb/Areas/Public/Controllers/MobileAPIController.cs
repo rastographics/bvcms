@@ -14,6 +14,7 @@ using ImageData;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
+using System.IO;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -606,7 +607,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 MobileOrganization org = new MobileOrganization().populate(item);
 
                 // Initial release version
-                if (dataIn.version == 2 && tzOffset != 0)
+                if (dataIn.version == 2 && tzOffset != 0 && dataIn.device == BaseMessage.API_DEVICE_IOS)
                 {
                     org.changeHourOffset(-tzOffset);
                 }
@@ -629,11 +630,15 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
 
+            // Convert raw post to avoid "+" being converted to space for iOS timezone info.  Remove this later when app has been updated.
+            String rawPost = new StreamReader(this.Request.InputStream).ReadToEnd();
+            rawPost = rawPost.Substring(5);
+
             // Check to see if type matches
-            BaseMessage dataIn = BaseMessage.createFromString(data);
+            BaseMessage dataIn = BaseMessage.createFromString(rawPost);
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            if (dataIn.version == 2)
+            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -680,10 +685,14 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
+            // Convert raw post to avoid "+" being converted to space for iOS timezone info.  Remove this later when app has been updated.
+            String rawPost = new StreamReader(this.Request.InputStream).ReadToEnd();
+            rawPost = rawPost.Substring(5);
+
+            BaseMessage dataIn = BaseMessage.createFromString(rawPost);
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
-            if (dataIn.version == 2)
+            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -744,10 +753,14 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Attendance"))
                 return BaseMessage.createErrorReturn("Attendance roles is required to take attendance for organizations");
 
-            BaseMessage dataIn = BaseMessage.createFromString(data);
+            // Convert raw post to avoid "+" being converted to space for iOS timezone info.  Remove this later when app has been updated.
+            String rawPost = new StreamReader(this.Request.InputStream).ReadToEnd();
+            rawPost = rawPost.Substring(5);
+
+            BaseMessage dataIn = BaseMessage.createFromString(rawPost);
             MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
 
-            if (dataIn.version == 2)
+            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
