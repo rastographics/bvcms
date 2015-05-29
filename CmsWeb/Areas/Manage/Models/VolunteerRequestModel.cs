@@ -262,6 +262,8 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 		}
 		public void ProcessReply(string ans)
 		{
+		    var committed = new int[]
+		    {AttendCommitmentCode.Attending, AttendCommitmentCode.FindSub, AttendCommitmentCode.Substitute};
 			var dt = new DateTime(ticks);
 			var i = (from rr in Db.VolRequests
 					 where rr.MeetingId == meeting.MeetingId
@@ -269,7 +271,7 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 					 where rr.Requested == dt
 					 where rr.VolunteerId == vid
 					 let commits = (from a in rr.Meeting.Attends
-									where a.Commitment == AttendCommitmentCode.Attending || a.Commitment == AttendCommitmentCode.FindSub
+									where committed.Contains(a.Commitment ?? 0)
 									select a).Count()
 					 let needed = (from e in rr.Meeting.MeetingExtras
 								   where e.Field == "TotalVolunteersNeeded"
