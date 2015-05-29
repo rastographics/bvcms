@@ -12,6 +12,10 @@ namespace CmsWeb.MobileAPI
 
 		public int peopleID = 0;
 		public bool present = false;
-		
+
+		public void changeHourOffset(int offset)
+		{
+			datetime = datetime.AddHours(offset);
+		}
 	}
 }

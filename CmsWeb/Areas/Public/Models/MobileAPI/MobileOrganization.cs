@@ -31,6 +31,11 @@ namespace CmsWeb.MobileAPI
 
 			return dt;
 		}
+
+		public void changeHourOffset(int offset)
+		{
+			datetime = datetime.AddHours(offset);
+		}
 	}
 
 	public class OrganizationInfo

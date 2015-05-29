@@ -594,10 +594,20 @@ namespace CmsWeb.Areas.Public.Controllers
             br.error = 0;
             br.count = orgs.Count();
 
-            foreach (var item in orgs)
-            {
-                mo.Add(new MobileOrganization().populate(item));
-            }
+				int tzOffset = 0;
+				int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+
+				foreach (var item in orgs)
+				{
+					MobileOrganization org = new MobileOrganization().populate(item);
+
+					// Initial release version
+					if (dataIn.version == 2 && tzOffset != 0) {
+						org.changeHourOffset(tzOffset);
+					}
+
+					mo.Add(org);
+				}
 
             br.data = JsonConvert.SerializeObject(mo);
             return br;
@@ -617,6 +627,16 @@ namespace CmsWeb.Areas.Public.Controllers
             // Check to see if type matches
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
+
+				if (dataIn.version == 2)
+				{
+					int tzOffset = 0;
+					int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+
+					if (tzOffset != 0) {
+						mprl.changeHourOffset(tzOffset * -1);
+					}
+				}
 
             var meetingId = DbUtil.Db.CreateMeeting(mprl.id, mprl.datetime);
             var people = RollsheetModel.RollList(meetingId, mprl.id, mprl.datetime);
@@ -656,6 +676,16 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
+
+				if (dataIn.version == 2)
+				{
+					int tzOffset = 0;
+					int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+
+					if (tzOffset != 0) {
+						mpa.changeHourOffset(tzOffset * -1);
+					}
+				}
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mpa.orgID && m.MeetingDate == mpa.datetime);
 
@@ -709,6 +739,16 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
             MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
+
+				if (dataIn.version == 2)
+				{
+					int tzOffset = 0;
+					int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
+
+					if (tzOffset != 0) {
+						mph.changeHourOffset(tzOffset * -1);
+					}
+				}
 
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(m => m.OrganizationId == mph.orgID && m.MeetingDate == mph.datetime);
             meeting.HeadCount = mph.headcount;

@@ -9,5 +9,10 @@ namespace CmsWeb.MobileAPI
 	{
 		public int id = 0;
 		public DateTime datetime = DateTime.Now;
+
+		public void changeHourOffset(int offset)
+		{
+			datetime = datetime.AddHours(offset);
+		}
 	}
 }
