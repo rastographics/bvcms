@@ -425,7 +425,6 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRole.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileSettings.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileState.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostTransaction.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostAddPerson.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostAttend.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostFetchImage.cs" />
@@ -434,7 +433,6 @@
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSaveImage.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostSearch.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostTransactionItem.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AveryAddressWordResult.cs" />
     <Compile Include="Areas\Reports\Models\Other\CustomColumnsModel.cs" />
     <Compile Include="Areas\Reports\Models\Other\CustomReportsModel.cs" />
