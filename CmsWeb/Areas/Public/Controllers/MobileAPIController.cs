@@ -632,13 +632,19 @@ namespace CmsWeb.Areas.Public.Controllers
 
             // Convert raw post to avoid "+" being converted to space for iOS timezone info.  Remove this later when app has been updated.
             String rawPost = new StreamReader(this.Request.InputStream).ReadToEnd();
-            rawPost = rawPost.Substring(5);
+            rawPost = Server.UrlDecode(rawPost).Substring(5);
 
             // Check to see if type matches
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
+
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            {
+                dataIn.data = dataIn.data.Replace(" ", "+");
+            }
+
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.version == 2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -687,12 +693,18 @@ namespace CmsWeb.Areas.Public.Controllers
 
             // Convert raw post to avoid "+" being converted to space for iOS timezone info.  Remove this later when app has been updated.
             String rawPost = new StreamReader(this.Request.InputStream).ReadToEnd();
-            rawPost = rawPost.Substring(5);
+            rawPost = Server.UrlDecode(rawPost).Substring(5);
 
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
+
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            {
+                dataIn.data = dataIn.data.Replace(" ", "+");
+            }
+
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.version == 2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -755,12 +767,18 @@ namespace CmsWeb.Areas.Public.Controllers
 
             // Convert raw post to avoid "+" being converted to space for iOS timezone info.  Remove this later when app has been updated.
             String rawPost = new StreamReader(this.Request.InputStream).ReadToEnd();
-            rawPost = rawPost.Substring(5);
+            rawPost = Server.UrlDecode(rawPost).Substring(5);
 
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
+
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            {
+                dataIn.data = dataIn.data.Replace(" ", "+");
+            }
+
             MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.version == 2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
