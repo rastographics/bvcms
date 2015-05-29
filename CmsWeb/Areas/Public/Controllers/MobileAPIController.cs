@@ -606,7 +606,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 // Initial release version
                 if (dataIn.version == 2 && tzOffset != 0)
                 {
-                    org.changeHourOffset(tzOffset);
+                    org.changeHourOffset(-tzOffset);
                 }
 
                 mo.Add(org);
@@ -638,7 +638,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 if (tzOffset != 0)
                 {
-                    mprl.changeHourOffset(tzOffset * -1);
+                    mprl.changeHourOffset(tzOffset);
                 }
             }
 
@@ -688,7 +688,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 if (tzOffset != 0)
                 {
-                    mpa.changeHourOffset(tzOffset * -1);
+                    mpa.changeHourOffset(tzOffset);
                 }
             }
 
@@ -752,7 +752,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                 if (tzOffset != 0)
                 {
-                    mph.changeHourOffset(tzOffset * -1);
+                    mph.changeHourOffset(tzOffset);
                 }
             }
 
