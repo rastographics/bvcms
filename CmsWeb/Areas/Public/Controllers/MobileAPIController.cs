@@ -560,6 +560,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 q = from o in DbUtil.Db.Organizations
                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where oids.Contains(o.OrganizationId)
+                    where o.OrganizationStatusId == OrgStatusCode.Active
                     where o.SecurityTypeId != 3
                     select o;
             }
@@ -575,6 +576,7 @@ namespace CmsWeb.Areas.Public.Controllers
                                )
                        || oids.Contains(o.OrganizationId)) // or a leader of a parent org
                     where o.SecurityTypeId != 3
+                    where o.OrganizationStatusId == OrgStatusCode.Active
                     select o;
             }
 
