@@ -607,7 +607,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 MobileOrganization org = new MobileOrganization().populate(item);
 
                 // Initial release version
-                if (dataIn.version == 2 && tzOffset != 0 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+                if (dataIn.version == 2 && tzOffset != 0)
                 {
                     org.changeHourOffset(-tzOffset);
                 }
@@ -644,7 +644,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            if (dataIn.version == 2)
+            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -704,7 +704,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
-            if (dataIn.version == 2)
+            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -778,7 +778,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
 
-            if (dataIn.version == 2)
+            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
