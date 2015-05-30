@@ -163,10 +163,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         SaveCheckboxChoices(om, ask);
                         break;
                     case "AskExtraQuestions":
-                    case "AskText":
-                        // skip these, they show up in OrganizationMember.OnlineRegData xml
-                        break;
-                    case "AskExtraQuestions":
                         foreach (var g in ExtraQuestion[ask.UniqueId])
                             if (g.Value.HasValue())
                                 if (setting.TargetExtraValues)

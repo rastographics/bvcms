@@ -74,12 +74,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         {
                             orgid = Orgid,
                             masterorgid = masterorgid,
-#if DEBUG2
-                            FirstName = "Otis",
-                            LastName = "Sukamotis-" + DateTime.Now.Millisecond,
-                            DateOfBirth = "5/30/55",
-                            EmailAddress = "otis@nowhere.com",
-                            Phone = "901-758-1862",
+#if DEBUG
+                            FirstName = "David",
+                            LastName = "Carroll", // + DateTime.Now.Millisecond,
+                            DateOfBirth = "5/30/52",
+                            EmailAddress = "david@bvcms.com",
 #endif
                         }
                 };
