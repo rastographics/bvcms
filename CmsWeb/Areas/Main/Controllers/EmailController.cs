@@ -43,6 +43,7 @@ namespace CmsWeb.Areas.Main.Controllers
 					m.Host = Util.Host;
 
 					ViewBag.templateID = templateID;
+				    m.OrgId = orgid;
 					return View("Compose", m);
 				}
 			}

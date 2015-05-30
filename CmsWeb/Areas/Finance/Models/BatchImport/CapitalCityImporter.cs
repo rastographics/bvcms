@@ -32,7 +32,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
                 var routingNumber = csv[17];
                 var accountNumber = csv[16];
-                var checkNumber = csv[14];
+                var checkNumber = csv[15];
 
                 if (bundleHeader == null)
                     bundleHeader = BatchImportContributions.GetBundleHeader(batchDate.Value, DateTime.Now);

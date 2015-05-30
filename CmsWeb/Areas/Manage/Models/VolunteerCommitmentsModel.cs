@@ -89,7 +89,7 @@ namespace CmsWeb.Areas.Manage.Models
 			public List<NameId> Persons { get; set; }
 			public int Count
 			{
-				get { return Persons.Count(pp => pp.Commitment == AttendCommitmentCode.Attending || pp.Commitment == AttendCommitmentCode.Substitute); }
+			    get { return Persons.Count(pp => AttendCommitmentCode.committed.Contains(pp.Commitment ?? 0)); }
 			}
 			public List<NameId> OrderedPersons()
 			{
@@ -118,7 +118,6 @@ namespace CmsWeb.Areas.Manage.Models
 		}
 		public IEnumerable<Slot> FetchSlots()
 		{
-            var commitments = new[] { AttendCommitmentCode.Attending, AttendCommitmentCode.FindSub };
 			var mlist = (from m in DbUtil.Db.Meetings
 			             where m.MeetingDate > Util.Now.Date
 			             where m.OrganizationId == OrgId

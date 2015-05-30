@@ -11,6 +11,10 @@ SELECT
 	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/DateOfBirth[1]', 'varchar(50)') [dob]
 	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/FirstName[1]', 'varchar(50)') [first]
 	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/LastName[1]', 'varchar(50)') [last]
+	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/PeopleId[1]', 'int') [PeopleId1]
+	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/PeopleId[2]', 'int') [PeopleId2]
+	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/PeopleId[3]', 'int') [PeopleId3]
+	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/PeopleId[4]', 'int') [PeopleId4]
 	,data.value('count(/OnlineRegModel/List/OnlineRegPersonModel)', 'int') cnt
 	,cast (CASE WHEN data.value('(/OnlineRegModel/URL)[1]', 'varchar(100)') LIKE '%source=%' THEN 1 ELSE 0 END AS BIT) [mobile]
 	,tt.completed

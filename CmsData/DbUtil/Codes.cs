@@ -270,19 +270,19 @@ namespace CmsData.Codes
         public const int NonTaxDed = 9;
         public const int GiftInKind = 10;
         public const int Stock = 20;
-        public static int[] SpecialTypes = new int[]
+        public static int[] SpecialTypes =
         {
             ContributionTypeCode.GiftInKind,
             ContributionTypeCode.NonTaxDed,
             ContributionTypeCode.Pledge,
             ContributionTypeCode.Stock,
         };
-        public static int[] NonTaxTypes = new int[]
+        public static int[] NonTaxTypes =
         {
             ContributionTypeCode.NonTaxDed,
             ContributionTypeCode.Pledge
         };
-        public static int[] ReturnedReversedTypes = new int[] 
+        public static int[] ReturnedReversedTypes =
         { 
             ContributionTypeCode.ReturnedCheck, 
             ContributionTypeCode.Reversed 
@@ -305,6 +305,13 @@ namespace CmsData.Codes
             yield return new KeyValuePair<int, string>(SubFound, "Sub Found");
             yield return new KeyValuePair<int, string>(Substitute, "Substitute");
         }
+
+        public static int[] committed =
+        {
+            Attending,
+            Substitute,
+            FindSub
+        };
         public static string Lookup(int? id)
         {
             var s = GetCodePairs().SingleOrDefault(ii => ii.Key == id);

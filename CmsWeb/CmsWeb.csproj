@@ -748,8 +748,12 @@
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskGradeOptions.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Related.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -1412,11 +1416,6 @@
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
     <Content Include="package.json" />
     <Content Include="Content\touchpoint\fonts\glyphicons-halflings-regular.eot" />
@@ -2285,10 +2284,6 @@
     <Content Include="Areas\Org\Views\Org2\Registration\NotifyList.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskSize.cshtml" />
     <Content Include="Areas\Manage\Views\Account\SetPasswordConfirm.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\AttendanceByGroups.cshtml" />
     <Content Include="Areas\Org\Views\Organization\OrgPickList2.cshtml" />

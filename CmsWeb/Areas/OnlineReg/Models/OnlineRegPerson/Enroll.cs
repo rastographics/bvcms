@@ -166,6 +166,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "AskText":
                         // skip these, they show up in OrganizationMember.OnlineRegData xml
                         break;
+                    case "AskExtraQuestions":
+                        foreach (var g in ExtraQuestion[ask.UniqueId])
+                            if (g.Value.HasValue())
+                                if (setting.TargetExtraValues)
+                                    person.AddEditExtraData(g.Key, g.Value);
+                        break;
+                    case "AskText":
+                        foreach (var g in Text[ask.UniqueId])
+                            if (g.Value.HasValue())
+                                if (setting.TargetExtraValues)
+                                    person.AddEditExtraData(g.Key, g.Value);
+                        break;
                     case "AskMenu":
                         SaveMenuChoices(om, ask);
                         break;

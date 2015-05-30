@@ -5,7 +5,8 @@
 }
 <form class="ajax" data-init="movequestions,updateQuestionList,showHideRegTypes,timepicker">
     @FormAction()
-    <br/>
+  <br/>
+    @Html.DisplayFor(m => Model.TargetExtraValues)
     <div id="QuestionList" class="movable-list noedit">
         @foreach (var ask in Model.AskItems)
         {

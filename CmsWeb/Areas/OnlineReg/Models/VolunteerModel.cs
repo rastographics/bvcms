@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 					where a.OrganizationId == OrgId
 					where a.MeetingDate >= Sunday
 					where a.MeetingDate <= EndDt.AddHours(24)
-					where a.Commitment == AttendCommitmentCode.Attending || a.Commitment == AttendCommitmentCode.Substitute
+					where AttendCommitmentCode.committed.Contains(a.Commitment ?? 0)
 					group a by a.MeetingDate into g
 					let attend = (from aa in g
 								  where aa.PeopleId == PeopleId

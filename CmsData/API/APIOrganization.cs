@@ -656,7 +656,7 @@ namespace CmsData.API
                                where om.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive
                                where org.Attends.Any(a => (a.MeetingDate <= DateTime.Today.AddDays(7) || sendall)
                                    && a.MeetingDate >= DateTime.Today
-                                   && (a.Commitment == AttendCommitmentCode.Attending || a.Commitment == AttendCommitmentCode.Substitute)
+                                   && AttendCommitmentCode.committed.Contains(a.Commitment ?? 0)
                                    && a.PeopleId == om.PeopleId)
                                select om).ToList();
 
@@ -667,7 +667,7 @@ namespace CmsData.API
             {
                 var q = (from a in org.Attends
                          where a.PeopleId == om.PeopleId
-                         where a.Commitment == AttendCommitmentCode.Attending || a.Commitment == AttendCommitmentCode.Substitute
+                         where AttendCommitmentCode.committed.Contains(a.Commitment ?? 0)
                          where a.MeetingDate >= DateTime.Today
                          orderby a.MeetingDate
                          select a.MeetingDate).ToList();
@@ -714,9 +714,7 @@ namespace CmsData.API
             {
                 var q = (from a in org.Attends
                          where a.PeopleId == om.PeopleId
-                         where
-                             a.Commitment == AttendCommitmentCode.Attending ||
-                             a.Commitment == AttendCommitmentCode.Substitute
+                         where AttendCommitmentCode.committed.Contains(a.Commitment ?? 0)
                          where a.MeetingDate >= DateTime.Today
                          where a.MeetingDate <= DateTime.Today.AddDays(7)
                          orderby a.MeetingDate

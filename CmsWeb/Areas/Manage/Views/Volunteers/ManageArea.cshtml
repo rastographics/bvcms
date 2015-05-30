@@ -123,7 +123,7 @@
           @if (vlist.Any(vv => vv.Conflicts == true))
           {
             <div class="selectable" source="commits"><h3>With Conflicts</h3></div>
-            foreach (var v in vlist.Where(vv => vv.Conflicts == true))
+            foreach (var v in vlist.Where(vv => vv.Conflicts == true).OrderBy(vv => vv.Name))
             {
               <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
                 @v.Name
@@ -132,7 +132,7 @@
             }
           }
             <div class="selectable" source="commits"><h3>With Commitments</h3></div>
-          @foreach (var v in vlist.Where(vv => vv.Commits == true && vv.Conflicts != true))
+          @foreach (var v in vlist.Where(vv => vv.Commits == true && vv.Conflicts != true).OrderBy(vv => vv.Name))
                     {
             <div class="selectable @(v.Conflicts == true ? "conflict" : "")" source="person" pid="@v.PeopleId">
               @v.Name
@@ -140,7 +140,7 @@
                   </div>
                     }
             <div class="selectable" source="nocommits"><h3>With No Commitments</h3></div>
-          @foreach (var v in vlist.Where(vv => vv.Commits != true))
+          @foreach (var v in vlist.Where(vv => vv.Commits != true).OrderBy(vv => vv.Name))
                     {
                   <div class="selectable" source="person" pid="@v.PeopleId">
               <span class="@(v.Conflicts == true ? "conflict" : "")">@v.Name</span>

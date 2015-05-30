@@ -155,8 +155,8 @@ namespace CmsWeb.Areas.Org2.Models
         [Org, Display(Description = TitleDescription)]
         public string RegistrationTitle { get; set; }
 
-        [Reg, Display(Name= "Validate Orgs", Description = VaidateOrgsDescription)]
-        public string VaidateOrgs { get; set; }
+        [Reg, Display(Name= "Validate Orgs", Description = ValidateOrgsDescription)]
+        public string ValidateOrgs { get; set; }
 
         [Reg, Display(Description = AgeGroupsDescription), UIHint("AgeGroups")]
         public List<Settings.AgeGroup> AgeGroups
@@ -250,7 +250,7 @@ This will cause the class to go into a 'class filled' state when the number of m
 This is the name of a script in *Special Content > Python Scripts* that will be run when someone registers.
 ";
         private const string TitleDescription = @"Leave blank to use the name of the organization.";
-        private const string VaidateOrgsDescription = @"
+        private const string ValidateOrgsDescription = @"
 A registrant must be in one of these organizations before registering.
 Use a comma separated list of OrgIds.
 ";

@@ -199,6 +199,9 @@ namespace CmsData
                         return CreateUserTag(emailqueueto);
                     break;
 
+                case "{church}":
+                    return db.Setting("NameOfChurch", "Set this in NameOfChurch setting");
+
                 case "{cmshost}":
                     return db.ServerLink();
 
@@ -498,7 +501,7 @@ namespace CmsData
             var mt = (from aa in db.Attends
                       where aa.OrganizationId == emailqueueto.OrgId
                       where aa.PeopleId == emailqueueto.PeopleId
-                      where aa.Commitment == AttendCommitmentCode.Attending
+                      where AttendCommitmentCode.committed.Contains(aa.Commitment ?? 0)
                       where aa.MeetingDate > DateTime.Now
                       orderby aa.MeetingDate
                       select aa.MeetingDate).FirstOrDefault();

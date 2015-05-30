@@ -238,10 +238,7 @@ namespace CmsData
         {
             var meetingid = TextValue.ToInt();
             Expression<Func<Person, bool>> pred = p =>
-                p.Attends.Any(a =>
-                    (a.Commitment == AttendCommitmentCode.Attending
-                    || a.Commitment == AttendCommitmentCode.Substitute
-                    || a.Commitment == AttendCommitmentCode.FindSub)
+                p.Attends.Any(a => AttendCommitmentCode.committed.Contains(a.Commitment ?? 0)
                     && a.MeetingId == meetingid
                     );
             Expression expr = Expression.Invoke(pred, parm);
