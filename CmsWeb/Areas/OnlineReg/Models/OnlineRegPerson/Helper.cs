@@ -40,6 +40,8 @@ namespace CmsWeb.Models
             {
                 if (_setting == null)
                 {
+                    if (ManageSubscriptions() && masterorgid.HasValue)
+                        return settings[masterorgid.Value];
                     if (org == null)
                         throw new Exception("no valid org");
                     if (settings == null)

@@ -1,9 +1,9 @@
 ﻿@using CmsData.Registration
 @using UtilityExtensions
 @model CmsWeb.Models.OnlineRegPersonModel
-@if (Model.Parent.SupportMissionTrip)
+@if (Model.Parent.SupportMissionTrip || Model.ManageSubscriptions())
 {
-    return;
+  return;
 }
 @if (Model.RecordFamilyAttendance())
 {

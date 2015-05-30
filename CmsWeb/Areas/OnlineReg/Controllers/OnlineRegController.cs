@@ -140,7 +140,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (!ModelState.IsValid)
                     return View(m);
 
-                if (m.masterorg != null && m.masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2)
+                if (m.ManagingSubscriptions())
                 {
                     TempData["ms"] = m.UserPeopleId;
                     return Redirect("/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid));
@@ -398,6 +398,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     }
                 }
             }
+
             if (p.ManageSubscriptions()
                  || p.OnlinePledge()
                  || p.ManageGiving()

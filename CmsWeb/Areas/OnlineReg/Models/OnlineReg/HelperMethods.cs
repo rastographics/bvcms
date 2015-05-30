@@ -140,7 +140,9 @@ namespace CmsWeb.Models
         }
 
         public bool OnlyOneAllowed()
-        { 
+        {
+            if (ManagingSubscriptions())
+                return true;
             if (org != null)
             {
                 var setting = settings[org.OrganizationId];

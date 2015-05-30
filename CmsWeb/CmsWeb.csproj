@@ -2792,9 +2792,6 @@
     <Content Include="Content\touchpoint\src\less\footers.less" />
     <Content Include="Views\Shared\PageHeader.cshtml" />
     <Content Include="Views\Shared\PageFooter.cshtml" />
-    <None Include="Web.bvcms.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
     <Content Include="Views\Shared\PagerHidden.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateAndTime.cshtml" />
@@ -2803,9 +2800,6 @@
     <Content Include="Views\Shared\DisplayTemplates\Time.cshtml" />
     <Content Include="Views\MobileAppMenu\Index.cshtml" />
     <Content Include="Views\Shared\Message2.cshtml" />
-    <None Include="Web.TeamCity.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </None>
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

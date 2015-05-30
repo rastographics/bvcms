@@ -10,26 +10,6 @@
 }
 <div class="form-group">
   <div class="col-sm-12">
-@*    @if (!specialcase.HasValue())*@
-@*    {*@
-@*      var fees = Model.TotalAmount();*@
-@*      <div class="alert-block alert-info">*@
-@*        <h4>You are almost done!</h4>*@
-@*        You can add additional people to your registration if you want.*@
-@*        @if (fees > 0)*@
-@*        {*@
-@*          <text>*@
-@*            You will be able to make your payment after clicking the Complete Registration button.*@
-@*          </text>*@
-@*        }*@
-@*        else*@
-@*        {*@
-@*          <text>*@
-@*            Click the Complete Registration button to finalize your registration.*@
-@*          </text>*@
-@*        }*@
-@*      </div>*@
-@*    }*@
     <span class="pull-right">
       @if (!Model.OnlyOneAllowed())
       {
@@ -38,7 +18,7 @@
       @switch (specialcase)
       {
         case "subscription":
-          @Helper.OnlineRegSubmitButton("Manage Subscriptions")
+          @Helper.OnlineRegSubmitButton("Manage Subscriptions", onlyoneallowed: true)
           break;
         case "pledge":
         @Helper.OnlineRegSubmitButton("Email me a link to manage my pledge")
