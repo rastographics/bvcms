@@ -199,6 +199,9 @@ namespace CmsData
                         return CreateUserTag(emailqueueto);
                     break;
 
+                case "{church}":
+                    return db.Setting("NameOfChurch", "Set this in NameOfChurch setting");
+
                 case "{cmshost}":
                     return db.ServerLink();
 
