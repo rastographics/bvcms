@@ -24,10 +24,15 @@
 }
 <div class="row">
   <div class="col-md-10 col-lg-8">
-    <div class="alert alert-info alert-dismissible">
-      <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-      <strong>Please Note:</strong> Your recipient list has been saved in a tag, so you can run queries in other tabs. But you should not compose two emails simultaneously as one will overwrite the other.
-    </div>
+    @if (!Model.OrgId.HasValue)
+    {
+      <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <strong>Please Note:</strong>
+        Your recipient list has been saved in a tag, so you can run queries in other tabs.
+        But you should not compose two emails simultaneously as one will overwrite the other.
+      </div>
+    }
     <div class="box box-responsive">
       <div class="box-content">
         <form class="form-horizontal" id="SendEmail" method="post">
@@ -52,22 +57,40 @@
           <div class="form-group">
             <label for="inputEmail3" class="col-sm-2 control-label">To:</label>
             <div class="col-sm-10">
-              <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                @if (Model.Recipients.Count() > 500)
-                {
-                  <option value="" selected="selected">@Model.Count people@(Model.wantParents ? " including parents." : ".")</option>
-                }
-                else
-                {
-                  foreach (var recipient in Model.Recipients)
-                  {
-                    <option value="@recipient" selected="selected">@recipient</option>
-                  }
-                }
-              </select>
-              @if (Model.Recipients.Count() <= 500)
+              @if (Model.OrgId.HasValue)
               {
-                <p class="help-block">@Model.Count @( Model.Count != 1 ? "people" : "person")@(Model.wantParents ? " including parents." : ".")</p>
+                var org = DbUtil.Db.LoadOrganizationById(Model.OrgId);
+                <p class="alert alert-warning">
+                  This email will be sent to all current members of <strong>@org.OrganizationName</strong>.
+                  The recipient list will be finalized when the email is actualy sent.
+                  Currently, this organization has <strong>@org.MemberCount members</strong>.
+                </p>
+              }
+              else
+              {
+                <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
+                  @if (Model.Recipients.Count() > 500)
+                  {
+                    <option value="" selected="selected">
+                      @Model.Count people@(Model.wantParents ? " including parents." : ".")
+                    </option>
+                  }
+                  else
+                  {
+                    foreach (var recipient in Model.Recipients)
+                    {
+                      <option value="@recipient" selected="selected">@recipient</option>
+                    }
+                  }
+                </select>
+                if (Model.Recipients.Count() <= 500)
+                {
+                  <p class="help-block">
+                    @Model.Count
+                    @( Model.Count != 1 ? "people" : "person")
+                    @(Model.wantParents ? " including parents." : ".")
+                  </p>
+                }
               }
             </div>
           </div>
@@ -204,16 +227,16 @@
     @ViewExtensions2.CKEditor()
     @Fingerprint.Script("/scripts/email/compose.js")
   }
-    <script type="text/javascript">
-      $(function () {
-        var extraSmallDevice = $('.device-xs').is(':visible');
-        var smallDevice = $('.device-sm').is(':visible');
-        if (extraSmallDevice || smallDevice) {
-          $('#Schedule').val($('#ScheduleIso').val());
-          $('#Schedule').attr('type', 'datetime-local');
-        } else {
-          $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' }, minDate: '@DateTime.UtcNow.ToString("o")' });
-        }
-      });
-    </script>
+  <script type="text/javascript">
+    $(function () {
+      var extraSmallDevice = $('.device-xs').is(':visible');
+      var smallDevice = $('.device-sm').is(':visible');
+      if (extraSmallDevice || smallDevice) {
+        $('#Schedule').val($('#ScheduleIso').val());
+        $('#Schedule').attr('type', 'datetime-local');
+      } else {
+        $("div.scheduleDateTime").datetimepicker({ format: 'MM/DD/YYYY h:mm A', widgetPositioning: { horizontal: 'left' }, minDate: '@DateTime.UtcNow.ToString("o")' });
+      }
+    });
+  </script>
 }
