@@ -83,7 +83,6 @@ namespace CmsWeb.Areas.Reports.Models
                 table.DefaultCell.Padding = 0;
                 table.WidthPercentage = 100;
                 var co = DbUtil.Db.CurrentOrg;
-    		    var committed = new int[] {AttendCommitmentCode.Attending, AttendCommitmentCode.FindSub, AttendCommitmentCode.Substitute};
                 
                 if (meeting != null)
                 {
@@ -92,7 +91,7 @@ namespace CmsWeb.Areas.Reports.Models
                     if (!Groups.HasValue())
                     {
                         var q = from at in meeting.Attends
-                                where at.AttendanceFlag == true || committed.Contains(at.Commitment ?? 0)
+                                where at.AttendanceFlag == true || AttendCommitmentCode.committed.Contains(at.Commitment ?? 0)
                                 orderby at.Person.LastName, at.Person.FamilyId, at.Person.Name2
                                 select new
                                            {
@@ -112,7 +111,7 @@ namespace CmsWeb.Areas.Reports.Models
                                 where at.MeetingId == meeting.MeetingId
                                 join om in DbUtil.Db.OrgMember(orgid, GroupSelectCode.Member, null, null, Groups, showhidden: false) on at.PeopleId equals om.PeopleId into mm
                                 from om in mm.DefaultIfEmpty()
-                                where at.AttendanceFlag || committed.Contains(at.Commitment ?? 0 )
+                                where at.AttendanceFlag || AttendCommitmentCode.committed.Contains(at.Commitment ?? 0 )
                                 orderby at.Person.LastName, at.Person.FamilyId, at.Person.Name2
                                 select new
                                            {

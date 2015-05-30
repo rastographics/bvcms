@@ -36,7 +36,7 @@ namespace CmsWeb.Models
 		{
 			var q = from m in Db.Meetings
 					where m.MeetingId == mid
-					let c = m.Attends.Count(aa => aa.Commitment == AttendCommitmentCode.Attending || aa.Commitment == AttendCommitmentCode.Substitute)
+					let c = m.Attends.Count(aa => AttendCommitmentCode.committed.Contains(aa.Commitment ?? 0 ))
 					let p = Db.People.Single(pp => pp.PeopleId == pid)
 					select new
 					{
@@ -262,16 +262,15 @@ Sorry, I cannot be there.</a>".Fmt(meeting.MeetingId, person.PeopleId, ticks);
 		}
 		public void ProcessReply(string ans)
 		{
-		    var committed = new int[]
-		    {AttendCommitmentCode.Attending, AttendCommitmentCode.FindSub, AttendCommitmentCode.Substitute};
 			var dt = new DateTime(ticks);
+
 			var i = (from rr in Db.VolRequests
 					 where rr.MeetingId == meeting.MeetingId
 					 where rr.RequestorId == person.PeopleId
 					 where rr.Requested == dt
 					 where rr.VolunteerId == vid
 					 let commits = (from a in rr.Meeting.Attends
-									where committed.Contains(a.Commitment ?? 0)
+									where AttendCommitmentCode.committed.Contains(a.Commitment ?? 0)
 									select a).Count()
 					 let needed = (from e in rr.Meeting.MeetingExtras
 								   where e.Field == "TotalVolunteersNeeded"
