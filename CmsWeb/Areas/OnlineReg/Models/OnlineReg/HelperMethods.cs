@@ -141,17 +141,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         public bool OnlyOneAllowed()
-        {
+        { 
+            if (ManagingSubscriptions())
+                return true;
             if (org != null)
             {
                 var setting = settings[org.OrganizationId];
                 return org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes
                        || org.RegistrationTypeId == RegistrationTypeCode.CreateAccount
                        || org.IsMissionTrip == true
-                       || setting.AllowOnlyOne
+                       || setting.AllowOnlyOne 
                        || setting.AskVisible("AskTickets")
-                       || ChoosingSlots()
-                       || OnlineGiving()
+                       || ChoosingSlots() 
+                       || OnlineGiving() 
                        || ManageGiving()
                        || SupportMissionTrip;
             }
@@ -248,9 +250,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     {
                         var g = DbUtil.Db.LoadPersonById(GoerId.Value);
                         if (g != null)
-                            return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
+                        return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
                     }
-                    return "Support: " + org.OrganizationName;
+                        return "Support: " + org.OrganizationName;
                 }
                 if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
                     return Util.PickFirst(org.RegistrationTitle, org.OrganizationName);
@@ -550,7 +552,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.OrganizationId == 81460 && om.PeopleId == 828612
-                        select om;
+                    select om;
                 foreach (var om in q)
                     om.Drop(DbUtil.Db, DateTime.Now);
                 DbUtil.Db.SubmitChanges();

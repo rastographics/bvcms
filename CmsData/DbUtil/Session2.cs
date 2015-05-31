@@ -59,6 +59,9 @@ namespace CmsData
         {
             get
             {
+                if(Util.IsDebug() && HttpContext.Current != null)
+                    return Util.URLCombine(Scheme() + "://" + HttpContext.Current.Request.Url.Authority, "");
+
                 // choose DefaultHost setting first
                 var defaultHost = Setting("DefaultHost", "");
 

@@ -18,7 +18,7 @@
       @switch (specialcase)
       {
         case "subscription":
-          @Helper.OnlineRegSubmitButton("Manage Subscriptions")
+          @Helper.OnlineRegSubmitButton("Manage Subscriptions", onlyoneallowed: true)
           break;
         case "pledge":
           @Helper.OnlineRegSubmitButton("Email me a link to manage my pledge")
