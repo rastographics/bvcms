@@ -1,12 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsWeb.Areas.Main.Models;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using UtilityExtensions;
 using CmsData;
 using Elmah;
@@ -199,11 +197,6 @@ namespace CmsWeb.Areas.Main.Controllers
 					Db.SubmitChanges();
 				}
 			});
-//			string keepdraft = Request["keepdraft"];
-//			int saveid = Request["saveid"].ToInt();
-//
-//			System.Diagnostics.Debug.Print("Keep: " + keepdraft + " - Save ID: " + saveid);
-//			if (keepdraft != "on" && saveid > 0) DbUtil.ContentDeleteFromID(saveid);
 			return Json(new { id = id });
 		}
 
