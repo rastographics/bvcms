@@ -329,9 +329,11 @@ Total Fee paid for this registration session: {4:C}<br/>
         {
             var amtpaid = Transaction.Amt ?? 0;
             var paylink = GetPayLink();
-            var orgsettings = settings[org.OrganizationId];
-            var message = Util.PickFirst(orgsettings.Body, "no message");
+            var body = settings[org.OrganizationId].Body;
+            if (masterorgid.HasValue && !body.HasValue())
+                body = settings[masterorgid.Value].Body;
 
+            var message = Util.PickFirst(body, "no message");
             var location = org.Location;
             if (!location.HasValue() && masterorg != null)
                 location = masterorg.Location;
