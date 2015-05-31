@@ -110,6 +110,7 @@ namespace CmsData
         InfoBecomeAChristian,
         InOneOfMyOrgs,
         IsCurrentPerson,
+        IsCurrentUser,
         IsHeadOfHousehold,
         IsInactiveMemberOf,
         IsPendingMemberOf,

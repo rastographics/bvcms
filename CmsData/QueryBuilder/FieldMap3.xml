@@ -697,6 +697,9 @@
     <IsCurrentPerson Title="Is Current Person" Type="Bit" DataValueField="IdCode">
       Specify True or False for person last viewed (used internally, but you can use it if you find a need for it)
     </IsCurrentPerson>
+    <IsCurrentUser Title="Is Current User" Type="Bit" DataValueField="IdCode">
+      Specify True or False for Current User (used internally, but you can use it if you find a need for it)
+    </IsCurrentUser>
     <DuplicateEmails Title="Duplicate Emails" Type="Bit" DataValueField="IdCode">
       Specify True or False for records with the same email.
     </DuplicateEmails>

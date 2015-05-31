@@ -89,6 +89,7 @@ namespace CmsData
                 { QueryType.InCurrentOrg, InCurrentOrg },
                 { QueryType.InOneOfMyOrgs, InOneOfMyOrgs },
                 { QueryType.IsCurrentPerson, IsCurrentPerson },
+                { QueryType.IsCurrentUser, IsCurrentUser },
                 { QueryType.IsHeadOfHousehold, IsHeadOfHousehold },
                 { QueryType.IsInactiveMemberOf, IsInactiveMemberOf },
                 { QueryType.IsMemberOf, IsMemberOf },
