@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!HasOneOfThreeRequired)
                 modelState.AddModelError("FORM", "we require one of valid birthdate, email or phone to find an existing profile");
 
-            if (!Util.ValidEmail(EmailAddress))
+            if (!Util.ValidEmail(EmailAddress) && (person == null || !Util.ValidEmail(person.EmailAddress)))
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress), "valid email required for registration confirmation");
 
             if (Phone.HasValue() && d < 10)
@@ -138,8 +138,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void ValidateEmail()
         {
             if (!IsFamily && (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress)))
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].person.EmailAddress),
-                    "Please specify a valid email address.");
+                if(!Util.ValidEmail(person.EmailAddress))
+                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress),
+                        "Please specify a valid email address.");
         }
         private void ValidateBirthdayRange()
         {
