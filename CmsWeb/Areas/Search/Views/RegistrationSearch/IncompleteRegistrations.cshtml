@@ -1,0 +1,16 @@
+﻿@model CmsWeb.Areas.Search.Models.IncompleteRegistrations
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Incomplete Registrations";
+  ViewBag.PageHeader = "Incomplete Registrations";
+}
+<div class="box box-responsive">
+    <div class="box-content">
+      <form class="ajax" data-results="#results" method="post" action="/IncompleteRegistrations/Results">
+        @Html.HiddenFor(m => m.oids)
+        @Html.Partial("IncompleteResults", Model)
+      </form>
+    </div>
+</div>
+
+

@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Org.Controllers
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
 
         [Route("~/Organization/{id:int}")]
-        public ActionResult Index(int id)
+        public ActionResult Index(int id, int? peopleid = null)
         {       
             if(Util2.UseNewOrg)
                 return Redirect("/Org/" + id);

@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.Org2.Controllers
         const string needNotify = "WARNING: please add the notify persons on messages tab.";
 
         [HttpGet, Route("~/Org/{id:int}")]
-        public ActionResult Index(int id)
+        public ActionResult Index(int id, int? peopleid = null)
         {
 //            if(!Util2.UseNewOrg)
 //                return Redirect("/Organization/" + id);
@@ -23,6 +23,8 @@ namespace CmsWeb.Areas.Org2.Controllers
             db.CurrentOrg = new CurrentOrg() { Id=id, GroupSelect = GroupSelectCode.Member};
 
             var m = new OrganizationModel(id);
+            if (peopleid.HasValue)
+                m.NameFilter = peopleid.ToString();
 
             if (m.Org == null)
                 return Content("organization not found");

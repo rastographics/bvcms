@@ -29,5 +29,18 @@ namespace CmsWeb.Areas.Search.Controllers
             //m.ClearSession();
             return Redirect("/RegistrationSearch");
         }
+        [HttpPost, Route("~/IncompleteRegistrations")]
+        public ActionResult IncompleteRegistrations(OrgSearchModel orgsearch, int? days)
+        {
+            var m = new IncompleteRegistrations(orgsearch, days);
+
+            return View("IncompleteRegistrations", m);
+        }
+        [HttpPost, Route("~/IncompleteRegistrations/Results")]
+        public ActionResult IncompleteResults(IncompleteRegistrations m)
+        {
+            //m.SaveToSession();
+            return View(m);
+        }
     }
 }
