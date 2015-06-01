@@ -40,7 +40,7 @@ namespace CmsWeb.Models
                         select p;
                 else
                     q = from p in q
-                        where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
+                        where p.LastName.StartsWith(last) || p.FirstName.StartsWith(last) || p.NickName.StartsWith(last) || p.MiddleName.StartsWith(last)
                         select p;
 
                 var q2 = from p in q
