@@ -202,6 +202,7 @@
     <column name="MainClass" join="bfc"> bfc.OrganizationName </column>
     <column name="AttendPct" join="bfcm"> om.AttendPct </column>
     <column name="AttendStr" join="bfcm"> om.AttendStr </column>
+    <column name="LastAttendedMF" join="bfcm"> om.LastAttended </column>
   </Columns>
   <SpecialColumns>
     <column name="StatusFlag">
