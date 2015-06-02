@@ -597,6 +597,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {"email", "EmailAddress"},
 
             {"homephone", "HomePhone"},
+            {"OtherOK", "QuestionsOK"},
             {"address", "AddressLineOne"},
             {"address2", "AddressLineTwo"},
             {"city", "City"},

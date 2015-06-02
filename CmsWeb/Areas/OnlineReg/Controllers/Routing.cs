@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var existingRegistration = m.GetExistingRegistration(pid ?? Util.UserPeopleId ?? 0);
             if (existingRegistration == null) 
                 return null;
-            TempData["PeopleId"] = m.UserPeopleId = Util.UserPeopleId;
+            TempData["PeopleId"] = existingRegistration.UserPeopleId;
             return "/OnlineReg/Existing/" + existingRegistration.DatumId;
         }
         private ActionResult RouteSpecialLogin(OnlineRegModel m)

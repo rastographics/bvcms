@@ -63,8 +63,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult Existing(int id)
         {
-            var pid = (int)TempData["PeopleId"];
-            if (pid == 0)
+            if(!TempData.ContainsKey("PeopleId"))
+                return Message("not logged in");
+            var pid = (int?)TempData["PeopleId"];
+            if (!pid.HasValue || pid == 0)
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
