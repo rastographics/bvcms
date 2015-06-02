@@ -27,17 +27,6 @@ namespace CmsWeb.Models
             ShowPageSize = true;
         }
 
-        //public string URL
-        //{
-        //    get
-        //    {
-        //        if (!_url.HasValue())
-        //            _url = "/{0}/{1}".Fmt(Controller(), Action());
-        //        return _url;
-        //    }
-        //    set { _url = value; }
-        //}
-
         public int DisplayCount = 0;
         public string Sort { get; set; }
         public string Direction { get; set; }
@@ -87,7 +76,8 @@ namespace CmsWeb.Models
             {
                 if (pagesize.HasValue)
                     return pagesize.Value;
-                return DbUtil.Db.UserPreference("PageSize", "10").ToInt();
+                pagesize = DbUtil.Db.UserPreference("PageSize", "10").ToInt();
+                return pagesize.Value;
             }
             set
             {
@@ -134,71 +124,6 @@ namespace CmsWeb.Models
             }
         }
 
-        //        internal void SetWithNoSort(string url, int? page, int? size)
-        //        {
-        //            AllowSort = false;
-        //            URL = url;
-        //            if (page.HasValue)
-        //                Page = page.Value;
-        //            if (size.HasValue)
-        //                PageSize = size.Value;
-        //        }
-        //        internal void SetWithNoPageSize(string url, int? page, string sort, string dir)
-        //        {
-        //            ShowPageSize = false;
-        //            URL = url;
-        //            if (page.HasValue)
-        //                Page = page.Value;
-        //            if (sort.HasValue())
-        //                Sort = sort;
-        //            if (dir.HasValue())
-        //                Direction = dir;
-        //        }
-        //        internal void SetWithPageOnly(string url, int? page)
-        //        {
-        //            ShowPageSize = false;
-        //            AllowSort = false;
-        //            URL = url;
-        //            if (page.HasValue)
-        //                Page = page.Value;
-        //        }
-        //        public string Controller()
-        //        {
-        //            var routeValues = HttpContext.Current.Request.RequestContext.RouteData.Values;
-        //
-        //            if (routeValues.ContainsKey("controller"))
-        //                return (string)routeValues["controller"];
-        //
-        //            return string.Empty;
-        //        }
-        //
-        //        public string Action()
-        //        {
-        //            var routeValues = HttpContext.Current.Request.RequestContext.RouteData.Values;
-        //
-        //            if (routeValues.ContainsKey("action"))
-        //                return (string)routeValues["action"];
-        //
-        //            return string.Empty;
-        //        }
-        //        // All
-        //        internal void Set(string url, int? page = 1, int? size = null, string sort = null, string dir = null)
-        //        {
-        //            URL = url;
-        //            Set(page, size, sort, dir);
-        //        }
-        //        internal void Set(int? page = 1, int? size = null, string sort = null, string dir = null)
-        //        {
-        //            AllowSort = true;
-        //            if (page.HasValue)
-        //                Page = page.Value;
-        //            if (size.HasValue)
-        //                PageSize = size.Value;
-        //            if (sort.HasValue())
-        //                Sort = sort ?? "default";
-        //            if (dir.HasValue())
-        //                Direction = dir ?? "asc";
-        //        }
         public HtmlString SortLink(string sortlabel)
         {
             var active = "";
