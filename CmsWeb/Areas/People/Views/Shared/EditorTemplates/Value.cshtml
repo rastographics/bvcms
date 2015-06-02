@@ -28,8 +28,9 @@
                            data-name="@Model.DataName"
                            class="@Model.EditableClass"
                            data-url="@Model.EditUrl"
-                           @if (dv.HasValue()) { <text> data-value="@dv" </text>        }
-                           @if (ds.HasValue()) {  <text> data-source="@ds" </text>       }>@Html.Raw(Model)</a>
+                           @if (Model.Type == "Date") { <text> data-showbuttons="false" </text> }
+                           @if (dv.HasValue()) { <text> data-value="@dv" </text> }
+                           @if (ds.HasValue()) { <text> data-source="@ds" </text> }>@Html.Raw(Model)</a>
                     </div>
                 </div>
             }
