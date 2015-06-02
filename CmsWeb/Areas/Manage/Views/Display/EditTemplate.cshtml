@@ -2,226 +2,233 @@
 @using CmsWeb.Models
 @model CmsData.Content
 @{
-  ViewBag.Title = "Edit Template";
-  ViewBag.PageHeader = "Edit Template";
-  Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Edit Template";
+    ViewBag.PageHeader = "Edit Template";
+    Layout = ViewExtensions2.TouchPointLayout();
 }
 @using (Html.BeginForm("ContentUpdate", "Display", FormMethod.Post))
 {
-  <div class="row">
-    <div class="col-md-9">
-      <div class="box box-responsive">
-        <div class="box-content">
-          <div class="row">
-            <div class="col-sm-4">
-              <div class="form-group">
-                <label for="name" class="control-label">Name</label>
-                @Html.TextBox("name", Model.Name, new { @class = "form-control" })
-              </div>
-              <div class="form-group">
-                <label for="title" class="control-label">Title</label>
-                @Html.TextBox("title", Model.Title, new { @class = "form-control" })
-              </div>
-              <div class="form-group">
-                <label for="role" class="control-label">Role</label>
-                @Html.DropDownList("roleid", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
-              </div>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="box box-responsive">
+                <div class="box-content">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label for="name" class="control-label">Name</label>
+                                @Html.TextBox("name", Model.Name, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label for="title" class="control-label">Title</label>
+                                @Html.TextBox("title", Model.Title, new { @class = "form-control" })
+                            </div>
+                            <div class="form-group">
+                                <label for="role" class="control-label">Role</label>
+                                @Html.DropDownList("roleid", new SelectList(ContentModel.fetchRoles(), "RoleId", "RoleName"), new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right" style="margin-bottom: 5px;">
+                        <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
+                    </div>
+                    <div class="form-group">
+                        @if (Util2.UseNewEditor)
+                        {
+                            <iframe frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
+                            <input type="hidden" id="body" name="body" />
+                        }
+                        else
+                        {
+                            @Html.TextArea("body", new { @class = "form-control", rows = "26" })
+                        }
+                    </div>
+                    <a href="/Display/#tab_emailTemplates" class="btn btn-default">Cancel</a>
+                    <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
+                    @if (Util2.UseNewEditor)
+                    {
+                        <a class="btn btn-primary save">Save Template</a>
+                    }
+                    else
+                    {
+                        <input type="submit" class="btn btn-primary" value="Save Template" />
+                    }
+                </div>
             </div>
-          </div>
-          <div class="pull-right" style="margin-bottom: 5px;">
-            <a href="http://docs.touchpointsoftware.com/EmailTexting/EmailReplacements.html" target="_blank" class="btn btn-default btn-sm"><i class="fa fa-question-circle"></i> Email Replacement Codes</a>
-          </div>
-          <div class="form-group">
-            @if (Util2.UseNewEditor)
-            {
-              <iframe frameborder="0" style="width: 100%;" id="email-body" name="email-body"></iframe>
-              <input type="hidden" id="body" name="body"/>
-            }
-            else
-            {
-              @Html.TextArea("body", new {@class = "form-control", rows = "26"})
-            }
-          </div>
-          <a href="/Display/#tab_emailTemplates" class="btn btn-default">Cancel</a> 
-          <a href="#" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> 
-          @if (Util2.UseNewEditor)
-          {
-            <a class="btn btn-primary save">Save Template</a>
-          }
-          else
-          {
-           <input type="submit" class="btn btn-primary" value="Save Template"/>
-          }
-         </div>
-      </div>
+        </div>
     </div>
-  </div>
-  @Html.Hidden("id");
+    @Html.Hidden("id");
 }
 @section scripts
 {
-  @if (Util2.UseNewEditor)
-  {
-    @ViewExtensions2.FroalaEditorScripts()
-    <script type="text/javascript">
-      $(function () {
-        function iframeLoaded() {
-          var iFrameID = document.getElementById('email-body');
-          if (iFrameID) {
-            // here you can make the height, I delete it first, then I make it again
-            iFrameID.height = "";
-            iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
-          }
-        }
-
-        var iframeSource = "/Display/EmailBody/@Model.Id";
-
-        $.Editable.DEFAULTS.allowedTags.push('html');
-        $.Editable.DEFAULTS.allowedTags.push('head');
-        $.Editable.DEFAULTS.allowedTags.push('style');
-        $.Editable.DEFAULTS.allowedTags.push('body');
-        $.Editable.DEFAULTS.allowedAttrs.push('xmlns');
-        $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
-        $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
-        $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
-        $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
-
-        var $emailBody = $('#email-body');
-        $emailBody.attr('src', iframeSource);
-        $emailBody.load(function () {
-          $(this).contents().find('#editor-body').froalaEditable({
-            inlineMode: false,
-            allowStyle: true,
-            spellcheck: true,
-            useFileName: false,
-            useClasses: false,
-            fullPage: true,
-            minHeight: 100,
-            theme: 'custom',
-            buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
-            imageUploadURL: '/Account/FroalaUpload',
-            fileUploadURL: '/Account/FroalaUpload'
-          });
-
-          // reset the html... it's strange but resetting the html here causes the editor to retain any html, head, body tags that might be in the html.
-          var fullHtml = $(this).contents().find('#hiddenHtml').val();
-          $(this).contents().find('#editor-body').froalaEditable('setHTML', fullHtml, true);
-
-          iframeLoaded();
-          $(this).contents().find('#editor-body').on('editable.htmlHide', function (e, editor, html) {
-            iframeLoaded();
-          });
-        });
-
-        $("a.save").click(function (ev) {
-          ev.preventDefault();
-          var emailHtml = $('#email-body').contents().find('#editor-body').froalaEditable('getHTML');
-          $('#body').val(emailHtml);
-          $(this).closest('form').submit();
-        });
-
-        $("a.delete").click(function (ev) {
-          ev.preventDefault();
-
-          swal({
-            title: "Are you sure?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
-          },
-            function () {
-              $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
-                if (ret && ret.error)
-                  swal("Error!", ret.error, "error");
-                else {
-                  swal({
-                    title: "Deleted!",
-                    type: "success"
-                  },
-                    function () {
-                      window.location = "/Manage/Display/#tab_emailTemplates";
-                    });
+    @if (Util2.UseNewEditor)
+    {
+        @ViewExtensions2.FroalaEditorScripts()
+        <script type="text/javascript">
+            $(function () {
+                function iframeLoaded() {
+                    var iFrameID = document.getElementById('email-body');
+                    if (iFrameID) {
+                        // here you can make the height, I delete it first, then I make it again
+                        iFrameID.height = "";
+                        iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + 200 + "px";
+                    }
                 }
-              });
-            });
-        });
-      });
-    </script>
-  }
-  else
-  {
-    @ViewExtensions2.CKEditor()
-    <script type="text/javascript">
 
-      function getParameterByName(name) {
-        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
-        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-      }
+                function getEditorBody() {
+                    return $('#email-body').contents().find('#editor-body');
+                }
 
-      $(function () {
+                var iframeSource = "/Display/EmailBody/@Model.Id";
 
-        $("a.delete").click(function (ev) {
-          ev.preventDefault();
-          var href = this.href;
+                $.Editable.DEFAULTS.allowedTags.push('html');
+                $.Editable.DEFAULTS.allowedTags.push('head');
+                $.Editable.DEFAULTS.allowedTags.push('style');
+                $.Editable.DEFAULTS.allowedTags.push('body');
+                $.Editable.DEFAULTS.allowedAttrs.push('xmlns');
+                $.Editable.DEFAULTS.allowedAttrs.push('bvedit');
+                $.Editable.DEFAULTS.allowedAttrs.push('bveditadd');
+                $.Editable.DEFAULTS.allowedAttrs.push('bvrepeat');
+                $.Editable.DEFAULTS.allowedAttrs.push('bvrepeatadd');
 
-          swal({
-            title: "Are you sure?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
-          },
-          function () {
-            $.post(href, null, function (ret) {
-              if (ret && ret.error)
-                swal("Error!", ret.error, "error");
-              else {
-                swal({
-                  title: "Deleted!",
-                  type: "success"
-                },
-                function () {
-                  window.location = "/Manage/Display/#tab_htmlContent";
+                var $emailBody = $('#email-body');
+                $emailBody.attr('src', iframeSource);
+                $emailBody.load(function () {
+                    $(this).contents().find('#editor-body').froalaEditable({
+                        inlineMode: false,
+                        allowStyle: true,
+                        spellcheck: true,
+                        useFileName: false,
+                        useClasses: false,
+                        fullPage: true,
+                        minHeight: 100,
+                        theme: 'custom',
+                        buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
+                        imageUploadURL: '/Account/FroalaUpload',
+                        fileUploadURL: '/Account/FroalaUpload'
+                    });
+
+                    // reset the html... it's strange but resetting the html here causes the editor to retain any html, head, body tags that might be in the html.
+                    var fullHtml = $(this).contents().find('#hiddenHtml').val();
+                    var $editorBody = getEditorBody();
+
+                    $editorBody.froalaEditable('setHTML', fullHtml, true);
+
+                    iframeLoaded();
+
+                    $editorBody.on('editable.htmlHide', function (e, editor, html) {
+                        iframeLoaded();
+                    });
                 });
-              }
+
+                $("a.save").click(function (ev) {
+                    ev.preventDefault();
+                    var emailHtml = getEditorBody().froalaEditable('getRawHTML');
+                    $('#body').val(emailHtml);
+                    $(this).closest('form').submit();
+                });
+
+                $("a.delete").click(function (ev) {
+                    ev.preventDefault();
+
+                    swal({
+                        title: "Are you sure?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: false
+                    },
+                      function () {
+                          $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
+                              if (ret && ret.error)
+                                  swal("Error!", ret.error, "error");
+                              else {
+                                  swal({
+                                      title: "Deleted!",
+                                      type: "success"
+                                  },
+                                    function () {
+                                        window.location = "/Manage/Display/#tab_emailTemplates";
+                                    });
+                              }
+                          });
+                      });
+                });
             });
-          });
-        });
+        </script>
+    }
+    else
+    {
+        @ViewExtensions2.CKEditor()
+        <script type="text/javascript">
 
-        CKEDITOR.env.isCompatible = true;
+            function getParameterByName(name) {
+                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+                return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
 
-        CKEDITOR.replace('body', {
-          height: 400,
-          allowedContent: true,
-          autoParagraph: false,
-          fullPage: !$("#snippet").prop("checked"),
-          customConfig: "/scripts/js/ckeditorconfig.js"
-        });
+            $(function () {
 
-        $("#snippet").change(function () {
-          var checked = this.checked;
-          swal({
-            title: "Reload page?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-warning",
-            confirmButtonText: "Yes!",
-            closeOnConfirm: false
-          },
-          function () {
-            if (checked)
-              window.location.href = window.location.pathname + '?snippet=true';
-            else
-              window.location.href = window.location.pathname;
-          });
+                $("a.delete").click(function (ev) {
+                    ev.preventDefault();
+                    var href = this.href;
 
-        });
-      });
-    </script>
-  }
+                    swal({
+                        title: "Are you sure?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-danger",
+                        confirmButtonText: "Yes, delete it!",
+                        closeOnConfirm: false
+                    },
+                    function () {
+                        $.post(href, null, function (ret) {
+                            if (ret && ret.error)
+                                swal("Error!", ret.error, "error");
+                            else {
+                                swal({
+                                    title: "Deleted!",
+                                    type: "success"
+                                },
+                                function () {
+                                    window.location = "/Manage/Display/#tab_htmlContent";
+                                });
+                            }
+                        });
+                    });
+                });
+
+                CKEDITOR.env.isCompatible = true;
+
+                CKEDITOR.replace('body', {
+                    height: 400,
+                    allowedContent: true,
+                    autoParagraph: false,
+                    fullPage: !$("#snippet").prop("checked"),
+                    customConfig: "/scripts/js/ckeditorconfig.js"
+                });
+
+                $("#snippet").change(function () {
+                    var checked = this.checked;
+                    swal({
+                        title: "Reload page?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn-warning",
+                        confirmButtonText: "Yes!",
+                        closeOnConfirm: false
+                    },
+                    function () {
+                        if (checked)
+                            window.location.href = window.location.pathname + '?snippet=true';
+                        else
+                            window.location.href = window.location.pathname;
+                    });
+
+                });
+            });
+        </script>
+    }
 }
