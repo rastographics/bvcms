@@ -22,11 +22,12 @@
                 <td>
                     <a href="#" data-pk="@Model.Id"
                        data-name="@Model.DataName"
-                       class="@Model.EditableClass" 
+                       class="@Model.EditableClass"
                        style="white-space: pre-line;"
                        data-url="@Model.EditUrl"
-                       @if (dv.HasValue()) { <text> data-value="@dv" </text>    }
-                       @if (ds.HasValue()) {  <text> data-source="@ds" </text>   }>@Html.Raw(Model)</a>
+                       @if (Model.Type == "Date") { <text> data-showbuttons="false" data-savenochange="true" </text> }
+                       @if (dv.HasValue()) { <text> data-value="@dv" </text> }
+                       @if (ds.HasValue()) { <text> data-source="@ds" </text> }>@Html.Raw(Model)</a>
                 </td>
             }
             else
