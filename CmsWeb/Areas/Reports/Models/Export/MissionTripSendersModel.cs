@@ -50,7 +50,10 @@ namespace CmsWeb.Models
                     Goer = g.Name2,
                     DateGiven = sa.Created,
                     Amt = sa.Amount,
-                    NoticeSent = sa.NoNoticeToGoer == true ? "not sent" : "sent"
+                    NoticeSent = 
+                        sa.NoNoticeToGoer == true ? "no notice" 
+                        : sa.NoNoticeToGoer == false ? "sent" 
+                        : "not sent"
                 };
             return q;
         }

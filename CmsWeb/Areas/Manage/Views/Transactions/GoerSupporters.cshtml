@@ -29,7 +29,12 @@
                         <td><a href="/Person2/@ss.SupporterId">@ss.SupporterName</a></td>
                         <td><a href="/Person2/@ss.GoerId">@ss.GoerName</a></td>
                         <td class="text-right">@ss.gs.Amount.ToString2("N2")</td>
-                        <td>@(ss.gs.NoNoticeToGoer == true ? "no notice" : "sent")</td>
+                        <td>@(ss.gs.NoNoticeToGoer == true 
+                            ? "no notice" 
+                            : ss.gs.NoNoticeToGoer == false
+                              ? "sent"
+                              : "not sent")
+                        </td>
                         <td>@ss.TripName</td>
                     </tr>
                 }
@@ -61,7 +66,12 @@
                         <td><a href="/Person2/@gg.SupporterId">@gg.SupporterName</a></td>
                         <td><a href="/Person2/@gg.GoerId">@gg.GoerName</a></td>
                         <td class="text-right">@gg.gs.Amount.ToString2("N2")</td>
-                        <td>@(gg.gs.NoNoticeToGoer == true ? "no notice" : "sent")</td>
+                        <td>@(gg.gs.NoNoticeToGoer == true 
+                            ? "no notice" 
+                            : gg.gs.NoNoticeToGoer == false
+                              ? "sent"
+                              : "not sent")
+                        </td>
                         <td>@gg.TripName</td>
                     </tr>
                 }
@@ -93,7 +103,12 @@
                         <td><a href="/Person2/@gg.SupporterId">@gg.SupporterName</a></td>
                         <td><a href="/Person2/@gg.GoerId">@gg.GoerName</a></td>
                         <td class="text-right">@gg.gs.Amount.ToString2("N2")</td>
-                        <td>@(gg.gs.NoNoticeToGoer == true ? "no notice" : "sent")</td>
+                        <td>@(gg.gs.NoNoticeToGoer == true 
+                            ? "no notice" 
+                            : gg.gs.NoNoticeToGoer == false
+                              ? "sent"
+                              : "not sent")
+                        </td>
                         <td>@gg.TripName</td>
                     </tr>
                 }
