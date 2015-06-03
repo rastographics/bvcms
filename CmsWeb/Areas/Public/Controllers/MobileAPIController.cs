@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web.Mvc;
-using CmsData;
+﻿using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.Reports.Models;
@@ -12,9 +7,15 @@ using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
 using ImageData;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web.Mvc;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
-using System.IO;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -54,7 +55,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.error = 0;
-            br.data = JsonConvert.SerializeObject(ms);
+            br.data = SerializeJSON(ms, BaseMessage.API_VERSION_UNKNOWN);
             br.token = result.User.ApiSessions.Single().SessionToken.ToString();
             return br;
         }
@@ -119,7 +120,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.error = 0;
-            br.data = JsonConvert.SerializeObject(ms);
+            br.data = SerializeJSON(ms, BaseMessage.API_VERSION_UNKNOWN);
             return br;
         }
 
@@ -270,7 +271,7 @@ namespace CmsWeb.Areas.Public.Controllers
                             mpl.Add(mp.id, mp);
                         }
 
-                        br.data = JsonConvert.SerializeObject(mpl);
+                        br.data = SerializeJSON(mpl, dataIn.version);
                         break;
                     }
 
@@ -283,7 +284,7 @@ namespace CmsWeb.Areas.Public.Controllers
                             mp.Add(new MobilePerson().populate(item));
                         }
 
-                        br.data = JsonConvert.SerializeObject(mp);
+                        br.data = SerializeJSON(mp, dataIn.version);
                         break;
                     }
             }
@@ -386,7 +387,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.error = 0;
-            br.data = JsonConvert.SerializeObject(GetRegistrations());
+            br.data = SerializeJSON(GetRegistrations(), BaseMessage.API_VERSION_UNKNOWN);
             return br;
         }
 
@@ -416,13 +417,13 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
             {
-                br.data = JsonConvert.SerializeObject(new MobilePerson().populate(person));
+                br.data = SerializeJSON(new MobilePerson().populate(person), dataIn.version);
             }
             else
             {
                 List<MobilePerson> mp = new List<MobilePerson>();
                 mp.Add(new MobilePerson().populate(person));
-                br.data = JsonConvert.SerializeObject(mp);
+                br.data = SerializeJSON(mp, dataIn.version);
             }
 
             return br;
@@ -615,7 +616,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 mo.Add(org);
             }
 
-            br.data = JsonConvert.SerializeObject(mo);
+            br.data = SerializeJSON(mo, dataIn.version);
             return br;
         }
 
@@ -637,14 +638,14 @@ namespace CmsWeb.Areas.Public.Controllers
             // Check to see if type matches
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -676,7 +677,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 mrl.attendees.Add(new MobileAttendee().populate(person));
             }
 
-            br.data = JsonConvert.SerializeObject(mrl);
+            br.data = SerializeJSON(mrl, dataIn.version);
             return br;
         }
 
@@ -697,14 +698,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -771,14 +772,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -984,6 +985,14 @@ namespace CmsWeb.Areas.Public.Controllers
                 Querystring = $"{orgId},{peopleId},0",
                 Expires = DateTime.Now.AddMinutes(10),
             };
+        }
+
+        private static string SerializeJSON(Object item, int version)
+        {
+            if (version == BaseMessage.API_VERSION_2)
+                return JsonConvert.SerializeObject(item);
+            else
+                return JsonConvert.SerializeObject(item, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss" });
         }
     }
 }
