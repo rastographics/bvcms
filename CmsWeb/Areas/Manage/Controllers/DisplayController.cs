@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Data;
@@ -15,7 +15,6 @@ using System.Web.UI.HtmlControls;
 using System.Windows.Forms;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Areas.Main.Models;
 using Dapper;
 using UtilityExtensions;
 using CmsWeb.Models;
@@ -27,10 +26,8 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
 using System.Web;
-using CmsWeb.Code;
 using Elmah;
 using Encoder = System.Drawing.Imaging.Encoder;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
