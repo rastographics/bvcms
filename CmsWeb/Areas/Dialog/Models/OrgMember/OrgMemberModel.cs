@@ -192,10 +192,13 @@ namespace CmsWeb.Areas.Dialog.Models
             {
                 if (payLink.HasValue())
                     return payLink;
-                if (om == null)
-                    om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
-                return payLink = om.PayLink2(DbUtil.Db);
+                return payLink = GetPayLink(OrgId, PeopleId);
             }
+        }
+        public static string GetPayLink(int? oid, int? pid)
+        {
+            var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == oid && mm.PeopleId == pid);
+            return om.PayLink2(DbUtil.Db);
         }
         private string supportLink;
         public string SupportLink
