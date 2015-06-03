@@ -67,5 +67,12 @@ namespace CmsWeb.MobileAPI
 		public const int API_DEVICE_UNKNOWN = 0;
 		public const int API_DEVICE_IOS = 1;
 		public const int API_DEVICE_ANDROID = 2;
+
+        // API Version
+        public const int API_VERSION_UNKNOWN = 0;
+        // Version 2 had issues with time zones being sent, remove after migrating to version 3
+        public const int API_VERSION_2 = 2;
+        // Version 3 has time zone corrections
+        public const int API_VERSION_3 = 3;
 	}
 }
