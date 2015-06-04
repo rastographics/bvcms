@@ -73,8 +73,8 @@
     <join name="bfc">
       left join dbo.Organizations bfc on bfc.OrganizationId = p.BibleFellowshipClassId
     </join>
-    <join name="og">
-      LEFT JOIN dbo.OrgPeopleGuests({orgid}, 1) og ON og.PeopleId = p.PeopleId
+    <join name="lao">
+      LEFT JOIN dbo.LastAttendOrg({orgid}) lao ON lao.PeopleId = p.PeopleId
     </join>
   </Joins>
   <Columns>
@@ -206,7 +206,7 @@
     <column name="AttendPct" join="bfcm"> bfcm.AttendPct </column>
     <column name="AttendStr" join="bfcm"> bfcm.AttendStr </column>
     <column name="LastAttendedMF" join="bfcm"> bfcm.LastAttended </column>
-    <column name="LastAttendedCO" join="og"> og.LastAttended </column>
+    <column name="LastAttendedCO" join="lao"> lao.LastAttended </column>
   </Columns>
   <SpecialColumns>
     <column name="StatusFlag">

@@ -615,9 +615,9 @@
         $('#enrollment-modal').modal('hide');
         var url = "/Reports/EnrollmentControl";
         if ($('#enrcontrolfiltertag').is(":checked"))
-            url = url.appendQuery("usecurrenttag=true");
+            url = $.appendQuery(url, "usecurrenttag=true");
         if ($('#enrcontrolexcel').is(":checked"))
-            url = url.appendQuery("excel=true");
+            url = $.appendQuery(url, "excel=true");
         $("#orgsearchform").attr("action", url);
         $("#orgsearchform").submit();
         return false;
@@ -629,6 +629,15 @@
         $("#orgsearchform").submit();
         return true;
     });
+    $.appendQuery = function (s, q) {
+        if (s && s.length > 0)
+            if (s.indexOf("&") != -1 || s.indexOf("?") != -1)
+                return s + '&' + q;
+            else
+                return s + '?' + q;
+        return q;
+    };
 });
+
 
 
