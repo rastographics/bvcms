@@ -66,10 +66,11 @@ namespace CmsWeb.Areas.Dialog.Models
             var q = from om in DbUtil.Db.OrganizationMembers
                 where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
                 where om.OrganizationId == OrgId
+                orderby om.Person.Name2
                 select new CodeValueItem()
                 {
                     Id = om.PeopleId,
-                    Value = om.Person.Name,
+                    Value = om.Person.Name2,
                 };
             var list = q.ToList();
             list.Insert(0, new CodeValueItem() { Id=0, Value = "(please select a Goer)" });
