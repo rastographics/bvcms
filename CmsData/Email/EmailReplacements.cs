@@ -54,7 +54,7 @@ namespace CmsData
             this.from = from;
             if (text == null)
                 text = "(no content)";
-            string pattern = @"(<style.*?</style>|{{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9})".Fmt(
+            var pattern = @"(<style.*?</style>|{{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9})".Fmt(
                 RegisterLinkRe, RegisterTagRe, RsvpLinkRe, RegisterHrefRe,
                 SendLinkRe, SupportLinkRe, VolReqLinkRe,
                 VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
@@ -94,7 +94,7 @@ namespace CmsData
                     aa.AddRange(db.GetCcList(p, emailqueueto));
 
                 if (emailqueueto.AddEmail.HasValue())
-                    foreach (string ad in emailqueueto.AddEmail.SplitStr(","))
+                    foreach (var ad in emailqueueto.AddEmail.SplitStr(","))
                         Util.AddGoodAddress(aa, ad);
 
                 if (emailqueueto.OrgId.HasValue && pi != null)
@@ -119,6 +119,8 @@ namespace CmsData
         //
         public string DoReplacements(CMSDataContext callingContext, Person p)
         {
+            person = p;
+
             db = callingContext;
             var aa = db.GetAddressList(p);
 
@@ -136,7 +138,7 @@ namespace CmsData
             public string Name { get; set; }
             public string Count { get; set; }
         }
-        private Dictionary<int, OrgInfo> orgcount = new Dictionary<int, OrgInfo>();
+        private readonly Dictionary<int, OrgInfo> orgcount = new Dictionary<int, OrgInfo>();
 
         private class PayInfo
         {
@@ -527,14 +529,14 @@ namespace CmsData
 
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
-            HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
-            Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+            var ele = doc.DocumentNode.Element("a");
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var id = GetId(d, "RegisterLink");
 
             var showfamily = code.Contains("registerlink2", ignoreCase: true);
-            string qs = "{0},{1},{2}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id);
+            var qs = "{0},{1},{2}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id);
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];
@@ -549,7 +551,7 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
+            var url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
             if (showfamily)
                 url += "?showfamily=true";
             if (d.ContainsKey("style"))
@@ -596,10 +598,10 @@ namespace CmsData
             if (code.Contains("&lt;"))
                 code = HttpUtility.HtmlDecode(code);
             doc.LoadHtml(code);
-            HtmlNode ele = doc.DocumentNode.FirstChild;
-            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var ele = doc.DocumentNode.FirstChild;
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
             var id = ele.Id.ToInt();
-            string url = RegisterLinkUrl(db, id, emailqueueto.PeopleId, emailqueueto.Id, "registerlink");
+            var url = RegisterLinkUrl(db, id, emailqueueto.PeopleId, emailqueueto.Id, "registerlink");
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
@@ -610,11 +612,11 @@ namespace CmsData
 
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
-            HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
-            Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+            var ele = doc.DocumentNode.Element("a");
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
-            string msg = "Thank you for responding.";
+            var msg = "Thank you for responding.";
             if (d.ContainsKey("title"))
                 msg = d["title"];
 
@@ -659,14 +661,14 @@ namespace CmsData
 
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
-            HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
-            Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+            var ele = doc.DocumentNode.Element("a");
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var id = GetId(d, "SendLink");
 
             var showfamily = code.Contains("sendlink2", ignoreCase: true);
-            string qs = "{0},{1},{2},{3}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id,
+            var qs = "{0},{1},{2},{3}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id,
                 showfamily ? "registerlink2" : "registerlink");
 
             OneTimeLink ot;
@@ -683,7 +685,7 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
+            var url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
@@ -695,13 +697,13 @@ namespace CmsData
             if (!match.Success || !emailqueueto.OrgId.HasValue)
                 return code;
 
-            string prefix = match.Groups["prefix"].Value;
-            string def = match.Groups["def"].Value;
-            string sg = (from mm in db.OrgMemMemTags
-                         where mm.OrgId == emailqueueto.OrgId
-                         where mm.PeopleId == emailqueueto.PeopleId
-                         where mm.MemberTag.Name.StartsWith(prefix)
-                         select mm.MemberTag.Name).FirstOrDefault();
+            var prefix = match.Groups["prefix"].Value;
+            var def = match.Groups["def"].Value;
+            var sg = (from mm in db.OrgMemMemTags
+                      where mm.OrgId == emailqueueto.OrgId
+                      where mm.PeopleId == emailqueueto.PeopleId
+                      where mm.MemberTag.Name.StartsWith(prefix)
+                      select mm.MemberTag.Name).FirstOrDefault();
             if (!sg.HasValue())
                 sg = def;
             return sg;
@@ -731,12 +733,11 @@ namespace CmsData
         {
             const string RE = @"\{smallgroups(:\[(?<prefix>[^\]]*)\]){0,1}\}";
             var re = new Regex(RE, RegexOptions.Singleline);
-            Match match = re.Match(code);
+            var match = re.Match(code);
             if (!match.Success || !emailqueueto.OrgId.HasValue)
                 return code;
 
-            string tag = match.Value;
-            string prefix = match.Groups["prefix"].Value;
+            var prefix = match.Groups["prefix"].Value;
             var q = from mm in db.OrgMemMemTags
                     where mm.OrgId == emailqueueto.OrgId
                     where mm.PeopleId == emailqueueto.PeopleId
@@ -752,12 +753,12 @@ namespace CmsData
 
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
-            HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
-            Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+            var ele = doc.DocumentNode.Element("a");
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var oid = GetId(d, "SupportLink");
-            string qs = "{0},{1},{2},{3},{4}".Fmt(oid, emailqueueto.PeopleId, emailqueueto.Id, "supportlink", emailqueueto.GoerSupportId);
+            var qs = "{0},{1},{2},{3},{4}".Fmt(oid, emailqueueto.PeopleId, emailqueueto.Id, "supportlink", emailqueueto.GoerSupportId);
 
             OneTimeLink ot;
             if (list.ContainsKey(qs))
@@ -773,7 +774,7 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
+            var url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
@@ -790,12 +791,11 @@ namespace CmsData
 
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
-            HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
-            Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+            var ele = doc.DocumentNode.Element("a");
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
-            string qs = "{0},{1},{2},{3}"
-                .Fmt(d["mid"], d["pid"], d["ticks"], emailqueueto.PeopleId);
+            var qs = "{0},{1},{2},{3}".Fmt(d["mid"], d["pid"], d["ticks"], emailqueueto.PeopleId);
             OneTimeLink ot = null;
             if (list.ContainsKey(qs))
                 ot = list[qs];
@@ -821,12 +821,11 @@ namespace CmsData
 
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
-            HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
-            Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+            var ele = doc.DocumentNode.Element("a");
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
-            string qs = "{0},{1},{2},{3}"
-                .Fmt(d["aid"], d["pid"], d["ticks"], emailqueueto.PeopleId);
+            var qs = "{0},{1},{2},{3}".Fmt(d["aid"], d["pid"], d["ticks"], emailqueueto.PeopleId);
             OneTimeLink ot = null;
             if (list.ContainsKey(qs))
                 ot = list[qs];
@@ -853,29 +852,29 @@ namespace CmsData
 
             var doc = new HtmlDocument();
             doc.LoadHtml(code);
-            HtmlNode ele = doc.DocumentNode.Element("a");
-            string inside = ele.InnerHtml.Replace("{last}", person.LastName);
-            Dictionary<string, string> d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+            var ele = doc.DocumentNode.Element("a");
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
-            string msg = "Thank you for responding.";
+            var msg = "Thank you for responding.";
             if (d.ContainsKey("title"))
                 msg = d["title"];
 
-            string confirm = "false";
+            var confirm = "false";
             if (d.ContainsKey("dir") && d["dir"] == "ltr")
                 confirm = "true";
 
             if (!d.ContainsKey("rel"))
                 throw new Exception("Votelink: no smallgroup attribute");
-            string smallgroup = d["rel"];
-            string pre = "";
-            string[] a = smallgroup.SplitStr(":");
+            var smallgroup = d["rel"];
+            var pre = "";
+            var a = smallgroup.SplitStr(":");
             if (a.Length > 1)
                 pre = a[0];
 
             var id = GetId(d, "VoteLink");
 
-            string qs = "{0},{1},{2},{3},{4}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id, pre, smallgroup);
+            var qs = "{0},{1},{2},{3},{4}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id, pre, smallgroup);
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];
@@ -890,12 +889,12 @@ namespace CmsData
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = db.ServerLink("/OnlineReg/VoteLinkSg/{0}?confirm={1}&message={2}"
+            var url = db.ServerLink("/OnlineReg/VoteLinkSg/{0}?confirm={1}&message={2}"
                                                       .Fmt(ot.Id.ToCode(), confirm, HttpUtility.UrlEncode(msg)));
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
-        private static string GetId(Dictionary<string, string> d, string from)
+        private static string GetId(IReadOnlyDictionary<string, string> d, string from)
         {
             string id = null;
             if (d.ContainsKey("lang"))
@@ -903,43 +902,43 @@ namespace CmsData
             else if (d.ContainsKey("id"))
                 id = d["id"];
             if (id == null)
-                throw new Exception("{0}: no id attribute".Fmt(from));
+                throw new Exception("No \"lang\" attribute found on \"{0}\"".Fmt(from));
             return id;
         }
 
-        private static List<string> SPECIAL_FORMATS = new List<string>() 
-        { 
-            "http://votelink", 
-            "https://votelink", 
+        private static List<string> SPECIAL_FORMATS = new List<string>()
+        {
+            "http://votelink",
+            "https://votelink",
 
-            "http://registerlink", 
-            "https://registerlink", 
+            "http://registerlink",
+            "https://registerlink",
 
-            "http://registerlink2", 
-            "https://registerlink2", 
+            "http://registerlink2",
+            "https://registerlink2",
 
-            "http://supportlink", 
-            "https://supportlink", 
+            "http://supportlink",
+            "https://supportlink",
 
-            "http://rsvplink", 
-            "https://rsvplink", 
+            "http://rsvplink",
+            "https://rsvplink",
 
-            "http://regretslink", 
-            "https://regretslink", 
+            "http://regretslink",
+            "https://regretslink",
 
-            "http://volsublink", 
-            "https://volsublink", 
+            "http://volsublink",
+            "https://volsublink",
 
-            "http://volreqlink", 
-            "https://volreqlink", 
+            "http://volreqlink",
+            "https://volreqlink",
 
-            "http://sendlink", 
-            "https://sendlink", 
+            "http://sendlink",
+            "https://sendlink",
 
-            "http://sendlink2", 
-            "https://sendlink2", 
+            "http://sendlink2",
+            "https://sendlink2",
 
-            "{emailhref}" 
+            "{emailhref}"
         };
         public static bool IsSpecialLink(string link)
         {
@@ -949,7 +948,7 @@ namespace CmsData
         public static string RegisterLinkUrl(CMSDataContext db, int orgid, int pid, int queueid, string linktype)
         {
             var showfamily = linktype == "registerlink2";
-            string qs = "{0},{1},{2},{3}".Fmt(orgid, pid, queueid, linktype);
+            var qs = "{0},{1},{2},{3}".Fmt(orgid, pid, queueid, linktype);
             var ot = new OneTimeLink
                 {
                     Id = Guid.NewGuid(),
@@ -957,7 +956,7 @@ namespace CmsData
                 };
             db.OneTimeLinks.InsertOnSubmit(ot);
             db.SubmitChanges();
-            string url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
+            var url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
             if (showfamily)
                 url += "?showfamily=true";
             return url;

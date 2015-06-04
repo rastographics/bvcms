@@ -2,6 +2,7 @@ using System;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
+using System.Net.Mail;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsWeb.Areas.Main.Models;
@@ -27,23 +28,21 @@ namespace CmsWeb.Areas.Main.Controllers
             if (!subj.HasValue() && templateID != 0)
 			{
 				if (templateID == null)
-					return View("SelectTemplate", new EmailTemplatesModel()
+					return View("SelectTemplate", new EmailTemplatesModel
 					{
-					    wantparents = parents ?? false, 
+					    wantparents = parents ?? false,
                         queryid = id,
 					});
-				else
-				{
-					DbUtil.LogActivity("Emailing people");
 
-					var m = new MassEmailer(id, parents, ccparents, nodups);
+			    DbUtil.LogActivity("Emailing people");
 
-					m.Host = Util.Host;
+			    var m = new MassEmailer(id, parents, ccparents, nodups);
 
-					ViewBag.templateID = templateID;
-				    m.OrgId = orgid;
-					return View("Compose", m);
-				}
+			    m.Host = Util.Host;
+
+			    ViewBag.templateID = templateID;
+			    m.OrgId = orgid;
+			    return View("Compose", m);
 			}
 
 			// using no templates
@@ -79,7 +78,7 @@ namespace CmsWeb.Areas.Main.Controllers
             ViewBag.content = c;
             return View();
         }
-        
+
         [HttpPost]
 		[ValidateInput(false)]
 		public ActionResult SaveDraft(MassEmailer m, int saveid, string name, int roleid)
@@ -92,9 +91,9 @@ namespace CmsWeb.Areas.Main.Controllers
 			{
 				content = new Content
 				{
-				    Name = name.HasValue() ? name 
-                        : "new draft " + DateTime.Now.FormatDateTm(), 
-                    TypeID = ContentTypeCode.TypeSavedDraft, 
+				    Name = name.HasValue() ? name
+                        : "new draft " + DateTime.Now.FormatDateTm(),
+                    TypeID = ContentTypeCode.TypeSavedDraft,
                     RoleID = roleid
 				};
 				content.OwnerID = Util.UserId;
@@ -104,7 +103,7 @@ namespace CmsWeb.Areas.Main.Controllers
 			content.Body = m.Body;
 			content.DateCreated = DateTime.Now;
 
-			if (saveid == 0) 
+			if (saveid == 0)
                 DbUtil.Db.Contents.InsertOnSubmit(content);
 
 			DbUtil.Db.SubmitChanges();
@@ -113,7 +112,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			ViewBag.parents = m.wantParents;
 			ViewBag.templateID = content.Id;
-            
+
 			return View("Compose", m);
 		}
 
@@ -162,39 +161,48 @@ namespace CmsWeb.Areas.Main.Controllers
 			}
 			catch (Exception ex)
 			{
-				Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+				ErrorSignal.FromCurrentContext().Raise(ex);
 				return Json(new { id = 0, error = ex.Message });
 			}
 
-			string host = Util.Host;
+			var host = Util.Host;
 			// save these from HttpContext to set again inside thread local storage
-			var useremail = Util.UserEmail;
-			var isinroleemailtest = User.IsInRole("EmailTest");
+			var userEmail = Util.UserEmail;
+			var isInRoleEmailTest = User.IsInRole("EmailTest");
 
-			System.Threading.Tasks.Task.Factory.StartNew(() =>
+		    try
+		    {
+		        ValidateEmailReplacementCodes(DbUtil.Db, m.Body, new MailAddress(m.FromAddress));
+		    }
+		    catch (Exception ex)
+		    {
+                return Json(new { error = ex.Message });
+		    }
+
+		    System.Threading.Tasks.Task.Factory.StartNew(() =>
 			{
 				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 				try
 				{
-					var Db = DbUtil.Create(host);
-					var cul = Db.Setting("Culture", "en-US");
+					var db = DbUtil.Create(host);
+					var cul = db.Setting("Culture", "en-US");
 					Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
 					Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
 					// set these again inside thread local storage
-					Util.UserEmail = useremail;
-					Util.IsInRoleEmailTest = isinroleemailtest;
-					Db.SendPeopleEmail(id);
+					Util.UserEmail = userEmail;
+					Util.IsInRoleEmailTest = isInRoleEmailTest;
+					db.SendPeopleEmail(id);
 				}
 				catch (Exception ex)
 				{
 					var ex2 = new Exception("Emailing error for queueid " + id, ex);
-					ErrorLog errorLog = ErrorLog.GetDefault(null);
+					var errorLog = ErrorLog.GetDefault(null);
 					errorLog.Log(new Error(ex2));
 
-					var Db = DbUtil.Create(host);
-					var equeue = Db.EmailQueues.Single(ee => ee.Id == id);
+					var db = DbUtil.Create(host);
+					var equeue = db.EmailQueues.Single(ee => ee.Id == id);
 					equeue.Error = ex.Message.Truncate(200);
-					Db.SubmitChanges();
+					db.SubmitChanges();
 				}
 			});
 			return Json(new { id = id });
@@ -209,15 +217,20 @@ namespace CmsWeb.Areas.Main.Controllers
 				Session["massemailer"] = m;
 				return Content("timeout");
 			}
+
 			if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
                 return Json(new { error = "No email address to send from." });
+
 			m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
-			var From = Util.FirstAddress(m.FromAddress, m.FromName);
+			var from = Util.FirstAddress(m.FromAddress, m.FromName);
 			var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
+
 			try
 			{
+                ValidateEmailReplacementCodes(DbUtil.Db, m.Body, from);
+
                 DbUtil.Db.CopySession();
-				DbUtil.Db.Email(From, p, null, m.Subject, m.Body, false);
+				DbUtil.Db.Email(from, p, null, m.Subject, m.Body, false);
 			}
 			catch (Exception ex)
 			{
@@ -256,7 +269,31 @@ namespace CmsWeb.Areas.Main.Controllers
             return Json(new {title = title, message = message});
 		}
 
-		private EmailQueue SetProgressInfo(int id)
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult CreateVoteTag(int orgid, bool confirm, string smallgroup, string message, string text, string votetagcontent)
+        {
+            if (votetagcontent.HasValue())
+                return Content("<votetag id={0} confirm={1} smallgroup=\"{2}\" message=\"{3}\">{4}</votetag>".Fmt(
+                    orgid, confirm, smallgroup, message, votetagcontent));
+
+            return Content("{{votelink id={0} confirm={1} smallgroup=\"{2}\" message=\"{3}\" text=\"{4}\"}}".Fmt(
+                orgid, confirm, smallgroup, message, text));
+        }
+
+        public ActionResult CheckQueued()
+        {
+            var q = from e in DbUtil.Db.EmailQueues
+                    where e.SendWhen < DateTime.Now
+                    where e.Sent == null
+                    select e;
+
+            foreach (var emailqueue in q)
+                DbUtil.Db.SendPeopleEmail(emailqueue.Id);
+            return Content("done");
+        }
+
+        private EmailQueue SetProgressInfo(int id)
 		{
 			var emailqueue = DbUtil.Db.EmailQueues.SingleOrDefault(e => e.Id == id);
 			if (emailqueue != null)
@@ -296,47 +333,10 @@ namespace CmsWeb.Areas.Main.Controllers
 			return emailqueue;
 		}
 
-		private bool Authenticate()
-		{
-			string username, password;
-			var auth = Request.Headers["Authorization"];
-			if (auth.HasValue())
-			{
-				var cred = System.Text.ASCIIEncoding.ASCII.GetString(
-					 Convert.FromBase64String(auth.Substring(6))).Split(':');
-				username = cred[0];
-				password = cred[1];
-			}
-			else
-			{
-				username = Request.Headers["username"];
-				password = Request.Headers["password"];
-			}
-			return CMSMembershipProvider.provider.ValidateUser(username, password);
-		}
-
-		public ActionResult CheckQueued()
-		{
-			var q = from e in DbUtil.Db.EmailQueues
-					  where e.SendWhen < DateTime.Now
-					  where e.Sent == null
-					  select e;
-
-			foreach (var emailqueue in q)
-				DbUtil.Db.SendPeopleEmail(emailqueue.Id);
-			return Content("done");
-		}
-
-		[HttpPost]
-		[ValidateInput(false)]
-		public ActionResult CreateVoteTag(int orgid, bool confirm, string smallgroup, string message, string text, string votetagcontent)
-		{
-			if (votetagcontent.HasValue())
-				return Content("<votetag id={0} confirm={1} smallgroup=\"{2}\" message=\"{3}\">{4}</votetag>".Fmt(
-					 orgid, confirm, smallgroup, message, votetagcontent));
-
-			return Content("{{votelink id={0} confirm={1} smallgroup=\"{2}\" message=\"{3}\" text=\"{4}\"}}".Fmt(
-				 orgid, confirm, smallgroup, message, text));
-		}
+        private static void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
+        {
+            var er = new EmailReplacements(db, emailText, fromAddress);
+            er.DoReplacements(db, DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value));
+        }
 	}
 }
