@@ -1169,7 +1169,8 @@ namespace CmsData
              bool filtertag
 	        )
 	    {
-	        return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false, null, null, filterchecked,
+	        return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false, 
+                Util2.CurrentTag, Util2.CurrentTagOwnerId, filterchecked,
 	            filtertag, null, Util.UserPeopleId);
 	    }
 	    public IQueryable<View.OrgPerson> OrgPeople(
@@ -1183,7 +1184,8 @@ namespace CmsData
              bool filtertag
 	        )
 	    {
-	        return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden, null, null, filterchecked,
+	        return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden, 
+                Util2.CurrentTag, Util2.CurrentTagOwnerId, filterchecked,
 	            filtertag, null, Util.UserPeopleId);
 	    }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
