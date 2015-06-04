@@ -902,7 +902,7 @@ namespace CmsData
             else if (d.ContainsKey("id"))
                 id = d["id"];
             if (id == null)
-                throw new Exception("No \"lang\" attribute found on \"{0}\"".Fmt(from));
+                throw new Exception("No \"Organization Id\" attribute found on \"{0}\"".Fmt(from));
             return id;
         }
 
