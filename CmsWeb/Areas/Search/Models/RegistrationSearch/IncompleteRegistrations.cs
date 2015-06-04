@@ -18,6 +18,13 @@ namespace CmsWeb.Areas.Search.Models
         {
         }
 
+        public IncompleteRegistrations(int id, int? days)
+            : base("Date", "desc", true)
+        {
+            this.oids = id.ToString();
+            this.days = days;
+            setPageSize();
+        }
         public IncompleteRegistrations(OrgSearchModel orgsearch, int? days)
             : base("Date", "desc", true)
         {
@@ -27,6 +34,11 @@ namespace CmsWeb.Areas.Search.Models
                 oids = string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId));
             }
             this.days = days;
+            setPageSize();
+        }
+
+        private void setPageSize()
+        {
             pagesize = 0;
             ShowPageSize = false;
         }
