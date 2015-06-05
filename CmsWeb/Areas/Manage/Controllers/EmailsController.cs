@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 					Db.SubmitChanges();
 				}
 			});
-			return Redirect("/Manage/Emails/Details/" + id);
+			return Redirect("/Emails/Details/" + id);
 		}
 
 		public ActionResult DeleteQueued(int id)
