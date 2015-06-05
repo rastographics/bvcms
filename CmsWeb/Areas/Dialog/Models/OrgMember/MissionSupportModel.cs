@@ -103,7 +103,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     var c = person.PostUnattendedContribution(DbUtil.Db,
                         AmountGoer ?? 0, fund, 
                         "SupportMissionTrip: org={0}; goer={1}".Fmt(OrgId, Goer.Value), typecode: BundleTypeCode.MissionTrip);
-                    c.CheckNo = CheckNo.Truncate(20);
+                    c.CheckNo = CheckNo.Trim().Truncate(20);
                     if (PeopleId == goerid)
                     {
                         var om = DbUtil.Db.OrganizationMembers.Single(
@@ -129,7 +129,8 @@ namespace CmsWeb.Areas.Dialog.Models
                     var c = person.PostUnattendedContribution(DbUtil.Db,
                         AmountGeneral ?? 0, fund, 
                         "SupportMissionTrip: org={0}".Fmt(OrgId), typecode: BundleTypeCode.MissionTrip);
-                    c.CheckNo = CheckNo;
+                    if(CheckNo.HasValue())
+                        c.CheckNo = CheckNo.Trim().Truncate(20);
                 }
                 DbUtil.Db.SubmitChanges();
             }
