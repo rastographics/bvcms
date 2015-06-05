@@ -40,6 +40,7 @@ RETURN
 	JOIN dbo.People p ON p.PeopleId = om.PeopleId
 	JOIN Meetings m ON m.MeetingId = @mid
 	WHERE om.OrganizationId = @oid
+	AND om.MemberTypeId NOT IN (230, 311)
 )
 
 GO
