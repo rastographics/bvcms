@@ -53,7 +53,7 @@ namespace CmsWeb.Models
                     NoticeSent = 
                         sa.NoNoticeToGoer == true ? "no notice" 
                         : sa.NoNoticeToGoer == false ? "sent" 
-                        : "not sent"
+                        : "manual trans"
                 };
             return q;
         }
