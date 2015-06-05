@@ -77,9 +77,9 @@ namespace CmsWeb.Models.ExtraValues
         {
             get
             {
-                if (Model.Location != "Adhoc")
-                    return "";
                 var n = HttpUtility.UrlEncode(Name);
+                if (Model.Location != "Adhoc")
+                    return "/ExtraValue/Delete/{0}/{1}?name={2}".Fmt(Model.Table, Id, n);
                 return "/ExtraValue/DeleteAdhoc/{0}/{1}?name={2}".Fmt(Model.Table, Id, n);
             }
         }
