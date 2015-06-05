@@ -223,7 +223,7 @@ namespace CmsWeb.Models
             return q;
         }
 
-        private void CheckBatchDates(DateTime start, DateTime end)
+        private static void CheckBatchDates(DateTime start, DateTime end)
         {
             var gateway = DbUtil.Db.Gateway();
             if (!gateway.CanGetSettlementDates)
@@ -248,7 +248,6 @@ namespace CmsWeb.Models
 
             foreach (var batchType in batchTypes)
             {
-
                 // key it by transaction reference and payment type.
                 var unMatchedKeyedByReference = unMatchedBatchTransactions.Where(x => x.BatchType == batchType).ToDictionary(x => x.Reference, x => x);
 
@@ -260,11 +259,11 @@ namespace CmsWeb.Models
                                                    select transaction;
 
                 // next key the matching approved transactions that came from our transaction table by the transaction id (reference).
-                var approvedMatchingTransactionsKeyedByTransactionId = approvedMatchingTransactions.ToDictionary(x => x.TransactionId, x => x);
+                var distinctTransactionIds = approvedMatchingTransactions.Select(x => x.TransactionId).Distinct();
 
                 // finally let's get a list of all transactions that need to be inserted, which we don't already have.
                 var transactionsToInsert = from transaction in unMatchedKeyedByReference
-                                           where !approvedMatchingTransactionsKeyedByTransactionId.Keys.Contains(transaction.Key)
+                                           where !distinctTransactionIds.Contains(transaction.Key)
                                            select transaction.Value;
 
                 var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
@@ -333,9 +332,6 @@ namespace CmsWeb.Models
                 }
             }
 
-            
-
-
 
             // finally we need to mark these batches as completed if there are any.
             foreach (var batch in unMatchedBatchTransactions.DistinctBy(x => x.BatchReference))
@@ -353,7 +349,7 @@ namespace CmsWeb.Models
                 else
                     checkedBatch.CheckedX = DateTime.Now;
             }
-            
+
             DbUtil.Db.SubmitChanges();
         }
 
