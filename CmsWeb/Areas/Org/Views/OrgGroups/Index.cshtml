@@ -4,8 +4,8 @@
 @using UtilityExtensions
 @{
     Layout = ViewExtensions2.TouchPointLayout();
-    ViewBag.Title = "Manage Groups";
-    ViewBag.PageHeader = "Manage Groups";
+    ViewBag.Title = "Manage Sub-Groups";
+    ViewBag.PageHeader = "Manage Sub-Groups";
     ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>".Fmt(Util2.Org, Model.orgid, Model.OrgName);
 }           
 @section head
@@ -16,8 +16,8 @@
 <div class="row">
     <div class="col-md-9">
         <ul class="nav nav-tabs" id="org-group-tabs">
-            <li class="active"><a href="#groupMembers" aria-controls="groupMembers" data-toggle="tab" id="group-members-tab"><i class="fa fa-users"></i>&nbsp;&nbsp;Group Members</a></li>
-            <li><a href="#manageGroup" aria-controls="manageGroup" data-toggle="tab"><i class="fa fa-cog"></i>&nbsp;&nbsp;Manage Groups</a></li>
+            <li class="active"><a href="#groupMembers" aria-controls="groupMembers" data-toggle="tab" id="group-members-tab"><i class="fa fa-users"></i>&nbsp;&nbsp;Sub-Group Members</a></li>
+            <li><a href="#manageGroup" aria-controls="manageGroup" data-toggle="tab"><i class="fa fa-cog"></i>&nbsp;&nbsp;Manage Sub-Groups</a></li>
         </ul>
         <div class="tab-content">
             <div class="tab-pane fade in active" id="groupMembers">
@@ -36,11 +36,11 @@
                                 @Html.HiddenFor(m => m.orgid)
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Create New Group</h4>
+                                    <h4 class="modal-title">Create New Sub-Group</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">
-                                        <label for="GroupName" class="control-label">Group Name</label>
+                                        <label for="GroupName" class="control-label">Sub-Group Name</label>
                                         <input type="text" id="GroupName" name="GroupName" class="form-control new-group-name" />
                                     </div>
                                 </div>
@@ -59,7 +59,7 @@
                                 @Html.HiddenFor(m => m.orgid)
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <h4 class="modal-title">Rename Group</h4>
+                                    <h4 class="modal-title">Rename Sub-Group</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="form-group">

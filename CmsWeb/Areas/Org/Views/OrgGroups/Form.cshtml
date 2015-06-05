@@ -70,21 +70,21 @@
 </div>
 <div class="table-responsive">
     <table id="members" class="table table-striped">
-        <thead>
-            <tr>
-                <th style="width: 10px;"><input id="SelectAll" type="checkbox" /></th>
-                <th><a href='#' class="sortable">Name</a></th>
-                <th><a href='#' class="sortable">MemberType</a></th>
-                <th>Gender</th>
-                <th>Age</th>
-                <th><a href='#' class="sortable">Request</a></th>
-                <th><a href="#" class="sortable">Groups</a></th>
-                @if (Model.isRecreationTeam)
-                {
-                    <th class="text-center"><a href='#' class="sortable">Score</a></th>
-                }
-            </tr>
-        </thead>
+      <thead>
+      <tr>
+        <th style="width: 10px;"><input id="SelectAll" type="checkbox"/></th>
+        <th><a href='#' class="sortable">Name</a></th>
+        <th><a href='#' class="sortable">MemberType</a></th>
+        <th>Gender</th>
+        <th>Age</th>
+        <th><a href='#' class="sortable">Request</a></th>
+        <th><a href="#" class="sortable">Groups</a></th>
+        @if (Model.isRecreationTeam)
+        {
+          <th class="text-center"><a href='#' class="sortable">Score</a></th>
+        }
+      </tr>
+      </thead>
         <tbody>
             @Html.Partial("Rows", Model)
         </tbody>
