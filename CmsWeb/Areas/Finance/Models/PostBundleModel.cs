@@ -389,7 +389,7 @@ namespace CmsWeb.Models
                     ContributionStatusId = 0,
                     ContributionTypeId = type,
                     ContributionDesc = notes,
-                    CheckNo = checkno.Trim().Truncate(20)
+                    CheckNo = (checkno ?? "").Trim().Truncate(20)
                 };
                 bundle.BundleDetails.Add(bd);
                 DbUtil.Db.SubmitChanges();
