@@ -236,6 +236,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (UserPeopleId == null)
                 return false;
+            return SaveProgressChecked();
+        }
+        public bool SaveProgressChecked()
+        {
             if (org != null)
                 return settings[org.OrganizationId].AllowSaveProgress;
             if (settings == null)

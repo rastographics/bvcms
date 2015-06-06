@@ -54,6 +54,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.Orgid == Util.CreateAccountCode)
                 return Content("/Person2/" + Util.UserPeopleId); // they already have an account, so take them to their page
 
+            m.UserPeopleId = Util.UserPeopleId;
             var route = RouteSpecialLogin(m);
             if (route != null)
                 return route;
@@ -61,7 +62,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             //if (m.UserSelectsOrganization())
             m.List[0].ValidateModelForFind(ModelState, 0);
 
-            m.UserPeopleId = Util.UserPeopleId;
             m.HistoryAdd("login");
             return FlowList(m);
         }
@@ -87,7 +87,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.List = new List<OnlineRegPersonModel>();
             return FlowList(m);
         }
-
         [HttpPost]
         public ActionResult RegisterFamilyMember(int id, OnlineRegModel m)
         {

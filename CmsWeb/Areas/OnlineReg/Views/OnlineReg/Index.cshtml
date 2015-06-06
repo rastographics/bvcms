@@ -28,6 +28,10 @@
   {
     @Fingerprint.Script("/Scripts/select2-3.5.2/select2.min.js")
   }
+  @if (Model.SaveProgressChecked())
+  {
+    @Fingerprint.Script("/Scripts/OnlineReg/AutoSaveProgress.js")
+  }
 }
 <noscript>
   <style type="text/css">
@@ -57,7 +61,7 @@
     <form id="completeReg" class="DisplayEdit form-horizontal" action="@action" method="post">
       @Html.Partial("Flow2/List", Model)
     </form>
-    
+
     if (Model.RecordFamilyAttendance())
     {
       @Html.Partial("Flow2/FamilyAttendTemplate")

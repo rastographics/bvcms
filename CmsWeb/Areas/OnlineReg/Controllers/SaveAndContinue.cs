@@ -36,6 +36,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [HttpPost]
+        public ActionResult AutoSaveProgress(OnlineRegModel m)
+        {
+            try { m.UpdateDatum(); } 
+            catch { }
+            return Content("saved");
+        }
+
+        [HttpPost]
         public ActionResult SaveProgress(OnlineRegModel m)
         {
             m.HistoryAdd("saveprogress");

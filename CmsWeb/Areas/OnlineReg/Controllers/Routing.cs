@@ -89,7 +89,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var link = RouteExistingRegistration(m);
             if(link.HasValue())
-                return Content(link);
+                return Redirect(link);
 
             m.CreateAnonymousList();
             m.UserPeopleId = Util.UserPeopleId;
