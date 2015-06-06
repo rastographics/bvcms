@@ -55,6 +55,7 @@ namespace CmsData.Registration
 		public string GroupToJoin { get; set; }
 	    public bool AddAsProspect { get; set; }
 		public int? TimeOut { get; set; }
+		public bool DisallowAnonymous { get; set; }
 
         public string DonationFund()
 		{
@@ -335,6 +336,9 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.TimeOut:
 					TimeOut = parser.GetNullInt();
+					break;
+				case Parser.RegKeywords.DisallowAnonymous:
+					DisallowAnonymous = parser.GetBool();
 					break;
 
 
@@ -727,6 +731,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "NotReqGender", NotReqGender);
 			AddValueCk(0, sb, "NotReqMarital", NotReqMarital);
 			AddValueCk(0, sb, "TimeOut", TimeOut);
+			AddValueCk(0, sb, "DisallowAnonymous", DisallowAnonymous);
 
 			TimeSlots.Output(sb);
 			foreach(var a in AskItems)

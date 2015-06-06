@@ -1,14 +1,17 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @{ Model.ShowLoginInstructions = true; }
 <div class="well">
-    @Html.EditorFor(m => m.username, new { placeholder = "Enter username or email address on record" })
-    @Html.EditorFor(m => m.password, "password")
-    @Html.DivValidationMessage("authentication")
-    <div class="form-group">
-        <div class="col-sm-offset-3 col-sm-9">
-            @Helper.OnlineRegAjaxButton("/OnlineReg/Login/", "Login", id: "loginbt", style: "btn-primary pull-right")
-            @Helper.OnlineRegAjaxButton("/OnlineReg/NoLogin", "Register without logging in", style: "btn-link")
-            <a href="/Account/ForgotPassword/" class="btn btn-link">Forgot Password?</a>
-        </div>
+  @Html.EditorFor(m => m.username, new { placeholder = "Enter username or email address on record" })
+  @Html.EditorFor(m => m.password, "password")
+  @Html.DivValidationMessage("authentication")
+  <div class="form-group">
+    <div class="col-sm-offset-3 col-sm-9">
+      @Helper.OnlineRegAjaxButton("/OnlineReg/Login/", "Login", id: "loginbt", style: "btn-primary pull-right")
+      @if (Model.AllowAnonymous)
+      {
+        @Helper.OnlineRegAjaxButton("/OnlineReg/NoLogin", "Register without logging in", style: "btn-link")
+      }
+      <a href="/Account/ForgotPassword/" class="btn btn-link">Forgot Password?</a>
     </div>
+  </div>
 </div>

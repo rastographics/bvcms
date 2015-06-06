@@ -352,6 +352,7 @@ namespace CmsData.Registration
             IncludeOtherFeesWithDeposit,
             ConfirmationTrackingCode,
             TimeOut,
+            DisallowAnonymous,
 
 
             OtherFeesAdded,

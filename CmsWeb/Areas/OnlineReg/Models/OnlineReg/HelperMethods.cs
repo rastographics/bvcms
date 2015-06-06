@@ -9,7 +9,6 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
-using DocumentFormat.OpenXml.Drawing;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -49,7 +48,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool DisplayLogin()
         {
-            return (List.Count == 0 && !UserPeopleId.HasValue && nologin == false);
+            return List.Count == 0 && !UserPeopleId.HasValue && (nologin == false || !AllowAnonymous);
         }
 
         public string LoginName
@@ -99,6 +98,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (o != null)
                 return o.ClassFilled == true;
             return false;
+        }
+
+        public bool AllowAnonymous
+        {
+            get { return allowAnonymous(masterorgid) && allowAnonymous(Orgid); }
+        }
+
+        private bool allowAnonymous(int? id)
+        {
+            if (id.HasValue)
+                return !settings[id.Value].DisallowAnonymous;
+            return true;
         }
 
         private bool Filled(Organization o)

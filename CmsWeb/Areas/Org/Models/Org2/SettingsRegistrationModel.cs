@@ -212,7 +212,10 @@ namespace CmsWeb.Areas.Org2.Models
         public string SpecialScript { get; set; }
 
         [Reg, Display(Description = TimeOutDescription)]
-        public string TimeOut { get; set; }
+        public int? TimeOut { get; set; }
+
+        [Reg, Display(Description = DisallowAnonymousDescription)]
+        public bool DisallowAnonymous { get; set; }
 
         #region Descriptions
 
@@ -295,6 +298,11 @@ Enter number of milliseconds (e.g. 600000 = 600 seconds = 10 minutes).
 This overrides the default on just this organization.
 The default is either the RegTimeout database setting if it exists 
 or the system wide default of 180000 (3 minutes).
+";
+
+        private const string DisallowAnonymousDescription = @"
+Does not allow Anonymous Registrations.
+Must have an accont and be logged in
 ";
 
         #endregion

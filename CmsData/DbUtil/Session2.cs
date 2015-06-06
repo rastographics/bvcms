@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using UtilityExtensions;
 using System.Web.Caching;
@@ -59,11 +60,10 @@ namespace CmsData
         {
             get
             {
-                if(Util.IsDebug() && HttpContext.Current != null)
-                    return Util.URLCombine(Scheme() + "://" + HttpContext.Current.Request.Url.Authority, "");
-
                 // choose DefaultHost setting first
                 var defaultHost = Setting("DefaultHost", "");
+                if(Util.IsDebug())
+                    return Regex.Replace(defaultHost, @"https://[^.]*\.tpsdb.com", "http://localhost:8888");
 
                 // if no DefaultHost setting exists, use current URL
                 if (!defaultHost.HasValue() && HttpContext.Current != null)

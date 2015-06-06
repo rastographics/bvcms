@@ -98,6 +98,11 @@
             <div class="col-sm-4 col-md-4">
                 @Html.EditorFor(m => m.TimeOut)
             </div>
+            <div class="col-sm-4 col-md-4">
+                <label class="checkbox-inline control-label">
+                    @Html.CheckBoxFor(m => m.DisallowAnonymous) Disallow Anonymous
+                </label>
+            </div>
             
         </div>
     </div>

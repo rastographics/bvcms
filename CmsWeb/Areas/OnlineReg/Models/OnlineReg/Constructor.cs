@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             this.testing = testing == true || DbUtil.Db.Setting("OnlineRegTesting", Util.IsDebug() ? "true" : "false").ToBool();
 
             // the email passed in is valid or they did not specify login
-            if (Util.ValidEmail(email) || login != true)
+            if (AllowAnonymous && (Util.ValidEmail(email) || login != true)) 
                 nologin = true;
 
             if (nologin)

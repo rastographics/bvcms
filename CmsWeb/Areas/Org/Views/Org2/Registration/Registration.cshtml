@@ -99,6 +99,9 @@
             <div class="col-sm-4 col-md-4">
                 @Html.DisplayFor(m => m.TimeOut)
             </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.DisplayFor(m => m.DisallowAnonymous, new { FalseValue = "n/a" })
+            </div>
         </div>
     </div>
     <h4>Relaxed Requirements</h4>
