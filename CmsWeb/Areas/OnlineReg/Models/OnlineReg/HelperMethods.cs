@@ -9,6 +9,7 @@ using CmsData.Registration;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using CmsData.Codes;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -141,7 +142,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         public bool OnlyOneAllowed()
-        { 
+        {
             if (ManagingSubscriptions())
                 return true;
             if (org != null)
@@ -150,10 +151,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes
                        || org.RegistrationTypeId == RegistrationTypeCode.CreateAccount
                        || org.IsMissionTrip == true
-                       || setting.AllowOnlyOne 
+                       || setting.AllowOnlyOne
                        || setting.AskVisible("AskTickets")
-                       || ChoosingSlots() 
-                       || OnlineGiving() 
+                       || ChoosingSlots()
+                       || OnlineGiving()
                        || ManageGiving()
                        || SupportMissionTrip;
             }
@@ -250,9 +251,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     {
                         var g = DbUtil.Db.LoadPersonById(GoerId.Value);
                         if (g != null)
-                        return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
+                            return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
                     }
-                        return "Support: " + org.OrganizationName;
+                    return "Support: " + org.OrganizationName;
                 }
                 if (settings != null && org != null && settings.ContainsKey(org.OrganizationId))
                     return Util.PickFirst(org.RegistrationTitle, org.OrganizationName);
@@ -475,7 +476,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 if (!timeOut.HasValue)
-                    timeOut = Util.IsDebug() ? 16000000 : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
+                {
+                    timeOut = Util.IsDebug() 
+                        ? 1600000
+                        : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
+                    if (masterorgid.HasValue)
+                        if (settings.ContainsKey(masterorgid.Value))
+                            timeOut = settings[masterorgid.Value].TimeOut ?? timeOut;
+                    if (Orgid.HasValue)
+                        if (settings.ContainsKey(Orgid.Value))
+                            timeOut = settings[org.OrganizationId].TimeOut ?? timeOut;
+                }
                 return timeOut.Value;
             }
         }
@@ -552,7 +563,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.OrganizationId == 81460 && om.PeopleId == 828612
-                    select om;
+                        select om;
                 foreach (var om in q)
                     om.Drop(DbUtil.Db, DateTime.Now);
                 DbUtil.Db.SubmitChanges();
@@ -581,8 +592,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             get
             {
-                return last != null 
-                    && last.QuestionsOK 
+                return last != null
+                    && last.QuestionsOK
                     && last.FinishedFindingOrAddingRegistrant;
             }
         }

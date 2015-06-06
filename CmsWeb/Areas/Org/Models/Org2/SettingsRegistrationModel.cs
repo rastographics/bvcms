@@ -211,6 +211,8 @@ namespace CmsWeb.Areas.Org2.Models
         [Reg, Display(Description = SpecialScriptDescription)]
         public string SpecialScript { get; set; }
 
+        [Reg, Display(Description = TimeOutDescription)]
+        public string TimeOut { get; set; }
 
         #region Descriptions
 
@@ -285,6 +287,14 @@ with an optional age-based fee
         private const string SpecialScriptDescription = @"
 Enter the name of the HTML/Script file for this registration.
 Only works with the Special Script type of registration (stored in Special Content).
+";
+
+        private const string TimeOutDescription = @"
+Enter number of milliseconds (e.g. 600000 = 600 seconds = 10 minutes).
+
+This overrides the default on just this organization.
+The default is either the RegTimeout database setting if it exists 
+or the system wide default of 180000 (3 minutes).
 ";
 
         #endregion

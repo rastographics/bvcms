@@ -351,6 +351,7 @@ namespace CmsData.Registration
             ApplyMaxToOtherFees,
             IncludeOtherFeesWithDeposit,
             ConfirmationTrackingCode,
+            TimeOut,
 
 
             OtherFeesAdded,

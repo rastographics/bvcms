@@ -54,6 +54,7 @@ namespace CmsData.Registration
 		public int? TimeSlotLockDays { get; set; }
 		public string GroupToJoin { get; set; }
 	    public bool AddAsProspect { get; set; }
+		public int? TimeOut { get; set; }
 
         public string DonationFund()
 		{
@@ -331,6 +332,9 @@ namespace CmsData.Registration
 					break;
 				case Parser.RegKeywords.Fee:
 					Fee = parser.GetDecimal();
+					break;
+				case Parser.RegKeywords.TimeOut:
+					TimeOut = parser.GetNullInt();
 					break;
 
 
@@ -722,6 +726,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "NotReqPhone", NotReqPhone);
 			AddValueCk(0, sb, "NotReqGender", NotReqGender);
 			AddValueCk(0, sb, "NotReqMarital", NotReqMarital);
+			AddValueCk(0, sb, "TimeOut", TimeOut);
 
 			TimeSlots.Output(sb);
 			foreach(var a in AskItems)
