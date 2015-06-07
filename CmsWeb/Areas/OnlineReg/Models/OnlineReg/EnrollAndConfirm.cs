@@ -8,6 +8,7 @@ using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
 using CmsData.Registration;
+using CmsData.View;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -195,6 +196,9 @@ Total Fee paid for this registration session: {4:C}<br/>
         {
             var p = List[0];
             Transaction.Fund = p.setting.DonationFund();
+            if(!p.orgid.HasValue || !p.PeopleId.HasValue)
+                throw new Exception(
+                    "DoMissionTripGoer missing org or person: orgid={0} or peopleid={1}".Fmt(p.orgid ?? 0, p.PeopleId ?? 0));
 
             DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
                 new GoerSenderAmount
@@ -231,11 +235,13 @@ Total Fee paid for this registration session: {4:C}<br/>
             var goerid = p.Parent.GoerId > 0
                 ? p.Parent.GoerId
                 : p.MissionTripGoerId;
-            if (p.MissionTripSupportGoer > 0)
+            var forgoer = "";
+            var forgeneral = "";
+            if (p.MissionTripSupportGoer > 0 && p.orgid.HasValue && p.PeopleId.HasValue)
             {
                 var gsa = new GoerSenderAmount
                 {
-                    Amount = p.MissionTripSupportGoer.Value,
+                    Amount = p.MissionTripSupportGoer ?? 0,
                     Created = DateTime.Now,
                     OrgId = p.orgid.Value,
                     SupporterId = p.PeopleId.Value,
@@ -253,38 +259,41 @@ Total Fee paid for this registration session: {4:C}<br/>
                 if (!Transaction.TransactionId.StartsWith("Coupon"))
                 {
                     p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGoer.Value, p.setting.DonationFundId,
+                        p.MissionTripSupportGoer ?? 0, p.setting.DonationFundId,
                         "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid), tranid: Transaction.Id);
                     // send notices
                     if (goerid > 0 && !p.MissionTripNoNoticeToGoer)
                     {
                         var goer = DbUtil.Db.LoadPersonById(goerid.Value);
+                        forgoer = ", {0:c} for {1}".Fmt(p.MissionTripSupportGoer, goer.Name);
                         DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
-                            "{0:C} donation received from {1}".Fmt(p.MissionTripSupportGoer.Value,
-                                Transaction.FullName(Transaction)));
+                            "{0:C} donation received from {1}{2}".Fmt(p.MissionTripSupportGoer ?? 0,
+                                Transaction.FullName(Transaction), forgoer));
                     }
                 }
             }
-            if (p.MissionTripSupportGeneral > 0)
+            if (p.MissionTripSupportGeneral > 0 && p.orgid.HasValue && p.PeopleId.HasValue)
             {
                 DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
                     new GoerSenderAmount
                     {
-                        Amount = p.MissionTripSupportGeneral.Value,
+                        Amount = p.MissionTripSupportGeneral ?? 0,
                         Created = DateTime.Now,
                         OrgId = p.orgid.Value,
                         SupporterId = p.PeopleId.Value
                     });
+                forgeneral = ", ({0:c}) for trip".Fmt(p.MissionTripSupportGeneral ?? 0);
                 if (!Transaction.TransactionId.StartsWith("Coupon"))
                 {
                     p.person.PostUnattendedContribution(DbUtil.Db,
-                        p.MissionTripSupportGeneral.Value, p.setting.DonationFundId,
-                        "SupportMissionTrip: org={0}".Fmt(p.orgid), tranid: Transaction.Id);
+                        p.MissionTripSupportGeneral ?? 0, p.setting.DonationFundId,
+                        "SupportMissionTrip: org={0}{1}".Fmt(p.orgid), tranid: Transaction.Id);
                 }
             }
             var notifyids = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
             DbUtil.Db.Email(notifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
-                "${0:N2} donation received from {1}".Fmt(Transaction.Amt, Transaction.FullName(Transaction)));
+                "${0:N2} donation received from {1}{2}{3}".Fmt(
+                Transaction.Amt, Transaction.FullName(Transaction), forgoer, forgeneral));
 
             var orgsettings = settings[org.OrganizationId];
             var senderSubject = orgsettings.SenderSubject ?? "NO SUBJECT SET";
