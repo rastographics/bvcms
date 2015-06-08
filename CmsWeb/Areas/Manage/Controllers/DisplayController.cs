@@ -387,7 +387,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     }
                     r.Cells.Add(new HtmlTableCell()
                     {
-                        InnerText = s,
+                        InnerHtml = s,
                         Align = align
                     });
                 }
