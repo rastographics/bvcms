@@ -335,7 +335,7 @@
             var f = $(this);
             $('#empty-dialog').html(f);
             $('#empty-dialog').modal("show");
-            
+
             $(".clickEdit", f).editable({
                 mode: 'popup',
                 type: 'textarea',
@@ -803,7 +803,7 @@
         var f = a.closest("form");
         $.post(a.attr("href"), null, function (ret) {
             var dest = a.data('dest');
-            $(dest).append(ret);
+            $(dest, a.closest('.movable')).append(ret);
             $.InitFunctions.movequestions();
             $.InitFunctions.timepicker();
             $(dest).children().last().children().first().effect("highlight", { color: '#eaab00' }, 2000);

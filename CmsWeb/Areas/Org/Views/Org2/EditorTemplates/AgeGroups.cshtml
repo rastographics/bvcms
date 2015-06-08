@@ -7,14 +7,14 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="pull-right newitem">
-                    <a href="/Org/NewAgeGroup" class="btn btn-success" data-dest="#age-groups"><i class="fa fa-plus-circle"></i> Add Item</a>
+                    <a href="/Org/NewAgeGroup" class="btn btn-success" data-dest=".age-groups"><i class="fa fa-plus-circle"></i> Add Item</a>
                 </div>
             </div>
         </div>
         <br />
-        <div class="row" id="age-groups">
+        <div class="row age-groups">
             @foreach (var i in Model)
-            {               
+            {
                 @Html.EditorFor(m => i)
             }
         </div>

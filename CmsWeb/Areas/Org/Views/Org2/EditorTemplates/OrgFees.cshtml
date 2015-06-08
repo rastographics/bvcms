@@ -5,12 +5,12 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="pull-right newitem">
-                    <a href="/Org/NewOrgFee" class="btn btn-success" data-dest="#orgfees"><i class="fa fa-plus-circle"></i> Add Org Fee</a>
+                    <a href="/Org/NewOrgFee" class="btn btn-success" data-dest=".orgfees"><i class="fa fa-plus-circle"></i> Add Org Fee</a>
                 </div>
             </div>
         </div>
         <br />
-        <div id="orgfees" class="row">
+        <div class="row orgfees">
             @foreach (var f in Model)
             {
                 @Html.EditorFor(m => f)
