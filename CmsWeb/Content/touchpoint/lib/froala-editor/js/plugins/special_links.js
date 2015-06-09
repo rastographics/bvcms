@@ -183,18 +183,18 @@
             b.restoreSelectionByMarkers();
             b.writeLink('https://' + linkType.val(), null, null, newTab.is(':checked'), true);
 
-            var link = b.getSelectionElement();
+            var link = b.getSelectionElements();
             if (confirmation.val().length > 0) {
-                $(link).attr('dir', confirmation.val());
+                $('a', link).attr('dir', confirmation.val());
             }
             if (orgId.val().length > 0) {
-                $(link).attr('lang', orgId.val());
+                $('a', link).attr('lang', orgId.val());
             }
             if (message.val().length > 0) {
-                $(link).attr('title', message.val());
+                $('a', link).attr('title', message.val());
             }
             if (smallGroup.val().length > 0) {
-                $(link).attr('rel', smallGroup.val());
+                $('a', link).attr('rel', smallGroup.val());
             }
 
             linkType.val('');
