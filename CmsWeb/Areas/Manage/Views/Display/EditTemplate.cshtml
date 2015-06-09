@@ -104,7 +104,8 @@
                         theme: 'custom',
                         buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
                         imageUploadURL: '/Account/FroalaUpload',
-                        fileUploadURL: '/Account/FroalaUpload'
+                        fileUploadURL: '/Account/FroalaUpload',
+                        maxFileSize: (1024 * 1024 * 15)
                     });
 
                     // reset the html... it's strange but resetting the html here causes the editor to retain any html, head, body tags that might be in the html.

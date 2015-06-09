@@ -39,7 +39,7 @@
             }
           </div>
           <a href="/Display/#tab_htmlContent" class="btn btn-default">Cancel</a>
-          <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a> 
+          <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
           @if (Util2.UseNewEditor)
           {
             <a class="btn btn-primary save">Save Content</a>
@@ -104,7 +104,8 @@
             theme: 'custom',
             buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html'],
             imageUploadURL: '/Account/FroalaUpload',
-            fileUploadURL: '/Account/FroalaUpload'
+            fileUploadURL: '/Account/FroalaUpload',
+            maxFileSize: (1024 * 1024 * 15)
           });
 
           // reset the html... it's strange but resetting the html here causes the editor to retain any html, head, body tags that might be in the html.
