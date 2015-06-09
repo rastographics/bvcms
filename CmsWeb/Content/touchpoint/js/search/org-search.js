@@ -18,7 +18,7 @@
                                 '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
-    
+
     $.InitFunctions.ReloadPeople = function () {
         $.getTable();
     };
@@ -194,7 +194,8 @@
             theme: 'custom',
             buttons: editorButtons,
             imageUploadURL: '/Account/FroalaUpload',
-            fileUploadURL: '/Account/FroalaUpload'
+            fileUploadURL: '/Account/FroalaUpload',
+            maxFileSize: (1024 * 1024 * 15)
         });
         $('#editor').froalaEditable('setHTML', $a.html());
         $('#editor-modal').modal('show');
@@ -212,7 +213,7 @@
         return false;
     };
 
-    $.fmtTable(); 
+    $.fmtTable();
 
     $('#ProgramId').change(function () {
         $.post('/OrgSearch/DivisionIds/' + $(this).val(), null, function (ret) {
@@ -343,7 +344,7 @@
                 });
             });
         });
-        
+
         return true;
     });
 
@@ -468,7 +469,7 @@
     $('#meetings-daterange-modal').on('hidden.bs.modal', function() {
         $("#attdetail2").off("click");
     });
-    
+
     $(".MonthReport").click(function(ev) {
         ev.preventDefault();
         $('#meetings-month-action').val(this.href);

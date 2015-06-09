@@ -3,7 +3,7 @@
     $('#Recipients').select2("readonly", true);
 
     var currentDiv = null;
-   
+
     $.clearFunction = undefined;
     $.addFunction = undefined;
 
@@ -47,7 +47,8 @@
             theme: 'custom',
             buttons: editorButtons,
             imageUploadURL: '/Account/FroalaUpload',
-            fileUploadURL: '/Account/FroalaUpload'
+            fileUploadURL: '/Account/FroalaUpload',
+            maxFileSize: (1024 * 1024 * 15)
         });
         var html = $(currentDiv).html();
         if (html !== "Click here to edit content") {

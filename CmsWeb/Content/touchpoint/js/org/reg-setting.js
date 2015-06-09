@@ -1,5 +1,5 @@
 ﻿$(function () {
-    
+
     $.InitFunctions.SettingFormsInit = function (f) {
         $('a.notifylist').SearchUsers({
             UpdateShared: function (topid, topid0, ele) {
@@ -42,9 +42,10 @@
             theme: 'custom',
             buttons: editorButtons,
             imageUploadURL: '/Account/FroalaUpload',
-            fileUploadURL: '/Account/FroalaUpload'
+            fileUploadURL: '/Account/FroalaUpload',
+            maxFileSize: (1024 * 1024 * 15)
         });
-        
+
         $('#editor').froalaEditable('setHTML', $("#" + name).val());
         $('#editor-modal').modal('show');
 
