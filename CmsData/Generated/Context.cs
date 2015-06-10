@@ -2700,6 +2700,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.LastAttendOrg", IsComposable = true)]
+        public IQueryable< View.LastAttendOrg > LastAttendOrg(
+            [Parameter(DbType="int")] int? oid
+            )
+        {
+            return CreateMethodCallQuery< View.LastAttendOrg>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    oid
+                );
+        }
+
         [Function(Name="dbo.LastMeetings", IsComposable = true)]
         public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="int")] int? orgid,

@@ -165,6 +165,10 @@
                                         {
                                             <li><a class="credit @noadmin" href='/Transactions/CreditVoid/@t.Id?type=Credit'><i class="fa fa-undo"></i>&nbsp;&nbsp;Credit Transaction</a></li>
                                         }
+                                        if (t.IsAdjustment ?? true)
+                                        {
+                                            <li><a class="deleteadj @noadmin" href='/Transactions/DeleteAdjustment/@t.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Delete Adjustment</a></li>
+                                        }
                                         if (User.IsInRole("Developer"))
                                         {
                                             <li><a class="setpar" href="/Transactions/SetParent/@t.Id/"><i class="fa fa-sitemap"></i>&nbsp;&nbsp;Set Parent</a></li>

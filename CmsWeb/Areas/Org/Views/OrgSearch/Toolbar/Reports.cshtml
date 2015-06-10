@@ -1,4 +1,7 @@
-﻿<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-3">
+﻿@{
+  var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
+}
+<ul class="dropdown-menu dropdown-menu-large dropdown-menu-right container bluebar-menu-col-3">
     <li class="col-sm-4">
         <ul>
             <li class="dropdown-header">Export Excel</li>
@@ -31,7 +34,7 @@
             <li><a id="enrollmentcontrol1" href='#'><span class="org-context">Enrollment Control Report</span></a></li>
             <li><a id="enrollmentcontrol2i" href='#'><span class="org-context">Enrollment Control iPhone/iPad</span></a></li>
             <li><a class="ViewReport" href='/IncompleteRegistrations'><span class="org-context">Incomplete Registrations</span></a></li>
-            @if (User.IsInRole("MissionGiving"))
+            @if (missiongiving)
             {
                 <li><a class="ViewReport" href='/Reports/MissionTripFunding'><span class="org-context">Mission Trip Funding</span></a></li>
                 <li><a class="ViewReport" href="/Reports/MissionTripSenders"><span class="org-context">Mission Trip Senders Export</span></a></li>
