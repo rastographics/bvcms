@@ -1,8 +1,3 @@
-
-
-
-
-
 CREATE VIEW [dbo].[TransactionBalances]
 AS
 SELECT BalancesId
@@ -15,6 +10,7 @@ SELECT BalancesId
 		,CONVERT(BIT, 
 			CASE WHEN CanVoid = 1 AND (Batchtyp = 'eft' OR Batchtyp = 'bankcard')
 			THEN 1 ELSE 0 END) CanCredit
+		,IsAdjustment
 FROM (
 	SELECT 
 		t.Id BalancesId
@@ -69,6 +65,8 @@ FROM (
 				AND t.amt > 0
 				THEN 1 ELSE 0 END)
 			CanVoid
+		,CONVERT(BIT, CASE WHEN t.TransactionId LIKE 'Adjust%' THEN 1 ELSE 0 END)
+			IsAdjustment
 
 	FROM dbo.[Transaction] t
 ) tt
