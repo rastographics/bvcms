@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Collections.Specialized;
 using ZXing;
 using ZXing.Common;
+using System.Windows.Forms;
 
 namespace CmsCheckin.Classes
 {
@@ -47,7 +48,7 @@ namespace CmsCheckin.Classes
 		 * If Guess (1 inch): Main, Guest, Security, Location (multiples
  		*/
 
-		public static void doPrinting(IEnumerable<LabelInfo> q, bool bPrintSingle = false)
+		public static bool doPrinting(IEnumerable<LabelInfo> q, bool bPrintSingle = false)
 		{
 			LabelSet lsLabels = new LabelSet();
 			int iLabelSize = PrinterHelper.getPageHeight(Program.settings.printer);
@@ -145,9 +146,17 @@ namespace CmsCheckin.Classes
 				}
 			}
 
-			if (Program.settings.extraLabel == true && q.Count() > 0) lsLabels.addBlank();
+            if (lsLabels.getCount() > 0)
+            {
+                if (Program.settings.extraLabel == true && q.Count() > 0) lsLabels.addBlank();
 
-			PrinterHelper.printAllLabels(Program.settings.printer, lsLabels);
+                PrinterHelper.printAllLabels(Program.settings.printer, lsLabels);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 		}
 
 		public static void setPaperSize(PrintDocument pd)
