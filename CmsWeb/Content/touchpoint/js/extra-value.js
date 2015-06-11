@@ -174,7 +174,7 @@
         });
         $("a.click-Code-Select").editable({ type: "select", mode: 'inline' });
         $('a.click-Bits').editable({ type: "checklist", mode: 'inline' });
-        $("a.click-Date").editable({ type: 'date', mode: 'popup', format: 'mm/dd/yyyy', viewformat: 'mm/dd/yyyy', datepicker: { weekStart: 1 }, });
+        $("a.click-Date").editable({ type: 'date', mode: 'popup', format: 'mm/dd/yyyy', viewformat: 'mm/dd/yyyy', datepicker: { weekStart: 0 }, });
         $("a.click-Bit").editable({ type: 'checklist', mode: 'inline', source: { 'True': 'True' }, emptytext: 'False' });
     };
 });

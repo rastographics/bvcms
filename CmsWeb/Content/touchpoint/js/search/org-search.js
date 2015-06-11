@@ -138,7 +138,7 @@
             format: 'mm/dd/yyyy',
             viewformat: 'mm/dd/yyyy',
             datepicker: {
-                weekStart: 1
+                weekStart: 0
             },
             params: function (params) {
                 var data = {};
