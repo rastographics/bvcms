@@ -65,8 +65,12 @@ FROM (
 				AND t.amt > 0
 				THEN 1 ELSE 0 END)
 			CanVoid
-		,CONVERT(BIT, CASE WHEN t.TransactionId LIKE 'Adjust%' THEN 1 ELSE 0 END)
-			IsAdjustment
+		,CONVERT(BIT, CASE 
+				WHEN t.TransactionId LIKE 'Adjust%' THEN 1 
+				WHEN t.TransactionId LIKE 'Payment%' THEN 1 
+				WHEN t.TransactionId LIKE 'Initial Tran%' THEN 1 
+				ELSE 0 
+			END) IsAdjustment
 
 	FROM dbo.[Transaction] t
 ) tt
