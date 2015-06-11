@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData.Codes;
 using CmsWeb.Areas.Main.Models;
@@ -75,6 +76,11 @@ namespace CmsWeb.Areas.Main.Controllers
             if(c == null)
                 return new EmptyResult();
 
+		    if (!c.Body.Contains("bvedit"))
+		        c.Body = @"<div bvedit=""discardthis"">
+{0}
+</div>".Fmt(c.Body);
+
             ViewBag.content = c;
             return View();
         }
@@ -100,7 +106,8 @@ namespace CmsWeb.Areas.Main.Controllers
 			}
 
 			content.Title = m.Subject;
-			content.Body = m.Body;
+            content.Body = GetBody(m.Body);
+
 			content.DateCreated = DateTime.Now;
 
 			if (saveid == 0)
@@ -116,7 +123,15 @@ namespace CmsWeb.Areas.Main.Controllers
 			return View("Compose", m);
 		}
 
-		[HttpPost]
+        private static string GetBody(string body)
+        {
+            var foundMatch = Regex.IsMatch(body, @"\A\s*<div bvedit=""discardthis"".*?>(.*)</div>\s*\z", RegexOptions.Singleline);
+            if (foundMatch)
+                body = Regex.Match(body, @"\s*<div bvedit=""discardthis"".*?>(.*)</div>\s*", RegexOptions.Singleline).Groups[1].Value;
+            return body;
+        }
+
+        [HttpPost]
 		public ActionResult ContentDeleteDrafts(Guid queryid, bool parents, int[] draftId)
 		{
 			using (var cn = new SqlConnection(Util.ConnectionString))
@@ -131,6 +146,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		[ValidateInput(false)]
 		public ActionResult QueueEmails(MassEmailer m)
 		{
+		    m.Body = GetBody(m.Body);
 			if (!m.Subject.HasValue() || !m.Body.HasValue())
                 return Json(new { id = 0, error = "Both subject and body need some text." });
 			if (!User.IsInRole("Admin") && m.Body.Contains("{createaccount}", ignoreCase: true))
@@ -212,6 +228,7 @@ namespace CmsWeb.Areas.Main.Controllers
 		[ValidateInput(false)]
 		public ActionResult TestEmail(MassEmailer m)
 		{
+		    m.Body = GetBody(m.Body);
             if (Util.SessionTimedOut())
 			{
 				Session["massemailer"] = m;
