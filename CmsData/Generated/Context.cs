@@ -3382,6 +3382,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.SenderGifts", IsComposable = true)]
+        public IQueryable< View.SenderGift > SenderGifts(
+            [Parameter(DbType="varchar")] string oids
+            )
+        {
+            return CreateMethodCallQuery< View.SenderGift>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    oids
+                );
+        }
+
         [Function(Name="dbo.Split", IsComposable = true)]
         public IQueryable< View.Split > Split(
             [Parameter(DbType="nvarchar")] string InputText,

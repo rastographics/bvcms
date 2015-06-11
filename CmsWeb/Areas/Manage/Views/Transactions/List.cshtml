@@ -167,7 +167,7 @@
                                         }
                                         if (t.IsAdjustment ?? true)
                                         {
-                                            <li><a class="deleteadj @noadmin" href='/Transactions/DeleteAdjustment/@t.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Delete Adjustment</a></li>
+                                            <li><a class="deleteadj @noadmin" href='/Transactions/DeleteManual/@t.Id'><i class="fa fa-undo"></i>&nbsp;&nbsp;Delete Adjustment</a></li>
                                         }
                                         if (User.IsInRole("Developer"))
                                         {

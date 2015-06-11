@@ -191,8 +191,9 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ManageTransactions,Finance")]
-        public ActionResult DeleteAdjustment(int id, TransactionsModel m)
+        public ActionResult DeleteManual(int id, TransactionsModel m)
         {
+            DbUtil.Db.ExecuteCommand("UPDATE dbo.OrganizationMembers SET TranId = NULL WHERE TranId = {0}", id);
             var t = DbUtil.Db.Transactions.Single(tt => tt.Id == id);
             DbUtil.Db.Transactions.DeleteOnSubmit(t);
             DbUtil.Db.SubmitChanges();
@@ -209,8 +210,10 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
         [Authorize(Roles = "ManageTransactions,Finance,Developer")]
         [HttpPost, Route("AssignGoer/{id:int}/{gid:int}")]
-        public ActionResult AssignGoer(int id, int gid, TransactionsModel m)
+        public ActionResult AssignGoer(int id, int? gid, TransactionsModel m)
         {
+            if (gid == 0)
+                gid = null;
             var gsa = DbUtil.Db.GoerSenderAmounts.Single(tt => tt.Id == id);
             gsa.GoerId = gid;
             DbUtil.Db.SubmitChanges();

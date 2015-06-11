@@ -497,6 +497,7 @@
     <Compile Include="Generated\Functions\RollList.cs" />
     <Compile Include="Generated\Functions\RollListHighlight.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
+    <Compile Include="Generated\Functions\SenderGift.cs" />
     <Compile Include="Generated\Functions\VisitsAbsent.cs" />
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />

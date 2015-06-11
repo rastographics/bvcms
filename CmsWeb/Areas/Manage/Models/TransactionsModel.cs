@@ -6,6 +6,7 @@ using System.Web;
 using CmsData;
 using CmsData.Finance;
 using CmsData.View;
+using CmsWeb.Areas.Manage.Models;
 using MoreLinq;
 using UtilityExtensions;
 
@@ -116,14 +117,20 @@ namespace CmsWeb.Models
                  where (t.Financeonly ?? false) == false || finance
                  select t;
             if (name != null)
-                _transactions = from t in _transactions
-                                where
-                                    (
-                                        (t.Last.StartsWith(last) || t.Last.StartsWith(name))
-                                        && (!hasfirst || t.First.StartsWith(first) || t.Last.StartsWith(name))
-                                    )
-                                    || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
-                                select t;
+                if (name == "0") 
+                    // special case, return no transactions, all we are interested in is the Senders on a Mission Trip
+                    _transactions = from t in _transactions
+                                    where t.OriginalId == nameid
+                                    select t;
+                else
+                    _transactions = from t in _transactions
+                                    where
+                                        (
+                                            (t.Last.StartsWith(last) || t.Last.StartsWith(name))
+                                            && (!hasfirst || t.First.StartsWith(first) || t.Last.StartsWith(name))
+                                        )
+                                        || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
+                                    select t;
             if (!HttpContext.Current.User.IsInRole("Finance"))
                 _transactions = _transactions.Where(tt => (tt.Financeonly ?? false) == false);
 
@@ -541,8 +548,8 @@ namespace CmsWeb.Models
         {
             return from gs in DbUtil.Db.GoerSenderAmounts
                    where gs.SupporterId == SenderId
-                   where gs.SupporterId != gs.GoerId
-                   let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   where gs.SupporterId != (gs.GoerId ?? 0)
+                   let gp = DbUtil.Db.People.SingleOrDefault(ss => ss.PeopleId == gs.GoerId)
                    let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
                    let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
