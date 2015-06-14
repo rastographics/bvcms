@@ -6,12 +6,17 @@
   @Html.DivValidationMessage("authentication")
   <div class="form-group">
     <div class="col-sm-offset-3 col-sm-9">
-      @Helper.OnlineRegAjaxButton("/OnlineReg/Login/", "Login", id: "loginbt", style: "btn-primary pull-right")
-      @if (Model.AllowAnonymous)
-      {
-        @Helper.OnlineRegAjaxButton("/OnlineReg/NoLogin", "Register without logging in", style: "btn-link")
-      }
-      <a href="/Account/ForgotPassword/" class="btn btn-link">Forgot Password?</a>
+      <div class="text-right">
+        @if (Model.AllowAnonymous)
+        {
+          @Helper.OnlineRegAjaxButton("/OnlineReg/NoLogin", "Register without logging in", style: "btn-link")
+        }
+        @Helper.OnlineRegAjaxButton("/OnlineReg/Login/", "Login", id: "loginbt", style: "btn-primary")
+      </div>
     </div>
+    <p class="text-center">
+      Need an account, or forgot your password?<br />
+      <a href="/Account/ForgotPassword/">Request a password</a>
+    </p>
   </div>
 </div>
