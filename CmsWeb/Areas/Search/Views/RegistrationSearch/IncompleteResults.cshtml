@@ -1,0 +1,34 @@
+﻿@using CmsData
+@using UtilityExtensions
+@model CmsWeb.Areas.Search.Models.IncompleteRegistrations
+<div id="results">
+    @Html.Partial("PagerTop", Model)
+    <div class="table-responsive">
+        <table id="resultsTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>@Model.SortLink("Date")</th>
+                    <th>@Model.SortLink("Organization")</th>
+                    <th>@Model.SortLink("Person")</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.ViewList())
+                {
+                    <tr>
+                        <td><a href="/OnlineReg/RegPeople/@r.DatumId" target="detail">@r.Stamp.FormatDateTm()</a></td>
+                      <td>
+                        <a href="/Org/@r.OrgId" target="detail">@r.OrgName</a>
+                      </td>
+                      <td>
+                        <a href="/Person2/@r.PeopleId" target="detail">@r.Name</a>
+                      </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @Html.Partial("PagerBottom", Model)
+    @Html.Hidden("totcnt", Model.Count().ToString("N0"))
+    @Html.Partial("PagerHidden", Model)
+</div>

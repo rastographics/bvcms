@@ -6,6 +6,7 @@ using System.Web;
 using CmsData;
 using CmsData.Finance;
 using CmsData.View;
+using CmsWeb.Areas.Manage.Models;
 using MoreLinq;
 using UtilityExtensions;
 
@@ -116,14 +117,20 @@ namespace CmsWeb.Models
                  where (t.Financeonly ?? false) == false || finance
                  select t;
             if (name != null)
-                _transactions = from t in _transactions
-                                where
-                                    (
-                                        (t.Last.StartsWith(last) || t.Last.StartsWith(name))
-                                        && (!hasfirst || t.First.StartsWith(first) || t.Last.StartsWith(name))
-                                    )
-                                    || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
-                                select t;
+                if (name == "0") 
+                    // special case, return no transactions, all we are interested in is the Senders on a Mission Trip
+                    _transactions = from t in _transactions
+                                    where t.OriginalId == nameid
+                                    select t;
+                else
+                    _transactions = from t in _transactions
+                                    where
+                                        (
+                                            (t.Last.StartsWith(last) || t.Last.StartsWith(name))
+                                            && (!hasfirst || t.First.StartsWith(first) || t.Last.StartsWith(name))
+                                        )
+                                        || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
+                                    select t;
             if (!HttpContext.Current.User.IsInRole("Finance"))
                 _transactions = _transactions.Where(tt => (tt.Financeonly ?? false) == false);
 
@@ -223,7 +230,7 @@ namespace CmsWeb.Models
             return q;
         }
 
-        private void CheckBatchDates(DateTime start, DateTime end)
+        private static void CheckBatchDates(DateTime start, DateTime end)
         {
             var gateway = DbUtil.Db.Gateway();
             if (!gateway.CanGetSettlementDates)
@@ -248,7 +255,6 @@ namespace CmsWeb.Models
 
             foreach (var batchType in batchTypes)
             {
-
                 // key it by transaction reference and payment type.
                 var unMatchedKeyedByReference = unMatchedBatchTransactions.Where(x => x.BatchType == batchType).ToDictionary(x => x.Reference, x => x);
 
@@ -260,11 +266,11 @@ namespace CmsWeb.Models
                                                    select transaction;
 
                 // next key the matching approved transactions that came from our transaction table by the transaction id (reference).
-                var approvedMatchingTransactionsKeyedByTransactionId = approvedMatchingTransactions.ToDictionary(x => x.TransactionId, x => x);
+                var distinctTransactionIds = approvedMatchingTransactions.Select(x => x.TransactionId).Distinct();
 
                 // finally let's get a list of all transactions that need to be inserted, which we don't already have.
                 var transactionsToInsert = from transaction in unMatchedKeyedByReference
-                                           where !approvedMatchingTransactionsKeyedByTransactionId.Keys.Contains(transaction.Key)
+                                           where !distinctTransactionIds.Contains(transaction.Key)
                                            select transaction.Value;
 
                 var notbefore = DateTime.Parse("6/1/12"); // the date when Sage payments began in BVCMS (?)
@@ -333,9 +339,6 @@ namespace CmsWeb.Models
                 }
             }
 
-            
-
-
 
             // finally we need to mark these batches as completed if there are any.
             foreach (var batch in unMatchedBatchTransactions.DistinctBy(x => x.BatchReference))
@@ -353,7 +356,7 @@ namespace CmsWeb.Models
                 else
                     checkedBatch.CheckedX = DateTime.Now;
             }
-            
+
             DbUtil.Db.SubmitChanges();
         }
 
@@ -545,8 +548,8 @@ namespace CmsWeb.Models
         {
             return from gs in DbUtil.Db.GoerSenderAmounts
                    where gs.SupporterId == SenderId
-                   where gs.SupporterId != gs.GoerId
-                   let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
+                   where gs.SupporterId != (gs.GoerId ?? 0)
+                   let gp = DbUtil.Db.People.SingleOrDefault(ss => ss.PeopleId == gs.GoerId)
                    let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
                    let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending

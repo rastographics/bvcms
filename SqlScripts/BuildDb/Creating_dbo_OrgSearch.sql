@@ -33,23 +33,17 @@ RETURN
 	filterLeaders2 AS (
 		SELECT o2.OrganizationId oid, o2.ParentOrgId
 		FROM dbo.Organizations o2
-		WHERE o2.OrganizationId IN (
-			SELECT oid FROM filterLeaders1 o1
-			WHERE o1.ParentOrgId = o2.OrganizationId
-		)
+		WHERE o2.ParentOrgId IN (SELECT oid FROM filterLeaders1)
 	),
 	filterLeaders3 AS (
-		SELECT o3.OrganizationId oid
+		SELECT o3.OrganizationId oid, o3.ParentOrgId
 		FROM dbo.Organizations o3
-		WHERE o3.OrganizationId IN (
-			SELECT oid FROM filterLeaders2 o2
-			WHERE o2.ParentOrgId = o3.OrganizationId
-		)
+		WHERE o3.ParentOrgId IN (SELECT oid FROM filterLeaders2)
 	),
 	filterLeaders AS (
-		SELECT oid FROM filterLeaders1
-		UNION SELECT oid FROM filterLeaders2
-		UNION SELECT oid FROM filterLeaders3
+		SELECT oid, ParentOrgId FROM filterLeaders1
+		UNION SELECT oid, ParentOrgId FROM filterLeaders2
+		UNION SELECT oid, ParentOrgId FROM filterLeaders3
 	),
 	filterProg AS (
 		SELECT o.OrganizationId oid

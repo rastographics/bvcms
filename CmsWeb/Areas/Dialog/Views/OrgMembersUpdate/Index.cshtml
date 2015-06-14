@@ -5,7 +5,7 @@
   var managetransactions = User.IsInRole("ManageTransactions");
   var admin = User.IsInRole("Admin");
   var manager = User.IsInRole("ManageGroups");
-  var missiongiving = User.IsInRole("MissionGiving");
+  var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
 }
 <div class="modal-dialog">
     <div class="modal-content">

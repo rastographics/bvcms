@@ -11,7 +11,8 @@
         theme: 'custom',
         buttons: ['bold', 'italic', 'underline', 'fontSize', 'fontFamily', 'color', 'removeFormat', 'sep', 'formatBlock', 'align', 'insertOrderedList', 'insertUnorderedList', 'outdent', 'indent', 'sep', 'createLink', 'specialLink', 'sep', 'insertImage', 'uploadFile', 'table', 'undo', 'redo', 'html', 'fullscreen'],
         imageUploadURL: '/Account/FroalaUpload',
-        fileUploadURL: '/Account/FroalaUpload'
+        fileUploadURL: '/Account/FroalaUpload',
+        maxFileSize: (1024 * 1024 * 15)
     });
 
     $(".Send").click(function () {

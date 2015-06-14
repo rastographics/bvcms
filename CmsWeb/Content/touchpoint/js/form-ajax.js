@@ -249,7 +249,7 @@
             return this.optional(element) || (validDateTimeIso);
         } else {
             var stamp = value.split(" ");
-            var validDate = !/Invalid|NaN/.test(new Date(stamp[0]).toString());
+            var validDate = !/Invalid|NaN/.test(moment(stamp[0], $.cultureDateFormat));
             var validTime = /^(([0-1]?[0-9])|([2][0-3])):([0-5]?[0-9])(:([0-5]?[0-9]))?$/i.test(stamp[1]);
             return this.optional(element) || (validDate && validTime);
         }

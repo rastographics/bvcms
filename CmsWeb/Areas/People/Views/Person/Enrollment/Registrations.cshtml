@@ -1,161 +1,169 @@
 ﻿@using CmsData
+@using CmsWeb.Areas.Dialog.Models
 @using UtilityExtensions
 @model CmsWeb.Areas.People.Models.RegistrationsModel
 @{
-    var goerlist = Model.GoerList();
+  var goerlist = Model.GoerList();
 }
 <form class="ajax" method="post">
-    <h3>Registration History</h3>
-    @if (goerlist.Count > 0)
-    {
-        <div class="row">
-            <div class="col-sm-6">
-                <h4>Mission Trip Funding</h4>
-            </div>
-            <div class="col-sm-6">
-                @FormActions()
-            </div>
-        </div>
-        <table class="table table-striped">
-            <tr>
-                <th>Trip</th>
-                <th class="text-right">Cost</th>
-                <th class="text-right">Paid</th>
-                <th class="text-right">Balance</th>
-                <th style="width: 50px;">Actions</th>
-            </tr>
-            @foreach (var g in goerlist)
+  <h3>Registration History</h3>
+  @if (goerlist.Count > 0)
+  {
+    <div class="row">
+      <div class="col-sm-6">
+        <h4>Mission Trip Funding</h4>
+      </div>
+      <div class="col-sm-6">
+        @FormActions()
+      </div>
+    </div>
+    <table class="table table-striped">
+      <tr>
+        <th>Trip</th>
+        <th class="text-right">Cost</th>
+        <th class="text-right">Paid</th>
+        <th class="text-right">Balance</th>
+        <th style="width: 50px;">Actions</th>
+      </tr>
+      @foreach (var g in goerlist)
+      {
+        var balance = g.Cost - g.Paid;
+        <tr>
+          <td>
+            @if (User.IsInRole("Access"))
             {
-                <tr>
-                    <td>
-                        @if (User.IsInRole("Access"))
-                        {
-                            <a href="@Util2.Org/@g.Id">@g.Trip</a>
-                        }
-                        else
-                        {
-                            <span>@g.Trip</span>
-                        }
-                    </td>
-                    <td class="text-right">@g.Cost.ToString("C")</td>
-                    <td class="text-right">@g.Paid.ToString("C")</td>
-                    <td class="text-right">@((g.Cost - g.Paid).ToString("C"))</td>
-                    <td style="width: 50px;">
-                        @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
-                        {
-                            <a href="/MissionTripEmail2/@g.Id/@Model.PeopleId" class="btn btn-default btn-sm"><i class="fa fa-envelope-o"></i> Email Supporters</a>
-                        }
-                    </td>
-                </tr>
+              <a href="@Util2.Org/@g.Id">@g.Trip</a>
             }
-        </table>
+            else
+            {
+              <span>@g.Trip</span>
+            }
+          </td>
+          <td class="text-right">@g.Cost.ToString("C")</td>
+          <td class="text-right">@g.Paid.ToString("C")</td>
+          <td class="text-right">
+            @if (balance > 0)
+            {
+              <a href="@OrgMemberModel.GetPayLink(g.Id, Model.PeopleId)" target="_blank">make payment</a>
+            }
+            @balance.ToString("C")
+          </td>
+          <td style="width: 50px;">
+            @if (Util.UserPeopleId == Model.PeopleId || User.IsInRole("Admin"))
+            {
+              <a href="/MissionTripEmail2/@g.Id/@Model.PeopleId" class="btn btn-default btn-sm"><i class="fa fa-envelope-o"></i> Email Supporters</a>
+            }
+          </td>
+        </tr>
+      }
+    </table>
+    <h4>General</h4>
+  }
+  else
+  {
+    <div class="row">
+      <div class="col-sm-6">
         <h4>General</h4>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-sm-6">
-                <h4>General</h4>
-            </div>
-            <div class="col-sm-6">
-                @FormActions()
-            </div>
-        </div>
-    }
-    <div class="well">
-        <div class="row">
-            <div class="col-md-5 col-lg-5">
-                @Html.DisplayFor(m => m.Mname)
-            </div>
-            <div class="col-md-5 col-lg-5">
-                @Html.DisplayFor(m => m.Fname)
-            </div>
-            <div class="col-md-2 col-lg-2">
-                @Html.DisplayFor(m => m.ShirtSize)
-            </div>
-            <div class="col-md-4 col-lg-2">
-                @Html.DisplayFor(m => m.CustodyIssue)
-            </div>
-            <div class="col-md-4 col-lg-2">
-                @Html.DisplayFor(m => m.OkTransport)
-            </div>
-            <div class="col-md-4 col-lg-2">
-                @Html.DisplayFor(m => m.Coaching)
-            </div>
-            <div class="col-md-4 col-lg-2">
-                @Html.DisplayFor(m => m.Member)
-            </div>
-            <div class="col-md-8 col-lg-4">
-                @Html.DisplayFor(m => m.ActiveInAnotherChurch)
-            </div>
-        </div>
+      </div>
+      <div class="col-sm-6">
+        @FormActions()
+      </div>
     </div>
-    <h4>Emergency Contact</h4>
-    <div class="well">
-        <div class="row">
-            <div class="col-md-6 col-lg-6">
-                @Html.DisplayFor(m => m.Emcontact)
-            </div>
-            <div class="col-md-6 col-lg-6">
-                @Html.DisplayFor(m => m.Emphone)
-            </div>
-        </div>
+  }
+  <div class="well">
+    <div class="row">
+      <div class="col-md-5 col-lg-5">
+        @Html.DisplayFor(m => m.Mname)
+      </div>
+      <div class="col-md-5 col-lg-5">
+        @Html.DisplayFor(m => m.Fname)
+      </div>
+      <div class="col-md-2 col-lg-2">
+        @Html.DisplayFor(m => m.ShirtSize)
+      </div>
+      <div class="col-md-4 col-lg-2">
+        @Html.DisplayFor(m => m.CustodyIssue)
+      </div>
+      <div class="col-md-4 col-lg-2">
+        @Html.DisplayFor(m => m.OkTransport)
+      </div>
+      <div class="col-md-4 col-lg-2">
+        @Html.DisplayFor(m => m.Coaching)
+      </div>
+      <div class="col-md-4 col-lg-2">
+        @Html.DisplayFor(m => m.Member)
+      </div>
+      <div class="col-md-8 col-lg-4">
+        @Html.DisplayFor(m => m.ActiveInAnotherChurch)
+      </div>
     </div>
-    <h4>Medical</h4>
-    <div class="well">
-        <div class="row">
-            <div class="col-md-6 col-lg-3">
-                @Html.DisplayFor(m => m.Doctor)
-            </div>
-            <div class="col-md-6 col-lg-3">
-                @Html.DisplayFor(m => m.Docphone)
-            </div>
-            <div class="col-md-6 col-lg-3">
-                @Html.DisplayFor(m => m.Insurance)
-            </div>
-            <div class="col-md-6 col-lg-3">
-                @Html.DisplayFor(m => m.Policy)
-            </div>
-            <div class="col-md-3 col-lg-3">
-                @Html.DisplayFor(m => m.Tylenol)
-            </div>
-            <div class="col-md-3 col-lg-3">
-                @Html.DisplayFor(m => m.Advil)
-            </div>
-            <div class="col-md-3 col-lg-3">
-                @Html.DisplayFor(m => m.Robitussin)
-            </div>
-            <div class="col-md-3 col-lg-3">
-                @Html.DisplayFor(m => m.Maalox)
-            </div>
-            <div class="col-md-12 col-lg-12">
-                @Html.DisplayFor(m => m.MedicalDescription)
-            </div>
-        </div>
+  </div>
+  <h4>Emergency Contact</h4>
+  <div class="well">
+    <div class="row">
+      <div class="col-md-6 col-lg-6">
+        @Html.DisplayFor(m => m.Emcontact)
+      </div>
+      <div class="col-md-6 col-lg-6">
+        @Html.DisplayFor(m => m.Emphone)
+      </div>
     </div>
-    <h4>Registration Log</h4>
-    @Html.TextAreaFor(m => m.Comments, new { @class = "form-control", disabled = "disabled", style = "cursor: text;", rows = 10 })
-    <br/>
-    @FormActions()
-    @FormActions(true)
-    @Html.HiddenFor2(m => m.PeopleId)
-    <br/><br/>
+  </div>
+  <h4>Medical</h4>
+  <div class="well">
+    <div class="row">
+      <div class="col-md-6 col-lg-3">
+        @Html.DisplayFor(m => m.Doctor)
+      </div>
+      <div class="col-md-6 col-lg-3">
+        @Html.DisplayFor(m => m.Docphone)
+      </div>
+      <div class="col-md-6 col-lg-3">
+        @Html.DisplayFor(m => m.Insurance)
+      </div>
+      <div class="col-md-6 col-lg-3">
+        @Html.DisplayFor(m => m.Policy)
+      </div>
+      <div class="col-md-3 col-lg-3">
+        @Html.DisplayFor(m => m.Tylenol)
+      </div>
+      <div class="col-md-3 col-lg-3">
+        @Html.DisplayFor(m => m.Advil)
+      </div>
+      <div class="col-md-3 col-lg-3">
+        @Html.DisplayFor(m => m.Robitussin)
+      </div>
+      <div class="col-md-3 col-lg-3">
+        @Html.DisplayFor(m => m.Maalox)
+      </div>
+      <div class="col-md-12 col-lg-12">
+        @Html.DisplayFor(m => m.MedicalDescription)
+      </div>
+    </div>
+  </div>
+  <h4>Registration Log</h4>
+  @Html.TextAreaFor(m => m.Comments, new { @class = "form-control", disabled = "disabled", style = "cursor: text;", rows = 10 })
+  <br />
+  @FormActions()
+  @FormActions(true)
+  @Html.HiddenFor2(m => m.PeopleId)
+  <br /><br />
 </form>
 @helper FormActions(bool xs = false)
 {
-    if (User.IsInRole("Edit"))
+  if (User.IsInRole("Edit"))
+  {
+    if (xs)
     {
-        if (xs)
-        {
-            <div class="visible-xs-block">
-                <a href="/Person2/RegistrationsEdit" class="pull-right btn btn-default btn-block ajax"><i class="fa fa-pencil"></i> Edit</a>
-            </div>
-        }
-        else
-        {
-            <div class="pull-right hidden-xs">
-                <a href="/Person2/RegistrationsEdit" class="pull-right btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
-            </div>
-        }
+      <div class="visible-xs-block">
+        <a href="/Person2/RegistrationsEdit" class="pull-right btn btn-default btn-block ajax"><i class="fa fa-pencil"></i> Edit</a>
+      </div>
     }
+    else
+    {
+      <div class="pull-right hidden-xs">
+        <a href="/Person2/RegistrationsEdit" class="pull-right btn btn-default ajax"><i class="fa fa-pencil"></i> Edit</a>
+      </div>
+    }
+  }
 }

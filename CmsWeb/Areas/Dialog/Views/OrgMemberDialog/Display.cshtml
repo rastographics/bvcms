@@ -6,7 +6,7 @@
   var admin = User.IsInRole("Admin");
   var manager = User.IsInRole("ManageGroups");
   var edit = User.IsInRole("Edit");
-  var missiongiving = User.IsInRole("MissionGiving");
+  var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
   var member = Model.Group == "Member";
   var sender = Model.Group == "Inactive" && Model.Organization.IsMissionTrip == true;
 }

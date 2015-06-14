@@ -1,48 +1,54 @@
 ﻿@model CmsWeb.Models.ExtraValues.Value
 @if (Model.UserCanView(DbUtil.Db))
 {
-    <tr>
-        @if (Model.Type == "Header")
-        {
-            <td colspan="3"><h4>@Html.Raw(Model.Name)</h4></td>
-        }
-        else if (Model.Type == "Link")
-        {
-            <td style="width: 450px;"><span class="pad-left">@Model.DisplayName</span></td>
-            <td>@Model.HyperLink()</td>
-            <td style="width: 50px;"></td>
-        }
-        else
-        {
-            <td style="width: 450px;"><span class="pad-left">@Model.DisplayName</span></td>
-            if (Model.UserCanEdit())
-            {
-                var dv = Model.DataValue;
-                var ds = Model.DataSource;
-                <td>
-                    <a href="#" data-pk="@Model.Id"
-                       data-name="@Model.DataName"
-                       class="@Model.EditableClass" 
-                       style="white-space: pre-line;"
-                       data-url="@Model.EditUrl"
-                       @if (dv.HasValue()) { <text> data-value="@dv" </text>    }
-                       @if (ds.HasValue()) {  <text> data-source="@ds" </text>   }>@Html.Raw(Model)</a>
-                </td>
-            }
-            else
-            {
-                <td>@Html.Raw(Model)</td>
-            }
-            if (!Model.Standard && Model.UserCanEdit())
-            {
-                <td style ="width: 50px;">
-                    <a href="@Model.DeleteUrl" class="ajax btn btn-danger btn-sm" data-confirm="Are you sure?" data-confirm-type="warning" data-confirm-btn-class="btn-danger" data-confirm-btn-text="Yes, delete!"><i class="fa fa-trash"></i> Delete</a>
-                </td>
-            }
-            else
-            {
-                <td style="width: 50px;"></td>
-            }
-        }
-    </tr>
+  <tr>
+    @if (Model.Type == "Header")
+    {
+      <td colspan="3"><h4>@Html.Raw(Model.Name)</h4></td>
+    }
+    else if (Model.Type == "Link")
+    {
+      <td style="width: 450px;"><span class="pad-left">@Model.DisplayName</span></td>
+      <td>@Model.HyperLink()</td>
+      <td style="width: 50px;"></td>
+    }
+    else
+    {
+      <td style="width: 450px;"><span class="pad-left">@Model.DisplayName</span></td>
+      if (Model.UserCanEdit())
+      {
+        var dv = Model.DataValue;
+        var ds = Model.DataSource;
+        <td>
+          <a href="#" data-pk="@Model.Id"
+             data-name="@Model.DataName"
+             class="@Model.EditableClass"
+             style="white-space: pre-line;"
+             data-url="@Model.EditUrl"
+             @if (Model.Type == "Date") { <text> data-showbuttons="false" data-savenochange="true" </text>  }
+             @if (dv.HasValue()) { <text> data-value="@dv" </text>  }
+             @if (ds.HasValue()) { <text> data-source="@ds" </text>  }>@Html.Raw(Model)</a>
+          </td>
+      }
+      else
+      {
+        <td>@Html.Raw(Model)</td>
+      }
+      if (Model.UserCanEdit())
+      {
+        var verb = Model.Standard ? "Clear" : "Delete";
+        <td style="width: 50px;">
+          <a href="@Model.DeleteUrl" class="ajax btn btn-danger btn-sm"
+             data-confirm="Are you sure?" data-confirm-type="warning" data-confirm-btn-class="btn-danger" data-confirm-btn-text="Yes, @(verb)!">
+            <i class="fa fa-trash"></i>
+            @(Model.Standard ? "Clear" : "Delete")
+          </a>
+        </td>
+      }
+      else
+      {
+        <td style="width: 50px;"></td>
+      }
+    }
+  </tr>
 }

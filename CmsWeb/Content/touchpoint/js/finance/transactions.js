@@ -1,8 +1,8 @@
 ﻿$(document).ready(function () {
 
     function initializePopovers() {
-        $('[data-toggle="popover"]').popover({html: true});
-        $('[data-toggle="popover"]').click(function(ev) {
+        $('[data-toggle="popover"]').popover({ html: true });
+        $('[data-toggle="popover"]').click(function (ev) {
             ev.preventDefault();
         });
     }
@@ -143,6 +143,63 @@
         });
         return false;
     });
+    $("body").on("click", 'a.deleteadj', function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        var f = $('#results').closest('form');
+        var q = f.serialize();
+
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete the " +
+                "adjustment!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post(a.attr("href"), q, function (ret) {
+                swal({
+                    title: "Adjustment Deleted!",
+                    type: "success"
+                },
+                function () {
+                    $("#results").html(ret);
+                    initializePopovers();
+                });
+            });
+        });
+        return false;
+    });
+    $("body").on("click", 'a.deletegsa', function (ev) {
+        ev.preventDefault();
+        var a = $(this);
+        var f = $('#results').closest('form');
+        var q = f.serialize();
+
+        swal({
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete the goer sender amount!",
+            closeOnConfirm: false
+        },
+        function () {
+            $.post(a.attr("href"), q, function (ret) {
+                swal({
+                    title: "Goer Sender Amount Deleted!",
+                    type: "success"
+                },
+                function () {
+                    $("#goersupporters").html(ret);
+                    initializePopovers();
+                });
+            });
+        });
+        return false;
+    });
 
     $("body").on("click", 'a.credit', function (ev) {
         ev.preventDefault();
@@ -156,7 +213,7 @@
         $("#credit-amt").val('').focus();
     });
 
-    $("#post-credit").click(function(ev) {
+    $("#post-credit").click(function (ev) {
         ev.preventDefault();
         var f = $('#results').closest('form');
         var q = f.serialize();
@@ -193,6 +250,23 @@
             initializePopovers();
         });
         return false;
+    });
+    $("body").on("click", 'a.assigngoer', function (ev) {
+        ev.preventDefault();
+        var href = this.href;
+        var f = $('#results').closest('form');
+        var q = f.serialize();
+
+        bootbox.prompt("Enter a Goer's PeopleId", function (result) {
+            if (result !== null) {
+                href += '/' + result;
+                $.post(href, q, function (ret) {
+                    $('#goersupporters').html(ret);
+                    initializePopovers();
+                    swal("Assigned!", "GoerId now = " + result, "success");
+                });
+            }
+        });
     });
 
     $("body").on("click", 'a.adjust', function (ev) {

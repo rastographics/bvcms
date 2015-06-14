@@ -68,10 +68,13 @@
   	  left join dbo.TransactionSummary ts on ts.OrganizationId = {orgid} and ts.PeopleId = p.PeopleId
     </join>
     <join name="bfcm">
-	    left join dbo.OrganizationMembers om on om.PeopleId = p.PeopleId AND om.OrganizationId = p.BibleFellowshipClassId
+	    left join dbo.OrganizationMembers bfcm on bfcm.PeopleId = p.PeopleId AND bfcm.OrganizationId = p.BibleFellowshipClassId
     </join>
     <join name="bfc">
       left join dbo.Organizations bfc on bfc.OrganizationId = p.BibleFellowshipClassId
+    </join>
+    <join name="lao">
+      LEFT JOIN dbo.LastAttendOrg({orgid}) lao ON lao.PeopleId = p.PeopleId
     </join>
   </Joins>
   <Columns>
@@ -200,9 +203,10 @@
     <column name="MotherEmail" join="mo"> mo.emailaddress </column>
     <column name="MotherCell" join="mo"> dbo.fmtphone(mo.cellphone) </column>
     <column name="MainClass" join="bfc"> bfc.OrganizationName </column>
-    <column name="AttendPct" join="bfcm"> om.AttendPct </column>
-    <column name="AttendStr" join="bfcm"> om.AttendStr </column>
-    <column name="LastAttendedMF" join="bfcm"> om.LastAttended </column>
+    <column name="AttendPct" join="bfcm"> bfcm.AttendPct </column>
+    <column name="AttendStr" join="bfcm"> bfcm.AttendStr </column>
+    <column name="LastAttendedMF" join="bfcm"> bfcm.LastAttended </column>
+    <column name="LastAttendedCO" join="lao"> lao.LastAttended </column>
   </Columns>
   <SpecialColumns>
     <column name="StatusFlag">

@@ -1,5 +1,6 @@
 using System.Web.Mvc;
 using CmsWeb.Areas.People.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
@@ -60,6 +61,22 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new ContactModel(cid);
             return View(m);
+        }
+        [HttpGet]
+        public ActionResult ConvertContacteesToQuery(int cid)
+        {
+            Response.NoCache();
+            var m = new ContacteesModel(cid);
+            var gid = m.ConvertToQuery();
+            return Redirect("/Query/{0}".Fmt(gid));
+        }
+        [HttpGet]
+        public ActionResult ConvertContactorsToQuery(int cid)
+        {
+            Response.NoCache();
+            var m = new ContactorsModel(cid);
+            var gid = m.ConvertToQuery();
+            return Redirect("/Query/{0}".Fmt(gid));
         }
         [HttpPost]
         public ActionResult ContactUpdate(int cid, ContactModel c)

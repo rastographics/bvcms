@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData;
+using CmsData.View;
 using CmsWeb.Areas.Search.Models;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -33,29 +34,14 @@ namespace CmsWeb.Models
             return Result(SenderGifts(orgids));
         }
 
-        public static IEnumerable<MissionTripSendInfo> SenderGifts(string orgids)
+        public static IEnumerable<SenderGift> SenderGifts(string orgids)
         {
-            var q = from sa in DbUtil.Db.GoerSenderAmounts
-                join o in DbUtil.Db.Organizations on sa.OrgId equals o.OrganizationId
-                join i in DbUtil.Db.SplitInts(orgids) on o.OrganizationId equals i.ValueX
-                join s in DbUtil.Db.People on sa.SupporterId equals s.PeopleId
-                join g in DbUtil.Db.People on sa.GoerId equals g.PeopleId
-                select new MissionTripSendInfo
-                {
-                    OrgId = o.OrganizationId,
-                    Trip = o.OrganizationName,
-                    SenderId = sa.SupporterId,
-                    Sender = s.Name2,
-                    GoerId = sa.GoerId,
-                    Goer = g.Name2,
-                    DateGiven = sa.Created,
-                    Amt = sa.Amount,
-                    NoticeSent = sa.NoNoticeToGoer == true ? "not sent" : "sent"
-                };
+            var q = from sg in DbUtil.Db.SenderGifts(orgids)
+                select sg;
             return q;
         }
 
-        private static EpplusResult Result(IEnumerable<MissionTripSendInfo> q)
+        private static EpplusResult Result(IEnumerable<SenderGift> q)
         {
             var list = q.ToList();
             var count = list.Count;

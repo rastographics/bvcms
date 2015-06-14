@@ -35,7 +35,7 @@ namespace CmsData.API
                 if (type.HasValue)
                     c.ContributionTypeId = type.Value;
                 if (checkno.HasValue())
-                    c.CheckNo = checkno;
+                    c.CheckNo = (checkno ?? "").Trim().Truncate(20);
                 Db.SubmitChanges();
                 return @"<PostContribution status=""ok"" id=""{0}"" />".Fmt(c.ContributionId);
             }

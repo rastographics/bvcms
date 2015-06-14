@@ -465,6 +465,7 @@
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlModel.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\CheckinControlResult.cs" />
     <Compile Include="Areas\Reports\Models\Attendance\WeeklyAttendanceModel.cs" />
+    <Compile Include="Areas\Search\Models\RegistrationSearch\IncompleteRegistrations.cs" />
     <Compile Include="Areas\Reports\Models\Other\WeeklyDecisionsModel.cs" />
     <Compile Include="Areas\Reports\Models\Enrollment\EnrollmentControlModel.cs" />
     <Compile Include="Areas\Manage\Controllers\CheckinLabelsController.cs" />
@@ -1454,6 +1455,8 @@
     <Content Include="Areas\Reports\Views\Reports\Application.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\FindTagPeople.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\DisplayAttendanceNotices.cshtml" />
+    <Content Include="Areas\Search\Views\RegistrationSearch\IncompleteRegistrations.cshtml" />
+    <Content Include="Areas\Search\Views\RegistrationSearch\IncompleteResults.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Dialogs.cshtml" />
@@ -3520,16 +3523,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
-          <AutoAssignPort>False</AutoAssignPort>
-          <DevelopmentServerPort>8888</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:8888</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>

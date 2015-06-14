@@ -191,6 +191,36 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ManageTransactions,Finance")]
+        public ActionResult DeleteManual(int id, TransactionsModel m)
+        {
+            DbUtil.Db.ExecuteCommand("UPDATE dbo.OrganizationMembers SET TranId = NULL WHERE TranId = {0}", id);
+            var t = DbUtil.Db.Transactions.Single(tt => tt.Id == id);
+            DbUtil.Db.Transactions.DeleteOnSubmit(t);
+            DbUtil.Db.SubmitChanges();
+            return View("List", m);
+        }
+        [HttpPost]
+        [Authorize(Roles = "ManageTransactions,Finance")]
+        public ActionResult DeleteGoerSenderAmount(int id, TransactionsModel m)
+        {
+            var gsa = DbUtil.Db.GoerSenderAmounts.Single(tt => tt.Id == id);
+            DbUtil.Db.GoerSenderAmounts.DeleteOnSubmit(gsa);
+            DbUtil.Db.SubmitChanges();
+            return View("GoerSupporters", m);
+        }
+        [Authorize(Roles = "ManageTransactions,Finance,Developer")]
+        [HttpPost, Route("AssignGoer/{id:int}/{gid:int}")]
+        public ActionResult AssignGoer(int id, int? gid, TransactionsModel m)
+        {
+            if (gid == 0)
+                gid = null;
+            var gsa = DbUtil.Db.GoerSenderAmounts.Single(tt => tt.Id == id);
+            gsa.GoerId = gid;
+            DbUtil.Db.SubmitChanges();
+            return View("GoerSupporters", m);
+        }
+        [HttpPost]
+        [Authorize(Roles = "ManageTransactions,Finance")]
         public ActionResult Adjust(int id, decimal amt, string desc, TransactionsModel m)
         {
             var qq = from tt in DbUtil.Db.Transactions

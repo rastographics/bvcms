@@ -29,6 +29,8 @@ namespace CmsData
         CheckInByActivity,
         ChristAsSavior,
         CommitmentForMeetingId,
+        ContactMaker,
+        ContactRecipient,
         ContributionOptionsId,
         ContributionsStatement,
         ContributionAmount2,

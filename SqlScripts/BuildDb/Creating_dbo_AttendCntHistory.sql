@@ -22,7 +22,7 @@ RETURN
 			AND  AttendanceFlag = 1
 			AND a.PeopleId = p.PeopleId
 			AND a.MeetingDate >= @start
-			AND a.MeetingDate < DATEADD(dd, 1, @end)
+			AND a.MeetingDate < @end
 			AND (@sched = 0
 				OR (
 					CAST(a.MeetingDate AS TIME) = CAST(CAST((@sched % 10000) / 100 AS VARCHAR) + ':' + CAST((@sched % 10000) % 100 AS VARCHAR) AS TIME) 

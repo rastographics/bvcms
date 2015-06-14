@@ -18,7 +18,7 @@
                                 '<button type="button" class="btn btn-default btn-sm editable-cancel">' +
                                     '<i class="fa fa-fw fa-times"></i>' +
                                 '</button>';
-    
+
     $.InitFunctions.ReloadPeople = function () {
         $.getTable();
     };
@@ -138,7 +138,7 @@
             format: 'mm/dd/yyyy',
             viewformat: 'mm/dd/yyyy',
             datepicker: {
-                weekStart: 1
+                weekStart: 0
             },
             params: function (params) {
                 var data = {};
@@ -194,7 +194,8 @@
             theme: 'custom',
             buttons: editorButtons,
             imageUploadURL: '/Account/FroalaUpload',
-            fileUploadURL: '/Account/FroalaUpload'
+            fileUploadURL: '/Account/FroalaUpload',
+            maxFileSize: (1024 * 1024 * 15)
         });
         $('#editor').froalaEditable('setHTML', $a.html());
         $('#editor-modal').modal('show');
@@ -212,7 +213,7 @@
         return false;
     };
 
-    $.fmtTable(); 
+    $.fmtTable();
 
     $('#ProgramId').change(function () {
         $.post('/OrgSearch/DivisionIds/' + $(this).val(), null, function (ret) {
@@ -343,7 +344,7 @@
                 });
             });
         });
-        
+
         return true;
     });
 
@@ -468,7 +469,7 @@
     $('#meetings-daterange-modal').on('hidden.bs.modal', function() {
         $("#attdetail2").off("click");
     });
-    
+
     $(".MonthReport").click(function(ev) {
         ev.preventDefault();
         $('#meetings-month-action').val(this.href);
@@ -615,9 +616,9 @@
         $('#enrollment-modal').modal('hide');
         var url = "/Reports/EnrollmentControl";
         if ($('#enrcontrolfiltertag').is(":checked"))
-            url = url.appendQuery("usecurrenttag=true");
+            url = $.appendQuery(url, "usecurrenttag=true");
         if ($('#enrcontrolexcel').is(":checked"))
-            url = url.appendQuery("excel=true");
+            url = $.appendQuery(url, "excel=true");
         $("#orgsearchform").attr("action", url);
         $("#orgsearchform").submit();
         return false;
@@ -629,6 +630,15 @@
         $("#orgsearchform").submit();
         return true;
     });
+    $.appendQuery = function (s, q) {
+        if (s && s.length > 0)
+            if (s.indexOf("&") != -1 || s.indexOf("?") != -1)
+                return s + '&' + q;
+            else
+                return s + '?' + q;
+        return q;
+    };
 });
+
 
 

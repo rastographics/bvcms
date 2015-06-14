@@ -34,6 +34,14 @@ namespace CmsData.View
 		
 		private string _Last;
 		
+		private int? _PeopleId1;
+		
+		private int? _PeopleId2;
+		
+		private int? _PeopleId3;
+		
+		private int? _PeopleId4;
+		
 		private int? _Cnt;
 		
 		private bool? _Mobile;
@@ -205,6 +213,74 @@ namespace CmsData.View
 			{
 				if (this._Last != value)
 					this._Last = value;
+			}
+
+		}
+
+		
+		[Column(Name="PeopleId1", Storage="_PeopleId1", DbType="int")]
+		public int? PeopleId1
+		{
+			get
+			{
+				return this._PeopleId1;
+			}
+
+			set
+			{
+				if (this._PeopleId1 != value)
+					this._PeopleId1 = value;
+			}
+
+		}
+
+		
+		[Column(Name="PeopleId2", Storage="_PeopleId2", DbType="int")]
+		public int? PeopleId2
+		{
+			get
+			{
+				return this._PeopleId2;
+			}
+
+			set
+			{
+				if (this._PeopleId2 != value)
+					this._PeopleId2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="PeopleId3", Storage="_PeopleId3", DbType="int")]
+		public int? PeopleId3
+		{
+			get
+			{
+				return this._PeopleId3;
+			}
+
+			set
+			{
+				if (this._PeopleId3 != value)
+					this._PeopleId3 = value;
+			}
+
+		}
+
+		
+		[Column(Name="PeopleId4", Storage="_PeopleId4", DbType="int")]
+		public int? PeopleId4
+		{
+			get
+			{
+				return this._PeopleId4;
+			}
+
+			set
+			{
+				if (this._PeopleId4 != value)
+					this._PeopleId4 = value;
 			}
 
 		}

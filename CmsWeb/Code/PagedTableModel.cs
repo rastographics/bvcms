@@ -25,7 +25,7 @@ namespace CmsWeb.Models
             AjaxPager = useAjax;
         }
         private int? count;
-        public int Count()
+        public virtual int Count()
         {
             if (!count.HasValue)
                 count = ModelList().Count();

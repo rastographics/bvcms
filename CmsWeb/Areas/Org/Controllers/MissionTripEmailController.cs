@@ -13,7 +13,8 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpGet, Route("MissionTripEmail2/{oid}/{pid}")]
         public ActionResult Index(int oid, int pid)
         {
-            if (Util.UserPeopleId != pid && !User.IsInRole("MissionGiving"))
+            var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
+            if (Util.UserPeopleId != pid && !missiongiving)
                 return Content("not authorized");
             DbUtil.LogActivity("MissionTripEmail {0}".Fmt(pid));
             var m = new MissionTripEmailer {PeopleId = pid, OrgId = oid};
@@ -23,7 +24,8 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpGet, Route("MissionTripEmail2/EmailBody/{oid}/{pid}")]
         public ActionResult EmailBody(int oid, int pid)
         {
-            if (Util.UserPeopleId != pid && !User.IsInRole("MissionGiving"))
+            var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
+            if (Util.UserPeopleId != pid && !missiongiving)
                 return Content("not authorized");
 
             var m = new MissionTripEmailer { PeopleId = pid, OrgId = oid };

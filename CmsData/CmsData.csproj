@@ -475,6 +475,7 @@
     <Compile Include="Generated\Functions\GuestList.cs" />
     <Compile Include="Generated\Functions\GuestList2.cs" />
     <Compile Include="Generated\Functions\HasIncompleteRegistration.cs" />
+    <Compile Include="Generated\Functions\LastAttendOrg.cs" />
     <Compile Include="Generated\Functions\OrgMember.cs" />
     <Compile Include="Generated\Functions\OrgMemberInfo.cs" />
     <Compile Include="Generated\Functions\OrgMemberQuestion.cs" />
@@ -491,9 +492,12 @@
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\PotentialSubstitute.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCountDesc.cs" />
+    <Compile Include="Generated\Functions\RecentIncompleteRegistration.cs" />
+    <Compile Include="Generated\Functions\RecentIncompleteRegistrations2.cs" />
     <Compile Include="Generated\Functions\RollList.cs" />
     <Compile Include="Generated\Functions\RollListHighlight.cs" />
     <Compile Include="Generated\Functions\SearchDivision.cs" />
+    <Compile Include="Generated\Functions\SenderGift.cs" />
     <Compile Include="Generated\Functions\VisitsAbsent.cs" />
     <Compile Include="Generated\Functions\VolunteerCalendar.cs" />
     <Compile Include="Generated\LongRunningOp.cs" />

@@ -72,6 +72,7 @@
         var q = f.serialize();
         $.post("/OrgGroups/Filter", q, function (ret) {
             $('#members > tbody').html(ret).ready($.fmtTable);
+            $("#totalcount").text($("#rowcount").val());
         });
         return false;
     }

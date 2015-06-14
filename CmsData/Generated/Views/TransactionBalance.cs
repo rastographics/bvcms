@@ -32,6 +32,8 @@ namespace CmsData.View
 		
 		private bool? _CanCredit;
 		
+		private bool? _IsAdjustment;
+		
 		
 		public TransactionBalance()
 		{
@@ -170,6 +172,23 @@ namespace CmsData.View
 			{
 				if (this._CanCredit != value)
 					this._CanCredit = value;
+			}
+
+		}
+
+		
+		[Column(Name="IsAdjustment", Storage="_IsAdjustment", DbType="bit")]
+		public bool? IsAdjustment
+		{
+			get
+			{
+				return this._IsAdjustment;
+			}
+
+			set
+			{
+				if (this._IsAdjustment != value)
+					this._IsAdjustment = value;
 			}
 
 		}

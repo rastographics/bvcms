@@ -49,6 +49,13 @@ namespace CmsWeb.Controllers
             m.DeleteStandard(name, removedata);
             return Content("ok");
         }
+        [HttpPost, Route("ExtraValue/Delete/{table}/{id:int}")]
+        public ActionResult Delete(string table, int id, string name)
+        {
+            var m = new ExtraValueModel(id, table, "Standard");
+            m.Delete(name);
+            return View("Standard", m);
+        }
 
         [ValidateInput(false)]
         [HttpPost, Route("ExtraValue/SaveNewStandard")]

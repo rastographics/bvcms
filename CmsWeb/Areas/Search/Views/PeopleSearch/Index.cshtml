@@ -14,7 +14,8 @@
                 <div class="row">
                     <div class="col-lg-3 col-md-3 col-sm-6">
                         <div class="form-group">
-                            <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name / ID#" data-content="Search names using starting letters of First<space>Last or just Last or First<space> for first name match only."><i class="fa fa-info-circle"></i></a>&nbsp;
+                          <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name / ID#" 
+                          data-content="@Model.m.nameHelp"><i class="fa fa-info-circle"></i></a>&nbsp;
                             <label for="name" class="control-label">Name / ID#</label>
                             @Html.TextBox("name", Model.m.name, new { @class = "form-control" })
                         </div>

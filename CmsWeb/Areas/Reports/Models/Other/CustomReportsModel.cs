@@ -169,9 +169,10 @@ namespace CmsWeb.Areas.Reports.Models
                 comma = ",";
             }
             sb.AppendLine("FROM dbo.People p");
+            var coid = DbUtil.Db.CurrentOrgId0;
             foreach (var j in joins)
             {
-                sb.AppendLine(mc.Joins[j]);
+                sb.AppendLine(mc.Joins[j].Replace("{orgid}", coid.ToString()));
             }
             sb.AppendLine("JOIN dbo.TagPerson tp ON tp.PeopleId = p.PeopleId");
             sb.AppendLine("WHERE tp.Id = @tagId\n");

@@ -2700,6 +2700,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.LastAttendOrg", IsComposable = true)]
+        public IQueryable< View.LastAttendOrg > LastAttendOrg(
+            [Parameter(DbType="int")] int? oid
+            )
+        {
+            return CreateMethodCallQuery< View.LastAttendOrg>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    oid
+                );
+        }
+
         [Function(Name="dbo.LastMeetings", IsComposable = true)]
         public IQueryable< View.LastMeeting > LastMeetings(
             [Parameter(DbType="int")] int? orgid,
@@ -3247,6 +3258,38 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.RecentIncompleteRegistrations", IsComposable = true)]
+        public IQueryable< View.RecentIncompleteRegistration > RecentIncompleteRegistrations(
+            [Parameter(DbType="int")] int? prog,
+            [Parameter(DbType="int")] int? div,
+            [Parameter(DbType="int")] int? org,
+            [Parameter(DbType="datetime")] DateTime? begdt,
+            [Parameter(DbType="datetime")] DateTime? enddt
+            )
+        {
+            return CreateMethodCallQuery< View.RecentIncompleteRegistration>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    prog,
+                    div,
+                    org,
+                    begdt,
+                    enddt
+                );
+        }
+
+        [Function(Name="dbo.RecentIncompleteRegistrations2", IsComposable = true)]
+        public IQueryable< View.RecentIncompleteRegistrations2 > RecentIncompleteRegistrations2(
+            [Parameter(DbType="varchar")] string orgs,
+            [Parameter(DbType="int")] int? days
+            )
+        {
+            return CreateMethodCallQuery< View.RecentIncompleteRegistrations2>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    orgs,
+                    days
+                );
+        }
+
         [Function(Name="dbo.RecentNewVisitCount", IsComposable = true)]
         public IQueryable< View.RecentNewVisitCount > RecentNewVisitCount(
             [Parameter(DbType="int")] int? progid,
@@ -3336,6 +3379,17 @@ namespace CmsData
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     oid,
                     name
+                );
+        }
+
+        [Function(Name="dbo.SenderGifts", IsComposable = true)]
+        public IQueryable< View.SenderGift > SenderGifts(
+            [Parameter(DbType="varchar")] string oids
+            )
+        {
+            return CreateMethodCallQuery< View.SenderGift>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    oids
                 );
         }
 

@@ -30,12 +30,12 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="pull-right newitem">
-                    <a href="/Org/NewSize/@listname" class="btn btn-success btn-sm" data-dest="#ask-sizes"><i class="fa fa-plus-circle"></i> Add Item</a>
+                    <a href="/Org/NewSize/@listname" class="btn btn-success btn-sm" data-dest=".ask-sizes"><i class="fa fa-plus-circle"></i> Add Item</a>
                 </div>
             </div>
         </div>
         <br />
-        <div id="ask-sizes" class="movable-list sort">
+        <div class="movable-list sort ask-sizes">
             @foreach (var item in Model.list)
             {
                 item.Name = listname;

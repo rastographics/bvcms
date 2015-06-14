@@ -5,6 +5,7 @@
   var edit = User.IsInRole("Edit");
   var delete = User.IsInRole("Delete");
   var manager = User.IsInRole("ManageGroups");
+  var missiongiving = User.IsInRole("MissionGiving") || User.IsInRole("Developer");
   var oid = ViewBag.oid;
   var model = (OrganizationModel)ViewBag.model;
   var o = model.Org;
@@ -29,7 +30,7 @@
                 <li><a href="/Org/CopySettings/@oid"><span class="org-context">Copy Settings</span></a></li>
                 <li><a href="/OrgChildren/@oid"><span class="org-context">Child Organization Management</span></a></li>
             }
-            @if (o.IsMissionTrip == true && User.IsInRole("MissionGiving"))
+            @if (o.IsMissionTrip == true && missiongiving)
             {
                 <li><a href="/Reports/MissionTripFunding/@oid"><span class="org-context">Mission Trip Funding</span></a></li>
                 <li><a href="/Reports/MissionTripSenders/@oid"><span class="org-context">Mission Trip Senders Export</span></a></li>

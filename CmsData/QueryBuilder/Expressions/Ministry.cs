@@ -117,6 +117,26 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression ContactRecipient()
+        {
+            var id = TextValue.ToInt();
+            Expression<Func<Person, bool>> pred = p =>
+                p.contactsHad.Any(c => c.ContactId == id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
+        internal Expression ContactMaker()
+        {
+            var id = TextValue.ToInt();
+            Expression<Func<Person, bool>> pred = p =>
+                p.contactsMade.Any(c => c.ContactId == id);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual)
+                expr = Expression.Not(expr);
+            return expr;
+        }
         internal Expression MadeContactTypeAsOf()
         {
             //StartDate, EndDate, Program, CodeIntIds

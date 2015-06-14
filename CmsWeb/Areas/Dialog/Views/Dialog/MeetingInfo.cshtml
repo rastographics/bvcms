@@ -8,7 +8,7 @@
                 <h4 class="modal-title">Meeting Options</h4>
             </div>
             <div class="modal-body">
-                @Html.EditorForIf(m => m.Schedule, Model.Schedule != null)
+                @Html.EditorForIf(m => m.Schedule, Model.Schedule != null && Model.Schedule.Items.Any())
                 @Html.EditorFor(m => m.MeetingDate, "DateAndTime")
                 @Html.EditorForIf(m => m.AttendCredit, Model.AttendCredit != null)
                 @Html.EditorFor(m => m.ByGroup)

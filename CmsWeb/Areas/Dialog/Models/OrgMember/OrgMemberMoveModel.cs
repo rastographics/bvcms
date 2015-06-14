@@ -93,7 +93,9 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public string Move(int toid)
         {
-            var om1 = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+            var om1 = DbUtil.Db.OrganizationMembers.FirstOrDefault(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
+            if (om1 == null)
+                return "not founjd";
             var om2 = OrganizationMember.InsertOrgMembers(DbUtil.Db,
                 toid, om1.PeopleId, om1.MemberTypeId, DateTime.Now, om1.InactiveDate, om1.Pending ?? false);
             DbUtil.Db.UpdateMainFellowship(om2.OrganizationId);

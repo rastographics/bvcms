@@ -744,12 +744,13 @@ Divisions: {11}".Fmt(
 
         public string EncodedJson()
         {
-            var s = HttpUtility.UrlEncode(Util.Encrypt(JsonConvert.SerializeObject(this)));
-            return s;
+            var j = JsonConvert.SerializeObject(this);
+            return Util.EncryptForUrl(j);
         }
         public static OrgSearchModel DecodedJson(string parameter)
         {
-            return JsonConvert.DeserializeObject<OrgSearchModel>(HttpUtility.UrlDecode(Util.Decrypt(parameter)));
+            var j = Util.DecryptFromUrl(parameter);
+            return JsonConvert.DeserializeObject<OrgSearchModel>(j);
         }
 
         public string ConvertToSearch()

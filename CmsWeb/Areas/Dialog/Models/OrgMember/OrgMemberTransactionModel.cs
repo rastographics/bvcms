@@ -82,7 +82,9 @@ namespace CmsWeb.Areas.Dialog.Models
 
             var reason = TransactionSummary == null
                 ? "Initial Tran"
-                : "Adjustment";
+                : AdjustFee 
+                    ? "AdjustFee" 
+                    : "Adjustment";
             if (isMissionTrip)
             {
                 if (TransactionSummary == null)
@@ -90,7 +92,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     om.AddToGroup(DbUtil.Db, "Goer");
                     om.Amount = Amount;
                 }
-                if (AdjustFee == false && Payment > 0)
+                if (AdjustFee == false && (Payment ?? 0) != 0)
                 {
                     var gs = new GoerSenderAmount
                     {

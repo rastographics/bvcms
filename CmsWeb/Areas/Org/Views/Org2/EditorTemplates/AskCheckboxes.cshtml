@@ -34,12 +34,12 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="pull-right newitem">
-                    <a href="/Org/NewCheckbox/@listname" class="btn btn-success btn-sm" data-dest="#Checkboxes"><i class="fa fa-plus-circle"></i> Add Item</a>
+                    <a href="/Org/NewCheckbox/@listname" class="btn btn-success btn-sm" data-dest=".Checkboxes"><i class="fa fa-plus-circle"></i> Add Item</a>
                 </div>
             </div>
         </div>
-        <br/>    
-        <div id="Checkboxes" class="movable-list sort">
+        <br/>
+        <div class="movable-list sort Checkboxes">
             @foreach (var item in Model.list)
             {
                 item.Name = listname;

@@ -1,21 +1,21 @@
 ﻿@model CmsWeb.Areas.Org.Models.OrgGroupsModel
 @using UtilityExtensions
 @foreach(var om in Model.FetchOrgMemberList())
-{ 
-	<tr @om.IsInGroup()>
-        <td style="width: 10px;">
-            @if (Model.isRecreationTeam)
-            {
-                <input id="@om.PeopleId" name="list" type="checkbox" value="@om.PeopleId" score="@om.Score" swap="@(Model.orgid)-@(om.PeopleId)" />
-            }
-            else
-            {
-                <input name="list" type="checkbox" value="@om.PeopleId" />
-            }
-        </td>
-	    <td>
-            <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@om.Name (@om.PeopleId)"
-               data-content="
+{
+  <tr @om.IsInGroup()>
+    <td style="width: 10px;">
+      @if (Model.isRecreationTeam)
+      {
+        <input id="@om.PeopleId" name="list" type="checkbox" value="@om.PeopleId" score="@om.Score" swap="@(Model.orgid)-@(om.PeopleId)"/>
+      }
+      else
+      {
+        <input name="list" type="checkbox" value="@om.PeopleId"/>
+      }
+    </td>
+    <td>
+      <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@om.Name (@om.PeopleId)"
+         data-content="
                 <label>Cell Phone:</label> @om.CellPhone<br/>
                 <label>Work Phone:</label> @om.WorkPhone<br />
                 <label>Home Phone:</label> @om.HomePhone<br/>
@@ -24,9 +24,9 @@
                 <label>Status:</label> @om.MemberStatus<br />
                 <label>Email:</label> @om.Email
             "><i class="fa fa-info-circle"></i></a>&nbsp;<a href="/Person2/@om.PeopleId">@om.Name</a>
-	    </td>
-	      <td>@om.MemberStatus @* This is actually MemberType in this instance *@
-    @*
+    </td>
+    <td>@om.MemberStatus @* This is actually MemberType in this instance *@
+      @*
 	        <div>@om.Address</div>
 	        @if (om.Address2.HasValue())
 	        {
@@ -34,15 +34,17 @@
 	        }
 	        <div>@om.CityStateZip</div>
     *@
-	      </td>
-		<td>@om.Gender</td>
-		<td>@om.Age</td>
-		<td>@om.Request</td>
-		<td>@om.GroupsDisplay</td>
-        @if( Model.isRecreationTeam ) {
-            <td class="text-center">
-                <a id="@(Model.orgid)-@(om.PeopleId)" peopleid="@om.PeopleId" data-pk="@(Model.orgid)-@(om.PeopleId)" class="clickEdit">@om.Score</a>
-            </td>
-        }
-	</tr>
+    </td>
+    <td>@om.Gender</td>
+    <td>@om.Age</td>
+    <td>@om.Request</td>
+    <td>@om.GroupsDisplay</td>
+    @if (Model.isRecreationTeam)
+    {
+      <td class="text-center">
+        <a id="@(Model.orgid)-@(om.PeopleId)" peopleid="@om.PeopleId" data-pk="@(Model.orgid)-@(om.PeopleId)" class="clickEdit">@om.Score</a>
+      </td>
+    }
+  </tr>
+  <tr style="display: none"><td colspan="7">@Html.Hidden("rowcount", @Model.count)</td></tr>
 }

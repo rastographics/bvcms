@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Security;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Xml.Linq;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
@@ -243,15 +244,19 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return View(m);
         }
+
         [HttpPost]
         public ActionResult EnrollmentControl2a(OrgSearchModel m)
         {
-            return View(m);
+            var json = m.EncodedJson();
+            var mm = OrgSearchModel.DecodedJson(json);
+            return RedirectToAction("EnrollmentControl2a", new { json });
         }
         [HttpGet, ValidateInput(false)]
         public ActionResult EnrollmentControl2a(string json)
         {
             var m = OrgSearchModel.DecodedJson(json);
+            ViewBag.json = json;
             if (m == null)
                 return RedirectShowError("must start with orgsearch");
             return View(m);

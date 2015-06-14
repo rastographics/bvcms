@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using CmsData.Finance.TransNational.Core;
 using CmsData.Finance.TransNational.Query;
-using CmsData.Finance.TransNational.Transaction.Refund;
 using CmsData.Finance.TransNational.Transaction.Auth;
+using CmsData.Finance.TransNational.Transaction.Refund;
 using CmsData.Finance.TransNational.Transaction.Sale;
 using CmsData.Finance.TransNational.Transaction.Void;
 using CmsData.Finance.TransNational.Vault;
-using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsData.Finance
@@ -168,7 +166,7 @@ namespace CmsData.Finance
             var vaultId = paymentInfo.TbnCardVaultId.GetValueOrDefault();
 
             var updateCreditCardVaultRequest = new UpdateCreditCardVaultRequest(
-                _userName, 
+                _userName,
                 _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 expiration,
@@ -306,7 +304,7 @@ namespace CmsData.Finance
         private void DeleteVault(int vaultId, Person person)
         {
             var deleteVaultRequest = new DeleteVaultRequest(
-                _userName, 
+                _userName,
                 _password,
                 vaultId.ToString(CultureInfo.InvariantCulture));
 
@@ -499,7 +497,7 @@ namespace CmsData.Finance
                     Approved = false,
                     Message = "missing payment info",
                 };
-            
+
             var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(
                 _userName,
                 _password,
@@ -587,7 +585,7 @@ namespace CmsData.Finance
 
         public BatchResponse GetBatchDetails(DateTime start, DateTime end)
         {
-            // because TransNational doesn't bring back all actions that have happended on any giving transaction we 
+            // because TransNational doesn't bring back all actions that have happended on any giving transaction we
             // need to always start 14 days before so that any e-check original actions will come in for us to process.
             start = start.AddDays(-14);
 
@@ -600,7 +598,7 @@ namespace CmsData.Finance
                 start,
                 end,
                 new List<TransNational.Query.Condition> {TransNational.Query.Condition.Complete},
-                new List<ActionType> {ActionType.Settle, ActionType.Sale, ActionType.Capture, ActionType.Credit, ActionType.Refund}); 
+                new List<ActionType> {ActionType.Settle, ActionType.Sale, ActionType.Capture, ActionType.Credit, ActionType.Refund});
 
             var response = queryRequest.Execute();
 
@@ -612,7 +610,7 @@ namespace CmsData.Finance
             return new BatchResponse(batchTransactions);
         }
 
-        private void BuildBatchTransactionsList(IEnumerable<TransNational.Query.Transaction> transactions, ActionType originalActionType, List<BatchTransaction> batchTransactions)
+        private static void BuildBatchTransactionsList(IEnumerable<TransNational.Query.Transaction> transactions, ActionType originalActionType, List<BatchTransaction> batchTransactions)
         {
             var transactionList = transactions.Where(t => t.Actions.Any(a => a.ActionType == originalActionType));
 
@@ -624,31 +622,27 @@ namespace CmsData.Finance
                 // need to make sure that both the settle action and the original action (sale, capture, credit or refund) are present before proceeding.
                 if (originalAction != null && settleAction != null)
                 {
-                    // prevent adding the same batch transaction more than once.
-                    if (batchTransactions.All(b => b.TransactionId != transaction.OrderId.ToInt()))
+                    batchTransactions.Add(new BatchTransaction
                     {
-                        batchTransactions.Add(new BatchTransaction
-                        {
-                            TransactionId = transaction.OrderId.ToInt(),
-                            Reference = transaction.TransactionId,
-                            BatchReference = settleAction.BatchId,
-                            TransactionType = GetTransactionType(originalActionType),
-                            BatchType = GetBatchType(transaction.TransactionType),
-                            Name = transaction.Name,
-                            Amount = settleAction.Amount,
-                            Approved = originalAction.Success,
-                            Message = originalAction.ResponseText,
-                            TransactionDate = originalAction.Date,
-                            SettledDate = settleAction.Date,
-                            LastDigits = transaction.LastDigits
-                        });
-                    }
+                        TransactionId = transaction.OrderId.ToInt(),
+                        Reference = transaction.TransactionId,
+                        BatchReference = settleAction.BatchId,
+                        TransactionType = GetTransactionType(originalActionType),
+                        BatchType = GetBatchType(transaction.TransactionType),
+                        Name = transaction.Name,
+                        Amount = settleAction.Amount,
+                        Approved = originalAction.Success,
+                        Message = originalAction.ResponseText,
+                        TransactionDate = originalAction.Date,
+                        SettledDate = settleAction.Date,
+                        LastDigits = transaction.LastDigits
+                    });
                 }
             }
-            
+
         }
 
-        private TransactionType GetTransactionType(ActionType actionType)
+        private static TransactionType GetTransactionType(ActionType actionType)
         {
             switch (actionType)
             {
@@ -670,7 +664,7 @@ namespace CmsData.Finance
         /// </summary>
         /// <param name="transactionType"></param>
         /// <returns></returns>
-        private BatchType GetBatchType(TransNational.Query.TransactionType transactionType)
+        private static BatchType GetBatchType(TransNational.Query.TransactionType transactionType)
         {
             switch (transactionType)
             {
@@ -696,7 +690,7 @@ namespace CmsData.Finance
                 new List<ActionType> {ActionType.CheckReturn, ActionType.CheckLateReturn});
 
             var response = queryRequest.Execute();
-            
+
             foreach (var transaction in response.Transactions)
             {
                 var returnAction = transaction.Actions.FirstOrDefault(a => a.ActionType == ActionType.CheckReturn || a.ActionType == ActionType.CheckLateReturn);

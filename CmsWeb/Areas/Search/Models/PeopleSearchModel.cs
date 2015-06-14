@@ -6,12 +6,14 @@
  */
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Code;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace CmsWeb.Models
 {
@@ -32,6 +34,12 @@ namespace CmsWeb.Models
         public string[] statusflags { get; set; }
         public int marital { get; set; }
         public int gender { get; set; }
+
+        //public string nameHelp = HttpUtility.HtmlEncode(@"
+        public string nameHelp = ViewExtensions2.Markdown(@"
+Search names using starting letters of *First*`space`*Last* 
+or just Last or *First*`space` for first name match only.
+").ToString();
     }
     public class PeopleSearchModel : PagerModel2
     {
