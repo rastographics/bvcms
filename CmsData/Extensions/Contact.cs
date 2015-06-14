@@ -12,9 +12,7 @@ namespace CmsData
         public static int AddContact(Guid qid, int? MakerId = null)
         {
             var q = DbUtil.Db.PeopleQuery(qid);
-            if (q.Count() > 100)
-                return -1;
-            if (q.Count() == 0)
+            if (!q.Any())
                 return 0;
             var c = new Contact 
 			{ 

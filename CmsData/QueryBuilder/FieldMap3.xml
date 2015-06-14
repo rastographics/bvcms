@@ -242,6 +242,12 @@
     <PleaseVisit Title="Please Visit" Type="Bit" DataValueField="IdCode">
       Select True or False for those with this checkbox flagged on their Growth tab.
     </PleaseVisit>
+    <ContactRecipient Title="Contact Recipients" Type="IntegerEqual" DisplayAs="ContactRecipientForId">
+      Enter Contact ID number.
+    </ContactRecipient>
+    <ContactMaker Title="Contact Makers" Type="IntegerEqual" DisplayAs="ContactMakerForId">
+      Enter Contact ID number.
+    </ContactMaker>
   </Ministry>
   <Membership>
     <MemberStatusId Title="Church Member Status" Type="Code" DisplayAs="ChurchMemberStatus" DataSource="MemberStatusCodes" DataValueField="IdCode">

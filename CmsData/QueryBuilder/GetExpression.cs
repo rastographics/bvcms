@@ -40,6 +40,8 @@ namespace CmsData
                 { QueryType.CheckInByDate, CheckInByDate },
                 { QueryType.CheckInVisits, CheckInVisits },
                 { QueryType.CommitmentForMeetingId, CommitmentForMeetingId },
+                { QueryType.ContactRecipient, ContactRecipient },
+                { QueryType.ContactMaker, ContactMaker },
                 { QueryType.ContributionAmount2, ContributionAmount },
                 { QueryType.ContributionChange, ContributionChange },
                 { QueryType.CreatedBy, CreatedBy },

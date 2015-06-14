@@ -1,32 +1,46 @@
 ﻿@model CmsWeb.Areas.People.Models.ContacteesModel
+@{
+  var count = Model.Count();
+}
 <div class="table-responsive">
+  @if (count > 100)
+  {
+    <div class="alert alert-info"><strong>There are @count.ToString("N0") Contactees.</strong>
+      <p>
+        Use the Convert To Search button to see the list.
+        The contact will also appear on each person's page, under Ministry > Contacts Received
+      </p>
+    </div>
+  }
+  else
+  {
     <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Name</th>
-                @if (Model.CanViewComments)
-                {
-                    <th colspan="2" style="width: 100px;">Actions</th>
-                }
-            </tr>
-        </thead>
-        @foreach (var c in Model.Contactees())
-        {
-            <tr>
-                <td>
-                    <a class="link in" href="/Person2/@c.PeopleId">@c.Name</a>
-                </td>
-                @if (Model.CanViewComments)
-                {
-                    <td style="width: 50px;">
-                        <a class="addtask in btn btn-default btn-sm" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId"><i class="fa fa-plus-circle"></i> Add Followup Task</a>
-                    </td>
-                    <td style="width: 50px;">
-                        <a class="remove in btn btn-danger btn-sm" href="/Contact2/RemoveContactee/@c.ContactId/@c.PeopleId"><i class="fa fa-trash"></i> Remove</a>
-                    </td>
-                }
-            </tr>
-        }
+      <thead>
+        <tr>
+          <th>Name</th>
+          @if (Model.CanViewComments)
+          {
+            <th colspan="2" style="width: 100px;">Actions</th>
+          }
+        </tr>
+      </thead>
+      @foreach (var c in Model.Contactees())
+      {
+        <tr>
+          <td>
+            <a class="link in" href="/Person2/@c.PeopleId">@c.Name</a>
+          </td>
+          @if (Model.CanViewComments)
+          {
+            <td style="width: 50px;">
+              <a class="addtask in btn btn-default btn-sm" href="/Contact2/AddTask/@c.ContactId/@c.PeopleId"><i class="fa fa-plus-circle"></i> Add Followup Task</a>
+            </td>
+            <td style="width: 50px;">
+              <a class="remove in btn btn-danger btn-sm" href="/Contact2/RemoveContactee/@c.ContactId/@c.PeopleId"><i class="fa fa-trash"></i> Remove</a>
+            </td>
+          }
+        </tr>
+      }
     </table>
+  }
 </div>
-

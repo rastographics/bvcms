@@ -54,6 +54,14 @@ namespace CmsWeb.Areas.People.Models
                      };
             return q2; 
         }
+        public Guid ConvertToQuery()
+        {
+            var c = DbUtil.Db.ScratchPadCondition();
+            c.Reset(DbUtil.Db);
+            c.AddNewClause(QueryType.ContactRecipient, CompareType.Equal, Contact.ContactId);
+            c.Save(DbUtil.Db);
+            return c.Id;
+        }
 
         public void RemoveContactee(int PeopleId)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -51,6 +52,14 @@ namespace CmsWeb.Areas.People.Models
             cn.Open();
             cn.Execute("delete Contactors where ContactId = @cid and PeopleId = @pid",
                 new {cid = Contact.ContactId, pid = PeopleId});
+        }
+        public Guid ConvertToQuery()
+        {
+            var c = DbUtil.Db.ScratchPadCondition();
+            c.Reset(DbUtil.Db);
+            c.AddNewClause(QueryType.ContactMaker, CompareType.Equal, Contact.ContactId);
+            c.Save(DbUtil.Db);
+            return c.Id;
         }
 
         public class ContactorInfo 
