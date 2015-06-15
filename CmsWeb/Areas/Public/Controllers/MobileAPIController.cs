@@ -582,6 +582,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     select o;
             }
 
+            // Adjusted to include schedule or latest meeting
             var orgs = from o in q
                        //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                        //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
