@@ -260,33 +260,33 @@ namespace CmsWeb.Areas.Public.Controllers
             switch (dataIn.device)
             {
                 case BaseMessage.API_DEVICE_ANDROID:
-                    {
-                        Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
+                {
+                    Dictionary<int, MobilePerson> mpl = new Dictionary<int, MobilePerson>();
 
-                        MobilePerson mp;
+                    MobilePerson mp;
 
                         foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
-                        {
-                            mp = new MobilePerson().populate(item);
-                            mpl.Add(mp.id, mp);
-                        }
-
-                        br.data = SerializeJSON(mpl, dataIn.version);
-                        break;
+                    {
+                        mp = new MobilePerson().populate(item);
+                        mpl.Add(mp.id, mp);
                     }
+
+                    br.data = SerializeJSON(mpl, dataIn.version);
+                    break;
+                }
 
                 case BaseMessage.API_DEVICE_IOS:
-                    {
-                        List<MobilePerson> mp = new List<MobilePerson>();
+                {
+                    List<MobilePerson> mp = new List<MobilePerson>();
 
                         foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
-                        {
-                            mp.Add(new MobilePerson().populate(item));
-                        }
-
-                        br.data = SerializeJSON(mp, dataIn.version);
-                        break;
+                    {
+                        mp.Add(new MobilePerson().populate(item));
                     }
+
+                    br.data = SerializeJSON(mp, dataIn.version);
+                    break;
+                }
             }
             return br;
         }
@@ -453,20 +453,20 @@ namespace CmsWeb.Areas.Public.Controllers
                 switch (mpfi.size)
                 {
                     case 0: // 50 x 50
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
-                        break;
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.ThumbId);
+                    break;
 
                     case 1: // 120 x 120
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
-                        break;
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.SmallId);
+                    break;
 
                     case 2: // 320 x 400
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
-                        break;
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.MediumId);
+                    break;
 
                     case 3: // 570 x 800
-                        image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
-                        break;
+                    image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == person.Picture.LargeId);
+                    break;
 
                 }
 
@@ -584,14 +584,17 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var orgs = from o in q
                        //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                       join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                       //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                       from sch in DbUtil.Db.OrgSchedules.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
+                       from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
                        select new OrganizationInfo
                        {
                            id = o.OrganizationId,
                            name = o.OrganizationName,
-                           time = sch.SchedTime ?? dt,
-                           day = sch.SchedDay ?? 0
+                           time = sch.SchedTime,
+                           day = sch.SchedDay,
+                           lastMeetting = mtg.MeetingDate
                        };
 
             BaseMessage br = new BaseMessage();
@@ -606,6 +609,7 @@ namespace CmsWeb.Areas.Public.Controllers
             foreach (var item in orgs)
             {
                 MobileOrganization org = new MobileOrganization().populate(item);
+                if (org.hasInvalidDate()) continue;
 
                 // Initial release version
                 if (dataIn.version == 2 && tzOffset != 0)
@@ -960,15 +964,15 @@ namespace CmsWeb.Areas.Public.Controllers
             switch (status)
             {
                 case UserValidationStatus.Success:
-                    return BaseMessage.API_ERROR_NONE;
+                return BaseMessage.API_ERROR_NONE;
                 case UserValidationStatus.PinExpired:
-                    return BaseMessage.API_ERROR_PIN_EXPIRED;
+                return BaseMessage.API_ERROR_PIN_EXPIRED;
                 case UserValidationStatus.PinInvalid:
-                    return BaseMessage.API_ERROR_PIN_INVALID;
+                return BaseMessage.API_ERROR_PIN_INVALID;
                 case UserValidationStatus.SessionTokenExpired:
-                    return BaseMessage.API_ERROR_SESSION_TOKEN_EXPIRED;
+                return BaseMessage.API_ERROR_SESSION_TOKEN_EXPIRED;
                 default:
-                    return BaseMessage.API_ERROR_SESSION_TOKEN_NOT_FOUND;
+                return BaseMessage.API_ERROR_SESSION_TOKEN_NOT_FOUND;
             }
         }
 
