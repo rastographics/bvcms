@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using CmsData;
 using Dapper;
@@ -47,6 +49,45 @@ namespace CmsWeb.Models
             }
         }
 
+        public string FormattedHtmlBody
+        {
+            get
+            {
+                using (var doc = TidyManaged.Document.FromString(queue.Body))
+                {
+                    doc.ShowWarnings        = false;
+                    doc.Quiet               = true;
+                    doc.DocType             = TidyManaged.DocTypeMode.Strict;
+                    doc.DropFontTags        = true;
+                    doc.UseLogicalEmphasis  = true;
+                    doc.OutputXhtml         = true;
+                    doc.OutputXml           = false;
+                    doc.MakeClean           = true;
+                    doc.DropEmptyParagraphs = true;
+                    doc.CleanWord2000       = true;
+                    doc.QuoteAmpersands     = true;
+                    doc.JoinStyles          = false;
+                    doc.JoinClasses         = false;
+                    doc.Markup              = true;
+                    doc.IndentSpaces        = 4;
+                    doc.IndentBlockElements = TidyManaged.AutoBool.Yes; // this increases file size! (but makes it better to read)
+                    doc.CharacterEncoding   = TidyManaged.EncodingType.Utf8;
+                    doc.CleanAndRepair();
+
+                    using (var str = new MemoryStream())
+                    {
+                        doc.Save(str);
+                        return Encoding.UTF8.GetString(str.ToArray());
+                    }
+                }
+
+
+                // NOTE: this one was junk... blows up at attributes it doesn't know (like "bvedit"). literally everything is internal. it's a java rewrite
+//                var tidy = new Tidy.Core.Tidy();
+//                return tidy.Parse(queue.Body);
+            }
+        }
+
         public FilterType FilterType { get; private set; }
 
         public int CountOfAllRecipients { get; private set; }
@@ -66,7 +107,7 @@ namespace CmsWeb.Models
         {
             return _count;
         }
-        
+
         public EmailModel(int id)
         {
             Id = id;
@@ -85,7 +126,7 @@ namespace CmsWeb.Models
         {
             var cn = DbUtil.Db.Connection;
             dynamic counts = cn.Query(@"
-SELECT 
+SELECT
 	COUNT(*) AS Total
 	,(SELECT COUNT(DISTINCT PeopleId) FROM dbo.EmailResponses WHERE EmailQueueId = @emailQueueId) AS NumberOpened
 	,(SELECT COUNT(*) FROM dbo.EmailQueueToFail WHERE Id = @emailQueueId) AS NumberFailed
@@ -127,14 +168,14 @@ WHERE eqt.Id = @emailQueueId
             Pager = new PagerModel2(Count);
             if (pageSize.HasValue)
                 Pager.PageSize = pageSize.Value;
-            Pager.Page = page; 
+            Pager.Page = page;
         }
 
         private IEnumerable<RecipientInfo> GetRecipients()
         {
             const string sql = @"
 ;WITH Emails AS (
-	SELECT 
+	SELECT
 		p.Name
 		,p.PeopleId
 		,p.EmailAddress
@@ -154,7 +195,7 @@ WHERE eqt.Id = @emailQueueId
 	WHERE EmailQueueId = @emailQueueId
 )
 ,AllEmails AS (
-	SELECT 
+	SELECT
 		e.PeopleId
 		,e.Name
 		,e.Name2
@@ -168,15 +209,15 @@ WHERE eqt.Id = @emailQueueId
 	LEFT JOIN dbo.People p1 ON p1.PeopleId = e.Parent1
 	LEFT JOIN dbo.People p2 ON p2.PeopleId = e.Parent2
 	LEFT JOIN dbo.EmailQueueToFail ef ON ef.Id = e.Id AND ef.PeopleId = e.PeopleId
-	WHERE 
+	WHERE
 		@currentPeopleId = (
-			CASE 
+			CASE
 				WHEN @isAdmin = 1 THEN @currentPeopleId
 				WHEN (SELECT QueuedBy FROM dbo.EmailQueue WHERE Id = @emailQueueId) = @currentPeopleId THEN @currentPeopleId
 				ELSE e.PeopleId
-			END	
+			END
 		)
-	GROUP BY 
+	GROUP BY
 		e.PeopleId
 		,e.Name
 		,e.Name2
@@ -185,7 +226,7 @@ WHERE eqt.Id = @emailQueueId
 		,p2.Name
 		,ef.Id
 )
-SELECT 
+SELECT
 	PeopleId
 	,Name
 	,EmailAddress
@@ -194,8 +235,8 @@ SELECT
 	,Parent2
 	,Failed
 FROM AllEmails
-WHERE 
-	(((CASE 
+WHERE
+	(((CASE
 		WHEN @filter = 'failed' AND Failed = 1 THEN 1
 		WHEN @filter = 'opened' AND NumberOpened > 0 THEN 1
 		WHEN @filter = 'unopened' AND NumberOpened = 0 THEN 1
