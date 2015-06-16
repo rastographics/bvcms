@@ -16,8 +16,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var om = GetOrgMember();
             var sb = StartSummary();
             SummarizePayment(ti, om, sb);
-            SummarizeSupportMissionTrip(sb);
-            SummarizeAnswers(sb, om);
+            if(Parent.SupportMissionTrip)
+                SummarizeSupportMissionTrip(sb);
+            else
+                SummarizeAnswers(sb, om);
             return FinishSummary(sb);
         }
 
@@ -100,6 +102,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SummarizeAnswers(StringBuilder sb, OrganizationMember om)
         {
+            if (Parent.SupportMissionTrip)
+                return;
+
             var rr = person.RecRegs.Single();
 
             foreach (var ask in setting.AskItems)
