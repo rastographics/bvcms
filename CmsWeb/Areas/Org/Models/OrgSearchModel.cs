@@ -186,7 +186,7 @@ namespace CmsWeb.Areas.Search.Models
         }
         public static IQueryable<OrgSearch> FetchOrgs(int orgId)
         {
-            return DbUtil.Db.OrgSearch(orgId.ToString(), null, null, null, null, null, null, null, null, null);
+            return DbUtil.Db.OrgSearch(orgId.ToString(), null, null, null, null, null, null, null, DbUtil.Db.CurrentUser.UserId, null);
         }
         public List<OrgSearch> ApplySort(List<OrgSearch> query)
         {
