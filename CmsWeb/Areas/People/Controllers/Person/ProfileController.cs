@@ -45,7 +45,7 @@ namespace CmsWeb.Areas.People.Controllers
             if (!ModelState.IsValid || ret != "ok")
                 return View("Profile/Membership/Edit", m);
 
-            DbUtil.LogActivity("Update Membership Info for: {0}".Fmt(m.person.Name));
+            DbUtil.LogPersonActivity("Update Membership Info for: {0}".Fmt(m.person.Name), m.PeopleId, m.person.Name);
             return View("Profile/Membership/Display", m);
         }
 
@@ -86,7 +86,7 @@ namespace CmsWeb.Areas.People.Controllers
             if (doc == null) 
                 return Redirect("/Person2/" + id);
             var person = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
-            DbUtil.LogActivity("Uploading Document for {0}".Fmt(person.Name));
+            DbUtil.LogPersonActivity("Uploading Document for {0}".Fmt(person.Name), id, person.Name);
             person.UploadDocument(DbUtil.Db, doc.InputStream, doc.FileName, doc.ContentType);
             return Redirect("/Person2/" + id);
         }

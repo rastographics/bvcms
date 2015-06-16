@@ -327,7 +327,7 @@ namespace CmsData
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
 
-                    if (code.StartsWith("{regtext:", StringComparison.OrdinalIgnoreCase))
+                    if (regTextRe.IsMatch(code))
                         return RegText(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroups", StringComparison.OrdinalIgnoreCase))

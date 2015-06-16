@@ -60,10 +60,11 @@ namespace CmsData
         {
             get
             {
+                if (Util.IsDebug())
+                    return ConfigurationManager.AppSettings["cmshost"];
+
                 // choose DefaultHost setting first
                 var defaultHost = Setting("DefaultHost", "");
-                if(Util.IsDebug())
-                    return Regex.Replace(defaultHost, @"https://[^.]*\.tpsdb.com", "http://localhost:8888");
 
                 // if no DefaultHost setting exists, use current URL
                 if (!defaultHost.HasValue() && HttpContext.Current != null)
@@ -202,6 +203,10 @@ namespace CmsData
             output = output + "\\log-{0}-{1}.txt".Fmt(Host, DateTime.Today.ToSortableDate());
             var text = "{0} {1}\r\n".Fmt(DateTime.Now.ToSortableTime(), s);
             File.AppendAllText(output, text);
+        }
+        public void LogActivity(string activity)
+        {
+            DbUtil.LogActivity(Host, activity);
         }
     }
 }

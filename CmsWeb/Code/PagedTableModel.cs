@@ -24,11 +24,17 @@ namespace CmsWeb.Models
             Direction = defaultDirection;
             AjaxPager = useAjax;
         }
-        private int? count;
+        public bool UseDbPager { get; set; }
+        internal int? count;
         public virtual int Count()
         {
             if (!count.HasValue)
-                count = ModelList().Count();
+            {
+                var li = ModelList();
+                if (count.HasValue)
+                    return count.Value;
+                count = li.Count();
+            }
             return count.Value;
         }
 
@@ -48,7 +54,7 @@ namespace CmsWeb.Models
             var q = DefineModelSort(ModelList());
             if(q == null)
                 throw new Exception("sort not defined {0}".Fmt(SortExpression));
-            if (PageSize == 0)
+            if (PageSize == 0 || UseDbPager)
                 return q;
             return q.Skip(StartRow).Take(PageSize);
         }

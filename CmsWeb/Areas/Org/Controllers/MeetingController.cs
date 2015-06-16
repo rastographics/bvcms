@@ -156,6 +156,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 c = null;
             Attend.MarkRegistered(DbUtil.Db, a[1], a[0], c);
             var desc = CmsData.Codes.AttendCommitmentCode.Lookup(c ?? 99);
+            DbUtil.LogActivity("EditCommitment {0} id={1}".Fmt(desc, id));
             return Content(desc);
         }
         [HttpPost]

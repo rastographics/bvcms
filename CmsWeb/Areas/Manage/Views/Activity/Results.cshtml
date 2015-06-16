@@ -1,0 +1,40 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.Manage.Models.ActivityModel
+<div id="results" class="table-responsive">
+  @Html.Partial("PagerTop", Model)
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <td colspan="6">
+          <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+          As of: @DateTime.Now.FormatDateTm()
+        </td>
+      </tr>
+      <tr>
+        <th>Machine</th>
+        <th>User</th>
+        <th>Date & Time</th>
+        <th>Activity</th>
+        <th>Organization</th>
+        <th>Person</th>
+      </tr>
+    </thead>
+    <tbody>
+      @foreach (var a in Model.ViewList())
+      {
+        <tr>
+          <td><a href="/LastActivity?machine=@a.Machine">@a.Machine</a></td>
+          <td><a href="/LastActivity?userid=@a.UserId">@a.UserName</a></td>
+          <td>@a.DateX.FormatDateTm()</td>
+          <td>@a.Activity</td>
+          <td><a href="/LastActivity?orgid=@a.OrgId">@a.OrgName</a></td>
+          <td><a href="/LastActivity?peopleid=@a.PeopleId">@a.PersonName</a></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  @Html.Partial("PagerBottom", Model)
+  @Html.Partial("PagerHidden")
+</div>
+
+

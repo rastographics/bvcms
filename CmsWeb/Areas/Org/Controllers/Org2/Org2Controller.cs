@@ -17,8 +17,6 @@ namespace CmsWeb.Areas.Org2.Controllers
         [HttpGet, Route("~/Org/{id:int}")]
         public ActionResult Index(int id, int? peopleid = null)
         {
-//            if(!Util2.UseNewOrg)
-//                return Redirect("/Organization/" + id);
             var db = DbUtil.Db;
             db.CurrentOrg = new CurrentOrg() { Id=id, GroupSelect = GroupSelectCode.Member};
 
@@ -52,7 +50,7 @@ namespace CmsWeb.Areas.Org2.Controllers
                 if (!User.IsInRole(m.Org.LimitToRole))
                     return NotAllowed("no privilege to view ", m.Org.OrganizationName);
 
-            DbUtil.LogActivity("Viewing Org({0})".Fmt(m.Org.OrganizationName), m.Org.OrganizationName, orgid: id);
+            DbUtil.LogOrgActivity("Viewing Org({0})".Fmt(m.Org.OrganizationName), id, m.Org.OrganizationName);
 
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.Org.FullName;

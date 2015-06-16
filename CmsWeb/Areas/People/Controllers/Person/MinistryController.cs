@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult AddContactMade(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogActivity("Adding contact from: {0}".Fmt(p.Name));
+            DbUtil.LogPersonActivity("Adding contact from: {0}".Fmt(p.Name), id, p.Name);
             var c = new Contact
             {
                 CreatedDate = Util.Now,
@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult AddContactReceived(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogActivity("Adding contact to: {0}".Fmt(p.Name));
+            DbUtil.LogPersonActivity("Adding contact to: {0}".Fmt(p.Name), id, p.Name);
             var c = new Contact
             {
                 CreatedDate = Util.Now,

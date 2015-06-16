@@ -81,9 +81,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("ClaimVolSub/{ans}/{guid}")]
         public ActionResult ClaimVolSub(string ans, string guid)
         {
-            ViewBag.Answer = ans;
-            ViewBag.Guid = guid;
-            return View();
+            try
+			{
+    			var vs = new VolSubModel();
+    			vs.PrepareToClaim(ans, guid);
+                ViewBag.Answer = ans;
+                ViewBag.Guid = guid;
+                return View();
+			}
+			catch (Exception ex)
+			{
+				return Message(ex.Message);
+			}
         }
 
         [HttpPost]
@@ -98,7 +107,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			}
 			catch (Exception ex)
 			{
-				return Content(ex.Message);
+				return Message(ex.Message);
 			}
 		}
 

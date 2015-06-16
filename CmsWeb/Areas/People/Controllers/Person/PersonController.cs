@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Finance;
 using CmsWeb.Areas.People.Models;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -53,7 +52,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.PeopleId = id.Value;
             Util2.CurrentPeopleId = id.Value;
             Session["ActivePerson"] = m.Person.Name;
-            DbUtil.LogActivity("Viewing Person: {0}".Fmt(m.Person.Name), m.Person.Name, pid: id);
+            DbUtil.LogPersonActivity("Viewing Person: {0}".Fmt(m.Person.Name), id.Value, m.Person.Name);
             InitExportToolbar(id);
             return View(m);
         }

@@ -1987,6 +1987,33 @@ namespace CmsData
 #endregion
 #region Table Functions
         
+        [Function(Name="dbo.ActivityLogSearch", IsComposable = true)]
+        public IQueryable< View.ActivityLogSearch > ActivityLogSearch(
+            [Parameter(DbType="varchar")] string machine,
+            [Parameter(DbType="varchar")] string activity,
+            [Parameter(DbType="int")] int? userid,
+            [Parameter(DbType="int")] int? orgid,
+            [Parameter(DbType="int")] int? peopleid,
+            [Parameter(DbType="datetime")] DateTime? enddate,
+            [Parameter(DbType="int")] int? lookback,
+            [Parameter(DbType="int")] int? pagesize,
+            [Parameter(DbType="int")] int? pagenum
+            )
+        {
+            return CreateMethodCallQuery< View.ActivityLogSearch>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    machine,
+                    activity,
+                    userid,
+                    orgid,
+                    peopleid,
+                    enddate,
+                    lookback,
+                    pagesize,
+                    pagenum
+                );
+        }
+
         [Function(Name="dbo.AttendanceCredits", IsComposable = true)]
         public IQueryable< View.AttendanceCredit > AttendanceCredits(
             [Parameter(DbType="int")] int? orgid,

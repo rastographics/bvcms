@@ -36,7 +36,7 @@ namespace CmsWeb.Areas.People.Controllers
             if (!(frdt.HasValue && todt.HasValue))
                 return Content("date formats invalid");
 
-            DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
+            DbUtil.LogPersonActivity("Contribution Statement for ({0})".Fmt(id), id, p.Name);
 
             return new Finance.Models.Report.ContributionStatementResult
             {
@@ -67,7 +67,7 @@ namespace CmsWeb.Areas.People.Controllers
                     p = p.Family.HeadOfHousehold;
             }
 
-			DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
+			DbUtil.LogPersonActivity("Contribution Statement for ({0})".Fmt(id), id, p.Name);
 
 			return new Finance.Models.Report.ContributionStatementResult 
 			{ 

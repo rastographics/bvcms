@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Split(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogActivity("Splitting Family for {0}".Fmt(p.Name));
+            DbUtil.LogPersonActivity("Splitting Family for {0}".Fmt(p.Name), id, p.Name);
             p.SplitFamily(DbUtil.Db);
             return Content("/Person2/" + id);
         }

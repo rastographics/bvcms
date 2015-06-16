@@ -27,7 +27,9 @@ namespace CmsWeb.Models
             var q2 = from p in q
                      orderby p.LastName, p.FirstName
                      let spouse = Db.People.SingleOrDefault(w => p.SpouseId == w.PeopleId)
-                     let om = p.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == p.BibleFellowshipClassId)
+                     let om = p.OrganizationMembers.SingleOrDefault(m => 
+                         m.OrganizationId == p.BibleFellowshipClassId 
+                         && (m.Organization.LimitToRole ?? "") == "")
                      select new InvolvementInfo
                      {
                          PeopleId = p.PeopleId,
@@ -51,7 +53,7 @@ namespace CmsWeb.Models
                          Spouse = spouse != null ? spouse.FirstName : "",
 
                          activities = from m in p.OrganizationMembers
-                                      where m.Organization.SecurityTypeId != 3 || !(Util2.OrgMembersOnly && Util2.OrgLeadersOnly)
+                                      where (m.Organization.LimitToRole ?? "") == ""
                                       select new ExportInvolvements.ActivityInfo
                                       {
                                           Name = m.Organization.OrganizationName,

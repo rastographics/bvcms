@@ -299,7 +299,7 @@ namespace CmsData
             Email2(q, queuedBy, fromAddr, fromName, subject, body);
         }
 
-        public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
+        public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string contentName)
         {
             var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
@@ -307,16 +307,14 @@ namespace CmsData
             EmailContent(savedQuery, queuedBy, fromAddr, fromName, c.Title, contentName);
         }
 
-        public void EmailContent(string savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
+        public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
             string contentName)
         {
             var c = db.ContentOfTypeHtml(contentName);
             if (c == null)
                 return;
-            var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedQuery);
-            if (qB == null)
-                return;
-            Email2(qB.QueryId, queuedBy, fromAddr, fromName, subject, c.Body);
+            var q = db.PeopleQuery2(savedQuery);
+            Email2(q, queuedBy, fromAddr, fromName, subject, c.Body);
         }
 
         public Guid OrgMembersQuery(int progid, int divid, int orgid, string memberTypes)
