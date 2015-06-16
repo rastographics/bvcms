@@ -49,8 +49,8 @@ namespace CmsWeb
             if (AccountController.TryImpersonate())
             {
                 var returnUrl = Request.QueryString["returnUrl"];
-                filterContext.Result = Redirect(returnUrl.HasValue() 
-                    ? returnUrl 
+                filterContext.Result = Redirect(returnUrl.HasValue()
+                    ? returnUrl
                     : Request.RawUrl);
             }
 
@@ -293,19 +293,20 @@ namespace CmsWeb
                 var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
                 if (cs != null)
                 {
-                    var cn = new SqlConnection(cs.ConnectionString);
-                    cn.Open();
-                    var cmd = new SqlCommand("LogRequest2", cn) { CommandType = CommandType.StoredProcedure };
-                    cmd.Parameters.AddWithValue("dbname", dbname);
-                    cmd.Parameters.AddWithValue("method", method);
-                    cmd.Parameters.AddWithValue("controller", controller);
-                    cmd.Parameters.AddWithValue("action", action);
-                    cmd.Parameters.AddWithValue("userid", userid);
-                    cmd.Parameters.AddWithValue("id", id);
-                    cmd.Parameters.AddWithValue("qs", querystring.Truncate(100));
-                    cmd.Parameters.AddWithValue("newui", userid.HasValue());
-                    cmd.ExecuteNonQuery();
-                    cn.Close();
+                    using (var cn = new SqlConnection(cs.ConnectionString))
+                    {
+                        cn.Open();
+                        var cmd = new SqlCommand("LogRequest2", cn) {CommandType = CommandType.StoredProcedure};
+                        cmd.Parameters.AddWithValue("dbname", dbname);
+                        cmd.Parameters.AddWithValue("method", method);
+                        cmd.Parameters.AddWithValue("controller", controller);
+                        cmd.Parameters.AddWithValue("action", action);
+                        cmd.Parameters.AddWithValue("userid", userid);
+                        cmd.Parameters.AddWithValue("id", id);
+                        cmd.Parameters.AddWithValue("qs", querystring.Truncate(100));
+                        cmd.Parameters.AddWithValue("newui", userid.HasValue());
+                        cmd.ExecuteNonQuery();
+                    }
                 }
             }
             catch
@@ -327,16 +328,20 @@ namespace CmsWeb
                 var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
                 if (cs != null)
                 {
-                    var cn = new SqlConnection(cs.ConnectionString);
-                    cn.Open();
-                    var userid = Util.UserName;
-                    if (!userid.HasValue())
-                        userid = AccountModel.UserName2;
-                    if(userid.HasValue())
-                        cn.Execute("update dbo.RequestLog set duration = @duration, userid = @userid where id = @id", new {duration, id, userid});
-                    else
-                        cn.Execute("update dbo.RequestLog set duration = @duration where id = @id", new {duration, id});
-                    cn.Close();
+                    using (var cn = new SqlConnection(cs.ConnectionString))
+                    {
+                        cn.Open();
+                        var userid = Util.UserName;
+                        if (!userid.HasValue())
+                            userid = AccountModel.UserName2;
+                        if (userid.HasValue())
+                            cn.Execute(
+                                "update dbo.RequestLog set duration = @duration, userid = @userid where id = @id",
+                                new {duration, id, userid});
+                        else
+                            cn.Execute("update dbo.RequestLog set duration = @duration where id = @id",
+                                new {duration, id});
+                    }
                 }
             }
             catch
