@@ -336,6 +336,8 @@
     <Compile Include="Areas\Finance\Models\DepositsModel.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
+    <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
+    <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\Org\Controllers\Org2\Meetings.cs" />
@@ -507,6 +509,8 @@
     <Compile Include="Areas\Search\Controllers\RegistrationSearchController.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchInfo.cs" />
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
+    <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
+    <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
@@ -623,7 +627,6 @@
     <Compile Include="Areas\People\Models\Person\PersonModel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SearchAdd\PendingPersonModel.cs" />
     <Compile Include="Areas\Public\Controllers\APIContributionController.cs" />
     <Compile Include="Areas\Public\Controllers\APIMetaController.cs" />
@@ -705,7 +708,7 @@
     <Compile Include="Areas\Public\Models\SmallGroupFinderModel.cs" />
     <Compile Include="Areas\Search\Controllers\QueryController.cs" />
     <Compile Include="Areas\Search\Controllers\SavedQueryController.cs" />
-    <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Areas\Manage\Models\Activity\ActivityModel.cs" />
     <Compile Include="Areas\Setup\Controllers\RolesController.cs" />
     <Compile Include="Areas\Setup\Controllers\TwilioController.cs" />
     <Compile Include="Code\BundleModel.cs">
@@ -1437,6 +1440,8 @@
     <Content Include="Areas\Org\Views\OrgSearch\DisplayAttendanceNotices.cshtml" />
     <Content Include="Areas\Search\Views\RegistrationSearch\IncompleteRegistrations.cshtml" />
     <Content Include="Areas\Search\Views\RegistrationSearch\IncompleteResults.cshtml" />
+    <Content Include="Areas\Manage\Views\Activity\Results.cshtml" />
+    <Content Include="Areas\Manage\Views\Activity\Index.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Dialogs.cshtml" />
@@ -3484,7 +3489,6 @@
     <Folder Include="Areas\Dialog\Views\Shared\" />
     <Folder Include="Areas\Finance\Views\Shared\" />
     <Folder Include="Areas\Main\Views\Shared\" />
-    <Folder Include="Areas\Manage\Models\Reports\" />
     <Folder Include="Areas\OnlineReg\Views\Shared\" />
     <Folder Include="Areas\Org\Views\Shared\" />
     <Folder Include="Areas\Public\Views\Shared\" />

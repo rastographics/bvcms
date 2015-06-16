@@ -1,5 +1,8 @@
 ﻿@model CmsWeb.Models.PagerModel2
-@if (Model.PageList().Count() > 1)
+@{
+  var pglist = Model.PageList().ToList();
+}
+@if (pglist.Count > 1)
 {
     <div class="col-lg-8 col-md-8 col-sm-8">
         <div class="pull-right">
@@ -15,7 +18,7 @@
                         <li><a href='#' title='goto page @(Model.Page - 1)' onclick='return $.gotoPage(this,(@Model.Page -1))'>Previous</a></li>
                     }
                 }
-                @foreach (var p in Model.PageList())
+                @foreach (var p in pglist)
                 {
                     if (p == 0)
                     {

@@ -1,0 +1,50 @@
+﻿@model CmsWeb.Areas.Manage.Models.ActivityModel
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Activity";
+  ViewBag.PageHeader = "Activity";
+}
+<div class="box box-responsive">
+  <div class="box-content">
+    <form id="form-activity-search" class="ajax" data-results="#results" method="post" action="/Activity/Results">
+      <div class="well">
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.Activity)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.OrgId)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.PeopleId)
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.Lookback)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.EndDate)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.Machine)
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-6">
+            @Html.EditorFor(m => m.UserId)
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-3 col-md-3 col-sm-4">
+            <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+          </div>
+          <div class="col-lg-3 col-lg-offset-6 col-md-3 col-md-offset-6 col-sm-4 col-sm-offset-4">
+            <div class="pull-right">
+              <a class="btn btn-primary ajax" href="/Activity/Results">Search</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      @Html.Partial("Results", Model)
+    </form>
+  </div>
+</div>

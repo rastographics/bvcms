@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult PersonalUpdate(int id, BasicPersonInfo m)
         {
             m.UpdatePerson();
-            DbUtil.LogActivity("Update Basic Info for: {0}".Fmt(m.person.Name));
+            DbUtil.LogPersonActivity("Update Basic Info for: {0}".Fmt(m.person.Name), m.Id, m.person.Name);
             InitExportToolbar(id);
             return View("Personal/Display", m);
         }
@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.People.Controllers
             if (picture == null) 
                 return Redirect("/Person2/" + id);
             var person = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogActivity("Uploading Picture for {0}".Fmt(person.Name));
+            DbUtil.LogPersonActivity("Uploading Picture for {0}".Fmt(person.Name), id, person.Name);
             person.UploadPicture(DbUtil.Db, picture.InputStream);
             return Redirect("/Person2/" + id);
         }

@@ -13,7 +13,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (!m.Sort.HasValue())
                 m.Sort = "default";
-            DbUtil.LogActivity("Viewing Enrollments for: {0}".Fmt(m.Person.Name));
+            DbUtil.LogPersonActivity("Viewing Enrollments for: {0}".Fmt(m.Person.Name), m.Person.PeopleId, m.Person.Name);
             return View("Enrollment/Current", m);
         }
         [HttpPost]
@@ -21,33 +21,35 @@ namespace CmsWeb.Areas.People.Controllers
         {
             if (!m.Sort.HasValue())
                 m.Sort = "default";
-            DbUtil.LogActivity("Viewing Prev Enrollments for: {0}".Fmt(m.Person.Name));
+            DbUtil.LogPersonActivity("Viewing Prev Enrollments for: {0}".Fmt(m.Person.Name), m.Person.PeopleId, m.Person.Name);
             return View("Enrollment/Previous", m);
         }
         [HttpPost]
         public ActionResult PendingEnrollGrid(PendingEnrollments m)
         {
-            DbUtil.LogActivity("Viewing Pending Enrollments for: {0}".Fmt(m.Person.Name));
+            DbUtil.LogPersonActivity("Viewing Pending Enrollments for: {0}".Fmt(m.Person.Name), m.Person.PeopleId, m.Person.Name);
             return View("Enrollment/Pending", m);
         }
         [HttpPost]
         public ActionResult Attendance(PersonAttendHistoryModel m)
         {
-            DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
+            var name = Session["ActivePerson"] as string;
+            DbUtil.LogPersonActivity("Viewing Attendance History for: {0}".Fmt(name), m.PeopleId, name);
             return View("Enrollment/Attendance", m);
         }
         [HttpPost]
         public ActionResult AttendanceFuture(PersonAttendHistoryModel m)
         {
             m.Future = true;
-            DbUtil.LogActivity("Viewing Attendance History for: {0}".Fmt(Session["ActivePerson"]));
+            var name = Session["ActivePerson"] as string;
+            DbUtil.LogPersonActivity("Viewing Attendance History for: {0}".Fmt(name), m.PeopleId, name);
             return View("Enrollment/Attendance", m);
         }
         [HttpPost]
         public ActionResult Registrations(int PeopleId)
         {
             var m = new RegistrationsModel(PeopleId);
-            DbUtil.LogActivity("Viewing Registrations for: {0}".Fmt(m.Person.Name));
+            DbUtil.LogPersonActivity("Viewing Registrations for: {0}".Fmt(m.Person.Name), m.Person.PeopleId, m.Person.Name);
             return View("Enrollment/Registrations", m);
         }
         [HttpPost]
@@ -60,7 +62,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult RegistrationsUpdate(RegistrationsModel m)
         {
             m.UpdateModel();
-            DbUtil.LogActivity("Updating Registrations for: {0}".Fmt(m.Person.Name));
+            DbUtil.LogPersonActivity("Updating Registrations for: {0}".Fmt(m.Person.Name), m.Person.PeopleId, m.Person.Name);
             return View("Enrollment/Registrations", m);
         }
     }

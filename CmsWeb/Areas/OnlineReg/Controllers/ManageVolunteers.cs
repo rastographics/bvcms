@@ -81,6 +81,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [Route("ClaimVolSub/{ans}/{guid}")]
         public ActionResult ClaimVolSub(string ans, string guid)
         {
+			var vs = new VolSubModel(guid);
+			vs.PrepareToClaim(ans);
             ViewBag.Answer = ans;
             ViewBag.Guid = guid;
             return View();

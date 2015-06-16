@@ -63,9 +63,10 @@ namespace CmsData
         {
             return CMSDataContext.Create(Util.GetConnectionString(host), host);
         }
-        public static void LogActivity(string activity, string name = null, int? orgid = null, int? pid = null)
+
+        private static void _logActivity(string host, string activity, int? orgid, int? pid)
         {
-            var db = Create(Util.Host);
+            var db = Create(host);
             int? uid = Util.UserId;
             if (uid == 0)
                 uid = null;
@@ -81,36 +82,39 @@ namespace CmsData
             db.ActivityLogs.InsertOnSubmit(a);
             db.SubmitChanges();
             db.Dispose();
-            if (orgid.HasValue)
-            {
-                var mru = Util2.MostRecentOrgs;
-                var i = mru.SingleOrDefault(vv => vv.Id == orgid);
-                if (i != null)
-                    mru.Remove(i);
-                mru.Insert(0, new Util2.MostRecentItem() { Id = orgid.Value, Name = name });
-                if (mru.Count > 5)
-                    mru.RemoveAt(mru.Count - 1);
-            }
-            else if (pid.HasValue && pid != Util.UserPeopleId)
-            {
-                var mru = Util2.MostRecentPeople;
-                var i = mru.SingleOrDefault(vv => vv.Id == pid);
-                if (i != null)
-                    mru.Remove(i);
-                mru.Insert(0, new Util2.MostRecentItem() { Id = pid.Value, Name = name });
-                if (mru.Count > 5)
-                    mru.RemoveAt(mru.Count - 1);
-            }
-            //		    else if (qid.HasValue && pid != Util.UserPeopleId)
-            //		    {
-            //		        var mru = Util2.MostRecentQueries;
-            //		        var i = mru.SingleOrDefault(vv => vv.Id == pid);
-            //		        if (i != null)
-            //		            mru.Remove(i);
-            //		        mru.Insert(0, new Util2.MostRecentItem() { Id = pid.Value, Name = name });
-            //                if (mru.Count > 5)
-            //    	            mru.RemoveAt(mru.Count-1);
-            //		    }
+            
+        }
+        public static void LogActivity(string activity)
+        {
+            _logActivity(Util.Host, activity, null, null);
+        }
+        public static void LogActivity(string host, string activity)
+        {
+            _logActivity(host, activity, null, null);
+        }
+        public static void LogOrgActivity(string activity, int orgid, string name)
+        {
+            _logActivity(Util.Host, activity, orgid, null);
+            var mru = Util2.MostRecentOrgs;
+            var i = mru.SingleOrDefault(vv => vv.Id == orgid);
+            if (i != null)
+                mru.Remove(i);
+            mru.Insert(0, new Util2.MostRecentItem() { Id = orgid, Name = name });
+            if (mru.Count > 5)
+                mru.RemoveAt(mru.Count - 1);
+        }
+        public static void LogPersonActivity(string activity, int pid, string name)
+        {
+            _logActivity(Util.Host, activity, null, pid);
+            if (pid == Util.UserPeopleId) 
+                return;
+            var mru = Util2.MostRecentPeople;
+            var i = mru.SingleOrDefault(vv => vv.Id == pid);
+            if (i != null)
+                mru.Remove(i);
+            mru.Insert(0, new Util2.MostRecentItem() { Id = pid, Name = name });
+            if (mru.Count > 5)
+                mru.RemoveAt(mru.Count - 1);
         }
         public static void DbDispose()
         {
@@ -358,5 +362,6 @@ namespace CmsData
 	        var sc = Supporters(ss);
 	        return sc.Single(ee => ee.email == email);
 	    }
+
     }
 }

@@ -45,6 +45,7 @@ namespace CmsWeb.Models
             this.attend = i.attend;
             person = i.person;
         }
+
         public VolSubModel()
         {
             Db = DbUtil.Db;
@@ -95,7 +96,7 @@ Yes, I can sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 
             subject = "Volunteer substitute request for {0}".Fmt(org.OrganizationName);
-            message = DbUtil.Db.ContentHtml("VolunteerSubRequest", Resource1.VolSubModel_ComposeMessage_Body);
+            message = Db.ContentHtml("VolunteerSubRequest", Resource1.VolSubModel_ComposeMessage_Body);
             message = message.Replace("{org}", org.OrganizationName)
                 .Replace("{meetingdate}", attend.MeetingDate.ToString("dddd, MMM d"))
                 .Replace("{meetingtime}", attend.MeetingDate.ToString("h:mm tt"))
@@ -179,9 +180,9 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
             qb.Reset(Db);
             qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, "{0},temp".Fmt(tag.Id));
             attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
-            qb.Save(DbUtil.Db);
+            qb.Save(Db);
 
-            var rurl = DbUtil.Db.ServerLink("/OnlineReg/VolSubReport/{0}/{1}/{2}".Fmt(attend.AttendId, person.PeopleId, dt.Ticks));
+            var rurl = Db.ServerLink("/OnlineReg/VolSubReport/{0}/{1}/{2}".Fmt(attend.AttendId, person.PeopleId, dt.Ticks));
             var reportlink = @"<a href=""{0}"">Substitute Status Report</a>".Fmt(rurl);
             var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
             //list.Insert(0, person);
@@ -198,7 +199,6 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
             m.Subject = subject;
             m.Body = message;
 
-            DbUtil.LogActivity("Emailing Vol Subs");
             m.FromName = person.Name;
             m.FromAddress = person.FromEmail;
 
@@ -207,6 +207,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
             // save these from HttpContext to set again inside thread local storage
             var useremail = Util.UserEmail;
             var isinroleemailtest = HttpContext.Current.User.IsInRole("EmailTest");
+            Log("Send Emails");
 
             TaskAlias.Factory.StartNew(() =>
             {
@@ -221,6 +222,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
                 }
                 catch (Exception ex)
                 {
+                    Log("Email Error");
                     var ex2 = new Exception("Emailing error for queueid " + eqid, ex);
                     ErrorLog errorLog = ErrorLog.GetDefault(null);
                     errorLog.Log(new Error(ex2));
@@ -235,31 +237,54 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
                 }
             });
         }
-        public void ProcessReply(string ans)
+
+        public class VolSubLogInfo
         {
-            if (attend.SubRequests.Any(ss => ss.CanSub == true))
-            {
-                DisplayMessage = "This substitute request has already been covered. Thank you so much for responding.";
-                return;
-            }
+            public SubRequest rr { get; set; }
+            public int oid { get; set; }
+            public DateTime dt { get; set; }
+        }
+
+        public void PrepareToClaim(string ans)
+        {
             var dt = new DateTime(ticks);
-            var r = (from rr in Db.SubRequests
+            var i = (from rr in Db.SubRequests
                      where rr.AttendId == attend.AttendId
                      where rr.RequestorId == person.PeopleId
                      where rr.Requested == dt
                      where rr.SubstituteId == sid
                      select rr).Single();
-            r.Responded = DateTime.Now;
+            Log("PrepareToClaim:" + ans, i.Requested, i.SubstituteId);
+        }
+        public void ProcessReply(string ans)
+        {
+            var dt = new DateTime(ticks);
+            var i = (from rr in Db.SubRequests
+                     where rr.AttendId == attend.AttendId
+                     where rr.RequestorId == person.PeopleId
+                     where rr.Requested == dt
+                     where rr.SubstituteId == sid
+                     select rr).Single();
+
+            if (attend.SubRequests.Any(ss => ss.CanSub == true))
+            {
+                DisplayMessage = "This substitute request has already been covered. Thank you so much for responding.";
+                Log("Covered", i.Requested, i.SubstituteId);
+                return;
+            }
+            i.Responded = DateTime.Now;
             if (ans != "yes")
             {
                 DisplayMessage = "Thank you for responding";
-                r.CanSub = false;
+                i.CanSub = false;
+                Log("Regrets", i.Requested, i.SubstituteId);
                 Db.SubmitChanges();
                 return;
             }
-            r.CanSub = true;
-            Attend.MarkRegistered(Db, r.Substitute.PeopleId, attend.MeetingId, CmsData.Codes.AttendCommitmentCode.Substitute);
+            i.CanSub = true;
+            Attend.MarkRegistered(Db, i.Substitute.PeopleId, attend.MeetingId, CmsData.Codes.AttendCommitmentCode.Substitute);
             attend.Commitment = CmsData.Codes.AttendCommitmentCode.SubFound;
+            Log("Claimed", i.Requested, i.SubstituteId);
             Db.SubmitChanges();
             var body = @"
 <p>{0},</p>
@@ -267,28 +292,40 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 <p>You are now assigned to cover for {1}<br />
 in the {2}<br />
 on {3:MMM d, yyyy} at {3:t}.
-See you there!</p>".Fmt(r.Substitute.Name, r.Requestor.Name,
+See you there!</p>".Fmt(i.Substitute.Name, i.Requestor.Name,
                 org.OrganizationName, attend.MeetingDate);
 
             // on screen message
             DisplayMessage = "<p>You have been sent the following email at {0}.</p>\n"
-                .Fmt(Util.ObscureEmail(r.Substitute.EmailAddress)) + body;
+                .Fmt(Util.ObscureEmail(i.Substitute.EmailAddress)) + body;
 
             // email confirmation
-            Db.Email(r.Requestor.FromEmail, r.Substitute,
+            Db.Email(i.Requestor.FromEmail, i.Substitute,
                 "Volunteer Substitute Committment for " + org.OrganizationName, body);
 
             // notify requestor and org notifyids
             var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
-            list.Insert(0, r.Requestor);
-            Db.Email(r.Substitute.FromEmail, list,
+            list.Insert(0, i.Requestor);
+            Db.Email(i.Substitute.FromEmail, list,
                 "Volunteer Substitute Committment for " + org.OrganizationName,
                 @"
 <p>The following email was sent to {0}.</p>
 <blockquote>
 {1}
-</blockquote>".Fmt(r.Substitute.Name, body));
+</blockquote>".Fmt(i.Substitute.Name, body));
         }
+
+        public void Log(string action, DateTime? reqtime, int? sub)
+        {
+            DbUtil.LogActivity("VolSub {0} org={1}, vol={2}, mdt={3}, rdt={4}, sub={5}".Fmt(action,
+                attend.OrganizationId, attend.PeopleId, attend.MeetingDate.FormatDateTm(), reqtime.FormatDateTm(), sub));
+        }
+        public void Log(string action)
+        {
+            DbUtil.LogActivity("VolSub {0} org={1}, vol={2}, mdt={3}".Fmt(action,
+                attend.OrganizationId, attend.PeopleId, attend.MeetingDate.FormatDateTm()));
+        }
+
         public class SubStatusInfo
         {
             public string SubName { get; set; }
@@ -328,7 +365,7 @@ See you there!</p>".Fmt(r.Substitute.Name, r.Requestor.Name,
         private Settings setting;
         public Settings Setting
         {
-            get { return setting ?? (setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId)); }
+            get { return setting ?? (setting = new Settings(org.RegSetting, Db, org.OrganizationId)); }
         }
     }
 }

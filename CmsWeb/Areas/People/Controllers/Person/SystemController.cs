@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -27,7 +28,8 @@ namespace CmsWeb.Areas.People.Controllers
             else
             {
                 u = CmsWeb.Models.AccountModel.AddUser(Util2.CurrentPeopleId);
-                DbUtil.LogActivity("New User for: {0}".Fmt(Session["ActivePerson"]));
+                var name = Session["ActivePerson"] as string;
+                DbUtil.LogPersonActivity("New User for: {0}".Fmt(name), Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
             }
             ViewBag.sendwelcome = false;
@@ -52,10 +54,13 @@ namespace CmsWeb.Areas.People.Controllers
             if (p.HasValue())
                 user.ChangePassword(p);
             DbUtil.Db.SubmitChanges();
+            if (!user.PeopleId.HasValue)
+                throw new Exception("missing peopleid in UserUpdate");
             var pp = DbUtil.Db.LoadPersonById(user.PeopleId.Value);
             if (sendwelcome)
                 CmsWeb.Models.AccountModel.SendNewUserEmail(u);
-            DbUtil.LogActivity("Update User for: {0}".Fmt(Session["ActivePerson"]));
+            var name = Session["ActivePerson"] as string;
+            DbUtil.LogPersonActivity("Update User for: {0}".Fmt(name), pp.PeopleId, name);
             InitExportToolbar(user.PeopleId);
             return View("System/Users", pp.Users.AsEnumerable());
         }

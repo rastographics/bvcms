@@ -203,5 +203,9 @@ namespace CmsData
             var text = "{0} {1}\r\n".Fmt(DateTime.Now.ToSortableTime(), s);
             File.AppendAllText(output, text);
         }
+        public void LogActivity(string activity)
+        {
+            DbUtil.LogActivity(Host, activity);
+        }
     }
 }
