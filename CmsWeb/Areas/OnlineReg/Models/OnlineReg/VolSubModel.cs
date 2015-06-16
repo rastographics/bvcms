@@ -245,8 +245,25 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
             public DateTime dt { get; set; }
         }
 
-        public void PrepareToClaim(string ans)
+        public void PrepareToClaim(string ans, string guid)
         {
+            var error = "";
+            if (!guid.HasValue())
+                error = "bad link";
+            var g = guid.ToGuid();
+            if (g == null)
+                error = "invalid link";
+            var ot = Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == g.Value);
+            if (ot == null)
+                error = "invalid link";
+            if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
+                error = "link expired";
+            if (error.HasValue())
+                throw new Exception(error);
+            var a = ot.Querystring.Split(',');
+            FetchEntities(a[0].ToInt(), a[1].ToInt());
+            ticks = a[2].ToLong();
+            sid = a[3].ToInt();
             var dt = new DateTime(ticks);
             var i = (from rr in Db.SubRequests
                      where rr.AttendId == attend.AttendId
@@ -317,13 +334,14 @@ See you there!</p>".Fmt(i.Substitute.Name, i.Requestor.Name,
 
         public void Log(string action, DateTime? reqtime, int? sub)
         {
-            DbUtil.LogActivity("VolSub {0} org={1}, vol={2}, mdt={3}, rdt={4}, sub={5}".Fmt(action,
-                attend.OrganizationId, attend.PeopleId, attend.MeetingDate.FormatDateTm(), reqtime.FormatDateTm(), sub));
+            DbUtil.LogActivity("VolSub {0} , mdt={1}, rdt={2}, sub={3}".Fmt(action,
+                attend.MeetingDate.FormatDateTm(), reqtime.FormatDateTm(), sub), 
+                attend.OrganizationId, attend.PeopleId);
         }
         public void Log(string action)
         {
-            DbUtil.LogActivity("VolSub {0} org={1}, vol={2}, mdt={3}".Fmt(action,
-                attend.OrganizationId, attend.PeopleId, attend.MeetingDate.FormatDateTm()));
+            DbUtil.LogActivity("VolSub {0}, mdt={1}".Fmt(action, 
+                attend.MeetingDate.FormatDateTm()), attend.OrganizationId, attend.PeopleId);
         }
 
         public class SubStatusInfo

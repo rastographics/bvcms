@@ -5,7 +5,10 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <td colspan="6">Results As of: @DateTime.Now.FormatDateTm()</td>
+        <td colspan="6">
+          <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+          As of: @DateTime.Now.FormatDateTm()
+        </td>
       </tr>
       <tr>
         <th>Machine</th>
@@ -24,8 +27,8 @@
           <td><a href="/LastActivity?userid=@a.UserId">@a.UserName</a></td>
           <td>@a.DateX.FormatDateTm()</td>
           <td>@a.Activity</td>
-          <td><a href="/LastActivity?orgid=@a.OrgId"></a>@a.OrgName</td>
-          <td><a href="/LastActivity?peopleid=@a.PeopleId"></a>@a.PersonName</td>
+          <td><a href="/LastActivity?orgid=@a.OrgId">@a.OrgName</a></td>
+          <td><a href="/LastActivity?peopleid=@a.PeopleId">@a.PersonName</a></td>
         </tr>
       }
     </tbody>

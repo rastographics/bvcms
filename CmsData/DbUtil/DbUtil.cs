@@ -84,13 +84,13 @@ namespace CmsData
             db.Dispose();
             
         }
-        public static void LogActivity(string activity)
+        public static void LogActivity(string activity, int? orgid = null, int? peopleid = null)
         {
-            _logActivity(Util.Host, activity, null, null);
+            _logActivity(Util.Host, activity, orgid, peopleid);
         }
-        public static void LogActivity(string host, string activity)
+        public static void LogActivity(string host, string activity, int? orgid = null, int? peopleid = null)
         {
-            _logActivity(host, activity, null, null);
+            _logActivity(host, activity, orgid, peopleid);
         }
         public static void LogOrgActivity(string activity, int orgid, string name)
         {
