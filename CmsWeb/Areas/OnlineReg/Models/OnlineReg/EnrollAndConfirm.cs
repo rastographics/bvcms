@@ -43,10 +43,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool EnrollAndConfirmMultipleOrgs()
         {
-            var paylink = GetPayLink();
             foreach (var p in List)
             {
-                p.Enroll(Transaction, paylink);
+                p.Enroll(Transaction, p.GetPayLink());
                 p.DoGroupToJoin();
                 p.CheckNotifyDiffEmails();
 
@@ -109,7 +108,7 @@ AmountDue: {5:C}<br/>
             DbUtil.Db.SetCurrentOrgId(p.orgid);
             var emailSubject = GetSubject(p);
             string details = p.PrepareSummaryText(Transaction);
-            var message = GetMessage(details, p);
+            var message = p.GetMessage(details);
 
             var NotifyIds = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId);
             var notify = NotifyIds[0];
@@ -334,35 +333,6 @@ Total Fee paid for this registration session: {4:C}<br/>
             return _subject = _subject.Replace("{org}", Header);
         }
 
-        private string GetMessage(string details, OnlineRegPersonModel p)
-        {
-            var amtpaid = Transaction.Amt ?? 0;
-            var paylink = GetPayLink();
-            var body = settings[org.OrganizationId].Body;
-            if (masterorgid.HasValue && !body.HasValue())
-                body = settings[masterorgid.Value].Body;
-
-            var message = Util.PickFirst(body, "no message");
-            var location = org.Location;
-            if (!location.HasValue() && masterorg != null)
-                location = masterorg.Location;
-
-            message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db,
-                p.person, org.DivisionName, org.OrganizationName, location, message);
-            message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
-                .Replace("{tickets}", p.ntickets.ToString())
-                .Replace("{details}", details)
-                .Replace("{paid}", amtpaid.ToString("c"))
-                .Replace("{sessiontotal}", amtpaid.ToString("c"))
-                .Replace("{participants}", details);
-            if (Transaction.Amtdue > 0)
-                message = message.Replace("{paylink}",
-                    "<a href='{0}'>Click this link to make a payment on your balance of {1:C}</a>.".Fmt(paylink,
-                        Transaction.Amtdue));
-            else
-                message = message.Replace("{paylink}", "You have a zero balance.");
-            return message;
-        }
 
 
         private string DoEnrollments()
@@ -387,7 +357,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                 details.AppendFormat(amountRowFormat, amtpaid, Transaction.Amtdue);
             foreach (var p in List)
             {
-                p.Enroll(Transaction, GetPayLink());
+                p.Enroll(Transaction, p.GetPayLink());
                 p.DoGroupToJoin();
                 p.CheckNotifyDiffEmails();
 
@@ -398,18 +368,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                 details.AppendFormat(summaryRow, p.PrepareSummaryText(Transaction));
             }
             details.Append("\n</table>\n");
-            return GetMessage(details.ToString(), List[0]);
-        }
-
-        private string _paylink;
-        private string GetPayLink()
-        {
-            if (_paylink.HasValue())
-                return _paylink;
-            if (org != null && org.IsMissionTrip == true)
-                return _paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, List[0].PeopleId));
-            var estr = HttpUtility.UrlEncode(Util.Encrypt(Transaction.OriginalId.ToString()));
-            return _paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
+            return List[0].GetMessage(details.ToString());
         }
 
         private List<MailAddress> listMailAddress;

@@ -4,6 +4,7 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using System.Text;
+using System.Web;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -29,6 +30,47 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             DbUtil.Db.SubmitChanges();
             return om;
+        }
+
+        public string GetMessage(string details)
+        {
+            var amtpaid = Parent.Transaction.Amt ?? 0;
+            var paylink = GetPayLink();
+            var body = settings[org.OrganizationId].Body;
+            if (masterorgid.HasValue && !body.HasValue())
+                body = settings[masterorgid.Value].Body;
+
+            var message = Util.PickFirst(body, "no message");
+            var location = org.Location;
+            if (!location.HasValue() && masterorg != null)
+                location = masterorg.Location;
+
+            message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db,
+                person, org.DivisionName, org.OrganizationName, location, message);
+            message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
+                .Replace("{tickets}", ntickets.ToString())
+                .Replace("{details}", details)
+                .Replace("{paid}", amtpaid.ToString("c"))
+                .Replace("{sessiontotal}", amtpaid.ToString("c"))
+                .Replace("{participants}", details);
+            if (Parent.Transaction.Amtdue > 0)
+                message = message.Replace("{paylink}",
+                    "<a href='{0}'>Click this link to make a payment on your balance of {1:C}</a>.".Fmt(paylink,
+                        Parent.Transaction.Amtdue));
+            else
+                message = message.Replace("{paylink}", "You have a zero balance.");
+            return message;
+        }
+
+        private string _paylink;
+        public string GetPayLink()
+        {
+            if (_paylink.HasValue())
+                return _paylink;
+            if (org != null && org.IsMissionTrip == true)
+                return _paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(orgid, PeopleId));
+            var estr = HttpUtility.UrlEncode(Util.Encrypt(Parent.Transaction.OriginalId.ToString()));
+            return _paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
         }
 
         private void LogRegistrationOnOrgMember(Transaction transaction, OrganizationMember om, string paylink)
