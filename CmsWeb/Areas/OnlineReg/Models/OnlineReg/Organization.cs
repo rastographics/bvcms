@@ -1,13 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Web;
-using System.Xml.Serialization;
 using CmsData;
 using CmsData.Codes;
-using CmsData.Registration;
-using CmsWeb.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models

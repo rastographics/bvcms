@@ -160,7 +160,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult SubmitQuestions(int id, OnlineRegModel m)
         {
             fromMethod = "SubmitQuestions";
-            m.HistoryAdd("SubmitOtherInfo id=" + id);
+            m.HistoryAdd("SubmitQuestions id=" + id);
             if (m.List.Count <= id)
                 return Content("<p style='color:red'>error: cannot find person on submit other info</p>");
             m.List[id].ValidateModelQuestions(ModelState, id);

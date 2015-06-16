@@ -577,7 +577,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (Util.IsLocalNetworkRequest)
             {
                 var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.OrganizationId == 81460 && om.PeopleId == 828612
+                        where om.PeopleId == 828612 || om.PeopleId == 828611
+                        where om.OrganizationId == 81460 || om.OrganizationId == 85521
                         select om;
                 foreach (var om in q)
                     om.Drop(DbUtil.Db, DateTime.Now);

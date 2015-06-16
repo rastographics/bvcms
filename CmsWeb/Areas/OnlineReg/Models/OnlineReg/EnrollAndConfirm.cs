@@ -406,7 +406,7 @@ Total Fee paid for this registration session: {4:C}<br/>
         {
             if (_paylink.HasValue())
                 return _paylink;
-            if (org.IsMissionTrip == true)
+            if (org != null && org.IsMissionTrip == true)
                 return _paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, List[0].PeopleId));
             var estr = HttpUtility.UrlEncode(Util.Encrypt(Transaction.OriginalId.ToString()));
             return _paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
