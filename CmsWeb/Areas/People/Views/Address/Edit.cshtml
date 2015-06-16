@@ -8,7 +8,7 @@
         <div class="modal-body">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#" data-toggle="tab"><b>@Model.Display Address</b></a></li>
-                <li><a id="otheraddress" href="#" class="ajax" data-toggle="tab" data-link="/Address/Edit/@Model.OtherName/@Model.PeopleId">Edit @Model.OtherDisplay Address</a></li>
+                <li><a id="otheraddress" href="#otheraddress" class="ajax" data-toggle="tab" data-link="/Address/Edit/@Model.OtherName/@Model.PeopleId">Edit @Model.OtherDisplay Address</a></li>
             </ul>
             <br/>
             @if (!string.IsNullOrWhiteSpace(Model.Error))
@@ -60,7 +60,7 @@
                 <a href="#" class="btn btn-default" data-dismiss="modal">Cancel</a>
             </div>
             <div class="pull-right">
-                <a href="#" class="btn btn-warning clear-address">Clear</a> 
+                <a href="#" class="btn btn-warning clear-address">Clear</a>
                 @if (!Model.IsValid && Model.ResultNotFound)
                 {
                     <a href="/Address/ForceSave" class="btn btn-danger ajax">Use this Address Anyway</a>

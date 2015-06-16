@@ -89,7 +89,7 @@
             var f = $(this);
             $('#empty-dialog').html(f);
             $('#empty-dialog').modal("show");
-            
+
             f.on("click", "a.clear-address", function () {
                 $("#AddressLineOne").val("");
                 $("#AddressLineTwo").val("");
@@ -329,7 +329,7 @@
             var f = $(this);
             $('#empty-dialog').html(f);
             $('#empty-dialog').modal("show");
-            
+
             $('#empty-dialog').on('hidden', function () {
                 f.remove();
                 $.RebindMemberGrids();
@@ -611,7 +611,7 @@
             function (isConfirm) {
                 if (isConfirm) {
                     $('#role-list input[name="role"]').prop('checked', false);
-                    
+
                 } else {
                     $('#myDataUserRole').prop('checked', false);
                 }
