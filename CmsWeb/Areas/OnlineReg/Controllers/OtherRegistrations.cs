@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             internal Exception LinkException(string msg)
             {
-                DbUtil.LogActivity(link + from + "Error " + msg, oid, pid);
+                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(link, from, msg), oid, pid);
                 return new Exception(msg);
             }
         }
@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ViewBag.Confirm = confirm.GetValueOrDefault().ToString();
 
             var smallgroup = li.a[4];
-            DbUtil.LogActivity(votelinkSTR + landingSTR + smallgroup, li.oid, li.pid);
+            DbUtil.LogActivity("{0}{1}: {2}".Fmt(votelinkSTR, landingSTR, smallgroup), li.oid, li.pid);
             return View();
         }
 
@@ -143,7 +143,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 li.ot.Used = true;
                 DbUtil.Db.SubmitChanges();
 
-                DbUtil.LogActivity(votelinkSTR + confirmSTR + " " + smallgroup, li.oid, li.pid);
+                DbUtil.LogActivity("{0}{1}: {2}".Fmt(votelinkSTR, confirmSTR, smallgroup), li.oid, li.pid);
 
                 if (confirm == true)
                 {
@@ -170,7 +170,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
-                DbUtil.LogActivity(votelinkSTR + confirmSTR + "Error " + ex.Message, li.oid, li.pid);
+                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(votelinkSTR, confirmSTR, ex.Message), li.oid, li.pid);
                 return Message(ex.Message);
             }
 
@@ -188,7 +188,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ViewBag.Confirm = confirm.GetValueOrDefault().ToString();
             ViewBag.Regrets = regrets.ToString();
 
-            DbUtil.LogActivity(rsvplinkSTR + landingSTR, li.oid, li.pid);
+            DbUtil.LogActivity("{0}{1}: {2}".Fmt(rsvplinkSTR, landingSTR, regrets), li.oid, li.pid);
             return View();
         }
 
@@ -242,7 +242,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 li.ot.Used = true;
                 DbUtil.Db.SubmitChanges();
                 Attend.MarkRegistered(DbUtil.Db, li.pid.Value, meetingid, regrets ? AttendCommitmentCode.Regrets : AttendCommitmentCode.Attending);
-                DbUtil.LogActivity(rsvplinkSTR + confirmSTR, q.org.OrganizationId, li.pid);
+                DbUtil.LogActivity("{0}{1}: {2}".Fmt(rsvplinkSTR, confirmSTR, regrets), q.org.OrganizationId, li.pid);
                 var setting = new Settings(q.org.RegSetting, DbUtil.Db, q.meeting.OrganizationId);
 
                 if (confirm == true)
@@ -261,7 +261,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
-                DbUtil.LogActivity(rsvplinkSTR + confirmSTR + "Error " + ex.Message, peopleid: li.pid);
+                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(rsvplinkSTR, confirmSTR, regrets), peopleid: li.pid);
                 return Message(ex.Message);
             }
             return Message(message);
@@ -302,7 +302,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (q.om == null && (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
                     throw new Exception("sorry, registration has been closed");
 
-                DbUtil.LogActivity(registerlinkSTR + landingSTR, li.oid, li.pid);
+                DbUtil.LogActivity("{0}{1}".Fmt(registerlinkSTR, landingSTR), li.oid, li.pid);
 
                 var url = string.IsNullOrWhiteSpace(source)
                     ? "/OnlineReg/{0}?registertag={1}".Fmt(li.oid, id)
@@ -315,7 +315,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
-                DbUtil.LogActivity(registerlinkSTR + "Error " + ex.Message, li.oid, li.pid);
+                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(registerlinkSTR, landingSTR, ex.Message), li.oid, li.pid);
                 return Message(ex.Message);
             }
         }
@@ -328,7 +328,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return Message(li.error);
 
             ViewBag.Id = id;
-            DbUtil.LogActivity(sendlinkSTR + landingSTR, li.oid, li.pid);
+            DbUtil.LogActivity("{0}{1}".Fmt(sendlinkSTR, landingSTR), li.oid, li.pid);
             return View();
         }
 
@@ -363,7 +363,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
                 li.ot.Used = true;
                 DbUtil.Db.SubmitChanges();
-                DbUtil.LogActivity(sendlinkSTR + confirmSTR, li.oid, li.pid);
+                DbUtil.LogActivity("{0}{1}".Fmt(sendlinkSTR, confirmSTR), li.oid, li.pid);
 
                 var subject = "Your link for " + q.org.OrganizationName;
                 var msg = @"<p>Here is your <a href=""{0}"">LINK</a></p>
@@ -378,7 +378,7 @@ or contact the church if you need help.</p>"
             }
             catch (Exception ex)
             {
-                DbUtil.LogActivity(sendlinkSTR + confirmSTR + "Error " + ex.Message, li.oid, li.pid);
+                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(sendlinkSTR, confirmSTR, ex.Message), li.oid, li.pid);
                 return Message(ex.Message);
             }
         }
