@@ -70,6 +70,10 @@ namespace CmsData
             int? uid = Util.UserId;
             if (uid == 0)
                 uid = null;
+            if (orgid.HasValue && !db.PeopleIdOk(pid))
+                pid = null;
+            if (pid.HasValue && !db.OrgIdOk(orgid))
+                orgid = null;
             var a = new ActivityLog
             {
                 ActivityDate = Util.Now,

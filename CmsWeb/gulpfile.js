@@ -89,7 +89,7 @@ var legacyJsFiles = [
             'Scripts/jquery.validate.js',
             'Scripts/globalize.js',
             'Scripts/jquery.validate.globalize.js',
-            'Scripts/jQuery/jquery.idle-timer.js',
+            'Content/touchpoint/lib/idleTimer/js/idle-timer.js',
             'Scripts/jQuery/jquery.blockUI.js',
             'Scripts/jQuery/jquery.sortElements.js',
             'Scripts/jQuery/jquery.showpassword.js'

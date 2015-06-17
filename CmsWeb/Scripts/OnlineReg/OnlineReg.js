@@ -175,7 +175,7 @@
         }
         return true;
     });
-    $.refreshenabled = false; // false until something happens
+    $.refreshenabled = true; // false until something happens
     $(document).bind("idle.idleTimer", function () {
         if ($.refreshenabled)
             window.location.href = $.timeoutUrl;

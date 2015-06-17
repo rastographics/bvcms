@@ -34,7 +34,7 @@ namespace CmsData
         internal string ConnectionString;
         public static CMSDataContext Create(string connStr, string host)
         {
-            return new CMSDataContext(connStr) {ConnectionString = connStr, Host = host};
+            return new CMSDataContext(connStr) { ConnectionString = connStr, Host = host };
         }
         partial void OnCreated()
         {
@@ -143,6 +143,20 @@ namespace CmsData
         {
             return this.Organizations.FirstOrDefault(o => o.OrganizationId == id);
         }
+        public bool OrgIdOk(int? id)
+        {
+            var i = (from o in Organizations
+                     where o.OrganizationId == id
+                     select o.OrganizationId).SingleOrDefault();
+            return i > 0;
+        }
+        public bool PeopleIdOk(int? id)
+        {
+            var i = (from o in People
+                     where o.PeopleId == id
+                     select o.PeopleId).SingleOrDefault();
+            return i > 0;
+        }
         public Meeting LoadMeetingById(int? id)
         {
             return this.Meetings.SingleOrDefault(m => m.MeetingId == id);
@@ -204,7 +218,7 @@ namespace CmsData
                     m = m.NextMatch();
                 }
                 if (pids.Count > 0)
-                return People.Where(pp => pids.Contains(pp.PeopleId));
+                    return People.Where(pp => pids.Contains(pp.PeopleId));
             }
 
             var qB = Queries.FirstOrDefault(cc => cc.Name == name);
@@ -335,7 +349,7 @@ namespace CmsData
         const int maxints = 1000;
         public void UnTagAll(List<int> list, Tag tag)
         {
-            for(var i = 0; i< list.Count; i+=maxints)
+            for (var i = 0; i < list.Count; i += maxints)
             {
                 var s = string.Join(",", list.Skip(i).Take(maxints));
                 var cmd = "DELETE dbo.TagPerson WHERE Id = {0} AND PeopleId IN ({1})".Fmt(tag.Id, s);
@@ -344,7 +358,7 @@ namespace CmsData
         }
         public void TagAll(List<int> list, Tag tag)
         {
-            for(var i = 0; i< list.Count; i+=maxints)
+            for (var i = 0; i < list.Count; i += maxints)
             {
                 var s = string.Join(",", list.Skip(i).Take(maxints));
                 var cmd = "INSERT dbo.TagPerson (Id, PeopleId) SELECT {0}, Value FROM dbo.SplitInts('{1}')".Fmt(tag.Id, s);
@@ -397,7 +411,7 @@ namespace CmsData
             var cmd = GetCommand(q);
             var s = cmd.CommandText;
             var plist = new List<DbParameter>();
-            
+
             int n = 0, pn = 0;
             foreach (var p in cmd.Parameters)
             {
@@ -406,7 +420,7 @@ namespace CmsData
                 {
                     s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
                     continue;
-            }
+                }
                 s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
                 plist.Add(pa);
             }
@@ -1148,8 +1162,8 @@ namespace CmsData
         }
         [Function(Name = "dbo.UpdateQuestion")]
         public int UpdateQuestion(
-            [Parameter(DbType = "Int")] int? oid, 
-            [Parameter(DbType = "Int")] int? pid, 
+            [Parameter(DbType = "Int")] int? oid,
+            [Parameter(DbType = "Int")] int? pid,
             [Parameter(DbType = "Int")] int? n,
             [Parameter(DbType = "VARCHAR(1000)")] string answer)
         {
@@ -1157,23 +1171,23 @@ namespace CmsData
             return ((int)(result.ReturnValue));
         }
         public IQueryable<View.OrgPerson> OrgPeople(int? oid, string sgfilter)
-	    {
-	        return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
-	    }
-	    public IQueryable<View.OrgPerson> OrgPeople(
+        {
+            return OrgPeople(oid, GroupSelectCode.Member, null, null, sgfilter, false, false, false);
+        }
+        public IQueryable<View.OrgPerson> OrgPeople(
              int? oid,
              string first,
              string last,
              string sgfilter,
              bool filterchecked,
              bool filtertag
-	        )
-	    {
-	        return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false, 
+            )
+        {
+            return OrgPeople(oid, GroupSelectCode.Member, first, last, sgfilter, false,
                 Util2.CurrentTag, Util2.CurrentTagOwnerId, filterchecked,
-	            filtertag, null, Util.UserPeopleId);
-	    }
-	    public IQueryable<View.OrgPerson> OrgPeople(
+                filtertag, null, Util.UserPeopleId);
+        }
+        public IQueryable<View.OrgPerson> OrgPeople(
              int? oid,
              string grouptype,
              string first,
@@ -1182,12 +1196,12 @@ namespace CmsData
              bool showhidden,
              bool filterchecked,
              bool filtertag
-	        )
-	    {
-	        return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden, 
+            )
+        {
+            return OrgPeople(oid, grouptype, first, last, sgfilter, showhidden,
                 Util2.CurrentTag, Util2.CurrentTagOwnerId, filterchecked,
-	            filtertag, null, Util.UserPeopleId);
-	    }
+                filtertag, null, Util.UserPeopleId);
+        }
         public OrganizationMember LoadOrgMember(int PeopleId, string OrgName, bool orgmustexist)
         {
             if (orgmustexist)

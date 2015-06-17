@@ -5,7 +5,6 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using CmsData.Codes;
-using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -52,7 +51,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             internal Exception LinkException(string msg)
             {
-                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(link, from, msg), oid, pid);
+                DbUtil.LogActivity("{0}{1}Error: {2} {3} {4}".Fmt(link, from, msg, oid, pid), oid, pid);
                 return new Exception(msg);
             }
         }
@@ -242,7 +241,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 li.ot.Used = true;
                 DbUtil.Db.SubmitChanges();
                 Attend.MarkRegistered(DbUtil.Db, li.pid.Value, meetingid, regrets ? AttendCommitmentCode.Regrets : AttendCommitmentCode.Attending);
-                DbUtil.LogActivity("{0}{1}: {2}".Fmt(rsvplinkSTR, confirmSTR, regrets), q.org.OrganizationId, li.pid);
+                DbUtil.LogActivity("{0}{1}: {2}".Fmt(rsvplinkSTR, confirmSTR, regrets ? "Regrets" : "Coming"), q.org.OrganizationId, li.pid);
                 var setting = new Settings(q.org.RegSetting, DbUtil.Db, q.meeting.OrganizationId);
 
                 if (confirm == true)
@@ -261,7 +260,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
-                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(rsvplinkSTR, confirmSTR, regrets), peopleid: li.pid);
+                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(rsvplinkSTR, confirmSTR, regrets ? "Regrets" : "Coming"), peopleid: li.pid);
                 return Message(ex.Message);
             }
             return Message(message);
@@ -378,7 +377,7 @@ or contact the church if you need help.</p>"
             }
             catch (Exception ex)
             {
-                DbUtil.LogActivity("{0}{1}Error: {2}".Fmt(sendlinkSTR, confirmSTR, ex.Message), li.oid, li.pid);
+                DbUtil.LogActivity("{0}{1}Error: {2} {3} {4}".Fmt(sendlinkSTR, confirmSTR, ex.Message, li.oid, li.pid), li.oid, li.pid);
                 return Message(ex.Message);
             }
         }

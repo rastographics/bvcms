@@ -887,6 +887,8 @@
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\tables.min.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\urls.min.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\js\plugins\video.min.js" />
+    <Content Include="Content\touchpoint\lib\idleTimer\js\idle-timer.js" />
+    <Content Include="Content\touchpoint\lib\idleTimer\js\idle-timer.min.js" />
     <Content Include="Content\touchpoint\lib\ion-sound\js\ion.sound.min.js" />
     <Content Include="Content\touchpoint\js\meeting\meeting-ticket.js" />
     <Content Include="Content\touchpoint\js\meeting\meeting.js" />
@@ -2529,7 +2531,6 @@
     <Content Include="Scripts\jQuery\jquery.contextmenu.r2.js" />
     <Content Include="Scripts\jQuery\jquery.form.js" />
     <Content Include="Scripts\jQuery\jquery.form2.js" />
-    <Content Include="Scripts\jQuery\jquery.idle-timer.js" />
     <Content Include="Scripts\jQuery\jquery.jscrollpane.js" />
     <Content Include="Scripts\jQuery\jquery.showpassword.js" />
     <Content Include="Scripts\js\ChurchAttendance.js" />
