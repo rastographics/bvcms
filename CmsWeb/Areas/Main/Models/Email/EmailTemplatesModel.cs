@@ -8,39 +8,36 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Models
 {
-	public class EmailTemplatesModel
-	{
-	    public bool wantparents { get; set; }
-	    public bool ccparents { get; set; }
-	    public bool nodups { get; set; }
-	    public Guid queryid { get; set; }
-	    public int? orgid { get; set; }
-		public IQueryable<Content> fetchTemplates()
-		{
-			var currentRoleIds = DbUtil.Db.CurrentRoleIds();
-			var isadmin = HttpContext.Current.User.IsInRole("Admin");
+    public class EmailTemplatesModel
+    {
+        public bool WantParents { get; set; }
+        public bool CcParents { get; set; }
+        public bool NoDups { get; set; }
+        public Guid QueryId { get; set; }
+        public int? OrgId { get; set; }
 
-			return from i in DbUtil.Db.Contents
-					 where i.TypeID == ContentTypeCode.TypeEmailTemplate
-					 where isadmin || i.RoleID == 0 || currentRoleIds.Contains(i.RoleID)
-					 orderby i.Name
-					 select i;
-		}
-
-        public Content fetchTemplateByName( string name )
+        public IQueryable<Content> FetchTemplates()
         {
             var currentRoleIds = DbUtil.Db.CurrentRoleIds();
             var isadmin = HttpContext.Current.User.IsInRole("Admin");
 
+            return from i in DbUtil.Db.Contents
+                   where i.TypeID == ContentTypeCode.TypeEmailTemplate
+                   where isadmin || i.RoleID == 0 || currentRoleIds.Contains(i.RoleID)
+                   orderby i.Name
+                   select i;
+        }
+
+        public Content FetchTemplateByName(string name)
+        {
             return (from i in DbUtil.Db.Contents
                     where i.Name == name
                     select i).SingleOrDefault();
         }
 
-        public IQueryable<ContentModel.SavedDraft> fetchDrafts()
-		{
-			var currentRoleIds = DbUtil.Db.CurrentRoleIds();
-			var isadmin = HttpContext.Current.User.IsInRole("Admin");
+        public IQueryable<ContentModel.SavedDraft> FetchDrafts()
+        {
+            var currentRoleIds = DbUtil.Db.CurrentRoleIds();
 
             return from c in DbUtil.Db.Contents
                    where c.TypeID == ContentTypeCode.TypeSavedDraft
@@ -59,6 +56,6 @@ namespace CmsWeb.Areas.Main.Models
                        role = r.RoleName,
                        roleID = c.RoleID
                    };
-		}
-	}
+        }
+    }
 }
