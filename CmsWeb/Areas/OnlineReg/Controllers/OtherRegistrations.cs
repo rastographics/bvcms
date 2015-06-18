@@ -5,7 +5,6 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using CmsData.Codes;
-using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {

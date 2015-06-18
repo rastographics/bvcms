@@ -259,17 +259,19 @@ namespace CmsWeb.Models
 				 Expires = "1015",
 				 Routing = "056008849",
 				 Account = "12345678901234"
-#else
-                CreditCard = r.payinfo.MaskedCard,
-                Account = r.payinfo.MaskedAccount,
-                Routing = r.payinfo.Routing,
-                Expires = r.payinfo.Expires,
-                SavePayInfo =
-                   (r.payinfo.MaskedAccount != null && r.payinfo.MaskedAccount.StartsWith("X"))
-                   || (r.payinfo.MaskedCard != null && r.payinfo.MaskedCard.StartsWith("X")),
-                Type = r.payinfo.PreferredPaymentType,
 #endif
             };
+            if (r.payinfo.PeopleId == Util.UserPeopleId) // Is this the logged in user?
+            {
+                pf.CreditCard = r.payinfo.MaskedCard;
+                pf.Account = r.payinfo.MaskedAccount;
+                pf.Routing = r.payinfo.Routing;
+                pf.Expires = r.payinfo.Expires;
+                pf.SavePayInfo =
+                   (r.payinfo.MaskedAccount != null && r.payinfo.MaskedAccount.StartsWith("X"))
+                   || (r.payinfo.MaskedCard != null && r.payinfo.MaskedCard.StartsWith("X"));
+                pf.Type = r.payinfo.PreferredPaymentType;
+            }
 
             ClearMaskedNumbers(pf, r.payinfo);
 
