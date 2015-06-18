@@ -31,8 +31,8 @@ namespace CmsWeb.Areas.Main.Controllers
 				if (templateID == null)
 					return View("SelectTemplate", new EmailTemplatesModel
 					{
-					    wantparents = parents ?? false,
-                        queryid = id,
+					    WantParents = parents ?? false,
+                        QueryId = id,
 					});
 
 			    DbUtil.LogActivity("Emailing people");
