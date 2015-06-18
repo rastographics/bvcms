@@ -21,7 +21,7 @@
     $.dateFormat = '@Util.jQueryDateFormat';
     var specialGivingFundsPrefix = "List[0]";
     $(function() {
-      $(document).idleTimer(6000); //@Model.TimeOut);
+      $(document).idleTimer(@Model.TimeOut);
       $(document).on("idle.idleTimer", function(event, elem, obj) {
           window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
       });

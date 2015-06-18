@@ -578,12 +578,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.PeopleId == 828612 || om.PeopleId == 828611
-                        where om.OrganizationId == 81460 || om.OrganizationId == 90199
+                        where om.OrganizationId == 81460
                         select om;
                 foreach (var om in q)
                 {
                     om.Drop(DbUtil.Db, DateTime.Now);
                 }
+/*
                 DbUtil.Db.ExecuteCommand(@"
 DELETE dbo.EnrollmentTransaction WHERE PeopleId = 828612 AND OrganizationId = 90199
 
@@ -609,6 +610,7 @@ DELETE dbo.GoerSenderAmounts
 WHERE OrgId = 90199
 AND SupporterId = 828612
 ");
+*/
                 DbUtil.Db.SubmitChanges();
             }
         }
