@@ -68,7 +68,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public static RouteModel ProcessPayment()
         {
-            return new RouteModel() { View = "Payment/Process" };
+            return new RouteModel()
+            {
+                View = "Payment/Process"
+            };
         }
 
         public static RouteModel AmountDue(decimal amt, Transaction ti)

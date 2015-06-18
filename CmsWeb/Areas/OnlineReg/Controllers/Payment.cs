@@ -42,12 +42,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(pf.OrgId ?? 0);
             var ret = pf.ProcessPayment(ModelState, m);
-            if (ret.Route == RouteType.AmtDue)
+            switch (ret.Route)
             {
-                ViewBag.amtdue = ret.AmtDue;
-                return View(ret.View, ret.Transaction);
+                case RouteType.ModelAction:
+                    return View(ret.View, ret.Model);
+                case RouteType.AmtDue:
+                    ViewBag.amtdue = ret.AmtDue;
+                    return View(ret.View, ret.Transaction);
+                default:
+                    return View(ret.View, pf);
             }
-            return View(ret.View, pf);
         }
 
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)

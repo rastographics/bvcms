@@ -286,7 +286,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                 {
                     p.person.PostUnattendedContribution(DbUtil.Db,
                         p.MissionTripSupportGeneral ?? 0, p.setting.DonationFundId,
-                        "SupportMissionTrip: org={0}{1}".Fmt(p.orgid), tranid: Transaction.Id);
+                        "SupportMissionTrip: org=" + p.orgid, tranid: Transaction.Id);
                 }
             }
             var notifyids = DbUtil.Db.NotifyIds(org.GiftNotifyIds);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.ExtraValue;
 using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Code;
@@ -609,7 +610,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (m != null)
                 {
                     m.DatumId = DatumId; // todo: not sure this is necessary
-                    m.FinishRegistration(ti);
+                    return m.FinishRegistration(ti);
                 }
 
                 OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);

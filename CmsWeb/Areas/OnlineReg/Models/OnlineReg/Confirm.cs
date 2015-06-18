@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case ConfirmEnum.Confirm:
                         return RouteModel.ViewAction("Confirm", this);
                     case ConfirmEnum.ConfirmAccount:
-                        return RouteModel.ViewAction("ConfirmAccount");
+                        return RouteModel.ViewAction("ConfirmAccount", this);
                 }
             }
             catch (Exception ex)
@@ -256,22 +256,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (om == null)
                         continue;
                     Db.SubmitChanges();
-                    if (org.IsMissionTrip == true)
-                    {
-                        Db.GoerSenderAmounts.InsertOnSubmit(
-                            new GoerSenderAmount
-                            {
-                                Amount = ti.Amt,
-                                GoerId = pi.PeopleId,
-                                Created = DateTime.Now,
-                                OrgId = org.OrganizationId,
-                                SupporterId = pi.PeopleId,
-                            });
-                        var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
-                        var fund = setting.DonationFundId;
-                        p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund,
-                            "SupportMissionTrip: org={0}; goer={1}".Fmt(org.OrganizationId, pi.PeopleId), typecode: BundleTypeCode.Online);
-                    }
+//                    if (org.IsMissionTrip == true)
+//                    {
+//                        Db.GoerSenderAmounts.InsertOnSubmit(
+//                            new GoerSenderAmount
+//                            {
+//                                Amount = ti.Amt,
+//                                GoerId = pi.PeopleId,
+//                                Created = DateTime.Now,
+//                                OrgId = org.OrganizationId,
+//                                SupporterId = pi.PeopleId,
+//                            });
+//                        var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
+//                        var fund = setting.DonationFundId;
+//                        p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund,
+//                            "SupportMissionTrip: org={0}; goer={1}".Fmt(org.OrganizationId, pi.PeopleId), typecode: BundleTypeCode.Online);
+//                    }
                     var pay = amt;
                     if (org.IsMissionTrip != true)
                         ti.Amtdue = PaymentForm.AmountDueTrans(Db, ti);
