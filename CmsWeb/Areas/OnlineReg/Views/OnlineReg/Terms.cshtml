@@ -7,11 +7,10 @@
 {
   <script type="text/javascript">
     $(function () {
-      $(document).bind("idle.idleTimer", function () {
+      $(document).idleTimer(@Model.TimeOut);
+      $(document).on("idle.idleTimer", function (event, elem, obj) {
         window.location.href = '@Model.URL';
       });
-      var tmout = parseInt('@Model.TimeOut');
-      $.idleTimer(tmout);
 
       if ($('#IAgree').attr("id")) {
         $("#Submit").attr("disabled", "disabled");

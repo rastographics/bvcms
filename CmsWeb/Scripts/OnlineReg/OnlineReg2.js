@@ -5,8 +5,8 @@
         var i = $("#nextid").val();
         var name = $("#familyattendname").val();
         $(o).attr("id", i);
-        $(o).find('input').each(function() {
-            this.name = this.name.replace('{0}', name+'['+i+']');
+        $(o).find('input').each(function () {
+            this.name = this.name.replace('{0}', name + '[' + i + ']');
         });
         $("#nextid").val(parseInt(i) + 1);
         $("#added-people").append(o);
@@ -60,8 +60,8 @@
                 if ($("#submitit").data("onlyoneallowed") === true) {
                     f.submit();
                 } else {
-                    if($('div.panel:last-child').length > 0)
-                        $('body, html').animate({scrollTop:$('div.panel:last-child').offset().top}, 'fast');
+                    if ($('div.panel:last-child').length > 0)
+                        $('body, html').animate({ scrollTop: $('div.panel:last-child').offset().top }, 'fast');
                 }
             });
         });
@@ -110,12 +110,12 @@
         if ($("#allowcc").val())
             $.ShowPaymentInfo();
     };
-//    $("form.DisplayEdit").submit(function () {
-//        if (!$("#submitit").val())
-//            return false;
-//        $("#submitit").attr("disabled", "true");
-//        return true;
-//    });
+    //    $("form.DisplayEdit").submit(function () {
+    //        if (!$("#submitit").val())
+    //            return false;
+    //        $("#submitit").attr("disabled", "true");
+    //        return true;
+    //    });
     $("form.DisplayEdit a.cancel").live('click', function (ev) {
         ev.preventDefault();
         var f = $(this).closest('form');
@@ -123,7 +123,7 @@
         $.post($(this).attr('href'), q, function (ret) {
             if (ret == 'refresh')
                 location.reload();
-            $(f).html(ret).ready(function() {
+            $(f).html(ret).ready(function () {
                 $('body, html').animate({ scrollTop: $('form').offset().top }, 'fast');
             });
         });
@@ -148,13 +148,13 @@
     }, 'no $ or commas');
     $('form.DisplayEdit,#managegivingform').validate({
         errorClass: "alert-danger",
-        highlight: function(element, errorClass, validClass) {
+        highlight: function (element, errorClass, validClass) {
             $(element).addClass(errorClass).removeClass(validClass);
         },
-        unhighlight: function(element, errorClass, validClass) {
+        unhighlight: function (element, errorClass, validClass) {
             $(element).removeClass(errorClass).addClass(validClass);
         },
-        submitHandler: function(form) {
+        submitHandler: function (form) {
             if (!$("#submitit").val())
                 return false;
             $("#submitit").attr("disabled", "true");
@@ -183,21 +183,6 @@
         }
         return true;
     });
-    $.refreshenabled = true; // false until something happens
-    $(document).bind("idle.idleTimer", function () {
-        if ($.refreshenabled)
-            window.location.href = $.timeoutUrl;
-        else
-            $.idleTimer($.tmout);
-    });
-
-    if ($('input:text:not([value=""])').length == 0)
-        $(document).bind("keydown", function () {
-            $(document).unbind("keydown");
-            $.idleTimer($.tmout);
-        });
-    else
-        $.idleTimer($.tmout);
 
     // if we are coming back to this page to continue a registration, 
     // check to see if we should be on our way to the next step
@@ -232,14 +217,14 @@
 
     function setDelayedFocus($element) {
         // set focus after 200 milliseconds.
-        var timeoutId = window.setTimeout(function () {
+        var timeoutId = window.setTimeout(function() {
             $element.focus();
             window.clearTimeout(timeoutId);
         }, 200);
     }
 
     function initializeSpecialFunds() {
-        if ($('#special-funds-list').length) {
+        if($('#special-funds-list').length) {
 
             $('input:text').first().focus();
 
@@ -257,7 +242,7 @@
                 $(this).closest('tr').remove();
                 var startingIndex = $('#funds tbody tr').length;
                 var prefix = getFundPrefix();
-                _($('#special-funds tbody tr')).each(function (item, index) {
+                _($('#special-funds tbody tr')).each(function(item, index) {
                     var fundIndex = startingIndex + index;
                     var fundIndexer = prefix + 'FundItem[' + fundIndex + ']';
                     var inputKey = fundIndexer + '.Key';

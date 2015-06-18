@@ -175,21 +175,7 @@
         }
         return true;
     });
-    $.refreshenabled = true; // false until something happens
-    $(document).bind("idle.idleTimer", function () {
-        if ($.refreshenabled)
-            window.location.href = $.timeoutUrl;
-        else
-            $.idleTimer($.tmout);
-    });
 
-    if ($('input:text:not([value=""])').length == 0)
-        $(document).bind("keydown", function () {
-            $(document).unbind("keydown");
-            $.idleTimer($.tmout);
-        });
-    else
-        $.idleTimer($.tmout);
     // if we are coming back to this page to continue a registration, 
     // check to see if we should be on our way to the next step
     if ($("#submitit").attr("onlyoneallowed") == "true" && $(".input-validation-error", $("#completeReg")).length === 0) {

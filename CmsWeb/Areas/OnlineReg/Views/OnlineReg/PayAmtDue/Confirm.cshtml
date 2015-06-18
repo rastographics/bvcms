@@ -9,16 +9,10 @@
   @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
   <script type="text/javascript">
     $(function () {
-      $(document).bind("idle.idleTimer", function () {
+      $(document).idleTimer(@Model.TimeOut);
+      $(document).on("idle.idleTimer", function (event, elem, obj) {
         window.location.href = '@Model.Url';
       });
-      var tmout = parseInt('@Model.TimeOut');
-
-      $(document).bind("keydown", function () {
-        $(document).unbind("keydown");
-        $.idleTimer(tmout);
-      });
-      $.idleTimer(tmout);
     });
   </script>
 }
@@ -27,7 +21,7 @@
 
   <h2>Transaction Completed</h2>
   <p>
-    Thank you for your payment of @Model.Amt.Value.ToString("N") for @Model.Description.<br />
+    Thank you for your payment of @((Model.Amt ?? 0).ToString("N")) for @Model.Description.<br />
     Your balance is @ViewBag.amtdue<br />
     You should receive a confirmation email shortly.
   </p>

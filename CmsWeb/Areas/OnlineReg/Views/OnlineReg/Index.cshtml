@@ -19,9 +19,13 @@
 {
   <script type="text/javascript">
     $.dateFormat = '@Util.jQueryDateFormat';
-    $.timeoutUrl = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
-    $.tmout = parseInt('@Model.TimeOut');
     var specialGivingFundsPrefix = "List[0]";
+    $(function() {
+      $(document).idleTimer(6000); //@Model.TimeOut);
+      $(document).on("idle.idleTimer", function(event, elem, obj) {
+          window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
+      });
+    });
   </script>
   @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
   @if (Model.DisplaySpecialFunds)

@@ -1,65 +1,57 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
 @{
-    Layout = "~/Views/Shared/onlinereg2.cshtml";
-    ViewBag.Title = "Online Registration";
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
 }
 @section scripts
 {
-    <script type="text/javascript">
-        $(function() {
-            $(document).bind("idle.idleTimer", function() {
-                window.location.href = '@Model.URL';
-            });
-            var tmout = parseInt('@Model.TimeOut');
+  <script type="text/javascript">
+    $(function () {
+      $(document).idleTimer(@Model.TimeOut);
+      $(document).on("idle.idleTimer", function (event, elem, obj) {
+        window.location.href = '@Model.URL';
+      });
 
-            if ($('input:text[value!=""]').length == 0)
-                $(document).bind("keydown", function() {
-                    $(document).unbind("keydown");
-                    $.idleTimer(tmout);
-                });
-            else
-                $.idleTimer(tmout);
-            $("body").on("click", '.personheader a', function(e) {
-                e.preventDefault();
-                $(this).closest('div').nextAll('table').slideToggle();
-                return false;
-            });
-        });
-    </script>
+      $("body").on("click", '.personheader a', function (e) {
+        e.preventDefault();
+        $(this).closest('div').nextAll('table').slideToggle();
+        return false;
+      });
+    });
+  </script>
 }
 <div class="regform">
-    <h2>@Model.Header</h2>
-    <form class="DisplayEdit" action="/OnlineReg/CompleteRegistration/@Model.qtesting" method="post">
-        @Html.Partial("Flow2/ModelHidden", Model)
-        @Html.Raw(Util.PickFirst(Model.DonationLabel(), @"<h2>Please consider making an extra donation</h2>"))
-        @if (Model.List.Count > 1)
-        {
-            <hr />
-            <div>Indicate which person is the donor and enter an amount.</div>
-        }
-        @for (var i = 0; i < Model.List.Count; i++)
-        {
-            var viewdata = new ViewDataDictionary(ViewData)
-            { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
-            var p = Model.List[i];
-            @Html.Partial("Flow2/PersonMetaHidden", p, viewdata)
-            @Html.Partial("Flow2/PersonHidden", p, viewdata)
-            @Html.Partial("Flow2/QuestionsHidden", p, viewdata)
-            if(Model.List.Count > 1)
-            {
-                <input type="radio" name="donor" value="@i" /> @(p.FirstName + " " + p.LastName) @:(@p.age)<br />
+  <h2>@Model.Header</h2>
+  <form class="DisplayEdit" action="/OnlineReg/CompleteRegistration/@Model.qtesting" method="post">
+    @Html.Partial("Flow2/ModelHidden", Model)
+    @Html.Raw(Util.PickFirst(Model.DonationLabel(), @"<h2>Please consider making an extra donation</h2>"))
+    @if (Model.List.Count > 1)
+    {
+      <hr />
+      <div>Indicate which person is the donor and enter an amount.</div>
+    }
+    @for (var i = 0; i < Model.List.Count; i++)
+    {
+      var viewdata = new ViewDataDictionary(ViewData) { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = "List[" + i + "]" } };
+      var p = Model.List[i];
+      @Html.Partial("Flow2/PersonMetaHidden", p, viewdata)
+      @Html.Partial("Flow2/PersonHidden", p, viewdata)
+      @Html.Partial("Flow2/QuestionsHidden", p, viewdata)
+      if (Model.List.Count > 1)
+      {
+        <input type="radio" name="donor" value="@i" /> @(p.FirstName + " " + p.LastName) @:(@p.age)<br />
             }
-            else if(Model.List.Count == 1)
-            {
-                <input type="hidden" name="donor" value="0" />
-            }
-        }
-        <hr />
-        <blockquote>
-            Donation Amount: <input type="text" name="donation" value="@Model.donation" />
-            <input id="submitit" type="submit" class="submitbutton" value='Continue Transaction' />
-            <div>@Html.ValidationMessage("donation")</div>
-        </blockquote>
-    </form>
+      else if (Model.List.Count == 1)
+      {
+        <input type="hidden" name="donor" value="0" />
+      }
+    }
+    <hr />
+    <blockquote>
+      Donation Amount: <input type="text" name="donation" value="@Model.donation" />
+      <input id="submitit" type="submit" class="submitbutton" value='Continue Transaction' />
+      <div>@Html.ValidationMessage("donation")</div>
+    </blockquote>
+  </form>
 </div>

@@ -9,16 +9,10 @@
   @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg2.js")
   <script type="text/javascript">
     $(function () {
-      $(document).bind("idle.idleTimer", function () {
+      $(document).idleTimer(@Model.TimeOut);
+      $(document).on("idle.idleTimer", function (event, elem, obj) {
         window.location.href = '@Model.URL';
       });
-      var tmout = parseInt('@Model.TimeOut');
-
-      $(document).bind("keydown", function () {
-        $(document).unbind("keydown");
-        $.idleTimer(tmout);
-      })
-      $.idleTimer(tmout);
     });
   </script>
 }
