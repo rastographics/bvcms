@@ -91,7 +91,7 @@ namespace CmsWeb.Models
             {
                 // reload transaction because it is not in this context
                 var om = Db.OrganizationMembers.SingleOrDefault(mm => mm.PeopleId == GoerId && mm.OrganizationId == Orgid);
-                if(om != null && om.TranId.HasValue)
+                if (om != null && om.TranId.HasValue)
                     ti.OriginalId = om.TranId;
             }
             else
@@ -103,6 +103,7 @@ namespace CmsWeb.Models
             ti.Participants = participants.ToString();
             ti.TransactionDate = DateTime.Now;
 
+/*
             if (org.IsMissionTrip == true)
             {
                 paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(Orgid, p0.PeopleId));
@@ -112,6 +113,10 @@ namespace CmsWeb.Models
                 var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
                 paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
             }
+*/
+            var estr = HttpUtility.UrlEncode(Util.Encrypt(ti.OriginalId.ToString()));
+            paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
+
             var pids = pids2.Select(pp => pp.PeopleId);
 
             for (var i = 0; i < List.Count; i++)
@@ -128,7 +133,7 @@ namespace CmsWeb.Models
                 om.RegistrationDataId = DatumId;
                 om.RegisterEmail = p.EmailAddress;
 
-                if(om.TranId == null)
+                if (om.TranId == null)
                     om.TranId = ti.OriginalId;
 
                 int grouptojoin = p.setting.GroupToJoin.ToInt();
@@ -204,7 +209,7 @@ namespace CmsWeb.Models
                 var p = List[0];
                 ti.Fund = p.setting.DonationFund();
                 var goerid = p.Parent.GoerId > 0
-                    ? p.Parent.GoerId 
+                    ? p.Parent.GoerId
                     : p.MissionTripGoerId;
                 if (p.MissionTripSupportGoer > 0)
                 {
@@ -216,7 +221,7 @@ namespace CmsWeb.Models
                         SupporterId = p.PeopleId.Value,
                         NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
                     };
-                    if(goerid > 0)
+                    if (goerid > 0)
                         gsa.GoerId = goerid;
                     DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(gsa);
                     if (p.Parent.GoerSupporterId.HasValue)
