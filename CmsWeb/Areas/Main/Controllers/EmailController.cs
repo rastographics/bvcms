@@ -12,6 +12,7 @@ using CmsData;
 using Elmah;
 using System.Threading;
 using Dapper;
+using HtmlAgilityPack;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
@@ -76,10 +77,11 @@ namespace CmsWeb.Areas.Main.Controllers
             if(c == null)
                 return new EmptyResult();
 
-		    if (!c.Body.Contains("bvedit"))
-		        c.Body = @"<div bvedit=""discardthis"">
-{0}
-</div>".Fmt(c.Body);
+            var doc = new HtmlDocument();
+            doc.LoadHtml(c.Body);
+            var bvedits = doc.DocumentNode.Descendants("//div[@bvedit]");
+            if(!bvedits.Any())
+		        c.Body = "<div bvedit='discardthis'>{0}</div>".Fmt(c.Body);
 
             ViewBag.content = c;
             return View();
@@ -125,9 +127,11 @@ namespace CmsWeb.Areas.Main.Controllers
 
         private static string GetBody(string body)
         {
-            var foundMatch = Regex.IsMatch(body, @"\A\s*<div bvedit=""discardthis"".*?>(.*)</div>\s*\z", RegexOptions.Singleline);
-            if (foundMatch)
-                body = Regex.Match(body, @"\s*<div bvedit=""discardthis"".*?>(.*)</div>\s*", RegexOptions.Singleline).Groups[1].Value;
+            var doc = new HtmlDocument();
+            doc.LoadHtml(body);
+            var ele = doc.DocumentNode.SelectSingleNode("/div[@bvedit='discardthis']");
+            if (ele != null)
+                body = ele.InnerHtml;
             return body;
         }
 

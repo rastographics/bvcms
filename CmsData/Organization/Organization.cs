@@ -129,6 +129,7 @@ namespace CmsData
             RegistrationTypeId = frorg.RegistrationTypeId;
             RegStart = frorg.RegStart;
             RegEnd = frorg.RegEnd;
+            IsMissionTrip = frorg.IsMissionTrip;
 
             RegSetting = frorg.RegSetting;
 
