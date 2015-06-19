@@ -217,8 +217,6 @@ $(function () {
             "MiddleInitial": { maxlength: 1},
             "Last": { required: true, maxlength: 50 },
             "Suffix": { maxlength: 10 },
-            "Address": { required: true, maxlength: 50 },
-            "Zip": { required: true, maxlength: 15 },
             "Phone": { maxlength: 50 }
         },
         errorPlacement: function(error, element) {

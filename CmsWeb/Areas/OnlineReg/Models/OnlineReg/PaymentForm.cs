@@ -197,22 +197,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                          Zip = ti.Zip,
                          testing = ti.Testing ?? false,
                          TranId = ti.Id,
-#if DEBUG2
-						 CreditCard = "4111111111111111",
-						 CVV = "123",
-						 Expires = "1015",
-						 Routing = "056008849",
-						 Account = "12345678901234"
-#else
-                         CreditCard = pi.MaskedCard,
-                         Expires = pi.Expires,
-                         Account = pi.MaskedAccount,
-                         Routing = pi.Routing,
-                         SavePayInfo =
-                            (pi.MaskedAccount != null && pi.MaskedAccount.StartsWith("X"))
-                            || (pi.MaskedCard != null && pi.MaskedCard.StartsWith("X")),
-#endif
                      };
+
+            if (pi.PeopleId == Util.UserPeopleId) // Is this the logged in user?
+            {
+                pf.CreditCard = pi.MaskedCard;
+                pf.Expires = pi.Expires;
+                pf.Account = pi.MaskedAccount;
+                pf.Routing = pi.Routing;
+                pf.SavePayInfo =
+                    (pi.MaskedAccount != null && pi.MaskedAccount.StartsWith("X"))
+                    || (pi.MaskedCard != null && pi.MaskedCard.StartsWith("X"));
+            }
 
             ClearMaskedNumbers(pf, pi);
 
@@ -260,17 +256,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
 				 Expires = "1017",
 				 Routing = "056008849",
 				 Account = "12345678901234"
-#else
-                CreditCard = r.payinfo.MaskedCard,
-                Account = r.payinfo.MaskedAccount,
-                Routing = r.payinfo.Routing,
-                Expires = r.payinfo.Expires,
-                SavePayInfo =
-                   (r.payinfo.MaskedAccount != null && r.payinfo.MaskedAccount.StartsWith("X"))
-                   || (r.payinfo.MaskedCard != null && r.payinfo.MaskedCard.StartsWith("X")),
-                Type = r.payinfo.PreferredPaymentType,
 #endif
             };
+            if (r.payinfo.PeopleId == Util.UserPeopleId) // Is this the logged in user?
+            {
+                pf.CreditCard = r.payinfo.MaskedCard;
+                pf.Account = r.payinfo.MaskedAccount;
+                pf.Routing = r.payinfo.Routing;
+                pf.Expires = r.payinfo.Expires;
+                pf.SavePayInfo =
+                   (r.payinfo.MaskedAccount != null && r.payinfo.MaskedAccount.StartsWith("X"))
+                   || (r.payinfo.MaskedCard != null && r.payinfo.MaskedCard.StartsWith("X"));
+                pf.Type = r.payinfo.PreferredPaymentType;
+            }
 
             ClearMaskedNumbers(pf, r.payinfo);
 

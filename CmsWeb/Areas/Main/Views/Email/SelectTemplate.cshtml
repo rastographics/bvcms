@@ -1,5 +1,4 @@
-﻿@using CmsWeb
-@using CmsData
+﻿@using CmsData
 @using CmsWeb.Models
 @using UtilityExtensions
 @model CmsWeb.Areas.Main.Models.EmailTemplatesModel
@@ -7,13 +6,13 @@
     ViewBag.Title = "Select Template";
     ViewBag.PageHeader = "Select Template";
     Layout = ViewExtensions2.TouchPointLayout();
-    var url = "/Email/" + Model.queryid;
+    var url = "/Email/" + Model.QueryId;
 
     var sdMine = new List<ContentModel.SavedDraft>();
     var sdRole = new List<ContentModel.SavedDraft>();
     var sdShared = new List<ContentModel.SavedDraft>();
 
-    foreach (var t in Model.fetchDrafts())
+    foreach (var t in Model.FetchDrafts())
     {
         if (t.ownerID == Util.UserId)
         {
@@ -43,17 +42,17 @@
         <div class="tab-content">
             <form id="selectTemplate" action="@url" method="post">
                 @Html.Hidden("templateID", "0")
-                @Html.Hidden("parents", @Model.wantparents)
-                @Html.Hidden("ccparents", @Model.ccparents)
-                @Html.Hidden("nodups", @Model.nodups)
-                @Html.Hidden("orgid", @Model.orgid)
+                @Html.Hidden("parents", @Model.WantParents)
+                @Html.Hidden("ccparents", @Model.CcParents)
+                @Html.Hidden("nodups", @Model.NoDups)
+                @Html.Hidden("orgid", @Model.OrgId)
             </form>
             <div class="tab-pane fade in active" id="emailTemplates">
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="row">
                             @{
-                                var empty = Model.fetchTemplateByName("Empty Template");
+                                var empty = Model.FetchTemplateByName("Empty Template");
                                 if (empty != null)
                                 {
                                     <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;" bvtemplate template="@empty.Id">
@@ -85,7 +84,7 @@
                                     </div>
                                 }
                             }
-                            @foreach (var t in Model.fetchTemplates())
+                            @foreach (var t in Model.FetchTemplates().Where(x => x.Name != "Empty Template"))
                             {
                                 <div class="col-sm-6 col-md-4 col-lg-3" style="margin-top: 5px; margin-bottom: 5px;" bvtemplate template="@t.Id">
                                     <div class="row">
@@ -113,8 +112,8 @@
                     </div>
                 </div>
                 <form id="savedDrafts" action="/Email/ContentDeleteDrafts" method="post">
-                    @Html.Hidden("parents", @Model.wantparents)
-                    @Html.Hidden("queryid", @Model.queryid)
+                    @Html.Hidden("parents", @Model.WantParents)
+                    @Html.Hidden("queryid", @Model.QueryId)
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="table-responsive">
@@ -140,9 +139,7 @@
                                                 @if (item.roleID != 0)
                                                 {
                                                     @item.role
-
                                                 }
-
                                             </td>
                                             <td>
                                                 @item.created.FormatDate()
@@ -178,9 +175,7 @@
                                             @if (item.roleID != 0)
                                             {
                                                 @item.role
-
                                             }
-
                                         </td>
                                         <td>
                                             @item.created.FormatDate()

@@ -31,20 +31,20 @@ namespace CmsWeb.Areas.Main.Controllers
 				if (templateID == null)
 					return View("SelectTemplate", new EmailTemplatesModel
 					{
-					    wantparents = parents ?? false, 
-                        queryid = id,
+					    WantParents = parents ?? false,
+                        QueryId = id,
 					});
 
-					DbUtil.LogActivity("Emailing people");
+			    DbUtil.LogActivity("Emailing people");
 
-					var m = new MassEmailer(id, parents, ccparents, nodups);
+			    var m = new MassEmailer(id, parents, ccparents, nodups);
 
-					m.Host = Util.Host;
+			    m.Host = Util.Host;
 
-					ViewBag.templateID = templateID;
-				    m.OrgId = orgid;
-					return View("Compose", m);
-				}
+			    ViewBag.templateID = templateID;
+			    m.OrgId = orgid;
+			    return View("Compose", m);
+			}
 
 			// using no templates
 
@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Main.Controllers
             ViewBag.content = c;
             return View();
         }
-        
+
         [HttpPost]
 		[ValidateInput(false)]
 		public ActionResult SaveDraft(MassEmailer m, int saveid, string name, int roleid)
@@ -97,9 +97,9 @@ namespace CmsWeb.Areas.Main.Controllers
 			{
 				content = new Content
 				{
-				    Name = name.HasValue() ? name 
-                        : "new draft " + DateTime.Now.FormatDateTm(), 
-                    TypeID = ContentTypeCode.TypeSavedDraft, 
+				    Name = name.HasValue() ? name
+                        : "new draft " + DateTime.Now.FormatDateTm(),
+                    TypeID = ContentTypeCode.TypeSavedDraft,
                     RoleID = roleid
 				};
 				content.OwnerID = Util.UserId;
@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			content.DateCreated = DateTime.Now;
 
-			if (saveid == 0) 
+			if (saveid == 0)
                 DbUtil.Db.Contents.InsertOnSubmit(content);
 
 			DbUtil.Db.SubmitChanges();
@@ -119,7 +119,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
 			ViewBag.parents = m.wantParents;
 			ViewBag.templateID = content.Id;
-            
+
 			return View("Compose", m);
 		}
 
@@ -131,7 +131,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return body;
         }
 
-		[HttpPost]
+        [HttpPost]
 		public ActionResult ContentDeleteDrafts(Guid queryid, bool parents, int[] draftId)
 		{
 			using (var cn = new SqlConnection(Util.ConnectionString))
@@ -195,7 +195,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 return Json(new { error = ex.Message });
 		    }
 
-			System.Threading.Tasks.Task.Factory.StartNew(() =>
+		    System.Threading.Tasks.Task.Factory.StartNew(() =>
 			{
 				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 				try
@@ -310,7 +310,7 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("done");
         }
 
-		private EmailQueue SetProgressInfo(int id)
+        private EmailQueue SetProgressInfo(int id)
 		{
 			var emailqueue = DbUtil.Db.EmailQueues.SingleOrDefault(e => e.Id == id);
 			if (emailqueue != null)
@@ -351,9 +351,9 @@ namespace CmsWeb.Areas.Main.Controllers
 		}
 
         private static void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
-		{
+        {
             var er = new EmailReplacements(db, emailText, fromAddress);
             er.DoReplacements(db, DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value));
-		}
+        }
 	}
 }
