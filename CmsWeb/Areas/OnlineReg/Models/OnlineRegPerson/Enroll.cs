@@ -67,8 +67,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (_paylink.HasValue())
                 return _paylink;
-            if (org != null && org.IsMissionTrip == true)
-                return _paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(orgid, PeopleId));
+//            if (org != null && org.IsMissionTrip == true)
+//                return _paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(orgid, PeopleId));
             var estr = HttpUtility.UrlEncode(Util.Encrypt(Parent.Transaction.OriginalId.ToString()));
             return _paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
         }
