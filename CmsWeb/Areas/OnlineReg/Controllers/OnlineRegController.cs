@@ -16,25 +16,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     [RouteArea("OnlineReg", AreaPrefix = "OnlineReg"), Route("{action}/{id?}")]
     public partial class OnlineRegController : CmsController
     {
-        protected override void OnException(ExceptionContext filterContext)
-        {
-            if (filterContext.ExceptionHandled)
-                return;
-            filterContext.Result = Message(filterContext.Exception.Message);
-            filterContext.ExceptionHandled = true;
-        }
-
         [HttpGet]
         [Route("~/OnlineReg/{id:int}")]
         public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
             Response.NoCache();
             var m = new OnlineRegModel(Request, id, testing, email, login, source);
-            m.PrepareMissionTrip(gsid, goerid);
+
+            if (m.org != null && m.org.IsMissionTrip == true)
+                m.PrepareMissionTrip(gsid, goerid);
+
             SetHeaders(m);
-
             var pid = m.CheckRegisterLink(registertag);
-
             return RouteRegistration(m, pid, showfamily);
         }
 
@@ -274,5 +267,13 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             TempData["stack"] = ex.StackTrace;
             return Content("/Error/");
         }
+        protected override void OnException(ExceptionContext filterContext)
+        {
+            if (filterContext.ExceptionHandled)
+                return;
+            filterContext.Result = Message(filterContext.Exception.Message);
+            filterContext.ExceptionHandled = true;
+        }
+
     }
 }

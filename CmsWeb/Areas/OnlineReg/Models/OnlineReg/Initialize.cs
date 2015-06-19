@@ -16,9 +16,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public void PrepareMissionTrip(int? gsid, int? goerid)
         {
-            if (org == null || org.IsMissionTrip != true)
-                return;
-
             if (gsid.HasValue) // this means that the person is a suppoter who got a support email
             {
                 var goerSupporter = DbUtil.Db.GoerSupporters.SingleOrDefault(gg => gg.Id == gsid); // used for mission trips
