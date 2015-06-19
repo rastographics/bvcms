@@ -234,7 +234,7 @@ namespace CmsWeb.Models
             if (request.HasValue())
             {
                 sbreg.AppendFormat("Request: {0}\n", request);
-                om.Request = request;
+                om.Request = request.Truncate(140);
             }
             sbreg.AppendFormat("{0}\n", EmailAddress);
 
