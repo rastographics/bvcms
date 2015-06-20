@@ -21,7 +21,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 var evdep = person.GetExtra("Deposit-" + orgid);
                 if (evdep.HasValue())
+                {
                     regulardeposit = evdep.ToDecimal() ?? 0;
+                    Log("UsedSpecialDeposit");
+                }
                 return regulardeposit + (setting.IncludeOtherFeesWithDeposit ? TotalOther() : 0);
             }
             return Parent.SupportMissionTrip
@@ -68,10 +71,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     && Parent.SupportMissionTrip == false) 
                 amt = setting.Fee ?? 0;
             if (orgfee.HasValue)
+            {
                 if (setting.OtherFeesAddedToOrgFee)
                     amt = orgfee.Value + TotalOther(); // special price for org member
                 else
                     amt = orgfee.Value;
+                Log("SpecialOrgFee");
+            }
             else
                 amt += TotalOther();
             return amt;

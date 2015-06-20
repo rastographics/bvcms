@@ -133,7 +133,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 Transaction.TransactionId = TransactionReturn;
                 if (testing == true && !Transaction.TransactionId.Contains("(testing)"))
+                {
                     Transaction.TransactionId += "(testing)";
+                    Log("TestingTransaction");
+                }
             }
         }
 
@@ -151,11 +154,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 p.AddPerson(null, p.org.EntryPointId ?? 0);
 
             var staff = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId)[0];
-            var text = p.setting.Body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
+            var text = p.setting.Body;
+            text = text.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true);
             text = text.Replace("{amt}", (Transaction.Amt ?? 0).ToString("N2"));
             text = text.Replace("{date}", DateTime.Today.ToShortDateString());
             text = text.Replace("{tranid}", Transaction.Id.ToString());
-            //text = text.Replace("{name}", p.person.Name);
             text = text.Replace("{account}", "");
             text = text.Replace("{email}", p.person.EmailAddress);
             text = text.Replace("{phone}", p.person.HomePhone.FmtFone());
@@ -196,6 +199,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Transaction.Fund = p.setting.DonationFund();
                 p.person.PostUnattendedContribution(DbUtil.Db, Transaction.Donate ?? 0, p.setting.DonationFundId, desc,
                     tranid: Transaction.Id);
+                Log("PostedContribution");
             }
             sb.Append(e);
             if (!Transaction.TransactionId.HasValue())
@@ -209,7 +213,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                                      select ex.Data).SingleOrDefault();
             if (contributionemail.HasValue())
                 contributionemail = (contributionemail ?? "").Trim();
-            if (!Util.ValidEmail(contributionemail))
+
+            if (Util.ValidEmail(contributionemail))
+                Log("UsingSpecialEmail");
+            else
                 contributionemail = p.person.FromEmail;
 
             var body = sb.ToString();

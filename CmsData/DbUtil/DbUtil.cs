@@ -6,6 +6,8 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -14,6 +16,7 @@ using System.Web;
 using UtilityExtensions;
 using System.Web.Caching;
 using System.Data.SqlClient;
+using Dapper;
 
 namespace CmsData
 {
@@ -78,7 +81,7 @@ namespace CmsData
             {
                 ActivityDate = Util.Now,
                 UserId = uid,
-                Activity = activity,
+                Activity = activity.Truncate(200),
                 Machine = Environment.MachineName,
                 OrgId = orgid,
                 PeopleId = pid,
@@ -86,7 +89,30 @@ namespace CmsData
             db.ActivityLogs.InsertOnSubmit(a);
             db.SubmitChanges();
             db.Dispose();
-            
+
+            // Logging temporarily to monitor some major changes
+
+            if (!a.Activity.StartsWith("OnlineReg"))
+                return;
+
+            var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
+            if (cs != null)
+            {
+                using (var cn = new SqlConnection(cs.ConnectionString))
+                {
+                    cn.Open();
+                    cn.Execute(
+                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid) VALUES(@db, @dt, @ac, @oid, @pid)", 
+                        new
+                        {
+                            db = host,
+                            activity,
+                            dt = a.ActivityDate,
+                            oid = a.OrgId,
+                            pid = a.PeopleId
+                        });
+                }
+            }
         }
         public static void LogActivity(string activity, int? orgid = null, int? peopleid = null)
         {
@@ -110,7 +136,7 @@ namespace CmsData
         public static void LogPersonActivity(string activity, int pid, string name)
         {
             _logActivity(Util.Host, activity, null, pid);
-            if (pid == Util.UserPeopleId) 
+            if (pid == Util.UserPeopleId)
                 return;
             var mru = Util2.MostRecentPeople;
             var i = mru.SingleOrDefault(vv => vv.Id == pid);
@@ -335,37 +361,37 @@ namespace CmsData
             return dt;
         }
 
-	    public class SupportPerson
-	    {
-	        public int id { get; set; }
-	        public string name { get; set; }
-	        public string email { get; set; }
-	    }
+        public class SupportPerson
+        {
+            public int id { get; set; }
+            public string name { get; set; }
+            public string email { get; set; }
+        }
         public static List<SupportPerson> Supporters(string supporters)
         {
             var ss = supporters.Split(',').Select(s => s.Split(':'));
             return ss.Select(a => new SupportPerson
             {
-                id = a[1].ToInt(), 
-                name = a[0].Trim(), 
+                id = a[1].ToInt(),
+                name = a[0].Trim(),
                 email = a[2].Trim()
             }).ToList();
         }
-	    public static string SupporterName(string ss, int n)
-	    {
-	        var sc = Supporters(ss);
-	        return sc[n].name;
-	    }
-	    public static string SupporterName(string ss, string email)
-	    {
-	        var sc = Supporters(ss);
-	        return sc.Single(ee => ee.email == email).name;
-	    }
-	    public static SupportPerson SupporterPerson(string ss, string email)
-	    {
-	        var sc = Supporters(ss);
-	        return sc.Single(ee => ee.email == email);
-	    }
+        public static string SupporterName(string ss, int n)
+        {
+            var sc = Supporters(ss);
+            return sc[n].name;
+        }
+        public static string SupporterName(string ss, string email)
+        {
+            var sc = Supporters(ss);
+            return sc.Single(ee => ee.email == email).name;
+        }
+        public static SupportPerson SupporterPerson(string ss, string email)
+        {
+            var sc = Supporters(ss);
+            return sc.Single(ee => ee.email == email);
+        }
 
     }
 }

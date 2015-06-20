@@ -47,8 +47,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ZipCode), "zip required (or \"na\")");
 
             if (!modelState.IsValid)
+            {
+                Log("AddressNotValid");
                 return false;
-
+            }
             var countryIsOK = modelState.IsValid && AddressLineOne.HasValue() && (Country == "United States" || !Country.HasValue());
             if (!countryIsOK)
                 return true; // not going to validate address
@@ -77,14 +79,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateMarital()
         {
-            if (!married.HasValue && RequiredMarital())
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].married), "Please specify marital status");
+            if (married.HasValue || !RequiredMarital()) 
+                return;
+            modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].married), "Please specify marital status");
+            Log("MaritalRequired");
         }
 
         private void ValidateGender()
         {
-            if (!gender.HasValue && RequiredGender())
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].gender), "Please specify gender");
+            if (gender.HasValue || !RequiredGender()) 
+                return;
+            modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].gender), "Please specify gender");
+            Log("GenderRequired");
         }
 
         private void ValidateMembership()
@@ -94,10 +100,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (MemberOnly())
             {
                 modelState.AddModelError(foundname, "Sorry, must be a member of church");
+                Log("MustBeChurchMember");
             }
             else if (org != null && setting.ValidateOrgIds.Count > 0 && !Parent.SupportMissionTrip)
             {
                 modelState.AddModelError(foundname, "Must be member of specified organization");
+                Log("MustBeSpecifiedOrgMember");
             }
         }
 
@@ -112,20 +120,28 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (birthday.HasValue && NoReqBirthYear() == false && birthday.Value.Year == Util.SignalNoYear)
             {
                 modelState.AddModelError(dobname, "BirthYear is required");
+                Log("BirthYearRequired");
                 IsValidForNew = false;
             }
 
             var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
             if (orgid == Util.CreateAccountCode && age < minage)
+            {
                 modelState.AddModelError(dobname, "must be {0} to create account".Fmt(minage));
-
+                Log("UnderAgeForAccount");
+            }
             if (ComputesOrganizationByAge() && GetAppropriateOrg() == null)
+            {
                 modelState.AddModelError(dobname, NoAppropriateOrgError);
+                Log("NoAppropriateOrg");
+            }
         }
         private void ValidatePhone()
         {
-            if (!PhoneOK)
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Phone), "cell or home phone required");
+            if (PhoneOK)
+                return;
+            modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Phone), "cell or home phone required");
+            Log("NeedPhone");
         }
 
         public bool PhoneOK
@@ -143,9 +159,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (EmailAddress.HasValue())
                 EmailAddress = EmailAddress.Trim();
 
-            if (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress))
-                modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].person.EmailAddress),
-                    "Please specify a valid email address.");
+            if (EmailAddress.HasValue() && Util.ValidEmail(EmailAddress)) 
+                return;
+            
+            modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].person.EmailAddress),
+                "Please specify a valid email address.");
+            Log("NeedValidEmail");
         }
     }
 }

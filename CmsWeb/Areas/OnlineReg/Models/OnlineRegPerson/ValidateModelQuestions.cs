@@ -42,6 +42,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
             ValidatePaymentOption();
             QuestionsOK = modelState.IsValid;
+            if(!QuestionsOK)
+                Log("QuestionsRetry");
         }
 
         private void ValidateAskCoaching()

@@ -642,5 +642,11 @@ AND SupporterId = 828612
                     && last.FinishedFindingOrAddingRegistrant;
             }
         }
+
+        public void Log(string action)
+        {
+            var p = List[0];
+            DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? Orgid, UserPeopleId ?? p.PeopleId);
+        }
     }
 }

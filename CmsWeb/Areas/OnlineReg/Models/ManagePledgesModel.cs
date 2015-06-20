@@ -96,5 +96,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 	        DbUtil.Db.Email(person.FromEmail, staff, "Online Pledge",
 	            @"{0} made a pledge to {1}".Fmt(person.Name, Organization.OrganizationName));
 	    }
+        public void Log(string action)
+        {
+            DbUtil.LogActivity("OnlineReg ManagePledge " + action, orgid, pid);
+        }
     }
 }

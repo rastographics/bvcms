@@ -13,13 +13,11 @@ using System.Web.Mvc;
 
 namespace CmsWeb
 {
-    [CMSLog]
     [MyRequireHttps]
     public class CmsController : CmsControllerNoHttps
     {
     }
 
-    [CMSLog]
     public class CmsControllerNoHttps : Controller
     {
         protected override void HandleUnknownAction(string actionName)
@@ -91,7 +89,6 @@ namespace CmsWeb
             return View("Message", model: text);
         }
     }
-    [CMSLog]
     [MyRequireHttps]
     public class CmsStaffController : Controller
     {
@@ -141,7 +138,6 @@ namespace CmsWeb
             return View("Message2", model: text);
         }
     }
-    [CMSLog]
     [MyRequireHttps]
     public class CmsStaffAsyncController : System.Web.Mvc.AsyncController
     {
@@ -266,6 +262,7 @@ namespace CmsWeb
             return ConfigurationManager.AppSettings["cmshost"].StartsWith("https:");
         }
     }
+/*
     public class CMSLogAttribute : ActionFilterAttribute
     {
         protected DateTime start_time;
@@ -349,4 +346,5 @@ namespace CmsWeb
             }
         }
     }
+*/
 }

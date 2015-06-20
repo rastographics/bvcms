@@ -16,7 +16,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var Db = DbUtil.Db;
             if (!person.EmailAddress.HasValue())
                 CannotCreateAccount = true;
-            else if (person.Users.Count() > 0) // already have account
+            else if (person.Users.Any()) // already have account
             {
                 SawExistingAccount = true;
                 var user = person.Users.OrderByDescending(uu => uu.LastActivityDate).First();
@@ -25,13 +25,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 message = message
                     .Replace("{name}", person.Name)
                     .Replace("{host}", DbUtil.Db.CmsHost);
-
+                Log("AlreadyHaveAccount");
                 Db.Email(DbUtil.AdminMail, person, "Account information for " + Db.Host, message);
             }
             else
             {
                 CreatedAccount = true;
                 var user = MembershipService.CreateUser(Db, person.PeopleId);
+                Log("SendNewUserEmail");
                 AccountModel.SendNewUserEmail(user.Username);
                 return user;
             }

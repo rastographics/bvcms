@@ -31,7 +31,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             IsValidForContinue = true; // true till proven false
             IsValidForExisting = true; // true till proven false
 
-            if (NeedsUserSelection()) return;
+            if (NeedsUserSelection()) 
+                return;
 
             var foundname = Parent.GetNameFor(mm => mm.List[Index].Found);
             if (IsFamily)
@@ -40,7 +41,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ValidateBasic();
             if (!modelState.IsValid)
                 return;
-
             Found = person != null;
             ValidateAgeRequirement();
             ValidateEmail();
@@ -125,6 +125,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (Phone.HasValue() && d < 10)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].Phone), "10+ digits required");
+            if(!modelState.IsValid)
+                Log("InvalidBasic");
         }
         private void ValidateAgeRequirement()
         {
@@ -134,24 +136,35 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (orgid == Util.CreateAccountCode && age < minage)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth),
                     "must be {0} to create account".Fmt(minage));
+            if(!modelState.IsValid)
+                Log("InvalidAge");
         }
         private void ValidateEmail()
         {
             if (!IsFamily && (!EmailAddress.HasValue() || !Util.ValidEmail(EmailAddress)))
                 if(!Util.ValidEmail(person.EmailAddress))
+                {
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].EmailAddress),
                         "Please specify a valid email address.");
+                    Log("InvalidEmail");
+                }
         }
         private void ValidateBirthdayRange()
         {
             if (org == null) return;
             if (!birthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
+            {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday required");
+                Log("BirthdayRequired");
+            }
             else if (birthday.HasValue)
             {
                 if ((org.BirthDayStart.HasValue && birthday < org.BirthDayStart)
                     || (org.BirthDayEnd.HasValue && birthday > org.BirthDayEnd))
+                {
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday outside age allowed range");
+                    Log("InvalidBirthdate");
+                }
             }
             IsValidForContinue = modelState.IsValid;
         }
@@ -168,7 +181,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (Parent.List.Count(ii => ii.PeopleId == PeopleId) <= 1)
                 return false;
-
+            Log("AlreadyPending");
             modelState.AddModelError(foundname, "Person already in Pending Registration");
             CancelText = "Register a different person";
             RegistrantProblem = @"**Person already in Pending Registration**";
@@ -188,6 +201,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!needemail) 
                 return false;
             modelState.AddModelError(foundname, "No Email Address on record");
+            Log("NoEmailOnRecord");
             RegistrantProblem = @"
 ** No Email Address on Record**  
 We have found your record but we have no email address for you. 
@@ -202,6 +216,7 @@ Please call the church to resolve this before we can complete your information."
             if (!ComputesOrganizationByAge() || org != null) 
                 return false;
             var msg = NoAppropriateOrgError ?? "Sorry, no approprate org";
+            Log("NoAppropriateOrg");
             if (selectFromFamily)
                 modelState.AddModelError("age-" + person.PeopleId, msg);
             else
@@ -215,6 +230,7 @@ Please call the church to resolve this before we can complete your information."
             if (!MemberOnly() || person.MemberStatusId == MemberStatusCode.Member) 
                 return false;
             modelState.AddModelError(foundname, "Sorry, must be a member of church");
+            Log("MustBeChurchMember");
             RegistrantProblem = @"**Sorry, must be a member of this church**";
             IsValidForContinue = false;
             IsValidForExisting = false;
@@ -229,6 +245,7 @@ Please call the church to resolve this before we can complete your information."
             if (person.Users.Any())
             {
                 modelState.AddModelError(foundname, "You already have an account");
+                Log("AccountAlreadyExists");
                 IsValidForContinue = false;
                 IsValidForExisting = false;
                 return true;
@@ -237,6 +254,7 @@ Please call the church to resolve this before we can complete your information."
                 return false;
 
             modelState.AddModelError(foundname, "You must have a valid email address on record");
+            Log("NeedEmailOnRecordForAccount");
             RegistrantProblem = @"
 We have found your record but we do not have a valid email for you.  
 For your protection, we cannot continue to create an account.  
@@ -270,6 +288,7 @@ Please call the church to resolve this before we can complete your account.
                 Parent.SupportMissionTrip) 
                 return false;
             modelState.AddModelError(foundname, "This person is already registered");
+            Log("AlreadyRegistered");
             RegistrantProblem = @"**This person is already registered**";
             CancelText = "Register a different person";
             IsValidForContinue = false;
@@ -286,6 +305,7 @@ Please call the church to resolve this before we can complete your account.
             if (person.OrganizationMembers.Any(mm => reqmemberids.Contains(mm.OrganizationId))) 
                 return false;
             modelState.AddModelError(foundname, "Must be member of specified organization");
+            Log("MustBeMemberOfSpecifiedOrg");
             RegistrantProblem = @"**Must be a member of specified organization to register**";
             IsValidForContinue = false;
             IsValidForExisting = false;
@@ -302,6 +322,7 @@ Please call the church to resolve this before we can complete your account.
                 return false;
 
             modelState.AddModelError(foundname, "Must not be a member of specified organization");
+            Log("MustNotBeMemberOfSpecifiedOrg");
             RegistrantProblem = @"**Must not be a member of specified organization to register**";
             IsValidForContinue = false;
             IsValidForExisting = false;

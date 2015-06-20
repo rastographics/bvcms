@@ -25,9 +25,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         var list = DbUtil.Db.FindPerson(FirstName, LastName, birthday, EmailAddress, Phone.GetDigits()).ToList();
                         count = list.Count;
                         if (count == 1)
-                            _person = DbUtil.Db.LoadPersonById(list[0].PeopleId.Value);
+                            _person = DbUtil.Db.LoadPersonById(list[0].PeopleId ?? 0);
                         if (_person != null)
                             PeopleId = _person.PeopleId;
+                        else
+                            Log("PersonNotFound");
                     }
                 return _person;
             }

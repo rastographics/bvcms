@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Linq;
-using System.Diagnostics;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -39,7 +37,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 State = pp.State;
                 ZipCode = pp.ZipCode;
                 Country = pp.Country;
+                Log("WillAddToSameFamily");
             }
+            else
+                Log("WillAddToNewFamily");
             ShowAddress = true;
             return false;
         }
@@ -75,20 +76,30 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (ComputesOrganizationByAge())
                 {
                     if (org == null)
+                    {
+                        Log("NoApproprateAgeGroup");
                         modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, cannot find an appropriate age group");
+                    }
                     else if (org.RegEnd.HasValue && DateTime.Now > org.RegEnd)
+                    {
+                        Log("Closed");
                         modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, registration has ended for that group");
+                    }
                     else if (org.OrganizationStatusId == OrgStatusCode.Inactive)
+                    {
+                        Log("Inactive");
                         modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
-                    else if (org.OrganizationStatusId == OrgStatusCode.Inactive)
-                        modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, that group is inactive");
+                    }
                 }
                 else if (!ManageSubscriptions())
                 {
                     if (!Parent.SupportMissionTrip)
                         IsFilled = org.RegLimitCount(DbUtil.Db) >= org.Limit;
                     if (IsFilled)
+                    {
+                        Log("Filled");
                         modelState.AddModelError(Parent.GetNameFor(mm => mm.List[id].Found), "Sorry, registration is filled");
+                    }
                 }
                 IsNew = true;
             }
@@ -146,9 +157,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 person.Comments = "Added during online registration because there was more than 1 match";
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("OnlineReg AddPerson {0}".Fmt(person.PeopleId));
             DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
             PeopleId = person.PeopleId;
+            DbUtil.LogActivity("OnlineReg AddPerson", orgid, PeopleId);
         }
     }
 }

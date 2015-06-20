@@ -58,15 +58,26 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (!id.HasValue)
                 return View("Unknown");
-            if (!transactionId.HasValue())
-                return Content("error no transaction");
 
             var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
             if (m == null || m.Completed)
+            {
+                if (m == null)
+                    DbUtil.LogActivity("OnlineReg NoPendingConfirmation");
+                else
+                    m.Log("NoPendingConfirmation");
                 return Content("no pending confirmation found");
-
+            }
+            if (!transactionId.HasValue())
+            {
+                m.Log("NoTransactionId");
+                return Content("error no transaction");
+            }
             if (m.List.Count == 0)
+            {
+                m.Log("NoRegistrants");
                 return Content("no registrants found");
+            }
             try
             {
                 OnlineRegModel.LogOutOfOnlineReg();
@@ -79,6 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             catch (Exception ex)
             {
+                m.Log("Error " + ex.Message);
                 ErrorSignal.FromCurrentContext().Raise(ex);
                 TempData["error"] = ex.Message;
                 return Redirect("/Error");

@@ -231,7 +231,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void SaveSMSChoice()
         {
             if (sms.HasValue && LoggedIn == true)
+            {
                 person.UpdateValue("ReceiveSMS", sms.Value);
+                Log("ReceiveSMS " + sms.Value);
+            }
         }
 
         private void SaveGradeChoice(OrganizationMember om)
@@ -241,7 +244,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             else
             {
                 om.Grade = gradeoption.ToInt();
-                person.Grade = gradeoption.ToInt();
+                person.UpdateValue("Grade", gradeoption.ToInt());
+                Log("GradeUpdate " + person.Grade);
             }
         }
 
@@ -325,6 +329,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 om.TranId = transaction.OriginalId;
             om.RegisterEmail = EmailAddress;
             om.RegistrationDataId = Parent.DatumId;
+            Log("JoinedOrg");
             return om;
         }
 

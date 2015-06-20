@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.ExtraValue;
 using CmsData.Finance;
 using CmsData.Registration;
 using CmsWeb.Code;
@@ -397,8 +396,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void PreventNegatives()
         {
-            if (AmtToPay < 0) AmtToPay = 0;
-            if (Donate < 0) Donate = 0;
+            if (AmtToPay < 0) 
+                AmtToPay = 0;
+            if (Donate < 0) 
+                Donate = 0;
             AllowCoupon = false;
         }
 
@@ -578,7 +579,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public RouteModel ProcessPayment(ModelStateDictionary modelState, OnlineRegModel m)
         {
             PreventNegatives();
-
             PreventZero(modelState);
             if (!modelState.IsValid)
                 return RouteModel.ProcessPayment();
@@ -593,8 +593,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     CheckStoreInVault(modelState, m.UserPeopleId.Value);
                 if (!modelState.IsValid)
                     return RouteModel.ProcessPayment();
-//                if(m != null)
-//                    ViewData["Terms"] = m.Terms;
 
                 var ti = ProcessPaymentTransaction(m);
 
@@ -614,8 +612,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 OnlineRegModel.ConfirmDuePaidTransaction(ti, ti.TransactionId, sendmail: true);
 
                 return RouteModel.AmountDue(AmountDueTrans(DbUtil.Db, ti), ti);
-                //ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
-                //return View("", ti);
             }
             catch (Exception ex)
             {

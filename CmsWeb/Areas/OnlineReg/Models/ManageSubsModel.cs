@@ -15,7 +15,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
     public class ManageSubsModel
     {
         public int pid { get; set; }
-        public int? masterorgid { get; set; }
+        public int masterorgid { get; set; }
         private Person _Person;
         public Person person
         {
@@ -37,8 +37,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_masterorg != null)
                     return _masterorg;
-                if (masterorgid.HasValue)
-                    _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
+                _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid);
                 return _masterorg;
             }
         }
@@ -83,7 +82,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public IEnumerable<OrgSub> OrderSubs(IEnumerable<OrgSub> q)
         {
-            if (!masterorgid.HasValue)
+            if (masterorg == null)
                 return q;
             var cklist = masterorg.OrgPickList.Split(',').Select(oo => oo.ToInt()).ToList();
             var list = q.ToList();
@@ -184,5 +183,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                      );
             }
         }
+	    public void Log(string action)
+	    {
+	        DbUtil.LogActivity("OnlineReg ManageSubs " + action, masterorgid, pid);
+	    }
     }
 }

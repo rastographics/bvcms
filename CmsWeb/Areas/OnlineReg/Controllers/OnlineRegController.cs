@@ -8,6 +8,7 @@ using CmsWeb.Areas.OnlineReg.Models;
 using Elmah;
 using UtilityExtensions;
 using System.Collections.Generic;
+using AuthorizeNet.Util;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -45,8 +46,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Session["OnlineRegLogin"] = true;
 
             if (m.Orgid == Util.CreateAccountCode)
+            {
+                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: Util.UserPeopleId);
                 return Content("/Person2/" + Util.UserPeopleId); // they already have an account, so take them to their page
-
+            }
             m.UserPeopleId = Util.UserPeopleId;
             var route = RouteSpecialLogin(m);
             if (route != null)
@@ -66,7 +69,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // Clicked the register without logging in link
             m.nologin = true;
             m.CreateAnonymousList();
-            m.HistoryAdd("nologin");
+            m.Log("NoLogin");
             return FlowList(m);
         }
 
@@ -119,7 +122,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (p.IsSpecialReg())
                 p.QuestionsOK = true;
             else if (p.RegistrationFull())
+            {
+                m.Log("Closed");
                 ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
+            }
             p.SetClassId();
             p.SetSpecialFee();
 
@@ -181,7 +187,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             m.HistoryAdd("AskDonation");
             if (m.List.Count == 0)
+            {
+                m.Log("AskDonationError NoRegistrants");
                 return Content("Can't find any registrants");
+            }
             m.RemoveLastRegistrantIfEmpty();
             SetHeaders(m);
             return View(m);
@@ -203,13 +212,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             Response.NoCache();
             var s = (string)TempData["onlineregmodel"];
             if (s == null)
+            {
+                DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
                 return Message("Registration cannot be completed after a page refresh.");
+            }
             var m = Util.DeSerialize<OnlineRegModel>(s);
 
             var ret = m.CompleteRegistration(this);
             switch (ret.Route)
             {
                 case RouteType.Error:
+                    m.Log(ret.Message);
                     return Message(ret.Message);
                 case RouteType.Action:
                     return View(ret.View);
@@ -220,7 +233,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 case RouteType.Payment:
                     return View(ret.View, ret.PaymentForm);
             }
-            throw new Exception("unexpected value on CompleteRegistration");
+            m.Log("BadRouteOnCompleteRegistration");
+            return Message("unexpected value on CompleteRegistration");
         }
 
         [HttpPost]
@@ -246,6 +260,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             try
             {
                 m.UpdateDatum();
+                m.Log(fromMethod);
                 var content = ViewExtensions2.RenderPartialViewToString2(this, "Flow2/List", m);
                 return Content(content);
             }
@@ -263,6 +278,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var ex2 = new Exception("{0}, {2}".Fmt(errorDisplay, m.DatumId, DbUtil.Db.ServerLink("/OnlineReg/RegPeople/") + m.DatumId), ex);
             ErrorSignal.FromCurrentContext().Raise(ex2);
+            m.Log(ex2.Message);
             TempData["error"] = errorDisplay;
             TempData["stack"] = ex.StackTrace;
             return Content("/Error/");
@@ -271,6 +287,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (filterContext.ExceptionHandled)
                 return;
+            DbUtil.LogActivity("OnlineReg Error:" + filterContext.Exception.Message);
             filterContext.Result = Message(filterContext.Exception.Message);
             filterContext.ExceptionHandled = true;
         }

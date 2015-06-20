@@ -12,8 +12,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
     {
         public void ParseSettings()
         {
-            //            if (HttpContext.Current.Items.Contains("RegSettings"))
-            //                return;
             var list = new Dictionary<int, Settings>();
             if (masterorgid.HasValue)
             {
@@ -27,15 +25,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             else if (org != null)
                 list[_orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, _orgid.Value);
-            //            if (HttpContext.Current.Items.Contains("RegSettings"))
-            //                return;
             HttpContext.Current.Items["RegSettings"] = list;
 
-            if (org == null || !org.AddToSmallGroupScript.HasValue()) return;
+            if (org == null || !org.AddToSmallGroupScript.HasValue()) 
+                return;
 
             var script = DbUtil.Db.Content(org.AddToSmallGroupScript);
-            if (script == null || !script.Body.HasValue()) return;
+            if (script == null || !script.Body.HasValue()) 
+                return;
 
+            Log("Script:" + org.AddToSmallGroupScript);
             try
             {
                 var pe = new PythonEvents(Util.Host, "RegisterEvent", script.Body);
@@ -43,6 +42,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             catch (Exception ex)
             {
+                Log("PythonError");
                 org.AddToExtraData("Python.errors", ex.Message);
                 throw;
             }

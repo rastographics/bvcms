@@ -35,16 +35,18 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				ot.Used = true;
 				DbUtil.Db.SubmitChanges();
 			}
+            m.Log("Start");
 			SetHeaders(id.ToInt());
-			DbUtil.LogActivity("Manage Subs: {0} ({1})".Fmt(m.Description(), m.person.Name));
 			return View("ManageSubscriptions/Choose", m);
 		}
 
-		[AcceptVerbs(HttpVerbs.Post)]
+
+	    [AcceptVerbs(HttpVerbs.Post)]
 		public ActionResult ConfirmSubscriptions(ManageSubsModel m)
-		{
+	    {
 			m.UpdateSubscriptions();
-			var Staff = DbUtil.Db.StaffPeopleForOrg(m.masterorgid.Value);
+
+			var Staff = DbUtil.Db.StaffPeopleForOrg(m.masterorgid);
 
 		    var msg = DbUtil.Db.ContentHtml("ConfirmSubscriptions", Resource1.ConfirmSubscriptions);
 		    var orgname = m.Description();
@@ -54,7 +56,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			DbUtil.Db.Email(m.person.FromEmail, Staff, "Subscriptions managed", 
             @"{0} managed subscriptions to {1}<br/>{2}".Fmt(m.person.Name, m.Description(), m.Summary));
 
-			SetHeaders(m.masterorgid.Value);
+			SetHeaders(m.masterorgid);
+            m.Log("Confirm");
 			return View("ManageSubscriptions/Confirm", m);
 		}
 	}

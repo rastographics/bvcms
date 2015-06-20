@@ -78,7 +78,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var notifyIds = GetNotifyIds();
             if (subject != "DO NOT SEND")
+            {
                 DbUtil.Db.Email(notifyIds[0].FromEmail, firstPerson, listMailAddress, subject, message, false);
+                Log("SentConfirmations");
+            }
 
             DbUtil.Db.SubmitChanges();
             // notify the staff
@@ -129,9 +132,11 @@ AmountDue: {5:C}<br/>
 
             // send confirmations
             if (emailSubject != "DO NOT SEND")
+            {
                 DbUtil.Db.Email(notify.FromEmail, p.person, Util.EmailAddressListFromString(p.fromemail),
                     emailSubject, message, redacted: false);
-
+                Log("SentConfirmation");
+            }
             // notify the staff
             DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notify.FromEmail),
                 NotifyIds, Header,
@@ -173,9 +178,12 @@ Total Fee paid for this registration session: {4:C}<br/>
                 p.person.PrimaryCity,
                 p.person.PrimaryState,
                 p.person.PrimaryZip);
-            if (!Transaction.TransactionId.StartsWith("Coupon"))
+            if (!Transaction.TransactionId.StartsWith("Coupon") && Transaction.Donate.HasValue)
+            {
                 p.person.PostUnattendedContribution(DbUtil.Db, Transaction.Donate.Value, p.setting.DonationFundId, desc,
                     tranid: Transaction.Id);
+                Log("ExtraDonation");
+            }
             var subject = GetSubject();
             var ma = donationtext.Match(message);
             if (ma.Success)
@@ -214,6 +222,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.person.PostUnattendedContribution(DbUtil.Db,
                 Transaction.Amt.Value, p.setting.DonationFundId,
                 "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId), tranid: Transaction.Id);
+            Log("GoerPayment");
             Transaction.Description = "Mission Trip Giving";
         }
 
@@ -260,6 +269,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                     p.person.PostUnattendedContribution(DbUtil.Db,
                         p.MissionTripSupportGoer ?? 0, p.setting.DonationFundId,
                         "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid), tranid: Transaction.Id);
+                    Log("GoerSupport");
                     // send notices
                     if (goerid > 0 && !p.MissionTripNoNoticeToGoer)
                     {
@@ -287,6 +297,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                     p.person.PostUnattendedContribution(DbUtil.Db,
                         p.MissionTripSupportGeneral ?? 0, p.setting.DonationFundId,
                         "SupportMissionTrip: org=" + p.orgid, tranid: Transaction.Id);
+                    Log("TripSupport");
                 }
             }
             var notifyids = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
@@ -467,13 +478,15 @@ Total Fee paid for this registration session: {4:C}<br/>
                 if (coupon != "Admin")
                 {
                     var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
-                    if (c != null)
-                    {
-                        c.RegAmount = AmtPaid;
-                        c.Used = DateTime.Now;
-                        c.PeopleId = List[0].PeopleId;
-                    }
+                    if (c == null) 
+                        return;
+                    c.RegAmount = AmtPaid;
+                    c.Used = DateTime.Now;
+                    c.PeopleId = List[0].PeopleId;
+                    Log("CouponUsed");
                 }
+                else
+                    Log("AdminCouponUsed");
             }
         }
         public void ConfirmReregister()
@@ -486,6 +499,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             var Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
+            Log("SendReRegisterLink");
         }
         public ConfirmEnum ConfirmManageSubscriptions()
         {
@@ -507,6 +521,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), "Manage Your Subscriptions", message);
+            Log("SendOneTimeLinkManageSub");
             return ConfirmEnum.ConfirmAccount;
         }
         private ConfirmEnum ConfirmPickSlots()
@@ -530,6 +545,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
+            Log("SendOneTimeLinkManageVol");
             URL = null;
             return ConfirmEnum.ConfirmAccount;
         }
@@ -553,6 +569,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManagePledge/"), c.Title, c.Body);
+            Log("SendOneTimeLinkManagePledge");
             return ConfirmEnum.ConfirmAccount;
         }
         internal ConfirmEnum SendLinkToManageGiving()
@@ -575,6 +592,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             p.SendOneTimeLink(
                 DbUtil.Db.StaffPeopleForOrg(Orgid.Value).First().FromEmail,
                 DbUtil.Db.ServerLink("/OnlineReg/ManageGiving/"), c.Title, c.Body);
+            Log("SendOneTimeLinkManageGiving");
             return ConfirmEnum.ConfirmAccount;
         }
         public int GetEntryPoint()

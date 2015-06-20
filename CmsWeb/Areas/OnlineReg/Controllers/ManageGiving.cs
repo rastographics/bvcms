@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				DbUtil.Db.SubmitChanges();
 			}
 			SetHeaders(m.orgid);
-			DbUtil.LogActivity("Manage Pledge: {0} ({1})".Fmt(m.Organization.OrganizationName, m.person.Name));
+		    m.Log("Start");
             return View("ManagePledge/Index", m);
 		}
 
@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 			if (!m.testing)
 				m.testing = testing ?? false;
 			SetHeaders(m.orgid);
-			DbUtil.LogActivity("Manage Giving: {0} ({1})".Fmt(m.Organization.OrganizationName, m.person.Name));
+            m.Log("Start");
             return View("ManageGiving/Setup", m);
 		}
 
@@ -123,6 +123,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 	        SetHeaders(m.orgid);
 	        OnlineRegModel.LogOutOfOnlineReg();
 
+            m.Log("Confirm");
 		    return View("ManageGiving/Confirm", m);
 		}
 
@@ -131,18 +132,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 		{
             m.Confirm();
 	        SetHeaders(m.orgid);
+            m.Log("Confirm");
 			return View("ManagePledge/Confirm", m);
 		}
 
 	    [HttpPost]
 	    public ActionResult RemoveManagedGiving(int peopleId, int orgId)
 	    {
-	        var manageGiving = new ManageGivingModel(peopleId, orgId);
-            manageGiving.CancelManagedGiving(peopleId);
-	        manageGiving.ThankYouMessage = "Your recurring giving has been stopped.";
+	        var m = new ManageGivingModel(peopleId, orgId);
+            m.CancelManagedGiving(peopleId);
+	        m.ThankYouMessage = "Your recurring giving has been stopped.";
 
-	        TempData["managegiving"] = manageGiving;
-
+            m.Log("Remove");
+	        TempData["managegiving"] = m;
 	        return Json(new { Url = Url.Action("ConfirmRecurringGiving") });
 	    }
 	}

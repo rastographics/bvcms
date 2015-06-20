@@ -408,6 +408,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     .Replace("{phone}", phone, ignoreCase: true);
                 var subj = "{0}, different email address than one on record".Fmt(orgname);
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
+                Log("DiffEmailFromRecord");
             }
             else
             {
@@ -418,6 +419,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     .Replace("{phone}", phone.FmtFone(), ignoreCase: true);
                 var subj = "{0}, no email on your record".Fmt(orgname);
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
+                Log("NoEmailOnRecord");
             }
         }
 
@@ -626,6 +628,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 OrganizationMember.InsertOrgMembers(DbUtil.Db, grouptojoin, PeopleId.Value, MemberTypeCode.Member,
                     DateTime.Now, null, false);
                 DbUtil.Db.UpdateMainFellowship(grouptojoin);
+                Log("AddedToOrg");
             }
         }
         private void AfterSettingConstructor()
@@ -664,6 +667,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             if (!Suggestedfee.HasValue && setting.AskVisible("AskSuggestedFee"))
                 Suggestedfee = setting.Fee;
+        }
+        public void Log(string action)
+        {
+            DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? orgid, PeopleId ?? Parent.UserPeopleId);
         }
     }
 

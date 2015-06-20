@@ -614,5 +614,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             ManagedGivingStopped = true;
         }
+        public void Log(string action)
+        {
+            DbUtil.LogActivity("OnlineReg ManageGiving " + action, orgid, pid);
+        }
     }
 }

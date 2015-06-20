@@ -13,10 +13,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             HistoryAdd("CompleteRegistration");
 
             var ret = CheckSpecialJavascript();
-            if (ret != null) return ret;
+            if (ret != null) 
+                return ret;
 
             ret = CheckAskDonation(ctl);
-            if (ret != null) return ret;
+            if (ret != null) 
+                return ret;
 
             if (List.Count == 0)
                 return RouteModel.ErrorMessage("Can't find any registrants");
@@ -24,22 +26,25 @@ namespace CmsWeb.Areas.OnlineReg.Models
             RemoveLastRegistrantIfEmpty();
 
             UpdateDatum();
-            DbUtil.LogActivity("Online Registration: {0} ({1})".Fmt(Header, DatumId));
 
             ret = CheckNoFeesDue();
-            if (ret != null) return ret;
+            if (ret != null) 
+                return ret;
 
             var terms = Util.PickFirst(Terms, "");
             if (terms.HasValue())
                 ctl.ViewBag.Terms = terms;
 
             ret = CheckTermsNoFee(ctl);
-            if (ret != null) return ret;
+            if (ret != null) 
+                return ret;
 
             ret = CheckAlreadyRegistered();
-            if (ret != null) return ret;
+            if (ret != null) 
+                return ret;
 
             var pf = PaymentForm.CreatePaymentForm(this);
+            Log("PaymentForm");
             ctl.ModelState.Clear();
             return RouteModel.ViewPayment("Payment/Process", pf);
         }
@@ -51,7 +56,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ParseSettings();
 
             if (om != null && settings[om.OrganizationId].AllowReRegister == false && !SupportMissionTrip)
+            {
+                Log("AlreadyRegistered");
                 return RouteModel.ErrorMessage("You are already registered it appears");
+            }
             return null;
         }
 
@@ -59,19 +67,25 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             ctl.SetHeaders(this);
             if (PayAmount() == 0 && Terms.HasValue())
+            {
+                Log("ViewTerms");
                 return RouteModel.ViewTerms("Terms");
+            }
             return null;
         }
 
         private RouteModel CheckNoFeesDue()
         {
             if (PayAmount() == 0 && (donation ?? 0) == 0 && !Terms.HasValue())
+            {
+                Log("ZeroDue");
                 return RouteModel.Redirect("Confirm",
                     new
                     {
                         id = DatumId,
                         TransactionID = "zero due",
                     });
+            }
             return null;
         }
 
@@ -82,6 +96,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ctl.SetHeaders(this);
                 ctl.ModelState.AddModelError("donation",
                     "Please indicate a donor or clear the donation amount");
+                Log("AskDonation");
                 return RouteModel.ViewAction("AskDonation");
             }
             return null;
@@ -95,6 +110,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (p.IsNew)
                     p.AddPerson(null, p.org.EntryPointId ?? 0);
                 SpecialRegModel.SaveResults(Orgid ?? 0, List[0].PeopleId ?? 0, List[0].SpecialTest);
+                Log("SpecialJavascript");
                 return RouteModel.ViewAction("SpecialRegistrationResults");
             }
             return null;
@@ -103,9 +119,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void RemoveLastRegistrantIfEmpty()
         {
             if (!last.IsNew && !last.Found == true)
+            {
+                Log("RemovedNotNewOrNotFound");
                 List.Remove(last);
+            }
             if (!(last.IsValidForNew || last.IsValidForExisting))
+            {
+                Log("RemovedNotValidForEitherNewOrExisting");
                 List.Remove(last);
+            }
         }
     }
 
