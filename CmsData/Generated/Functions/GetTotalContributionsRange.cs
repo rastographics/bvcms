@@ -63,7 +63,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="Range", Storage="_Range", DbType="int NOT NULL")]
+		[Column(Name="RANGE", Storage="_Range", DbType="int NOT NULL")]
 		public int Range
 		{
 			get

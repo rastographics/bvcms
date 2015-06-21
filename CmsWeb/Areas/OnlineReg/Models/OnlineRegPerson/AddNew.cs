@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             DbUtil.Db.SubmitChanges();
             DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, person);
             PeopleId = person.PeopleId;
-            DbUtil.LogActivity("OnlineReg AddPerson", orgid, PeopleId);
+            Log("AddPerson");
         }
     }
 }

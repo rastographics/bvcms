@@ -11,7 +11,6 @@
         </td>
       </tr>
       <tr>
-        <th>Machine</th>
         <th>User</th>
         <th>Date & Time</th>
         <th>Activity</th>
@@ -23,10 +22,15 @@
       @foreach (var a in Model.ViewList())
       {
         <tr>
-          <td><a href="/LastActivity?machine=@a.Machine">@a.Machine</a></td>
-          <td><a href="/LastActivity?userid=@a.UserId">@a.UserName</a></td>
-          <td>@a.DateX.FormatDateTm()</td>
-          <td>@a.Activity</td>
+          <td><a href="/LastActivity?userid=@a.UserId" title="Machine: @a.Machine">@a.UserName</a></td>
+          <td nowrap="nowrap">@a.DateX.FormatDateTm()</td>
+          <td>
+            @a.Activity
+            @if(a.DatumId.HasValue)
+            {
+              <a href="/OnlineReg/RegPeople/@a.DatumId" target="regdata">reg</a>
+            }
+          </td>
           <td><a href="/LastActivity?orgid=@a.OrgId">@a.OrgName</a></td>
           <td><a href="/LastActivity?peopleid=@a.PeopleId">@a.PersonName</a></td>
         </tr>

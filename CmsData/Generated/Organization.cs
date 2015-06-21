@@ -181,8 +181,6 @@ namespace CmsData
 		
    		private EntitySet< EnrollmentTransaction> _EnrollmentTransactions;
 		
-   		private EntitySet< ActivityLog> _ActivityLogs;
-		
    		private EntitySet< Attend> _Attends;
 		
    		private EntitySet< Coupon> _Coupons;
@@ -466,8 +464,6 @@ namespace CmsData
 			this._ChildOrgs = new EntitySet< Organization>(new Action< Organization>(this.attach_ChildOrgs), new Action< Organization>(this.detach_ChildOrgs)); 
 			
 			this._EnrollmentTransactions = new EntitySet< EnrollmentTransaction>(new Action< EnrollmentTransaction>(this.attach_EnrollmentTransactions), new Action< EnrollmentTransaction>(this.detach_EnrollmentTransactions)); 
-			
-			this._ActivityLogs = new EntitySet< ActivityLog>(new Action< ActivityLog>(this.attach_ActivityLogs), new Action< ActivityLog>(this.detach_ActivityLogs)); 
 			
 			this._Attends = new EntitySet< Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
 			
@@ -2286,16 +2282,6 @@ namespace CmsData
    		}
 
 		
-   		[Association(Name="FK_ActivityLog_Organizations", Storage="_ActivityLogs", OtherKey="OrgId")]
-   		public EntitySet< ActivityLog> ActivityLogs
-   		{
-   		    get { return this._ActivityLogs; }
-
-			set	{ this._ActivityLogs.Assign(value); }
-
-   		}
-
-		
    		[Association(Name="FK_AttendWithAbsents_TBL_ORGANIZATIONS_TBL", Storage="_Attends", OtherKey="OrganizationId")]
    		public EntitySet< Attend> Attends
    		{
@@ -2734,19 +2720,6 @@ namespace CmsData
 		}
 
 		private void detach_EnrollmentTransactions(EnrollmentTransaction entity)
-		{
-			this.SendPropertyChanging();
-			entity.Organization = null;
-		}
-
-		
-		private void attach_ActivityLogs(ActivityLog entity)
-		{
-			this.SendPropertyChanging();
-			entity.Organization = this;
-		}
-
-		private void detach_ActivityLogs(ActivityLog entity)
 		{
 			this.SendPropertyChanging();
 			entity.Organization = null;

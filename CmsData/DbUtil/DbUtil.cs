@@ -67,7 +67,7 @@ namespace CmsData
             return CMSDataContext.Create(Util.GetConnectionString(host), host);
         }
 
-        private static void _logActivity(string host, string activity, int? orgid, int? pid)
+        private static void _logActivity(string host, string activity, int? orgid, int? pid, int? did)
         {
             var db = Create(host);
             int? uid = Util.UserId;
@@ -85,6 +85,7 @@ namespace CmsData
                 Machine = Environment.MachineName,
                 OrgId = orgid,
                 PeopleId = pid,
+                DatumId = did,
             };
             db.ActivityLogs.InsertOnSubmit(a);
             db.SubmitChanges();
@@ -102,29 +103,30 @@ namespace CmsData
                 {
                     cn.Open();
                     cn.Execute(
-                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid) VALUES(@db, @dt, @ac, @oid, @pid)", 
+                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid, did) VALUES(@db, @dt, @ac, @oid, @pid, @did)", 
                         new
                         {
                             db = host,
-                            activity,
+                            ac = activity,
                             dt = a.ActivityDate,
                             oid = a.OrgId,
-                            pid = a.PeopleId
+                            pid = a.PeopleId,
+                            did = a.DatumId,
                         });
                 }
             }
         }
-        public static void LogActivity(string activity, int? orgid = null, int? peopleid = null)
+        public static void LogActivity(string activity, int? orgid = null, int? peopleid = null, int? did = null)
         {
-            _logActivity(Util.Host, activity, orgid, peopleid);
+            _logActivity(Util.Host, activity, orgid, peopleid, did);
         }
         public static void LogActivity(string host, string activity, int? orgid = null, int? peopleid = null)
         {
-            _logActivity(host, activity, orgid, peopleid);
+            _logActivity(host, activity, orgid, peopleid, null);
         }
         public static void LogOrgActivity(string activity, int orgid, string name)
         {
-            _logActivity(Util.Host, activity, orgid, null);
+            _logActivity(Util.Host, activity, orgid, null, null);
             var mru = Util2.MostRecentOrgs;
             var i = mru.SingleOrDefault(vv => vv.Id == orgid);
             if (i != null)
@@ -135,7 +137,7 @@ namespace CmsData
         }
         public static void LogPersonActivity(string activity, int pid, string name)
         {
-            _logActivity(Util.Host, activity, null, pid);
+            _logActivity(Util.Host, activity, null, pid, null);
             if (pid == Util.UserPeopleId)
                 return;
             var mru = Util2.MostRecentPeople;

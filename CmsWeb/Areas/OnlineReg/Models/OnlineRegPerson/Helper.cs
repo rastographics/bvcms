@@ -670,7 +670,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public void Log(string action)
         {
-            DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? orgid, PeopleId ?? Parent.UserPeopleId);
+            DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? orgid, PeopleId ?? Parent.UserPeopleId, Parent.DatumId);
         }
     }
 

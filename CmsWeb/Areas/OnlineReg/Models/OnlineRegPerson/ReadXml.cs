@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using CmsData;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -61,7 +63,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         ReadSpecialTest(e);
                         break;
                     default:
-                        Util.SetPropertyFromText(this, TranslateName(name), e.Value);
+                        try
+                        {
+                            Util.SetPropertyFromText(this, TranslateName(name), e.Value);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log("XMLError:name={0},value={1}".Fmt(name, e.Value));
+                        }
                         break;
                 }
             }

@@ -77,8 +77,6 @@ namespace CmsData
 		private DateTime? _ResetPasswordExpires;
 		
    		
-   		private EntitySet< ActivityLog> _ActivityLogs;
-		
    		private EntitySet< Coupon> _Coupons;
 		
    		private EntitySet< SMSGroupMember> _SMSGroupMembers;
@@ -191,8 +189,6 @@ namespace CmsData
     #endregion
 		public User()
 		{
-			
-			this._ActivityLogs = new EntitySet< ActivityLog>(new Action< ActivityLog>(this.attach_ActivityLogs), new Action< ActivityLog>(this.detach_ActivityLogs)); 
 			
 			this._Coupons = new EntitySet< Coupon>(new Action< Coupon>(this.attach_Coupons), new Action< Coupon>(this.detach_Coupons)); 
 			
@@ -861,16 +857,6 @@ namespace CmsData
         
     #region Foreign Key Tables
    		
-   		[Association(Name="FK_ActivityLog_Users", Storage="_ActivityLogs", OtherKey="UserId")]
-   		public EntitySet< ActivityLog> ActivityLogs
-   		{
-   		    get { return this._ActivityLogs; }
-
-			set	{ this._ActivityLogs.Assign(value); }
-
-   		}
-
-		
    		[Association(Name="FK_Coupons_Users", Storage="_Coupons", OtherKey="UserId")]
    		public EntitySet< Coupon> Coupons
    		{
@@ -994,19 +980,6 @@ namespace CmsData
 		}
 
    		
-		private void attach_ActivityLogs(ActivityLog entity)
-		{
-			this.SendPropertyChanging();
-			entity.User = this;
-		}
-
-		private void detach_ActivityLogs(ActivityLog entity)
-		{
-			this.SendPropertyChanging();
-			entity.User = null;
-		}
-
-		
 		private void attach_Coupons(Coupon entity)
 		{
 			this.SendPropertyChanging();

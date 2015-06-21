@@ -265,8 +265,6 @@ namespace CmsData
 		
    		private EntitySet< Family> _FamiliesHeaded2;
 		
-   		private EntitySet< ActivityLog> _ActivityLogs;
-		
    		private EntitySet< Attend> _Attends;
 		
    		private EntitySet< BackgroundCheck> _BackgroundChecks;
@@ -772,8 +770,6 @@ namespace CmsData
 			this._FamiliesHeaded = new EntitySet< Family>(new Action< Family>(this.attach_FamiliesHeaded), new Action< Family>(this.detach_FamiliesHeaded)); 
 			
 			this._FamiliesHeaded2 = new EntitySet< Family>(new Action< Family>(this.attach_FamiliesHeaded2), new Action< Family>(this.detach_FamiliesHeaded2)); 
-			
-			this._ActivityLogs = new EntitySet< ActivityLog>(new Action< ActivityLog>(this.attach_ActivityLogs), new Action< ActivityLog>(this.detach_ActivityLogs)); 
 			
 			this._Attends = new EntitySet< Attend>(new Action< Attend>(this.attach_Attends), new Action< Attend>(this.detach_Attends)); 
 			
@@ -3646,16 +3642,6 @@ namespace CmsData
    		}
 
 		
-   		[Association(Name="FK_ActivityLog_People", Storage="_ActivityLogs", OtherKey="PeopleId")]
-   		public EntitySet< ActivityLog> ActivityLogs
-   		{
-   		    get { return this._ActivityLogs; }
-
-			set	{ this._ActivityLogs.Assign(value); }
-
-   		}
-
-		
    		[Association(Name="FK_AttendWithAbsents_TBL_PEOPLE_TBL", Storage="_Attends", OtherKey="PeopleId")]
    		public EntitySet< Attend> Attends
    		{
@@ -5061,19 +5047,6 @@ namespace CmsData
 		{
 			this.SendPropertyChanging();
 			entity.HeadOfHouseholdSpouse = null;
-		}
-
-		
-		private void attach_ActivityLogs(ActivityLog entity)
-		{
-			this.SendPropertyChanging();
-			entity.Person = this;
-		}
-
-		private void detach_ActivityLogs(ActivityLog entity)
-		{
-			this.SendPropertyChanging();
-			entity.Person = null;
 		}
 
 		

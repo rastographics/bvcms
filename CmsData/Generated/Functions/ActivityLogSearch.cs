@@ -34,6 +34,8 @@ namespace CmsData.View
 		
 		private string _PersonName;
 		
+		private int? _DatumId;
+		
 		private int? _MaxRows;
 		
 		
@@ -191,6 +193,23 @@ namespace CmsData.View
 			{
 				if (this._PersonName != value)
 					this._PersonName = value;
+			}
+
+		}
+
+		
+		[Column(Name="DatumId", Storage="_DatumId", DbType="int")]
+		public int? DatumId
+		{
+			get
+			{
+				return this._DatumId;
+			}
+
+			set
+			{
+				if (this._DatumId != value)
+					this._DatumId = value;
 			}
 
 		}
