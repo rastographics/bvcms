@@ -4,6 +4,7 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using CmsData;
+using Elmah;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -63,13 +64,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         ReadSpecialTest(e);
                         break;
                     default:
-                        try
+                        if(Util.SetPropertyFromText(this, TranslateName(name), e.Value) == false)
                         {
-                            Util.SetPropertyFromText(this, TranslateName(name), e.Value);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log("XMLError:name={0},value={1}".Fmt(name, e.Value));
+                            ErrorSignal.FromCurrentContext().Raise(new Exception("OnlineRegPerson Missing name:" + name));
+                            Log("Error:Missing({0})".Fmt(name));
                         }
                         break;
                 }

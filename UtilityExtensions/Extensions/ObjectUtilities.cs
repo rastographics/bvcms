@@ -197,10 +197,13 @@ namespace UtilityExtensions
             SetPropertyEx(Sub, Subs, Value);
         }
 
-       public static void SetPropertyFromText(object obj, string member, string textvalue)
+        public static bool SetPropertyFromText(object obj, string member, string textvalue)
         {
             Type typBindingSource = null;
-            object minfo = obj.GetType().GetMember(member, bindingFlags)[0];
+            var a = obj.GetType().GetMember(member, bindingFlags);
+            if (a.Length == 0)
+                return false;
+            object minfo = a[0];
             MemberTypes mt;
             if (minfo is FieldInfo)
                 mt = ((FieldInfo)minfo).MemberType;
@@ -213,35 +216,36 @@ namespace UtilityExtensions
                 typBindingSource = ((PropertyInfo)minfo).PropertyType;
 
             object value = null;
-            if (!GetValue(textvalue, typBindingSource, ref value)) 
-                return;
+            if (!GetValue(textvalue, typBindingSource, ref value))
+                return true;
 
             SetPropertyEx(obj, member, value);
+            return true;
         }
 
         private static bool GetValue(string textvalue, Type typBindingSource, ref object value)
         {
-            if (typBindingSource == typeof (string))
+            if (typBindingSource == typeof(string))
                 value = textvalue;
-            else if (typBindingSource == typeof (int))
+            else if (typBindingSource == typeof(int))
                 value = textvalue.ToInt();
-            else if (typBindingSource == typeof (int?))
+            else if (typBindingSource == typeof(int?))
                 value = textvalue.ToInt2();
-            else if (typBindingSource == typeof (bool))
+            else if (typBindingSource == typeof(bool))
                 value = textvalue.ToBool();
-            else if (typBindingSource == typeof (bool?))
+            else if (typBindingSource == typeof(bool?))
                 value = textvalue.ToBool2();
-            else if (typBindingSource == typeof (DateTime))
+            else if (typBindingSource == typeof(DateTime))
                 value = textvalue.ToDate() ?? DateTime.MinValue;
-            else if (typBindingSource == typeof (DateTime?))
+            else if (typBindingSource == typeof(DateTime?))
                 value = textvalue.ToDate();
-            else if (typBindingSource == typeof (long?))
+            else if (typBindingSource == typeof(long?))
                 value = textvalue.ToLong2();
-            else if (typBindingSource == typeof (decimal))
+            else if (typBindingSource == typeof(decimal))
                 value = textvalue.ToDecimal() ?? 0;
-            else if (typBindingSource == typeof (decimal?))
+            else if (typBindingSource == typeof(decimal?))
                 value = textvalue.ToDecimal();
-            else if (typBindingSource == typeof (double))
+            else if (typBindingSource == typeof(double))
                 value = double.Parse(textvalue);
             else if (typBindingSource.IsEnum)
                 value = Enum.Parse(typBindingSource, textvalue);
@@ -295,10 +299,10 @@ namespace UtilityExtensions
             public T Value { get; set; }
         }
 
-        public static IEnumerable<Numbered<T>> ToNumbered<T>(this IEnumerable<T> q) 
+        public static IEnumerable<Numbered<T>> ToNumbered<T>(this IEnumerable<T> q)
         {
             int i = 0;
-            foreach (T element in q) 
+            foreach (T element in q)
             {
                 yield return new Numbered<T> { Index = i, Value = element };
                 i++;
