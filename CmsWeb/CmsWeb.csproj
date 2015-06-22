@@ -1468,6 +1468,7 @@
     <Content Include="Areas\Search\Views\RegistrationSearch\IncompleteResults.cshtml" />
     <Content Include="Areas\Manage\Views\Activity\Results.cshtml" />
     <Content Include="Areas\Manage\Views\Activity\Index.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RegPeople.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org2\Dialogs.cshtml" />

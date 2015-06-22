@@ -400,7 +400,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return om;
         }
 
-        private string AgeGroup()
+        public string AgeGroup()
         {
             foreach (var i in setting.AgeGroups)
                 if (person.Age >= i.StartAge && person.Age <= i.EndAge)

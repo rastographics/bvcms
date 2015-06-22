@@ -8,7 +8,6 @@ using CmsWeb.Areas.OnlineReg.Models;
 using Elmah;
 using UtilityExtensions;
 using System.Collections.Generic;
-using AuthorizeNet.Util;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -18,18 +17,28 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     public partial class OnlineRegController : CmsController
     {
         [HttpGet]
+        [Route("~/OnlineReg/Index/{id:int}")]
         [Route("~/OnlineReg/{id:int}")]
+        // ReSharper disable once FunctionComplexityOverflow
         public ActionResult Index(int? id, bool? testing, string email, bool? login, string registertag, bool? showfamily, int? goerid, int? gsid, string source)
         {
             Response.NoCache();
-            var m = new OnlineRegModel(Request, id, testing, email, login, source);
+            try
+            {
+                var m = new OnlineRegModel(Request, id, testing, email, login, source);
+                if (m.org != null && m.org.IsMissionTrip == true)
+                    m.PrepareMissionTrip(gsid, goerid);
 
-            if (m.org != null && m.org.IsMissionTrip == true)
-                m.PrepareMissionTrip(gsid, goerid);
-
-            SetHeaders(m);
-            var pid = m.CheckRegisterLink(registertag);
-            return RouteRegistration(m, pid, showfamily);
+                SetHeaders(m);
+                var pid = m.CheckRegisterLink(registertag);
+                return RouteRegistration(m, pid, showfamily);
+            }
+            catch (Exception ex)
+            {
+                if (ex is BadRegistrationException)
+                    return Message(ex.Message);
+                throw;
+            }
         }
 
         [HttpPost]
@@ -292,6 +301,5 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             filterContext.Result = Message(filterContext.Exception.Message);
             filterContext.ExceptionHandled = true;
         }
-
     }
 }

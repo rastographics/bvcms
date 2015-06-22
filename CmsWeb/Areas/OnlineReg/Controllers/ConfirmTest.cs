@@ -63,15 +63,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 select i).SingleOrDefault();
             if (rd == null)
                 return Content("no data");
-//            var xd = XDocument.Parse(ed.Data);
-//            var proc1 = new XProcessingInstruction("xml-stylesheet", @"type=""text/xsl"" href=""/Content/xml.xsl""");
-//            var proc2 = new XProcessingInstruction("xml-stylesheet", @"type=""text/css"" href=""/Content/xml.css""");
-//            if (xd.Root != null)
-//            {
-//                xd.Root.AddBeforeSelf(proc1);
-//                xd.Root.AddBeforeSelf(proc2);
-//                return Content(xd.ToString(), contentType: "text/xml");
-//            }
             return Content(rd.Data, contentType: "text/xml");
         }
         [Authorize(Roles = "ManageTransactions,Finance,Admin")]
@@ -99,6 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                 }
             }
+            return View(q2[0].m);
             return View("ConfirmTest", q2);
         }
     }

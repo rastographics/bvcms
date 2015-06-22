@@ -85,7 +85,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.UpdateDatum(completed: true);
                 SetHeaders(m);
                 if (view == ConfirmEnum.ConfirmAccount)
+                {
+                    m.Log("ConfirmAccount");
                     return View("ConfirmAccount", m);
+                }
+                m.Log("Confirm");
                 return View("Confirm", m);
             }
             catch (Exception ex)
@@ -135,6 +139,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             SetHeaders(pf.OrgId ?? 0);
 
+            DbUtil.LogActivity("OnlineReg PayDueStart", ti.OrgId, ti.LoginPeopleId ?? ti.FirstTransactionPeopleId());
             return View("Payment/Process", pf);
         }
 
@@ -143,17 +148,23 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (!id.HasValue)
                 return View("Unknown");
             if (!transactionId.HasValue())
-                return Message("error no transaction");
-
+            {
+                DbUtil.LogActivity("OnlineReg PayDueNoTransactionId");
+                return Message("error no transactionid");
+            }
             var ti = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == id);
             if (ti == null)
+            {
+                DbUtil.LogActivity("OnlineReg PayDueNoPendingTrans");
                 return Message("no pending transaction");
+            }
 #if DEBUG
             ti.Testing = true;
 #endif
             OnlineRegModel.ConfirmDuePaidTransaction(ti, transactionId, sendmail: true);
             ViewBag.amtdue = PaymentForm.AmountDueTrans(DbUtil.Db, ti).ToString("C");
             SetHeaders(ti.OrgId ?? 0);
+            DbUtil.LogActivity("OnlineReg PayDueConfirm", ti.OrgId, ti.LoginPeopleId ?? ti.FirstTransactionPeopleId());
             return View("PayAmtDue/Confirm", ti);
         }
 

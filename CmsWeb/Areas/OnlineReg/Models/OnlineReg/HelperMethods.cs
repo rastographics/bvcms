@@ -108,7 +108,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private bool allowAnonymous(int? id)
         {
             if (id.HasValue)
-                return !settings[id.Value].DisallowAnonymous;
+                if(settings.ContainsKey(id.Value))
+                    return !settings[id.Value].DisallowAnonymous;
             return true;
         }
 
@@ -645,8 +646,10 @@ AND SupporterId = 828612
 
         public void Log(string action)
         {
-            var p = List[0];
-            DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? Orgid, UserPeopleId ?? p.PeopleId, DatumId);
+            int? pid = null;
+            if(List.Count > 0)
+                pid = List[0].PeopleId;
+            DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? Orgid, UserPeopleId ?? pid, DatumId);
         }
     }
 }
