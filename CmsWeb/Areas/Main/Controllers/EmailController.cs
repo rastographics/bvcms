@@ -80,7 +80,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var doc = new HtmlDocument();
             doc.LoadHtml(c.Body);
             var bvedits = doc.DocumentNode.SelectNodes("//div[@bvedit]");
-            if(!bvedits.Any())
+            if(bvedits == null || !bvedits.Any())
 		        c.Body = "<div bvedit='discardthis'>{0}</div>".Fmt(c.Body);
 
             ViewBag.content = c;
