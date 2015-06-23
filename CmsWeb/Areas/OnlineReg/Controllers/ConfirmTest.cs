@@ -79,6 +79,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 try
                 {
                     var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
+                    m.Datum = ed;
                     var i = new ConfirmTestInfo
                     {
                         ed = ed,
@@ -91,7 +92,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
             }
             return View(q2[0].m);
-            return View("ConfirmTest", q2);
         }
     }
 }

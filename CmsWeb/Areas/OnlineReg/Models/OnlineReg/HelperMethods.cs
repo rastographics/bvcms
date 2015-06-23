@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Xml.Serialization;
@@ -516,6 +515,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             else
             {
+                // Don't create a new Datum if there is no data yet.
+                if (List.Count == 0)
+                    return;
+                var p = FirstRegistrant;
+                if(List.Count > 0 && !p.FirstName.HasValue() && !p.LastName.HasValue() && p.EmailAddress.HasValue())
+                    return;
+
                 Datum = new RegistrationDatum
                 {
                     OrganizationId = masterorgid ?? _orgid,

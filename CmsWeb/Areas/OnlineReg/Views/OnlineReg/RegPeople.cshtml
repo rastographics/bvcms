@@ -11,7 +11,14 @@
 
 <h2>RegPeople</h2>
 <table class="table" style="width: auto">
-  <tr><td>DateTime</td><td><a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a></td></tr>
+  <tr><td>DateTime</td>
+    <td>
+      @if (Model.Datum != null)
+      {
+        <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
+      }
+    </td>
+  </tr>
   <tr><td>Status</td><td>@(Model.Datum.Completed == true ? "completed" : "incomplete")</td></tr>
   <tr>
     <td>Org</td>

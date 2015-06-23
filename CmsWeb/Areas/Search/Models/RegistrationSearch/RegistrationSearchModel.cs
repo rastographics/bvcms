@@ -32,6 +32,7 @@ namespace CmsWeb.Areas.Search.Models
 
             var q = from r in db.ViewRegistrationLists
                     where r.Cnt > 0
+                    where r.First.Length > 0 && r.Last.Length > 0
                     select r;
             if (SearchParameters.Registrant.HasValue())
             {
