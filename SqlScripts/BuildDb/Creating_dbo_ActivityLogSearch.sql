@@ -1,3 +1,4 @@
+
 CREATE FUNCTION [dbo].[ActivityLogSearch]
 (
 	@machine VARCHAR(30),
@@ -22,6 +23,7 @@ RETURNS
 	OrgId INT,
 	PeopleId INT,
 	PersonName NVARCHAR(139),
+	DatumId INT,
 	MaxRows INT
 )
 AS
@@ -38,11 +40,13 @@ BEGIN
 			OrgId,
 			o.OrganizationName,
 			a.PeopleId,
-			p.Name2
+			p.Name2,
+			rd.Id DatumId
 		FROM dbo.ActivityLog a
 		LEFT JOIN dbo.Organizations o ON o.OrganizationId = a.OrgId
 		LEFT JOIN dbo.People p ON p.PeopleId = a.PeopleId
 		LEFT JOIN dbo.Users u ON u.UserId = a.UserId
+		LEFT JOIN dbo.RegistrationData rd ON rd.Id = a.DatumId
 		WHERE 1 = 1
 		AND a.ActivityDate >= DATEADD(DAY, -@lookback, @enddate)
 		AND a.ActivityDate <= @enddate
@@ -64,6 +68,7 @@ BEGIN
 	          orgid ,
 	          peopleid ,
 	          personname ,
+			  DatumId,
 	          maxrows
 	        )
 	SELECT 
@@ -76,6 +81,7 @@ BEGIN
 		r.OrgId,
 		r.PeopleId,
 		r.Name2,
+		r.DatumId,
 		c.MaxRows
 	FROM results r, TempCount c
 	ORDER BY r.ActivityDate DESC
