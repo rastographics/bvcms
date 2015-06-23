@@ -73,6 +73,13 @@ This will be presented as a dropdown selection.
             var v = list.SingleOrDefault(i => choices.Contains(i.SmallGroup, StringComparer.OrdinalIgnoreCase));
 		    return v;
 		}
+		public string SmallGroupDescription(List<string> choices)
+		{
+            var v = list.SingleOrDefault(i => choices.Contains(i.SmallGroup, StringComparer.OrdinalIgnoreCase));
+            if(v != null)
+    		    return v.Description;
+		    return "";
+		}
 
 		public bool IsSmallGroupFilled(List<string> smallgroups, string sg)
 		{

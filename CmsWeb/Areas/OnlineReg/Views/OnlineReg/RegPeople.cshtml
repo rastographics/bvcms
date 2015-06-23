@@ -10,7 +10,7 @@
 }
 
 <h2>RegPeople</h2>
-<table class="table" style="width:auto">
+<table class="table" style="width: auto">
   <tr><td>DateTime</td><td><a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a></td></tr>
   <tr><td>Status</td><td>@(Model.Datum.Completed == true ? "completed" : "incomplete")</td></tr>
   <tr>
@@ -31,148 +31,158 @@
     </td>
   </tr>
   <tr><td>User</td><td>@Model.LoginName</td></tr>
+</table>
+<table class="table" style="width: auto">
   @foreach (var p in Model.List)
   {
-    <tr>
-      <td>@(n++)</td>
-      <td>
-        <table class="table" style="width:auto">
-          @{
-            var om = p.GetOrgMember();
-            var rr = p.person.RecRegs.Single();
-          }
-          @foreach (var ask in p.setting.AskItems)
+    var om = p.GetOrgMember() ?? new OrganizationMember();
+    var rr = (p.person ?? new Person()).GetRecReg();
+
+    <tr><td>@(n++)</td><td></td><td></td></tr>
+    <tr><td></td><td>Organization</td><td>@p.org.OrganizationName</td></tr>
+    <tr><td></td><td>Name</td><td>@p.FirstName @(p.LastName.HasValue() ? p.LastName : "(empty)")</td></tr>
+    <tr><td></td><td>Birthday</td><td>@p.DateOfBirth @(p.age.ToString2("({0})"))</td></tr>
+    <tr><td></td><td>MobileApp</td><td>@p.InMobileAppMode</td></tr>
+    <tr><td></td><td>IsNew</td><td>@p.IsNew</td></tr>
+    <tr><td></td><td>QuestionsOK</td><td>@p.QuestionsOK</td></tr>
+    <tr><td></td><td>LoggedIn</td><td>@p.LoggedIn</td></tr>
+    <tr><td></td><td>Phone</td><td>@p.Phone</td></tr>
+    <tr><td></td><td>Address</td><td>@Html.Raw(p.Address().Replace("\n", "<br>\n"))</td></tr>
+    foreach (var ask in p.setting.AskItems)
+    {
+      switch (ask.Type)
+      {
+        case "AskTickets":
+          <tr><td></td><td>Tickets</td><td>@om.Tickets</td></tr>
+          break;
+        case "AskSize":
+          <tr><td></td><td>Shirt</td><td>@om.ShirtSize</td></tr>
+          break;
+        case "AskEmContact":
+          <tr><td></td><td>Emerg Contact</td><td>@rr.Emcontact</td></tr>
+          <tr><td></td><td>Emerg Phone</td><td>@rr.Emphone</td></tr>
+          break;
+        case "AskDoctor":
+          <tr><td></td><td>Physician Name</td><td>@rr.Doctor</td></tr>
+          <tr><td></td><td>Physician Phone</td><td>@rr.Docphone</td></tr>
+          break;
+        case "AskInsurance":
+          <tr><td></td><td>Insurance Carrier</td><td>@rr.Insurance</td></tr>
+          <tr><td></td><td>Insurance Policy</td><td>@rr.Policy</td></tr>
+          break;
+        case "AskRequest":
+          <tr><td></td><td>@(((AskRequest)ask).Label):</td><td>@om.Request</td></tr>
+          break;
+        case "AskHeader":
+          <tr><td></td><td><strong>Header</strong></td><td>@Html.Raw(((AskHeader)ask).Label)</td></tr>
+          break;
+        case "AskInstruction":
+          <tr><td></td><td><strong><em>Instruction</em></strong></td><td>@Html.Raw(((AskInstruction)ask).Label)</td></tr>
+          break;
+        case "AskAllergies":
+          <tr><td></td><td>Medical</td><td>@rr.MedicalDescription</td></tr>
+          break;
+        case "AskTylenolEtc":
+          <tr><td></td>
+            <td>
+              Tylenol? @(p.tylenol == true ? "Yes" : p.tylenol == false ? "No" : "")
+              Advil? @(p.advil == true ? "Yes" : p.advil == false ? "No" : "")
+              Robitussin? @(p.robitussin == true ? "Yes" : p.robitussin == false ? "No" : "")
+              Maalox? @(p.maalox == true ? "Yes" : p.maalox == false ? "No" : "")
+            </td>
+          </tr>
+          break;
+        case "AskChurch":
+          <tr><td></td><td>Member</td><td>@rr.Member</td></tr>
+          <tr><td></td><td>OtherChurch</td><td>@rr.ActiveInAnotherChurch</td></tr>
+          break;
+        case "AskParents":
+          <tr><td></td><td>Mother's name</td><td>@rr.Mname</td></tr>
+          <tr><td></td><td>Father's name</td><td>@rr.Fname</td></tr>
+          break;
+        case "AskCoaching":
+          <tr><td></td><td>Coaching</td><td>@rr.Coaching</td></tr>
+          break;
+        case "AskSMS":
+          <tr><td></td><td>Receive Texts</td><td>@((p.person ?? new Person()).ReceiveSMS)</td></tr>
+          break;
+        case "AskDropdown":
+          <tr><td></td>
+            <td>@(Util.PickFirst(((AskDropdown)ask).Label, "Options")))</td>
+            <td>@(((AskDropdown)ask).SmallGroupDescription(p.option))</td>
+          </tr>
+          break;
+        case "AskMenu":
+          var menulabel = ((AskMenu)ask).Label;
+          foreach (var i in ((AskMenu)ask).MenuItemsChosen(p.MenuItem[ask.UniqueId]))
           {
-            switch (ask.Type)
-            {
-              case "AskTickets":
-                <tr><td>Tickets:</td><td>@om.Tickets</td></tr>
-                break;
-              case "AskSize":
-              <tr><td>Shirt:</td><td>@om.ShirtSize</td></tr>
-                break;
-              case "AskEmContact":
-              <tr><td>Emerg Contact:</td><td>@rr.Emcontact</td></tr>
-              <tr><td>Emerg Phone:</td><td>@rr.Emphone</td></tr>
-                break;
-              case "AskDoctor":
-              <tr><td>Physician Name:</td><td>@rr.Doctor</td></tr>
-              <tr><td>Physician Phone:</td><td>@rr.Docphone</td></tr>
-                break;
-              case "AskInsurance":
-              <tr><td>Insurance Carrier:</td><td>@rr.Insurance</td></tr>
-              <tr><td>Insurance Policy:</td><td>@rr.Policy</td></tr>
-                break;
-              case "AskRequest":
-              <tr><td>@(((AskRequest)ask).Label):</td><td>@om.Request</td></tr>
-                break;
-              case "AskHeader":
-              <tr><td colspan='2'><h4>@(((AskHeader)ask).Label)</h4></td></tr>
-                break;
-              case "AskInstruction":
-                break;
-              case "AskAllergies":
-              <tr><td>Medical:</td><td>@rr.MedicalDescription</td></tr>
-                break;
-              case "AskTylenolEtc":
-              <tr>
-                <td>
-                  Tylenol?: @(p.tylenol == true ? "Yes" : p.tylenol == false ? "No" : "")
-                  Advil?: @(p.advil == true ? "Yes" : p.advil == false ? "No" : "")
-                  Robitussin?: @(p.robitussin == true ? "Yes" : p.robitussin == false ? "No" : "")
-                  Maalox?: @(p.maalox == true ? "Yes" : p.maalox == false ? "No" : "")
-                </td>
-              </tr>
-                break;
-              case "AskChurch":
-              <tr><td>Member:</td><td>@rr.Member</td></tr>
-              <tr><td>OtherChurch:</td><td>@rr.ActiveInAnotherChurch</td></tr>
-                break;
-              case "AskParents":
-              <tr><td>Mother's name:</td><td>@rr.Mname</td></tr>
-              <tr><td>Father's name:</td><td>@rr.Fname</td></tr>
-                break;
-              case "AskCoaching":
-              <tr><td>Coaching:</td><td>@rr.Coaching</td></tr>
-                break;
-              case "AskSMS":
-              <tr><td>Receive Texts:</td><td>@p.person.ReceiveSMS</td></tr>
-                break;
-              case "AskDropdown":
-              <tr>
-                <td>@(Util.PickFirst(((AskDropdown)ask).Label, "Options")))</td>
-                <td>@(((AskDropdown)ask).SmallGroupChoice(p.option).Description):</td>
-              </tr>
-                break;
-              case "AskMenu":
-                var menulabel = ((AskMenu)ask).Label;
-                foreach (var i in ((AskMenu)ask).MenuItemsChosen(p.MenuItem[ask.UniqueId]))
+            <tr><td></td>
+              <td>@menulabel</td>
+              <td>
+                @i.number @i.desc
+                @if (i.amt > 0)
                 {
-                  <tr>
-                    <td>@menulabel</td>
-                    <td>
-                      @i.number @i.desc
-                      @if (i.amt > 0)
-                      {
-                        <text>(at @i.amt.ToString("c"))</text>
-                      }
-                    </td>
-                  </tr>
-                      menulabel = string.Empty;
+                  <text>(at @i.amt.ToString("c"))</text>
                 }
-                break;
-              case "AskCheckboxes":
-                var askcb = (AskCheckboxes)ask;
-                var cbmenulabel = askcb.Label;
-                foreach (var i in askcb.CheckboxItemsChosen(p.Checkbox))
-                {
-                  if (cbmenulabel.HasValue())
-                  {
-                    <tr><td colspan='2'><br>@cbmenulabel</td></tr>
-                  }
-                  <tr>
-                    <td></td>
-                    <td>@i.Description @(i.Fee > 0 ? "({0:C})".Fmt(i.Fee) : "")<br>(@i.SmallGroup)</td>
-                  </tr>
-                  cbmenulabel = string.Empty;
-                }
-                break;
-              case "AskYesNoQuestions":
-                foreach (var a in ((AskYesNoQuestions)ask).list
-                .Where(aa => p.YesNoQuestion.ContainsKey(aa.SmallGroup)))
-                {
-                  <tr>
-                    <td>@a.Question:</td>
-                    <td>@(p.YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No")</td>
-                  </tr>
-                }
-                break;
-              case "AskExtraQuestions":
-                foreach (var a in p.ExtraQuestion[ask.UniqueId].Where(aa => aa.Value.HasValue()))
-                {
-                  <tr><td>@a.Key:</td><td>@a.Value</td></tr>
-                }
-                break;
-              case "AskText":
-                foreach (var a in p.Text[ask.UniqueId].Where(aa => aa.Value.HasValue()))
-                {
-                  <tr><td>@a.Key:</td><td>@a.Value</td></tr>
-                }
-                break;
-              case "AskGradeOptions":
-              <tr>
-                <td>GradeOption:</td>
-                <td>@p.GradeOptions(ask).SingleOrDefault(s => s.Value == (p.gradeoption ?? "00")).Text</td>
-              </tr>
-                break;
-            }
-            if (p.setting.AgeGroups.Count > 0)
-            {
-              <tr><td>AgeGroup:</td><td>@p.AgeGroup()</td></tr>
-            }
+              </td>
+            </tr>
+            menulabel = string.Empty;
           }
-        </table>
-      </td>
-    </tr>
+          break;
+        case "AskCheckboxes":
+          var askcb = (AskCheckboxes)ask;
+          var cbmenulabel = askcb.Label;
+          var checkboxes = askcb.CheckboxItemsChosen(p.Checkbox).ToList();
+          foreach (var i in checkboxes)
+          {
+            if (cbmenulabel.HasValue())
+            {
+              <tr><td></td><td colspan='2'><br>@cbmenulabel</td></tr>
+            }
+            <tr>
+              <td></td><td></td>
+              <td>@i.Description @(i.Fee > 0 ? "({0:C})".Fmt(i.Fee) : "")<br>(@i.SmallGroup)</td>
+            </tr>
+            cbmenulabel = string.Empty;
+          }
+          if (checkboxes.Count == 0)
+          {
+            <tr><td></td><td></td><td>(none chosen)</td></tr>
+          }
+          break;
+        case "AskYesNoQuestions":
+          foreach (var a in ((AskYesNoQuestions)ask).list.Where(aa => p.YesNoQuestion.ContainsKey(aa.SmallGroup)))
+          {
+            <tr>
+              <td></td><td>@a.Question</td>
+              <td>@(p.YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No")</td>
+            </tr>
+          }
+          break;
+        case "AskExtraQuestions":
+          foreach (var a in p.ExtraQuestion[ask.UniqueId].Where(aa => aa.Value.HasValue()))
+          {
+            <tr><td></td><td>@a.Key:</td><td>@a.Value</td></tr>
+          }
+          break;
+        case "AskText":
+          foreach (var a in p.Text[ask.UniqueId].Where(aa => aa.Value.HasValue()))
+          {
+            <tr><td></td><td>@a.Key</td><td>@a.Value</td></tr>
+          }
+          break;
+        case "AskGradeOptions":
+        <tr>
+          <td></td><td>GradeOption</td>
+          <td>@p.GradeOptions(ask).SingleOrDefault(s => s.Value == (p.gradeoption ?? "00")).Text</td>
+        </tr>
+          break;
+      }
+      if (p.setting.AgeGroups.Count <= 0)
+      {
+        continue;
+      }
+      <tr><td></td><td>Settings.AgeGroup:</td><td>@p.AgeGroup()</td></tr>
+    }
   }
 </table>

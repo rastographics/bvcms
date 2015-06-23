@@ -276,5 +276,19 @@ namespace UtilityExtensions
                 return source;
             return source.Substring(source.Length - stringLength);
         }
+        public static void AppendNewLine(this StringBuilder sb, string s)
+        {
+            if (!s.HasValue())
+                return;
+            if (sb.Length > 0)
+                sb.AppendLine();
+            sb.Append(s);
+        }
+        public static void AppendSpace(this StringBuilder sb, string s)
+        {
+            if (!s.HasValue())
+                return;
+            sb.Append(" " + s);
+        }
     }
 }

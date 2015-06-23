@@ -672,6 +672,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? orgid, PeopleId ?? Parent.UserPeopleId, Parent.DatumId);
         }
+
+        public string Address()
+        {
+            var sb = new StringBuilder();
+            sb.AppendNewLine(AddressLineOne);
+            sb.AppendNewLine(AddressLineTwo);
+            var csz = Util.FormatCSZ(City, State, ZipCode);
+            sb.AppendNewLine(csz);
+            return sb.ToString();
+        }
     }
 
     public class FamilyAttendInfo

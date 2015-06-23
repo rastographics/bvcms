@@ -117,7 +117,7 @@ namespace UtilityExtensions
         public static string ToString2(this int? i, string fmt)
         {
             if (i.HasValue)
-                return i.Value.ToString(fmt);
+                return fmt.Contains("{") ? fmt.Fmt(i.Value) : i.Value.ToString(fmt);
             return "";
         }
         public static string ToString2(this decimal? d, string fmt)

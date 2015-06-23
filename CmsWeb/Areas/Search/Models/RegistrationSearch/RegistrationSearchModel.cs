@@ -31,7 +31,8 @@ namespace CmsWeb.Areas.Search.Models
             var db = DbUtil.Db;
 
             var q = from r in db.ViewRegistrationLists
-                select r;
+                    where r.Cnt > 0
+                    select r;
             if (SearchParameters.Registrant.HasValue())
             {
                 string first;

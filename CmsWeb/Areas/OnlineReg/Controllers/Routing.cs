@@ -12,7 +12,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if(pid == 0)
             {
-                m.Log("Anonymous");
                 return View(m);
             }
             var link = RouteExistingRegistration(m, pid);
