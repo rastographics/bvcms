@@ -20,10 +20,10 @@
   <script type="text/javascript">
     $.dateFormat = '@Util.jQueryDateFormat';
     var specialGivingFundsPrefix = "List[0]";
-    $(function() {
+    $(function () {
       $(document).idleTimer(@Model.TimeOut);
-      $(document).on("idle.idleTimer", function(event, elem, obj) {
-          window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
+      $(document).on("idle.idleTimer", function (event, elem, obj) {
+        window.location.href = '/OnlineReg/Timeout?ret=' + encodeURI('@Model.URL');
       });
     });
   </script>

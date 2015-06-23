@@ -65,7 +65,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             /* We use Content as an ActionResult instead of Message because we want plain text sent back
              * This is an HttpPost ajax call and will have a SiteLayout wrapping this.
              */
-            return Content("We have saved your progress. An email with a link to finish this registration will come to you shortly.");
+            return Content(@"
+We have saved your progress. An email with a link to finish this registration will come to you shortly.
+<input type='hidden' id='SavedProgress' value='true'/>
+");
         }
 
         [HttpGet]

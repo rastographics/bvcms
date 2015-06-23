@@ -19,7 +19,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public OnlineRegModel()
         {
             HttpContext.Current.Items["OnlineRegModel"] = this;
-            UpdateDatum();
         }
 
         public OnlineRegModel(HttpRequestBase req, int? id, bool? testing, string email, bool? login, string source)
