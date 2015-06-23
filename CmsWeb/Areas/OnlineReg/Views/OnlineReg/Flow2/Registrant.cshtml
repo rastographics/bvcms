@@ -99,9 +99,13 @@
             {
               @Html.Partial("Flow2/PersonFind", Model)
             }
-            else
+            else if(Model.Found == false)
             {
               @Html.Partial("Flow2/EnterAddress", Model)
+            }
+            else
+            {
+              @Html.Partial("Flow2/PersonDisplay", Model)
             }
           }
         }
