@@ -9,14 +9,11 @@
   var n = 1;
 }
 
-<h2>RegPeople</h2>
+<h2>Registration</h2>
 <table class="table" style="width: auto">
   <tr><td>DateTime</td>
     <td>
-      @if (Model.Datum != null)
-      {
-        <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
-      }
+      <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
     </td>
   </tr>
   <tr><td>Status</td><td>@(Model.Datum.Completed == true ? "completed" : "incomplete")</td></tr>
@@ -38,6 +35,18 @@
     </td>
   </tr>
   <tr><td>User</td><td>@Model.LoginName</td></tr>
+  @if (Model.FromMobile.HasValue())
+  {
+    <tr><td>MobileApp</td><td>@Model.FromMobile</td></tr>
+  }
+  @if (Model.SupportMissionTrip)
+  {
+    if (Model.SupportMissionTrip && Model.List.Count > 0)
+    {
+      <tr><td></td><td>Support GoerId</td><td>@Model.List[0].MissionTripGoerId</td></tr>
+      <tr><td></td><td>GoerNotice</td><td>@Model.List[0].MissionTripNoNoticeToGoer</td></tr>
+    }
+  }
 </table>
 <table class="table" style="width: auto">
   @foreach (var p in Model.List)
@@ -45,15 +54,37 @@
     var om = p.GetOrgMember() ?? new OrganizationMember();
     var rr = (p.person ?? new Person()).GetRecReg();
 
-    <tr><td>@(n++)</td><td></td><td></td></tr>
-    <tr><td></td><td>Organization</td><td>@p.org.OrganizationName</td></tr>
-    <tr><td></td><td>Name</td><td>@p.FirstName @(p.LastName.HasValue() ? p.LastName : "(empty)")</td></tr>
-    <tr><td></td><td>Birthday</td><td>@p.DateOfBirth @(p.age.ToString2("({0})"))</td></tr>
-    <tr><td></td><td>MobileApp</td><td>@p.InMobileAppMode</td></tr>
+    <tr><td colspan="3"><h3>Registrant #@(n++)</h3></td></tr>
     <tr><td></td><td>IsNew</td><td>@p.IsNew</td></tr>
+    <tr><td></td><td>Name</td><td>@p.FirstName @(p.LastName.HasValue() ? p.LastName : "(empty)")</td></tr>
+    <tr><td></td><td>Organization</td><td>@p.org.OrganizationName</td></tr>
+    <tr><td></td><td>Birthday</td><td>@p.DateOfBirth @(p.age.ToString2("({0})"))</td></tr>
     <tr><td></td><td>QuestionsOK</td><td>@p.QuestionsOK</td></tr>
-    <tr><td></td><td>LoggedIn</td><td>@p.LoggedIn</td></tr>
     <tr><td></td><td>Phone</td><td>@p.Phone</td></tr>
+    <tr><td></td><td>Gender</td><td>@p.gender</td></tr>
+    <tr><td></td><td>Marital</td><td>@p.married</td></tr>
+    if (p.paydeposit.HasValue)
+    {
+      <tr><td></td><td>PayDeposit</td><td>@p.paydeposit</td></tr>
+    }
+    if (p.Suggestedfee.HasValue)
+    {
+      <tr><td></td><td>SugestedFee</td><td>@p.Suggestedfee</td></tr>
+    }
+    if (p.FundItem.Count > 0)
+    {
+      var funds = p.Funds();
+      var br = "";
+      <tr><td></td><td>Funds</td><td>
+      @foreach (var i in p.FundItem)
+      {
+        var f = funds.Single(vv => vv.Value == i.Key.ToString());
+        @Html.Raw(br)
+        @f.Text
+        br = "<br>";
+      }
+      </td></tr>
+    }
     <tr><td></td><td>Address</td><td>@Html.Raw(p.Address().Replace("\n", "<br>\n"))</td></tr>
     foreach (var ask in p.setting.AskItems)
     {
@@ -192,4 +223,10 @@
       <tr><td></td><td>Settings.AgeGroup:</td><td>@p.AgeGroup()</td></tr>
     }
   }
+  <tr><td colspan="3"><h3>Actions</h3></td></tr>
+  @foreach (var h in Model.History)
+  {
+    <tr><td></td><td colspan="2">@h</td></tr>
+  }
+
 </table>
