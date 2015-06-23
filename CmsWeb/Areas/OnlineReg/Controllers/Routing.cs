@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private string RouteManageGivingSubscriptionsPledgeVolunteer(OnlineRegModel m)
         {
-            TempData["PeopleId"] = Util.UserPeopleId;
+            TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
             if (m.ManageGiving())
                 return "/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid);
             if (m.ManagingSubscriptions())
