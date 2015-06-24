@@ -64,7 +64,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (route != null)
                 return route;
 
-            //if (m.UserSelectsOrganization())
+            if(m.UserPeopleId.HasValue)
+            {
+                var p = m.LoadExistingPerson(m.UserPeopleId.Value, 0);
+                m.List[0] = p;
+            }
             m.List[0].ValidateModelForFind(ModelState, 0);
 
             m.HistoryAdd("login");
