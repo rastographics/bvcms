@@ -24,9 +24,9 @@
 <h2>@Model.org.OrganizationName</h2>
 <div>
 </div>
-<form action="/OnlineReg/GetVolSub" method="post">
-  @Html.Hidden("aid", Model.attend.AttendId);
-  @Html.Hidden("pid", Model.attend.PeopleId);
+<form id="sendthem" action="/OnlineReg/GetVolSub" method="post">
+  @Html.Hidden("aid", Model.attend.AttendId)
+  @Html.Hidden("pid", Model.attend.PeopleId)
   <input type="hidden" name="ticks" value="@Model.ticks" />
   <p>
     <label>Subject:</label>
@@ -80,6 +80,6 @@
   </div>
   <div style="clear: both"></div>
   <hr />
-  <input type="submit" name="submit" value="Send Emails" 
-    onclick=" this.disabled = true;this.value = 'Sending, please wait...';this.form.submit(); "/>
+  <input id="submitit" type="button" value="Send Emails"/>
+  <span id="sending" style="display:none"><em>Sending, Please Wait...</em></span>
 </form>

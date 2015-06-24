@@ -21,10 +21,16 @@
         else
             $("input[name='pids']:visible", "#allsame").removeAttr('checked');
     });
-    $("#selectallothers").click(function () {
+    $("#selectallothers").click(function() {
         if ($(this).attr("checked"))
             $("input[name='pids']:visible", "#allothers").attr('checked', true);
         else
             $("input[name='pids']:visible", "#allothers").removeAttr('checked');
+    });
+    $("#submitit").click(function() {
+        this.value = 'Sending, please wait...';
+        $("#submitit").hide();
+        $("#sending").show();
+        $('#sendthem').submit();
     });
 });
