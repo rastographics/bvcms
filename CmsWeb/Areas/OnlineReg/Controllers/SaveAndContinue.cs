@@ -30,10 +30,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
                 return Message("no existing registration available");
-            m.HistoryAdd("startover");
-            m.UpdateDatum(abandoned: true);
+            m.StartOver();
             return Redirect(m.URL);
         }
+
 
         [HttpPost]
         public ActionResult AutoSaveProgress(OnlineRegModel m)

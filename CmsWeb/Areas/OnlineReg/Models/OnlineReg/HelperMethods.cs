@@ -536,7 +536,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (completed)
                 Datum.Completed = true;
             if (abandoned)
+            {
                 Datum.Abandoned = true;
+            }
             DbUtil.Db.SubmitChanges();
         }
 
@@ -656,6 +658,17 @@ AND SupporterId = 828612
             if(List.Count > 0)
                 pid = List[0].PeopleId;
             DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? Orgid, UserPeopleId ?? pid, DatumId);
+        }
+        internal void StartOver()
+        {
+            HistoryAdd("startover");
+            UpdateDatum(abandoned: true);
+            DbUtil.Db.ExecuteCommand(@"
+UPDATE dbo.RegistrationData 
+SET abandoned = 1
+WHERE ISNULL(abandoned, 0) = 0
+AND UserPeopleid = {0} 
+AND OrganizationId = {1}", Datum.UserPeopleId, Datum.OrganizationId);
         }
     }
 }
