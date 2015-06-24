@@ -254,6 +254,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ti.TransactionId += "(testing)";
 
             var amt = ti.Amt;
+            var due = PaymentForm.AmountDueTrans(Db, ti);
             foreach (var pi in ti.OriginalTrans.TransactionPeople)
             {
                 var p = Db.LoadPersonById(pi.PeopleId);
@@ -280,14 +281,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             "SupportMissionTrip: org={0}; goer={1}".Fmt(org.OrganizationId, pi.PeopleId), typecode: BundleTypeCode.Online);
                     }
                     var pay = amt;
-                    if (org.IsMissionTrip != true)
-                        ti.Amtdue = PaymentForm.AmountDueTrans(Db, ti);
+                    if (org.IsMissionTrip == true)
+                        ti.Amtdue = due;
 
                     var sb = new StringBuilder();
                     sb.AppendFormat("{0:g} ----------\n", Util.Now);
                     sb.AppendFormat("{0:c} ({1} id) transaction amount\n", ti.Amt, ti.Id);
                     sb.AppendFormat("{0:c} applied to this registrant\n", pay);
-                    sb.AppendFormat("{0:c} total due all registrants\n", ti.Amtdue);
+                    sb.AppendFormat("{0:c} total due all registrants\n", due);
 
                     om.AddToMemberDataBelowComments(sb.ToString());
                     var reg = p.RecRegs.Single();
@@ -324,7 +325,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         Db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description,
                         "{0} paid {1:c} for {2}, balance of {3:c}\n({4})".Fmt(
-                            Transaction.FullName(ti), ti.Amt, ti.Description, ti.Amtdue, names));
+                            Transaction.FullName(ti), ti.Amt, ti.Description, due, names));
                 }
             }
         }
