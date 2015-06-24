@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
@@ -57,8 +58,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (m.masterorgid == null && m.Orgid == null)
                 return Content("Registration is not far enough along to save, sorry.");
 
-            var registerLink = EmailReplacements.CreateRegisterLink(m.masterorgid ?? m.Orgid, "Resume registration for {0}".Fmt(m.Header));
-            var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
+            var msg = DbUtil.Db.ContentHtml("ContinueRegistrationLink", @"
+<p>Hi {first},</p>
+<p>Here is the link to continue your registration:</p>
+Resume [registration for {orgname}]
+").Replace("{orgname}", m.Header);
+            var linktext = Regex.Match(msg, @"(\[(.*)\])", RegexOptions.Singleline).Groups[2].Value;
+            var registerlink = EmailReplacements.CreateRegisterLink(m.masterorgid ?? m.Orgid, linktext);
+            msg = Regex.Replace(msg, @"(\[.*\])", registerlink, RegexOptions.Singleline);
+
             var notifyids = DbUtil.Db.NotifyIds((m.masterorg ?? m.org).NotifyIds);
             DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
 
