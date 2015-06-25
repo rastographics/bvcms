@@ -226,6 +226,14 @@ namespace UtilityExtensions
             }
         }
 
+        public static int TrialDbOffset
+        {
+            get
+            {
+                return Host != "trialdb" ? 0 : (ConfigurationManager.AppSettings["TrialDbOffset"] ?? "0").ToInt();
+            }
+        }
+
         public static T QueryString<T>(this System.Web.UI.Page page, string param)
         {
             return QueryString<T>(HttpContext.Current.Request, param);

@@ -52,6 +52,8 @@ namespace UtilityExtensions
         {
             get
             {
+                if (IsDebug())
+                    return true;
                 return ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true";
             }
         }

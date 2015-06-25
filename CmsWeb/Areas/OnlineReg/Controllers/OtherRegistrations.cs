@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
@@ -88,24 +89,34 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             try
             {
-                //                var emailid = li.a[2].ToInt();
-                //                var pre = li.a[3];
                 var smallgroup = li.a[4];
 
-                var q = (from pp in DbUtil.Db.People
-                         where pp.PeopleId == li.pid
-                         let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
-                         let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
-                         select new { p = pp, org = org, om = om }).Single();
                 if (!li.oid.HasValue)
                     throw new Exception("orgid missing");
 
                 if (!li.pid.HasValue)
                     throw new Exception("peopleid missing");
 
-                if (q.org == null)
-                    throw new Exception("org missing, bad link");
+                var q = (from pp in DbUtil.Db.People
+                         where pp.PeopleId == li.pid
+                         let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == li.oid)
+                         let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
+                         select new { p = pp, org = org, om = om }).Single();
 
+                if (q.org == null && DbUtil.Db.Host == "trialdb")
+                {
+                    var oid = li.oid + Util.TrialDbOffset;
+                    q = (from pp in DbUtil.Db.People
+                         where pp.PeopleId == li.pid
+                         let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
+                         let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == li.pid)
+                         select new { p = pp, org = org, om = om }).Single();
+                }
+
+                if (q.org == null)
+                {
+                    throw new Exception("org missing, bad link");
+                }
                 if ((q.org.RegistrationTypeId ?? RegistrationTypeCode.None) == RegistrationTypeCode.None)
                     throw new Exception("votelink is no longer active");
 
@@ -292,6 +303,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == li.oid && oo.PeopleId == li.pid)
                          select new { p = pp, org = org, om = om }).Single();
 
+                if (q.org == null && DbUtil.Db.Host == "trialdb")
+                {
+                    var oid = li.oid + Util.TrialDbOffset;
+                    q = (from pp in DbUtil.Db.People
+                         where pp.PeopleId == li.pid
+                         let org = DbUtil.Db.Organizations.SingleOrDefault(oo => oo.OrganizationId == oid)
+                         let om = DbUtil.Db.OrganizationMembers.SingleOrDefault(oo => oo.OrganizationId == oid && oo.PeopleId == li.pid)
+                         select new { p = pp, org = org, om = om }).Single();
+                }
+
                 if (q.org == null)
                     throw new Exception("org missing, bad link");
 
@@ -353,6 +374,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                          where pp.PeopleId == li.pid
                          let org = DbUtil.Db.LoadOrganizationById(li.oid)
                          select new { p = pp, org }).Single();
+
+                if (q.org == null && DbUtil.Db.Host == "trialdb")
+                {
+                    var oid = li.oid + Util.TrialDbOffset;
+                    q = (from pp in DbUtil.Db.People
+                         where pp.PeopleId == li.pid
+                         let org = DbUtil.Db.LoadOrganizationById(oid)
+                         select new { p = pp, org }).Single();
+                }
 
                 if (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive)
                     throw new Exception("sorry, registration has been closed");
