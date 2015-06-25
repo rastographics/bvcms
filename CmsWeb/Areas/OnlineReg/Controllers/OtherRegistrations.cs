@@ -281,7 +281,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (!li.oid.HasValue)
                     throw new Exception("missing orgid");
 
-                var linktype = li.a.Length > 3 ? li.a[3].Split(',') : "".Split(',');
+                var linktype = li.a.Length > 3 ? li.a[3].Split(':') : "".Split(':');
                 int? gsid = null;
                 if (linktype[0].Equal("supportlink"))
                     gsid = linktype.Length > 1 ? linktype[1].ToInt() : 0;

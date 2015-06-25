@@ -758,7 +758,7 @@ namespace CmsData
             var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var oid = GetId(d, "SupportLink");
-            var qs = "{0},{1},{2},{3},{4}".Fmt(oid, emailqueueto.PeopleId, emailqueueto.Id, "supportlink", emailqueueto.GoerSupportId);
+            var qs = "{0},{1},{2},{3}:{4}".Fmt(oid, emailqueueto.PeopleId, emailqueueto.Id, "supportlink", emailqueueto.GoerSupportId);
 
             OneTimeLink ot;
             if (list.ContainsKey(qs))
