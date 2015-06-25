@@ -13,7 +13,7 @@
 </address>
 
 <div class="alert alert-info">Please provide additional information</div>
-@if (Model.RequiredDOB() && !Model.DateOfBirth.HasValue())
+@if (Model.StillNeedBirthday())
 {
   @Html.EditorFor(m => m.DateOfBirth, new { placeholder = "M/D/YY" })
 }

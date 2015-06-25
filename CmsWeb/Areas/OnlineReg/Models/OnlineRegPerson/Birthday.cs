@@ -70,6 +70,5 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             return bmon.HasValue && byear.HasValue && bday.HasValue;
         }
-
     }
 }

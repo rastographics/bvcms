@@ -16,6 +16,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
                        : settings == null || !settings.Values.Any(o => o.NotReqAddr);
     	}
 
+        public bool StillNeedBirthday()
+        {
+            if (RequiredDOB())
+                if(!DateOfBirth.HasValue() || byear == null)
+                    return true;
+            return false;
+        }
+        public bool BirthYearRequired()
+        {
+            if (ComputesOrganizationByAge())
+                return true;
+            return org != null 
+                       ? setting.NoReqBirthYear == false : 
+                       settings == null || !settings.Values.Any(i => i.NoReqBirthYear);
+        }
         public bool RequiredDOB()
         {
             if (ComputesOrganizationByAge())

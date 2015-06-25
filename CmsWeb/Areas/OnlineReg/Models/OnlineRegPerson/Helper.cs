@@ -62,7 +62,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (_person != null && _person.BirthDate.HasValue)
                     return GetAge(_person.BirthDate.Value);
                 if (birthday.HasValue)
-                    return GetAge(birthday.Value);
+                    return byear == null || birthday.Value.Year == Util.SignalNoYear
+                        ? (int?) null 
+                        : GetAge(birthday.Value);
                 return null;
             }
         }
@@ -187,13 +189,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (org != null)
                 return org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge;
             return false;
-        }
-
-        public bool NoReqBirthYear()
-        {
-            if (org != null)
-                return setting.NoReqBirthYear;
-            return settings.Values.Any(o => o.NoReqBirthYear);
         }
 
         public bool MemberOnly()
