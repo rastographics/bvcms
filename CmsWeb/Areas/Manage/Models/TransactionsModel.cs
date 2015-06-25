@@ -479,6 +479,7 @@ namespace CmsWeb.Models
                      BatchDate = t.Batch.FormatDate(),
                      t.Batchtyp,
                      t.Batchref,
+                     t.People,
                      RegAmt = (t.Amt ?? 0) - (t.Donate ?? 0),
                      Donate = t.Donate ?? 0,
                      TotalAmt = t.Amt ?? 0,
@@ -490,7 +491,7 @@ namespace CmsWeb.Models
                      t.City,
                      t.State,
                      t.Zip,
-                     t.Fund
+                     t.Fund,
                  };
             return q2.ToDataTable();
         }
