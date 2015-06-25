@@ -24,7 +24,7 @@
   </style>
 }
 <h2>@Model.org.OrganizationName</h2>
-<form action="/Volunteers/Request" method="post" style="max-width: 60em; margin-left: auto;margin-right:auto">
+<form id="sendthem" action="/Volunteers/Request" method="post" style="max-width: 60em; margin-left: auto;margin-right:auto">
   @Html.Hidden("mid", Model.meeting.MeetingId)
   @Html.Hidden("pid", Model.person.PeopleId)
   <input type="hidden" name="ticks" value="@Model.ticks" />
@@ -52,49 +52,49 @@
     <label>Body:</label>
     @Html.TextArea("message", Model.message, new { @class = "editor", rows = "7", cols = "15" })
   </p>
-    <hr />
-    <p>
-      Group Filter: @Html.DropDownList("smallgroups", Model.SmallGroups())
-    </p>
-    <h3>Already Committed For This Meeting</h3>
-    <div class="wrapper">
-      @foreach (var p in Model.CommittedThisMeeting())
-      {
-        <div class="item @p.Groups">
-          <input type="checkbox" disabled="disabled" />
-          <span title="@p.EmailAddress">@p.Name2</span>
-        </div>
-      }
-    </div>
-    <div style="clear: both"></div>
-    <h3>
-      <input id="selectallsame" type="checkbox" />
-      Select All Who Have Same Schedule On Other Weeks
-    </h3>
-    <div id="allsame" class="wrapper">
-      @foreach (var p in Model.ThisSchedule())
-      {
-        <div class="item @p.Groups">
-          <input type="checkbox" name="pids" value="@p.PeopleId" />
-          <span title="@p.EmailAddress">@p.Name2</span>
-        </div>
-      }
-    </div>
-    <div style="clear: both"></div>
-    <h3>
-      <input id="selectallothers" type="checkbox" />
-      Select All Who Have Different Schedule
-    </h3>
-    <div id="allothers" class="wrapper">
-      @foreach (var p in Model.OtherVolunteers())
-      {
-        <div class="item @p.Groups">
-          <input type="checkbox" name="pids" value="@p.PeopleId" />
-          <span title="@p.EmailAddress">@p.Name2</span>
-        </div>
-      }
-    </div>
-    <div style="clear: both"></div>
-    <hr />
-    <input type="Submit" name="submit" value="Send Emails" />
+  <hr />
+  <p>
+    Group Filter: @Html.DropDownList("smallgroups", Model.SmallGroups())
+  </p>
+  <h3>Already Committed For This Meeting</h3>
+  <div class="wrapper">
+    @foreach (var p in Model.CommittedThisMeeting())
+    {
+      <div class="item @p.Groups">
+        <input type="checkbox" disabled="disabled" />
+        <span title="@p.EmailAddress">@p.Name2</span>
+      </div>
+    }
+  </div>
+  <div style="clear: both"></div>
+  <h3>
+    <input id="selectallsame" type="checkbox" />
+    Select All Who Have Same Schedule On Other Weeks
+  </h3>
+  <div id="allsame" class="wrapper">
+    @foreach (var p in Model.ThisSchedule())
+    {
+      <div class="item @p.Groups">
+        <input type="checkbox" name="pids" value="@p.PeopleId" />
+        <span title="@p.EmailAddress">@p.Name2</span>
+      </div>
+    }
+  </div>
+  <div style="clear: both"></div>
+  <h3>
+    Select All Who Have Different Schedule
+  </h3>
+  <div id="allothers" class="wrapper">
+    @foreach (var p in Model.OtherVolunteers())
+    {
+      <div class="item @p.Groups">
+        <input type="checkbox" name="pids" value="@p.PeopleId" />
+        <span title="@p.EmailAddress">@p.Name2</span>
+      </div>
+    }
+  </div>
+  <div style="clear: both"></div>
+  <hr />
+  <input id="submitit" type="button" value="Send Emails" />
+  <span id="sending" style="display:none"><em>Sending, Please Wait...</em></span>
 </form>
