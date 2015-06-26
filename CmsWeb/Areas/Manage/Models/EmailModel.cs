@@ -59,6 +59,8 @@ namespace CmsWeb.Models
                 {
                     using (var doc = Document.FromString(queue.Body))
                     {
+                        doc.NewBlockLevelTags = "registertag";
+
                         doc.ShowWarnings = false;
                         doc.Quiet = true;
                         doc.DocType = DocTypeMode.Strict;
