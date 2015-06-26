@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using CmsData;
 using CmsData.View;
@@ -11,9 +12,13 @@ namespace CmsWeb.Areas.Manage.Models
     public class ActivityModel : PagedTableModel<ActivityLogSearch, ActivityLogSearch>
     {
         public string Activity { get; set; }
+        [DisplayName("User Id")]
         public int? UserId { get; set; }
+        [DisplayName("Organization Id")]
         public int? OrgId { get; set; }
+        [DisplayName("About People Id")]
         public int? PeopleId { get; set; }
+        [DisplayName("Lookback Days before EndDate")]
         public int? Lookback { get; set; }
         public DateTime? EndDate { get; set; }
         public string Machine { get; set; }
