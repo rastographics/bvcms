@@ -2,7 +2,7 @@
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
-using CmsWeb.Areas.Org2.Models;
+using CmsWeb.Areas.Org.Models;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
 using UtilityExtensions;

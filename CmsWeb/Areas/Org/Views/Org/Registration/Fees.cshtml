@@ -1,0 +1,94 @@
+﻿@using CmsData
+@model CmsWeb.Areas.Org.Models.SettingsFeesModel
+@{
+  ViewBag.ShowHelp = DbUtil.Db.UserPreference("ShowFeesHelp") == "true";
+  ViewBag.FalseValue = "";
+}
+<form class="ajax">
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>Basic Setup</h4>
+        </div>
+        <div class="col-sm-6">
+            @FormAction()
+        </div>
+    </div>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-3 col-md-4">
+                @Html.DisplayFor(m => m.Fee)
+            </div>
+            <div class="col-sm-3 col-md-4">
+                @Html.DisplayFor(m => m.Deposit)
+            </div>
+            <div class="col-sm-6 col-md-4">
+                @Html.DisplayFor(m => m.IncludeOtherFeesWithDeposit, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-6 col-md-3">
+                @Html.DisplayFor(m => m.MaximumFee)
+            </div>
+            <div class="col-sm-6 col-md-3">
+                @Html.DisplayFor(m => m.ApplyMaxToOtherFees, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.ExtraFee)
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.LastDayBeforeExtra)
+            </div>
+            <div class="col-sm-4 col-md-3">
+                @Html.DisplayFor(m => m.ExtraValueFeeName)
+            </div>
+            <div class="col-sm-6 col-md-4">
+                @Html.DisplayFor(m => m.AccountingCode)
+            </div>
+            <div class="col-sm-6 col-md-5">
+                @Html.DisplayFor(m => m.OtherFeesAddedToOrgFee, new { FalseValue = "n/a" })
+            </div>
+        </div>
+    </div>
+    <h4>Org Fees</h4>
+    <div class="well">
+        @Html.DisplayFor(m => m.OrgFees)
+    </div>
+    <h4>Donation Setup</h4>
+    <div class="well">
+        <div class="row">
+            <div class="col-sm-6 col-md-6">
+                @Html.DisplayFor(m => m.AskDonation, new { FalseValue = "n/a" })
+            </div>
+            <div class="col-sm-6 col-md-6">
+                @Html.DisplayFor(m => m.DonationFundId)
+            </div>
+            <div class="col-sm-12 col-md-12">
+                @Html.DisplayFor(m => m.DonationLabel)
+            </div>
+        </div>
+    </div>
+    @FormAction()
+    @FormAction(true)   
+    <br/><br/>
+</form>
+@helper FormAction(bool xs = false)
+{
+    if (xs)
+    {
+        <div class="visible-xs-block">
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/FeesEdit/@Model.Id" class="btn edit ajax btn-default btn-block"><i class="fa fa-pencil"></i> Edit</a>
+            }
+            <a href="/Org/FeesHelpToggle/@Model.Id" class="btn btn-default btn-block ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+        </div>
+    }
+    else
+    {
+        <div class="pull-right hidden-xs">
+            <a href="/Org/FeesHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
+            @if (User.IsInRole("Edit"))
+            {
+                <a href="/Org/FeesEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+            }
+        </div>
+    }
+}

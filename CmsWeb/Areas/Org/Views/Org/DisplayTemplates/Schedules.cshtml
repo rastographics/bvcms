@@ -1,0 +1,28 @@
+﻿@using CmsData
+@using UtilityExtensions
+@model IEnumerable<CmsWeb.Areas.Org.Models.ScheduleInfo>
+<div class="form-group">
+    <div class="controls">
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Attend Credit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var sc in Model.OrderBy(cc => cc.Id))
+                    {
+                        @Html.DisplayFor(m => sc)
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
+        {
+            <div class="alert alert-info">@Html.Markdown(ViewData.ModelMetadata.Description)</div>
+        }
+    </div>
+</div>

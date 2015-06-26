@@ -1,5 +1,5 @@
 using CmsData;
-using CmsWeb.Areas.Org2.Models;
+using CmsWeb.Areas.Org.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Models

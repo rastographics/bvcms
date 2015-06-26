@@ -1,0 +1,24 @@
+﻿@model CmsWeb.Areas.Org.Models.OrgPeopleModel
+<form class="ajax" data-init="popovers">
+    @Html.Partial("People/Hidden", Model)
+    <div class="row">
+        <div class="col-sm-12">
+            <div id="groupSelector" class="btn-group">
+                @Html.Partial("People/GroupButtons", Model)
+                @Html.Partial("People/GroupOptions", Model)
+            </div>
+        </div>
+    </div>
+    @Html.Partial("People/FilterPeople", Model)
+    <div class="row">
+        <div class="col-sm-12">
+            @Html.Partial("PagerTop", Model)
+            <div class="table-responsive">
+                @Html.Partial("People/Table")
+            </div>
+            @Html.Partial("PagerBottom", Model)
+            @Html.Partial("PagerHidden", Model)
+        </div>
+    </div>
+    <br/><br/><br/><br/>
+</form>
