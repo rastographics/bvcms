@@ -208,6 +208,12 @@ namespace CmsData
 			if (ev != null)
 				Db.FamilyExtras.DeleteOnSubmit(ev);
         }
+
+        public void LogExtraValue(string op, string field)
+        {
+            DbUtil.LogActivity("EVFamily {0}:{1}".Fmt(op, field));
+        }
+
         public void AddEditExtraValue(string field, string value)
         {
 			if (!field.HasValue())

@@ -1136,6 +1136,12 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (ev != null)
                 Db.PeopleExtras.DeleteOnSubmit(ev);
         }
+
+        public void LogExtraValue(string op, string field)
+        {
+            DbUtil.LogActivity("EV {0}:{1}".Fmt(op, field), peopleid: PeopleId);
+        }
+
         public void AddEditExtraValue(string field, string value)
         {
             if (!Util.HasValue(field))

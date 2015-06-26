@@ -20,7 +20,6 @@ namespace CmsWeb.Controllers
         {
             var m = new ExtraValueModel(pk.ToInt(), table);
             m.EditExtra(type, HttpUtility.UrlDecode(name), value);
-
             return new EmptyResult();
         }
 

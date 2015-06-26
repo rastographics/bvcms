@@ -135,12 +135,14 @@ namespace CmsWeb.Models.ExtraValues
                         field);
                     break;
             }
+            DbUtil.LogActivity("EV DeleteAll {0} {1}".Fmt(field, value));
             return "done";
         }
 
         public override void RenameAll(string field, string newname)
         {
             DbUtil.Db.ExecuteCommand("update PeopleExtra set field = {0} where field = {1}", newname, field);
+            DbUtil.LogActivity("EV RenameAll {0}>{1}".Fmt(Field, newname));
         }
     }
 }

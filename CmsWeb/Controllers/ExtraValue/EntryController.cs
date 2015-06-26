@@ -1,4 +1,5 @@
 using System.Web.Mvc;
+using CmsData;
 using CmsWeb.Models.ExtraValues;
 using UtilityExtensions;
 
@@ -9,6 +10,7 @@ namespace CmsWeb.Controllers
         [HttpPost, Route("ExtraValue/EditEntry")]
         public ActionResult EditEntry(string pk, string name, string value)
         {
+            DbUtil.LogActivity("ExtraValue", peopleid: pk.ToInt());
             EntryModel.EditValue(pk.ToInt(), name, value);
             return new EmptyResult();
         }

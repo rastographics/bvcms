@@ -245,6 +245,7 @@ Option 2
                     break;
             }
             DbUtil.Db.SubmitChanges();
+            o.LogExtraValue("add", ExtraValueName);
             return null;
         }
 
@@ -266,6 +267,7 @@ Option 2
                 case "Bit":
                     return AddNewExtraValueBools(list);
             }
+            DbUtil.LogActivity("EV AddNewFromQuery {0} {1}".Fmt(ExtraValueName, AdhocExtraValueType.Value));
             return null;
         }
 
@@ -334,6 +336,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             if (RemoveAnyValue)
             {
                 cn.Execute(sql, new { name = ExtraValueName, id = tag.Id });
+                DbUtil.LogActivity("EV DeleteFromQuery {0}".Fmt(ExtraValueName));
                 return;
             }
             switch (AdhocExtraValueType.Value)
@@ -360,6 +363,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
                         new { name = ExtraValueName, value = ExtraValueInteger, id = tag.Id });
                     break;
             }
+            DbUtil.LogActivity("EV DeleteFromQuery {0} {1}".Fmt(ExtraValueName, AdhocExtraValueType.Value));
         }
 
         public void ConvertToStandard(string name)
@@ -433,6 +437,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             var i = Views.GetViewsView(DbUtil.Db, ExtraValueTable, ExtraValueLocation);
             i.view.Values.Add(v);
             i.views.Save(DbUtil.Db);
+            DbUtil.LogActivity("EV{0} ConvertToStandard {1}".Fmt(ExtraValueTable, name));
         }
     }
 }

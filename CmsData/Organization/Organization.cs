@@ -479,6 +479,11 @@ namespace CmsData
             ev.TransactionTime = DateTime.Now;
         }
 
+        public void LogExtraValue(string op, string field)
+        {
+            DbUtil.LogActivity("EVOrg {0}:{1}".Fmt(op, field), orgid: OrganizationId);
+        }
+
         public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)
         {
             return !Db.OrganizationExtras.Any(ee => ee.Field == newfield && ee.Type != type);

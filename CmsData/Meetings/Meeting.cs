@@ -141,7 +141,12 @@ namespace CmsData
                 Db.MeetingExtras.DeleteOnSubmit(ev);
         }
 
-        public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)
+        public void LogExtraValue(string op, string field)
+        {
+            DbUtil.LogActivity("EVMeeting {0}:{1}:{2}".Fmt(op, field, MeetingId));
+        }
+
+	    public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)
         {
             return !Db.MeetingExtras.Any(ee => ee.Field == newfield && ee.Type != type);
         }

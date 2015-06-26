@@ -46,6 +46,7 @@ namespace CmsWeb.Models.ExtraValues
         public override void RenameAll(string field, string newname)
         {
             DbUtil.Db.ExecuteCommand("update OrganizationExtra set field = {0} where field = {1}", newname, field);
+            DbUtil.LogActivity("EVOrg RenameAll {0}>{1}".Fmt(field, newname));
         }
 
         public override IEnumerable<ExtraInfo> CodeSummary()
@@ -140,6 +141,7 @@ namespace CmsWeb.Models.ExtraValues
                         field);
                     break;
             }
+            DbUtil.LogActivity("EVOrg DeleteAll {0} {1}".Fmt(field, value));
             return "done";
         }
     }

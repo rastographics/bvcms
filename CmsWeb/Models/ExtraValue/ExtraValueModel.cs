@@ -6,6 +6,7 @@ using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Code;
 using Dapper;
+using Elmah;
 using Newtonsoft.Json;
 using UtilityExtensions;
 
@@ -203,6 +204,21 @@ namespace CmsWeb.Models.ExtraValues
             return JsonConvert.SerializeObject(q.ToArray());
         }
 
+        private bool logged;
+        private void Log(ITableWithExtraValues record, string op, string name)
+        {
+            if (logged)
+                return;
+            record.LogExtraValue(op, name);
+            logged = true;
+        }
+
+        private void RemoveExtraValue(ITableWithExtraValues record, string name)
+        {
+            record.RemoveExtraValue(DbUtil.Db, name);
+            Log(record, "remove", name);
+        }
+        
         public void EditExtra(string type, string name, string value)
         {
             var record = TableObject();
@@ -211,13 +227,13 @@ namespace CmsWeb.Models.ExtraValues
             switch (type)
             {
                 case "Code":
-                    record.AddEditExtraValue(name, value);
+                    record.LogExtraValue("set", name);
                     break;
                 case "Data":
                 case "Text":
                 case "Text2":
                     if(!value.HasValue())
-                        record.RemoveExtraValue(DbUtil.Db, name);
+                        RemoveExtraValue(record, name);
                     else
                         record.AddEditExtraData(name, value);
                     break;
@@ -227,7 +243,7 @@ namespace CmsWeb.Models.ExtraValues
                         if (DateTime.TryParse(value, out dt))
                             record.AddEditExtraDate(name, dt);
                         else
-                            record.RemoveExtraValue(DbUtil.Db, name);
+                            RemoveExtraValue(record, name);
                     }
                     break;
                 case "Int":
@@ -251,12 +267,13 @@ namespace CmsWeb.Models.ExtraValues
                                     record.AddEditExtraBool(currentBit.Name, true);
                             if (!newCheckedBits.Contains(currentBit.Name))
                                 if (currentBit.Checked)
-                                    record.RemoveExtraValue(DbUtil.Db, currentBit.Name);
+                                    RemoveExtraValue(record, currentBit.Name);
                         }
                         break;
                     }
             }
             DbUtil.Db.SubmitChanges();
+            Log(record, "set", name);
         }
 
         public static void NewExtra(int id, string field, string type, string value)
