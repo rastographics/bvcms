@@ -227,7 +227,7 @@ namespace CmsWeb.Models.ExtraValues
             switch (type)
             {
                 case "Code":
-                    record.LogExtraValue("set", name);
+                    record.AddEditExtraValue(name, value);
                     break;
                 case "Data":
                 case "Text":
