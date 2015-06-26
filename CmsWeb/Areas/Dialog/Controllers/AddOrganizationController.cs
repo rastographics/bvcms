@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
 			}
 	        DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("Add new org {0}".Fmt(m.org.OrganizationName));
-            return Redirect("/Organization/{0}".Fmt(m.org.OrganizationId));
+            return Redirect("/Org/{0}".Fmt(m.org.OrganizationId));
         }
     }
 }
