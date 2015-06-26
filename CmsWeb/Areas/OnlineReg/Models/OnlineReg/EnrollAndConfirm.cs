@@ -511,16 +511,21 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             var c = DbUtil.Content("OneTimeConfirmation");
             if (c == null)
+            {
                 c = new Content();
-
-            var message = Util.PickFirst(c.Body,
-                    @"Hi {name},
-<p>Here is your <a href=""{url}"">link</a> to manage your subscriptions. (note: it will only work once for security reasons)</p> ");
+                c.Name = "OneTimeConfirmation";
+                c.Title = "Manage Your Subscriptions";
+                c.Body = @"Hi {name},
+<p>Here is your <a href=""{url}"">link</a> to manage your subscriptions. (note: it will only work once for security reasons)</p> 
+";
+                DbUtil.Db.Contents.InsertOnSubmit(c);
+                DbUtil.Db.SubmitChanges();
+            }
 
             var Staff = DbUtil.Db.StaffPeopleForOrg(masterorgid.Value);
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
-                DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), "Manage Your Subscriptions", message);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageSubscriptions/"), c.Title, c.Body);
             Log("SendOneTimeLinkManageSub");
             return ConfirmEnum.ConfirmAccount;
         }
@@ -534,17 +539,21 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             var c = DbUtil.Content("OneTimeConfirmationVolunteer");
             if (c == null)
+            {
                 c = new Content();
-
-            var message = Util.PickFirst(c.Body,
-                    @"Hi {name},
-<p>Here is your <a href=""{url}"">link</a> to manage your volunteer commitments. (note: it will only work once for security reasons)</p> ");
+                c.Name = "OneTimeConfirmationVolunteer";
+                c.Title = "Manage Your Volunteer Commitments";
+                c.Body = @"Hi {name},
+<p>Here is your <a href=""{url}"">link</a> to manage your volunteer commitments. (note: it will only work once for security reasons)</p>";
+                DbUtil.Db.Contents.InsertOnSubmit(c);
+                DbUtil.Db.SubmitChanges();
+            }
 
             List<Person> Staff = null;
             Staff = DbUtil.Db.StaffPeopleForOrg(Orgid.Value);
             p.SendOneTimeLink(
                 Staff.First().FromEmail,
-                DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), "Manage Your Volunteer Commitments", message);
+                DbUtil.Db.ServerLink("/OnlineReg/ManageVolunteer/"), c.Title, c.Body);
             Log("SendOneTimeLinkManageVol");
             URL = null;
             return ConfirmEnum.ConfirmAccount;
@@ -561,9 +570,12 @@ Total Fee paid for this registration session: {4:C}<br/>
             if (c == null)
             {
                 c = new Content();
+                c.Name = "OneTimeConfirmationPledge";
                 c.Title = "Manage your pledge";
                 c.Body = @"Hi {name},
 <p>Here is your <a href=""{url}"">link</a> to manage your pledge. (note: it will only work once for security reasons)</p> ";
+                DbUtil.Db.Contents.InsertOnSubmit(c);
+                DbUtil.Db.SubmitChanges();
             }
 
             p.SendOneTimeLink(
@@ -584,9 +596,12 @@ Total Fee paid for this registration session: {4:C}<br/>
             if (c == null)
             {
                 c = new Content();
+                c.Name = "OneTimeManageGiving";
                 c.Title = "Manage your recurring giving";
                 c.Body = @"Hi {name},
 <p>Here is your <a href=""{url}"">link</a> to manage your recurring giving. (note: it will only work once for security reasons)</p> ";
+                DbUtil.Db.Contents.InsertOnSubmit(c);
+                DbUtil.Db.SubmitChanges();
             }
 
             p.SendOneTimeLink(
