@@ -41,7 +41,6 @@ namespace CmsWeb
 
         protected void Session_Start(object sender, EventArgs e)
         {
-            //DbUtil.LogActivity("Session Starting");
             if (Util.Host.StartsWith("direct"))
                 return;
             if (User.Identity.IsAuthenticated)
@@ -224,7 +223,7 @@ namespace CmsWeb
         private static bool IsAuthorizedToViewProfiler(HttpRequest request)
         {
             if (request.IsLocal)
-                return true;
+                return false;
 
             var ctx = request.RequestContext.HttpContext;
             if (ctx == null || ctx.User == null)

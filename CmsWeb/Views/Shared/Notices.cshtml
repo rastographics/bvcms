@@ -1,6 +1,6 @@
 ﻿@if (Util.UrgentMessage.HasValue())
 {
-    <div id='urgentNotice'>@Util.UrgentMessage</div>
+  <div style="background-color: yellow;font-size: 2em;text-align: center;">@Util.UrgentMessage</div>
 }
 @if (DbUtil.TopNotice().HasValue())
 {

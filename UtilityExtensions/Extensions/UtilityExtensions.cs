@@ -139,11 +139,15 @@ namespace UtilityExtensions
         {
             get
             {
+                var path = ConfigurationManager.AppSettings["RebootDbInProgress"].Replace("%USERPROFILE%",
+                    Environment.GetEnvironmentVariable("USERPROFILE"));
+                if (File.Exists(path))
+                    return true;
                 string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 if (!Directory.Exists(output)) 
                     return false;
-                var path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%",
+                path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
                 var exists = File.Exists(path);
                 if (exists)
