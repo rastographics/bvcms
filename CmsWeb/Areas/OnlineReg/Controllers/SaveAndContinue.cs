@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             try { m.UpdateDatum(); } 
             catch { }
-            return Content("saved");
+            return Content(m.DatumId.ToString());
         }
 
         [HttpPost]

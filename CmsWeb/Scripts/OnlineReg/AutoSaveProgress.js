@@ -5,7 +5,9 @@
             $.AutoSaveEnabled = false;
         if ($.AutoSaveEnabled) {
             var q = $("#completeReg").serialize();
-            $.post("/OnlineReg/AutoSaveProgress", q);
+            $.post("/OnlineReg/AutoSaveProgress", q, function(ret) {
+                $("#DatumId").val(ret);
+            });
             setTimeout(AutoSaveProgress, 30000);
         }
     }

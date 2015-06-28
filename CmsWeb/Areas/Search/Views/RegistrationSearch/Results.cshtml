@@ -20,7 +20,7 @@
                 @foreach (var r in Model.ViewList())
                 {
                     <tr>
-                        <td><a href="/OnlineReg/RegPeople/@r.Id">@r.Stamp.FormatDateTm()</a></td>
+                        <td><a href="/OnlineReg/RegPeople/@r.Id" target="regdata">@r.Stamp.FormatDateTm()</a></td>
                         <td>
                             @r.First.Truncate(20) @r.Last.Truncate(20)
                         </td>
