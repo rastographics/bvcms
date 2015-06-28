@@ -95,7 +95,7 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             var om1 = DbUtil.Db.OrganizationMembers.FirstOrDefault(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
             if (om1 == null)
-                return "not founjd";
+                return "not found";
             var om2 = OrganizationMember.InsertOrgMembers(DbUtil.Db,
                 toid, om1.PeopleId, om1.MemberTypeId, DateTime.Now, om1.InactiveDate, om1.Pending ?? false);
             DbUtil.Db.UpdateMainFellowship(om2.OrganizationId);
@@ -111,6 +111,7 @@ namespace CmsWeb.Areas.Dialog.Models
             om2.RegistrationDataId = om1.RegistrationDataId;
             om1.Drop(DbUtil.Db);
             DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("OrgMem Move to " + om2.OrganizationId, OrgId, PeopleId);
             return "moved";
         }
     }

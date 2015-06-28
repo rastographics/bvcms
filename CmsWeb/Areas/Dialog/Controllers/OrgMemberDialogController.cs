@@ -35,14 +35,6 @@ namespace CmsWeb.Areas.Dialog.Controllers
             return View(m);
         }
         [HttpPost]
-        public ActionResult EditQuestion(string id, string value)
-        {
-            var a = id.Split(',');
-            DbUtil.Db.UpdateQuestion(a[0].ToInt(), a[1].ToInt(), a[2].ToInt(), value);
-            var c = Content(value);
-            return c;
-        }
-        [HttpPost]
         public ActionResult Update(OrgMemberModel m)
         {
             try
@@ -71,6 +63,18 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             var ret = m.Move(toid);
             return Content(ret);
+        }
+        [HttpPost]
+        public ActionResult EditQuestion(string id, string value)
+        {
+            var a = id.Split(',');
+            var oid = a[0].ToInt();
+            var pid = a[1].ToInt();
+            var n = a[2].ToInt();
+            DbUtil.Db.UpdateQuestion(oid, pid, n, value);
+            DbUtil.LogActivity("OrgMem EditQuestion " + n, oid, pid);
+            var c = Content(value);
+            return c;
         }
         public string HelpLink()
         {

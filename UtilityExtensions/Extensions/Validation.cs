@@ -61,6 +61,21 @@ namespace UtilityExtensions
         {
             return !s.Equal(s2);
         }
+
+        public static bool SameMinute(this DateTime dt1, DateTime dt2)
+        {
+            dt1 = new DateTime(dt1.Year, dt1.Month, dt1.Day, dt1.Hour, dt1.Minute, 0);
+            dt2 = new DateTime(dt2.Year, dt2.Month, dt2.Day, dt2.Hour, dt2.Minute, 0);
+            return dt1.Equals(dt2);
+        }
+        public static bool SameMinute(this object o, DateTime? dt2)
+        {
+            if (!dt2.HasValue)
+                return false;
+            if (o is DateTime)
+                return SameMinute((DateTime) o, dt2.Value);
+            return false;
+        }
         public static bool AllDigits(this string str)
         {
             if (!str.HasValue())

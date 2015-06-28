@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
+using DocumentFormat.OpenXml.EMMA;
 using UtilityExtensions;
 using Tasks = System.Threading.Tasks;
 
@@ -117,12 +118,12 @@ namespace CmsWeb.Areas.Dialog.Models
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
-                //Thread.Sleep(1000);
             }
             // finished
             lop = FetchLongRunningOp(db, model.Id, Op);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
+            db.LogActivity("OrgMem AddFromTag {0} count={1}".Fmt(model.GroupName, model.pids.Count), model.Id);
         }
 
         public void Validate(ModelStateDictionary modelState)

@@ -106,6 +106,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 }
             }
             om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee);
+            DbUtil.LogActivity("OrgMem " + reason, OrgId, PeopleId);
         }
     }
 }

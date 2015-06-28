@@ -81,6 +81,26 @@ namespace CmsWeb.Areas.Dialog.Models
 
 
         public string Group { get; set; }
+        public string GroupName
+        {
+            get
+            {
+                switch (Group)
+                {
+                    case GroupSelectCode.Member:
+                        return "Member";
+                    case GroupSelectCode.Pending:
+                        return "Pending";
+                    case GroupSelectCode.Prospect:
+                        return "Prospect";
+                    case GroupSelectCode.Inactive:
+                        return "Inactive";
+                    case GroupSelectCode.Previous:
+                        return "Previous";
+                }
+                return null;
+            }
+        }
 
         private bool dopopulate = false;
         public int? OrgId
@@ -115,24 +135,44 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public Settings Setting { get; set; }
 
+        [TrackChanges]
         public CodeInfo MemberType { get; set; }
 
+        [TrackChanges]
         public DateTime? InactiveDate { get; set; }
 
+        [TrackChanges]
         [DisplayName("Enrollment Date")]
         public DateTime? EnrollmentDate { get; set; }
 
+        [TrackChanges]
         public bool Pending { get; set; }
 
+        [TrackChanges]
         public string RegisterEmail { get; set; }
 
+        [TrackChanges]
         public string Request { get; set; }
 
+        [TrackChanges]
         public int? Grade { get; set; }
 
+        [TrackChanges]
         public int? TranId { get; set; }
 
+        [TrackChanges]
         public int? Tickets { get; set; }
+
+        [TrackChanges]
+        public string ShirtSize { get; set; }
+
+        [TrackChanges]
+        [DisplayName("Extra Member Info")]
+        public string UserData { get; set; }
+
+        [TrackChanges]
+        public DateTime? DropDate { get; set; }
+
 
         [DisplayName("Total Amount")]
         public decimal? Amount { get; set; }
@@ -170,18 +210,14 @@ namespace CmsWeb.Areas.Dialog.Models
             }
         }
 
-        public string ShirtSize { get; set; }
-
-        // this is populated via reflection using the CopyPropertiesFrom method using the OrganizationMember class
-        [DisplayName("Extra Member Info")]
-        public string UserData { get; set; }
-
         public void UpdateModel()
         {
             if (om == null)
                 om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
-            this.CopyPropertiesTo(om);
+            var changes = this.CopyPropertiesTo(om);
             DbUtil.Db.SubmitChanges();
+            foreach (var g in changes)
+                DbUtil.LogActivity("OrgMem {0} change {1}".Fmt(GroupName, g.Field), OrgId, PeopleId);
             Populate();
         }
 
@@ -209,13 +245,11 @@ namespace CmsWeb.Areas.Dialog.Models
                     return supportLink;
                 if (om == null)
                     om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
-                if(IsMissionTrip && om.MemberTypeId == MemberTypeCode.Member)
+                if (IsMissionTrip && om.MemberTypeId == MemberTypeCode.Member)
                     return supportLink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(OrgId, PeopleId));
                 return null;
             }
         }
-
-        public DateTime? DropDate { get; set; }
 
         [Display(Description = @"
 Checking the Remove From Enrollment History box will erase all enrollment history (but not attendance) of this person in this organization. 
@@ -231,6 +265,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             else
                 om.Drop(DbUtil.Db);
             DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("OrgMem Drop", OrgId, PeopleId);
             if (RemoveFromEnrollmentHistory)
             {
                 DbUtil.DbDispose();
@@ -238,6 +273,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                 var q = DbUtil.Db.EnrollmentTransactions.Where(tt => tt.OrganizationId == OrgId && tt.PeopleId == PeopleId);
                 DbUtil.Db.EnrollmentTransactions.DeleteAllOnSubmit(q);
                 DbUtil.Db.SubmitChanges();
+                DbUtil.LogActivity("OrgMem RemoveEnrollmentHistory", OrgId, PeopleId);
             }
         }
         public string SmallGroupChanged(int sgtagid, bool ck)
@@ -248,13 +284,27 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
             if (om == null)
                 return "error";
             if (ck)
+            {
+                var name = (from mt in DbUtil.Db.MemberTags
+                            where mt.Id == sgtagid
+                            where mt.OrgId == OrgId
+                            select mt.Name);
                 om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = sgtagid });
+                DbUtil.LogActivity("OrgMem AddSubGroup " + name, OrgId, PeopleId);
+            }
             else
             {
-                var mt = om.OrgMemMemTags.SingleOrDefault(t => t.MemberTagId == sgtagid);
-                if (mt == null)
+                var i = (from mt in om.OrgMemMemTags
+                         where mt.MemberTagId == sgtagid
+                         select new
+                         {
+                             mt,
+                             name = mt.MemberTag.Name
+                         }).SingleOrDefault();
+                if (i == null)
                     return "not found";
-                DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
+                DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(i.mt);
+                DbUtil.LogActivity("OrgMem RemoveSubGroup " + i.name, OrgId, PeopleId);
             }
             DbUtil.Db.SubmitChanges();
             return "ok";

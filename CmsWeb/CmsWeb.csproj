@@ -241,7 +241,6 @@
     <Compile Include="Areas\Dialog\Controllers\DialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\NewMeetingController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgMemberDialogController.cs" />
-    <Compile Include="Areas\Dialog\Controllers\OrgMembersDialogController.cs" />
     <Compile Include="Areas\Dialog\Controllers\OrgMembersUpdateController.cs" />
     <Compile Include="Areas\Dialog\Controllers\RepairTransactionsController.cs" />
     <Compile Include="Areas\Dialog\Controllers\RepairTransactionsOrgsController.cs" />
@@ -257,7 +256,6 @@
     <Compile Include="Areas\Dialog\Models\OrgSearchDrop.cs" />
     <Compile Include="Areas\Dialog\Models\OrgDrop.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembers.cs" />
-    <Compile Include="Areas\Dialog\Models\OrgMembersDialogModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMembersUpdate.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\MissionSupportModel.cs" />
     <Compile Include="Areas\Dialog\Models\OrgMember\OrgMemberModel.cs" />

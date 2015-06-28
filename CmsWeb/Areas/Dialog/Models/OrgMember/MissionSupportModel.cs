@@ -82,7 +82,6 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             if (AmountGeneral > 0 || AmountGoer > 0)
             {
-
                 var org = DbUtil.Db.LoadOrganizationById(OrgId);
                 var notifyIds = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
                 var person = DbUtil.Db.LoadPersonById(PeopleId ?? 0);
@@ -115,6 +114,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     ToGoerName = "to " + goer.Name;
                     DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
                         "{0:C} donation received from {1}".Fmt(AmountGoer, person.Name));
+                    DbUtil.LogActivity("OrgMem SupportMissionTrip goer=" + goerid, OrgId, PeopleId);
                 }
                 if (AmountGeneral > 0)
                 {
@@ -131,6 +131,7 @@ namespace CmsWeb.Areas.Dialog.Models
                         "SupportMissionTrip: org={0}".Fmt(OrgId), typecode: BundleTypeCode.MissionTrip);
                     if(CheckNo.HasValue())
                         c.CheckNo = (CheckNo ?? "").Trim().Truncate(20);
+                    DbUtil.LogActivity("OrgMem SupportMissionTrip", OrgId, PeopleId);
                 }
                 DbUtil.Db.SubmitChanges();
             }

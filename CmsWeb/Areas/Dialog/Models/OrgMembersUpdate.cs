@@ -108,18 +108,19 @@ namespace CmsWeb.Areas.Dialog.Models
                 DbUtil.Db = DbUtil.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
 
+                var changes = new List<ChangeDetail>();
                 if (InactiveDate.HasValue)
-                    om.InactiveDate = InactiveDate;
+                    om.UpdateValue(changes, "InactiveDate", InactiveDate);
                 if (RemoveInactiveDate)
-                    om.InactiveDate = null;
+                    om.UpdateValue(changes, "InactiveDate", null);
 
                 if (EnrollmentDate.HasValue)
-                    om.EnrollmentDate = EnrollmentDate;
+                    om.UpdateValue(changes, "EnrollmentDate", EnrollmentDate);
 
                 om.Pending = Pending;
 
                 if (MemberType.Value != "0")
-                    om.MemberTypeId = MemberType.Value.ToInt();
+                    om.UpdateValue(changes, "MemberTypeId", MemberType.Value.ToInt());
 
                 if (MakeMemberTypeOriginal)
                 {
@@ -132,6 +133,8 @@ namespace CmsWeb.Areas.Dialog.Models
                 }
 
                 DbUtil.Db.SubmitChanges();
+                foreach(var g in changes)
+                    DbUtil.LogActivity("OrgMem change " + g.Field, om.OrganizationId, om.PeopleId);
             }
         }
 
@@ -145,7 +148,10 @@ namespace CmsWeb.Areas.Dialog.Models
                 DbUtil.DbDispose();
                 DbUtil.Db = DbUtil.Create(Util.Host);
                 var om = DbUtil.Db.OrganizationMembers.Single(mm => mm.PeopleId == pid && mm.OrganizationId == Id);
-                n += om.AddToGroup(DbUtil.Db, sgtagid);
+                var nn = om.AddToGroup(DbUtil.Db, sgtagid);
+                n += nn;
+                if(nn == 1)
+                    DbUtil.LogActivity("OrgMem AddSubGroup " + name, om.OrganizationId, om.PeopleId);
             }
             return "{0} added to sub-group {1}".Fmt(n, name);
         }
@@ -153,6 +159,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public void RemoveSmallGroup(int sgtagid)
         {
             var pids = (from p in People(DbUtil.Db.CurrentOrg) select p.PeopleId).ToList();
+            var name = DbUtil.Db.MemberTags.Single(mm => mm.Id == sgtagid && mm.OrgId == Id).Name;
             foreach (var pid in pids)
             {
                 DbUtil.DbDispose();
@@ -162,6 +169,8 @@ namespace CmsWeb.Areas.Dialog.Models
                 if (mt != null)
                     DbUtil.Db.OrgMemMemTags.DeleteOnSubmit(mt);
                 DbUtil.Db.SubmitChanges();
+                if(mt != null)
+                    DbUtil.LogActivity("OrgMem RemoveSubGroup " + name, om.OrganizationId, om.PeopleId);
             }
             DbUtil.Db = DbUtil.Create(Util.Host);
             DbUtil.Db.ExecuteCommand(@"
@@ -195,6 +204,7 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
                 var reason = ts == null ? "Initial Tran" : "Adjustment";
                 om.AddTransaction(db, reason, Payment ?? 0, Description, Amount, AdjustFee);
                 db.SubmitChanges();
+                DbUtil.LogActivity("OrgMem " + reason, Id, pid);
             }
         }
 
@@ -204,6 +214,7 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
             var mt = new MemberTag() { Name = NewGroup };
             o.MemberTags.Add(mt);
             DbUtil.Db.SubmitChanges();
+            DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, Id);
             AddSmallGroup(mt.Id);
             NewGroup = null;
         }

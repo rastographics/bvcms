@@ -335,10 +335,16 @@ namespace CmsData
                 return;
             if (o is int && value.ToInt().Equals(o))
                 return;
-            if (o is DateTime && o.Equals(value.ToDate()))
-                return;
-            psb.Add(new ChangeDetail(field, o, value));
-            //psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
+            if (o is DateTime)
+            {
+                if (o.Equals(value.ToDate()))
+                    return;
+                if(!o.SameMinute(value.ToDate()))
+                    psb.Add(new ChangeDetail(field, o, value));
+            }
+            else
+                psb.Add(new ChangeDetail(field, o, value));
+
             var s = value as string;
             if (s != null)
                 Util.SetPropertyFromText(obj, field, s);
