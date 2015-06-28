@@ -10,6 +10,7 @@ AS
 		ab.Name About,
 		t.Notes,
 		ts.Description Status,
+		t.ForceCompleteWContact,
 		t.Id,
 		t.OwnerId,
 		t.CoOwnerId,

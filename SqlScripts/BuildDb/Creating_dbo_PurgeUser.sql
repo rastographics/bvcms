@@ -33,6 +33,11 @@ BEGIN
 	DELETE 
 	FROM dbo.ApiSession
 	WHERE UserId = @uid
+
+	DELETE dbo.SMSGroupMembers
+	FROM dbo.SMSGroupMembers m
+	JOIN dbo.Users u ON u.UserId = m.UserID
+	WHERE u.UserId = @uid
 	
 	DELETE dbo.Users
 	WHERE UserId = @uid

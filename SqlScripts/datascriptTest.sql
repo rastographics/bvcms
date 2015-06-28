@@ -732,10 +732,10 @@ Just login to {host} and you will be taken to your record where you can make cor
 <tr><td>Password:</td><td><strong><span style="font-family: courier new, courier, monospace">{password}</span></strong></td></tr>
 </table></blockquote>
 <p>Thank You</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (63, N'OneTimeConfirmation', N'OneTimeConfirmation', N'Hi {name},
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (63, N'OneTimeConfirmation', N'Manage Your Subscriptions', N'Hi {name},
 <p>Here is your <a href="{url}">link</a> to manage your subscriptions. 
 (note: it will only work once for security reasons)</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
-INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (64, N'OneTimeConfirmationPledge', N'OneTimeConfirmationPledge', N'Hi {name},
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (64, N'OneTimeConfirmationPledge', N'Manage Your Pledge', N'Hi {name},
 <p>Here is your <a href="{url}">link</a> to manage your pledge. 
 (note: it will only work once for security reasons)</p>', '2011-10-18 20:12:42.000', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (65, N'DiffEmailMessage', N'DiffEmailMessage', N'<html>
