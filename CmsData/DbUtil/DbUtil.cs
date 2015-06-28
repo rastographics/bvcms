@@ -93,28 +93,28 @@ namespace CmsData
 
             // Logging temporarily to monitor some major changes
 
-            if (!a.Activity.StartsWith("OnlineReg"))
-                return;
-
-            var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-            if (cs != null)
-            {
-                using (var cn = new SqlConnection(cs.ConnectionString))
-                {
-                    cn.Open();
-                    cn.Execute(
-                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid, did) VALUES(@db, @dt, @ac, @oid, @pid, @did)", 
-                        new
-                        {
-                            db = host,
-                            ac = activity,
-                            dt = a.ActivityDate,
-                            oid = a.OrgId,
-                            pid = a.PeopleId,
-                            did = a.DatumId,
-                        });
-                }
-            }
+//            if (!a.Activity.StartsWith("OnlineReg"))
+//                return;
+//
+//            var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
+//            if (cs != null)
+//            {
+//                using (var cn = new SqlConnection(cs.ConnectionString))
+//                {
+//                    cn.Open();
+//                    cn.Execute(
+//                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid, did) VALUES(@db, @dt, @ac, @oid, @pid, @did)", 
+//                        new
+//                        {
+//                            db = host,
+//                            ac = activity,
+//                            dt = a.ActivityDate,
+//                            oid = a.OrgId,
+//                            pid = a.PeopleId,
+//                            did = a.DatumId,
+//                        });
+//                }
+//            }
         }
         public static void LogActivity(string activity, int? orgid = null, int? peopleid = null, int? did = null)
         {
