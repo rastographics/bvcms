@@ -57,24 +57,6 @@ namespace CmsWeb
             Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
             Util.SessionStarting = true;
-
-            LogBrowser();
-        }
-
-        private void LogBrowser()
-        {
-            var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-            if (cs == null) return;
-
-            using (var cn = new SqlConnection(cs.ConnectionString))
-            {
-                cn.Open();
-                var cmd = new SqlCommand("LogBrowser", cn) { CommandType = CommandType.StoredProcedure };
-                cmd.Parameters.AddWithValue("browser", Request.Browser.Type);
-                cmd.Parameters.AddWithValue("who", Util.UserName);
-                cmd.Parameters.AddWithValue("host", Util.Host);
-                cmd.ExecuteNonQuery();
-            }
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
