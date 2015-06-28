@@ -13,7 +13,14 @@
 <table class="table" style="width: auto">
   <tr><td>DateTime</td>
     <td>
-      <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
+      @if (User.IsInRole("Developer"))
+      {
+        <a href="@(DbUtil.Db.ServerLink("/OnlineReg/ConfirmTestXml"))/@Model.DatumId">@Model.Datum.Stamp.FormatDateTm()</a>
+      }
+      else
+      {
+        @Model.Datum.Stamp.FormatDateTm()
+      }
     </td>
   </tr>
   <tr><td>Status</td><td>@(Model.Datum.Completed == true ? "completed" : "incomplete")</td></tr>
