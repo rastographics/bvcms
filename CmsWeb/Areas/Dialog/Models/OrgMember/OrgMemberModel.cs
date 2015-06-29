@@ -288,7 +288,7 @@ Checking the Remove From Enrollment History box will erase all enrollment histor
                 var name = (from mt in DbUtil.Db.MemberTags
                             where mt.Id == sgtagid
                             where mt.OrgId == OrgId
-                            select mt.Name);
+                            select mt.Name).Single();
                 om.OrgMemMemTags.Add(new OrgMemMemTag { MemberTagId = sgtagid });
                 DbUtil.LogActivity("OrgMem AddSubGroup " + name, OrgId, PeopleId);
             }
