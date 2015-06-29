@@ -11,6 +11,7 @@ using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using HtmlAgilityPack;
 
 namespace CmsWeb.Controllers
 {
@@ -48,22 +49,14 @@ namespace CmsWeb.Controllers
             return Redirect("/Query");
         }
 
-//        public ActionResult Test()
-//        {
-//            var s = @"
-//q = model.ChangedAddresses()
-//for v in q:
-//    print 'Hi {} {}, \nI noticed you have moved to {}\n'.format(v.FirstName, v.LastName, v.PrimaryCity)
-//";
-//            var ret = PythonEvents.RunScript(Util.Host, s);
-//            return Content("<pre>{0}</pre>".Fmt(ret));
-//        }
 #if DEBUG
         [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            var q = DbUtil.Db.CardIdentifiers.Select(mm => "{0}\t{1}".Fmt(mm.PeopleId, mm.Person.Name));
-            return Content(string.Join("\n", q), "text/plain");
+            string body = "";
+            var doc = new HtmlDocument();
+            doc.LoadHtml(body);
+            return Content(body);
         }
 #endif
 

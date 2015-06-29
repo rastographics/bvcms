@@ -109,6 +109,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 CKEditorFuncNum, baseurl + fn, error));
         }
 
+        [Route("~/ForceError")]
         public ActionResult ForceError()
         {
             var z = 0;

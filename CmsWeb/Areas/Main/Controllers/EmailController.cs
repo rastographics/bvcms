@@ -127,6 +127,8 @@ namespace CmsWeb.Areas.Main.Controllers
 
         private static string GetBody(string body)
         {
+            if (body == null)
+                body = "";
             var doc = new HtmlDocument();
             doc.LoadHtml(body);
             var ele = doc.DocumentNode.SelectSingleNode("/div[@bvedit='discardthis']");
