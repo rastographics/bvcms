@@ -47,13 +47,13 @@ namespace CmsWeb.Areas.Dialog.Models
                     case GroupSelectCode.Member:
                         return "Members";
                     case GroupSelectCode.Pending:
-                        return "Pending Members";
+                        return "Pending";
                     case GroupSelectCode.Prospect:
                         return "Prospects";
                     case GroupSelectCode.Inactive:
-                        return "Inactive Members";
+                        return "Inactive";
                     case GroupSelectCode.Previous:
-                        return "Previous Members";
+                        return "Previous";
                 }
                 return null;
             }
@@ -118,12 +118,12 @@ namespace CmsWeb.Areas.Dialog.Models
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
+                db.LogActivity("Org{0} AddFromTag".Fmt(model.GroupName), model.Id, pid);
             }
             // finished
             lop = FetchLongRunningOp(db, model.Id, Op);
             lop.Completed = DateTime.Now;
             db.SubmitChanges();
-            db.LogActivity("OrgMem AddFromTag {0} count={1}".Fmt(model.GroupName, model.pids.Count), model.Id);
         }
 
         public void Validate(ModelStateDictionary modelState)
