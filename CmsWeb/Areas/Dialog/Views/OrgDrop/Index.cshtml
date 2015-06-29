@@ -1,5 +1,4 @@
-﻿@using CmsData
-@model CmsWeb.Areas.Dialog.Models.OrgDrop
+﻿@model CmsWeb.Areas.Dialog.Models.OrgDrop
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
@@ -8,6 +7,7 @@
         </div>
         <div class="modal-body">
             @Html.HiddenFor(mm => mm.Id)
+            @Html.HiddenFor(mm => mm.Group)
             @Html.Hidden("callback", "ReloadPeople")
             <div class="alert alert-danger">
                 This will Drop @Model.Count people in @Model.Group from @Model.OrgName

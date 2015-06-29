@@ -23,10 +23,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             model.UpdateLongRunningOp(DbUtil.Db, OrgDrop.Op);
             if (!model.Started.HasValue)
-            { 
-                DbUtil.LogActivity("Drop Memers from Org {0}".Fmt(Session["ActiveOrganization"]));
                 model.Process(DbUtil.Db);
-            }
 			return View(model);
 		}
     }

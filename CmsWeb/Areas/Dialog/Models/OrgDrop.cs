@@ -19,6 +19,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public string OrgName { get; set; }
         public DateTime? DropDate { get; set; }
         public bool RemoveFromEnrollmentHistory { get; set; }
+        public string Group { get; set; }
 
         public OrgDrop() { }
         public OrgDrop(int id)
@@ -27,6 +28,23 @@ namespace CmsWeb.Areas.Dialog.Models
             var org = DbUtil.Db.LoadOrganizationById(id);
             OrgName = org.OrganizationName;
             Count = People(DbUtil.Db.CurrentOrg).Count();
+
+            Group = "People"; // default
+            switch (DbUtil.Db.CurrentOrg.GroupSelect)
+            {
+                case GroupSelectCode.Member:
+                    Group = "Members";
+                    break;
+                case GroupSelectCode.Inactive:
+                    Group = "Inactive";
+                    break;
+                case GroupSelectCode.Pending:
+                    Group = "Pending";
+                    break;
+                case GroupSelectCode.Prospect:
+                    Group = "Prospects";
+                    break;
+            }
         }
 
         public IQueryable<OrgPerson> People(ICurrentOrg co)
@@ -39,26 +57,7 @@ namespace CmsWeb.Areas.Dialog.Models
             return q;
         }
 
-        public string Group
-        {
-            get
-            {
-                switch (DbUtil.Db.CurrentOrg.GroupSelect)
-                {
-                    case GroupSelectCode.Member:
-                        return "Current Members";
-                    case GroupSelectCode.Inactive:
-                        return "Inactive Members";
-                    case GroupSelectCode.Pending:
-                        return "Pending Members";
-                    case GroupSelectCode.Prospect:
-                        return "Prospects";
-                }
-                return "People";
-            }
-        }
-
-        private List<int> pids; 
+        private List<int> pids;
         public void Process(CMSDataContext db)
         {
             // running has not started yet, start it on a separate thread
@@ -102,6 +101,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
+                DbUtil.LogActivity("Org{0} Drop{1}".Fmt(Group, RemoveFromEnrollmentHistory ? " w/history" : ""), Id, pid);
             }
             // finished
             lop = FetchLongRunningOp(db, model.Id, Op);

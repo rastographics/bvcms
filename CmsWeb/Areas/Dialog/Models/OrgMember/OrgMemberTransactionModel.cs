@@ -4,6 +4,7 @@ using System.Linq;
 using CmsData;
 using CmsWeb.Models;
 using System.Web.Mvc;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -106,7 +107,10 @@ namespace CmsWeb.Areas.Dialog.Models
                 }
             }
             om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee);
-            DbUtil.LogActivity("OrgMem " + reason, OrgId, PeopleId);
+            var showcount = "";
+            if (TransactionSummary != null && TransactionSummary.NumPeople > 1)
+                showcount = "({0}) ".Fmt(TransactionSummary.NumPeople);
+            DbUtil.LogActivity("OrgMem{0} {1}".Fmt(showcount, reason), OrgId, PeopleId);
         }
     }
 }
