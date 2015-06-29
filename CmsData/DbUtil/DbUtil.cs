@@ -67,10 +67,11 @@ namespace CmsData
             return CMSDataContext.Create(Util.GetConnectionString(host), host);
         }
 
-        private static void _logActivity(string host, string activity, int? orgid, int? pid, int? did)
+        private static void _logActivity(string host, string activity, int? orgid, int? pid, int? did, int? uid)
         {
             var db = Create(host);
-            int? uid = Util.UserId;
+            if (!uid.HasValue || uid == 0)
+                uid = Util.UserId;
             if (uid == 0)
                 uid = null;
             if (orgid.HasValue && !db.PeopleIdOk(pid))
@@ -116,17 +117,17 @@ namespace CmsData
 //                }
 //            }
         }
-        public static void LogActivity(string activity, int? orgid = null, int? peopleid = null, int? did = null)
+        public static void LogActivity(string activity, int? orgid = null, int? peopleid = null, int? did = null, int? uid = null)
         {
-            _logActivity(Util.Host, activity, orgid, peopleid, did);
+            _logActivity(Util.Host, activity, orgid, peopleid, did, uid);
         }
-        public static void LogActivity(string host, string activity, int? orgid = null, int? peopleid = null)
+        public static void LogActivity(string host, string activity, int? orgid = null, int? peopleid = null, int? uid = null)
         {
-            _logActivity(host, activity, orgid, peopleid, null);
+            _logActivity(host, activity, orgid, peopleid, null, uid);
         }
         public static void LogOrgActivity(string activity, int orgid, string name)
         {
-            _logActivity(Util.Host, activity, orgid, null, null);
+            _logActivity(Util.Host, activity, orgid, null, null, null);
             var mru = Util2.MostRecentOrgs;
             var i = mru.SingleOrDefault(vv => vv.Id == orgid);
             if (i != null)
@@ -137,7 +138,7 @@ namespace CmsData
         }
         public static void LogPersonActivity(string activity, int pid, string name)
         {
-            _logActivity(Util.Host, activity, null, pid, null);
+            _logActivity(Util.Host, activity, null, pid, null, null);
             if (pid == Util.UserPeopleId)
                 return;
             var mru = Util2.MostRecentPeople;

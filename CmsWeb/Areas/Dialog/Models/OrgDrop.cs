@@ -20,9 +20,14 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? DropDate { get; set; }
         public bool RemoveFromEnrollmentHistory { get; set; }
         public string Group { get; set; }
+        public int UserId { get; set; }
 
-        public OrgDrop() { }
+        public OrgDrop()
+        {
+            UserId = Util.UserId;
+        }
         public OrgDrop(int id)
+            : this()
         {
             Id = id;
             var org = DbUtil.Db.LoadOrganizationById(id);
@@ -101,7 +106,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
-                db.LogActivity("Org{0} Drop{1}".Fmt(Group, RemoveFromEnrollmentHistory ? " w/history" : ""), Id, pid);
+                db.LogActivity("Org{0} Drop{1}".Fmt(Group, RemoveFromEnrollmentHistory ? " w/history" : ""), Id, pid, UserId);
             }
             // finished
             lop = FetchLongRunningOp(db, model.Id, Op);
