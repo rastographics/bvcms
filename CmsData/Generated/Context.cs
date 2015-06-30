@@ -216,6 +216,10 @@ namespace CmsData
         partial void UpdateDivOrg(DivOrg instance);
         partial void DeleteDivOrg(DivOrg instance);
         
+        partial void InsertDownline(Downline instance);
+        partial void UpdateDownline(Downline instance);
+        partial void DeleteDownline(Downline instance);
+        
         partial void InsertDropType(DropType instance);
         partial void UpdateDropType(DropType instance);
         partial void DeleteDropType(DropType instance);
@@ -988,6 +992,12 @@ namespace CmsData
         public Table< DivOrg> DivOrgs
         {
             get { return GetTable< DivOrg>(); }
+
+        }
+
+        public Table< Downline> Downlines
+        {
+            get { return GetTable< Downline>(); }
 
         }
 

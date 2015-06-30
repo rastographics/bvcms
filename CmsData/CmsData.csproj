@@ -464,6 +464,7 @@
     <Compile Include="Generated\ApiSession.cs" />
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
+    <Compile Include="Generated\Downline.cs" />
     <Compile Include="Generated\Functions\ActivityLogSearch.cs" />
     <Compile Include="Generated\Functions\AttendCommitment.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />

@@ -30,6 +30,8 @@ namespace CmsData.View
 		
 		private string _Status;
 		
+		private bool? _ForceCompleteWContact;
+		
 		private int _Id;
 		
 		private int _OwnerId;
@@ -163,6 +165,23 @@ namespace CmsData.View
 			{
 				if (this._Status != value)
 					this._Status = value;
+			}
+
+		}
+
+		
+		[Column(Name="ForceCompleteWContact", Storage="_ForceCompleteWContact", DbType="bit")]
+		public bool? ForceCompleteWContact
+		{
+			get
+			{
+				return this._ForceCompleteWContact;
+			}
+
+			set
+			{
+				if (this._ForceCompleteWContact != value)
+					this._ForceCompleteWContact = value;
 			}
 
 		}
