@@ -102,7 +102,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             SetTransactionReturn(TransactionReturn);
             EnrollAndConfirm();
-            CheckForNoPerson();
             UseCoupon(Transaction.TransactionId, Transaction.Amt ?? 0);
             return ConfirmEnum.Confirm;
         }
@@ -116,15 +115,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private bool CreatingAccount()
         {
             return org != null && org.RegistrationTypeId == RegistrationTypeCode.CreateAccount;
-        }
-
-        private void CheckForNoPerson()
-        {
-            if (List.Any(pp => pp.PeopleId == null))
-            {
-                LogOutOfOnlineReg();
-                throw new Exception("no person");
-            }
         }
 
         private void SetTransactionReturn(string TransactionReturn)
@@ -291,7 +281,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     sb.AppendFormat("{0:c} total due all registrants\n", due);
 
                     om.AddToMemberDataBelowComments(sb.ToString());
-                    var reg = p.RecRegs.Single();
+                    var reg = p.SetRecReg();
                     reg.AddToComments(sb.ToString());
                     reg.AddToComments("{0} ({1})".Fmt(org.OrganizationName, org.OrganizationId));
 

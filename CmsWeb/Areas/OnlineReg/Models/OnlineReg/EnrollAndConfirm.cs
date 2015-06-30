@@ -391,7 +391,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             foreach (var p in List)
             {
                 if (p.PeopleId == null)
-                    throw new Exception("no PeopleId in List");
+                    continue;
                 if (transactionPeople.Any(pp => pp.PeopleId == p.PeopleId))
                     continue;
                 transactionPeople.Add(new TransactionPerson
