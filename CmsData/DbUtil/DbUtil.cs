@@ -121,9 +121,9 @@ namespace CmsData
         {
             _logActivity(Util.Host, activity, orgid, peopleid, did, uid);
         }
-        public static void LogActivity(string host, string activity, int? orgid = null, int? peopleid = null, int? uid = null)
+        public static void LogActivity(string host, string activity, int? orgid = null, int? peopleid = null, int? did = null, int? uid = null)
         {
-            _logActivity(host, activity, orgid, peopleid, null, uid);
+            _logActivity(host, activity, orgid, peopleid, did, uid);
         }
         public static void LogOrgActivity(string activity, int orgid, string name)
         {

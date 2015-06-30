@@ -620,6 +620,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return RouteModel.ProcessPayment();
             }
         }
+
+        public void CheckTesting()
+        {
+            // randomixe payment for testing only 
+            // prevents testing gateway from giving a duplicate tran error
+            var random = new Random();
+            AmtToPay += (decimal)random.Next(100, 199) / 100;
+        }
     }
 }
 

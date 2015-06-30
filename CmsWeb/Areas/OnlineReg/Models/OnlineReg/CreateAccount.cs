@@ -18,6 +18,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 CannotCreateAccount = true;
             else if (person.Users.Any()) // already have account
             {
+                if (org == null || org.IsMissionTrip == true) 
+                    return null;
                 SawExistingAccount = true;
                 var user = person.Users.OrderByDescending(uu => uu.LastActivityDate).First();
 
@@ -40,18 +42,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public void SendOneTimeLink(string from, string url, string subject, string body)
         {
-            var ot = new OneTimeLink 
-            { 
+            var ot = new OneTimeLink
+            {
                 Id = Guid.NewGuid(),
-                Querystring = "{0},{1}".Fmt(divid ?? orgid ?? masterorgid , PeopleId) 
+                Querystring = "{0},{1}".Fmt(divid ?? orgid ?? masterorgid, PeopleId)
             };
             var Db = DbUtil.Db;
             Db.OneTimeLinks.InsertOnSubmit(ot);
             Db.SubmitChanges();
 
-            var message = body.Replace("{url}", url + ot.Id.ToCode(), ignoreCase:true);
-            message = message.Replace("{name}", person.Name, ignoreCase:true);
-            message = message.Replace("{first}", person.PreferredName, ignoreCase:true);
+            var message = body.Replace("{url}", url + ot.Id.ToCode(), ignoreCase: true);
+            message = message.Replace("{name}", person.Name, ignoreCase: true);
+            message = message.Replace("{first}", person.PreferredName, ignoreCase: true);
 
             Db.Email(from, person, subject, message);
         }

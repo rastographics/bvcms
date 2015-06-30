@@ -33,8 +33,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 				return Content("Already submitted");
 #endif
 
+            int? datumid = null;
             if (m != null)
             {
+                datumid = m.DatumId;
                 var msg = m.CheckDuplicateGift(pf.AmtToPay);
                 if (msg.HasValue())
                     return Message(msg);
@@ -49,8 +51,19 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 case RouteType.AmtDue:
                     ViewBag.amtdue = ret.AmtDue;
                     return View(ret.View, ret.Transaction);
-                default:
+                case RouteType.Error:
+                    DbUtil.Db.LogActivity("OnlineReg Error " + ret.Message, pf.OrgId, did: datumid);
+                    return Message(ret.Message);
+                case RouteType.ValidationError:
                     return View(ret.View, pf);
+                default: // unexptected Route
+                    if (ModelState.IsValid)
+                    {
+                        ErrorSignal.FromCurrentContext().Raise(new Exception("OnlineReg Unexpected route datum= " + datumid));
+                        DbUtil.Db.LogActivity("OnlineReg Unexpected Route " + ret.Message, oid: pf.OrgId, did: datumid);
+                        ModelState.AddModelError("form", "unexpected error in payment processing");
+                    }
+                    return View(ret.View ?? "Payment/Process", pf);
             }
         }
 

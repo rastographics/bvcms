@@ -1353,6 +1353,13 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 Db.BundleHeaders.InsertOnSubmit(bundle);
             }
             if (!Fund.HasValue)
+                Fund = Db.Setting("DefaultFundId", "1").ToInt();
+            var fundtouse = (from f in Db.ContributionFunds
+                where f.FundId == Fund
+                select f).SingleOrDefault();
+
+            //failsafe if fund is not found
+            if(fundtouse == null)
                 Fund = (from f in Db.ContributionFunds
                         where f.FundStatusId == 1
                         orderby f.FundId
@@ -1394,6 +1401,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             };
             bundle.BundleDetails.Add(bd);
             Db.SubmitChanges();
+            if(fundtouse == null)
+                Db.LogActivity("FundNotFound Used fund #{0} on contribution #{1}".Fmt(Fund, bd.ContributionId) );
             return bd.Contribution;
         }
         public static int FetchOrCreateMemberStatus(CMSDataContext Db, string type)

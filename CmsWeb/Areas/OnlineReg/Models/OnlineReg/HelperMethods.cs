@@ -586,40 +586,38 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (Util.IsLocalNetworkRequest)
             {
                 var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.PeopleId == 828612 || om.PeopleId == 828611
+                        where om.PeopleId == 828612
                         where om.OrganizationId == 81460
                         select om;
                 foreach (var om in q)
                 {
                     om.Drop(DbUtil.Db, DateTime.Now);
                 }
-/*
-                DbUtil.Db.ExecuteCommand(@"
-DELETE dbo.EnrollmentTransaction WHERE PeopleId = 828612 AND OrganizationId = 90199
-
-IF OBJECT_ID('tempdb..#t') IS NOT NULL
-   DROP TABLE #t
-
-SELECT c.ContributionId INTO #t
-FROM dbo.Contribution c
-JOIN dbo.BundleDetail d ON d.ContributionId = c.ContributionId
-JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
-WHERE CONVERT(DATE, h.ContributionDate) = CONVERT(DATE, GETDATE())
-AND c.PeopleId = 90199
-
-DELETE dbo.BundleDetail
-FROM dbo.BundleDetail d
-JOIN #t ON #t.ContributionId = d.ContributionId
-
-DELETE dbo.Contribution
-FROM dbo.Contribution c
-JOIN #t ON #t.ContributionId = c.ContributionId
-
-DELETE dbo.GoerSenderAmounts
-WHERE OrgId = 90199
-AND SupporterId = 828612
-");
-*/
+//                DbUtil.Db.ExecuteCommand(@"
+//DELETE dbo.EnrollmentTransaction WHERE PeopleId = 58207 AND OrganizationId = 2202
+//
+//IF OBJECT_ID('tempdb..#t') IS NOT NULL
+//   DROP TABLE #t
+//
+//SELECT c.ContributionId INTO #t
+//FROM dbo.Contribution c
+//JOIN dbo.BundleDetail d ON d.ContributionId = c.ContributionId
+//JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
+//WHERE CONVERT(DATE, h.ContributionDate) = CONVERT(DATE, GETDATE())
+//AND c.PeopleId = 58207
+//
+//DELETE dbo.BundleDetail
+//FROM dbo.BundleDetail d
+//JOIN #t ON #t.ContributionId = d.ContributionId
+//
+//DELETE dbo.Contribution
+//FROM dbo.Contribution c
+//JOIN #t ON #t.ContributionId = c.ContributionId
+//
+//DELETE dbo.GoerSenderAmounts
+//WHERE OrgId = 2202
+//AND SupporterId = 58207
+//");
                 DbUtil.Db.SubmitChanges();
             }
         }

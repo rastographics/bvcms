@@ -1,5 +1,7 @@
+using System;
 using System.Web.Routing;
 using CmsData;
+using Elmah;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -70,6 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             return new RouteModel()
             {
+                Route = RouteType.ValidationError,
                 View = "Payment/Process"
             };
         }
@@ -90,6 +93,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         Error,
         Action,
         ModelAction,
+        ValidationError,
         Redirect,
         Terms,
         Payment,

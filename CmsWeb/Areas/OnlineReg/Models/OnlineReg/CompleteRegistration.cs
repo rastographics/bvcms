@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using CmsData;
 using CmsData.Codes;
@@ -13,11 +14,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             HistoryAdd("CompleteRegistration");
 
             var ret = CheckSpecialJavascript();
-            if (ret != null) 
+            if (ret != null)
                 return ret;
 
             ret = CheckAskDonation(ctl);
-            if (ret != null) 
+            if (ret != null)
                 return ret;
 
             if (List.Count == 0)
@@ -28,7 +29,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             UpdateDatum();
 
             ret = CheckNoFeesDue();
-            if (ret != null) 
+            if (ret != null)
                 return ret;
 
             var terms = Util.PickFirst(Terms, "");
@@ -36,14 +37,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ctl.ViewBag.Terms = terms;
 
             ret = CheckTermsNoFee(ctl);
-            if (ret != null) 
+            if (ret != null)
                 return ret;
 
             ret = CheckAlreadyRegistered();
-            if (ret != null) 
+            if (ret != null)
                 return ret;
 
             var pf = PaymentForm.CreatePaymentForm(this);
+
+#if DEBUG
+            pf.CheckTesting();
+#endif
             Log("PaymentForm");
             ctl.ModelState.Clear();
             return RouteModel.ViewPayment("Payment/Process", pf);
