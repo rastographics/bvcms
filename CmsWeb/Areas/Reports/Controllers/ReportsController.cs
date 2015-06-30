@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Reports.Controllers
     [RouteArea("Reports", AreaPrefix = "Reports"), Route("{action}/{id?}")]
     public class ReportsController : CmsStaffController
     {
-        [Authorize(Roles = "Elder,Admin")]
+        [Authorize(Roles = "MembershipApp,Admin")]
         [HttpGet, Route("Application/{orgid:int}/{peopleid:int}/{content}")]
         public ActionResult Application(int orgid, int peopleid, string content)
         {
