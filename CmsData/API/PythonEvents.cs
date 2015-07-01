@@ -472,7 +472,7 @@ namespace CmsData
 
                 // get the most recent attend date
                 var lastAttend = p.Attends
-                    .Where(x => x.OrganizationId == orgId)
+                    .Where(x => x.OrganizationId == orgId && x.AttendanceFlag)
                     .OrderByDescending(x => x.MeetingDate)
                     .FirstOrDefault();
 
