@@ -461,6 +461,30 @@ namespace CmsData
             }
         }
 
+        public void UpdateNewMemberClassDateIfNullForLastAttended(object savedQuery, int orgId)
+        {
+            var q = db.PeopleQuery2(savedQuery);
+            foreach (var p in q)
+            {
+                // skip any who already have their new member class date set
+                if (p.NewMemberClassDate.HasValue)
+                    continue;
+
+                // get the most recent attend date
+                var lastAttend = p.Attends
+                    .Where(x => x.OrganizationId == orgId)
+                    .OrderByDescending(x => x.MeetingDate)
+                    .FirstOrDefault();
+
+                if (lastAttend != null)
+                {
+                    p.UpdateValue("NewMemberClassDate", lastAttend.MeetingDate);
+                    p.LogChanges(db);
+                    db.SubmitChanges();
+                }
+            }
+        }
+
         public void AddMembersToOrg(object savedQuery, int OrgId)
         {
             var q = db.PeopleQuery2(savedQuery);
@@ -493,7 +517,7 @@ namespace CmsData
             var i = 0;
             for (; i < a.Length; i++)
             {
-                if (a[i].Length < 6 || a[i].Length > 10) 
+                if (a[i].Length < 6 || a[i].Length > 10)
                     continue;
                 var dt = a[i].ToDate();
                 if (dt.HasValue && dt == dtwanted)
