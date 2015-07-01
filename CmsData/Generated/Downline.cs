@@ -18,15 +18,17 @@ namespace CmsData
 		
 	#region Private Fields
 		
-		private int? _OrgId;
+		private int _Id;
 		
-		private int? _LeaderId;
+		private int _OrgId;
 		
-		private int? _DiscipleId;
+		private int _PeopleId;
 		
 		private DateTime? _StartDt;
 		
 		private DateTime? _EndDt;
+		
+		private bool? _Leader;
 		
    		
     	
@@ -37,20 +39,23 @@ namespace CmsData
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
-		partial void OnOrgIdChanging(int? value);
+		partial void OnIdChanging(int value);
+		partial void OnIdChanged();
+		
+		partial void OnOrgIdChanging(int value);
 		partial void OnOrgIdChanged();
 		
-		partial void OnLeaderIdChanging(int? value);
-		partial void OnLeaderIdChanged();
-		
-		partial void OnDiscipleIdChanging(int? value);
-		partial void OnDiscipleIdChanged();
+		partial void OnPeopleIdChanging(int value);
+		partial void OnPeopleIdChanged();
 		
 		partial void OnStartDtChanging(DateTime? value);
 		partial void OnStartDtChanged();
 		
 		partial void OnEndDtChanging(DateTime? value);
 		partial void OnEndDtChanged();
+		
+		partial void OnLeaderChanging(bool? value);
+		partial void OnLeaderChanged();
 		
     #endregion
 		public Downline()
@@ -63,8 +68,30 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int")]
-		public int? OrgId
+		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public int Id
+		{
+			get { return this._Id; }
+
+			set
+			{
+				if (this._Id != value)
+				{
+				
+                    this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		public int OrgId
 		{
 			get { return this._OrgId; }
 
@@ -85,43 +112,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="LeaderId", UpdateCheck=UpdateCheck.Never, Storage="_LeaderId", DbType="int")]
-		public int? LeaderId
+		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
+		public int PeopleId
 		{
-			get { return this._LeaderId; }
+			get { return this._PeopleId; }
 
 			set
 			{
-				if (this._LeaderId != value)
+				if (this._PeopleId != value)
 				{
 				
-                    this.OnLeaderIdChanging(value);
+                    this.OnPeopleIdChanging(value);
 					this.SendPropertyChanging();
-					this._LeaderId = value;
-					this.SendPropertyChanged("LeaderId");
-					this.OnLeaderIdChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="DiscipleId", UpdateCheck=UpdateCheck.Never, Storage="_DiscipleId", DbType="int")]
-		public int? DiscipleId
-		{
-			get { return this._DiscipleId; }
-
-			set
-			{
-				if (this._DiscipleId != value)
-				{
-				
-                    this.OnDiscipleIdChanging(value);
-					this.SendPropertyChanging();
-					this._DiscipleId = value;
-					this.SendPropertyChanged("DiscipleId");
-					this.OnDiscipleIdChanged();
+					this._PeopleId = value;
+					this.SendPropertyChanged("PeopleId");
+					this.OnPeopleIdChanged();
 				}
 
 			}
@@ -166,6 +171,28 @@ namespace CmsData
 					this._EndDt = value;
 					this.SendPropertyChanged("EndDt");
 					this.OnEndDtChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Leader", UpdateCheck=UpdateCheck.Never, Storage="_Leader", DbType="bit")]
+		public bool? Leader
+		{
+			get { return this._Leader; }
+
+			set
+			{
+				if (this._Leader != value)
+				{
+				
+                    this.OnLeaderChanging(value);
+					this.SendPropertyChanging();
+					this._Leader = value;
+					this.SendPropertyChanged("Leader");
+					this.OnLeaderChanged();
 				}
 
 			}

@@ -226,12 +226,19 @@ namespace CmsData
             var hc = HttpRuntime.Cache[Db.Host + "topnotice"] as string;
             if (hc == null)
             {
-                var h = Content("TopNotice");
-                if (h != null)
-                    hc = h.Body;
-                else
-                    hc = string.Empty;
+                hc = Db.ContentHtml("TopNotice", "");
                 HttpRuntime.Cache.Insert(Db.Host + "topnotice", hc, null,
+                     DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
+            }
+            return hc;
+        }
+        public static string NoticeToAdmins()
+        {
+            var hc = HttpRuntime.Cache[Db.Host + "Notam"] as string;
+            if (hc == null)
+            {
+                hc = Db.ContentHtml("Notam", "");
+                HttpRuntime.Cache.Insert(Db.Host + "Notam", hc, null,
                      DateTime.Now.AddMinutes(1), Cache.NoSlidingExpiration);
             }
             return hc;

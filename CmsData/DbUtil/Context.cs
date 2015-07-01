@@ -1273,18 +1273,19 @@ namespace CmsData
         public Content Content(string name, string defaultValue, int contentTypeId)
         {
             var c = Contents.FirstOrDefault(cc => cc.Name == name);
-            if (c == null)
+            if (c != null) 
+                return c;
+            c = new Content()
             {
-                c = new Content()
-                        {
-                            Name = name,
-                            Title = name,
-                            Body = defaultValue,
-                            TypeID = contentTypeId
-                        };
-                Contents.InsertOnSubmit(c);
-                SubmitChanges();
-            }
+                Name = name,
+                Title = name,
+                Body = defaultValue,
+                TypeID = contentTypeId
+            };
+            if (!defaultValue.HasValue()) 
+                return c;
+            Contents.InsertOnSubmit(c);
+            SubmitChanges();
             return c;
         }
         public string Content2(string name, string defaultValue, int contentTypeId)
