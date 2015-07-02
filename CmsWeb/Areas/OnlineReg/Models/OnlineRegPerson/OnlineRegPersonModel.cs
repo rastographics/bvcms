@@ -69,7 +69,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string emcontact { get; set; }
 
         [DisplayName("Emergency Phone"), StringLength(50)]
-        public string emphone { get; set; }
+        public string emphone
+        {
+            get { return _emphone; }
+            set { _emphone = value.Truncate(50); }
+        }
 
         [DisplayName("Insurance Carrier"), StringLength(100)]
         public string insurance { get; set; }
@@ -83,7 +87,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string docphone { get; set; }
 
         [DisplayName("Medical Issues"), StringLength(200)]
-        public string medical { get; set; }
+        public string medical
+        {
+            get { return _medical; }
+            set { _medical = value.Truncate(200); }
+        }
 
         [DisplayName("Mother's Name (first last)"), StringLength(80)]
         public string mname { get; set; }
@@ -186,7 +194,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         internal int count;
 
         private string phone;
-        private string homephone;
+        private string _emphone;
+        private string _medical;
 
         public bool IsCreateAccount()
         {
