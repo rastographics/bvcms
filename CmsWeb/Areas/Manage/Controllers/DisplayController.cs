@@ -115,7 +115,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
 
             if (stayaftersave == "true")
-                return RedirectEdit(content);
+                return RedirectToAction("ContentEdit", new {id, snippet});
 
             var url = GetIndexTabUrl(content);
             return Redirect(url);

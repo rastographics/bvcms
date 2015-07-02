@@ -1066,7 +1066,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     Created = Util.Now
                 };
                 Db.ChangeLogs.InsertOnSubmit(c);
-                c.ChangeDetails.AddRange(changes);
+                c.ChangeDetails.AddRange(changes.Where(x => Db.ChangeDetails.GetOriginalEntityState(x) == null));
             }
         }
         public void LogPictureUpload(CMSDataContext Db, int UserPeopleId)
