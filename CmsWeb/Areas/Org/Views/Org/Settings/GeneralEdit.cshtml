@@ -60,6 +60,10 @@
                     </div>
                 </div>
             }
+            else
+            {
+              @Html.HiddenFor(m => m.LimitToRole)
+            }
             <div class="col-sm-12 col-md-12">
                 <label class="checkbox-inline control-label">
                     @Html.CheckBoxFor(m => m.IsMissionTrip) Is mission trip
