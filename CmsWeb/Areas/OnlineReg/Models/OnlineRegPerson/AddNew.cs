@@ -136,7 +136,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     StateCode = State,
                     ZipCode = ZipCode,
                     CountryName = Country,
-                    HomePhone = Phone,
+                    HomePhone = Phone.GetDigits().Truncate(20),
                 };
             else
                 f = p.Family;
@@ -149,7 +149,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             person.EmailAddress = EmailAddress.Trim();
             person.SendEmailAddress1 = true;
             person.CampusId = DbUtil.Db.Setting("DefaultCampusId", "").ToInt2();
-            person.CellPhone = Phone.GetDigits();
+            person.CellPhone = Phone.GetDigits().Truncate(20);
 
             if (count == 0)
                 person.Comments = "Added during online registration because record was not found";
