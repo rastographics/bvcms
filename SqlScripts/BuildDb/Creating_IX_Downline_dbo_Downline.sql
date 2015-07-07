@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [IX_ActivityLog] ON [dbo].[ActivityLog] ([UserId], [ActivityDate] DESC)
+CREATE NONCLUSTERED INDEX [IX_Downline] ON [dbo].[Downline] ([CategoryId], [DownlineId])
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

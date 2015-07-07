@@ -1,10 +1,13 @@
 CREATE TABLE [dbo].[Downline]
 (
+[CategoryId] [int] NULL,
+[DownlineId] [int] NULL,
+[Generation] [int] NULL,
 [OrgId] [int] NULL,
 [LeaderId] [int] NULL,
 [DiscipleId] [int] NULL,
 [StartDt] [datetime] NULL,
-[EndDt] [datetime] NULL
+[Trace] [varchar] (400) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

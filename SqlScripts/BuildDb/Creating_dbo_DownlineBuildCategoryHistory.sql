@@ -1,0 +1,219 @@
+-- ================================================
+CREATE PROCEDURE [dbo].[DownlineBuildCategoryHistory] 
+	@categoryid INT
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	DECLARE @orgs TABLE (orgid INT)
+	DECLARE @mf BIT, @progs VARCHAR(100), @divs VARCHAR(100)
+
+	SELECT 
+		@mf = mainfellowship
+		,@progs = programs
+		,@divs = divisions
+	FROM dbo.DownlineCategories(@categoryid)
+
+	IF OBJECT_ID('tempdb..#DownlineData') IS NOT NULL
+		DROP TABLE #DownlineData
+
+	CREATE TABLE #DownlineData (
+		[OrgId] [INT] NULL,
+		[LeaderId] [INT] NULL,
+		[DiscId] [INT] NULL,
+		[StartDt] [DATETIME] NULL,
+		[EndDt] [DATETIME] NULL
+	)
+
+	CREATE INDEX IXDownlineDataLeaderIdEndDt ON #DownlineData
+	(
+		[LeaderId] ASC,
+		[EndDt] ASC
+	)
+
+	;WITH porgs AS (
+		SELECT oid = OrganizationId 
+		FROM dbo.Organizations o
+		WHERE EXISTS(
+			SELECT NULL
+			FROM dbo.DivOrg dd
+			WHERE dd.OrgId = o.OrganizationId
+			AND	EXISTS(
+				SELECT NULL
+				FROM dbo.ProgDiv pd
+				WHERE pd.DivId = dd.DivId
+				AND pd.ProgId IN (SELECT Value FROM dbo.SplitInts(@progs))
+			)
+		)
+	),
+	dorgs AS (
+		SELECT oid = OrganizationId 
+		FROM dbo.Organizations o
+		WHERE EXISTS(
+			SELECT NULL
+			FROM dbo.DivOrg dd
+			WHERE dd.OrgId = o.OrganizationId
+			AND dd.DivId IN (SELECT Value FROM dbo.SplitInts(@divs))
+		)
+	),
+	mainfellowships AS (
+		SELECT oid = OrganizationId
+		FROM dbo.Organizations
+		WHERE IsBibleFellowshipOrg = 1
+		AND @mf = 1
+	), combined AS (
+		SELECT oid FROM porgs
+		UNION SELECT oid FROM dorgs
+		UNION SELECT oid FROM mainfellowships
+	)
+	INSERT @orgs ( orgid )
+	SELECT DISTINCT oid
+	FROM combined
+
+	DECLARE @cnt INT
+	SELECT @cnt = COUNT(*) FROM @orgs
+	RAISERROR ('inserted %i orgs', 0, 1, @cnt) WITH NOWAIT
+
+	-- Build the history table of start dates and end dates from EnrollmentTransaction table
+	-- Our goal is to have each row contain the org, person, leader status, started when, ended when
+
+	IF OBJECT_ID('tempdb..#enrollhistory') IS NOT NULL
+		DROP TABLE #enrollhistory
+
+	CREATE TABLE #enrollhistory
+	(
+		oid INT,
+		pid INT, 
+		lead BIT, 
+		startdt DATETIME,
+		enddt DATETIME
+	)
+
+	INSERT #enrollhistory ( oid, pid, lead, startdt, enddt )
+	SELECT 
+		t.OrganizationId,
+		PeopleId,
+
+		-- flag to indicate leader or not 
+		-- 140 = leader, 160 = teacher
+		CASE WHEN MemberTypeId = o.LeaderMemberTypeId THEN 1 ELSE 0 END,
+
+		-- start date
+		TransactionDate,
+
+		-- end date is null to begin with
+		NULL
+
+	FROM dbo.EnrollmentTransaction t
+	JOIN dbo.Organizations o ON o.OrganizationId = t.OrganizationId
+	JOIN @orgs oo ON oo.orgid = o.OrganizationId
+
+	-- looking for enrollments=1 and changes=3
+	WHERE TransactionTypeId IN (1,3)
+
+	ORDER BY TransactionDate
+
+	-- find change dates to update the end dates on the rows with the right start date
+	UPDATE #enrollhistory
+	SET enddt = (
+		-- find the closet transaction
+		SELECT MIN(TransactionDate)
+		FROM dbo.EnrollmentTransaction
+
+		-- that was a change
+		WHERE TransactionTypeId = 3
+
+		-- in the same org
+		AND OrganizationId = oid
+
+		-- for the same person
+		AND PeopleId = pid
+
+		-- where it is after the starting date
+		AND TransactionDate > startdt
+	)
+	FROM #enrollhistory
+
+	-- only update the end dates where they have not already been updated
+	WHERE enddt IS NULL
+
+	-- find drop dates to update the end dates on the rows with the right start date
+	UPDATE #enrollhistory
+	SET enddt = (
+
+		-- find the closet transaction
+		SELECT MIN(TransactionDate)
+		FROM dbo.EnrollmentTransaction
+
+		-- that was a drop
+		WHERE TransactionTypeId = 5
+
+		-- in the same org
+		AND OrganizationId = oid
+
+		-- for the same person
+		AND PeopleId = pid
+
+		-- where it is after the starting date
+		AND TransactionDate > startdt
+	)
+	FROM #enrollhistory
+
+	-- only update the end dates where they have not already been updated
+	WHERE enddt IS NULL
+
+	SELECT @cnt = COUNT(*) FROM #enrollhistory
+	RAISERROR ('inserted %i enrollhistory records', 0, 1, @cnt) WITH NOWAIT
+
+	;WITH data AS (
+		SELECT 
+		leader.oid 
+		,leaderid = leader.pid
+		,discid = disc.pid
+		,leadersdt = leader.startdt -- starting date
+		,leaderedt = ISNULL(leader.enddt, '1/1/3000') -- ending date
+		,discsdt = disc.startdt -- starting date
+		,discedt = ISNULL(disc.enddt, '1/1/3000') -- ending date
+		FROM #enrollhistory leader
+		-- join leaders and followers 
+		JOIN #enrollhistory disc
+
+		ON leader.oid = disc.oid -- leader and disciple in the same org
+		AND leader.lead = 1 -- leader is a leader
+		AND disc.lead = 0 -- disciple is not a leader
+		AND leader.pid <> disc.pid -- leader is not the disciple
+
+		-- look for an overlap in time frame
+		AND leader.startdt < ISNULL(disc.enddt, '1/1/3000') -- leader started before disciple quit
+		AND disc.startdt < ISNULL(leader.enddt, '1/1/3000') -- disciple started before leader quit
+	)
+
+	INSERT #DownlineData
+	        ( 
+			  OrgId ,
+	          LeaderId ,
+	          DiscId ,
+	          StartDt ,
+	          EndDt
+	        )
+	SELECT 
+		oid,
+		leaderid, 
+		discid, 
+		IIF(leadersdt > discsdt, leadersdt, discsdt),
+		IIF(leaderedt < discedt, leaderedt, discedt)
+	FROM data t
+	--GROUP BY t.oid, t.leaderid, t.discid
+
+	SELECT @cnt = COUNT(*) FROM #DownlineData
+	RAISERROR ('inserted %i downlinedata records', 0, 1, @cnt) WITH NOWAIT
+
+	EXEC dbo.DownlineAddLeaders @categoryid
+	
+
+END
+GO
+IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
+GO
+IF @@TRANCOUNT=0 BEGIN INSERT INTO #tmpErrors (Error) SELECT 1 BEGIN TRANSACTION END
+GO
