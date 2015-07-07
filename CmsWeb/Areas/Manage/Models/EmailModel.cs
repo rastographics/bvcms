@@ -312,6 +312,11 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 return sendFromOrg;
             }
         }
+
+        public Guid CurrentPersonQueryId
+        {
+            get { return DbUtil.Db.QueryIsCurrentPerson().QueryId; }
+        }
     }
 
     public class RecipientInfo

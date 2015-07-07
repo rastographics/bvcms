@@ -198,6 +198,7 @@
                                 <li><a href="/Manage/Emails/Tracking/@Model.Id"><i class="fa fa-link"></i>&nbsp;&nbsp;View Link Tracking</a></li>
                             }
                             <li><a href="/Manage/Emails/SeeHtml/@Model.Id"><i class="fa fa-code"></i>&nbsp;&nbsp;View Html Source</a></li>
+                            <li><a href="#" class="action-create-new-draft"><i class="fa fa-envelope-o"></i>&nbsp;&nbsp;Create New Draft</a></li>
                         </ul>
                     </div>
                 </div>
@@ -290,6 +291,11 @@
 
     </div>
 </div>
+
+<form id="selectTemplate" action="@Url.Action("Index", "Email", new { Area = "Main", id = Model.CurrentPersonQueryId })" method="post">
+    @Html.Hidden("templateID", "0")
+    @Html.Hidden("body", Model.queue.Body)
+</form>
 @section scripts
 {
     @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
@@ -332,6 +338,11 @@
 
                 return false;
             };
+
+            $('.action-create-new-draft').click(function(e) {
+                e.preventDefault();
+                $("#selectTemplate").submit();
+            });
 
             var easyPieChartDefaults = {
                 animate: 2000,
