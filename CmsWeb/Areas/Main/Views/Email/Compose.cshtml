@@ -69,7 +69,7 @@
               else
               {
                 <select multiple="multiple" id="Recipients" name="Recipients" class="form-control">
-                  @if (Model.Recipients.Count() > 500)
+                  @if (Model.Count > 500)
                   {
                     <option value="" selected="selected">
                       @Model.Count people@(Model.wantParents ? " including parents." : ".")
@@ -83,7 +83,7 @@
                     }
                   }
                 </select>
-                if (Model.Recipients.Count() <= 500)
+                if (Model.Count <= 500)
                 {
                   <p class="help-block">
                     @Model.Count

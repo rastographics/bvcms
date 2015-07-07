@@ -18,17 +18,21 @@ namespace CmsData
 		
 	#region Private Fields
 		
-		private int _Id;
+		private int? _CategoryId;
 		
-		private int _OrgId;
+		private int? _DownlineId;
 		
-		private int _PeopleId;
+		private int? _Generation;
+		
+		private int? _OrgId;
+		
+		private int? _LeaderId;
+		
+		private int? _DiscipleId;
 		
 		private DateTime? _StartDt;
 		
-		private DateTime? _EndDt;
-		
-		private bool? _Leader;
+		private string _Trace;
 		
    		
     	
@@ -39,23 +43,29 @@ namespace CmsData
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
-		partial void OnIdChanging(int value);
-		partial void OnIdChanged();
+		partial void OnCategoryIdChanging(int? value);
+		partial void OnCategoryIdChanged();
 		
-		partial void OnOrgIdChanging(int value);
+		partial void OnDownlineIdChanging(int? value);
+		partial void OnDownlineIdChanged();
+		
+		partial void OnGenerationChanging(int? value);
+		partial void OnGenerationChanged();
+		
+		partial void OnOrgIdChanging(int? value);
 		partial void OnOrgIdChanged();
 		
-		partial void OnPeopleIdChanging(int value);
-		partial void OnPeopleIdChanged();
+		partial void OnLeaderIdChanging(int? value);
+		partial void OnLeaderIdChanged();
+		
+		partial void OnDiscipleIdChanging(int? value);
+		partial void OnDiscipleIdChanged();
 		
 		partial void OnStartDtChanging(DateTime? value);
 		partial void OnStartDtChanged();
 		
-		partial void OnEndDtChanging(DateTime? value);
-		partial void OnEndDtChanged();
-		
-		partial void OnLeaderChanging(bool? value);
-		partial void OnLeaderChanged();
+		partial void OnTraceChanging(string value);
+		partial void OnTraceChanged();
 		
     #endregion
 		public Downline()
@@ -68,21 +78,21 @@ namespace CmsData
 		
     #region Columns
 		
-		[Column(Name="Id", UpdateCheck=UpdateCheck.Never, Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="int NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public int Id
+		[Column(Name="CategoryId", UpdateCheck=UpdateCheck.Never, Storage="_CategoryId", DbType="int")]
+		public int? CategoryId
 		{
-			get { return this._Id; }
+			get { return this._CategoryId; }
 
 			set
 			{
-				if (this._Id != value)
+				if (this._CategoryId != value)
 				{
 				
-                    this.OnIdChanging(value);
+                    this.OnCategoryIdChanging(value);
 					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
+					this._CategoryId = value;
+					this.SendPropertyChanged("CategoryId");
+					this.OnCategoryIdChanged();
 				}
 
 			}
@@ -90,8 +100,52 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int OrgId
+		[Column(Name="DownlineId", UpdateCheck=UpdateCheck.Never, Storage="_DownlineId", DbType="int")]
+		public int? DownlineId
+		{
+			get { return this._DownlineId; }
+
+			set
+			{
+				if (this._DownlineId != value)
+				{
+				
+                    this.OnDownlineIdChanging(value);
+					this.SendPropertyChanging();
+					this._DownlineId = value;
+					this.SendPropertyChanged("DownlineId");
+					this.OnDownlineIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Generation", UpdateCheck=UpdateCheck.Never, Storage="_Generation", DbType="int")]
+		public int? Generation
+		{
+			get { return this._Generation; }
+
+			set
+			{
+				if (this._Generation != value)
+				{
+				
+                    this.OnGenerationChanging(value);
+					this.SendPropertyChanging();
+					this._Generation = value;
+					this.SendPropertyChanged("Generation");
+					this.OnGenerationChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int")]
+		public int? OrgId
 		{
 			get { return this._OrgId; }
 
@@ -112,21 +166,43 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="PeopleId", UpdateCheck=UpdateCheck.Never, Storage="_PeopleId", DbType="int NOT NULL", IsPrimaryKey=true)]
-		public int PeopleId
+		[Column(Name="LeaderId", UpdateCheck=UpdateCheck.Never, Storage="_LeaderId", DbType="int")]
+		public int? LeaderId
 		{
-			get { return this._PeopleId; }
+			get { return this._LeaderId; }
 
 			set
 			{
-				if (this._PeopleId != value)
+				if (this._LeaderId != value)
 				{
 				
-                    this.OnPeopleIdChanging(value);
+                    this.OnLeaderIdChanging(value);
 					this.SendPropertyChanging();
-					this._PeopleId = value;
-					this.SendPropertyChanged("PeopleId");
-					this.OnPeopleIdChanged();
+					this._LeaderId = value;
+					this.SendPropertyChanged("LeaderId");
+					this.OnLeaderIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DiscipleId", UpdateCheck=UpdateCheck.Never, Storage="_DiscipleId", DbType="int")]
+		public int? DiscipleId
+		{
+			get { return this._DiscipleId; }
+
+			set
+			{
+				if (this._DiscipleId != value)
+				{
+				
+                    this.OnDiscipleIdChanging(value);
+					this.SendPropertyChanging();
+					this._DiscipleId = value;
+					this.SendPropertyChanged("DiscipleId");
+					this.OnDiscipleIdChanged();
 				}
 
 			}
@@ -156,43 +232,21 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="EndDt", UpdateCheck=UpdateCheck.Never, Storage="_EndDt", DbType="datetime")]
-		public DateTime? EndDt
+		[Column(Name="Trace", UpdateCheck=UpdateCheck.Never, Storage="_Trace", DbType="varchar(400)")]
+		public string Trace
 		{
-			get { return this._EndDt; }
+			get { return this._Trace; }
 
 			set
 			{
-				if (this._EndDt != value)
+				if (this._Trace != value)
 				{
 				
-                    this.OnEndDtChanging(value);
+                    this.OnTraceChanging(value);
 					this.SendPropertyChanging();
-					this._EndDt = value;
-					this.SendPropertyChanged("EndDt");
-					this.OnEndDtChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="Leader", UpdateCheck=UpdateCheck.Never, Storage="_Leader", DbType="bit")]
-		public bool? Leader
-		{
-			get { return this._Leader; }
-
-			set
-			{
-				if (this._Leader != value)
-				{
-				
-                    this.OnLeaderChanging(value);
-					this.SendPropertyChanging();
-					this._Leader = value;
-					this.SendPropertyChanged("Leader");
-					this.OnLeaderChanged();
+					this._Trace = value;
+					this.SendPropertyChanged("Trace");
+					this.OnTraceChanged();
 				}
 
 			}
