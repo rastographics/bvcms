@@ -1463,7 +1463,6 @@
     <Content Include="Areas\People\Views\Downline\Results.cshtml" />
     <Content Include="Areas\People\Views\DownlineSummary\Index.cshtml" />
     <Content Include="Areas\People\Views\DownlineSummary\Results.cshtml" />
-    <Content Include="Areas\People\Views\DownlineSummary\Trace.cshtml" />
     <Content Include="Areas\People\Views\Downline\Trace.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
