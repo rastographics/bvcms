@@ -293,7 +293,7 @@
 </div>
 
 <form id="selectTemplate" action="@Url.Action("Index", "Email", new { Area = "Main", id = Model.CurrentPersonQueryId })" method="post">
-    @Html.Hidden("templateID", "0")
+    @Html.Hidden("templateID", Model.EmptyTemplateId)
     @Html.Hidden("body", Model.queue.Body)
 </form>
 @section scripts
