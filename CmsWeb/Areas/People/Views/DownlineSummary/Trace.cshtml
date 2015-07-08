@@ -1,0 +1,33 @@
+﻿@using CmsWeb.Areas.People.Models
+@using UtilityExtensions
+@model DownlineModel
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Downline";
+  ViewBag.PageHeader = "Downline Trace for {0} in {1}".Fmt(Model.Name, Model.Category);
+}
+<div class="box box-responsive">
+  <div class="box-content">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Level</th>
+          <th>Leader</th>
+          <th>Disciple</th>
+          <th>Trace</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach (var r in Model.TraceList())
+        {
+          <tr>
+            <td>@r.Generation</td>
+            <td><a href="/Downline/@Model.CategoryId/@r.LeaderId">@r.LeaderName</a></td>
+            <td>@r.DiscipleName</td>
+            <td>@r.Trace</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

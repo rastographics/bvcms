@@ -390,6 +390,9 @@
     <Compile Include="Areas\Org\Models\MeetingModel.cs" />
     <Compile Include="Areas\Org\Models\MemberDirectoryModel.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
+    <Compile Include="Areas\People\Controllers\DownlineSummaryController.cs" />
+    <Compile Include="Areas\People\Controllers\DownlineController.cs" />
+    <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInCampus.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInInformation.cs" />
@@ -401,6 +404,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostHeadcount.cs" />
+    <Compile Include="Areas\People\Models\Downline\DownlineModel.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -1455,6 +1459,12 @@
     <Content Include="Areas\Manage\Views\Activity\Results.cshtml" />
     <Content Include="Areas\Manage\Views\Activity\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RegPeople.cshtml" />
+    <Content Include="Areas\People\Views\Downline\Index.cshtml" />
+    <Content Include="Areas\People\Views\Downline\Results.cshtml" />
+    <Content Include="Areas\People\Views\DownlineSummary\Index.cshtml" />
+    <Content Include="Areas\People\Views\DownlineSummary\Results.cshtml" />
+    <Content Include="Areas\People\Views\DownlineSummary\Trace.cshtml" />
+    <None Include="Areas\People\Views\Downline\Trace.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

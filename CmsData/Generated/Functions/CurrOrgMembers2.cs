@@ -308,7 +308,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="HomePhone", Storage="_HomePhone", DbType="nvarchar(20)")]
+		[Column(Name="HomePhone", Storage="_HomePhone", DbType="nvarchar(30)")]
 		public string HomePhone
 		{
 			get
@@ -325,7 +325,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="CellPhone", Storage="_CellPhone", DbType="nvarchar(20)")]
+		[Column(Name="CellPhone", Storage="_CellPhone", DbType="nvarchar(30)")]
 		public string CellPhone
 		{
 			get
@@ -342,7 +342,7 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="WorkPhone", Storage="_WorkPhone", DbType="nvarchar(20)")]
+		[Column(Name="WorkPhone", Storage="_WorkPhone", DbType="nvarchar(30)")]
 		public string WorkPhone
 		{
 			get

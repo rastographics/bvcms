@@ -1,0 +1,30 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.DownlineSummaryModel
+<div id="results">
+  @Html.Partial("PagerTop", Model)
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <td colspan="5">
+          <strong>Total Count</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+          As of: @DateTime.Now.FormatDateTm()
+        </td>
+      </tr>
+    <tr>
+      <th>Name</th>
+      <th>Count</th>
+    </tr>
+    </thead>
+    <tbody>
+      @foreach (var r in Model.ViewList())
+      {
+        <tr>
+          <td><a href="/Downline/@Model.CategoryId/@r.PeopleId" target="downline">@r.LeaderName</a></td>
+          <td>@r.Cnt.ToString2("N0")</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  @Html.Partial("PagerBottom", Model)
+  @Html.Partial("PagerHidden")
+</div>

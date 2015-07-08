@@ -109,6 +109,12 @@ namespace CmsWeb.Areas.Manage.Controllers
 CKEditorFuncNum, baseurl + fn, error));
         }
 
+        [Route("~/Abandon")]
+        public ActionResult Abandon()
+        {
+            Session.Abandon();
+            return Redirect("/");
+        }
         [Route("~/ForceError")]
         public ActionResult ForceError()
         {

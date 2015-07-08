@@ -1,0 +1,15 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.DownlineSummaryModel
+@{
+  Layout = ViewExtensions2.TouchPointLayout();
+  ViewBag.Title = "Downline Summary";
+  ViewBag.PageHeader = "Downline Summary for {0}".Fmt(Model.Category);
+}
+<div class="box box-responsive">
+  <div class="box-content">
+    <form class="ajax" data-results="#results" method="post" action="/DownlineSummary/Results">
+      @Html.HiddenFor(m => m.CategoryId)
+      @Html.Partial("Results", Model)
+    </form>
+  </div>
+</div>

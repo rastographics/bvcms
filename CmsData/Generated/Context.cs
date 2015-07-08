@@ -2364,6 +2364,66 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.DownlineCategories", IsComposable = true)]
+        public IQueryable< View.DownlineCategory > DownlineCategories(
+            [Parameter(DbType="int")] int? categoryId
+            )
+        {
+            return CreateMethodCallQuery< View.DownlineCategory>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    categoryId
+                );
+        }
+
+        [Function(Name="dbo.DownlineDetails", IsComposable = true)]
+        public IQueryable< View.DownlineDetail > DownlineDetails(
+            [Parameter(DbType="int")] int? categoryid,
+            [Parameter(DbType="int")] int? leaderid,
+            [Parameter(DbType="int")] int? pagenum,
+            [Parameter(DbType="int")] int? pagesize
+            )
+        {
+            return CreateMethodCallQuery< View.DownlineDetail>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    categoryid,
+                    leaderid,
+                    pagenum,
+                    pagesize
+                );
+        }
+
+        [Function(Name="dbo.DownlineSingleTrace", IsComposable = true)]
+        public IQueryable< View.DownlineSingleTrace > DownlineSingleTrace(
+            [Parameter(DbType="int")] int? categoryid,
+            [Parameter(DbType="int")] int? leaderid,
+            [Parameter(DbType="varchar")] string trace
+            )
+        {
+            return CreateMethodCallQuery< View.DownlineSingleTrace>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    categoryid,
+                    leaderid,
+                    trace
+                );
+        }
+
+        [Function(Name="dbo.DownlineSummary", IsComposable = true)]
+        public IQueryable< View.DownlineSummary > DownlineSummary(
+            [Parameter(DbType="int")] int? categoryid,
+            [Parameter(DbType="int")] int? leaderid,
+            [Parameter(DbType="int")] int? pagenum,
+            [Parameter(DbType="int")] int? pagesize
+            )
+        {
+            return CreateMethodCallQuery< View.DownlineSummary>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    categoryid,
+                    leaderid,
+                    pagenum,
+                    pagesize
+                );
+        }
+
         [Function(Name="dbo.FilterOnlineReg", IsComposable = true)]
         public IQueryable< View.FilterOnlineReg > FilterOnlineReg(
             [Parameter(DbType="int")] int? onlinereg
