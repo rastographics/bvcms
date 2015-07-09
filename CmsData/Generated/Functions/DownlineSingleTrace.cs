@@ -28,6 +28,8 @@ namespace CmsData.View
 		
 		private string _OrgName;
 		
+		private DateTime? _StartDt;
+		
 		private string _Trace;
 		
 		
@@ -134,6 +136,23 @@ namespace CmsData.View
 			{
 				if (this._OrgName != value)
 					this._OrgName = value;
+			}
+
+		}
+
+		
+		[Column(Name="StartDt", Storage="_StartDt", DbType="datetime")]
+		public DateTime? StartDt
+		{
+			get
+			{
+				return this._StartDt;
+			}
+
+			set
+			{
+				if (this._StartDt != value)
+					this._StartDt = value;
 			}
 
 		}

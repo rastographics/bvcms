@@ -465,12 +465,14 @@
     <Compile Include="Generated\CheckInSetting.cs" />
     <Compile Include="Generated\CustomColumn.cs" />
     <Compile Include="Generated\Downline.cs" />
+    <Compile Include="Generated\DownlineLeader.cs" />
     <Compile Include="Generated\Functions\ActivityLogSearch.cs" />
     <Compile Include="Generated\Functions\AttendCommitment.cs" />
     <Compile Include="Generated\Functions\CurrOrgMember.cs" />
     <Compile Include="Generated\Functions\CurrOrgMembers2.cs" />
     <Compile Include="Generated\Functions\DownlineCategory.cs" />
     <Compile Include="Generated\Functions\DownlineDetail.cs" />
+    <Compile Include="Generated\Functions\DownlineLevel.cs" />
     <Compile Include="Generated\Functions\DownlineSingleTrace.cs" />
     <Compile Include="Generated\Functions\DownlineSummary.cs" />
     <Compile Include="Generated\Functions\FilterOnlineReg.cs" />

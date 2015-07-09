@@ -8,29 +8,30 @@ using CmsWeb.Areas.People.Models;
 
 namespace CmsWeb.Areas.People.Controllers
 {
-    [RouteArea("People", AreaPrefix = "Downline")]
-    public class DownlineController : CmsStaffController
+    [RouteArea("People", AreaPrefix = "DownlineDetail")]
+    public class DownlineDetailController : CmsStaffController
     {
-        [HttpGet, Route("~/Downline/{category}/{peopleid}")]
-        public ActionResult Index(int category, int peopleid)
+        [HttpGet, Route("~/DownlineDetail/{category}/{peopleid:int}/{level:int}")]
+        public ActionResult Index(int category, int peopleid, int level)
         {
-            var m = new DownlineModel
+            var m = new DownlineDetailModel
             {
                 CategoryId = category,
-                DownlineId = peopleid
+                DownlineId = peopleid,
+                Level = level
             };
             return View(m);
         }
-        [HttpPost, Route("~/Downline/Results")]
-        public ActionResult Results(DownlineModel m)
+        [HttpPost, Route("~/DownlineDetail/Results")]
+        public ActionResult Results(DownlineDetailModel m)
         {
             return View(m);
         }
 
-        [HttpGet, Route("~/Downline/Trace/{category}/{peopleid}")]
+        [HttpGet, Route("~/DownlineTrace/{category}/{peopleid}")]
         public ActionResult Trace(int category, int peopleid, string trace)
         {
-            var m = new DownlineModel
+            var m = new DownlineDetailModel
             {
                 CategoryId = category,
                 DownlineId = peopleid,

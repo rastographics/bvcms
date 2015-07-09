@@ -220,6 +220,10 @@ namespace CmsData
         partial void UpdateDownline(Downline instance);
         partial void DeleteDownline(Downline instance);
         
+        partial void InsertDownlineLeader(DownlineLeader instance);
+        partial void UpdateDownlineLeader(DownlineLeader instance);
+        partial void DeleteDownlineLeader(DownlineLeader instance);
+        
         partial void InsertDropType(DropType instance);
         partial void UpdateDropType(DropType instance);
         partial void DeleteDropType(DropType instance);
@@ -998,6 +1002,12 @@ namespace CmsData
         public Table< Downline> Downlines
         {
             get { return GetTable< Downline>(); }
+
+        }
+
+        public Table< DownlineLeader> DownlineLeaders
+        {
+            get { return GetTable< DownlineLeader>(); }
 
         }
 
@@ -2379,11 +2389,30 @@ namespace CmsData
         public IQueryable< View.DownlineDetail > DownlineDetails(
             [Parameter(DbType="int")] int? categoryid,
             [Parameter(DbType="int")] int? leaderid,
+            [Parameter(DbType="int")] int? level,
             [Parameter(DbType="int")] int? pagenum,
             [Parameter(DbType="int")] int? pagesize
             )
         {
             return CreateMethodCallQuery< View.DownlineDetail>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    categoryid,
+                    leaderid,
+                    level,
+                    pagenum,
+                    pagesize
+                );
+        }
+
+        [Function(Name="dbo.DownlineLevels", IsComposable = true)]
+        public IQueryable< View.DownlineLevel > DownlineLevels(
+            [Parameter(DbType="int")] int? categoryid,
+            [Parameter(DbType="int")] int? leaderid,
+            [Parameter(DbType="int")] int? pagenum,
+            [Parameter(DbType="int")] int? pagesize
+            )
+        {
+            return CreateMethodCallQuery< View.DownlineLevel>(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     categoryid,
                     leaderid,
@@ -2410,7 +2439,6 @@ namespace CmsData
         [Function(Name="dbo.DownlineSummary", IsComposable = true)]
         public IQueryable< View.DownlineSummary > DownlineSummary(
             [Parameter(DbType="int")] int? categoryid,
-            [Parameter(DbType="int")] int? leaderid,
             [Parameter(DbType="int")] int? pagenum,
             [Parameter(DbType="int")] int? pagesize
             )
@@ -2418,7 +2446,6 @@ namespace CmsData
             return CreateMethodCallQuery< View.DownlineSummary>(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     categoryid,
-                    leaderid,
                     pagenum,
                     pagesize
                 );

@@ -1,0 +1,38 @@
+﻿@using UtilityExtensions
+@model CmsWeb.Areas.People.Models.DownlineDetailModel
+<div id="results">
+  @Html.Partial("PagerTop", Model)
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <td colspan="5">
+          <strong>Total Count for Level @Model.Level</strong> <span id="totalcount" class="badge">@Model.Count().ToString("N0")</span>
+          As of: @DateTime.Now.FormatDateTm()
+        </td>
+      </tr>
+    <tr>
+      <th>Organization</th>
+      <th>Leader</th>
+      <th>Disciple</th>
+      <th>StartDt</th>
+      <th>Trace</th>
+    </tr>
+    </thead>
+    <tbody>
+      @foreach (var r in Model.ViewList())
+      {
+        <tr>
+          <td>@r.OrganizationName</td>
+          <td><a href="/DownlineLevels/@Model.CategoryId/@r.LeaderId">@r.Leader</a></td>
+          <td>@r.Student</td>
+          <td>@r.StartDt.FormatDate()</td>
+          <td><a href="/DownlineTrace/@Model.CategoryId/@Model.DownlineId?trace=@Server.UrlEncode(r.Trace)" target="trace">
+            @r.Trace.Replace("/", ", ")
+          </a></td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  @Html.Partial("PagerBottom", Model)
+  @Html.Partial("PagerHidden")
+</div>
