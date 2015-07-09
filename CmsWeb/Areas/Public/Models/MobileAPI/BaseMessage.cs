@@ -48,11 +48,26 @@ namespace CmsWeb.MobileAPI
 			return br;
 		}
 
-		public BaseMessage setData(string newData)
+        public BaseMessage setData(string data)
 		{
-			data = newData;
+            this.data = data;
 			return this;
 		}
+
+        public void setError(int error)
+        {
+            this.error = error;
+        }
+
+        public void setNoError()
+        {
+            this.error = API_ERROR_NONE;
+        }
+
+        // API Device Numbers
+        public const int API_DEVICE_UNKNOWN = 0;
+        public const int API_DEVICE_IOS = 1;
+        public const int API_DEVICE_ANDROID = 2;
 
 		// API Login Errors
 		public const int API_ERROR_NONE = 0;
@@ -63,16 +78,17 @@ namespace CmsWeb.MobileAPI
 		public const int API_ERROR_IMPROPER_HEADER_STRUCTURE = -5;
 		public const int API_ERROR_INVALID_CREDENTIALS = -6;
 
-		// API Device Numbers
-		public const int API_DEVICE_UNKNOWN = 0;
-		public const int API_DEVICE_IOS = 1;
-		public const int API_DEVICE_ANDROID = 2;
+        // API People Errors
+        public const int API_ERROR_PERSON_NOT_FOUND = 100;
+
+        // API Push Notification Errors
+        public const int API_PUSH_ID_DOESNT_EXISTS = 900;
 
         // API Version
-        public const int API_VERSION_UNKNOWN = 0;
         // Version 2 had issues with time zones being sent, remove after migrating to version 3
-        public const int API_VERSION_2 = 2;
         // Version 3 has time zone corrections
+        public const int API_VERSION_UNKNOWN = 0;
+        public const int API_VERSION_2 = 2;
         public const int API_VERSION_3 = 3;
 	}
 }

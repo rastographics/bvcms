@@ -438,7 +438,10 @@
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInCampus.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInFamily.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInInformation.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInLabelFormat.cs" />
+    <Compile Include="Areas\Public\Models\CheckInAPI\CheckInPerson.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInSettingsEntry.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileCampus.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileFloor.cs" />
@@ -575,6 +578,7 @@
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
+    <Compile Include="Code\DictionaryExtensions.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Code\DecimalModelBinder.cs" />

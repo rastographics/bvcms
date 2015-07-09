@@ -1,4 +1,9 @@
-﻿using CmsData;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Web.Mvc;
+using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.Reports.Models;
@@ -8,13 +13,9 @@ using CmsWeb.Models.iPhone;
 using ImageData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Web.Mvc;
 using UtilityExtensions;
+using CmsData.Classes.GoogleCloudMessaging;
 using DbUtil = CmsData.DbUtil;
 
 namespace CmsWeb.Areas.Public.Controllers
@@ -54,7 +55,7 @@ namespace CmsWeb.Areas.Public.Controllers
             MobileSettings ms = getUserInfo();
 
             var br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.data = SerializeJSON(ms, BaseMessage.API_VERSION_UNKNOWN);
             br.token = result.User.ApiSessions.Single().SessionToken.ToString();
             return br;
@@ -69,7 +70,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return AuthorizationError(result);
 
             var br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
@@ -85,7 +86,7 @@ namespace CmsWeb.Areas.Public.Controllers
             Session.Abandon();
 
             var br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
@@ -119,7 +120,7 @@ namespace CmsWeb.Areas.Public.Controllers
             MobileSettings ms = getUserInfo();
 
             var br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.data = SerializeJSON(ms, BaseMessage.API_VERSION_UNKNOWN);
             return br;
         }
@@ -133,7 +134,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/" + givingOrgId;
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
@@ -155,7 +156,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
@@ -177,7 +178,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
@@ -198,7 +199,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
@@ -219,7 +220,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true";
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
@@ -241,6 +242,152 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
+        public ActionResult RegisterPushID(string data)
+        {
+            // Authenticate first
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            BaseMessage br = new BaseMessage();
+
+            var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
+                                where e.RegistrationId == dataIn.argString
+                                select e).FirstOrDefault();
+
+            switch (dataIn.argInt)
+            {
+                case 1: // Add
+                {
+                    if (registration == null)
+                    {
+                        MobileAppPushRegistration register = new MobileAppPushRegistration();
+                        register.Enabled = dataIn.argInt > 0;
+                        register.PeopleId = Util.UserPeopleId ?? 0;
+                        register.Type = dataIn.device;
+                        register.RegistrationId = dataIn.argString;
+
+                        DbUtil.Db.MobileAppPushRegistrations.InsertOnSubmit(register);
+                        DbUtil.Db.SubmitChanges();
+                        br.setNoError();
+                    }
+                    else
+                    {
+                        br.setNoError();
+                    }
+
+                    break;
+                }
+
+                case 2: // Enable - May not be used
+                {
+                    if (registration != null)
+                    {
+                        registration.Enabled = true;
+                        DbUtil.Db.SubmitChanges();
+                        br.setNoError();
+                    }
+                    else
+                    {
+                        br.setError(BaseMessage.API_PUSH_ID_DOESNT_EXISTS);
+                    }
+
+                    break;
+                }
+
+                case 3: // Disable - May not be used
+                {
+                    if (registration != null)
+                    {
+                        registration.Enabled = false;
+                        DbUtil.Db.SubmitChanges();
+                        br.setNoError();
+                    }
+                    else
+                    {
+                        br.setError(BaseMessage.API_PUSH_ID_DOESNT_EXISTS);
+                    }
+
+                    break;
+                }
+
+                default: break;
+            }
+
+            return br;
+        }
+
+        private void sendPushNotification()
+        {
+            var ids = (from i in DbUtil.Db.MobileAppPushRegistrations
+                       select i.RegistrationId).ToList<string>();
+
+            GCMData messageData = new GCMData();
+            messageData.type = 0;
+            messageData.id = 1;
+            messageData.message = "Test message";
+
+            GCMMessage message = new GCMMessage(ids, messageData);
+
+            GCMHelper.send(message);
+
+            //string deviceToken64 = "xtgRc+6lUO3Ymzf6R2iVaPXxMW8hadJ/kWQvOUTTQSw=";
+
+            //APNSConnection connection = new APNSConnection();
+            //connection.open();
+
+            //APNSAlert alert = new APNSAlert("New Notification", "You have a notification!");
+
+            //APNSMessage message = new APNSMessage();
+            //message.addAlert(alert);
+            //message.addSound("default");
+            //message.addCommand(3);
+
+            //APNSNotification notification = new APNSNotification(message, true);
+            //notification.setDeviceToken(deviceToken64);
+            //notification.sendViaConnection(connection);
+
+            //connection.close();
+
+            // OLD STUFF
+            //string json = "{\"aps\":{\"alert\":\"Test for push notification!\",\"sound\":\"default\"}}";
+
+            ////byte[] command = BitConverter.GetBytes(Convert.ToByte("2"));
+            //byte[] command = new byte[1] { 0x02 };
+
+            ////byte[] id = BitConverter.GetBytes(Convert.ToByte("1"));
+            //byte[] id = new byte[1] { 0x01 };
+            //byte[] size = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Convert.ToInt16(32)));
+            //byte[] token = Convert.FromBase64String(deviceToken64);
+
+            ////byte[] jsonid = BitConverter.GetBytes(Convert.ToByte("2"));
+            //byte[] jsonid = new byte[1] { 0x02 };
+            //byte[] jsonsize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Convert.ToInt16(json.Length)));
+            //byte[] jsondata = Encoding.UTF8.GetBytes(json);
+
+            //int commandSize = 1 + size.Length + token.Length + 1 + jsonsize.Length + jsondata.Length;
+
+            //byte[] commandBytes = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(commandSize));
+
+            //stream.Write(command);
+            //stream.Write(commandBytes);
+
+            //stream.Write(id);
+            //stream.Write(size);
+            //stream.Write(token);
+
+            //stream.Write(jsonid);
+            //stream.Write(jsonsize);
+            //stream.Write(jsondata);
+
+            //stream.Close();
+            //stream.Dispose();
+
+            //client.Client.Close();
+            //client.Client.Dispose();
+        }
+
+        [HttpPost]
         public ActionResult FetchPeople(string data)
         {
             // Authenticate first
@@ -254,7 +401,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var m = new SearchModel(mps.name, mps.comm, mps.addr);
 
-            br.error = 0;
+            br.setNoError();
             br.count = m.Count;
 
             switch (dataIn.device)
@@ -319,6 +466,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 categories.Add("selected", val);
             return Json(categories);
         }
+
         private List<MobileRegistrationCategory> GetRegistrations()
         {
             var registrations = (from o in DbUtil.Db.ViewAppRegistrations
@@ -386,7 +534,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid) return AuthorizationError(result);
 
             var br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.data = SerializeJSON(GetRegistrations(), BaseMessage.API_VERSION_UNKNOWN);
             return br;
         }
@@ -407,12 +555,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (person == null)
             {
-                br.error = 1;
+                br.setError(BaseMessage.API_ERROR_PERSON_NOT_FOUND);
                 br.data = "Person not found.";
                 return br;
             }
 
-            br.error = 0;
+            br.setNoError();
             br.count = 1;
 
             if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
@@ -474,7 +622,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
                     br.data = Convert.ToBase64String(image.Bits);
                     br.count = 1;
-                    br.error = 0;
+                    br.setNoError();
                 }
             }
 
@@ -530,7 +678,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            br.error = 0;
+            br.setNoError();
             br.data = "Image updated.";
             br.id = mpsi.id;
             br.count = 1;
@@ -582,7 +730,6 @@ namespace CmsWeb.Areas.Public.Controllers
                     select o;
             }
 
-            // Adjusted to include schedule or latest meeting
             var orgs = from o in q
                        //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                        //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
@@ -601,7 +748,7 @@ namespace CmsWeb.Areas.Public.Controllers
             BaseMessage br = new BaseMessage();
             List<MobileOrganization> mo = new List<MobileOrganization>();
 
-            br.error = 0;
+            br.setNoError();
             br.count = orgs.Count();
 
             int tzOffset = 0;
@@ -613,7 +760,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 if (org.hasInvalidDate()) continue;
 
                 // Initial release version
-                if (dataIn.version == 2 && tzOffset != 0)
+                if (dataIn.version == BaseMessage.API_VERSION_2 && tzOffset != 0)
                 {
                     org.changeHourOffset(-tzOffset);
                 }
@@ -643,14 +790,14 @@ namespace CmsWeb.Areas.Public.Controllers
             // Check to see if type matches
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -674,7 +821,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage br = new BaseMessage();
             br.id = meetingId;
-            br.error = 0;
+            br.setNoError();
             br.count = people.Count();
 
             foreach (var person in people)
@@ -703,14 +850,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -749,7 +896,7 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.LogActivity($"Mobile RecAtt o:{meeting.OrganizationId} p:{mpa.peopleID} u:{Util.UserPeopleId} a:{mpa.present}");
 
             BaseMessage br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.count = 1;
 
             return br;
@@ -777,14 +924,14 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == 2)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -803,7 +950,7 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.LogActivity($"Mobile Headcount o:{meeting.OrganizationId} m:{meeting.MeetingId} h:{mph.headcount}");
 
             BaseMessage br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.count = 1;
 
             return br;
@@ -922,7 +1069,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             BaseMessage br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.id = p.PeopleId;
             br.count = 1;
 
@@ -954,7 +1101,7 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.SubmitChanges();
 
             BaseMessage br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.count = 1;
 
             return br;
@@ -995,9 +1142,13 @@ namespace CmsWeb.Areas.Public.Controllers
         private static string SerializeJSON(Object item, int version)
         {
             if (version == BaseMessage.API_VERSION_2)
+            {
                 return JsonConvert.SerializeObject(item);
+            }
             else
+            {
                 return JsonConvert.SerializeObject(item, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss" });
+            }
         }
     }
 }

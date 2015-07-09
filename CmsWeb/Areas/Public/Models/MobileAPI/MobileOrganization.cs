@@ -22,7 +22,7 @@ namespace CmsWeb.MobileAPI
             {
                 datetime = createOrgDateTime(oi.time.Value, oi.day.Value);
             }
-            else if (oi.lastMeetting != null && oi.lastMeetting.Value > DateTime.Today.AddDays(-7))
+            else if (oi.lastMeetting != null && oi.lastMeetting.Value > DateTime.Today.AddDays(-7) && oi.lastMeetting.Value < DateTime.Today.AddDays(1).Date)
             {
                 datetime = oi.lastMeetting;
             }
