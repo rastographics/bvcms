@@ -20,6 +20,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return AccountModel.AuthenticateMobile("Checkin").IsValid;
         }
 
+        // Used for Attendance
         public ActionResult Match(string id, int campus, int thisday, int? page, string kiosk, bool? kioskmode)
         {
             if (!Authenticate())
@@ -37,6 +38,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return new MultipleResult(matches, page);
         }
 
+        // Used for Building Mode
         public ActionResult Find(string id, string building, int? page, string querybit)
         {
             if (!Authenticate())
@@ -56,6 +58,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return new MultipleResult(matches, page);
         }
 
+        // Used for Attendance
         public ActionResult Family(int id, int campus, int thisday, string kiosk, bool? kioskmode)
         {
             if (!Authenticate())
@@ -66,6 +69,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return new FamilyResult(id, campus, thisday, 0, false);
         }
 
+        // Used for Building Mode
         public ActionResult SingleFamily(int id, string building, string querybit)
         {
             if (!Authenticate())
@@ -76,6 +80,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return new FindResult(id, building, querybit);
         }
 
+        // Used for Attendance
         public ActionResult Class(int id, int thisday)
         {
             if (!Authenticate())
@@ -85,6 +90,8 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.LogActivity("checkin class " + id);
             return new ClassResult(id, thisday);
         }
+
+        // Used for Attendance
         public ActionResult Classes(int id, int campus, int thisday, bool? noagecheck, bool? kioskmode)
         {
             if (!Authenticate())
@@ -95,6 +102,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return new ClassesResult(id, thisday, campus, noagecheck ?? false, kioskmode ?? false);
         }
 
+        // Used for CommonListNames
         public ActionResult NameSearch(string id, int? page)
         {
             if (!Authenticate())
@@ -104,6 +112,8 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.LogActivity("checkin namesearch " + id);
             return new NameSearchResult2(id, page ?? 1);
         }
+
+        // Used for Util
         [HttpPost]
         public ActionResult AddPerson(int id, PersonInfo m)
         {
@@ -123,6 +133,8 @@ namespace CmsWeb.Areas.Public.Controllers
             UpdatePerson(p, m, isNew: true);
             return Content(f.FamilyId.ToString() + "." + p.PeopleId);
         }
+
+        // Used for Util
         [HttpPost]
         public ActionResult EditPerson(int id, PersonInfo m)
         {
@@ -133,6 +145,7 @@ namespace CmsWeb.Areas.Public.Controllers
             UpdatePerson(p, m, isNew: false);
             return Content(p.FamilyId.ToString());
         }
+
         string Trim(string s)
         {
             if (s.HasValue())
@@ -140,6 +153,8 @@ namespace CmsWeb.Areas.Public.Controllers
             else
                 return s;
         }
+
+        // Not used
         private void UpdatePerson(Person p, PersonInfo m, bool isNew)
         {
             var psb = new List<ChangeDetail>();
@@ -294,6 +309,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 });
             return View(list);
         }
+
+        // Used for Util
         [HttpPost]
         public ContentResult RecordAttend(int PeopleId, int OrgId, bool Present, int thisday, string kiosk)
         {
@@ -307,6 +324,8 @@ namespace CmsWeb.Areas.Public.Controllers
             r.Content = "success";
             return r;
         }
+
+        // Used for Util
         [HttpPost]
         public ContentResult RecordAttend2(int PeopleId, int OrgId, bool Present, DateTime hour, string kiosk)
         {
@@ -318,6 +337,8 @@ namespace CmsWeb.Areas.Public.Controllers
             r.Content = "success";
             return r;
         }
+
+        // Used for Util
         [HttpPost]
         public ContentResult Membership(int PeopleId, int OrgId, bool Member)
         {
@@ -330,6 +351,8 @@ namespace CmsWeb.Areas.Public.Controllers
             r.Content = "success";
             return r;
         }
+
+        // Not used
         [Authorize(Roles = "Access")]
         public ActionResult CheckIn(int? id, int? pid)
         {
@@ -338,6 +361,8 @@ namespace CmsWeb.Areas.Public.Controllers
             var m = new CheckInRecModel(id ?? 0, pid);
             return View(m);
         }
+
+        // Not used
         [HttpPost]
         public JsonResult PostCheckIn(int id, string KeyCode)
         {
@@ -360,6 +385,8 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             return Json(new { pid = pid });
         }
+
+        // Not used
         [HttpPost]
         public ContentResult NewKeyCard(int pid, string KeyCode)
         {
@@ -381,6 +408,8 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("Card Associated");
         }
+
+        // Not used
         [HttpPost]
         public ContentResult Edit(string id, string value)
         {
@@ -406,6 +435,8 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.SubmitChanges();
             return c;
         }
+
+        // Used for CommonTakePicture
         [HttpPost]
         public ContentResult UploadImage(int id)
         {
@@ -432,6 +463,8 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.SubmitChanges();
             return Content("done");
         }
+
+        // Used for Util
         public ActionResult FetchImage(int id)
         {
             if (!Authenticate())
@@ -444,6 +477,8 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             return new ImageResult(0);
         }
+
+        // Not used
         public ActionResult CheckInList()
         {
             var m = from t in DbUtil.Db.CheckInTimes
@@ -451,6 +486,8 @@ namespace CmsWeb.Areas.Public.Controllers
                     select t;
             return View(m.Take(200));
         }
+
+        // Used in Util
         [HttpPost]
         public ActionResult UnLockFamily(int fid)
         {
@@ -464,6 +501,8 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             return new EmptyResult();
         }
+
+        // Not used
         [HttpPost]
         public ActionResult ReportPrinterProblem(string kiosk, int campusid)
         {
@@ -488,6 +527,8 @@ namespace CmsWeb.Areas.Public.Controllers
             }
             return new EmptyResult();
         }
+
+        // Used for Util
         [HttpPost]
         [ValidateInput(false)]
         public ContentResult UploadPrintJob(string id)
@@ -502,6 +543,8 @@ namespace CmsWeb.Areas.Public.Controllers
             m.SavePrintJob(id, job);
             return Content("done");
         }
+
+        // Used for Util
         public ActionResult FetchPrintJobs(string id)
         {
             if (!Authenticate())
@@ -510,6 +553,8 @@ namespace CmsWeb.Areas.Public.Controllers
             var b = m.GetNextPrintJobs(id);
             return Content(b, "text/xml");
         }
+
+        // Used for Util
         public ActionResult FetchBuildingActivities(string id)
         {
             if (!Authenticate())
@@ -519,6 +564,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 "<BuildingActivity/>"), "text/xml");
         }
 
+        // Used for Util
         public ContentResult FetchGuestCount(string id)
         {
             Util.NoCache(Response);
@@ -539,6 +585,7 @@ namespace CmsWeb.Areas.Public.Controllers
         public const int ADD_ERROR_EXISTS = 1;
         public const int ADD_ERROR_OTHER = 2;
 
+        // Not used
         [HttpPost]
         [ValidateInput(false)]
         public ContentResult AddIDCard(string cardid, int personid, bool overwrite = false)
@@ -572,6 +619,7 @@ namespace CmsWeb.Areas.Public.Controllers
             // Error return: 0 = None, 1 = Exists, 2 = Other
         }
 
+        // Used for PrintHelper, move to log in settings
         [HttpPost]
         [ValidateInput(false)]
         public ContentResult FetchLabelFormat(string sName, int iSize)
@@ -594,6 +642,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
         }
 
+        // Used for debug
         [HttpPost]
         [ValidateInput(false)]
         public ContentResult SaveLabelFormat(string sName, int iSize, string sFormat)
@@ -623,6 +672,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return Content("0");
         }
 
+        // Used for debug
         public ContentResult FetchLabelList()
         {
             if (!Authenticate()) return Content("Not Authorized");
@@ -643,6 +693,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
         }
 
+        // Used for Util
         [HttpPost]
         [ValidateInput(false)]
         public ContentResult BuildingCheckin(int id, string location, int accesstype, int? guestof)
@@ -732,6 +783,8 @@ namespace CmsWeb.Areas.Public.Controllers
 
             return Content(ac.Id.ToString());
         }
+
+        // Used for Util
         [HttpPost]
         [ValidateInput(false)]
         public ContentResult BuildingUnCheckin(int id)
