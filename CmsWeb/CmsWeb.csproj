@@ -529,11 +529,13 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Code\DecimalModelBinder.cs" />
+    <Compile Include="Code\JsonDotNetValueProviderFactory.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
