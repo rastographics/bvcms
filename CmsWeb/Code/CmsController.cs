@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text;
 using System.Web;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Models;
@@ -25,6 +26,7 @@ namespace CmsWeb
             //base.HandleUnknownAction(actionName);
             throw new HttpException(404, "404");
         }
+
         public static string HeaderHtml(string altcontent, string headertext, string logoimg)
         {
             var c = DbUtil.Content("Site2Header" + altcontent) ?? DbUtil.Content("Site2Header");
@@ -37,6 +39,7 @@ namespace CmsWeb
 		   </div>
 		</div>".Fmt(logoimg, headertext);
         }
+
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
@@ -53,6 +56,7 @@ namespace CmsWeb
             }
 
         }
+
         public string AuthenticateDeveloper(bool log = false, string addrole = "")
         {
             var auth = Request.Headers["Authorization"];
@@ -84,11 +88,19 @@ namespace CmsWeb
             }
             return "!API no Authorization Header";
         }
+
         public ViewResult Message(string text)
         {
             return View("Message", model: text);
         }
+
+        protected override JsonResult Json(object data, string contentType, Encoding contentEncoding, JsonRequestBehavior behavior)
+        {
+            return new JsonNetResult {Data = data, ContentType = contentType, ContentEncoding = contentEncoding, JsonRequestBehavior = behavior };
+        }
+
     }
+
     [MyRequireHttps]
     public class CmsStaffController : Controller
     {

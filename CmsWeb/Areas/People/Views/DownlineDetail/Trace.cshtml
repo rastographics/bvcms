@@ -1,19 +1,21 @@
 ﻿@using CmsWeb.Areas.People.Models
 @using UtilityExtensions
-@model DownlineModel
+@model DownlineDetailModel
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = "Downline";
   ViewBag.PageHeader = "Downline Trace for {0} in {1}".Fmt(Model.Name, Model.Category);
 }
-<div class="box box-responsive">
-  <div class="box-content">
+<div class="box box-responsive" style="margin-left: auto; margin-right:auto;display:table">
+  <div class="box-content" style="display:table">
     <table class="table table-striped">
       <thead>
         <tr>
           <th>Level</th>
           <th>Leader</th>
           <th>Disciple</th>
+          <th>Organization</th>
+          <th>StartDt</th>
           <th>Trace</th>
         </tr>
       </thead>
@@ -22,9 +24,11 @@
         {
           <tr>
             <td>@r.Generation</td>
-            <td><a href="/Downline/@Model.CategoryId/@r.LeaderId">@r.LeaderName</a></td>
+            <td><a href="/DownlineLevels/@Model.CategoryId/@r.LeaderId" target="downline">@r.LeaderName</a></td>
             <td>@r.DiscipleName</td>
-            <td>@r.Trace</td>
+            <td>@r.OrgName</td>
+            <td>@r.StartDt.FormatDate()</td>
+            <td>@r.Trace.Replace("/", ", ")</td>
           </tr>
         }
       </tbody>

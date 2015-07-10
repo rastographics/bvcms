@@ -5,8 +5,8 @@
   ViewBag.Title = "Downline Summary";
   ViewBag.PageHeader = "Downline Summary for {0}".Fmt(Model.Category);
 }
-<div class="box box-responsive">
-  <div class="box-content">
+<div class="box box-responsive" style="margin-left: auto; margin-right:auto;display:table">
+  <div class="box-content" style="display:table">
     <form class="ajax" data-results="#results" method="post" action="/DownlineSummary/Results">
       @Html.HiddenFor(m => m.CategoryId)
       @Html.Partial("Results", Model)

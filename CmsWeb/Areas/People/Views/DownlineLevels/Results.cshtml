@@ -1,5 +1,5 @@
 ﻿@using UtilityExtensions
-@model CmsWeb.Areas.People.Models.DownlineModel
+@model CmsWeb.Areas.People.Models.DownlineLevelsModel
 <div id="results">
   @Html.Partial("PagerTop", Model)
   <table class="table table-striped">
@@ -14,8 +14,8 @@
       <th>Level</th>
       <th>Organization</th>
       <th>Leader</th>
-      <th>Disciple</th>
-      <th>Trace</th>
+      <th>StartDt</th>
+      <th>Disciples</th>
     </tr>
     </thead>
     <tbody>
@@ -24,11 +24,9 @@
         <tr>
           <td>@r.Level</td>
           <td>@r.OrganizationName</td>
-          <td><a href="/Downline/@Model.CategoryId/@r.LeaderId">@r.Leader</a></td>
-          <td>@r.Student</td>
-          <td><a href="/Downline/Trace/@Model.CategoryId/@Model.DownlineId?trace=@Server.UrlEncode(r.Trace)" target="trace">
-            @r.Trace
-          </a></td>
+          <td>@r.Leader</td>
+          <td>@r.StartDt.FormatDate()</td>
+          <td><a href="/DownlineDetail/@Model.CategoryId/@Model.DownlineId/@r.Level">@r.Cnt</a></td>
         </tr>
       }
     </tbody>

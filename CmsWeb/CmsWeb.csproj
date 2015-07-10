@@ -390,8 +390,10 @@
     <Compile Include="Areas\Org\Models\MeetingModel.cs" />
     <Compile Include="Areas\Org\Models\MemberDirectoryModel.cs" />
     <Compile Include="Areas\Org\Models\MissionTripEmailer.cs" />
+    <Compile Include="Areas\People\Controllers\DownlineLevelsController.cs" />
     <Compile Include="Areas\People\Controllers\DownlineSummaryController.cs" />
-    <Compile Include="Areas\People\Controllers\DownlineController.cs" />
+    <Compile Include="Areas\People\Controllers\DownlineDetailController.cs" />
+    <Compile Include="Areas\People\Models\Downline\DownlineLevelsModel.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineSummaryModel.cs" />
     <Compile Include="Areas\Public\Controllers\CheckInAPIController.cs" />
     <Compile Include="Areas\Public\Models\CheckInAPI\CheckInCampus.cs" />
@@ -404,7 +406,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostHeadcount.cs" />
-    <Compile Include="Areas\People\Models\Downline\DownlineModel.cs" />
+    <Compile Include="Areas\People\Models\Downline\DownlineDetailModel.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -527,11 +529,13 @@
     <Compile Include="Areas\Search\Models\RegistrationSearch\RegistrationSearchModel.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
+    <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
     <Compile Include="Code\FamilyExtraValues.cs" />
     <Compile Include="Code\DateEmptyOrValidAttribute.cs" />
     <Compile Include="Code\DecimalModelBinder.cs" />
+    <Compile Include="Code\JsonDotNetValueProviderFactory.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Controllers\ExtraValue\EntryController.cs" />
     <Compile Include="Controllers\ExtraValue\StandardController.cs" />
@@ -1459,12 +1463,14 @@
     <Content Include="Areas\Manage\Views\Activity\Results.cshtml" />
     <Content Include="Areas\Manage\Views\Activity\Index.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RegPeople.cshtml" />
-    <Content Include="Areas\People\Views\Downline\Index.cshtml" />
-    <Content Include="Areas\People\Views\Downline\Results.cshtml" />
+    <Content Include="Areas\People\Views\DownlineDetail\Index.cshtml" />
+    <Content Include="Areas\People\Views\DownlineDetail\Results.cshtml" />
     <Content Include="Areas\People\Views\DownlineSummary\Index.cshtml" />
     <Content Include="Areas\People\Views\DownlineSummary\Results.cshtml" />
-    <Content Include="Areas\People\Views\DownlineSummary\Trace.cshtml" />
-    <None Include="Areas\People\Views\Downline\Trace.cshtml" />
+    <Content Include="Areas\People\Views\DownlineDetail\Trace.cshtml" />
+    <Content Include="Areas\People\Views\DownlineLevels\Index.cshtml" />
+    <Content Include="Areas\People\Views\DownlineLevels\Results.cshtml" />
+    <Content Include="Areas\People\Views\DownlineLevels\Trace.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

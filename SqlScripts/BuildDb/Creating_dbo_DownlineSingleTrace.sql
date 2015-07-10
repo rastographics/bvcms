@@ -18,6 +18,7 @@ RETURNS
 	DiscipleId INT,
 	DiscipleName VARCHAR(100),
 	OrgName VARCHAR(100),
+	StartDt DATETIME,
 	Trace VARCHAR(400)
 )
 AS
@@ -43,6 +44,7 @@ BEGIN
 			d.OrgId,
 			d.LeaderId,
 			d.DiscipleId,
+			d.StartDt,
 			d.TRACE
 		FROM dbo.Downline d
 		JOIN @t t ON d.LeaderId = t.lid AND d.DiscipleId = t.did
@@ -56,15 +58,17 @@ BEGIN
 	          DiscipleId ,
 	          DiscipleName ,
 	          OrgName ,
+			  StartDt,
 	          Trace
 	        )
-	SELECT DISTINCT
+	SELECT
 		om.Generation 
 		,om.LeaderId
 		,l.NAME
 		,om.DiscipleId
 		,d.NAME
-		,o.OrganizationName 
+		,o.OrganizationName
+		,om.StartDt
 		,om.TRACE
 	FROM  orgmembers om
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrgId
