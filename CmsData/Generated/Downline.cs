@@ -32,6 +32,8 @@ namespace CmsData
 		
 		private DateTime? _StartDt;
 		
+		private DateTime? _EndDt;
+		
 		private string _Trace;
 		
    		
@@ -63,6 +65,9 @@ namespace CmsData
 		
 		partial void OnStartDtChanging(DateTime? value);
 		partial void OnStartDtChanged();
+		
+		partial void OnEndDtChanging(DateTime? value);
+		partial void OnEndDtChanged();
 		
 		partial void OnTraceChanging(string value);
 		partial void OnTraceChanged();
@@ -225,6 +230,28 @@ namespace CmsData
 					this._StartDt = value;
 					this.SendPropertyChanged("StartDt");
 					this.OnStartDtChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="EndDt", UpdateCheck=UpdateCheck.Never, Storage="_EndDt", DbType="datetime")]
+		public DateTime? EndDt
+		{
+			get { return this._EndDt; }
+
+			set
+			{
+				if (this._EndDt != value)
+				{
+				
+                    this.OnEndDtChanging(value);
+					this.SendPropertyChanging();
+					this._EndDt = value;
+					this.SendPropertyChanged("EndDt");
+					this.OnEndDtChanged();
 				}
 
 			}

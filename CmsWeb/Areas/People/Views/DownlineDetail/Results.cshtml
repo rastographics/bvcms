@@ -15,6 +15,7 @@
       <th>Leader</th>
       <th>Disciple</th>
       <th>StartDt</th>
+      <th>EndDt</th>
       <th>Trace</th>
     </tr>
     </thead>
@@ -26,6 +27,7 @@
           <td><a href="/DownlineLevels/@Model.CategoryId/@r.LeaderId">@r.Leader</a></td>
           <td>@r.Student</td>
           <td>@r.StartDt.FormatDate()</td>
+          <td>@r.EndDt.FormatDate()</td>
           <td><a href="/DownlineTrace/@Model.CategoryId/@Model.DownlineId?trace=@Server.UrlEncode(r.Trace)" target="trace">
             @r.Trace.Replace("/", ", ")
           </a></td>
