@@ -7,7 +7,8 @@ CREATE TABLE [dbo].[Downline]
 [LeaderId] [int] NULL,
 [DiscipleId] [int] NULL,
 [StartDt] [datetime] NULL,
-[Trace] [varchar] (400) NULL
+[Trace] [varchar] (400) NULL,
+[EndDt] [datetime] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
