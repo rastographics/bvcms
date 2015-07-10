@@ -312,6 +312,29 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 return sendFromOrg;
             }
         }
+
+        public Guid CurrentPersonQueryId
+        {
+            get { return DbUtil.Db.QueryIsCurrentPerson().QueryId; }
+        }
+
+        private int? _emptyTemplateId;
+        public int EmptyTemplateId
+        {
+            get
+            {
+                if (!_emptyTemplateId.HasValue)
+                {
+                    var emptyTemplate = (from content in DbUtil.Db.Contents
+                                        where content.Name == "Empty Template"
+                                        select content).SingleOrDefault();
+
+                    _emptyTemplateId = (emptyTemplate == null) ? 0 : emptyTemplate.Id;
+                }
+
+                return _emptyTemplateId.Value;
+            }
+        }
     }
 
     public class RecipientInfo
