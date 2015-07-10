@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
@@ -398,6 +399,20 @@ namespace CmsData
                     select p;
             return q.Count();
         }
+
+        /* QueryList is designed to run a pre-saved query referenced by name which is passed in as a string in the function call.
+        * The resulting collection of people records (limited to 1000) is returned as an IEnumerable to that all attributes of the 
+        * Person record is accessible
+        */
+        public IEnumerable<Person> QueryList(string s)
+        {
+            var qb = db.PeopleQuery2(s).Take(1000);
+            if (qb == null)
+                return null;
+
+            return qb;
+        }
+
         public double ContributionTotals(int days1, int days2, string funds)
         {
             var fundids = (from f in funds.Split(',')
