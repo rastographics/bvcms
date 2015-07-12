@@ -72,7 +72,7 @@ BEGIN
 		,d.NAME
 		,o.OrganizationName
 		,om.StartDt
-		,om.EndDt
+		,EndDt = NULLIF(om.EndDt, '1/1/3000')
 		,om.TRACE
 	FROM  orgmembers om
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrgId

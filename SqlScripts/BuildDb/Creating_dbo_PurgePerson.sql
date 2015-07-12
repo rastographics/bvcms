@@ -124,6 +124,9 @@ BEGIN
 		SET HeadOfHouseholdId = NULL, HeadOfHouseholdSpouseId = NULL
 		WHERE FamilyId = @fid AND HeadOfHouseholdId = @pid
 		OR FamilyId = @fid AND HeadOfHouseholdSpouseId = @pid
+
+		DELETE dbo.SubRequest
+		WHERE RequestorId = @pid OR SubstituteId = @pid
 		
 		DELETE dbo.People WHERE PeopleId = @pid
 		

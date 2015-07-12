@@ -41,7 +41,7 @@ RETURN
 		,d.LeaderId
 		,d.Cnt
 		,d.StartDt
-		,d.EndDt
+		,EndDt = NULLIF(d.EndDt, '1/1/3000')
 		,c.MaxRows 
 	FROM levels d
 	JOIN dbo.Organizations o ON o.OrganizationId = d.OrgId
