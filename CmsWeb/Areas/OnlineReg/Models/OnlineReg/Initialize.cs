@@ -61,8 +61,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             else if (HttpContext.Current.User.Identity.IsAuthenticated)
                 pid = Util.UserPeopleId ?? 0;
 
-            if(pid > 0)
+            if (pid > 0)
+            {
                 UserPeopleId = pid;
+                Util.UserPeopleId = pid;
+            }
             return pid;
         }
 
