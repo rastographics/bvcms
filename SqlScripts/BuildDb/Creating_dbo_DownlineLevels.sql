@@ -16,6 +16,7 @@ RETURN
 			,LeaderId
 			,DiscipleId 
 			,StartDt
+			,EndDt
 		FROM dbo.Downline
 		WHERE DownlineId = @leaderid
 		AND CategoryId = @categoryid
@@ -25,6 +26,7 @@ RETURN
 			OrgId,
 			LeaderId,
 			StartDt = MIN(downlineids.StartDt),
+			EndDt = MAX(downlineids.EndDt),
 			Cnt = COUNT(*)
 		FROM downlineids
 		GROUP BY Generation, OrgId, LeaderId
@@ -39,6 +41,7 @@ RETURN
 		,d.LeaderId
 		,d.Cnt
 		,d.StartDt
+		,EndDt = NULLIF(d.EndDt, '1/1/3000')
 		,c.MaxRows 
 	FROM levels d
 	JOIN dbo.Organizations o ON o.OrganizationId = d.OrgId

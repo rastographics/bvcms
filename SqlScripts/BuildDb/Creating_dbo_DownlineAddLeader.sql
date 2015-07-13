@@ -5,12 +5,12 @@ BEGIN
 
 	CREATE TABLE #t
 	(
-		Generation INT ,
-		OrgId INT ,
-		LeaderId INT ,
-		DiscipleId INT ,
-		StartDt DATETIME ,
-		EndDt DATETIME ,
+		Generation INT,
+		OrgId INT,
+		LeaderId INT,
+		DiscipleId INT,
+		StartDt DATETIME,
+		EndDt DATETIME,
 		Trace VARCHAR(400)
 	)
 
@@ -51,8 +51,13 @@ BEGIN
 				nextlevel.OrgId
 				,nextlevel.LeaderId 
 				,nextlevel.DiscId 
-				,nextlevel.StartDt
-				,nextlevel.EndDt
+
+				-- Get Maximum StartDt
+				,StartDt = IIF(nextlevel.StartDt > prevlevel.StartDt, nextlevel.StartDt, prevlevel.StartDt)
+
+				-- Get Minimum EndDt
+				,EndDt = IIF(nextlevel.EndDt < prevlevel.EndDt, nextlevel.EndDt, prevlevel.EndDt)
+
 				,Trace = prevlevel.Trace + '/' + CAST(nextlevel.DiscId AS VARCHAR(10))
 		    FROM #t prevlevel
 		    JOIN #DownlineData nextlevel 
@@ -65,7 +70,6 @@ BEGIN
 			AND prevlevel.DiscipleId = nextlevel.LeaderId 
 
 			-- the new leader was previously a follower
-			--AND prevlevel.StartDt < nextlevel.EndDt
 			AND (prevlevel.StartDt <= nextlevel.EndDt)
 
 			-- no need to include someone already counted at a previous time

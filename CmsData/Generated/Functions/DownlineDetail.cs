@@ -32,6 +32,8 @@ namespace CmsData.View
 		
 		private DateTime? _StartDt;
 		
+		private DateTime? _EndDt;
+		
 		private int? _MaxRows;
 		
 		
@@ -172,6 +174,23 @@ namespace CmsData.View
 			{
 				if (this._StartDt != value)
 					this._StartDt = value;
+			}
+
+		}
+
+		
+		[Column(Name="EndDt", Storage="_EndDt", DbType="datetime")]
+		public DateTime? EndDt
+		{
+			get
+			{
+				return this._EndDt;
+			}
+
+			set
+			{
+				if (this._EndDt != value)
+					this._EndDt = value;
 			}
 
 		}

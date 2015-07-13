@@ -16,7 +16,8 @@ RETURN
 			,LeaderId
 			,DiscipleId 
 			,StartDt
-			,TRACE
+			,EndDt
+			,Trace
 		FROM dbo.Downline
 		WHERE DownlineId = @leaderid
 		AND CategoryId = @categoryid
@@ -33,6 +34,7 @@ RETURN
 		,d.LeaderId
 		,d.DiscipleId
 		,d.StartDt
+		,EndDt = NULLIF(d.EndDt, '1/1/3000')
 		,MaxRows 
 	FROM downlineids d
 	JOIN dbo.Organizations o ON o.OrganizationId = d.OrgId

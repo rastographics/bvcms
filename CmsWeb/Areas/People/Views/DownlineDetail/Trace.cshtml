@@ -16,6 +16,7 @@
           <th>Disciple</th>
           <th>Organization</th>
           <th>StartDt</th>
+          <th>EndDt</th>
           <th>Trace</th>
         </tr>
       </thead>
@@ -28,6 +29,7 @@
             <td>@r.DiscipleName</td>
             <td>@r.OrgName</td>
             <td>@r.StartDt.FormatDate()</td>
+            <td>@r.EndDt.FormatDate()</td>
             <td>@r.Trace.Replace("/", ", ")</td>
           </tr>
         }

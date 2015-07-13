@@ -15,6 +15,7 @@
       <th>Organization</th>
       <th>Leader</th>
       <th>StartDt</th>
+      <th>EndDt</th>
       <th>Disciples</th>
     </tr>
     </thead>
@@ -26,6 +27,7 @@
           <td>@r.OrganizationName</td>
           <td>@r.Leader</td>
           <td>@r.StartDt.FormatDate()</td>
+          <td>@r.EndDt.FormatDate()</td>
           <td><a href="/DownlineDetail/@Model.CategoryId/@Model.DownlineId/@r.Level">@r.Cnt</a></td>
         </tr>
       }

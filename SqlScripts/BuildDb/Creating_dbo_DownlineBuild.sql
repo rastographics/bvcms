@@ -7,6 +7,7 @@ BEGIN
 	EXEC dbo.DownlineCreateCategoryConfigContent
 
 	TRUNCATE TABLE dbo.Downline
+	TRUNCATE TABLE dbo.DownlineLeaders
 
 	ALTER INDEX [IX_Downline] ON [dbo].[Downline] DISABLE
 	ALTER INDEX [IXDownlineCatLeaderDisc] ON [dbo].[Downline] DISABLE
@@ -31,7 +32,6 @@ BEGIN
 
 	SET @n = 1
 
-	TRUNCATE TABLE dbo.DownlineLeaders
 	WHILE @n <= @maxrows
 	BEGIN
 
@@ -40,7 +40,6 @@ BEGIN
 		EXEC dbo.DownlineBuildSummary @categoryid
 	    SELECT @n = @n + 1
 	END
-
 
 END
 GO
