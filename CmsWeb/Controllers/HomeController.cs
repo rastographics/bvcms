@@ -246,11 +246,21 @@ namespace CmsWeb.Controllers
                 var script = DbUtil.Db.ContentOfTypePythonScript(name);
                 if (!script.HasValue())
                     return Message("no script named " + name);
+
                 script = script.Replace("@P1", p1 ?? "NULL")
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
                     .Replace("V2", v2 ?? "None");
-                var pe = new PythonEvents(Util.Host, script);
+
+                var pe = new PythonEvents(Util.Host);
+
+                foreach (var key in Request.QueryString.AllKeys)
+                {
+                    pe.DictionaryAdd(key, Request.QueryString[key]);
+                }
+
+                pe.RunScript(script);
+
                 return View(pe);
             }
             catch (Exception ex)

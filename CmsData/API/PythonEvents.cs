@@ -12,7 +12,7 @@ using Microsoft.Scripting.Hosting;
 
 namespace CmsData
 {
-    public class PythonEvents
+    public class PythonEvents : IPythonApi
     {
         private CMSDataContext db;
         public Dictionary<string, string> dictionary { get; set; }
@@ -27,8 +27,10 @@ namespace CmsData
             db = DbUtil.Create(dbname);
         }
 
-        // this constructor creates an instance of the class named classname, and is called with pe.instance.Run()
-        // supports old style of MorningBatch
+        /// <summary>
+        /// This constructor creates an instance of the class named classname, and is called with pe.instance.Run().
+        /// It supports the old style of MorningBatch.
+        /// </summary>
         public PythonEvents(string dbname, string classname, string script)
         {
             db = DbUtil.Create(dbname);
@@ -42,6 +44,7 @@ namespace CmsData
             db.SubmitChanges();
 
             dynamic Event = scope.GetVariable(classname);
+
             instance = Event();
         }
 
@@ -50,128 +53,48 @@ namespace CmsData
             db = DbUtil.Create(dbname);
         }
 
-        public string Script { get; set; } // set this in the python code for javascript on the output page
-        public string Header { get; set; } // set this in the python code for output page
-        public string Output { get; set; } // this is set automatically for the output page
+        // set this in the python code for javascript on the output page
+        public string Script { get; set; }
 
-        public PythonEvents(string dbname, string script)
+        // set this in the python code for output page
+        public string Header { get; set; }
+
+        // this is set automatically for the output page
+        public string Output { get; set; }
+
+        public string RunScript(string script)
         {
-            var engine = Python.CreateEngine();
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            engine.Runtime.IO.SetOutput(ms, sw);
-            engine.Runtime.IO.SetErrorOutput(ms, sw);
             try
             {
-                var sc = engine.CreateScriptSourceFromString(script);
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-                db = DbUtil.Create(dbname);
-                scope.SetVariable("model", this);
-                var qf = new QueryFunctions(db);
-                scope.SetVariable("q", qf);
-                code.Execute(scope);
-                db.SubmitChanges();
-                ms.Position = 0;
-                var sr = new StreamReader(ms);
-                Output = sr.ReadToEnd();
+                Output = ExecutePython(script, this);
             }
             catch (Exception ex)
             {
-                var err = engine.GetService<ExceptionOperations>().FormatException(ex);
-                throw new Exception(err);
+                Output = ex.Message;
             }
+            return Output;
         }
 
         public static string RunScript(string dbname, string script)
         {
-            var engine = Python.CreateEngine();
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            engine.Runtime.IO.SetOutput(ms, sw);
-            engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script);
             try
             {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-                var pe = new PythonEvents(dbname);
-                scope.SetVariable("model", pe);
-                var qf = new QueryFunctions(pe.db);
-                scope.SetVariable("q", qf);
-                code.Execute(scope);
-                pe.db.SubmitChanges();
-                ms.Position = 0;
-                var sr = new StreamReader(ms);
-                var s = sr.ReadToEnd();
-                return s;
+                return ExecutePython(script, new PythonEvents(dbname));
             }
             catch (Exception ex)
             {
-                return engine.GetService<ExceptionOperations>().FormatException(ex);
+                return ex.Message;
             }
         }
 
-        public string RunScript(string script)
-        {
-            var engine = Python.CreateEngine();
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            engine.Runtime.IO.SetOutput(ms, sw);
-            engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script);
-            try
-            {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-                scope.SetVariable("model", this);
-                var qf = new QueryFunctions(db);
-                scope.SetVariable("q", qf);
-                code.Execute(scope);
-                db.SubmitChanges();
-                ms.Position = 0;
-                var sr = new StreamReader(ms);
-                var s = sr.ReadToEnd();
-                return s;
-            }
-            catch (Exception ex)
-            {
-                return engine.GetService<ExceptionOperations>().FormatException(ex);
-            }
-        }
+        #region API Functions
 
         public string CallScript(string scriptname)
         {
             var script = db.ContentOfTypePythonScript(scriptname);
-            var engine = Python.CreateEngine();
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            engine.Runtime.IO.SetOutput(ms, sw);
-            engine.Runtime.IO.SetErrorOutput(ms, sw);
-            try
-            {
-            var sc = engine.CreateScriptSourceFromString(script);
-            var code = sc.Compile();
-            var scope = engine.CreateScope();
-            var pe = new PythonEvents(db.Host);
-            scope.SetVariable("model", pe);
-            var qf = new QueryFunctions(pe.db);
-            scope.SetVariable("q", qf);
-            code.Execute(scope);
-            pe.db.SubmitChanges();
-            ms.Position = 0;
-            var sr = new StreamReader(ms);
-            var s = sr.ReadToEnd();
-            return s;
-            }
-            catch (Exception ex)
-            {
-                var s = engine.GetService<ExceptionOperations>().FormatException(ex);
-                throw new Exception(s);
-            }
-        }
 
-        // List of api functions to call from Python
+            return ExecutePython(script, new PythonEvents(db.Host));
+        }
 
         public void CreateTask(int forPeopleId, Person p, string description)
         {
@@ -380,6 +303,7 @@ namespace CmsData
                     select o.OrganizationId;
             return q.ToList();
         }
+
         public List<int> PeopleIds(object savedQuery)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
@@ -545,6 +469,7 @@ namespace CmsData
             var d = dt.ToDate();
             return d ?? DateTime.MinValue;
         }
+
         public string ContentForDate(string contentName, object date)
         {
             var dtwanted = date.ToDate();
@@ -574,6 +499,7 @@ namespace CmsData
         {
             return Regex.Replace(text, pattern, replacement);
         }
+
         public int ExtraValueInt(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -581,6 +507,7 @@ namespace CmsData
                 return ev.IntValue ?? 0;
             return 0;
         }
+
         public string ExtraValueText(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -588,6 +515,7 @@ namespace CmsData
                 return ev.Data ?? "";
             return "";
         }
+
         public DateTime ExtraValueDate(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -595,6 +523,7 @@ namespace CmsData
                 return ev.DateValue ?? DateTime.MinValue;
             return DateTime.MinValue;
         }
+
         public string ExtraValue(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -602,6 +531,12 @@ namespace CmsData
                 return ev.StrValue ?? "";
             return "";
         }
+
+        public string ExtraValueCode(object pid, string name)
+        {
+            return ExtraValue(pid, name);
+        }
+
         public bool ExtraValueBit(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -609,6 +544,7 @@ namespace CmsData
                 return ev.BitValue ?? false;
             return false;
         }
+
         public APIPerson.Person GetPerson(object pid)
         {
             var api = new APIPerson(db);
@@ -664,6 +600,51 @@ namespace CmsData
         public string FmtPhone(string s, string prefix)
         {
             return s.FmtFone(prefix);
+        }
+
+        #endregion
+
+        private static string ExecutePython(string scriptContent, PythonEvents model)
+        {
+            // we could consider only passing in an explicit IPythonApi to the script so that only things defined
+            // on the interface are accessible to the script; however, I'm worried that we may have some scripts
+            // that are using functions not defined on the API docs site (which is what the interface is based on)
+
+            var engine = Python.CreateEngine();
+
+            using (var ms = new MemoryStream())
+            using (var sw = new StreamWriter(ms))
+            {
+                engine.Runtime.IO.SetOutput(ms, sw);
+                engine.Runtime.IO.SetErrorOutput(ms, sw);
+
+                try
+                {
+                    var sc = engine.CreateScriptSourceFromString(scriptContent);
+                    var code = sc.Compile();
+
+                    var scope = engine.CreateScope();
+                    scope.SetVariable("model", model);
+
+                    var qf = new QueryFunctions(model.db);
+                    scope.SetVariable("q", qf);
+                    code.Execute(scope);
+
+                    model.db.SubmitChanges();
+
+                    ms.Position = 0;
+
+                    using (var sr = new StreamReader(ms))
+                    {
+                        return sr.ReadToEnd();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var err = engine.GetService<ExceptionOperations>().FormatException(ex);
+                    throw new Exception(err);
+                }
+            }
         }
     }
 }
