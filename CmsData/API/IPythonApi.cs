@@ -17,8 +17,7 @@ namespace CmsData.API
 
         void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string contentName);
 
-        void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
-            string contentName);
+        void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName);
 
         void Email(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body);
 
@@ -65,5 +64,54 @@ namespace CmsData.API
         bool ExtraValueBit(object pid, string name);
 
         APIPerson.Person GetPerson(object pid);
+
+        void CreateTask(int forPeopleId, Person p, string description);
+
+        void JoinOrg(int orgId, Person p);
+
+        void UpdateField(Person p, string field, object value);
+
+        void EmailReminders(int orgId);
+
+        bool DictionaryIsNotAvailable { get; }
+
+        string Dictionary(string s);
+
+        void DictionaryAdd(string key, string value);
+
+        DateTime DateAddDays(object dt, int days);
+
+        int WeekNumber(object dt);
+
+        DateTime SundayForDate(object dt);
+
+        DateTime SundayForWeek(int year, int week);
+
+        DateTime MostRecentAttendedSunday(int progid);
+
+        int CurrentOrgId { get; set; }
+
+        bool SmtpDebug { set; }
+
+        void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string contentName);
+
+        void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string subject, string contentName);
+
+        void UpdateNamedField(object savedQuery, string field, object value);
+
+        DateTime ParseDate(string dt);
+
+        string ContentForDate(string contentName, object date);
+
+        string HtmlContent(string name);
+
+        string Replace(string text, string pattern, string replacement);
+
+        void EmailReport(object savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report);
+
+        void EmailReport(string savedquery, int queuedBy, string fromaddr, string fromname, string subject,
+            string report, string queryname, string querydescription);
+
+        string FmtPhone(string s, string prefix);
     }
 }
