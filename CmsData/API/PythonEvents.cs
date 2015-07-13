@@ -8,12 +8,14 @@ using IronPython.Hosting;
 using System;
 using System.Text.RegularExpressions;
 using CmsData.API;
+using Microsoft.Scripting.Hosting;
 
 namespace CmsData
 {
     public class PythonEvents
     {
         private CMSDataContext db;
+        public Dictionary<string, string> dictionary { get; set; }
         public dynamic instance { get; set; }
 
         private void ResetDb()
@@ -25,6 +27,8 @@ namespace CmsData
             db = DbUtil.Create(dbname);
         }
 
+        // this constructor creates an instance of the class named classname, and is called with pe.instance.Run()
+        // supports old style of MorningBatch
         public PythonEvents(string dbname, string classname, string script)
         {
             db = DbUtil.Create(dbname);
@@ -57,18 +61,26 @@ namespace CmsData
             var sw = new StreamWriter(ms);
             engine.Runtime.IO.SetOutput(ms, sw);
             engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script);
-            var code = sc.Compile();
-            var scope = engine.CreateScope();
-            db = DbUtil.Create(dbname);
-            scope.SetVariable("model", this);
-            var qf = new QueryFunctions(db);
-            scope.SetVariable("q", qf);
-            code.Execute(scope);
-            db.SubmitChanges();
-            ms.Position = 0;
-            var sr = new StreamReader(ms);
-            Output = sr.ReadToEnd();
+            try
+            {
+                var sc = engine.CreateScriptSourceFromString(script);
+                var code = sc.Compile();
+                var scope = engine.CreateScope();
+                db = DbUtil.Create(dbname);
+                scope.SetVariable("model", this);
+                var qf = new QueryFunctions(db);
+                scope.SetVariable("q", qf);
+                code.Execute(scope);
+                db.SubmitChanges();
+                ms.Position = 0;
+                var sr = new StreamReader(ms);
+                Output = sr.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                var err = engine.GetService<ExceptionOperations>().FormatException(ex);
+                throw new Exception(err);
+            }
         }
 
         public static string RunScript(string dbname, string script)
@@ -96,7 +108,7 @@ namespace CmsData
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return engine.GetService<ExceptionOperations>().FormatException(ex);
             }
         }
 
@@ -124,7 +136,7 @@ namespace CmsData
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return engine.GetService<ExceptionOperations>().FormatException(ex);
             }
         }
 
@@ -136,6 +148,8 @@ namespace CmsData
             var sw = new StreamWriter(ms);
             engine.Runtime.IO.SetOutput(ms, sw);
             engine.Runtime.IO.SetErrorOutput(ms, sw);
+            try
+            {
             var sc = engine.CreateScriptSourceFromString(script);
             var code = sc.Compile();
             var scope = engine.CreateScope();
@@ -149,6 +163,12 @@ namespace CmsData
             var sr = new StreamReader(ms);
             var s = sr.ReadToEnd();
             return s;
+            }
+            catch (Exception ex)
+            {
+                var s = engine.GetService<ExceptionOperations>().FormatException(ex);
+                throw new Exception(s);
+            }
         }
 
         // List of api functions to call from Python
@@ -191,6 +211,24 @@ namespace CmsData
         public DateTime DateTime
         {
             get { return DateTime.Now; }
+        }
+
+        public bool DictionaryIsNotAvailable
+        {
+            get { return dictionary == null; }
+        }
+
+        public string Dictionary(string s)
+        {
+            if (dictionary != null && dictionary.ContainsKey(s))
+                return dictionary[s];
+            return "";
+        }
+        public void DictionaryAdd(string key, string value)
+        {
+            if(dictionary == null)
+                dictionary = new Dictionary<string, string>();
+            dictionary.Add(key, value);
         }
 
         public DateTime DateAddDays(object dt, int days)
@@ -267,7 +305,7 @@ namespace CmsData
             Util.IsInRoleEmailTest = TestEmail;
             var queueremail = db.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).Single();
             Util.UserEmail = queueremail;
-			db.SetCurrentOrgId(CurrentOrgId);
+            db.SetCurrentOrgId(CurrentOrgId);
 
             var emailqueue = db.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
             emailqueue.Transactional = Transactional;
@@ -576,18 +614,16 @@ namespace CmsData
             var p = api.GetPersonData(pid.ToInt());
             return p;
         }
-    
-         /* EmailReport is designed to be very similar to EmailContent, except that the body of the email is generated by a python script
+
+        /* EmailReport is designed to be very similar to EmailContent, 
+         * except that the body of the email is generated by a python script
          * instead of being pulled from an static file.
          * The code for the Python Engine was copied from the VitalStats function in QueryFunctions.cs 
          */
-        public void EmailReport(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report)
+        public void EmailReport(object savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report)
         {
             var from = new MailAddress(fromaddr, fromname);
-            var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedquery);
-            if (qB == null)
-                return;
-            var q = db.PeopleQuery(qB.QueryId);
+            var q = db.PeopleQuery2(savedquery);
 
             q = from p in q
                 where p.EmailAddress != null
@@ -596,41 +632,17 @@ namespace CmsData
                 select p;
             var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
 
-            var qf = new QueryFunctions(db);
-            var script = db.Content(report);
-            
-            var engine = Python.CreateEngine();
-            var sc = engine.CreateScriptSourceFromString(script.Body);
+            var script = db.ContentOfTypePythonScript(report);
+            if (script == null)
+                return;
 
-            var emailbody = "";
-
-            try
-            {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-                code.Execute(scope);
-
-                dynamic Results = scope.GetVariable(report);
-                dynamic m = Results();
-                emailbody = m.Run(qf);
-            }
-            catch (Exception ex)
-            {
-                emailbody = "Python Script error: " + ex.Message;
-            }
-
-#if DEBUG2
-            var items = new string[] { "Purity", "Rite", "Launch", "Overview"};
-            if(items.Any(ii => savedquery.Contains(ii)))
-            {
-    	        var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
-                db.SendPeopleEmail(emailqueue.Id);
-            }
-#else
+            var emailbody = RunScript(script);
             var emailqueue = db.CreateQueue(queuedBy, from, subject, emailbody, null, tag.Id, false);
 
+            emailqueue.Transactional = Transactional;
+            Util.IsInRoleEmailTest = TestEmail;
+
             db.SendPeopleEmail(emailqueue.Id);
-#endif
         }
 
 
@@ -640,62 +652,17 @@ namespace CmsData
          */
         public void EmailReport(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report, string queryname, string querydescription)
         {
-            var from = new MailAddress(fromaddr, fromname);
-            var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedquery);
-            if (qB == null)
-                return;
-            var q = db.PeopleQuery(qB.QueryId);
-
-            q = from p in q
-                where p.EmailAddress != null
-                where p.EmailAddress != ""
-                where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
-                select p;
-            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
-
-            var qf = new QueryFunctions(db);
-            var script = db.Content(report);
-            
-            var engine = Python.CreateEngine();
-            var sc = engine.CreateScriptSourceFromString(script.Body);
-
-            var emailbody = "";
-
-            try
+            dictionary = new Dictionary<string, string>
             {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-
-                scope.SetVariable("QueryName", queryname);
-                scope.SetVariable("QueryDescription", querydescription);
-                code.Execute(scope);
-
-                dynamic Results = scope.GetVariable(report);
-                dynamic m = Results();
-                emailbody = m.Run(qf);
-
-            }
-            catch (Exception ex)
-            {
-                emailbody = "Python Script error: " + ex.Message;
-            }
-
-#if DEBUG2
-            var items = new string[] { "Purity", "Rite", "Launch", "Overview"};
-            if(items.Any(ii => savedquery.Contains(ii)))
-            {
-    	        var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
-                db.SendPeopleEmail(emailqueue.Id);
-            }
-#else
-            var emailqueue = db.CreateQueue(queuedBy, from, subject, emailbody, null, tag.Id, false);
-
-            db.SendPeopleEmail(emailqueue.Id);
-#endif
+                {"QueryName", queryname},
+                {"QueryDescription", querydescription},
+            };
+            EmailReport(savedquery, queuedBy, fromaddr, fromname, subject, report);
         }
 
-
-	}
-
-
+        public string FmtPhone(string s, string prefix)
+        {
+            return s.FmtFone(prefix);
+        }
+    }
 }

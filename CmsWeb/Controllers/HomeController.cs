@@ -243,11 +243,7 @@ namespace CmsWeb.Controllers
         {
             try
             {
-#if DEBUG2
-                var script = System.IO.File.ReadAllText(Server.MapPath("/chart.py"));
-#else
                 var script = DbUtil.Db.ContentOfTypePythonScript(name);
-#endif
                 if (!script.HasValue())
                     return Message("no script named " + name);
                 script = script.Replace("@P1", p1 ?? "NULL")
