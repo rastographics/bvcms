@@ -47,7 +47,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             if (!id.HasValue)
                 throw new HttpException(404, "No ID found.");
+
             var content = DbUtil.ContentFromID(id.Value);
+            if (content == null)
+                throw new HttpException(404, "No ID found.");
+
             if (snippet == true)
             {
                 content.Snippet = true;
