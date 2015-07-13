@@ -1,8 +1,7 @@
-CREATE FUNCTION [dbo].[DownlineDetails]
+CREATE FUNCTION [dbo].[DownlineLevels]
 (	
 	@categoryid INT,
 	@leaderid INT,
-	@level INT,
 	@pagenum INT,
 	@pagesize INT
 )
@@ -12,36 +11,43 @@ RETURN
 (
 	WITH downlineids AS (
 		SELECT 
-			OrgId
+			Generation
+			,OrgId
 			,LeaderId
 			,DiscipleId 
 			,StartDt
 			,EndDt
-			,Trace
 		FROM dbo.Downline
 		WHERE DownlineId = @leaderid
 		AND CategoryId = @categoryid
-		AND Generation = @level
+	), levels AS (
+		SELECT
+			[level] = downlineids.Generation,
+			OrgId,
+			LeaderId,
+			StartDt = MIN(downlineids.StartDt),
+			EndDt = MAX(downlineids.EndDt),
+			Cnt = COUNT(*)
+		FROM downlineids
+		GROUP BY Generation, OrgId, LeaderId
 	), TempCount AS (
-	    SELECT COUNT(*) AS MaxRows FROM downlineids
+	    SELECT COUNT(*) AS MaxRows FROM levels
 	)
 	SELECT 
-		OrganizationName
+		[Level]
+		,OrganizationName
 		,Leader = leader.Name2
-		,Student = follow.Name2
-		,Trace
 		,d.OrgId
 		,d.LeaderId
-		,d.DiscipleId
+		,d.Cnt
 		,d.StartDt
 		,EndDt = NULLIF(d.EndDt, '1/1/3000')
-		,MaxRows 
-	FROM downlineids d
+		,c.MaxRows 
+	FROM levels d
 	JOIN dbo.Organizations o ON o.OrganizationId = d.OrgId
 	JOIN dbo.People leader ON leader.PeopleId = d.leaderid
-	JOIN dbo.People follow ON follow.PeopleId = d.DiscipleId
 	JOIN TempCount c ON 1 = 1
-	ORDER BY o.OrganizationName, leader.Name2, follow.Name2
+	ORDER BY [level], o.OrganizationName, leader.Name2
     OFFSET (@pagenum-1)*@pagesize ROWS
 	FETCH NEXT @pagesize ROWS ONLY
 )

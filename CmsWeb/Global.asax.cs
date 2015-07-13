@@ -34,6 +34,10 @@ namespace CmsWeb
             RouteTable.Routes.RouteExistingFiles = true;
             HttpRuntime.Cache.Remove("BuildDate");
 
+            //Remove and JsonValueProviderFactory and add JsonNetValueProviderFactory
+            ValueProviderFactories.Factories.Remove(ValueProviderFactories.Factories.OfType<JsonValueProviderFactory>().FirstOrDefault());
+            ValueProviderFactories.Factories.Add(new JsonNetValueProviderFactory());
+
             MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
             MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
 

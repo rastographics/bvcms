@@ -1,4 +1,4 @@
-CREATE NONCLUSTERED INDEX [_dta_index_Downline_13_656630028__K1_K2_K6] ON [dbo].[Downline] ([CategoryId], [DownlineId], [DiscipleId])
+CREATE NONCLUSTERED INDEX [IXDownlineCatLeaderDisc] ON [dbo].[Downline] ([CategoryId], [DownlineId], [DiscipleId]) INCLUDE ([Generation])
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

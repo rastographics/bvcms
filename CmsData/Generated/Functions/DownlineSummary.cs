@@ -16,11 +16,15 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
+		private int? _Rank;
+		
 		private int? _PeopleId;
 		
 		private string _LeaderName;
 		
 		private int? _Cnt;
+		
+		private int? _Levels;
 		
 		private int? _MaxRows;
 		
@@ -30,6 +34,23 @@ namespace CmsData.View
 		}
 
 		
+		
+		[Column(Name="Rank", Storage="_Rank", DbType="int")]
+		public int? Rank
+		{
+			get
+			{
+				return this._Rank;
+			}
+
+			set
+			{
+				if (this._Rank != value)
+					this._Rank = value;
+			}
+
+		}
+
 		
 		[Column(Name="PeopleId", Storage="_PeopleId", DbType="int")]
 		public int? PeopleId
@@ -77,6 +98,23 @@ namespace CmsData.View
 			{
 				if (this._Cnt != value)
 					this._Cnt = value;
+			}
+
+		}
+
+		
+		[Column(Name="Levels", Storage="_Levels", DbType="int")]
+		public int? Levels
+		{
+			get
+			{
+				return this._Levels;
+			}
+
+			set
+			{
+				if (this._Levels != value)
+					this._Levels = value;
 			}
 
 		}

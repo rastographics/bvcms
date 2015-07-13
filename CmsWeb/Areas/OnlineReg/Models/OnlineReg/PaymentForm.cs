@@ -257,7 +257,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 				 Account = "12345678901234"
 #endif
             };
-            if (r.payinfo.PeopleId == Util.UserPeopleId) // Is this the logged in user?
+            if (r.payinfo.PeopleId == m.UserPeopleId) // Is this the logged in user?
             {
                 pf.CreditCard = r.payinfo.MaskedCard;
                 pf.Account = r.payinfo.MaskedAccount;

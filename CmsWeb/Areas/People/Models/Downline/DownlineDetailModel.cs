@@ -8,14 +8,16 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.People.Models
 {
 
-    public class DownlineModel : PagedTableModel<DownlineDetail, DownlineDetail>
+    public class DownlineDetailModel : PagedTableModel<DownlineDetail, DownlineDetail>
     {
-        public int? DownlineId { get; set; }
         public int? CategoryId { get; set; }
+        public int? DownlineId { get; set; }
+        public int? Level { get; set; }
         public int? DownlineCount { get; set; }
+        public int? DownlineLevels { get; set; }
         public string Trace { get; set; }
 
-        public DownlineModel()
+        public DownlineDetailModel()
             : base("", "", true)
         {
             UseDbPager = true;
@@ -29,10 +31,10 @@ namespace CmsWeb.Areas.People.Models
             {
                 if (!name.HasValue() && DownlineId.HasValue)
                 {
-                    name = (from p in DbUtil.Db.People
-                        where p.PeopleId == DownlineId
-                        select p.Name).Single();
-                    DownlineCount = DbUtil.Db.DownlineSummary(CategoryId, DownlineId, 1, 1).Single().Cnt;
+                    var i = DbUtil.Db.DownlineLeaders.Single(dd => dd.CategoryId == CategoryId && dd.PeopleId == DownlineId);
+                    name = i.Name;
+                    DownlineCount = i.Cnt;
+                    DownlineLevels = i.Levels;
                 }
                 return name;
             }
@@ -54,7 +56,7 @@ namespace CmsWeb.Areas.People.Models
         {
             if (rows != null)
                 return rows;
-            rows = (from a in DbUtil.Db.DownlineDetails(CategoryId, DownlineId, Page, PageSize)
+            rows = (from a in DbUtil.Db.DownlineDetails(CategoryId, DownlineId, Level, Page, PageSize)
                     select a).ToList();
             count = rows.Count == 0 ? 0 : rows[0].MaxRows;
             return rows;

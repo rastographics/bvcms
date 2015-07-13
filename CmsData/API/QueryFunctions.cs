@@ -25,18 +25,12 @@ namespace CmsData
             var script = Db.Content("VitalStats");
             if (script == null)
                 return "no VitalStats script";
-#if DEBUG2
-            var options = new Dictionary<string, object>();
-            options["Debug"] = true;
-            var engine = Python.CreateEngine(options);
-            var paths = engine.GetSearchPaths();
-            paths.Add(path);
-            engine.SetSearchPaths(paths);
-            var sc = engine.CreateScriptSourceFromFile(HttpContext.Current.Server.MapPath("/MembershipAutomation2.py"));
-#else
+
+            if (!script.Body.Contains("class VitalStats"))
+                return RunScript(Db, script.Body);
+
             var engine = Python.CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script.Body);
-#endif
 
             try
             {
@@ -44,9 +38,9 @@ namespace CmsData
                 var scope = engine.CreateScope();
                 code.Execute(scope);
 
-                dynamic VitalStats = scope.GetVariable("VitalStats");
-                dynamic m = VitalStats();
-                return m.Run(qf);
+                    dynamic VitalStats = scope.GetVariable("VitalStats");
+                    dynamic m = VitalStats();
+                    return m.Run(qf);
             }
             catch (Exception ex)
             {
@@ -57,7 +51,7 @@ namespace CmsData
         public static string RunScript(CMSDataContext db, string script)
         {
             if (!script.HasValue())
-                return "no VitalStats script";
+                return "no script";
 
             var qf = new QueryFunctions(db);
             var engine = Python.CreateEngine();
@@ -79,7 +73,7 @@ namespace CmsData
             }
             catch (Exception ex)
             {
-                return "VitalStats script error: " + ex.Message;
+                return "Python script error: " + ex.Message;
             }
         }
 
@@ -145,14 +139,14 @@ namespace CmsData
             var dt2 = dt.AddHours(endhour);
 
             var q = from p in db.Programs
-                where progid == 0 || p.Id == progid
-                from pd in p.ProgDivs
-                where divid == 0 || pd.DivId == divid
-                select (from dg in pd.Division.DivOrgs
-                    from m in dg.Organization.Meetings
-                    where m.MeetingDate >= dt1
-                    where m.MeetingDate < dt2
-                    select m.MaxCount).Sum() ?? 0;
+                    where progid == 0 || p.Id == progid
+                    from pd in p.ProgDivs
+                    where divid == 0 || pd.DivId == divid
+                    select (from dg in pd.Division.DivOrgs
+                            from m in dg.Organization.Meetings
+                            where m.MeetingDate >= dt1
+                            where m.MeetingDate < dt2
+                            select m.MaxCount).Sum() ?? 0;
             return q.Sum();
         }
 
@@ -222,16 +216,16 @@ namespace CmsData
         }
         public string SqlNameCountArray(string title, string sql)
         {
-//            var qb = db.PeopleQuery2(s);
-//            if (qb == null)
-//                return 0;
+            //            var qb = db.PeopleQuery2(s);
+            //            if (qb == null)
+            //                return 0;
             var cs = db.CurrentUser.InRole("Finance")
                 ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
             string declareqtagid = null;
-            if(sql.Contains("@qtagid"))
+            if (sql.Contains("@qtagid"))
             {
                 var id = db.FetchLastQuery().Id;
                 var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
@@ -250,11 +244,18 @@ namespace CmsData
         }
         public int QueryCountDivDateRange(string s, string division, object startdt, int days)
         {
+            return QueryCountProgIdDivDateRange(s, null, division, startdt, days);
+        }
+        public int QueryCountProgIdDivDateRange(string s, int? progid, string division, object startdt, int days)
+        {
             var start = startdt.ToDate();
             if (start == null)
                 throw new Exception("bad date: " + startdt);
             var enddt = start.Value.AddDays(days);
-            var divid = db.Divisions.Where(dd => dd.Name == division).Select(dd => dd.Id).SingleOrDefault();
+            var divid = (from dd in db.Divisions
+                         where dd.Name == division
+                         where progid == null || dd.ProgId == progid
+                         select dd.Id).SingleOrDefault();
             db.QbStartDateOverride = start;
             db.QbEndDateOverride = enddt;
             db.QbDivisionOverride = divid;
@@ -273,12 +274,20 @@ namespace CmsData
                 db.QbDivisionOverride = null;
             }
         }
+
         public int QueryCountDivDate(string s, string division, object startdt)
+        {
+            return QueryCountDivDate(s, null, division, startdt);
+        }
+        public int QueryCountDivDate(string s, int? progid, string division, object startdt)
         {
             var start = startdt.ToDate();
             if (start == null)
                 throw new Exception("bad date: " + startdt);
-            var divid = db.Divisions.Where(dd => dd.Name == division).Select(dd => dd.Id).SingleOrDefault();
+            var divid = (from dd in db.Divisions
+                         where dd.Name == division
+                         where progid == null || dd.ProgId == progid
+                         select dd.Id).SingleOrDefault();
             db.QbStartDateOverride = start;
             db.QbEndDateOverride = start;
             db.QbDivisionOverride = divid;
@@ -334,7 +343,7 @@ namespace CmsData
                     select m;
             return q.Count();
         }
-        public int DecisionCountDateRange(string decisiontype , object startdt, int days)
+        public int DecisionCountDateRange(string decisiontype, object startdt, int days)
         {
             var start = startdt.ToDate();
             if (start == null)
@@ -357,12 +366,12 @@ namespace CmsData
             var a = attendtype.Split(',');
 
             var qt = from t in db.AttendTypes
-                select t;
+                     select t;
 
-            if(attendtype.NotEqual("All"))
+            if (attendtype.NotEqual("All"))
                 qt = from t in qt
-                    where a.Contains(t.Description)
-                    select t;
+                     where a.Contains(t.Description)
+                     select t;
 
             var ids = string.Join(",", qt.Select(t => t.Id));
             var q = db.AttendanceTypeAsOf(start, enddt, progid, divid, orgid, 0, ids);

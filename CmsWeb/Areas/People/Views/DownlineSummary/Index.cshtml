@@ -3,10 +3,13 @@
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = "Downline Summary";
-  ViewBag.PageHeader = "Downline Summary for {0}".Fmt(Model.Category);
+    
+  ViewBag.PageHeader = Model.Count() > 0
+    ? "Downline Summary for {0}".Fmt(Model.Category)
+    : "Downline not available now (it may be rebuilding, check back later)";
 }
-<div class="box box-responsive">
-  <div class="box-content">
+<div class="box box-responsive" style="margin-left: auto; margin-right:auto;display:table">
+  <div class="box-content" style="display: table">
     <form class="ajax" data-results="#results" method="post" action="/DownlineSummary/Results">
       @Html.HiddenFor(m => m.CategoryId)
       @Html.Partial("Results", Model)
