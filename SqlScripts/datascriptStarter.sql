@@ -1439,6 +1439,18 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 </body>
 </html>
 ', '2015-06-27 13:25:03.937', NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 0)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (86, N'DownlineCategories', N'Downline Category XML Config', N'<root>
+	<!--Note the category id="1" line, that specifies a single category which is the default.
+		mainfellowship="true" will include any organization which is a main fellowship in the downline
+		The other two lines are commented out 
+		and show examples using programs and divisions to select the participating orgs.
+	 -->
+	<category id="1" name="Main Fellowships" mainfellowship="true" />
+	<!--
+	<category id="2" name="LifeGroups and DiscipleLife" programs="101,103" />
+	<category id="3" name="Discipleship" divisions="6366" />
+	-->
+</root>', '2015-07-11 09:33:42.840', NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Content] OFF
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (1, 1, '2010-10-30 15:36:12.533', N'General Operation', N'General Operation', 1, 1, 0, NULL, N'0', N'0', N'0', N'0', N'0', N'0', 1, NULL, 0, 0)
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (2, 3, '2011-09-27 15:37:43.453', N'Pledge', N'Pledge', 1, 1, 1, NULL, N'0', N'0', N'0', N'0', N'0', N'0', 2, 0, 0, 0)

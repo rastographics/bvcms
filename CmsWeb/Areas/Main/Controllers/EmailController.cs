@@ -16,114 +16,126 @@ using HtmlAgilityPack;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
-    [RouteArea("Main", AreaPrefix="Email"), Route("{action}/{id?}")]
-	public class EmailController : CmsStaffController
-	{
-		[ValidateInput(false)]
+    [RouteArea("Main", AreaPrefix = "Email"), Route("{action}/{id?}")]
+    public class EmailController : CmsStaffController
+    {
+        [ValidateInput(false)]
         [Route("~/Email/{id:guid}")]
-		public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid)
-		{
-			if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
-			if (!body.HasValue())
-				body = TempData["body"] as string;
+        public ActionResult Index(Guid id, int? templateID, bool? parents, string body, string subj, bool? ishtml, bool? ccparents, bool? nodups, int? orgid)
+        {
+            if (Util.SessionTimedOut()) return Redirect("/Errors/SessionTimeout.htm");
+            if (!body.HasValue())
+                body = TempData["body"] as string;
 
             if (!subj.HasValue() && templateID != 0)
-			{
-				if (templateID == null)
-					return View("SelectTemplate", new EmailTemplatesModel
-					{
-					    WantParents = parents ?? false,
+            {
+                if (templateID == null)
+                    return View("SelectTemplate", new EmailTemplatesModel
+                    {
+                        WantParents = parents ?? false,
                         QueryId = id,
-					});
+                    });
 
-			    DbUtil.LogActivity("Emailing people");
+                DbUtil.LogActivity("Emailing people");
 
-			    var m = new MassEmailer(id, parents, ccparents, nodups);
+                var m = new MassEmailer(id, parents, ccparents, nodups);
 
-			    m.Host = Util.Host;
+                m.Host = Util.Host;
 
-			    ViewBag.templateID = templateID;
-			    m.OrgId = orgid;
-			    return View("Compose", m);
-			}
+                if (body.HasValue())
+                    templateID = SaveDraft(null, null, 0, null, body);
 
-			// using no templates
+                ViewBag.templateID = templateID;
+                m.OrgId = orgid;
+                return View("Compose", m);
+            }
 
-			DbUtil.LogActivity("Emailing people");
+            // using no templates
 
-			var me = new MassEmailer(id, parents, ccparents, nodups);
-			me.Host = Util.Host;
+            DbUtil.LogActivity("Emailing people");
 
-			if (body.HasValue())
-				me.Body = Server.UrlDecode(body);
+            var me = new MassEmailer(id, parents, ccparents, nodups);
+            me.Host = Util.Host;
 
-			if (subj.HasValue())
-				me.Subject = Server.UrlDecode(subj);
+            if (body.HasValue())
+                me.Body = Server.UrlDecode(body);
 
-			ViewData["oldemailer"] = "/EmailPeople.aspx?id=" + id
-				 + "&subj=" + subj + "&body=" + body + "&ishtml=" + ishtml
-				 + (parents == true ? "&parents=true" : "");
+            if (subj.HasValue())
+                me.Subject = Server.UrlDecode(subj);
 
-			if (parents == true)
-				ViewData["parentsof"] = "with ParentsOf option";
+            ViewData["oldemailer"] = "/EmailPeople.aspx?id=" + id
+                 + "&subj=" + subj + "&body=" + body + "&ishtml=" + ishtml
+                 + (parents == true ? "&parents=true" : "");
 
-			return View("Index", me);
-		}
+            if (parents == true)
+                ViewData["parentsof"] = "with ParentsOf option";
+
+            return View("Index", me);
+        }
 
         public ActionResult EmailBody(string id)
         {
             var i = id.ToInt();
             var c = ViewExtensions2.GetContent(i);
-            if(c == null)
+            if (c == null)
                 return new EmptyResult();
 
             var doc = new HtmlDocument();
             doc.LoadHtml(c.Body);
             var bvedits = doc.DocumentNode.SelectNodes("//div[@bvedit]");
-            if(bvedits == null || !bvedits.Any())
-		        c.Body = "<div bvedit='discardthis'>{0}</div>".Fmt(c.Body);
+            if (bvedits == null || !bvedits.Any())
+                c.Body = "<div bvedit='discardthis'>{0}</div>".Fmt(c.Body);
 
             ViewBag.content = c;
             return View();
         }
 
         [HttpPost]
-		[ValidateInput(false)]
-		public ActionResult SaveDraft(MassEmailer m, int saveid, string name, int roleid)
-		{
-			Content content = null;
+        [ValidateInput(false)]
+        public ActionResult SaveDraft(MassEmailer m, int saveid, string name, int roleid)
+        {
+            var id = SaveDraft(saveid, name, roleid, m.Subject, m.Body);
 
-			if (saveid > 0)
-				content = DbUtil.ContentFromID(saveid);
-            if(content == null)
-			{
-				content = new Content
-				{
-				    Name = name.HasValue() ? name
+            System.Diagnostics.Debug.Print("Template ID: " + id);
+
+            ViewBag.parents = m.wantParents;
+            ViewBag.templateID = id;
+
+            return View("Compose", m);
+        }
+
+        private static int SaveDraft(int? draftId, string name, int roleId, string draftSubject, string draftBody)
+        {
+            Content content = null;
+
+            if (draftId.HasValue && draftId > 0)
+                content = DbUtil.ContentFromID(draftId.Value);
+
+            if (content == null)
+            {
+                content = new Content
+                {
+                    Name = name.HasValue()
+                        ? name
                         : "new draft " + DateTime.Now.FormatDateTm(),
                     TypeID = ContentTypeCode.TypeSavedDraft,
-                    RoleID = roleid
-				};
-				content.OwnerID = Util.UserId;
-			}
+                    RoleID = roleId,
+                    OwnerID = Util.UserId
+                };
+            }
 
-			content.Title = m.Subject;
-            content.Body = GetBody(m.Body);
+            content.Title = draftSubject;
+            content.Body = GetBody(draftBody);
 
-			content.DateCreated = DateTime.Now;
+            content.DateCreated = DateTime.Now;
 
-			if (saveid == 0)
+            if (!draftId.HasValue || draftId == 0)
                 DbUtil.Db.Contents.InsertOnSubmit(content);
 
-			DbUtil.Db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
 
-			System.Diagnostics.Debug.Print("Template ID: " + content.Id);
-
-			ViewBag.parents = m.wantParents;
-			ViewBag.templateID = content.Id;
-
-			return View("Compose", m);
-		}
+            return content.Id;
+        }
 
         private static string GetBody(string body)
         {
@@ -138,159 +150,159 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         [HttpPost]
-		public ActionResult ContentDeleteDrafts(Guid queryid, bool parents, int[] draftId)
-		{
-			using (var cn = new SqlConnection(Util.ConnectionString))
-			{
-				cn.Open();
-				cn.Execute("delete from dbo.Content where id in @ids", new { ids = draftId });
-			}
-			return RedirectToAction("Index", new { id = queryid, parents });
-		}
+        public ActionResult ContentDeleteDrafts(Guid queryid, bool parents, int[] draftId)
+        {
+            using (var cn = new SqlConnection(Util.ConnectionString))
+            {
+                cn.Open();
+                cn.Execute("delete from dbo.Content where id in @ids", new { ids = draftId });
+            }
+            return RedirectToAction("Index", new { id = queryid, parents });
+        }
 
-		[HttpPost]
-		[ValidateInput(false)]
-		public ActionResult QueueEmails(MassEmailer m)
-		{
-		    m.Body = GetBody(m.Body);
-			if (!m.Subject.HasValue() || !m.Body.HasValue())
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult QueueEmails(MassEmailer m)
+        {
+            m.Body = GetBody(m.Body);
+            if (!m.Subject.HasValue() || !m.Body.HasValue())
                 return Json(new { id = 0, error = "Both subject and body need some text." });
-			if (!User.IsInRole("Admin") && m.Body.Contains("{createaccount}", ignoreCase: true))
+            if (!User.IsInRole("Admin") && m.Body.Contains("{createaccount}", ignoreCase: true))
                 return Json(new { id = 0, error = "Only Admin can use {createaccount}." });
 
-			if (Util.SessionTimedOut())
-			{
-				Session["massemailer"] = m;
-				return Content("timeout");
-			}
+            if (Util.SessionTimedOut())
+            {
+                Session["massemailer"] = m;
+                return Content("timeout");
+            }
 
-			DbUtil.LogActivity("Emailing people");
+            DbUtil.LogActivity("Emailing people");
 
-			if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
+            if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
                 return Json(new { id = 0, error = "No email address to send from." });
 
-			m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
+            m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
 
-			int id;
-			try
-			{
-				var eq = m.CreateQueue();
-				if (eq == null)
-					throw new Exception("No Emails to send (tag does not exist)");
-			    id = eq.Id;
-				if (eq.SendWhen.HasValue)
-					return Json(new { id = 0, content = "Emails queued to be sent." });
-			}
-			catch (Exception ex)
-			{
-				ErrorSignal.FromCurrentContext().Raise(ex);
-				return Json(new { id = 0, error = ex.Message });
-			}
+            int id;
+            try
+            {
+                var eq = m.CreateQueue();
+                if (eq == null)
+                    throw new Exception("No Emails to send (tag does not exist)");
+                id = eq.Id;
+                if (eq.SendWhen.HasValue)
+                    return Json(new { id = 0, content = "Emails queued to be sent." });
+            }
+            catch (Exception ex)
+            {
+                ErrorSignal.FromCurrentContext().Raise(ex);
+                return Json(new { id = 0, error = ex.Message });
+            }
 
-			var host = Util.Host;
-			// save these from HttpContext to set again inside thread local storage
-			var userEmail = Util.UserEmail;
-			var isInRoleEmailTest = User.IsInRole("EmailTest");
+            var host = Util.Host;
+            // save these from HttpContext to set again inside thread local storage
+            var userEmail = Util.UserEmail;
+            var isInRoleEmailTest = User.IsInRole("EmailTest");
 
-		    try
-		    {
-		        ValidateEmailReplacementCodes(DbUtil.Db, m.Body, new MailAddress(m.FromAddress));
-		    }
-		    catch (Exception ex)
-		    {
+            try
+            {
+                ValidateEmailReplacementCodes(DbUtil.Db, m.Body, new MailAddress(m.FromAddress));
+            }
+            catch (Exception ex)
+            {
                 return Json(new { error = ex.Message });
-		    }
+            }
 
-		    System.Threading.Tasks.Task.Factory.StartNew(() =>
-			{
-				Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-				try
-				{
-					var db = DbUtil.Create(host);
-					var cul = db.Setting("Culture", "en-US");
-					Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
-					Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
-					// set these again inside thread local storage
-					Util.UserEmail = userEmail;
-					Util.IsInRoleEmailTest = isInRoleEmailTest;
-					db.SendPeopleEmail(id);
-				}
-				catch (Exception ex)
-				{
-					var ex2 = new Exception("Emailing error for queueid " + id, ex);
-					var errorLog = ErrorLog.GetDefault(null);
-					errorLog.Log(new Error(ex2));
+            System.Threading.Tasks.Task.Factory.StartNew(() =>
+            {
+                Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
+                try
+                {
+                    var db = DbUtil.Create(host);
+                    var cul = db.Setting("Culture", "en-US");
+                    Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
+                    // set these again inside thread local storage
+                    Util.UserEmail = userEmail;
+                    Util.IsInRoleEmailTest = isInRoleEmailTest;
+                    db.SendPeopleEmail(id);
+                }
+                catch (Exception ex)
+                {
+                    var ex2 = new Exception("Emailing error for queueid " + id, ex);
+                    var errorLog = ErrorLog.GetDefault(null);
+                    errorLog.Log(new Error(ex2));
 
-					var db = DbUtil.Create(host);
-					var equeue = db.EmailQueues.Single(ee => ee.Id == id);
-					equeue.Error = ex.Message.Truncate(200);
-					db.SubmitChanges();
-				}
-			});
-			return Json(new { id = id });
-		}
+                    var db = DbUtil.Create(host);
+                    var equeue = db.EmailQueues.Single(ee => ee.Id == id);
+                    equeue.Error = ex.Message.Truncate(200);
+                    db.SubmitChanges();
+                }
+            });
+            return Json(new { id = id });
+        }
 
-		[HttpPost]
-		[ValidateInput(false)]
-		public ActionResult TestEmail(MassEmailer m)
-		{
-		    m.Body = GetBody(m.Body);
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult TestEmail(MassEmailer m)
+        {
+            m.Body = GetBody(m.Body);
             if (Util.SessionTimedOut())
-			{
-				Session["massemailer"] = m;
-				return Content("timeout");
-			}
+            {
+                Session["massemailer"] = m;
+                return Content("timeout");
+            }
 
-			if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
+            if (m.EmailFroms().Count(ef => ef.Value == m.FromAddress) == 0)
                 return Json(new { error = "No email address to send from." });
 
-			m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
-			var from = Util.FirstAddress(m.FromAddress, m.FromName);
-			var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
+            m.FromName = m.EmailFroms().First(ef => ef.Value == m.FromAddress).Text;
+            var from = Util.FirstAddress(m.FromAddress, m.FromName);
+            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
 
-			try
-			{
+            try
+            {
                 ValidateEmailReplacementCodes(DbUtil.Db, m.Body, from);
 
                 DbUtil.Db.CopySession();
-				DbUtil.Db.Email(from, p, null, m.Subject, m.Body, false);
-			}
-			catch (Exception ex)
-			{
+                DbUtil.Db.Email(from, p, null, m.Subject, m.Body, false);
+            }
+            catch (Exception ex)
+            {
                 return Json(new { error = ex.Message });
-			}
-			return Content("Test email sent.");
-		}
+            }
+            return Content("Test email sent.");
+        }
 
-		[HttpPost]
-		public ActionResult TaskProgress(string id)
-		{
-		    var idi = id.ToInt();
-			var queue = SetProgressInfo(idi);
-			if (queue == null)
+        [HttpPost]
+        public ActionResult TaskProgress(string id)
+        {
+            var idi = id.ToInt();
+            var queue = SetProgressInfo(idi);
+            if (queue == null)
                 return Json(new { error = "No queue." });
 
-		    var title = string.Empty;
-		    var message = string.Empty;
+            var title = string.Empty;
+            var message = string.Empty;
 
-		    if ((bool) ViewData["finished"])
-		    {
-		        title = "Email has completed.";
-		    }
-            else if (((string) ViewData["error"]).HasValue())
+            if ((bool)ViewData["finished"])
             {
-                return Json(new {error = (string) ViewData["error"]});
+                title = "Email has completed.";
+            }
+            else if (((string)ViewData["error"]).HasValue())
+            {
+                return Json(new { error = (string)ViewData["error"] });
             }
             else
             {
                 title = "Your emails have been queued and will be sent.";
             }
 
-		    message = "Queued: {0}\nStarted: {1}\nTotal Emails: {2}\nSent: {3}\nElapsed: {4}".Fmt(ViewData["queued"],
-		        ViewData["started"], ViewData["total"], ViewData["sent"], ViewData["elapsed"]);
+            message = "Queued: {0}\nStarted: {1}\nTotal Emails: {2}\nSent: {3}\nElapsed: {4}".Fmt(ViewData["queued"],
+                ViewData["started"], ViewData["total"], ViewData["sent"], ViewData["elapsed"]);
 
-            return Json(new {title = title, message = message});
-		}
+            return Json(new { title = title, message = message });
+        }
 
         [HttpPost]
         [ValidateInput(false)]
@@ -317,49 +329,49 @@ namespace CmsWeb.Areas.Main.Controllers
         }
 
         private EmailQueue SetProgressInfo(int id)
-		{
-			var emailqueue = DbUtil.Db.EmailQueues.SingleOrDefault(e => e.Id == id);
-			if (emailqueue != null)
-			{
-				var q = from et in DbUtil.Db.EmailQueueTos
-						  where et.Id == id
-						  select et;
-				ViewData["queued"] = emailqueue.Queued.ToString("g");
-				ViewData["total"] = q.Count();
-				ViewData["sent"] = q.Count(e => e.Sent != null);
-				ViewData["finished"] = false;
-				if (emailqueue.Started == null)
-				{
-					ViewData["started"] = "not started";
-					ViewData["completed"] = "not started";
-					ViewData["elapsed"] = "not started";
-				}
-				else
-				{
-					ViewData["started"] = emailqueue.Started.Value.ToString("g");
-					var max = q.Max(et => et.Sent);
-					max = max ?? DateTime.Now;
+        {
+            var emailqueue = DbUtil.Db.EmailQueues.SingleOrDefault(e => e.Id == id);
+            if (emailqueue != null)
+            {
+                var q = from et in DbUtil.Db.EmailQueueTos
+                        where et.Id == id
+                        select et;
+                ViewData["queued"] = emailqueue.Queued.ToString("g");
+                ViewData["total"] = q.Count();
+                ViewData["sent"] = q.Count(e => e.Sent != null);
+                ViewData["finished"] = false;
+                if (emailqueue.Started == null)
+                {
+                    ViewData["started"] = "not started";
+                    ViewData["completed"] = "not started";
+                    ViewData["elapsed"] = "not started";
+                }
+                else
+                {
+                    ViewData["started"] = emailqueue.Started.Value.ToString("g");
+                    var max = q.Max(et => et.Sent);
+                    max = max ?? DateTime.Now;
 
-					if (emailqueue.Sent == null && !emailqueue.Error.HasValue())
-						ViewData["completed"] = "running";
-					else
-					{
-						ViewData["completed"] = max;
-						if (emailqueue.Error.HasValue())
-							ViewData["Error"] = emailqueue.Error;
-						else
-							ViewData["finished"] = true;
-					}
-					ViewData["elapsed"] = max.Value.Subtract(emailqueue.Started.Value).ToString(@"h\:mm\:ss");
-				}
-			}
-			return emailqueue;
-		}
+                    if (emailqueue.Sent == null && !emailqueue.Error.HasValue())
+                        ViewData["completed"] = "running";
+                    else
+                    {
+                        ViewData["completed"] = max;
+                        if (emailqueue.Error.HasValue())
+                            ViewData["Error"] = emailqueue.Error;
+                        else
+                            ViewData["finished"] = true;
+                    }
+                    ViewData["elapsed"] = max.Value.Subtract(emailqueue.Started.Value).ToString(@"h\:mm\:ss");
+                }
+            }
+            return emailqueue;
+        }
 
         private static void ValidateEmailReplacementCodes(CMSDataContext db, string emailText, MailAddress fromAddress)
         {
             var er = new EmailReplacements(db, emailText, fromAddress);
             er.DoReplacements(db, DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value));
         }
-	}
+    }
 }

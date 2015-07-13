@@ -2,7 +2,7 @@
 @model CmsWeb.Areas.People.Models.DownlineSummaryModel
 <div id="results">
   @Html.Partial("PagerTop", Model)
-  <table class="table table-striped">
+  <table class="table table-striped" style="width:auto">
     <thead>
       <tr>
         <td colspan="5">
@@ -11,16 +11,20 @@
         </td>
       </tr>
     <tr>
+      <th>Rank</th>
       <th>Name</th>
       <th>Count</th>
+      <th>Levels</th>
     </tr>
     </thead>
     <tbody>
       @foreach (var r in Model.ViewList())
       {
         <tr>
-          <td><a href="/Downline/@Model.CategoryId/@r.PeopleId" target="downline">@r.LeaderName</a></td>
+          <td>@r.Rank.ToString2("N0")</td>
+          <td><a href="/DownlineLevels/@Model.CategoryId/@r.PeopleId" target="downline">@r.LeaderName</a></td>
           <td>@r.Cnt.ToString2("N0")</td>
+          <td>@r.Levels.ToString2("N0")</td>
         </tr>
       }
     </tbody>

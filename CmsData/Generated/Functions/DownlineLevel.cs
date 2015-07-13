@@ -10,25 +10,23 @@ using System.ComponentModel;
 
 namespace CmsData.View
 {
-	[Table(Name="DownlineDetails")]
-	public partial class DownlineDetail
+	[Table(Name="DownlineLevels")]
+	public partial class DownlineLevel
 	{
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
+		
+		private int? _Level;
 		
 		private string _OrganizationName;
 		
 		private string _Leader;
 		
-		private string _Student;
-		
-		private string _Trace;
-		
 		private int? _OrgId;
 		
 		private int? _LeaderId;
 		
-		private int? _DiscipleId;
+		private int? _Cnt;
 		
 		private DateTime? _StartDt;
 		
@@ -37,11 +35,28 @@ namespace CmsData.View
 		private int? _MaxRows;
 		
 		
-		public DownlineDetail()
+		public DownlineLevel()
 		{
 		}
 
 		
+		
+		[Column(Name="Level", Storage="_Level", DbType="int")]
+		public int? Level
+		{
+			get
+			{
+				return this._Level;
+			}
+
+			set
+			{
+				if (this._Level != value)
+					this._Level = value;
+			}
+
+		}
+
 		
 		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
 		public string OrganizationName
@@ -72,40 +87,6 @@ namespace CmsData.View
 			{
 				if (this._Leader != value)
 					this._Leader = value;
-			}
-
-		}
-
-		
-		[Column(Name="Student", Storage="_Student", DbType="nvarchar(139)")]
-		public string Student
-		{
-			get
-			{
-				return this._Student;
-			}
-
-			set
-			{
-				if (this._Student != value)
-					this._Student = value;
-			}
-
-		}
-
-		
-		[Column(Name="Trace", Storage="_Trace", DbType="varchar(400)")]
-		public string Trace
-		{
-			get
-			{
-				return this._Trace;
-			}
-
-			set
-			{
-				if (this._Trace != value)
-					this._Trace = value;
 			}
 
 		}
@@ -145,18 +126,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="DiscipleId", Storage="_DiscipleId", DbType="int")]
-		public int? DiscipleId
+		[Column(Name="Cnt", Storage="_Cnt", DbType="int")]
+		public int? Cnt
 		{
 			get
 			{
-				return this._DiscipleId;
+				return this._Cnt;
 			}
 
 			set
 			{
-				if (this._DiscipleId != value)
-					this._DiscipleId = value;
+				if (this._Cnt != value)
+					this._Cnt = value;
 			}
 
 		}

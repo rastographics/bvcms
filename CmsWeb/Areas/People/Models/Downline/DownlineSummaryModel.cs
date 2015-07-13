@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.People.Models
         {
             if (rows != null)
                 return rows;
-            rows = (from a in DbUtil.Db.DownlineSummary(CategoryId, null, Page, PageSize)
+            rows = (from a in DbUtil.Db.DownlineSummary(CategoryId, Page, PageSize)
                     select a).ToList();
             count = rows.Count == 0 ? 0 : rows[0].MaxRows;
             return rows;

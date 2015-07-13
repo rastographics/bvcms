@@ -32,9 +32,11 @@ BEGIN
 	)
 
 	;WITH porgs AS (
-		SELECT oid = OrganizationId 
+		SELECT oid = o.OrganizationId 
 		FROM dbo.Organizations o
-		WHERE EXISTS(
+		LEFT JOIN dbo.OrganizationExtra e ON e.OrganizationId = o.OrganizationId AND e.Field = 'NoDownline'
+		WHERE e.OrganizationId IS NULL
+		AND EXISTS(
 			SELECT NULL
 			FROM dbo.DivOrg dd
 			WHERE dd.OrgId = o.OrganizationId
@@ -47,9 +49,11 @@ BEGIN
 		)
 	),
 	dorgs AS (
-		SELECT oid = OrganizationId 
+		SELECT oid = o.OrganizationId 
 		FROM dbo.Organizations o
-		WHERE EXISTS(
+		LEFT JOIN dbo.OrganizationExtra e ON e.OrganizationId = o.OrganizationId AND e.Field = 'NoDownline'
+		WHERE e.OrganizationId IS NULL
+		AND EXISTS(
 			SELECT NULL
 			FROM dbo.DivOrg dd
 			WHERE dd.OrgId = o.OrganizationId
@@ -57,9 +61,11 @@ BEGIN
 		)
 	),
 	mainfellowships AS (
-		SELECT oid = OrganizationId
-		FROM dbo.Organizations
-		WHERE IsBibleFellowshipOrg = 1
+		SELECT oid = o.OrganizationId
+		FROM dbo.Organizations o
+		LEFT JOIN dbo.OrganizationExtra e ON e.OrganizationId = o.OrganizationId AND e.Field = 'NoDownline'
+		WHERE e.OrganizationId IS NULL
+		AND IsBibleFellowshipOrg = 1
 		AND @mf = 1
 	), combined AS (
 		SELECT oid FROM porgs
@@ -95,7 +101,6 @@ BEGIN
 		PeopleId,
 
 		-- flag to indicate leader or not 
-		-- 140 = leader, 160 = teacher
 		CASE WHEN MemberTypeId = o.LeaderMemberTypeId THEN 1 ELSE 0 END,
 
 		-- start date
@@ -207,6 +212,47 @@ BEGIN
 
 	SELECT @cnt = COUNT(*) FROM #DownlineData
 	RAISERROR ('inserted %i downlinedata records', 0, 1, @cnt) WITH NOWAIT
+
+
+	;WITH leaders AS (
+		SELECT
+			oid, 
+			pid,
+			CAST(startdt AS DATE) startdt,
+			CAST(enddt AS DATE) enddt
+		FROM #enrollhistory e
+		WHERE LEAD = 1
+	),
+	pass2 AS (
+		SELECT
+			oid, 
+			startdt, 
+			enddt, 
+			MIN(pid) p1, 
+			MAX(pid) p2 
+		FROM leaders l
+		GROUP BY oid, startdt, enddt
+		HAVING COUNT(*) = 2 
+	),
+	females AS (
+		SELECT
+			oid, 
+			pid = IIF(p1.GenderId = 2, p1.PeopleId, p2.PeopleId),
+			sd = l.startdt,
+			ed = l.enddt
+		FROM pass2 l
+		JOIN dbo.People p1 ON p1.PeopleId = l.p1
+		JOIN dbo.People p2 ON p2.PeopleId = l.p2
+		WHERE p1.GenderId <> p2.GenderId
+	)
+	DELETE #DownlineData 
+	FROM #DownlineData dd
+	WHERE EXISTS(
+		SELECT oid, pid, sd, ed
+		FROM females
+		WHERE oid = dd.OrgId AND dd.LeaderId = pid AND CAST(dd.StartDt AS DATE) = sd AND CAST(dd.EndDt AS DATE) = ed
+	)
+
 
 	EXEC dbo.DownlineAddLeaders @categoryid
 	

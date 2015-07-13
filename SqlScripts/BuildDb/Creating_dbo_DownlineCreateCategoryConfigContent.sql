@@ -12,7 +12,7 @@ BEGIN
 		and show examples using programs and divisions to select the participating orgs.
 	 -->
 	<category id="1" name="Main Fellowships" mainfellowship="true" />
-	<--
+	<!--
 	<category id="2" name="LifeGroups and DiscipleLife" programs="101,103" />
 	<category id="3" name="Discipleship" divisions="6366" />
 	-->
