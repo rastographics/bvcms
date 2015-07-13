@@ -51,9 +51,13 @@ namespace CmsWeb.Areas.People.Models
                          Name = m.Name,
                          Age = m.Age,
                          Color = m.DeceasedDate != null ? "red" : "auto",
-                         PositionInFamily = m.PositionInFamilyId == CmsData.Codes.PositionInFamily.PrimaryAdult ?
-                            (m.FamiliesHeaded.Any() ? "Head" : (m.PeopleId == m.Family.HeadOfHouseholdSpouseId ? "Spouse" : "Head2")) :
-                            m.FamilyPosition.Description,
+                         PositionInFamily = m.PositionInFamilyId == CmsData.Codes.PositionInFamily.PrimaryAdult 
+                            ? ((m.FamiliesHeaded.Any() || m.FamiliesHeaded2.Any()) 
+                                ? "Head" 
+                                : (m.PeopleId == m.Family.HeadOfHouseholdSpouseId 
+                                    ? "Spouse" 
+                                    : "Head2")) 
+                            : m.FamilyPosition.Description,
                          SpouseIndicator = m.PeopleId == Person.SpouseId ? "*" : "&nbsp;",
                          Email = m.EmailAddress,
                          isDeceased = m.Deceased,

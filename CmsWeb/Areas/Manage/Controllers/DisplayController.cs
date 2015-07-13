@@ -151,6 +151,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     return View("EditSqlScript", cContent);
 
                 case ContentTypeCode.TypePythonScript:
+                    ViewBag.SimpleTextarea = DbUtil.Db.UserPreference("SimpleTextarea", "false");
                     return View("EditPythonScript", cContent);
 
                 case ContentTypeCode.TypeEmailTemplate:
