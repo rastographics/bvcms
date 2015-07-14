@@ -116,7 +116,8 @@ namespace CmsWeb.MobileAPI
 
 			foreach (var rf in q)
 			{
-				relatives.Add(rf.hohid.ToString(), rf.description);
+                if(!relatives.ContainsKey(rf.hohid.ToString()))
+    				relatives.Add(rf.hohid.ToString(), rf.description);
 			}
 
 			picture = "";

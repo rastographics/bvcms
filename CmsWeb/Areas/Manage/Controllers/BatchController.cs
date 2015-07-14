@@ -648,17 +648,7 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
         [Authorize(Roles = "Admin")]
         public ActionResult RunScript(string id)
         {
-            try
-            {
-                var script = DbUtil.Db.Content(id);
-                var pe = new PythonEvents(Util.Host, id, script.Body);
-                pe.instance.Run();
-            }
-            catch (Exception e)
-            {
-                return Content(e.Message);
-            }
-            return Content("done");
+            return Redirect("/PyScript/" + id);
         }
         [HttpGet]
         [Authorize(Roles = "Admin")]
