@@ -7,12 +7,11 @@ namespace CmsWeb.Areas.Manage.Controllers
     public class ActivityController : CmsStaffController
     {
         [HttpGet, Route("~/LastActivity")]
-        public ActionResult Index(int? userid, string machine, int? peopleid, int? orgid)
+        public ActionResult Index(int? userid, int? peopleid, int? orgid)
         {
             var m = new ActivityModel
             {
                 UserId = userid, 
-                Machine = machine, 
                 PeopleId = peopleid,
                 OrgId = orgid,
             };

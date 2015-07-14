@@ -413,13 +413,9 @@ namespace CmsData
         * The resulting collection of people records (limited to 1000) is returned as an IEnumerable to that all attributes of the 
         * Person record is accessible
         */
-        public IEnumerable<Person> QueryList(string s)
+        public IEnumerable<Person> QueryList(object s)
         {
-            var qb = db.PeopleQuery2(s).Take(1000);
-            if (qb == null)
-                return null;
-
-            return qb;
+            return db.PeopleQuery2(s).Take(1000);
         }
 
         public double ContributionTotals(int days1, int days2, string funds)

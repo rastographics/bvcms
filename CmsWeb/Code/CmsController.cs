@@ -1,16 +1,13 @@
 using System;
 using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
 using System.Text;
 using System.Web;
+using System.Web.Mvc;
+using CmsData;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Models;
-using Dapper;
 using OfficeOpenXml;
 using UtilityExtensions;
-using CmsData;
-using System.Web.Mvc;
 
 namespace CmsWeb
 {
@@ -54,7 +51,6 @@ namespace CmsWeb
                     ? returnUrl
                     : Request.RawUrl);
             }
-
         }
 
         public string AuthenticateDeveloper(bool log = false, string addrole = "")
@@ -62,17 +58,17 @@ namespace CmsWeb
             var auth = Request.Headers["Authorization"];
             if (auth.HasValue())
             {
-                var cred = System.Text.ASCIIEncoding.ASCII.GetString(
+                var cred = Encoding.ASCII.GetString(
                     Convert.FromBase64String(auth.Substring(6))).Split(':');
                 var username = cred[0];
                 var password = cred[1];
 
-                string ret = null;
+                string ret;
                 var valid = CMSMembershipProvider.provider.ValidateUser(username, password);
                 if (valid)
                 {
                     var roles = CMSRoleProvider.provider;
-                    var u = CmsWeb.Models.AccountModel.SetUserInfo(username, Session);
+                    var u = AccountModel.SetUserInfo(username, Session);
                     if (!roles.IsUserInRole(username, "Developer"))
                         valid = false;
                     if (addrole.HasValue() && !roles.IsUserInRole(username, addrole))
@@ -111,7 +107,8 @@ namespace CmsWeb
             //base.HandleUnknownAction(actionName);
             throw new HttpException(404, "404");
         }
-        protected override void OnActionExecuting(System.Web.Mvc.ActionExecutingContext filterContext)
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -122,7 +119,7 @@ namespace CmsWeb
             }
             else if (!NoCheckRole)
             {
-                var r = Models.AccountModel.CheckAccessRole(Util.UserName);
+                var r = AccountModel.CheckAccessRole(Util.UserName);
                 if (r.HasValue())
                     filterContext.Result = Redirect(r);
             }
@@ -132,26 +129,31 @@ namespace CmsWeb
                 filterContext.ActionDescriptor.ActionName);
             DbUtil.Db.UpdateLastActivity(Util.UserId);
         }
+
         public static string ErrorUrl(string message)
         {
             return "/Home/ShowError/?error={0}&url={1}".Fmt(System.Web.HttpContext.Current.Server.UrlEncode(message),
                 System.Web.HttpContext.Current.Request.Url.OriginalString);
         }
+
         public ActionResult RedirectShowError(string message)
         {
             return new RedirectResult(ErrorUrl(message));
         }
+
         public ViewResult Message(string text)
         {
             return View("Message", model: text);
         }
+
         public ViewResult Message2(string text)
         {
             return View("Message2", model: text);
         }
     }
+
     [MyRequireHttps]
-    public class CmsStaffAsyncController : System.Web.Mvc.AsyncController
+    public class CmsStaffAsyncController : AsyncController
     {
         public bool NoCheckRole { get; set; }
 
@@ -160,7 +162,8 @@ namespace CmsWeb
             //base.HandleUnknownAction(actionName);
             throw new HttpException(404, "404");
         }
-        protected override void OnActionExecuting(System.Web.Mvc.ActionExecutingContext filterContext)
+
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -171,7 +174,7 @@ namespace CmsWeb
             }
             else if (!NoCheckRole)
             {
-                var r = Models.AccountModel.CheckAccessRole(Util.UserName);
+                var r = AccountModel.CheckAccessRole(Util.UserName);
                 if (r.HasValue())
                     filterContext.Result = Redirect(r);
             }
@@ -182,6 +185,7 @@ namespace CmsWeb
             DbUtil.Db.UpdateLastActivity(Util.UserId);
         }
     }
+
     public class RequireBasicAuthentication : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -220,17 +224,20 @@ namespace CmsWeb
     {
         private ExcelPackage pkg;
         private string fn;
+
         public EpplusResult(ExcelPackage pkg, string fn)
         {
             this.pkg = pkg;
             this.fn = fn;
         }
+
         public EpplusResult(string fn)
         {
             pkg = new ExcelPackage();
             pkg.Workbook.Worksheets.Add("Sheet1");
             this.fn = fn;
         }
+
         public override void ExecuteResult(ControllerContext context)
         {
             context.HttpContext.Response.Clear();
@@ -267,6 +274,7 @@ namespace CmsWeb
             }
             base.OnAuthorization(filterContext);
         }
+
         public static bool NeedRedirect(HttpRequestBase Request)
         {
             if (ConfigurationManager.AppSettings["INSERT_X-FORWARDED-PROTO"] == "true")
