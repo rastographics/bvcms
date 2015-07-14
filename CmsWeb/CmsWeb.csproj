@@ -3316,10 +3316,6 @@
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Web.bvcms2.config">
-      <DependentUpon>Web.config</DependentUpon>
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="Areas\Finance\Views\QuickBooks\Index.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults.cshtml" />
     <Content Include="App_Code\Helper.cshtml" />
