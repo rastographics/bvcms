@@ -6,6 +6,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -145,7 +146,7 @@ namespace UtilityExtensions
                     return true;
                 string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
-                if (!Directory.Exists(output)) 
+                if (!Directory.Exists(output))
                     return false;
                 path = ConfigurationManager.AppSettings["AppOfflineFile"].Replace("%USERPROFILE%",
                     Environment.GetEnvironmentVariable("USERPROFILE"));
@@ -161,7 +162,7 @@ namespace UtilityExtensions
             get
             {
                 var path = ConfigurationManager.AppSettings["SimSunFont"];
-                if(path != null)
+                if (path != null)
                     path = path.Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
                 return path;
             }
@@ -330,8 +331,8 @@ namespace UtilityExtensions
                 return null;
             if (originalUrl.IndexOf("://") != -1)
                 return originalUrl;
-            return originalUrl.StartsWith("~") 
-                ? VirtualPathUtility.ToAbsolute(originalUrl) 
+            return originalUrl.StartsWith("~")
+                ? VirtualPathUtility.ToAbsolute(originalUrl)
                 : originalUrl;
         }
 
@@ -355,7 +356,7 @@ namespace UtilityExtensions
             {
                 var ns = new XmlSerializerNamespaces();
                 ns.Add("", "");
-                var slz = new XmlSerializer(typeof (T));
+                var slz = new XmlSerializer(typeof(T));
                 slz.Serialize(sw, m, ns);
                 return sw.ToString();
             }
@@ -412,6 +413,21 @@ namespace UtilityExtensions
             d = true;
 #endif
             return d;
+        }
+        public static V GetValueOrDefault<K, V>(this IDictionary<K, V> dict, K key)
+        {
+            return dict.GetValueOrDefault(key, default(V));
+        }
+
+        public static V GetValueOrDefault<K, V>(this IDictionary<K, V> dict, K key, V defVal)
+        {
+            return dict.GetValueOrDefault(key, () => defVal);
+        }
+
+        public static V GetValueOrDefault<K, V>(this IDictionary<K, V> dict, K key, Func<V> defValSelector)
+        {
+            V value;
+            return dict.TryGetValue(key, out value) ? value : defValSelector();
         }
 
     }

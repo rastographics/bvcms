@@ -8,12 +8,14 @@ using IronPython.Hosting;
 using System;
 using System.Text.RegularExpressions;
 using CmsData.API;
+using Microsoft.Scripting.Hosting;
 
 namespace CmsData
 {
-    public class PythonEvents
+    public class PythonEvents : IPythonApi
     {
         private CMSDataContext db;
+        public Dictionary<string, string> dictionary { get; set; }
         public dynamic instance { get; set; }
 
         private void ResetDb()
@@ -25,6 +27,10 @@ namespace CmsData
             db = DbUtil.Create(dbname);
         }
 
+        /// <summary>
+        /// This constructor creates an instance of the class named classname, and is called with pe.instance.Run().
+        /// It supports the old style of MorningBatch.
+        /// </summary>
         public PythonEvents(string dbname, string classname, string script)
         {
             db = DbUtil.Create(dbname);
@@ -38,6 +44,7 @@ namespace CmsData
             db.SubmitChanges();
 
             dynamic Event = scope.GetVariable(classname);
+
             instance = Event();
         }
 
@@ -46,81 +53,33 @@ namespace CmsData
             db = DbUtil.Create(dbname);
         }
 
-        public string Script { get; set; } // set this in the python code for javascript on the output page
-        public string Header { get; set; } // set this in the python code for output page
-        public string Output { get; set; } // this is set automatically for the output page
+        // set this in the python code for javascript on the output page
+        public string Script { get; set; }
 
-        public PythonEvents(string dbname, string script)
+        // set this in the python code for output page
+        public string Header { get; set; }
+
+        // this is set automatically for the output page
+        public string Output { get; set; }
+
+        public string RunScript(string script)
         {
-            var engine = Python.CreateEngine();
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            engine.Runtime.IO.SetOutput(ms, sw);
-            engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script);
-            var code = sc.Compile();
-            var scope = engine.CreateScope();
-            db = DbUtil.Create(dbname);
-            scope.SetVariable("model", this);
-            var qf = new QueryFunctions(db);
-            scope.SetVariable("q", qf);
-            code.Execute(scope);
-            db.SubmitChanges();
-            ms.Position = 0;
-            var sr = new StreamReader(ms);
-            Output = sr.ReadToEnd();
+            try
+            {
+                Output = ExecutePython(script, this);
+            }
+            catch (Exception ex)
+            {
+                Output = ex.Message;
+            }
+            return Output;
         }
 
         public static string RunScript(string dbname, string script)
         {
-            var engine = Python.CreateEngine();
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            engine.Runtime.IO.SetOutput(ms, sw);
-            engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script);
             try
             {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-                var pe = new PythonEvents(dbname);
-                scope.SetVariable("model", pe);
-                var qf = new QueryFunctions(pe.db);
-                scope.SetVariable("q", qf);
-                code.Execute(scope);
-                pe.db.SubmitChanges();
-                ms.Position = 0;
-                var sr = new StreamReader(ms);
-                var s = sr.ReadToEnd();
-                return s;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public string RunScript(string script)
-        {
-            var engine = Python.CreateEngine();
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            engine.Runtime.IO.SetOutput(ms, sw);
-            engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script);
-            try
-            {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-                scope.SetVariable("model", this);
-                var qf = new QueryFunctions(db);
-                scope.SetVariable("q", qf);
-                code.Execute(scope);
-                db.SubmitChanges();
-                ms.Position = 0;
-                var sr = new StreamReader(ms);
-                var s = sr.ReadToEnd();
-                return s;
+                return ExecutePython(script, new PythonEvents(dbname));
             }
             catch (Exception ex)
             {
@@ -131,27 +90,9 @@ namespace CmsData
         public string CallScript(string scriptname)
         {
             var script = db.ContentOfTypePythonScript(scriptname);
-            var engine = Python.CreateEngine();
-            var ms = new MemoryStream();
-            var sw = new StreamWriter(ms);
-            engine.Runtime.IO.SetOutput(ms, sw);
-            engine.Runtime.IO.SetErrorOutput(ms, sw);
-            var sc = engine.CreateScriptSourceFromString(script);
-            var code = sc.Compile();
-            var scope = engine.CreateScope();
-            var pe = new PythonEvents(db.Host);
-            scope.SetVariable("model", pe);
-            var qf = new QueryFunctions(pe.db);
-            scope.SetVariable("q", qf);
-            code.Execute(scope);
-            pe.db.SubmitChanges();
-            ms.Position = 0;
-            var sr = new StreamReader(ms);
-            var s = sr.ReadToEnd();
-            return s;
-        }
 
-        // List of api functions to call from Python
+            return ExecutePython(script, new PythonEvents(db.Host));
+        }
 
         public void CreateTask(int forPeopleId, Person p, string description)
         {
@@ -191,6 +132,25 @@ namespace CmsData
         public DateTime DateTime
         {
             get { return DateTime.Now; }
+        }
+
+        public bool DictionaryIsNotAvailable
+        {
+            get { return dictionary == null; }
+        }
+
+        public string Dictionary(string s)
+        {
+            if (dictionary != null && dictionary.ContainsKey(s))
+                return dictionary[s];
+            return "";
+        }
+
+        public void DictionaryAdd(string key, string value)
+        {
+            if (dictionary == null)
+                dictionary = new Dictionary<string, string>();
+            dictionary.Add(key, value);
         }
 
         public DateTime DateAddDays(object dt, int days)
@@ -267,7 +227,7 @@ namespace CmsData
             Util.IsInRoleEmailTest = TestEmail;
             var queueremail = db.People.Where(pp => pp.PeopleId == queuedBy).Select(pp => pp.EmailAddress).Single();
             Util.UserEmail = queueremail;
-			db.SetCurrentOrgId(CurrentOrgId);
+            db.SetCurrentOrgId(CurrentOrgId);
 
             var emailqueue = db.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
             emailqueue.Transactional = Transactional;
@@ -341,6 +301,7 @@ namespace CmsData
                     select o.OrganizationId;
             return q.ToList();
         }
+
         public List<int> PeopleIds(object savedQuery)
         {
             var list = db.PeopleQuery2(savedQuery).Select(ii => ii.PeopleId).ToList();
@@ -506,6 +467,7 @@ namespace CmsData
             var d = dt.ToDate();
             return d ?? DateTime.MinValue;
         }
+
         public string ContentForDate(string contentName, object date)
         {
             var dtwanted = date.ToDate();
@@ -535,6 +497,7 @@ namespace CmsData
         {
             return Regex.Replace(text, pattern, replacement);
         }
+
         public int ExtraValueInt(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -542,6 +505,7 @@ namespace CmsData
                 return ev.IntValue ?? 0;
             return 0;
         }
+
         public string ExtraValueText(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -549,6 +513,7 @@ namespace CmsData
                 return ev.Data ?? "";
             return "";
         }
+
         public DateTime ExtraValueDate(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -556,6 +521,7 @@ namespace CmsData
                 return ev.DateValue ?? DateTime.MinValue;
             return DateTime.MinValue;
         }
+
         public string ExtraValue(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -563,6 +529,12 @@ namespace CmsData
                 return ev.StrValue ?? "";
             return "";
         }
+
+        public string ExtraValueCode(object pid, string name)
+        {
+            return ExtraValue(pid, name);
+        }
+
         public bool ExtraValueBit(object pid, string name)
         {
             var ev = Person.GetExtraValue(db, pid.ToInt(), name);
@@ -570,24 +542,24 @@ namespace CmsData
                 return ev.BitValue ?? false;
             return false;
         }
+
         public APIPerson.Person GetPerson(object pid)
         {
             var api = new APIPerson(db);
             var p = api.GetPersonData(pid.ToInt());
             return p;
         }
-    
-         /* EmailReport is designed to be very similar to EmailContent, except that the body of the email is generated by a python script
-         * instead of being pulled from an static file.
-         * The code for the Python Engine was copied from the VitalStats function in QueryFunctions.cs 
-         */
-        public void EmailReport(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report)
+
+         /// <summary>
+         /// EmailReport is designed to be very similar to EmailContent,
+         /// except that the body of the email is generated by a python script
+         /// instead of being pulled from an static file.
+         /// The code for the Python Engine was copied from the VitalStats function in QueryFunctions.cs
+         /// </summary>
+        public void EmailReport(object savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report)
         {
             var from = new MailAddress(fromaddr, fromname);
-            var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedquery);
-            if (qB == null)
-                return;
-            var q = db.PeopleQuery(qB.QueryId);
+            var q = db.PeopleQuery2(savedquery);
 
             q = from p in q
                 where p.EmailAddress != null
@@ -596,106 +568,81 @@ namespace CmsData
                 select p;
             var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
 
-            var qf = new QueryFunctions(db);
-            var script = db.Content(report);
-            
-            var engine = Python.CreateEngine();
-            var sc = engine.CreateScriptSourceFromString(script.Body);
+            var script = db.ContentOfTypePythonScript(report);
+            if (script == null)
+                return;
 
-            var emailbody = "";
-
-            try
-            {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-                code.Execute(scope);
-
-                dynamic Results = scope.GetVariable(report);
-                dynamic m = Results();
-                emailbody = m.Run(qf);
-            }
-            catch (Exception ex)
-            {
-                emailbody = "Python Script error: " + ex.Message;
-            }
-
-#if DEBUG2
-            var items = new string[] { "Purity", "Rite", "Launch", "Overview"};
-            if(items.Any(ii => savedquery.Contains(ii)))
-            {
-    	        var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
-                db.SendPeopleEmail(emailqueue.Id);
-            }
-#else
+            var emailbody = RunScript(script);
             var emailqueue = db.CreateQueue(queuedBy, from, subject, emailbody, null, tag.Id, false);
 
+            emailqueue.Transactional = Transactional;
+            Util.IsInRoleEmailTest = TestEmail;
+
             db.SendPeopleEmail(emailqueue.Id);
-#endif
         }
 
 
-        /* Overloaded version of EmailReport adds variables in the function call for QueryName and QueryDescription. The original version of EmailReport
-         * required you to embed the query name in the Python Script.  This version of the function permits you to have a generic Python script 
-         * and then call it multiple times with a different query and description each time.
-         */
+        /// <summary>
+        /// Overloaded version of EmailReport adds variables in the function call for QueryName and QueryDescription. The original version of EmailReport
+        /// required you to embed the query name in the Python Script.  This version of the function permits you to have a generic Python script
+        /// and then call it multiple times with a different query and description each time.
+        /// </summary>
         public void EmailReport(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report, string queryname, string querydescription)
         {
-            var from = new MailAddress(fromaddr, fromname);
-            var qB = db.Queries.FirstOrDefault(cc => cc.Name == savedquery);
-            if (qB == null)
-                return;
-            var q = db.PeopleQuery(qB.QueryId);
-
-            q = from p in q
-                where p.EmailAddress != null
-                where p.EmailAddress != ""
-                where (p.SendEmailAddress1 ?? true) || (p.SendEmailAddress2 ?? false)
-                select p;
-            var tag = db.PopulateSpecialTag(q, DbUtil.TagTypeId_Emailer);
-
-            var qf = new QueryFunctions(db);
-            var script = db.Content(report);
-            
-            var engine = Python.CreateEngine();
-            var sc = engine.CreateScriptSourceFromString(script.Body);
-
-            var emailbody = "";
-
-            try
+            dictionary = new Dictionary<string, string>
             {
-                var code = sc.Compile();
-                var scope = engine.CreateScope();
-
-                scope.SetVariable("QueryName", queryname);
-                scope.SetVariable("QueryDescription", querydescription);
-                code.Execute(scope);
-
-                dynamic Results = scope.GetVariable(report);
-                dynamic m = Results();
-                emailbody = m.Run(qf);
-
-            }
-            catch (Exception ex)
-            {
-                emailbody = "Python Script error: " + ex.Message;
-            }
-
-#if DEBUG2
-            var items = new string[] { "Purity", "Rite", "Launch", "Overview"};
-            if(items.Any(ii => savedquery.Contains(ii)))
-            {
-    	        var emailqueue = db.CreateQueue(queuedBy, from, subject, c.Body, null, tag.Id, false);
-                db.SendPeopleEmail(emailqueue.Id);
-            }
-#else
-            var emailqueue = db.CreateQueue(queuedBy, from, subject, emailbody, null, tag.Id, false);
-
-            db.SendPeopleEmail(emailqueue.Id);
-#endif
+                {"QueryName", queryname},
+                {"QueryDescription", querydescription},
+            };
+            EmailReport(savedquery, queuedBy, fromaddr, fromname, subject, report);
         }
 
+        public string FmtPhone(string s, string prefix)
+        {
+            return s.FmtFone(prefix);
+        }
 
-	}
+        private static string ExecutePython(string scriptContent, PythonEvents model)
+        {
+            // we could consider only passing in an explicit IPythonApi to the script so that only things defined
+            // on the interface are accessible to the script; however, I'm worried that we may have some scripts
+            // that are using functions not defined on the API docs site (which is what the interface is based on)
 
+            var engine = Python.CreateEngine();
 
+            using (var ms = new MemoryStream())
+            using (var sw = new StreamWriter(ms))
+            {
+                engine.Runtime.IO.SetOutput(ms, sw);
+                engine.Runtime.IO.SetErrorOutput(ms, sw);
+
+                try
+                {
+                    var sc = engine.CreateScriptSourceFromString(scriptContent);
+                    var code = sc.Compile();
+
+                    var scope = engine.CreateScope();
+                    scope.SetVariable("model", model);
+
+                    var qf = new QueryFunctions(model.db);
+                    scope.SetVariable("q", qf);
+                    code.Execute(scope);
+
+                    model.db.SubmitChanges();
+
+                    ms.Position = 0;
+
+                    using (var sr = new StreamReader(ms))
+                    {
+                        return sr.ReadToEnd();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    var err = engine.GetService<ExceptionOperations>().FormatException(ex);
+                    throw new Exception(err);
+                }
+            }
+        }
+    }
 }
