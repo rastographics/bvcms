@@ -28,8 +28,8 @@
             {
               <div id="editor" style="width: 100%; height: 550px; border: #ccc solid 1px;">@Model.Body</div>
               <textarea id="mobile-body" name="mobile-body" class="form-control" rows="15" style="display:none; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">@Model.Body</textarea>
-              @Html.HiddenFor(m => m.Body)
             }
+            @Html.HiddenFor(m => m.Body)
           </div>
           <a href="/Manage/Display/#tab_pythonScripts" class="btn btn-default">Cancel</a> <a href="/Display/ContentDelete/@Model.Id" class="btn btn-danger delete"><i class="fa fa-trash"></i> Delete</a>
           @if (User.IsInRole("Admin"))
@@ -49,7 +49,7 @@
 {
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.3/ace.js"></script>
   <script type="text/javascript">
-    $(function () {
+    $(function() {
 
       var extraSmallDevice = $('.device-xs').is(':visible');
       var smallDevice = $('.device-sm').is(':visible');
@@ -65,41 +65,46 @@
         }
       }
 
-      $("a.save").click(function (ev) {
+      $("a.save").click(function(ev) {
         ev.preventDefault();
-        if (extraSmallDevice || smallDevice) {
-          $("#Body").val($('#mobile-body').val());
+        var haseditor = $("#editor").length;
+        if (haseditor) {
+          if (extraSmallDevice || smallDevice) {
+            $("#Body").val($('#mobile-body').val());
+          } else {
+            $("#Body").val(editor.getValue());
+          }
         } else {
-          $("#Body").val(editor.getValue());
+            $("#Body").val($('#mobile-body').val());
         }
         $("form").submit();
       });
 
-      $("a.delete").click(function (ev) {
+      $("a.delete").click(function(ev) {
         ev.preventDefault();
         swal({
-          title: "Are you sure?",
-          type: "warning",
-          showCancelButton: true,
-          confirmButtonClass: "btn-danger",
-          confirmButtonText: "Yes, delete it!",
-          closeOnConfirm: false
-        },
-            function () {
-              $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
-                if (ret && ret.error)
-                  swal("Error!", ret.error, "error");
-                else {
-                  swal({
-                    title: "Deleted!",
-                    type: "success"
-                  },
-                      function () {
-                        window.location = "/Manage/Display/#tab_pythonScripts";
-                      });
-                }
-              });
-            });
+            title: "Are you sure?",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, delete it!",
+            closeOnConfirm: false
+          },
+          function() {
+            $.post("/Display/ContentDelete", { id: "@Model.Id" }, function(ret) {
+            if (ret && ret.error)
+              swal("Error!", ret.error, "error");
+            else {
+              swal({
+                  title: "Deleted!",
+                  type: "success"
+                },
+                function() {
+                  window.location = "/Manage/Display/#tab_pythonScripts";
+                });
+            }
+          });
+        });
       });
     });
   </script>
