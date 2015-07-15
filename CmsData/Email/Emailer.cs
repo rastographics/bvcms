@@ -11,12 +11,14 @@ using UtilityExtensions;
 using System.Linq;
 using System.Configuration;
 using System.Collections.Generic;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Transactions;
 using System.Web;
 using HtmlAgilityPack;
+using SendGrid;
 
 namespace CmsData
 {
@@ -582,6 +584,31 @@ namespace CmsData
         {
             byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
             return Convert.ToBase64String(data, 0, data.Length);
+        }
+
+        public void SendGrid(string sysFromEmail, string cmsHost, MailAddress fromaddr, string subject, string message, List<MailAddress> to, int id, int? pid)
+        {
+            try
+            {
+                var msg = new SendGridMessage();
+                msg.To = to.ToArray();
+                msg.From = fromaddr;
+                msg.Subject = subject;
+
+                var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                msg.Text = regex.Replace(message, string.Empty);
+
+                msg.Html = message;
+                
+                var credentials = new NetworkCredential(SendGridMailUser, SendGridMailPassword);
+                var transportWeb = new Web(credentials);
+                
+                System.Threading.Tasks.Task.WaitAll(transportWeb.DeliverAsync(msg));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

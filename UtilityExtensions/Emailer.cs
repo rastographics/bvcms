@@ -11,48 +11,48 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Web;
 using System.Threading;
+using SendGrid;
 
 namespace UtilityExtensions
 {
     public static partial class Util
     {
-        public static void SendMsg(string SysFromEmail, string CmsHost, MailAddress From, string subject, string Message, List<MailAddress> to, int id, int? pid)
+        public static void SendMsg(string sysFromEmail, string cmsHost, MailAddress fromaddr, string subject, string message, List<MailAddress> to, int id, int? pid)
         {
             if (ConfigurationManager.AppSettings["sendemail"] == "false")
                 return;
-            sendmsg(SysFromEmail, CmsHost, From, subject, Message, to, id, pid);
-            return;
+           SendSmtp(sysFromEmail, cmsHost, fromaddr, subject, message, to, id, pid); 
         }
-        public static void sendmsg(string SysFromEmail, string CmsHost, MailAddress From, string subject, string Message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null)
+        public static void SendSmtp(string sysFromEmail, string cmsHost, MailAddress fromaddr, string subject, string message, List<MailAddress> to, int id, int? pid)
         {
             var senderrorsto = ConfigurationManager.AppSettings["senderrorsto"];
             var msg = new MailMessage();
-            if (From == null)
-                From = FirstAddress(senderrorsto);
+            if (fromaddr == null)
+                fromaddr = FirstAddress(senderrorsto);
             var problemDomains = (ConfigurationManager.AppSettings["ProblemDomainsForEmail"] ?? "").Split(',');
-            if (problemDomains.Any(dd => From.Host.ToLower() == dd || to.Any(ee => ee.Host.ToLower() == dd)))
+            if (problemDomains.Any(dd => fromaddr.Host.ToLower() == dd || to.Any(ee => ee.Host.ToLower() == dd)))
             {
-                if (!SysFromEmail.HasValue())
-                    SysFromEmail = "mailer@bvcms.com";
-                var sysmail = new MailAddress(SysFromEmail, From.DisplayName);
+                if (!sysFromEmail.HasValue())
+                    sysFromEmail = "mailer@bvcms.com";
+                var sysmail = new MailAddress(sysFromEmail, fromaddr.DisplayName);
                 msg.From = sysmail;
-                msg.ReplyToList.Add(From);
+                msg.ReplyToList.Add(fromaddr);
             }
             else
             {
-                msg.From = From;
-                if (SysFromEmail.HasValue())
+                msg.From = fromaddr;
+                if (sysFromEmail.HasValue())
                 {
-                    var sysmail = new MailAddress(SysFromEmail);
-                    if (From.Host != sysmail.Host)
+                    var sysmail = new MailAddress(sysFromEmail);
+                    if (fromaddr.Host != sysmail.Host)
                         msg.Sender = sysmail;
                 }
             }
 
             msg.Headers.Add("X-SMTPAPI",
                         "{{\"unique_args\":{{\"host\":\"{0}\",\"mailid\":\"{1}\",\"pid\":\"{2}\"}}}}"
-                        .Fmt(CmsHost, id, pid));
-            msg.Headers.Add("X-BVCMS", "host:{0}, mailid:{1}, pid:{2}".Fmt(CmsHost, id, pid));
+                        .Fmt(cmsHost, id, pid));
+            msg.Headers.Add("X-BVCMS", "host:{0}, mailid:{1}, pid:{2}".Fmt(cmsHost, id, pid));
 
             foreach (var ma in to)
             {
@@ -68,22 +68,22 @@ namespace UtilityExtensions
             {
                 msg.AddAddr(msg.From);
                 msg.AddAddr(Util.FirstAddress(senderrorsto));
-                msg.Subject += "-- bad addr for {0}({1})".Fmt(CmsHost, pid);
-                BadEmailLink = "<p><a href='{0}/Person2/{1}'>bad addr for</a></p>\n".Fmt(CmsHost, pid);
+                msg.Subject += "-- bad addr for {0}({1})".Fmt(cmsHost, pid);
+                BadEmailLink = "<p><a href='{0}/Person2/{1}'>bad addr for</a></p>\n".Fmt(cmsHost, pid);
             }
 
             var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-            var text = regex.Replace(Message, string.Empty);
+            var text = regex.Replace(message, string.Empty);
             var htmlView1 = AlternateView.CreateAlternateViewFromString(text, Encoding.UTF8, MediaTypeNames.Text.Plain);
             htmlView1.TransferEncoding = TransferEncoding.Base64;
             msg.AlternateViews.Add(htmlView1);
 
-            var html = BadEmailLink + Message;
+            var html = BadEmailLink + message;
             var htmlView = AlternateView.CreateAlternateViewFromString(html, Encoding.UTF8, MediaTypeNames.Text.Html);
             htmlView.TransferEncoding = TransferEncoding.Base64;
-            if (attachments != null)
-                foreach (var a in attachments)
-                    htmlView.LinkedResources.Add(a);
+//            if (attachments != null)
+//                foreach (var a in attachments)
+//                    htmlView.LinkedResources.Add(a);
             msg.AlternateViews.Add(htmlView);
 
             try
@@ -96,6 +96,7 @@ namespace UtilityExtensions
                 htmlView.Dispose();
             }
         }
+
         private static void AddAddr(this MailMessage msg, MailAddress a)
         {
             if (IsInRoleEmailTest)
