@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.People.Models
                          Age = m.Age,
                          Color = m.DeceasedDate != null ? "red" : "auto",
                          PositionInFamily = m.PositionInFamilyId == CmsData.Codes.PositionInFamily.PrimaryAdult 
-                            ? ((m.FamiliesHeaded.Any() || m.FamiliesHeaded2.Any()) 
+                            ? (m.FamiliesHeaded.Any() 
                                 ? "Head" 
                                 : (m.PeopleId == m.Family.HeadOfHouseholdSpouseId 
                                     ? "Spouse" 
