@@ -1,30 +1,23 @@
 using System;
+using System.Collections.Generic;
 using System.Configuration;
-using System.Text;
 using System.Linq;
 using System.Net.Mail;
-using System.Web.Configuration;
-using System.IO;
 using System.Net.Mime;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Data.SqlClient;
-using System.Collections.Generic;
-using System.Web;
 using System.Threading;
+using System.Web;
 
 namespace UtilityExtensions
 {
     public static partial class Util
     {
-        public static void SendMsg(string SysFromEmail, string CmsHost, MailAddress From, string subject, string Message, List<MailAddress> to, int id, int? pid)
+        public static void SendMsg(string SysFromEmail, string CmsHost, MailAddress From, string subject, string Message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null)
         {
             if (ConfigurationManager.AppSettings["sendemail"] == "false")
                 return;
-            sendmsg(SysFromEmail, CmsHost, From, subject, Message, to, id, pid);
-            return;
-        }
-        public static void sendmsg(string SysFromEmail, string CmsHost, MailAddress From, string subject, string Message, List<MailAddress> to, int id, int? pid, List<LinkedResource> attachments = null)
-        {
+
             var senderrorsto = ConfigurationManager.AppSettings["senderrorsto"];
             var msg = new MailMessage();
             if (From == null)
@@ -64,10 +57,10 @@ namespace UtilityExtensions
             var BadEmailLink = "";
             if (msg.To.Count == 0 && to.Any(tt => tt.Host == "nowhere.name"))
                 return;
-            if(msg.To.Count == 0)
+            if (msg.To.Count == 0)
             {
                 msg.AddAddr(msg.From);
-                msg.AddAddr(Util.FirstAddress(senderrorsto));
+                msg.AddAddr(FirstAddress(senderrorsto));
                 msg.Subject += "-- bad addr for {0}({1})".Fmt(CmsHost, pid);
                 BadEmailLink = "<p><a href='{0}/Person2/{1}'>bad addr for</a></p>\n".Fmt(CmsHost, pid);
             }
@@ -88,7 +81,7 @@ namespace UtilityExtensions
 
             try
             {
-                var smtp = Util.Smtp();
+                var smtp = Smtp();
                 smtp.Send(msg);
             }
             finally
@@ -96,12 +89,14 @@ namespace UtilityExtensions
                 htmlView.Dispose();
             }
         }
+
         private static void AddAddr(this MailMessage msg, MailAddress a)
         {
             if (IsInRoleEmailTest)
                 a = new MailAddress(UserEmail, a.DisplayName + " (test)");
             msg.To.Add(a);
         }
+
         public static bool IsInRoleEmailTest
         {
             get
@@ -121,6 +116,7 @@ namespace UtilityExtensions
                     Thread.SetData(Thread.GetNamedDataSlot("IsInRoleEmailTest"), value);
             }
         }
+
         private const string STR_UserEmail = "UserEmail";
         public static string UserEmail
         {
@@ -148,6 +144,5 @@ namespace UtilityExtensions
                     Thread.SetData(Thread.GetNamedDataSlot(STR_UserEmail), value);
             }
         }
-
     }
 }
