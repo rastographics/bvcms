@@ -11,7 +11,6 @@ using System.Data.SqlClient;
 using System.Collections.Generic;
 using System.Web;
 using System.Threading;
-using SendGrid;
 
 namespace UtilityExtensions
 {

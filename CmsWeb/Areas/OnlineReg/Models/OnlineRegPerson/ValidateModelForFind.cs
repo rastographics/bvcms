@@ -152,15 +152,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void ValidateBirthdayRange()
         {
             if (org == null) return;
-            if (!birthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
+            var bd = birthday;
+            if (person != null && person.BirthDate.HasValue)
+                bd = birthday ?? person.BirthDate;
+            if (!bd.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
             {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday required");
                 Log("BirthdayRequired");
             }
-            else if (birthday.HasValue)
+            else if (bd.HasValue)
             {
-                if ((org.BirthDayStart.HasValue && birthday < org.BirthDayStart)
-                    || (org.BirthDayEnd.HasValue && birthday > org.BirthDayEnd))
+                if ((org.BirthDayStart.HasValue && bd < org.BirthDayStart)
+                    || (org.BirthDayEnd.HasValue && bd > org.BirthDayEnd))
                 {
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday outside age allowed range");
                     Log("InvalidBirthdate");
