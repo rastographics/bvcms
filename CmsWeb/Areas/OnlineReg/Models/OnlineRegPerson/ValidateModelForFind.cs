@@ -91,10 +91,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var mindate = DateTime.Parse("1/1/1753");
             var HasOneOfThreeRequired = false;
 
-            if (birthday.HasValue && birthday < mindate)
+            if (BestBirthday.HasValue && BestBirthday < mindate)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "invalid date");
 
-            if (birthday.HasValue && birthday > mindate)
+            if (BestBirthday.HasValue && BestBirthday > mindate)
                 HasOneOfThreeRequired = true;
 
             if (Util.ValidEmail(EmailAddress))
@@ -120,7 +120,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         private void ValidateAgeRequirement()
         {
-            if (ComputesOrganizationByAge() && !birthday.HasValue)
+            if (ComputesOrganizationByAge() && !BestBirthday.HasValue)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday required");
             var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
             if (orgid == Util.CreateAccountCode && age < minage)
@@ -142,18 +142,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void ValidateBirthdayRange()
         {
             if (org == null) return;
-            var bd = birthday;
-            if (person != null && person.BirthDate.HasValue)
-                bd = birthday ?? person.BirthDate;
-            if (!bd.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
+            if (!BestBirthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
             {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday required");
                 Log("BirthdayRequired");
             }
-            else if (bd.HasValue)
+            else if (BestBirthday.HasValue)
             {
-                if ((org.BirthDayStart.HasValue && bd < org.BirthDayStart)
-                    || (org.BirthDayEnd.HasValue && bd > org.BirthDayEnd))
+                if ((org.BirthDayStart.HasValue && BestBirthday < org.BirthDayStart)
+                    || (org.BirthDayEnd.HasValue && BestBirthday > org.BirthDayEnd))
                 {
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday outside age allowed range");
                     Log("InvalidBirthdate");
@@ -161,6 +158,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             IsValidForContinue = modelState.IsValid;
         }
+
+        private DateTime? _bestbirthday;
+        public DateTime? BestBirthday
+        {
+            get
+            {
+                if(_bestbirthday.HasValue)
+                    return _bestbirthday;
+                _bestbirthday = birthday;
+                if (person != null && person.BirthDate.HasValue)
+                    _bestbirthday = person.BirthDate ?? birthday;
+                return _bestbirthday;
+            }
+        }
+
         private void PopulateExistingInformation()
         {
             AddressLineOne = person.PrimaryAddress;

@@ -115,9 +115,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             DateTime dt;
             if (RequiredDOB() && DateOfBirth.HasValue() && !Util.BirthDateValid(bmon, bday, byear, out dt))
                 modelState.AddModelError(dobname, "birthday invalid");
-            else if (!birthday.HasValue && RequiredDOB())
+            else if (!BestBirthday.HasValue && RequiredDOB())
                 modelState.AddModelError(dobname, "birthday required");
-            if (birthday.HasValue && BirthYearRequired() && birthday.Value.Year == Util.SignalNoYear)
+            if (BestBirthday.HasValue && BirthYearRequired() && BestBirthday.Value.Year == Util.SignalNoYear)
             {
                 modelState.AddModelError(dobname, "BirthYear is required");
                 Log("BirthYearRequired");

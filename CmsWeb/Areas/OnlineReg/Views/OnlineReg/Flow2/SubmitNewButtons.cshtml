@@ -4,7 +4,7 @@
         <div class="pull-right">
             @if (Model.ManageSubscriptions()) // allow submit here for manage subscriptions
             {
-                if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsMissionTrip())
+                if ((Model.age >= 16 || !Model.BestBirthday.HasValue) && !Model.IsMissionTrip())
                 {
                   if (Model.InMobileAppMode && !UtilityExtensions.Util.UserPeopleId.HasValue && !Model.LoggedIn)
                   {

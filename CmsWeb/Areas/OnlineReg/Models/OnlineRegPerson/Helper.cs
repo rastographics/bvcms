@@ -260,11 +260,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             NoAppropriateOrgError = null;
 
-            var bestbirthdate = birthday;
-
-            if (person != null && person.BirthDate.HasValue)
-                bestbirthdate = person.BirthDate;
-
             if (!masterorgid.HasValue)
                 return null;
 
@@ -276,8 +271,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var list = q.ToList();
             var q2 = from o in list
-                     where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
-                     where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
+                     where BestBirthday >= o.BirthDayStart || o.BirthDayStart == null
+                     where BestBirthday <= o.BirthDayEnd || o.BirthDayEnd == null
                      select o;
 
             var oo = q2.FirstOrDefault();
