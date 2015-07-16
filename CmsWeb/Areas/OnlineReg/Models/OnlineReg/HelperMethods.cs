@@ -485,7 +485,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public string GetFinishRegistrationButton()
         {
-            const string def = "Finish Registration";
+            string def = DbUtil.Db.Setting("FinishRegBtnText", "Finish Registration");
 
             string text = null;
             if (masterorg != null)
