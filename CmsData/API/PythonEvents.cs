@@ -6,6 +6,9 @@ using CmsData.Codes;
 using UtilityExtensions;
 using IronPython.Hosting;
 using System;
+using System.Configuration;
+using System.Diagnostics;
+using System.Text;
 using System.Text.RegularExpressions;
 using CmsData.API;
 using Microsoft.Scripting.Hosting;
@@ -17,6 +20,8 @@ namespace CmsData
         private CMSDataContext db;
         public Dictionary<string, string> dictionary { get; set; }
         public dynamic instance { get; set; }
+        public string pythonPath { get; set; }
+        public string pyrazorPath { get; set; }
 
         private void ResetDb()
         {
@@ -32,8 +37,8 @@ namespace CmsData
         /// It supports the old style of MorningBatch.
         /// </summary>
         public PythonEvents(string dbname, string classname, string script)
+            : this(dbname)
         {
-            db = DbUtil.Create(dbname);
             var engine = Python.CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script);
 
@@ -51,6 +56,8 @@ namespace CmsData
         public PythonEvents(string dbname)
         {
             db = DbUtil.Create(dbname);
+            pythonPath = ConfigurationManager.AppSettings["pythonPath"];
+            pyrazorPath = ConfigurationManager.AppSettings["pyrazorPath"];
         }
 
         // set this in the python code for javascript on the output page
@@ -608,6 +615,9 @@ namespace CmsData
             // on the interface are accessible to the script; however, I'm worried that we may have some scripts
             // that are using functions not defined on the API docs site (which is what the interface is based on)
 
+            if (scriptContent.StartsWith("@# pyhtml #@"))
+                scriptContent = RunPyHtml(scriptContent, model.pythonPath, model.pyrazorPath);
+
             var engine = Python.CreateEngine();
 
             using (var ms = new MemoryStream())
@@ -644,5 +654,65 @@ namespace CmsData
                 }
             }
         }
+        static string RunPyHtml(string text, string pythonPath, string pyrazorPath)
+        {
+            const string build = @"
+import sys
+sys.path.append('{2}')
+import razorview
+
+text = '''
+{0}
+'''
+
+print '''
+import sys
+sys.path.append('{1}')
+from StringIO import StringIO
+        
+class Cgi:
+    def escape(self, t):
+        return (t.replace('&', '&amp;')
+                .replace('<', '&lt;')
+                .replace('>', '&gt;')
+                .replace(""'"", '&#39;')
+                .replace('""', '&quot;')
+        )
+cgi = Cgi()
+
+''' + razorview.RenderCode(text) + '''
+sb = StringIO()
+
+template(None, sb, model)
+print sb.getvalue()
+'''
+";
+            var cmd = string.Format(build, text, Path.Combine(pythonPath, "Lib"), pyrazorPath);
+
+            var start = new ProcessStartInfo();
+            start.FileName = Path.Combine(pythonPath, "python.exe");
+            start.Arguments = "-";
+            start.UseShellExecute = false;
+            start.RedirectStandardInput = true;
+            start.RedirectStandardOutput = true;
+            start.RedirectStandardError = true;
+            using (var process = Process.Start(start))
+            {
+                process.StandardInput.WriteLine(cmd);
+                process.StandardInput.Flush();
+                process.StandardInput.Close();
+                var sb = new StringBuilder();
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    sb.Append(reader.ReadToEnd());
+                }
+                using (StreamReader reader = process.StandardError)
+                {
+                    sb.Append(reader.ReadToEnd());
+                }
+                return sb.ToString();
+            }
+        }
+
     }
 }
