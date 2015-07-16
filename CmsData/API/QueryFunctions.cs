@@ -410,12 +410,57 @@ namespace CmsData
         }
 
         /* QueryList is designed to run a pre-saved query referenced by name which is passed in as a string in the function call.
-        * The resulting collection of people records (limited to 1000) is returned as an IEnumerable to that all attributes of the 
-        * Person record is accessible
+        * The resulting collection of people records (limited to 1000) is returned as an IEnumerable so that all attributes of the 
+        * Person record are accessible
         */
         public IEnumerable<Person> QueryList(object s)
         {
             return db.PeopleQuery2(s).Take(1000);
+        }
+
+        /* Overloaded QueryList with Sort Order
+        */
+        public IEnumerable<Person> QueryList(object s, string orderbyparam, bool ascending)
+        {
+            var q = db.PeopleQuery2(s);
+
+            switch(orderbyparam.ToLower())
+            {
+                
+                case "age":
+                    if (ascending)
+                        q = from u in q
+                            orderby u.Age, u.LastName, u.FirstName
+                            select u;
+                    else
+                        q = from u in q
+                            orderby u.Age descending, u.LastName, u.FirstName
+                            select u;
+                    break;
+                case "birthday":
+                   if (ascending)
+                       q = from u in q
+                           orderby u.BirthMonth, u.BirthDay, u.LastName, u.FirstName
+                           select u;
+                   else
+                       q = from u in q
+                           orderby u.BirthMonth descending, u.BirthDay descending, u.LastName, u.FirstName
+                           select u;
+                    break;
+                case "name":
+                    if (ascending)
+                        q = from u in q
+						    orderby u.LastName, u.FirstName
+						    select u;
+                    else
+                        q = from u in q
+                            orderby u.LastName descending, u.FirstName descending
+                            select u;
+                    break;
+                
+            }
+            return q.Take(1000);
+         
         }
 
         public double ContributionTotals(int days1, int days2, string funds)
