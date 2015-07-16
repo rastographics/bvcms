@@ -1,39 +1,40 @@
 ﻿@using UtilityExtensions
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
-@if ((Model.classid ?? 0) > 0)
-{
-    <tr>
-        <td>Chosen Class:</td>
-        <td>@Model.org.OrganizationName</td>
-    </tr>
-}
 <div>
-    <div class="col-sm-12">
-        <address>
-            @Html.Partial("Flow2/FinishedHeader", Model)
-            @if (Model.ShowAddress)
-            {
-                <br />@Model.MarriedDisplay @:&nbsp; @Model.GenderDisplay<br />
-                <br />@Model.AddressLineOne
-                if (Model.AddressLineTwo.HasValue())
-                {
-                    <br />@Model.AddressLineTwo
-                }
-                <br />@Util.FormatCSZ(Model.City, Model.State, Model.ZipCode)
-                if (Model.Country != "United States")
-                {
-                    <br />@Model.Country
-                }
-            }
-        </address>
-    </div>
-</div>
-@if (Model.QuestionsOK)
-{
-    @Html.Partial("Flow2/QuestionsHidden", Model)
-    @Html.Partial("Flow2/QuestionsDisplay", Model)
-}
-else
-{
-    @Html.Partial("Flow2/QuestionsEdit", Model)
-}
+  <div class="col-sm-12">
+    @if ((Model.classid ?? Model.orgid) > 0)
+    {
+      <div>
+        <span>Chosen Class:</span>
+        <span>@Model.org.OrganizationName</span>
+      </div>
+    }
+    <address>
+      @Html.Partial("Flow2/FinishedHeader", Model)
+      @if (Model.ShowAddress)
+      {
+        <br />@Model.MarriedDisplay @:&nbsp; @Model.GenderDisplay<br />
+        <br />@Model.AddressLineOne
+        if (Model.AddressLineTwo.HasValue())
+        {
+          <br />@Model.AddressLineTwo
+        }
+        <br />@Util.FormatCSZ(Model.City, Model.State, Model.ZipCode)
+        if (Model.Country != "United States")
+        {
+          <br />@Model.Country
+
+        }
+      }
+          </address>
+        </div>
+      </div>
+      @if (Model.QuestionsOK)
+      {
+        @Html.Partial("Flow2/QuestionsHidden", Model)
+        @Html.Partial("Flow2/QuestionsDisplay", Model)
+      }
+      else
+      {
+        @Html.Partial("Flow2/QuestionsEdit", Model)
+      }
