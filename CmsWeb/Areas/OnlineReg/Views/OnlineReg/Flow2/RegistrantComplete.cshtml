@@ -31,7 +31,7 @@
           @Helper.OnlineRegSubmitButton("Processing, Please Wait", onlyoneallowed: true, style: "btn-default")
           break;
         default:
-          @Helper.OnlineRegSubmitButton("Continue Registration", style: "btn-success min-width15em")
+          @Helper.OnlineRegSubmitButton(Model.GetFinishRegistrationButton(), style: "btn-success min-width15em")
           if (Model.AllowSaveProgress())
           {
             @Helper.OnlineRegAjaxButton("/OnlineReg/SaveProgress", "Save Progress, Finish Later", style: "btn-warning min-width15em")

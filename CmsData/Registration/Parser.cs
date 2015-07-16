@@ -359,6 +359,7 @@ namespace CmsData.Registration
             AskOptions,
             AskMedical,
             Thanks,
+            FinishRegistrationButton,
         }
 	}
 }

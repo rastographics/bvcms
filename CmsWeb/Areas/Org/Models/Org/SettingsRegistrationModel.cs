@@ -217,6 +217,9 @@ namespace CmsWeb.Areas.Org.Models
         [Reg, Display(Description = DisallowAnonymousDescription)]
         public bool DisallowAnonymous { get; set; }
 
+        [Reg, Display(Description = FinishRegistrationButtonDescription)]
+        public string FinishRegistrationButton { get; set; }
+
         #region Descriptions
 
         private const string RegistrationTypeDescription = @"
@@ -303,6 +306,12 @@ or the system wide default of 180000 (3 minutes).
         private const string DisallowAnonymousDescription = @"
 Does not allow Anonymous Registrations.
 Must have an accont and be logged in
+";
+
+        private const string FinishRegistrationButtonDescription = @"
+Allows you to set the text of the button used to Finish, Continue or Complete the registation.
+Please keep it short because the text of the button is not the place to put help.
+Long Buttons do not look good.
 ";
 
         #endregion

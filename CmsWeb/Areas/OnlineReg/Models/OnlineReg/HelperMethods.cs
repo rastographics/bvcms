@@ -483,6 +483,30 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 .Replace("{url}", URL);
             return msg;
         }
+        public string GetFinishRegistrationButton()
+        {
+            const string def = "Finish Registration";
+
+            string text = null;
+            if (masterorg != null)
+            {
+                var setting1 = new Settings();
+                if (settings.ContainsKey(masterorg.OrganizationId))
+                    setting1 = settings[masterorg.OrganizationId];
+                var setting2 = setting1;
+                if (last != null && last.org != null && settings.ContainsKey(last.org.OrganizationId))
+                    setting1 = settings[last.org.OrganizationId];
+                text = Util.PickFirst(setting1.FinishRegistrationButton, setting2.FinishRegistrationButton, def);
+            }
+            else
+            {
+                var setting = new Settings();
+                if (settings.ContainsKey(org.OrganizationId))
+                    setting = settings[org.OrganizationId];
+                text = Util.PickFirst(setting.FinishRegistrationButton, def);
+            }
+            return text;
+        }
 
         private int? timeOut;
         public int TimeOut
