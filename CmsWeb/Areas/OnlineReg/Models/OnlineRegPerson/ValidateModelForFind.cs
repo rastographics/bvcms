@@ -19,18 +19,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             DbUtil.Db.SetNoLock();
             modelState = modelstate;
             Index = i;
-            if (classid.HasValue)
-            {
-                Parent.Orgid = classid;
-                Parent.classid = classid;
-                orgid = classid;
-            }
             if(selectFromFamily == false)
                 PeopleId = null; // not found yet
 
             IsValidForContinue = true; // true till proven false
             IsValidForExisting = true; // true till proven false
 
+            SetChosenClass();
             if (NeedsUserSelection()) 
                 return;
 
@@ -78,15 +73,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (!UserSelectsOrganization()) 
                 return false;
-            if ((classid ?? 0) != 0) 
+            if ((orgid) > 0)
                 return false;
 
-            var nameclassid = Parent.GetNameFor(mm => mm.List[Index].classid);
-            const string pleaseChooseAGroupEvent = "please choose a group/event";
-            if (IsFamily)
-                modelState.AddModelError(nameclassid, pleaseChooseAGroupEvent);
-            else
-                modelState.AddModelError(nameclassid, pleaseChooseAGroupEvent);
+            modelState.AddModelError("classid", "please choose a group/event");
             IsValidForExisting = modelState.IsValid;
             return true;
         }

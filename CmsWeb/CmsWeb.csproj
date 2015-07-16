@@ -2106,7 +2106,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Registrant.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTrip.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Birthday.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\SelectClass.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SelectClass.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Date2.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\datepicker.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\DateTime.cshtml" />
@@ -2126,7 +2126,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Int32.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\String.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\TextArea.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\SelectFamily.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SelectFamily.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FindOrNewButtons.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonMetaHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonHidden.cshtml" />

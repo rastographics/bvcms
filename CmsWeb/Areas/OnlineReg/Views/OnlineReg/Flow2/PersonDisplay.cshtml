@@ -2,10 +2,10 @@
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 <div>
   <div class="col-sm-12">
-    @if ((Model.classid ?? Model.orgid) > 0)
+    @if(Model.DisplaySelectedOrg())
     {
       <div>
-        <span>Chosen Class:</span>
+        <span>Selection:</span>
         <span>@Model.org.OrganizationName</span>
       </div>
     }

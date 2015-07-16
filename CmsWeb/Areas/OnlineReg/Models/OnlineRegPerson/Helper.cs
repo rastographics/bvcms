@@ -103,6 +103,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                    masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2;
         }
 
+        public bool DisplaySelectedOrg()
+        {
+            return (UserSelectsOrganization() || ComputesOrganizationByAge()) && org != null;
+        }
+
 
         private bool RegistrationType(int typ)
         {
@@ -212,8 +217,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     else
                         _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
                 }
-                if (_org == null && classid.HasValue)
-                    _org = DbUtil.Db.LoadOrganizationById(classid.Value);
                 if (_org == null && (divid.HasValue || masterorgid.HasValue) && (Found == true || IsValidForNew))
                 {
                     if (ComputesOrganizationByAge())
@@ -608,10 +611,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return _nameLookup.ContainsKey(name) ? _nameLookup[name] : name;
         }
 
-        public void SetClassId()
+        public void SetChosenClass()
         {
-            if (org != null && FinishedFindingOrAddingRegistrant && ComputesOrganizationByAge())
-                classid = org.OrganizationId;
+            // set org from class dropdown if applicable
+            if (Parent.classid > 0)
+                orgid = Parent.classid;
+
+            // make sure orgid is set
+            if (!orgid.HasValue && Parent.Orgid.HasValue)
+                orgid = Parent.Orgid;
         }
         internal void DoGroupToJoin()
         {

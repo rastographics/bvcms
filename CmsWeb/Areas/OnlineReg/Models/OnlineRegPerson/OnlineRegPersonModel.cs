@@ -21,7 +21,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int? orgid { get; set; }
         public int? masterorgid { get; set; }
         public int? divid { get; set; }
-        public int? classid { get; set; }
         public int? PeopleId { get; set; }
         public bool? Found { get; set; }
         public bool IsNew { get; set; }

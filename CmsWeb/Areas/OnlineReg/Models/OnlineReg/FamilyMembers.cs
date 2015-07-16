@@ -41,9 +41,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             modelState.Clear(); // ensure we pull form fields from our model, not MVC's
             HistoryAdd("Register");
             int index = List.Count - 1;
-            if (List[index].classid.HasValue)
-                classid = List[index].classid;
             var p = LoadExistingPerson(id, index);
+
             p.ValidateModelForFind(modelState, id, selectFromFamily: true);
             if (!modelState.IsValid)
                 return;
@@ -64,8 +63,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             if (p.org == null && p.ComputesOrganizationByAge())
                 modelState.AddModelError(this.GetNameFor(mm => mm.List[id].Found), p.NoAppropriateOrgError);
-            if (p.FinishedFindingOrAddingRegistrant && p.org != null && p.ComputesOrganizationByAge())
-                p.classid = p.org.OrganizationId;
         }
     }
 }

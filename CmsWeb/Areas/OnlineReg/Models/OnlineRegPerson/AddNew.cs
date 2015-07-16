@@ -106,8 +106,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             IsValidForExisting = modelState.IsValid == false;
             if (IsNew)
                 FillPriorInfo();
-            if (org != null && FinishedFindingOrAddingRegistrant && ComputesOrganizationByAge())
-                classid = org.OrganizationId;
             return null;
         }
         internal bool AnonymousReRegistrant()

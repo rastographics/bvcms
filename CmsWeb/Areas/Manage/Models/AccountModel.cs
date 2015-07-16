@@ -372,6 +372,14 @@ namespace CmsWeb.Models
 			}
 			return status.ErrorMessage;
 		}
+#if DEBUG
+		public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request)
+		{
+			FormsAuthentication.SetAuthCookie(userName, false);
+			SetUserInfo(userName, Session);
+		    return null;
+		}
+#endif
 
 		private static void NotifyAdmins(string subject, string message)
 		{

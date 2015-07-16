@@ -8,6 +8,7 @@ using CmsWeb.Areas.OnlineReg.Models;
 using Elmah;
 using UtilityExtensions;
 using System.Collections.Generic;
+using System.Configuration;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
@@ -46,7 +47,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             fromMethod = "Login";
             // they clicked the Login button on the login page
-            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
+
+            var ret = Util.IsDebug() && Util.IsLocalNetworkRequest
+                ? AccountModel.AutoLogin(m.username, Session, Request)
+                : AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
+
             if (ret is string)
             {
                 ModelState.AddModelError("authentication", ret.ToString());
@@ -63,13 +68,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var route = RouteSpecialLogin(m);
             if (route != null)
                 return route;
-
-            if(m.UserPeopleId.HasValue)
-            {
-                var p = m.LoadExistingPerson(m.UserPeopleId.Value, 0);
-                m.List[0] = p;
-            }
-            m.List[0].ValidateModelForFind(ModelState, 0);
 
             m.HistoryAdd("login");
             return FlowList(m);
@@ -94,6 +92,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("yeslogin");
             m.nologin = false;
             m.List = new List<OnlineRegPersonModel>();
+#if DEBUG
+            m.username = "David";
+#endif
             return FlowList(m);
         }
         [HttpPost]
@@ -126,7 +127,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (id >= m.List.Count)
                 return FlowList(m);
             var p = m.List[id];
-
+            p.SetChosenClass();
             p.ValidateModelForFind(ModelState, id);
 
             if (p.AnonymousReRegistrant())
@@ -139,7 +140,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.Log("Closed");
                 ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             }
-            p.SetClassId();
             p.SetSpecialFee();
 
             if (!ModelState.IsValid || p.count == 1)
@@ -191,6 +191,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
+#if DEBUG
+                FirstName = "Delaine",
+                LastName = "Carroll",
+                EmailAddress = "delaine@davidcarroll.name"
+#endif
             });
             return FlowList(m);
         }

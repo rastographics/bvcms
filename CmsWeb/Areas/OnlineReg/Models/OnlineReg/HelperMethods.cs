@@ -437,7 +437,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Phone = Util.PickFirst(person.CellPhone, person.HomePhone),
                 orgid = Orgid,
                 masterorgid = masterorgid,
-                classid = classid,
                 IsFamily = true,
                 Found = true,
                 IsValidForExisting = true,
