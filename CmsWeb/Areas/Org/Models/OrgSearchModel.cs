@@ -521,6 +521,8 @@ namespace CmsWeb.Areas.Search.Models
             public const int AnyOnlineRegActive96 = 96;
             public const int AnyOnlineRegNotOnApp95 = 95;
             public const int AnyOnlineRegOnApp94 = 94;
+            public const int AnyOnlineRegStandAlone93 = 93;
+            public const int AnyOnlineRegPicklistOnly92 = 92;
         }
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
@@ -549,7 +551,17 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem
             {
                 Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
-                Text = "(registration, no picklist)",
+                Text = "(reg, no picklist)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegPicklistOnly92.ToString(),
+                Text = "(reg, picklist only)",
+            });
+            list.Insert(0, new SelectListItem
+            {
+                Value = RegistrationClassification.AnyOnlineRegStandAlone93.ToString(),
+                Text = "(reg, no picklist/master)",
             });
             list.Insert(0, new SelectListItem
             {
