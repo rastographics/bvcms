@@ -133,6 +133,14 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
+        public ActionResult TargetOrg(bool id)
+        {
+            DbUtil.Db.SetUserPreference("TargetLinkOrg", id ? "false" : "true");
+            DbUtil.Db.SubmitChanges();
+            if (Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.OriginalString);
+            return Redirect("/");
+        }
         public ActionResult UseNewFeature(bool id)
         {
             Util2.UseNewFeature = id;

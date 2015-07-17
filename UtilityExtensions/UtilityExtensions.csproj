@@ -148,6 +148,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationProxy.cs" />
     <Compile Include="Emailer.cs" />
     <Compile Include="EnDeCrypt.cs" />
     <Compile Include="Extensions\ConnectionStrings.cs" />

@@ -1,5 +1,10 @@
-﻿@model CmsWeb.Areas.Search.Models.OrgSearchModel.OrganizationInfo
-@{ var o = Model; }
+﻿@using CmsData
+@model CmsWeb.Areas.Search.Models.OrgSearchModel.OrganizationInfo
+@{
+  var o = Model; 
+  var targeto = Util2.TargetLinkOrg ? "target='org'" : "";
+  var targetp = Util2.TargetLinkPeople ? "target='people'" : "";
+}
 <tr>
     <td class="text-center">
         <a tabindex="0" href="#" data-toggle="popover" data-trigger="focus" data-title="@o.OrganizationName (@o.Id)"
@@ -14,8 +19,8 @@
             <label>Divisions:</label> @o.Divisions<br />
         "><i class="fa fa-info-circle"></i></a>
     </td>
-    <td><a href="/Org/@o.Id">@o.OrganizationName</a></td>
-    <td><a href="/Person2/@o.LeaderId">@o.LeaderName</a></td>
+    <td><a href="/Org/@o.Id" @targeto>@o.OrganizationName</a></td>
+    <td><a href="/Person2/@o.LeaderId" @targetp>@o.LeaderName</a></td>
     <td class="text-right">@o.MemberCount</td>
     @if (o.PrevMemberCount == 0 && o.ProspectCount == 0)
     {
