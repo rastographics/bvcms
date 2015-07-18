@@ -1542,6 +1542,18 @@ INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [Text
 	<category id="3" name="Discipleship" divisions="6366" />
 	-->
 </root>', '2015-07-11 09:34:05.753', NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (76, N'CustomReportsMenu', N'CustomReportsMenu', N'<?xml version="1.0" encoding="utf-8"?>
+<ReportsMenu>
+  <Column1>
+<!--
+    <Header>Statistics</Header>
+    <Report link="/Reports/VitalStats">Vital Stats</Report>
+-->
+  </Column1>
+  <Column2>
+  </Column2>
+</ReportsMenu>
+', NULL, NULL, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Content] OFF
 INSERT INTO [dbo].[ContributionFund] ([FundId], [CreatedBy], [CreatedDate], [FundName], [FundDescription], [FundStatusId], [FundTypeId], [FundPledgeFlag], [FundAccountCode], [FundIncomeDept], [FundIncomeAccount], [FundIncomeFund], [FundCashDept], [FundCashAccount], [FundCashFund], [OnlineSort], [NonTaxDeductible], [QBIncomeAccount], [QBAssetAccount]) VALUES (1, 1, '2010-10-30 15:36:12.533', N'General Tithe', N'General Tithe', 1, 1, 0, NULL, N'0', N'0', N'0', N'0', N'0', N'0', NULL, NULL, 0, 0)
 SET IDENTITY_INSERT [dbo].[ContributionsRun] ON
@@ -4067,7 +4079,7 @@ INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 12)
 INSERT INTO [dbo].[UserRole] ([UserId], [RoleId]) VALUES (3, 25)
 SET IDENTITY_INSERT [dbo].[Users] ON
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (1, 1, N'Admin', NULL, N'2352354235', NULL, NULL, 1, '2015-02-19 13:22:38.507', NULL, '2014-08-22 21:17:16.130', '2009-05-05 22:46:43.890', 0, '2012-09-11 15:37:25.863', 1, '2014-10-20 12:10:19.993', 0, NULL, NULL, NULL, 1, N'testdb.bvcms.com', N'bvcms', N'The Admin', N'Admin, The', NULL, NULL, NULL)
-INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2015-02-28 08:19:04.077', '2015-06-30 21:38:33.553', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2015-02-28 08:18:17.550', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
+INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (2, 2, N'david', N'', N'uNVML/ZamnY7YdE1NXvMHPIznic=', NULL, NULL, 1, '2015-07-12 10:05:09.707', '2015-07-12 10:04:58.520', '2013-09-20 22:45:26.960', '2010-10-30 15:23:25.763', 0, '2013-09-20 22:45:26.880', 0, '2015-02-28 08:18:17.550', 0, '2010-10-30 15:23:25.763', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'David Carroll', N'Carroll, David', NULL, NULL, '2013-09-21 22:45:01.070')
 INSERT INTO [dbo].[Users] ([UserId], [PeopleId], [Username], [Comment], [Password], [PasswordQuestion], [PasswordAnswer], [IsApproved], [LastActivityDate], [LastLoginDate], [LastPasswordChangedDate], [CreationDate], [IsLockedOut], [LastLockedOutDate], [FailedPasswordAttemptCount], [FailedPasswordAttemptWindowStart], [FailedPasswordAnswerAttemptCount], [FailedPasswordAnswerAttemptWindowStart], [ItemsInGrid], [CurrentCart], [MustChangePassword], [Host], [TempPassword], [Name], [Name2], [ResetPasswordCode], [DefaultGroup], [ResetPasswordExpires]) VALUES (3, 3, N'karenw', N'', N'2352354235', NULL, NULL, 1, '2011-09-01 15:29:59.107', NULL, '2010-10-30 15:29:49.930', '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:49.860', 0, '2010-10-30 15:29:25.757', 0, '2010-10-30 15:29:25.757', NULL, NULL, 0, N'starterdb.bvcms.com', NULL, N'Karen Worrell', N'Worrell, Karen', NULL, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[Users] OFF
 ALTER TABLE [dbo].[Users] ADD CONSTRAINT [FK_Users_People] FOREIGN KEY ([PeopleId]) REFERENCES [dbo].[People] ([PeopleId])

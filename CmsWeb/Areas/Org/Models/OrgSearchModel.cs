@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 using CmsData.View;
 using CmsWeb.Models;
 using MoreLinq;
@@ -188,6 +187,7 @@ namespace CmsWeb.Areas.Search.Models
         {
             return DbUtil.Db.OrgSearch(orgId.ToString(), null, null, null, null, null, null, null, DbUtil.Db.CurrentUser.UserId, null);
         }
+        // ReSharper disable once FunctionComplexityOverflow
         public List<OrgSearch> ApplySort(List<OrgSearch> query)
         {
             var regdt = DateTime.Today.AddYears(5);
@@ -512,72 +512,39 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-        public class RegistrationClassification
+        public class RegClass
         {
             public const int NotSpecified = -1;
-            public const int AnyOnlineReg99 = 99;
-            public const int AnyOnlineRegMissionTrip98 = 98;
-            public const int AnyOnlineRegNonPicklist97 = 97;
-            public const int AnyOnlineRegActive96 = 96;
-            public const int AnyOnlineRegNotOnApp95 = 95;
-            public const int AnyOnlineRegOnApp94 = 94;
-            public const int AnyOnlineRegStandAlone93 = 93;
-            public const int AnyOnlineRegPicklistOnly92 = 92;
+            public const int AnyRegistration = 99;
+            public const int MissionTrip = 98;
+            public const int MasterOrStandalone = 97;
+            public const int Active = 96;
+            public const int NotOnApp = 95;
+            public const int OnApp = 94;
+            public const int Standalone = 93;
+            public const int ChildOfMaster = 92;
         }
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
-            var q = from o in CmsData.Codes.RegistrationTypeCode.GetCodePairs()
-                    select new SelectListItem
-                    {
-                        Value = o.Key.ToString(),
-                        Text = o.Value
-                    };
-            var list = q.ToList();
-            list.Insert(0, new SelectListItem
+            var list = new List<SelectListItem>();
+            var spec = new Dictionary<int, string>()
             {
-                Value = RegistrationClassification.AnyOnlineRegOnApp94.ToString(),
-                Text = "(any reg on app)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegNotOnApp95.ToString(),
-                Text = "(active reg not on app)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegActive96.ToString(),
-                Text = "(active registration)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegNonPicklist97.ToString(),
-                Text = "(reg, no picklist)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegPicklistOnly92.ToString(),
-                Text = "(reg, picklist only)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegStandAlone93.ToString(),
-                Text = "(reg, no picklist/master)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineReg99.ToString(),
-                Text = "(any registration)",
-            });
-            list.Insert(0, new SelectListItem
-            {
-                Value = "-1",
-                Text = "(not specified)",
-            });
-            list.Add(new SelectListItem
-            {
-                Value = RegistrationClassification.AnyOnlineRegMissionTrip98.ToString(),
-                Text = "Mission Trip",
-            });
+                { RegClass.NotSpecified , "(Not Specified)" },
+                { RegClass.Active, "(Active Registration)" },
+                { RegClass.OnApp, "(Any Reg on App)" },
+                { RegClass.NotOnApp, "(Any Reg not on App)" },
+                { RegClass.MasterOrStandalone, "(Master or StandAlone Reg)" },
+                { RegClass.AnyRegistration, "(Any Registration)" },
+                { RegClass.ChildOfMaster , "(Child of Master Reg)" },
+                { RegClass.Standalone, "(StandAlone reg)" },
+            };
+            list.AddRange(spec.Select(dd => new SelectListItem {Value = dd.Key.ToString(), Text = dd.Value}));
+
+            var codes = RegistrationTypeCode.GetCodePairs();
+            list.AddRange(codes.Select(dd => new SelectListItem {Value = dd.Key.ToString(), Text = dd.Value}));
+
+            list.Add(new SelectListItem { Value = RegClass.MissionTrip.ToString(), Text = "Mission Trip" });
+
             return list;
         }
         public static DateTime DefaultMeetingDate(int scheduleid)
