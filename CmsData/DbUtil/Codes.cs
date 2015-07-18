@@ -163,19 +163,21 @@ namespace CmsData.Codes
         public const int ChooseVolunteerTimes = 6;
         public const int OnlineGiving = 8;
         public const int OnlinePledge = 9;
-        public const int UserSelectsOrganization2 = 10;
-        public const int ComputeOrganizationByAge2 = 11;
+        public const int UserSelects = 10;
+        public const int ComputeOrgByAge = 11;
         public const int ManageGiving = 14;
-        public const int ManageSubscriptions2 = 15;
+        public const int ManageSubscriptions = 15;
         public const int SpecialJavascript = 16;
         public const int RecordFamilyAttendance = 18;
+        public const int RegisterLinkMaster = 20;
         public static IEnumerable<KeyValuePair<int, string>> GetCodePairs()
         {
             yield return new KeyValuePair<int, string>(None, "No Online Registration");
             yield return new KeyValuePair<int, string>(JoinOrganization, "Join Organization");
-            yield return new KeyValuePair<int, string>(UserSelectsOrganization2, "User Selects Organization");
-            yield return new KeyValuePair<int, string>(ComputeOrganizationByAge2, "Compute Org By Birthday");
-            yield return new KeyValuePair<int, string>(ManageSubscriptions2, "Manage Subscriptions");
+            yield return new KeyValuePair<int, string>(UserSelects, "User Selects Organization");
+            yield return new KeyValuePair<int, string>(ComputeOrgByAge, "Compute Org By Birthday");
+            yield return new KeyValuePair<int, string>(RegisterLinkMaster, "RegisterLink Master");
+            yield return new KeyValuePair<int, string>(ManageSubscriptions, "Manage Subscriptions");
             yield return new KeyValuePair<int, string>(ManageGiving, "Manage Recurring Giving");
             yield return new KeyValuePair<int, string>(OnlineGiving, "Online Giving");
             yield return new KeyValuePair<int, string>(OnlinePledge, "Online Pledge");

@@ -94,13 +94,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public bool UserSelectsOrganization()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelects;
         }
 
         public bool ComputesOrganizationByAge()
         {
             return masterorgid.HasValue &&
-                   masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2;
+                   masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrgByAge;
         }
 
         public bool DisplaySelectedOrg()
@@ -129,7 +129,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool ManageSubscriptions()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2;
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions;
         }
 
         public bool RecordFamilyAttendance()
@@ -240,9 +240,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
                 else
                 {
-                    if (org.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2
-                        || org.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2
-                        || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2)
+                    if (org.RegistrationTypeId == RegistrationTypeCode.UserSelects
+                        || org.RegistrationTypeId == RegistrationTypeCode.ComputeOrgByAge
+                        || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions)
                     {
                         _masterorg = org;
                         masterorgid = orgid;

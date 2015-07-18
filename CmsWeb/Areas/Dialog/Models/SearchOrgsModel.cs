@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public SearchOrgsModel()
         {
-            maxitems = 15;
+            maxitems = 200;
         }
         private IQueryable<Organization> orgs;
         public IQueryable<Organization> FetchOrgs()
@@ -41,7 +41,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
             orgs = from o in DbUtil.Db.Organizations
                    let org = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == id)
-                   where o.DivOrgs.Any(dd => org.DivOrgs.Any(oo => oo.DivId == dd.DivId))
+                   //where o.DivOrgs.Any(dd => org.DivOrgs.Any(oo => oo.DivId == dd.DivId))
 				   where o.OrganizationId != id
                    where o.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
                    select o;

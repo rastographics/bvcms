@@ -149,7 +149,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool UserSelectsOrganization()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelects;
         }
 
         public bool OnlyOneAllowed()
@@ -193,7 +193,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool ManagingSubscriptions()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2;
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions;
         }
 
         public bool OnlinePledge()
