@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{019a33ac-25a8-4df1-b6bb-72d4180d30fc}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>Program.py</StartupFile>
+    <StartupFile>class1.py</StartupFile>
     <SearchPath>C:\Users\David\Documents\BellevueProject\BellevueHg\CmsWeb\;C:\Users\David\Documents\BellevueProject\BellevueHg\UtilityExtensions\obj\Debug\;..\CmsData\bin\Debug</SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <AssemblyName>PythonApplication1</AssemblyName>
@@ -28,6 +28,10 @@
   <ItemGroup>
     <Compile Include="class2.py" />
     <Compile Include="class1.py" />
+    <Compile Include="class3.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="configproxy.py" />
     <Compile Include="Program.py" />
   </ItemGroup>
   <ItemGroup>
@@ -36,5 +40,15 @@
       <Project>{98aee43c-4226-49e7-bd46-c1a85467eced}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\UtilityExtensions\UtilityExtensions.csproj">
+      <Name>UtilityExtensions</Name>
+      <Project>{c504e3d2-5498-451b-bf82-309623706f11}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="myconfig.config">
+      <SubType>Code</SubType>
+    </Content>
   </ItemGroup>
 </Project>
