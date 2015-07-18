@@ -2475,7 +2475,6 @@
     <Content Include="Scripts\jQuery\jquery.joyride-1.0.5.js" />
     <Content Include="Scripts\js\tutorial.js" />
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
-    <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
     <Compile Include="Controllers\SupportController.cs" />
     <Compile Include="Models\SupportRequestModel.cs" />
     <Compile Include="Models\HomeModel.cs" />
@@ -3316,7 +3315,6 @@
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Finance\Views\QuickBooks\Index.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults.cshtml" />
     <Content Include="App_Code\Helper.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults2.cshtml" />
