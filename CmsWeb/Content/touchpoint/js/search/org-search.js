@@ -250,6 +250,35 @@
         });
         return false;
     });
+    $("#MakeChildrenOf").click(function (ev) {
+        ev.preventDefault();
+        var f = $('#resultsTable').closest('form');
+        var q = f.serialize();
+
+        swal({
+            title: "Are you sure?",
+            text: "This will make the entire filtered list children of the indicated org",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-warning",
+            confirmButtonText: "Yes, apply change!",
+            closeOnConfirm: true
+        },
+        function () {
+            $.block();
+            $.post('/OrgSearch/MakeChildrenOf/' + $("#ParentOrg").val(), q, function (ret) {
+                $.unblock();
+                if (ret !== "") {
+                    if (ret === "ok")
+                        $.getTable();
+                    else {
+                        swal("Error!", ret, "error");
+                    }
+                }
+            });
+        });
+        return false;
+    });
 
     $("#AddNewDiv").click(function (ev) {
         ev.preventDefault();

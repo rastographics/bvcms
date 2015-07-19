@@ -11,7 +11,6 @@
     var edit = User.IsInRole("Edit");
     var design = User.IsInRole("Design");
     var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
-    var quickbooks = ViewExtensions2.DbSetting("ShowQuickBooksMenu", "false") == "true";
 }
 <div class="row">
     <div class="col-sm-4 col-md-4 col-lg-3">
