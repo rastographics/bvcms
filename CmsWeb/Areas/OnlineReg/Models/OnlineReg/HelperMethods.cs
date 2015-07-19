@@ -195,6 +195,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions;
         }
+        public bool RegisterLinkMaster()
+        {
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.RegisterLinkMaster;
+        }
 
         public bool OnlinePledge()
         {
@@ -604,18 +608,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 : null;
         }
 #if DEBUG
-        public static void DebugCleanUp()
+        public void DebugCleanUp()
         {
             if (Util.IsLocalNetworkRequest)
-            {
-                var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.PeopleId == 828612
-                        where om.OrganizationId == 81460
-                        select om;
-                foreach (var om in q)
-                {
-                    om.Drop(DbUtil.Db, DateTime.Now);
-                }
+                return;
+
+            var q = from om in DbUtil.Db.OrganizationMembers
+                    where om.PeopleId == 828612
+                    where om.OrganizationId == Orgid
+                    select om;
+            foreach (var om in q)
+                om.Drop(DbUtil.Db, DateTime.Now);
+            DbUtil.Db.SubmitChanges();
 //                DbUtil.Db.ExecuteCommand(@"
 //DELETE dbo.EnrollmentTransaction WHERE PeopleId = 58207 AND OrganizationId = 2202
 //
@@ -641,11 +645,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 //WHERE OrgId = 2202
 //AND SupporterId = 58207
 //");
-                DbUtil.Db.SubmitChanges();
-            }
         }
 #endif
-
         public void CancelRegistrant(int n)
         {
             HistoryAdd("Cancel id=" + n);

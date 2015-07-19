@@ -5,11 +5,10 @@ using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
 using CmsWeb.Areas.OnlineReg.Models;
-using Elmah;
 using UtilityExtensions;
 using System.Collections.Generic;
-using System.Configuration;
 using CmsData.Codes;
+using Elmah;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {

@@ -6,6 +6,7 @@ using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
 using CmsData.Codes;
+using CmsWeb.Areas.OnlineReg.Models;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -278,6 +279,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         }
 
         [ValidateInput(false)]
+        // ReSharper disable once FunctionComplexityOverflow
         public ActionResult RegisterLink(string id, bool? showfamily, string source)
         {
             var li = new LinkInfo(registerlinkSTR, landingSTR, id);
@@ -390,17 +392,38 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (q.org.RegistrationTypeId == RegistrationTypeCode.None)
                     throw new Exception("sorry, registration is no longer available");
 
-                li.ot.Used = true;
-                DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("{0}{1}".Fmt(sendlinkSTR, confirmSTR), li.oid, li.pid);
 
-                var subject = "Your link for " + q.org.OrganizationName;
-                var msg = @"<p>Here is your <a href=""{0}"">LINK</a></p>
-<p>Note: If you did not request this link, please ignore this email,
-or contact the church if you need help.</p>"
-                    .Fmt(EmailReplacements.RegisterLinkUrl(DbUtil.Db, li.oid.Value, li.pid.Value, queueid, linktype));
-                var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
+                var expires = DateTime.Now.AddMinutes(DbUtil.Db.Setting("SendlinkExpireMintues", "30").ToInt());
+                var c = DbUtil.Content("SendLinkMessage");
+                if (c == null)
+                {
+                    c = new Content 
+                    {
+                        Name = "SendLinkMessage", 
+                        Title = "Your Link for {org}", 
+                        Body = @"
+<p>Here is your temporary <a href='{url}'>LINK</a> to register for {org}.</p>
 
+<p>This link will expire at {time} (30 minutes).
+You may request another link by clicking the link in the original email you received.</p>
+
+<p>Note: If you did not request this link, please ignore this email,
+or contact the church if you need help.</p>
+"
+                    };
+                    DbUtil.Db.Contents.InsertOnSubmit(c);
+                    DbUtil.Db.SubmitChanges();
+                }
+                var url = EmailReplacements.RegisterLinkUrl(DbUtil.Db,
+                    li.oid.Value, li.pid.Value, queueid, linktype, expires);
+                var subject = c.Title.Replace("{org}", q.org.OrganizationName);
+                var msg = c.Body.Replace("{org}", q.org.OrganizationName)
+                    .Replace("{time}", expires.ToString("f"))
+                    .Replace("{url}", url)
+                    .Replace("%7Burl%7D", url);
+
+                var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
                 DbUtil.Db.Email(NotifyIds[0].FromEmail, q.p, subject, msg); // send confirmation
 
                 return Message("Thank you, {0}, we just sent an email to {1} with your link...".Fmt(q.p.PreferredName, Util.ObscureEmail(q.p.EmailAddress)));
@@ -419,6 +442,18 @@ or contact the church if you need help.</p>"
                              select mt.MemberTag.Name).ToList();
             return setting.AskItems.Where(aa => aa.Type == "AskDropdown").Any(aa => ((AskDropdown)aa).IsSmallGroupFilled(GroupTags, sg))
                  || setting.AskItems.Where(aa => aa.Type == "AskCheckboxes").Any(aa => ((AskCheckboxes)aa).IsSmallGroupFilled(GroupTags, sg));
+        }
+
+        public ActionResult RegisterLinkMaster(int id)
+        {
+			var pid = TempData["PeopleId"] as int?;
+            TempData["PeopleId"] = pid;
+            if (pid == null)
+                return Message("Must start with a registerlink");
+            var m = new OnlineRegModel() { masterorgid = id };
+            ViewBag.Token = TempData["token"];
+			SetHeaders(id.ToInt());
+            return View(m);
         }
     }
 }

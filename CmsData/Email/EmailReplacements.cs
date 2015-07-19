@@ -30,6 +30,9 @@ namespace CmsData
         private const string SupportLinkRe = "<a[^>]*?href=\"https{0,1}://supportlink/{0,1}\"[^>]*>.*?</a>";
         private readonly Regex supportLinkRe = new Regex(SupportLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
+        private const string MasterLinkRe = "<a[^>]*?href=\"https{0,1}://masterlink/{0,1}\"[^>]*>.*?</a>";
+        private readonly Regex masterLinkRe = new Regex(MasterLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
         private const string VolReqLinkRe = "<a[^>]*?href=\"https{0,1}://volreqlink\"[^>]*>.*?</a>";
         private readonly Regex volReqLinkRe = new Regex(VolReqLinkRe, RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
@@ -54,9 +57,9 @@ namespace CmsData
             this.from = from;
             if (text == null)
                 text = "(no content)";
-            var pattern = @"(<style.*?</style>|{{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9})".Fmt(
+            var pattern = @"(<style.*?</style>|{{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|{10})".Fmt(
                 RegisterLinkRe, RegisterTagRe, RsvpLinkRe, RegisterHrefRe,
-                SendLinkRe, SupportLinkRe, VolReqLinkRe,
+                SendLinkRe, SupportLinkRe, MasterLinkRe, VolReqLinkRe,
                 VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
@@ -335,6 +338,9 @@ namespace CmsData
 
                     if (supportLinkRe.IsMatch(code))
                         return SupportLink(code, emailqueueto);
+
+                    if (masterLinkRe.IsMatch(code))
+                        return MasterLink(code, emailqueueto);
 
                     if (volReqLinkRe.IsMatch(code))
                         return VolReqLink(code, emailqueueto);
@@ -778,6 +784,37 @@ namespace CmsData
             return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
         }
 
+        private string MasterLink(string code, EmailQueueTo emailqueueto)
+        {
+            var list = new Dictionary<string, OneTimeLink>();
+
+            var doc = new HtmlDocument();
+            doc.LoadHtml(code);
+            var ele = doc.DocumentNode.Element("a");
+            var inside = ele.InnerHtml.Replace("{last}", person.LastName);
+            var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
+
+            var oid = GetId(d, "MasterLink");
+            var qs = "{0},{1},{2},{3}".Fmt(oid, emailqueueto.PeopleId, emailqueueto.Id, "masterlink");
+
+            OneTimeLink ot;
+            if (list.ContainsKey(qs))
+                ot = list[qs];
+            else
+            {
+                ot = new OneTimeLink
+                    {
+                        Id = Guid.NewGuid(),
+                        Querystring = qs
+                    };
+                db.OneTimeLinks.InsertOnSubmit(ot);
+                db.SubmitChanges();
+                list.Add(qs, ot);
+            }
+            var url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
+            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+        }
+
         private string UnSubscribeLink(EmailQueueTo emailqueueto)
         {
             var qs = "OptOut/UnSubscribe/?enc=" + Util.EncryptForUrl("{0}|{1}".Fmt(emailqueueto.PeopleId, from.Address));
@@ -920,6 +957,9 @@ namespace CmsData
             "http://supportlink",
             "https://supportlink",
 
+            "http://masterlink",
+            "https://masterlink",
+
             "http://rsvplink",
             "https://rsvplink",
 
@@ -945,15 +985,17 @@ namespace CmsData
             return SPECIAL_FORMATS.Contains(link.ToLower());
         }
 
-        public static string RegisterLinkUrl(CMSDataContext db, int orgid, int pid, int queueid, string linktype)
+        public static string RegisterLinkUrl(CMSDataContext db, int orgid, int pid, int queueid, string linktype, DateTime? expires = null)
         {
             var showfamily = linktype == "registerlink2";
             var qs = "{0},{1},{2},{3}".Fmt(orgid, pid, queueid, linktype);
             var ot = new OneTimeLink
                 {
                     Id = Guid.NewGuid(),
-                    Querystring = qs
+                    Querystring = qs,
                 };
+            if (expires.HasValue)
+                ot.Expires = expires.Value;
             db.OneTimeLinks.InsertOnSubmit(ot);
             db.SubmitChanges();
             var url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));

@@ -1,0 +1,35 @@
+﻿@using CmsData
+@using CmsWeb.Areas.OnlineReg.Models
+@model OnlineRegModel
+@{
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
+}
+@section scripts
+{
+  @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js")
+}
+<h2>@Model.Header</h2>
+<p>@Html.Raw(Model.masterorg.Description)</p>
+<div>@Html.Raw(Model.Instructions)</div>
+<h4>Register Links</h4>
+<table id="subs" class="table" style="width: auto; display:table">
+  @foreach (var o in DbUtil.Db.RegisterLinksFromMaster(Model.masterorgid))
+  {
+    <tr>
+      <td>
+        @if (o.UseRegisterLink2 == true)
+        {
+        <b><a href="/OnlineReg/@o.OrganizationId?registertag=@ViewBag.Token&showfamily=true">@(o.Title ?? o.OrganizationName)</a></b>
+        }
+        else
+        {
+        <b><a href="/OnlineReg/@o.OrganizationId?registertag=@ViewBag.Token">@(o.Title ?? o.OrganizationName)</a></b>
+        }
+        <p>@Html.Raw(o.Description)</p>
+      </td>
+    </tr>
+  }
+</table>
+
+

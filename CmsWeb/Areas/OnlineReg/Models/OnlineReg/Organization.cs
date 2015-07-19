@@ -51,7 +51,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (org != null && masterorgid == null &&
                 (org.RegistrationTypeId == RegistrationTypeCode.UserSelects
                  || org.RegistrationTypeId == RegistrationTypeCode.ComputeOrgByAge
-                 || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions))
+                 || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions
+                 || org.RegistrationTypeId == RegistrationTypeCode.RegisterLinkMaster))
             {
                 _masterOrg = org;
                 masterorgid = Orgid;

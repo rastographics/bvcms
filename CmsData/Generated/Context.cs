@@ -3446,6 +3446,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.RegisterLinksFromMaster", IsComposable = true)]
+        public IQueryable< View.RegisterLinksFromMaster > RegisterLinksFromMaster(
+            [Parameter(DbType="int")] int? master
+            )
+        {
+            return CreateMethodCallQuery< View.RegisterLinksFromMaster>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    master
+                );
+        }
+
         [Function(Name="dbo.Registrations", IsComposable = true)]
         public IQueryable< View.Registration > Registrations(
             [Parameter(DbType="int")] int? days

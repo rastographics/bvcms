@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData;
 using System.Text;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
 using CmsData.Registration;
-using CmsData.View;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -443,7 +441,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 
         private void ExpireRegisterTag()
         {
-            if (registertag.HasValue())
+            if (registertag.HasValue() && registerLinkType != "masterlink")
             {
                 var guid = registertag.ToGuid();
                 var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);
