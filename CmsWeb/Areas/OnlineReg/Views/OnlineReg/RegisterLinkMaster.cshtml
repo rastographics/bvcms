@@ -1,9 +1,13 @@
 ﻿@using CmsData
 @using CmsWeb.Areas.OnlineReg.Models
+@using RestSharp.Extensions
 @model OnlineRegModel
 @{
   Layout = "~/Views/Shared/onlinereg2.cshtml";
   ViewBag.Title = "Online Registration";
+  var q = from o in DbUtil.Db.RegisterLinksFromMaster(Model.masterorgid)
+          orderby o.AppCategory, o.PublicSortOrder
+          select o;
 }
 @section scripts
 {
@@ -14,17 +18,21 @@
 <div>@Html.Raw(Model.Instructions)</div>
 <h4>Register Links</h4>
 <table id="subs" class="table" style="width: auto; display:table">
-  @foreach (var o in DbUtil.Db.RegisterLinksFromMaster(Model.masterorgid))
+  @foreach (var o in q)
   {
+    if (o.RegisterLinkHeader.HasValue())
+    {
+      <tr><th><br/>@Html.Raw(o.RegisterLinkHeader)</th></tr>
+    }
     <tr>
       <td>
         @if (o.UseRegisterLink2 == true)
         {
-        <b><a href="/OnlineReg/@o.OrganizationId?registertag=@ViewBag.Token&showfamily=true">@(o.Title ?? o.OrganizationName)</a></b>
+          <b><a href="/OnlineReg/@o.OrganizationId?registertag=@ViewBag.Token&showfamily=true">@(o.Title ?? o.OrganizationName)</a></b>
         }
         else
         {
-        <b><a href="/OnlineReg/@o.OrganizationId?registertag=@ViewBag.Token">@(o.Title ?? o.OrganizationName)</a></b>
+          <b><a href="/OnlineReg/@o.OrganizationId?registertag=@ViewBag.Token">@(o.Title ?? o.OrganizationName)</a></b>
         }
         <p>@Html.Raw(o.Description)</p>
       </td>

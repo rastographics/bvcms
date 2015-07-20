@@ -197,7 +197,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public bool RegisterLinkMaster()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.RegisterLinkMaster;
+            return org != null && org.RegistrationTypeId == RegistrationTypeCode.RegisterLinkMaster;
         }
 
         public bool OnlinePledge()

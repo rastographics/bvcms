@@ -327,6 +327,10 @@ namespace CmsData
                     if (code.StartsWith("{orgmember:", StringComparison.OrdinalIgnoreCase))
                         return OrgMember(code, emailqueueto);
 
+                    if(code.StartsWith("{orgbarcode:"))
+                        return string.Format("<img src='{0}' />", 
+                            db.ServerLink("/Track/Barcode/{0}-{1}".Fmt(code.Substring(12).TrimEnd('}').ToInt(), p.PeopleId)));
+
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
 

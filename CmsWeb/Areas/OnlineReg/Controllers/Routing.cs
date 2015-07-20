@@ -77,10 +77,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
             if (m.RegisterLinkMaster())
             {
-                if(m.registerLinkType != "masterlink")
+                if(m.registerLinkType != "masterlink" && !User.Identity.IsAuthenticated)
                     throw new Exception("RegisterLinkMaster registration requires MasterLink type of link");
                 TempData["token"] = m.registertag;
-                return "/OnlineReg/RegisterLinkMaster/{0}".Fmt(m.masterorgid);
+                return "/OnlineReg/RegisterLinkMaster/{0}".Fmt(m.Orgid);
             }
             if (m.ManagingSubscriptions())
                 return "/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid);

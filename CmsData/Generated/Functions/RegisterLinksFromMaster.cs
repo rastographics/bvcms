@@ -24,9 +24,13 @@ namespace CmsData.View
 		
 		private string _Description;
 		
+		private string _AppCategory;
+		
 		private string _PublicSortOrder;
 		
 		private bool? _UseRegisterLink2;
+		
+		private string _RegisterLinkHeader;
 		
 		
 		public RegisterLinksFromMaster()
@@ -103,6 +107,23 @@ namespace CmsData.View
 		}
 
 		
+		[Column(Name="AppCategory", Storage="_AppCategory", DbType="varchar(15)")]
+		public string AppCategory
+		{
+			get
+			{
+				return this._AppCategory;
+			}
+
+			set
+			{
+				if (this._AppCategory != value)
+					this._AppCategory = value;
+			}
+
+		}
+
+		
 		[Column(Name="PublicSortOrder", Storage="_PublicSortOrder", DbType="varchar(15)")]
 		public string PublicSortOrder
 		{
@@ -132,6 +153,23 @@ namespace CmsData.View
 			{
 				if (this._UseRegisterLink2 != value)
 					this._UseRegisterLink2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="RegisterLinkHeader", Storage="_RegisterLinkHeader", DbType="nvarchar")]
+		public string RegisterLinkHeader
+		{
+			get
+			{
+				return this._RegisterLinkHeader;
+			}
+
+			set
+			{
+				if (this._RegisterLinkHeader != value)
+					this._RegisterLinkHeader = value;
 			}
 
 		}

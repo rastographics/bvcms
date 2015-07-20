@@ -160,7 +160,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     var subject = Util.PickFirst(setting.Subject, "no subject");
                     var msg = Util.PickFirst(setting.Body, "no message");
-                    msg = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, q.p, q.org.DivisionName, q.org.OrganizationName, q.org.Location, msg);
+                    msg = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, q.p, q.org.DivisionName, q.org.OrganizationId, q.org.OrganizationName, q.org.Location, msg);
                     msg = msg.Replace("{details}", smallgroup);
                     var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
 
@@ -260,7 +260,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                     var subject = Util.PickFirst(setting.Subject, "no subject");
                     var msg = Util.PickFirst(setting.Body, "no message");
-                    msg = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, q.p, q.org.DivisionName, q.org.OrganizationName, q.org.Location, msg);
+                    msg = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, q.p, q.org.DivisionName, q.org.OrganizationId, q.org.OrganizationName, q.org.Location, msg);
                     msg = msg.Replace("{details}", q.meeting.MeetingDate.ToString2("f"));
                     var NotifyIds = DbUtil.Db.StaffPeopleForOrg(q.org.OrganizationId);
 
