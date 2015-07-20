@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Db.SubmitChanges();
 
             var message = body.Replace("{url}", url + ot.Id.ToCode(), ignoreCase: true);
-            message = message.Replace(WebUtility.UrlEncode("{url}"), person.Name, ignoreCase: true);
+            message = message.Replace(WebUtility.UrlEncode("{url}"), url + ot.Id.ToCode(), ignoreCase: true);
             message = message.Replace("{name}", person.Name, ignoreCase: true);
             message = message.Replace("{first}", person.PreferredName, ignoreCase: true);
 
