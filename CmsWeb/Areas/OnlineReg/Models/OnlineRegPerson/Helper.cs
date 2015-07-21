@@ -615,6 +615,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // make sure orgid is set
             if (!orgid.HasValue && Parent.Orgid.HasValue)
                 orgid = Parent.Orgid;
+
+            CheckUserNeedsSelection();
         }
         internal void DoGroupToJoin()
         {

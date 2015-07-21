@@ -1,11 +1,15 @@
 ﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegModel
-@Helper.OnlineRegHeaderFullRow("Make a Selection")
-<div>
-    <select name="classid">
-        @foreach (var i in Model.Classes(Model.classid))
-        {
-            <option value="@i.Id" @(i.selected ? "selected=selected" : "") @(i.filled ? "disabled=disabled" : "")>@i.Text</option>
-        }
-    </select>
-    @Html.DivValidationMessage("classid")
+@Helper.OnlineRegHeaderFullRow("Make a Selection", Model.UserNeedsSelection ? "alert alert-danger" : "")
+<div class="form-group">
+  <div class="col-md-11 col-md-offset-1">
+    @foreach (var i in Model.Classes(Model.classid))
+    {
+      <div class="radio">
+        <label for="classid-@i.Id">
+          <input type="radio" name="classid" id="classid-@i.Id" value="@i.Id" @(i.selected ? "checked=checked" : "") @(i.filled ? "disabled=disabled" : "")/>
+          <span style="@(i.filled ? "text-decoration:line-through;" : "")">@i.Text</span>
+        </label>
+      </div>
+    }
+  </div>
 </div>

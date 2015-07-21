@@ -126,7 +126,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (id >= m.List.Count)
                 return FlowList(m);
             var p = m.List[id];
-            p.SetChosenClass();
             p.ValidateModelForFind(ModelState, id);
 
             if (p.AnonymousReRegistrant())
