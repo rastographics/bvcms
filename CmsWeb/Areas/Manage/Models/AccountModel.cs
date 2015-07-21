@@ -365,8 +365,8 @@ namespace CmsWeb.Models
 			var status = AuthenticateLogon(userName, password, Request.Url.OriginalString);
 			if (status.IsValid)
 			{
-				FormsAuthentication.SetAuthCookie(status.User.Username, false);
 				SetUserInfo(status.User.Username, Session);
+				FormsAuthentication.SetAuthCookie(status.User.Username, false);
 				DbUtil.LogActivity("User {0} logged in".Fmt(status.User.Username));
 				return status.User;
 			}
@@ -375,8 +375,8 @@ namespace CmsWeb.Models
 		public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request)
 		{
 #if DEBUG
-			FormsAuthentication.SetAuthCookie(userName, false);
 			SetUserInfo(userName, Session);
+			FormsAuthentication.SetAuthCookie(userName, false);
 #endif
 		    return null;
 		}

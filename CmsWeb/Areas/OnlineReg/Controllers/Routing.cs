@@ -11,9 +11,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         private ActionResult RouteRegistration(OnlineRegModel m, int pid, bool? showfamily)
         {
             if(pid == 0)
-            {
                 return View(m);
-            }
 #if DEBUG
             m.DebugCleanUp();
 #endif
@@ -74,14 +72,16 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private string RouteManageGivingSubscriptionsPledgeVolunteer(OnlineRegModel m)
         {
-            TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
             if (m.RegisterLinkMaster())
             {
-                if(m.registerLinkType != "masterlink" && !User.Identity.IsAuthenticated)
-                    throw new Exception("RegisterLinkMaster registration requires MasterLink type of link");
-                TempData["token"] = m.registertag;
+                if (m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
+                {
+                    TempData["token"] = m.registertag;
+                    TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
+                }
                 return "/OnlineReg/RegisterLinkMaster/{0}".Fmt(m.Orgid);
             }
+            TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
             if (m.ManagingSubscriptions())
                 return "/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid);
             if (m.ManageGiving())

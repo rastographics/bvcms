@@ -47,9 +47,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             fromMethod = "Login";
             // they clicked the Login button on the login page
 
-            var ret = Util.IsDebug() && Util.IsLocalNetworkRequest
-                ? AccountModel.AutoLogin(m.username, Session, Request)
-                : AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
+//            var ret = Util.IsDebug() && Util.IsLocalNetworkRequest
+//                ? AccountModel.AutoLogin(m.username, Session, Request) : 
+            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
 
             if (ret is string)
             {

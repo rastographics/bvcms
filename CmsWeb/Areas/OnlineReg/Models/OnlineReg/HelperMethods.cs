@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Web;
 using System.Xml.Serialization;
 using CmsData;
@@ -106,6 +107,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool allowAnonymous(int? id)
         {
+            if (RegisterLinkMaster())
+                return false;
             if (id.HasValue)
                 if(settings.ContainsKey(id.Value))
                     return !settings[id.Value].DisallowAnonymous;

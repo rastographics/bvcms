@@ -447,11 +447,15 @@ or contact the church if you need help.</p>
         public ActionResult RegisterLinkMaster(int id)
         {
 			var pid = TempData["PeopleId"] as int?;
-            TempData["PeopleId"] = pid;
+            ViewBag.Token = TempData["token"];
+
+            var m = new OnlineRegModel() { Orgid = id };
+            if (User.Identity.IsAuthenticated)
+                return View(m);
+
             if (pid == null)
                 return Message("Must start with a registerlink");
-            var m = new OnlineRegModel() { masterorgid = id };
-            ViewBag.Token = TempData["token"];
+
 			SetHeaders(id.ToInt());
             return View(m);
         }
