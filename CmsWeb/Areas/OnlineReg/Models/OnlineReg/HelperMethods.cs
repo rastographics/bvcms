@@ -107,6 +107,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool allowAnonymous(int? id)
         {
+            if (RegisterLinkMaster())
+                return false;
             if (id.HasValue)
                 if(settings.ContainsKey(id.Value))
                     return !settings[id.Value].DisallowAnonymous;
@@ -195,6 +197,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool ManagingSubscriptions()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions;
+        }
+        public bool RegisterLinkMaster()
+        {
+            return org != null && org.RegistrationTypeId == RegistrationTypeCode.RegisterLinkMaster;
         }
 
         public bool OnlinePledge()
@@ -518,7 +524,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!timeOut.HasValue)
                 {
-                    timeOut = Util.IsDebug()
+                    timeOut = Util.IsDebug() 
                         ? 1600000
                         : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
                     if (masterorgid.HasValue)
@@ -607,18 +613,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 : null;
         }
 #if DEBUG
-        public static void DebugCleanUp()
+        public void DebugCleanUp()
         {
             if (Util.IsLocalNetworkRequest)
-            {
+                return;
+
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.PeopleId == 828612
-                        where om.OrganizationId == 81460
+                    where om.OrganizationId == Orgid
                         select om;
                 foreach (var om in q)
-                {
                     om.Drop(DbUtil.Db, DateTime.Now);
-                }
+            DbUtil.Db.SubmitChanges();
 //                DbUtil.Db.ExecuteCommand(@"
 //DELETE dbo.EnrollmentTransaction WHERE PeopleId = 58207 AND OrganizationId = 2202
 //
@@ -644,11 +650,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 //WHERE OrgId = 2202
 //AND SupporterId = 58207
 //");
-                DbUtil.Db.SubmitChanges();
-            }
         }
 #endif
-
         public void CancelRegistrant(int n)
         {
             HistoryAdd("Cancel id=" + n);
@@ -688,10 +691,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             HistoryAdd("startover");
             UpdateDatum(abandoned: true);
             DbUtil.Db.ExecuteCommand(@"
-UPDATE dbo.RegistrationData
+UPDATE dbo.RegistrationData 
 SET abandoned = 1
 WHERE ISNULL(abandoned, 0) = 0
-AND UserPeopleid = {0}
+AND UserPeopleid = {0} 
 AND OrganizationId = {1}", Datum.UserPeopleId, Datum.OrganizationId);
         }
     }

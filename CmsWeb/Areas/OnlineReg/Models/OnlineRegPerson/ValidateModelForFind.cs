@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             IsValidForExisting = true; // true till proven false
 
             SetChosenClass();
-            if (NeedsUserSelection()) 
+            if (Parent.UserNeedsSelection) 
                 return;
 
             var foundname = Parent.GetNameFor(mm => mm.List[Index].Found);
@@ -69,16 +69,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ValidateBirthdayRange();
             }
         }
-        private bool NeedsUserSelection()
+        public void CheckUserNeedsSelection()
         {
+            Parent.UserNeedsSelection = false;
             if (!UserSelectsOrganization()) 
-                return false;
+                return;
             if ((orgid) > 0)
-                return false;
-
-            modelState.AddModelError("classid", "please choose a group/event");
-            IsValidForExisting = modelState.IsValid;
-            return true;
+                return;
+            modelState.AddModelError("class", "");
+            Parent.UserNeedsSelection = true;
         }
         private void ValidateBasic()
         {

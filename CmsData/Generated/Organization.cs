@@ -1672,7 +1672,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="OrgPickList", UpdateCheck=UpdateCheck.Never, Storage="_OrgPickList", DbType="nvarchar(300)")]
+		[Column(Name="OrgPickList", UpdateCheck=UpdateCheck.Never, Storage="_OrgPickList", DbType="varchar")]
 		public string OrgPickList
 		{
 			get { return this._OrgPickList; }

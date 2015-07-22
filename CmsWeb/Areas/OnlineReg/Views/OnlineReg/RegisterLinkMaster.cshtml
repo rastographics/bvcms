@@ -1,0 +1,43 @@
+﻿@using CmsData
+@using CmsWeb.Areas.OnlineReg.Models
+@using UtilityExtensions
+@model OnlineRegModel
+@{
+  Layout = "~/Views/Shared/onlinereg2.cshtml";
+  ViewBag.Title = "Online Registration";
+  var q = from o in DbUtil.Db.RegisterLinksFromMaster(Model.Orgid)
+          orderby o.AppCategory, o.PublicSortOrder
+          select o;
+  var token = ViewBag.Token as string;
+}
+@section scripts
+{
+  @Fingerprint.Script("/Scripts/OnlineReg/OnlineReg.js")
+}
+<h2>@Model.Header</h2>
+<p>@Html.Raw(Model.org.Description)</p>
+<div>@Html.Raw(Model.Instructions)</div>
+<h4>Register Links</h4>
+<table id="subs" class="table" style="width: auto; display:table">
+  @foreach (var o in q)
+  {
+    var link = string.Format("/OnlineReg/" +
+      o.OrganizationId, o.UseRegisterLink2 == true ? "?showfamily=true" : "");
+    if (token.HasValue())
+    {
+      link += (link.Contains("?") ? "&" : "?") + "registertag=" + token;
+    }
+    if (o.RegisterLinkHeader.HasValue())
+    {
+      <tr><th><br/>@Html.Raw(o.RegisterLinkHeader)</th></tr>
+    }
+    <tr>
+      <td>
+        <b><a href="@link">@(o.Title ?? o.OrganizationName)</a></b>
+        <p>@Html.Raw(o.Description)</p>
+      </td>
+    </tr>
+  }
+</table>
+
+

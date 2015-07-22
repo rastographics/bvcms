@@ -5,11 +5,10 @@ using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
 using CmsWeb.Areas.OnlineReg.Models;
-using Elmah;
 using UtilityExtensions;
 using System.Collections.Generic;
-using System.Configuration;
 using CmsData.Codes;
+using Elmah;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -48,9 +47,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             fromMethod = "Login";
             // they clicked the Login button on the login page
 
-            var ret = Util.IsDebug() && Util.IsLocalNetworkRequest
-                ? AccountModel.AutoLogin(m.username, Session, Request)
-                : AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
+//            var ret = Util.IsDebug() && Util.IsLocalNetworkRequest
+//                ? AccountModel.AutoLogin(m.username, Session, Request) : 
+            var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
 
             if (ret is string)
             {
@@ -127,7 +126,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (id >= m.List.Count)
                 return FlowList(m);
             var p = m.List[id];
-            p.SetChosenClass();
             p.ValidateModelForFind(ModelState, id);
 
             if (p.AnonymousReRegistrant())

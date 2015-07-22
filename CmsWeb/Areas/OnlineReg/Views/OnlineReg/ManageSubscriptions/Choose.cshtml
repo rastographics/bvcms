@@ -15,16 +15,16 @@
   @Html.Hidden("specialedit", 1)
   @Html.Hidden("pid", Model.pid)
   @Html.Hidden("masterorgid", Model.masterorgid)
-  <table id="subs">
+  <table id="subs" class="table" style="width: auto; display:table">
     @foreach (var o in Model.OrderSubs(Model.FetchSubs()))
     {
       <tr>
-        <td class="top">
+        <td class="top" align="right">
           <input type="checkbox" name="Subscribe" @o.CHECKED value="@o.OrgId" />
         </td>
         <td>
-          <h3>@o.Name</h3>
-          <h4>@o.Description</h4>
+          <b>@o.Name</b>
+          <p>@Html.Raw(o.Description)</p>
         </td>
       </tr>
     }

@@ -39,13 +39,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int? UserPeopleId { get; set; }
         public bool prospect { get; set; }
         public int? classid { get; set; }
-
-        private string _registerTag;
-        public string registertag
-        {
-            get { return _registerTag; }
-            set { _registerTag = value; }
-        }
+        public string registertag { get; set; }
+        public string registerLinkType { get; set; }
 
         private List<OnlineRegPersonModel> _list = new List<OnlineRegPersonModel>();
 
