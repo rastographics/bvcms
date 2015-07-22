@@ -635,14 +635,15 @@ namespace CmsData.API
             xs.Serialize(sw, a);
             return sw.ToString();
         }
-        public static string MessageReplacements(CMSDataContext db, Person p, string DivisionName, string OrganizationName, string Location, string message)
+        public static string MessageReplacements(CMSDataContext db, Person p, string divisionName, int orgId, string organizationName, string location, string message)
         {
             message = message.Replace("{first}", p.PreferredName, ignoreCase: true);
             message = message.Replace("{name}", p.Name, ignoreCase: true);
-            message = message.Replace("{division}", DivisionName, ignoreCase: true);
-            message = message.Replace("{org}", OrganizationName, ignoreCase: true);
-            message = message.Replace("{location}", Location, ignoreCase: true);
+            message = message.Replace("{division}", divisionName, ignoreCase: true);
+            message = message.Replace("{org}", organizationName, ignoreCase: true);
+            message = message.Replace("{location}", location, ignoreCase: true);
             message = message.Replace("{cmshost}", db.CmsHost, ignoreCase: true);
+            message = message.Replace("{orgbarcode}", "{{orgbarcode:{0}}}".Fmt(orgId.ToString()));
             return message;
         }
         public void SendVolunteerReminders(int id, bool sendall)
@@ -696,7 +697,7 @@ namespace CmsData.API
                 var message = Util.PickFirst(setting.ReminderBody, "no body");
 
                 string loc = org.Location;
-                message = MessageReplacements(Db, om.Person, null, oname, loc, message);
+                message = MessageReplacements(Db, om.Person, null, org.OrganizationId, oname, loc, message);
 
                 message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
                 message = message.Replace("{details}", details);
@@ -735,7 +736,7 @@ namespace CmsData.API
                 var message = Util.PickFirst(setting.ReminderBody, "no body");
 
                 string location = org.Location;
-                message = MessageReplacements(Db, n, null, organizationName, location, message);
+                message = MessageReplacements(Db, n, null, org.OrganizationId, organizationName, location, message);
 
                 message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
                 message = message.Replace("{details}", sb.ToString());
@@ -773,7 +774,7 @@ namespace CmsData.API
                 message = Util.PickFirst(setting.ReminderBody, noBody);
 
                 string location = org.Location;
-                message = MessageReplacements(Db, om.Person, null, organizationName, location, message);
+                message = MessageReplacements(Db, om.Person, null, org.OrganizationId, organizationName, location, message);
 
                 message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
                 message = message.Replace("{details}", details);

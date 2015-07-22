@@ -90,6 +90,27 @@ namespace CmsWeb.Areas.Search.Controllers
             return Content("ok");
         }
         [HttpPost]
+        public ActionResult MakeChildrenOf(int id, OrgSearchModel m)
+        {
+            int? t = (id == -1 ? (int?)null : id);
+            if (t == 0)
+                return Content("");
+            var org = DbUtil.Db.LoadOrganizationById(id);
+            if (t.HasValue || org != null)
+            {
+                var q = from o in DbUtil.Db.Organizations
+                    join os in m.FetchOrgs() on o.OrganizationId equals os.OrganizationId
+                    where o.OrganizationId != id
+                    select o;
+                foreach (var o in q)
+                    o.ParentOrgId = t;
+            }
+            else
+                return Content("error: missing type");
+            DbUtil.Db.SubmitChanges();
+            return Content("ok");
+        }
+        [HttpPost]
         public ActionResult RenameDiv(int id, int divid, string name)
         {
             var d = DbUtil.Db.Divisions.Single(dd => dd.Id == divid);

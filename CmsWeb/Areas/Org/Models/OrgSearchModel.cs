@@ -137,6 +137,7 @@ namespace CmsWeb.Areas.Search.Models
                          os.OrganizationStatusId,
                          os.AppCategory,
                          os.PublicSortOrder,
+                         os.UseRegisterLink2,
                      };
             return q2.ToDataTable().ToExcel("Organizations.xlsx");
         }

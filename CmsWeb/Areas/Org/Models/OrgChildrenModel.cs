@@ -78,9 +78,8 @@ namespace CmsWeb.Areas.Org.Models
                     let ck = (o.ParentOrgId ?? 0) == org.OrganizationId
                     let ot = o.ParentOrgId != null && o.ParentOrgId != org.OrganizationId
                     let pa = o.ChildOrgs.Count() > 0
-					//where o.DivisionId == org.DivisionId
                     where o.DivOrgs.Any(dd => org.DivOrgs.Select(oo => oo.DivId).Contains(dd.DivId)) || o.ParentOrgId == orgid
-                    where namesearch == null || o.OrganizationName.Contains(namesearch) || ck
+                    where namesearch == null || o.OrganizationName.Contains(namesearch) || o.DivOrgs.Any(dd => dd.Division.Name.Contains(namesearch)) || ck
                     where o.OrganizationId != org.OrganizationId
                     where o.OrganizationStatusId == OrgStatusCode.Active || o.ParentOrgId == orgid
                     orderby !ck, ot, pa, o.OrganizationName

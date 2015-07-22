@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 location = masterorg.Location;
 
             message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db,
-                person, org.DivisionName, org.OrganizationName, location, message);
+                person, org.DivisionName, org.OrganizationId, org.OrganizationName, location, message);
             message = message.Replace("{phone}", org.PhoneNumber.FmtFone7())
                 .Replace("{tickets}", ntickets.ToString())
                 .Replace("{details}", details)

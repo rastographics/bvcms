@@ -32,9 +32,9 @@ namespace CmsData
 		
 		private DateTime? _StartDt;
 		
-		private DateTime? _EndDt;
-		
 		private string _Trace;
+		
+		private DateTime? _EndDt;
 		
    		
     	
@@ -66,11 +66,11 @@ namespace CmsData
 		partial void OnStartDtChanging(DateTime? value);
 		partial void OnStartDtChanged();
 		
-		partial void OnEndDtChanging(DateTime? value);
-		partial void OnEndDtChanged();
-		
 		partial void OnTraceChanging(string value);
 		partial void OnTraceChanged();
+		
+		partial void OnEndDtChanging(DateTime? value);
+		partial void OnEndDtChanged();
 		
     #endregion
 		public Downline()
@@ -237,28 +237,6 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="EndDt", UpdateCheck=UpdateCheck.Never, Storage="_EndDt", DbType="datetime")]
-		public DateTime? EndDt
-		{
-			get { return this._EndDt; }
-
-			set
-			{
-				if (this._EndDt != value)
-				{
-				
-                    this.OnEndDtChanging(value);
-					this.SendPropertyChanging();
-					this._EndDt = value;
-					this.SendPropertyChanged("EndDt");
-					this.OnEndDtChanged();
-				}
-
-			}
-
-		}
-
-		
 		[Column(Name="Trace", UpdateCheck=UpdateCheck.Never, Storage="_Trace", DbType="varchar(400)")]
 		public string Trace
 		{
@@ -274,6 +252,28 @@ namespace CmsData
 					this._Trace = value;
 					this.SendPropertyChanged("Trace");
 					this.OnTraceChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="EndDt", UpdateCheck=UpdateCheck.Never, Storage="_EndDt", DbType="datetime")]
+		public DateTime? EndDt
+		{
+			get { return this._EndDt; }
+
+			set
+			{
+				if (this._EndDt != value)
+				{
+				
+                    this.OnEndDtChanging(value);
+					this.SendPropertyChanging();
+					this._EndDt = value;
+					this.SendPropertyChanged("EndDt");
+					this.OnEndDtChanged();
 				}
 
 			}
