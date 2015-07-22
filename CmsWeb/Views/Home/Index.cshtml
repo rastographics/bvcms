@@ -64,7 +64,7 @@
                     <ul class="list-group">
                         @foreach (var birthday in birthdays)
                         {
-                            <li class="list-group-item"><a href="@birthday.Url">@birthday.Name (@birthday.Birthday.ToString("m"))</a></li>
+                            <li class="list-group-item"><a href="@birthday.Url">@birthday.Name (@birthday.Birthday.ToString("m", new System.Globalization.CultureInfo("en-US"))</a></li>
                         }
                     </ul>
                 }
