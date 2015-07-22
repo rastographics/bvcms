@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Net;
 using System.Web;
 using System.Xml.Serialization;
 using CmsData;
@@ -487,9 +487,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             msg = msg.Replace("{org}", Header)
                 .Replace("{email}", Util.ObscureEmail(email))
-                .Replace("{url}", URL);
+                .Replace("{url}", URL)
+                .Replace(WebUtility.UrlEncode("{url}"), URL);
             return msg;
         }
+
         public string GetFinishRegistrationButton()
         {
             string def = DbUtil.Db.Setting("FinishRegBtnText", "Finish Registration");
@@ -616,12 +618,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (Util.IsLocalNetworkRequest)
                 return;
 
-            var q = from om in DbUtil.Db.OrganizationMembers
-                    where om.PeopleId == 828612
+                var q = from om in DbUtil.Db.OrganizationMembers
+                        where om.PeopleId == 828612
                     where om.OrganizationId == Orgid
-                    select om;
-            foreach (var om in q)
-                om.Drop(DbUtil.Db, DateTime.Now);
+                        select om;
+                foreach (var om in q)
+                    om.Drop(DbUtil.Db, DateTime.Now);
             DbUtil.Db.SubmitChanges();
 //                DbUtil.Db.ExecuteCommand(@"
 //DELETE dbo.EnrollmentTransaction WHERE PeopleId = 58207 AND OrganizationId = 2202
