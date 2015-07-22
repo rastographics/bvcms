@@ -20,7 +20,7 @@ BVCMS is maintained by TouchPointSoftware, LLC.
 
 ### Install Development Tools and required libraries
 
-1. **[Visual Studio Express 2013 or Visual Studio Community][IDE]**
+1. **[Visual Studio Community or Visual Studio Express 2015][IDE]**
 1. **[SQL Server Express 2012 SP1][SQL]**
 1. **[GitHub for Windows][GHW]**
 1. **[Microsoft URL Rewrite Module 2.0 for IIS 7][RWM]** (if not already installed)
@@ -45,7 +45,7 @@ BVCMS is maintained by TouchPointSoftware, LLC.
 
 ### Open the Project
 
-1. Start **Visual Studio 2013**
+1. Start **Visual Studio 2015**
 
 1. Open **CmsWeb.sln** solution in the root of the repository
 

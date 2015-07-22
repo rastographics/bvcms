@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Xml.Serialization;
 using CmsData;
@@ -480,9 +481,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             msg = msg.Replace("{org}", Header)
                 .Replace("{email}", Util.ObscureEmail(email))
-                .Replace("{url}", URL);
+                .Replace("{url}", URL)
+                .Replace(WebUtility.UrlEncode("{url}"), URL);
             return msg;
         }
+
         public string GetFinishRegistrationButton()
         {
             string def = DbUtil.Db.Setting("FinishRegBtnText", "Finish Registration");
@@ -515,7 +518,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!timeOut.HasValue)
                 {
-                    timeOut = Util.IsDebug() 
+                    timeOut = Util.IsDebug()
                         ? 1600000
                         : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
                     if (masterorgid.HasValue)
@@ -685,10 +688,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             HistoryAdd("startover");
             UpdateDatum(abandoned: true);
             DbUtil.Db.ExecuteCommand(@"
-UPDATE dbo.RegistrationData 
+UPDATE dbo.RegistrationData
 SET abandoned = 1
 WHERE ISNULL(abandoned, 0) = 0
-AND UserPeopleid = {0} 
+AND UserPeopleid = {0}
 AND OrganizationId = {1}", Datum.UserPeopleId, Datum.OrganizationId);
         }
     }
