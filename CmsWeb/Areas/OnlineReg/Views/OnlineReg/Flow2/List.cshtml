@@ -36,10 +36,6 @@ else
       @Html.Partial("Flow2/Registrant", Model.List[i], GetViewData(i))
     }
   </div>
-  if (Model.UserNeedsSelection)
-  {
-    <p class="alert alert-danger">Please Choose Event/Class</p>
-  }
 
   //show the buttons if we are ready to move on
   if (Model.RegistrantComplete)
