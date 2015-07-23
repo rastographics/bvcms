@@ -21,8 +21,7 @@
 <table id="subs" class="table" style="width: auto; display:table">
   @foreach (var o in q)
   {
-    var link = string.Format("/OnlineReg/" +
-      o.OrganizationId, o.UseRegisterLink2 == true ? "?showfamily=true" : "");
+    var link = "/OnlineReg/{0}{1}".Fmt(o.OrganizationId, o.UseRegisterLink2 == true ? "?showfamily=true" : "");
     if (token.HasValue())
     {
       link += (link.Contains("?") ? "&" : "?") + "registertag=" + token;

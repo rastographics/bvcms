@@ -59,9 +59,9 @@
                 $.InstructionsShow();
                 if ($("#submitit").data("onlyoneallowed") === true) {
                     f.submit();
-//                } else {
-//                    if ($('div.panel:last-child').length > 0)
-//                        $('body, html').animate({ scrollTop: $('div.panel:last-child').offset().top }, 'fast');
+                } else {
+                    if ($('h4.alert-danger').length > 0)
+                        $('body, html').animate({ scrollTop: $('h4.alert-danger').offset().top }, 'fast');
                 }
             });
         });

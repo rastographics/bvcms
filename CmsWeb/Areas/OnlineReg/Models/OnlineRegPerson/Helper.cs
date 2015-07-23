@@ -606,7 +606,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return _nameLookup.ContainsKey(name) ? _nameLookup[name] : name;
         }
 
-        public void SetChosenClass()
+        public bool NeedsToChooseClass()
         {
             // set org from class dropdown if applicable
             if (Parent.classid > 0)
@@ -616,7 +616,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!orgid.HasValue && Parent.Orgid.HasValue)
                 orgid = Parent.Orgid;
 
-            CheckUserNeedsSelection();
+            return Parent.UserNeedsSelection = UserSelectsOrganization() && orgid == null;
         }
         internal void DoGroupToJoin()
         {

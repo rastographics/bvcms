@@ -25,10 +25,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             IsValidForContinue = true; // true till proven false
             IsValidForExisting = true; // true till proven false
 
-            SetChosenClass();
-            if (Parent.UserNeedsSelection) 
-                return;
-
             var foundname = Parent.GetNameFor(mm => mm.List[Index].Found);
             if (IsFamily)
                 foundname = "fammember-" + PeopleId;
@@ -68,16 +64,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (MustNotBeMemberOfAnotherOrg(foundname)) return;
                 ValidateBirthdayRange();
             }
-        }
-        public void CheckUserNeedsSelection()
-        {
-            Parent.UserNeedsSelection = false;
-            if (!UserSelectsOrganization()) 
-                return;
-            if ((orgid) > 0)
-                return;
-            modelState.AddModelError("class", "");
-            Parent.UserNeedsSelection = true;
         }
         private void ValidateBasic()
         {

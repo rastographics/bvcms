@@ -104,7 +104,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             m.StartRegistrationForFamilyMember(id, ModelState);
 
-            // now take them to the Questions page
+            // show errors or take them to the Questions page
             return FlowList(m);
         }
 
@@ -126,11 +126,15 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if (id >= m.List.Count)
                 return FlowList(m);
             var p = m.List[id];
+
+            if(p.NeedsToChooseClass())
+                return FlowList(m);
+
             p.ValidateModelForFind(ModelState, id);
 
             if (p.AnonymousReRegistrant())
                 return View("ConfirmReregister", m); // send email with link to reg-register
-            p.FillPriorInfo();
+
             if (p.IsSpecialReg())
                 p.QuestionsOK = true;
             else if (p.RegistrationFull())
@@ -138,9 +142,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.Log("Closed");
                 ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             }
+
+            p.FillPriorInfo();
             p.SetSpecialFee();
 
-            if (!ModelState.IsValid || p.count == 1)
+            if (!ModelState.IsValid || p.count == 1) 
                 return FlowList(m);
 
             // form is ok but not found, so show AddressGenderMarital Form
