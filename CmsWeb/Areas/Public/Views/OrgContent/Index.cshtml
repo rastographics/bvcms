@@ -5,11 +5,12 @@
     Layout = "~/Views/Shared/Site2.cshtml";
 }
 @section edit {
-    @if (Model.CanEdit == true)
+    @if (Model.CanEdit)
     {
-    <a href="/OrgContent/Edit/@Model.OrgId">edit</a>
+        <a href="/OrgContent/Edit/@Model.OrgId">edit</a>
     }
 }
+
 @if (!Model.IsMember)
 {
     <h2>Sorry, members only</h2>
@@ -21,7 +22,10 @@ else if (Model.Inactive)
 else
 {
     <div style="max-width: 600px;">
-    <h1><a href="@Util2.Org/@Model.OrgId">@Model.OrgName</a></h1>
+    @if (!Model.HideBanner)
+    {
+        <h1><a href="@Util2.Org/@Model.OrgId">@Model.OrgName</a></h1>
+    }
     @Html.Raw(Model.Html)
     </div>
 }
