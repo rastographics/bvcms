@@ -16,7 +16,9 @@
 }
 <h2>@Model.Header</h2>
 <p>@Html.Raw(Model.org.Description)</p>
-<div>@Html.Raw(Model.Instructions)</div>
+<div id="specialedit">
+  @Html.Raw(Model.Instructions)
+</div>
 <h4>Register Links</h4>
 <table id="subs" class="table" style="width: auto; display:table">
   @foreach (var o in q)
