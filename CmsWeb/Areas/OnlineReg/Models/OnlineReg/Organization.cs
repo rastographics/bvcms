@@ -49,9 +49,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void CheckMasterOrg()
         {
             if (org != null && masterorgid == null &&
-                (org.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2
-                 || org.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2
-                 || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2))
+                (org.RegistrationTypeId == RegistrationTypeCode.UserSelects
+                 || org.RegistrationTypeId == RegistrationTypeCode.ComputeOrgByAge
+                 || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions))
             {
                 _masterOrg = org;
                 masterorgid = Orgid;

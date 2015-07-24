@@ -208,5 +208,42 @@ namespace CmsData
         {
             DbUtil.LogActivity(Host, activity, oid, pid, did, uid);
         }
+
+        public string SendGridMailUser 
+        {
+            get
+            {
+                const string sendgridmailuser = "SendGridMailUser";
+
+                var user = HttpRuntime.Cache[Host + sendgridmailuser] as string;
+                if (user.HasValue())
+                    return user;
+
+                user = Setting(sendgridmailuser, "");
+                if(!user.HasValue())
+                    user = ConfigurationManager.AppSettings[sendgridmailuser];
+				HttpRuntime.Cache.Insert(Host + sendgridmailuser, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+
+                return user;
+            } 
+        }
+        public string SendGridMailPassword 
+        {
+            get
+            {
+                const string sendgridmailpassword = "SendGridMailPassword";
+
+                var user = HttpRuntime.Cache[Host + sendgridmailpassword] as string;
+                if (user.HasValue())
+                    return user;
+
+                user = Setting(sendgridmailpassword, "");
+                if(!user.HasValue())
+                    user = ConfigurationManager.AppSettings[sendgridmailpassword];
+				HttpRuntime.Cache.Insert(Host + sendgridmailpassword, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+
+                return user;
+            } 
+        }
     }
 }

@@ -100,11 +100,11 @@
     @text
   </a>
 }
-@helper OnlineRegHeaderFullRow(string text)
+@helper OnlineRegHeaderFullRow(string text, string style = null)
 {
   <div class="form-group">
     <div class="col-sm-12">
-      <h4 class="form-control-static">@text</h4>
+      <h4 class="form-control-static @style">@text</h4>
     </div>
   </div>
 }

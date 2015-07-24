@@ -33,11 +33,16 @@ namespace CmsWeb.Areas.Public.Controllers
         }
         public FileContentResult Barcode(string id)
         {
-            id = id.GetDigits();
-            if (!id.HasValue())
-                id = "0";
-            var code = new Code39BarCode(id);
-            return new FileContentResult(code.Generate(), "image/png");
+            try
+            {
+                var code = new Code39BarCode(id);
+                return new FileContentResult(code.Generate(), "image/png");
+            }
+            catch (Exception)
+            {
+                var code = new Code39BarCode("N/A");
+                return new FileContentResult(code.Generate(), "image/png");
+            }
         }
     }
 }

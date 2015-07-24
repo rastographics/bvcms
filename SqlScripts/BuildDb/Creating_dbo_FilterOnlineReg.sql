@@ -7,9 +7,25 @@ BEGIN
 	DECLARE @picklist TABLE(oid INT)
 	DECLARE @orgmaster TABLE(oid INT, isPickList BIT)
 	DECLARE @activeReg TABLE(oid INT)
-	DECLARE @appRegistrations TABLE(oid INT)
+	DECLARE @appReg TABLE(oid INT)
 
-	IF @onlinereg IN (94,95,96,97)
+    DECLARE @AnyReg INT = 99
+    DECLARE @MissionTrip INT = 98
+    DECLARE @MasterOrStandalone INT = 97
+    DECLARE @Active INT = 96
+    DECLARE @NotOnApp INT = 95
+    DECLARE @OnApp INT = 94
+    DECLARE @Standalone INT = 93
+    DECLARE @ChildOfMaster INT = 92
+
+	IF @onlinereg IN (
+		@ChildOfMaster,
+		@Standalone,
+		@OnApp,
+		@NotOnApp,
+		@Active,
+		@MasterOrStandalone
+	)
 	BEGIN
 		INSERT @picklist ( oid )
 			SELECT PickListOrgId
@@ -33,7 +49,7 @@ BEGIN
 			AND ISNULL(o.ClassFilled, 0) = 0
 			AND (o.RegStart IS NULL OR o.RegStart <= DATEADD(DAY, 21, GETDATE()))
 			AND (o.RegEnd IS NULL OR o.RegEnd > GETDATE())
-		INSERT @appRegistrations ( oid )
+		INSERT @appReg ( oid )
 			SELECT o.OrganizationId
 			FROM dbo.Organizations o
 			JOIN @activeReg a ON a.oid = o.OrganizationId
@@ -44,76 +60,86 @@ BEGIN
 	END
     
 
-	; WITH anyOnlineRegOnApp94 AS (
+	; WITH OnApp AS (
 		SELECT o.OrganizationId oid
 		FROM dbo.Organizations o
-		JOIN @appRegistrations a ON a.oid = o.OrganizationId
+		JOIN @appReg a ON a.oid = o.OrganizationId
 	),
-	anyOnlineRegNotOnApp95 AS ( 
+	NotOnApp AS ( 
 		SELECT o.OrganizationId oid
 		FROM dbo.Organizations o
 		JOIN @activeReg a ON a.oid = o.OrganizationId
-		LEFT JOIN @appRegistrations ap ON ap.oid = o.OrganizationId
+		LEFT JOIN @appReg ap ON ap.oid = o.OrganizationId
 		WHERE ap.oid IS NULL
 	),
-	anyOnlineRegActive96 AS (
+	Active AS (
 		SELECT o.OrganizationId oid
 		FROM dbo.Organizations o
 		JOIN @activeReg a ON a.oid = o.OrganizationId
 	),
-	anyOnlineRegNonPicklist97 AS (
+	MasterOrStandalone AS (
 		SELECT o.OrganizationId oid
 		FROM dbo.Organizations o
 		JOIN @orgmaster m ON m.oid = o.OrganizationId
 		WHERE m.IsPickList = 0
 	),
-	anyOnlineRegMissionTrip98 AS (
+	MissionTrip AS (
 		SELECT o.OrganizationId oid
 		FROM dbo.Organizations o
 		WHERE ISNULL(o.RegistrationTypeId, 0) > 0 
 		AND o.IsMissionTrip = 1
 	),
-	anyOnlineReg99 AS (
+	AnyReg AS (
 		SELECT o.OrganizationId oid
 		FROM dbo.Organizations o
 		WHERE ISNULL(o.RegistrationTypeId, 0) > 0 
 	),
-	noOnlineReg AS (
+	NotReg AS (
 		SELECT o.OrganizationId oid
 		FROM dbo.Organizations o
 		WHERE ISNULL(o.RegistrationTypeId, 0) = 0
 	),
-	filterReg AS (
+	Filter AS (
 		SELECT OrganizationId oid
 		FROM dbo.Organizations o
-		WHERE (@onlinereg = 0 
-			AND o.OrganizationId IN (SELECT oid FROM noOnlineReg)
+		WHERE (ISNULL(@onlinereg, 0) = 0 
+			AND o.OrganizationId IN (SELECT oid FROM NotReg)
 		)
-		OR (@onlinereg = 94
-			AND o.OrganizationId IN (SELECT oid FROM anyOnlineRegOnApp94)
+		OR (@onlinereg = @ChildOfMaster
+			AND o.OrganizationId IN (SELECT oid FROM @picklist)
+			AND ISNULL(o.RegistrationTypeId, 0) > 0
 		) 
-		OR (@onlinereg = 95
-			AND o.OrganizationId IN (SELECT oid FROM anyOnlineRegNotOnApp95)
+		OR (@onlinereg = @Standalone
+			AND o.OrganizationId NOT IN (SELECT oid FROM @picklist)
+			AND ISNULL(o.RegistrationTypeId, 0) = 1 
 		) 
-		OR (@onlinereg = 96
-			AND o.OrganizationId IN (SELECT oid FROM anyOnlineRegActive96)
+		OR (@onlinereg = @OnApp
+			AND o.OrganizationId IN (SELECT oid FROM OnApp)
 		) 
-		OR (@onlinereg = 97
-			AND o.OrganizationId IN (SELECT oid FROM anyOnlineRegNonPicklist97)
+		OR (@onlinereg = @NotOnApp
+			AND o.OrganizationId IN (SELECT oid FROM NotOnApp)
 		) 
-		OR (@onlinereg = 98
-			AND o.OrganizationId IN (SELECT oid FROM anyOnlineRegMissionTrip98)
+		OR (@onlinereg = @Active
+			AND o.OrganizationId IN (SELECT oid FROM Active)
 		) 
-		OR (@onlinereg = 99
-			AND o.OrganizationId IN (SELECT oid FROM anyOnlineReg99)
+		OR (@onlinereg = @MasterOrStandalone
+			AND o.OrganizationId IN (SELECT oid FROM MasterOrStandalone)
+		) 
+		OR (@onlinereg = @MissionTrip
+			AND o.OrganizationId IN (SELECT oid FROM MissionTrip)
+		) 
+		OR (@onlinereg = @AnyReg
+			AND o.OrganizationId IN (SELECT oid FROM AnyReg)
 		) 
 		OR (@onlinereg > 0 AND @onlinereg < 90
 			AND o.RegistrationTypeId = @onlinereg
 		) 
 	) 
-	INSERT @t SELECT oid FROM filterReg
+	INSERT @t SELECT oid FROM Filter
 	RETURN 
 END
+
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO

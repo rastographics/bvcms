@@ -1470,6 +1470,7 @@
     <Content Include="Areas\People\Views\DownlineDetail\Trace.cshtml" />
     <Content Include="Areas\People\Views\DownlineLevels\Index.cshtml" />
     <Content Include="Areas\People\Views\DownlineLevels\Results.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\RegisterLinkMaster.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -2106,7 +2107,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\Registrant.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SupportMissionTrip.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Birthday.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\SelectClass.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SelectClass.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\Date2.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\datepicker.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\DateTime.cshtml" />
@@ -2126,7 +2127,7 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\Int32.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\String.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\DisplayTemplates\TextArea.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\SelectFamily.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\SelectFamily.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\FindOrNewButtons.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonMetaHidden.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Flow2\PersonHidden.cshtml" />
@@ -2475,7 +2476,6 @@
     <Content Include="Scripts\jQuery\jquery.joyride-1.0.5.js" />
     <Content Include="Scripts\js\tutorial.js" />
     <Compile Include="Code\UnallowedCodeAttribute.cs" />
-    <Compile Include="Areas\Finance\Controllers\QuickBooksController.cs" />
     <Compile Include="Controllers\SupportController.cs" />
     <Compile Include="Models\SupportRequestModel.cs" />
     <Compile Include="Models\HomeModel.cs" />
@@ -3316,7 +3316,6 @@
       <DependentUpon>Web.config</DependentUpon>
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Areas\Finance\Views\QuickBooks\Index.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults.cshtml" />
     <Content Include="App_Code\Helper.cshtml" />
     <Content Include="Views\Shared\DatePickerDefaults2.cshtml" />

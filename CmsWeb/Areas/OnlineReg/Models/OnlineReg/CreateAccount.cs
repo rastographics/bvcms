@@ -1,11 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.Net;
 using CmsData;
-using System.Text;
-using UtilityExtensions;
 using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -18,7 +16,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 CannotCreateAccount = true;
             else if (person.Users.Any()) // already have account
             {
-                if (org == null || org.IsMissionTrip == true) 
+                if (org == null || org.IsMissionTrip == true)
                     return null;
                 SawExistingAccount = true;
                 var user = person.Users.OrderByDescending(uu => uu.LastActivityDate).First();
@@ -40,6 +38,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             return null;
         }
+
         public void SendOneTimeLink(string from, string url, string subject, string body)
         {
             var ot = new OneTimeLink
@@ -52,6 +51,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Db.SubmitChanges();
 
             var message = body.Replace("{url}", url + ot.Id.ToCode(), ignoreCase: true);
+            message = message.Replace(WebUtility.UrlEncode("{url}"), url + ot.Id.ToCode(), ignoreCase: true);
             message = message.Replace("{name}", person.Name, ignoreCase: true);
             message = message.Replace("{first}", person.PreferredName, ignoreCase: true);
 

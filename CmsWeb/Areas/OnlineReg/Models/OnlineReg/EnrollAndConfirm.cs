@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using CmsData;
 using System.Text;
 using UtilityExtensions;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
 using CmsData.Registration;
-using CmsData.View;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -121,7 +119,7 @@ AmountDue: {5:C}<br/>
                 location = masterorg.Location;
 
             message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person, 
-                masterorg.OrganizationName, p.org.OrganizationName, location, message);
+                masterorg.OrganizationName, p.org.OrganizationId, p.org.OrganizationName, location, message);
 
             var amtpaid = Transaction.Amt ?? 0;
 
@@ -309,7 +307,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             var senderSubject = orgsettings.SenderSubject ?? "NO SUBJECT SET";
             var senderBody = orgsettings.SenderBody ?? "NO SENDEREMAIL MESSAGE HAS BEEN SET";
             senderBody = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person,
-                org.DivisionName, org.OrganizationName, org.Location, senderBody);
+                org.DivisionName, org.OrganizationId, org.OrganizationName, org.Location, senderBody);
             senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
             senderBody = senderBody.Replace("{paid}", Transaction.Amt.ToString2("c"));
 
@@ -443,7 +441,7 @@ Total Fee paid for this registration session: {4:C}<br/>
 
         private void ExpireRegisterTag()
         {
-            if (registertag.HasValue())
+            if (registertag.HasValue() && registerLinkType != "masterlink")
             {
                 var guid = registertag.ToGuid();
                 var ot = DbUtil.Db.OneTimeLinks.SingleOrDefault(oo => oo.Id == guid.Value);

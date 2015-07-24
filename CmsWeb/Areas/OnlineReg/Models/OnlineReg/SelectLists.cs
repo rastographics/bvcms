@@ -61,9 +61,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         filled = !hasroom
                     };
             var list = q.ToList();
-            if (list.Count == 1)
-                return list;
-            list.Insert(0, new ClassInfo { Text = "Registration Options", Id = 0});
             return list;
         }
         private static string ClassName(Organization o)
@@ -84,5 +81,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             return o.OrganizationName + lead + dt + loc;
         }
+
+        public bool UserNeedsSelection;
     }
 }

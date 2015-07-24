@@ -1,13 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
-using System.Text;
-using System.Web.Mvc;
-using System.Web.UI.WebControls;
-using CmsData.Codes;
-using CmsWeb.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -54,6 +48,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
                 registertag = regtag;
                 var a = ot.Querystring.Split(',');
+                if(a.Length >= 4)
+                    registerLinkType = a[3];
                 pid = a[1].ToInt();
             }
 

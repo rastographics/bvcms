@@ -10,7 +10,6 @@ using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using HtmlAgilityPack;
 
 namespace CmsWeb.Controllers
@@ -128,6 +127,14 @@ namespace CmsWeb.Controllers
         public ActionResult TargetPerson(bool id)
         {
             DbUtil.Db.SetUserPreference("TargetLinkPeople", id ? "false" : "true");
+            DbUtil.Db.SubmitChanges();
+            if (Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.OriginalString);
+            return Redirect("/");
+        }
+        public ActionResult TargetOrg(bool id)
+        {
+            DbUtil.Db.SetUserPreference("TargetLinkOrg", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);

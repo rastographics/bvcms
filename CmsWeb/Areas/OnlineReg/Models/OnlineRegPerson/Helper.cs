@@ -94,13 +94,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public bool UserSelectsOrganization()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelects;
         }
 
         public bool ComputesOrganizationByAge()
         {
             return masterorgid.HasValue &&
-                   masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2;
+                   masterorg.RegistrationTypeId == RegistrationTypeCode.ComputeOrgByAge;
+        }
+
+        public bool DisplaySelectedOrg()
+        {
+            return (UserSelectsOrganization() || ComputesOrganizationByAge()) && org != null;
         }
 
 
@@ -124,7 +129,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool ManageSubscriptions()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2;
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions;
         }
 
         public bool RecordFamilyAttendance()
@@ -212,8 +217,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     else
                         _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
                 }
-                if (_org == null && classid.HasValue)
-                    _org = DbUtil.Db.LoadOrganizationById(classid.Value);
                 if (_org == null && (divid.HasValue || masterorgid.HasValue) && (Found == true || IsValidForNew))
                 {
                     if (ComputesOrganizationByAge())
@@ -237,9 +240,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     _masterorg = DbUtil.Db.LoadOrganizationById(masterorgid.Value);
                 else
                 {
-                    if (org.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2
-                        || org.RegistrationTypeId == RegistrationTypeCode.ComputeOrganizationByAge2
-                        || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2)
+                    if (org.RegistrationTypeId == RegistrationTypeCode.UserSelects
+                        || org.RegistrationTypeId == RegistrationTypeCode.ComputeOrgByAge
+                        || org.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions)
                     {
                         _masterorg = org;
                         masterorgid = orgid;
@@ -257,11 +260,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             NoAppropriateOrgError = null;
 
-            var bestbirthdate = birthday;
-
-            if (person != null && person.BirthDate.HasValue)
-                bestbirthdate = person.BirthDate;
-
             if (!masterorgid.HasValue)
                 return null;
 
@@ -273,8 +271,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var list = q.ToList();
             var q2 = from o in list
-                     where bestbirthdate >= o.BirthDayStart || o.BirthDayStart == null
-                     where bestbirthdate <= o.BirthDayEnd || o.BirthDayEnd == null
+                     where BestBirthday >= o.BirthDayStart || o.BirthDayStart == null
+                     where BestBirthday <= o.BirthDayEnd || o.BirthDayEnd == null
                      select o;
 
             var oo = q2.FirstOrDefault();
@@ -608,10 +606,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return _nameLookup.ContainsKey(name) ? _nameLookup[name] : name;
         }
 
-        public void SetClassId()
+        public bool NeedsToChooseClass()
         {
-            if (org != null && FinishedFindingOrAddingRegistrant && ComputesOrganizationByAge())
-                classid = org.OrganizationId;
+            // set org from class dropdown if applicable
+            if (Parent.classid > 0)
+                orgid = Parent.classid;
+
+            // make sure orgid is set
+            if (!orgid.HasValue && Parent.Orgid.HasValue)
+                orgid = Parent.Orgid;
+
+            return Parent.UserNeedsSelection = UserSelectsOrganization() && orgid == null;
         }
         internal void DoGroupToJoin()
         {

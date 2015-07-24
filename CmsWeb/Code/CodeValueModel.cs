@@ -700,7 +700,10 @@ namespace CmsWeb.Code
 
         public IEnumerable<CodeValueItem> RegistrationTypes()
         {
-            return from i in CmsData.Codes.RegistrationTypeCode.GetCodePairs()
+            var q = RegistrationTypeCode.GetCodePairs();
+            if(!HttpContext.Current.User.IsInRole("Developer"))
+                q = q.Where(pp => pp.Key != RegistrationTypeCode.RegisterLinkMaster);
+            return from i in q
                    select new CodeValueItem
                    {
                        Id = i.Key,
