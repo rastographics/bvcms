@@ -49,7 +49,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             this.pid = pid;
             var org = DbUtil.Db.LoadOrganizationById(id);
-            if (org.RegistrationTypeId != RegistrationTypeCode.ManageSubscriptions2)
+            if (org.RegistrationTypeId != RegistrationTypeCode.ManageSubscriptions)
                 throw new Exception("must be a ManageSubscriptions RegistrationType");
             masterorgid = id;
             _masterorg = org;

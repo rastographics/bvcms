@@ -1,11 +1,9 @@
 ﻿@model CmsWeb.Models.TotalsByFundModel
-@using UtilityExtensions
-@using CmsData.Classes.QuickBooks
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Totals By Fund";
     ViewBag.ReportPageHeader = "Totals By Fund";
-    var qbh = new QuickBooksHelper();
+//    var qbh = new QuickBooksHelper();
 }
 <div class="report box box-responsive">
     <div class="box-content">
@@ -82,10 +80,10 @@
                                     <li><a href="#" id="exportdonordetails">Export Donor Details</a></li>
                                     <li><a href="#" id="exportdonorfundtotals">Export Donor Fund Totals</a></li>
                                     <li><a href="#" id="exportdonortotals">Export Donor Totals</a></li>
-                                    @if (qbh.hasActiveConnection())
-                                    {
-                                        <li id="export-quickbooks"><a href="#" id="toquickbooks">Export To Quickbooks</a></li>
-                                    }
+@*                                    @if (qbh.hasActiveConnection())*@
+@*                                    {*@
+@*                                        <li id="export-quickbooks"><a href="#" id="toquickbooks">Export To Quickbooks</a></li>*@
+@*                                    }*@
                                     <li id="gl-divider" class="divider" style="display: none;"></li>
                                     <li id="gl-extract" style="display: none;"><a href="#" id="glextract">GL Extract</a></li>
                                 </ul>

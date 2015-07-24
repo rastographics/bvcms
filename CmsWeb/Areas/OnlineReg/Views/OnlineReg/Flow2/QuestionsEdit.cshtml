@@ -156,7 +156,7 @@
     <div class="form-group">
         <div class="col-sm-offset-3 col-sm-9 text-right">
 
-            @if ((Model.age >= 16 || !Model.birthday.HasValue) && !Model.IsCreateAccount())
+            @if ((Model.age >= 16 || !Model.BestBirthday.HasValue) && !Model.IsCreateAccount())
             {
               if (Model.InMobileAppMode && !UtilityExtensions.Util.UserPeopleId.HasValue && !Model.LoggedIn)
               {

@@ -1,12 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using CmsData;
-using UtilityExtensions;
 using System.Drawing;
-using System.IO;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
+using CmsData;
+using CmsData.Codes;
+using UtilityExtensions;
+using DbUtil = CmsData.DbUtil;
+using Image = ImageData.Image;
 
 namespace CmsWeb.Models
 {
@@ -19,21 +19,17 @@ namespace CmsWeb.Models
         public bool IsMember { get; set; }
         public bool IsLeader { get; set; }
         public bool NotAuthenticated { get; set; }
-        public bool CanEdit
-        {
-            get
-            {
-                return ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit")) && IsLeader) ||  Util.IsInRole("Admin");
-            }
-        }
         public OrgContent oc { get; set; }
+
+        public bool CanEdit => ((Util.IsInRole("ContentEdit") || Util.IsInRole("Edit")) && IsLeader) ||  Util.IsInRole("Admin");
+
         public string Html
         {
             get
             {
                 if (oc == null)
                     return "<h2>" + OrgName + "</h2>";
-                return ImageData.Image.Content(oc.ImageId ?? 0);
+                return Image.Content(oc.ImageId ?? 0);
             }
             set
             {
@@ -46,17 +42,20 @@ namespace CmsWeb.Models
                 if (i != null)
                     i.SetText(value);
                 else
-                    oc.ImageId = ImageData.Image.NewTextFromString(value).Id;
+                    oc.ImageId = Image.NewTextFromString(value).Id;
                 DbUtil.Db.SubmitChanges();
             }
         }
-        public ImageData.Image image
+
+        public bool HideBanner => Html?.Contains("<span class=\"hide-banner\"/>") ?? false;
+
+        public Image image
         {
             get
             {
                 if (oc == null || !IsMember)
                 {
-                    var i = new ImageData.Image();
+                    var i = new Image();
                     var bmp = new Bitmap(200, 200, PixelFormat.Format24bppRgb);
                     var g = Graphics.FromImage(bmp);
                     g.Clear(Color.Bisque);
@@ -70,6 +69,7 @@ namespace CmsWeb.Models
                 return ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == oc.ImageId);
             }
         }
+
         public static OrgContentInfo Get(int id)
         {
             var q = from oo in DbUtil.Db.Organizations
@@ -91,7 +91,7 @@ namespace CmsWeb.Models
             if (o != null && !o.IsMember)
             {
                 var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
-                if (!oids.Contains(o.OrgId)) 
+                if (!oids.Contains(o.OrgId))
                     return o;
                 o.NotAuthenticated = false;
                 o.IsMember = true;
@@ -99,6 +99,7 @@ namespace CmsWeb.Models
             }
             return o;
         }
+
         public static OrgContentInfo GetOc(int id)
         {
             var q = from oo in DbUtil.Db.Organizations
@@ -120,7 +121,7 @@ namespace CmsWeb.Models
             if (o != null && !o.IsMember)
             {
                 var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
-                if (!oids.Contains(o.OrgId)) 
+                if (!oids.Contains(o.OrgId))
                     return o;
                 o.NotAuthenticated = false;
                 o.IsMember = true;

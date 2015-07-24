@@ -5,7 +5,7 @@
     var difference = Model.TotalHeader() - Model.TotalItems();
 }
 <div class="row">
-    <div class="col-sm-12 col-md-8 col-lg-9">
+    <div class="col-sm-12 col-md-12 col-lg-12">
         <div class="box box-responsive">
             <div class="box-title-btn">
                 <div class="box-tools">
@@ -114,46 +114,6 @@
                     <a class="btn btn-default btn-block" href="/Bundles"><i class="fa fa-arrow-circle-left"></i> Back to List</a>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="hidden-xs col-md-4 col-lg-3">
-        <div class="box box-primary" style="background-color: #fff;">
-            <div class="box-title">
-                <h5>Bundle Totals</h5>
-            </div>
-            <table class="table">
-                <tbody>
-                    <tr>
-                        <td>Total Cash</td>
-                        <td class="text-right">@Model.Bundle.TotalCash.GetValueOrDefault().ToString("C2")</td>
-                    </tr>
-                    <tr>
-                        <td>Total Checks</td>
-                        <td class="text-right">@Model.Bundle.TotalChecks.GetValueOrDefault().ToString("C2")</td>
-                    </tr>
-                    <tr>
-                        <td>Total Coin</td>
-                        <td class="text-right">@Model.Bundle.TotalEnvelopes.GetValueOrDefault().ToString("C2")</td>
-                    </tr>
-                </tbody>
-                <tfoot>
-                    <tr class="totals-row">
-                        <td class="text-left">Bundle Total</td>
-                        <td class="text-right">@Model.TotalHeader().ToString("C2")</td>
-                    </tr>
-                    @if (difference != 0)
-                    {
-                        <tr>
-                            <td class="text-left">Items Total</td>
-                            <td class="text-right">@Model.TotalItems().ToString("C2")</td>
-                        </tr>
-                        <tr class="totals-row warning">
-                            <td class="text-left">Difference</td>
-                            <td class="text-right">@difference.ToString("C2")</td>
-                        </tr>
-                    }
-                </tfoot>
-            </table>
         </div>
     </div>
 </div>

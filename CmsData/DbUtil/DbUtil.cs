@@ -66,6 +66,10 @@ namespace CmsData
         {
             return CMSDataContext.Create(Util.GetConnectionString(host), host);
         }
+        public static CMSDataContext Create(string connstr, string host)
+        {
+            return CMSDataContext.Create(connstr, host);
+        }
 
         private static void _logActivity(string host, string activity, int? orgid, int? pid, int? did, int? uid)
         {

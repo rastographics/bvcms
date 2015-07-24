@@ -133,6 +133,8 @@ namespace CmsWeb.Areas.Main.Models
             if (!Schedule.HasValue)
             {
                 var tag = DbUtil.Db.TagById(TagId);
+                if(tag == null)
+                    throw new Exception("email tag is missing");
                 var q = tag.People(DbUtil.Db);
                 Count = q.Count();
                 if (Count >= 300)

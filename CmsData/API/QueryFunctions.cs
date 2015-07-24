@@ -18,6 +18,10 @@ namespace CmsData
         {
             this.db = Db;
         }
+        public QueryFunctions(string dbname)
+        {
+            db = DbUtil.Create(dbname);
+        }
 
         public static string VitalStats(CMSDataContext Db)
         {

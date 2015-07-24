@@ -6,6 +6,7 @@ using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
 using System.Web.Mvc;
+using CmsData.Codes;
 using CmsData.View;
 
 namespace CmsWeb.Areas.Org.Models
@@ -45,8 +46,9 @@ namespace CmsWeb.Areas.Org.Models
         private Tag orgTag;
         public Tag OrgTag
         {
-            get {
-                return orgTag ?? 
+            get
+            {
+                return orgTag ??
                     (orgTag = DbUtil.Db.FetchOrCreateTag("Org-" + Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
             }
         }
@@ -59,10 +61,10 @@ namespace CmsWeb.Areas.Org.Models
                 return currentList;
             return currentList = (from p in DbUtil.Db.OrgPeople(Id, GroupSelect,
                         this.First(), this.Last(), SgFilter, ShowHidden,
-                        filterchecked: false, filtertag: FilterTag, 
+                        filterchecked: false, filtertag: FilterTag,
                         currtag: Util2.CurrentTag, currtagowner: Util2.CurrentTagOwnerId,
                         ministryinfo: false, userpeopleid: Util.UserPeopleId)
-                    select p.PeopleId).ToList();
+                                  select p.PeopleId).ToList();
         }
         public List<int> CurrentNotChecked()
         {
@@ -157,7 +159,7 @@ namespace CmsWeb.Areas.Org.Models
                         q = from p in q orderby p.AttPct descending select p;
                         break;
                     case "Name":
-                        q = from p in q orderby p.Name2 descending , p.PeopleId descending select p;
+                        q = from p in q orderby p.Name2 descending, p.PeopleId descending select p;
                         break;
                     case "Bday":
                         q = from p in q orderby p.BirthMonth descending, p.BirthDay descending, p.Name2 descending select p;
@@ -268,6 +270,21 @@ namespace CmsWeb.Areas.Org.Models
         public bool FilterIndividuals { get; set; }
         public bool ClearFilter { get; set; }
 
+        public HtmlString GroupHelp
+        {
+            get
+            {
+                return ViewExtensions2.Markdown(@"
+* Click one of the buttons to see those people.
+* You can work with them individually 
+* or combine them with the options dropdown.
+
+When a single group is shown (not combined), 
+use the dropdown menu immediately to it's right 
+to `Add`, `Drop`, `Update` Members etc.
+");
+            }
+        }
         public HtmlString NameFilterHelp
         {
             get
@@ -298,5 +315,23 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
+        public bool GroupNeedsMenu(string group)
+        {
+            switch (group)
+            {
+                case GroupSelectCode.Guest:
+                    return false;
+                case GroupSelectCode.Previous:
+                    var u = HttpContext.Current.User;
+                    return u.IsInRole("Developer") || u.IsInRole("Conversion");
+                default:
+                    return true;
+            }
+        }
+
+        public bool Showdrop(string group)
+        {
+            return HttpContext.Current.User.IsInRole("Edit") && (MultiSelect ? "" : GroupSelect) == group;
+        }
     }
 }

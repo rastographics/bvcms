@@ -1,10 +1,8 @@
-﻿@using CmsData.Classes.QuickBooks
-@model CmsData.ContributionFund
+﻿@model CmsData.ContributionFund
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Edit Fund";
     ViewBag.PageHeader = "Edit Fund";
-    var qhb = new QuickBooksHelper(); 
 }
 @using (Html.BeginForm("Update", "Fund"))
 {
@@ -94,26 +92,6 @@
                             </div>
                         </div>
                     </div>
-                    @if (qhb.hasActiveConnection())
-                    {
-                        var list = qhb.getAllAccounts();
-                        <div class="row">
-                            <div class="col-sm-4 col-lg-3">
-                                <div class="form-group">
-                                    <label for="QBIncomeAccount" class="control-label">QB Income Account</label>
-                                    @Html.DropDownList("QBIncomeAccount", new SelectList(list, "ID", "Name", Model.QBIncomeAccount), new { @class = "form-control" })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4 col-lg-3">
-                                <div class="form-group">
-                                    <label for="QBAssetAccount" class="control-label">QB Asset Account</label>
-                                    @Html.DropDownList("QBAssetAccount", new SelectList(list, "ID", "Name", Model.QBAssetAccount), new { @class = "form-control" })
-                                </div>
-                            </div>
-                        </div>
-                    }
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="checkbox">

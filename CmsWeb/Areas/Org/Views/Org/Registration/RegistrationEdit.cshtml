@@ -89,6 +89,9 @@
             <div class="col-sm-4 col-md-4">
                 @Html.EditorFor(m => m.SpecialScript)
             </div>
+            <div class="col-sm-4 col-md-4">
+                @Html.EditorFor(m => m.FinishRegistrationButton)
+            </div>
             @if (User.IsInRole("Admin"))
             {
                 <div class="col-sm-4 col-md-4">

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Xml.Serialization;
 using CmsData;
@@ -106,6 +107,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private bool allowAnonymous(int? id)
         {
+            if (RegisterLinkMaster())
+                return false;
             if (id.HasValue)
                 if(settings.ContainsKey(id.Value))
                     return !settings[id.Value].DisallowAnonymous;
@@ -149,7 +152,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool UserSelectsOrganization()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelectsOrganization2;
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelects;
         }
 
         public bool OnlyOneAllowed()
@@ -193,7 +196,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool ManagingSubscriptions()
         {
-            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions2;
+            return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.ManageSubscriptions;
+        }
+        public bool RegisterLinkMaster()
+        {
+            return org != null && org.RegistrationTypeId == RegistrationTypeCode.RegisterLinkMaster;
         }
 
         public bool OnlinePledge()
@@ -437,7 +444,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Phone = Util.PickFirst(person.CellPhone, person.HomePhone),
                 orgid = Orgid,
                 masterorgid = masterorgid,
-                classid = classid,
                 IsFamily = true,
                 Found = true,
                 IsValidForExisting = true,
@@ -481,8 +487,34 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
             msg = msg.Replace("{org}", Header)
                 .Replace("{email}", Util.ObscureEmail(email))
-                .Replace("{url}", URL);
+                .Replace("{url}", URL)
+                .Replace(WebUtility.UrlEncode("{url}"), URL);
             return msg;
+        }
+
+        public string GetFinishRegistrationButton()
+        {
+            string def = DbUtil.Db.Setting("FinishRegBtnText", "Finish Registration");
+
+            string text = null;
+            if (masterorg != null)
+            {
+                var setting1 = new Settings();
+                if (settings.ContainsKey(masterorg.OrganizationId))
+                    setting1 = settings[masterorg.OrganizationId];
+                var setting2 = setting1;
+                if (last != null && last.org != null && settings.ContainsKey(last.org.OrganizationId))
+                    setting1 = settings[last.org.OrganizationId];
+                text = Util.PickFirst(setting1.FinishRegistrationButton, setting2.FinishRegistrationButton, def);
+            }
+            else
+            {
+                var setting = new Settings();
+                if (settings.ContainsKey(org.OrganizationId))
+                    setting = settings[org.OrganizationId];
+                text = Util.PickFirst(setting.FinishRegistrationButton, def);
+            }
+            return text;
         }
 
         private int? timeOut;
@@ -581,18 +613,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 : null;
         }
 #if DEBUG
-        public static void DebugCleanUp()
+        public void DebugCleanUp()
         {
             if (Util.IsLocalNetworkRequest)
-            {
+                return;
+
                 var q = from om in DbUtil.Db.OrganizationMembers
                         where om.PeopleId == 828612
-                        where om.OrganizationId == 81460
+                    where om.OrganizationId == Orgid
                         select om;
                 foreach (var om in q)
-                {
                     om.Drop(DbUtil.Db, DateTime.Now);
-                }
+            DbUtil.Db.SubmitChanges();
 //                DbUtil.Db.ExecuteCommand(@"
 //DELETE dbo.EnrollmentTransaction WHERE PeopleId = 58207 AND OrganizationId = 2202
 //
@@ -618,11 +650,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 //WHERE OrgId = 2202
 //AND SupporterId = 58207
 //");
-                DbUtil.Db.SubmitChanges();
-            }
         }
 #endif
-
         public void CancelRegistrant(int n)
         {
             HistoryAdd("Cancel id=" + n);

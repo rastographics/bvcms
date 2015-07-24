@@ -3,6 +3,7 @@
     var access = User.IsInRole("Access");
     var finance = User.IsInRole("Finance");
     var targetperson = Util2.TargetLinkPeople;
+    var targetorg = Util2.TargetLinkOrg;
     var useneweditor = Util2.UseNewEditor;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
 
@@ -143,17 +144,29 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="/Home/UseNewEdtitor/@Html.Raw(targetperson)">
+                                <a href="/Home/TargetPerson/@Html.Raw(targetperson)">
                                     @if (targetperson)
                                     {
                                         <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
-                                        <span>&nbsp;&nbsp;Open People In New Tab</span>
                                     }
                                     else
                                     {
                                         <i class="dropdown-icon fa fa-toggle-off"></i>
-                                        <span>&nbsp;&nbsp;Open Person In New Tab</span>
                                     }
+                                    <span>&nbsp;&nbsp;Open Person In New Tab</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/Home/TargetOrg/@Html.Raw(targetorg)">
+                                    @if (targetorg)
+                                    {
+                                        <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="dropdown-icon fa fa-toggle-off"></i>
+                                    }
+                                    <span>&nbsp;&nbsp;Open Org In New Tab</span>
                                 </a>
                             </li>
                             @if (finance)

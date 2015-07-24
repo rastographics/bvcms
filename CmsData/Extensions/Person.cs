@@ -178,6 +178,7 @@ namespace CmsData
                 om2.ShirtSize = om.ShirtSize;
                 om2.Tickets = om.Tickets;
                 om2.UserData = om.UserData;
+                om2.OnlineRegData = om.OnlineRegData;
                 db.SubmitChanges();
                 foreach (var m in om.OrgMemMemTags)
                     if (!om2.OrgMemMemTags.Any(mm => mm.MemberTagId == m.MemberTagId))

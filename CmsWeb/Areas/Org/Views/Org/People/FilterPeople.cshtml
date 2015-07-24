@@ -14,7 +14,7 @@
                         <a class="input-group-addon" tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Sub-Group Filter" data-content="@Model.SgFilterHelp"><i class="fa fa-info-circle"></i></a>
                         <textarea rows="4" id="sgFilter" name="sgFilter" class="form-control" placeholder="Sub-Group Filter">@Model.SgFilter</textarea>
                         <div class="input-group-btn">
-                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="margin-top: 0;">
+                            <button class="btn btn-info dropdown-toggle" data-toggle="dropdown" style="margin-top: 0; width: 2em;">
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" style="height: 200px; overflow: auto;">
@@ -40,8 +40,10 @@
                 <div class="form-group">
                     <a class="btn btn-default" id="clear-filter" href="#">Clear</a> 
                     <div class="btn-group">
-                        <a class="btn btn-primary setfilter">Filter@(Model.IsFiltered ? " (filtered)" : "")</a>
-                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                        <a class="btn btn-default setfilter">
+                          Filter@(Html.Raw(Model.IsFiltered ? " <span style='color: red'>(filtered)</span>" : ""))
+                        </a>
+                        <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <span class="caret"></span>
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>

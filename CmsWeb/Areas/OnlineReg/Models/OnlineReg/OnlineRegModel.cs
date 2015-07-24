@@ -31,7 +31,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        public int? classid { get; set; }
         [DisplayName("Username")]
         public string username { get; set; }
         public bool nologin { get; set; }
@@ -39,13 +38,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int? donor { get; set; }
         public int? UserPeopleId { get; set; }
         public bool prospect { get; set; }
-
-        private string _registerTag;
-        public string registertag
-        {
-            get { return _registerTag; }
-            set { _registerTag = value; }
-        }
+        public int? classid { get; set; }
+        public string registertag { get; set; }
+        public string registerLinkType { get; set; }
 
         private List<OnlineRegPersonModel> _list = new List<OnlineRegPersonModel>();
 

@@ -252,6 +252,9 @@ namespace CmsWeb.Areas.Manage.Controllers
                         case "PublicSortOrder":
                             o.PublicSortOrder = val;
                             break;
+                        case "UseRegisterLink2":
+                            o.UseRegisterLink2 = val.ToBool2();
+                            break;
                         case "Name":
                             o.OrganizationName = val;
                             break;

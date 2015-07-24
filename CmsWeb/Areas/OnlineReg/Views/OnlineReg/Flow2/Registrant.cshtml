@@ -13,14 +13,14 @@
   // show a select class dropdown
   if (Model.UserSelectsOrganization()) 
   {
-    @Html.EditorFor(m => m, "SelectClass")
+    @Html.Partial("Flow2/SelectClass", Model.Parent)
   }
   
   
   // show a family list if logged in and more than one in family
   if (Model.Parent.UserPeopleId.HasValue && Model.Parent.FamilyMembers().Any())
   {
-    @Html.EditorFor(m => m, "SelectFamily")
+    @Html.Partial("Flow2/SelectFamily", Model.Parent)
     @Helper.OnlineRegHeaderFullRow("Or find another non-family member here")
   }
   

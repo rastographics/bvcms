@@ -150,8 +150,8 @@ namespace CmsWeb.Models
 			var orgregtypes = new int[]
 			{
 				RegistrationTypeCode.JoinOrganization,
-        		RegistrationTypeCode.UserSelectsOrganization2,
-        		RegistrationTypeCode.ComputeOrganizationByAge2,
+        		RegistrationTypeCode.UserSelects,
+        		RegistrationTypeCode.ComputeOrgByAge,
 			};
 
 			var q = (from o in organizations

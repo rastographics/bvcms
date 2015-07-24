@@ -97,6 +97,7 @@
             '<option value="sendlink2">Send Link 2</option>' +
             '<option value="supportlink">Support Link</option>' +
             '<option value="votelink">Vote Link</option>' +
+            '<option value="masterlink">Master Link (NOT SUPPORTED YET)</option>' +
             '</select>' +
             '</div>' +
             '<div class="f-popup-line">' +

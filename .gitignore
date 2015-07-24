@@ -76,3 +76,4 @@ CmsDataSqlClr_.*.sqlproj
 /CmsWeb/SimSun.ttf
 
 .vs
+*.pyc

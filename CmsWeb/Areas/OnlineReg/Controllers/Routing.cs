@@ -11,9 +11,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         private ActionResult RouteRegistration(OnlineRegModel m, int pid, bool? showfamily)
         {
             if(pid == 0)
-            {
                 return View(m);
-            }
+#if DEBUG
+            m.DebugCleanUp();
+#endif
+
             var link = RouteExistingRegistration(m, pid);
             if (link.HasValue())
                 return Redirect(link);
@@ -42,6 +44,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             if(link.HasValue())
                 if (m.ManageGiving()) // use Direct ActionResult instead of redirect
                     return ManageGiving(m.Orgid.ToString(), m.testing);
+                else if (m.RegisterLinkMaster())
+                    return Redirect(link);
                 else
                     return Redirect(link);
 
@@ -68,11 +72,20 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
         private string RouteManageGivingSubscriptionsPledgeVolunteer(OnlineRegModel m)
         {
+            if (m.RegisterLinkMaster())
+            {
+                if (m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
+                {
+                    TempData["token"] = m.registertag;
+                    TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
+                }
+                return "/OnlineReg/RegisterLinkMaster/{0}".Fmt(m.Orgid);
+            }
             TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
-            if (m.ManageGiving())
-                return "/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid);
             if (m.ManagingSubscriptions())
                 return "/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid);
+            if (m.ManageGiving())
+                return "/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid);
             if (m.OnlinePledge())
                 return "/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid);
             if (m.ChoosingSlots())

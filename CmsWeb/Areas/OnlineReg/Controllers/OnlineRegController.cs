@@ -5,10 +5,10 @@ using System.Web.Security;
 using CmsData;
 using CmsWeb.Models;
 using CmsWeb.Areas.OnlineReg.Models;
-using Elmah;
 using UtilityExtensions;
 using System.Collections.Generic;
 using CmsData.Codes;
+using Elmah;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -46,7 +46,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             fromMethod = "Login";
             // they clicked the Login button on the login page
+
+//            var ret = Util.IsDebug() && Util.IsLocalNetworkRequest
+//                ? AccountModel.AutoLogin(m.username, Session, Request) : 
             var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
+
             if (ret is string)
             {
                 ModelState.AddModelError("authentication", ret.ToString());
@@ -63,13 +67,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var route = RouteSpecialLogin(m);
             if (route != null)
                 return route;
-
-            if(m.UserPeopleId.HasValue)
-            {
-                var p = m.LoadExistingPerson(m.UserPeopleId.Value, 0);
-                m.List[0] = p;
-            }
-            m.List[0].ValidateModelForFind(ModelState, 0);
 
             m.HistoryAdd("login");
             return FlowList(m);
@@ -94,6 +91,9 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             m.HistoryAdd("yeslogin");
             m.nologin = false;
             m.List = new List<OnlineRegPersonModel>();
+#if DEBUG
+            m.username = "David";
+#endif
             return FlowList(m);
         }
         [HttpPost]
@@ -104,7 +104,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             m.StartRegistrationForFamilyMember(id, ModelState);
 
-            // now take them to the Questions page
+            // show errors or take them to the Questions page
             return FlowList(m);
         }
 
@@ -127,11 +127,14 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return FlowList(m);
             var p = m.List[id];
 
+            if(p.NeedsToChooseClass())
+                return FlowList(m);
+
             p.ValidateModelForFind(ModelState, id);
 
             if (p.AnonymousReRegistrant())
                 return View("ConfirmReregister", m); // send email with link to reg-register
-            p.FillPriorInfo();
+
             if (p.IsSpecialReg())
                 p.QuestionsOK = true;
             else if (p.RegistrationFull())
@@ -139,10 +142,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 m.Log("Closed");
                 ModelState.AddModelError(m.GetNameFor(mm => mm.List[id].DateOfBirth), "Sorry, but registration is closed.");
             }
-            p.SetClassId();
+
+            p.FillPriorInfo();
             p.SetSpecialFee();
 
-            if (!ModelState.IsValid || p.count == 1)
+            if (!ModelState.IsValid || p.count == 1) 
                 return FlowList(m);
 
             // form is ok but not found, so show AddressGenderMarital Form
@@ -191,6 +195,11 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             {
                 orgid = m.Orgid,
                 masterorgid = m.masterorgid,
+#if DEBUG
+                FirstName = "Delaine",
+                LastName = "Carroll",
+                EmailAddress = "delaine@davidcarroll.name"
+#endif
             });
             return FlowList(m);
         }

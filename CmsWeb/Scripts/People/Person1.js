@@ -284,7 +284,7 @@
     $("#failedemails a.unspam").live("click", function (ev) {
         if (confirm("are you sure?"))
             $.post("/Manage/Emails/Unspam", { email: $(this).attr("email") }, function (ret) {
-                $.growlUI("email unspamed", ret);
+                $.growlUI("email unspam", ret);
             });
     });
     $.RebindMemberGrids = function() {

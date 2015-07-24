@@ -73,6 +73,7 @@ namespace CmsData.Registration
 		public string InstructionSorry { get; set; }
 		public string InstructionAll { get; set; }
 		public string ThankYouMessage { get; set; }
+		public string FinishRegistrationButton { get; set; }
 
 		public List<OrgFee> OrgFees { get; set; }
 		public List<AgeGroup> AgeGroups { get; set; }
@@ -587,6 +588,9 @@ namespace CmsData.Registration
 					case Parser.RegKeywords.Thanks:
 						ThankYouMessage = parser.GetString();
 						break;
+					case Parser.RegKeywords.FinishRegistrationButton:
+						FinishRegistrationButton = parser.GetString();
+						break;
 					case Parser.RegKeywords.Body:
 						InstructionAll = parser.GetString();
 						break;
@@ -715,6 +719,7 @@ namespace CmsData.Registration
 			AddValueCk(0, sb, "ValidateOrgs", ValidateOrgs);
 			AddValueCk(0, sb, "Shell", Shell);
 			AddValueCk(0, sb, "ShellBs", ShellBs);
+			AddValueCk(0, sb, "FinishRegistrationButton", FinishRegistrationButton);
 			AddValueCk(0, sb, "SpecialScript", SpecialScript);
 			AddValueCk(0, sb, "AllowOnlyOne", AllowOnlyOne);
 			AddValueCk(0, sb, "TargetExtraValues", TargetExtraValues);
