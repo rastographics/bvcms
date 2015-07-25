@@ -501,6 +501,19 @@ namespace CmsData.API
             public List<Organization> List { get; set; }
         }
 
+        public Organization GetOrganization(int id)
+        {
+            var org = (from o in Db.Organizations
+                       where o.OrganizationId == id
+                       select new Organization
+                       {
+                           id = o.OrganizationId,
+                           name = o.OrganizationName,
+                           location = o.Location,
+                           description = o.Description,
+                       }).SingleOrDefault();
+            return org;
+        }
         public string ParentOrgs(int id, string extravalue1, string extravalue2)
         {
             try
