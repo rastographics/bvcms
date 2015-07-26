@@ -347,6 +347,15 @@ namespace CmsWeb {
                 return ResourceManager.GetString("OrgMembersModel_SendMovedNotices", resourceCulture);
             }
         }
+
+
+        internal static string OrgMembersModel_SendMovedNotices_Subject
+        {
+            get
+            {
+                return ResourceManager.GetString("OrgMembersModel_SendMovedNotices_Subject", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
