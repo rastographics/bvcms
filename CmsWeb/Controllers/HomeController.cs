@@ -278,12 +278,20 @@ namespace CmsWeb.Controllers
                 return RedirectShowError(ex.Message);
             }
         }
+        private string FetchPyScriptForm(string name)
+        {
+#if DEBUG2
+                return System.IO.File.ReadAllText(Server.MapPath("~/PythonForm.py"));
+#else
+                return DbUtil.Db.ContentOfTypePythonScript(name);
+#endif
+        }
         [HttpGet, Route("~/PyScriptForm/{name}")]
         public ActionResult PyScriptForm(string name)
         {
             try
             {
-                var script = DbUtil.Db.ContentOfTypePythonScript(name);
+                var script = FetchPyScriptForm(name);
 
                 if (!script.HasValue())
                     return Message("no script named " + name);
@@ -310,7 +318,7 @@ namespace CmsWeb.Controllers
                     pe.DictionaryAdd(key, Request.Form[key]);
                 pe.HttpMethod = "post";
 
-                var script = DbUtil.Db.ContentOfTypePythonScript(pe.Dictionary("pyscript"));
+                var script = FetchPyScriptForm(pe.Dictionary("pyscript"));
                 return Content(pe.RunScript(script));
             }
             catch (Exception ex)
