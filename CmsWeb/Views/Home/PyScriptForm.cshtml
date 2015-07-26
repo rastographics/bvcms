@@ -1,0 +1,16 @@
+﻿@model PythonEvents
+@{
+    ViewBag.Title = "Python Script with Input";
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<div class="box box-responsive">
+  <div class="box-content">
+    @Html.Raw(Model.Form)
+  </div>
+</div>
+@section scripts
+{
+  <script>
+    @Html.Raw(Model.Script)
+  </script>
+}

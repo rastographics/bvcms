@@ -264,7 +264,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                         MobilePerson mp;
 
-                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
                         {
                             mp = new MobilePerson().populate(item);
                             mpl.Add(mp.id, mp);
@@ -278,7 +278,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     {
                         List<MobilePerson> mp = new List<MobilePerson>();
 
-                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
                         {
                             mp.Add(new MobilePerson().populate(item));
                         }

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using CmsData;
 using CmsWeb.Areas.People.Models;
 using Dapper;
@@ -180,7 +181,7 @@ namespace CmsWeb.Controllers
 
         public ActionResult SwitchTag(string tag)
         {
-            var m = new TagsModel {tag = tag};
+            var m = new TagsModel { tag = tag };
             m.SetCurrentTag();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.ToString());
@@ -254,6 +255,8 @@ namespace CmsWeb.Controllers
                 if (!script.HasValue())
                     return Message("no script named " + name);
 
+                if (script.Contains("model.Form"))
+                    return Redirect("/PyScriptForm/" + name);
                 script = script.Replace("@P1", p1 ?? "NULL")
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
@@ -269,6 +272,46 @@ namespace CmsWeb.Controllers
                 pe.RunScript(script);
 
                 return View(pe);
+            }
+            catch (Exception ex)
+            {
+                return RedirectShowError(ex.Message);
+            }
+        }
+        [HttpGet, Route("~/PyScriptForm/{name}")]
+        public ActionResult PyScriptForm(string name)
+        {
+            try
+            {
+                var script = DbUtil.Db.ContentOfTypePythonScript(name);
+
+                if (!script.HasValue())
+                    return Message("no script named " + name);
+                var pe = new PythonEvents(Util.Host);
+                foreach (var key in Request.QueryString.AllKeys)
+                    pe.DictionaryAdd(key, Request.QueryString[key]);
+                pe.DictionaryAdd("pyscript", name);
+                pe.HttpMethod = "get";
+                pe.RunScript(script);
+                return View(pe);
+            }
+            catch (Exception ex)
+            {
+                return RedirectShowError(ex.Message);
+            }
+        }
+        [HttpPost, Route("~/PyScriptForm")]
+        public ActionResult PyScriptForm()
+        {
+            try
+            {
+                var pe = new PythonEvents(Util.Host);
+                foreach (var key in Request.Form.AllKeys)
+                    pe.DictionaryAdd(key, Request.Form[key]);
+                pe.HttpMethod = "post";
+
+                var script = DbUtil.Db.ContentOfTypePythonScript(pe.Dictionary("pyscript"));
+                return Content(pe.RunScript(script));
             }
             catch (Exception ex)
             {

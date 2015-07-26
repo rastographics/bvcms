@@ -340,12 +340,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
 <div class=""instructions find"">{2}</div>
 <div class=""instructions options"">{3}</div>
 <div class=""instructions submit"">{4}</div>
-<div class=""instructions sorry"">{5}</div>
+<div class=""instructions special"">{5}</div>
+<div class=""instructions sorry"">{6}</div>
 ".Fmt(Util.PickFirst(setting1.InstructionLogin, setting2.InstructionLogin),
                         Util.PickFirst(setting1.InstructionSelect, setting2.InstructionSelect),
                         Util.PickFirst(setting1.InstructionFind, setting2.InstructionFind),
                         Util.PickFirst(setting1.InstructionOptions, setting2.InstructionOptions),
                         Util.PickFirst(setting1.InstructionSubmit, setting2.InstructionSubmit),
+                        Util.PickFirst(setting1.InstructionSpecial, setting2.InstructionSpecial),
                         Util.PickFirst(setting1.InstructionSorry, setting2.InstructionSorry)
                         );
                 }
@@ -355,12 +357,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (setting.InstructionAll != null)
                     if (setting.InstructionAll.ToString().HasValue())
                         return setting.InstructionAll.ToString();
-                var v = "{0}{1}{2}{3}{4}{5}".Fmt(
+                var v = "{0}{1}{2}{3}{4}{5}{6}".Fmt(
                     setting.InstructionLogin,
                     setting.InstructionSelect,
                     setting.InstructionFind,
                     setting.InstructionOptions,
                     setting.InstructionSubmit,
+                    setting.InstructionSpecial,
                     setting.InstructionSorry);
                 string ins = null;
                 if (v.HasValue())
@@ -369,12 +372,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
 <div class=""instructions find"">{2}</div>
 <div class=""instructions options"">{3}</div>
 <div class=""instructions submit"">{4}</div>
-<div class=""instructions sorry"">{5}</div>".Fmt(
+<div class=""instructions special"">{5}</div>
+<div class=""instructions sorry"">{6}</div>".Fmt(
                         setting.InstructionLogin,
                         setting.InstructionSelect,
                         setting.InstructionFind,
                         setting.InstructionOptions,
                         setting.InstructionSubmit,
+                        setting.InstructionSpecial,
                         setting.InstructionSorry
                         );
                 if (ins.Contains("{ev:", ignoreCase: true))

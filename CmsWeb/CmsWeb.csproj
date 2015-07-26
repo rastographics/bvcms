@@ -2752,6 +2752,7 @@
     <Content Include="Views\Shared\DisplayTemplates\Time.cshtml" />
     <Content Include="Views\MobileAppMenu\Index.cshtml" />
     <Content Include="Views\Shared\Message2.cshtml" />
+    <Content Include="Views\Home\PyScriptForm.cshtml" />
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
