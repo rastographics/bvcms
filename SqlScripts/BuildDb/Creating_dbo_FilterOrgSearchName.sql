@@ -54,11 +54,30 @@ BEGIN
 			AND e.Field LIKE SUBSTRING(@name, 5, 50) + '%'
 		)
 	),
+	token2 AS (
+		SELECT CAST(Value AS INT) oid FROM dbo.Split(@name, ':') WHERE TokenID = 2
+	),
+	filterPicklist AS (
+		SELECT oid FROM token2
+		UNION
+		SELECT PickListOrgId
+		FROM dbo.MasterOrgs 
+		WHERE OrganizationId = (SELECT oid FROM token2)
+	),
+	filterChildOf AS (
+		SELECT oid FROM token2
+		UNION
+		SELECT OrganizationId
+		FROM dbo.Organizations
+		WHERE ParentOrgId = (SELECT oid FROM token2)
+	),
 	filterName AS (
 		SELECT OrganizationId oid
 		FROM dbo.Organizations o
 		WHERE (@name LIKE 'ev:%' AND o.OrganizationId IN (SELECT oid FROM filterHasExtraValue)) 
 		OR (@name LIKE '-ev:%' AND o.OrganizationId IN (SELECT oid FROM filterNotHasExtraValue)) 
+		OR (@name LIKE 'childof:%' AND o.OrganizationId IN (SELECT oid FROM filterChildOf)) 
+		OR (@name LIKE 'master:%' AND o.OrganizationId IN (SELECT oid FROM filterPicklist)) 
 		OR (o.OrganizationId IN (SELECT oid FROM filterNames)) 
 	)
 	INSERT @t SELECT oid FROM filterName
