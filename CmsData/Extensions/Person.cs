@@ -4,37 +4,30 @@
  * you may not use this code except in compliance with the License.
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
-using System.Data.SqlClient;
-using System.Linq;
-using ImageData;
-using IronPython.Modules;
-using UtilityExtensions;
-using System.Text;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.ComponentModel;
+using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Data.Linq.SqlClient;
 using System.Web;
 using CmsData.Codes;
+using ImageData;
+using UtilityExtensions;
 
 namespace CmsData
 {
 
     public partial class Person : ITableWithExtraValues
     {
-        public static int[] DiscClassStatusCompletedCodes = new int[]
-        {
+        public static int[] DiscClassStatusCompletedCodes = {
             NewMemberClassStatusCode.AdminApproval,
             NewMemberClassStatusCode.Attended,
             NewMemberClassStatusCode.ExemptedChild
         };
-        public static int[] DropCodesThatDrop = new int[]
-        {
+        public static int[] DropCodesThatDrop = {
             DropTypeCode.Administrative,
             DropTypeCode.AnotherDenomination,
             DropTypeCode.LetteredOut,
@@ -56,22 +49,14 @@ namespace CmsData
         90		Contribution				-1 peopleid in Excel with Name?
         98		Other						Task, use task description
         */
-        public string CityStateZip
-        {
-            get { return Util.FormatCSZ4(PrimaryCity, PrimaryState, PrimaryZip); }
-        }
-        public string CityStateZip5
-        {
-            get { return Util.FormatCSZ(PrimaryCity, PrimaryState, PrimaryZip); }
-        }
-        public string AddrCityStateZip
-        {
-            get { return PrimaryAddress + " " + CityStateZip; }
-        }
-        public string Addr2CityStateZip
-        {
-            get { return PrimaryAddress2 + " " + CityStateZip; }
-        }
+        public string CityStateZip => Util.FormatCSZ4(PrimaryCity, PrimaryState, PrimaryZip);
+
+        public string CityStateZip5 => Util.FormatCSZ(PrimaryCity, PrimaryState, PrimaryZip);
+
+        public string AddrCityStateZip => PrimaryAddress + " " + CityStateZip;
+
+        public string Addr2CityStateZip => $"{PrimaryAddress2} {CityStateZip}";
+
         public string FullAddress
         {
             get
@@ -186,7 +171,7 @@ namespace CmsData
                 db.SubmitChanges();
                 db.OrgMemMemTags.DeleteAllOnSubmit(om.OrgMemMemTags);
                 db.SubmitChanges();
-                TrySubmit(db, "Organizations (orgid:{0})".Fmt(om.OrganizationId));
+                TrySubmit(db, $"Organizations (orgid:{om.OrganizationId})");
             }
             db.OrganizationMembers.DeleteAllOnSubmit(this.OrganizationMembers);
             TrySubmit(db, "DeletingMemberships");
@@ -289,7 +274,7 @@ namespace CmsData
                                  TransactionTime = e.TransactionTime
                              };
                 db.PeopleExtras.InsertOnSubmit(e2);
-                TrySubmit(db, "ExtraValues (pid={0},field={1})".Fmt(e2.PeopleId, e2.Field));
+                TrySubmit(db, $"ExtraValues (pid={e2.PeopleId},field={e2.Field})");
             }
             db.PeopleExtras.DeleteAllOnSubmit(PeopleExtras);
             TrySubmit(db, "Delete ExtraValues");
@@ -485,7 +470,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             int originId,
             int? EntryPointId)
         {
-            return Person.Add(DbUtil.Db, true, fam, position, tag, firstname, nickname, lastname, dob, MarriedCode, gender, originId, EntryPointId);
+            return Add(DbUtil.Db, true, fam, position, tag, firstname, nickname, lastname, dob, MarriedCode, gender, originId, EntryPointId);
         }
 
         // Used for Conversions
@@ -590,7 +575,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     var np = Db.GetNewPeopleManagers();
                     if (np != null)
                         Db.Email(Util.SysFromEmail, np,
-                            "Just Added Person on " + Db.Host, "<a href='{0}'>{1}</a>".Fmt(Db.ServerLink("/Person2/" + p.PeopleId), p.Name));
+                            $"Just Added Person on {Db.Host}",
+                            $"<a href='{Db.ServerLink("/Person2/" + p.PeopleId)}'>{p.Name}</a>");
                 }
             }
             return p;
@@ -822,7 +808,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public string OptOutKey(string FromEmail)
         {
-            return Util.EncryptForUrl("{0}|{1}".Fmt(PeopleId, FromEmail));
+            return Util.EncryptForUrl($"{PeopleId}|{FromEmail}");
         }
 
         public static bool ToggleTag(int PeopleId, string TagName, int? OwnerId, int TagTypeId)
@@ -1016,13 +1002,11 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             value = value.TrimEnd();
             var o = Util.GetProperty(this, field);
-            if (o is string)
-                o = ((string)o).TrimEnd();
+            o = (o as string)?.TrimEnd();
             if (o == null && value == null)
                 return;
-            if (o is int)
-                if ((int)o == value.ToInt())
-                    return;
+            if (o as int? == value.ToInt())
+                return;
             var i = o as int?;
             if (i != null)
                 if (i == value.ToInt2())
@@ -1140,7 +1124,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public void LogExtraValue(string op, string field)
         {
-            DbUtil.LogActivity("EV {0}:{1}".Fmt(op, field), peopleid: PeopleId);
+            DbUtil.LogActivity($"EV {op}:{field}", peopleid: PeopleId);
         }
 
         public void AddEditExtraValue(string field, string value)
@@ -1377,7 +1361,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (!FinanceManagerId.HasValue)
                     FinanceManagerId = 1;
             }
-            var bd = new CmsData.BundleDetail
+            var bd = new BundleDetail
             {
                 BundleHeaderId = bundle.BundleHeaderId,
                 CreatedBy = FinanceManagerId.Value,
@@ -1403,7 +1387,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             bundle.BundleDetails.Add(bd);
             Db.SubmitChanges();
             if(fundtouse == null)
-                Db.LogActivity("FundNotFound Used fund #{0} on contribution #{1}".Fmt(Fund, bd.ContributionId) );
+                Db.LogActivity($"FundNotFound Used fund #{Fund} on contribution #{bd.ContributionId}");
             return bd.Contribution;
         }
         public static int FetchOrCreateMemberStatus(CMSDataContext Db, string type)
@@ -1527,7 +1511,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             LogChanges(db, Util.UserPeopleId.Value);
             db.SubmitChanges();
         }
-        public void UploadPicture(CMSDataContext db, System.IO.Stream stream)
+        public void UploadPicture(CMSDataContext db, Stream stream)
         {
             if (Picture == null)
                 Picture = new Picture();
@@ -1536,10 +1520,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var p = Picture;
             p.CreatedDate = Util.Now;
             p.CreatedBy = Util.UserName;
-            p.ThumbId = ImageData.Image.NewImageFromBits(bits, 50, 50).Id;
-            p.SmallId = ImageData.Image.NewImageFromBits(bits, 120, 120).Id;
-            p.MediumId = ImageData.Image.NewImageFromBits(bits, 320, 400).Id;
-            p.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
+            p.ThumbId = Image.NewImageFromBits(bits, 50, 50).Id;
+            p.SmallId = Image.NewImageFromBits(bits, 120, 120).Id;
+            p.MediumId = Image.NewImageFromBits(bits, 320, 400).Id;
+            p.LargeId = Image.NewImageFromBits(bits).Id;
             LogPictureUpload(db, Util.UserPeopleId ?? 1);
             db.SubmitChanges();
 
@@ -1566,14 +1550,14 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             db.SubmitChanges();
         }
 
-        public void UploadDocument(CMSDataContext db, System.IO.Stream stream, string name, string mimetype)
+        public void UploadDocument(CMSDataContext db, Stream stream, string name, string mimetype)
         {
             var mdf = new MemberDocForm
             {
                 PeopleId = PeopleId,
                 DocDate = Util.Now,
                 UploaderId = Util2.CurrentPeopleId,
-                Name = System.IO.Path.GetFileName(name).Truncate(100)
+                Name = Path.GetFileName(name).Truncate(100)
             };
             db.MemberDocForms.InsertOnSubmit(mdf);
             var bits = new byte[stream.Length];
@@ -1585,15 +1569,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 case "image/gif":
                 case "image/png":
                     mdf.IsDocument = false;
-                    mdf.SmallId = ImageData.Image.NewImageFromBits(bits, 165, 220).Id;
-                    mdf.MediumId = ImageData.Image.NewImageFromBits(bits, 675, 900).Id;
-                    mdf.LargeId = ImageData.Image.NewImageFromBits(bits).Id;
+                    mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
+                    mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
+                    mdf.LargeId = Image.NewImageFromBits(bits).Id;
                     break;
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
                 case "application/vnd.ms-excel":
-                    mdf.MediumId = ImageData.Image.NewImageFromBits(bits, mimetype).Id;
+                    mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
                     mdf.SmallId = mdf.MediumId;
                     mdf.LargeId = mdf.MediumId;
                     mdf.IsDocument = true;

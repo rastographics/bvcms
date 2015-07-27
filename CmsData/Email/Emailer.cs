@@ -1,15 +1,14 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Net.Mail;
 using CmsData.Codes;
 using UtilityExtensions;
 using System.Linq;
-using System.Configuration;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -103,8 +102,8 @@ namespace CmsData
         public List<Person> AdminPeople()
         {
             var list = (from p in CMSRoleProvider.provider.GetAdmins()
-                        where p.EmailAddress.HasValue() 
-                        && !p.EmailAddress.Contains("bvcms.com") 
+                        where p.EmailAddress.HasValue()
+                        && !p.EmailAddress.Contains("bvcms.com")
                         && !p.EmailAddress.Contains("touchpointsoftware.com")
                         select p).ToList();
             if (list.Count == 0)
@@ -167,7 +166,7 @@ namespace CmsData
             var masterOrgId = (from o in ViewMasterOrgs
                                where o.PickListOrgId == orgid
                                select o.OrganizationId).FirstOrDefault();
-            // so if the master id has notifyids, return them 
+            // so if the master id has notifyids, return them
             if (masterOrgId > 0)
                 return StaffPeopleForOrg(masterOrgId);
             // there was no master notifyids either, so return admins
@@ -365,8 +364,8 @@ namespace CmsData
                         Util.SendMsg(sysFromEmail, CmsHost, from, emailqueue.Subject, text, aa, emailqueue.Id, pid);
                     else
                         Util.SendMsg(sysFromEmail, CmsHost, from,
-                            "(no email address) " + emailqueue.Subject,
-                            "<p style='color:red'>You are receiving this because there is no email address for {0}({1}). You should probably contact them since they were probably expecting this information.</p>\n{2}".Fmt(p.Name, p.PeopleId, text),
+                            $"(no email address) {emailqueue.Subject}",
+                            $"<p style='color:red'>You are receiving this because there is no email address for {p.Name}({p.PeopleId}). You should probably contact them since they were probably expecting this information.</p>\n{text}",
                             Util.ToMailAddressList(from),
                             emailqueue.Id, pid);
                     emailqueueto.Sent = DateTime.Now;
@@ -482,15 +481,15 @@ namespace CmsData
                 }
 #if DEBUG
 #else
-                }
+            }
                 catch (Exception ex)
                 {
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        "sent emails - error: {0}".Fmt(CmsHost), ex.Message,
+                        $"sent emails - error: {CmsHost}", ex.Message,
                         Util.ToMailAddressList(from),
                         emailqueue.Id, null);
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        "sent emails - error: {0}".Fmt(CmsHost), ex.Message,
+                        $"sent emails - error: {CmsHost}", ex.Message,
                         Util.SendErrorsTo(),
                         emailqueue.Id, null);
                 }
@@ -528,7 +527,7 @@ namespace CmsData
                 var from = new MailAddress(From, FromName);
                 string subj = "sent emails: " + subject;
                 var link = ServerLink("/Emails/Details/" + id);
-                string body = @"<a href=""{0}"">{1} emails sent</a>".Fmt(link, count);
+                string body = $@"<a href=""{link}"">{count} emails sent</a>";
                 var sysFromEmail = Util.SysFromEmail;
 
                 Util.SendMsg(sysFromEmail, CmsHost, from,
@@ -567,7 +566,7 @@ namespace CmsData
                     EmailLinks.InsertOnSubmit(emailLink);
                     SubmitChanges();
 
-                    att.Value = ServerLink("/ExternalServices/ct?l={0}".Fmt(HttpUtility.UrlEncode(hash)));
+                    att.Value = ServerLink($"/ExternalServices/ct?l={HttpUtility.UrlEncode(hash)}");
 
                     linkIndex++;
 
@@ -599,10 +598,10 @@ namespace CmsData
                 msg.Text = regex.Replace(message, string.Empty);
 
                 msg.Html = message;
-                
+
                 var credentials = new NetworkCredential(SendGridMailUser, SendGridMailPassword);
                 var transportWeb = new Web(credentials);
-                
+
                 System.Threading.Tasks.Task.WaitAll(transportWeb.DeliverAsync(msg));
             }
             catch (Exception ex)

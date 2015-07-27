@@ -1,9 +1,11 @@
-﻿@model User
+﻿@using System.Collections.Generic
+@using System.Web
+@model User
 
 @{
     ViewBag.Title = "User Preferences";
     ViewBag.PageHeader = "User Preferences";
-    ViewBag.PageSubHeader = "{0} ({1})".Fmt(Model.Name, Model.Username);
+    ViewBag.PageSubHeader = $"{Model.Name} ({Model.Username})";
     Layout = ViewExtensions2.TouchPointLayout();
     var d = HttpContext.Current.Session["preferences"] as Dictionary<string, string>;
 }

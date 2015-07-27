@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var ot = new OneTimeLink
             {
                 Id = Guid.NewGuid(),
-                Querystring = "{0},{1}".Fmt(divid ?? orgid ?? masterorgid, PeopleId)
+                Querystring = $"{divid ?? orgid ?? masterorgid},{PeopleId}"
             };
             var Db = DbUtil.Db;
             Db.OneTimeLinks.InsertOnSubmit(ot);

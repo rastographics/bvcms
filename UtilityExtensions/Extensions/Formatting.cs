@@ -1,25 +1,21 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
-using System.Threading;
-using System.Web;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
+using System.Threading;
+using System.Web;
 
 namespace UtilityExtensions
 {
     public static partial class Util
     {
-        public static string Fmt(this string fmt, params object[] p)
-        {
-            return string.Format(fmt, p);
-        }
         public static string FormatBirthday(int? y, int? m, int? d)
         {
             return FormatBirthday(y, m, d, "");
@@ -42,16 +38,18 @@ namespace UtilityExtensions
             }
             catch (Exception)
             {
-                return "bad date {0}/{1}/{2}".Fmt(m ?? 0, d ?? 0, y ?? 0);
+                return $"bad date {m ?? 0}/{d ?? 0}/{y ?? 0}";
             }
             return def;
         }
+
         public static string FormatDate(this DateTime? dt)
         {
             if (dt.HasValue)
                 return dt.Value.ToString("d");
             return "";
         }
+
         public static HtmlString FormatDate2(this DateTime? dt, string prefix = null, string suffix = null)
         {
             if (dt.HasValue)
@@ -59,10 +57,11 @@ namespace UtilityExtensions
                 if (prefix != null)
                     prefix = prefix + " ";
                 var s = dt.Value.ToString("d");
-                return new HtmlString("{0}{1}{2}".Fmt(prefix, s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2), suffix));
+                return new HtmlString($"{prefix}{s.Substring(0, s.Length - 4) + s.Substring(s.Length - 2, 2)}{suffix}");
             }
             return new HtmlString("");
         }
+
         public static string FormatDate(dynamic dyndt)
         {
             var dt = dyndt as DateTime?;
@@ -75,10 +74,12 @@ namespace UtilityExtensions
         {
             return dt.ToString("yyyy-MM-dd");
         }
+
         public static string ToSortableTime(this DateTime dt)
         {
             return dt.ToString("hhmmss.ff");
         }
+
         public static string ToSortableDate(this DateTime? dt)
         {
             return dt.ToString2("yyyy-MM-dd");
@@ -90,79 +91,92 @@ namespace UtilityExtensions
                 return dt.Value.ToString("d");
             return def;
         }
+
         public static string FormatDateTm(this DateTime dt)
         {
             return dt.ToString("g");
         }
+
         public static string FormatDateTm(this DateTime? dt)
         {
             return dt.FormatDateTm(null);
         }
+
         public static string FormatDateTm(this DateTime? dt, string def)
         {
             if (dt.HasValue)
                 return dt.ToString2("g");
             return def;
         }
+
         public static string FormatTime(this DateTime? tm)
         {
             if (tm.HasValue)
                 return tm.Value.FormatTime();
             return "";
         }
+
         public static string FormatTime(this DateTime tm)
         {
             return tm.ToString("h:mm tt");
         }
+
         public static string ToString2(this int? i, string fmt)
         {
             if (i.HasValue)
-                return fmt.Contains("{") ? fmt.Fmt(i.Value) : i.Value.ToString(fmt);
+                return fmt.Contains("{") ? string.Format(fmt, i.Value) : i.Value.ToString(fmt);
             return "";
         }
+
         public static string ToString2(this decimal? d, string fmt)
         {
             if (d.HasValue)
                 return d.Value.ToString(fmt);
             return "";
         }
+
         public static string ToString2(this DateTime? d, string fmt)
         {
             if (d.HasValue)
                 return d.Value.ToString(fmt);
             return "";
         }
+
         public static string ToString2(this TimeSpan? ts, string fmt)
         {
             if (ts.HasValue)
                 return ts.Value.ToString(fmt);
             return "";
         }
+
         public static string FormatCSZ(string city, string st, string zip)
         {
-            string csz = city ?? string.Empty;
+            var csz = city ?? string.Empty;
             if (st.HasValue())
                 csz += ", " + st;
             if (zip.HasValue())
                 csz += " " + zip.FmtZip();
             return csz.Trim();
         }
+
         public static string FormatCSZ4(string city, string st, string zip)
         {
-            string csz = city ?? string.Empty;
+            var csz = city ?? string.Empty;
             if (st.HasValue())
                 csz += ", " + st;
             csz += " " + FmtZip(zip);
             return csz.Trim();
         }
+
         public static string FormatCSZ5(string city, string st, string zip)
         {
-            string csz = city ?? string.Empty;
+            var csz = city ?? string.Empty;
             if (st.HasValue())
                 csz += ", " + st;
             csz += " " + Zip5(zip);
             return csz.Trim();
         }
+
         public static string FmtFone(this string phone, string prefix)
         {
             phone = phone.FmtFone();
@@ -170,6 +184,7 @@ namespace UtilityExtensions
                 return prefix + " " + phone;
             return "";
         }
+
         public static string FmtFone7(this string phone)
         {
             if (string.IsNullOrEmpty(phone))
@@ -181,6 +196,7 @@ namespace UtilityExtensions
                 t.Insert(3, "-");
             return t.ToString();
         }
+
         public static string FmtFone7(this string phone, string prefix)
         {
             phone = phone.FmtFone7();
@@ -188,6 +204,7 @@ namespace UtilityExtensions
                 return prefix + phone;
             return "";
         }
+
         public static string FmtFone(this string phone)
         {
             var ph = phone.GetDigits();
@@ -201,6 +218,7 @@ namespace UtilityExtensions
                 return Regex.Replace(ph, @"(\d{3})(\d{3})(\d{4})(\d*)", "$1-$2-$3 $4").Trim();
             return phone;
         }
+
         public static string FmtZip(this string zip)
         {
             if (!zip.HasValue())
@@ -212,6 +230,7 @@ namespace UtilityExtensions
                 t.Insert(5, "-");
             return t.ToString();
         }
+
         public static string Zip5(this string zip)
         {
             if (!zip.HasValue())
@@ -223,12 +242,14 @@ namespace UtilityExtensions
                 return t.Substring(0, 5);
             return t;
         }
+
         public static string FmtAttendStr(this string attendstr)
         {
             if (!attendstr.HasValue())
                 return " ";
             return attendstr;
         }
+
         public static string SafeFormat(string s)
         {
             if (s == null)
@@ -248,23 +269,25 @@ namespace UtilityExtensions
                 "<a target=\"_new\" href=\"http://$2\">$1</a>", RegexOptions.Singleline);
             s = Regex.Replace(s, "&gt;&gt;&gt;(?:\r\n)?(.*?)(?:\r\n)?&lt;&lt;&lt;(?:\r\n)?",
                 "<blockquote>$1</blockquote>", RegexOptions.Singleline);
-            s = s.Replace(System.Environment.NewLine, "\n");
+            s = s.Replace(Environment.NewLine, "\n");
             return s.Replace("\n", "<br>\r\n");
         }
 
         private static string HtmlFormat(string s, string lookfor, string htmlcode)
         {
-            return Regex.Replace(s, "{0}(.*?){0}".Fmt(lookfor),
-                "<{0}>$1</{0}>".Fmt(htmlcode), RegexOptions.Singleline);
+            return Regex.Replace(s, $"{lookfor}(.*?){lookfor}",
+                $"<{htmlcode}>$1</{htmlcode}>", RegexOptions.Singleline);
         }
+
         public static string Disallow(this string value, string dissallow)
         {
             var v = value ?? "";
             value = v.Trim();
-            if (String.Compare(value, dissallow, StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(value, dissallow, StringComparison.OrdinalIgnoreCase) == 0)
                 return "";
             return value;
         }
+
         public static string ToStringNoZero(this int? value)
         {
             value = value ?? 0;
@@ -272,39 +295,43 @@ namespace UtilityExtensions
                 return "";
             return value.ToString();
         }
+
         public static string fmtcoupon(string s)
         {
             if (s.Length == 12)
                 return s.Insert(8, " ").Insert(4, " ");
             return s;
         }
+
         public static string MaskCC(string s)
         {
             if (!s.HasValue())
                 return s;
-            var n = Int64.Parse(s.GetDigits());
+            var n = long.Parse(s.GetDigits());
             StringBuilder sb = null;
             switch (s[0])
             {
                 case '3':
-                    sb = new StringBuilder("{0:0000 00000 00000}".Fmt(n));
+                    sb = new StringBuilder($"{n:0000 00000 00000}");
                     break;
                 case '4': // Visa
                 case '5': // Mastercard
                 case '6': // Discover
-                    sb = new StringBuilder("{0:0000 0000 0000 0000}".Fmt(n));
+                    sb = new StringBuilder($"{n:0000 0000 0000 0000}");
                     break;
                 default:
                     return s;
             }
             return Mask(sb, 4);
         }
+
         public static string MaskAccount(string s)
         {
             if (!s.HasValue())
                 return s;
             return Mask(new StringBuilder(s), 4);
         }
+
         public static string Mask(StringBuilder sb, int leave)
         {
             for (var i = 0; i < sb.Length - leave; i++)
@@ -312,6 +339,7 @@ namespace UtilityExtensions
                     sb[i] = 'X';
             return sb.ToString();
         }
+
         public static string ToProper(this string s)
         {
             // allow names that start with uppercase and are not all uppercase to skip the conversion
@@ -322,4 +350,3 @@ namespace UtilityExtensions
         }
     }
 }
-

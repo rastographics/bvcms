@@ -4,10 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Code;
-using UtilityExtensions;
 using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
+using CmsWeb.Code;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -19,19 +19,20 @@ namespace CmsWeb.Areas.Org.Controllers
             if (m.FilterIndividuals)
                 if (m.NameFilter.HasValue())
                     m.FilterIndividuals = false;
-                else
-                    if (DbUtil.Db.OrgCheckedCount(m.Id, m.GroupSelect, Util.UserPeopleId) == 0)
-                        m.FilterIndividuals = false;
+                else if (DbUtil.Db.OrgCheckedCount(m.Id, m.GroupSelect, Util.UserPeopleId) == 0)
+                    m.FilterIndividuals = false;
             DbUtil.Db.CurrentOrg.CopyPropertiesFrom(m);
             ViewBag.OrgMemberContext = true;
             ViewBag.orgname = Session["ActiveOrganization"];
             return PartialView(m);
         }
+
         public ActionResult DialogAdd(int id, string type)
         {
             ViewBag.OrgID = id;
             return View("DialogAdd" + type);
         }
+
         public ActionResult ReGenPaylinks(int id)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
@@ -48,6 +49,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             return View("Other/ReGenPaylinks", org);
         }
+
         [HttpPost, Route("AddProspect/{oid:int}/{pid:int}")]
         public ActionResult AddProspect(int oid, int pid)
         {
@@ -55,9 +57,10 @@ namespace CmsWeb.Areas.Org.Controllers
             OrganizationMember.InsertOrgMembers(DbUtil.Db,
                 oid, pid, MemberTypeCode.Prospect,
                 DateTime.Now, null, false);
-            DbUtil.LogActivity("Adding Prospect {0}({1})".Fmt(org.OrganizationName, pid));
+            DbUtil.LogActivity($"Adding Prospect {org.OrganizationName}({pid})");
             return Content("ok");
         }
+
         [HttpPost, Route("ShowProspect/{oid:int}/{pid:int}/{show}")]
         public ActionResult ShowProspect(int oid, int pid, string show)
         {
@@ -66,9 +69,10 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("member not found");
             om.Hidden = show.Equal("hide");
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("ShowProspect {0},{1},{2}".Fmt(oid, pid, show));
+            DbUtil.LogActivity($"ShowProspect {oid},{pid},{show}");
             return Content("ok");
         }
+
         [HttpPost, Route("ShowVisitor/{oid:int}/{pid:int}/{ticks:long}/{show}")]
         public ActionResult ShowVisitor(int oid, int pid, long ticks, string show)
         {
@@ -78,9 +82,10 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("attendance not found");
             attend.NoShow = show.Equal("hide");
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("ShowVisitor {0},{1},{2},{3}".Fmt(oid, pid, attend.AttendId, show));
+            DbUtil.LogActivity($"ShowVisitor {oid},{pid},{attend.AttendId},{show}");
             return Content("ok");
         }
+
         [HttpPost, Route("Join/{oid:int}/{pid:int}")]
         public ActionResult Join(int oid, int pid)
         {
@@ -99,17 +104,18 @@ namespace CmsWeb.Areas.Org.Controllers
                             && os.ScheduleId == ss.ScheduleId)));
                 if (om != null)
                 {
-                    DbUtil.LogActivity("Same Hour Joining Org {0}({1})".Fmt(org.OrganizationName, pid));
-                    return Content("Already a member of {0} at this hour".Fmt(om.OrganizationId));
+                    DbUtil.LogActivity($"Same Hour Joining Org {org.OrganizationName}({pid})");
+                    return Content($"Already a member of {om.OrganizationId} at this hour");
                 }
             }
             OrganizationMember.InsertOrgMembers(DbUtil.Db,
                 oid, pid, MemberTypeCode.Member,
                 DateTime.Now, null, false);
             DbUtil.Db.UpdateMainFellowship(oid);
-            DbUtil.LogActivity("Joining Org {0}({1})".Fmt(org.OrganizationName, pid));
+            DbUtil.LogActivity($"Joining Org {org.OrganizationName}({pid})");
             return Content("ok");
         }
+
         [HttpPost, Route("ToggleCheckbox/{oid:int}/{pid:int}")]
         public ActionResult ToggleCheckbox(int oid, int pid, bool chkd)
         {
@@ -120,6 +126,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
+
         [HttpPost, Route("ToggleCheckboxes/{id:int}")]
         public ActionResult ToggleCheckboxes(int id, IList<int> pids, bool chkd)
         {
@@ -131,6 +138,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
+
         [HttpPost]
         public ActionResult CheckAll(OrgPeopleModel m)
         {
@@ -139,6 +147,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.TagAll(list, m.OrgTag);
             return PartialView("People", m);
         }
+
         [HttpPost]
         public ActionResult CheckNone(OrgPeopleModel m)
         {
@@ -147,6 +156,5 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.UnTagAll(list, m.OrgTag);
             return PartialView("People", m);
         }
-
     }
 }

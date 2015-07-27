@@ -27,7 +27,7 @@
                     var ifdeceased = !active.HasValue() && m.isDeceased ? "alert alert-danger" : "";
                     var gender = m.Gender;
                     var portraitUrl = gender == "M" ? m.Pictures.SmallMaleUrl : gender == "F" ? m.Pictures.SmallFemaleUrl : m.Pictures.SmallUrl;
-                    var portraitBgPos = m.Pictures.X.HasValue || m.Pictures.Y.HasValue ? string.Format("{0}% {1}%", m.Pictures.X.GetValueOrDefault(), m.Pictures.Y.GetValueOrDefault()) : "top";
+                    var portraitBgPos = m.Pictures.X.HasValue || m.Pictures.Y.HasValue ? $"{m.Pictures.X.GetValueOrDefault()}% {m.Pictures.Y.GetValueOrDefault()}%" : "top";
                     <li class="@active @ifdeceased" style="font-size: 0.85em;">
                         <a href="/Person2/@m.Id">
                             <div class="headshot" style="background-image:url(@portraitUrl); background-position: @portraitBgPos"></div>
@@ -37,7 +37,7 @@
                                 &bull; <span class="status">@m.MemberStatus</span>
                                 &bull; <span class="role">@m.PositionInFamily</span>
                             </span>
-                            <span class="email email_display">@m.Email</span>                          
+                            <span class="email email_display">@m.Email</span>
                         </a>
                     </li>
                 }
@@ -48,7 +48,7 @@
             <div class="col-sm-12">
                 <a href="/SearchAdd2/Dialog/Family/@Model.Person.PeopleId" class="searchadd btn btn-success btn-sm btn-block"><i class="fa fa-plus-circle"></i>&nbsp;&nbsp;Add Family Member</a>
             </div>
-                
+
         }
         <div class="col-sm-12">
             <br />

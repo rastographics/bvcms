@@ -2,8 +2,6 @@ using System;
 using System.Linq;
 using CmsData.View;
 using UtilityExtensions;
-using System.Collections.Generic;
-using System.Data;
 
 namespace CmsData
 {
@@ -31,10 +29,8 @@ namespace CmsData
                 && TransactionId.HasValue()
                 && Amt > 0;
         }
-        public Transaction OriginalTrans
-        {
-         get { return OriginalTransaction ?? this;}
-        }
+        public Transaction OriginalTrans => OriginalTransaction ?? this;
+
         public int FirstTransactionPeopleId()
         {
             return OriginalTrans.TransactionPeople.Select(pp => pp.PeopleId).FirstOrDefault();
@@ -54,8 +50,8 @@ namespace CmsData
             if (!last.HasValue())
                 return name;
             s = mi.HasValue()
-                ? "{0} {1} {2}".Fmt(first, mi, last)
-                : "{0} {1}".Fmt(first, last);
+                ? $"{first} {mi} {last}"
+                : $"{first} {last}";
             if (suffix.HasValue())
                 s = s + ", " + suffix;
             return s;
@@ -90,11 +86,11 @@ namespace CmsData
             //                rejectcode = r["reject_code"].ToString(),
             //                message = r["correction_info"].ToString(),
             //            };
-            /* 
-             * Create a new transaction to reverse the original 
-             * If the transaction was for online giving or recurring giving, then reverse the contribution. 
-             * If the transaction contained an extra donation, then reverse that contribution. 
-             * Send an email to the payor. 
+            /*
+             * Create a new transaction to reverse the original
+             * If the transaction was for online giving or recurring giving, then reverse the contribution.
+             * If the transaction contained an extra donation, then reverse that contribution.
+             * Send an email to the payor.
              * Send an email notification to the online notify list for the associated organization
              */
         }

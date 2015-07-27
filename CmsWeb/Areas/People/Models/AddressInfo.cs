@@ -137,7 +137,7 @@ namespace CmsWeb.Areas.People.Models
 
         [DisplayName("Bad Address Flag")]
         public bool BadAddress { get; set; }
-        public string BadAddressClass { get { return BadAddress ? "badaddress" : ""; } }
+        public string BadAddressClass => BadAddress ? "badaddress" : "";
 
         [DisplayName("Resident Code")]
         public CodeInfo ResCode { get; set; }
@@ -249,10 +249,7 @@ namespace CmsWeb.Areas.People.Models
         public string Error { get; set; }
         public bool Saved { get; set; }
         public bool ResultChanged { get; set; }
-        public bool ResultNotFound
-        {
-            get { return Result.found == false || Result.error.HasValue(); }
-        }
+        public bool ResultNotFound => Result.found == false || Result.error.HasValue();
 
         public bool IsValid
         {
@@ -328,7 +325,7 @@ namespace CmsWeb.Areas.People.Models
             try
             {
                 DbUtil.Db.SubmitChanges();
-                DbUtil.LogActivity("Update Address for: {0}".Fmt(person.Name));
+                DbUtil.LogActivity($"Update Address for: {person.Name}");
             }
             catch (InvalidOperationException ex)
             {
@@ -349,8 +346,7 @@ namespace CmsWeb.Areas.People.Models
                     if(np != null)
                         DbUtil.Db.EmailRedacted(p.FromEmail, np,
                             "Address Info Changed",
-                            "{0} changed the following information:<br />\n<table>{1}</table>"
-                                .Fmt(Util.UserName, sb));
+                            $"{Util.UserName} changed the following information:<br />\n<table>{sb}</table>");
                 }
         }
 
@@ -374,9 +370,9 @@ namespace CmsWeb.Areas.People.Models
                 Result = AddressVerify.LookupAddress(AddressLineOne, AddressLineTwo, CityName, StateCode.Value, ZipCode);
                 const string alertdiv = @" <div class=""alert {0}"">{1}</div>";
                 if (Result.Line1 == "error")
-                    Error = alertdiv.Fmt("alert-danger", "<h4>Network Error</h4>");
+                    Error = string.Format(alertdiv, "alert-danger", "<h4>Network Error</h4>");
                 else if (ResultNotFound)
-                    Error = alertdiv.Fmt("alert-danger", "<h4>Address Not Validated</h4><h6>{0}</h6>".Fmt(Result.error));
+                    Error = string.Format(alertdiv, "alert-danger", $"<h4>Address Not Validated</h4><h6>{Result.error}</h6>");
                 else if (Result.Changed(AddressLineOne, AddressLineTwo, CityName, StateCode.Value, ZipCode))
                 {
                     var msg = @"<h4>Address Found and Adjusted by USPS</h4><h6>What you entered</h6>"
@@ -385,7 +381,7 @@ namespace CmsWeb.Areas.People.Models
                     var rc = DbUtil.Db.FindResCode(Result.Zip, Country.Value);
                     ResCode = new CodeInfo(rc, "ResCode");
                     SetAddressInfo();
-                    Error = alertdiv.Fmt("alert-success", msg);
+                    Error = string.Format(alertdiv, "alert-success", msg);
                 }
             }
             return !Error.HasValue();

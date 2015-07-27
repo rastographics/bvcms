@@ -89,7 +89,7 @@ namespace CmsWeb.Areas.Dialog.Models
                     lop = FetchLongRunningOp(db, model.Id, Op);
                     Debug.Assert(lop != null, "r != null");
                     lop.Processed++;
-                    lop.CustomMessage = "Working on {0}, {1}/{2}".Fmt(orginfo.Name, n, pids.Count);
+                    lop.CustomMessage = $"Working on {orginfo.Name}, {n}/{pids.Count}";
                     db.SubmitChanges();
                 }
                 var o = db.LoadOrganizationById(orginfo.Id);

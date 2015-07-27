@@ -1,6 +1,7 @@
-﻿@using CmsData.Registration
+﻿@using System
+@using System.Linq
+@using CmsData.Registration
 @using CmsWeb
-@using UtilityExtensions
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 
 @if (Model.Parent.SupportMissionTrip)
@@ -114,7 +115,7 @@
                 var ddi = dd.SmallGroupChoice(Model.option);
                 if (ddi == null)
                 {
-                    throw new Exception("AskDropdown [{0}] choice is not found [{1}]".Fmt(string.Join(",", dd.list.Select(ii => ii.SmallGroup)), string.Join(",", Model.option)));
+                    throw new Exception($"AskDropdown [{string.Join(",", dd.list.Select(ii => ii.SmallGroup))}] choice is not found [{string.Join(",", Model.option)}]");
                 }
                 <input type="hidden" name="@(prefix).option" value="@ddi.SmallGroup" />
                 break;

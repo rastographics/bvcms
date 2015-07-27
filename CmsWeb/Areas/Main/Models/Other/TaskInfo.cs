@@ -1,21 +1,19 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
-using UtilityExtensions;
-using System.ComponentModel;
-using System.Collections;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -47,17 +45,13 @@ namespace CmsWeb.Models
         public int? CoOwnerId { get; set; }
         internal Person who;
 
-        public string PersonUrl
-        {
-            get { return "/Person2/" + WhoId; }
-        }
+        public string PersonUrl => "/Person2/" + WhoId;
+
         public int? WhoId
         {
             get
             {
-                if (who == null)
-                    return null;
-                return who.PeopleId;
+                return who?.PeopleId;
             }
             set
             {
@@ -65,17 +59,11 @@ namespace CmsWeb.Models
                     who = DbUtil.Db.LoadPersonById(value.Value);
             }
         }
-        public string Who
-        {
-            get { return who == null ? "" : who.Name; }
-        }
+        public string Who => who == null ? "" : who.Name;
         public int PrimarySort { get; set; }
         //public int ListId { get; set; }
         public DateTime? SortDue { get; set; }
-        public DateTime? DueOrCompleted
-        {
-            get { return SortDueOrCompleted != DateTime.MaxValue.Date ? (DateTime?)SortDueOrCompleted : null; }
-        }
+        public DateTime? DueOrCompleted => SortDueOrCompleted != DateTime.MaxValue.Date ? (DateTime?)SortDueOrCompleted : null;
         public DateTime SortDueOrCompleted { get; set; }
         public string Status { get; set; }
         public bool Completed { get; set; }
@@ -87,10 +75,7 @@ namespace CmsWeb.Models
             get { return SortPriority == 4 ? null : (int?)SortPriority; }
             set { SortPriority = value ?? 4; }
         }
-        public bool IsAnOwner
-        {
-            get { return IsOwner || IsCoOwner; }
-        }
+        public bool IsAnOwner => IsOwner || IsCoOwner;
         public bool IsOwner { get; set; }
         public bool IsCoOwner { get; set; }
 
@@ -106,10 +91,8 @@ namespace CmsWeb.Models
         public string OwnerEmail { get; set; }
         public bool ForceCompleteWContact { get; set; }
         public string CoOwnerEmail { get; set; }
-        public string WhoEmail
-        {
-            get { return who == null ? "" : "{0} <{1}>".Fmt(who.Name, who.EmailAddress); }
-        }
+        public string WhoEmail => who == null ? "" : $"{who.Name} <{who.EmailAddress}>";
+
         public string WhoEmail2
         {
             get
@@ -119,28 +102,15 @@ namespace CmsWeb.Models
                 return string.Empty;
             }
         }
-        public string ContactUrl
-        {
-            get { return  "/Contact2/" + CompletedContactId; }
-        }
+        public string ContactUrl => "/Contact2/" + CompletedContactId;
 
-        public string WhoAddress
-        {
-            get { return who == null ? "" : who.PrimaryAddress; }
-        }
-        public string WhoAddrCityStateZip
-        {
-            get { return who == null ? "" : who.AddrCityStateZip; }
-        }
-        public string WhoPhone
-        {
-            get { return who == null ? "" : who.HomePhone.FmtFone(); }
-        }
+        public string WhoAddress => who == null ? "" : who.PrimaryAddress;
+
+        public string WhoAddrCityStateZip => who == null ? "" : who.AddrCityStateZip;
+
+        public string WhoPhone => who == null ? "" : who.HomePhone.FmtFone();
         public DateTime CreatedOn { get; set; }
-        public string ChangeWho
-        {
-            get { return AssignChange(WhoId); }
-        }
+        public string ChangeWho => AssignChange(WhoId);
 
         private string AssignChange(int? id)
         {
@@ -152,10 +122,7 @@ namespace CmsWeb.Models
             get { return (SortDue.HasValue && SortDue != DateTime.MaxValue.Date) ? SortDue : null; }
             set { SortDue = value; }
         }
-        public string ChangeCoOwner
-        {
-            get { return CoOwnerId == null ? "(delegate)" : "(redelegate)"; }
-        }
+        public string ChangeCoOwner => CoOwnerId == null ? "(delegate)" : "(redelegate)";
         public int StatusId { get; set; }
         public int StatusEnum
         {
@@ -164,41 +131,26 @@ namespace CmsWeb.Models
         }
         public string Location { get; set; }
         public string Project { get; set; }
-        public bool ShowCompleted { get { return CompletedOn.HasValue; } }
-        public bool ShowLocation { get { return HttpContext.Current.User.IsInRole("AdvancedTask"); } }
-        public bool HasProject
-        {
-            get { return string.IsNullOrEmpty(Project); }
-        }
+        public bool ShowCompleted => CompletedOn.HasValue;
+        public bool ShowLocation => HttpContext.Current.User.IsInRole("AdvancedTask");
+
+        public bool HasProject => string.IsNullOrEmpty(Project);
         public int? SourceContactId { get; set; }
         public DateTime? SourceContact { get; set; }
-        public string SourceContactChange
-        {
-            get { return AssignChange(SourceContactId); }
-        }
+        public string SourceContactChange => AssignChange(SourceContactId);
         public int? CompletedContactId { get; set; }
         public DateTime? CompletedContact { get; set; }
         public string Notes { get; set; }
-        public string FmtNotes
-        {
-            get { return Util.SafeFormat(Notes); }
-        }
-        public bool HasNotes
-        {
-            get { return string.IsNullOrEmpty(Notes); }
-        }
-        public bool CanComplete
-        {
-            get { return IsAnOwner && this.StatusId != TaskStatusCode.Complete && !ForceCompleteWContact; }
-        }
-        public bool CanCompleteWithContact
-        {
-            get { return IsAnOwner && this.StatusId != TaskStatusCode.Complete && WhoId != null; }
-        }
-        public bool CanAccept
-        {
-            get { return IsCoOwner && this.StatusId == TaskStatusCode.Pending; }
-        }
+        public string FmtNotes => Util.SafeFormat(Notes);
+
+        public bool HasNotes => string.IsNullOrEmpty(Notes);
+
+        public bool CanComplete => IsAnOwner && this.StatusId != TaskStatusCode.Complete && !ForceCompleteWContact;
+
+        public bool CanCompleteWithContact => IsAnOwner && this.StatusId != TaskStatusCode.Complete && WhoId != null;
+
+        public bool CanAccept => IsCoOwner && this.StatusId == TaskStatusCode.Pending;
+
         public string ProspectReportLink()
         {
             Util2.CurrentPeopleId = WhoId.Value;

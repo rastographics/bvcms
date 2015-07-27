@@ -40,12 +40,10 @@ namespace CmsWeb.Models
                     var city = m.Groups["city"].Value;
                     var state = m.Groups["state"].Value;
                     var zip = m.Groups["zip"].Value;
-                    r.Write("\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\",{5},{6}\r\n".Fmt(
-                        label, line1, line2, city, state, zip, mi.PeopleId));
+                    r.Write($"\"{label}\",\"{line1}\",\"{line2}\",\"{city}\",\"{state}\",{zip},{mi.PeopleId}\r\n");
                 }
                 else
-                    r.Write("\"{0}\",\"{1}\",\"{2}\",\"{3}\",\"{4}\",{5},{6}\r\n".Fmt(
-                        label, mi.Address, mi.Address2, mi.City, mi.State, mi.Zip.FmtZip(), mi.PeopleId));
+                    r.Write($"\"{label}\",\"{mi.Address}\",\"{mi.Address2}\",\"{mi.City}\",\"{mi.State}\",{mi.Zip.FmtZip()},{mi.PeopleId}\r\n");
             }
         }
     }

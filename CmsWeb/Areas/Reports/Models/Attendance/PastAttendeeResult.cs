@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Linq;
@@ -10,7 +10,6 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using CmsData;
 using UtilityExtensions;
-using System.Text;
 using System.Web.Mvc;
 using System.Collections.Generic;
 using CmsWeb.Models;
@@ -61,9 +60,9 @@ namespace CmsWeb.Areas.Reports.Models
             doc = new Document(PageSize.LETTER.Rotate(), 36, 36, 64, 64);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
-        	var roles = DbUtil.Db.CurrentRoles();
-            var i = (from o in DbUtil.Db.Organizations 
-					 where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+            var roles = DbUtil.Db.CurrentRoles();
+            var i = (from o in DbUtil.Db.Organizations
+                     where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                      where o.OrganizationId == orgid
                      select new
                      {
@@ -74,15 +73,14 @@ namespace CmsWeb.Areas.Reports.Models
 
             w.PageEvent = new HeadFoot
             {
-                HeaderText = "Recent Attendee Report: {0} - {1} ({2})".Fmt(
-                    i.OrganizationName, i.LeaderName, i.FirstMeetingDate.HasValue ? "since " + i.FirstMeetingDate.FormatDate() : "no First Meeting Date set"),
+                HeaderText = $"Recent Attendee Report: {i.OrganizationName} - {i.LeaderName} ({(i.FirstMeetingDate.HasValue ? "since " + i.FirstMeetingDate.FormatDate() : "no First Meeting Date set")})",
                 FooterText = "Recent Attendee Report"
             };
             doc.Open();
 
             var q = Attendees(orgid.Value);
 
-            if (!orgid.HasValue || i == null || q.Count() == 0)
+            if (!orgid.HasValue || i == null || !q.Any())
                 doc.Add(new Phrase("no data"));
             else
             {
@@ -121,7 +119,7 @@ namespace CmsWeb.Areas.Reports.Models
                     t.DefaultCell.BackgroundColor = color;
 
                     if (v != p.visitor)
-                        t.Add("             ------ {0} ------".Fmt(p.visitor == true ? "Guests and Previous Members" : "Members"), 6, bigboldfont);
+                        t.Add($"             ------ {(p.visitor ? "Guests and Previous Members" : "Members")} ------", 6, bigboldfont);
                     v = p.visitor;
 
                     t.Add(p.Name, font);
@@ -145,7 +143,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                     t.Add("", font);
                     t.Add(p.AttendStr, 4, monofont);
-                    t.AddRight("{0:n1}{1}".Fmt(p.AttendPct, p.AttendPct.HasValue ? "%" : ""), font);
+                    t.AddRight($"{p.AttendPct:n1}{(p.AttendPct.HasValue ? "%" : "")}", font);
 
                     mt.AddCell(t);
                 }
@@ -157,7 +155,7 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var q = from ra in DbUtil.Db.RecentAttendance(orgid)
                     let p = DbUtil.Db.People.Single(pp => pp.PeopleId == ra.PeopleId)
-                    orderby ra.Visitor descending, ra.Lastattend descending, p.Name2 
+                    orderby ra.Visitor descending, ra.Lastattend descending, p.Name2
                     select new AttendInfo
                     {
                         PeopleId = p.PeopleId,

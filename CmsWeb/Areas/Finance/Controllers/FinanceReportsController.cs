@@ -22,7 +22,7 @@ namespace CmsWeb.Areas.Finance.Controllers
     {
         public ActionResult ContributionStatement(int id, DateTime fromDate, DateTime toDate, int typ)
         {
-            DbUtil.LogActivity("Contribution Statement for ({0})".Fmt(id));
+            DbUtil.LogActivity($"Contribution Statement for ({id})");
             return new ContributionStatementResult
             {
                 PeopleId = id,
@@ -67,7 +67,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
 
-            var rd = cn.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, }, 
+            var rd = cn.ExecuteReader("dbo.PledgeFulfillment2", new { fundid1, fundid2, },
                 commandTimeout: 1200, commandType: CommandType.StoredProcedure);
             ep.AddSheet(rd, "Pledges");
             return new EpplusResult(ep, "PledgeFulfillment2.xlsx");
@@ -152,7 +152,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             var fd = DateTime.Parse("1/1/1900");
             var td = DateTime.Parse("1/1/2099");
             var q = from r in DbUtil.Db.PledgeReport(fd, td, 0)
-                    orderby r.FundId descending 
+                    orderby r.FundId descending
                     select r;
             return View(q);
         }
@@ -164,7 +164,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 if (string.IsNullOrEmpty(sortDir) || sortDir == "desc")
                 {
                     var q = from rg in DbUtil.Db.ManagedGivings.ToList()
-                        orderby rg.Person.LastName ascending, rg.Person.FirstName ascending 
+                        orderby rg.Person.LastName ascending, rg.Person.FirstName ascending
                         select rg;
 
                     ViewBag.SortDir = "asc";
@@ -173,13 +173,13 @@ namespace CmsWeb.Areas.Finance.Controllers
                 else
                 {
                     var q = from rg in DbUtil.Db.ManagedGivings.ToList()
-                            orderby rg.Person.LastName descending , rg.Person.FirstName descending 
+                            orderby rg.Person.LastName descending , rg.Person.FirstName descending
                             select rg;
 
                     ViewBag.SortDir = "desc";
                     return View(q);
                 }
-                
+
             }
             else
             {
@@ -302,7 +302,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                     case "PledgeAmt":
                     case "TotalGiven":
                     case "Balance":
-                        table.Columns[i].TotalsRowFormula = "SUBTOTAL(109,[{0}])".Fmt(name);
+                        table.Columns[i].TotalsRowFormula = $"SUBTOTAL(109,[{name}])";
                         colrange.Style.Numberformat.Format = "#,##0.00;(#,##0.00)";
                         colrange.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                         ws.Column(col).Width = 12;
@@ -323,7 +323,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                 }
             }
 
-            return new EpplusResult(ep, "PledgeFulfillment - {0}.xlsx".Fmt(id));
+            return new EpplusResult(ep, $"PledgeFulfillment - {id}.xlsx");
         }
     }
 }

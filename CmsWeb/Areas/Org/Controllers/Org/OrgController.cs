@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using UtilityExtensions;
 using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -12,13 +12,13 @@ namespace CmsWeb.Areas.Org.Controllers
     [SessionExpire]
     public partial class OrgController : CmsStaffController
     {
-        const string needNotify = "WARNING: please add the notify persons on messages tab.";
+        private const string needNotify = "WARNING: please add the notify persons on messages tab.";
 
         [HttpGet, Route("~/Org/{id:int}")]
         public ActionResult Index(int id, int? peopleid = null)
         {
             var db = DbUtil.Db;
-            db.CurrentOrg = new CurrentOrg() { Id=id, GroupSelect = GroupSelectCode.Member};
+            db.CurrentOrg = new CurrentOrg {Id = id, GroupSelect = GroupSelectCode.Member};
 
             var m = new OrganizationModel(id);
             if (peopleid.HasValue)
@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 if (!User.IsInRole(m.Org.LimitToRole))
                     return NotAllowed("no privilege to view ", m.Org.OrganizationName);
 
-            DbUtil.LogOrgActivity("Viewing Org({0})".Fmt(m.Org.OrganizationName), id, m.Org.OrganizationName);
+            DbUtil.LogOrgActivity($"Viewing Org({m.Org.OrganizationName})", id, m.Org.OrganizationName);
 
             ViewBag.OrganizationContext = true;
             ViewBag.orgname = m.Org.FullName;
@@ -61,11 +61,11 @@ namespace CmsWeb.Areas.Org.Controllers
             Session["ActiveOrganization"] = m.Org.OrganizationName;
             return View(m);
         }
+
         private ActionResult NotAllowed(string error, string name)
         {
-            DbUtil.LogActivity("Trying to view Organization ({0})".Fmt(name));
-            return Content("<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>"
-                                    .Fmt(error, "javascript: history.go(-1)", "Go Back"));
+            DbUtil.LogActivity($"Trying to view Organization ({name})");
+            return Content($"<h3 style='color:red'>{error}</h3>\n<a href='{"javascript: history.go(-1)"}'>{"Go Back"}</a>");
         }
 
         [Authorize(Roles = "Delete")]
@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var currorg = Util2.CurrentOrganization;
             currorg.Id = 0;
             currorg.SgFilter = null;
-            DbUtil.LogActivity("Delete Org {0}".Fmt(Session["ActiveOrganization"]));
+            DbUtil.LogActivity($"Delete Org {Session["ActiveOrganization"]}");
             Session.Remove("ActiveOrganization");
             return Content("ok");
         }
@@ -97,7 +97,7 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewBag.AddContact = "/Org/AddContact/" + qid;
             ViewBag.AddTasks = "/Org/AddTasks/" + qid;
             ViewBag.OrganizationContext = true;
-            if (!DbUtil.Db.Organizations.Any(oo => oo.ParentOrgId == oid)) 
+            if (!DbUtil.Db.Organizations.Any(oo => oo.ParentOrgId == oid))
                 return;
             ViewBag.ParentOrgContext = true;
             ViewBag.leadersqid = DbUtil.Db.QueryLeadersUnderCurrentOrg().QueryId;
@@ -110,6 +110,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrganizationModel(id);
             return PartialView(m);
         }
+
         [HttpPost]
         public ActionResult Registrations(int id)
         {

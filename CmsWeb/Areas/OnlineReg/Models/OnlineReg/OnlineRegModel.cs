@@ -15,10 +15,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string FromMobile { get; set; }
         public string URL { get; set; }
 
-        public bool DisplaySpecialFunds
-        {
-            get { return OnlineGiving() || ManageGiving(); }
-        }
+        public bool DisplaySpecialFunds => OnlineGiving() || ManageGiving();
 
         private int? _tranId;
         public int? TranId
@@ -60,7 +57,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public int? GoerSupporterId { get; set; }
         public int? GoerId { get; set; }
-        public bool SupportMissionTrip { get { return GoerSupporterId.HasValue || GoerId.HasValue; } }
+        public bool SupportMissionTrip => GoerSupporterId.HasValue || GoerId.HasValue;
 
         public Person GetGoer()
         {
@@ -114,7 +111,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public void HistoryAdd(string s)
         {
-            History.Add("{0} {1:g} (c-ip={2})".Fmt(s, DateTime.Now, Util.GetIpAddress()));
+            History.Add($"{s} {DateTime.Now:g} (c-ip={Util.GetIpAddress()})");
         }
     }
 }

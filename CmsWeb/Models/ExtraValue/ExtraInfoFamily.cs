@@ -15,33 +15,17 @@ namespace CmsWeb.Models.ExtraValues
             get
             {
                 if (Type == "Bit" || Type == "Code")
-                    return "/ExtraValue/FamilyQueryCodes?field={0}&value={1}"
-                        .Fmt(HttpUtility.UrlEncode(Field), HttpUtility.UrlEncode(Value));
-                return "/ExtraValue/FamilyQueryData?field={0}&type={1}"
-                    .Fmt(HttpUtility.UrlEncode(Field), Type);
+                    return $"/ExtraValue/FamilyQueryCodes?field={HttpUtility.UrlEncode(Field)}&value={HttpUtility.UrlEncode(Value)}";
+                return $"/ExtraValue/FamilyQueryData?field={HttpUtility.UrlEncode(Field)}&type={Type}";
             }
         }
 
-        public override string RenameAllUrl
-        {
-            get { return "/ExtraValue/RenameAll/Family?field={0}".Fmt(HttpUtility.UrlEncode(Field)); }
-        }
+        public override string RenameAllUrl => $"/ExtraValue/RenameAll/Family?field={HttpUtility.UrlEncode(Field)}";
 
-        public override string DeleteAllUrl
-        {
-            get
-            {
-                return "/ExtraValue/DeleteAll/Family/{0}?field={1}&value={2}"
-                    .Fmt(Type, HttpUtility.UrlEncode(Field), HttpUtility.UrlEncode(Value));
-            }
-        }
-        public override string ConvertToStandardUrl
-        {
-            get
-            {
-                return "/ExtraValue/ConvertToStandard/Family?name={0}".Fmt(HttpUtility.UrlEncode(Field));
-            }
-        }
+        public override string DeleteAllUrl => $"/ExtraValue/DeleteAll/Family/{Type}?field={HttpUtility.UrlEncode(Field)}&value={HttpUtility.UrlEncode(Value)}";
+
+        public override string ConvertToStandardUrl => $"/ExtraValue/ConvertToStandard/Family?name={HttpUtility.UrlEncode(Field)}";
+
         public override IEnumerable<ExtraInfo> CodeSummary()
         {
             var NameTypes = Views.GetViewableNameTypes(DbUtil.Db, "Family", nocache: true);
@@ -62,7 +46,7 @@ namespace CmsWeb.Models.ExtraValues
                          join sv in NameTypes on i.key.Field equals sv.Name into j
                          from sv in j.DefaultIfEmpty()
                          let type = sv == null ? i.key.Type : sv.Type
-                         let typobj = sv == null 
+                         let typobj = sv == null
                                 ? adhoctypes.SingleOrDefault(ee => ee.Code == type)
                                 : standardtypes.SingleOrDefault(ee => ee.Code == type)
                          let typedisplay = typobj == null ? "unknown" : typobj.Value
@@ -91,7 +75,7 @@ namespace CmsWeb.Models.ExtraValues
                           join sv in NameTypes on i.key.Field equals sv.Name into j
                           from sv in j.DefaultIfEmpty()
                           let type = sv == null ? i.key.Type : sv.Type
-                          let typedisplay = sv == null 
+                          let typedisplay = sv == null
                                 ? adhoctypes.SingleOrDefault(ee => ee.Code == type)
                                 : standardtypes.SingleOrDefault(ee => ee.Code == type)
                           select new ExtraInfoFamily
@@ -135,14 +119,14 @@ namespace CmsWeb.Models.ExtraValues
                         field);
                     break;
             }
-            DbUtil.LogActivity("EVFamily DeleteAll {0} {1}".Fmt(field, value));
+            DbUtil.LogActivity($"EVFamily DeleteAll {field} {value}");
             return "done";
         }
 
         public override void RenameAll(string field, string newname)
         {
             DbUtil.Db.ExecuteCommand("update FamilyExtra set field = {0} where field = {1}", newname, field);
-            DbUtil.LogActivity("EVFamily RenameAll {0}>{1}".Fmt(field, newname));
+            DbUtil.LogActivity($"EVFamily RenameAll {field}>{newname}");
         }
     }
 }

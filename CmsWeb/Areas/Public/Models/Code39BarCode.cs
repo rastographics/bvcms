@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Web;
 
 namespace CmsWeb.Areas.Public.Models
 {
@@ -23,52 +19,52 @@ namespace CmsWeb.Areas.Public.Models
 		private const string InterchangeGap = "0";
 		private const string code39alphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%*";
 
-		private readonly string[] code39code = 
+		private readonly string[] code39code =
 		{
-			/* 0 */ "000110100", 
-			/* 1 */ "100100001", 
-			/* 2 */ "001100001", 
+			/* 0 */ "000110100",
+			/* 1 */ "100100001",
+			/* 2 */ "001100001",
 			/* 3 */ "101100000",
-			/* 4 */ "000110001", 
-			/* 5 */ "100110000", 
-			/* 6 */ "001110000", 
+			/* 4 */ "000110001",
+			/* 5 */ "100110000",
+			/* 6 */ "001110000",
 			/* 7 */ "000100101",
-			/* 8 */ "100100100", 
-			/* 9 */ "001100100", 
-			/* A */ "100001001", 
+			/* 8 */ "100100100",
+			/* 9 */ "001100100",
+			/* A */ "100001001",
 			/* B */ "001001001",
-			/* C */ "101001000", 
-			/* D */ "000011001", 
-			/* E */ "100011000", 
+			/* C */ "101001000",
+			/* D */ "000011001",
+			/* E */ "100011000",
 			/* F */ "001011000",
-			/* G */ "000001101", 
-			/* H */ "100001100", 
-			/* I */ "001001100", 
+			/* G */ "000001101",
+			/* H */ "100001100",
+			/* I */ "001001100",
 			/* J */ "000011100",
-			/* K */ "100000011", 
-			/* L */ "001000011", 
-			/* M */ "101000010", 
+			/* K */ "100000011",
+			/* L */ "001000011",
+			/* M */ "101000010",
 			/* N */ "000010011",
-			/* O */ "100010010", 
-			/* P */ "001010010", 
-			/* Q */ "000000111", 
+			/* O */ "100010010",
+			/* P */ "001010010",
+			/* Q */ "000000111",
 			/* R */ "100000110",
-			/* S */ "001000110", 
-			/* T */ "000010110", 
-			/* U */ "110000001", 
+			/* S */ "001000110",
+			/* T */ "000010110",
+			/* U */ "110000001",
 			/* V */ "011000001",
-			/* W */ "111000000", 
-			/* X */ "010010001", 
-			/* Y */ "110010000", 
+			/* W */ "111000000",
+			/* X */ "010010001",
+			/* Y */ "110010000",
 			/* Z */ "011010000",
-			/* - */ "010000101", 
-			/* . */ "110000100", 
+			/* - */ "010000101",
+			/* . */ "110000100",
 			/*' '*/ "011000100",
 			/* $ */ "010101000",
-			/* / */ "010100010", 
-			/* + */ "010001010", 
-			/* % */ "000101010", 
-			/* * */ "010010100" 
+			/* / */ "010100010",
+			/* + */ "010001010",
+			/* % */ "000101010",
+			/* * */ "010010100"
 		};
 		#endregion
 
@@ -106,7 +102,7 @@ namespace CmsWeb.Areas.Public.Models
 			// Ensure BarCode does not contain invalid characters
 			for (var i = 0; i < this.BarCodeText.Length; i++)
 				if (code39alphabet.IndexOf(this.BarCodeText[i]) == -1)
-					throw new ArgumentException(string.Format("Invalid character for barcode: '{0}' is not a valid code 39 character", this.BarCodeText[i]));
+					throw new ArgumentException($"Invalid character for barcode: '{this.BarCodeText[i]}' is not a valid code 39 character");
 
 
 			// Create the encoded string

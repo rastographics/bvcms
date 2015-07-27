@@ -1,6 +1,5 @@
 using System.Linq;
 using System.Web.Mvc;
-using UtilityExtensions;
 using CmsData;
 
 namespace CmsWeb.Areas.Main.Controllers
@@ -12,7 +11,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult Set(string id, string value)
         {
             DbUtil.Db.SetUserPreference(id, value);
-            return Content("set {0}: {1}".Fmt(id, value));
+            return Content($"set {id}: {value}");
         }
         [Route("UnSet/{id}/{value}")]
         public ActionResult UnSet(string id)

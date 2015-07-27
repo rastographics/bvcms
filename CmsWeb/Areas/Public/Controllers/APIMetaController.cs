@@ -1,22 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Mvc.Ajax;
-using UtilityExtensions;
-using CmsWeb.Models;
-using System.Xml;
-using System.IO;
-using System.Net.Mail;
-using CmsData.Codes;
-using CmsData.API;
-using System.Text;
-using System.Net;
 using CmsData;
-using CmsWeb.Areas.Manage.Controllers;
+using CmsData.API;
+using CmsWeb.Areas.Setup.Controllers;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -27,14 +15,14 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<Lookups error=\"{0}\" />".Fmt(ret.Substring(1)));
+                return Content($"<Lookups error=\"{ret.Substring(1)}\" />");
             if (!id.HasValue())
                 return Content("Lookups error=\"not found\">");
-            var q = DbUtil.Db.ExecuteQuery<Setup.Controllers.LookupController.Row>("select * from lookup." + id);
-            var w = new CmsData.API.APIWriter();
+            var q = DbUtil.Db.ExecuteQuery<LookupController.Row>("select * from lookup." + id);
+            var w = new APIWriter();
             w.Start("Lookups");
             w.Attr("name", id);
-            foreach(var i in q)
+            foreach (var i in q)
             {
                 w.Start("Lookup");
                 w.Attr("Id", i.Id);
@@ -42,16 +30,18 @@ namespace CmsWeb.Areas.Public.Controllers
                 w.End();
             }
             w.End();
-			DbUtil.LogActivity("APIMeta Lookups");
+            DbUtil.LogActivity("APIMeta Lookups");
             return Content(w.ToString(), "text/xml");
         }
-		public ActionResult Cookies()
-		{
-			var s = Request.UserAgent;
-			if (Request.Browser.Cookies == true)
-				return Content("supports cookies<br>" + s);
-			return Content("does not support cookies<br>" + s);
-		}
+
+        public ActionResult Cookies()
+        {
+            var s = Request.UserAgent;
+            if (Request.Browser.Cookies)
+                return Content("supports cookies<br>" + s);
+            return Content("does not support cookies<br>" + s);
+        }
+
 //		public ActionResult TestCors()
 //		{
 //            var ret = AuthenticateDeveloper();
@@ -60,11 +50,11 @@ namespace CmsWeb.Areas.Public.Controllers
 //			return Content("This is from a CORS request " + DateTime.Now);
 //		}
         [HttpGet]
-		public ActionResult SQLView(string id)
+        public ActionResult SQLView(string id)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<SQLView error=\"{0}\" />".Fmt(ret.Substring(1)));
+                return Content($"<SQLView error=\"{ret.Substring(1)}\" />");
             if (!id.HasValue())
                 return Content("<SQLView error\"no view name\" />");
             try
@@ -73,7 +63,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 cmd.Connection = new SqlConnection(Util.ConnectionString);
                 cmd.Connection.Open();
                 var rdr = cmd.ExecuteReader();
-    			DbUtil.LogActivity("APIMeta SQLView " + id);
+                DbUtil.LogActivity("APIMeta SQLView " + id);
                 var w = new APIWriter();
                 w.Start("SQLView");
                 w.Attr("name", id);
@@ -85,15 +75,15 @@ namespace CmsWeb.Areas.Public.Controllers
                     for (var i = 0; i < rdr.FieldCount; i++)
                         w.Attr(rdr.GetName(i), rdr[i].ToString());
                     w.End();
-                   read = rdr.Read();
+                    read = rdr.Read();
                 }
                 w.End();
                 return Content(w.ToString(), "text/xml");
             }
             catch (Exception)
             {
-                return Content("<SQLView error=\"cannot find view guest.{0}\" />".Fmt(id));
+                return Content($"<SQLView error=\"cannot find view guest.{id}\" />");
             }
-		}
+        }
     }
 }

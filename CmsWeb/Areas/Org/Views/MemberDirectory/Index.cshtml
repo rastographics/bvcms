@@ -3,8 +3,8 @@
 @model CmsWeb.Areas.Org.Models.MemberDirectoryModel
 @{
     ViewBag.Title = "Member Directory";
-    ViewBag.PageHeader = Model.FamilyOption ? "Family Directory for {0}".Fmt(Model.OrgName) : "Member Directory for {0}".Fmt(Model.OrgName);
-    ViewBag.PageSubHeader = "<a href=\"/Person2/{0}\">{1}</a>".Fmt(Util.UserPeopleId, Util.UserFullName);
+    ViewBag.PageHeader = Model.FamilyOption ? $"Family Directory for {Model.OrgName}" : $"Member Directory for {Model.OrgName}";
+    ViewBag.PageSubHeader = $"<a href=\"/Person2/{Util.UserPeopleId}\">{Util.UserFullName}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="row">

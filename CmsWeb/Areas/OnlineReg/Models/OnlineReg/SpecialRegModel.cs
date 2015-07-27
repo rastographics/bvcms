@@ -18,6 +18,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                      select e).ToDictionary(ee => ee.Substring(3), ee => elements[ee]);
             return q;
         }
+
         public static void SaveResults(int id, int peopleId, Dictionary<string, string> items)
         {
             var org = (from e in DbUtil.Db.Organizations
@@ -44,7 +45,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             DbUtil.Db.SubmitChanges();
 
-            List<Person> staffList = DbUtil.Db.StaffPeopleForOrg(id);
+            var staffList = DbUtil.Db.StaffPeopleForOrg(id);
             var staff = staffList[0];
 
             var regSettings = new Settings(org.RegSetting, DbUtil.Db, id);
@@ -54,18 +55,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             subject = subject.Replace("{org}", org.OrganizationName);
 
-            body = body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), ignoreCase: true)
-                .Replace("{name}", person.Name, ignoreCase: true)
-                .Replace("{date}", DateTime.Now.ToString("d"), ignoreCase: true)
-                .Replace("{email}", person.EmailAddress, ignoreCase: true)
-                .Replace("{phone}", person.HomePhone.FmtFone(), ignoreCase: true)
-                .Replace("{contact}", staff.Name, ignoreCase: true)
-                .Replace("{contactemail}", staff.EmailAddress, ignoreCase: true)
-                .Replace("{contactphone}", org.PhoneNumber.FmtFone(), ignoreCase: true)
-                .Replace("{details}", summary.ToString(), ignoreCase: true);
+            body = body.Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "church"), true)
+                .Replace("{name}", person.Name, true)
+                .Replace("{date}", DateTime.Now.ToString("d"), true)
+                .Replace("{email}", person.EmailAddress, true)
+                .Replace("{phone}", person.HomePhone.FmtFone(), true)
+                .Replace("{contact}", staff.Name, true)
+                .Replace("{contactemail}", staff.EmailAddress, true)
+                .Replace("{contactphone}", org.PhoneNumber.FmtFone(), true)
+                .Replace("{details}", summary.ToString(), true);
 
             DbUtil.Db.Email(staff.FromEmail, person, subject, body);
-            DbUtil.Db.Email(person.FromEmail, staff, "Registration completed for {0}".Fmt(org.OrganizationName), "{0} completed {1}<br/><br/>{2}".Fmt(person.Name, org.OrganizationName, summary));
+            DbUtil.Db.Email(person.FromEmail, staff, $"Registration completed for {org.OrganizationName}", $"{person.Name} completed {org.OrganizationName}<br/><br/>{summary}");
         }
     }
 }

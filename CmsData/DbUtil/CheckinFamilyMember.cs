@@ -1,27 +1,18 @@
 using System;
-using System.Linq;
 using UtilityExtensions;
-using System.Text;
-using System.Data.Linq;
-using System.Data.Linq.Mapping;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.ComponentModel;
 
 namespace CmsData.View
 {
     public partial class CheckinFamilyMember
     {
-        public string BirthDay
-        {
-            get { return Util.FormatBirthday(BYear, BMon, BDay); }
-        }
+        public string BirthDay => Util.FormatBirthday(BYear, BMon, BDay);
+
         public string DisplayName
         {
             get
             {
                 if (Age <= 18)
-                    return "{0} ({1})".Fmt(Name, Age);
+                    return $"{Name} ({Age})";
                 return Name;
             }
         }

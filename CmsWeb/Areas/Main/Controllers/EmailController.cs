@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Main.Controllers
             doc.LoadHtml(c.Body);
             var bvedits = doc.DocumentNode.SelectNodes("//div[@bvedit]");
             if (bvedits == null || !bvedits.Any())
-                c.Body = "<div bvedit='discardthis'>{0}</div>".Fmt(c.Body);
+                c.Body = $"<div bvedit='discardthis'>{c.Body}</div>";
 
             ViewBag.content = c;
             return View();
@@ -298,8 +298,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 title = "Your emails have been queued and will be sent.";
             }
 
-            message = "Queued: {0}\nStarted: {1}\nTotal Emails: {2}\nSent: {3}\nElapsed: {4}".Fmt(ViewData["queued"],
-                ViewData["started"], ViewData["total"], ViewData["sent"], ViewData["elapsed"]);
+            message = $"Queued: {ViewData["queued"]}\nStarted: {ViewData["started"]}\nTotal Emails: {ViewData["total"]}\nSent: {ViewData["sent"]}\nElapsed: {ViewData["elapsed"]}";
 
             return Json(new { title = title, message = message });
         }
@@ -309,11 +308,9 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult CreateVoteTag(int orgid, bool confirm, string smallgroup, string message, string text, string votetagcontent)
         {
             if (votetagcontent.HasValue())
-                return Content("<votetag id={0} confirm={1} smallgroup=\"{2}\" message=\"{3}\">{4}</votetag>".Fmt(
-                    orgid, confirm, smallgroup, message, votetagcontent));
+                return Content($"<votetag id={orgid} confirm={confirm} smallgroup=\"{smallgroup}\" message=\"{message}\">{votetagcontent}</votetag>");
 
-            return Content("{{votelink id={0} confirm={1} smallgroup=\"{2}\" message=\"{3}\" text=\"{4}\"}}".Fmt(
-                orgid, confirm, smallgroup, message, text));
+            return Content($"{{votelink id={orgid} confirm={confirm} smallgroup=\"{smallgroup}\" message=\"{message}\" text=\"{text}\"}}");
         }
 
         public ActionResult CheckQueued()

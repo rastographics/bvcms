@@ -1,31 +1,31 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System.Collections.Generic;
 using System.Linq;
-using CmsData.Codes;
-using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Models
 {
     public class MemberDirectoryModel : PagerModel2
     {
-        public string Name { get; set; }
-        public int OrgId { get; set; }
-        public string OrgName { get; set; }
-        public bool FamilyOption { get; set; }
+        private int? count;
+        private IQueryable<Person> members;
 
         public MemberDirectoryModel()
         {
             GetCount = Count;
             Sort = "Family";
         }
+
         public MemberDirectoryModel(int oid)
             : this()
         {
@@ -33,15 +33,19 @@ namespace CmsWeb.Areas.Org.Models
             var q = from o in DbUtil.Db.Organizations
                     where o.OrganizationId == OrgId
                     select new
-                       {
-                           o.OrganizationName,
-                           o.PublishDirectory
-                       };
+                    {
+                        o.OrganizationName,
+                        o.PublishDirectory
+                    };
             OrgName = q.Single().OrganizationName;
             FamilyOption = q.Single().PublishDirectory == 2;
         }
 
-        private IQueryable<Person> members;
+        public string Name { get; set; }
+        public int OrgId { get; set; }
+        public string OrgName { get; set; }
+        public bool FamilyOption { get; set; }
+
         public IEnumerable<DirectoryInfo> MemberList()
         {
             members = FetchMembers();
@@ -58,9 +62,11 @@ namespace CmsWeb.Areas.Org.Models
             {
                 var qf = (from p in members
                           let famname = p.Family.People.Single(hh => hh.PeopleId == hh.Family.HeadOfHouseholdId).Name2
-                          group p by new { famname, p.FamilyId } into g
+                          group p by new {famname, p.FamilyId}
+                          into g
                           orderby g.Key.famname, g.Key.FamilyId
-                          select g.Max(pp => pp.FamilyId)).Skip(StartRow).Take(PageSize); ;
+                          select g.Max(pp => pp.FamilyId)).Skip(StartRow).Take(PageSize);
+                ;
                 q1 = from p in q1
                      where qf.Contains(p.FamilyId)
                      let pos = (p.PositionInFamilyId == 10 ? p.GenderId : 1000 - (p.Age ?? 0))
@@ -70,7 +76,7 @@ namespace CmsWeb.Areas.Org.Models
             }
 
             var q2 = from p in q1
-                     select new DirectoryInfo()
+                     select new DirectoryInfo
                      {
                          Family = p.LastName,
                          FamilyId = p.FamilyId,
@@ -90,20 +96,21 @@ namespace CmsWeb.Areas.Org.Models
             return q2;
         }
 
-        private int? count;
         public int Count()
         {
             if (!count.HasValue)
             {
                 if (Sort == "Family")
                     count = (from pp in FetchMembers()
-                             group pp by pp.FamilyId into g
+                             group pp by pp.FamilyId
+                             into g
                              select g.Key).Count();
                 else
                     count = FetchMembers().Count();
             }
             return count.Value;
         }
+
         private IQueryable<Person> FetchMembers()
         {
             if (members != null)
@@ -114,23 +121,23 @@ namespace CmsWeb.Areas.Org.Models
                     select o.PublishDirectory;
             FamilyOption = q.Single() == 2;
 
-            if(FamilyOption)
+            if (FamilyOption)
                 members = from p in DbUtil.Db.People
-                          where p.Family.People.Any(pp => 
-                              pp.OrganizationMembers.Any(mm => 
-                                  mm.OrganizationId == OrgId 
-                                  && (mm.Pending ?? false) == false 
-                                  && mm.MemberTypeId != MemberTypeCode.InActive 
+                          where p.Family.People.Any(pp =>
+                              pp.OrganizationMembers.Any(mm =>
+                                  mm.OrganizationId == OrgId
+                                  && (mm.Pending ?? false) == false
+                                  && mm.MemberTypeId != MemberTypeCode.InActive
                                   && mm.MemberTypeId != MemberTypeCode.Prospect))
                           where p.DeceasedDate == null
                           select p;
             else
                 members = from p in DbUtil.Db.People
-                          where p.OrganizationMembers.Any(mm => 
-                                  mm.OrganizationId == OrgId 
-                                  && (mm.Pending ?? false) == false 
-                                  && mm.MemberTypeId != MemberTypeCode.InActive 
-                                  && mm.MemberTypeId != MemberTypeCode.Prospect)
+                          where p.OrganizationMembers.Any(mm =>
+                              mm.OrganizationId == OrgId
+                              && (mm.Pending ?? false) == false
+                              && mm.MemberTypeId != MemberTypeCode.InActive
+                              && mm.MemberTypeId != MemberTypeCode.Prospect)
                           where p.DeceasedDate == null
                           select p;
 
@@ -139,6 +146,20 @@ namespace CmsWeb.Areas.Org.Models
                           where p.Name.Contains(Name)
                           select p;
             return members;
+        }
+
+        public MvcHtmlString AddDiv(string s)
+        {
+            if (s.HasValue())
+                return new MvcHtmlString($"<div>{s}</div>\n");
+            return null;
+        }
+
+        public MvcHtmlString AddEmailDiv(string s)
+        {
+            if (s.HasValue())
+                return new MvcHtmlString($"<div><a href='mailto:{s}'>{s}</a></div>\n");
+            return null;
         }
 
         public class DirectoryInfo
@@ -156,19 +177,6 @@ namespace CmsWeb.Areas.Org.Models
             public string Email { get; set; }
             public string Email2 { get; set; }
             public bool? DoNotPublishPhones { get; set; }
-        }
-
-        public MvcHtmlString AddDiv(string s)
-        {
-            if (s.HasValue())
-                return new MvcHtmlString("<div>{0}</div>\n".Fmt(s));
-            return null;
-        }
-        public MvcHtmlString AddEmailDiv(string s)
-        {
-            if (s.HasValue())
-                return new MvcHtmlString("<div><a href='mailto:{0}'>{0}</a></div>\n".Fmt(s));
-            return null;
         }
     }
 }

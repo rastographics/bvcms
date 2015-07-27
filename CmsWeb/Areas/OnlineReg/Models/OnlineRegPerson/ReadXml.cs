@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using CmsData;
 using Elmah;
 using UtilityExtensions;
 
@@ -12,8 +11,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
     public partial class OnlineRegPersonModel
     {
         private int eqset;
-        private int txset;
         private int menuset;
+        private int txset;
 
         public void ReadXml(XmlReader reader)
         {
@@ -64,14 +63,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         ReadSpecialTest(e);
                         break;
                     default:
-                        if(Util.SetPropertyFromText(this, TranslateName(name), e.Value) == false)
+                        if (Util.SetPropertyFromText(this, TranslateName(name), e.Value) == false)
                         {
                             ErrorSignal.FromCurrentContext().Raise(new Exception("OnlineRegPerson Missing name:" + name));
-                            Log("Error:Missing({0})".Fmt(name));
+                            Log($"Error:Missing({name})");
                         }
                         break;
                 }
             }
+        }
+
+        public XmlSchema GetSchema()
+        {
+            throw new NotImplementedException("The method or operation is not implemented.");
         }
 
         private void ReadDropdownOption(XElement e)
@@ -176,11 +180,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private string GetAttr(XElement e, string name)
         {
             var a = e.Attribute(name);
-            return a != null ? a.Value : string.Empty;
-        }
-        public XmlSchema GetSchema()
-        {
-            throw new System.NotImplementedException("The method or operation is not implemented.");
+            return a?.Value ?? string.Empty;
         }
     }
 }

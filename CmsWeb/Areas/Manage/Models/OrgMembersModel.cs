@@ -1,16 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using MoreLinq;
 using UtilityExtensions;
-using System.Web.Mvc;
-using System.Text;
-using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
     public class OrgMembersModel
     {
+        private IQueryable<OrganizationMember> _members;
+
+        public OrgMembersModel()
+        {
+            MembersOnly = true;
+        }
+
         public bool MembersOnly { get; set; }
         public bool SmallGroupsToo { get; set; }
         public int TargetId { get; set; }
@@ -22,22 +29,11 @@ namespace CmsWeb.Models
         public string SmallGroup { get; set; }
         public string Sort { get; set; }
         public string Dir { get; set; }
-
-        public OrgMembersModel()
-        {
-            MembersOnly = true;
-        }
-
-        private IList<string> list = new List<string>();
-        public IList<string> List
-        {
-            get { return list; }
-            set { list = value; }
-        }
+        public IList<string> List { get; set; } = new List<string>();
 
         public void FetchSavedIds()
         {
-            string pref = DbUtil.Db.UserPreference("OrgMembersModelIds", "0.0.0");
+            var pref = DbUtil.Db.UserPreference("OrgMembersModelIds", "0.0.0");
             var a = pref.Split('.').Select(s => s.ToInt()).ToArray();
             var prog = DbUtil.Db.Programs.SingleOrDefault(p => p.Id == a[0]);
             if (prog != null)
@@ -50,6 +46,7 @@ namespace CmsWeb.Models
             var source = DbUtil.Db.Organizations.Where(o => o.OrganizationId == a[2]).Select(o => o.OrganizationId).SingleOrDefault();
             SourceId = a[2];
         }
+
         public void ValidateIds()
         {
             var q = from prog in DbUtil.Db.Programs
@@ -57,7 +54,7 @@ namespace CmsWeb.Models
                     let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == DivId && d.ProgId == ProgId)
                     let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
                     let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
-                    select new { div, noorg = org == null, noorg2 = org2 == null };
+                    select new {div, noorg = org == null, noorg2 = org2 == null};
             var i = q.SingleOrDefault();
             if (i == null)
                 ProgId = DivId = SourceId = TargetId = 0;
@@ -74,6 +71,7 @@ namespace CmsWeb.Models
                 }
             }
         }
+
         public IEnumerable<SelectListItem> Programs()
         {
             var q = from c in DbUtil.Db.Programs
@@ -87,10 +85,11 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem
             {
                 Value = "0",
-                Text = "(not specified)",
+                Text = "(not specified)"
             });
             return list;
         }
+
         public IEnumerable<SelectListItem> Divisions()
         {
             var q = from d in DbUtil.Db.Divisions
@@ -105,10 +104,11 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem
             {
                 Value = "0",
-                Text = "(not specified)",
+                Text = "(not specified)"
             });
             return list;
         }
+
         public IEnumerable<SelectListItem> Organizations()
         {
             var roles = DbUtil.Db.CurrentRoles();
@@ -124,9 +124,10 @@ namespace CmsWeb.Models
                         Text = o.OrganizationName + sctime
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
             return list;
         }
+
         public IEnumerable<SelectListItem> Organizations2()
         {
             var member = MemberTypeCode.Member;
@@ -145,15 +146,15 @@ namespace CmsWeb.Models
                         Text = o.OrganizationName + sctime + " (" + cmales + "+" + cfemales + "=" + (cmales + cfemales) + ")"
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
             return list;
         }
-        IQueryable<OrganizationMember> _members;
+
         private IQueryable<OrganizationMember> GetMembers()
         {
             if (_members == null)
             {
-                var glist = new int[] { };
+                var glist = new int[] {};
                 if (Grades.HasValue())
                     glist = (from g in (Grades ?? "").Split(',')
                              select g.ToInt()).ToArray();
@@ -168,6 +169,7 @@ namespace CmsWeb.Models
             }
             return _members;
         }
+
         public IEnumerable<MemberInfo> Members()
         {
             var q = ApplySort();
@@ -184,14 +186,16 @@ namespace CmsWeb.Models
                          Name = om.Person.Name,
                          isChecked = om.OrganizationId == TargetId,
                          MemberStatus = om.MemberType.Description,
-                         OrgName = om.Organization.OrganizationName,
+                         OrgName = om.Organization.OrganizationName
                      };
             return q2;
         }
+
         public int Count()
         {
             return GetMembers().Count();
         }
+
         public IEnumerable<OrganizationMember> ApplySort()
         {
             var q = GetMembers();
@@ -268,6 +272,7 @@ namespace CmsWeb.Models
                 }
             return q;
         }
+
         public void Move()
         {
             foreach (var i in List)
@@ -311,6 +316,7 @@ namespace CmsWeb.Models
             }
             DbUtil.Db.UpdateMainFellowship(TargetId);
         }
+
         public int MovedCount()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
@@ -319,6 +325,7 @@ namespace CmsWeb.Models
                     select om;
             return q.Count();
         }
+
         public void ResetMoved()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
@@ -330,6 +337,7 @@ UPDATE dbo.OrganizationMembers
 SET Moved = NULL
 WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId = {0})", DivId);
         }
+
         public int AllCount()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
@@ -338,6 +346,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                     select om;
             return q.Count();
         }
+
         public void SendMovedNotices()
         {
             var Db = DbUtil.Db;
@@ -362,7 +371,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             var sb = new StringBuilder("Room Notices sent to:\r\n<pre>\r\n");
             foreach (var i in q)
             {
-                string subj = "{0} room assignment".Fmt(i.OrganizationName);
+                string subj = $"{i.OrganizationName} room assignment";
                 var msg = DbUtil.Db.ContentHtml("OrgMembersModel_SendMovedNotices", Resource1.OrgMembersModel_SendMovedNotices);
                 msg = msg.Replace("{name}", i.Name)
                     .Replace("{org}", i.OrganizationName)
@@ -378,7 +387,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                         Db.Email(Db.CurrentUser.Person.FromEmail,
                             i.om.Person, Util.ToMailAddressList(i.RegisterEmail),
                             subj, msg, false);
-                        sb.AppendFormat("\"{0}\" [{1}]R ({2}): {3}\r\n".Fmt(i.Name, i.FromEmail, i.PeopleId, i.Location));
+                        sb.Append($"\"{i.Name}\" [{i.FromEmail}]R ({i.PeopleId}): {i.Location}\r\n");
                         i.om.Moved = false;
                     }
 
@@ -390,7 +399,7 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                     Db.Email(Db.CurrentUser.Person.FromEmail, flist, subj, msg);
                     foreach (var m in flist)
                     {
-                        sb.AppendFormat("{0}P ({1}): {2}\r\n".Fmt(m, i.PeopleId, i.Location));
+                        sb.Append($"{m}P ({i.PeopleId}): {i.Location}\r\n");
                         i.om.Moved = false;
                     }
                 }
@@ -415,6 +424,19 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             Db.SubmitChanges();
         }
 
+        public EpplusResult ToExcel(int oid)
+        {
+            var d = from om in DbUtil.Db.OrganizationMembers
+                    where om.OrganizationId == oid
+                    select new
+                    {
+                        om.PeopleId,
+                        om.OrganizationId,
+                        Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name).ToArray())
+                    };
+            return d.ToDataTable().ToExcel("OrgMembers.xlsx");
+        }
+
         public class MemberInfo
         {
             public int PeopleId { get; set; }
@@ -428,22 +450,11 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             public string Gender { get; set; }
             public string Request { get; set; }
             public bool isChecked { get; set; }
+
             public string Checked
             {
                 get { return isChecked ? "checked='checked'" : ""; }
             }
-        }
-        public EpplusResult ToExcel(int oid)
-        {
-            var d = from om in DbUtil.Db.OrganizationMembers
-                    where om.OrganizationId == oid
-                    select new
-                    {
-                        om.PeopleId,
-                        om.OrganizationId,
-                        Groups = string.Join(",", om.OrgMemMemTags.Select(mt => mt.MemberTag.Name).ToArray()),
-                    };
-            return d.ToDataTable().ToExcel("OrgMembers.xlsx");
         }
     }
 }

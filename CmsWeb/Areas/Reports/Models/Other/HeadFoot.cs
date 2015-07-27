@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.Reports.Models
                 dc.EndText();
 
                 //---Column 3: Page Number
-                sText = "Page {0} of ".Fmt(writer.PageNumber);
+                sText = $"Page {writer.PageNumber} of ";
                 fLen = font.GetWidthPoint(sText, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);

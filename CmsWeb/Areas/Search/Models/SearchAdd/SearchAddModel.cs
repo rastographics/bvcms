@@ -1,85 +1,26 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web;
+using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
 using UtilityExtensions;
-using CmsData;
 
 namespace CmsWeb.Areas.Search.Models
 {
     public class SearchAddModel : SearchResultsModel
     {
-        private readonly string[] noaddtypes = { "relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2" };
-        private readonly string[] onlyonetypes = { "taskdelegate", "taskowner", "taskdelegate2", "mergeto", "relatedfamily" };
-
-        public List<PendingPersonModel> PendingList { get; set; }
-
-        public string DialogTitle
-        {
-            get
-            {
-                switch (AddContext.ToLower())
-                {
-                    case "addpeople":
-                    case "menu":
-                        return "Add to Database";
-                    case "mergeto":
-                        return "Merge Duplicate Into";
-                    case "addtotag":
-                        return "Add to Tag";
-                    case "family":
-                        return "Add to Family";
-                    case "relatedfamily":
-                        return "Add as Related Family";
-                    case "org":
-                        return "Add as Member of Organization";
-                    case "prospect":
-                        return "Add as Prospect of Organization";
-                    case "pending":
-                        return "Add as Pending Member of Organization";
-                    case "inactive":
-                        if (org == null)
-                            org = DbUtil.Db.LoadOrganizationById(PrimaryKeyForContextType.ToInt());
-                        return "Add as {0}".Fmt(org.IsMissionTrip == true ? "Sender of Mission Trip" : "Inactive Member of Organization");
-                    case "visitor":
-                        return "Add as Visitor to Meeting";
-                    case "registered":
-                        return "Add as Registered for Future Meeting";
-                    case "contactee":
-                        return "Add as Contactee for Ministry Contact";
-                    case "contactor":
-                        return "Add as Contactor for Ministry Contact";
-                    case "contributor":
-                        return "Add for a Gift";
-                    case "taskdelegate":
-                    case "taskdelegate2":
-                        return "Delegate Task";
-                    case "taskowner":
-                        return "Transfer Task Ownership";
-                    case "taskabout":
-                        return "Change who Task is Regarding";
-                }
-                return "";
-            }
-        }
-
-        public string PrimaryKeyForContextType { get; set; }
-        public bool CanAdd { get { return !noaddtypes.Contains(AddContext.ToLower()); } }
-        public bool OnlyOne { get { return onlyonetypes.Contains(AddContext.ToLower()); } }
-        public int NewFamilyId { get; set; }
-        public int? EntryPointId { get; set; }
-        public int? CampusId { get; set; }
-        public int Index { get; set; }
-        public bool DisplaySkipSearch { get; set; }
+        private readonly string[] noaddtypes = {"relatedfamily", "mergeto", "contactor", "taskdelegate", "taskowner", "taskdelegate2"};
+        private readonly string[] onlyonetypes = {"taskdelegate", "taskowner", "taskdelegate2", "mergeto", "relatedfamily"};
         private Organization org;
 
         public SearchAddModel()
@@ -87,6 +28,7 @@ namespace CmsWeb.Areas.Search.Models
             PendingList = new List<PendingPersonModel>();
             DisplaySkipSearch = true;
         }
+
         public SearchAddModel(string context, string contextid, bool displaySkipSearch = true)
             : this()
         {
@@ -138,6 +80,69 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
+        public List<PendingPersonModel> PendingList { get; set; }
+
+        public string DialogTitle
+        {
+            get
+            {
+                switch (AddContext.ToLower())
+                {
+                    case "addpeople":
+                    case "menu":
+                        return "Add to Database";
+                    case "mergeto":
+                        return "Merge Duplicate Into";
+                    case "addtotag":
+                        return "Add to Tag";
+                    case "family":
+                        return "Add to Family";
+                    case "relatedfamily":
+                        return "Add as Related Family";
+                    case "org":
+                        return "Add as Member of Organization";
+                    case "prospect":
+                        return "Add as Prospect of Organization";
+                    case "pending":
+                        return "Add as Pending Member of Organization";
+                    case "inactive":
+                        if (org == null)
+                            org = DbUtil.Db.LoadOrganizationById(PrimaryKeyForContextType.ToInt());
+                        return $"Add as {(org.IsMissionTrip == true ? "Sender of Mission Trip" : "Inactive Member of Organization")}";
+                    case "visitor":
+                        return "Add as Visitor to Meeting";
+                    case "registered":
+                        return "Add as Registered for Future Meeting";
+                    case "contactee":
+                        return "Add as Contactee for Ministry Contact";
+                    case "contactor":
+                        return "Add as Contactor for Ministry Contact";
+                    case "contributor":
+                        return "Add for a Gift";
+                    case "taskdelegate":
+                    case "taskdelegate2":
+                        return "Delegate Task";
+                    case "taskowner":
+                        return "Transfer Task Ownership";
+                    case "taskabout":
+                        return "Change who Task is Regarding";
+                }
+                return "";
+            }
+        }
+
+        public string PrimaryKeyForContextType { get; set; }
+
+        public bool CanAdd => !noaddtypes.Contains(AddContext.ToLower());
+
+        public bool OnlyOne => onlyonetypes.Contains(AddContext.ToLower());
+
+        public int NewFamilyId { get; set; }
+        public int? EntryPointId { get; set; }
+        public int? CampusId { get; set; }
+        public int Index { get; set; }
+        public bool DisplaySkipSearch { get; set; }
+
         public int NextNewFamilyId()
         {
             NewFamilyId--;
@@ -154,7 +159,7 @@ namespace CmsWeb.Areas.Search.Models
                 MaritalStatus = new CodeInfo(99, "MaritalStatus"),
                 Campus = new CodeInfo(CampusId, "Campus"),
                 EntryPoint = new CodeInfo(EntryPointId, "EntryPoint"),
-                context = AddContext,
+                context = AddContext
             };
             if (familyid == 0)
             {
@@ -168,11 +173,12 @@ namespace CmsWeb.Areas.Search.Models
             PendingList.Add(p);
             return p;
         }
+
         public static string AddRelatedFamily(int peopleid, int relatedPersonId)
         {
             var p = DbUtil.Db.LoadPersonById(peopleid);
             var rf = p.AddRelated(DbUtil.Db, relatedPersonId);
-            return "#rf-{0}-{1}".Fmt(rf.FamilyId, rf.RelatedFamilyId);
+            return $"#rf-{rf.FamilyId}-{rf.RelatedFamilyId}";
         }
 
         internal void AddExisting(int id)
@@ -220,41 +226,26 @@ namespace CmsWeb.Areas.Search.Models
                     return AddContributor(iid, OriginCode.Contribution);
                 case "taskdelegate":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", url = "/Task/Delegate/", pid = PendingList[0].PeopleId, from = AddContext };
+                        return new ReturnResult {close = true, how = "addselected", url = "/Task/Delegate/", pid = PendingList[0].PeopleId, from = AddContext};
                     break;
                 case "taskdelegate2":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected2", url = "/Task/Action/1", pid = PendingList[0].PeopleId, from = AddContext };
+                        return new ReturnResult {close = true, how = "addselected2", url = "/Task/Action/1", pid = PendingList[0].PeopleId, from = AddContext};
                     break;
                 case "taskabout":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", url = "/Task/ChangeAbout/", pid = PendingList[0].PeopleId, from = AddContext };
+                        return new ReturnResult {close = true, how = "addselected", url = "/Task/ChangeAbout/", pid = PendingList[0].PeopleId, from = AddContext};
                     break;
                 case "taskowner":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", url = "/Task/ChangeOwner/", pid = PendingList[0].PeopleId, from = AddContext };
+                        return new ReturnResult {close = true, how = "addselected", url = "/Task/ChangeOwner/", pid = PendingList[0].PeopleId, from = AddContext};
                     break;
                 case "mergeto":
                     if (PendingList.Count > 0)
-                        return new ReturnResult { close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext };
+                        return new ReturnResult {close = true, how = "addselected", pid = PrimaryKeyForContextType.ToInt(), pid2 = PendingList[0].PeopleId, from = AddContext};
                     break;
             }
-            return new ReturnResult { close = true, from = AddContext };
-        }
-
-        public class ReturnResult
-        {
-            public bool close { get; set; }
-            public string how { get; set; }
-            public string url { get; set; }
-            public int? pid { get; set; }
-            public int? pid2 { get; set; }
-            public string from { get; set; }
-            public string name { get; set; }
-            public int? cid { get; set; }
-            public string message { get; set; }
-            public string error { get; set; }
-            public string key { get; set; }
+            return new ReturnResult {close = true, from = AddContext};
         }
 
         private ReturnResult AddContactees(int id, int origin)
@@ -272,7 +263,7 @@ namespace CmsWeb.Areas.Search.Models
                         ctee = new Contactee
                         {
                             ContactId = id,
-                            PeopleId = p.Person.PeopleId,
+                            PeopleId = p.Person.PeopleId
                         };
                         c.contactees.Add(ctee);
                         DbUtil.LogActivity("AddContactee " + id, peopleid: p.PeopleId);
@@ -280,13 +271,14 @@ namespace CmsWeb.Areas.Search.Models
                 }
                 DbUtil.Db.SubmitChanges();
             }
-            return new ReturnResult { close = true, from = AddContext, cid = id };
+            return new ReturnResult {close = true, from = AddContext, cid = id};
         }
+
         private ReturnResult AddContactors(int id, int origin)
         {
             var c = DbUtil.Db.Contacts.SingleOrDefault(ct => ct.ContactId == id);
             if (c == null)
-                return new ReturnResult { close = true, how = "CloseAddDialog", from = AddContext };
+                return new ReturnResult {close = true, how = "CloseAddDialog", from = AddContext};
 
             foreach (var p in PendingList)
             {
@@ -298,15 +290,16 @@ namespace CmsWeb.Areas.Search.Models
                     ctor = new Contactor
                     {
                         ContactId = id,
-                        PeopleId = p.Person.PeopleId,
+                        PeopleId = p.Person.PeopleId
                     };
                     c.contactsMakers.Add(ctor);
                     DbUtil.LogActivity("AddContactor " + id, peopleid: p.PeopleId);
                 }
             }
             DbUtil.Db.SubmitChanges();
-            return new ReturnResult { close = true, cid = id, from = AddContext };
+            return new ReturnResult {close = true, cid = id, from = AddContext};
         }
+
         private ReturnResult AddFamilyMembers(int id, int origin)
         {
             if (id > 0)
@@ -326,7 +319,7 @@ namespace CmsWeb.Areas.Search.Models
                         if (i.Person.Age < 18)
                             i.Person.PositionInFamilyId = PositionInFamily.Child;
                         else if (p.Family.People.Count(per =>
-                                    per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
+                            per.PositionInFamilyId == PositionInFamily.PrimaryAdult) < 2)
                             i.Person.PositionInFamilyId = PositionInFamily.PrimaryAdult;
                         else
                             i.Person.PositionInFamilyId = PositionInFamily.SecondaryAdult;
@@ -336,8 +329,9 @@ namespace CmsWeb.Areas.Search.Models
                 }
                 DbUtil.Db.SubmitChanges();
             }
-            return new ReturnResult { pid = id, from = AddContext };
+            return new ReturnResult {pid = id, from = AddContext};
         }
+
         private ReturnResult AddRelatedFamilys(int id, int origin)
         {
             var p = PendingList[0];
@@ -352,15 +346,17 @@ namespace CmsWeb.Areas.Search.Models
             {
                 throw;
             }
-            return new ReturnResult { from = AddContext, pid = id, key = key };
+            return new ReturnResult {from = AddContext, pid = id, key = key};
         }
+
         private ReturnResult AddPeople(int origin)
         {
             foreach (var p in PendingList)
                 AddPerson(p, PendingList, origin, EntryPointId);
             DbUtil.Db.SubmitChanges();
-            return new ReturnResult { pid = PendingList[0].PeopleId, from = AddContext };
+            return new ReturnResult {pid = PendingList[0].PeopleId, from = AddContext};
         }
+
         private ReturnResult AddOrgMembers(int id, int origin, int membertypeid = MemberTypeCode.Member, bool pending = false)
         {
             string message = null;
@@ -381,8 +377,8 @@ namespace CmsWeb.Areas.Search.Models
                                 && os.ScheduleId == ss.ScheduleId)));
                     if (om != null)
                     {
-                        message = "Already a member of {0} (orgid) with same schedule".Fmt(om.OrganizationId);
-                        return new ReturnResult { close = true, how = "CloseAddDialog", message = message, from = AddContext };
+                        message = $"Already a member of {om.OrganizationId} (orgid) with same schedule";
+                        return new ReturnResult {close = true, how = "CloseAddDialog", message = message, from = AddContext};
                     }
                 }
                 foreach (var p in PendingList)
@@ -402,14 +398,15 @@ namespace CmsWeb.Areas.Search.Models
                                     : membertypeid == MemberTypeCode.Prospect
                                         ? "Prospect"
                                         : "Member";
-                            DbUtil.LogActivity("Org{0} Add".Fmt(type), om.OrganizationId, om.PeopleId);
+                            DbUtil.LogActivity($"Org{type} Add", om.OrganizationId, om.PeopleId);
                         }
                 }
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.UpdateMainFellowship(id);
             }
-            return new ReturnResult { close = true, how = "rebindgrids", message = message, from = AddContext };
+            return new ReturnResult {close = true, how = "rebindgrids", message = message, from = AddContext};
         }
+
         private ReturnResult AddContributor(int id, int origin)
         {
             var c = DbUtil.Db.Contributions.SingleOrDefault(cc => cc.ContributionId == id);
@@ -427,7 +424,7 @@ namespace CmsWeb.Areas.Search.Models
                         ci = new CardIdentifier
                         {
                             Id = c.BankAccount,
-                            CreatedOn = Util.Now,
+                            CreatedOn = Util.Now
                         };
                         DbUtil.Db.CardIdentifiers.InsertOnSubmit(ci);
                     }
@@ -435,10 +432,11 @@ namespace CmsWeb.Areas.Search.Models
                 }
                 DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("AddContributor " + c.ContributionId, peopleid: p.PeopleId);
-                return new ReturnResult { close = true, how = "addselected", cid = id, pid = p.PeopleId, name = p.Person.Name2, from = AddContext };
+                return new ReturnResult {close = true, how = "addselected", cid = id, pid = p.PeopleId, name = p.Person.Name2, from = AddContext};
             }
-            return new ReturnResult { close = true, how = "addselected", from = AddContext };
+            return new ReturnResult {close = true, how = "addselected", from = AddContext};
         }
+
         private ReturnResult AddPeopleToTag(string id, int origin)
         {
             if (id.HasValue())
@@ -451,8 +449,9 @@ namespace CmsWeb.Areas.Search.Models
                 DbUtil.Db.SubmitChanges();
                 DbUtil.LogActivity("AddPeopleToTag");
             }
-            return new ReturnResult { close = true, how = "addselected", from = AddContext };
+            return new ReturnResult {close = true, how = "addselected", from = AddContext};
         }
+
         private ReturnResult AddVisitors(int id, int origin)
         {
             var sb = new StringBuilder();
@@ -475,8 +474,9 @@ namespace CmsWeb.Areas.Search.Models
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.UpdateMeetingCounters(meeting.MeetingId);
             }
-            return new ReturnResult { close = true, how = "addselected", error = sb.ToString(), from = AddContext };
+            return new ReturnResult {close = true, how = "addselected", error = sb.ToString(), from = AddContext};
         }
+
         private ReturnResult AddRegistered(int id, int origin)
         {
             var meeting = DbUtil.Db.Meetings.SingleOrDefault(me => me.MeetingId == id);
@@ -496,8 +496,9 @@ namespace CmsWeb.Areas.Search.Models
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.UpdateMeetingCounters(meeting.MeetingId);
             }
-            return new ReturnResult { close = true, how = "addselected", from = AddContext };
+            return new ReturnResult {close = true, how = "addselected", from = AddContext};
         }
+
         private void AddPerson(PendingPersonModel p, List<PendingPersonModel> list, int originid, int? entrypointid)
         {
             if (p.IsNew)
@@ -505,10 +506,10 @@ namespace CmsWeb.Areas.Search.Models
             else
             {
                 if (entrypointid != 0 &&
-                        (!p.Person.EntryPointId.HasValue || p.Person.EntryPointId == 0))
+                    (!p.Person.EntryPointId.HasValue || p.Person.EntryPointId == 0))
                     p.Person.EntryPointId = entrypointid;
                 if (originid != 0 &&
-                        (!p.Person.OriginId.HasValue || p.Person.OriginId == 0))
+                    (!p.Person.OriginId.HasValue || p.Person.OriginId == 0))
                     p.Person.OriginId = originid;
                 DbUtil.Db.SubmitChanges();
             }
@@ -523,6 +524,21 @@ namespace CmsWeb.Areas.Search.Models
             }
             Util2.CurrentPeopleId = p.Person.PeopleId;
             HttpContext.Current.Session["ActivePerson"] = p.Person.Name;
+        }
+
+        public class ReturnResult
+        {
+            public bool close { get; set; }
+            public string how { get; set; }
+            public string url { get; set; }
+            public int? pid { get; set; }
+            public int? pid2 { get; set; }
+            public string from { get; set; }
+            public string name { get; set; }
+            public int? cid { get; set; }
+            public string message { get; set; }
+            public string error { get; set; }
+            public string key { get; set; }
         }
     }
 }

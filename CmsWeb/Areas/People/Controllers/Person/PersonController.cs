@@ -52,7 +52,7 @@ namespace CmsWeb.Areas.People.Controllers
             ViewBag.PeopleId = id.Value;
             Util2.CurrentPeopleId = id.Value;
             Session["ActivePerson"] = m.Person.Name;
-            DbUtil.LogPersonActivity("Viewing Person: {0}".Fmt(m.Person.Name), id.Value, m.Person.Name);
+            DbUtil.LogPersonActivity($"Viewing Person: {m.Person.Name}", id.Value, m.Person.Name);
             InitExportToolbar(id);
             return View(m);
         }

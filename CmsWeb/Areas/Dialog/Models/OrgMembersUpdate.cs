@@ -27,8 +27,6 @@ namespace CmsWeb.Areas.Dialog.Models
 //                        throw new Exception("Current org no longer exists, aborting");
                     id = DbUtil.Db.CurrentOrgId0;
                 }
-//                if (id != DbUtil.Db.CurrentOrgId0)
-//                    throw new Exception("Current org has changed from {0} to {1}, aborting".Fmt(id, DbUtil.Db.CurrentOrgId0));
                 return id;
             }
             set
@@ -153,7 +151,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 if(nn == 1)
                     DbUtil.LogActivity("OrgMem AddSubGroup " + name, om.OrganizationId, om.PeopleId);
             }
-            return "{0} added to sub-group {1}".Fmt(n, name);
+            return $"{n} added to sub-group {name}";
         }
 
         public void RemoveSmallGroup(int sgtagid)
@@ -174,8 +172,8 @@ namespace CmsWeb.Areas.Dialog.Models
             }
             DbUtil.Db = DbUtil.Create(Util.Host);
             DbUtil.Db.ExecuteCommand(@"
-DELETE dbo.MemberTags 
-WHERE Id = {1} AND OrgId = {0} 
+DELETE dbo.MemberTags
+WHERE Id = {1} AND OrgId = {0}
 AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTagId = {1})
 ", Id, sgtagid);
         }
@@ -186,7 +184,7 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
             var results = new List<ValidationResult>();
             if (id != DbUtil.Db.CurrentOrgId0)
             {
-                CurrentOrgError = "Current org has changed from {0} to {1}".Fmt(id, DbUtil.Db.CurrentOrgId0);
+                CurrentOrgError = $"Current org has changed from {id} to {DbUtil.Db.CurrentOrgId0}";
                 results.Add(new ValidationResult(CurrentOrgError));
                 throw new Exception(CurrentOrgError);
             }
@@ -211,7 +209,7 @@ AND NOT EXISTS(SELECT NULL FROM dbo.OrgMemMemTags WHERE OrgId = {0} AND MemberTa
         public void AddNewSmallGroup()
         {
             var o = DbUtil.Db.LoadOrganizationById(Id);
-            var mt = new MemberTag() { Name = NewGroup };
+            var mt = new MemberTag { Name = NewGroup };
             o.MemberTags.Add(mt);
             DbUtil.Db.SubmitChanges();
             DbUtil.LogActivity("OrgMem AddNewSubGroup " + NewGroup, Id);

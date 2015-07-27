@@ -2,17 +2,18 @@ using System;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Web.Mvc;
-using CmsWeb.Areas.Finance.Models.Report;
 using CmsData;
+using CmsWeb.Areas.Finance.Models.Report;
 using UtilityExtensions;
-using System.Text;
+using Task = System.Threading.Tasks.Task;
 
 namespace CmsWeb.Areas.Finance.Controllers
 {
     [Authorize(Roles = "Finance")]
-    [RouteArea("Finance", AreaPrefix= "Statements"), Route("{action}")]
+    [RouteArea("Finance", AreaPrefix = "Statements"), Route("{action}")]
     public class StatementsController : CmsController
     {
         [Route("~/Statements")]
@@ -20,6 +21,7 @@ namespace CmsWeb.Areas.Finance.Controllers
         {
             return View();
         }
+
         [HttpPost, Route("Start")]
         public ActionResult ContributionStatements(DateTime? fromDate, DateTime? endDate, string startswith, string sort, int? tagid, bool excludeelectronic)
         {
@@ -42,7 +44,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             if (tagid == 0)
                 tagid = null;
 
-            System.Threading.Tasks.Task.Factory.StartNew(() =>
+            Task.Factory.StartNew(() =>
             {
                 Thread.CurrentThread.Priority = ThreadPriority.Lowest;
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
@@ -52,16 +54,19 @@ namespace CmsWeb.Areas.Finance.Controllers
             });
             return Redirect("/Statements/Progress");
         }
+
         public ActionResult SomeTaskCompleted(string result)
         {
             return Content(result);
         }
-        private string Output()
+
+        private static string Output()
         {
-            string output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
-            output = output + "/Statements/contributions_{0}.pdf".Fmt(Util.Host);
+            var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
+            output = output + $"/Statements/contributions_{Util.Host}.pdf";
             return output;
         }
+
         [HttpPost]
         public JsonResult Progress2()
         {
@@ -71,7 +76,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             {
                 var sets = r.Sets.Split(',').Select(ss => ss.ToInt()).ToList();
                 foreach (var set in sets)
-                    html.AppendFormat(" | <a href=\"/Statements/Download/{0}\">Set {0}</a>", set);
+                    html.Append($" | <a href=\"/Statements/Download/{set}\">Set {set}</a>");
             }
             return Json(new
             {
@@ -84,17 +89,19 @@ namespace CmsWeb.Areas.Finance.Controllers
                 html = html.ToString()
             });
         }
+
         [HttpGet]
         public ActionResult Progress()
         {
             var r = DbUtil.Db.ContributionsRuns.OrderByDescending(mm => mm.Id).First();
             return View(r);
         }
+
         [HttpGet, Route("~/Statements/Download/{id:int?}")]
         public ActionResult Download(int? id)
         {
-            string output = Output();
-            string fn = output;
+            var output = Output();
+            var fn = output;
             if (id.HasValue)
                 fn = ContributionStatementsExtract.Output(output, id.Value);
             if (!System.IO.File.Exists(fn))

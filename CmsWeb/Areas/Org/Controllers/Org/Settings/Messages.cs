@@ -2,10 +2,10 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Registration;
-using UtilityExtensions;
+using CmsData.API;
 using CmsData.Codes;
 using CmsWeb.Areas.Org.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -17,6 +17,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsMessagesModel(id);
             return PartialView("Registration/Messages", m);
         }
+
         [HttpPost]
         public ActionResult MessagesHelpToggle(int id)
         {
@@ -24,6 +25,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsMessagesModel(id);
             return PartialView("Registration/Messages", m);
         }
+
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult MessagesEdit(int id)
@@ -31,12 +33,13 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsMessagesModel(id);
             return PartialView("Registration/MessagesEdit", m);
         }
+
         [HttpPost]
         public ActionResult MessagesUpdate(SettingsMessagesModel m)
         {
             if (!ModelState.IsValid)
                 return PartialView("Registration/MessagesEdit", m);
-            DbUtil.LogActivity("Update Fees {0}".Fmt(m.Org.OrganizationName));
+            DbUtil.LogActivity($"Update Fees {m.Org.OrganizationName}");
             try
             {
                 m.Update();
@@ -50,6 +53,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 return PartialView("Registration/MessagesEdit", m);
             }
         }
+
         public ActionResult NotifyIds(int id, string field)
         {
             if (Util.SessionTimedOut())
@@ -72,10 +76,11 @@ namespace CmsWeb.Areas.Org.Controllers
             }
             var q = DbUtil.Db.PeopleFromPidString(notifyids).Select(p => p.PeopleId);
             foreach (var pid in q)
-                t.PersonTags.Add(new TagPerson { PeopleId = pid });
+                t.PersonTags.Add(new TagPerson {PeopleId = pid});
             DbUtil.Db.SubmitChanges();
             return Redirect("/SearchUsers?ordered=true&topid=" + q.FirstOrDefault());
         }
+
         [HttpPost]
         public ActionResult UpdateNotifyIds(int id, int topid, string field)
         {
@@ -108,7 +113,7 @@ namespace CmsWeb.Areas.Org.Controllers
         public ActionResult Reminders(int id, bool? emailall)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
-            var m = new CmsData.API.APIOrganization(DbUtil.Db);
+            var m = new APIOrganization(DbUtil.Db);
             try
             {
                 if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)

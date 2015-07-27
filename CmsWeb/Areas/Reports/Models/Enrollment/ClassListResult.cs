@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public ClassListResult()
         {
-            
+
         }
 
         public ClassListResult(OrgSearchModel m)
@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Reports.Models
         private Document doc;
         private PdfContentByte dc;
 
-        float[] HeaderWids = new float[] { 45, 35, 15 };
+        float[] HeaderWids = { 45, 35, 15 };
 
         private PdfPTable StartPageSet(OrgInfo o)
         {
@@ -94,7 +94,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.DefaultCell.Border = PdfPCell.NO_BORDER;
             t.WidthPercentage = 100;
             t.DefaultCell.Padding = 5;
-            pageEvents.StartPageSet("Class List: {0} - {1} ({2})".Fmt(o.Division, o.Name, o.Teacher));
+            pageEvents.StartPageSet($"Class List: {o.Division} - {o.Name} ({o.Teacher})");
 
             t.AddCell(new Phrase("Name\nAddress", boldfont));
             t.AddCell(new Phrase("Phones\nEmail", boldfont));
@@ -108,7 +108,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             var c = new Phrase();
             c.Add(new Chunk(p.Name, boldfont));
-            c.Add(new Chunk("  ({0})\n".Fmt(p.PeopleId), smallfont));
+            c.Add(new Chunk($"  ({p.PeopleId})\n", smallfont));
             var sb = new StringBuilder();
             AddLine(sb, p.Address);
             AddLine(sb, p.Address2);

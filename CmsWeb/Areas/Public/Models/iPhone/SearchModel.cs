@@ -75,7 +75,7 @@ namespace CmsWeb.Models.iPhone
             {
                 string First, Last;
                 Util.NameSplit(Name, out First, out Last);
-                DbUtil.LogActivity("iphone search '{0}' '{1}'".Fmt(First, Last));
+                DbUtil.LogActivity($"iphone search '{First}' '{Last}'");
                 if (First.HasValue())
                     query = from p in query
                             where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)

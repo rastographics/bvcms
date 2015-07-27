@@ -37,11 +37,11 @@ namespace CmsData.API
                 if (checkno.HasValue())
                     c.CheckNo = (checkno ?? "").Trim().Truncate(20);
                 Db.SubmitChanges();
-                return @"<PostContribution status=""ok"" id=""{0}"" />".Fmt(c.ContributionId);
+                return $@"<PostContribution status=""ok"" id=""{c.ContributionId}"" />";
             }
             catch (Exception ex)
             {
-                return @"<PostContribution status=""error"">" + ex.Message + "</PostContribution>";
+                return $@"<PostContribution status=""error"">{ex.Message}</PostContribution>";
             }
         }
 
@@ -61,7 +61,7 @@ namespace CmsData.API
             }
             catch (Exception ex)
             {
-                return @"<PostContribution status=""error"">" + ex.Message + "</PostContribution>";
+                return $@"<PostContribution status=""error"">{ex.Message}</PostContribution>";
             }
         }
 
@@ -335,8 +335,8 @@ namespace CmsData.API
 
         public static IEnumerable<PledgeSummaryInfo> pledges(CMSDataContext Db, ContributorInfo ci, DateTime toDate)
         {
-            var PledgeExcludes = new int[] 
-            { 
+            var PledgeExcludes = new int[]
+            {
                 ContributionTypeCode.Reversed,
             };
 

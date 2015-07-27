@@ -214,9 +214,9 @@ namespace CmsWeb.Controllers
             {
                 var id = Db.FetchLastQuery().Id;
                 var tag = Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                declareqtagid = "DECLARE @qtagid INT = {0}\n".Fmt(tag.Id);
+                declareqtagid = $"DECLARE @qtagid INT = {tag.Id}\n";
             }
-            return "{0}DECLARE @p1 VARCHAR(100) = '{1}' {2}".Fmt(declareqtagid, parameter, body);
+            return $"{declareqtagid}DECLARE @p1 VARCHAR(100) = '{parameter}' {body}";
         }
 
         [HttpGet, Route("~/RunScript/{name}/{parameter?}/{title?}")]
@@ -233,7 +233,7 @@ namespace CmsWeb.Controllers
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
-            ViewBag.name = title ?? "Run Script {0} {1}".Fmt(name, parameter);
+            ViewBag.name = title ?? $"Run Script {name} {parameter}";
             var cmd = new SqlCommand(script, cn);
             var rd = cmd.ExecuteReader();
             return View(rd);

@@ -3,41 +3,35 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using CmsData;
-using CmsData.View;
 using Dapper;
 using UtilityExtensions;
-using System.Net.Mail;
 
 namespace CmsWeb.Models
 {
     public class SupportRequestModel
     {
+        private readonly List<string> ccAddrs = new List<string>();
+        private readonly ConnectionStringSettings cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
+        private readonly string DibLink = ConfigurationManager.AppSettings["DibLink"];
+        private readonly string ManageLink = ConfigurationManager.AppSettings["SupportManageLink"];
+        private readonly string SupportInsert = ConfigurationManager.AppSettings["SupportInsert"];
+
+        private readonly List<DbUtil.SupportPerson> supportPeople
+            = DbUtil.Supporters(ConfigurationManager.AppSettings["SupportPeople"]);
+
+        private readonly string SupportRead = ConfigurationManager.AppSettings["SupportRead"];
+        private readonly string SupportUpdate = ConfigurationManager.AppSettings["SupportUpdate"];
+        private readonly string SupportUpdate2 = ConfigurationManager.AppSettings["SupportUpdate2"];
         public string urgency { get; set; }
         public string body { get; set; }
         public string lastsearch { get; set; }
         public string cc { get; set; }
 
-        private readonly string SupportInsert = ConfigurationManager.AppSettings["SupportInsert"];
-        private readonly string SupportUpdate = ConfigurationManager.AppSettings["SupportUpdate"];
-        private readonly string SupportUpdate2 = ConfigurationManager.AppSettings["SupportUpdate2"];
-        private readonly string SupportRead = ConfigurationManager.AppSettings["SupportRead"];
-        private readonly string DibLink = ConfigurationManager.AppSettings["DibLink"];
-        private readonly string ManageLink = ConfigurationManager.AppSettings["SupportManageLink"];
-        private readonly ConnectionStringSettings cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-        private readonly List<DbUtil.SupportPerson> supportPeople
-                = DbUtil.Supporters(ConfigurationManager.AppSettings["SupportPeople"]);
+        public static bool CanSupport => Util.IsHosted;
 
-        public static bool CanSupport
-        {
-            get
-            {
-                return Util.IsHosted;
-            }
-        }
-
-        private readonly List<string> ccAddrs = new List<string>();
         public void SendSupportRequest()
         {
             const string to = "support@touchpointsoftware.com";
@@ -46,7 +40,7 @@ namespace CmsWeb.Models
 
             if (Util.UserPeopleId.HasValue)
             {
-                var c = Contact.AddContact(DbUtil.Db, Util.UserPeopleId.Value, DateTime.Now, "<p>{0}</p>{1}".Fmt(msg.Subject, body));
+                var c = Contact.AddContact(DbUtil.Db, Util.UserPeopleId.Value, DateTime.Now, $"<p>{msg.Subject}</p>{body}");
                 c.LimitToRole = "Admin";
                 c.MinistryId = Contact.FetchOrCreateMinistry(DbUtil.Db, "TouchPoint Support").MinistryId;
                 DbUtil.Db.SubmitChanges();
@@ -59,21 +53,21 @@ namespace CmsWeb.Models
             const string responseBody = "Your support request has been received. We will respond to you as quickly as possible.<br><br>TouchPoint Support Team";
 
             var response = new MailMessage("support@touchpointsoftware.com", Util.UserEmail, responseSubject, responseBody)
-                { IsBodyHtml = true };
+            {IsBodyHtml = true};
 
             smtp.Send(response);
 
             if (DbUtil.AdminMail.Length > 0)
             {
                 var toAdmin = new MailMessage("support@touchpointsoftware.com", DbUtil.AdminMail, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint:<br><br>" + body)
-                    { IsBodyHtml = true };
+                {IsBodyHtml = true};
                 smtp.Send(toAdmin);
             }
 
             foreach (var ccsend in ccAddrs)
             {
                 var toCC = new MailMessage("support@touchpointsoftware.com", ccsend, msg.Subject, Util.UserFullName + " submitted a support request to TouchPoint and CCed you:<br><br>" + body)
-                    { IsBodyHtml = true };
+                {IsBodyHtml = true};
                 smtp.Send(toCC);
             }
         }
@@ -89,10 +83,10 @@ namespace CmsWeb.Models
         private MailMessage CreateRequest(string prefix, string toaddress)
         {
             var who = Util.UserFullName + " <" + Util.UserEmail + ">";
-            int id = 0;
-            var subject = prefix + (urgency.HasValue() ? " {0}: ".Fmt(urgency) : ": ")
-                          + "{0} @ {1}".Fmt(Util.UserFullName, DbUtil.Db.Host);
-            if(cs != null)
+            var id = 0;
+            var subject = prefix + (urgency.HasValue() ? $" {urgency}: " : ": ")
+                          + $"{Util.UserFullName} @ {DbUtil.Db.Host}";
+            if (cs != null)
             {
                 var cn = new SqlConnection(cs.ConnectionString);
                 cn.Open();
@@ -104,11 +98,11 @@ namespace CmsWeb.Models
                     h = Util.Host,
                     u = urgency,
                     r = body,
-                    whoid = Util.UserPeopleId,
+                    whoid = Util.UserPeopleId
                 }).Single();
-                subject += " [{0}]".Fmt(id);
+                subject += $" [{id}]";
 
-                cn.Execute(SupportUpdate, new { subject, id });
+                cn.Execute(SupportUpdate, new {subject, id});
                 cn.Close();
             }
             const string @from = "support-system@touchpointsoftware.com";
@@ -150,7 +144,9 @@ namespace CmsWeb.Models
                         msg.ReplyToList.Add(addcc);
                         ccAddrs.Add(addcc);
                     }
-                    catch (FormatException) { }
+                    catch (FormatException)
+                    {
+                    }
                 }
             }
             msg.To.Add("support@touchpointsoftware.com");
@@ -161,20 +157,21 @@ namespace CmsWeb.Models
 
             return msg;
         }
+
         private string CreateDibs(int requestID)
         {
-            string diblink = DibLink;
+            var diblink = DibLink;
             var dibLinks = supportPeople.Select(s =>
-                "<a href='{0}'>{1}</a>".Fmt(diblink.Fmt(requestID, s.id), s.name)
+                $"<a href='{string.Format(diblink, requestID, s.id)}'>{s.name}</a>"
                 ).ToList();
             var sb = new StringBuilder("<br><table cellpadding=5>\n");
             var closetr = "";
-            for(var i = 0;i<dibLinks.Count;i++)
+            for (var i = 0; i < dibLinks.Count; i++)
             {
                 var a = dibLinks[i];
                 if (i%4 == 0)
                 {
-                    sb.Append("{0}<tr>".Fmt(closetr));
+                    sb.Append($"{closetr}<tr>");
                     closetr = "</tr>";
                 }
                 sb.AppendFormat("<td>{0}</td>", a);

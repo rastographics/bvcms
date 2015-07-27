@@ -1,28 +1,38 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Web.Mvc;
+using CmsData;
+using CmsData.Codes;
 using CmsData.View;
+using CmsWeb.Areas.Search.Controllers;
 using CmsWeb.Models;
 using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
-using System.Web.Mvc;
-using CmsData;
-using CmsData.Codes;
-using CmsWeb.Areas.Search.Controllers;
 
 namespace CmsWeb.Areas.Search.Models
 {
-
     public class OrgSearchModel
     {
+        private int? _count;
+        internal string noticelist;
+        private List<OrgSearch> organizations;
+
+        public OrgSearchModel()
+        {
+            Pager = new PagerModel2();
+            Pager.GetCount = Count;
+        }
+
         public string Name { get; set; }
         public int? ProgramId { get; set; }
         public int? DivisionId { get; set; }
@@ -40,18 +50,12 @@ namespace CmsWeb.Areas.Search.Models
         [JsonIgnore]
         public PagerModel2 Pager { get; set; }
 
-        public OrgSearchModel()
-        {
-            Pager = new PagerModel2();
-            Pager.GetCount = Count;
-        }
         public Division Division()
         {
             var d = DbUtil.Db.Divisions.SingleOrDefault(dd => dd.Id == DivisionId);
             return d;
         }
 
-        private List<OrgSearch> organizations;
         public IEnumerable<OrganizationInfo> OrganizationList()
         {
             organizations = FetchOrgsList();
@@ -60,6 +64,7 @@ namespace CmsWeb.Areas.Search.Models
             organizations = ApplySort(organizations).Skip(Pager.StartRow).Take(Pager.PageSize).ToList();
             return OrganizationList(organizations, TagProgramId, TagDiv);
         }
+
         public static IEnumerable<OrganizationInfo> OrganizationList(List<OrgSearch> query, int? TagProgramId, int? TagDiv)
         {
             var q = from os in query
@@ -95,17 +100,18 @@ namespace CmsWeb.Areas.Search.Models
                         UseRegisterLink2 = os.UseRegisterLink2,
                         DivisionId = os.DivisionId,
                         BDayStart = os.BirthDayStart.FormatDate(),
-                        BDayEnd = os.BirthDayEnd.FormatDate(),
+                        BDayEnd = os.BirthDayEnd.FormatDate()
                     };
             return q;
         }
+
         public EpplusResult OrganizationExcelList()
         {
             var q = FetchOrgs();
             var q2 = from os in q
-                    join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
-                    select new
-                    {
+                     join o in DbUtil.Db.Organizations on os.OrganizationId equals o.OrganizationId
+                     select new
+                     {
                          OrgId = os.OrganizationId,
                          Name = os.OrganizationName,
                          os.Description,
@@ -137,16 +143,11 @@ namespace CmsWeb.Areas.Search.Models
                          os.OrganizationStatusId,
                          os.AppCategory,
                          os.PublicSortOrder,
-                         os.UseRegisterLink2,
+                         os.UseRegisterLink2
                      };
             return q2.ToDataTable().ToExcel("Organizations.xlsx");
         }
-        public class OrgMemberInfoClass : ExportInvolvements.MemberInfoClass
-        {
-            public int OrganizationId { get; set; }
-            public string Organization { get; set; }
-            public string Schedule { get; set; }
-        }
+
         public EpplusResult OrgsMemberList()
         {
             var q = FetchOrgs();
@@ -154,17 +155,6 @@ namespace CmsWeb.Areas.Search.Models
                 .ToDataTable().ToExcel("OrgsMembers.xlsx");
         }
 
-        private int TagSubDiv(string s)
-        {
-            if (!s.HasValue())
-                return 0;
-            var a = s.Split(':');
-            if (a.Length > 1)
-                return a[1].ToInt();
-            return 0;
-        }
-
-        private int? _count;
         public int Count()
         {
             if (!_count.HasValue)
@@ -179,15 +169,18 @@ namespace CmsWeb.Areas.Search.Models
                     DbUtil.Db.CurrentUser.UserId, TagDiv).ToList();
             return organizations;
         }
+
         public IQueryable<OrgSearch> FetchOrgs()
         {
             return DbUtil.Db.OrgSearch(Name, ProgramId, DivisionId, TypeId, CampusId, ScheduleId, StatusId, OnlineReg,
-                    DbUtil.Db.CurrentUser.UserId, TagDiv);
+                DbUtil.Db.CurrentUser.UserId, TagDiv);
         }
+
         public static IQueryable<OrgSearch> FetchOrgs(int orgId)
         {
             return DbUtil.Db.OrgSearch(orgId.ToString(), null, null, null, null, null, null, null, DbUtil.Db.CurrentUser.UserId, null);
         }
+
         // ReSharper disable once FunctionComplexityOverflow
         public List<OrgSearch> ApplySort(List<OrgSearch> query)
         {
@@ -198,86 +191,86 @@ namespace CmsWeb.Areas.Search.Models
                 {
                     case "ID":
                         list = from o in query
-                                orderby o.OrganizationId
-                                select o;
+                               orderby o.OrganizationId
+                               select o;
                         break;
                     case "Division":
                     case "Program/Division":
                         list = from o in query
-                                orderby o.Program, o.Division, o.OrganizationName
-                                select o;
+                               orderby o.Program, o.Division, o.OrganizationName
+                               select o;
                         break;
                     case "Name":
                         list = from o in query
-                                orderby o.OrganizationName
-                                select o;
+                               orderby o.OrganizationName
+                               select o;
                         break;
                     case "Location":
                         list = from o in query
-                                orderby o.Location
-                                select o;
+                               orderby o.Location
+                               select o;
                         break;
                     case "Schedule":
                         list = from o in query
-                                orderby o.ScheduleId
-                                select o;
+                               orderby o.ScheduleId
+                               select o;
                         break;
                     case "Self CheckIn":
                         list = from o in query
-                                orderby (o.CanSelfCheckin ?? false)
-                                select o;
+                               orderby (o.CanSelfCheckin ?? false)
+                               select o;
                         break;
                     case "Leader":
                         list = from o in query
-                                orderby o.LeaderName,
-                                o.OrganizationName
-                                select o;
+                               orderby o.LeaderName,
+                                   o.OrganizationName
+                               select o;
                         break;
                     case "Filled":
                         list = from o in query
-                                orderby o.ClassFilled, o.OrganizationName
-                                select o;
+                               orderby o.ClassFilled, o.OrganizationName
+                               select o;
                         break;
                     case "Closed":
                         list = from o in query
-                                orderby o.RegistrationClosed, o.OrganizationName
-                                select o;
+                               orderby o.RegistrationClosed, o.OrganizationName
+                               select o;
                         break;
                     case "RegType":
                         list = from o in query
-                                orderby o.RegistrationTypeId, o.OrganizationName
-                                select o;
+                               orderby o.RegistrationTypeId, o.OrganizationName
+                               select o;
                         break;
                     case "Category":
                         list = from o in query
-                                orderby o.AppCategory ?? "zzz", o.PublicSortOrder ?? "zzz", o.OrganizationName
-                                select o;
+                               orderby o.AppCategory ?? "zzz", o.PublicSortOrder ?? "zzz", o.OrganizationName
+                               select o;
                         break;
                     case "Members":
                     case "Curr":
                         list = from o in query
-                                orderby o.MemberCount, o.OrganizationName
-                                select o;
+                               orderby o.MemberCount, o.OrganizationName
+                               select o;
                         break;
                     case "FirstDate":
                         list = from o in query
-                                orderby o.FirstMeetingDate, o.LastMeetingDate
-                                select o;
+                               orderby o.FirstMeetingDate, o.LastMeetingDate
+                               select o;
                         break;
                     case "RegStart":
                         list = from o in query
-                                orderby o.RegStart ?? regdt
-                                select o;
+                               orderby o.RegStart ?? regdt
+                               select o;
                         break;
                     case "RegEnd":
                         list = from o in query
-                                orderby o.RegEnd ?? regdt
-                                select o;
+                               orderby o.RegEnd ?? regdt
+                               select o;
                         break;
                     case "LastMeetingDate":
                         list = from o in query
-                                orderby o.LastMeetingDate, o.FirstMeetingDate
-                                select o;
+                               orderby o.LastMeetingDate, o.FirstMeetingDate
+                               select o;
                         break;
                 }
             else
@@ -285,93 +278,93 @@ namespace CmsWeb.Areas.Search.Models
                 {
                     case "ID":
                         list = from o in query
-                                orderby o.OrganizationId descending
-                                select o;
+                               orderby o.OrganizationId descending
+                               select o;
                         break;
                     case "Program/Division":
                     case "Division":
                         list = from o in query
-                                orderby o.Program descending, o.Division descending,
-                                o.OrganizationName descending
-                                select o;
+                               orderby o.Program descending, o.Division descending,
+                                   o.OrganizationName descending
+                               select o;
                         break;
                     case "Name":
                         list = from o in query
-                                orderby o.OrganizationName descending
-                                select o;
+                               orderby o.OrganizationName descending
+                               select o;
                         break;
                     case "Location":
                         list = from o in query
-                                orderby o.Location descending
-                                select o;
+                               orderby o.Location descending
+                               select o;
                         break;
                     case "Schedule":
                         list = from o in query
-                                orderby o.ScheduleId descending
-                                select o;
+                               orderby o.ScheduleId descending
+                               select o;
                         break;
                     case "Self CheckIn":
                         list = from o in query
-                                orderby (o.CanSelfCheckin ?? false) descending
-                                select o;
+                               orderby (o.CanSelfCheckin ?? false) descending
+                               select o;
                         break;
                     case "Leader":
                         list = from o in query
-                                orderby o.LeaderName descending,
-                                o.OrganizationName descending
-                                select o;
+                               orderby o.LeaderName descending,
+                                   o.OrganizationName descending
+                               select o;
                         break;
                     case "Filled":
                         list = from o in query
-                                orderby o.ClassFilled descending,
-                                o.OrganizationName descending
-                                select o;
+                               orderby o.ClassFilled descending,
+                                   o.OrganizationName descending
+                               select o;
                         break;
                     case "Closed":
                         list = from o in query
-                                orderby o.RegistrationClosed descending,
-                                o.OrganizationName descending
-                                select o;
+                               orderby o.RegistrationClosed descending,
+                                   o.OrganizationName descending
+                               select o;
                         break;
                     case "RegType":
                         list = from o in query
-                                orderby o.RegistrationTypeId descending,
-                                o.OrganizationName descending
-                                select o;
+                               orderby o.RegistrationTypeId descending,
+                                   o.OrganizationName descending
+                               select o;
                         break;
                     case "Category":
                         list = from o in query
-                                orderby o.AppCategory ?? "zzz", o.PublicSortOrder ?? "zzz", o.OrganizationName
-                                select o;
+                               orderby o.AppCategory ?? "zzz", o.PublicSortOrder ?? "zzz", o.OrganizationName
+                               select o;
                         break;
                     case "Members":
                     case "Curr":
                         list = from o in query
-                                orderby o.MemberCount descending,
-                                o.OrganizationName descending
-                                select o;
+                               orderby o.MemberCount descending,
+                                   o.OrganizationName descending
+                               select o;
                         break;
                     case "FirstDate":
                         list = from o in query
-                                orderby o.FirstMeetingDate descending,
-                                o.LastMeetingDate descending
-                                select o;
+                               orderby o.FirstMeetingDate descending,
+                                   o.LastMeetingDate descending
+                               select o;
                         break;
                     case "RegStart":
                         list = from o in query
-                                orderby o.RegStart descending 
-                                select o;
+                               orderby o.RegStart descending
+                               select o;
                         break;
                     case "RegEnd":
                         list = from o in query
-                                orderby o.RegEnd descending 
-                                select o;
+                               orderby o.RegEnd descending
+                               select o;
                         break;
                     case "LastMeetingDate":
                         list = from o in query
-                                orderby o.LastMeetingDate descending,
-                                o.FirstMeetingDate descending
-                                select o;
+                               orderby o.LastMeetingDate descending,
+                                   o.FirstMeetingDate descending
+                               select o;
                         break;
                 }
             return list.ToList();
@@ -386,9 +379,10 @@ namespace CmsWeb.Areas.Search.Models
                         Text = s.Description
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
             return list;
         }
+
         public IEnumerable<SelectListItem> CampusIds()
         {
             var q = from c in DbUtil.Db.Campus
@@ -410,6 +404,7 @@ namespace CmsWeb.Areas.Search.Models
             });
             return list;
         }
+
         public IEnumerable<SelectListItem> ProgramIds()
         {
             var q = from c in DbUtil.Db.Programs
@@ -423,14 +418,16 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem
             {
                 Value = "0",
-                Text = "(not specified)",
+                Text = "(not specified)"
             });
             return list;
         }
+
         public IEnumerable<SelectListItem> DivisionIds()
         {
             return DivisionIds(ProgramId ?? 0);
         }
+
         public static IEnumerable<SelectListItem> DivisionIds(int ProgId)
         {
             var q = from d in DbUtil.Db.Divisions
@@ -445,14 +442,16 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem
             {
                 Value = "0",
-                Text = ProgId == 0 ? "(select a program)" : "(not specified)",
+                Text = ProgId == 0 ? "(select a program)" : "(not specified)"
             });
             return list;
         }
+
         public IEnumerable<SelectListItem> ScheduleIds()
         {
             var q = from sc in DbUtil.Db.OrgSchedules
-                    group sc by new { sc.ScheduleId, sc.MeetingTime } into g
+                    group sc by new {sc.ScheduleId, sc.MeetingTime}
+                    into g
                     orderby g.Key.ScheduleId
                     where g.Key.ScheduleId != null
                     select new SelectListItem
@@ -464,40 +463,28 @@ namespace CmsWeb.Areas.Search.Models
             list.Insert(0, new SelectListItem
             {
                 Value = "-1",
-                Text = "(None)",
+                Text = "(None)"
             });
             list.Insert(0, new SelectListItem
             {
                 Value = "0",
-                Text = "(not specified)",
+                Text = "(not specified)"
             });
             return list;
-        }
-
-        public class OrgType
-        {
-            public const int NoFees = -8;
-            public const int Fees = -7;
-            public const int ChildOrg = -6;
-            public const int ParentOrg = -5;
-            public const int SuspendedCheckin = -4;
-            public const int MainFellowship = -3;
-            public const int NotMainFellowship = -2;
-            public const int NoOrgType = -1;
         }
 
         public static IEnumerable<SelectListItem> OrgTypeFilters()
         {
             var list = OrgTypes().ToList();
-            list.Insert(0, new SelectListItem { Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Parent Org", Value = OrgType.ParentOrg.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Child Org", Value = OrgType.ChildOrg.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Orgs With Fees", Value = OrgType.Fees.ToString() });
-            list.Insert(0, new SelectListItem { Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString() });
-            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
+            list.Insert(0, new SelectListItem {Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString()});
+            list.Insert(0, new SelectListItem {Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString()});
+            list.Insert(0, new SelectListItem {Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString()});
+            list.Insert(0, new SelectListItem {Text = "Parent Org", Value = OrgType.ParentOrg.ToString()});
+            list.Insert(0, new SelectListItem {Text = "Child Org", Value = OrgType.ChildOrg.ToString()});
+            list.Insert(0, new SelectListItem {Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString()});
+            list.Insert(0, new SelectListItem {Text = "Orgs With Fees", Value = OrgType.Fees.ToString()});
+            list.Insert(0, new SelectListItem {Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString()});
+            list.Insert(0, new SelectListItem {Text = "(not specified)", Value = "0"});
             return list;
         }
 
@@ -513,53 +500,43 @@ namespace CmsWeb.Areas.Search.Models
             return q;
         }
 
-        public class RegClass
-        {
-            public const int NotSpecified = -1;
-            public const int AnyRegistration = 99;
-            public const int MissionTrip = 98;
-            public const int MasterOrStandalone = 97;
-            public const int Active = 96;
-            public const int NotOnApp = 95;
-            public const int OnApp = 94;
-            public const int Standalone = 93;
-            public const int ChildOfMaster = 92;
-        }
         public static IEnumerable<SelectListItem> RegistrationTypeIds()
         {
             var list = new List<SelectListItem>();
-            var spec = new Dictionary<int, string>()
+            var spec = new Dictionary<int, string>
             {
-                { RegClass.NotSpecified , "(Not Specified)" },
-                { RegClass.Active, "(Active Registration)" },
-                { RegClass.OnApp, "(Any Reg on App)" },
-                { RegClass.NotOnApp, "(Any Reg not on App)" },
-                { RegClass.MasterOrStandalone, "(Master or StandAlone Reg)" },
-                { RegClass.AnyRegistration, "(Any Registration)" },
-                { RegClass.ChildOfMaster , "(Child of Master Reg)" },
-                { RegClass.Standalone, "(StandAlone reg)" },
+                {RegClass.NotSpecified, "(Not Specified)"},
+                {RegClass.Active, "(Active Registration)"},
+                {RegClass.OnApp, "(Any Reg on App)"},
+                {RegClass.NotOnApp, "(Any Reg not on App)"},
+                {RegClass.MasterOrStandalone, "(Master or StandAlone Reg)"},
+                {RegClass.AnyRegistration, "(Any Registration)"},
+                {RegClass.ChildOfMaster, "(Child of Master Reg)"},
+                {RegClass.Standalone, "(StandAlone reg)"}
             };
             list.AddRange(spec.Select(dd => new SelectListItem {Value = dd.Key.ToString(), Text = dd.Value}));
 
             var codes = RegistrationTypeCode.GetCodePairs();
             list.AddRange(codes.Select(dd => new SelectListItem {Value = dd.Key.ToString(), Text = dd.Value}));
 
-            list.Add(new SelectListItem { Value = RegClass.MissionTrip.ToString(), Text = "Mission Trip" });
+            list.Add(new SelectListItem {Value = RegClass.MissionTrip.ToString(), Text = "Mission Trip"});
 
             return list;
         }
+
         public static DateTime DefaultMeetingDate(int scheduleid)
         {
-            var sdt = CmsData.Organization.GetDateFromScheduleId(scheduleid);
+            var sdt = Organization.GetDateFromScheduleId(scheduleid);
             if (sdt == null)
                 return DateTime.Now.Date.AddHours(8);
             var dt = Util.Now.Date;
-            dt = dt.AddDays(-(int)dt.DayOfWeek); // prev sunday
-            dt = dt.AddDays((int)sdt.Value.Day);
+            dt = dt.AddDays(-(int) dt.DayOfWeek); // prev sunday
+            dt = dt.AddDays(sdt.Value.Day);
             if (dt < Util.Now.Date)
                 dt = dt.AddDays(7);
             return dt.Add(sdt.Value.TimeOfDay);
         }
+
         private static string RecentAbsentsEmail(OrgSearchController c, IEnumerable<RecentAbsent> list)
         {
             var q = from p in list
@@ -567,6 +544,7 @@ namespace CmsWeb.Areas.Search.Models
                     select p;
             return ViewExtensions2.RenderPartialViewToString(c, "RecentAbsentsEmail", q);
         }
+
         private static string RecentVisitsEmail(OrgSearchController c, IEnumerable<OrgVisitorsAsOfDate> list)
         {
             var q = from p in list
@@ -575,7 +553,6 @@ namespace CmsWeb.Areas.Search.Models
             return ViewExtensions2.RenderPartialViewToString(c, "RecentVisitsEmail", q);
         }
 
-        internal string noticelist;
         public Dictionary<Person, string> NoticesToSend(OrgSearchController c)
         {
             var leaderNotices = new Dictionary<Person, string>();
@@ -594,7 +571,8 @@ namespace CmsWeb.Areas.Search.Models
 
             var plist = (from om in DbUtil.Db.ViewOrganizationLeaders
                          where olist.Contains(om.OrganizationId)
-                         group om.OrganizationId by om.PeopleId into leaderlist
+                         group om.OrganizationId by om.PeopleId
+                         into leaderlist
                          select leaderlist).ToList();
 
             var sb2 = new StringBuilder("Notices sent to:</br>\n<table>\n");
@@ -606,17 +584,17 @@ namespace CmsWeb.Areas.Search.Models
                 var leader = DbUtil.Db.LoadPersonById(p.Key);
                 foreach (var m in meetings)
                 {
-                    string orgname = Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
-                    sb.AppendFormat("<a href='{0}'>{1} - {2}</a><br/>\n", 
-                        DbUtil.Db.ServerLink("/Meeting/" + m.MeetingId), 
+                    var orgname = Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
+                    sb.AppendFormat("<a href='{0}'>{1} - {2}</a><br/>\n",
+                        DbUtil.Db.ServerLink("/Meeting/" + m.MeetingId),
                         orgname, m.Lastmeeting.FormatDateTm());
                     sb2.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2:g}</td></tr>\n",
-                                     leader.Name, orgname, m.Lastmeeting.FormatDateTm());
+                        leader.Name, orgname, m.Lastmeeting.FormatDateTm());
                 }
                 foreach (var m in meetings)
                 {
                     var absents = alist.Where(a => a.OrganizationId == m.OrganizationId);
-                    var vlist = DbUtil.Db.OrgVisitorsAsOfDate(m.OrganizationId, m.Lastmeeting, NoCurrentMembers: true).ToList();
+                    var vlist = DbUtil.Db.OrgVisitorsAsOfDate(m.OrganizationId, m.Lastmeeting, true).ToList();
                     sb.Append(RecentAbsentsEmail(c, absents));
                     sb.Append(RecentVisitsEmail(c, vlist));
                 }
@@ -626,16 +604,87 @@ namespace CmsWeb.Areas.Search.Models
             noticelist = sb2.ToString();
             return leaderNotices;
         }
+
         public void SendNotices(OrgSearchController c)
         {
             var leaders = NoticesToSend(c);
             foreach (var leader in leaders)
             {
                 DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, leader.Key, null,
-                                DbUtil.Db.Setting("SubjectAttendanceNotices", "Attendance reports are ready for viewing"), leader.Value , false);
+                    DbUtil.Db.Setting("SubjectAttendanceNotices", "Attendance reports are ready for viewing"), leader.Value, false);
             }
             DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, DbUtil.Db.CurrentUser.Person, null,
-                            "Attendance emails sent", noticelist, false);
+                "Attendance emails sent", noticelist, false);
+        }
+
+        public string EncodedJson()
+        {
+            var j = JsonConvert.SerializeObject(this);
+            return Util.EncryptForUrl(j);
+        }
+
+        public static OrgSearchModel DecodedJson(string parameter)
+        {
+            var j = Util.DecryptFromUrl(parameter);
+            return JsonConvert.DeserializeObject<OrgSearchModel>(j);
+        }
+
+        public string ConvertToSearch()
+        {
+            var cc = DbUtil.Db.ScratchPadCondition();
+            cc.Reset(DbUtil.Db);
+            var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,T");
+            if (Name.HasValue())
+                c.OrgName = Name;
+            if (ProgramId != 0)
+                c.Program = ProgramId ?? 0;
+            if (DivisionId != 0)
+                c.Division = DivisionId ?? 0;
+            if (StatusId != 0)
+                c.OrgStatus = StatusId ?? 0;
+            if (TypeId != 0)
+                c.OrgType2 = TypeId ?? 0;
+            if (CampusId != 0)
+                c.Campus = CampusId ?? 0;
+            if (ScheduleId != 0)
+                c.Schedule = ScheduleId ?? 0;
+            if (OnlineReg != 0)
+                c.OnlineReg = OnlineReg ?? 0;
+
+            cc.Save(DbUtil.Db);
+            return "/Query/" + cc.Id;
+        }
+
+        public class OrgMemberInfoClass : ExportInvolvements.MemberInfoClass
+        {
+            public int OrganizationId { get; set; }
+            public string Organization { get; set; }
+            public string Schedule { get; set; }
+        }
+
+        public class OrgType
+        {
+            public const int NoFees = -8;
+            public const int Fees = -7;
+            public const int ChildOrg = -6;
+            public const int ParentOrg = -5;
+            public const int SuspendedCheckin = -4;
+            public const int MainFellowship = -3;
+            public const int NotMainFellowship = -2;
+            public const int NoOrgType = -1;
+        }
+
+        public class RegClass
+        {
+            public const int NotSpecified = -1;
+            public const int AnyRegistration = 99;
+            public const int MissionTrip = 98;
+            public const int MasterOrStandalone = 97;
+            public const int Active = 96;
+            public const int NotOnApp = 95;
+            public const int OnApp = 94;
+            public const int Standalone = 93;
+            public const int ChildOfMaster = 92;
         }
 
         public class OrganizationInfo
@@ -651,10 +700,8 @@ namespace CmsWeb.Areas.Search.Models
             public bool ClassFilled { get; set; }
             public bool RegClosed { get; set; }
             public int? RegTypeId { get; set; }
-            public string RegType
-            {
-                get { return RegistrationTypeCode.Lookup(RegTypeId ?? 0); }
-            }
+
+            public string RegType => RegistrationTypeCode.Lookup(RegTypeId ?? 0);
 
             public string RegStart { get; set; }
             public string RegEnd { get; set; }
@@ -678,36 +725,17 @@ namespace CmsWeb.Areas.Search.Models
             public bool AllowSelfCheckIn { get; set; }
             public string BDayStart { get; set; }
             public string BDayEnd { get; set; }
-            public string ToolTip
-            {
-                get
-                {
-                    return
-@"{0} ({1})|
-Program: {2} ({3})|
-Division: {4} ({5})|
-Leader: {6}|
-First Meeting: {7}|
-Last Meeting: {8}|
-Schedule: {9}|
-Location: {10}|
-Divisions: {11}".Fmt(
-                    OrganizationName,
-                    Id,
-                    ProgramName,
-                    ProgramId,
-                    DivisionName,
-                    DivisionId,
-                    LeaderName,
-                    FirstMeetingDate,
-                    LastMeetingDate,
-                    Schedule,
-                    Location,
-                    Divisions
-                    );
-                }
-            }
+            public string ToolTip => $@"{OrganizationName} ({Id})|
+Program: {ProgramName} ({ProgramId})|
+Division: {DivisionName} ({DivisionId})|
+Leader: {LeaderName}|
+First Meeting: {FirstMeetingDate}|
+Last Meeting: {LastMeetingDate}|
+Schedule: {Schedule}|
+Location: {Location}|
+Divisions: {Divisions}";
         }
+
         public class OrganizationInfoExcel
         {
             public int OrgId { get; set; }
@@ -718,45 +746,8 @@ Divisions: {11}".Fmt(
             public string Division { get; set; }
             public string FirstMeeting { get; set; }
             public DateTime? MeetingTime { get; set; }
-            public string Schedule { get { return "{0:ddd h:mm tt}".Fmt(MeetingTime); } }
+            public string Schedule => $"{MeetingTime:ddd h:mm tt}";
             public string Location { get; set; }
-        }
-
-        public string EncodedJson()
-        {
-            var j = JsonConvert.SerializeObject(this);
-            return Util.EncryptForUrl(j);
-        }
-        public static OrgSearchModel DecodedJson(string parameter)
-        {
-            var j = Util.DecryptFromUrl(parameter);
-            return JsonConvert.DeserializeObject<OrgSearchModel>(j);
-        }
-
-        public string ConvertToSearch()
-        {
-            var cc = DbUtil.Db.ScratchPadCondition();
-            cc.Reset(DbUtil.Db);
-            var c = cc.AddNewClause(QueryType.OrgSearchMember, CompareType.Equal, "1,T");
-            if(Name.HasValue())
-                c.OrgName = Name;
-            if (ProgramId != 0) 
-                c.Program = ProgramId ?? 0;
-            if (DivisionId != 0)
-                c.Division = DivisionId ?? 0;
-            if (StatusId != 0)
-                c.OrgStatus = StatusId ?? 0;
-            if (TypeId != 0)
-                c.OrgType2 = TypeId ?? 0;
-            if (CampusId != 0)
-                c.Campus = CampusId ?? 0;
-            if (ScheduleId != 0)
-                c.Schedule = ScheduleId ?? 0;
-            if (OnlineReg != 0)
-                c.OnlineReg = OnlineReg ?? 0;
-
-            cc.Save(DbUtil.Db);
-            return "/Query/" + cc.Id;
         }
     }
 }

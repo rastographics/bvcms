@@ -300,7 +300,7 @@ namespace CmsData
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
                                        where mtlist.Contains(mt.Description)
-                                       select "{0},{1}".Fmt(mt.Id, mt.Code));
+                                       select $"{mt.Id},{mt.Code}");
             var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
             clause.Program = progid;
             clause.Division = divid;
@@ -722,7 +722,7 @@ print '''
 import sys
 sys.path.append('{1}')
 from StringIO import StringIO
-        
+
 class Cgi:
     def escape(self, t):
         return (t.replace('&', '&amp;')

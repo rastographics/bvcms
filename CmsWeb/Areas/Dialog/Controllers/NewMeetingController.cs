@@ -25,6 +25,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             ViewBag.Method = "POST";
             return View("MeetingInfo", m);
         }
+
         [HttpGet, Route("ForNewRollsheet/{orgid:int}")]
         public ActionResult ForNewRollsheet(int orgid)
         {
@@ -39,6 +40,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             ViewBag.Method = "POST";
             return View("MeetingInfo", m);
         }
+
         [HttpGet, Route("ForNewRallyRollsheet/{orgid:int}")]
         public ActionResult ForNewRallyRollsheet(int orgid)
         {
@@ -53,6 +55,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             ViewBag.Method = "POST";
             return View("MeetingInfo", m);
         }
+
         [HttpPost, Route("ForNewRollsheets/{schedule:int}")]
         public ActionResult ForNewRollsheets(int schedule)
         {
@@ -64,6 +67,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             };
             return View("MeetingInfo", m);
         }
+
         [HttpPost, Route("ForNewRallyRollsheets/{schedule:int}")]
         public ActionResult ForNewRallyRollsheets(int schedule)
         {
@@ -75,6 +79,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             };
             return View("MeetingInfo", m);
         }
+
         [HttpPost, Route("~/CreateNewMeeting")]
         public ActionResult CreateNewMeeting(NewMeetingInfo model)
         {
@@ -101,7 +106,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             };
             DbUtil.Db.Meetings.InsertOnSubmit(mt);
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Creating new meeting for {0}".Fmt(organization.OrganizationName));
+            DbUtil.LogActivity($"Creating new meeting for {organization.OrganizationName}");
             return Redirect("/Meeting/" + mt.MeetingId);
         }
     }

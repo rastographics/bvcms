@@ -1,36 +1,35 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Text;
-using System.Collections;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using System.Web.Routing;
+using System.Web.Script.Serialization;
 using CmsData;
+using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Code;
-using DocumentFormat.OpenXml.Drawing.ChartDrawing;
 using Elmah;
+using MarkdownDeep;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using UtilityExtensions;
-using System.Web.Routing;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web.Hosting;
-using System.Web.Script.Serialization;
-using iTextSharp.tool.xml.html;
-using ExpressionHelper = System.Web.Mvc.ExpressionHelper;
-using MarkdownDeep;
 
 namespace CmsWeb
 {
@@ -40,15 +39,61 @@ namespace CmsWeb
         Unordered,
         TableCell
     }
+
     public static class ModelStateDictionaryExtensions
     {
         public static void SetModelValue(this ModelStateDictionary modelState, string key, object rawValue)
         {
-            modelState.SetModelValue(key, new ValueProviderResult(rawValue, String.Empty, CultureInfo.InvariantCulture));
+            modelState.SetModelValue(key, new ValueProviderResult(rawValue, string.Empty, CultureInfo.InvariantCulture));
         }
     }
+
     public static class ViewExtensions2
     {
+        public static string jqueryGlobalizeCulture
+        {
+            get
+            {
+                //Determine culture - GUI culture for preference, user selected culture as fallback
+                var currentCulture = CultureInfo.CurrentCulture;
+                var filePattern = "/Content/touchpoint/lib/jquery-globalize/js/cultures/globalize.culture.{0}.js";
+                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
+
+                //Try to pick a more appropriate regionalisation
+                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
+                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
+
+                return regionalisedFileToUse;
+            }
+        }
+
+        public static string Globalize => "/Scripts/globalize.js";
+
+        public static string GlobalizeCulture
+        {
+            get
+            {
+                //Determine culture - GUI culture for preference, user selected culture as fallback
+                var currentCulture = CultureInfo.CurrentCulture;
+                var filePattern = "/Scripts/globalize/globalize.culture.{0}.js";
+                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
+
+                //Try to pick a more appropriate regionalisation
+                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
+                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
+                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
+
+                return regionalisedFileToUse;
+            }
+        }
+
+        public static string CmsHost => DbUtil.Db.CmsHost;
+
+        public static string GridClass => "table table-condensed table-striped not-wide grid2";
+
         public static MvcHtmlString DivValidationMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression)
         {
             try
@@ -73,6 +118,7 @@ namespace CmsWeb
                 return null;
             }
         }
+
         public static MvcHtmlString DivValidationMessage(this HtmlHelper helper, string field, string @class = null)
         {
             try
@@ -87,7 +133,7 @@ namespace CmsWeb
                     return null;
                 var div = new TagBuilder("div");
                 div.AddCssClass("alert alert-danger");
-                if(@class.HasValue())
+                if (@class.HasValue())
                     div.AddCssClass(@class);
                 div.InnerHtml = s;
                 return new MvcHtmlString(div.ToString());
@@ -99,7 +145,7 @@ namespace CmsWeb
                 return null;
             }
         }
-        
+
         public static HtmlString DivAlertBox(this HtmlHelper helper, string msg, string alerttype = "alert-danger")
         {
             if (!msg.HasValue())
@@ -110,35 +156,36 @@ namespace CmsWeb
             div.InnerHtml = msg;
             return new HtmlString(div.ToString());
         }
+
         public static MvcHtmlString PartialFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string partialViewName)
         {
-            string name = ExpressionHelper.GetExpressionText(expression);
-            object model = ModelMetadata.FromLambdaExpression(expression, helper.ViewData).Model;
-            var viewData = new ViewDataDictionary(helper.ViewData) { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = name } };
+            var name = ExpressionHelper.GetExpressionText(expression);
+            var model = ModelMetadata.FromLambdaExpression(expression, helper.ViewData).Model;
+            var viewData = new ViewDataDictionary(helper.ViewData) {TemplateInfo = new TemplateInfo {HtmlFieldPrefix = name}};
             return helper.Partial(partialViewName, model, viewData);
         }
+
         public static string GetNameFor<M, P>(this M model, Expression<Func<M, P>> ex)
         {
             return ExpressionHelper.GetExpressionText(ex);
         }
+
         public static string GetIdFor<M, P>(this M model, Expression<Func<M, P>> ex)
         {
             return ExpressionHelper.GetExpressionText(ex).ToSuitableId();
         }
+
         public static string RegisterScript(this HtmlHelper helper, string scriptFileName)
         {
-            string scriptRoot = VirtualPathUtility.ToAbsolute("~/Scripts");
-            string scriptFormat = "<script src=\"{0}/{1}\" type=\"text/javascript\"></script>\r\n";
+            var scriptRoot = VirtualPathUtility.ToAbsolute("~/Scripts");
+            var scriptFormat = "<script src=\"{0}/{1}\" type=\"text/javascript\"></script>\r\n";
             return string.Format(scriptFormat, scriptRoot, scriptFileName);
-
         }
+
         public static string ToFormattedList(this IEnumerable list, ListType listType)
         {
-            StringBuilder sb = new StringBuilder();
-            IEnumerator en = list.GetEnumerator();
-
-            string outerListFormat = "";
-            string listFormat = "";
+            var outerListFormat = "";
+            var listFormat = "";
 
             switch (listType)
             {
@@ -154,45 +201,45 @@ namespace CmsWeb
                     outerListFormat = "{0}";
                     listFormat = "<td>{0}</td>";
                     break;
-                default:
-                    break;
             }
             return string.Format(outerListFormat, ToFormattedList(list, listFormat));
         }
+
         public static string ToFormattedList(IEnumerable list, string format)
         {
             var sb = new StringBuilder();
-            foreach (object item in list)
-                sb.AppendFormat(format, item.ToString());
+            foreach (var item in list)
+                sb.AppendFormat(format, item);
             return sb.ToString();
         }
 
         public static string GetSiteUrl(this ViewPage pg)
         {
-            string Port = pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_PORT"];
+            var Port = pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_PORT"];
             if (Port == null || Port == "80" || Port == "443")
                 Port = "";
             else
                 Port = ":" + Port;
 
-            string Protocol = pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_PORT_SECURE"];
+            var Protocol = pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_PORT_SECURE"];
             if (Protocol == null || Protocol == "0")
                 Protocol = "http://";
             else
                 Protocol = "http://";
 
-            string appPath = pg.ViewContext.HttpContext.Request.ApplicationPath;
+            var appPath = pg.ViewContext.HttpContext.Request.ApplicationPath;
             if (appPath == "/")
                 appPath = "";
 
-            string sOut = Protocol + pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_NAME"] + Port + appPath;
+            var sOut = Protocol + pg.ViewContext.HttpContext.Request.ServerVariables["SERVER_NAME"] + Port + appPath;
             return sOut;
         }
+
         public static HtmlString PageSizesDropDown(this HtmlHelper helper, string id, string onchange)
         {
             var tb = new TagBuilder("select");
             tb.MergeAttribute("id", id);
-            if (Util.HasValue(onchange))
+            if (onchange.HasValue())
                 tb.MergeAttribute("onchange", onchange);
             var sb = new StringBuilder();
             foreach (var o in PageSizes(null))
@@ -202,19 +249,21 @@ namespace CmsWeb
                 if (o.Selected)
                     ot.MergeAttribute("selected", "selected");
                 ot.SetInnerText(o.Text);
-                sb.Append(ot.ToString());
+                sb.Append(ot);
             }
             tb.InnerHtml = sb.ToString();
             return new HtmlString(tb.ToString());
         }
+
         public static IEnumerable<SelectListItem> PageSizes(this HtmlHelper helper)
         {
-            var sizes = new int[] { 10, 25, 50, 75, 100, 200 };
+            var sizes = new[] {10, 25, 50, 75, 100, 200};
             var list = new List<SelectListItem>();
             foreach (var size in sizes)
-                list.Add(new SelectListItem { Text = size.ToString() });
+                list.Add(new SelectListItem {Text = size.ToString()});
             return list;
         }
+
         public static HtmlString SpanIf(this HtmlHelper helper, bool condition, string text, object htmlAttributes)
         {
             if (!condition)
@@ -222,17 +271,19 @@ namespace CmsWeb
             var tb = new TagBuilder("span");
             var attr = new RouteValueDictionary(htmlAttributes);
             tb.InnerHtml = text;
-            tb.MergeAttributes<string, object>(attr);
+            tb.MergeAttributes(attr);
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString Span(this HtmlHelper helper, string text, object htmlAttributes)
         {
             var tb = new TagBuilder("span");
             var attr = new RouteValueDictionary(htmlAttributes);
             tb.InnerHtml = text;
-            tb.MergeAttributes<string, object>(attr);
+            tb.MergeAttributes(attr);
             return new HtmlString(tb.ToString());
         }
+
         private static string TryGetModel(this HtmlHelper helper, string name)
         {
             ModelState val;
@@ -242,6 +293,7 @@ namespace CmsWeb
                 s = val.Value.AttemptedValue;
             return s;
         }
+
         public static HtmlString DropDownList2(this HtmlHelper helper, string name, IEnumerable<SelectListItem> list, bool visible)
         {
             var tb = new TagBuilder("select");
@@ -255,23 +307,24 @@ namespace CmsWeb
             {
                 var ot = new TagBuilder("option");
                 ot.MergeAttribute("value", o.Value);
-                bool selected = false;
-                if (Util.HasValue(s))
+                var selected = false;
+                if (s.HasValue())
                     selected = s == o.Value;
                 else if (o.Selected)
                     selected = true;
                 if (selected)
                     ot.MergeAttribute("selected", "selected");
                 ot.SetInnerText(o.Text);
-                sb.Append(ot.ToString());
+                sb.Append(ot);
             }
             tb.InnerHtml = sb.ToString();
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString DropDownList3(this HtmlHelper helper, string id, string name, IEnumerable<SelectListItem> list, string value)
         {
             var tb = new TagBuilder("select");
-            if (Util.HasValue(id))
+            if (id.HasValue())
                 tb.MergeAttribute("id", id);
             tb.MergeAttribute("name", name);
             var sb = new StringBuilder();
@@ -282,18 +335,19 @@ namespace CmsWeb
                 if (value == o.Value)
                     ot.MergeAttribute("selected", "selected");
                 ot.SetInnerText(o.Text);
-                sb.Append(ot.ToString());
+                sb.Append(ot);
             }
             tb.InnerHtml = sb.ToString();
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString DropDownList4(this HtmlHelper helper, string id, string name, IEnumerable<SelectListItem> list, string value, string cssClass = "")
         {
             var tb = new TagBuilder("select");
-            if (Util.HasValue(id))
+            if (id.HasValue())
                 tb.MergeAttribute("id", id);
             tb.MergeAttribute("name", name);
-            if (Util.HasValue(cssClass))
+            if (cssClass.HasValue())
                 tb.MergeAttribute("class", cssClass);
             var sb = new StringBuilder();
             foreach (var o in list)
@@ -303,18 +357,19 @@ namespace CmsWeb
                 if (value == o.Value)
                     ot.MergeAttribute("selected", "selected");
                 ot.SetInnerText(o.Text);
-                sb.Append(ot.ToString());
+                sb.Append(ot);
             }
             tb.InnerHtml = sb.ToString();
             return new HtmlString(tb.ToString());
         }
-        public static HtmlString DropDownList4(this HtmlHelper helper, string id, string name, IEnumerable<CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel.SelectListItemFilled> list, string value, string cssClass = "")
+
+        public static HtmlString DropDownList4(this HtmlHelper helper, string id, string name, IEnumerable<OnlineRegPersonModel.SelectListItemFilled> list, string value, string cssClass = "")
         {
             var tb = new TagBuilder("select");
-            if (Util.HasValue(id))
+            if (id.HasValue())
                 tb.MergeAttribute("id", id);
             tb.MergeAttribute("name", name);
-            if (Util.HasValue(cssClass))
+            if (cssClass.HasValue())
                 tb.MergeAttribute("class", cssClass);
             var sb = new StringBuilder();
             foreach (var o in list)
@@ -326,11 +381,12 @@ namespace CmsWeb
                 //				if (o.Filled)
                 //					ot.MergeAttribute("disabled", "disabled");
                 ot.SetInnerText(o.Text);
-                sb.Append(ot.ToString());
+                sb.Append(ot);
             }
             tb.InnerHtml = sb.ToString();
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString TextBox2(this HtmlHelper helper, string name, bool visible)
         {
             var tb = new TagBuilder("input");
@@ -344,6 +400,7 @@ namespace CmsWeb
             tb.MergeAttribute("value", s ?? viewDataValue);
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString TextBox3(this HtmlHelper helper, string id, string name, string value)
         {
             var tb = new TagBuilder("input");
@@ -353,6 +410,7 @@ namespace CmsWeb
             tb.MergeAttribute("value", value);
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString TextBox3(this HtmlHelper helper, string id, string name, string value, object htmlAttributes)
         {
             var tb = new TagBuilder("input");
@@ -361,12 +419,13 @@ namespace CmsWeb
             tb.MergeAttribute("name", name);
             tb.MergeAttribute("value", value);
             var attr = new RouteValueDictionary(htmlAttributes);
-            tb.MergeAttributes<string, object>(attr);
+            tb.MergeAttributes(attr);
             ModelState state;
             if (helper.ViewData.ModelState.TryGetValue(name, out state) && (state.Errors.Count > 0))
                 tb.AddCssClass(HtmlHelper.ValidationInputCssClassName);
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString TextBoxClass(this HtmlHelper helper, string name, string @class)
         {
             var tb = new TagBuilder("input");
@@ -379,6 +438,7 @@ namespace CmsWeb
             tb.MergeAttribute("value", s ?? viewDataValue);
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString HiddenFor2<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression)
         {
             var tb = new TagBuilder("input");
@@ -386,7 +446,7 @@ namespace CmsWeb
             var name = ExpressionHelper.GetExpressionText(expression);
             var v = htmlHelper.ViewData.Eval(name);
             var prefix = htmlHelper.ViewData.TemplateInfo.HtmlFieldPrefix;
-            if (Util.HasValue(prefix))
+            if (prefix.HasValue())
                 name = prefix + "." + name;
             tb.MergeAttribute("name", name);
             if (v != null)
@@ -395,6 +455,7 @@ namespace CmsWeb
                 tb.MergeAttribute("value", "");
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString HiddenFor3<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression)
         {
             var tb = new TagBuilder("input");
@@ -402,7 +463,7 @@ namespace CmsWeb
             var name = ExpressionHelper.GetExpressionText(expression);
             var v = htmlHelper.ViewData.Eval(name);
             var prefix = htmlHelper.ViewData.TemplateInfo.HtmlFieldPrefix;
-            if (Util.HasValue(prefix))
+            if (prefix.HasValue())
                 name = prefix + "." + name;
             tb.MergeAttribute("name", name);
             if (v != null)
@@ -411,6 +472,7 @@ namespace CmsWeb
                 tb.MergeAttribute("value", "");
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString DatePicker(this HtmlHelper helper, string name)
         {
             var tb = new TagBuilder("input");
@@ -419,10 +481,11 @@ namespace CmsWeb
             tb.MergeAttribute("name", name);
             tb.MergeAttribute("class", "datepicker");
             var s = helper.TryGetModel(name);
-            var viewDataValue = (DateTime?)helper.ViewData.Eval(name);
+            var viewDataValue = (DateTime?) helper.ViewData.Eval(name);
             tb.MergeAttribute("value", viewDataValue.FormatDate());
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString CheckBoxReadonly(this HtmlHelper helper, bool? ck)
         {
             var tb = new TagBuilder("input");
@@ -432,11 +495,12 @@ namespace CmsWeb
                 tb.MergeAttribute("checked", "checked");
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString CodeDesc(this HtmlHelper helper, string name, IEnumerable<SelectListItem> list)
         {
             var tb = new TagBuilder("span");
             var viewDataValue = helper.ViewData.Eval(name);
-            var i = (int?)viewDataValue ?? 0;
+            var i = (int?) viewDataValue ?? 0;
 
             var si = list.SingleOrDefault(v => v.Value == i.ToString());
             if (si != null)
@@ -445,20 +509,23 @@ namespace CmsWeb
                 tb.InnerHtml = "?";
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString Hidden3(this HtmlHelper helper, string id, string name, object value)
         {
             var tb = new TagBuilder("input");
-            if (Util.HasValue(id))
+            if (id.HasValue())
                 tb.MergeAttribute("id", id);
             tb.MergeAttribute("type", "hidden");
             tb.MergeAttribute("name", name);
             tb.MergeAttribute("value", value != null ? value.ToString() : "");
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString Hidden3(this HtmlHelper helper, string name, object value)
         {
             return helper.Hidden3(null, name, value);
         }
+
         public static HtmlString HiddenIf(this HtmlHelper helper, string name, bool? include)
         {
             if (include == true)
@@ -473,6 +540,7 @@ namespace CmsWeb
             }
             return new HtmlString("");
         }
+
         public static HtmlString IsRequired(this HtmlHelper helper, bool? Required)
         {
             //var tb = new TagBuilder("img");
@@ -489,7 +557,7 @@ namespace CmsWeb
             //tb.MergeAttribute("alt", "not req");
             var tb = new TagBuilder("span");
             tb.MergeAttribute("class", "asterisk");
-            if ((Required ?? true) == true)
+            if ((Required ?? true))
             {
                 tb.InnerHtml = "*";
                 return new HtmlString(tb.ToString());
@@ -497,14 +565,17 @@ namespace CmsWeb
             tb.InnerHtml = "&nbsp;";
             return new HtmlString(tb.ToString());
         }
+
         public static HtmlString Required(this HtmlHelper helper)
         {
             return helper.IsRequired(true);
         }
+
         public static HtmlString NotRequired(this HtmlHelper helper)
         {
             return helper.IsRequired(false);
         }
+
         public static HtmlString HiddenIf(this HtmlHelper helper, string name, object value, bool? include)
         {
             if (include == true)
@@ -518,6 +589,7 @@ namespace CmsWeb
             }
             return new HtmlString("");
         }
+
         public static HtmlString ValidationMessage2(this HtmlHelper helper, string name)
         {
             var m = helper.ViewData.ModelState[name];
@@ -529,23 +601,19 @@ namespace CmsWeb
             b.SetInnerText(e);
             return new HtmlString(b.ToString());
         }
+
         public static string Json(this HtmlHelper html, string variableName, object model)
         {
-            TagBuilder tag = new TagBuilder("script");
+            var tag = new TagBuilder("script");
             tag.Attributes.Add("type", "text/javascript");
             var jsonSerializer = new JavaScriptSerializer();
             tag.InnerHtml = "var " + variableName + " = " + jsonSerializer.Serialize(model) + ";";
             return tag.ToString();
         }
+
         public static string NameFor2<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper, Expression<Func<TModel, TProperty>> expression)
         {
             return htmlHelper.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(ExpressionHelper.GetExpressionText(expression));
-        }
-
-        public class HelpMessage
-        {
-            public HtmlString message;
-            public string errorClass;
         }
 
         //        public static HelpMessage HelpMessageFor<TModel, TProperty>(this HtmlHelper<TModel> helper, Expression<Func<TModel, TProperty>> expression, string classname)
@@ -571,11 +639,11 @@ namespace CmsWeb
         //        }
         public static MvcHtmlString ValidationMessageLabelFor<TModel, TProperty>(this HtmlHelper<TModel> html, Expression<Func<TModel, TProperty>> expression, string errorClass = "error")
         {
-            string elementId = html.IdFor(m => m).ToString();
-            MvcHtmlString normal = html.ValidationMessageFor(expression);
+            var elementId = html.IdFor(m => m).ToString();
+            var normal = html.ValidationMessageFor(expression);
             if (normal != null)
             {
-                string newValidator = Regex.Replace(normal.ToHtmlString(), @"<span([^>]*)>([^<]*)</span>", string.Format("<label for=\"{0}\" $1>$2</label>", elementId), RegexOptions.IgnoreCase);
+                var newValidator = Regex.Replace(normal.ToHtmlString(), @"<span([^>]*)>([^<]*)</span>", $"<label for=\"{elementId}\" $1>$2</label>", RegexOptions.IgnoreCase);
                 if (!string.IsNullOrWhiteSpace(errorClass))
                     newValidator = newValidator.Replace("field-validation-error", errorClass);
                 return MvcHtmlString.Create(newValidator);
@@ -601,6 +669,7 @@ namespace CmsWeb
                 return ex.ToString();
             }
         }
+
         public static string RenderPartialViewToString2(Controller controller, string viewName, object model)
         {
             controller.ViewData.Model = model;
@@ -612,12 +681,13 @@ namespace CmsWeb
                 return sw.GetStringBuilder().ToString();
             }
         }
+
         public static IHtmlString TextBoxFor2<TModel, TProperty>(
-          this HtmlHelper<TModel> htmlHelper,
-          Expression<Func<TModel, TProperty>> expression,
-          bool useNativeUnobtrusiveAttributes,
-          string format = null,
-          object htmlAttributes = null)
+            this HtmlHelper<TModel> htmlHelper,
+            Expression<Func<TModel, TProperty>> expression,
+            bool useNativeUnobtrusiveAttributes,
+            string format = null,
+            object htmlAttributes = null)
         {
             // Return to native if true not passed
             if (!useNativeUnobtrusiveAttributes)
@@ -633,10 +703,11 @@ namespace CmsWeb
 
             return textBox;
         }
+
         public static IHtmlString CheckBoxFor2<TModel>(this HtmlHelper<TModel> htmlHelper,
-          Expression<Func<TModel, bool>> expression,
-          bool useNativeUnobtrusiveAttributes,
-          object htmlAttributes = null)
+            Expression<Func<TModel, bool>> expression,
+            bool useNativeUnobtrusiveAttributes,
+            object htmlAttributes = null)
         {
             // Return to native if true not passed
             if (!useNativeUnobtrusiveAttributes)
@@ -644,13 +715,14 @@ namespace CmsWeb
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
-            var value = (bool)ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
+            var value = (bool) ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
 
             var checkBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
                 htmlHelper.CheckBoxFor(expression, value, attributes));
 
             return checkBox;
         }
+
         public static IHtmlString RadioButtonFor2<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
             bool useNativeUnobtrusiveAttributes,
@@ -669,6 +741,7 @@ namespace CmsWeb
 
             return radioButton;
         }
+
         public static IHtmlString DropDownListFor2<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
             bool useNativeUnobtrusiveAttributes,
@@ -683,11 +756,12 @@ namespace CmsWeb
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
 
-            IHtmlString dropDown = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
+            var dropDown = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
                 htmlHelper.DropDownListFor(expression, selectList, optionLabel, attributes));
 
             return dropDown;
         }
+
         public static IHtmlString DropDownListForCodeInfo<TProperty>(this HtmlHelper<CodeInfo> htmlHelper,
             Expression<Func<CodeInfo, TProperty>> expression,
             bool useNativeUnobtrusiveAttributes,
@@ -706,6 +780,7 @@ namespace CmsWeb
 
             return dropDown;
         }
+
         public static IHtmlString DisplayForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
             bool show, string templateName, object viewdata = null, object htmlAttributes = null)
@@ -716,12 +791,14 @@ namespace CmsWeb
                 return htmlHelper.DisplayFor(expression, viewdata);
             return htmlHelper.DisplayFor(expression, templateName, viewdata);
         }
+
         public static IHtmlString DisplayForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
             bool show, object viewdata = null)
         {
             return htmlHelper.DisplayForIf(expression, show, null, viewdata);
         }
+
         public static IHtmlString EditorForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
             bool show, string templateName, object viewdata = null, object htmlAttributes = null)
@@ -732,12 +809,14 @@ namespace CmsWeb
                 return htmlHelper.EditorFor(expression, viewdata);
             return htmlHelper.EditorFor(expression, templateName, viewdata);
         }
+
         public static IHtmlString EditorForIf<TModel, TProperty>(this HtmlHelper<TModel> htmlHelper,
             Expression<Func<TModel, TProperty>> expression,
             bool show, object viewdata = null)
         {
             return htmlHelper.EditorForIf(expression, show, null, viewdata);
         }
+
         public static void SetExcelHeader(this ExcelWorksheet ws, params string[] headers)
         {
             var col = 0;
@@ -755,22 +834,27 @@ namespace CmsWeb
             range.Style.Border.Bottom.Style = ExcelBorderStyle.Thick;
             range.Style.Border.Bottom.Color.SetColor(Color.FromArgb(172, 204, 234));
         }
+
         public static HtmlString GoogleFonts()
         {
             return new HtmlString("<link href=\"//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,400,600,300,700\" rel=\"stylesheet\">\n");
         }
+
         public static HtmlString OldStyles()
         {
             return Fingerprint.Css("/content/styles/bundle.stylecss.css");
         }
+
         public static HtmlString NewStyles()
         {
             return Fingerprint.Css("/content/css/bundle.new2css.css");
         }
+
         public static HtmlString FixupsCss()
         {
             return Fingerprint.Css("/content/css/Fixups2.css");
         }
+
         public static string Bootstrap3Css()
         {
             return @"
@@ -779,6 +863,7 @@ namespace CmsWeb
 <link rel=""stylesheet"" href=""/Content/css/fixups3.css"">
 ";
         }
+
         public static HtmlString FroalaEditorCss()
         {
             return new HtmlString(@"
@@ -787,6 +872,7 @@ namespace CmsWeb
 <link rel=""stylesheet"" href=""/Content/touchpoint/lib/froala-editor/css/custom-theme.css?v=1.2.7"">
 ");
         }
+
         public static HtmlString FroalaEditorScripts()
         {
             var sb = new StringBuilder();
@@ -804,30 +890,35 @@ namespace CmsWeb
 <script type=""text/javascript"">
     //froala key
     $.Editable.DEFAULTS.key = '" + ConfigurationManager.AppSettings["froalaEditorKey"] + @"';
-        
+
     // must alias froala editor because it could conflict with the same function name with bootstrap-editable.
     $.fn.froalaEditable = $.fn.editable;
-    delete $.fn.editable;   
+    delete $.fn.editable;
 </script>
 ");
             return new HtmlString(sb.ToString());
         }
+
         public static HtmlString FontAwesome()
         {
             return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
+
         public static HtmlString CKEditor()
         {
             return new HtmlString("<script src=\"//cdn.ckeditor.com/4.4.7/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
+
         public static HtmlString jQuery()
         {
             return new HtmlString("<script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js'></script>\n");
         }
+
         public static HtmlString jQueryUICss()
         {
             return new HtmlString("<link rel=\"stylesheet\" href=\"//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css\" />\n");
         }
+
         public static HtmlString jQueryUI()
         {
             return new HtmlString(@"<script src=""//ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js""></script>");
@@ -841,31 +932,12 @@ namespace CmsWeb
 
         public static HtmlString jqueryGlobalize()
         {
-            return new HtmlString(@"
-<script src=""{0}"" type=""text/javascript""></script>
-<script src=""{1}"" type=""text/javascript""></script>
-".Fmt(Globalize, GlobalizeCulture));
+            return new HtmlString($@"
+<script src=""{Globalize}"" type=""text/javascript""></script>
+<script src=""{GlobalizeCulture}"" type=""text/javascript""></script>
+");
         }
 
-        public static string jqueryGlobalizeCulture
-        {
-            get
-            {
-                //Determine culture - GUI culture for preference, user selected culture as fallback
-                var currentCulture = CultureInfo.CurrentCulture;
-                var filePattern = "/Content/touchpoint/lib/jquery-globalize/js/cultures/globalize.culture.{0}.js";
-                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
-
-                //Try to pick a more appropriate regionalisation
-                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
-                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
-                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
-                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
-
-                return regionalisedFileToUse;
-            }
-        }
-        
         public static HtmlString Moment()
         {
             return new HtmlString("<script src=\"//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js\" type=\"text/javascript\"></script>\n");
@@ -886,27 +958,6 @@ namespace CmsWeb
             return new HtmlString(@"<script src=""//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js""></script>");
         }
 
-
-        public static string Globalize { get { return "/Scripts/globalize.js"; } }
-        public static string GlobalizeCulture
-        {
-            get
-            {
-                //Determine culture - GUI culture for preference, user selected culture as fallback
-                var currentCulture = CultureInfo.CurrentCulture;
-                var filePattern = "/Scripts/globalize/globalize.culture.{0}.js";
-                var regionalisedFileToUse = string.Format(filePattern, "en-US"); //Default localisation to use
-
-                //Try to pick a more appropriate regionalisation
-                if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.Name)))) //First try for a globalize.culture.en-GB.js style file
-                    regionalisedFileToUse = string.Format(filePattern, currentCulture.Name);
-                else if (File.Exists(HostingEnvironment.MapPath(string.Format(filePattern, currentCulture.TwoLetterISOLanguageName)))) //That failed; now try for a globalize.culture.en.js style file
-                    regionalisedFileToUse = string.Format(filePattern, currentCulture.TwoLetterISOLanguageName);
-
-                return regionalisedFileToUse;
-            }
-        }
-
         public static HtmlString LoDash()
         {
             return new HtmlString(@"<script src=""//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js""></script>");
@@ -916,12 +967,14 @@ namespace CmsWeb
         {
             return Markdown(text);
         }
+
         public static HtmlString Markdown(string text)
         {
             var md = new Markdown();
-            string output = md.Transform(text.Trim());
+            var output = md.Transform(text.Trim());
             return new HtmlString(output);
         }
+
         public static bool ShowOrgSettingsHelp(this HtmlHelper helper)
         {
             return DbUtil.Db.UserPreference("ShowOrgSettingsHelp", "true") == "true";
@@ -942,11 +995,6 @@ namespace CmsWeb
             return DbUtil.Db.Setting(name, def);
         }
 
-        public static string CmsHost
-        {
-            get { return DbUtil.Db.CmsHost; }
-        }
-
         public static IEnumerable<Person> PeopleFromPidString(string pids)
         {
             return from p in DbUtil.Db.PeopleFromPidString(pids)
@@ -957,6 +1005,7 @@ namespace CmsWeb
         {
             return User.AllRoles(DbUtil.Db).Select(rr => rr.RoleName).ToList();
         }
+
         public static string StatusFlagsAll(int peopleId)
         {
             return DbUtil.Db.StatusFlagsAll(peopleId);
@@ -971,18 +1020,14 @@ namespace CmsWeb
             return c;
         }
 
-        public static string GridClass
-        {
-            get { return "table table-condensed table-striped not-wide grid2"; }
-        }
         public static string DatabaseErrorUrl(DbUtil.CheckDatabaseResult ret)
         {
             switch (ret)
             {
                 case DbUtil.CheckDatabaseResult.DatabaseDoesNotExist:
-                    return "/Errors/DatabaseNotFound.aspx?dbname={0}".Fmt(Util.Host);
+                    return $"/Errors/DatabaseNotFound.aspx?dbname={Util.Host}";
                 case DbUtil.CheckDatabaseResult.ServerNotFound:
-                    return "/Errors/DatabaseServerNotFound.aspx?server={0}".Fmt(Util.DbServer);
+                    return $"/Errors/DatabaseServerNotFound.aspx?server={Util.DbServer}";
                 case DbUtil.CheckDatabaseResult.DatabaseExists:
                     return null;
             }
@@ -991,16 +1036,16 @@ namespace CmsWeb
 
         public static CollectionItemNamePrefixScope BeginCollectionItem<TModel>(this HtmlHelper<TModel> html, string collectionName)
         {
-            string itemIndex = GetCollectionItemIndex(collectionName);
-            var collectionItemName = String.Format("{0}[{1}]", collectionName, itemIndex);
+            var itemIndex = GetCollectionItemIndex(collectionName);
+            var collectionItemName = $"{collectionName}[{itemIndex}]";
 
             var indexField = new TagBuilder("input");
-            indexField.MergeAttributes(new Dictionary<string, string>() 
+            indexField.MergeAttributes(new Dictionary<string, string>
             {
-                { "name", String.Format("{0}.Index", collectionName) },
-                { "value", itemIndex },
-                { "type", "hidden" },
-                { "autocomplete", "off" }
+                {"name", $"{collectionName}.Index"},
+                {"value", itemIndex},
+                {"type", "hidden"},
+                {"autocomplete", "off"}
             });
 
             return new CollectionItemNamePrefixScope(
@@ -1008,9 +1053,10 @@ namespace CmsWeb
                 collectionItemName,
                 indexField.ToString(TagRenderMode.SelfClosing));
         }
+
         private static string GetCollectionItemIndex(string collectionIndexFieldName)
         {
-            Queue<string> previousIndices = (Queue<string>)HttpContext.Current.Items[collectionIndexFieldName];
+            var previousIndices = (Queue<string>) HttpContext.Current.Items[collectionIndexFieldName];
             if (previousIndices == null)
             {
                 HttpContext.Current.Items[collectionIndexFieldName] = previousIndices = new Queue<string>();
@@ -1026,39 +1072,9 @@ namespace CmsWeb
             return previousIndices.Count > 0 ? previousIndices.Dequeue() : Guid.NewGuid().ToString();
         }
 
-        public class CollectionItemNamePrefixScope : IDisposable
-        {
-            private readonly TemplateInfo _templateInfo;
-            private readonly string _previousPrefix;
-            public string hiddenindex { get; set; }
-            public string SuitableId
-            {
-                get { return _templateInfo.HtmlFieldPrefix.ToSuitableId(); }
-            }
-            public string CollectionName
-            {
-                get { return _templateInfo.HtmlFieldPrefix; }
-            }
-
-            public CollectionItemNamePrefixScope(TemplateInfo templateInfo, string collectionItemName, string hiddenindex)
-            {
-                this._templateInfo = templateInfo;
-
-                _previousPrefix = templateInfo.HtmlFieldPrefix;
-                templateInfo.HtmlFieldPrefix = collectionItemName;
-                this.hiddenindex = hiddenindex;
-            }
-
-            public void Dispose()
-            {
-                _templateInfo.HtmlFieldPrefix = _previousPrefix;
-            }
-        }
-
         public static MvcHtmlString ValidationSummaryBootstrap(this HtmlHelper helper, bool closeable)
         {
             # region Equivalent view markup
-
 
             // var errors = ViewData.ModelState.SelectMany(x => x.Value.Errors.Select(y => y.ErrorMessage));
             //
@@ -1076,9 +1092,7 @@ namespace CmsWeb
             //     </div>
             // }
 
-
             # endregion
-
 
             var errors = helper.ViewContext.ViewData.ModelState.SelectMany(state => state.Value.Errors.Select(error => error.ErrorMessage));
 
@@ -1141,11 +1155,42 @@ namespace CmsWeb
 
             return new MvcHtmlString(div.ToString());
         }
-        
+
         public static MvcHtmlString ValidationSummaryBootstrap(this HtmlHelper helper)
         {
             return ValidationSummaryBootstrap(helper, true);
         }
 
+        public class HelpMessage
+        {
+            public string errorClass;
+            public HtmlString message;
+        }
+
+        public class CollectionItemNamePrefixScope : IDisposable
+        {
+            private readonly string _previousPrefix;
+            private readonly TemplateInfo _templateInfo;
+
+            public CollectionItemNamePrefixScope(TemplateInfo templateInfo, string collectionItemName, string hiddenindex)
+            {
+                _templateInfo = templateInfo;
+
+                _previousPrefix = templateInfo.HtmlFieldPrefix;
+                templateInfo.HtmlFieldPrefix = collectionItemName;
+                this.hiddenindex = hiddenindex;
+            }
+
+            public string hiddenindex { get; set; }
+
+            public string SuitableId => _templateInfo.HtmlFieldPrefix.ToSuitableId();
+
+            public string CollectionName => _templateInfo.HtmlFieldPrefix;
+
+            public void Dispose()
+            {
+                _templateInfo.HtmlFieldPrefix = _previousPrefix;
+            }
+        }
     }
 }

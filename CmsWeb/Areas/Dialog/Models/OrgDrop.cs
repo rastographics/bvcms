@@ -106,7 +106,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
-                db.LogActivity("Org{0} Drop{1}".Fmt(Group, RemoveFromEnrollmentHistory ? " w/history" : ""), Id, pid, UserId);
+                db.LogActivity($"Org{Group} Drop{(RemoveFromEnrollmentHistory ? " w/history" : "")}", Id, pid, UserId);
             }
             // finished
             lop = FetchLongRunningOp(db, model.Id, Op);

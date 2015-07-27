@@ -1,11 +1,10 @@
 ﻿@using CmsData
-@using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting Tickets";
     ViewBag.PageHeader = "Meeting";
-    ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>".Fmt(Util2.Org, Model.meeting.OrganizationId, Model.meeting.Organization.OrganizationName);
+    ViewBag.PageSubHeader = $"<a href=\"{Util2.Org}/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
 }
 @section head
@@ -20,7 +19,7 @@
             padding: 5px;
             border: solid 1px #eee;
             min-height: 32px;
-        }     
+        }
     </style>
 }
 <form id="markform" method="Post">

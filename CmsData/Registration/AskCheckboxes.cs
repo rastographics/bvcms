@@ -80,7 +80,7 @@ For each checkbox, you can specify the following:
                      where g.Count() > 1
                      select g.Key).ToList();
             if (q.Any())
-                throw parser.GetException("Duplicate SmallGroup in Checkboxes: {0}".Fmt(string.Join(",", q)));
+                throw parser.GetException($"Duplicate SmallGroup in Checkboxes: {string.Join(",", q)}");
             return cb;
         }
         public override List<string> SmallGroups()
@@ -116,7 +116,7 @@ For each checkbox, you can specify the following:
         {
             public override string ToString()
             {
-                return "{0}: {1}|{2} (limit={3},fee={4})".Fmt(Name, Description, SmallGroup, Limit, Fee);
+                return $"{Name}: {Description}|{SmallGroup} (limit={Limit},fee={Fee})";
             }
             public string Name { get; set; }
             public string Description { get; set; }

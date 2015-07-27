@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
@@ -32,10 +32,7 @@ namespace CmsWeb.Areas.Reports.Models
             public double CellWidth { get; set; }
             public double MaxPicHeight { get; set; }
 
-            public double PicHeightPixels
-            {
-                get { return Pixels(MaxPicHeight); }
-            }
+            public double PicHeightPixels => Pixels(MaxPicHeight);
 
             public double FontSize { get; set; }
             public double FontSizeName { get; set; }
@@ -45,28 +42,9 @@ namespace CmsWeb.Areas.Reports.Models
             public double MarginTop { get; set; }
             public double MarginBottom { get; set; }
 
-            public Formatting namebold
-            {
-                get
-                {
-                    return new Formatting { Size = FontSizeName, Bold = true };
-                }
-            }
-            public Formatting emailsmall
-            {
-                get
-                {
-                    return new Formatting { Size = FontSizeEmail };
-                }
-            }
-            public Formatting font
-            {
-                get
-                {
-                    return new Formatting { Size = FontSize };
-                }
-            }
-
+            public Formatting namebold => new Formatting { Size = FontSizeName, Bold = true };
+            public Formatting emailsmall => new Formatting { Size = FontSizeEmail };
+            public Formatting font => new Formatting { Size = FontSize };
         }
         public FamilyPictureDir(Guid id)
         {
@@ -261,9 +239,7 @@ namespace CmsWeb.Areas.Reports.Models
                             : string.Join("~", p.Family.People
                                 .Where(cc => cc.PositionInFamilyId == 30)
                                 .Select(cc =>
-                                    "{0}|{1}|{2}|{3}".Fmt((cc.LastName == familyname
-                                        ? cc.PreferredName
-                                        : cc.Name), cc.Age, cc.BirthMonth, cc.BirthDay)
+                                    $"{(cc.LastName == familyname ? cc.PreferredName : cc.Name)}|{cc.Age}|{cc.BirthMonth}|{cc.BirthDay}"
                                 )),
                         ImageId = p.Family.Picture.LargeId,
                     };
@@ -285,10 +261,7 @@ namespace CmsWeb.Areas.Reports.Models
             }
             public int? BDay2 { get; set; }
             public int? BMon2 { get; set; }
-            public string BirthDay2
-            {
-                get { return Util.FormatBirthday(null, BMon2, BDay2); }
-            }
+            public string BirthDay2 => Util.FormatBirthday(null, BMon2, BDay2);
             public string Title { get; set; }
             public string Address { get; set; }
             public string Address2 { get; set; }
@@ -302,9 +275,9 @@ namespace CmsWeb.Areas.Reports.Models
                 {
                     var sb = new StringBuilder();
                     if (Email.HasValue())
-                        sb.AppendLine("{0}: {1}".Fmt(First1, Email));
+                        sb.AppendLine($"{First1}: {Email}");
                     if (Email2.HasValue())
-                        sb.AppendLine("{0}: {1}".Fmt(First2, Email2));
+                        sb.AppendLine($"{First2}: {Email2}");
                     return sb.ToString().TrimEnd();
                 }
             }
@@ -337,10 +310,7 @@ namespace CmsWeb.Areas.Reports.Models
                 }
             }
 
-            public string CSZ
-            {
-                get { return Util.FormatCSZ5(City, State, Zip); }
-            }
+            public string CSZ => Util.FormatCSZ5(City, State, Zip);
 
             public string Email { get; set; }
             public string Email2 { get; set; }
@@ -374,19 +344,12 @@ namespace CmsWeb.Areas.Reports.Models
             public string Name { get; set; }
             public int? Age { get; set; }
 
-            public string Display
-            {
-                get { return Age.HasValue ? "{0} ({1})".Fmt(Name, Age) : Name; }
-            }
+            public string Display => Age.HasValue ? $"{Name} ({Age})" : Name;
 
             public int? BDay { get; set; }
             public int? BMon { get; set; }
 
-            public string BirthDay
-            {
-                get { return Util.FormatBirthday(null, BMon, BDay); }
-            }
-
+            public string BirthDay => Util.FormatBirthday(null, BMon, BDay);
         }
     }
 }

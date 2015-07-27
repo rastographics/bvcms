@@ -4,7 +4,7 @@
 @using UtilityExtensions
 @{
     ViewBag.Title = "Contribution Bundle";
-    ViewBag.PageHeader = "Contribution Bundle #{0}".Fmt(Model.BundleId);
+    ViewBag.PageHeader = $"Contribution Bundle #{Model.BundleId}";
     Layout = ViewExtensions2.TouchPointLayout();
 }
 @if ((bool?)TempData["createbundle"] == true)
@@ -106,7 +106,7 @@ else
                         }
                     });
                 }
-                
+
             };
 
             $.SetValidation();

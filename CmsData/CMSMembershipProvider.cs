@@ -1,33 +1,30 @@
 ﻿/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
-using System.Web.Security;
-using System.Configuration.Provider;
-using System.Collections.Specialized;
+
 using System;
+using System.Collections.Specialized;
 using System.Configuration;
+using System.Configuration.Provider;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Web.Configuration;
-using System.Linq;
-using UtilityExtensions;
-using System.Collections.Generic;
 using System.Web;
-using System.Text.RegularExpressions;
+using System.Web.Configuration;
+using System.Web.Hosting;
+using System.Web.Security;
 using CmsData.API;
+using UtilityExtensions;
 
 namespace CmsData
 {
 
     public sealed class CMSMembershipProvider : MembershipProvider
     {
-        public static CMSMembershipProvider provider
-        {
-            get { return Membership.Provider as CMSMembershipProvider; }
-        }
+        public static CMSMembershipProvider provider => Membership.Provider as CMSMembershipProvider;
 
         private int newPasswordLength = 8;
 
@@ -42,10 +39,10 @@ namespace CmsData
             if (config == null)
                 throw new ArgumentNullException("config");
 
-            if (name == null || name.Length == 0)
+            if (string.IsNullOrEmpty(name))
                 name = "CMSMembershipProvider";
 
-            if (String.IsNullOrEmpty(config["description"]))
+            if (string.IsNullOrEmpty(config["description"]))
             {
                 config.Remove("description");
                 config.Add("description", "CMS Membership provider");
@@ -55,10 +52,10 @@ namespace CmsData
             pMaxInvalidPasswordAttempts = Convert.ToInt32(GetConfigValue(config["maxInvalidPasswordAttempts"], "5"));
             pPasswordAttemptWindow = Convert.ToInt32(GetConfigValue(config["passwordAttemptWindow"], "10"));
 
-			var Db = GetDb();
-        	pMinRequiredPasswordLength = Db.Setting("PasswordMinLength", "7").ToInt();
+            var Db = GetDb();
+            pMinRequiredPasswordLength = Db.Setting("PasswordMinLength", "7").ToInt();
 
-        	pMinRequiredNonAlphanumericCharacters = DbUtil.Db.Setting("PasswordRequireSpecialCharacter", "true").ToBool() ? 1 : 0;
+            pMinRequiredNonAlphanumericCharacters = DbUtil.Db.Setting("PasswordRequireSpecialCharacter", "true").ToBool() ? 1 : 0;
             pPasswordStrengthRegularExpression = Convert.ToString(GetConfigValue(config["passwordStrengthRegularExpression"], ""));
             pEnablePasswordReset = Convert.ToBoolean(GetConfigValue(config["enablePasswordReset"], "true"));
             pEnablePasswordRetrieval = Convert.ToBoolean(GetConfigValue(config["enablePasswordRetrieval"], "true"));
@@ -86,7 +83,7 @@ namespace CmsData
 
             // Get encryption and decryption key information from the configuration.
             Configuration cfg =
-              WebConfigurationManager.OpenWebConfiguration(System.Web.Hosting.HostingEnvironment.ApplicationVirtualPath);
+              WebConfigurationManager.OpenWebConfiguration(HostingEnvironment.ApplicationVirtualPath);
             machineKey = (MachineKeySection)cfg.GetSection("system.web/machineKey");
 
             if (machineKey.ValidationKey.Contains("AutoGenerate"))
@@ -99,9 +96,9 @@ namespace CmsData
 //		public bool pRequireOneNumber { get; set; }
 //		public bool pRequireOneUpper { get; set; }
 
-    	private string GetConfigValue(string configValue, string defaultValue)
+        private string GetConfigValue(string configValue, string defaultValue)
         {
-            if (String.IsNullOrEmpty(configValue))
+            if (string.IsNullOrEmpty(configValue))
                 return defaultValue;
             return configValue;
         }
@@ -109,55 +106,25 @@ namespace CmsData
         public override string ApplicationName { get { return "cms"; } set { } }
 
         private bool pEnablePasswordReset;
-        public override bool EnablePasswordReset
-        {
-            get { return pEnablePasswordReset; }
-        }
+        public override bool EnablePasswordReset => pEnablePasswordReset;
         private bool pEnablePasswordRetrieval;
-        public override bool EnablePasswordRetrieval
-        {
-            get { return pEnablePasswordRetrieval; }
-        }
+        public override bool EnablePasswordRetrieval => pEnablePasswordRetrieval;
         private bool pRequiresQuestionAndAnswer;
-        public override bool RequiresQuestionAndAnswer
-        {
-            get { return pRequiresQuestionAndAnswer; }
-        }
+        public override bool RequiresQuestionAndAnswer => pRequiresQuestionAndAnswer;
         private bool pRequiresUniqueEmail;
-        public override bool RequiresUniqueEmail
-        {
-            get { return pRequiresUniqueEmail; }
-        }
+        public override bool RequiresUniqueEmail => pRequiresUniqueEmail;
         private int pMaxInvalidPasswordAttempts;
-        public override int MaxInvalidPasswordAttempts
-        {
-            get { return pMaxInvalidPasswordAttempts; }
-        }
+        public override int MaxInvalidPasswordAttempts => pMaxInvalidPasswordAttempts;
         private int pPasswordAttemptWindow;
-        public override int PasswordAttemptWindow
-        {
-            get { return pPasswordAttemptWindow; }
-        }
+        public override int PasswordAttemptWindow => pPasswordAttemptWindow;
         private MembershipPasswordFormat pPasswordFormat;
-        public override MembershipPasswordFormat PasswordFormat
-        {
-            get { return pPasswordFormat; }
-        }
+        public override MembershipPasswordFormat PasswordFormat => pPasswordFormat;
         private int pMinRequiredNonAlphanumericCharacters;
-        public override int MinRequiredNonAlphanumericCharacters
-        {
-            get { return pMinRequiredNonAlphanumericCharacters; }
-        }
+        public override int MinRequiredNonAlphanumericCharacters => pMinRequiredNonAlphanumericCharacters;
         private int pMinRequiredPasswordLength;
-        public override int MinRequiredPasswordLength
-        {
-            get { return pMinRequiredPasswordLength; }
-        }
+        public override int MinRequiredPasswordLength => pMinRequiredPasswordLength;
         private string pPasswordStrengthRegularExpression;
-        public override string PasswordStrengthRegularExpression
-        {
-            get { return pPasswordStrengthRegularExpression; }
-        }
+        public override string PasswordStrengthRegularExpression => pPasswordStrengthRegularExpression;
         public bool AdminOverride = false;
         public override bool ChangePassword(string username, string oldPwd, string newPwd)
         {
@@ -176,16 +143,16 @@ namespace CmsData
             if (!AdminOverride)
             {
                 if (newPwd.Length < MinRequiredPasswordLength)
-                    throw new ArgumentException("Password must contain at least {0} chars".Fmt(MinRequiredPasswordLength));
-				if (MembershipService.RequireSpecialCharacter)
-					if (newPwd.All(char.IsLetterOrDigit))
+                    throw new ArgumentException($"Password must contain at least {MinRequiredPasswordLength} chars");
+                if (MembershipService.RequireSpecialCharacter)
+                    if (newPwd.All(char.IsLetterOrDigit))
                         throw new ArgumentException("Password needs at least 1 non-alphanumeric character");
-				if (MembershipService.RequireOneNumber)
-					if (!newPwd.Any(char.IsDigit))
-						throw new ArgumentException("Password needs at least 1 number");
-				if (MembershipService.RequireOneUpper)
-					if (!newPwd.Any(char.IsUpper))
-						throw new ArgumentException("Password needs at least 1 uppercase letter");
+                if (MembershipService.RequireOneNumber)
+                    if (!newPwd.Any(char.IsDigit))
+                        throw new ArgumentException("Password needs at least 1 number");
+                if (MembershipService.RequireOneUpper)
+                    if (!newPwd.Any(char.IsUpper))
+                        throw new ArgumentException("Password needs at least 1 uppercase letter");
             }
 
             var db = GetDb();
@@ -529,8 +496,8 @@ namespace CmsData
             {
                 var Db = GetDb();
                 username = Util.GetUserName(username);
-                var user = Db.Users.FirstOrDefault(u => 
-                    u.Username == username 
+                var user = Db.Users.FirstOrDefault(u =>
+                    u.Username == username
                     || u.EmailAddress == username
                     || u.Person.EmailAddress2 == username
                     );
@@ -540,10 +507,10 @@ namespace CmsData
                     if (user.IsApproved)
                     {
                         user.LastLoginDate = Util.Now;
-						user.FailedPasswordAttemptCount = 0;
-						if (user.IsLockedOut && user.FailedPasswordAttemptWindowStart.HasValue)
-							if ((DateTime.Now - user.FailedPasswordAttemptWindowStart.Value).TotalMinutes > 3)
-								user.IsLockedOut = false;
+                        user.FailedPasswordAttemptCount = 0;
+                        if (user.IsLockedOut && user.FailedPasswordAttemptWindowStart.HasValue)
+                            if ((DateTime.Now - user.FailedPasswordAttemptWindowStart.Value).TotalMinutes > 3)
+                                user.IsLockedOut = false;
                         Db.SubmitChanges();
                         return true;
                     }

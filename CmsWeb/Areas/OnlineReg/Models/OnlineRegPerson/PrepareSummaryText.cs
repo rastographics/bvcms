@@ -25,13 +25,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static void SummarizePayment(Transaction ti, OrganizationMember om, StringBuilder sb)
         {
-            if ((ti.Amt ?? 0) == 0 || om == null) 
+            if ((ti.Amt ?? 0) == 0 || om == null)
                 return;
 
             var ts = om.TransactionSummary(DbUtil.Db);
             if (ts != null)
                 sb.AppendFormat(@"
-<tr><td colspan='2'> 
+<tr><td colspan='2'>
 <table cellpadding=4>
     <tr>
         <td>Registrant Fee</td>
@@ -72,7 +72,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return;
             var goer = DbUtil.Db.LoadPersonById(MissionTripGoerId ?? 0);
             if (goer != null)
-                sb.AppendFormat("<tr><td>Support Mission Trip for:</td><td>{0}</td></tr>\n", goer.Name);
+                sb.Append($"<tr><td>Support Mission Trip for:</td><td>{goer.Name}</td></tr>\n");
             if (MissionTripSupportGeneral > 0)
                 sb.Append("<tr><td>Support Mission Trip:</td><td>Any other participiants</td></tr>\n");
         }
@@ -82,19 +82,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var sb = StartSummary();
             foreach (var m in FamilyAttend.Where(m => m.Attend))
                 if (m.PeopleId != null)
-                    sb.Append("<tr><td colspan=\"2\">{0}{1}</td></tr>\n"
-                        .Fmt(m.Name, (m.Age.HasValue ? " ({0})".Fmt(m.Age) : "")));
+                    sb.Append($"<tr><td colspan=\"2\">{m.Name}{(m.Age.HasValue ? $" ({m.Age})" : "")}</td></tr>\n");
                 else
                 {
-                    sb.Append("<tr><td colspan=\"2\">{0}{1}".Fmt(m.Name, (m.Age.HasValue ? " ({0})".Fmt(m.Age) : "")));
+                    sb.Append($"<tr><td colspan=\"2\">{m.Name}{(m.Age.HasValue ? $" ({m.Age})" : "")}");
                     if (m.Email.HasValue())
-                        sb.Append(", {0}".Fmt(m.Email));
+                        sb.Append($", {m.Email}");
                     if (m.Birthday.HasValue())
-                        sb.Append(", {0}".Fmt(m.Birthday));
+                        sb.Append($", {m.Birthday}");
                     if (m.MaritalId.HasValue)
-                        sb.Append(", {0}".Fmt(m.Marital));
+                        sb.Append($", {m.Marital}");
                     if (m.GenderId.HasValue)
-                        sb.Append(", {0}".Fmt(m.Gender));
+                        sb.Append($", {m.Gender}");
                     sb.Append("</td></tr>\n");
                 }
             return FinishSummary(sb);
@@ -204,22 +203,21 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             foreach (var a in Text[ask.UniqueId])
                 if (a.Value.HasValue())
-                    sb.AppendFormat("<tr><td>{0}:</td><td>{1}</td></tr>\n".Fmt(a.Key, a.Value));
+                    sb.Append($"<tr><td>{a.Key}:</td><td>{a.Value}</td></tr>\n");
         }
 
         private void SummarizeExtraAnswers(StringBuilder sb, Ask ask)
         {
             foreach (var a in ExtraQuestion[ask.UniqueId])
                 if (a.Value.HasValue())
-                    sb.AppendFormat("<tr><td>{0}:</td><td>{1}</td></tr>\n".Fmt(a.Key, a.Value));
+                    sb.Append($"<tr><td>{a.Key}:</td><td>{a.Value}</td></tr>\n");
         }
 
         private void SummarizeYesNoChoices(StringBuilder sb, Ask ask)
         {
             foreach (var a in ((AskYesNoQuestions) ask).list)
                 if (YesNoQuestion.ContainsKey(a.SmallGroup))
-                    sb.AppendFormat("<tr><td>{0}:</td><td>{1}</td></tr>\n".Fmt(a.Question,
-                        YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No"));
+                    sb.Append($"<tr><td>{a.Question}:</td><td>{(YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No")}</td></tr>\n");
         }
 
         private void SummarizeCheckboxChoices(StringBuilder sb, Ask ask)
@@ -230,12 +228,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 string row;
                 if (menulabel.HasValue())
-                    sb.Append("<tr><td colspan='2'><br>{0}</td></tr>\n".Fmt(menulabel));
+                    sb.Append($"<tr><td colspan='2'><br>{menulabel}</td></tr>\n");
                 if (i.Fee > 0)
-                    row = "<tr><td></td><td>{0} (${1:N2})<br>({2})</td></tr>\n".Fmt(i.Description, i.Fee,
-                        i.SmallGroup);
+                    row = $"<tr><td></td><td>{i.Description} (${i.Fee:N2})<br>({i.SmallGroup})</td></tr>\n";
                 else
-                    row = "<tr><td></td><td>{0}<br>({1})</td></tr>\n".Fmt(i.Description, i.SmallGroup);
+                    row = $"<tr><td></td><td>{i.Description}<br>({i.SmallGroup})</td></tr>\n";
                 sb.Append(row);
                 menulabel = string.Empty;
             }
@@ -248,11 +245,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 string row;
                 if (i.amt > 0)
-                    row = "<tr><td>{0}</td><td>{1} {2} (at {3:N2})</td></tr>\n".Fmt(menulabel, i.number, i.desc,
-                        i.amt);
+                    row = $"<tr><td>{menulabel}</td><td>{i.number} {i.desc} (at {i.amt:N2})</td></tr>\n";
                 else
-                    row = "<tr><td>{0}</td><td>{1} {2}</td></tr>\n".Fmt(menulabel, i.number, i.desc);
-                sb.AppendFormat(row);
+                    row = $"<tr><td>{menulabel}</td><td>{i.number} {i.desc}</td></tr>\n";
+                sb.Append(row);
                 menulabel = string.Empty;
             }
         }

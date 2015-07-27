@@ -43,9 +43,8 @@ namespace UtilityExtensions
             }
 
             msg.Headers.Add("X-SMTPAPI",
-                        "{{\"unique_args\":{{\"host\":\"{0}\",\"mailid\":\"{1}\",\"pid\":\"{2}\"}}}}"
-                        .Fmt(CmsHost, id, pid));
-            msg.Headers.Add("X-BVCMS", "host:{0}, mailid:{1}, pid:{2}".Fmt(CmsHost, id, pid));
+                $"{{\"unique_args\":{{\"host\":\"{CmsHost}\",\"mailid\":\"{id}\",\"pid\":\"{pid}\"}}}}");
+            msg.Headers.Add("X-BVCMS", $"host:{CmsHost}, mailid:{id}, pid:{pid}");
 
             foreach (var ma in to)
             {
@@ -61,8 +60,8 @@ namespace UtilityExtensions
             {
                 msg.AddAddr(msg.From);
                 msg.AddAddr(FirstAddress(senderrorsto));
-                msg.Subject += "-- bad addr for {0}({1})".Fmt(CmsHost, pid);
-                BadEmailLink = "<p><a href='{0}/Person2/{1}'>bad addr for</a></p>\n".Fmt(CmsHost, pid);
+                msg.Subject += $"-- bad addr for {CmsHost}({pid})";
+                BadEmailLink = $"<p><a href='{CmsHost}/Person2/{pid}'>bad addr for</a></p>\n";
             }
 
             var regex = new Regex("</?([^>]*)>", RegexOptions.IgnoreCase | RegexOptions.Multiline);

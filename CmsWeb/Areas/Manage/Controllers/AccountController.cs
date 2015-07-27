@@ -1,19 +1,19 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
-using UtilityExtensions;
-using System.IO;
-using System.Web.Configuration;
 using CmsWeb.Models;
 using net.openstack.Core.Domain;
 using net.openstack.Providers.Rackspace;
+using UtilityExtensions;
 using User = CmsData.User;
-using System.ComponentModel.DataAnnotations;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
@@ -31,8 +31,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var m = new AccountModel();
             string baseurl = null;
 
-            var fn = "{0}.{1:yyMMddHHmm}.{2}".Fmt(DbUtil.Db.Host, DateTime.Now,
-                m.CleanFileName(Path.GetFileName(file.FileName)));
+            var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
             var error = string.Empty;
             var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
 
@@ -41,16 +40,16 @@ namespace CmsWeb.Areas.Manage.Controllers
                 baseurl = rackspacecdn;
                 var username = ConfigurationManager.AppSettings["RackspaceUser"];
                 var key = ConfigurationManager.AppSettings["RackspaceKey"];
-                var cloudIdentity = new CloudIdentity() { APIKey = key, Username = username };
+                var cloudIdentity = new CloudIdentity {APIKey = key, Username = username};
                 var cloudFilesProvider = new CloudFilesProvider(cloudIdentity);
                 cloudFilesProvider.CreateObject("AllFiles", file.InputStream, fn);
             }
             else // local server
             {
-                baseurl = "{0}://{1}/Upload/".Fmt(Request.Url.Scheme, Request.Url.Authority);
+                baseurl = $"{Request.Url.Scheme}://{Request.Url.Authority}/Upload/";
                 try
                 {
-                    string path = Server.MapPath("/Upload/");
+                    var path = Server.MapPath("/Upload/");
                     path += fn;
 
                     path = m.GetNewFileName(path);
@@ -62,7 +61,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     baseurl = string.Empty;
                 }
             }
-            return Json(new { link = baseurl + fn, error = error }, JsonRequestBehavior.AllowGet);
+            return Json(new {link = baseurl + fn, error}, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost, MyRequireHttps]
@@ -73,8 +72,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (Request.Files.Count == 0)
                 return Content("");
             var file = Request.Files[0];
-            var fn = "{0}.{1:yyMMddHHmm}.{2}".Fmt(DbUtil.Db.Host, DateTime.Now,
-                m.CleanFileName(Path.GetFileName(file.FileName)));
+            var fn = $"{DbUtil.Db.Host}.{DateTime.Now:yyMMddHHmm}.{m.CleanFileName(Path.GetFileName(file.FileName))}";
             var error = string.Empty;
             var rackspacecdn = ConfigurationManager.AppSettings["RackspaceUrlCDN"];
 
@@ -83,16 +81,16 @@ namespace CmsWeb.Areas.Manage.Controllers
                 baseurl = rackspacecdn;
                 var username = ConfigurationManager.AppSettings["RackspaceUser"];
                 var key = ConfigurationManager.AppSettings["RackspaceKey"];
-                var cloudIdentity = new CloudIdentity() { APIKey = key, Username = username };
+                var cloudIdentity = new CloudIdentity {APIKey = key, Username = username};
                 var cloudFilesProvider = new CloudFilesProvider(cloudIdentity);
                 cloudFilesProvider.CreateObject("AllFiles", file.InputStream, fn);
             }
             else // local server
             {
-                baseurl = "{0}://{1}/Upload/".Fmt(Request.Url.Scheme, Request.Url.Authority);
+                baseurl = $"{Request.Url.Scheme}://{Request.Url.Authority}/Upload/";
                 try
                 {
-                    string path = Server.MapPath("/Upload/");
+                    var path = Server.MapPath("/Upload/");
                     path += fn;
 
                     path = m.GetNewFileName(path);
@@ -104,9 +102,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     baseurl = string.Empty;
                 }
             }
-            return Content(string.Format(
-"<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction( {0}, '{1}', '{2}' );</script>",
-CKEditorFuncNum, baseurl + fn, error));
+            return Content($"<script type='text/javascript'>window.parent.CKEDITOR.tools.callFunction( {CKEditorFuncNum}, '{baseurl + fn}', '{error}' );</script>");
         }
 
         [Route("~/Abandon")]
@@ -115,11 +111,12 @@ CKEditorFuncNum, baseurl + fn, error));
             Session.Abandon();
             return Redirect("/");
         }
+
         [Route("~/ForceError")]
         public ActionResult ForceError()
         {
             var z = 0;
-            var x = 2 / z;
+            var x = 2/z;
             return Content("error");
         }
 
@@ -139,7 +136,7 @@ CKEditorFuncNum, baseurl + fn, error));
             if (redirect != null)
                 return Redirect(redirect);
 
-            string user = AccountModel.GetValidToken(Request.QueryString["otltoken"]);
+            var user = AccountModel.GetValidToken(Request.QueryString["otltoken"]);
             if (user.HasValue())
             {
                 FormsAuthentication.SetAuthCookie(user, false);
@@ -149,7 +146,7 @@ CKEditorFuncNum, baseurl + fn, error));
                 return Redirect("/");
             }
 
-            var m = new AccountInfo { ReturnUrl = returnUrl };
+            var m = new AccountInfo {ReturnUrl = returnUrl};
             return View(m);
         }
 
@@ -159,7 +156,7 @@ CKEditorFuncNum, baseurl + fn, error));
                 return false;
             if (!Util.IsDebug())
                 return false;
-            if(!WebConfigurationManager.AppSettings["TryImpersonate"].ToBool())
+            if (!WebConfigurationManager.AppSettings["TryImpersonate"].ToBool())
                 return false;
             var username = WebConfigurationManager.AppSettings["DebugUser"];
             if (!username.HasValue())
@@ -198,9 +195,9 @@ CKEditorFuncNum, baseurl + fn, error));
                 return Redirect("/Account/ChangePassword");
 
             var access = DbUtil.Db.Setting("LimitAccess", "");
-            if(access.HasValue())
+            if (access.HasValue())
                 if (!user.InRole("Developer"))
-                    return Message("Site is {0}, contact {1} for help".Fmt(access, DbUtil.AdminMail));
+                    return Message($"Site is {access}, contact {DbUtil.AdminMail} for help");
 
             if (!m.ReturnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
@@ -209,6 +206,7 @@ CKEditorFuncNum, baseurl + fn, error));
                 return Redirect(m.ReturnUrl);
             return Redirect("/");
         }
+
         [MyRequireHttps]
         public ActionResult LogOff()
         {
@@ -216,6 +214,7 @@ CKEditorFuncNum, baseurl + fn, error));
             Session.Abandon();
             return Redirect("/");
         }
+
         [MyRequireHttps]
         public ActionResult ForgotUsername(string email)
         {
@@ -227,8 +226,7 @@ CKEditorFuncNum, baseurl + fn, error));
             if (!ModelState.IsValid)
                 return View();
 
-            if (email != null)
-                email = email.Trim();
+            email = email?.Trim();
             var q = from u in DbUtil.Db.Users
                     where u.Person.EmailAddress == email || u.Person.EmailAddress2 == email
                     where email != "" && email != null
@@ -242,23 +240,14 @@ CKEditorFuncNum, baseurl + fn, error));
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.EmailRedacted(DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
-                    "touchpoint user: {0} forgot username".Fmt(user.Name), "no content");
+                    $"touchpoint user: {user.Name} forgot username", "no content");
             }
             if (!q.Any())
                 DbUtil.Db.EmailRedacted(DbUtil.AdminMail,
                     CMSRoleProvider.provider.GetAdmins(),
-                    "touchpoint unknown email: {0} forgot username".Fmt(email), "no content");
+                    $"touchpoint unknown email: {email} forgot username", "no content");
 
             return RedirectToAction("RequestUsername");
-
-        }
-
-        public class AccountInfo
-        {
-            [Required]
-            public string UsernameOrEmail { get; set; }
-            public string Password { get; set; }
-            public string ReturnUrl { get; set; }
         }
 
         [HttpGet, MyRequireHttps]
@@ -277,6 +266,7 @@ CKEditorFuncNum, baseurl + fn, error));
 
             return RedirectToAction("RequestPassword");
         }
+
         [MyRequireHttps]
         public ActionResult CreateAccount(string id)
         {
@@ -289,7 +279,7 @@ CKEditorFuncNum, baseurl + fn, error));
                 return View("LinkUsed");
             var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
             if ((p.Age ?? 16) < minage)
-                return Content("must be Adult ({0} or older)".Fmt(minage));
+                return Content($"must be Adult ({minage} or older)");
             var user = MembershipService.CreateUser(DbUtil.Db, pid);
             FormsAuthentication.SetAuthCookie(user.Username, false);
             AccountModel.SetUserInfo(user.Username, Session);
@@ -302,16 +292,19 @@ CKEditorFuncNum, baseurl + fn, error));
 
             return View("SetPassword");
         }
+
         [MyRequireHttps]
         public ActionResult RequestPassword()
         {
             return View();
         }
+
         [MyRequireHttps]
         public ActionResult RequestUsername()
         {
             return View();
         }
+
         [MyRequireHttps]
         [Authorize]
         public ActionResult ChangePassword()
@@ -322,6 +315,7 @@ CKEditorFuncNum, baseurl + fn, error));
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
             return View();
         }
+
         [MyRequireHttps]
         [HttpGet]
         public ActionResult SetPassword(Guid? id)
@@ -329,6 +323,7 @@ CKEditorFuncNum, baseurl + fn, error));
             ViewBag.Id = id;
             return View("SetPasswordConfirm");
         }
+
         [MyRequireHttps]
         [HttpPost]
         public ActionResult SetPasswordConfirm(Guid? id)
@@ -351,6 +346,7 @@ CKEditorFuncNum, baseurl + fn, error));
             ViewBag.RequireOneUpper = MembershipService.RequireOneUpper;
             return View("SetPassword");
         }
+
         [MyRequireHttps]
         [HttpPost]
         [Authorize]
@@ -370,8 +366,7 @@ CKEditorFuncNum, baseurl + fn, error));
             {
                 if (mu.ChangePassword(mu.ResetPassword(), newPassword))
                     return RedirectToAction("ChangePasswordSuccess");
-                else
-                    ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
+                ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
             }
             catch (Exception ex)
             {
@@ -379,6 +374,7 @@ CKEditorFuncNum, baseurl + fn, error));
             }
             return View();
         }
+
         [MyRequireHttps]
         [Authorize]
         [HttpPost]
@@ -397,11 +393,8 @@ CKEditorFuncNum, baseurl + fn, error));
             {
                 if (MembershipService.ChangePassword(User.Identity.Name, currentPassword, newPassword))
                     return RedirectToAction("ChangePasswordSuccess");
-                else
-                {
-                    ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
-                    return View();
-                }
+                ModelState.AddModelError("form", "The current password is incorrect or the new password is invalid.");
+                return View();
             }
             catch (Exception ex)
             {
@@ -409,6 +402,7 @@ CKEditorFuncNum, baseurl + fn, error));
                 return View();
             }
         }
+
         [MyRequireHttps]
         public ActionResult ChangePasswordSuccess()
         {
@@ -417,18 +411,28 @@ CKEditorFuncNum, baseurl + fn, error));
                 return Redirect(rd);
             return View();
         }
+
         private bool ValidateChangePassword(string currentPassword, string newPassword, string confirmPassword)
         {
             if (string.IsNullOrEmpty(currentPassword))
                 ModelState.AddModelError("currentPassword", "You must specify a current password.");
             if (newPassword == null || newPassword.Length < MembershipService.MinPasswordLength)
                 ModelState.AddModelError("newPassword",
-                        String.Format(CultureInfo.CurrentCulture,
-                             "You must specify a new password of {0} or more characters.",
-                             MembershipService.MinPasswordLength));
-            if (!String.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
+                    string.Format(CultureInfo.CurrentCulture,
+                        "You must specify a new password of {0} or more characters.",
+                        MembershipService.MinPasswordLength));
+            if (!string.Equals(newPassword, confirmPassword, StringComparison.Ordinal))
                 ModelState.AddModelError("form", "The new password and confirmation password do not match.");
             return ModelState.IsValid;
+        }
+
+        public class AccountInfo
+        {
+            [Required]
+            public string UsernameOrEmail { get; set; }
+
+            public string Password { get; set; }
+            public string ReturnUrl { get; set; }
         }
     }
 }

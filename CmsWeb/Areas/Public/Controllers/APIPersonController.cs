@@ -1,13 +1,13 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Areas.People.Models;
-using UtilityExtensions;
-using CmsWeb.Models;
-using System.IO;
 using CmsData.API;
+using CmsWeb.Areas.People.Models;
+using CmsWeb.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -18,11 +18,11 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<Login error=\"{0}\" />".Fmt(ret.Substring(1)));
+                return Content($"<Login error=\"{ret.Substring(1)}\" />");
 
-			var validationStatus = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString);
-			if (!validationStatus.IsValid)
-                return Content("<Login error=\"{0} not valid\">{1}</Login>".Fmt(user ?? "(null)", validationStatus.ErrorMessage));
+            var validationStatus = AccountModel.AuthenticateLogon(user, password, Request.Url.OriginalString);
+            if (!validationStatus.IsValid)
+                return Content($"<Login error=\"{user ?? "(null)"} not valid\">{validationStatus.ErrorMessage}</Login>");
 
             var api = new APIFunctions(DbUtil.Db);
             return Content(api.Login(validationStatus.User.Person), "text/xml");
@@ -33,22 +33,24 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<LoginInfo error=\"{0}\" />".Fmt(ret.Substring(1)));
-			if (!id.HasValue)
-				return Content("<LoginInfo error=\"Missing id\" />");
+                return Content($"<LoginInfo error=\"{ret.Substring(1)}\" />");
+            if (!id.HasValue)
+                return Content("<LoginInfo error=\"Missing id\" />");
             var p = DbUtil.Db.People.Single(pp => pp.PeopleId == id);
             var api = new APIFunctions(DbUtil.Db);
             return Content(api.Login(p), "text/xml");
         }
+
         [HttpPost]
         public ActionResult GetOneTimeLoginLink(string url, string user)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
                 return Content(url);
-			DbUtil.LogActivity("APIPerson GetOneTimeLoginLink {0}, {1}".Fmt(url, user));
+            DbUtil.LogActivity($"APIPerson GetOneTimeLoginLink {url}, {user}");
             return Content(GetOTLoginLink(url, user));
         }
+
         public static string GetOTLoginLink(string url, string user)
         {
             var ot = new OneTimeLink
@@ -59,11 +61,9 @@ namespace CmsWeb.Areas.Public.Controllers
             };
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-            return "{0}Logon?ReturnUrl={1}&otltoken={2}".Fmt(
-                Util.CmsHost2, 
-                HttpUtility.UrlEncode(url), 
-                ot.Id.ToCode());
+            return $"{Util.CmsHost2}Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}";
         }
+
         [HttpPost]
         public ActionResult GetOneTimeRegisterLink(int OrgId, int PeopleId)
         {
@@ -73,65 +73,69 @@ namespace CmsWeb.Areas.Public.Controllers
             var ot = new OneTimeLink
             {
                 Id = Guid.NewGuid(),
-                Querystring = "{0},{1},0".Fmt(OrgId, PeopleId),
-                Expires = DateTime.Now.AddMinutes(10),
+                Querystring = $"{OrgId},{PeopleId},0",
+                Expires = DateTime.Now.AddMinutes(10)
             };
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+            DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
             return Content(Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode());
         }
+
         [HttpGet]
         public ActionResult ExtraValues(int? id, string fields)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<ExtraValues error=\"{0}\" />".Fmt(ret.Substring(1)));
-			if (!id.HasValue)
-				return Content("<ExtraValues error=\"Missing id\" />");
+                return Content($"<ExtraValues error=\"{ret.Substring(1)}\" />");
+            if (!id.HasValue)
+                return Content("<ExtraValues error=\"Missing id\" />");
 
-			DbUtil.LogActivity("APIPerson ExtraValues {0}, {1}".Fmt(id, fields));
+            DbUtil.LogActivity($"APIPerson ExtraValues {id}, {fields}");
             return Content(new APIFunctions(DbUtil.Db).ExtraValues(id.Value, fields), "text/xml");
         }
+
         [HttpPost]
         public ActionResult AddEditExtraValue(int peopleid, string field, string value, string type = "data")
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
                 return Content(ret.Substring(1));
-			DbUtil.LogActivity("APIPerson AddExtraValue {0}, {1}".Fmt(peopleid, field));
+            DbUtil.LogActivity($"APIPerson AddExtraValue {peopleid}, {field}");
             return Content(new APIFunctions(DbUtil.Db).AddEditExtraValue(peopleid, field, value, type));
         }
+
         [HttpPost]
         public ActionResult DeleteExtraValue(int peopleid, string field)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
                 return Content(ret.Substring(1));
-			DbUtil.LogActivity("APIPerson DeleteExtraValue {0}, {1}".Fmt(peopleid, field));
+            DbUtil.LogActivity($"APIPerson DeleteExtraValue {peopleid}, {field}");
             new APIFunctions(DbUtil.Db).DeleteExtraValue(peopleid, field);
             return Content("ok");
         }
+
         [HttpPost]
         public ActionResult ChangePassword(string username, string current, string password)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
                 return Content(ret.Substring(1));
-			DbUtil.LogActivity("APIPerson ChangePassword " + username);
+            DbUtil.LogActivity("APIPerson ChangePassword " + username);
             try
             {
                 var ok = MembershipService.ChangePassword(username, current, password);
                 if (ok)
                     return Content("ok");
-                else
-                    return Content("<ChangePassword error=\"invalid password\" />");
+                return Content("<ChangePassword error=\"invalid password\" />");
             }
             catch (Exception ex)
             {
-                return Content("<ChangePassword error=\"{0}\" />".Fmt(ex.Message));
+                return Content($"<ChangePassword error=\"{ex.Message}\" />");
             }
         }
+
         [HttpPost]
         public ActionResult SetPassword(string username, string password)
         {
@@ -140,88 +144,95 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content(ret.Substring(1));
             var mu = CMSMembershipProvider.provider.GetUser(username, false);
             mu.UnlockUser();
-			DbUtil.LogActivity("APIPerson SetPassword " + username);
+            DbUtil.LogActivity("APIPerson SetPassword " + username);
             try
             {
                 if (mu.ChangePassword(mu.ResetPassword(), password))
                     return Content("ok");
-                else
-                    return Content("<ChangePassword error=\"invalid password\" />");
+                return Content("<ChangePassword error=\"invalid password\" />");
             }
             catch (Exception ex)
             {
-                return Content("<ChangePassword error=\"{0}\" />".Fmt(ex.Message));
+                return Content($"<ChangePassword error=\"{ex.Message}\" />");
             }
         }
+
         [HttpGet]
         public ActionResult FamilyMembers(int? id)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<FamilyMembers error=\"{0}\" />".Fmt(ret.Substring(1)));
-			if (!id.HasValue)
-				return Content("<FamilyMembers error=\"Missing id\" />");
-			DbUtil.LogActivity("APIPerson FamilyMembers " + id);
+                return Content($"<FamilyMembers error=\"{ret.Substring(1)}\" />");
+            if (!id.HasValue)
+                return Content("<FamilyMembers error=\"Missing id\" />");
+            DbUtil.LogActivity("APIPerson FamilyMembers " + id);
             return Content(new APIFunctions(DbUtil.Db).FamilyMembers(id.Value), "text/xml");
         }
+
         [HttpGet]
         public ActionResult AccessUsers()
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<AccessUsers error=\"{0}\" />".Fmt(ret.Substring(1)));
-			DbUtil.LogActivity("APIPerson AccessUsers");
+                return Content($"<AccessUsers error=\"{ret.Substring(1)}\" />");
+            DbUtil.LogActivity("APIPerson AccessUsers");
             return Content(new APIFunctions(DbUtil.Db).AccessUsersXml(), "text/xml");
         }
+
         [HttpGet]
         public ActionResult AllUsers()
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<AccessUsers error=\"{0}\" />".Fmt(ret.Substring(1)));
-			DbUtil.LogActivity("APIPerson AccessUsers");
-            return Content(new APIFunctions(DbUtil.Db).AccessUsersXml(includeNoAccess:true), "text/xml");
+                return Content($"<AccessUsers error=\"{ret.Substring(1)}\" />");
+            DbUtil.LogActivity("APIPerson AccessUsers");
+            return Content(new APIFunctions(DbUtil.Db).AccessUsersXml(true), "text/xml");
         }
+
         [HttpGet]
         public ActionResult GetPeople(int? peopleid, int? famid, string first, string last)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<Person error=\"{0}\" />".Fmt(ret.Substring(1)));
-			DbUtil.LogActivity("APIPerson GetPeople");
+                return Content($"<Person error=\"{ret.Substring(1)}\" />");
+            DbUtil.LogActivity("APIPerson GetPeople");
             return Content(new APIPerson(DbUtil.Db).GetPeopleXml(peopleid, famid, first, last), "text/xml");
         }
+
         [HttpGet]
         public ActionResult GetPerson(int? id)
         {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<Person error=\"{0}\" />".Fmt(ret.Substring(1)));
-			if (!id.HasValue)
-				return Content("<Person error=\"Missing id\" />");
-			DbUtil.LogActivity("APIPerson GetPerson " + id);
+                return Content($"<Person error=\"{ret.Substring(1)}\" />");
+            if (!id.HasValue)
+                return Content("<Person error=\"Missing id\" />");
+            DbUtil.LogActivity("APIPerson GetPerson " + id);
             return Content(new APIPerson(DbUtil.Db).GetPersonXml(id.Value), "text/xml");
         }
+
         [HttpPost]
         public ActionResult UpdatePerson()
         {
             var reader = new StreamReader(Request.InputStream);
-            string xml = reader.ReadToEnd();
+            var xml = reader.ReadToEnd();
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content("<Person error=\"{0}\" />".Fmt(ret.Substring(1)));
-			DbUtil.LogActivity("APIPerson Update");
+                return Content($"<Person error=\"{ret.Substring(1)}\" />");
+            DbUtil.LogActivity("APIPerson Update");
             return Content(new APIPerson(DbUtil.Db).UpdatePersonXml(xml), "text/xml");
         }
+
         [HttpGet, Route("Portrait/{id:int?}/{w:int?}/{h:int?}")]
         public ActionResult Portrait(int? id, int? w, int? h)
         {
-            return new PictureResult(id ?? 0, w, h, portrait: true);
+            return new PictureResult(id ?? 0, w, h, true);
         }
+
         [HttpGet, Route("FamilyPortrait/{id:int?}/{w:int?}/{h:int?}")]
         public ActionResult FamilyPortrait(int? id, int? w, int? h)
         {
-            return new PictureResult(id ?? 0, w, h, portrait: false);
+            return new PictureResult(id ?? 0, w, h, false);
         }
     }
 }

@@ -1,10 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
-using System.Text;
 using CmsData;
 using CmsData.View;
 using LumenWorks.Framework.IO.Csv;
@@ -14,13 +12,14 @@ namespace CmsWeb.Models
 {
     public class UploadPeopleModel
     {
+        private readonly CMSDataContext Db;
+        private readonly CMSDataContext Db2;
+        private readonly bool noupdate;
+        private readonly int PeopleId;
+        private Dictionary<string, int> Campuses;
+        private List<ChangeDetail> fsb;
         private Dictionary<string, int> names;
         private List<ChangeDetail> psb;
-        private List<ChangeDetail> fsb;
-        private CMSDataContext Db;
-        private CMSDataContext Db2;
-        private int PeopleId;
-        private bool noupdate;
 
         public UploadPeopleModel(CMSDataContext Db, int PeopleId, bool noupdate)
         {
@@ -71,6 +70,7 @@ namespace CmsWeb.Models
                 if (value != null)
                     Util.SetProperty(p, prop, value);
         }
+
         private void SetField(Family f, string[] a, string prop, string s, object value)
         {
             if (names.ContainsKey(s))
@@ -95,7 +95,7 @@ namespace CmsWeb.Models
                     if (DateTime.TryParse(a[names[s]], out dt))
                     {
                         if (dt.Year < 1800)
-                            throw new Exception("error on {0} {1}: [{2}]({3})".Fmt(p.FirstName, p.LastName, names[s], a[names[s]]));
+                            throw new Exception($"error on {p.FirstName} {p.LastName}: [{names[s]}]({a[names[s]]})");
                         return dt;
                     }
                 }
@@ -174,6 +174,7 @@ namespace CmsWeb.Models
                 }
             return 10;
         }
+
         private int? Campus(string[] a)
         {
             if (names.ContainsKey("campus"))
@@ -182,7 +183,6 @@ namespace CmsWeb.Models
             return null;
         }
 
-        private Dictionary<string, int> Campuses;
         public bool DoUpload(string text, bool testing = false)
         {
             var rt = Db2.UploadPeopleRuns.OrderByDescending(mm => mm.Id).First();
@@ -191,30 +191,30 @@ namespace CmsWeb.Models
 
             var list0 = list.First().Select(kk => kk).ToList();
             names = list0.ToDictionary(i => i.TrimEnd(),
-                                       i => list0.FindIndex(s => s == i), StringComparer.OrdinalIgnoreCase);
+                i => list0.FindIndex(s => s == i), StringComparer.OrdinalIgnoreCase);
 
             if (names.ContainsKey("campus"))
             {
                 var campuslist = (from li in list.Skip(1)
                                   where li.Length == names.Count
                                   group li by li[names["campus"]]
-                                      into campus
-                                      where campus.Key.HasValue()
-                                      select campus.Key).ToList();
+                                  into campus
+                                  where campus.Key.HasValue()
+                                  select campus.Key).ToList();
                 var dbc = from c in campuslist
                           join cp in Db.Campus on c equals cp.Description into j
                           from cp in j.DefaultIfEmpty()
-                          select new { cp, c };
+                          select new {cp, c};
                 var clist = dbc.ToList();
                 if (clist.Count > 0)
                 {
                     var maxcampusid = 0;
-                    if(Db.Campus.Any())
+                    if (Db.Campus.Any())
                         maxcampusid = Db.Campus.Max(c => c.Id);
                     foreach (var i in clist)
                         if (i.cp == null)
                         {
-                            var cp = new Campu { Description = i.c, Id = ++maxcampusid };
+                            var cp = new Campu {Description = i.c, Id = ++maxcampusid};
                             if (!testing)
                                 Db.Campus.InsertOnSubmit(cp);
                         }
@@ -228,18 +228,18 @@ namespace CmsWeb.Models
             var q = (from li in list.Skip(1)
                      where li.Length == names.Count
                      group li by li[names["familyid"]]
-                         into fam
-                         select fam).ToList();
+                     into fam
+                     select fam).ToList();
             rt.Count = q.Sum(ff => ff.Count());
             Db2.SubmitChanges();
 
             var standardnames = new List<string>
-        	{
-        		"familyid", "title", "first", "last", "goesby", "altname", "gender", "marital", "maidenName",
-        		"address", "address2", "city", "state", "zip", "position", "birthday", "cellphone", "homephone",
-        		"workphone", "email", "email2", "suffix", "middle", "joindate", "dropdate", "baptismdate", "weddingdate",
-        		"memberstatus", "employer", "occupation",
-        	};
+            {
+                "familyid", "title", "first", "last", "goesby", "altname", "gender", "marital", "maidenName",
+                "address", "address2", "city", "state", "zip", "position", "birthday", "cellphone", "homephone",
+                "workphone", "email", "email2", "suffix", "middle", "joindate", "dropdate", "baptismdate", "weddingdate",
+                "memberstatus", "employer", "occupation"
+            };
             var orgs = new Dictionary<string, int>();
             var membertypes = new Dictionary<string, int>();
 
@@ -307,7 +307,7 @@ namespace CmsWeb.Models
                         UpdateField(p, a, "GenderId", "gender", Gender(a));
                         UpdateField(p, a, "MaritalStatusId", "marital", Marital(a));
                         UpdateField(p, a, "PositionInFamilyId", "position", Position(a));
-                        if(!testing)
+                        if (!testing)
                             UpdateField(p, a, "CampusId", "campus", Campus(a));
 
                         UpdateField(p.Family, a, "AddressLineOne", "address");
@@ -382,7 +382,7 @@ namespace CmsWeb.Models
                             if (m == null)
                             {
                                 var nx = Db.MemberStatuses.Max(mm => mm.Id) + 1;
-                                m = new MemberStatus { Id = nx, Description = ms, Code = nx.ToString() };
+                                m = new MemberStatus {Id = nx, Description = ms, Code = nx.ToString()};
                                 Db.MemberStatuses.InsertOnSubmit(m);
                             }
                             p.MemberStatusId = m.Id;

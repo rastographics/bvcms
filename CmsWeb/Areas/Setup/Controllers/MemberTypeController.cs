@@ -9,19 +9,6 @@ namespace CmsWeb.Areas.Setup.Controllers
     [RouteArea("Setup", AreaPrefix = "MemberType"), Route("{action=index}/{id?}")]
     public class MemberTypeController : CmsStaffController
     {
-        public MemberTypeController()
-        {
-
-        }
-        public class MemberTypeInfo
-        {
-            public int Id { get; set; }
-            public string Code { get; set; }
-            public string Description { get; set; }
-            public string AttendType { get; set; }
-            public int? AttendTypeId { get; set; }
-            public bool? Hardwired { get; set; }
-        }
         public ActionResult Index()
         {
             var q = from mt in DbUtil.Db.MemberTypes
@@ -42,16 +29,17 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             if (!id.HasValue)
                 return Content("need an integer id");
-            
+
             if (!DbUtil.Db.MemberTypes.Any(mt => mt.Id == id))
             {
-                var m = new MemberType { Id = id.Value };
+                var m = new MemberType {Id = id.Value};
                 DbUtil.Db.MemberTypes.InsertOnSubmit(m);
                 DbUtil.Db.SubmitChanges();
             }
-            
-            return Redirect("/MemberType/#{0}".Fmt(id));
+
+            return Redirect($"/MemberType/#{id}");
         }
+
         [HttpPost]
         public ActionResult Move(int fromid, int toid)
         {
@@ -96,28 +84,38 @@ namespace CmsWeb.Areas.Setup.Controllers
             if (mt == null)
                 return new EmptyResult();
             var IsUsed = (from m in DbUtil.Db.MemberTypes
-                            where m.Id == mt.Id
-                            let mta = m.Attends.Any()
-                            let mto = m.OrganizationMembers.Any()
-                            let mte = m.EnrollmentTransactions.Any()
-                            select (mta || mto || mte)).SingleOrDefault();
+                          where m.Id == mt.Id
+                          let mta = m.Attends.Any()
+                          let mto = m.OrganizationMembers.Any()
+                          let mte = m.EnrollmentTransactions.Any()
+                          select (mta || mto || mte)).SingleOrDefault();
             if (IsUsed)
                 return Content("used");
             DbUtil.Db.MemberTypes.DeleteOnSubmit(mt);
             DbUtil.Db.SubmitChanges();
             return Content("done");
         }
-        
+
         public JsonResult AttendTypeCodes()
         {
             var q = from c in DbUtil.Db.AttendTypes
                     select new
                     {
                         value = c.Id.ToString(),
-                        text = c.Description,
+                        text = c.Description
                     };
 
             return Json(q.ToList(), JsonRequestBehavior.AllowGet);
+        }
+
+        public class MemberTypeInfo
+        {
+            public int Id { get; set; }
+            public string Code { get; set; }
+            public string Description { get; set; }
+            public string AttendType { get; set; }
+            public int? AttendTypeId { get; set; }
+            public bool? Hardwired { get; set; }
         }
     }
 }

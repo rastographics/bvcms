@@ -2,18 +2,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsData;
 using System.Web.Mvc;
+using CmsData;
+using CmsData.Codes;
 using CmsWeb.Code;
 using UtilityExtensions;
-using System.Text.RegularExpressions;
-using System.Collections;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
 {
     public class OrgGroupsModel
     {
+        public int count;
+        private List<SelectListItem> mtypes;
+
+        public OrgGroupsModel()
+        {
+        }
+
+        public OrgGroupsModel(int id)
+        {
+            orgid = id;
+
+            var org = DbUtil.Db.LoadOrganizationById(orgid);
+            isRecreationTeam = org.IsRecreationTeam;
+        }
+
         public int orgid { get; set; }
         public int? groupid { get; set; }
         public string GroupName { get; set; }
@@ -23,51 +36,24 @@ namespace CmsWeb.Areas.Org.Models
         public string sort { get; set; }
         public int tagfilter { get; set; }
         public bool isRecreationTeam { get; set; }
-
-        public OrgGroupsModel() { }
-
-        public OrgGroupsModel( int id )
-        {
-            orgid = id;
-
-            var org = DbUtil.Db.LoadOrganizationById(orgid);
-            isRecreationTeam = org.IsRecreationTeam;
-        }
-
-        public string OrgName
-        {
-            get { return DbUtil.Db.LoadOrganizationById(orgid).OrganizationName; }
-        }
-
+        public string OrgName => DbUtil.Db.LoadOrganizationById(orgid).OrganizationName;
         public int memtype { get; set; }
+        public IList<int> List { get; set; } = new List<int>();
 
-        private IList<int> list = new List<int>();
-        public IList<int> List
-        {
-            get { return list; }
-            set { list = value; }
-        }
-
-        public class GroupDetails
-        {
-            public int members { get; set; }
-            public int total { get; set; }
-            public double average { get; set; }
-        }
-
-        public GroupDetails GetGroupDetails( int id )
+        public GroupDetails GetGroupDetails(int id)
         {
             var d = from e in DbUtil.Db.OrgMemMemTags
                     from om in DbUtil.Db.OrganizationMembers.DefaultIfEmpty()
                     where e.MemberTagId == id
                     where om.PeopleId == e.PeopleId
                     where om.OrganizationId == e.OrgId
-                    group new { e, om } by e.MemberTagId into grp
-                    select new GroupDetails()
+                    group new {e, om} by e.MemberTagId
+                    into grp
+                    select new GroupDetails
                     {
-                        members = grp.Count( m => m.e.MemberTagId > 0 ),
-                        total = grp.Sum( t => t.om.Score ),
-                        average = grp.Average( a => a.om.Score )
+                        members = grp.Count(m => m.e.MemberTagId > 0),
+                        total = grp.Sum(t => t.om.Score),
+                        average = grp.Average(a => a.om.Score)
                     };
 
             return d.SingleOrDefault();
@@ -89,13 +75,13 @@ namespace CmsWeb.Areas.Org.Models
                     select new
                     {
                         value = g.Id,
-                        text = g.Name,
+                        text = g.Name
                     };
             var list = q.ToList();
-            list.Insert(0, new { value = 0, text = "(not specified)" });
+            list.Insert(0, new {value = 0, text = "(not specified)"});
             return new SelectList(list, "value", "text", groupid.ToString());
         }
-        private List<SelectListItem> mtypes;
+
         private List<SelectListItem> MemberTypes()
         {
             if (mtypes == null)
@@ -105,25 +91,26 @@ namespace CmsWeb.Areas.Org.Models
                         where (om.Pending ?? false) == false
                         where om.MemberTypeId != MemberTypeCode.InActive
                         where om.MemberTypeId != MemberTypeCode.Prospect
-                        group om by om.MemberType into g
+                        group om by om.MemberType
+                        into g
                         orderby g.Key.Description
                         select new SelectListItem
                         {
                             Value = g.Key.Id.ToString(),
-                            Text = g.Key.Description,
+                            Text = g.Key.Description
                         };
                 mtypes = q.ToList();
             }
             return mtypes;
         }
+
         public IEnumerable<SelectListItem> MemberTypeCodesWithNotSpecified()
         {
             var mt = MemberTypes().ToList();
-            mt.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            mt.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
             return mt;
         }
 
-        public int count;
         public IEnumerable<PersonInfo> FetchOrgMemberList()
         {
             if (ingroup == null)
@@ -131,29 +118,29 @@ namespace CmsWeb.Areas.Org.Models
             var q = OrgMembers();
             if (memtype != 0)
                 q = q.Where(om => om.MemberTypeId == memtype);
-			if (ingroup.HasValue())
-			{
-				var groups = ingroup.Split(',');
-				for (var i = 0; i < groups.Length; i++)
-				{
-					var group = groups[i];
-					q = q.Where(om => om.OrgMemMemTags.Any(omt => omt.MemberTag.Name.StartsWith(group)));
-				}
-			}
+            if (ingroup.HasValue())
+            {
+                var groups = ingroup.Split(',');
+                for (var i = 0; i < groups.Length; i++)
+                {
+                    var group = groups[i];
+                    q = q.Where(om => om.OrgMemMemTags.Any(omt => omt.MemberTag.Name.StartsWith(group)));
+                }
+            }
             if (notgroupactive)
                 if (notgroup.HasValue())
                     q = q.Where(om => !om.OrgMemMemTags.Any(omt => omt.MemberTag.Name.StartsWith(notgroup)));
                 else
-                    q = q.Where(om => om.OrgMemMemTags.Count() == 0);
+                    q = q.Where(om => !om.OrgMemMemTags.Any());
 
             count = q.Count();
             if (!sort.HasValue())
                 sort = "Name";
-            switch(sort)
+            switch (sort)
             {
                 case "Request":
                     q = from m in q
-                         let ck = m.OrgMemMemTags.Any(g => g.MemberTagId == groupid.ToInt())
+                        let ck = m.OrgMemMemTags.Any(g => g.MemberTagId == groupid.ToInt())
                         orderby !ck, m.Request == null ? 2 : 1, m.Request
                         select m;
                     break;
@@ -178,9 +165,9 @@ namespace CmsWeb.Areas.Org.Models
                     q = from m in q
                         let ck = m.OrgMemMemTags.Any(g => g.MemberTagId == groupid.ToInt())
                         let grp = (from g in m.OrgMemMemTags
-                                  where g.MemberTag.Name.StartsWith(ingroup)
-                                  orderby g.MemberTag.Name
-                                  select g.MemberTag.Name).FirstOrDefault()
+                                   where g.MemberTag.Name.StartsWith(ingroup)
+                                   orderby g.MemberTag.Name
+                                   select g.MemberTag.Name).FirstOrDefault()
                         orderby !ck, grp, m.Person.Name2
                         select m;
                     break;
@@ -219,6 +206,7 @@ namespace CmsWeb.Areas.Org.Models
                      };
             return q2;
         }
+
         public IQueryable<OrganizationMember> OrgMembers()
         {
             var q = from om in DbUtil.Db.OrganizationMembers
@@ -231,61 +219,13 @@ namespace CmsWeb.Areas.Org.Models
                     select om;
             return q;
         }
+
         public IEnumerable<SelectListItem> Tags()
         {
             var cv = new CodeValueModel();
             var tg = CodeValueModel.ConvertToSelect(cv.UserTags(Util.UserPeopleId), "Id").ToList();
-            tg.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
+            tg.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
             return tg;
-        }
-        public class GroupInfo
-        {
-            public string Name { get; set; }
-            public int Count { get; set; }
-        }
-        public class PersonInfo
-        {
-            public int PeopleId { get; set; }
-            public string Name { get; set; }
-            public string LastName { get; set; }
-            public DateTime? JoinDate { get; set; }
-            public string Email { get; set; }
-            public string BirthDate { get; set; }
-            public string Address { get; set; }
-            public string Address2 { get; set; }
-            public string CityStateZip { get; set; }
-            public string HomePhone { get; set; }
-            public string CellPhone { get; set; }
-            public string WorkPhone { get; set; }
-            public int? Age { get; set; }
-            public string MemberStatus { get; set; }
-            public string Gender { get; set; }
-            public string Request { get; set; }
-            public int Score { get; set; }
-            public IEnumerable<GroupInfo> Groups { get; set; }
-            public HtmlString GroupsDisplay
-            {
-                get
-                {
-                    var s = string.Join(",~", Groups.Select(g => "{0}({1})".Fmt(g.Name, g.Count)).ToArray());
-                    s = s.Replace(" ", "&nbsp;").Replace(",~", "<br />\n");
-                    return new HtmlString(s);
-                }
-            }
-            public bool ischecked { get; set; }
-            public HtmlString IsInGroup()
-            {
-                var s = ischecked ? "class='info'" : "";
-                return new HtmlString(s);
-            }
-            public string ToolTip
-            {
-                get
-                {
-                    return "{0} ({1})|Cell Phone: {2}|Work Phone: {3}|Home Phone: {4}|BirthDate: {5:d}|Join Date: {6:d}|Status: {7}|Email: {8}"
-                        .Fmt(Name, PeopleId, CellPhone, WorkPhone, HomePhone, BirthDate, JoinDate, MemberStatus, Email);
-                }
-            }
         }
 
         public void createTeamGroups()
@@ -316,7 +256,7 @@ namespace CmsWeb.Areas.Org.Models
             // Refresh the list
             var teamList = (from e in DbUtil.Db.MemberTags
                             where e.OrgId == orgid
-                            where e.Name.StartsWith( "TM:" )
+                            where e.Name.StartsWith("TM:")
                             select e).ToList();
 
 
@@ -327,10 +267,10 @@ namespace CmsWeb.Areas.Org.Models
 
             var teams = teamList.Count();
             var players = p.Count();
-            var perTeam = Math.Floor((double)players / teams);
-            var passes = Math.Floor((double)perTeam / 2);
+            var perTeam = Math.Floor((double) players/teams);
+            var passes = Math.Floor(perTeam/2);
 
-            for (int iX = 0; iX < passes; iX++)
+            for (var iX = 0; iX < passes; iX++)
             {
                 foreach (var team in teamList)
                 {
@@ -338,7 +278,7 @@ namespace CmsWeb.Areas.Org.Models
                     var tagBot = new OrgMemMemTag();
 
                     var top = p.OrderByDescending(t => t.Score).ThenByDescending(t => t.PeopleId).Take(1).SingleOrDefault();
-						  var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
+                    var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
 
                     tagTop.MemberTagId = team.Id;
                     tagTop.OrgId = orgid;
@@ -356,13 +296,13 @@ namespace CmsWeb.Areas.Org.Models
                 }
             }
 
-            if (p.Count() > 0)
+            if (p.Any())
             {
                 foreach (var team in teamList)
                 {
                     var tagBot = new OrgMemMemTag();
 
-						  var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
+                    var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
                     if (bot == null) break;
 
                     tagBot.MemberTagId = team.Id;
@@ -375,13 +315,13 @@ namespace CmsWeb.Areas.Org.Models
                 }
             }
 
-            if (p.Count() > 0)
+            if (p.Any())
             {
                 foreach (var team in teamList)
                 {
                     var tagBot = new OrgMemMemTag();
 
-						  var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
+                    var bot = p.OrderBy(t => t.Score).ThenBy(t => t.PeopleId).Take(1).SingleOrDefault();
                     if (bot == null) break;
 
                     tagBot.MemberTagId = team.Id;
@@ -395,6 +335,60 @@ namespace CmsWeb.Areas.Org.Models
             }
 
             DbUtil.Db.SubmitChanges();
+        }
+
+        public class GroupDetails
+        {
+            public int members { get; set; }
+            public int total { get; set; }
+            public double average { get; set; }
+        }
+
+        public class GroupInfo
+        {
+            public string Name { get; set; }
+            public int Count { get; set; }
+        }
+
+        public class PersonInfo
+        {
+            public int PeopleId { get; set; }
+            public string Name { get; set; }
+            public string LastName { get; set; }
+            public DateTime? JoinDate { get; set; }
+            public string Email { get; set; }
+            public string BirthDate { get; set; }
+            public string Address { get; set; }
+            public string Address2 { get; set; }
+            public string CityStateZip { get; set; }
+            public string HomePhone { get; set; }
+            public string CellPhone { get; set; }
+            public string WorkPhone { get; set; }
+            public int? Age { get; set; }
+            public string MemberStatus { get; set; }
+            public string Gender { get; set; }
+            public string Request { get; set; }
+            public int Score { get; set; }
+            public IEnumerable<GroupInfo> Groups { get; set; }
+
+            public HtmlString GroupsDisplay
+            {
+                get
+                {
+                    var s = string.Join(",~", Groups.Select(g => $"{g.Name}({g.Count})").ToArray());
+                    s = s.Replace(" ", "&nbsp;").Replace(",~", "<br />\n");
+                    return new HtmlString(s);
+                }
+            }
+
+            public bool ischecked { get; set; }
+            public string ToolTip => $"{Name} ({PeopleId})|Cell Phone: {CellPhone}|Work Phone: {WorkPhone}|Home Phone: {HomePhone}|BirthDate: {BirthDate:d}|Join Date: {JoinDate:d}|Status: {MemberStatus}|Email: {Email}";
+
+            public HtmlString IsInGroup()
+            {
+                var s = ischecked ? "class='info'" : "";
+                return new HtmlString(s);
+            }
         }
     }
 }

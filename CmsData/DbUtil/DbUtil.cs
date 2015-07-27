@@ -1,22 +1,17 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Web;
-using UtilityExtensions;
 using System.Web.Caching;
-using System.Data.SqlClient;
-using Dapper;
+using UtilityExtensions;
 
 namespace CmsData
 {
@@ -54,13 +49,7 @@ namespace CmsData
                 InternalDb = value;
             }
         }
-        public static CMSDataContext DbReadOnly
-        {
-            get
-            {
-                return CMSDataContext.Create(Util.ConnectionStringReadOnly, Util.Host);
-            }
-        }
+        public static CMSDataContext DbReadOnly => CMSDataContext.Create(Util.ConnectionStringReadOnly, Util.Host);
 
         public static CMSDataContext Create(string host)
         {
@@ -108,7 +97,7 @@ namespace CmsData
 //                {
 //                    cn.Open();
 //                    cn.Execute(
-//                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid, did) VALUES(@db, @dt, @ac, @oid, @pid, @did)", 
+//                        "INSERT dbo.RegActivity (db, dt, activity, oid, pid, did) VALUES(@db, @dt, @ac, @oid, @pid, @did)",
 //                        new
 //                        {
 //                            db = host,
@@ -174,7 +163,7 @@ namespace CmsData
         }
         public static string StandardExtraValues2(bool forceread = false)
         {
-            return StandardExtraValues2(DbUtil.Db, forceread: forceread);
+            return StandardExtraValues2(Db, forceread: forceread);
         }
         public static string StandardExtraValues2(CMSDataContext db, bool forceread = false)
         {
@@ -288,12 +277,12 @@ namespace CmsData
 
         public static Content Content(string name)
         {
-            return DbUtil.Db.Contents.SingleOrDefault(c => c.Name == name);
+            return Db.Contents.SingleOrDefault(c => c.Name == name);
         }
 
         public static Content ContentFromID(int id)
         {
-            return DbUtil.Db.Contents.SingleOrDefault(c => c.Id == id);
+            return Db.Contents.SingleOrDefault(c => c.Id == id);
         }
 
         public static void ContentDeleteFromID(int id)
@@ -301,13 +290,13 @@ namespace CmsData
             if (id == 0) return;
 
             Content cDelete = ContentFromID(id);
-            DbUtil.Db.Contents.DeleteOnSubmit(cDelete);
-            DbUtil.Db.SubmitChanges();
+            Db.Contents.DeleteOnSubmit(cDelete);
+            Db.SubmitChanges();
         }
 
         public static string Content(string name, string def)
         {
-            var content = DbUtil.Db.Contents.SingleOrDefault(c => c.Name == name);
+            var content = Db.Contents.SingleOrDefault(c => c.Name == name);
             if (content != null)
                 return content.Body;
             return def;
@@ -375,7 +364,7 @@ namespace CmsData
             DateTime dt;
             var mm = m.Groups["mm"].Value;
             var yy = m.Groups["yy"].Value;
-            var s = "{0}/15/{1}".Fmt(mm, yy);
+            var s = $"{mm}/15/{yy}";
             if (!DateTime.TryParse(s, out dt))
                 return null;
             return dt;

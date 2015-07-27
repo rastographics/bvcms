@@ -1,26 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 using System.Web.Mvc;
 using CmsData.Registration;
 using UtilityExtensions;
 
 namespace CmsWeb
 {
-    class SmartBinder : DefaultModelBinder
+    internal class SmartBinder : DefaultModelBinder
     {
         protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
             string type = null;
-            if (modelType == typeof(Ask))
+            if (modelType == typeof (Ask))
             {
                 var requestname = bindingContext.ModelName + ".Type";
                 var value = controllerContext.Controller.ValueProvider.GetValue(requestname);
                 if (value == null)
-                    throw new Exception("Ask Type '{0}' not found".Fmt(requestname));
+                    throw new Exception($"Ask Type '{requestname}' not found");
 
                 type = value.AttemptedValue;
 
@@ -37,19 +34,32 @@ namespace CmsWeb
                     case "AskCoaching":
                     case "AskChurch":
                         return new Ask(type);
-                    case "AskCheckboxes": return new AskCheckboxes();
-                    case "AskDropdown": return new AskDropdown();
-                    case "AskMenu": return new AskMenu();
-                    case "AskSuggestedFee": return new AskSuggestedFee();
-                    case "AskSize": return new AskSize();
-                    case "AskRequest": return new AskRequest();
-                    case "AskHeader": return new AskHeader();
-                    case "AskInstruction": return new AskInstruction();
-                    case "AskTickets": return new AskTickets();
-                    case "AskYesNoQuestions": return new AskYesNoQuestions();
-                    case "AskExtraQuestions": return new AskExtraQuestions();
-                    case "AskText": return new AskText();
-                    case "AskGradeOptions": return new AskGradeOptions();
+                    case "AskCheckboxes":
+                        return new AskCheckboxes();
+                    case "AskDropdown":
+                        return new AskDropdown();
+                    case "AskMenu":
+                        return new AskMenu();
+                    case "AskSuggestedFee":
+                        return new AskSuggestedFee();
+                    case "AskSize":
+                        return new AskSize();
+                    case "AskRequest":
+                        return new AskRequest();
+                    case "AskHeader":
+                        return new AskHeader();
+                    case "AskInstruction":
+                        return new AskInstruction();
+                    case "AskTickets":
+                        return new AskTickets();
+                    case "AskYesNoQuestions":
+                        return new AskYesNoQuestions();
+                    case "AskExtraQuestions":
+                        return new AskExtraQuestions();
+                    case "AskText":
+                        return new AskText();
+                    case "AskGradeOptions":
+                        return new AskGradeOptions();
                     default:
                         return base.CreateModel(controllerContext, bindingContext, modelType);
                 }
@@ -57,9 +67,9 @@ namespace CmsWeb
             return base.CreateModel(controllerContext, bindingContext, modelType);
         }
 
-        override protected ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        protected override ICustomTypeDescriptor GetTypeDescriptor(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            if (bindingContext.ModelType == typeof(Ask) && bindingContext.Model != null)
+            if (bindingContext.ModelType == typeof (Ask) && bindingContext.Model != null)
             {
                 var concreteType = bindingContext.Model.GetType();
 
@@ -77,7 +87,7 @@ namespace CmsWeb
         public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
             var valueResult = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
-            var modelState = new ModelState { Value = valueResult };
+            var modelState = new ModelState {Value = valueResult};
             object actualValue = null;
             int i;
             if (valueResult != null)

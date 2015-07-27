@@ -3,7 +3,7 @@
     var help = ViewData["help"] as string;
     if (help.HasValue())
     {
-        help = "<span class='help-block'>{0}</span>".Fmt(help);
+        help = $"<span class='help-block'>{help}</span>";
     }
 }
 <div class="form-group">

@@ -1,37 +1,38 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web.Mvc;
+using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using CmsData;
 using UtilityExtensions;
-using System.Web.Mvc;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class RegistrationResult : ActionResult
     {
         private const float FLOAT_t1SpacingAfter = 20f;
-        private Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
+        private readonly PageEvent pageEvents = new PageEvent();
         private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
-        private Font xsmallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7, new GrayColor(50));
-        private PageEvent pageEvents = new PageEvent();
+        private PdfContentByte dc;
         private Document doc;
         private DateTime dt;
-        private PdfContentByte dc;
-
-        private Guid? qid;
+        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+        private Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
         private int? oid;
+        private Guid? qid;
+        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
+        private Font xsmallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7, new GrayColor(50));
+
         public RegistrationResult(Guid? id, int? oid)
         {
             qid = id;
@@ -41,9 +42,10 @@ namespace CmsWeb.Areas.Reports.Models
         private static void SetDefaults(PdfPTable t)
         {
             t.DefaultCell.SetLeading(2.0f, 1f);
-            t.DefaultCell.Border = PdfPCell.NO_BORDER;
+            t.DefaultCell.Border = Rectangle.NO_BORDER;
             t.LockedWidth = false;
         }
+
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
@@ -60,7 +62,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             if (qid != null) // print using a query
             {
-                pageEvents.StartPageSet("Registration Report: {0:d}".Fmt(dt));
+                pageEvents.StartPageSet($"Registration Report: {dt:d}");
                 var q2 = DbUtil.Db.PeopleQuery(qid.Value);
                 if (!oid.HasValue)
                     oid = DbUtil.Db.CurrentOrgId;
@@ -72,7 +74,7 @@ namespace CmsWeb.Areas.Reports.Models
                             h = p.Family.HeadOfHousehold,
                             s = p.Family.HeadOfHouseholdSpouse,
                             m = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == oid),
-							o = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == oid).Organization
+                            o = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == oid).Organization
                         };
                 if (!q.Any())
                     doc.Add(new Phrase("no data"));
@@ -97,7 +99,7 @@ namespace CmsWeb.Areas.Reports.Models
                         t1.SpacingAfter = FLOAT_t1SpacingAfter;
                         doc.Add(t1);
 
-                        var t2 = new PdfPTable(new float[] { 35, 65 });
+                        var t2 = new PdfPTable(new float[] {35, 65});
                         SetDefaults(t2);
                         if (i.h != null
                             && i.h.PeopleId != i.p.PeopleId
@@ -141,7 +143,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                         if (i.o == null || SettingVisible(setting, "AskTylenolEtc"))
                         {
-                            var t4 = new PdfPTable(new float[] { 20, 80 });
+                            var t4 = new PdfPTable(new float[] {20, 80});
                             SetDefaults(t4);
                             t4.AddCell("Tylenol:");
                             t4.AddCell(rr.Tylenol == true ? "Yes" : "No");
@@ -154,7 +156,7 @@ namespace CmsWeb.Areas.Reports.Models
                             t4.SpacingAfter = FLOAT_t1SpacingAfter;
                             doc.Add(t4);
                         }
-                        var t5 = new PdfPTable(new float[] { 45, 55 });
+                        var t5 = new PdfPTable(new float[] {45, 55});
                         SetDefaults(t5);
 
                         if (i.o == null || SettingVisible(setting, "AskEmContact"))
@@ -200,7 +202,7 @@ namespace CmsWeb.Areas.Reports.Models
                         }
                         if (i.m != null && i.m.UserData != null)
                         {
-                        	var a = Regex.Split(i.m.UserData, @"\s*--Add comments above this line--\s*", RegexOptions.Multiline);
+                            var a = Regex.Split(i.m.UserData, @"\s*--Add comments above this line--\s*", RegexOptions.Multiline);
                             if (a.Length > 0)
                             {
                                 t5.AddCell("Comments");
@@ -237,14 +239,14 @@ namespace CmsWeb.Areas.Reports.Models
             return rr;
         }
 
-        class PageEvent : PdfPageEventHelper
+        private class PageEvent : PdfPageEventHelper
         {
-            private PdfTemplate npages;
-            private PdfWriter writer;
-            private Document document;
             private PdfContentByte dc;
+            private Document document;
             private BaseFont font;
             private string HeadText;
+            private PdfTemplate npages;
+            private PdfWriter writer;
 
             public override void OnOpenDocument(PdfWriter writer, Document document)
             {
@@ -254,6 +256,7 @@ namespace CmsWeb.Areas.Reports.Models
                 font = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 dc = writer.DirectContent;
             }
+
             public void EndPageSet()
             {
                 if (npages == null)
@@ -263,14 +266,16 @@ namespace CmsWeb.Areas.Reports.Models
                 npages.ShowText((writer.PageNumber + 1).ToString());
                 npages.EndText();
             }
+
             public void StartPageSet(string header1)
             {
                 EndPageSet();
                 document.NewPage();
                 document.ResetPageCount();
-                this.HeadText = header1;
+                HeadText = header1;
                 npages = dc.CreateTemplate(50, 50);
             }
+
             public override void OnEndPage(PdfWriter writer, Document document)
             {
                 base.OnEndPage(writer, document);
@@ -303,7 +308,7 @@ namespace CmsWeb.Areas.Reports.Models
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width / 2 - len / 2, 30);
+                dc.SetTextMatrix(document.PageSize.Width/2 - len/2, 30);
                 dc.ShowText(text);
                 dc.EndText();
 
@@ -319,4 +324,3 @@ namespace CmsWeb.Areas.Reports.Models
         }
     }
 }
-

@@ -1,15 +1,14 @@
 using System;
 using System.ComponentModel;
-using System.Linq;
+using CmsData;
 using CmsWeb.Code;
 using UtilityExtensions;
-using CmsData;
 
 namespace CmsWeb.Areas.Org.Models
 {
     public class ScheduleInfo
     {
-        private OrgSchedule sc;
+        private readonly OrgSchedule sc;
 
         public ScheduleInfo(OrgSchedule sc)
         {
@@ -29,6 +28,7 @@ namespace CmsWeb.Areas.Org.Models
             get { return sc.Id; }
             set { sc.Id = value; }
         }
+
         public DateTime Time
         {
             get
@@ -39,6 +39,7 @@ namespace CmsWeb.Areas.Org.Models
             }
             set { sc.SchedTime = value; }
         }
+
         public CodeInfo SchedDay { get; set; }
         public CodeInfo AttendCredit { get; set; }
 
@@ -48,7 +49,7 @@ namespace CmsWeb.Areas.Org.Models
             {
                 if (sc == null)
                     return "None";
-                return "{0}, {1}, {2}".Fmt(SchedDay, Time.FormatTime(), AttendCredit);
+                return $"{SchedDay}, {Time.FormatTime()}, {AttendCredit}";
             }
         }
 
@@ -57,15 +58,16 @@ namespace CmsWeb.Areas.Org.Models
             get
             {
                 var dt = PrevMeetingTime;
-                return "{0} {1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCredit.Value);
+                return $"{dt.Date.ToShortDateString()} {dt.ToShortTimeString()},{AttendCredit.Value}";
             }
         }
+
         public string ValueNext
         {
             get
             {
                 var dt = NextMeetingTime;
-                return "{0} {1},{2}".Fmt(dt.Date.ToShortDateString(), dt.ToShortTimeString(), AttendCredit.Value);
+                return $"{dt.Date.ToShortDateString()} {dt.ToShortTimeString()},{AttendCredit.Value}";
             }
         }
 
@@ -73,7 +75,7 @@ namespace CmsWeb.Areas.Org.Models
         {
             get
             {
-                DateTime dt = Util.Now.Date;
+                var dt = Util.Now.Date;
                 if (sc.SchedDay < 9)
                 {
                     dt = Util.Now.Date.Sunday().AddDays(sc.SchedDay ?? 0);
@@ -84,9 +86,6 @@ namespace CmsWeb.Areas.Org.Models
             }
         }
 
-        public DateTime NextMeetingTime
-        {
-            get { return PrevMeetingTime.AddDays(7); }
-        }
+        public DateTime NextMeetingTime => PrevMeetingTime.AddDays(7);
     }
 }

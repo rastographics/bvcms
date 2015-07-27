@@ -4,7 +4,6 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
-using Settings = CmsData.Registration.Settings;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -15,23 +14,26 @@ namespace CmsWeb.Areas.Org.Controllers
         {
             return View("Registration/Questions", getRegSettings(id));
         }
+
         [HttpPost]
         public ActionResult QuestionsHelpToggle(int id)
         {
             DbUtil.Db.ToggleUserPreference("ShowQuestionsHelp");
             return PartialView("Registration/Questions", getRegSettings(id));
         }
+
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult QuestionsEdit(int id)
         {
             return PartialView("Registration/QuestionsEdit", getRegSettings(id));
         }
+
         [HttpPost]
         public ActionResult QuestionsUpdate(int id)
         {
             var m = getRegSettings(id);
-            DbUtil.LogActivity("Update SettingsQuestions {0}".Fmt(m.org.OrganizationName));
+            DbUtil.LogActivity($"Update SettingsQuestions {m.org.OrganizationName}");
             m.AskItems.Clear();
             m.TimeSlots.list.Clear();
             try
@@ -43,7 +45,7 @@ namespace CmsWeb.Areas.Org.Controllers
                             select e.Errors[0].ErrorMessage;
                     throw new Exception(q.First());
                 }
-                string s = m.ToString();
+                var s = m.ToString();
                 m = new Settings(s, DbUtil.Db, id);
                 m.org.RegSetting = m.ToString();
                 DbUtil.Db.SubmitChanges();
@@ -57,50 +59,59 @@ namespace CmsWeb.Areas.Org.Controllers
                 return Content("error:" + ex.Message);
             }
         }
+
         [HttpPost]
         public ActionResult NewMenuItem(string id)
         {
-            return PartialView("EditorTemplates/MenuItem", new AskMenu.MenuItem { Name = id });
+            return PartialView("EditorTemplates/MenuItem", new AskMenu.MenuItem {Name = id});
         }
+
         [HttpPost]
         public ActionResult NewDropdownItem(string id)
         {
-            return PartialView("EditorTemplates/DropdownItem", new AskDropdown.DropdownItem { Name = id });
+            return PartialView("EditorTemplates/DropdownItem", new AskDropdown.DropdownItem {Name = id});
         }
+
         [HttpPost]
         public ActionResult NewCheckbox(string id)
         {
-            return PartialView("EditorTemplates/CheckboxItem", new AskCheckboxes.CheckboxItem { Name = id });
+            return PartialView("EditorTemplates/CheckboxItem", new AskCheckboxes.CheckboxItem {Name = id});
         }
+
         [HttpPost]
         public ActionResult NewGradeOption(string id)
         {
-            return PartialView("EditorTemplates/GradeOption", new AskGradeOptions.GradeOption { Name = id });
+            return PartialView("EditorTemplates/GradeOption", new AskGradeOptions.GradeOption {Name = id});
         }
+
         [HttpPost]
         public ActionResult NewYesNoQuestion(string id)
         {
-            return PartialView("EditorTemplates/YesNoQuestion", new AskYesNoQuestions.YesNoQuestion { Name = id });
+            return PartialView("EditorTemplates/YesNoQuestion", new AskYesNoQuestions.YesNoQuestion {Name = id});
         }
+
         [HttpPost]
         public ActionResult NewSize(string id)
         {
-            return PartialView("EditorTemplates/Size", new AskSize.Size { Name = id });
+            return PartialView("EditorTemplates/Size", new AskSize.Size {Name = id});
         }
+
         [HttpPost]
         public ActionResult NewExtraQuestion(string id)
         {
-            return PartialView("EditorTemplates/ExtraQuestion", new AskExtraQuestions.ExtraQuestion { Name = id });
+            return PartialView("EditorTemplates/ExtraQuestion", new AskExtraQuestions.ExtraQuestion {Name = id});
         }
+
         [HttpPost]
         public ActionResult NewText(string id)
         {
-            return PartialView("EditorTemplates/Text", new AskExtraQuestions.ExtraQuestion { Name = id });
+            return PartialView("EditorTemplates/Text", new AskExtraQuestions.ExtraQuestion {Name = id});
         }
+
         [HttpPost]
         public ActionResult NewTimeSlot(string id)
         {
-            return PartialView("EditorTemplates/TimeSlot", new TimeSlots.TimeSlot { Name = id });
+            return PartialView("EditorTemplates/TimeSlot", new TimeSlots.TimeSlot {Name = id});
         }
 
         [HttpPost]
@@ -120,33 +131,33 @@ namespace CmsWeb.Areas.Org.Controllers
                 case "AskParents":
                 case "AskCoaching":
                 case "AskChurch":
-                    return PartialView("EditorTemplates/Ask", new Ask(type) { Name = id });
+                    return PartialView("EditorTemplates/Ask", new Ask(type) {Name = id});
                 case "AskCheckboxes":
-                    return PartialView(template, new AskCheckboxes() { Name = id });
+                    return PartialView(template, new AskCheckboxes {Name = id});
                 case "AskDropdown":
-                    return PartialView(template, new AskDropdown() { Name = id });
+                    return PartialView(template, new AskDropdown {Name = id});
                 case "AskMenu":
-                    return PartialView(template, new AskMenu() { Name = id });
+                    return PartialView(template, new AskMenu {Name = id});
                 case "AskSuggestedFee":
-                    return PartialView(template, new AskSuggestedFee() { Name = id });
+                    return PartialView(template, new AskSuggestedFee {Name = id});
                 case "AskSize":
-                    return PartialView(template, new AskSize() { Name = id });
+                    return PartialView(template, new AskSize {Name = id});
                 case "AskRequest":
-                    return PartialView(template, new AskRequest() { Name = id });
+                    return PartialView(template, new AskRequest {Name = id});
                 case "AskHeader":
-                    return PartialView(template, new AskHeader() { Name = id });
+                    return PartialView(template, new AskHeader {Name = id});
                 case "AskInstruction":
-                    return PartialView(template, new AskInstruction() { Name = id });
+                    return PartialView(template, new AskInstruction {Name = id});
                 case "AskTickets":
-                    return PartialView(template, new AskTickets() { Name = id });
+                    return PartialView(template, new AskTickets {Name = id});
                 case "AskYesNoQuestions":
-                    return PartialView(template, new AskYesNoQuestions() { Name = id });
+                    return PartialView(template, new AskYesNoQuestions {Name = id});
                 case "AskExtraQuestions":
-                    return PartialView(template, new AskExtraQuestions() { Name = id });
+                    return PartialView(template, new AskExtraQuestions {Name = id});
                 case "AskText":
-                    return PartialView(template, new AskText() { Name = id });
+                    return PartialView(template, new AskText {Name = id});
                 case "AskGradeOptions":
-                    return PartialView(template, new AskGradeOptions() { Name = id });
+                    return PartialView(template, new AskGradeOptions {Name = id});
             }
             return Content("unexpected type " + type);
         }

@@ -6,7 +6,6 @@ using System.Web;
 using CmsData;
 using CmsData.Finance;
 using CmsData.View;
-using CmsWeb.Areas.Manage.Models;
 using MoreLinq;
 using UtilityExtensions;
 
@@ -14,9 +13,38 @@ namespace CmsWeb.Models
 {
     public class TransactionsModel
     {
+        private int? _count;
+        private IQueryable<TransactionList> _transactions;
+        public int nameid;
+
+        public TransactionsModel(int? tranid, string reference = "", string desc = "")
+            : this()
+        {
+            name = tranid.ToString();
+            if (!tranid.HasValue)
+                GoerId = null;
+
+            if (!string.IsNullOrWhiteSpace(reference))
+            {
+                name = reference;
+            }
+            if (!string.IsNullOrWhiteSpace(desc))
+            {
+                description = desc;
+            }
+        }
+
+        public TransactionsModel()
+        {
+            Pager = new PagerModel2(Count);
+            Pager.Sort = "Date";
+            Pager.Direction = "desc";
+            finance = HttpContext.Current.User.IsInRole("Finance");
+            admin = HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("ManageTransactions");
+        }
+
         public string description { get; set; }
         public string name { get; set; }
-        public int nameid;
         public string Submit { get; set; }
         public decimal? gtamount { get; set; }
         public decimal? ltamount { get; set; }
@@ -28,42 +56,18 @@ namespace CmsWeb.Models
         public string batchref { get; set; }
         public bool usebatchdates { get; set; }
         public PagerModel2 Pager { get; set; }
-        int? _count;
+        public bool finance { get; set; }
+        public bool admin { get; set; }
+        public int? GoerId { get; set; } // for mission trip supporters of this goer
+        public int? SenderId { get; set; } // for mission trip goers of this supporter
+
         public int Count()
         {
             if (!_count.HasValue)
                 _count = FetchTransactions().Count();
             return _count.Value;
         }
-        public bool finance { get; set; }
-        public bool admin { get; set; }
-        public int? GoerId { get; set; } // for mission trip supporters of this goer
-        public int? SenderId { get; set; } // for mission trip goers of this supporter
 
-        public TransactionsModel(int? tranid, string reference = "", string desc = "")
-            : this()
-        {
-            this.name = tranid.ToString();
-            if (!tranid.HasValue)
-                GoerId = null;
-
-            if (!string.IsNullOrWhiteSpace(reference))
-            {
-                this.name = reference;
-            }
-            if (!string.IsNullOrWhiteSpace(desc))
-            {
-                this.description = desc;
-            }
-        }
-        public TransactionsModel()
-        {
-            Pager = new PagerModel2(Count);
-            Pager.Sort = "Date";
-            Pager.Direction = "desc";
-            finance = HttpContext.Current.User.IsInRole("Finance");
-            admin = HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.User.IsInRole("ManageTransactions");
-        }
         public IEnumerable<TransactionList> Transactions()
         {
             var q0 = ApplySort();
@@ -71,20 +75,13 @@ namespace CmsWeb.Models
             return q0;
         }
 
-        public class TotalTransaction
-        {
-            public int Count { get; set; }
-            public decimal Amt { get; set; }
-            public decimal Amtdue { get; set; }
-            public decimal Donate { get; set; }
-        }
-
         public TotalTransaction TotalTransactions()
         {
             var q0 = FetchTransactions();
             var q = from t in q0
-                    group t by 1 into g
-                    select new TotalTransaction()
+                    group t by 1
+                    into g
+                    select new TotalTransaction
                     {
                         Amt = g.Sum(tt => tt.Amt ?? 0),
                         Amtdue = g.Sum(tt => tt.Amtdue ?? 0),
@@ -94,7 +91,6 @@ namespace CmsWeb.Models
             return q.FirstOrDefault();
         }
 
-        private IQueryable<TransactionList> _transactions;
         private IQueryable<TransactionList> FetchTransactions()
         {
             if (_transactions != null)
@@ -106,18 +102,18 @@ namespace CmsWeb.Models
             var hasfirst = first.HasValue();
             nameid = name.ToInt();
             _transactions
-               = from t in DbUtil.Db.ViewTransactionLists
-                 let donate = t.Donate ?? 0
-                 where t.Amt >= gtamount || gtamount == null
-                 where t.Amt <= ltamount || ltamount == null
-                 where description == null || t.Description.Contains(description)
-                 where nameid > 0 || ((t.Testing ?? false) == testtransactions)
-                 where apprtransactions == (t.Moneytran == true) || !apprtransactions
-                 where (nocoupons && !t.TransactionId.Contains("Coupon")) || !nocoupons
-                 where (t.Financeonly ?? false) == false || finance
-                 select t;
+                = from t in DbUtil.Db.ViewTransactionLists
+                  let donate = t.Donate ?? 0
+                  where t.Amt >= gtamount || gtamount == null
+                  where t.Amt <= ltamount || ltamount == null
+                  where description == null || t.Description.Contains(description)
+                  where nameid > 0 || ((t.Testing ?? false) == testtransactions)
+                  where apprtransactions == (t.Moneytran == true) || !apprtransactions
+                  where (nocoupons && !t.TransactionId.Contains("Coupon")) || !nocoupons
+                  where (t.Financeonly ?? false) == false || finance
+                  select t;
             if (name != null)
-                if (name == "0") 
+                if (name == "0")
                     // special case, return no transactions, all we are interested in is the Senders on a Mission Trip
                     _transactions = from t in _transactions
                                     where t.OriginalId == nameid
@@ -128,7 +124,7 @@ namespace CmsWeb.Models
                                         (
                                             (t.Last.StartsWith(last) || t.Last.StartsWith(name))
                                             && (!hasfirst || t.First.StartsWith(first) || t.Last.StartsWith(name))
-                                        )
+                                            )
                                         || t.Batchref == name || t.TransactionId == name || t.OriginalId == nameid || t.Id == nameid
                                     select t;
             if (!HttpContext.Current.User.IsInRole("Finance"))
@@ -137,8 +133,7 @@ namespace CmsWeb.Models
             var edt = enddt;
             if (!edt.HasValue && startdt.HasValue)
                 edt = startdt;
-            if (edt.HasValue)
-                edt = edt.Value.AddHours(24);
+            edt = edt?.AddHours(24);
             if (usebatchdates && startdt.HasValue)
             {
                 CheckBatchDates(startdt.Value, edt.Value);
@@ -159,21 +154,13 @@ namespace CmsWeb.Models
             return _transactions;
         }
 
-        public class BatchTranGroup
-        {
-            public int count { get; set; }
-            public DateTime? batchdate { get; set; }
-            public string BatchRef { get; set; }
-            public string BatchType { get; set; }
-            public decimal Total { get; set; }
-        }
-
         public IQueryable<BatchTranGroup> FetchBatchTransactions()
         {
             var q = from t in FetchTransactions()
-                    group t by t.Batchref into g
+                    group t by t.Batchref
+                    into g
                     orderby g.First().Batch descending
-                    select new BatchTranGroup()
+                    select new BatchTranGroup
                     {
                         count = g.Count(),
                         batchdate = g.Max(gg => gg.Batch),
@@ -183,28 +170,15 @@ namespace CmsWeb.Models
                     };
             return q;
         }
-        public class DescriptionGroup
-        {
-            public int count { get; set; }
-            public string Description { get; set; }
-            public decimal Total { get; set; }
-        }
-        public class BatchDescriptionGroup
-        {
-            public int count { get; set; }
-            public DateTime? batchdate { get; set; }
-            public string BatchRef { get; set; }
-            public string BatchType { get; set; }
-            public string Description { get; set; }
-            public decimal Total { get; set; }
-        }
+
         public IEnumerable<DescriptionGroup> FetchTransactionsByDescription()
         {
             var q0 = FetchTransactions();
             var q = from t in q0
-                    group t by t.Description into g
+                    group t by t.Description
+                    into g
                     orderby g.First().Batch descending
-                    select new DescriptionGroup()
+                    select new DescriptionGroup
                     {
                         count = g.Count(),
                         Description = g.Key,
@@ -212,13 +186,15 @@ namespace CmsWeb.Models
                     };
             return q;
         }
+
         public IQueryable<BatchDescriptionGroup> FetchTransactionsByBatchDescription()
         {
             var q = from t in FetchTransactions()
-                    group t by new { t.Batchref, t.Description } into g
+                    group t by new {t.Batchref, t.Description}
+                    into g
                     let f = g.First()
                     orderby f.Batch, f.Description descending
-                    select new BatchDescriptionGroup()
+                    select new BatchDescriptionGroup
                     {
                         count = g.Count(),
                         batchdate = f.Batch,
@@ -298,19 +274,19 @@ namespace CmsWeb.Models
                         TransactionId = transactionToInsert.Reference,
                         Amt = transactionToInsert.TransactionType == TransactionType.Credit ||
                               transactionToInsert.TransactionType == TransactionType.Refund
-                                ? -transactionToInsert.Amount
-                                : transactionToInsert.Amount,
+                            ? -transactionToInsert.Amount
+                            : transactionToInsert.Amount,
                         Approved = transactionToInsert.Approved,
                         Message = transactionToInsert.Message,
                         TransactionDate = transactionToInsert.TransactionDate,
                         TransactionGateway = gateway.GatewayType,
                         Settled = settlementDate,
-                        Batch = settlementDate,  // this date now will be the same as the settlement date.
+                        Batch = settlementDate, // this date now will be the same as the settlement date.
                         Batchref = transactionToInsert.BatchReference,
                         Batchtyp = transactionToInsert.BatchType == BatchType.Ach ? "eft" : "bankcard",
-                        OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?)null,
+                        OriginalId = originalTransaction != null ? (originalTransaction.OriginalId ?? originalTransaction.Id) : (int?) null,
                         Fromsage = true,
-                        Description = originalTransaction != null ? originalTransaction.Description : "no description from {0}, id={1}".Fmt(gateway.GatewayType, transactionToInsert.TransactionId),
+                        Description = originalTransaction != null ? originalTransaction.Description : $"no description from {gateway.GatewayType}, id={transactionToInsert.TransactionId}",
                         PaymentType = transactionToInsert.BatchType == BatchType.Ach ? PaymentType.Ach : PaymentType.CreditCard,
                         LastFourCC = transactionToInsert.BatchType == BatchType.CreditCard ? transactionToInsert.LastDigits : null,
                         LastFourACH = transactionToInsert.BatchType == BatchType.Ach ? transactionToInsert.LastDigits : null
@@ -329,7 +305,7 @@ namespace CmsWeb.Models
                     // get the adjusted settlement date
                     var settlementDate = AdjustSettlementDateForAllTimeZones(batchTransaction.SettledDate);
 
-                    existingTransaction.Batch = settlementDate;  // this date now will be the same as the settlement date.
+                    existingTransaction.Batch = settlementDate; // this date now will be the same as the settlement date.
                     existingTransaction.Batchref = batchTransaction.BatchReference;
                     existingTransaction.Batchtyp = batchTransaction.BatchType == BatchType.Ach ? "eft" : "bankcard";
                     existingTransaction.Settled = settlementDate;
@@ -361,8 +337,8 @@ namespace CmsWeb.Models
         }
 
         /// <summary>
-        /// we are not exactly sure why we add four hours to the settlement date
-        /// we think it is to handle all timezones and push to the next day??
+        ///     we are not exactly sure why we add four hours to the settlement date
+        ///     we think it is to handle all timezones and push to the next day??
         /// </summary>
         /// <param name="settlementDate"></param>
         /// <returns></returns>
@@ -465,46 +441,38 @@ namespace CmsWeb.Models
 
             return q;
         }
+
         public DataTable ExportTransactions()
         {
             var q = FetchTransactions();
 
             var q2 = from t in q
                      select new
-                 {
-                     t.Id,
-                     t.TransactionId,
-                     t.Approved,
-                     TranDate = t.TransactionDate.FormatDate(),
-                     BatchDate = t.Batch.FormatDate(),
-                     t.Batchtyp,
-                     t.Batchref,
-                     t.People,
-                     RegAmt = (t.Amt ?? 0) - (t.Donate ?? 0),
-                     Donate = t.Donate ?? 0,
-                     TotalAmt = t.Amt ?? 0,
-                     Amtdue = t.TotDue ?? 0,
-                     t.Description,
-                     t.Message,
-                     FullName = Transaction.FullName(t),
-                     t.Address,
-                     t.City,
-                     t.State,
-                     t.Zip,
-                     t.Fund,
-                 };
+                     {
+                         t.Id,
+                         t.TransactionId,
+                         t.Approved,
+                         TranDate = t.TransactionDate.FormatDate(),
+                         BatchDate = t.Batch.FormatDate(),
+                         t.Batchtyp,
+                         t.Batchref,
+                         t.People,
+                         RegAmt = (t.Amt ?? 0) - (t.Donate ?? 0),
+                         Donate = t.Donate ?? 0,
+                         TotalAmt = t.Amt ?? 0,
+                         Amtdue = t.TotDue ?? 0,
+                         t.Description,
+                         t.Message,
+                         FullName = Transaction.FullName(t),
+                         t.Address,
+                         t.City,
+                         t.State,
+                         t.Zip,
+                         t.Fund
+                     };
             return q2.ToDataTable();
         }
 
-        public class SupporterInfo
-        {
-            public GoerSenderAmount gs { get; set; }
-            public string GoerName { get; set; }
-            public string SupporterName { get; set; }
-            public int? GoerId { get; set; }
-            public int? SupporterId { get; set; }
-            public string TripName { get; set; }
-        }
         public IQueryable<SupporterInfo> Supporters()
         {
             return from gs in DbUtil.Db.GoerSenderAmounts
@@ -514,7 +482,7 @@ namespace CmsWeb.Models
                    let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
                    let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
-                   select new SupporterInfo()
+                   select new SupporterInfo
                    {
                        gs = gs,
                        SupporterName = sp.Name,
@@ -534,7 +502,7 @@ namespace CmsWeb.Models
                    let gp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.GoerId)
                    let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
-                   select new SupporterInfo()
+                   select new SupporterInfo
                    {
                        gs = gs,
                        SupporterName = sp.Name,
@@ -554,7 +522,7 @@ namespace CmsWeb.Models
                    let sp = DbUtil.Db.People.Single(ss => ss.PeopleId == gs.SupporterId)
                    let o = DbUtil.Db.Organizations.Single(oo => oo.OrganizationId == gs.OrgId)
                    orderby gs.Created descending
-                   select new SupporterInfo()
+                   select new SupporterInfo
                    {
                        gs = gs,
                        SupporterName = sp.Name,
@@ -568,6 +536,50 @@ namespace CmsWeb.Models
         public EpplusResult ToExcel()
         {
             return ExportTransactions().ToExcel("Transactions.xlsx");
+        }
+
+        public class TotalTransaction
+        {
+            public int Count { get; set; }
+            public decimal Amt { get; set; }
+            public decimal Amtdue { get; set; }
+            public decimal Donate { get; set; }
+        }
+
+        public class BatchTranGroup
+        {
+            public int count { get; set; }
+            public DateTime? batchdate { get; set; }
+            public string BatchRef { get; set; }
+            public string BatchType { get; set; }
+            public decimal Total { get; set; }
+        }
+
+        public class DescriptionGroup
+        {
+            public int count { get; set; }
+            public string Description { get; set; }
+            public decimal Total { get; set; }
+        }
+
+        public class BatchDescriptionGroup
+        {
+            public int count { get; set; }
+            public DateTime? batchdate { get; set; }
+            public string BatchRef { get; set; }
+            public string BatchType { get; set; }
+            public string Description { get; set; }
+            public decimal Total { get; set; }
+        }
+
+        public class SupporterInfo
+        {
+            public GoerSenderAmount gs { get; set; }
+            public string GoerName { get; set; }
+            public string SupporterName { get; set; }
+            public int? GoerId { get; set; }
+            public int? SupporterId { get; set; }
+            public string TripName { get; set; }
         }
     }
 }

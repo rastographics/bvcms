@@ -4,7 +4,6 @@ using System.Linq;
 using CmsData;
 using CmsWeb.Models;
 using System.Web.Mvc;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -37,7 +36,7 @@ namespace CmsWeb.Areas.Dialog.Models
             om = i.om;
             isMissionTrip = i.mt;
             TransactionSummary = i.ts;
-            Due = isMissionTrip 
+            Due = isMissionTrip
                 ? MissionTripFundingModel.TotalDue(peopleId, orgId)
                 : i.ts != null ? i.ts.TotDue ?? 0 : 0;
         }
@@ -76,15 +75,15 @@ namespace CmsWeb.Areas.Dialog.Models
         {
             if (TransactionSummary != null && (Payment ?? 0) == 0)
                 modelState.AddModelError("Payment", "must have non zero value");
-            if (TransactionSummary == null && (Amount ?? 0) == 0) 
+            if (TransactionSummary == null && (Amount ?? 0) == 0)
                 modelState.AddModelError("Amount", "Initial Fee Must be > 0");
             if (!modelState.IsValid)
                 return;
 
             var reason = TransactionSummary == null
                 ? "Initial Tran"
-                : AdjustFee 
-                    ? "AdjustFee" 
+                : AdjustFee
+                    ? "AdjustFee"
                     : "Adjustment";
             if (isMissionTrip)
             {
@@ -109,8 +108,8 @@ namespace CmsWeb.Areas.Dialog.Models
             om.AddTransaction(DbUtil.Db, reason, Payment ?? 0, Description, Amount, AdjustFee);
             var showcount = "";
             if (TransactionSummary != null && TransactionSummary.NumPeople > 1)
-                showcount = "({0}) ".Fmt(TransactionSummary.NumPeople);
-            DbUtil.LogActivity("OrgMem{0} {1}".Fmt(showcount, reason), OrgId, PeopleId);
+                showcount = $"({TransactionSummary.NumPeople}) ";
+            DbUtil.LogActivity($"OrgMem{showcount} {reason}", OrgId, PeopleId);
         }
     }
 }

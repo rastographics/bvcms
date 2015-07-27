@@ -1,30 +1,33 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using CmsWeb.Code;
-using UtilityExtensions;
 using System.Web.Mvc;
 using CmsData;
-using System.Collections.Generic;
+using CmsWeb.Code;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
     public class UpdateFieldsModel
     {
+        private ModelStateDictionary modelState;
         public string Tag { get; set; }
         public string Field { get; set; }
         public string NewValue { get; set; }
+        public int? Count { get; set; }
 
         public List<SelectListItem> Fields()
         {
-            return new SelectList(new[] { 
+            return new SelectList(new[]
+            {
                 "(not specified)",
                 "Approval Codes",
                 "Background Check Date",
@@ -53,31 +56,31 @@ namespace CmsWeb.Models
                 "ReceiveSMS",
                 "School",
                 "Statement Options",
-                "Title",
-            }.Select(x => new { value = x, text = x }),
+                "Title"
+            }.Select(x => new {value = x, text = x}),
                 "value", "text").ToList();
         }
+
         public SelectList Tags()
         {
             var cv = new CodeValueModel();
             var tg = cv.UserTags(Util.UserPeopleId);
-            tg = tg.Select(tt => new CodeValueItem() { Value = "tag: {0}:{1}".Fmt(tt.Id, tt.Value) }).ToList();
+            tg = tg.Select(tt => new CodeValueItem {Value = $"tag: {tt.Id}:{tt.Value}"}).ToList();
             var q = from e in DbUtil.Db.PeopleExtras
                     where e.StrValue != null
-                    group e by e.FieldValue into g
-                    select new CodeValueItem() { Value = "exval: " + g.Key };
+                    group e by e.FieldValue
+                    into g
+                    select new CodeValueItem {Value = "exval: " + g.Key};
             tg.AddRange(q);
             if (HttpContext.Current.User.IsInRole("Admin"))
-                tg.Insert(0, new CodeValueItem() { Value = "last query" });
-            tg.Insert(0, new CodeValueItem() { Value = "(not specified)" });
+                tg.Insert(0, new CodeValueItem {Value = "last query"});
+            tg.Insert(0, new CodeValueItem {Value = "(not specified)"});
             var list = tg.ToSelect("Value");
             var sel = list.SingleOrDefault(mm => mm.Value == Tag);
             if (sel != null)
                 sel.Selected = true;
             return list;
         }
-        
-        public int? Count { get; set; }
 
         public IEnumerable<Person> People()
         {
@@ -88,33 +91,32 @@ namespace CmsWeb.Models
             switch (a[0])
             {
                 case "last query":
-                    {
-                        var id = DbUtil.Db.FetchLastQuery().Id;
-                        q = DbUtil.Db.PeopleQuery(id);
-                    }
+                {
+                    var id = DbUtil.Db.FetchLastQuery().Id;
+                    q = DbUtil.Db.PeopleQuery(id);
+                }
                     break;
                 case "tag":
-                    {
-                        var b = a[1].SplitStr(":", 2);
-                        var tag = DbUtil.Db.TagById(b[0].ToInt());
-                        q = tag.People(DbUtil.Db);
-                    }
+                {
+                    var b = a[1].SplitStr(":", 2);
+                    var tag = DbUtil.Db.TagById(b[0].ToInt());
+                    q = tag.People(DbUtil.Db);
+                }
                     break;
                 case "exval":
-                    {
-                        var b = a[1].SplitStr(":", 2);
-                        q = from e in DbUtil.Db.PeopleExtras
-                            where e.Field == b[0]
-                            where e.StrValue == b[1]
-                            select e.Person;
-                    }
+                {
+                    var b = a[1].SplitStr(":", 2);
+                    q = from e in DbUtil.Db.PeopleExtras
+                        where e.Field == b[0]
+                        where e.StrValue == b[1]
+                        select e.Person;
+                }
                     break;
             }
             Count = q.Count();
             return q;
         }
 
-        private ModelStateDictionary modelState;
         public void Run(ModelStateDictionary model)
         {
             modelState = model;
@@ -246,6 +248,7 @@ namespace CmsWeb.Models
                 modelState.AddModelError("NewValue", "Must be Date");
             return modelState.IsValid;
         }
+
         private void DoBackgroundChecks(Person p)
         {
             if (!DateValid())
@@ -253,7 +256,7 @@ namespace CmsWeb.Models
             var i = p.Volunteers.SingleOrDefault();
             if (i == null)
             {
-                i = new Volunteer { PeopleId = p.PeopleId };
+                i = new Volunteer {PeopleId = p.PeopleId};
                 DbUtil.Db.Volunteers.InsertOnSubmit(i);
                 DbUtil.Db.SubmitChanges();
             }
@@ -271,7 +274,7 @@ namespace CmsWeb.Models
             var i = p.Volunteers.SingleOrDefault();
             if (i == null)
             {
-                i = new Volunteer { PeopleId = p.PeopleId };
+                i = new Volunteer {PeopleId = p.PeopleId};
                 DbUtil.Db.Volunteers.InsertOnSubmit(i);
                 DbUtil.Db.SubmitChanges();
             }
@@ -289,7 +292,7 @@ namespace CmsWeb.Models
             else if (code > 0)
             {
                 if (app == null)
-                    p.VoluteerApprovalIds.Add(new VoluteerApprovalId { ApprovalId = code, });
+                    p.VoluteerApprovalIds.Add(new VoluteerApprovalId {ApprovalId = code});
             }
             else if (code == 0)
             {
@@ -299,62 +302,66 @@ namespace CmsWeb.Models
 
         public static List<CodeValueItem> Grades()
         {
-            return new List<CodeValueItem> 
-				{
-					new CodeValueItem { Code = "-1", Value = "Pre K" },
-					new CodeValueItem { Code = "0", Value = "Kindergarten" },
-					new CodeValueItem { Code = "1", Value = "1st Grade" },
-                    new CodeValueItem { Code = "2", Value = "2nd Grade" },
-                    new CodeValueItem { Code = "3", Value = "3rd Grade" },
-                    new CodeValueItem { Code = "4", Value = "4th Grade" },
-                    new CodeValueItem { Code = "5", Value = "5th Grade" },
-                    new CodeValueItem { Code = "6", Value = "6th Grade" },
-                    new CodeValueItem { Code = "7", Value = "7th Grade" },
-                    new CodeValueItem { Code = "8", Value = "8th Grade" },
-                    new CodeValueItem { Code = "9", Value = "9th Grade" },
-                    new CodeValueItem { Code = "10", Value = "10th Grade" },
-                    new CodeValueItem { Code = "11", Value = "11th Grade" },
-                    new CodeValueItem { Code = "12", Value = "12th Grade" },
-					new CodeValueItem { Code = "13", Value = "Freshman" },
-					new CodeValueItem { Code = "14", Value = "Sophmore" },
-					new CodeValueItem { Code = "15", Value = "Junior" },
-					new CodeValueItem { Code = "16", Value = "Senior" },
-					new CodeValueItem { Code = "99", Value = "Special Class" },
-					new CodeValueItem { Code = "YYYY", Value = "Graduation Year" },
-					new CodeValueItem { Code = "+1", Value = "Add 1 Grade Level" },
-				};
+            return new List<CodeValueItem>
+            {
+                new CodeValueItem {Code = "-1", Value = "Pre K"},
+                new CodeValueItem {Code = "0", Value = "Kindergarten"},
+                new CodeValueItem {Code = "1", Value = "1st Grade"},
+                new CodeValueItem {Code = "2", Value = "2nd Grade"},
+                new CodeValueItem {Code = "3", Value = "3rd Grade"},
+                new CodeValueItem {Code = "4", Value = "4th Grade"},
+                new CodeValueItem {Code = "5", Value = "5th Grade"},
+                new CodeValueItem {Code = "6", Value = "6th Grade"},
+                new CodeValueItem {Code = "7", Value = "7th Grade"},
+                new CodeValueItem {Code = "8", Value = "8th Grade"},
+                new CodeValueItem {Code = "9", Value = "9th Grade"},
+                new CodeValueItem {Code = "10", Value = "10th Grade"},
+                new CodeValueItem {Code = "11", Value = "11th Grade"},
+                new CodeValueItem {Code = "12", Value = "12th Grade"},
+                new CodeValueItem {Code = "13", Value = "Freshman"},
+                new CodeValueItem {Code = "14", Value = "Sophmore"},
+                new CodeValueItem {Code = "15", Value = "Junior"},
+                new CodeValueItem {Code = "16", Value = "Senior"},
+                new CodeValueItem {Code = "99", Value = "Special Class"},
+                new CodeValueItem {Code = "YYYY", Value = "Graduation Year"},
+                new CodeValueItem {Code = "+1", Value = "Add 1 Grade Level"}
+            };
         }
+
         public static List<CodeValueItem> ReceiveSMS()
         {
-            return new List<CodeValueItem> 
-				{
-					new CodeValueItem { Code = "true", Value = "Yes, Receive SMS Text messages" },
-					new CodeValueItem { Code = "false", Value = "No, Do not Receive SMS Text messages" },
-				};
+            return new List<CodeValueItem>
+            {
+                new CodeValueItem {Code = "true", Value = "Yes, Receive SMS Text messages"},
+                new CodeValueItem {Code = "false", Value = "No, Do not Receive SMS Text messages"}
+            };
         }
+
         public static List<CodeValueItem> BadAddressFlag()
         {
-            return new List<CodeValueItem> 
-				{
-					new CodeValueItem { Code = "true", Value = "Yes, Address is Bad" },
-					new CodeValueItem { Code = "false", Value = "No, Address is Good" },
-				};
+            return new List<CodeValueItem>
+            {
+                new CodeValueItem {Code = "true", Value = "Yes, Address is Bad"},
+                new CodeValueItem {Code = "false", Value = "No, Address is Good"}
+            };
         }
+
         public static List<CodeValueItem> DoNotMail()
         {
-            return new List<CodeValueItem> 
-				{
-					new CodeValueItem { Code = "true", Value = "Yes, Do Not Mail" },
-					new CodeValueItem { Code = "false", Value = "No, OK To Mail" },
-				};
+            return new List<CodeValueItem>
+            {
+                new CodeValueItem {Code = "true", Value = "Yes, Do Not Mail"},
+                new CodeValueItem {Code = "false", Value = "No, OK To Mail"}
+            };
         }
+
         public static List<CodeValueItem> ElectronicStatement()
         {
-            return new List<CodeValueItem> 
-				{
-					new CodeValueItem { Code = "true", Value = "Yes, Only Electronic Statements" },
-					new CodeValueItem { Code = "false", Value = "No, Paper Statements" },
-				};
+            return new List<CodeValueItem>
+            {
+                new CodeValueItem {Code = "true", Value = "Yes, Only Electronic Statements"},
+                new CodeValueItem {Code = "false", Value = "No, Paper Statements"}
+            };
         }
     }
 }

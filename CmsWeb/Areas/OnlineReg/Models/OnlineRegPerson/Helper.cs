@@ -59,32 +59,23 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             get
             {
-                if (_person != null && _person.BirthDate.HasValue)
+                if (_person?.BirthDate != null)
                     return GetAge(_person.BirthDate.Value);
                 if (birthday.HasValue)
                     return byear == null || birthday.Value.Year == Util.SignalNoYear
-                        ? (int?) null 
+                        ? (int?) null
                         : GetAge(birthday.Value);
                 return null;
             }
         }
 
         [DisplayName("Gender")]
-        public string GenderDisplay
-        {
-            get { return gender == 1 ? "Male" : gender == 2 ? "Female" : "not specified"; }
-        }
+        public string GenderDisplay => gender == 1 ? "Male" : gender == 2 ? "Female" : "not specified";
 
         [DisplayName("Marital")]
-        public string MarriedDisplay
-        {
-            get { return married == 10 ? "Single" : married == 20 ? "Married" : "not specified"; }
-        }
+        public string MarriedDisplay => married == 10 ? "Single" : married == 20 ? "Married" : "not specified";
 
-        public string SpecialGivingFundsHeader
-        {
-            get { return DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds"); }
-        }
+        public string SpecialGivingFundsHeader => DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
         public IEnumerable<Organization> GetOrgsInDiv()
         {
@@ -149,16 +140,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool OnlineGiving()
         {
-            if (org != null)
-                return org.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
-            return false;
+            return org?.RegistrationTypeId == RegistrationTypeCode.OnlineGiving;
         }
 
         public bool IsSpecialScript()
         {
-            if (org != null)
-                return org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript;
-            return false;
+            return org?.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript;
         }
 
         public bool IsSpecialReg()
@@ -191,9 +178,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool OnlinePledge()
         {
-            if (org != null)
-                return org.RegistrationTypeId == RegistrationTypeCode.OnlinePledge;
-            return false;
+            return org?.RegistrationTypeId == RegistrationTypeCode.OnlinePledge;
         }
 
         public bool MemberOnly()
@@ -280,15 +265,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (oo == null)
                 NoAppropriateOrgError = "Sorry, cannot find an appropriate age group";
             else if (oo.RegEnd.HasValue && DateTime.Now > oo.RegEnd)
-                NoAppropriateOrgError = "Sorry, registration has ended for {0}".Fmt(oo.OrganizationName);
+                NoAppropriateOrgError = $"Sorry, registration has ended for {oo.OrganizationName}";
             else if (oo.OrganizationStatusId == OrgStatusCode.Inactive)
-                NoAppropriateOrgError = "Sorry, {0} is inactive".Fmt(oo.OrganizationName);
+                NoAppropriateOrgError = $"Sorry, {oo.OrganizationName} is inactive";
             else if (oo.ClassFilled == true)
-                NoAppropriateOrgError = "Sorry, {0} is filled".Fmt(oo.OrganizationName);
+                NoAppropriateOrgError = $"Sorry, {oo.OrganizationName} is filled";
             else if (oo.RegistrationTypeId == RegistrationTypeCode.None)
-                NoAppropriateOrgError = "Sorry, {0} is not available".Fmt(oo.OrganizationName);
+                NoAppropriateOrgError = $"Sorry, {oo.OrganizationName} is not available";
             else if (oo.RegistrationClosed == true)
-                NoAppropriateOrgError = "Sorry, {0} is closed".Fmt(oo.OrganizationName);
+                NoAppropriateOrgError = $"Sorry, {oo.OrganizationName} is closed";
             if (NoAppropriateOrgError.HasValue())
                 oo = null;
 
@@ -399,7 +384,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     .Replace("{first}", person.PreferredName, ignoreCase: true)
                     .Replace("{org}", orgname, ignoreCase: true)
                     .Replace("{phone}", phone, ignoreCase: true);
-                var subj = "{0}, different email address than one on record".Fmt(orgname);
+                var subj = $"{orgname}, different email address than one on record";
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
                 Log("DiffEmailFromRecord");
             }
@@ -410,7 +395,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     .Replace("{first}", person.PreferredName, ignoreCase: true)
                     .Replace("{org}", orgname, ignoreCase: true)
                     .Replace("{phone}", phone.FmtFone(), ignoreCase: true);
-                var subj = "{0}, no email on your record".Fmt(orgname);
+                var subj = $"{orgname}, no email on your record";
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
                 Log("NoEmailOnRecord");
             }
@@ -432,7 +417,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     new FamilyAttendInfo()
                     {
-                        Name = "{0} {1}".Fmt(FirstName, LastName),
+                        Name = $"{FirstName} {LastName}",
                         PeopleId = -1,
                         Attend = true
                     }
@@ -475,17 +460,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             sb.AppendFormat("Org: {0}<br/>\n", org.OrganizationName);
             if (PeopleId.HasValue)
             {
-                sb.AppendFormat("{0}({1},{2},{3}), Birthday: {4}({5}), Phone: {6}, {7}, {8}<br />\n".Fmt(
-                    person.Name, person.PeopleId, person.Gender.Code, person.MaritalStatus.Code,
-                    person.DOB, person.Age, Phone.FmtFone(), person.EmailAddress, EmailAddress));
+                sb.Append($"{person.Name}({person.PeopleId},{person.Gender.Code},{person.MaritalStatus.Code}), Birthday: {person.DOB}({person.Age}), Phone: {Phone.FmtFone()}, {person.EmailAddress}, {EmailAddress}<br />\n");
                 if (ShowAddress)
                     sb.AppendFormat("&nbsp;&nbsp;{0}; {1}<br />\n", person.PrimaryAddress, person.CityStateZip);
             }
             else
             {
-                sb.AppendFormat("{0} {1}({2},{3}), Birthday: {4}({5}), Phone: {6}, {7}<br />\n".Fmt(
-                    FirstName, LastName, gender, married,
-                    DateOfBirth, age, Phone.FmtFone(), EmailAddress));
+                sb.Append($"{FirstName} {LastName}({gender},{married}), Birthday: {DateOfBirth}({age}), Phone: {Phone.FmtFone()}, {EmailAddress}<br />\n");
                 if (ShowAddress)
                     sb.AppendFormat("&nbsp;&nbsp;{0}; {1}<br />\n", AddressLineOne, City);
             }
@@ -542,7 +523,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     where (f.OnlineSort > 0)
                     select new SelectListItem
                     {
-                        Text = "{0}".Fmt(f.FundName),
+                        Text = $"{f.FundName}",
                         Value = f.FundId.ToString()
                     }).ToArray();
         }
@@ -553,7 +534,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     where (f.OnlineSort > 0 && f.OnlineSort <= 99)
                     select new SelectListItem
                     {
-                        Text = "{0}".Fmt(f.FundName),
+                        Text = $"{f.FundName}",
                         Value = f.FundId.ToString()
                     }).ToArray();
         }
@@ -564,7 +545,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     where f.OnlineSort > 99
                     select new SelectListItem
                     {
-                        Text = "{0}".Fmt(f.FundName),
+                        Text = $"{f.FundName}",
                         Value = f.FundId.ToString()
                     }).ToArray();
         }
@@ -578,10 +559,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private PythonEvents _pythonEvents;
-        public PythonEvents PythonEvents
-        {
-            get { return _pythonEvents ?? (_pythonEvents = HttpContext.Current.Items["PythonEvents"] as PythonEvents); }
-        }
+        public PythonEvents PythonEvents => _pythonEvents ?? (_pythonEvents = HttpContext.Current.Items["PythonEvents"] as PythonEvents);
 
         private readonly Dictionary<string, string> _nameLookup = new Dictionary<string, string>()
         {
@@ -694,7 +672,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public string Email { get; set; }
         public int? GenderId { get; set; }
         public int? MaritalId { get; set; }
-        public string Gender { get { return GenderId == 1 ? "Male" : "Female"; } }
-        public string Marital { get { return MaritalId == 10 ? "Single" : "Married"; } }
+        public string Gender => GenderId == 1 ? "Male" : "Female";
+        public string Marital => MaritalId == 10 ? "Single" : "Married";
     }
 }

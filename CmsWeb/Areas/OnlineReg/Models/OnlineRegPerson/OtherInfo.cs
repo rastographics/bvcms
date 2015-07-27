@@ -1,53 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using CmsData;
 using CmsData.Registration;
 using UtilityExtensions;
-using System.Web.Mvc;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-
-        public string ExtraQuestionValue(int set, string s)
-        {
-            if (ExtraQuestion[set].ContainsKey(s))
-                return ExtraQuestion[set][s];
-            return null;
-        }
-        public string TextValue(int set, string s)
-        {
-            if (Text[set].ContainsKey(s))
-                return Text[set][s];
-            return null;
-        }
-
-        public bool Attended(int id)
-        {
-            if (FamilyAttend == null)
-                return false;
-            var a = FamilyAttend.SingleOrDefault(aa => aa.PeopleId == id);
-            if (a == null)
-                return false;
-            return a.Attend;
-        }
-
-        public bool YesNoChecked(string key, bool value)
-        {
-            if (YesNoQuestion != null && YesNoQuestion.ContainsKey(key))
-                return YesNoQuestion[key] == value;
-            return false;
-        }
-
-        public bool CheckboxChecked(string sg)
-        {
-            if (Checkbox == null)
-                return false;
-            return Checkbox.Contains(sg);
-        }
-
         private List<string> _GroupTags;
+
         public List<string> GroupTags
         {
             get
@@ -75,10 +38,43 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return r;
             }
         }
-        public class SelectListItemFilled : SelectListItem
+
+        public string ExtraQuestionValue(int set, string s)
         {
-            public bool Filled { get; set; }
+            if (ExtraQuestion[set].ContainsKey(s))
+                return ExtraQuestion[set][s];
+            return null;
         }
+
+        public string TextValue(int set, string s)
+        {
+            if (Text[set].ContainsKey(s))
+                return Text[set][s];
+            return null;
+        }
+
+        public bool Attended(int id)
+        {
+            var a = FamilyAttend?.SingleOrDefault(aa => aa.PeopleId == id);
+            if (a == null)
+                return false;
+            return a.Attend;
+        }
+
+        public bool YesNoChecked(string key, bool value)
+        {
+            if (YesNoQuestion != null && YesNoQuestion.ContainsKey(key))
+                return YesNoQuestion[key] == value;
+            return false;
+        }
+
+        public bool CheckboxChecked(string sg)
+        {
+            if (Checkbox == null)
+                return false;
+            return Checkbox.Contains(sg);
+        }
+
         public IEnumerable<SelectListItemFilled> DropdownList(Ask ask)
         {
             // this appears to only occur when a user saves progress, the organization has a dropdown question added, and then the user continues
@@ -88,8 +84,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 option.Add(string.Empty);
             }
 
-            var q = from s in ((AskDropdown)ask).list
-                    let amt = s.Fee.HasValue ? " ({0:C})".Fmt(s.Fee) : ""
+            var q = from s in ((AskDropdown) ask).list
+                    let amt = s.Fee.HasValue ? $" ({s.Fee:C})" : ""
                     select new SelectListItemFilled
                     {
                         Text = s.Description + amt,
@@ -98,15 +94,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         Selected = s.SmallGroup == option[ask.UniqueId]
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItemFilled { Text = "(please select)", Value = "00" });
+            list.Insert(0, new SelectListItemFilled {Text = "(please select)", Value = "00"});
             return list;
         }
-        public class FundItemChosen
-        {
-            public string desc { get; set; }
-            public int fundid { get; set; }
-            public decimal amt { get; set; }
-        }
+
         public IEnumerable<FundItemChosen> FundItemsChosen()
         {
             if (FundItem == null)
@@ -115,22 +106,25 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
-                    select new FundItemChosen { fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value.Value };
+                    select new FundItemChosen {fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value.Value};
             return q;
         }
+
         public IEnumerable<SelectListItem> GradeOptions(Ask ask)
         {
-            var q = from s in ((AskGradeOptions)ask).list
-                    select new SelectListItem { Text = s.Description, Value = s.Code.ToString() };
+            var q = from s in ((AskGradeOptions) ask).list
+                    select new SelectListItem {Text = s.Description, Value = s.Code.ToString()};
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Text = "(please select)", Value = "00" });
+            list.Insert(0, new SelectListItem {Text = "(please select)", Value = "00"});
             return list;
         }
+
         public static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Organization org)
         {
             var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
             return ShirtSizes(setting);
         }
+
         private static IEnumerable<SelectListItem> ShirtSizes(Settings setting)
         {
             var askSize = setting.AskItems.FirstOrDefault(aa => aa is AskSize) as AskSize;
@@ -141,30 +135,33 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         Text = ss.Description
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Value = "0", Text = "(please select)" });
+            list.Insert(0, new SelectListItem {Value = "0", Text = "(please select)"});
             if (askSize.AllowLastYear)
-                list.Add(new SelectListItem { Value = "lastyear", Text = "Use shirt from last year" });
+                list.Add(new SelectListItem {Value = "lastyear", Text = "Use shirt from last year"});
             return list;
         }
+
         public IEnumerable<SelectListItem> ShirtSizes()
         {
             return ShirtSizes(setting);
         }
+
         public List<SelectListItem> MissionTripGoers()
         {
             var q = from g in DbUtil.Db.OrganizationMembers
-                where g.OrganizationId == orgid
-                where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
-                orderby g.Person.Name2
-                select new SelectListItem()
-                {
-                    Value = g.PeopleId.ToString(),
-                    Text = g.Person.Name2
-                };
+                    where g.OrganizationId == orgid
+                    where g.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                    orderby g.Person.Name2
+                    select new SelectListItem
+                    {
+                        Value = g.PeopleId.ToString(),
+                        Text = g.Person.Name2
+                    };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem() { Value = "0", Text = "(please select)" });
+            list.Insert(0, new SelectListItem {Value = "0", Text = "(please select)"});
             return list;
         }
+
         public void FillPriorInfo()
         {
             if (Found != true)
@@ -172,54 +169,54 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (IsNew || !LoggedIn)
                 return;
 
-                var rr = DbUtil.Db.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
-                if (rr != null)
+            var rr = DbUtil.Db.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
+            if (rr != null)
+            {
+                if (setting.AskVisible("AskRequest"))
                 {
-                    if (setting.AskVisible("AskRequest"))
-                    {
-                        var om = GetOrgMember();
-                        if (om != null)
-                            request = om.Request;
-                    }
-                    if (setting.AskVisible("AskSize"))
-                        shirtsize = rr.ShirtSize;
-                    if (setting.AskVisible("AskEmContact"))
-                    {
-                        emcontact = rr.Emcontact;
-                        emphone = rr.Emphone;
-                    }
-                    if (setting.AskVisible("AskInsurance"))
-                    {
-                        insurance = rr.Insurance;
-                        policy = rr.Policy;
-                    }
-                    if (setting.AskVisible("AskDoctor"))
-                    {
-                        docphone = rr.Docphone;
-                        doctor = rr.Doctor;
-                    }
-                    if (setting.AskVisible("AskParents"))
-                    {
-                        mname = rr.Mname;
-                        fname = rr.Fname;
-                    }
-                    if (setting.AskVisible("AskAllergies"))
-                        medical = rr.MedicalDescription;
-                    if (setting.AskVisible("AskCoaching"))
-                        coaching = rr.Coaching;
-                    if (setting.AskVisible("AskChurch"))
-                    {
-                        otherchurch = rr.ActiveInAnotherChurch ?? false;
-                        memberus = rr.Member ?? false;
-                    }
-                    if (setting.AskVisible("AskTylenolEtc"))
-                    {
-                        tylenol = rr.Tylenol;
-                        advil = rr.Advil;
-                        robitussin = rr.Robitussin;
-                        maalox = rr.Maalox;
-                    }
+                    var om = GetOrgMember();
+                    if (om != null)
+                        request = om.Request;
                 }
+                if (setting.AskVisible("AskSize"))
+                    shirtsize = rr.ShirtSize;
+                if (setting.AskVisible("AskEmContact"))
+                {
+                    emcontact = rr.Emcontact;
+                    emphone = rr.Emphone;
+                }
+                if (setting.AskVisible("AskInsurance"))
+                {
+                    insurance = rr.Insurance;
+                    policy = rr.Policy;
+                }
+                if (setting.AskVisible("AskDoctor"))
+                {
+                    docphone = rr.Docphone;
+                    doctor = rr.Doctor;
+                }
+                if (setting.AskVisible("AskParents"))
+                {
+                    mname = rr.Mname;
+                    fname = rr.Fname;
+                }
+                if (setting.AskVisible("AskAllergies"))
+                    medical = rr.MedicalDescription;
+                if (setting.AskVisible("AskCoaching"))
+                    coaching = rr.Coaching;
+                if (setting.AskVisible("AskChurch"))
+                {
+                    otherchurch = rr.ActiveInAnotherChurch ?? false;
+                    memberus = rr.Member ?? false;
+                }
+                if (setting.AskVisible("AskTylenolEtc"))
+                {
+                    tylenol = rr.Tylenol;
+                    advil = rr.Advil;
+                    robitussin = rr.Robitussin;
+                    maalox = rr.Maalox;
+                }
+            }
 #if DEBUG2
             request = "Toby";
             ntickets = 1;
@@ -256,10 +253,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (org != null)
                 return (setting.AskVisible("AskEmContact")
-                    || setting.AskVisible("AskInsurance")
-                    || setting.AskVisible("AskDoctor")
-                    || setting.AskVisible("AskParents"));
+                        || setting.AskVisible("AskInsurance")
+                        || setting.AskVisible("AskDoctor")
+                        || setting.AskVisible("AskParents"));
             return false;
+        }
+
+        public class SelectListItemFilled : SelectListItem
+        {
+            public bool Filled { get; set; }
+        }
+
+        public class FundItemChosen
+        {
+            public string desc { get; set; }
+            public int fundid { get; set; }
+            public decimal amt { get; set; }
         }
     }
 }

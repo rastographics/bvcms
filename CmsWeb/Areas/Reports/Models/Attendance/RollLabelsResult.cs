@@ -1,15 +1,14 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CmsWeb.Models;
-using DocumentFormat.OpenXml.Vml;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using UtilityExtensions;
@@ -26,11 +25,11 @@ namespace CmsWeb.Areas.Reports.Models
         public bool useMailFlags { get; set; }
         public bool usephone { get; set; }
 
-        public bool? sortzip; 
-	    public string sort
-	    {
-			get { return (sortzip ?? false) ? "Zip" : "Name"; }
-	    }
+        public bool? sortzip;
+        public string sort
+        {
+            get { return (sortzip ?? false) ? "Zip" : "Name"; }
+        }
 
         protected float H = .925f;
         protected float W = 3f;
@@ -75,7 +74,7 @@ namespace CmsWeb.Areas.Reports.Models
                     q = ctl.FetchCouplesBothList(sort, qid);
                     break;
             }
-            AddLabel(document, "=========", "{0}\n{1},{2:g}".Fmt(Util.UserName, q.Count(), DateTime.Now), String.Empty);
+            AddLabel(document, "=========", $"{Util.UserName}\n{q.Count()},{DateTime.Now:g}", String.Empty);
             foreach (var m in q)
             {
                 var label = m.LabelName;

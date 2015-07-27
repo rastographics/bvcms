@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
 using CmsWeb.Areas.Search.Models;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -23,11 +20,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
         {
             model.UpdateLongRunningOp(DbUtil.Db, OrgSearchDrop.Op);
             if (!model.Started.HasValue)
-            { 
-                DbUtil.LogActivity("OrgSearchDrop {0} Members from {1} Orgs".Fmt(model.Count, model.OrgCount));
+            {
+                DbUtil.LogActivity($"OrgSearchDrop {model.Count} Members from {model.OrgCount} Orgs");
                 model.Process(DbUtil.Db);
             }
-			return View(model);
-		}
+            return View(model);
+        }
     }
 }

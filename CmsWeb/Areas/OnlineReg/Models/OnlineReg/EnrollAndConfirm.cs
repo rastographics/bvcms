@@ -1,18 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
-using System.Text;
-using UtilityExtensions;
-using System.Text.RegularExpressions;
 using System.Net.Mail;
+using System.Text;
+using System.Text.RegularExpressions;
+using CmsData;
+using CmsData.API;
 using CmsData.Registration;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
-        private Regex donationtext = new Regex(@"\{donation(?<text>.*)donation\}", RegexOptions.Singleline | RegexOptions.Multiline);
+        private readonly Regex donationtext = new Regex(@"\{donation(?<text>.*)donation\}", RegexOptions.Singleline | RegexOptions.Multiline);
+        private Settings _masterSettings;
+        private List<Person> _notifyIds;
+        private string _subject;
+        private List<MailAddress> listMailAddress;
+        private bool usedAdminsForNotify;
 
         public bool EnrollAndConfirm()
         {
@@ -85,40 +91,35 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // notify the staff
             foreach (var p in List)
             {
-                DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
-                    @"{7}{0} has registered for {1}<br/>
-Total Fee for this registrant: {2:C}<br/>
-Total Fee for this registration: {3:C}<br/>
-Total Fee paid today: {4:C}<br/>
-AmountDue: {5:C}<br/>
-<pre>{6}</pre>".Fmt(p.person.Name,
-                        Header,
-                        p.TotalAmount(),
-                        TotalAmount(),
-                        amtpaid,
-                        Transaction.Amtdue, 
-                        p.PrepareSummaryText(Transaction),
-                        usedAdminsForNotify
-                            ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
+                var messageNotice = usedAdminsForNotify
+                    ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
 <a href='http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>"
-                            : ""));
+                    : "";
+                DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notifyIds[0].FromEmail), notifyIds, Header,
+                    $@"{messageNotice}{p.person.Name} has registered for {Header}<br/>
+Total Fee for this registrant: {p.TotalAmount():C}<br/>
+Total Fee for this registration: {TotalAmount():C}<br/>
+Total Fee paid today: {amtpaid:C}<br/>
+AmountDue: {Transaction.Amtdue:C}<br/>
+<pre>{p.PrepareSummaryText(Transaction)}</pre>");
             }
         }
+
         private void SendSingleConfirmationForOrg(OnlineRegPersonModel p)
         {
             DbUtil.Db.SetCurrentOrgId(p.orgid);
             var emailSubject = GetSubject(p);
-            string details = p.PrepareSummaryText(Transaction);
+            var details = p.PrepareSummaryText(Transaction);
             var message = p.GetMessage(details);
 
             var NotifyIds = DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId);
             var notify = NotifyIds[0];
 
-            string location = p.org.Location;
+            var location = p.org.Location;
             if (!location.HasValue())
                 location = masterorg.Location;
 
-            message = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person, 
+            message = APIOrganization.MessageReplacements(DbUtil.Db, p.person,
                 masterorg.OrganizationName, p.org.OrganizationId, p.org.OrganizationName, location, message);
 
             var amtpaid = Transaction.Amt ?? 0;
@@ -132,25 +133,19 @@ AmountDue: {5:C}<br/>
             if (emailSubject != "DO NOT SEND")
             {
                 DbUtil.Db.Email(notify.FromEmail, p.person, Util.EmailAddressListFromString(p.fromemail),
-                    emailSubject, message, redacted: false);
+                    emailSubject, message, false);
                 Log("SentConfirmation");
             }
             // notify the staff
             DbUtil.Db.Email(Util.PickFirst(p.person.FromEmail, notify.FromEmail),
                 NotifyIds, Header,
-                @"{0} has registered for {1}<br/>
-Feepaid for this registrant: {2:C}<br/>
-Others in this registration session: {3:C}<br/>
-Total Fee paid for this registration session: {4:C}<br/>
-<pre>{5}</pre>".Fmt(p.person.Name,
-                    Header,
-                    p.AmountToPay(),
-                    p.GetOthersInTransaction(Transaction),
-                    amtpaid,
-                    p.PrepareSummaryText(Transaction)));
+                $@"{p.person.Name} has registered for {Header}<br/>
+Feepaid for this registrant: {p.AmountToPay():C}<br/>
+Others in this registration session: {p.GetOthersInTransaction(Transaction):C}<br/>
+Total Fee paid for this registration session: {amtpaid:C}<br/>
+<pre>{p.PrepareSummaryText(Transaction)}</pre>");
         }
 
-        private Settings _masterSettings;
         private Settings GetMasterOrgSettings()
         {
             if (_masterSettings != null)
@@ -165,17 +160,11 @@ Total Fee paid for this registration session: {4:C}<br/>
             return _masterSettings = settings[masterorgid.Value];
         }
 
-
         private string DoDonationModifyMessage(string message)
         {
             var p = List[donor.Value];
             Transaction.Fund = p.setting.DonationFund();
-            var desc = "{0}; {1}; {2}, {3} {4}".Fmt(
-                p.person.Name,
-                p.person.PrimaryAddress,
-                p.person.PrimaryCity,
-                p.person.PrimaryState,
-                p.person.PrimaryZip);
+            var desc = $"{p.person.Name}; {p.person.PrimaryAddress}; {p.person.PrimaryCity}, {p.person.PrimaryState} {p.person.PrimaryZip}";
             if (!Transaction.TransactionId.StartsWith("Coupon") && Transaction.Donate.HasValue)
             {
                 p.person.PostUnattendedContribution(DbUtil.Db, Transaction.Donate.Value, p.setting.DonationFundId, desc,
@@ -193,7 +182,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             // send donation confirmations
             var notifyIds = GetNotifyIds();
             DbUtil.Db.Email(notifyIds[0].FromEmail, notifyIds, subject + "-donation",
-                "${0:N2} donation received from {1}".Fmt(Transaction.Donate, Transaction.FullName(Transaction)));
+                $"${Transaction.Donate:N2} donation received from {Transaction.FullName(Transaction)}");
             return message;
         }
 
@@ -201,9 +190,9 @@ Total Fee paid for this registration session: {4:C}<br/>
         {
             var p = List[0];
             Transaction.Fund = p.setting.DonationFund();
-            if(!p.orgid.HasValue || !p.PeopleId.HasValue)
+            if (!p.orgid.HasValue || !p.PeopleId.HasValue)
                 throw new Exception(
-                    "DoMissionTripGoer missing org or person: orgid={0} or peopleid={1}".Fmt(p.orgid ?? 0, p.PeopleId ?? 0));
+                    $"DoMissionTripGoer missing org or person: orgid={p.orgid ?? 0} or peopleid={p.PeopleId ?? 0}");
 
             DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
                 new GoerSenderAmount
@@ -219,13 +208,11 @@ Total Fee paid for this registration session: {4:C}<br/>
 
             p.person.PostUnattendedContribution(DbUtil.Db,
                 Transaction.Amt.Value, p.setting.DonationFundId,
-                "MissionTrip: org={0}; goer={1}".Fmt(p.orgid, p.PeopleId), tranid: Transaction.Id);
+                $"MissionTrip: org={p.orgid}; goer={p.PeopleId}", tranid: Transaction.Id);
             Log("GoerPayment");
             Transaction.Description = "Mission Trip Giving";
         }
 
-        private bool usedAdminsForNotify;
-        private List<Person> _notifyIds;
         private List<Person> GetNotifyIds()
         {
             if (_notifyIds != null)
@@ -251,7 +238,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                     Created = DateTime.Now,
                     OrgId = p.orgid.Value,
                     SupporterId = p.PeopleId.Value,
-                    NoNoticeToGoer = p.MissionTripNoNoticeToGoer,
+                    NoNoticeToGoer = p.MissionTripNoNoticeToGoer
                 };
                 if (goerid > 0)
                     gsa.GoerId = goerid;
@@ -266,16 +253,15 @@ Total Fee paid for this registration session: {4:C}<br/>
                 {
                     p.person.PostUnattendedContribution(DbUtil.Db,
                         p.MissionTripSupportGoer ?? 0, p.setting.DonationFundId,
-                        "SupportMissionTrip: org={0}; goer={1}".Fmt(p.orgid, goerid), tranid: Transaction.Id);
+                        $"SupportMissionTrip: org={p.orgid}; goer={goerid}", tranid: Transaction.Id);
                     Log("GoerSupport");
                     // send notices
                     if (goerid > 0 && !p.MissionTripNoNoticeToGoer)
                     {
                         var goer = DbUtil.Db.LoadPersonById(goerid.Value);
-                        forgoer = ", {0:c} for {1}".Fmt(p.MissionTripSupportGoer, goer.Name);
+                        forgoer = $", {p.MissionTripSupportGoer:c} for {goer.Name}";
                         DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
-                            "{0:C} donation received from {1}{2}".Fmt(p.MissionTripSupportGoer ?? 0,
-                                Transaction.FullName(Transaction), forgoer));
+                            $"{p.MissionTripSupportGoer ?? 0:C} donation received from {Transaction.FullName(Transaction)}{forgoer}");
                     }
                 }
             }
@@ -289,7 +275,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                         OrgId = p.orgid.Value,
                         SupporterId = p.PeopleId.Value
                     });
-                forgeneral = ", ({0:c}) for trip".Fmt(p.MissionTripSupportGeneral ?? 0);
+                forgeneral = $", ({p.MissionTripSupportGeneral ?? 0:c}) for trip";
                 if (!Transaction.TransactionId.StartsWith("Coupon"))
                 {
                     p.person.PostUnattendedContribution(DbUtil.Db,
@@ -300,13 +286,12 @@ Total Fee paid for this registration session: {4:C}<br/>
             }
             var notifyids = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
             DbUtil.Db.Email(notifyIds[0].FromEmail, notifyids, org.OrganizationName + "-donation",
-                "${0:N2} donation received from {1}{2}{3}".Fmt(
-                Transaction.Amt, Transaction.FullName(Transaction), forgoer, forgeneral));
+                $"${Transaction.Amt:N2} donation received from {Transaction.FullName(Transaction)}{forgoer}{forgeneral}");
 
             var orgsettings = settings[org.OrganizationId];
             var senderSubject = orgsettings.SenderSubject ?? "NO SUBJECT SET";
             var senderBody = orgsettings.SenderBody ?? "NO SENDEREMAIL MESSAGE HAS BEEN SET";
-            senderBody = CmsData.API.APIOrganization.MessageReplacements(DbUtil.Db, p.person,
+            senderBody = APIOrganization.MessageReplacements(DbUtil.Db, p.person,
                 org.DivisionName, org.OrganizationId, org.OrganizationName, org.Location, senderBody);
             senderBody = senderBody.Replace("{phone}", org.PhoneNumber.FmtFone7());
             senderBody = senderBody.Replace("{paid}", Transaction.Amt.ToString2("c"));
@@ -324,6 +309,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             var os = GetMasterOrgSettings();
             return Util.PickFirst(os.Subject, "no subject");
         }
+
         private string GetMessage(OnlineRegPersonModel p)
         {
             if (p.setting.Body.HasValue())
@@ -332,7 +318,6 @@ Total Fee paid for this registration session: {4:C}<br/>
             return Util.PickFirst(os.Body, "no body");
         }
 
-        private string _subject;
         private string GetSubject()
         {
             if (_subject.HasValue())
@@ -341,8 +326,6 @@ Total Fee paid for this registration session: {4:C}<br/>
             _subject = Util.PickFirst(orgsettings.Subject, "no subject");
             return _subject = _subject.Replace("{org}", Header);
         }
-
-
 
         private string DoEnrollments()
         {
@@ -380,7 +363,6 @@ Total Fee paid for this registration session: {4:C}<br/>
             return List[0].GetMessage(details.ToString());
         }
 
-        private List<MailAddress> listMailAddress;
         private void AddPeopleToTransaction()
         {
             listMailAddress = GetEmailList();
@@ -396,7 +378,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                 {
                     PeopleId = p.PeopleId.Value,
                     Amt = p.TotalAmount(),
-                    OrgId = p.orgid ?? Orgid,
+                    OrgId = p.orgid ?? Orgid
                 });
             }
 
@@ -416,7 +398,6 @@ Total Fee paid for this registration session: {4:C}<br/>
             Transaction.TransactionDate = DateTime.Now;
         }
 
-
         private string GetParticipants(List<MailAddress> elist)
         {
             var participants = new StringBuilder();
@@ -428,13 +409,13 @@ Total Fee paid for this registration session: {4:C}<br/>
                     Person uperson = null;
                     if (i > 0)
                     {
-                        if(List[i].AddressLineOne.HasValue() && List[i].AddressLineOne == List[i-1].AddressLineOne)
+                        if (List[i].AddressLineOne.HasValue() && List[i].AddressLineOne == List[i - 1].AddressLineOne)
                             uperson = List[i - 1].person; // add to previous family
                     }
                     p.AddPerson(uperson, p.org.EntryPointId ?? 0);
                 }
                 Util.AddGoodAddress(elist, p.fromemail);
-                participants.Append(p.ToString());
+                participants.Append(p);
             }
             return participants.ToString();
         }
@@ -462,10 +443,9 @@ Total Fee paid for this registration session: {4:C}<br/>
             return elist;
         }
 
-
         public void UseCoupon(string TransactionID, decimal AmtPaid)
         {
-            string matchcoupon = @"Coupon\((?<coupon>[^)]*)\)";
+            var matchcoupon = @"Coupon\((?<coupon>[^)]*)\)";
             if (Regex.IsMatch(TransactionID, matchcoupon, RegexOptions.IgnoreCase))
             {
                 var match = Regex.Match(TransactionID, matchcoupon, RegexOptions.IgnoreCase);
@@ -476,7 +456,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                 if (coupon != "Admin")
                 {
                     var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == coupon);
-                    if (c == null) 
+                    if (c == null)
                         return;
                     c.RegAmount = AmtPaid;
                     c.Used = DateTime.Now;
@@ -487,6 +467,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                     Log("AdminCouponUsed");
             }
         }
+
         public void ConfirmReregister()
         {
             var p = List[0];
@@ -499,12 +480,13 @@ Total Fee paid for this registration session: {4:C}<br/>
                 DbUtil.Db.ServerLink("/OnlineReg/RegisterLink/"), "Manage Your Registration for " + Header, message);
             Log("SendReRegisterLink");
         }
+
         public ConfirmEnum ConfirmManageSubscriptions()
         {
             var p = List[0];
             if (p.IsNew)
                 p.AddPerson(null, GetEntryPoint());
-            if (p.CreatingAccount == true)
+            if (p.CreatingAccount)
                 p.CreateAccount();
 
             var c = DbUtil.Content("OneTimeConfirmation");
@@ -514,7 +496,7 @@ Total Fee paid for this registration session: {4:C}<br/>
                 c.Name = "OneTimeConfirmation";
                 c.Title = "Manage Your Subscriptions";
                 c.Body = @"Hi {name},
-<p>Here is your <a href=""{url}"">link</a> to manage your subscriptions. (note: it will only work once for security reasons)</p> 
+<p>Here is your <a href=""{url}"">link</a> to manage your subscriptions. (note: it will only work once for security reasons)</p>
 ";
                 DbUtil.Db.Contents.InsertOnSubmit(c);
                 DbUtil.Db.SubmitChanges();
@@ -527,12 +509,13 @@ Total Fee paid for this registration session: {4:C}<br/>
             Log("SendOneTimeLinkManageSub");
             return ConfirmEnum.ConfirmAccount;
         }
+
         private ConfirmEnum ConfirmPickSlots()
         {
             var p = List[0];
             if (p.IsNew)
                 p.AddPerson(null, GetEntryPoint());
-            if (p.CreatingAccount == true)
+            if (p.CreatingAccount)
                 p.CreateAccount();
 
             var c = DbUtil.Content("OneTimeConfirmationVolunteer");
@@ -556,12 +539,13 @@ Total Fee paid for this registration session: {4:C}<br/>
             URL = null;
             return ConfirmEnum.ConfirmAccount;
         }
+
         internal ConfirmEnum SendLinkForPledge()
         {
             var p = List[0];
             if (p.IsNew)
                 p.AddPerson(null, p.org.EntryPointId ?? 0);
-            if (p.CreatingAccount == true)
+            if (p.CreatingAccount)
                 p.CreateAccount();
 
             var c = DbUtil.Content("OneTimeConfirmationPledge");
@@ -582,12 +566,13 @@ Total Fee paid for this registration session: {4:C}<br/>
             Log("SendOneTimeLinkManagePledge");
             return ConfirmEnum.ConfirmAccount;
         }
+
         internal ConfirmEnum SendLinkToManageGiving()
         {
             var p = List[0];
             if (p.IsNew)
                 p.AddPerson(null, p.org.EntryPointId ?? 0);
-            if (p.CreatingAccount == true)
+            if (p.CreatingAccount)
                 p.CreateAccount();
 
             var c = DbUtil.Content("OneTimeManageGiving");
@@ -608,6 +593,7 @@ Total Fee paid for this registration session: {4:C}<br/>
             Log("SendOneTimeLinkManageGiving");
             return ConfirmEnum.ConfirmAccount;
         }
+
         public int GetEntryPoint()
         {
             if (org != null && org.EntryPointId != null)
@@ -620,13 +606,13 @@ Total Fee paid for this registration session: {4:C}<br/>
         public override string ToString()
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("orgid: {0}<br/>\n", this.Orgid);
-            sb.AppendFormat("masterorgid: {0}<br/>\n", this.masterorgid);
-            sb.AppendFormat("userid: {0}<br/>\n", this.UserPeopleId);
+            sb.AppendFormat("orgid: {0}<br/>\n", Orgid);
+            sb.AppendFormat("masterorgid: {0}<br/>\n", masterorgid);
+            sb.AppendFormat("userid: {0}<br/>\n", UserPeopleId);
             foreach (var li in List)
             {
                 sb.AppendFormat("--------------------------------\nList: {0}<br/>\n", li.Index);
-                sb.Append(li.ToString());
+                sb.Append(li);
             }
             return sb.ToString();
         }

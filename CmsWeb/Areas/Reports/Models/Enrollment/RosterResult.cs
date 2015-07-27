@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Reports.Models
 
         public RosterResult()
         {
-            
+
         }
 
         public RosterResult(OrgSearchModel m)
@@ -122,11 +122,11 @@ namespace CmsWeb.Areas.Reports.Models
         {
             t = new PdfPTable(4);
             t.WidthPercentage = 100;
-            t.SetWidths(new int[] { 15, 30, 15, 40 });
+            t.SetWidths(new[] { 15, 30, 15, 40 });
             t.DefaultCell.Border = PdfPCell.NO_BORDER;
             pageEvents.StartPageSet(
-                                    "{0}: {1}, {2} ({3})".Fmt(o.Division, o.Name, o.Location, o.Teacher),
-                                    "({1})".Fmt(DateTime.Now, o.OrgId));
+                $"{o.Division}: {o.Name}, {o.Location} ({o.Teacher})",
+                $"({o.OrgId})");
 
             var boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
             t.AddCell(new Phrase("PeopleId", boldfont));

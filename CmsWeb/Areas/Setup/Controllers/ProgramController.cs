@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var p = new Program { Name = "new program" };
             DbUtil.Db.Programs.InsertOnSubmit(p);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Programs/#{0}".Fmt(p.Id));
+            return Redirect($"/Programs/#{p.Id}");
         }
 
         [HttpPost]

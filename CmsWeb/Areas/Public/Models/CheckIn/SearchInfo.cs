@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -32,14 +28,9 @@ namespace CmsWeb.Models
 
         public string GetDisplay()
         {
-            return "{0} {1}({2}) {3} {4} / {5}".Fmt(
-                       goesby.HasValue() ? goesby : first, 
-                       last, 
-                       age, 
-                       Util.FmtFone7(home, "h"), 
-                       Util.FmtFone7(cell,"c"), 
-                       addr);
+            return $"{(goesby.HasValue() ? goesby : first)} {last}({age}) {home.FmtFone7("h")} {cell.FmtFone7("c")} / {addr}";
         }
+
         public string church { get; set; }
     }
 }

@@ -150,7 +150,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-            //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+            //          DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
@@ -172,7 +172,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-            //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+            //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
@@ -193,7 +193,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-            //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink {0}, {1}".Fmt(OrgId, PeopleId));
+            //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
             br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
@@ -214,10 +214,10 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
-            //			DbUtil.LogActivity("APIPerson GetOneTimeRegisterLink2 {0}, {1}".Fmt(OrgId, PeopleId));
+            //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink2 {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/{0}?showfamily=true".Fmt(ot.Id.ToCode());
+            br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true";
             br.error = 0;
             return br;
         }
@@ -740,7 +740,7 @@ namespace CmsWeb.Areas.Public.Controllers
             Attend.RecordAttendance(mpa.peopleID, meeting.MeetingId, mpa.present);
 
             DbUtil.Db.UpdateMeetingCounters(mpa.orgID);
-            DbUtil.LogActivity("Mobile RecAtt o:{0} p:{1} u:{2} a:{3}".Fmt(meeting.OrganizationId, mpa.peopleID, Util.UserPeopleId, mpa.present));
+            DbUtil.LogActivity($"Mobile RecAtt o:{meeting.OrganizationId} p:{mpa.peopleID} u:{Util.UserPeopleId} a:{mpa.present}");
 
             BaseMessage br = new BaseMessage();
             br.error = 0;
@@ -794,7 +794,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             DbUtil.Db.SubmitChanges();
 
-            DbUtil.LogActivity("Mobile Headcount o:{0} m:{1} h:{2}".Fmt(meeting.OrganizationId, meeting.MeetingId, mph.headcount));
+            DbUtil.LogActivity($"Mobile Headcount o:{meeting.OrganizationId} m:{meeting.MeetingId} h:{mph.headcount}");
 
             BaseMessage br = new BaseMessage();
             br.error = 0;
@@ -981,7 +981,7 @@ namespace CmsWeb.Areas.Public.Controllers
             return new OneTimeLink
             {
                 Id = Guid.NewGuid(),
-                Querystring = "{0},{1},0".Fmt(orgId, peopleId),
+                Querystring = $"{orgId},{peopleId},0",
                 Expires = DateTime.Now.AddMinutes(10),
             };
         }

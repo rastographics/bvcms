@@ -17,7 +17,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         private int _fundId;
 
         private readonly List<EntryDetail> _details = new List<EntryDetail>();
-        
+
         public int? RunImport(string text, DateTime date, int? fundid, bool fromFile)
         {
             _fundId = fundid ?? BatchImportContributions.FirstFundId();
@@ -96,7 +96,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             var dollars = amountWithoutDecimal.Substring(0, amountWithoutDecimal.Length - 2);
             var cents = amountWithoutDecimal.Substring(amountWithoutDecimal.Length - 2);
 
-            var amount = string.Format("{0}.{1}", dollars, cents);
+            var amount = $"{dollars}.{cents}";
 
             _details.Add(new EntryDetail(amount, individualIdNumber, routingNumber, accountNumber, name));
         }

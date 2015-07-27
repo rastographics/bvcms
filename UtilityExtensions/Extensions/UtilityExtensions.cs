@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -254,7 +254,7 @@ namespace UtilityExtensions
         public static string HelpLink(string page)
         {
             var h = ConfigurationManager.AppSettings["helpurl"];
-            return h.Fmt(page);
+            return string.Format(h, page);
         }
 
         public static void Cookie(string name, string value, int days)
@@ -297,7 +297,7 @@ namespace UtilityExtensions
 
         public static string EndShowMessage(string message, string href, string text)
         {
-            return "<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>".Fmt(message, href, text);
+            return $"<h3 style='color:red'>{message}</h3>\n<a href='{href}'>{text}</a>";
         }
 
         public static void NoCache(this HttpResponse response)
@@ -321,8 +321,7 @@ namespace UtilityExtensions
         public static void ShowError(string message)
         {
             HttpContext.Current.Response.Redirect(
-                "/Home/ShowError/?error={0}&url={1}".Fmt(HttpContext.Current.Server.UrlEncode(message),
-                    HttpContext.Current.Request.Url.OriginalString));
+                $"/Home/ShowError/?error={HttpContext.Current.Server.UrlEncode(message)}&url={HttpContext.Current.Request.Url.OriginalString}");
         }
 
         public static string ResolveUrl(string originalUrl)

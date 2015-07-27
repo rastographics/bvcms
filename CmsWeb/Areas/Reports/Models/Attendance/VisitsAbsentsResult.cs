@@ -1,52 +1,33 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
+using System.Web.Mvc;
+using CmsData;
+using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using CmsData;
 using UtilityExtensions;
-using System.Text;
-using System.Web.Mvc;
-using System.Collections.Generic;
-using CmsWeb.Models;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class VisitsAbsentsResult : ActionResult
     {
-        public class AttendInfo
-        {
-            public int PeopleId { get; set; }
-            public string Name { get; set; }
-            public string Address { get; set; }
-            public string Address2 { get; set; }
-            public string Email { get; set; }
-            public string Birthday { get; set; }
-            public string HomePhone { get; set; }
-            public string CellPhone { get; set; }
-            public string CSZ { get; set; }
-            public string Status { get; set; }
-            public DateTime? LastAttend { get; set; }
-            public decimal? AttendPct { get; set; }
-            public string AttendStr { get; set; }
-            public bool visitor { get; set; }
-        }
-        private Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
-        private Font bigboldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
+        private readonly Font bigboldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+        private readonly Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
         private Document doc;
         private DateTime dt;
-
         private int? mtgid;
+        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
+
         public VisitsAbsentsResult(int? meetingid)
         {
             mtgid = meetingid;
@@ -74,15 +55,14 @@ namespace CmsWeb.Areas.Reports.Models
 
             w.PageEvent = new HeadFoot
             {
-                HeaderText = "Guests/Absents Report: {0} - {1} {2:g}".Fmt(
-                    i.OrganizationName, i.LeaderName, i.MeetingDate),
+                HeaderText = $"Guests/Absents Report: {i.OrganizationName} - {i.LeaderName} {i.MeetingDate:g}",
                 FooterText = "Guests/Absents Report"
             };
             doc.Open();
 
             var q = VisitsAbsents(mtgid.Value);
 
-            if (!mtgid.HasValue || i == null || q.Count() == 0)
+            if (!mtgid.HasValue || i == null || !q.Any())
                 doc.Add(new Paragraph("no data"));
             else
             {
@@ -90,10 +70,10 @@ namespace CmsWeb.Areas.Reports.Models
                 mt.SetNoPadding();
                 mt.HeaderRows = 1;
 
-                float[] widths = new float[] { 4f, 6f, 7f, 2.6f, 2f, 3f };
+                float[] widths = {4f, 6f, 7f, 2.6f, 2f, 3f};
                 var t = new PdfPTable(widths);
-                t.DefaultCell.Border = PdfPCell.NO_BORDER;
-                t.DefaultCell.VerticalAlignment = PdfPCell.ALIGN_TOP;
+                t.DefaultCell.Border = Rectangle.NO_BORDER;
+                t.DefaultCell.VerticalAlignment = Element.ALIGN_TOP;
                 t.DefaultCell.SetLeading(2.0f, 1f);
                 t.WidthPercentage = 100;
 
@@ -120,7 +100,7 @@ namespace CmsWeb.Areas.Reports.Models
                     t.DefaultCell.BackgroundColor = color;
 
                     if (v != p.visitor)
-                        t.Add("             ------ {0} ------".Fmt(p.visitor == true ? "Guests" : "Absentees"), 6, bigboldfont);
+                        t.Add($"             ------ {(p.visitor ? "Guests" : "Absentees")} ------", 6, bigboldfont);
                     v = p.visitor;
 
                     t.Add(p.Name, font);
@@ -145,8 +125,7 @@ namespace CmsWeb.Areas.Reports.Models
                     if (p.Status == null || !p.Status.StartsWith("Visit"))
                     {
                         t.Add("", font);
-                        t.Add("{0}           {1:n1}{2}"
-                            .Fmt(p.AttendStr, p.AttendPct, p.AttendPct.HasValue ? "%" : ""), 5, monofont);
+                        t.Add($"{p.AttendStr}           {p.AttendPct:n1}{(p.AttendPct.HasValue ? "%" : "")}", 5, monofont);
                     }
 
                     mt.AddCell(t);
@@ -155,6 +134,7 @@ namespace CmsWeb.Areas.Reports.Models
             }
             doc.Close();
         }
+
         public IEnumerable<AttendInfo> VisitsAbsents(int mtgid)
         {
             var q = from va in DbUtil.Db.VisitsAbsents(mtgid)
@@ -173,9 +153,27 @@ namespace CmsWeb.Areas.Reports.Models
                         LastAttend = va.LastAttended,
                         AttendPct = va.AttendPct,
                         AttendStr = va.AttendStr,
-                        visitor = va.AttendanceFlag == true
+                        visitor = va.AttendanceFlag
                     };
             return q;
+        }
+
+        public class AttendInfo
+        {
+            public int PeopleId { get; set; }
+            public string Name { get; set; }
+            public string Address { get; set; }
+            public string Address2 { get; set; }
+            public string Email { get; set; }
+            public string Birthday { get; set; }
+            public string HomePhone { get; set; }
+            public string CellPhone { get; set; }
+            public string CSZ { get; set; }
+            public string Status { get; set; }
+            public DateTime? LastAttend { get; set; }
+            public decimal? AttendPct { get; set; }
+            public string AttendStr { get; set; }
+            public bool visitor { get; set; }
         }
     }
 }

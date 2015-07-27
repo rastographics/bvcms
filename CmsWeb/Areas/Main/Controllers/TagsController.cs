@@ -1,15 +1,13 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using CmsWeb.Models;
 using CmsData;
+using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
-    [RouteArea("Main", AreaPrefix="Tags"), Route("{action}/{id?}")]
+    [RouteArea("Main", AreaPrefix = "Tags"), Route("{action}/{id?}")]
     public class TagsController : CmsStaffController
     {
         [Route("~/Tags")]
@@ -22,6 +20,7 @@ namespace CmsWeb.Areas.Main.Controllers
             InitExportToolbar();
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Results(TagsModel m)
         {
@@ -29,12 +28,14 @@ namespace CmsWeb.Areas.Main.Controllers
             InitExportToolbar();
             return View(m);
         }
+
         [HttpPost]
         public ActionResult SetShared(TagsModel m)
         {
             m.SetShareIds();
             return View("Results", m);
         }
+
         [HttpPost]
         public ActionResult Delete()
         {
@@ -48,6 +49,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var m = new TagsModel();
             return View("Tags", m);
         }
+
         [HttpPost]
         public ActionResult RenameTag(TagsModel m, string renamedTag = null)
         {
@@ -59,6 +61,7 @@ namespace CmsWeb.Areas.Main.Controllers
             Util2.CurrentTag = m.tagname;
             return View("Tags", m);
         }
+
         [HttpPost]
         public ActionResult NewTag(TagsModel m)
         {
@@ -66,15 +69,17 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.TagCurrent();
             return View("Tags", m);
         }
+
         private void InitExportToolbar()
         {
             var qid = DbUtil.Db.QueryHasCurrentTag().QueryId;
             ViewBag.queryid = qid;
-            ViewBag.TagAction = "/Tags/TagAll/{0}".Fmt(qid);
-            ViewBag.UnTagAction = "/Tags/UnTagAll/{0}".Fmt(qid);
+            ViewBag.TagAction = $"/Tags/TagAll/{qid}";
+            ViewBag.UnTagAction = $"/Tags/UnTagAll/{qid}";
             ViewBag.AddContact = "/Tags/AddContact/" + qid;
             ViewBag.AddTasks = "/Tags/AddTasks/" + qid;
         }
+
         [HttpPost]
         public ActionResult ToggleTag(int id)
         {
@@ -82,6 +87,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.SubmitChanges();
             return Content(t ? "Remove" : "Add");
         }
+
         [HttpPost]
         public ContentResult TagAll(Guid id, string tagname, bool? cleartagfirst)
         {
@@ -102,6 +108,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.TagCurrent();
             return Content("Manage");
         }
+
         [HttpPost]
         public ContentResult UnTagAll(Guid id)
         {
@@ -109,6 +116,7 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.UnTagAll(q);
             return Content("Add");
         }
+
         [HttpPost]
         public ContentResult ClearTag()
         {
@@ -116,17 +124,20 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.ExecuteCommand("delete dbo.TagPerson where Id = {0}", tag.Id);
             return Content("ok");
         }
+
         [HttpPost]
         public ActionResult AddContact(Guid id)
         {
-            var cid = CmsData.Contact.AddContact(id);
+            var cid = Contact.AddContact(id);
             return Content("/Contact2/" + cid);
         }
+
         [HttpPost]
         public ActionResult AddTasks(Guid id)
         {
             return Content(Task.AddTasks(DbUtil.Db, id).ToString());
         }
+
         public ActionResult SharedTags()
         {
             var t = DbUtil.Db.FetchOrCreateTag(Util.SessionId, Util.UserPeopleId, DbUtil.TagTypeId_AddSelected);
@@ -134,10 +145,11 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.SubmitChanges();
             var tag = DbUtil.Db.TagCurrent();
             foreach (var ts in tag.TagShares)
-                t.PersonTags.Add(new TagPerson { PeopleId = ts.PeopleId });
+                t.PersonTags.Add(new TagPerson {PeopleId = ts.PeopleId});
             DbUtil.Db.SubmitChanges();
             return Redirect("/SearchUsers");
         }
+
         [HttpPost]
         public ActionResult UpdateShared()
         {
@@ -155,18 +167,19 @@ namespace CmsWeb.Areas.Main.Controllers
                            where p == -1
                            select pid;
             foreach (var pid in userAdds)
-                tag.TagShares.Add(new TagShare { PeopleId = pid });
+                tag.TagShares.Add(new TagShare {PeopleId = pid});
             DbUtil.Db.TagPeople.DeleteAllOnSubmit(t.PersonTags);
             DbUtil.Db.Tags.DeleteOnSubmit(t);
             DbUtil.Db.SubmitChanges();
             return Content(DbUtil.Db.TagShares.Count(tt => tt.TagId == tag.Id).ToString());
         }
+
         [Authorize(Roles = "Admin")]
         public ActionResult ConvertTagToExtraValue(string tag, string field, string value)
         {
             if (Request.HttpMethod.ToUpper() == "GET")
             {
-                var success = (string)TempData["success"];
+                var success = (string) TempData["success"];
                 if (success.HasValue())
                     ViewData["success"] = success;
                 ViewData["tag"] = tag;

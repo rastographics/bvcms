@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ImageData;
-using IronPython.Modules;
 using UtilityExtensions;
 using System.Text;
 
@@ -10,18 +9,12 @@ namespace CmsData
 {
     public partial class Family : ITableWithExtraValues
     {
-        public string CityStateZip
-        {
-            get { return Util.FormatCSZ4(CityName,StateCode,ZipCode); }
-        }
-        public string AddrCityStateZip
-        {
-            get { return AddressLineOne + " " + CityStateZip; }
-        }
-        public string Addr2CityStateZip
-        {
-            get { return AddressLineTwo + " " + CityStateZip; }
-        }
+        public string CityStateZip => Util.FormatCSZ4(CityName,StateCode,ZipCode);
+
+        public string AddrCityStateZip => AddressLineOne + " " + CityStateZip;
+
+        public string Addr2CityStateZip => AddressLineTwo + " " + CityStateZip;
+
         public string FullAddress
         {
             get
@@ -37,14 +30,14 @@ namespace CmsData
 
         public string HohName(CMSDataContext Db)
         {
-                if (HeadOfHouseholdId.HasValue) 
+                if (HeadOfHouseholdId.HasValue)
                     return Db.People.Where(p => p.PeopleId == HeadOfHouseholdId.Value).Select(p => p.Name).SingleOrDefault();
                 return "";
         }
 
         public string HohSpouseName(CMSDataContext Db)
         {
-                if (HeadOfHouseholdSpouseId.HasValue) 
+                if (HeadOfHouseholdSpouseId.HasValue)
                     return Db.People.Where(p => p.PeopleId == HeadOfHouseholdSpouseId.Value).Select(p => p.Name).SingleOrDefault();
                 return "";
         }
@@ -53,10 +46,7 @@ namespace CmsData
             return "The " + HohName(Db) + " Family";
         }
 
-        public int MemberCount
-        {
-            get { return People.Count; }
-        }
+        public int MemberCount => People.Count;
 
         private List<ChangeDetail> fsbDefault;
         public void UpdateValue(string field, object value)
@@ -174,22 +164,22 @@ namespace CmsData
             var e = FamilyExtras.SingleOrDefault(ee => ee.Field == field);
             if (e == null)
                 return "";
-			if (e.StrValue.HasValue())
-				return e.StrValue;
-			if (e.Data.HasValue())
-				return e.Data;
-			if (e.DateValue.HasValue)
-				return e.DateValue.FormatDate();
-			if (e.IntValue.HasValue)
-				return e.IntValue.ToString();
-			return e.BitValue.ToString();
+            if (e.StrValue.HasValue())
+                return e.StrValue;
+            if (e.Data.HasValue())
+                return e.Data;
+            if (e.DateValue.HasValue)
+                return e.DateValue.FormatDate();
+            if (e.IntValue.HasValue)
+                return e.IntValue.ToString();
+            return e.BitValue.ToString();
         }
         public FamilyExtra GetExtraValue(string field)
         {
-			if (!field.HasValue())
-				field = "blank";
-			field = field.Replace(",", "_");
-			var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase:true) == 0);
+            if (!field.HasValue())
+                field = "blank";
+            field = field.Replace(",", "_");
+            var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase:true) == 0);
             if (ev == null)
             {
                 ev = new FamilyExtra
@@ -204,20 +194,20 @@ namespace CmsData
         }
         public void RemoveExtraValue(CMSDataContext Db, string field)
         {
-			var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase:true) == 0);
-			if (ev != null)
-				Db.FamilyExtras.DeleteOnSubmit(ev);
+            var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase:true) == 0);
+            if (ev != null)
+                Db.FamilyExtras.DeleteOnSubmit(ev);
         }
 
         public void LogExtraValue(string op, string field)
         {
-            DbUtil.LogActivity("EVFamily {0}:{1}".Fmt(op, field));
+            DbUtil.LogActivity($"EVFamily {op}:{field}");
         }
 
         public void AddEditExtraValue(string field, string value)
         {
-			if (!field.HasValue())
-				return;
+            if (!field.HasValue())
+                return;
             if (!value.HasValue())
                 return;
             var ev = GetExtraValue(field);
@@ -226,8 +216,8 @@ namespace CmsData
         }
         public void AddEditExtraDate(string field, DateTime? value)
         {
-			if (!value.HasValue)
-				return;
+            if (!value.HasValue)
+                return;
             var ev = GetExtraValue(field);
             ev.DateValue = value;
             ev.TransactionTime = DateTime.Now;
@@ -237,7 +227,7 @@ namespace CmsData
             if (!value.HasValue())
                 return;
             var ev = GetExtraValue(field);
-			ev.Data = value;
+            ev.Data = value;
             ev.TransactionTime = DateTime.Now;
         }
         public void AddToExtraData(string field, string value)
@@ -245,10 +235,10 @@ namespace CmsData
             if (!value.HasValue())
                 return;
             var ev = GetExtraValue(field);
-			if (ev.Data.HasValue())
-				ev.Data = value + "\n" + ev.Data;
-			else
-				ev.Data = value;
+            if (ev.Data.HasValue())
+                ev.Data = value + "\n" + ev.Data;
+            else
+                ev.Data = value;
             ev.TransactionTime = DateTime.Now;
         }
         public void AddEditExtraInt(string field, int value)
@@ -259,8 +249,8 @@ namespace CmsData
         }
         public void AddEditExtraBool(string field, bool tf)
         {
-			if (!field.HasValue())
-				return;
+            if (!field.HasValue())
+                return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
             ev.TransactionTime = DateTime.Now;

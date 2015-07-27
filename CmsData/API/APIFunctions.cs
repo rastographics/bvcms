@@ -1,19 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
-using UtilityExtensions;
-using System.Text.RegularExpressions;
-using System.Data.Linq;
-using System.Data.Linq.SqlClient;
-using IronPython.Hosting;
-using System.IO;
-using CmsData.Codes;
 using System.Web;
-using System.Xml;
-using System.Diagnostics;
-using Microsoft.Scripting.Hosting;
 using System.Xml.Serialization;
+using CmsData.Codes;
+using IronPython.Hosting;
+using UtilityExtensions;
 
 namespace CmsData.API
 {
@@ -44,7 +38,7 @@ class TestAPI(object):
                 foreach (var s in ss.Split('\n'))
                     sb.AppendFormat("\t\t{0}\n", s);
                 var engine = Python.CreateEngine();
-                script = shell.Fmt(init, sb.ToString());
+                script = string.Format(shell, init, sb);
                 var sc = engine.CreateScriptSourceFromString(script);
                 var code = sc.Compile();
                 var scope = engine.CreateScope();
@@ -102,7 +96,7 @@ class LoginInfo(object):
             }
             catch (Exception ex)
             {
-                return "<login error=\"API-LoginInfo script error: {0}\" />".Fmt(ex.Message);
+                return $"<login error=\"API-LoginInfo script error: {ex.Message}\" />";
             }
         }
         public int AttendCount(int orgid, int PeopleId)
@@ -157,7 +151,7 @@ class LoginInfo(object):
             var q = from a in Db.OrganizationMembers
                     where a.OrganizationId == orgid
                     where a.PeopleId == PeopleId
-                    where a.MemberTypeId != Codes.MemberTypeCode.InActive
+                    where a.MemberTypeId != MemberTypeCode.InActive
                     select a;
             return q.Count();
         }
