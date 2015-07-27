@@ -118,6 +118,8 @@ namespace CmsData.API
 
         string Form { get; set; }
 
+        string Header { get; set; }
+
         string HttpMethod { get; set; }
 
         bool InOrg(object pid, object OrgId);
