@@ -674,6 +674,7 @@
     <Compile Include="Registration\AskSuggestedFee.cs" />
     <Compile Include="Registration\AskHeader.cs" />
     <Compile Include="Registration\AskInstruction.cs" />
+    <Compile Include="Registration\ReadWriteXml.cs" />
     <Compile Include="Registration\Settings.cs" />
     <Compile Include="Registration\TimeSlots.cs" />
     <Compile Include="Registration\AskDropdown.cs" />

@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using CmsData;
+using CmsData.Registration;
 using CmsWeb.Areas.People.Models;
 using Dapper;
 using Newtonsoft.Json;
@@ -53,10 +54,10 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            string body = "";
-            var doc = new HtmlDocument();
-            doc.LoadHtml(body);
-            return Content(body);
+            var o = DbUtil.Db.LoadOrganizationById(90926);
+            var os = new Settings(o.RegSetting, DbUtil.Db, o.OrganizationId);
+            var x = Util.Serialize(os);
+            return Content(x, "text/xml");
         }
 #endif
 

@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -192,6 +194,29 @@ For each checkbox, you can specify the following:
                 var cnt = smallgroups.Count(mm => mm == SmallGroup);
                 return cnt >= Limit;
             }
+        }
+
+        public override void WriteXml(XmlWriter writer)
+        {
+            if (list.Count == 0)
+                return;
+            var w = new APIWriter(writer);
+
+            w.Start("Checkboxes");
+            w.Attr("Minimum", Minimum);
+            w.Attr("Maximum", Maximum);
+            w.Attr("Columns", Columns);
+            foreach (var i in list)
+            {
+                w.Start("Checkbox");
+                w.Attr("Fee", i.Fee);
+                w.Attr("Limit", i.Limit);
+                w.Attr("Time", i.MeetingTime.ToString2("s"));
+                w.Add("SmallGroup", i.SmallGroup);
+                w.Add("Description", i.Description);
+                w.End();
+            }
+            w.End();
         }
     }
 }

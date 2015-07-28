@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -144,5 +146,24 @@ You can optionally associate a fee with one or more items.
 				return menuitem;
 			}
 		}
+	    public override void WriteXml(XmlWriter writer)
+	    {
+			if (list.Count == 0)
+				return;
+            var w = new APIWriter(writer);
+	        w.Start("Menu");
+            w.Add("Label", Label);
+			foreach (var g in list)
+			{
+			    w.Start("Item");
+				w.Attr("SmallGroup", g.SmallGroup);
+				w.Attr("Fee", g.Fee);
+				w.Attr("Limit", g.Limit);
+				w.Attr("Time", g.MeetingTime.ToString2("s"));
+			    w.AddText(g.Description);
+			    w.End();
+			}
+	        w.End();
+	    }
 	}
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using CmsData.API;
 
 namespace CmsData.Registration
 {
@@ -71,5 +73,22 @@ namespace CmsData.Registration
 				return option;
 			}
 		}
+
+	    public override void WriteXml(XmlWriter writer)
+	    {
+			if (list.Count == 0)
+				return;
+            var w = new APIWriter(writer);
+	        w.Start("GradeOptions");
+            w.Add("Label", Label);
+			foreach (var g in list)
+			{
+			    w.Start("Grade");
+			    w.Attr("Code", g.Code);
+			    w.AddText(g.Description);
+			    w.End();
+			}
+	        w.End();
+	    }
 	}
 }

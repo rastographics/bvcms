@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -47,5 +49,15 @@ If you need a long explanation assoicated with your question, put that in as an 
 			}
 			return tx;
 		}
+	    public override void WriteXml(XmlWriter writer)
+	    {
+			if (list.Count == 0)
+				return;
+            var w = new APIWriter(writer);
+	        w.Start("Text");
+	        foreach (var q in list)
+                w.Add("Question", q);
+	        w.End();
+	    }
 	}
 }

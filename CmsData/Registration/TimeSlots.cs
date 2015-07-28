@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
 {
-	public class TimeSlots
+	public class TimeSlots : IXmlSerializable
 	{
         public string Help { get { return @"
 This is help for TimeSlots
@@ -31,6 +35,7 @@ This is help for TimeSlots
 				c.Output(sb);
 			sb.AppendLine();
 		}
+
 		public static TimeSlots Parse(Parser parser)
 		{
 			var ts = new TimeSlots();
@@ -46,6 +51,7 @@ This is help for TimeSlots
 			}
 			return ts;
 		}
+
 		public class TimeSlot
 		{
 			public int Id { get; set; }
@@ -106,5 +112,32 @@ This is help for TimeSlots
 				return timeslot;
 			}
 		}
+
+        public XmlSchema GetSchema()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ReadXml(XmlReader reader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void WriteXml(XmlWriter writer)
+        {
+            var w = new APIWriter(writer);
+			w.StartPending("TimeSlots");
+			w.Add("LockDays", TimeSlotLockDays);
+			foreach (var c in list)
+			{
+			    w.Start("Slot");
+			    w.Attr("Time", c.Time.ToString2("t"));
+			    w.Attr("DayOfWeek", c.DayOfWeek);
+			    w.Attr("Limit", c.Limit);
+			    w.AddText(c.Description);
+			    w.End();
+			}
+            w.EndPending();
+        }
 	}
 }

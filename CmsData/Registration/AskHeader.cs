@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -33,5 +35,12 @@ This can be used to separate sections.
 			Settings.AddValueCk(1, sb, "Label", Label);
 			sb.AppendLine();
 		}
+	    public override void WriteXml(XmlWriter writer)
+	    {
+            var w = new APIWriter(writer);
+	        if (!Label.HasValue())
+	            Label = "Header";
+            w.AddCdata("Header", Label);
+	    }
 	}
 }

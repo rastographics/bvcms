@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -124,5 +126,23 @@ Display a dropdown of custom sizes. With each size you can:
 			}
 			return list;
 		}
+	    public override void WriteXml(XmlWriter writer)
+	    {
+			if (list.Count == 0)
+				return;
+            var w = new APIWriter(writer);
+	        w.Start("Size");
+			w.Attr("Fee", Fee);
+			w.Attr("AllowLastYear", AllowLastYear);
+            w.Add("Label", Label ?? "Size");
+			foreach (var g in list)
+			{
+			    w.Start("Item");
+				w.Add("SmallGroup", g.SmallGroup);
+			    w.Add("Description", g.Description);
+			    w.End();
+			}
+	        w.End();
+	    }
 	}
 }

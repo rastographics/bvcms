@@ -1,4 +1,6 @@
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -32,5 +34,12 @@ Good for things like number of lunches (so you can bring friends).
 			Settings.AddValueCk(1, sb, "Label", Label);
 			sb.AppendLine();
 		}
+	    public override void WriteXml(XmlWriter writer)
+	    {
+            var w = new APIWriter(writer);
+	        w.Start("Tickets");
+            w.AddText(Label ?? "No. of Items");
+	        w.End();
+	    }
 	}
 }
