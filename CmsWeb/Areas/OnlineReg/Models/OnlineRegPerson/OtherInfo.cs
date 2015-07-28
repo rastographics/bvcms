@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool Attended(int id)
         {
-            if (FamilyAttend == null) 
+            if (FamilyAttend == null)
                 return false;
             var a = FamilyAttend.SingleOrDefault(aa => aa.PeopleId == id);
             if (a == null)
@@ -81,6 +81,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public IEnumerable<SelectListItemFilled> DropdownList(Ask ask)
         {
+            // this appears to only occur when a user saves progress, the organization has a dropdown question added, and then the user continues
+            // we need to ensure that we have options set for all of the questions
+            while (ask.UniqueId >= option.Count)
+            {
+                option.Add(string.Empty);
+            }
+
             var q = from s in ((AskDropdown)ask).list
                     let amt = s.Fee.HasValue ? " ({0:C})".Fmt(s.Fee) : ""
                     select new SelectListItemFilled
@@ -160,9 +167,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
         public void FillPriorInfo()
         {
-            if (Found != true) 
+            if (Found != true)
                 return;
-            if (IsNew || !LoggedIn) 
+            if (IsNew || !LoggedIn)
                 return;
 
                 var rr = DbUtil.Db.RecRegs.SingleOrDefault(r => r.PeopleId == PeopleId);
