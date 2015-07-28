@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -44,8 +45,8 @@ namespace CmsData
 
         private readonly string[] stringlist;
         private readonly MailAddress from;
-        private string connStr;
-        private string host;
+        private readonly string connStr;
+        private readonly string host;
         private int? currentOrgId;
         private CMSDataContext db;
 
@@ -55,12 +56,17 @@ namespace CmsData
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
             this.from = from;
+
             if (text == null)
                 text = "(no content)";
+
             var pattern = @"(<style.*?</style>|{{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|{10})".Fmt(
                 RegisterLinkRe, RegisterTagRe, RsvpLinkRe, RegisterHrefRe,
                 SendLinkRe, SupportLinkRe, MasterLinkRe, VolReqLinkRe,
                 VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
+
+            text = MapUrlEncodedReplacementCodes(text, new[]{ "emailhref" });
+
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
 
@@ -328,7 +334,7 @@ namespace CmsData
                         return OrgMember(code, emailqueueto);
 
                     if(code.StartsWith("{orgbarcode:"))
-                        return string.Format("<img src='{0}' />", 
+                        return string.Format("<img src='{0}' />",
                             db.ServerLink("/Track/Barcode/{0}-{1}".Fmt(code.Substring(12).TrimEnd('}').ToInt(), p.PeopleId)));
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
@@ -1013,6 +1019,21 @@ namespace CmsData
             if (!orgid.HasValue)
                 throw new ArgumentException("null not allowed on GetRegisterLink", "orgid");
             return "<a href=\"http://registerlink\" lang=\"{0}\">{1}</a>".Fmt(orgid, text);
+        }
+
+        /// <summary>
+        /// Depending on the WYSIWYG editor being used, the URLs (where replacement codes are set) might end up getting URL encoded.
+        /// This method will replace the URL-encoded version with the normal version so that the actual replacement logic can be relatively
+        /// consistent.
+        /// </summary>
+        private static string MapUrlEncodedReplacementCodes(string text, IEnumerable<string> codesToReplace)
+        {
+            foreach (var code in codesToReplace)
+            {
+                var codeToReplace = $"{{{code}}}";
+                text = text.Replace(WebUtility.UrlEncode(codeToReplace), codeToReplace);
+            }
+            return text;
         }
     }
 }
