@@ -180,7 +180,8 @@ namespace CmsWeb.Areas.Manage.Controllers
             var cn = new SqlConnection(Util.ConnectionStringReadOnly);
             cn.Open();
             var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, body);
-            var rd = cn.ExecuteReader(script);
+            var cmd = new SqlCommand(script);
+            var rd = cmd.ExecuteReader();
             return new GridResult(rd);
         }
         [HttpPost]
@@ -337,13 +338,13 @@ namespace CmsWeb.Areas.Manage.Controllers
     }
     public class GridResult : ActionResult
     {
-        private readonly IDataReader rd;
-        public GridResult(IDataReader rd)
+        private readonly SqlDataReader rd;
+        public GridResult(SqlDataReader rd)
         {
             this.rd = rd;
         }
 
-        public static HtmlTable HtmlTable(IDataReader rd)
+        public static HtmlTable HtmlTable(SqlDataReader rd)
         {
             var t = new HtmlTable();
             t.Attributes.Add("class", "table table-striped");
@@ -351,6 +352,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             for (var i = 0; i < rd.FieldCount; i++)
             {
                 var typ = rd.GetDataTypeName(i);
+                var nam = rd.GetName(i).ToLower();
                 string align = null;
                 switch (typ.ToLower())
                 {
@@ -358,7 +360,8 @@ namespace CmsWeb.Areas.Manage.Controllers
                         align = "right";
                         break;
                     case "int":
-                        align = "right";
+                        if (!nam.EndsWith("id") && !nam.EndsWith("id2"))
+                            align = "right";
                         break;
                 }
                 h.Cells.Add(new HtmlTableCell
@@ -374,6 +377,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 for (var i = 0; i < rd.FieldCount; i++)
                 {
                     var typ = rd.GetDataTypeName(i);
+                    var nam = rd.GetName(i).ToLower();
                     string s;
                     string align = null;
                     switch (typ.ToLower())
@@ -383,8 +387,13 @@ namespace CmsWeb.Areas.Manage.Controllers
                             align = "right";
                             break;
                         case "int":
-                            s = rd[i].ToInt().ToString("N0");
-                            align = "right";
+                            if (nam.EndsWith("id") || nam.EndsWith("id2"))
+                                s = rd[i].ToInt().ToString();
+                            else
+                            {
+                                s = rd[i].ToInt().ToString("N0");
+                                align = "right";
+                            }
                             break;
                         default:
                             s = rd[i].ToString();
@@ -414,7 +423,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             t.RenderControl(new HtmlTextWriter(context.HttpContext.Response.Output));
         }
 
-        public static string Table(IDataReader rd)
+        public static string Table(SqlDataReader rd)
         {
             var t = HtmlTable(rd);
             var sb = new StringBuilder();

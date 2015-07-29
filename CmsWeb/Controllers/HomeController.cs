@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
@@ -206,6 +207,8 @@ namespace CmsWeb.Controllers
 
         private string RunScriptSql(CMSDataContext Db, string parameter, string body)
         {
+            if (!CanRunScript(body))
+                return "Not Authorized to run this script";
             var declareqtagid = "";
             if (body.Contains("@qtagid"))
             {
@@ -228,9 +231,23 @@ namespace CmsWeb.Controllers
             var cn = new SqlConnection(cs);
             cn.Open();
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
+            if (script.StartsWith("Not Authorized"))
+                return Message(script);
             ViewBag.name = title ?? "Run Script {0} {1}".Fmt(name, parameter);
-            var rd = cn.ExecuteReader(script);
+            var cmd = new SqlCommand(script, cn);
+            var rd = cmd.ExecuteReader();
             return View(rd);
+        }
+
+        private bool CanRunScript(string script)
+        {
+            if (!script.StartsWith("--Roles="))
+                return true;
+            var re = new Regex("--Roles=(?<roles>.*)");
+            var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim());
+            if (!roles.Any(rr => User.IsInRole(rr)))
+                return false;
+            return true;
         }
 
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
@@ -244,6 +261,8 @@ namespace CmsWeb.Controllers
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
+            if (script.StartsWith("Not Authorized"))
+                return Message(script);
             return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
         }
 
