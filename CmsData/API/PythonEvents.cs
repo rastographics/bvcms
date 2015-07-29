@@ -279,7 +279,11 @@ namespace CmsData
             EmailContent(savedQuery, queuedBy, fromAddr, fromName, c.Title, contentName);
         }
 
-        public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
+        public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName)
+        {
+            EmailContent2(savedQuery, queuedBy, fromAddr, fromName, subject, contentName);
+        }
+        public void EmailContent2(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
             string contentName)
         {
             var c = db.ContentOfTypeHtml(contentName);
