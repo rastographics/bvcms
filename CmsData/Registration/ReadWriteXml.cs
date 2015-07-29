@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
+using UtilityExtensions;
 
 namespace CmsData.Registration
 {
@@ -30,7 +32,8 @@ namespace CmsData.Registration
         public void WriteXml(XmlWriter writer)
         {
             var w = new APIWriter(writer);
-            writer.WriteComment(DateTime.Now.ToString());
+            var userPeopleId = Util.UserPeopleId;
+            writer.WriteComment($"{userPeopleId} {DateTime.Now:g}");
 
             w.StartPending("Confirmation");
             w.Add("Subject", Subject);
