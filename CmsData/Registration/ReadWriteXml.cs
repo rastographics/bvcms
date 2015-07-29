@@ -23,7 +23,131 @@ namespace CmsData.Registration
                 var name = e.Name.ToString();
                 switch (name)
                 {
-                    case "test":
+                    case "Confirmation":
+                        break;
+                    case "Reminder":
+                        break;
+                    case "Support":
+                        break;
+                    case "Sender":
+                        break;
+                    case "Fee":
+                        break;
+                    case "Deposit":
+                        break;
+                    case "ExtraFee":
+                        break;
+                    case "MaximumFee":
+                        break;
+                    case "ApplyMaxToOtherFees":
+                        break;
+                    case "ExtraValueFeeName":
+                        break;
+                    case "AccountingCode":
+                        break;
+                    case "IncludeOtherFeesWithDeposit":
+                        break;
+                    case "Donation":
+                        break;
+                    case "AgeGroups":
+                        break;
+                    case "OrgFees":
+                        break;
+                    case "OtherFeesAddedToOrgFee":
+                        break;
+                    case "Instructions":
+                        break;
+                    case "Terms":
+                        break;
+                    case "ConfirmationTrackingCode":
+                        break;
+                    case "ValidateOrgs":
+                        break;
+                    case "Shell":
+                        break;
+                    case "ShellBs":
+                        break;
+                    case "FinishRegistrationButton":
+                        break;
+                    case "SpecialScript":
+                        break;
+                    case "GroupToJoin":
+                        break;
+                    case "TimeOut":
+                        break;
+                    case "AllowOnlyOne":
+                        break;
+                    case "TargetExtraValues":
+                        break;
+                    case "AllowReRegister":
+                        break;
+                    case "AllowSaveProgress":
+                        break;
+                    case "MemberOnly":
+                        break;
+                    case "AddAsProspect":
+                        break;
+                    case "NoReqBirthYear":
+                        break;
+                    case "NotReqDOB":
+                        break;
+                    case "NotReqAddr":
+                        break;
+                    case "NotReqZip":
+                        break;
+                    case "NotReqPhone":
+                        break;
+                    case "NotReqGender":
+                        break;
+                    case "NotReqMarital":
+                        break;
+                    case "DisallowAnonymous":
+                        break;
+                    case "TimeSlots":
+                        break;
+                    case "Ask":
+                        break;
+                    case "AskCheckboxes":
+                        break;
+                    case "AskDropdown":
+                        break;
+                    case "AskExtraQuestions":
+                        break;
+                    case "AskGradeOptions":
+                        break;
+                    case "AskHeader":
+                        break;
+                    case "AskInstruction":
+                        break;
+                    case "AskMenu":
+                        break;
+                    case "AskRequest":
+                        break;
+                    case "AskSize":
+                        break;
+                    case "AskSuggestedFee":
+                        break;
+                    case "AskText":
+                        break;
+                    case "AskTickets":
+                        break;
+                    case "AskYesNoQuestions":
+                        break;
+                        
+
+                    case "AskSMS":
+                    case "AskParents":
+                    case "AskDoctor":
+                    case "AskInsurance":
+                    case "AskEmContact":
+                    case "AskAllergies":
+                    case "AskChurch":
+                    case "AskTylenolEtc":
+                    case "AskCoaching":
+                    case "AskGrade":
+                    case "AskDonation":
+                    case "AskMedical":
+                        AskItems.Add(new Ask(name));
                         break;
                 }
             }
@@ -35,25 +159,25 @@ namespace CmsData.Registration
             var userPeopleId = Util.UserPeopleId;
             writer.WriteComment($"{userPeopleId} {DateTime.Now:g}");
 
-            w.StartPending("Confirmation");
-            w.Add("Subject", Subject);
-            w.AddCdata("Body", Body);
-            w.EndPending();
+            w.StartPending("Confirmation")
+                .Add("Subject", Subject)
+                .AddCdata("Body", Body)
+                .EndPending();
 
-            w.StartPending("Reminder");
-            w.Add("Subject", ReminderSubject);
-            w.AddCdata("Body", ReminderBody);
-            w.EndPending();
+            w.StartPending("Reminder")
+                .Add("Subject", ReminderSubject)
+                .AddCdata("Body", ReminderBody)
+                .EndPending();
 
-            w.StartPending("Support");
-            w.Add("Subject", SupportSubject);
-            w.AddCdata("Body", SupportBody);
-            w.EndPending();
+            w.StartPending("Support")
+                .Add("Subject", SupportSubject)
+                .AddCdata("Body", SupportBody)
+                .EndPending();
 
-            w.StartPending("Sender");
-            w.Add("Subject", SenderSubject);
-            w.AddCdata("Body", SenderBody);
-            w.EndPending();
+            w.StartPending("Sender")
+                .Add("Subject", SenderSubject)
+                .AddCdata("Body", SenderBody)
+                .EndPending();
 
             w.Add("Fee", Fee);
             w.Add("Deposit", Deposit);
@@ -64,45 +188,42 @@ namespace CmsData.Registration
             w.Add("AccountingCode", AccountingCode);
             w.AddIfTrue("IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit);
 
-            w.StartPending("Donation");
-            w.Add("Label", DonationLabel);
-            w.Add("FundId", DonationFundId);
-            w.EndPending();
-
-            w.StartPending("AgeGroups");
-            foreach (var i in AgeGroups)
-            {
-                w.Start("Group");
-                w.Attr("StartAge", i.StartAge);
-                w.Attr("EndAge", i.EndAge);
-                w.Attr("Fee", i.Fee);
-                w.AddText(i.SmallGroup);
-                w.End();
-            }
-            w.EndPending();
+            w.StartPending("Donation")
+                .Add("Label", DonationLabel)
+                .Add("FundId", DonationFundId)
+                .EndPending();
 
             w.StartPending("OrgFees");
             foreach (var i in OrgFees)
-            {
-                w.Start("Fee");
-                w.Attr("OrgId", i.OrgId);
-                w.Attr("Fee", i.Fee);
-                w.End();
-            }
+                w.Start("Fee")
+                    .Attr("OrgId", i.OrgId)
+                    .Attr("Fee", i.Fee)
+                    .End();
+            w.EndPending();
+
+
+            w.StartPending("AgeGroups");
+            foreach (var i in AgeGroups)
+                w.Start("Group")
+                    .Attr("StartAge", i.StartAge)
+                    .Attr("EndAge", i.EndAge)
+                    .Attr("Fee", i.Fee)
+                    .AddText(i.SmallGroup)
+                    .End();
             w.EndPending();
 
             w.AddIfTrue("OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee);
 
-            w.StartPending("Instructions");
-            w.AddCdata("Login", InstructionLogin);
-            w.AddCdata("Select", InstructionSelect);
-            w.AddCdata("Find", InstructionFind);
-            w.AddCdata("Options", InstructionOptions);
-            w.AddCdata("Special", InstructionSpecial);
-            w.AddCdata("Submit", InstructionSubmit);
-            w.AddCdata("Sorry", InstructionSorry);
-            w.AddCdata("Thanks", ThankYouMessage);
-            w.EndPending();
+            w.StartPending("Instructions")
+                .AddCdata("Login", InstructionLogin)
+                .AddCdata("Select", InstructionSelect)
+                .AddCdata("Find", InstructionFind)
+                .AddCdata("Options", InstructionOptions)
+                .AddCdata("Special", InstructionSpecial)
+                .AddCdata("Submit", InstructionSubmit)
+                .AddCdata("Sorry", InstructionSorry)
+                .AddCdata("Thanks", ThankYouMessage)
+                .EndPending();
 
             w.Add("Terms", Terms);
             w.Add("ConfirmationTrackingCode", ConfirmationTrackingCode);

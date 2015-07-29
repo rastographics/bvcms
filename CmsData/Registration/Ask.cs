@@ -66,7 +66,6 @@ Good for indicating whether they are a prospect or not.
 
         public virtual void ReadXml(XmlReader reader)
         {
-            throw new NotImplementedException();
         }
 
         public virtual void WriteXml(XmlWriter writer)

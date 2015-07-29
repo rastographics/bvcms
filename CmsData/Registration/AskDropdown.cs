@@ -185,10 +185,10 @@ This will be presented as a dropdown selection.
             if (list.Count == 0)
                 return;
             var w = new APIWriter(writer);
-            w.Start("Dropdown");
+            w.Start(Type);
             foreach (var i in list)
             {
-                w.Start("Option");
+                w.Start("DropdownItem");
                 w.Attr("SmallGroup", i.SmallGroup);
                 w.Attr("Fee", i.Fee);
                 w.Attr("Limit", i.Limit);

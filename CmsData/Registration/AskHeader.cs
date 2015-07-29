@@ -40,7 +40,7 @@ This can be used to separate sections.
             var w = new APIWriter(writer);
 	        if (!Label.HasValue())
 	            Label = "Header";
-            w.AddCdata("Header", Label);
+            w.AddCdata(Type, Label);
 	    }
 	}
 }

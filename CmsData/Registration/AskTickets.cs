@@ -37,7 +37,7 @@ Good for things like number of lunches (so you can bring friends).
 	    public override void WriteXml(XmlWriter writer)
 	    {
             var w = new APIWriter(writer);
-	        w.Start("Tickets");
+	        w.Start(Type);
             w.AddText(Label ?? "No. of Items");
 	        w.End();
 	    }

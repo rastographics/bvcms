@@ -131,7 +131,7 @@ Display a dropdown of custom sizes. With each size you can:
 			if (list.Count == 0)
 				return;
             var w = new APIWriter(writer);
-	        w.Start("Size");
+	        w.Start(Type);
 			w.Attr("Fee", Fee);
 			w.Attr("AllowLastYear", AllowLastYear);
             w.Add("Label", Label ?? "Size");

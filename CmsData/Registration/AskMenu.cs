@@ -151,11 +151,11 @@ You can optionally associate a fee with one or more items.
 			if (list.Count == 0)
 				return;
             var w = new APIWriter(writer);
-	        w.Start("Menu");
+	        w.Start(Type);
             w.Add("Label", Label);
 			foreach (var g in list)
 			{
-			    w.Start("Item");
+			    w.Start("MenuItem");
 				w.Attr("SmallGroup", g.SmallGroup);
 				w.Attr("Fee", g.Fee);
 				w.Attr("Limit", g.Limit);

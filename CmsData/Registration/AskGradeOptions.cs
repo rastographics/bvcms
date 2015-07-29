@@ -79,11 +79,11 @@ namespace CmsData.Registration
 			if (list.Count == 0)
 				return;
             var w = new APIWriter(writer);
-	        w.Start("GradeOptions");
+	        w.Start(Type);
             w.Add("Label", Label);
 			foreach (var g in list)
 			{
-			    w.Start("Grade");
+			    w.Start("GradeOption");
 			    w.Attr("Code", g.Code);
 			    w.AddText(g.Description);
 			    w.End();

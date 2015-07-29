@@ -72,9 +72,9 @@ If you need a long explanation assoicated with your question, put that in as an 
 			if (list.Count == 0)
 				return;
             var w = new APIWriter(writer);
-	        w.Start("ExtraQuestions");
+	        w.Start(Type);
 	        foreach (var q in list)
-                w.Add("Question", q);
+                w.Add("ExtraQuestion", q);
 	        w.End();
 	    }
 	}

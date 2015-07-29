@@ -26,7 +26,7 @@ namespace CmsData.Registration
 	    public override void WriteXml(XmlWriter writer)
 	    {
             var w = new APIWriter(writer);
-	        w.Start("SuggestedFee");
+	        w.Start(Type);
             w.AddText(Label ?? "Suggested Amount");
 	        w.End();
 	    }

@@ -35,7 +35,7 @@ namespace CmsData.Registration
             var w = new APIWriter(writer);
 	        if (!Label.HasValue())
 	            Label = "Instruction";
-            w.AddCdata("Instruction", Label);
+            w.AddCdata(Type, Label);
 	    }
 	}
 }

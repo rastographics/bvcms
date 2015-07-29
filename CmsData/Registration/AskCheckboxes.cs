@@ -202,13 +202,13 @@ For each checkbox, you can specify the following:
                 return;
             var w = new APIWriter(writer);
 
-            w.Start("Checkboxes");
+            w.Start(Type);
             w.Attr("Minimum", Minimum);
             w.Attr("Maximum", Maximum);
             w.Attr("Columns", Columns);
             foreach (var i in list)
             {
-                w.Start("Checkbox");
+                w.Start("CheckboxItem");
                 w.Attr("Fee", i.Fee);
                 w.Attr("Limit", i.Limit);
                 w.Attr("Time", i.MeetingTime.ToString2("s"));

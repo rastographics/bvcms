@@ -88,7 +88,7 @@ If you need a longer explanation, use InstructionalText above the question so yo
 			if (list.Count == 0)
 				return;
             var w = new APIWriter(writer);
-	        w.Start("YesNo");
+	        w.Start(Type);
 	        foreach (var q in list)
 	        {
 	            w.Start("Question");
