@@ -86,9 +86,9 @@
       <tr><td></td><td>Funds</td><td>
       @foreach (var i in p.FundItem)
       {
-        var f = funds.Single(vv => vv.Value == i.Key.ToString());
+        var f = funds.SingleOrDefault(vv => vv.Value == i.Key.ToString());
         @Html.Raw(br)
-        @f.Text
+        @(f?.Text ?? $"Missing: {i.Key}")
         br = "<br>";
       }
       </td></tr>
