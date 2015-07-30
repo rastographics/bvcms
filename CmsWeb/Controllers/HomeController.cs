@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using CmsData;
+using CmsData.Registration;
 using CmsWeb.Areas.People.Models;
 using Dapper;
 using Newtonsoft.Json;
@@ -53,10 +55,10 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            string body = "";
-            var doc = new HtmlDocument();
-            doc.LoadHtml(body);
-            return Content(body);
+            var o = DbUtil.Db.LoadOrganizationById(90926);
+            var os = new Settings(o.RegSetting, DbUtil.Db, o.OrganizationId);
+            var x = Util.Serialize(os);
+            return Content(x, "text/xml");
         }
 #endif
 
@@ -205,6 +207,8 @@ namespace CmsWeb.Controllers
 
         private string RunScriptSql(CMSDataContext Db, string parameter, string body)
         {
+            if (!CanRunScript(body))
+                return "Not Authorized to run this script";
             var declareqtagid = "";
             if (body.Contains("@qtagid"))
             {
@@ -227,9 +231,23 @@ namespace CmsWeb.Controllers
             var cn = new SqlConnection(cs);
             cn.Open();
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
+            if (script.StartsWith("Not Authorized"))
+                return Message(script);
             ViewBag.name = title ?? "Run Script {0} {1}".Fmt(name, parameter);
-            var rd = cn.ExecuteReader(script);
+            var cmd = new SqlCommand(script, cn);
+            var rd = cmd.ExecuteReader();
             return View(rd);
+        }
+
+        private bool CanRunScript(string script)
+        {
+            if (!script.StartsWith("--Roles="))
+                return true;
+            var re = new Regex("--Roles=(?<roles>.*)");
+            var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim());
+            if (!roles.Any(rr => User.IsInRole(rr)))
+                return false;
+            return true;
         }
 
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
@@ -243,6 +261,8 @@ namespace CmsWeb.Controllers
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
+            if (script.StartsWith("Not Authorized"))
+                return Message(script);
             return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
         }
 
@@ -278,12 +298,20 @@ namespace CmsWeb.Controllers
                 return RedirectShowError(ex.Message);
             }
         }
+        private string FetchPyScriptForm(string name)
+        {
+#if DEBUG2
+                return System.IO.File.ReadAllText(Server.MapPath("~/PythonForm.py"));
+#else
+                return DbUtil.Db.ContentOfTypePythonScript(name);
+#endif
+        }
         [HttpGet, Route("~/PyScriptForm/{name}")]
         public ActionResult PyScriptForm(string name)
         {
             try
             {
-                var script = DbUtil.Db.ContentOfTypePythonScript(name);
+                var script = FetchPyScriptForm(name);
 
                 if (!script.HasValue())
                     return Message("no script named " + name);
@@ -310,7 +338,7 @@ namespace CmsWeb.Controllers
                     pe.DictionaryAdd(key, Request.Form[key]);
                 pe.HttpMethod = "post";
 
-                var script = DbUtil.Db.ContentOfTypePythonScript(pe.Dictionary("pyscript"));
+                var script = FetchPyScriptForm(pe.Dictionary("pyscript"));
                 return Content(pe.RunScript(script));
             }
             catch (Exception ex)

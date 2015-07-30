@@ -1,9 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using CmsData.API;
 
 namespace CmsData.Registration
 {
-    public class Ask
+    [Serializable]
+    public class Ask : IXmlSerializable
     {
         public string Type { get; set; }
         public string Name { get; set; }
@@ -52,5 +58,21 @@ Ask whether they are a member here, or active in another church.
 Good for indicating whether they are a prospect or not.
 "},
         };
+
+        public virtual XmlSchema GetSchema()
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual void ReadXml(XmlReader reader)
+        {
+        }
+
+        public virtual void WriteXml(XmlWriter writer)
+        {
+            var w = new APIWriter(writer);
+            w.Start(Type);
+            w.End();
+        }
     }
 }

@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -178,5 +180,23 @@ This will be presented as a dropdown selection.
 				return cnt >= Limit;
 			}
 		}
+        public override void WriteXml(XmlWriter writer)
+        {
+            if (list.Count == 0)
+                return;
+            var w = new APIWriter(writer);
+            w.Start(Type);
+            foreach (var i in list)
+            {
+                w.Start("DropdownItem");
+                w.Attr("SmallGroup", i.SmallGroup);
+                w.Attr("Fee", i.Fee);
+                w.Attr("Limit", i.Limit);
+                w.Attr("Time", i.MeetingTime.ToString2("s"));
+                w.AddText(i.Description);
+                w.End();
+            }
+            w.End();
+        }
 	}
 }

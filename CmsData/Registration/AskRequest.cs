@@ -1,4 +1,6 @@
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -31,5 +33,12 @@ You can put a label on this text box to clarify what you are asking.
 			Settings.AddValueCk(1, sb, "Label", Label);
 			sb.AppendLine();
 		}
+	    public override void WriteXml(XmlWriter writer)
+	    {
+            var w = new APIWriter(writer);
+	        if (!Label.HasValue())
+	            Label = "Request";
+            w.Add("AskRequest", Label);
+	    }
 	}
 }

@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
+using System.Xml.Serialization;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -62,5 +66,16 @@ If you need a long explanation assoicated with your question, put that in as an 
 				return new ExtraQuestion { Question = parser.GetLine() };
 			}
 		}
+
+	    public override void WriteXml(XmlWriter writer)
+	    {
+			if (list.Count == 0)
+				return;
+            var w = new APIWriter(writer);
+	        w.Start(Type);
+	        foreach (var q in list)
+                w.Add("ExtraQuestion", q);
+	        w.End();
+	    }
 	}
 }

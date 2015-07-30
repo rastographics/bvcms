@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CmsData.Registration
 {
-    public class Settings
+    public partial class Settings
 	{
 		public List<Ask> AskItems { get; set; }
 		public bool AskVisible(string name)

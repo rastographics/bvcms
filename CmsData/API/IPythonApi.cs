@@ -17,7 +17,7 @@ namespace CmsData.API
 
         void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string contentName);
 
-        void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName);
+        void EmailContent2(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName);
 
         void Email(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body);
 
@@ -117,6 +117,8 @@ namespace CmsData.API
         bool InSubGroup(object pid, object OrgId, string group);
 
         string Form { get; set; }
+
+        string Header { get; set; }
 
         string HttpMethod { get; set; }
 

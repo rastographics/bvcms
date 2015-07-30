@@ -74,14 +74,6 @@ questions AS (
 		Question,
 		Answer
 	FROM yesno
-	UNION
-    SELECT 
-		'subgroup',
-		PeopleId,
-		OrganizationId,
-		subgroups.NAME,
-		'True'
-	FROM subgroups
 )
 SELECT 
 	OrganizationId,
@@ -91,6 +83,10 @@ SELECT
 	Answer
 FROM results
 JOIN dbo.People p ON p.PeopleId = results.PeopleId
+
+
+
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
