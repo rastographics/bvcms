@@ -52,6 +52,22 @@ If you need a long explanation assoicated with your question, put that in as an 
 			}
 			return eq;
 		}
+        public override void WriteXml(APIWriter w)
+	    {
+			if (list.Count == 0)
+				return;
+	        w.Start(Type);
+	        foreach (var q in list)
+                w.Add("ExtraQuestion", q);
+	        w.End();
+	    }
+	    public new static AskExtraQuestions ReadXml(XElement e)
+	    {
+			var eq = new AskExtraQuestions();
+	        foreach (var ee in e.Elements("ExtraQuestion"))
+                eq.list.Add(ExtraQuestion.ReadXml(ee));
+			return eq;
+	    }
 		public class ExtraQuestion
 		{
 			public string Name { get; set; }
@@ -73,23 +89,5 @@ If you need a long explanation assoicated with your question, put that in as an 
 		        return new ExtraQuestion() { Question = e.Value };
 		    }
 		}
-
-        public override void WriteXml(APIWriter w)
-	    {
-			if (list.Count == 0)
-				return;
-	        w.Start(Type);
-	        foreach (var q in list)
-                w.Add("ExtraQuestion", q);
-	        w.End();
-	    }
-
-	    public new static AskExtraQuestions ReadXml(XElement e)
-	    {
-			var eq = new AskExtraQuestions();
-	        foreach (var ee in e.Elements("ExtraQuestion"))
-                eq.list.Add(ExtraQuestion.ReadXml(ee));
-			return eq;
-	    }
 	}
 }

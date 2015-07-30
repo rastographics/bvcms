@@ -58,6 +58,26 @@ You can optionally associate a fee with one or more items.
                 throw parser.GetException($"Duplicate SmallGroup in MenuItems: {string.Join(",", q)}");
             return mi;
         }
+	    public override void WriteXml(APIWriter w)
+	    {
+			if (list.Count == 0)
+				return;
+	        w.Start(Type);
+            w.Add("Label", Label);
+			foreach (var g in list)
+                g.WriteXml(w);
+	        w.End();
+	    }
+	    public new static AskMenu ReadXml(XElement ele)
+	    {
+			var m = new AskMenu();
+	        m.Label = ele.Element("Label")?.Value;
+			m.list = new List<MenuItem>();
+            foreach(var ee in ele.Elements("MenuItem"))
+                m.list.Add(MenuItem.ReadXml(ee));
+	        return m;
+	        // todo: check duplicates
+	    }
         public override List<string> SmallGroups()
         {
             var q = (from i in list
@@ -142,7 +162,6 @@ You can optionally associate a fee with one or more items.
                 }
                 return menuitem;
             }
-
 		    public void WriteXml(APIWriter w)
 		    {
 		        w.Start("MenuItem")
@@ -153,7 +172,6 @@ You can optionally associate a fee with one or more items.
 		            .Add("SmallGroup", SmallGroup)
 		            .End();
 		    }
-
 		    // ReSharper disable once MemberHidesStaticFromOuterClass
 		    public static MenuItem ReadXml(XElement e)
 		    {
@@ -168,27 +186,5 @@ You can optionally associate a fee with one or more items.
 		        return mi;
 		    }
         }
-
-	    public override void WriteXml(APIWriter w)
-	    {
-			if (list.Count == 0)
-				return;
-	        w.Start(Type);
-            w.Add("Label", Label);
-			foreach (var g in list)
-                g.WriteXml(w);
-	        w.End();
-	    }
-
-	    public new static AskMenu ReadXml(XElement ele)
-	    {
-			var m = new AskMenu();
-	        m.Label = ele.Element("Label")?.Value;
-			m.list = new List<MenuItem>();
-            foreach(var ee in ele.Elements("MenuItem"))
-                m.list.Add(MenuItem.ReadXml(ee));
-	        return m;
-	        // todo: check duplicates
-	    }
     }
 }

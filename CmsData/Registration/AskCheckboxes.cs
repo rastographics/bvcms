@@ -83,6 +83,35 @@ For each checkbox, you can specify the following:
                 throw parser.GetException($"Duplicate SmallGroup in Checkboxes: {string.Join(",", q)}");
             return cb;
         }
+        public new static AskCheckboxes ReadXml(XElement ele)
+        {
+            var cb = new AskCheckboxes
+            {
+                Minimum = ele.Attribute("Minimum")?.ToInt2(),
+                Maximum = ele.Attribute("Maximum")?.ToInt2(),
+                Columns = ele.Attribute("Columns")?.ToInt2(),
+                Label = ele.Element("Label")?.Value,
+                list = new List<CheckboxItem>()
+            };
+            foreach (var ee in ele.Elements("CheckBoxItem"))
+                cb.list.Add(CheckboxItem.ReadXml(ee));
+            return cb;
+
+        }
+        public override void WriteXml(APIWriter w)
+        {
+            if (list.Count == 0)
+                return;
+            w.Start(Type)
+                .Attr("Minimum", Minimum)
+                .Attr("Maximum", Maximum)
+                .Attr("Columns", Columns)
+                .Add("Label", Label);
+            foreach (var i in list)
+                i.WriteXml(w);
+            // todo: prevent duplicates
+            w.End();
+        }
         public override List<string> SmallGroups()
         {
             var q = (from i in list
@@ -174,30 +203,6 @@ For each checkbox, you can specify the following:
                 }
                 return i;
             }
-            public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)
-            {
-                if (om == null)
-                    return;
-                if (pe != null)
-                {
-                    pe.instance.AddToSmallGroup(SmallGroup, om);
-                    om.Person.LogChanges(Db, om.PeopleId);
-                }
-                om.AddToGroup(Db, SmallGroup);
-                if (MeetingTime.HasValue)
-                    Attend.MarkRegistered(Db, om.OrganizationId, om.PeopleId, MeetingTime.Value, 1);
-            }
-            public void RemoveFromSmallGroup(CMSDataContext Db, OrganizationMember om)
-            {
-                om.RemoveFromGroup(Db, SmallGroup);
-            }
-            public bool IsSmallGroupFilled(IEnumerable<string> smallgroups)
-            {
-                if (!(Limit > 0)) return false;
-                var cnt = smallgroups.Count(mm => mm == SmallGroup);
-                return cnt >= Limit;
-            }
-
             // ReSharper disable once MemberHidesStaticFromOuterClass
             internal static CheckboxItem ReadXml(XElement ele)
             {
@@ -221,36 +226,29 @@ For each checkbox, you can specify the following:
                 w.Add("Description", Description);
                 w.End();
             }
-        }
-
-        public new static AskCheckboxes ReadXml(XElement ele)
-        {
-            var cb = new AskCheckboxes
+            public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)
             {
-                Minimum = ele.Attribute("Minimum")?.ToInt2(),
-                Maximum = ele.Attribute("Maximum")?.ToInt2(),
-                Columns = ele.Attribute("Columns")?.ToInt2(),
-                Label = ele.Element("Label")?.Value,
-                list = new List<CheckboxItem>()
-            };
-            foreach (var ee in ele.Elements("CheckBoxItem"))
-                cb.list.Add(CheckboxItem.ReadXml(ee));
-            return cb;
-
-        }
-        public override void WriteXml(APIWriter w)
-        {
-            if (list.Count == 0)
-                return;
-            w.Start(Type);
-            w.Attr("Minimum", Minimum);
-            w.Attr("Maximum", Maximum);
-            w.Attr("Columns", Columns);
-            w.Add("Label", Label);
-            foreach (var i in list)
-                i.WriteXml(w);
-            // todo: prevent duplicates
-            w.End();
+                if (om == null)
+                    return;
+                if (pe != null)
+                {
+                    pe.instance.AddToSmallGroup(SmallGroup, om);
+                    om.Person.LogChanges(Db, om.PeopleId);
+                }
+                om.AddToGroup(Db, SmallGroup);
+                if (MeetingTime.HasValue)
+                    Attend.MarkRegistered(Db, om.OrganizationId, om.PeopleId, MeetingTime.Value, 1);
+            }
+            public void RemoveFromSmallGroup(CMSDataContext Db, OrganizationMember om)
+            {
+                om.RemoveFromGroup(Db, SmallGroup);
+            }
+            public bool IsSmallGroupFilled(IEnumerable<string> smallgroups)
+            {
+                if (!(Limit > 0)) return false;
+                var cnt = smallgroups.Count(mm => mm == SmallGroup);
+                return cnt >= Limit;
+            }
         }
     }
 }

@@ -43,7 +43,6 @@ This can be used to separate sections.
                 Label = "Header";
             w.AddCdata(Type, Label);
         }
-
         public new static AskHeader ReadXml(XElement e)
         {
             var h = new AskHeader() { Label = e.Value };

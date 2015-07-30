@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -57,6 +58,13 @@ If you need a long explanation assoicated with your question, put that in as an 
 	        foreach (var q in list)
                 w.Add("Question", q);
 	        w.End();
+	    }
+	    public new static AskText ReadXml(XElement e)
+	    {
+	        var t = new AskText();
+            foreach(var ee in e.Elements("Question"))
+                t.list.Add(AskExtraQuestions.ExtraQuestion.ReadXml(ee));
+	        return t;
 	    }
 	}
 }

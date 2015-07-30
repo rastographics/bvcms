@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -51,6 +52,22 @@ If you need a longer explanation, use InstructionalText above the question so yo
 			}
 			return ynq;
 		}
+	    public override void WriteXml(APIWriter w)
+	    {
+			if (list.Count == 0)
+				return;
+	        w.Start(Type);
+	        foreach (var q in list)
+                q.WriteXml(w);
+	        w.End();
+	    }
+	    public new static AskYesNoQuestions ReadXml(XElement e)
+	    {
+	        var yn = new AskYesNoQuestions();
+            foreach(var ee in e.Elements("YesNoQuestion"))
+                yn.list.Add(YesNoQuestion.ReadXml(ee));
+	        return yn;
+	    }
         public override List<string> SmallGroups()
         {
             var q = (from i in list
@@ -82,20 +99,22 @@ If you need a longer explanation, use InstructionalText above the question so yo
 				q.SmallGroup = parser.GetString();
 				return q;
 			}
+		    public void WriteXml(APIWriter w)
+		    {
+		        w.Start("YesNoQuestion")
+		            .Add("Question", Question ?? "need a question here")
+		            .Add("SmallGroup", SmallGroup)
+		            .End();
+		    }
+		    // ReSharper disable once MemberHidesStaticFromOuterClass
+		    public static YesNoQuestion ReadXml(XElement e)
+		    {
+		        return new YesNoQuestion
+		        {
+		            Question = e.Element("Question")?.Value,
+		            SmallGroup = e.Element("SmallGroup")?.Value
+		        };
+		    }
 		}
-	    public override void WriteXml(APIWriter w)
-	    {
-			if (list.Count == 0)
-				return;
-	        w.Start(Type);
-	        foreach (var q in list)
-	        {
-	            w.Start("Question");
-	            w.Add("Question", q.Question ?? "need a question here");
-	            w.Add("SmallGroup", q.SmallGroup);
-	            w.End();
-	        }
-	        w.End();
-	    }
 	}
 }

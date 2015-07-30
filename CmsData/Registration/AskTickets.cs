@@ -1,5 +1,6 @@
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -36,9 +37,13 @@ Good for things like number of lunches (so you can bring friends).
 		}
 	    public override void WriteXml(APIWriter w)
 	    {
-	        w.Start(Type);
-            w.AddText(Label ?? "No. of Items");
-	        w.End();
+	        w.Start(Type)
+	            .AddText(Label ?? "No. of Items")
+	            .End();
+	    }
+	    public new static AskTickets ReadXml(XElement e)
+	    {
+	        return new AskTickets {Label = e.Value};
 	    }
 	}
 }

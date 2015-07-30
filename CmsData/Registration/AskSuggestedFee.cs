@@ -1,5 +1,6 @@
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -29,5 +30,9 @@ namespace CmsData.Registration
             w.AddText(Label ?? "Suggested Amount");
 	        w.End();
 	    }
+        public new static AskSuggestedFee ReadXml(XElement e)
+        {
+            return new AskSuggestedFee() { Label = e.Value };
+        }
 	}
 }

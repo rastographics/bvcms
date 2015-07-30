@@ -148,44 +148,44 @@ namespace CmsData.Registration
             var userPeopleId = Util.UserPeopleId;
             writer.WriteComment($"{userPeopleId} {DateTime.Now:g}");
 
-            w.StartPending(RegKeywords.Confirmation)
+            w.StartPending("Confirmation")
                 .Add("Subject", Subject)
                 .AddCdata("Body", Body)
                 .EndPending();
 
-            w.StartPending(RegKeywords.Reminder)
+            w.StartPending("Reminder")
                 .Add("Subject", ReminderSubject)
                 .AddCdata("Body", ReminderBody)
                 .EndPending();
 
-            w.StartPending(RegKeywords.SupportEmail)
+            w.StartPending("SupportEmail")
                 .Add("Subject", SupportSubject)
                 .AddCdata("Body", SupportBody)
                 .EndPending();
 
-            w.StartPending(RegKeywords.SenderEmail)
+            w.StartPending("SenderEmail")
                 .Add("Subject", SenderSubject)
                 .AddCdata("Body", SenderBody)
                 .EndPending();
 
             w.Start("Fees")
-                .Add(RegKeywords.Fee, Fee)
-                .Add(RegKeywords.Deposit, Deposit)
-                .Add(RegKeywords.ExtraFee, ExtraFee)
-                .Add(RegKeywords.MaximumFee, MaximumFee)
-                .Add(RegKeywords.ApplyMaxToOtherFees, ApplyMaxToOtherFees)
-                .Add(RegKeywords.ExtraValueFeeName, ExtraValueFeeName)
-                .Add(RegKeywords.AccountingCode, AccountingCode)
-                .AddIfTrue(RegKeywords.IncludeOtherFeesWithDeposit, IncludeOtherFeesWithDeposit)
-                .AddIfTrue(RegKeywords.OtherFeesAddedToOrgFee, OtherFeesAddedToOrgFee)
-                .StartPending(RegKeywords.AskDonation)
+                .Add("Fee", Fee)
+                .Add("Deposit", Deposit)
+                .Add("ExtraFee", ExtraFee)
+                .Add("MaximumFee", MaximumFee)
+                .Add("ApplyMaxToOtherFees", ApplyMaxToOtherFees)
+                .Add("ExtraValueFeeName", ExtraValueFeeName)
+                .Add("AccountingCode", AccountingCode)
+                .AddIfTrue("IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit)
+                .AddIfTrue("OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee)
+                .StartPending("AskDonation")
                     .Add("Label", DonationLabel)
                     .Add("FundId", DonationFundId)
                     .EndPending()
                 .EndPending();
 
 
-            w.StartPending(RegKeywords.OrgFees);
+            w.StartPending("OrgFees");
             foreach (var i in OrgFees)
                 w.Start("Fee")
                     .Attr("OrgId", i.OrgId)
@@ -194,7 +194,7 @@ namespace CmsData.Registration
             w.EndPending();
 
 
-            w.StartPending(RegKeywords.AgeGroups);
+            w.StartPending("AgeGroups");
             foreach (var i in AgeGroups)
                 w.Start("Group")
                     .Attr("StartAge", i.StartAge)
@@ -204,7 +204,7 @@ namespace CmsData.Registration
                     .End();
             w.EndPending();
 
-            w.StartPending(RegKeywords.Instructions)
+            w.StartPending("Instructions")
                 .AddCdata("Login", InstructionLogin)
                 .AddCdata("Select", InstructionSelect)
                 .AddCdata("Find", InstructionFind)
@@ -217,31 +217,31 @@ namespace CmsData.Registration
                 .EndPending();
 
             w.StartPending("Options")
-                .Add(RegKeywords.ConfirmationTrackingCode, ConfirmationTrackingCode)
-                .Add(RegKeywords.ValidateOrgs, ValidateOrgs)
-                .Add(RegKeywords.Shell, Shell)
-                .Add(RegKeywords.ShellBs, ShellBs)
-                .Add(RegKeywords.FinishRegistrationButton, FinishRegistrationButton)
-                .Add(RegKeywords.SpecialScript, SpecialScript)
-                .Add(RegKeywords.GroupToJoin, GroupToJoin)
-                .Add(RegKeywords.TimeOut, TimeOut)
-                .AddIfTrue(RegKeywords.AllowOnlyOne, AllowOnlyOne)
-                .AddIfTrue(RegKeywords.TargetExtraValues, TargetExtraValues)
-                .AddIfTrue(RegKeywords.AllowReRegister, AllowReRegister)
-                .AddIfTrue(RegKeywords.AllowSaveProgress, AllowSaveProgress)
-                .AddIfTrue(RegKeywords.MemberOnly, MemberOnly)
-                .AddIfTrue(RegKeywords.AddAsProspect, AddAsProspect)
+                .Add("ConfirmationTrackingCode", ConfirmationTrackingCode)
+                .Add("ValidateOrgs", ValidateOrgs)
+                .Add("Shell", Shell)
+                .Add("ShellBs", ShellBs)
+                .Add("FinishRegistrationButton", FinishRegistrationButton)
+                .Add("SpecialScript", SpecialScript)
+                .Add("GroupToJoin", GroupToJoin)
+                .Add("TimeOut", TimeOut)
+                .AddIfTrue("AllowOnlyOne", AllowOnlyOne)
+                .AddIfTrue("TargetExtraValues", TargetExtraValues)
+                .AddIfTrue("AllowReRegister", AllowReRegister)
+                .AddIfTrue("AllowSaveProgress", AllowSaveProgress)
+                .AddIfTrue("MemberOnly", MemberOnly)
+                .AddIfTrue("AddAsProspect", AddAsProspect)
                 .EndPending();
 
             w.StartPending("NotReq")
-                .AddIfTrue(RegKeywords.NoReqBirthYear, NoReqBirthYear)
-                .AddIfTrue(RegKeywords.NotReqDOB, NotReqDOB)
-                .AddIfTrue(RegKeywords.NotReqAddr, NotReqAddr)
-                .AddIfTrue(RegKeywords.NotReqZip, NotReqZip)
-                .AddIfTrue(RegKeywords.NotReqPhone, NotReqPhone)
-                .AddIfTrue(RegKeywords.NotReqGender, NotReqGender)
-                .AddIfTrue(RegKeywords.NotReqMarital, NotReqMarital)
-                .AddIfTrue(RegKeywords.DisallowAnonymous, DisallowAnonymous)
+                .AddIfTrue("NoReqBirthYear", NoReqBirthYear)
+                .AddIfTrue("NotReqDOB", NotReqDOB)
+                .AddIfTrue("NotReqAddr", NotReqAddr)
+                .AddIfTrue("NotReqZip", NotReqZip)
+                .AddIfTrue("NotReqPhone", NotReqPhone)
+                .AddIfTrue("NotReqGender", NotReqGender)
+                .AddIfTrue("NotReqMarital", NotReqMarital)
+                .AddIfTrue("DisallowAnonymous", DisallowAnonymous)
                 .EndPending();
 
             TimeSlots?.WriteXml(w);

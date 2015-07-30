@@ -31,34 +31,6 @@ namespace CmsData.Registration
         {
             Settings.AddValueCk(0, sb, Type, true);
         }
-
-        public virtual List<string> SmallGroups()
-        {
-            return new List<string>();
-        }
-
-        public virtual string Help { get { return HelpDictionary[Type]; } }
-
-        private static readonly Dictionary<string, string> HelpDictionary = new Dictionary<string, string>
-        {
-            {"AskAllergies", @"Displays a multi-line text box to enter any medical information."},
-            {"AnswersNotRequired", @"Textbox like questions do not require answers."},
-            {"AskCoaching", @"Asks whether the parent is interested in coaching or not."},
-            {"AskDoctor", @"Asks for Doctor's name and Phone Number."},
-            {"AskEmContact", @"Asks for the name and phone number for an emergency contact."},
-            {"AskInsurance", @"
-Displays two questions: Insurance name and policy number.
-Good for camp or ball teams where you might a participant might get hurt.
-"},
-            {"AskParents", @"Displays two text boxes asking for mother and/or father's names."},
-            {"AskSMS", @"Displays yes/no radio buttons for opting in to SMS."},
-            {"AskTylenolEtc", @"Asks whether it is ok to give a child Tylenol, Advil, Robitussin, or Maalox."},
-            {"AskChurch", @"
-Ask whether they are a member here, or active in another church.
-Good for indicating whether they are a prospect or not.
-"},
-        };
-
         public virtual void WriteXml(APIWriter w)
         {
             w.Start(Type);
@@ -88,16 +60,44 @@ Good for indicating whether they are a prospect or not.
                 case "AskSize":
                     return AskSize.ReadXml(ele);
                 case "AskSuggestedFee":
-                    return new Ask(ask);
+                    return AskSuggestedFee.ReadXml(ele);
                 case "AskText":
-                    return new Ask(ask);
+                    return AskText.ReadXml(ele);
                 case "AskTickets":
-                    return new Ask(ask);
+                    return AskTickets.ReadXml(ele);
                 case "AskYesNoquestions":
-                    return new Ask(ask);
+                    return AskYesNoQuestions.ReadXml(ele);
                 default:
                     return new Ask(ask);
             }
         }
+
+        public virtual List<string> SmallGroups()
+        {
+            return new List<string>();
+        }
+
+        public virtual string Help { get { return HelpDictionary[Type]; } }
+
+        private static readonly Dictionary<string, string> HelpDictionary = new Dictionary<string, string>
+        {
+            {"AskAllergies", @"Displays a multi-line text box to enter any medical information."},
+            {"AnswersNotRequired", @"Textbox like questions do not require answers."},
+            {"AskCoaching", @"Asks whether the parent is interested in coaching or not."},
+            {"AskDoctor", @"Asks for Doctor's name and Phone Number."},
+            {"AskEmContact", @"Asks for the name and phone number for an emergency contact."},
+            {"AskInsurance", @"
+Displays two questions: Insurance name and policy number.
+Good for camp or ball teams where you might a participant might get hurt.
+"},
+            {"AskParents", @"Displays two text boxes asking for mother and/or father's names."},
+            {"AskSMS", @"Displays yes/no radio buttons for opting in to SMS."},
+            {"AskTylenolEtc", @"Asks whether it is ok to give a child Tylenol, Advil, Robitussin, or Maalox."},
+            {"AskChurch", @"
+Ask whether they are a member here, or active in another church.
+Good for indicating whether they are a prospect or not.
+"},
+        };
+
     }
 }

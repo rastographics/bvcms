@@ -60,6 +60,26 @@ This will be presented as a dropdown selection.
                 throw parser.GetException($"Duplicate SmallGroup in Dropdown: {string.Join(",", q)}");
             return dd;
         }
+        public override void WriteXml(APIWriter w)
+        {
+            if (list.Count == 0)
+                return;
+            w.Start(Type)
+                .Add("Label", Label);
+            foreach (var i in list)
+                i.WriteXml(w);
+            w.End();
+        }
+		public new static AskDropdown ReadXml(XElement ele)
+		{
+			var dd = new AskDropdown();
+		    dd.Label = ele.Value;
+			dd.list = new List<DropdownItem>();
+		    foreach (var ee in ele.Elements("DropdownItem"))
+		        dd.list.Add(DropdownItem.ReadXml(ee));
+            // todo: prevent duplicates
+			return dd;
+		}
         public override List<string> SmallGroups()
         {
             var q = (from i in list
@@ -204,26 +224,5 @@ This will be presented as a dropdown selection.
 				return i;
 		    }
         }
-
-        public override void WriteXml(APIWriter w)
-        {
-            if (list.Count == 0)
-                return;
-            w.Start(Type);
-            w.Add("Label", Label);
-            foreach (var i in list)
-                i.WriteXml(w);
-            w.End();
-        }
-		public new static AskDropdown ReadXml(XElement ele)
-		{
-			var dd = new AskDropdown();
-		    dd.Label = ele.Value;
-			dd.list = new List<DropdownItem>();
-		    foreach (var ee in ele.Elements("DropdownItem"))
-		        dd.list.Add(DropdownItem.ReadXml(ee));
-            // todo: prevent duplicates
-			return dd;
-		}
     }
 }
