@@ -63,7 +63,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return GetAge(_person.BirthDate.Value);
                 if (birthday.HasValue)
                     return byear == null || birthday.Value.Year == Util.SignalNoYear
-                        ? (int?) null
+                        ? (int?)null
                         : GetAge(birthday.Value);
                 return null;
             }
@@ -345,32 +345,32 @@ namespace CmsWeb.Areas.OnlineReg.Models
             catch (Exception)
             {
             }
-            if (ma != null)
+            if (ma == null) // no need to continue since they must have a good email on their record to have gotten this far.
+                return;
+
+            /* If one of the email addresses we have on record
+             * is the same as the email address given in registration
+             * then no problem, (not different) */
+            if (person.EmailAddress.HasValue() &&
+                string.Compare(ma.Address, person.EmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
+                return;
+            if (person.EmailAddress2.HasValue() &&
+                String.Compare(ma.Address, person.EmailAddress2, StringComparison.OrdinalIgnoreCase) == 0)
+                return;
+            /* So now we check to see if anybody in the famiy
+             * has the email address used in registration
+             * if so then that is OK too. */
+            var flist = from fm in person.Family.People
+                        where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
+                        select fm;
+            foreach (var fm in flist)
             {
-                /* If one of the email addresses we have on record
-                 * is the same as the email address given in registration
-                 * then no problem, (not different) */
-                if (person.EmailAddress.HasValue() &&
-                    string.Compare(ma.Address, person.EmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
+                if (fm.EmailAddress.HasValue() &&
+                    string.Compare(ma.Address, fm.EmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
                     return;
-                if (person.EmailAddress2.HasValue() &&
-                    String.Compare(ma.Address, person.EmailAddress2, StringComparison.OrdinalIgnoreCase) == 0)
+                if (fm.EmailAddress2.HasValue() &&
+                    string.Compare(ma.Address, fm.EmailAddress2, StringComparison.OrdinalIgnoreCase) == 0)
                     return;
-                /* So now we check to see if anybody in the famiy
-                 * has the email address used in registration
-                 * if so then that is OK too. */
-                var flist = from fm in person.Family.People
-                            where fm.PositionInFamilyId == PositionInFamily.PrimaryAdult
-                            select fm;
-                foreach (var fm in flist)
-                {
-                    if (fm.EmailAddress.HasValue() &&
-                        string.Compare(ma.Address, fm.EmailAddress, StringComparison.OrdinalIgnoreCase) == 0)
-                        return;
-                    if (fm.EmailAddress2.HasValue() &&
-                        string.Compare(ma.Address, fm.EmailAddress2, StringComparison.OrdinalIgnoreCase) == 0)
-                        return;
-                }
             }
             if (!phone.HasValue())
                 phone = DbUtil.Db.Setting("ChurchPhone", "(sorry, no phone # in settings)");
@@ -383,7 +383,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 msg = msg.Replace("{name}", person.Name, ignoreCase: true)
                     .Replace("{first}", person.PreferredName, ignoreCase: true)
                     .Replace("{org}", orgname, ignoreCase: true)
-                    .Replace("{phone}", phone, ignoreCase: true);
+                    .Replace("{phone}", DbUtil.Db.Setting("ChurchPhone", "ChurchPhone"));
                 var subj = $"{orgname}, different email address than one on record";
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
                 Log("DiffEmailFromRecord");
@@ -394,7 +394,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 msg = msg.Replace("{name}", person.Name)
                     .Replace("{first}", person.PreferredName, ignoreCase: true)
                     .Replace("{org}", orgname, ignoreCase: true)
-                    .Replace("{phone}", phone.FmtFone(), ignoreCase: true);
+                    .Replace("{phone}", DbUtil.Db.Setting("ChurchPhone", "ChurchPhone"));
                 var subj = $"{orgname}, no email on your record";
                 DbUtil.Db.Email(fromemail, person, Util.ToMailAddressList(EmailAddress), subj, msg, false);
                 Log("NoEmailOnRecord");
