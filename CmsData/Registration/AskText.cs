@@ -49,11 +49,10 @@ If you need a long explanation assoicated with your question, put that in as an 
 			}
 			return tx;
 		}
-	    public override void WriteXml(XmlWriter writer)
+	    public override void WriteXml(APIWriter w)
 	    {
 			if (list.Count == 0)
 				return;
-            var w = new APIWriter(writer);
 	        w.Start(Type);
 	        foreach (var q in list)
                 w.Add("Question", q);

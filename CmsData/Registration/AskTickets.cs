@@ -34,9 +34,8 @@ Good for things like number of lunches (so you can bring friends).
 			Settings.AddValueCk(1, sb, "Label", Label);
 			sb.AppendLine();
 		}
-	    public override void WriteXml(XmlWriter writer)
+	    public override void WriteXml(APIWriter w)
 	    {
-            var w = new APIWriter(writer);
 	        w.Start(Type);
             w.AddText(Label ?? "No. of Items");
 	        w.End();

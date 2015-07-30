@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
+using UtilityExtensions;
 
 namespace CmsData.Registration
 {
@@ -72,23 +74,45 @@ namespace CmsData.Registration
 				option.Code = code.Value;
 				return option;
 			}
+
+		    public void WriteXml(APIWriter w)
+		    {
+			    w.Start("GradeOption");
+			    w.Attr("Code", Code);
+			    w.AddText(Description);
+			    w.End();
+		    }
+
+		    // ReSharper disable once MemberHidesStaticFromOuterClass
+		    public static GradeOption ReadXml(XElement e)
+		    {
+		        var option = new GradeOption
+		        {
+		            Description = e.Value,
+		            Code = e.Attribute("Code")?.Value.ToInt2() ?? 0
+		        };
+		        return option;
+		    }
 		}
 
-	    public override void WriteXml(XmlWriter writer)
+	    public override void WriteXml(APIWriter w)
 	    {
 			if (list.Count == 0)
 				return;
-            var w = new APIWriter(writer);
 	        w.Start(Type);
             w.Add("Label", Label);
 			foreach (var g in list)
-			{
-			    w.Start("GradeOption");
-			    w.Attr("Code", g.Code);
-			    w.AddText(g.Description);
-			    w.End();
-			}
+                g.WriteXml(w);
 	        w.End();
+	    }
+
+	    public new static AskGradeOptions ReadXml(XElement e)
+	    {
+			var go = new AskGradeOptions();
+	        go.Label = e.Element("Label")?.Value;
+	        foreach (var ele in e.Elements("GradeOption"))
+	            go.list.Add(GradeOption.ReadXml(ele));
+	        return go;
 	    }
 	}
 }

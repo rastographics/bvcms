@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Xml;
 using System.Xml.Linq;
@@ -6,12 +7,17 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
 using UtilityExtensions;
+using RegKeywords = CmsData.Registration.Parser.RegKeywords;
 
 namespace CmsData.Registration
 {
     [Serializable]
     public partial class Settings : IXmlSerializable
     {
+        private Parser.RegKeywords Parse(string s)
+        {
+            return (RegKeywords)Enum.Parse(typeof(RegKeywords), s);
+        }
         public void ReadXml(XmlReader reader)
         {
             var s = reader.ReadOuterXml();
@@ -24,131 +30,114 @@ namespace CmsData.Registration
                 switch (name)
                 {
                     case "Confirmation":
+                        Subject = e.Element("Subject")?.Value;
+                        Body = e.Element("Body")?.Value;
                         break;
                     case "Reminder":
+                        ReminderSubject = e.Element("Subject")?.Value;
+                        ReminderBody = e.Element("Body")?.Value;
                         break;
-                    case "Support":
+                    case "SupportEmail":
+                        SupportSubject = e.Element("Subject")?.Value;
+                        SupportBody = e.Element("Body")?.Value;
                         break;
-                    case "Sender":
+                    case "SenderEmail":
+                        SenderSubject = e.Element("Subject")?.Value;
+                        SenderBody = e.Element("Body")?.Value;
                         break;
-                    case "Fee":
-                        break;
-                    case "Deposit":
-                        break;
-                    case "ExtraFee":
-                        break;
-                    case "MaximumFee":
-                        break;
-                    case "ApplyMaxToOtherFees":
-                        break;
-                    case "ExtraValueFeeName":
-                        break;
-                    case "AccountingCode":
-                        break;
-                    case "IncludeOtherFeesWithDeposit":
-                        break;
-                    case "Donation":
+                    case "Fees":
+                        Fee = e.Element("Fee")?.Value.ToDecimal();
+                        Deposit = e.Element("Deposit")?.Value.ToDecimal();
+                        ExtraFee = e.Element("ExtraFee")?.Value.ToDecimal();
+                        MaximumFee = e.Element("MaximumFee")?.Value.ToDecimal();
+                        ApplyMaxToOtherFees = e.Element("ApplyMaxToOtherFees")?.Value.ToBool2() ?? false;
+                        ExtraValueFeeName = e.Element("ExtraValueFeeName")?.Value;
+                        AccountingCode = e.Element("")?.Value;
+                        IncludeOtherFeesWithDeposit = e.Element("")?.Value.ToBool2() ?? false;
+                        OtherFeesAddedToOrgFee = e.Element("")?.Value.ToBool2() ?? false;
+                        AskDonation = e.Element("AskDonation") != null;
+                        if (AskDonation)
+                        {
+                            DonationLabel = e.Element("AskDonation")?.Element("Label")?.Value;
+                            DonationFundId = e.Element("AskDonation")?.Element("FundId")?.Value.ToInt2();
+                        }
                         break;
                     case "AgeGroups":
+                        if(AgeGroups == null)
+                            AgeGroups = new List<AgeGroup>();
+                        var ageGroup = new AgeGroup()
+                        {
+                            StartAge = e.Attribute("StartAge")?.Value.ToInt2() ?? 0,
+                            EndAge = e.Attribute("EndAge")?.Value.ToInt2() ?? 0,
+                            Fee = e.Attribute("Fee")?.Value.ToDecimal(),
+                            SmallGroup = e.Value
+                        };
+                        AgeGroups.Add(ageGroup);
                         break;
                     case "OrgFees":
-                        break;
-                    case "OtherFeesAddedToOrgFee":
+                        if(OrgFees == null)
+                            OrgFees = new List<OrgFee>();
+                        var orgfee = new OrgFee()
+                        {
+                            OrgId = e.Attribute("OrgId").Value.ToInt(),
+                            Fee = e.Attribute("Fee").Value.ToDecimal(),
+                        };
+                        OrgFees.Add(orgfee);
                         break;
                     case "Instructions":
+                        InstructionLogin = e.Element("Login")?.Value;
+                        InstructionSelect = e.Element("Select")?.Value;
+                        InstructionFind = e.Element("Find")?.Value;
+                        InstructionOptions = e.Element("Options")?.Value;
+                        InstructionSpecial = e.Element("Special")?.Value;
+                        InstructionSubmit = e.Element("Submit")?.Value;
+                        InstructionSorry = e.Element("Sorry")?.Value;
+                        ThankYouMessage = e.Element("Thanks")?.Value;
+                        Terms = e.Element("Terms")?.Value;
                         break;
-                    case "Terms":
+                    case "Options":
+                        ConfirmationTrackingCode = e.Element("ConfirmTrackingCode")?.Value;
+                        ValidateOrgs = e.Element("ValidateOrgs")?.Value;
+                        Shell = e.Element("Shell")?.Value;
+                        ShellBs = e.Element("ShellBs")?.Value;
+                        FinishRegistrationButton = e.Element("FinishRegistrationButton")?.Value;
+                        SpecialScript = e.Element("SpecialScript")?.Value;
+                        GroupToJoin = e.Element("GroupToJoin")?.Value;
+                        TimeOut = e.Element("TimeOut")?.Value.ToInt2();
+                        AllowOnlyOne = e.Element("AllowOnlyOne")?.Value.ToBool2() ?? false;
+                        TargetExtraValues = e.Element("TargetExtraValues")?.Value.ToBool2() ?? false;
+                        AllowReRegister = e.Element("AllowReRegister")?.Value.ToBool2() ?? false;
+                        AllowSaveProgress = e.Element("AllowSaveProgress")?.Value.ToBool2() ?? false;
+                        MemberOnly = e.Element("MemberOnly")?.Value.ToBool2() ?? false;
+                        AddAsProspect = e.Element("AddAsProspect")?.Value.ToBool2() ?? false;
                         break;
-                    case "ConfirmationTrackingCode":
-                        break;
-                    case "ValidateOrgs":
-                        break;
-                    case "Shell":
-                        break;
-                    case "ShellBs":
-                        break;
-                    case "FinishRegistrationButton":
-                        break;
-                    case "SpecialScript":
-                        break;
-                    case "GroupToJoin":
-                        break;
-                    case "TimeOut":
-                        break;
-                    case "AllowOnlyOne":
-                        break;
-                    case "TargetExtraValues":
-                        break;
-                    case "AllowReRegister":
-                        break;
-                    case "AllowSaveProgress":
-                        break;
-                    case "MemberOnly":
-                        break;
-                    case "AddAsProspect":
-                        break;
-                    case "NoReqBirthYear":
-                        break;
-                    case "NotReqDOB":
-                        break;
-                    case "NotReqAddr":
-                        break;
-                    case "NotReqZip":
-                        break;
-                    case "NotReqPhone":
-                        break;
-                    case "NotReqGender":
-                        break;
-                    case "NotReqMarital":
-                        break;
-                    case "DisallowAnonymous":
+                    case "NotReqired":
+                        NoReqBirthYear = e.Element("NoReqBirthYear")?.Value.ToBool2() ?? false;
+                        NotReqDOB = e.Element("NotReqDOB")?.Value.ToBool2() ?? false;
+                        NotReqAddr = e.Element("NotReqAddr")?.Value.ToBool2() ?? false;
+                        NotReqZip = e.Element("NotReqZip")?.Value.ToBool2() ?? false;
+                        NotReqPhone = e.Element("NotReqPhone")?.Value.ToBool2() ?? false;
+                        NotReqGender = e.Element("NotReqGender")?.Value.ToBool2() ?? false;
+                        NotReqMarital = e.Element("NotReqMarital")?.Value.ToBool2() ?? false;
+                        DisallowAnonymous = e.Element("DisallowAnonymous")?.Value.ToBool2() ?? false;
                         break;
                     case "TimeSlots":
+                        TimeSlotLockDays = e.Attribute("LockDays")?.Value.ToInt2();
+                        TimeSlots = new TimeSlots();
+                        foreach (var ele in e.Elements("Slot"))
+                            TimeSlots.list.Add(new TimeSlots.TimeSlot()
+                            {
+                                Time = ele.Attribute("Time")?.Value.ToDate(),
+                                DayOfWeek = ele.Attribute("DayOfWeek")?.Value.ToInt2() ?? 0,
+                                Limit = ele.Attribute("Limit")?.Value.ToInt2(),
+                                Description = ele.Value,
+                            });
                         break;
                     case "Ask":
+                        foreach (var ele in e.Elements())
+                            AskItems.Add(Ask.ReadXml(ele));
                         break;
-                    case "AskCheckboxes":
-                        break;
-                    case "AskDropdown":
-                        break;
-                    case "AskExtraQuestions":
-                        break;
-                    case "AskGradeOptions":
-                        break;
-                    case "AskHeader":
-                        break;
-                    case "AskInstruction":
-                        break;
-                    case "AskMenu":
-                        break;
-                    case "AskRequest":
-                        break;
-                    case "AskSize":
-                        break;
-                    case "AskSuggestedFee":
-                        break;
-                    case "AskText":
-                        break;
-                    case "AskTickets":
-                        break;
-                    case "AskYesNoQuestions":
-                        break;
-                        
 
-                    case "AskSMS":
-                    case "AskParents":
-                    case "AskDoctor":
-                    case "AskInsurance":
-                    case "AskEmContact":
-                    case "AskAllergies":
-                    case "AskChurch":
-                    case "AskTylenolEtc":
-                    case "AskCoaching":
-                    case "AskGrade":
-                    case "AskDonation":
-                    case "AskMedical":
-                        AskItems.Add(new Ask(name));
-                        break;
                 }
             }
         }
@@ -159,41 +148,44 @@ namespace CmsData.Registration
             var userPeopleId = Util.UserPeopleId;
             writer.WriteComment($"{userPeopleId} {DateTime.Now:g}");
 
-            w.StartPending("Confirmation")
+            w.StartPending(RegKeywords.Confirmation)
                 .Add("Subject", Subject)
                 .AddCdata("Body", Body)
                 .EndPending();
 
-            w.StartPending("Reminder")
+            w.StartPending(RegKeywords.Reminder)
                 .Add("Subject", ReminderSubject)
                 .AddCdata("Body", ReminderBody)
                 .EndPending();
 
-            w.StartPending("Support")
+            w.StartPending(RegKeywords.SupportEmail)
                 .Add("Subject", SupportSubject)
                 .AddCdata("Body", SupportBody)
                 .EndPending();
 
-            w.StartPending("Sender")
+            w.StartPending(RegKeywords.SenderEmail)
                 .Add("Subject", SenderSubject)
                 .AddCdata("Body", SenderBody)
                 .EndPending();
 
-            w.Add("Fee", Fee);
-            w.Add("Deposit", Deposit);
-            w.Add("ExtraFee", ExtraFee);
-            w.Add("MaximumFee", MaximumFee);
-            w.Add("ApplyMaxToOtherFees", ApplyMaxToOtherFees);
-            w.Add("ExtraValueFeeName", ExtraValueFeeName);
-            w.Add("AccountingCode", AccountingCode);
-            w.AddIfTrue("IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit);
-
-            w.StartPending("Donation")
-                .Add("Label", DonationLabel)
-                .Add("FundId", DonationFundId)
+            w.Start("Fees")
+                .Add(RegKeywords.Fee, Fee)
+                .Add(RegKeywords.Deposit, Deposit)
+                .Add(RegKeywords.ExtraFee, ExtraFee)
+                .Add(RegKeywords.MaximumFee, MaximumFee)
+                .Add(RegKeywords.ApplyMaxToOtherFees, ApplyMaxToOtherFees)
+                .Add(RegKeywords.ExtraValueFeeName, ExtraValueFeeName)
+                .Add(RegKeywords.AccountingCode, AccountingCode)
+                .AddIfTrue(RegKeywords.IncludeOtherFeesWithDeposit, IncludeOtherFeesWithDeposit)
+                .AddIfTrue(RegKeywords.OtherFeesAddedToOrgFee, OtherFeesAddedToOrgFee)
+                .StartPending(RegKeywords.AskDonation)
+                    .Add("Label", DonationLabel)
+                    .Add("FundId", DonationFundId)
+                    .EndPending()
                 .EndPending();
 
-            w.StartPending("OrgFees");
+
+            w.StartPending(RegKeywords.OrgFees);
             foreach (var i in OrgFees)
                 w.Start("Fee")
                     .Attr("OrgId", i.OrgId)
@@ -202,7 +194,7 @@ namespace CmsData.Registration
             w.EndPending();
 
 
-            w.StartPending("AgeGroups");
+            w.StartPending(RegKeywords.AgeGroups);
             foreach (var i in AgeGroups)
                 w.Start("Group")
                     .Attr("StartAge", i.StartAge)
@@ -212,9 +204,7 @@ namespace CmsData.Registration
                     .End();
             w.EndPending();
 
-            w.AddIfTrue("OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee);
-
-            w.StartPending("Instructions")
+            w.StartPending(RegKeywords.Instructions)
                 .AddCdata("Login", InstructionLogin)
                 .AddCdata("Select", InstructionSelect)
                 .AddCdata("Find", InstructionFind)
@@ -223,38 +213,43 @@ namespace CmsData.Registration
                 .AddCdata("Submit", InstructionSubmit)
                 .AddCdata("Sorry", InstructionSorry)
                 .AddCdata("Thanks", ThankYouMessage)
+                .AddCdata("Terms", Terms)
                 .EndPending();
 
-            w.Add("Terms", Terms);
-            w.Add("ConfirmationTrackingCode", ConfirmationTrackingCode);
+            w.StartPending("Options")
+                .Add(RegKeywords.ConfirmationTrackingCode, ConfirmationTrackingCode)
+                .Add(RegKeywords.ValidateOrgs, ValidateOrgs)
+                .Add(RegKeywords.Shell, Shell)
+                .Add(RegKeywords.ShellBs, ShellBs)
+                .Add(RegKeywords.FinishRegistrationButton, FinishRegistrationButton)
+                .Add(RegKeywords.SpecialScript, SpecialScript)
+                .Add(RegKeywords.GroupToJoin, GroupToJoin)
+                .Add(RegKeywords.TimeOut, TimeOut)
+                .AddIfTrue(RegKeywords.AllowOnlyOne, AllowOnlyOne)
+                .AddIfTrue(RegKeywords.TargetExtraValues, TargetExtraValues)
+                .AddIfTrue(RegKeywords.AllowReRegister, AllowReRegister)
+                .AddIfTrue(RegKeywords.AllowSaveProgress, AllowSaveProgress)
+                .AddIfTrue(RegKeywords.MemberOnly, MemberOnly)
+                .AddIfTrue(RegKeywords.AddAsProspect, AddAsProspect)
+                .EndPending();
 
-            w.Add("ValidateOrgs", ValidateOrgs);
-            w.Add("Shell", Shell);
-            w.Add("ShellBs", ShellBs);
-            w.Add("FinishRegistrationButton", FinishRegistrationButton);
-            w.Add("SpecialScript", SpecialScript);
-            w.Add("GroupToJoin", GroupToJoin);
-            w.Add("TimeOut", TimeOut);
+            w.StartPending("NotReq")
+                .AddIfTrue(RegKeywords.NoReqBirthYear, NoReqBirthYear)
+                .AddIfTrue(RegKeywords.NotReqDOB, NotReqDOB)
+                .AddIfTrue(RegKeywords.NotReqAddr, NotReqAddr)
+                .AddIfTrue(RegKeywords.NotReqZip, NotReqZip)
+                .AddIfTrue(RegKeywords.NotReqPhone, NotReqPhone)
+                .AddIfTrue(RegKeywords.NotReqGender, NotReqGender)
+                .AddIfTrue(RegKeywords.NotReqMarital, NotReqMarital)
+                .AddIfTrue(RegKeywords.DisallowAnonymous, DisallowAnonymous)
+                .EndPending();
 
-            w.AddIfTrue("AllowOnlyOne", AllowOnlyOne);
-            w.AddIfTrue("TargetExtraValues", TargetExtraValues);
-            w.AddIfTrue("AllowReRegister", AllowReRegister);
-            w.AddIfTrue("AllowSaveProgress", AllowSaveProgress);
-            w.AddIfTrue("MemberOnly", MemberOnly);
-            w.AddIfTrue("AddAsProspect", AddAsProspect);
-            w.AddIfTrue("NoReqBirthYear", NoReqBirthYear);
-            w.AddIfTrue("NotReqDOB", NotReqDOB);
-            w.AddIfTrue("NotReqAddr", NotReqAddr);
-            w.AddIfTrue("NotReqZip", NotReqZip);
-            w.AddIfTrue("NotReqPhone", NotReqPhone);
-            w.AddIfTrue("NotReqGender", NotReqGender);
-            w.AddIfTrue("NotReqMarital", NotReqMarital);
-            w.AddIfTrue("DisallowAnonymous", DisallowAnonymous);
+            TimeSlots?.WriteXml(w);
 
-            TimeSlots.WriteXml(writer);
-
+            w.StartPending("AskItems");
             foreach (var a in AskItems)
-                a.WriteXml(writer);
+                a.WriteXml(w);
+            w.EndPending();
 
         }
         public XmlSchema GetSchema()

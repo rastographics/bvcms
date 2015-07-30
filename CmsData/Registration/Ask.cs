@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
 
 namespace CmsData.Registration
 {
-    [Serializable]
-    public class Ask : IXmlSerializable
+    public class Ask
     {
         public string Type { get; set; }
         public string Name { get; set; }
@@ -59,20 +59,45 @@ Good for indicating whether they are a prospect or not.
 "},
         };
 
-        public virtual XmlSchema GetSchema()
+        public virtual void WriteXml(APIWriter w)
         {
-            throw new NotImplementedException();
-        }
-
-        public virtual void ReadXml(XmlReader reader)
-        {
-        }
-
-        public virtual void WriteXml(XmlWriter writer)
-        {
-            var w = new APIWriter(writer);
             w.Start(Type);
             w.End();
+        }
+        public static Ask ReadXml(XElement ele)
+        {
+            var ask = ele.Name.ToString();
+            switch (ask)
+            {
+                case "AskCheckboxes":
+                    return AskCheckboxes.ReadXml(ele);
+                case "AskDropdown":
+                    return AskDropdown.ReadXml(ele);
+                case "AskExtraQuestions":
+                    return AskExtraQuestions.ReadXml(ele);
+                case "AskGradeOptions":
+                    return AskExtraQuestions.ReadXml(ele);
+                case "AskHeader":
+                    return AskHeader.ReadXml(ele);
+                case "AskInstruction":
+                    return AskInstruction.ReadXml(ele);
+                case "AskMenu":
+                    return AskMenu.ReadXml(ele);
+                case "AskRequest":
+                    return AskRequest.ReadXml(ele);
+                case "AskSize":
+                    return AskSize.ReadXml(ele);
+                case "AskSuggestedFee":
+                    return new Ask(ask);
+                case "AskText":
+                    return new Ask(ask);
+                case "AskTickets":
+                    return new Ask(ask);
+                case "AskYesNoquestions":
+                    return new Ask(ask);
+                default:
+                    return new Ask(ask);
+            }
         }
     }
 }

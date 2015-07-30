@@ -56,6 +56,11 @@ namespace CmsData.API
             }
         }
 
+        public APIWriter StartPending(object element)
+        {
+            stack.Push(new Pending(element.ToString()));
+            return this;
+        }
         public APIWriter StartPending(string element)
         {
             stack.Push(new Pending(element));
@@ -91,23 +96,23 @@ namespace CmsData.API
                 s = i.ToString();
             return s;
         }
-        public APIWriter Add(string element, object i)
+        public APIWriter Add(object element, object i)
         {
             var s = tostr(i);
             if (s.HasValue() || NoDefaults)
             {
                 CheckPendingStart();
-                w.WriteElementString(element, s);
+                w.WriteElementString(element.ToString(), s);
             }
             return this;
         }
-        public APIWriter AddIfTrue(string element, bool b)
+        public APIWriter AddIfTrue(object element, bool b)
         {
             var s = tostr(b);
             if(b)
             {
                 CheckPendingStart();
-                w.WriteElementString(element, s);
+                w.WriteElementString(element.ToString(), s);
             }
             return this;
         }

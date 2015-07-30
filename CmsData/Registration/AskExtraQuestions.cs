@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
@@ -65,17 +66,30 @@ If you need a long explanation assoicated with your question, put that in as an 
 					throw parser.GetException("unexpected line");
 				return new ExtraQuestion { Question = parser.GetLine() };
 			}
+
+		    // ReSharper disable once MemberHidesStaticFromOuterClass
+		    public static ExtraQuestion ReadXml(XElement e)
+		    {
+		        return new ExtraQuestion() { Question = e.Value };
+		    }
 		}
 
-	    public override void WriteXml(XmlWriter writer)
+        public override void WriteXml(APIWriter w)
 	    {
 			if (list.Count == 0)
 				return;
-            var w = new APIWriter(writer);
 	        w.Start(Type);
 	        foreach (var q in list)
                 w.Add("ExtraQuestion", q);
 	        w.End();
+	    }
+
+	    public new static AskExtraQuestions ReadXml(XElement e)
+	    {
+			var eq = new AskExtraQuestions();
+	        foreach (var ee in e.Elements("ExtraQuestion"))
+                eq.list.Add(ExtraQuestion.ReadXml(ee));
+			return eq;
 	    }
 	}
 }

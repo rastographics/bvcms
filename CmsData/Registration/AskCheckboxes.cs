@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -14,7 +15,9 @@ namespace CmsData.Registration
     {
         public override string Help
         {
-            get { return @"
+            get
+            {
+                return @"
 This is a group of checkboxes where you can check more than one.
 You can specify a minumum number they must check.
 And you can specify a maximum number they can check.
@@ -26,7 +29,7 @@ For each checkbox, you can specify the following:
 * **Fee** (optional) for the selection.
 * **Limit** (optional) which limits the number of people allowed for a selection.
 * **DateTime** (optional) which registers them in a meeting.
-"; 
+";
             }
         }
 
@@ -125,11 +128,11 @@ For each checkbox, you can specify the following:
             public DateTime? MeetingTime { get; set; }
 
             [DisplayName("DateTime")]
-		    public string MeetingTimeString
-		    {
-		        get { return MeetingTime.ToString2("g"); }
-		        set { MeetingTime = value.ToDate(); }
-		    }
+            public string MeetingTimeString
+            {
+                get { return MeetingTime.ToString2("g"); }
+                set { MeetingTime = value.ToDate(); }
+            }
 
             public void Output(StringBuilder sb)
             {
@@ -194,28 +197,59 @@ For each checkbox, you can specify the following:
                 var cnt = smallgroups.Count(mm => mm == SmallGroup);
                 return cnt >= Limit;
             }
+
+            // ReSharper disable once MemberHidesStaticFromOuterClass
+            internal static CheckboxItem ReadXml(XElement ele)
+            {
+                var i = new CheckboxItem
+                {
+                    Description = ele.Element("Description")?.Value,
+                    Fee = ele.Attribute("Fee")?.Value.ToDecimal(),
+                    Limit = ele.Attribute("Limit")?.Value.ToInt2(),
+                    MeetingTime = ele.Attribute("Time")?.Value.ToDate()
+                };
+                i.SmallGroup = ele.Element("SmallGroup")?.Value ?? i.Description;
+                return i;
+            }
+            public void WriteXml(APIWriter w)
+            {
+                w.Start("CheckboxItem");
+                w.Attr("Fee", Fee);
+                w.Attr("Limit", Limit);
+                w.Attr("Time", MeetingTime.ToString2("s"));
+                w.Add("SmallGroup", SmallGroup);
+                w.Add("Description", Description);
+                w.End();
+            }
         }
 
-        public override void WriteXml(XmlWriter writer)
+        public new static AskCheckboxes ReadXml(XElement ele)
+        {
+            var cb = new AskCheckboxes
+            {
+                Minimum = ele.Attribute("Minimum")?.ToInt2(),
+                Maximum = ele.Attribute("Maximum")?.ToInt2(),
+                Columns = ele.Attribute("Columns")?.ToInt2(),
+                Label = ele.Element("Label")?.Value,
+                list = new List<CheckboxItem>()
+            };
+            foreach (var ee in ele.Elements("CheckBoxItem"))
+                cb.list.Add(CheckboxItem.ReadXml(ee));
+            return cb;
+
+        }
+        public override void WriteXml(APIWriter w)
         {
             if (list.Count == 0)
                 return;
-            var w = new APIWriter(writer);
-
             w.Start(Type);
             w.Attr("Minimum", Minimum);
             w.Attr("Maximum", Maximum);
             w.Attr("Columns", Columns);
+            w.Add("Label", Label);
             foreach (var i in list)
-            {
-                w.Start("CheckboxItem");
-                w.Attr("Fee", i.Fee);
-                w.Attr("Limit", i.Limit);
-                w.Attr("Time", i.MeetingTime.ToString2("s"));
-                w.Add("SmallGroup", i.SmallGroup);
-                w.Add("Description", i.Description);
-                w.End();
-            }
+                i.WriteXml(w);
+            // todo: prevent duplicates
             w.End();
         }
     }

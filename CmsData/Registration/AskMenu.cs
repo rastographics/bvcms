@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -145,25 +146,52 @@ You can optionally associate a fee with one or more items.
 				}
 				return menuitem;
 			}
+
+		    public void WriteXml(APIWriter w)
+		    {
+		        w.Start("MenuItem")
+		            .Attr("Fee", Fee)
+		            .Attr("Limit", Limit)
+		            .Attr("Time", MeetingTime.ToString2("s"))
+		            .Add("Description", Description)
+		            .Add("SmallGroup", SmallGroup)
+		            .End();
+		    }
+
+		    // ReSharper disable once MemberHidesStaticFromOuterClass
+		    public static MenuItem ReadXml(XElement e)
+		    {
+		        var mi = new MenuItem
+		        {
+		            Description = e.Element("Description")?.Value,
+		            Fee = e.Attribute("Fee")?.Value.ToDecimal(),
+		            Limit = e.Attribute("Limit")?.Value.ToInt2(),
+		            MeetingTime = e.Attribute("Time")?.Value.ToDate()
+		        };
+		        mi.SmallGroup = e.Element("SmallGroup")?.Value ?? mi.Description;
+		        return mi;
+		    }
 		}
-	    public override void WriteXml(XmlWriter writer)
+	    public override void WriteXml(APIWriter w)
 	    {
 			if (list.Count == 0)
 				return;
-            var w = new APIWriter(writer);
 	        w.Start(Type);
             w.Add("Label", Label);
 			foreach (var g in list)
-			{
-			    w.Start("MenuItem");
-				w.Attr("SmallGroup", g.SmallGroup);
-				w.Attr("Fee", g.Fee);
-				w.Attr("Limit", g.Limit);
-				w.Attr("Time", g.MeetingTime.ToString2("s"));
-			    w.AddText(g.Description);
-			    w.End();
-			}
+                g.WriteXml(w);
 	        w.End();
+	    }
+
+	    public new static AskMenu ReadXml(XElement ele)
+	    {
+			var m = new AskMenu();
+	        m.Label = ele.Element("Label")?.Value;
+			m.list = new List<MenuItem>();
+            foreach(var ee in ele.Elements("MenuItem"))
+                m.list.Add(MenuItem.ReadXml(ee));
+	        return m;
+	        // todo: check duplicates
 	    }
 	}
 }

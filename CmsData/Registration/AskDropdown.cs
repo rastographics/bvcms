@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -179,24 +180,49 @@ This will be presented as a dropdown selection.
 				var cnt = smallgroups.Count(mm => mm == SmallGroup);
 				return cnt >= Limit;
 			}
+
+		    public void WriteXml(APIWriter w)
+		    {
+                w.Start("DropdownItem");
+                w.Attr("Fee", Fee);
+                w.Attr("Limit", Limit);
+                w.Attr("Time", MeetingTime.ToString2("s"));
+                w.Add("Description", Description);
+                w.Add("SmallGroup", SmallGroup);
+                w.End();
+		    }
+
+		    // ReSharper disable once MemberHidesStaticFromOuterClass
+		    public static DropdownItem ReadXml(XElement ele)
+		    {
+				var i = new DropdownItem();
+		        i.Description = ele.Element("Description")?.Value;
+		        i.SmallGroup = ele.Element("SmallGroup")?.Value ?? i.Description;
+		        i.Fee = ele.Attribute("Fee")?.Value?.ToDecimal();
+		        i.Limit = ele.Attribute("Limit")?.Value?.ToInt2();
+		        i.MeetingTime = ele.Attribute("Time")?.Value?.ToDate();
+				return i;
+		    }
 		}
-        public override void WriteXml(XmlWriter writer)
+        public override void WriteXml(APIWriter w)
         {
             if (list.Count == 0)
                 return;
-            var w = new APIWriter(writer);
             w.Start(Type);
+            w.Add("Label", Label);
             foreach (var i in list)
-            {
-                w.Start("DropdownItem");
-                w.Attr("SmallGroup", i.SmallGroup);
-                w.Attr("Fee", i.Fee);
-                w.Attr("Limit", i.Limit);
-                w.Attr("Time", i.MeetingTime.ToString2("s"));
-                w.AddText(i.Description);
-                w.End();
-            }
+                i.WriteXml(w);
             w.End();
         }
+		public new static AskDropdown ReadXml(XElement ele)
+		{
+			var dd = new AskDropdown();
+		    dd.Label = ele.Value;
+			dd.list = new List<DropdownItem>();
+		    foreach (var ee in ele.Elements("DropdownItem"))
+		        dd.list.Add(DropdownItem.ReadXml(ee));
+            // todo: prevent duplicates
+			return dd;
+		}
 	}
 }

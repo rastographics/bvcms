@@ -23,9 +23,8 @@ namespace CmsData.Registration
 			Settings.AddValueCk(1, sb, "Label", Label ?? "Suggested Amount");
 			sb.AppendLine();
 		}
-	    public override void WriteXml(XmlWriter writer)
+	    public override void WriteXml(APIWriter w)
 	    {
-            var w = new APIWriter(writer);
 	        w.Start(Type);
             w.AddText(Label ?? "Suggested Amount");
 	        w.End();
