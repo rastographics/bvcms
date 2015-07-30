@@ -15,6 +15,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsFeesModel(id);
             return PartialView("Registration/Fees", m);
         }
+
         [HttpPost]
         public ActionResult FeesHelpToggle(int id)
         {
@@ -22,6 +23,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsFeesModel(id);
             return PartialView("Registration/Fees", m);
         }
+
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult FeesEdit(int id)
@@ -29,12 +31,13 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsFeesModel(id);
             return PartialView("Registration/FeesEdit", m);
         }
+
         [HttpPost]
         public ActionResult FeesUpdate(SettingsFeesModel m)
         {
             if (!ModelState.IsValid)
                 return PartialView("Registration/FeesEdit", m);
-            DbUtil.LogActivity("Update Fees {0}".Fmt(m.Org.OrganizationName));
+            DbUtil.LogActivity($"Update Fees {m.Org.OrganizationName}");
             try
             {
                 m.Update();

@@ -3,12 +3,22 @@
     var list = Model.OrgList();
 }
 <b>Showing top @Model.listcount of @Model.count.ToString("N0")</b>
+<table width="100%" class="table-striped">
 @foreach (var o in list)
 {
-    <div class="checkbox">
+    <tr>
+      <td class="checkbox">
         <label>
             <input type="checkbox" @(o.IsChecked ? "checked='checked'" : "") value="@o.OrgId" />
             @o.Division &mdash; @o.Name
         </label>
-    </div>
+      </td>
+      <td>
+        @if (o.IsChecked && !o.IsFirst)
+        {
+        <a href="#" class="move">move to top</a>
+        }
+      </td>
+    </tr>
 }
+</table>

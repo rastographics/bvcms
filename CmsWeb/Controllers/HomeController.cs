@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI;
 using CmsData;
+using CmsData.Registration;
 using CmsWeb.Areas.People.Models;
 using Dapper;
 using Newtonsoft.Json;
@@ -52,10 +55,10 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            string body = "";
-            var doc = new HtmlDocument();
-            doc.LoadHtml(body);
-            return Content(body);
+            var o = DbUtil.Db.LoadOrganizationById(90926);
+            var os = new Settings(o.RegSetting, DbUtil.Db, o.OrganizationId);
+            var x = Util.Serialize(os);
+            return Content(x, "text/xml");
         }
 #endif
 
@@ -180,7 +183,7 @@ namespace CmsWeb.Controllers
 
         public ActionResult SwitchTag(string tag)
         {
-            var m = new TagsModel {tag = tag};
+            var m = new TagsModel { tag = tag };
             m.SetCurrentTag();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.ToString());
@@ -204,14 +207,16 @@ namespace CmsWeb.Controllers
 
         private string RunScriptSql(CMSDataContext Db, string parameter, string body)
         {
+            if (!CanRunScript(body))
+                return "Not Authorized to run this script";
             var declareqtagid = "";
             if (body.Contains("@qtagid"))
             {
                 var id = Db.FetchLastQuery().Id;
                 var tag = Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                declareqtagid = "DECLARE @qtagid INT = {0}\n".Fmt(tag.Id);
+                declareqtagid = $"DECLARE @qtagid INT = {tag.Id}\n";
             }
-            return "{0}DECLARE @p1 VARCHAR(100) = '{1}' {2}".Fmt(declareqtagid, parameter, body);
+            return $"{declareqtagid}DECLARE @p1 VARCHAR(100) = '{parameter}' {body}";
         }
 
         [HttpGet, Route("~/RunScript/{name}/{parameter?}/{title?}")]
@@ -226,9 +231,23 @@ namespace CmsWeb.Controllers
             var cn = new SqlConnection(cs);
             cn.Open();
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
-            ViewBag.name = title ?? "Run Script {0} {1}".Fmt(name, parameter);
-            var rd = cn.ExecuteReader(script);
+            if (script.StartsWith("Not Authorized"))
+                return Message(script);
+            ViewBag.name = title ?? $"Run Script {name} {parameter}";
+            var cmd = new SqlCommand(script, cn);
+            var rd = cmd.ExecuteReader();
             return View(rd);
+        }
+
+        private bool CanRunScript(string script)
+        {
+            if (!script.StartsWith("--Roles="))
+                return true;
+            var re = new Regex("--Roles=(?<roles>.*)");
+            var roles = re.Match(script).Groups["roles"].Value.Split(',').Select(aa => aa.Trim());
+            if (!roles.Any(rr => User.IsInRole(rr)))
+                return false;
+            return true;
         }
 
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
@@ -242,6 +261,8 @@ namespace CmsWeb.Controllers
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
+            if (script.StartsWith("Not Authorized"))
+                return Message(script);
             return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
         }
 
@@ -254,6 +275,8 @@ namespace CmsWeb.Controllers
                 if (!script.HasValue())
                     return Message("no script named " + name);
 
+                if (script.Contains("model.Form"))
+                    return Redirect("/PyScriptForm/" + name);
                 script = script.Replace("@P1", p1 ?? "NULL")
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
@@ -269,6 +292,54 @@ namespace CmsWeb.Controllers
                 pe.RunScript(script);
 
                 return View(pe);
+            }
+            catch (Exception ex)
+            {
+                return RedirectShowError(ex.Message);
+            }
+        }
+        private string FetchPyScriptForm(string name)
+        {
+#if DEBUG2
+                return System.IO.File.ReadAllText(Server.MapPath("~/PythonForm.py"));
+#else
+                return DbUtil.Db.ContentOfTypePythonScript(name);
+#endif
+        }
+        [HttpGet, Route("~/PyScriptForm/{name}")]
+        public ActionResult PyScriptForm(string name)
+        {
+            try
+            {
+                var script = FetchPyScriptForm(name);
+
+                if (!script.HasValue())
+                    return Message("no script named " + name);
+                var pe = new PythonEvents(Util.Host);
+                foreach (var key in Request.QueryString.AllKeys)
+                    pe.DictionaryAdd(key, Request.QueryString[key]);
+                pe.DictionaryAdd("pyscript", name);
+                pe.HttpMethod = "get";
+                pe.RunScript(script);
+                return View(pe);
+            }
+            catch (Exception ex)
+            {
+                return RedirectShowError(ex.Message);
+            }
+        }
+        [HttpPost, Route("~/PyScriptForm")]
+        public ActionResult PyScriptForm()
+        {
+            try
+            {
+                var pe = new PythonEvents(Util.Host);
+                foreach (var key in Request.Form.AllKeys)
+                    pe.DictionaryAdd(key, Request.Form[key]);
+                pe.HttpMethod = "post";
+
+                var script = FetchPyScriptForm(pe.Dictionary("pyscript"));
+                return Content(pe.RunScript(script));
             }
             catch (Exception ex)
             {

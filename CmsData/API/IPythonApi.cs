@@ -17,7 +17,7 @@ namespace CmsData.API
 
         void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string contentName);
 
-        void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName);
+        void EmailContent2(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName);
 
         void Email(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string body);
 
@@ -47,11 +47,11 @@ namespace CmsData.API
 
         void UpdateNewMemberClassDate(object savedQuery, object dt);
 
-        void UpdateNewMemberClassDateIfNullForLastAttended(object savedQuery, int orgId);
+        void UpdateNewMemberClassDateIfNullForLastAttended(object savedQuery, object orgId);
 
-        void AddMembersToOrg(object savedQuery, int orgId);
+        void AddMembersToOrg(object savedQuery, object orgId);
 
-        void AddMemberToOrg(int pid, int orgId);
+        void AddMemberToOrg(object pid, object orgId);
 
         string ExtraValueCode(object pid, string name);
 
@@ -71,7 +71,7 @@ namespace CmsData.API
 
         void UpdateField(Person p, string field, object value);
 
-        void EmailReminders(int orgId);
+        void EmailReminders(object orgId);
 
         bool DictionaryIsNotAvailable { get; }
 
@@ -113,5 +113,21 @@ namespace CmsData.API
             string report, string queryname, string querydescription);
 
         string FmtPhone(string s, string prefix);
+
+        bool InSubGroup(object pid, object OrgId, string group);
+
+        string Form { get; set; }
+
+        string Header { get; set; }
+
+        string HttpMethod { get; set; }
+
+        bool InOrg(object pid, object OrgId);
+
+        void AddSubGroup(object pid, object OrgId, string group);
+
+        void RemoveSubGroup(object pid, object OrgId, string group);
+
+        APIOrganization.Organization GetOrganization(object OrgId);
     }
 }

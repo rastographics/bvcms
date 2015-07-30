@@ -1,6 +1,5 @@
 using System;
 using System.Configuration;
-using System.Data;
 using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
@@ -90,7 +89,7 @@ namespace CmsWeb
                 var ret = DbUtil.CreateDatabase();
                 if (ret.HasValue())
                 {
-                    Response.Redirect("/Errors/DatabaseCreationError.aspx?error={0}".Fmt(HttpUtility.UrlEncode(ret)));
+                    Response.Redirect($"/Errors/DatabaseCreationError.aspx?error={HttpUtility.UrlEncode(ret)}");
                     return;
                 }
             }
@@ -107,7 +106,7 @@ namespace CmsWeb
             }
             catch (SqlException)
             {
-                Response.Redirect("/Errors/DatabaseNotInitialized.aspx?dbname=".Fmt(Util.Host));
+                Response.Redirect($"/Errors/DatabaseNotInitialized.aspx?dbname={Util.Host}");
             }
 
             var cul = DbUtil.Db.Setting("Culture", "en-US");
@@ -212,7 +211,7 @@ namespace CmsWeb
                 return false;
 
             var ctx = request.RequestContext.HttpContext;
-            if (ctx == null || ctx.User == null)
+            if (ctx?.User == null)
                 return false;
 
             return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled", "false") == "true";

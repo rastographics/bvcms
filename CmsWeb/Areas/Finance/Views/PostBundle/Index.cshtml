@@ -1,13 +1,10 @@
 ﻿@using System.Globalization
-@using CmsData
-@using DocumentFormat.OpenXml.Office2010.Word
 @using UtilityExtensions
-@using CmsWeb
 @model CmsWeb.Models.PostBundleModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Post Bundle";
-    ViewBag.PageHeader = "Contribution Bundle #{0}".Fmt(Model.id);
+    ViewBag.PageHeader = $"Contribution Bundle #{Model.id}";
 }
 @Html.Hidden("fundid", Model.bundle.FundId)
 @Html.Hidden("fundispledge", Model.FundName)
@@ -119,7 +116,7 @@
                                         <input id="notes" name="notes" type="text" style="width: 98%; min-width: 15em; font-size: 14px; padding: 5px;" class="form-control input-sm" />
                                     </td>
                                     <td style="padding-right: 0;">
-                                        <a class="update btn btn-primary btn-sm" href='#'>Update</a> 
+                                        <a class="update btn btn-primary btn-sm" href='#'>Update</a>
                                     </td>
                                     <td style="padding-left: 0;">
                                         <div class="btn-group" id="gear" style="display: none;">
@@ -172,7 +169,7 @@
                 </ul>
                 <p>
                     <div class="checkbox">
-                        
+
                     </div>
                 </p>
             </div>

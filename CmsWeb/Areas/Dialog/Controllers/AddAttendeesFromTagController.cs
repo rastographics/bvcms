@@ -1,7 +1,6 @@
 ﻿using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -28,12 +27,12 @@ namespace CmsWeb.Areas.Dialog.Controllers
                 return View("Index", model); // let them confirm by seeing the count and the tagname
 
             if (!model.Started.HasValue)
-            { 
-                DbUtil.LogActivity("Add attendees from tag for {0}".Fmt(Session["ActiveOrganization"]));
+            {
+                DbUtil.LogActivity($"Add attendees from tag for {Session["ActiveOrganization"]}");
                 model.Process(DbUtil.Db);
             }
 
-			return View(model);
-		}
+            return View(model);
+        }
     }
 }

@@ -1,18 +1,25 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using CmsData;
-using System.Web.Mvc;
 using CmsWeb.Code;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class MemberNotesModel
     {
         public Person person;
+
+        public MemberNotesModel(int id)
+        {
+            person = DbUtil.Db.LoadPersonById(id);
+            this.CopyPropertiesFrom(person);
+            PeopleId = id;
+        }
+
+        public MemberNotesModel()
+        {
+        }
 
         [NoUpdate]
         public int PeopleId { get; set; }
@@ -28,21 +35,13 @@ namespace CmsWeb.Areas.People.Models
         [UIHint("Textarea"), DisplayName("Letter Notes")]
         public string LetterStatusNotes { get; set; }
 
-        public MemberNotesModel(int id)
-        {
-            person = DbUtil.Db.LoadPersonById(id);
-            this.CopyPropertiesFrom(person);
-            PeopleId = id;
-        }
-        public MemberNotesModel() { }
-
         public void UpdateMemberNotes()
         {
             person = DbUtil.Db.LoadPersonById(PeopleId);
             this.CopyPropertiesTo(person);
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Updated Growth: {0}".Fmt(person.Name));
+            DbUtil.LogActivity($"Updated Growth: {person.Name}");
         }
     }
 }

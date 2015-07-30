@@ -1,10 +1,8 @@
 using System;
+using System.Data.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
-using CmsWeb.Code;
-using UtilityExtensions;
-using CmsWeb.Models;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -16,6 +14,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsAttendanceModel(id);
             return PartialView("Settings/Attendance", m);
         }
+
         [HttpPost]
         public ActionResult AttendanceHelpToggle(int id)
         {
@@ -23,21 +22,24 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsAttendanceModel(id);
             return PartialView("Settings/Attendance", m);
         }
+
         [HttpPost]
         public ActionResult AttendanceEdit(int id)
         {
             var m = new SettingsAttendanceModel(id);
             return PartialView("Settings/AttendanceEdit", m);
         }
+
         [HttpPost]
         public ActionResult AttendanceUpdate(SettingsAttendanceModel m)
         {
             m.Update();
             m.UpdateSchedules();
-            DbUtil.Db.Refresh(System.Data.Linq.RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
-            DbUtil.LogActivity("Update SettingsAttendance {0}".Fmt(m.Org.OrganizationName));
+            DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, m.Org.OrgSchedules);
+            DbUtil.LogActivity($"Update SettingsAttendance {m.Org.OrganizationName}");
             return PartialView("Settings/Attendance", m);
         }
+
         [HttpPost]
         public ActionResult NewSchedule()
         {
@@ -50,6 +52,5 @@ namespace CmsWeb.Areas.Org.Controllers
                 });
             return PartialView("EditorTemplates/ScheduleInfo", s);
         }
-
     }
 }

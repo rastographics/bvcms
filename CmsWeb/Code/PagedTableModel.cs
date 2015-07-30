@@ -1,22 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
     public abstract class PagedTableModel<TModel, TView> : PagerModel2
     {
+        internal int? count;
+        internal IQueryable<TModel> list;
+
         protected PagedTableModel(string defaultSort, string defaultDirection)
-           : this()
+            : this()
         {
             Sort = defaultSort;
             Direction = defaultDirection;
         }
+
         protected PagedTableModel()
         {
             GetCount = Count;
         }
+
         protected PagedTableModel(string defaultSort, string defaultDirection, bool useAjax)
             : this()
         {
@@ -24,8 +28,9 @@ namespace CmsWeb.Models
             Direction = defaultDirection;
             AjaxPager = useAjax;
         }
+
         public bool UseDbPager { get; set; }
-        internal int? count;
+
         public virtual int Count()
         {
             if (!count.HasValue)
@@ -38,7 +43,6 @@ namespace CmsWeb.Models
             return count.Value;
         }
 
-        internal IQueryable<TModel> list;
         public abstract IQueryable<TModel> DefineModelList();
         public abstract IQueryable<TModel> DefineModelSort(IQueryable<TModel> q);
         public abstract IEnumerable<TView> DefineViewList(IQueryable<TModel> q);
@@ -49,15 +53,17 @@ namespace CmsWeb.Models
                 return list;
             return list = DefineModelList();
         }
+
         private IQueryable<TModel> SortedList()
         {
             var q = DefineModelSort(ModelList());
-            if(q == null)
-                throw new Exception("sort not defined {0}".Fmt(SortExpression));
+            if (q == null)
+                throw new Exception($"sort not defined {SortExpression}");
             if (PageSize == 0 || UseDbPager)
                 return q;
             return q.Skip(StartRow).Take(PageSize);
         }
+
         public IEnumerable<TView> ViewList()
         {
             return DefineViewList(SortedList());

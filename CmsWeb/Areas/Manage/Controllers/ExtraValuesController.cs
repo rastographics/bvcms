@@ -73,7 +73,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var cc = DbUtil.Db.ScratchPadCondition();
             cc.Reset(DbUtil.Db);
-            cc.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
+            cc.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, $"{field}:{value}");
             cc.Save(DbUtil.Db);
             return Redirect("/Query/" + cc.Id);
         }

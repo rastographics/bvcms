@@ -3,8 +3,8 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsWeb.Areas.Finance.Models.Report;
 using CmsWeb.Areas.People.Models;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -16,16 +16,18 @@ namespace CmsWeb.Areas.People.Controllers
         {
             return View("Giving/Contributions", m);
         }
+
         [HttpPost]
         public ActionResult Statements(ContributionsModel m)
         {
-            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, m.PeopleId))
+            if (!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, m.PeopleId))
                 return Content("No permission to view statement");
             return View("Giving/Statements", m);
         }
+
         public ActionResult Statement(int id, string fr, string to)
         {
-            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
+            if (!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
                 return Content("No permission to view statement");
             var p = DbUtil.Db.LoadPersonById(id);
             if (p == null)
@@ -36,9 +38,9 @@ namespace CmsWeb.Areas.People.Controllers
             if (!(frdt.HasValue && todt.HasValue))
                 return Content("date formats invalid");
 
-            DbUtil.LogPersonActivity("Contribution Statement for ({0})".Fmt(id), id, p.Name);
+            DbUtil.LogPersonActivity($"Contribution Statement for ({id})", id, p.Name);
 
-            return new Finance.Models.Report.ContributionStatementResult
+            return new ContributionStatementResult
             {
                 PeopleId = id,
                 FromDate = frdt.Value,
@@ -46,61 +48,63 @@ namespace CmsWeb.Areas.People.Controllers
                 typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult ? 2 : 1,
                 noaddressok = true,
                 useMinAmt = false,
-                singleStatement = true,
+                singleStatement = true
             };
         }
+
         // the datetime arguments come across as sortable dates to make them universal for all cultures
         [HttpGet, Route("ContributionStatement/{id:int}/{fr:datetime}/{to:datetime}")]
-		public ActionResult ContributionStatement(int id, DateTime fr, DateTime to)
-		{
-            if(!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
-				return Content("No permission to view statement");
-			var p = DbUtil.Db.LoadPersonById(id);
-			if (p == null)
-				return Content("Invalid Id");
+        public ActionResult ContributionStatement(int id, DateTime fr, DateTime to)
+        {
+            if (!DbUtil.Db.CurrentUserPerson.CanViewStatementFor(DbUtil.Db, id))
+                return Content("No permission to view statement");
+            var p = DbUtil.Db.LoadPersonById(id);
+            if (p == null)
+                return Content("Invalid Id");
 
             if (p.PeopleId == p.Family.HeadOfHouseholdSpouseId)
             {
                 var hh = DbUtil.Db.LoadPersonById(p.Family.HeadOfHouseholdId ?? 0);
-                if((hh.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
+                if ((hh.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint
                     && (p.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                     p = p.Family.HeadOfHousehold;
             }
 
-			DbUtil.LogPersonActivity("Contribution Statement for ({0})".Fmt(id), id, p.Name);
+            DbUtil.LogPersonActivity($"Contribution Statement for ({id})", id, p.Name);
 
-			return new Finance.Models.Report.ContributionStatementResult 
-			{ 
-				PeopleId = p.PeopleId, 
-				FromDate = fr,
-				ToDate = to,
-				typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult 
-                    && (p.ContributionOptionsId ?? (p.SpouseId > 0 
-                                                    ? StatementOptionCode.Joint 
-                                                    : StatementOptionCode.Individual)) 
-                                                    == StatementOptionCode.Joint ? 2 : 1,
-				noaddressok = true,
-				useMinAmt = false,
-                singleStatement = true,
-			};
-		}
+            return new ContributionStatementResult
+            {
+                PeopleId = p.PeopleId,
+                FromDate = fr,
+                ToDate = to,
+                typ = p.PositionInFamilyId == PositionInFamily.PrimaryAdult
+                      && (p.ContributionOptionsId ?? (p.SpouseId > 0
+                          ? StatementOptionCode.Joint
+                          : StatementOptionCode.Individual))
+                      == StatementOptionCode.Joint ? 2 : 1,
+                noaddressok = true,
+                useMinAmt = false,
+                singleStatement = true
+            };
+        }
 
         [HttpGet]
         public ActionResult ManageGiving()
         {
-            int org = (from o in DbUtil.Db.Organizations
-                where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
-                select o.OrganizationId).FirstOrDefault();
+            var org = (from o in DbUtil.Db.Organizations
+                       where o.RegistrationTypeId == RegistrationTypeCode.ManageGiving
+                       select o.OrganizationId).FirstOrDefault();
             if (org > 0)
                 return Redirect("/OnlineReg/" + org);
             return new EmptyResult();
         }
+
         [HttpGet]
         public ActionResult OneTimeGift()
         {
-            int org = (from o in DbUtil.Db.Organizations
-                where o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving
-                select o.OrganizationId).FirstOrDefault();
+            var org = (from o in DbUtil.Db.Organizations
+                       where o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving
+                       select o.OrganizationId).FirstOrDefault();
             if (org > 0)
                 return Redirect("/OnlineReg/" + org);
             return new EmptyResult();

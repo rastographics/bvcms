@@ -1,23 +1,20 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using CmsData;
 using CmsData.API;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;
-using CmsData;
-using UtilityExtensions;
-using iTextSharp.text.xml.simpleparser;
-using CmsWeb.Areas.Reports.Models;
-using System.Diagnostics;
 using iTextSharp.tool.xml;
-using iTextSharp.tool.xml.pipeline;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.Report
 {
@@ -38,14 +35,13 @@ namespace CmsWeb.Areas.Finance.Models.Report
 
     public class ContributionStatementsExtra
     {
+        private readonly PageEvent pageEvents = new PageEvent();
         public int FamilyId { get; set; }
         public int PeopleId { get; set; }
         public int? SpouseId { get; set; }
         public int typ { get; set; }
         public DateTime FromDate { get; set; }
         public DateTime ToDate { get; set; }
-        private PageEvent pageEvents = new PageEvent();
-
         public bool ShowCheckNo { get; set; }
         public bool ShowNotes { get; set; }
 
@@ -68,7 +64,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         public void Run(Stream stream, CMSDataContext Db, IEnumerable<ContributorInfo> q, int set = 0)
         {
             pageEvents.set = set;
-            IEnumerable<ContributorInfo> contributors = q;
+            var contributors = q;
 
             PdfContentByte dc;
             var font = FontFactory.GetFont(FontFactory.HELVETICA, 11);
@@ -81,7 +77,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
             doc.Open();
             dc = w.DirectContent;
 
-            int prevfid = 0;
+            var prevfid = 0;
             var runningtotals = Db.ContributionsRuns.OrderByDescending(mm => mm.Id).FirstOrDefault();
             runningtotals.Processed = 0;
             Db.SubmitChanges();
@@ -128,10 +124,10 @@ p { font-size: 11px; }
                 //----Church Name
 
                 var t1 = new PdfPTable(1);
-                t1.TotalWidth = 72f * 5f;
+                t1.TotalWidth = 72f*5f;
                 t1.DefaultCell.Border = Rectangle.NO_BORDER;
-                string html1 = Db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
-                string html2 = Db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
+                var html1 = Db.ContentHtml("StatementHeader", Resource1.ContributionStatementHeader);
+                var html2 = Db.ContentHtml("StatementNotice", Resource1.ContributionStatementNotice);
 
                 var mh = new MyHandler();
                 using (var sr = new StringReader(css + html1))
@@ -146,7 +142,7 @@ p { font-size: 11px; }
                 t1.AddCell("\n");
 
                 var t1a = new PdfPTable(1);
-                t1a.TotalWidth = 72f * 5f;
+                t1a.TotalWidth = 72f*5f;
                 t1a.DefaultCell.Border = Rectangle.NO_BORDER;
 
                 var ae = new PdfPTable(1);
@@ -159,7 +155,7 @@ p { font-size: 11px; }
                 a.AddCell(new Phrase(ci.Name, font));
                 foreach (var line in ci.MailingAddress.SplitLines())
                     a.AddCell(new Phrase(line, font));
-                cell = new PdfPCell(a) { Border = Rectangle.NO_BORDER };
+                cell = new PdfPCell(a) {Border = Rectangle.NO_BORDER};
                 //cell.FixedHeight = 72f * 1.0625f;
                 ae.AddCell(cell);
 
@@ -170,9 +166,9 @@ p { font-size: 11px; }
                 //-----Notice
 
                 var t2 = new PdfPTable(1);
-                t2.TotalWidth = 72f * 3f;
+                t2.TotalWidth = 72f*3f;
                 t2.DefaultCell.Border = Rectangle.NO_BORDER;
-                t2.AddCell(new Phrase("\nPrint Date: {0:d}   (id:{1} {2})".Fmt(DateTime.Now, ci.PeopleId, ci.CampusId), font));
+                t2.AddCell(new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId} {ci.CampusId})", font));
                 t2.AddCell("");
                 var mh2 = new MyHandler();
                 using (var sr = new StringReader(css + html2))
@@ -187,30 +183,30 @@ p { font-size: 11px; }
                 //----Header
 
                 var yp = doc.BottomMargin +
-                     Db.Setting("StatementRetAddrPos", "10.125").ToFloat() * 72f;
+                         Db.Setting("StatementRetAddrPos", "10.125").ToFloat()*72f;
                 t1.WriteSelectedRows(0, -1,
-                     doc.LeftMargin - 0.1875f * 72f, yp, dc);
+                    doc.LeftMargin - 0.1875f*72f, yp, dc);
 
                 yp = doc.BottomMargin +
-                     Db.Setting("StatementAddrPos", "8.3375").ToFloat() * 72f;
+                     Db.Setting("StatementAddrPos", "8.3375").ToFloat()*72f;
                 t1a.WriteSelectedRows(0, -1, doc.LeftMargin, yp, dc);
 
-                yp = doc.BottomMargin + 10.125f * 72f;
-                t2.WriteSelectedRows(0, -1, doc.LeftMargin + 72f * 4.4f, yp, dc);
+                yp = doc.BottomMargin + 10.125f*72f;
+                t2.WriteSelectedRows(0, -1, doc.LeftMargin + 72f*4.4f, yp, dc);
 
                 //----Contributions
 
                 doc.Add(new Paragraph(" "));
-                doc.Add(new Paragraph(" ") { SpacingBefore = 72f * 2.125f });
+                doc.Add(new Paragraph(" ") {SpacingBefore = 72f*2.125f});
 
-                doc.Add(new Phrase("\n  Period: {0:d} - {1:d}".Fmt(FromDate, ToDate), boldfont));
+                doc.Add(new Phrase($"\n  Period: {FromDate:d} - {ToDate:d}", boldfont));
 
                 var pos = w.GetVerticalPosition(true);
 
                 var ct = new ColumnText(dc);
-                float colwidth = (doc.Right - doc.Left);
+                var colwidth = (doc.Right - doc.Left);
 
-                var t = new PdfPTable(new float[] { 15f, 25f, 15f, 15f, 30f });
+                var t = new PdfPTable(new[] {15f, 25f, 15f, 15f, 30f});
                 t.WidthPercentage = 100;
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
                 t.HeaderRows = 2;
@@ -298,7 +294,7 @@ p { font-size: 11px; }
 
                 if (pledges.Count > 0)
                 {
-                    t = new PdfPTable(new float[] { 25f, 15f, 15f, 15f, 30f });
+                    t = new PdfPTable(new[] {25f, 15f, 15f, 15f, 30f});
                     t.WidthPercentage = 100;
                     t.DefaultCell.Border = Rectangle.NO_BORDER;
                     t.HeaderRows = 2;
@@ -347,7 +343,7 @@ p { font-size: 11px; }
 
                 if (giftsinkind.Count > 0)
                 {
-                    t = new PdfPTable(new float[] { 15f, 25f, 15f, 15f, 30f });
+                    t = new PdfPTable(new[] {15f, 25f, 15f, 15f, 30f});
                     t.WidthPercentage = 100;
                     t.DefaultCell.Border = Rectangle.NO_BORDER;
                     t.HeaderRows = 2;
@@ -390,7 +386,7 @@ p { font-size: 11px; }
 
                 //-----Summary
 
-                t = new PdfPTable(new float[] { 40f, 15f, 45f });
+                t = new PdfPTable(new[] {40f, 15f, 45f});
                 t.WidthPercentage = 100;
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
                 t.HeaderRows = 2;
@@ -447,7 +443,7 @@ p { font-size: 11px; }
 
                 if (nontaxitems.Count > 0)
                 {
-                    t = new PdfPTable(new float[] { 15f, 25f, 15f, 15f, 30f });
+                    t = new PdfPTable(new[] {15f, 25f, 15f, 15f, 30f});
                     t.WidthPercentage = 100;
                     t.DefaultCell.Border = Rectangle.NO_BORDER;
                     t.HeaderRows = 2;
@@ -528,27 +524,16 @@ p { font-size: 11px; }
                 runningtotals.Completed = DateTime.Now;
             Db.SubmitChanges();
         }
-        class PageEvent : PdfPageEventHelper
+
+        private class PageEvent : PdfPageEventHelper
         {
-            class NPages
-            {
-                public NPages(PdfContentByte dc)
-                {
-                    template = dc.CreateTemplate(50, 50);
-                }
-                public bool juststartednewset;
-                public PdfTemplate template;
-                public int n;
-            }
+            private PdfContentByte dc;
+            private Document document;
+            private BaseFont font;
             private NPages npages;
             private int pg;
-
             private PdfWriter writer;
-            private Document document;
-            private PdfContentByte dc;
-            private BaseFont font;
             public int set { get; set; }
-
             public Dictionary<int, int> FamilySet { get; set; }
 
             public override void OnOpenDocument(PdfWriter writer, Document document)
@@ -562,6 +547,7 @@ p { font-size: 11px; }
                     FamilySet = new Dictionary<int, int>();
                 npages = new NPages(dc);
             }
+
             public void EndPageSet()
             {
                 if (npages == null)
@@ -575,16 +561,17 @@ p { font-size: 11px; }
                     foreach (var kp in list)
                         if (kp.Value == 0)
                             FamilySet[kp.Key] = npages.n;
-
                 }
                 pg = 1;
                 npages.template.EndText();
                 npages = new NPages(dc);
             }
+
             public void StartPageSet()
             {
                 npages.juststartednewset = true;
             }
+
             public override void OnEndPage(PdfWriter writer, Document document)
             {
                 base.OnEndPage(writer, document);
@@ -604,12 +591,24 @@ p { font-size: 11px; }
                 dc.AddTemplate(npages.template, 30 + len, 30);
                 npages.n = pg++;
             }
+
             public override void OnCloseDocument(PdfWriter writer, Document document)
             {
                 base.OnCloseDocument(writer, document);
                 EndPageSet();
             }
+
+            private class NPages
+            {
+                public readonly PdfTemplate template;
+                public bool juststartednewset;
+                public int n;
+
+                public NPages(PdfContentByte dc)
+                {
+                    template = dc.CreateTemplate(50, 50);
+                }
+            }
         }
     }
 }
-

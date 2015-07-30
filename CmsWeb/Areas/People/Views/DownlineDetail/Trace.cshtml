@@ -2,38 +2,38 @@
 @using UtilityExtensions
 @model DownlineDetailModel
 @{
-  Layout = ViewExtensions2.TouchPointLayout();
-  ViewBag.Title = "Downline";
-  ViewBag.PageHeader = "Downline Trace for {0} in {1}".Fmt(Model.Name, Model.Category);
+    Layout = ViewExtensions2.TouchPointLayout();
+    ViewBag.Title = "Downline";
+    ViewBag.PageHeader = $"Downline Trace for {Model.Name} in {Model.Category}";
 }
 <div class="box box-responsive" style="margin-left: auto; margin-right:auto;display:table">
-  <div class="box-content" style="display:table">
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Level</th>
-          <th>Leader</th>
-          <th>Disciple</th>
-          <th>Organization</th>
-          <th>StartDt</th>
-          <th>EndDt</th>
-          <th>Trace</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach (var r in Model.TraceList())
-        {
-          <tr>
-            <td>@r.Generation</td>
-            <td><a href="/DownlineLevels/@Model.CategoryId/@r.LeaderId" target="downline">@r.LeaderName</a></td>
-            <td>@r.DiscipleName</td>
-            <td>@r.OrgName</td>
-            <td>@r.StartDt.FormatDate()</td>
-            <td>@r.EndDt.FormatDate()</td>
-            <td>@r.Trace.Replace("/", ", ")</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+    <div class="box-content" style="display:table">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Level</th>
+                    <th>Leader</th>
+                    <th>Disciple</th>
+                    <th>Organization</th>
+                    <th>StartDt</th>
+                    <th>EndDt</th>
+                    <th>Trace</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model.TraceList())
+                {
+                    <tr>
+                        <td>@r.Generation</td>
+                        <td><a href="/DownlineLevels/@Model.CategoryId/@r.LeaderId" target="downline">@r.LeaderName</a></td>
+                        <td>@r.DiscipleName</td>
+                        <td>@r.OrgName</td>
+                        <td>@r.StartDt.FormatDate()</td>
+                        <td>@r.EndDt.FormatDate()</td>
+                        <td>@r.Trace.Replace("/", ", ")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>

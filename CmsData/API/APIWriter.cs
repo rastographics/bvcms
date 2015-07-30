@@ -1,9 +1,8 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Xml;
 using UtilityExtensions;
 using System.Text;
-using System.IO;
 
 namespace CmsData.API
 {
@@ -12,6 +11,18 @@ namespace CmsData.API
         private XmlWriter w;
         private StringBuilder sb;
         public bool NoDefaults { get; set; }
+
+        class Pending
+        {
+            public string PendingStart { get; set; }
+            public bool PendingEnd { get; set; }
+
+            public Pending(string ele)
+            {
+                PendingStart = ele;
+            }
+        }
+        private Stack<Pending> stack = new Stack<Pending>(); 
 
         public APIWriter()
         {
@@ -27,12 +38,44 @@ namespace CmsData.API
         }
         public APIWriter Start(string element)
         {
+            CheckPendingStart();
             w.WriteStartElement(element);
+            return this;
+        }
+
+        private void CheckPendingStart()
+        {
+            if (stack.Count > 0)
+            {
+                var p = stack.Peek();
+                if (!p.PendingEnd)
+                {
+                    w.WriteStartElement(p.PendingStart);
+                    p.PendingEnd = true;
+                }
+            }
+        }
+
+        public APIWriter StartPending(object element)
+        {
+            stack.Push(new Pending(element.ToString()));
+            return this;
+        }
+        public APIWriter StartPending(string element)
+        {
+            stack.Push(new Pending(element));
             return this;
         }
         public APIWriter End()
         {
             w.WriteEndElement();
+            return this;
+        }
+        public APIWriter EndPending()
+        {
+            var p = stack.Pop();
+            if(p.PendingEnd)
+                w.WriteEndElement();
             return this;
         }
         public APIWriter Attr(string attr, object i)
@@ -53,11 +96,35 @@ namespace CmsData.API
                 s = i.ToString();
             return s;
         }
-        public APIWriter Add(string element, object i)
+        public APIWriter Add(object element, object i)
         {
             var s = tostr(i);
             if (s.HasValue() || NoDefaults)
-                w.WriteElementString(element, s);
+            {
+                CheckPendingStart();
+                w.WriteElementString(element.ToString(), s);
+            }
+            return this;
+        }
+        public APIWriter AddIfTrue(object element, bool b)
+        {
+            var s = tostr(b);
+            if(b)
+            {
+                CheckPendingStart();
+                w.WriteElementString(element.ToString(), s);
+            }
+            return this;
+        }
+        public APIWriter AddCdata(string element, string cdata)
+        {
+            if(cdata.HasValue())
+            {
+                CheckPendingStart();
+                Start(element);
+                w.WriteCData("\n" + cdata + "\n");
+                End();
+            }
             return this;
         }
         public APIWriter AddText(string text)

@@ -4,7 +4,6 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Web;
 using UtilityExtensions;
 using System.Web.Caching;
@@ -34,13 +33,7 @@ namespace CmsData
 
         public int? CurrentOrgId { get; set; }
 
-        public int CurrentOrgId0
-        {
-            get
-            {
-                return (CurrentOrg ?? new CurrentOrg()).Id ?? Util2.CurrentOrgId ?? 0;
-            }
-        }
+        public int CurrentOrgId0 => (CurrentOrg ?? new CurrentOrg()).Id ?? Util2.CurrentOrgId ?? 0;
 
         public int[] CurrentGroups { get; set; }
         public string CurrentGroupsPrefix { get; set; }
@@ -136,15 +129,15 @@ namespace CmsData
         }
         public string Setting(string name, string defaultvalue)
         {
-			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
+            var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
                 try
                 {
                     list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX,
                         StringComparer.OrdinalIgnoreCase);
-					HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-						DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
+                    HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                        DateTime.Now.AddSeconds(15), Cache.NoSlidingExpiration);
                 }
                 catch (SqlException)
                 {
@@ -164,12 +157,12 @@ namespace CmsData
         public void SetSetting(string name, string value)
         {
             name = name.Trim();
-			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
+            var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
                 list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
-				HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                        DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
             }
             list[name] = value;
 
@@ -184,12 +177,12 @@ namespace CmsData
         }
         public void DeleteSetting(string name)
         {
-			var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
+            var list = HttpRuntime.Cache[Host + "Setting"] as Dictionary<string, string>;
             if (list == null)
             {
                 list = Settings.ToDictionary(c => c.Id.Trim(), c => c.SettingX);
-				HttpRuntime.Cache.Insert(Host + "Setting", list, null,
-						DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(Host + "Setting", list, null,
+                        DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
             }
             list.Remove(name);
 
@@ -200,8 +193,8 @@ namespace CmsData
         public new void Log(string s)
         {
             var output = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));
-            output = output + "\\log-{0}-{1}.txt".Fmt(Host, DateTime.Today.ToSortableDate());
-            var text = "{0} {1}\r\n".Fmt(DateTime.Now.ToSortableTime(), s);
+            output = output + $"\\log-{Host}-{DateTime.Today.ToSortableDate()}.txt";
+            var text = $"{DateTime.Now.ToSortableTime()} {s}\r\n";
             File.AppendAllText(output, text);
         }
         public void LogActivity(string activity, int? oid = null, int? pid = null, int? did = null, int? uid = null)
@@ -209,7 +202,7 @@ namespace CmsData
             DbUtil.LogActivity(Host, activity, oid, pid, did, uid);
         }
 
-        public string SendGridMailUser 
+        public string SendGridMailUser
         {
             get
             {
@@ -222,12 +215,12 @@ namespace CmsData
                 user = Setting(sendgridmailuser, "");
                 if(!user.HasValue())
                     user = ConfigurationManager.AppSettings[sendgridmailuser];
-				HttpRuntime.Cache.Insert(Host + sendgridmailuser, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(Host + sendgridmailuser, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
 
                 return user;
-            } 
+            }
         }
-        public string SendGridMailPassword 
+        public string SendGridMailPassword
         {
             get
             {
@@ -240,10 +233,10 @@ namespace CmsData
                 user = Setting(sendgridmailpassword, "");
                 if(!user.HasValue())
                     user = ConfigurationManager.AppSettings[sendgridmailpassword];
-				HttpRuntime.Cache.Insert(Host + sendgridmailpassword, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
+                HttpRuntime.Cache.Insert(Host + sendgridmailpassword, user, null, DateTime.Now.AddSeconds(60), Cache.NoSlidingExpiration);
 
                 return user;
-            } 
+            }
         }
     }
 }

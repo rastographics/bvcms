@@ -15,6 +15,7 @@ using UtilityExtensions;
 using System.Data.Linq.SqlClient;
 using System.Web.UI.WebControls;
 using System.Text.RegularExpressions;
+using CmsData.View;
 
 namespace CmsWeb.Areas.Dialog.Models
 {
@@ -31,7 +32,7 @@ namespace CmsWeb.Areas.Dialog.Models
 
         public SearchOrgsModel()
         {
-            maxitems = 200;
+            maxitems = 50;
         }
         private IQueryable<Organization> orgs;
         public IQueryable<Organization> FetchOrgs()
@@ -108,6 +109,7 @@ namespace CmsWeb.Areas.Dialog.Models
                         Division = o.Division.Name,
                         Divisions = string.Join("|", o.DivOrgs.Where(pp => pp.DivId != o.DivisionId).Select(pp => pp.Division.Name)),
                         IsChecked = ck,
+                        IsFirst = ck && cklist.Count > 0 && o.OrganizationId == cklist[0]
                     };
             return q;
         }
@@ -118,6 +120,7 @@ namespace CmsWeb.Areas.Dialog.Models
             public string Division { get; set; }
             public string Divisions { get; set; }
             public bool IsChecked { get; set; }
+            public bool IsFirst { get; set; }
         }
     }
 }

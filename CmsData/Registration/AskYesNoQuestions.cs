@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -81,5 +83,19 @@ If you need a longer explanation, use InstructionalText above the question so yo
 				return q;
 			}
 		}
+	    public override void WriteXml(APIWriter w)
+	    {
+			if (list.Count == 0)
+				return;
+	        w.Start(Type);
+	        foreach (var q in list)
+	        {
+	            w.Start("Question");
+	            w.Add("Question", q.Question ?? "need a question here");
+	            w.Add("SmallGroup", q.SmallGroup);
+	            w.End();
+	        }
+	        w.End();
+	    }
 	}
 }

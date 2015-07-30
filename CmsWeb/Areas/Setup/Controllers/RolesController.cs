@@ -21,7 +21,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var r = new Role { RoleName = "NEW" };
             DbUtil.Db.Roles.InsertOnSubmit(r);
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Roles/#{0}".Fmt(r.RoleId));
+            return Redirect($"/Roles/#{r.RoleId}");
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -61,8 +61,8 @@ namespace CmsWeb.Areas.Setup.Controllers
             var role = DbUtil.Db.Roles.SingleOrDefault(m => m.RoleId == id.ToInt());
             if (role == null)
                 return new EmptyResult();
-			if (role.UserRoles.Any())
-				return Content("users have that role, not deleted");
+            if (role.UserRoles.Any())
+                return Content("users have that role, not deleted");
             DbUtil.Db.Roles.DeleteOnSubmit(role);
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();

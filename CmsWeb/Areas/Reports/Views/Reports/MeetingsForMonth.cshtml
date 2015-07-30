@@ -1,9 +1,11 @@
-﻿@using CmsWeb
+﻿@using System.Collections.Generic
+@using System.Linq
+@using CmsWeb
 @using UtilityExtensions
-@model IEnumerable<dynamic>
+@model System.Collections.Generic.IEnumerable<dynamic>
 @{
     ViewBag.Title = "Meetings For Month";
-    ViewBag.ReportPageHeader = string.Format("Meetings for {0}", ViewBag.Month);
+    ViewBag.ReportPageHeader = $"Meetings for {ViewBag.Month}";
     Layout = ViewExtensions2.TouchPointLayout();
     var entity = (IDictionary<string, object>)Model.First();
     var cols = entity.Keys.ToList();

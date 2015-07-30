@@ -14,10 +14,10 @@ namespace CmsWeb.Areas.Finance.Controllers
         [Route("~/Funds")]
         public ActionResult Index(string sort, int? status)
         {
-        	var m = from f in DbUtil.Db.ContributionFunds 
-					where f.FundStatusId == (status ?? 1)
-					select f;
-            ViewBag.status = status == null ? 1 : status;
+            var m = from f in DbUtil.Db.ContributionFunds
+                    where f.FundStatusId == (status ?? 1)
+                    select f;
+            ViewBag.status = status ?? 1;
             switch (sort ?? "FundId")
             {
                 case "FundId":
@@ -58,37 +58,39 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Create(string fundid)
         {
             var id = fundid.ToInt();
             if (id == 0)
                 return Json(new { error = "expected an integer (account number)" });
-        	var f = DbUtil.Db.ContributionFunds.SingleOrDefault(ff => ff.FundId == id);
-			if (f != null)
-                return Json(new { error = "fund already exists: {0} ({1})".Fmt(f.FundName, fundid) });
+            var f = DbUtil.Db.ContributionFunds.SingleOrDefault(ff => ff.FundId == id);
+            if (f != null)
+                return Json(new { error = $"fund already exists: {f.FundName} ({fundid})" });
             try
             {
-                f = new ContributionFund 
-                { 
-                    FundName = "new fund", 
+                f = new ContributionFund
+                {
+                    FundName = "new fund",
                     FundId=id,
                     CreatedBy = Util.UserId1,
                     CreatedDate = Util.Now,
                     FundStatusId = 1,
                     FundTypeId = 1,
                     FundPledgeFlag = false,
-					NonTaxDeductible = false
+                    NonTaxDeductible = false
                 };
                 DbUtil.Db.ContributionFunds.InsertOnSubmit(f);
                 DbUtil.Db.SubmitChanges();
-				return Json(new {edit = "/Fund/Edit/" + id});
+                return Json(new {edit = "/Fund/Edit/" + id});
             }
             catch(Exception ex)
             {
-            	return Json(new {error = ex.Message});
+                return Json(new {error = ex.Message});
             }
         }
+
         public ActionResult Edit(int id)
         {
             var fund = DbUtil.Db.ContributionFunds.SingleOrDefault(f => f.FundId == id);
@@ -105,6 +107,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             DbUtil.Db.SubmitChanges();
             return RedirectToAction("Index");
         }
+
         [HttpPost]
         public ActionResult Update(int fundId)
         {
@@ -119,6 +122,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             }
             return View("Edit", fund);
         }
+
         [HttpPost]
         public ContentResult EditOrder(string id, int? value)
         {
@@ -128,6 +132,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             DbUtil.Db.SubmitChanges();
             return Content(value.ToString());
         }
+
         [HttpPost]
         public ContentResult EditStatus(string id, int value)
         {
@@ -137,6 +142,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             DbUtil.Db.SubmitChanges();
             return Content(value == 1 ? "Open" : "Closed");
         }
+
         public static List<SelectListItem> GetFundStatusList()
         {
             var list = new List<SelectListItem>();
@@ -144,6 +150,7 @@ namespace CmsWeb.Areas.Finance.Controllers
             list.Add(new SelectListItem { Text = "Closed", Value = "2" });
             return list;
         }
+
         public static List<SelectListItem> GetFundTypeList()
         {
             var list = new List<SelectListItem>();

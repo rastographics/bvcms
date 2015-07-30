@@ -55,8 +55,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 .Replace("{participants}", details);
             if (Parent.Transaction.Amtdue > 0)
                 message = message.Replace("{paylink}",
-                    "<a href='{0}'>Click this link to make a payment on your balance of {1:C}</a>.".Fmt(paylink,
-                        Parent.Transaction.Amtdue));
+                    $"<a href='{paylink}'>Click this link to make a payment on your balance of {Parent.Transaction.Amtdue:C}</a>.");
             else
                 message = message.Replace("{paylink}", "You have a zero balance.");
             return message;
@@ -68,7 +67,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (_paylink.HasValue())
                 return _paylink;
 //            if (org != null && org.IsMissionTrip == true)
-//                return _paylink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(orgid, PeopleId));
+//                return _paylink = DbUtil.Db.ServerLink($"/OnlineReg/{orgid}?goerid={PeopleId}");
             var estr = HttpUtility.UrlEncode(Util.Encrypt(Parent.Transaction.OriginalId.ToString()));
             return _paylink = DbUtil.Db.ServerLink("/OnlineReg/PayAmtDue?q=" + estr);
         }
@@ -91,7 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             om.AddToMemberDataBelowComments(sb.ToString());
 
             var sbreg = new StringBuilder();
-            sbreg.AppendFormat("{0}\n".Fmt(org.OrganizationName));
+            sbreg.Append($"{org.OrganizationName}\n");
             sbreg.AppendFormat("{0:g} ----------------\n", DateTime.Now);
             if (om.AmountPaid > 0)
             {
@@ -148,7 +147,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private void SaveAnswers(OrganizationMember om)
-        {            
+        {
             om.OnlineRegData = Util.Serialize(this); // saves all answers
 
             var reg = person.SetRecReg();
@@ -276,9 +275,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     om.AddToMemberDataBelowComments(menulabel);
                     string desc;
                     if (i.amt > 0)
-                        desc = "{0} {1} (at {2:N2})".Fmt(i.number, i.desc, i.amt);
+                        desc = $"{i.number} {i.desc} (at {i.amt:N2})";
                     else
-                        desc = "{0} {1}".Fmt(i.number, i.desc);
+                        desc = $"{i.number} {i.desc}";
                     om.AddToMemberDataBelowComments(desc);
                     menulabel = string.Empty;
                 }

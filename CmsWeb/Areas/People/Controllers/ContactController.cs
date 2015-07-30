@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.People.Controllers
             Response.NoCache();
             var m = new ContacteesModel(cid);
             var gid = m.ConvertToQuery();
-            return Redirect("/Query/{0}".Fmt(gid));
+            return Redirect($"/Query/{gid}");
         }
         [HttpGet]
         public ActionResult ConvertContactorsToQuery(int cid)
@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.People.Controllers
             Response.NoCache();
             var m = new ContactorsModel(cid);
             var gid = m.ConvertToQuery();
-            return Redirect("/Query/{0}".Fmt(gid));
+            return Redirect($"/Query/{gid}");
         }
         [HttpPost]
         public ActionResult ContactUpdate(int cid, ContactModel c)

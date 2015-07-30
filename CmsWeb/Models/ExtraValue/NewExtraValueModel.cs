@@ -79,22 +79,22 @@ namespace CmsWeb.Models.ExtraValues
         [DisplayName("Limit to Roles")]
         public string[] VisibilityRolesList { get; set; }
 
-		public IEnumerable<SelectListItem> Roles()
-		{
-			var q = from r in DbUtil.Db.Roles
-			        orderby r.RoleName
-			        select new SelectListItem
-			        {
-						Value = r.RoleName,
-						Text = r.RoleName
-			        };
-			var list = q.ToList();
-		    foreach (var item in list.Where(item => VisibilityRoles.Contains(item.Text)))
-		    {
-		        item.Selected = true;
-		    }
-			return list;
-		}
+        public IEnumerable<SelectListItem> Roles()
+        {
+            var q = from r in DbUtil.Db.Roles
+                    orderby r.RoleName
+                    select new SelectListItem
+                    {
+                        Value = r.RoleName,
+                        Text = r.RoleName
+                    };
+            var list = q.ToList();
+            foreach (var item in list.Where(item => VisibilityRoles.Contains(item.Text)))
+            {
+                item.Selected = true;
+            }
+            return list;
+        }
 
         public NewExtraValueModel(Guid id)
         {
@@ -142,34 +142,34 @@ namespace CmsWeb.Models.ExtraValues
                 case "People":
                     if (type == "Bits")
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.PeopleExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
-                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
                     else
                         if (DbUtil.Db.PeopleExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
-                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
                     break;
                 case "Family":
                     if (type == "Bits")
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.FamilyExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
-                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
                     else
                         if (DbUtil.Db.FamilyExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
-                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
                     break;
                 case "Organization":
                     if (type == "Bits")
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
-                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
                     else
                         if (DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
-                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
                     break;
                 case "Meeting":
                     if (type == "Bits")
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.MeetingExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
-                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(b));
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
                     else
                         if (DbUtil.Db.MeetingExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
-                            throw new Exception(nameAlreadyExistsAsADifferentType.Fmt(ExtraValueName));
+                            throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
                     break;
             }
         }
@@ -194,7 +194,7 @@ Option 2
             var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable);
             var existing = fields.SingleOrDefault(ff => ff.Name == ExtraValueName);
             if (existing != null)
-                throw new Exception("{0} already exists".Fmt(ExtraValueName));
+                throw new Exception($"{ExtraValueName} already exists");
 
             TryCheckIntegrity();
 
@@ -267,7 +267,7 @@ Option 2
                 case "Bit":
                     return AddNewExtraValueBools(list);
             }
-            DbUtil.LogActivity("EV AddNewFromQuery {0} {1}".Fmt(ExtraValueName, AdhocExtraValueType.Value));
+            DbUtil.LogActivity($"EV AddNewFromQuery {ExtraValueName} {AdhocExtraValueType.Value}");
             return null;
         }
 
@@ -336,7 +336,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             if (RemoveAnyValue)
             {
                 cn.Execute(sql, new { name = ExtraValueName, id = tag.Id });
-                DbUtil.LogActivity("EV DeleteFromQuery {0}".Fmt(ExtraValueName));
+                DbUtil.LogActivity($"EV DeleteFromQuery {ExtraValueName}");
                 return;
             }
             switch (AdhocExtraValueType.Value)
@@ -363,7 +363,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
                         new { name = ExtraValueName, value = ExtraValueInteger, id = tag.Id });
                     break;
             }
-            DbUtil.LogActivity("EV DeleteFromQuery {0} {1}".Fmt(ExtraValueName, AdhocExtraValueType.Value));
+            DbUtil.LogActivity($"EV DeleteFromQuery {ExtraValueName} {AdhocExtraValueType.Value}");
         }
 
         public void ConvertToStandard(string name)
@@ -437,7 +437,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
             var i = Views.GetViewsView(DbUtil.Db, ExtraValueTable, ExtraValueLocation);
             i.view.Values.Add(v);
             i.views.Save(DbUtil.Db);
-            DbUtil.LogActivity("EV{0} ConvertToStandard {1}".Fmt(ExtraValueTable, name));
+            DbUtil.LogActivity($"EV{ExtraValueTable} ConvertToStandard {name}");
         }
     }
 }

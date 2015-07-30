@@ -9,7 +9,6 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
-using DocumentFormat.OpenXml.EMMA;
 using UtilityExtensions;
 using Tasks = System.Threading.Tasks;
 
@@ -60,11 +59,8 @@ namespace CmsWeb.Areas.Dialog.Models
         }
 
         internal List<int> pids;
-  
-        public bool TagHasBeenSelected
-        {
-            get { return Count.HasValue; }
-        }
+
+        public bool TagHasBeenSelected => Count.HasValue;
 
         public void Process(CMSDataContext db)
         {
@@ -118,7 +114,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 Debug.Assert(lop != null, "r != null");
                 lop.Processed++;
                 db.SubmitChanges();
-                db.LogActivity("Org{0} AddFromTag".Fmt(model.GroupName), model.Id, pid);
+                db.LogActivity($"Org{model.GroupName} AddFromTag", model.Id, pid);
             }
             // finished
             lop = FetchLongRunningOp(db, model.Id, Op);

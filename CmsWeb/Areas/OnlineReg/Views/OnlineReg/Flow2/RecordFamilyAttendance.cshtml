@@ -1,5 +1,4 @@
-﻿@using UtilityExtensions
-@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
+﻿@model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
     var name = Html.NameFor2(m => m.FamilyAttend);
     Model.PopulateFamilyMemberAttends();
@@ -17,7 +16,7 @@
                     <label>
                         <input type="checkbox" name="@(name)[@i].Attend" value="true" @(m.Attend ? "checked='checked'" : "")
                                @(m.PeopleId == Model.PeopleId || Model.IsNew ? "disabled='disabled'" : "") />
-                        <strong>@m.Name @(m.Age.HasValue ? "({0})".Fmt(m.Age) : "")</strong>
+                        <strong>@m.Name @(m.Age.HasValue ? $"({m.Age})" : "")</strong>
                     </label>
                 </div>
                 @if (m.PeopleId == Model.PeopleId || Model.IsNew)

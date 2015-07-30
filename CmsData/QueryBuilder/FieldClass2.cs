@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
@@ -16,39 +16,39 @@ namespace CmsData
 
     public class FieldClass2
     {
-        private string _Name;
+        private string _name;
         public string Name
         {
             get
             {
-                return _Name;
+                return _name;
             }
             set
             {
-                _Name = value;
-                _QueryType = ConvertQueryType(value);
+                _name = value;
+                _queryType = ConvertQueryType(value);
             }
         }
-        private QueryType _QueryType;
+        private QueryType _queryType;
         public QueryType QueryType
         {
             get
             {
-                return _QueryType;
+                return _queryType;
             }
             set
             {
-                _QueryType = value;
+                _queryType = value;
                 Name = value.ToString();
             }
         }
         public string CategoryTitle { get; set; }
         public string QuartersTitle { get; set; }
-        private string _Title;
+        private string _title;
         public string Title
         {
-            get { return _Title.HasValue() ? _Title : Name; }
-            set { _Title = value; }
+            get { return _title.HasValue() ? _title : Name; }
+            set { _title = value; }
         }
         public FieldType Type { get; set; }
         public string DisplayAs { get; set; }
@@ -97,7 +97,7 @@ namespace CmsData
                             prop = string.Join("; ", ((string) prop).Split(','));
                 p.Add(prop);
             }
-            return fmt.Fmt(p.ToArray());
+            return string.Format(fmt, p.ToArray());
         }
         internal string Display(Condition c)
         {
@@ -107,7 +107,7 @@ namespace CmsData
         }
         public bool HasParam(string p)
         {
-            return ParamList == null ? false : ParamList.Contains(p);
+            return ParamList?.Contains(p) ?? false;
         }
         public static FieldType Convert(string type)
         {
@@ -128,8 +128,8 @@ namespace CmsData
                             from f in c.Fields
                             select f;
                     fields = q.ToDictionary(f => f.Name);
-					HttpRuntime.Cache.Insert("fields2", fields, null,
-						DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
+                    HttpRuntime.Cache.Insert("fields2", fields, null,
+                        DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }
                 return fields;
             }

@@ -66,8 +66,12 @@ namespace CmsData
         // set this in the python code for output page
         public string Header { get; set; }
 
-        // this is set automatically for the output page
+        // this is set automatically from the print statements for the output page
         public string Output { get; set; }
+
+        public string Form { get; set; }
+
+        public string HttpMethod { get; set; }
 
         public string RunScript(string script)
         {
@@ -120,15 +124,16 @@ namespace CmsData
             p.UpdateValue(field, value);
         }
 
-        public void EmailReminders(int orgId)
+        public void EmailReminders(object orgId)
         {
-            var org = db.LoadOrganizationById(orgId);
+            var oid = orgId.ToInt();
+            var org = db.LoadOrganizationById(oid);
             var m = new API.APIOrganization(db);
             Util.IsInRoleEmailTest = TestEmail;
             if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
-                m.SendVolunteerReminders(orgId, false);
+                m.SendVolunteerReminders(oid, false);
             else
-                m.SendEventReminders(orgId);
+                m.SendEventReminders(oid);
         }
 
         public int DayOfWeek
@@ -274,7 +279,11 @@ namespace CmsData
             EmailContent(savedQuery, queuedBy, fromAddr, fromName, c.Title, contentName);
         }
 
-        public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
+        public void EmailContent(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject, string contentName)
+        {
+            EmailContent2(savedQuery, queuedBy, fromAddr, fromName, subject, contentName);
+        }
+        public void EmailContent2(object savedQuery, int queuedBy, string fromAddr, string fromName, string subject,
             string contentName)
         {
             var c = db.ContentOfTypeHtml(contentName);
@@ -291,7 +300,7 @@ namespace CmsData
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
                                        where mtlist.Contains(mt.Description)
-                                       select "{0},{1}".Fmt(mt.Id, mt.Code));
+                                       select $"{mt.Id},{mt.Code}");
             var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
             clause.Program = progid;
             clause.Division = divid;
@@ -429,7 +438,7 @@ namespace CmsData
             }
         }
 
-        public void UpdateNewMemberClassDateIfNullForLastAttended(object savedQuery, int orgId)
+        public void UpdateNewMemberClassDateIfNullForLastAttended(object savedQuery, object orgId)
         {
             var q = db.PeopleQuery2(savedQuery);
             foreach (var p in q)
@@ -440,7 +449,7 @@ namespace CmsData
 
                 // get the most recent attend date
                 var lastAttend = p.Attends
-                    .Where(x => x.OrganizationId == orgId && x.AttendanceFlag)
+                    .Where(x => x.OrganizationId == orgId.ToInt() && x.AttendanceFlag)
                     .OrderByDescending(x => x.MeetingDate)
                     .FirstOrDefault();
 
@@ -453,20 +462,59 @@ namespace CmsData
             }
         }
 
-        public void AddMembersToOrg(object savedQuery, int OrgId)
+        public void AddMembersToOrg(object savedQuery, object OrgId)
         {
             var q = db.PeopleQuery2(savedQuery);
             var dt = DateTime.Now;
             foreach (var p in q)
             {
-                OrganizationMember.InsertOrgMembers(db, OrgId, p.PeopleId, MemberTypeCode.Member, dt, null, false);
+                OrganizationMember.InsertOrgMembers(db, OrgId.ToInt(), p.PeopleId, MemberTypeCode.Member, dt, null, false);
                 db.SubmitChanges();
             }
         }
 
-        public void AddMemberToOrg(int pid, int OrgId)
+        public bool InOrg(object pid, object OrgId)
         {
-            AddMembersToOrg("peopleid=" + pid, OrgId);
+            var om = (from mm in db.OrganizationMembers
+                where mm.PeopleId == pid.ToInt()
+                where mm.OrganizationId == OrgId.ToInt()
+                select mm).SingleOrDefault();
+            return om != null;
+        }
+        public void AddMemberToOrg(object pid, object OrgId)
+        {
+            AddMembersToOrg("peopleid=" + pid.ToInt(), OrgId.ToInt());
+        }
+        public bool InSubGroup(object pid, object OrgId, string group)
+        {
+            var om = (from mm in db.OrganizationMembers
+                where mm.PeopleId == pid.ToInt()
+                where mm.OrganizationId == OrgId.ToInt()
+                select mm).SingleOrDefault();
+            if (om == null)
+                throw new Exception($"no orgmember {pid}:");
+
+            return om.IsInGroup(group);
+        }
+        public void AddSubGroup(object pid, object OrgId, string group)
+        {
+            var om = (from mm in db.OrganizationMembers
+                where mm.PeopleId == pid.ToInt()
+                where mm.OrganizationId == OrgId.ToInt()
+                select mm).SingleOrDefault();
+            if (om == null)
+                throw new Exception($"no orgmember {pid}:");
+            om.AddToGroup(db, group);
+        }
+        public void RemoveSubGroup(object pid, object OrgId, string group)
+        {
+            var om = (from mm in db.OrganizationMembers
+                where mm.PeopleId == pid.ToInt()
+                where mm.OrganizationId == OrgId.ToInt()
+                select mm).SingleOrDefault();
+            if (om == null)
+                throw new Exception($"no orgmember {pid}:");
+            om.RemoveFromGroup(db, group);
         }
 
         public DateTime ParseDate(string dt)
@@ -555,6 +603,11 @@ namespace CmsData
             var api = new APIPerson(db);
             var p = api.GetPersonData(pid.ToInt());
             return p;
+        }
+        public APIOrganization.Organization GetOrganization(object OrgId)
+        {
+            var api = new APIOrganization(db);
+            return api.GetOrganization(OrgId.ToInt());
         }
 
          /// <summary>
@@ -669,7 +722,7 @@ print '''
 import sys
 sys.path.append('{1}')
 from StringIO import StringIO
-        
+
 class Cgi:
     def escape(self, t):
         return (t.replace('&', '&amp;')

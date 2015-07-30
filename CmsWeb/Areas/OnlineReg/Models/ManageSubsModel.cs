@@ -1,22 +1,38 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using CmsData;
 using System.Text;
+using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
 using UtilityExtensions;
-using System.Web.Mvc;
-using System.Xml.Linq;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
     public class ManageSubsModel
     {
+        private Organization _masterorg;
+        private Person _Person;
+        private string _summary;
+        private Settings setting;
+
+        public ManageSubsModel()
+        {
+        }
+
+        public ManageSubsModel(int pid, int id)
+        {
+            this.pid = pid;
+            var org = DbUtil.Db.LoadOrganizationById(id);
+            if (org.RegistrationTypeId != RegistrationTypeCode.ManageSubscriptions)
+                throw new Exception("must be a ManageSubscriptions RegistrationType");
+            masterorgid = id;
+            _masterorg = org;
+        }
+
         public int pid { get; set; }
         public int masterorgid { get; set; }
-        private Person _Person;
+
         public Person person
         {
             get
@@ -26,11 +42,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return _Person;
             }
         }
-        public string Description()
-        {
-            return masterorg.OrganizationName;
-        }
-        private Organization _masterorg;
+
         public Organization masterorg
         {
             get
@@ -41,34 +53,45 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return _masterorg;
             }
         }
-        public ManageSubsModel()
-        {
 
-        }
-        public ManageSubsModel(int pid, int id)
-        {
-            this.pid = pid;
-            var org = DbUtil.Db.LoadOrganizationById(id);
-            if (org.RegistrationTypeId != RegistrationTypeCode.ManageSubscriptions)
-                throw new Exception("must be a ManageSubscriptions RegistrationType");
-            masterorgid = id;
-            _masterorg = org;
-        }
         public int[] Subscribe { get; set; }
-        public class OrgSub
+
+        public string Summary
         {
-            public int OrgId { get; set; }
-            public string Name { get; set; }
-            public string Description { get; set; }
-            public bool Checked { get; set; }
-            public string CHECKED
+            get
             {
-                get
+                if (!_summary.HasValue())
                 {
-                    return Checked ? "checked=\"checked\"" : "";
+                    var q = from i in FetchSubs()
+                            where i.Checked
+                            select i;
+
+                    var sb = new StringBuilder();
+                    foreach (var s in OrderSubs(q))
+                        sb.AppendFormat("<p><b>{0}</b><br/>{1}</p>\n",
+                            s.Name, s.Description);
+                    _summary = Util.PickFirst(sb.ToString(), "<p>no subscriptions</p>");
                 }
+                return _summary;
             }
         }
+
+        public Settings Setting => setting ?? (setting = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId));
+        public string Instructions => $@"
+<div class=""instructions login"">{Setting.InstructionLogin}</div>
+<div class=""instructions select"">{Setting.InstructionSelect}</div>
+<div class=""instructions find"">{Setting.InstructionFind}</div>
+<div class=""instructions options"">{Setting.InstructionOptions}</div>
+<div class=""instructions special"">{Setting.InstructionSpecial}</div>
+<div class=""instructions submit"">{Setting.InstructionSubmit}</div>
+<div class=""instructions sorry"">{Setting.InstructionSorry}</div>
+";
+
+        public string Description()
+        {
+            return masterorg.OrganizationName;
+        }
+
         public IEnumerable<OrgSub> FetchSubs()
         {
             return from o in OnlineRegModel.UserSelectClasses(masterorg)
@@ -80,6 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                        Checked = o.OrganizationMembers.Any(om => om.PeopleId == pid)
                    };
         }
+
         public IEnumerable<OrgSub> OrderSubs(IEnumerable<OrgSub> q)
         {
             if (masterorg == null)
@@ -97,26 +121,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                      select o;
             return qq;
         }
-        private string _summary;
-        public string Summary
-        {
-            get
-            {
-                if (!_summary.HasValue())
-                {
-                    var q = from i in FetchSubs()
-                            where i.Checked == true
-                            select i;
 
-                    var sb = new StringBuilder();
-                    foreach (var s in OrderSubs(q))
-                        sb.AppendFormat("<p><b>{0}</b><br/>{1}</p>\n",
-                            s.Name, s.Description);
-                    _summary = Util.PickFirst(sb.ToString(), "<p>no subscriptions</p>");
-                }
-                return _summary;
-            }
-        }
         public void UpdateSubscriptions()
         {
             var q = from o in OnlineRegModel.UserSelectClasses(masterorg)
@@ -126,7 +131,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var current = q.ToList();
 
             if (Subscribe == null)
-                Subscribe = new int[] { };
+                Subscribe = new int[] {};
 
             var drops = from om in current
                         join id in Subscribe on om.OrganizationId equals id into j
@@ -153,39 +158,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 //DbUtil.Db.UpdateMainFellowship(id);
             }
         }
-        private Settings setting;
-        public Settings Setting
+
+        public void Log(string action)
         {
-            get
-            {
-                return setting ?? (setting = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId));
-            }
+            DbUtil.LogActivity("OnlineReg ManageSubs " + action, masterorgid, pid);
         }
-        public string Instructions
+
+        public class OrgSub
         {
-            get
-            {
-                return @"
-<div class=""instructions login"">{0}</div>
-<div class=""instructions select"">{1}</div>
-<div class=""instructions find"">{2}</div>
-<div class=""instructions options"">{3}</div>
-<div class=""instructions special"">{4}</div>
-<div class=""instructions submit"">{5}</div>
-<div class=""instructions sorry"">{6}</div>
-".Fmt(Setting.InstructionLogin,
-                     Setting.InstructionSelect,
-                     Setting.InstructionFind,
-                     Setting.InstructionOptions,
-                     Setting.InstructionSpecial,
-                     Setting.InstructionSubmit,
-                     Setting.InstructionSorry
-                     );
-            }
+            public int OrgId { get; set; }
+            public string Name { get; set; }
+            public string Description { get; set; }
+            public bool Checked { get; set; }
+            public string CHECKED => Checked ? "checked=\"checked\"" : "";
         }
-	    public void Log(string action)
-	    {
-	        DbUtil.LogActivity("OnlineReg ManageSubs " + action, masterorgid, pid);
-	    }
     }
 }

@@ -43,10 +43,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
             int index = List.Count - 1;
             var p = LoadExistingPerson(id, index);
 
+            if(p.NeedsToChooseClass())
+                return;
+
             p.ValidateModelForFind(modelState, id, selectFromFamily: true);
             if (!modelState.IsValid)
                 return;
+
             List[index] = p;
+            
             if (p.ManageSubscriptions() && p.Found == true)
                 return;
 

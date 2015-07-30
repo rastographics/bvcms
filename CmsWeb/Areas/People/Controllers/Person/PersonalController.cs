@@ -2,7 +2,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.View;
 using CmsWeb.Areas.People.Models;
 using UtilityExtensions;
 
@@ -24,17 +23,19 @@ namespace CmsWeb.Areas.People.Controllers
             var m = new BasicPersonInfo(id);
             return View("Personal/Display", m);
         }
+
         [HttpPost]
         public ActionResult PersonalEdit(int id)
         {
             var m = new BasicPersonInfo(id);
             return View("Personal/Edit", m);
         }
+
         [HttpPost]
         public ActionResult PersonalUpdate(int id, BasicPersonInfo m)
         {
             m.UpdatePerson();
-            DbUtil.LogPersonActivity("Update Basic Info for: {0}".Fmt(m.person.Name), m.Id, m.person.Name);
+            DbUtil.LogPersonActivity($"Update Basic Info for: {m.person.Name}", m.Id, m.person.Name);
             InitExportToolbar(id);
             return View("Personal/Display", m);
         }
@@ -45,16 +46,18 @@ namespace CmsWeb.Areas.People.Controllers
             var m = new PersonModel(id);
             return View("Personal/PictureDialog", m);
         }
+
         [HttpPost]
         public ActionResult UploadPicture(int id, HttpPostedFileBase picture)
         {
-            if (picture == null) 
+            if (picture == null)
                 return Redirect("/Person2/" + id);
             var person = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogPersonActivity("Uploading Picture for {0}".Fmt(person.Name), id, person.Name);
+            DbUtil.LogPersonActivity($"Uploading Picture for {person.Name}", id, person.Name);
             person.UploadPicture(DbUtil.Db, picture.InputStream);
             return Redirect("/Person2/" + id);
         }
+
         [HttpPost]
         public ActionResult DeletePicture(int id)
         {
@@ -62,6 +65,7 @@ namespace CmsWeb.Areas.People.Controllers
             person.DeletePicture(DbUtil.Db);
             return Redirect("/Person2/" + id);
         }
+
         [HttpPost]
         public ActionResult RefreshThumbnail(int id)
         {
@@ -81,7 +85,7 @@ namespace CmsWeb.Areas.People.Controllers
             // if we are updating the current user update their thumbnail pic position in session also.
             if (Util.UserPeopleId == id)
             {
-                Util.UserThumbPictureBgPosition = "{0}% {1}%".Fmt(xPos, yPos);
+                Util.UserThumbPictureBgPosition = $"{xPos}% {yPos}%";
             }
             return Redirect("/Person2/" + id);
         }

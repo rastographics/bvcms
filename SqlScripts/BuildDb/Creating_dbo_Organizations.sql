@@ -52,7 +52,7 @@ CREATE TABLE [dbo].[Organizations]
 [lat] [float] NULL,
 [long] [float] NULL,
 [RegSetting] [nvarchar] (max) NULL,
-[OrgPickList] [nvarchar] (300) NULL,
+[OrgPickList] [varchar] (max) NULL,
 [Offsite] [bit] NULL,
 [RegStart] [datetime] NULL,
 [RegEnd] [datetime] NULL,

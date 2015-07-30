@@ -1,12 +1,11 @@
 ﻿@using CmsData
 @using CmsWeb
-@using UtilityExtensions
 @model CmsWeb.Areas.Manage.Models.VolunteerCommitmentsModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Volunteer Calendar";
     ViewBag.PageHeader = "Volunteer Calendar";
-    ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>".Fmt(Util2.Org, Model.OrgId, Model.OrgName);
+    ViewBag.PageSubHeader = $"<a href=\"{Util2.Org}/{Model.OrgId}\">{Model.OrgName}</a>";
 }
 @section head
 {

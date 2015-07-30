@@ -378,13 +378,21 @@
     }
 
     $.initializeSelectOrgsDialog = function (f) {
-        $('body').on('click', '#select-orgs #UpdateSelected', function (ev) {
+        $('body').on('click', '#select-orgs .UpdateSelected', function (ev) {
             ev.preventDefault();
             var list = $('#select-orgs input[type=checkbox]:checked').map(function () {
                 return $(this).val();
             }).get().join(',');
 
             UpdateSelectedOrgs(list, f);
+            return false;
+        });
+        $('body').on('click', '#select-orgs a.move', function (ev) {
+            ev.preventDefault();
+            var $this = $(this).parent().parent();
+            var $a = $this.find("a");
+            $this.insertBefore($this.siblings(':eq(0)'));
+            $a.appendTo($this.next().find("td")[1]);
             return false;
         });
 

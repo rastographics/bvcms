@@ -16,7 +16,7 @@
 }
 @Html.EditorFor(m => m.MissionTripSupportGoer, new { label = "Your gift to support " + name })
 @Html.EditorFor(m => m.MissionTripNoNoticeToGoer,
-    new { label = "If you don't want {0} to be notified of your gift, check this box.".Fmt(name) })
+    new { label = $"If you don't want {name} to be notified of your gift, check this box."})
 @Html.EditorFor(m => m.MissionTripSupportGeneral,
     new
     {

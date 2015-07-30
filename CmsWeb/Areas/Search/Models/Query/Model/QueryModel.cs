@@ -38,7 +38,7 @@ namespace CmsWeb.Areas.Search.Models
             : this()
         {
             QueryId = id;
-            DbUtil.LogActivity("Running Query ({0})".Fmt(id));
+            DbUtil.LogActivity($"Running Query ({id})");
         }
 
         public int? Program { get; set; }

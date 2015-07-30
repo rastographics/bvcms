@@ -17,12 +17,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void FinishLaterNotice()
         {
             var registerLink = EmailReplacements.CreateRegisterLink(masterorgid ?? Orgid,
-                "Resume registration for {0}".Fmt(Header));
+                $"Resume registration for {Header}");
             var msg = "<p>Hi {first},</p>\n<p>Here is the link to continue your registration:</p>\n" + registerLink;
             Debug.Assert((masterorgid ?? Orgid) != null, "m.Orgid != null");
             var notifyids = DbUtil.Db.NotifyIds((masterorg ?? org).NotifyIds);
             var p = UserPeopleId.HasValue ? DbUtil.Db.LoadPersonById(UserPeopleId.Value) : List[0].person;
-            DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(Header), msg);
+            DbUtil.Db.Email(notifyids[0].FromEmail, p, $"Continue your registration for {Header}", msg);
         }
 
         public string CheckDuplicateGift(decimal? amt)
@@ -163,10 +163,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var e = match.Groups["e"].Value;
             var sb = new StringBuilder(b);
 
-            var desc = "{0}; {1}; {2}".Fmt(
-                p.person.Name,
-                p.person.PrimaryAddress,
-                p.person.PrimaryZip);
+            var desc = $"{p.person.Name}; {p.person.PrimaryAddress}; {p.person.PrimaryZip}";
             foreach (var g in p.FundItemsChosen())
             {
                 if (g.amt > 0)
@@ -218,8 +215,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 Util.EmailAddressListFromString(contributionemail), 0, p.PeopleId);
             DbUtil.Db.Email(contributionemail, DbUtil.Db.StaffPeopleForOrg(p.org.OrganizationId),
                 "online giving contribution received",
-                "see contribution records for {0} ({1})".Fmt(p.person.Name, p.PeopleId));
-            if (p.CreatingAccount == true)
+                $"see contribution records for {p.person.Name} ({p.PeopleId})");
+            if (p.CreatingAccount)
                 p.CreateAccount();
             return ConfirmEnum.Confirm;
         }
@@ -268,7 +265,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
                         var fund = setting.DonationFundId;
                         p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund,
-                            "SupportMissionTrip: org={0}; goer={1}".Fmt(org.OrganizationId, pi.PeopleId), typecode: BundleTypeCode.Online);
+                            $"SupportMissionTrip: org={org.OrganizationId}; goer={pi.PeopleId}", typecode: BundleTypeCode.Online);
                     }
                     var pay = amt;
                     if (org.IsMissionTrip == true)
@@ -283,7 +280,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     om.AddToMemberDataBelowComments(sb.ToString());
                     var reg = p.SetRecReg();
                     reg.AddToComments(sb.ToString());
-                    reg.AddToComments("{0} ({1})".Fmt(org.OrganizationName, org.OrganizationId));
+                    reg.AddToComments($"{org.OrganizationName} ({org.OrganizationId})");
 
                     amt -= pay;
                 }
@@ -291,7 +288,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     Db.Email(Db.StaffEmailForOrg(org.OrganizationId),
                         Db.PeopleFromPidString(org.NotifyIds),
                         "missing person on payment due",
-                        "Cannot find {0} ({1}), payment due completed of {2:c} but no record".Fmt(pi.Person.Name, pi.PeopleId, pi.Amt));
+                        $"Cannot find {pi.Person.Name} ({pi.PeopleId}), payment due completed of {pi.Amt:c} but no record");
             }
             Db.SubmitChanges();
             var names = string.Join(", ", ti.OriginalTrans.TransactionPeople.Select(i => i.Person.Name).ToArray());
@@ -303,19 +300,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (p0 == null)
                     Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(Db.StaffEmailForOrg(org.OrganizationId)),
-                        "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(
-                                ti.Amt, ti.Description, ti.Amtdue, names),
+                        "Payment confirmation", $"Thank you for paying {ti.Amt:c} for {ti.Description}.<br/>Your balance is {ti.Amtdue:c}<br/>{names}",
                         Util.ToMailAddressList(Util.FirstAddress(ti.Emails)), 0, pid);
                 else
                 {
                     Db.Email(Db.StaffEmailForOrg(org.OrganizationId), p0, Util.ToMailAddressList(ti.Emails),
-                        "Payment confirmation", "Thank you for paying {0:c} for {1}.<br/>Your balance is {2:c}<br/>{3}".Fmt(
-                                ti.Amt, ti.Description, ti.Amtdue, names), false);
+                        "Payment confirmation", $"Thank you for paying {ti.Amt:c} for {ti.Description}.<br/>Your balance is {ti.Amtdue:c}<br/>{names}", false);
                     Db.Email(p0.FromEmail,
                         Db.PeopleFromPidString(org.NotifyIds),
                         "payment received for " + ti.Description,
-                        "{0} paid {1:c} for {2}, balance of {3:c}\n({4})".Fmt(
-                            Transaction.FullName(ti), ti.Amt, ti.Description, due, names));
+                        $"{Transaction.FullName(ti)} paid {ti.Amt:c} for {ti.Description}, balance of {due:c}\n({names})");
                 }
             }
         }

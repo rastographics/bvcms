@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using iTextSharp.text;
@@ -34,7 +34,7 @@ namespace CmsWeb.Areas.Reports.Models
             if (sdt.HasValue)
                 scheduletext = sdt.Value.ToString("dddd h:mm tt");
 
-            var headtext = "Enrollment Control Report {0}".Fmt(scheduletext);
+            var headtext = $"Enrollment Control Report {scheduletext}";
             w.PageEvent = new HeadFoot(headtext);
 
             var boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 8);

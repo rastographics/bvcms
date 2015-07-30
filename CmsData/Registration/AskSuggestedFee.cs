@@ -1,4 +1,6 @@
 using System.Text;
+using System.Xml;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -21,5 +23,11 @@ namespace CmsData.Registration
 			Settings.AddValueCk(1, sb, "Label", Label ?? "Suggested Amount");
 			sb.AppendLine();
 		}
+	    public override void WriteXml(APIWriter w)
+	    {
+	        w.Start(Type);
+            w.AddText(Label ?? "Suggested Amount");
+	        w.End();
+	    }
 	}
 }

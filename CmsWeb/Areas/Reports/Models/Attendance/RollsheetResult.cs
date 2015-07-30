@@ -1,50 +1,49 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
+using CmsData;
+using CmsData.Codes;
+using CmsWeb.Areas.Dialog.Models;
+using CmsWeb.Areas.Search.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using CmsData;
 using UtilityExtensions;
-using System.Web.Mvc;
-using CmsWeb.Areas.Dialog.Models;
-using CmsData.Codes;
-using CmsWeb.Areas.Search.Models;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class RollsheetResult : ActionResult
     {
-        public class PersonVisitorInfo
-        {
-            public int PeopleId { get; set; }
-            public string Name2 { get; set; }
-            public string BirthDate { get; set; }
-            public DateTime? LastAttended { get; set; }
-            public string NameParent1 { get; set; }
-            public string NameParent2 { get; set; }
-            public string VisitorType { get; set; }
-        }
-
-        public OrgSearchModel OrgSearchModel;
-        public NewMeetingInfo NewMeetingInfo;
-        public int? meetingid, orgid;
-        bool pageSetStarted;
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA);
+        private readonly Font medfont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+        private readonly PageEvent pageEvents = new PageEvent();
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
+        private PdfPCell box;
+        private Font china;
+        private PdfContentByte dc;
+        private Document doc;
         private bool hasRows;
+        public int? meetingid, orgid;
+        public NewMeetingInfo NewMeetingInfo;
+        public OrgSearchModel OrgSearchModel;
+        private bool pageSetStarted;
 
         public override void ExecuteResult(ControllerContext context)
         {
             var Response = context.HttpContext.Response;
 
-            CmsData.Meeting meeting = null;
+            Meeting meeting = null;
             if (meetingid.HasValue)
             {
                 meeting = DbUtil.Db.Meetings.Single(mt => mt.MeetingId == meetingid);
@@ -53,7 +52,7 @@ namespace CmsWeb.Areas.Reports.Models
                 orgid = meeting.OrganizationId;
             }
 
-            var list1 = NewMeetingInfo.ByGroup == true ? ReportList2().ToList() : ReportList().ToList();
+            var list1 = NewMeetingInfo.ByGroup ? ReportList2().ToList() : ReportList().ToList();
 
             if (!list1.Any())
             {
@@ -70,7 +69,7 @@ namespace CmsWeb.Areas.Reports.Models
             dc = w.DirectContent;
 
             box = new PdfPCell();
-            box.Border = PdfPCell.NO_BORDER;
+            box.Border = Rectangle.NO_BORDER;
             box.CellEvent = new CellEvent();
             PdfPTable table = null;
 
@@ -79,27 +78,26 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 lasto = o;
                 table = new PdfPTable(1);
-                table.DefaultCell.Border = PdfPCell.NO_BORDER;
+                table.DefaultCell.Border = Rectangle.NO_BORDER;
                 table.DefaultCell.Padding = 0;
                 table.WidthPercentage = 100;
                 var co = DbUtil.Db.CurrentOrg;
-                
+
                 if (meeting != null)
                 {
-
                     var Groups = o.Groups;
                     if (!Groups.HasValue())
                     {
                         var q = from at in meeting.Attends
-                                where at.AttendanceFlag == true || AttendCommitmentCode.committed.Contains(at.Commitment ?? 0)
+                                where at.AttendanceFlag || AttendCommitmentCode.committed.Contains(at.Commitment ?? 0)
                                 orderby at.Person.LastName, at.Person.FamilyId, at.Person.Name2
                                 select new
-                                           {
-                                               at.MemberType.Code,
-                                               Name2 = NewMeetingInfo.UseAltNames && at.Person.AltName.HasValue() ? at.Person.AltName : at.Person.Name2,
-                                               at.PeopleId,
-                                               at.Person.DOB,
-                                           };
+                                {
+                                    at.MemberType.Code,
+                                    Name2 = NewMeetingInfo.UseAltNames && at.Person.AltName.HasValue() ? at.Person.AltName : at.Person.Name2,
+                                    at.PeopleId,
+                                    at.Person.DOB
+                                };
                         if (q.Any())
                             StartPageSet(o);
                         foreach (var a in q)
@@ -109,17 +107,17 @@ namespace CmsWeb.Areas.Reports.Models
                     {
                         var q = from at in DbUtil.Db.Attends
                                 where at.MeetingId == meeting.MeetingId
-                                join om in DbUtil.Db.OrgMember(orgid, GroupSelectCode.Member, null, null, Groups, showhidden: false) on at.PeopleId equals om.PeopleId into mm
+                                join om in DbUtil.Db.OrgMember(orgid, GroupSelectCode.Member, null, null, Groups, false) on at.PeopleId equals om.PeopleId into mm
                                 from om in mm.DefaultIfEmpty()
-                                where at.AttendanceFlag || AttendCommitmentCode.committed.Contains(at.Commitment ?? 0 )
+                                where at.AttendanceFlag || AttendCommitmentCode.committed.Contains(at.Commitment ?? 0)
                                 orderby at.Person.LastName, at.Person.FamilyId, at.Person.Name2
                                 select new
-                                           {
-                                               at.MemberType.Code,
-                                               Name2 = NewMeetingInfo.UseAltNames && at.Person.AltName.HasValue() ? at.Person.AltName : at.Person.Name2,
-                                               at.PeopleId,
-                                               at.Person.DOB,
-                                           };
+                                {
+                                    at.MemberType.Code,
+                                    Name2 = NewMeetingInfo.UseAltNames && at.Person.AltName.HasValue() ? at.Person.AltName : at.Person.Name2,
+                                    at.PeopleId,
+                                    at.Person.DOB
+                                };
                         if (q.Any())
                             StartPageSet(o);
                         foreach (var a in q)
@@ -130,47 +128,14 @@ namespace CmsWeb.Areas.Reports.Models
                 {
                     var q = from om in DbUtil.Db.OrganizationMembers
                             where om.OrganizationId == o.OrgId
-                        join m in DbUtil.Db.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
-                        where om.EnrollmentDate <= Util.Now
-                        orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
-                        let p = om.Person
-                        let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
-                        select new
-                        {
-                            PeopleId = p.PeopleId,
-                            Name2 = ch ? p.AltName : p.Name2,
-                            BirthDate = Util.FormatBirthday(
-                                p.BirthYear,
-                                p.BirthMonth,
-                                p.BirthDay),
-                            MemberTypeCode = om.MemberType.Code,
-                            ch,
-                            highlight =
-                                om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup)
-                                    ? NewMeetingInfo.HighlightGroup
-                                    : ""
-                        };
-                    if (q.Any())
-                        StartPageSet(o);
-                    foreach (var m in q)
-                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
-
-                }
-                else if(co.GroupSelect == GroupSelectCode.Member)
-                {
-                    var Groups = NewMeetingInfo.ByGroup == true ? o.Groups : co.SgFilter;
-                    var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.OrganizationId == orgid
-                        join m in DbUtil.Db.OrgPeople(orgid, co.GroupSelect,
-                            co.First(), co.Last(), Groups, co.ShowHidden,
-                            co.FilterIndividuals, co.FilterTag) on om.PeopleId equals m.PeopleId
+                            join m in DbUtil.Db.OrgPeople(o.OrgId, o.Groups) on om.PeopleId equals m.PeopleId
                             where om.EnrollmentDate <= Util.Now
                             orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
                             let p = om.Person
-                        let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
+                            let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
                             select new
                             {
-                                PeopleId = p.PeopleId,
+                                p.PeopleId,
                                 Name2 = ch ? p.AltName : p.Name2,
                                 BirthDate = Util.FormatBirthday(
                                     p.BirthYear,
@@ -178,11 +143,43 @@ namespace CmsWeb.Areas.Reports.Models
                                     p.BirthDay),
                                 MemberTypeCode = om.MemberType.Code,
                                 ch,
-                            highlight =
-                                om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup)
-                                    ? NewMeetingInfo.HighlightGroup
-                                    : ""
-                        };
+                                highlight =
+                                    om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup)
+                                        ? NewMeetingInfo.HighlightGroup
+                                        : ""
+                            };
+                    if (q.Any())
+                        StartPageSet(o);
+                    foreach (var m in q)
+                        table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
+                }
+                else if (co.GroupSelect == GroupSelectCode.Member)
+                {
+                    var Groups = NewMeetingInfo.ByGroup ? o.Groups : co.SgFilter;
+                    var q = from om in DbUtil.Db.OrganizationMembers
+                            where om.OrganizationId == orgid
+                            join m in DbUtil.Db.OrgPeople(orgid, co.GroupSelect,
+                                co.First(), co.Last(), Groups, co.ShowHidden,
+                                co.FilterIndividuals, co.FilterTag) on om.PeopleId equals m.PeopleId
+                            where om.EnrollmentDate <= Util.Now
+                            orderby om.Person.LastName, om.Person.FamilyId, om.Person.Name2
+                            let p = om.Person
+                            let ch = NewMeetingInfo.UseAltNames && p.AltName != null && p.AltName.Length > 0
+                            select new
+                            {
+                                p.PeopleId,
+                                Name2 = ch ? p.AltName : p.Name2,
+                                BirthDate = Util.FormatBirthday(
+                                    p.BirthYear,
+                                    p.BirthMonth,
+                                    p.BirthDay),
+                                MemberTypeCode = om.MemberType.Code,
+                                ch,
+                                highlight =
+                                    om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == NewMeetingInfo.HighlightGroup)
+                                        ? NewMeetingInfo.HighlightGroup
+                                        : ""
+                            };
                     if (q.Any())
                         StartPageSet(o);
                     foreach (var m in q)
@@ -190,9 +187,9 @@ namespace CmsWeb.Areas.Reports.Models
                 }
                 else
                 {
-                        var q = from m in DbUtil.Db.OrgPeople(orgid, co.GroupSelect,
-                                co.First(), co.Last(), co.SgFilter, co.ShowHidden,
-                                co.FilterIndividuals, co.FilterTag)
+                    var q = from m in DbUtil.Db.OrgPeople(orgid, co.GroupSelect,
+                        co.First(), co.Last(), co.SgFilter, co.ShowHidden,
+                        co.FilterIndividuals, co.FilterTag)
                             orderby m.Name2
                             let p = DbUtil.Db.People.Single(pp => pp.PeopleId == m.PeopleId)
                             let om = p.OrganizationMembers.SingleOrDefault(mm => mm.OrganizationId == orgid)
@@ -215,18 +212,18 @@ namespace CmsWeb.Areas.Reports.Models
                         table.AddCell(AddRow(m.MemberTypeCode, m.Name2, m.PeopleId, m.BirthDate, m.highlight, m.ch ? china ?? font : font));
                 }
                 if ((OrgSearchModel != null && NewMeetingInfo.ByGroup == false)
-                   || (co != null 
-                        && co.GroupSelect == GroupSelectCode.Member 
+                    || (co != null
+                        && co.GroupSelect == GroupSelectCode.Member
                         && meeting == null
-                        && !co.SgFilter.HasValue() 
-                        && !co.NameFilter.HasValue() 
+                        && !co.SgFilter.HasValue()
+                        && !co.NameFilter.HasValue()
                         && !co.FilterIndividuals
                         && !co.FilterTag
                         && NewMeetingInfo.ByGroup == false))
                 {
-                    foreach ( var m in RollsheetModel.FetchVisitors(o.OrgId, NewMeetingInfo.MeetingDate, NoCurrentMembers: true, UseAltNames: NewMeetingInfo.UseAltNames))
+                    foreach (var m in RollsheetModel.FetchVisitors(o.OrgId, NewMeetingInfo.MeetingDate, true, NewMeetingInfo.UseAltNames))
                     {
-                        if(table.Rows.Count == 0)
+                        if (table.Rows.Count == 0)
                             StartPageSet(o);
                         table.AddCell(AddRow(m.VisitorType, m.Name2, m.PeopleId, m.BirthDate, "", boldfont));
                     }
@@ -235,16 +232,16 @@ namespace CmsWeb.Areas.Reports.Models
                     continue;
 
                 var col = 0;
-                float gutter = 20f;
-                float colwidth = (doc.Right - doc.Left - gutter) / 2;
+                var gutter = 20f;
+                var colwidth = (doc.Right - doc.Left - gutter)/2;
                 var ct = new ColumnText(w.DirectContent);
                 ct.AddElement(table);
 
-                int status = 0;
+                var status = 0;
 
                 while (ColumnText.HasMoreText(status))
                 {
-                    if(col == 0)
+                    if (col == 0)
                         ct.SetSimpleColumn(doc.Left, doc.Bottom, doc.Left + colwidth, doc.Top);
                     else
                         ct.SetSimpleColumn(doc.Right - colwidth, doc.Bottom, doc.Right, doc.Top);
@@ -266,26 +263,6 @@ namespace CmsWeb.Areas.Reports.Models
             doc.Close();
         }
 
-        public class MemberInfo
-        {
-            public string Name { get; set; }
-            public int Id { get; set; }
-            public string Organization { get; set; }
-            public string Location { get; set; }
-            public string MemberType { get; set; }
-        }
-
-        private PdfPCell box;
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
-        private Font medfont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private Font china = null;
-        private PageEvent pageEvents = new PageEvent();
-        private Document doc;
-        private PdfContentByte dc;
-
-
         public Font CreateChineseFont()
         {
             var simsunfont = Util.SimSunFont;
@@ -295,12 +272,13 @@ namespace CmsWeb.Areas.Reports.Models
                 simsunfont = HttpContext.Current.Server.MapPath(Util.SimSunFont);
             if (!File.Exists(simsunfont))
                 return null;
-            BaseFont baseFont = BaseFont.CreateFont(
+            var baseFont = BaseFont.CreateFont(
                 simsunfont,
                 BaseFont.IDENTITY_H,
-                BaseFont.EMBEDDED); 
+                BaseFont.EMBEDDED);
             return new Font(baseFont);
         }
+
         private void StartPageSet(OrgInfo o)
         {
             doc.NewPage();
@@ -308,17 +286,18 @@ namespace CmsWeb.Areas.Reports.Models
             if (NewMeetingInfo.UseAltNames)
                 china = CreateChineseFont();
             pageEvents.StartPageSet(
-                                    "{0}: {1}, {2} ({3})".Fmt(o.Division, o.Name, o.Location, o.Teacher),
-                                    "{0:f} ({1})".Fmt(NewMeetingInfo.MeetingDate, o.OrgId),
-                                    "M.{0}.{1:MMddyyHHmm}".Fmt(o.OrgId, NewMeetingInfo.MeetingDate));
+                $"{o.Division}: {o.Name}, {o.Location} ({o.Teacher})",
+                $"{NewMeetingInfo.MeetingDate:f} ({o.OrgId})",
+                $"M.{o.OrgId}.{NewMeetingInfo.MeetingDate:MMddyyHHmm}");
         }
+
         private PdfPTable AddRow(string Code, string name, int pid, string dob, string highlight, Font font)
         {
             var t = new PdfPTable(4);
             //t.SplitRows = false;
             t.WidthPercentage = 100;
-            t.SetWidths(new int[] { 30, 4, 6, 30 });
-            t.DefaultCell.Border = PdfPCell.NO_BORDER;
+            t.SetWidths(new[] {30, 4, 6, 30});
+            t.DefaultCell.Border = Rectangle.NO_BORDER;
 
             var bc = new Barcode39();
             bc.X = 1.2f;
@@ -327,8 +306,8 @@ namespace CmsWeb.Areas.Reports.Models
             var img = bc.CreateImageWithBarcode(dc, null, null);
             var c = new PdfPCell(img, false);
             c.PaddingTop = 3f;
-            c.Border = PdfPCell.NO_BORDER;
-            c.HorizontalAlignment = PdfPCell.ALIGN_RIGHT;
+            c.Border = Rectangle.NO_BORDER;
+            c.HorizontalAlignment = Element.ALIGN_RIGHT;
             t.AddCell(c);
 
             t.AddCell("");
@@ -340,22 +319,14 @@ namespace CmsWeb.Areas.Reports.Models
             var p = new Phrase(name, font);
             p.Add("\n");
             p.Add(new Chunk(" ", medfont));
-            p.Add(new Chunk("({0}) {1:MMM d}".Fmt(Code, bd), smallfont));
+            p.Add(new Chunk($"({Code}) {bd:MMM d}", smallfont));
             if (highlight.HasValue())
                 p.Add("\n" + highlight);
             t.AddCell(p);
             hasRows = true;
             return t;
         }
-        private class OrgInfo
-        {
-            public int OrgId { get; set; }
-            public string Division { get; set; }
-            public string Name { get; set; }
-            public string Teacher { get; set; }
-            public string Location { get; set; }
-            public string Groups { get; set; }
-        }
+
         private IEnumerable<OrgInfo> ReportList()
         {
             var orgs = OrgSearchModel == null
@@ -374,6 +345,7 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q;
         }
+
         private IEnumerable<OrgInfo> ReportList2()
         {
             var orgs = OrgSearchModel == null
@@ -394,7 +366,38 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q;
         }
-        class CellEvent : IPdfPCellEvent
+
+        public class PersonVisitorInfo
+        {
+            public int PeopleId { get; set; }
+            public string Name2 { get; set; }
+            public string BirthDate { get; set; }
+            public DateTime? LastAttended { get; set; }
+            public string NameParent1 { get; set; }
+            public string NameParent2 { get; set; }
+            public string VisitorType { get; set; }
+        }
+
+        public class MemberInfo
+        {
+            public string Name { get; set; }
+            public int Id { get; set; }
+            public string Organization { get; set; }
+            public string Location { get; set; }
+            public string MemberType { get; set; }
+        }
+
+        private class OrgInfo
+        {
+            public int OrgId { get; set; }
+            public string Division { get; set; }
+            public string Name { get; set; }
+            public string Teacher { get; set; }
+            public string Location { get; set; }
+            public string Groups { get; set; }
+        }
+
+        private class CellEvent : IPdfPCellEvent
         {
             public void CellLayout(PdfPCell cell, Rectangle pos, PdfContentByte[] canvases)
             {
@@ -406,28 +409,18 @@ namespace CmsWeb.Areas.Reports.Models
                 cb.ResetRGBColorStroke();
             }
         }
-        class PageEvent : PdfPageEventHelper
-        {
-            class NPages
-            {
-                public NPages(PdfContentByte dc)
-                {
-                    template = dc.CreateTemplate(50, 50);
-                }
-                public bool juststartednewset;
-                public PdfTemplate template;
-                public int n;
-            }
-            private NPages npages;
-            private int pg;
 
-            private PdfWriter writer;
-            private Document document;
+        private class PageEvent : PdfPageEventHelper
+        {
+            private string Barcode;
             private PdfContentByte dc;
+            private Document document;
             private BaseFont font;
             private string HeadText;
             private string HeadText2;
-            private string Barcode;
+            private NPages npages;
+            private int pg;
+            private PdfWriter writer;
 
             public override void OnOpenDocument(PdfWriter writer, Document document)
             {
@@ -438,6 +431,7 @@ namespace CmsWeb.Areas.Reports.Models
                 dc = writer.DirectContent;
                 npages = new NPages(dc);
             }
+
             public void EndPageSet()
             {
                 if (npages == null)
@@ -449,13 +443,15 @@ namespace CmsWeb.Areas.Reports.Models
                 npages.template.EndText();
                 npages = new NPages(dc);
             }
+
             public void StartPageSet(string header1, string header2, string barcode)
             {
-                this.HeadText = header1;
-                this.HeadText2 = header2;
-                this.Barcode = barcode;
+                HeadText = header1;
+                HeadText2 = header2;
+                Barcode = barcode;
                 npages.juststartednewset = true;
             }
+
             public override void OnEndPage(PdfWriter writer, Document document)
             {
                 base.OnEndPage(writer, document);
@@ -476,7 +472,7 @@ namespace CmsWeb.Areas.Reports.Models
                 dc.EndText();
                 dc.BeginText();
                 dc.SetFontAndSize(font, HeadFontSize);
-                dc.SetTextMatrix(30, document.PageSize.Height - 30 - (HeadFontSize * 1.5f));
+                dc.SetTextMatrix(30, document.PageSize.Height - 30 - (HeadFontSize*1.5f));
                 dc.ShowText(HeadText2);
                 dc.EndText();
 
@@ -506,7 +502,7 @@ namespace CmsWeb.Areas.Reports.Models
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width / 2 - len / 2, 30);
+                dc.SetTextMatrix(document.PageSize.Width/2 - len/2, 30);
                 dc.ShowText(text);
                 dc.EndText();
 
@@ -518,13 +514,14 @@ namespace CmsWeb.Areas.Reports.Models
                 dc.SetTextMatrix(document.PageSize.Width - 30 - len, 30);
                 dc.ShowText(text);
                 dc.EndText();
-
             }
+
             public override void OnCloseDocument(PdfWriter writer, Document document)
             {
                 base.OnCloseDocument(writer, document);
                 EndPageSet();
             }
+
             private float PutText(string text, BaseFont font, float size, float x, float y)
             {
                 dc.BeginText();
@@ -534,8 +531,18 @@ namespace CmsWeb.Areas.Reports.Models
                 dc.EndText();
                 return font.GetWidthPoint(text, size);
             }
+
+            private class NPages
+            {
+                public readonly PdfTemplate template;
+                public bool juststartednewset;
+                public int n;
+
+                public NPages(PdfContentByte dc)
+                {
+                    template = dc.CreateTemplate(50, 50);
+                }
+            }
         }
     }
 }
-
-

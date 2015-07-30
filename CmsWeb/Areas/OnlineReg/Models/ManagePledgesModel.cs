@@ -43,13 +43,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private Settings setting;
-        public Settings Setting
-        {
-            get
-            {
-                return setting ?? (setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid));
-            }
-        }
+        public Settings Setting => setting ?? (setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid));
+
         public PledgeInfo GetPledgeInfo()
         {
             var RRTypes = new int[] { 6, 7 };
@@ -70,32 +65,27 @@ namespace CmsWeb.Areas.OnlineReg.Models
             this.pid = pid;
             this.orgid = orgid;
         }
-	    public void Confirm()
-	    {
-	        var staff = DbUtil.Db.StaffPeopleForOrg(orgid);
+        public void Confirm()
+        {
+            var staff = DbUtil.Db.StaffPeopleForOrg(orgid);
 
-	        var desc = "{0}; {1}; {2}, {3} {4}".Fmt(
-	            person.Name,
-	            person.PrimaryAddress,
-	            person.PrimaryCity,
-	            person.PrimaryState,
-	            person.PrimaryZip);
+            var desc = $"{person.Name}; {person.PrimaryAddress}; {person.PrimaryCity}, {person.PrimaryState} {person.PrimaryZip}";
 
-	        person.PostUnattendedContribution(DbUtil.Db,
-	            pledge ?? 0,
-	            Setting.DonationFundId,
-	            desc, pledge: true);
+            person.PostUnattendedContribution(DbUtil.Db,
+                pledge ?? 0,
+                Setting.DonationFundId,
+                desc, pledge: true);
 
-	        var pi = GetPledgeInfo();
-	        var body = Setting.Body;
-	        body = body.Replace("{amt}", pi.Pledged.ToString("N2"), ignoreCase: true)
-	            .Replace("{org}", Organization.OrganizationName, ignoreCase: true)
-	            .Replace("{first}", person.PreferredName, ignoreCase: true);
-	        DbUtil.Db.EmailRedacted(staff[0].FromEmail, person, Setting.Subject, body);
+            var pi = GetPledgeInfo();
+            var body = Setting.Body;
+            body = body.Replace("{amt}", pi.Pledged.ToString("N2"), ignoreCase: true)
+                .Replace("{org}", Organization.OrganizationName, ignoreCase: true)
+                .Replace("{first}", person.PreferredName, ignoreCase: true);
+            DbUtil.Db.EmailRedacted(staff[0].FromEmail, person, Setting.Subject, body);
 
-	        DbUtil.Db.Email(person.FromEmail, staff, "Online Pledge",
-	            @"{0} made a pledge to {1}".Fmt(person.Name, Organization.OrganizationName));
-	    }
+            DbUtil.Db.Email(person.FromEmail, staff, "Online Pledge",
+                $@"{person.Name} made a pledge to {Organization.OrganizationName}");
+        }
         public void Log(string action)
         {
             DbUtil.LogActivity("OnlineReg ManagePledge " + action, orgid, pid);

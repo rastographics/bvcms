@@ -2,7 +2,6 @@
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Dialog.Models;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -13,18 +12,19 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(int id)
         {
             if (id != DbUtil.Db.CurrentOrgId0)
-                throw new Exception("Current org has changed from {0} to {1}, aborting".Fmt(id, DbUtil.Db.CurrentOrgId0));
+                throw new Exception($"Current org has changed from {id} to {DbUtil.Db.CurrentOrgId0}, aborting");
             var model = new OrgDrop(id);
             model.RemoveExistingLop(DbUtil.Db, id, OrgDrop.Op);
             return View(model);
         }
+
         [HttpPost]
         public ActionResult Process(OrgDrop model)
         {
             model.UpdateLongRunningOp(DbUtil.Db, OrgDrop.Op);
             if (!model.Started.HasValue)
                 model.Process(DbUtil.Db);
-			return View(model);
-		}
+            return View(model);
+        }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
@@ -56,7 +55,7 @@ namespace CmsWeb.Areas.Dialog.Models
                          ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
                      }).SingleOrDefault();
             if (i == null)
-                throw new Exception("missing OrgMember at oid={0}, pid={1}".Fmt(OrgId, PeopleId));
+                throw new Exception($"missing OrgMember at oid={OrgId}, pid={PeopleId}");
             om = i.mm;
             TransactionSummary = i.ts;
             this.CopyPropertiesFrom(om);
@@ -195,18 +194,19 @@ namespace CmsWeb.Areas.Dialog.Models
                     om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
 
                 if (!IsMissionTrip)
-                    return transactionsLink = om.TranId.HasValue ? "/Transactions/{0}".Fmt(om.TranId) : null;
+                    return transactionsLink = om.TranId.HasValue ? $"/Transactions/{om.TranId}" : null;
 
                 if (om.IsInGroup("Goer") && om.IsInGroup("Sender"))
-                    return transactionsLink = om.TranId.HasValue ? "/Transactions/{0}?goerid={1}&senderid={1}".Fmt(om.TranId, om.PeopleId) : null;
+                    return transactionsLink = om.TranId.HasValue ? $"/Transactions/{om.TranId}?goerid={om.PeopleId}&senderid={om.PeopleId}" : null;
 
                 if (om.IsInGroup("Goer"))
-                    return transactionsLink = om.TranId.HasValue ? "/Transactions/{0}?goerid={1}".Fmt(om.TranId, om.PeopleId) : null;
+                    return transactionsLink = om.TranId.HasValue ? $"/Transactions/{om.TranId}?goerid={om.PeopleId}"
+                        : null;
 
                 if (om.IsInGroup("Sender"))
-                    return transactionsLink = "/Transactions/{0}?senderid={1}".Fmt(0, om.PeopleId);
+                    return transactionsLink = $"/Transactions/{0}?senderid={om.PeopleId}";
 
-                return transactionsLink = om.TranId.HasValue ? "/Transactions/{0}".Fmt(om.TranId) : null;
+                return transactionsLink = om.TranId.HasValue ? $"/Transactions/{om.TranId}" : null;
             }
         }
 
@@ -217,7 +217,7 @@ namespace CmsWeb.Areas.Dialog.Models
             var changes = this.CopyPropertiesTo(om);
             DbUtil.Db.SubmitChanges();
             foreach (var g in changes)
-                DbUtil.LogActivity("OrgMem {0} change {1}".Fmt(GroupName, g.Field), OrgId, PeopleId);
+                DbUtil.LogActivity($"OrgMem {GroupName} change {g.Field}", OrgId, PeopleId);
             Populate();
         }
 
@@ -246,13 +246,13 @@ namespace CmsWeb.Areas.Dialog.Models
                 if (om == null)
                     om = DbUtil.Db.OrganizationMembers.Single(mm => mm.OrganizationId == OrgId && mm.PeopleId == PeopleId);
                 if (IsMissionTrip && om.MemberTypeId == MemberTypeCode.Member)
-                    return supportLink = DbUtil.Db.ServerLink("/OnlineReg/{0}?goerid={1}".Fmt(OrgId, PeopleId));
+                    return supportLink = DbUtil.Db.ServerLink($"/OnlineReg/{OrgId}?goerid={PeopleId}");
                 return null;
             }
         }
 
         [Display(Description = @"
-Checking the Remove From Enrollment History box will erase all enrollment history (but not attendance) of this person in this organization. 
+Checking the Remove From Enrollment History box will erase all enrollment history (but not attendance) of this person in this organization.
 **There is no undo.**")]
         public bool RemoveFromEnrollmentHistory { get; set; }
 

@@ -59,6 +59,38 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }
+        [HttpGet]
+        [Authorize(Roles="Edit")]
+        public ActionResult EditXml(int id)
+        {
+            var org = DbUtil.Db.LoadOrganizationById(id);
+            ViewData["OrganizationId"] = id;
+            ViewData["orgname"] = org.OrganizationName;
+            var os = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+            var x = Util.Serialize(os);
+            ViewData["text"] = x;
+            return View();
+        }
+
+//        [HttpPost]
+//        [Authorize(Roles="Edit")]
+//        public ActionResult UpdateXml(int id, string text)
+//        {
+//            var org = DbUtil.Db.LoadOrganizationById(id);
+//            try
+//            {
+//                var os = new Settings(text, DbUtil.Db, id);
+//                org.RegSetting = text;
+//            }
+//            catch (Exception ex)
+//            {
+//                TempData["error"] = ex.Message;
+//                TempData["regsetting"] = text;
+//                return Redirect("/RegSettings/" + id);
+//            }
+//            DbUtil.Db.SubmitChanges();
+//            return Redirect("/RegSettings/" + id);
+//        }
         public ActionResult ConvertFromMdy(int id)
         {
             var cul = "en-US";

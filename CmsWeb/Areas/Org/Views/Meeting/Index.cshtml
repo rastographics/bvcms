@@ -1,11 +1,10 @@
 ﻿@using CmsData
-@using CmsWeb
 @using UtilityExtensions
 @model CmsWeb.Areas.Org.Models.MeetingModel
 @{
     ViewBag.Title = "Meeting";
     ViewBag.PageHeader = "Meeting";
-    ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>".Fmt(Util2.Org, Model.meeting.OrganizationId, Model.meeting.Organization.OrganizationName);
+    ViewBag.PageSubHeader = $"<a href=\"{Util2.Org}/{Model.meeting.OrganizationId}\">{Model.meeting.Organization.OrganizationName}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
     var RegularMeetingHeadCount = Model.RegularMeetingHeadCountSetting();
     var CanEditHeadCount = Model.meeting.GroupMeetingFlag || RegularMeetingHeadCount == "enable";
@@ -23,7 +22,7 @@
             padding: 5px;
             border: solid 1px #eee;
             min-height: 32px;
-        }         
+        }
     </style>
 }
 <div class="row">
@@ -115,7 +114,7 @@
                                     </label>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="/SearchAdd2/Dialog/registered/@Model.meeting.MeetingId" class="btn btn-success hidden searchadd"><i class="fa fa-plus-circle"></i> Add Registered</a> 
+                                    <a href="/SearchAdd2/Dialog/registered/@Model.meeting.MeetingId" class="btn btn-success hidden searchadd"><i class="fa fa-plus-circle"></i> Add Registered</a>
                                     <a href="/SearchAdd2/Dialog/visitor/@Model.meeting.MeetingId" class="btn btn-success searchadd" title="Click to Add Guests to Meeting"><i class="fa fa-plus-circle"></i> Add Guests</a>
                                 </div>
                             </div>

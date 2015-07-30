@@ -1,5 +1,8 @@
 using System.ComponentModel;
 using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -28,5 +31,15 @@ namespace CmsData.Registration
 			Settings.AddValueCk(1, sb, "Label", Label);
 			sb.AppendLine();
 		}
+	    public override void WriteXml(APIWriter w)
+	    {
+	        if (!Label.HasValue())
+	            Label = "Instruction";
+            w.AddCdata(Type, Label);
+	    }
+        public new static AskInstruction ReadXml(XElement e)
+        {
+            return new AskInstruction() { Label = e.Value };
+        }
 	}
 }

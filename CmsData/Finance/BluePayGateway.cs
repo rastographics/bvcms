@@ -13,9 +13,9 @@ namespace CmsData.Finance
         private readonly CMSDataContext db;
 
         private bool IsLive { get; set; }
-        private string ServiceMode { get { return IsLive ? "LIVE" : "TEST"; } }
+        private string ServiceMode => IsLive ? "LIVE" : "TEST";
 
-        public string GatewayType { get { return "BluePay"; } }
+        public string GatewayType => "BluePay";
 
         public BluePayGateway(CMSDataContext db, bool testing)
         {
@@ -32,7 +32,7 @@ namespace CmsData.Finance
                 throw new Exception("bluepay_secretKey setting not found, which is required for BluePay.");
 
         }
-        //BluePay stores payment methods by simply using a past transaction's ID as a token. 
+        //BluePay stores payment methods by simply using a past transaction's ID as a token.
         //We will do an Auth for $0, and save the resulting TransactionID as a Token in the payment profile BluePayCardVaultId.
         public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode,
             string routing, string account, bool giving)
@@ -71,8 +71,7 @@ namespace CmsData.Finance
 
                 if (!response.Approved)
                     throw new Exception(
-                        "BluePay failed to save the credit card info for people id: {0}, message: {1}; transactionID: {2}".Fmt(
-                            person.PeopleId, response.Message, response.TransactionId));
+                        $"BluePay failed to save the credit card info for people id: {person.PeopleId}, message: {response.Message}; transactionID: {response.TransactionId}");
 
                 //save for future
                 paymentInfo.BluePayCardVaultId = response.TransactionId;
@@ -82,7 +81,7 @@ namespace CmsData.Finance
             }
             //TODO: Handle bank accounts too (not just credit cards)
             else
-                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
 
 
             if (giving)
@@ -97,10 +96,8 @@ namespace CmsData.Finance
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo();
-            if (paymentInfo == null)
-                return;
 
-            if (!string.IsNullOrEmpty(paymentInfo.BluePayCardVaultId))
+            if (!string.IsNullOrEmpty(paymentInfo?.BluePayCardVaultId))
             {
                 // clear out local record and save changes.
                 //there is nothing to do on BluePay server since vault is really only a previous transaction ID.
@@ -226,7 +223,7 @@ namespace CmsData.Finance
             if (type == PaymentType.CreditCard)
                 masterId = paymentInfo.BluePayCardVaultId;
             else
-                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
 
             var gateway = createGateway();
             gateway.setupVaultTransaction(description, tranid);
@@ -256,7 +253,7 @@ namespace CmsData.Finance
                     BatchReference = transaction.settlement_id,
                     TransactionType = GetTransactionType(transaction.trans_type),
                     BatchType = GetBatchType(transaction.payment_type),
-                    Name = "{0} {1}".Fmt(transaction.name1, transaction.name2),
+                    Name = $"{transaction.name1} {transaction.name2}",
                     Amount = transaction.amount,
                     Approved = IsApproved(transaction.status),
                     Message = transaction.message,
@@ -312,25 +309,13 @@ namespace CmsData.Finance
             return transactionStatus == "1";
         }
 
-        public bool CanVoidRefund
-        {
-            get { return true; }
-        }
+        public bool CanVoidRefund => true;
 
-        public bool CanGetSettlementDates
-        {
-            get { return true; }
-        }
+        public bool CanGetSettlementDates => true;
 
-        public bool CanGetBounces
-        {
-            get { return false; }
-        }
+        public bool CanGetBounces => false;
 
-        public bool CanTakeBankAccounts
-        {
-            get { return false; }
-        }
+        public bool CanTakeBankAccounts => false;
 
 
         private BluePayPayment createGateway()

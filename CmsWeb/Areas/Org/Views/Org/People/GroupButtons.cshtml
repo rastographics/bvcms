@@ -1,7 +1,9 @@
 ﻿@using CmsData.Codes
 @model CmsWeb.Areas.Org.Models.OrgPeopleModel
-
-@GroupButton(GroupSelectCode.Member, "Members")
+<div class="btn-group">
+  <a class="btn btn-default" tabindex="0" href="#" data-toggle="popover" data-container="body" data-placement="bottom" data-trigger="focus" data-title="Group Buttons" data-content="@Model.GroupHelp"><i class="fa fa-info-circle"></i></a>
+  @GroupButton(GroupSelectCode.Member, "Members")
+</div>
 @GroupButton(GroupSelectCode.Previous, "Previous")
 @GroupButton(GroupSelectCode.Inactive, Model.Org.IsMissionTrip == true ? "Senders" : "Inactive")
 @GroupButton(GroupSelectCode.Pending, "Pending")
@@ -10,20 +12,16 @@
 
 @helper GroupButton(string group, string name)
 {
-  <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
-  if (group == GroupSelectCode.Guest)
+  if (!Model.GroupNeedsMenu(group))
   {
-    return;
+    <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
+    return; 
   }
-  if (group == GroupSelectCode.Previous && !User.IsInRole("Developer") && !User.IsInRole("Conversion"))
-  {
-    return;
-  }
-  var showdrop = User.IsInRole("Edit") && (Model.MultiSelect ? "" : Model.GroupSelect) == group;
-  group = showdrop ? group : "";
+  var showdrop = Model.Showdrop(group);
   <div class="btn-group">
-    <button class="btn btn-default dropdown-toggle @(showdrop ? "" : "hide")" data-toggle="dropdown"><span class="caret"></span></button>
-    @switch (group)
+    <button class="btn btn-default grp @Model.GroupActive(group)" value="@group">@name</button>
+    <button class="btn btn-info dropdown-toggle @(showdrop ? "" : "hide")" data-toggle="dropdown"><span class="caret"></span></button>
+    @switch (showdrop ? group : "")
     {
       case GroupSelectCode.Member:
         <ul class="dropdown-menu dropdown-menu-right">

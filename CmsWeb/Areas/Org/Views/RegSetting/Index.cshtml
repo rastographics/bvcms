@@ -1,10 +1,8 @@
 ﻿@using System.Text
-@using CmsWeb
-@using UtilityExtensions
 @{
     ViewBag.Title = "Registration Settings";
     ViewBag.PageHeader = "Registration Settings";
-    ViewBag.PageSubHeader = "<a href=\"/Org/{0}\">{1}</a>".Fmt(ViewData["OrganizationId"], ViewData["orgname"]);
+    ViewBag.PageSubHeader = $"<a href=\"/Org/{ViewData["OrganizationId"]}\">{ViewData["orgname"]}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
     var sb = new StringBuilder();
     var lines = (string[])ViewData["lines"];

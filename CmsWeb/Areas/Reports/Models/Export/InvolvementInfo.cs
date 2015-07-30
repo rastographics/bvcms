@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using UtilityExtensions;
 
@@ -99,10 +97,9 @@ namespace CmsWeb.Models
             {
                 if (!_OrgName.HasValue())
                     return "";
-                var s = "{0}, {1}, {2}, {3}"
-                    .Fmt(_DivName, _OrgName, _Teacher, _MemberType);
+                var s = $"{_DivName}, {_OrgName}, {_Teacher}, {_MemberType}";
                 if (_AttendPct.HasValue)
-                    s += ", {0:n1}%".Fmt(_AttendPct.Value);
+                    s += $", {_AttendPct.Value:n1}%";
                 return s;
             }
         }
@@ -132,7 +129,7 @@ namespace CmsWeb.Models
             set { _AttendPct = value; }
         }
 
-        
+
         public string Spouse { get; set; }
         public int Age { get; set; }
         public string JoinInfo { get; set; }
@@ -141,7 +138,7 @@ namespace CmsWeb.Models
         {
             set { _Activities = value; }
         }
-        
+
         public string Activities
         {
             get
@@ -153,18 +150,18 @@ namespace CmsWeb.Models
                     sb.AppendFormat("{0} - {1}", o.Name, o.Leader);
                     if (o.Pct.HasValue)
                         sb.AppendFormat(", {0:n1}%", o.Pct.Value);
-					sb.Append("<br/>");
+                    sb.Append("<br/>");
                 }
                 return sb.ToString();
             }
         }
-        
+
         public string Notes { get; set; }
         public string OfficeUseOnly { get; set; }
         public string LastName { get; set; }
         public string FirstName { get; set; }
-		public string Campus { get; set; }
-		public string CampusDate { get; set; }
+        public string Campus { get; set; }
+        public string CampusDate { get; set; }
 
     }
 }

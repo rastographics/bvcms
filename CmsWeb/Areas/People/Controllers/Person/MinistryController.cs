@@ -1,7 +1,7 @@
 using System.Web.Mvc;
 using CmsData;
+using CmsWeb.Areas.Main.Models.Other;
 using CmsWeb.Areas.People.Models;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -13,16 +13,17 @@ namespace CmsWeb.Areas.People.Controllers
         {
             return View("Ministry/Contacts", m);
         }
+
         [HttpPost]
         public ActionResult AddContactMade(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogPersonActivity("Adding contact from: {0}".Fmt(p.Name), id, p.Name);
+            DbUtil.LogPersonActivity($"Adding contact from: {p.Name}", id, p.Name);
             var c = new Contact
             {
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,
-                ContactDate = Util.Now.Date,
+                ContactDate = Util.Now.Date
             };
 
             DbUtil.Db.Contacts.InsertOnSubmit(c);
@@ -40,38 +41,42 @@ namespace CmsWeb.Areas.People.Controllers
             TempData["ContactEdit"] = true;
             return Content("/Contact2/" + c.ContactId);
         }
+
         [HttpPost]
         public ActionResult ContactsReceived(ContactsReceivedModel m)
         {
             return View("Ministry/Contacts", m);
         }
+
         [HttpPost]
         public ActionResult AddContactReceived(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogPersonActivity("Adding contact to: {0}".Fmt(p.Name), id, p.Name);
+            DbUtil.LogPersonActivity($"Adding contact to: {p.Name}", id, p.Name);
             var c = new Contact
             {
                 CreatedDate = Util.Now,
                 CreatedBy = Util.UserId1,
-                ContactDate = Util.Now.Date,
+                ContactDate = Util.Now.Date
             };
 
             DbUtil.Db.Contacts.InsertOnSubmit(c);
             DbUtil.Db.SubmitChanges();
 
-            c.contactees.Add(new Contactee { PeopleId = p.PeopleId });
-            c.contactsMakers.Add(new Contactor { PeopleId = Util.UserPeopleId.Value });
+            c.contactees.Add(new Contactee {PeopleId = p.PeopleId});
+            c.contactsMakers.Add(new Contactor {PeopleId = Util.UserPeopleId.Value});
             DbUtil.Db.SubmitChanges();
 
             TempData["ContactEdit"] = true;
-            return Content("/Contact2/{0}".Fmt(c.ContactId));
+            return Content($"/Contact2/{c.ContactId}");
         }
+
         [HttpPost]
         public ActionResult TasksAbout(TasksAboutModel m)
         {
             return View("Ministry/Tasks", m);
         }
+
         [HttpPost]
         public ActionResult AddTaskAbout(int id)
         {
@@ -80,15 +85,17 @@ namespace CmsWeb.Areas.People.Controllers
                 return Content("no id");
             var t = p.AddTaskAbout(DbUtil.Db, Util.UserPeopleId.Value, "Please Contact");
             DbUtil.Db.SubmitChanges();
-            return Content("/Task/Detail/{0}".Fmt(t.Id));
+            return Content($"/Task/Detail/{t.Id}");
         }
+
         [HttpPost]
         public ActionResult TasksAssigned(TasksAssignedModel m)
         {
             return View("Ministry/Tasks", m);
         }
+
         [HttpPost]
-        public ActionResult VolunteerApprovals(Main.Models.Other.VolunteerModel m)
+        public ActionResult VolunteerApprovals(VolunteerModel m)
         {
             return View("Ministry/Volunteer", m);
         }

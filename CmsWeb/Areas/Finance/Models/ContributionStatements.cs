@@ -1,23 +1,21 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using CmsData;
 using CmsData.API;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;
-using CmsData;
-using UtilityExtensions;
-using iTextSharp.text.xml.simpleparser;
-using CmsWeb.Areas.Reports.Models;
-using System.Diagnostics;
 using iTextSharp.tool.xml;
 using iTextSharp.tool.xml.pipeline;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.Report
 {
@@ -165,7 +163,7 @@ p { font-size: 11px; }
                 var t2 = new PdfPTable(1);
                 t2.TotalWidth = 72f * 3f;
                 t2.DefaultCell.Border = Rectangle.NO_BORDER;
-                t2.AddCell(new Phrase("\nPrint Date: {0:d}   (id:{1} {2})".Fmt(DateTime.Now, ci.PeopleId, ci.CampusId), font));
+                t2.AddCell(new Phrase($"\nPrint Date: {DateTime.Now:d}   (id:{ci.PeopleId} {ci.CampusId})", font));
                 t2.AddCell("");
                 var mh2 = new MyHandler();
                 using (var sr = new StringReader(css + html2))
@@ -196,7 +194,7 @@ p { font-size: 11px; }
                 doc.Add(new Paragraph(" "));
                 doc.Add(new Paragraph(" ") { SpacingBefore = 72f * 2.125f });
 
-                doc.Add(new Phrase("\n  Period: {0:d} - {1:d}".Fmt(FromDate, toDate), boldfont));
+                doc.Add(new Phrase($"\n  Period: {FromDate:d} - {toDate:d}", boldfont));
 
                 var pos = w.GetVerticalPosition(true);
 
@@ -204,7 +202,7 @@ p { font-size: 11px; }
                 float gutter = 20f;
                 float colwidth = (doc.Right - doc.Left - gutter) / 2;
 
-                var t = new PdfPTable(new float[] { 10f, 24f, 10f });
+                var t = new PdfPTable(new[] { 10f, 24f, 10f });
                 t.WidthPercentage = 100;
                 t.DefaultCell.Border = Rectangle.NO_BORDER;
                 t.HeaderRows = 2;

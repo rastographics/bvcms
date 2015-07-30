@@ -1,230 +1,226 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using CmsData;
-using DocumentFormat.OpenXml.Wordprocessing;
+﻿using System.Collections.Generic;
 using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Wordprocessing;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Models.Directories
 {
-	public class PersonInfo
-	{
-		public string First { get; set; }
-		public string Last { get; set; }
-		public string Email { get; set; }
-		public string Cell { get; set; }
-		public int? Age { get; set; }
-		public int position { get; set; }
-		public string SafeAge { get { return Age.HasValue && Age <= 20 ? "(" + Age + ")" : ""; } }
-	}
+    public class PersonInfo
+    {
+        public string First { get; set; }
+        public string Last { get; set; }
+        public string Email { get; set; }
+        public string Cell { get; set; }
+        public int? Age { get; set; }
+        public int position { get; set; }
 
-	public class FamilyInfo
-	{
-		public string FamilyName { get; set; }
-		public string Address { get; set; }
-		public string Address2 { get; set; }
-		public string CityStateZip { get; set; }
-		public string HomePhone { get; set; }
-		public IEnumerable<PersonInfo> Members { get; set; }
-	}
+        public string SafeAge => Age.HasValue && Age <= 20 ? "(" + Age + ")" : "";
+    }
 
-	public class FamilyRow
-	{
-		// Creates an Paragraph instance and adds its children.
-		public Paragraph GenerateParagraph(FamilyInfo f)
-		{
-			Paragraph paragraph1 = new Paragraph() { RsidParagraphAddition = "00185682", RsidParagraphProperties = "00EF4816", RsidRunAdditionDefault = "00185682" };
+    public class FamilyInfo
+    {
+        public string FamilyName { get; set; }
+        public string Address { get; set; }
+        public string Address2 { get; set; }
+        public string CityStateZip { get; set; }
+        public string HomePhone { get; set; }
+        public IEnumerable<PersonInfo> Members { get; set; }
+    }
 
-			ParagraphProperties paragraphProperties1 = new ParagraphProperties();
+    public class FamilyRow
+    {
+        // Creates an Paragraph instance and adds its children.
+        public Paragraph GenerateParagraph(FamilyInfo f)
+        {
+            var paragraph1 = new Paragraph {RsidParagraphAddition = "00185682", RsidParagraphProperties = "00EF4816", RsidRunAdditionDefault = "00185682"};
 
-			Tabs tabs1 = new Tabs();
-			TabStop tabStop1 = new TabStop() { Val = TabStopValues.Left, Position = 270 };
-			TabStop tabStop2 = new TabStop() { Val = TabStopValues.Left, Position = 1710 };
-			TabStop tabStop3 = new TabStop() { Val = TabStopValues.Left, Position = 4410 };
+            var paragraphProperties1 = new ParagraphProperties();
 
-			tabs1.Append(tabStop1);
-			tabs1.Append(tabStop2);
-			tabs1.Append(tabStop3);
+            var tabs1 = new Tabs();
+            var tabStop1 = new TabStop {Val = TabStopValues.Left, Position = 270};
+            var tabStop2 = new TabStop {Val = TabStopValues.Left, Position = 1710};
+            var tabStop3 = new TabStop {Val = TabStopValues.Left, Position = 4410};
 
-			ParagraphMarkRunProperties paragraphMarkRunProperties1 = new ParagraphMarkRunProperties();
-			NoProof noProof1 = new NoProof();
+            tabs1.Append(tabStop1);
+            tabs1.Append(tabStop2);
+            tabs1.Append(tabStop3);
 
-			paragraphMarkRunProperties1.Append(noProof1);
+            var paragraphMarkRunProperties1 = new ParagraphMarkRunProperties();
+            var noProof1 = new NoProof();
 
-			paragraphProperties1.Append(new KeepLines());
-			paragraphProperties1.Append(tabs1);
-			paragraphProperties1.Append(paragraphMarkRunProperties1);
+            paragraphMarkRunProperties1.Append(noProof1);
 
-			Run run1 = new Run() { RsidRunProperties = "00E8319A" };
+            paragraphProperties1.Append(new KeepLines());
+            paragraphProperties1.Append(tabs1);
+            paragraphProperties1.Append(paragraphMarkRunProperties1);
 
-			RunProperties runProperties1 = new RunProperties();
-			Bold bold1 = new Bold();
-			BoldComplexScript boldComplexScript1 = new BoldComplexScript();
-			Italic italic1 = new Italic();
-			ItalicComplexScript italicComplexScript1 = new ItalicComplexScript();
-			NoProof noProof2 = new NoProof();
-			Color color1 = new Color() { Val = "4F81BD", ThemeColor = ThemeColorValues.Accent1 };
+            var run1 = new Run {RsidRunProperties = "00E8319A"};
 
-			runProperties1.Append(bold1);
-			runProperties1.Append(boldComplexScript1);
-			runProperties1.Append(italic1);
-			runProperties1.Append(italicComplexScript1);
-			runProperties1.Append(noProof2);
-			runProperties1.Append(color1);
-			Text text1 = new Text();
-			text1.Text = f.FamilyName;
+            var runProperties1 = new RunProperties();
+            var bold1 = new Bold();
+            var boldComplexScript1 = new BoldComplexScript();
+            var italic1 = new Italic();
+            var italicComplexScript1 = new ItalicComplexScript();
+            var noProof2 = new NoProof();
+            var color1 = new Color {Val = "4F81BD", ThemeColor = ThemeColorValues.Accent1};
 
-			run1.Append(runProperties1);
-			run1.Append(text1);
+            runProperties1.Append(bold1);
+            runProperties1.Append(boldComplexScript1);
+            runProperties1.Append(italic1);
+            runProperties1.Append(italicComplexScript1);
+            runProperties1.Append(noProof2);
+            runProperties1.Append(color1);
+            var text1 = new Text();
+            text1.Text = f.FamilyName;
 
-			Run run2 = new Run() { RsidRunProperties = "006217A5" };
+            run1.Append(runProperties1);
+            run1.Append(text1);
 
-			RunProperties runProperties2 = new RunProperties();
-			RunStyle runStyle1 = new RunStyle() { Val = "IntenseEmphasis" };
-			NoProof noProof3 = new NoProof();
+            var run2 = new Run {RsidRunProperties = "006217A5"};
 
-			runProperties2.Append(runStyle1);
-			runProperties2.Append(noProof3);
-			Text text2 = new Text() { Space = SpaceProcessingModeValues.Preserve };
-			text2.Text = " Family ";
+            var runProperties2 = new RunProperties();
+            var runStyle1 = new RunStyle {Val = "IntenseEmphasis"};
+            var noProof3 = new NoProof();
 
-			run2.Append(runProperties2);
-			run2.Append(text2);
+            runProperties2.Append(runStyle1);
+            runProperties2.Append(noProof3);
+            var text2 = new Text {Space = SpaceProcessingModeValues.Preserve};
+            text2.Text = " Family ";
 
-			Run run3 = new Run();
+            run2.Append(runProperties2);
+            run2.Append(text2);
 
-			RunProperties runProperties3 = new RunProperties();
-			NoProof noProof4 = new NoProof();
+            var run3 = new Run();
 
-			runProperties3.Append(noProof4);
-			Break break1 = new Break();
+            var runProperties3 = new RunProperties();
+            var noProof4 = new NoProof();
 
-			run3.Append(runProperties3);
-			run3.Append(break1);
+            runProperties3.Append(noProof4);
+            var break1 = new Break();
 
-			Run run4 = new Run();
+            run3.Append(runProperties3);
+            run3.Append(break1);
 
-			RunProperties runProperties4 = new RunProperties();
-			NoProof noProof5 = new NoProof();
+            var run4 = new Run();
 
-			runProperties4.Append(noProof5);
-			TabChar tabChar1 = new TabChar();
-			Text text3 = new Text();
-			text3.Text = f.Address;
+            var runProperties4 = new RunProperties();
+            var noProof5 = new NoProof();
 
-			run4.Append(runProperties4);
-			run4.Append(tabChar1);
-			run4.Append(text3);
+            runProperties4.Append(noProof5);
+            var tabChar1 = new TabChar();
+            var text3 = new Text();
+            text3.Text = f.Address;
 
-			Run run5 = new Run();
+            run4.Append(runProperties4);
+            run4.Append(tabChar1);
+            run4.Append(text3);
 
-			RunProperties runProperties5 = new RunProperties();
-			NoProof noProof6 = new NoProof();
+            var run5 = new Run();
 
-			runProperties5.Append(noProof6);
-			Break break2 = new Break();
+            var runProperties5 = new RunProperties();
+            var noProof6 = new NoProof();
 
-			run5.Append(runProperties5);
-			run5.Append(break2);
+            runProperties5.Append(noProof6);
+            var break2 = new Break();
 
-			Run run6 = new Run();
+            run5.Append(runProperties5);
+            run5.Append(break2);
 
-			RunProperties runProperties6 = new RunProperties();
-			NoProof noProof7 = new NoProof();
+            var run6 = new Run();
 
-			runProperties6.Append(noProof7);
-			TabChar tabChar2 = new TabChar();
-			Text text4 = new Text();
-			text4.Text = f.CityStateZip;
+            var runProperties6 = new RunProperties();
+            var noProof7 = new NoProof();
 
-			run6.Append(runProperties6);
-			run6.Append(tabChar2);
-			run6.Append(text4);
+            runProperties6.Append(noProof7);
+            var tabChar2 = new TabChar();
+            var text4 = new Text();
+            text4.Text = f.CityStateZip;
 
-			Run run7 = new Run();
+            run6.Append(runProperties6);
+            run6.Append(tabChar2);
+            run6.Append(text4);
 
-			RunProperties runProperties7 = new RunProperties();
-			NoProof noProof8 = new NoProof();
+            var run7 = new Run();
 
-			runProperties7.Append(noProof8);
-			Break break3 = new Break();
+            var runProperties7 = new RunProperties();
+            var noProof8 = new NoProof();
 
-			run7.Append(runProperties7);
-			run7.Append(break3);
+            runProperties7.Append(noProof8);
+            var break3 = new Break();
 
-			Run run8 = new Run();
+            run7.Append(runProperties7);
+            run7.Append(break3);
 
-			RunProperties runProperties8 = new RunProperties();
-			NoProof noProof9 = new NoProof();
+            var run8 = new Run();
 
-			runProperties8.Append(noProof9);
-			TabChar tabChar3 = new TabChar();
-			Text text5 = new Text();
-			text5.Text = "Home Phone: " + f.HomePhone.FmtFone();
+            var runProperties8 = new RunProperties();
+            var noProof9 = new NoProof();
 
-			run8.Append(runProperties8);
-			run8.Append(tabChar3);
-			run8.Append(text5);
+            runProperties8.Append(noProof9);
+            var tabChar3 = new TabChar();
+            var text5 = new Text();
+            text5.Text = "Home Phone: " + f.HomePhone.FmtFone();
+
+            run8.Append(runProperties8);
+            run8.Append(tabChar3);
+            run8.Append(text5);
 
 
+            var run20 = new Run();
 
-			Run run20 = new Run();
+            var runProperties20 = new RunProperties();
+            var noProof21 = new NoProof();
 
-			RunProperties runProperties20 = new RunProperties();
-			NoProof noProof21 = new NoProof();
+            runProperties20.Append(noProof21);
+            var tabChar11 = new TabChar();
 
-			runProperties20.Append(noProof21);
-			TabChar tabChar11 = new TabChar();
+            run20.Append(runProperties20);
+            run20.Append(tabChar11);
+            var bookmarkStart1 = new BookmarkStart {Name = "_GoBack", Id = "0"};
+            var bookmarkEnd1 = new BookmarkEnd {Id = "0"};
 
-			run20.Append(runProperties20);
-			run20.Append(tabChar11);
-			BookmarkStart bookmarkStart1 = new BookmarkStart() { Name = "_GoBack", Id = "0" };
-			BookmarkEnd bookmarkEnd1 = new BookmarkEnd() { Id = "0" };
+            paragraph1.Append(paragraphProperties1);
+            paragraph1.Append(run1);
+            paragraph1.Append(run2);
+            paragraph1.Append(run3);
+            paragraph1.Append(run4);
+            paragraph1.Append(run5);
+            paragraph1.Append(run6);
+            paragraph1.Append(run7);
+            paragraph1.Append(run8);
 
-			paragraph1.Append(paragraphProperties1);
-			paragraph1.Append(run1);
-			paragraph1.Append(run2);
-			paragraph1.Append(run3);
-			paragraph1.Append(run4);
-			paragraph1.Append(run5);
-			paragraph1.Append(run6);
-			paragraph1.Append(run7);
-			paragraph1.Append(run8);
-
-			foreach (var m in f.Members)
-			{
-				var first = new Run();
-				first.Append(new RunProperties(new NoProof()));
-				first.Append(new Break());
-			    string fname = m.Last == f.FamilyName
-			        ? m.First
-			        : m.First + " " + m.Last;
-			    fname = m.Age.HasValue && m.Age < 22 
-                    ? "{0} ({1})".Fmt(fname, m.Age) 
+            foreach (var m in f.Members)
+            {
+                var first = new Run();
+                first.Append(new RunProperties(new NoProof()));
+                first.Append(new Break());
+                var fname = m.Last == f.FamilyName
+                    ? m.First
+                    : m.First + " " + m.Last;
+                fname = m.Age.HasValue && m.Age < 22
+                    ? $"{fname} ({m.Age})"
                     : fname;
 
-			    first.Append(new Text(fname));
-				paragraph1.Append(first);
+                first.Append(new Text(fname));
+                paragraph1.Append(first);
 
-				var email = new Run();
-				email.Append(new RunProperties(new NoProof()));
-				email.Append(new TabChar());
-				email.Append(new Text(m.Email ?? ""));
-				paragraph1.Append(email);
+                var email = new Run();
+                email.Append(new RunProperties(new NoProof()));
+                email.Append(new TabChar());
+                email.Append(new Text(m.Email ?? ""));
+                paragraph1.Append(email);
 
-				var cell = new Run();
-				cell.Append(new RunProperties(new NoProof()));
-				cell.Append(new TabChar());
-				cell.Append(new Text(m.Cell.FmtFone()));
-				paragraph1.Append(cell);
-			}
+                var cell = new Run();
+                cell.Append(new RunProperties(new NoProof()));
+                cell.Append(new TabChar());
+                cell.Append(new Text(m.Cell.FmtFone()));
+                paragraph1.Append(cell);
+            }
 
-			paragraph1.Append(run20);
-			paragraph1.Append(bookmarkStart1);
-			paragraph1.Append(bookmarkEnd1);
-			return paragraph1;
-		}
-	}
+            paragraph1.Append(run20);
+            paragraph1.Append(bookmarkStart1);
+            paragraph1.Append(bookmarkEnd1);
+            return paragraph1;
+        }
+    }
 }

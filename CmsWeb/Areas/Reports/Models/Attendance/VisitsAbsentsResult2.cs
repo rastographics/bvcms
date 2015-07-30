@@ -1,56 +1,41 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Data.Linq;
+using System.Text;
+using System.Web.Mvc;
+using CmsData;
+using CmsData.Codes;
 using CmsWeb.Code;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using CmsData;
 using UtilityExtensions;
-using System.Text;
-using System.Web.Mvc;
-using System.Collections.Generic;
-using CmsWeb.Models;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class VisitsAbsentsResult2 : ActionResult
     {
-        public class AttendInfo
-        {
-            public int PeopleId { get; set; }
-            public string Name { get; set; }
-            public string Address { get; set; }
-            public string Address2 { get; set; }
-            public string Email { get; set; }
-            public string Birthday { get; set; }
-            public string HomePhone { get; set; }
-            public string CellPhone { get; set; }
-            public string CSZ { get; set; }
-            public string Status { get; set; }
-            public DateTime? LastAttend { get; set; }
-            public decimal? AttendPct { get; set; }
-            public string AttendStr { get; set; }
-            public bool visitor { get; set; }
-            public string MemberStatus { get; set; }
-        }
-        private Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+        private readonly int border = Rectangle.NO_BORDER; //PdfPCell.BOX;
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+        private readonly Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
+        private readonly PageEvent pageEvents = new PageEvent();
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
+        private readonly float[] w = {40 + 70 + 80, 40 + 130};
+        private readonly float[] w2 = {40, 70, 80};
+        private readonly float[] w3 = {40, 130};
         private Font bigboldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
-        private PageEvent pageEvents = new PageEvent();
-        private PdfPTable t;
         private Document doc;
         private DateTime dt;
-
         private int? mtgid;
+        private PdfPTable t;
+
         public VisitsAbsentsResult2(int? meetingid)
         {
             mtgid = meetingid;
@@ -81,12 +66,11 @@ namespace CmsWeb.Areas.Reports.Models
 
             var q = VisitsAbsents(mtgid.Value);
 
-            if (!mtgid.HasValue || i == null || q.Count() == 0)
+            if (!mtgid.HasValue || i == null || !q.Any())
                 doc.Add(new Paragraph("no data"));
             else
             {
-                StartPageSet("Guests/Absentees Contact Report: {0} - {1} {2:g}".Fmt(
-                    i.OrganizationName, i.LeaderName, i.MeetingDate));
+                StartPageSet($"Guests/Absentees Contact Report: {i.OrganizationName} - {i.LeaderName} {i.MeetingDate:g}");
 
                 foreach (var p in q)
                     AddRow(p);
@@ -95,15 +79,9 @@ namespace CmsWeb.Areas.Reports.Models
                 else
                     doc.Add(new Phrase("no data"));
                 pageEvents.EndPageSet();
-
             }
             doc.Close();
         }
-
-        float[] w = new float[] { 40 + 70 + 80, 40 + 130 };
-        float[] w2 = new float[] { 40, 70, 80 };
-        float[] w3 = new float[] { 40, 130 };
-        int border = PdfPCell.NO_BORDER; //PdfPCell.BOX;
 
         private void StartPageSet(string header)
         {
@@ -138,9 +116,10 @@ namespace CmsWeb.Areas.Reports.Models
             c.AddElement(t3);
             t.AddCell(c);
         }
+
         private void AddRow(AttendInfo p)
         {
-            if (t.Rows.Count % 2 == 0)
+            if (t.Rows.Count%2 == 0)
                 t.DefaultCell.BackgroundColor = new GrayColor(240);
             else
                 t.DefaultCell.BackgroundColor = BaseColor.WHITE;
@@ -150,7 +129,7 @@ namespace CmsWeb.Areas.Reports.Models
             t2.DefaultCell.Border = border;
             t2.DefaultCell.Padding = 5;
             var name = new Phrase(p.Name + "\n", font);
-            name.Add(new Chunk("  ({0})".Fmt(p.PeopleId), smallfont));
+            name.Add(new Chunk($"  ({p.PeopleId})", smallfont));
             t2.AddCell(name);
             var addr = new StringBuilder(p.Address);
             AddLine(addr, p.Address2);
@@ -194,10 +173,12 @@ namespace CmsWeb.Areas.Reports.Models
             c.AddElement(t3);
             t.AddCell(c);
         }
+
         private void AddLine(StringBuilder sb, string value)
         {
-            AddLine(sb, value, String.Empty);
+            AddLine(sb, value, string.Empty);
         }
+
         private void AddLine(StringBuilder sb, string value, string postfix)
         {
             if (value.HasValue())
@@ -209,6 +190,7 @@ namespace CmsWeb.Areas.Reports.Models
                     sb.Append(postfix);
             }
         }
+
         private void AddPhone(StringBuilder sb, string value, string prefix)
         {
             if (value.HasValue())
@@ -224,8 +206,9 @@ namespace CmsWeb.Areas.Reports.Models
         {
             var q = from a in DbUtil.Db.Attends
                     where a.PeopleId == pid
-                    where a.AttendanceFlag == true
-                    group a by a.MeetingDate.Date into g
+                    where a.AttendanceFlag
+                    group a by a.MeetingDate.Date
+                    into g
                     orderby g.Key descending
                     select g.Key;
             var list = q.ToList();
@@ -255,17 +238,18 @@ namespace CmsWeb.Areas.Reports.Models
 
             attstr = new StringBuilder();
             foreach (var d in list.Take(8))
-                attstr.Insert(0, "{0:d}  ".Fmt(d));
+                attstr.Insert(0, $"{d:d}  ");
             if (list.Count > 8)
             {
                 attstr.Insert(0, "...  ");
                 var q2 = q.OrderBy(d => d).Take(Math.Min(list.Count - 8, 3));
                 foreach (var d in q2.OrderByDescending(d => d))
-                    attstr.Insert(0, "{0:d}  ".Fmt(d));
+                    attstr.Insert(0, $"{d:d}  ");
             }
             ph.Add(new Chunk(attstr.ToString(), smallfont));
             return ph;
         }
+
         private List GetContacts(int pid)
         {
             var ctl = new CodeValueModel();
@@ -278,19 +262,19 @@ namespace CmsWeb.Areas.Reports.Models
                      select new
                      {
                          ce.contact,
-                         madeby = ce.contact.contactsMakers.FirstOrDefault().person,
+                         madeby = ce.contact.contactsMakers.FirstOrDefault().person
                      };
-            var list = new iTextSharp.text.List(false, 10);
+            var list = new List(false, 10);
             list.ListSymbol = new Chunk("\u2022", font);
             var epip = (from p in DbUtil.Db.People
-                       where p.PeopleId == pid
-                       select new
-                       { 
-                           ep = p.EntryPoint != null ? p.EntryPoint.Description : "",
-                           ip = p.InterestPoint != null ? p.InterestPoint.Description : ""
-                       }).Single();
+                        where p.PeopleId == pid
+                        select new
+                        {
+                            ep = p.EntryPoint != null ? p.EntryPoint.Description : "",
+                            ip = p.InterestPoint != null ? p.InterestPoint.Description : ""
+                        }).Single();
             if (epip.ep.HasValue() || epip.ip.HasValue())
-                list.Add(new ListItem(1.2f * font.Size, "Entry, Interest: {0}, {1}".Fmt(epip.ep, epip.ip), font));
+                list.Add(new ListItem(1.2f*font.Size, $"Entry, Interest: {epip.ep}, {epip.ip}", font));
             const int maxcontacts = 4;
             foreach (var pc in cq.Take(maxcontacts))
             {
@@ -305,41 +289,41 @@ namespace CmsWeb.Areas.Reports.Models
                 string comments = null;
                 if (pc.contact.Comments.HasValue())
                     comments = pc.contact.Comments.Replace("\r\n\r\n", "\r\n");
-                string s = "{0:d}: {1} by {2}\n{3}".Fmt(
-                        pc.contact.ContactDate, ctype, cname, comments);
-                list.Add(new iTextSharp.text.ListItem(1.2f * font.Size, s, font));
-            } 
+                string s = $"{pc.contact.ContactDate:d}: {ctype} by {cname}\n{comments}";
+                list.Add(new ListItem(1.2f*font.Size, s, font));
+            }
             if (cq.Count() > maxcontacts)
-                list.Add(new ListItem(1.2f * font.Size, "(showing most recent 10 of {0})".Fmt(cq.Count()), font));
+                list.Add(new ListItem(1.2f*font.Size, $"(showing most recent 10 of {cq.Count()})", font));
 
             return list;
         }
+
         public IEnumerable<AttendInfo> VisitsAbsents(int mtgid)
         {
-            var visitors = new int[] 
-            { 
-                AttendTypeCode.VisitingMember, 
-                AttendTypeCode.RecentVisitor, 
-                AttendTypeCode.NewVisitor 
+            var visitors = new[]
+            {
+                AttendTypeCode.VisitingMember,
+                AttendTypeCode.RecentVisitor,
+                AttendTypeCode.NewVisitor
             };
             var q = from a in DbUtil.Db.Attends
                     where a.MeetingId == mtgid
                     where (a.EffAttendFlag == true && visitors.Contains(a.AttendanceTypeId.Value))
-                        || a.EffAttendFlag == false
+                          || a.EffAttendFlag == false
                     let p = a.Person
                     let status = a.EffAttendFlag == false ? a.MemberType.Description : a.AttendType.Description
                     let lastattend = a.Meeting.Organization.Attends
-                                    .Where(aa => aa.PeopleId == a.PeopleId && aa.AttendanceFlag == true)
-                                    .Where(aa => aa.MeetingId != mtgid)
-                                    .Max(aa => aa.MeetingDate)
+                        .Where(aa => aa.PeopleId == a.PeopleId && aa.AttendanceFlag)
+                        .Where(aa => aa.MeetingId != mtgid)
+                        .Max(aa => aa.MeetingDate)
                     let attendpct = a.Meeting.Organization.OrganizationMembers
-                                    .Where(aa => aa.PeopleId == a.PeopleId)
-                                    .Select(aa => aa.AttendPct)
-                                    .SingleOrDefault()
+                        .Where(aa => aa.PeopleId == a.PeopleId)
+                        .Select(aa => aa.AttendPct)
+                        .SingleOrDefault()
                     let attendstr = a.Meeting.Organization.OrganizationMembers
-                                    .Where(aa => aa.PeopleId == a.PeopleId)
-                                    .Select(aa => aa.AttendStr)
-                                    .SingleOrDefault()
+                        .Where(aa => aa.PeopleId == a.PeopleId)
+                        .Select(aa => aa.AttendStr)
+                        .SingleOrDefault()
                     orderby a.EffAttendFlag descending, a.Person.Name2
                     select new AttendInfo
                     {
@@ -360,14 +344,34 @@ namespace CmsWeb.Areas.Reports.Models
                     };
             return q;
         }
-        class PageEvent : PdfPageEventHelper
+
+        public class AttendInfo
         {
-            private PdfTemplate npages;
-            private PdfWriter writer;
-            private Document document;
+            public int PeopleId { get; set; }
+            public string Name { get; set; }
+            public string Address { get; set; }
+            public string Address2 { get; set; }
+            public string Email { get; set; }
+            public string Birthday { get; set; }
+            public string HomePhone { get; set; }
+            public string CellPhone { get; set; }
+            public string CSZ { get; set; }
+            public string Status { get; set; }
+            public DateTime? LastAttend { get; set; }
+            public decimal? AttendPct { get; set; }
+            public string AttendStr { get; set; }
+            public bool visitor { get; set; }
+            public string MemberStatus { get; set; }
+        }
+
+        private class PageEvent : PdfPageEventHelper
+        {
             private PdfContentByte dc;
+            private Document document;
             private BaseFont font;
             private string HeadText;
+            private PdfTemplate npages;
+            private PdfWriter writer;
 
             public override void OnOpenDocument(PdfWriter writer, Document document)
             {
@@ -377,6 +381,7 @@ namespace CmsWeb.Areas.Reports.Models
                 font = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 dc = writer.DirectContent;
             }
+
             public void EndPageSet()
             {
                 if (npages == null)
@@ -386,14 +391,16 @@ namespace CmsWeb.Areas.Reports.Models
                 npages.ShowText((writer.PageNumber + 1).ToString());
                 npages.EndText();
             }
+
             public void StartPageSet(string header1)
             {
                 EndPageSet();
                 document.NewPage();
                 document.ResetPageCount();
-                this.HeadText = header1;
+                HeadText = header1;
                 npages = dc.CreateTemplate(50, 50);
             }
+
             public override void OnEndPage(PdfWriter writer, Document document)
             {
                 base.OnEndPage(writer, document);
@@ -426,7 +433,7 @@ namespace CmsWeb.Areas.Reports.Models
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width / 2 - len / 2, 30);
+                dc.SetTextMatrix(document.PageSize.Width/2 - len/2, 30);
                 dc.ShowText(text);
                 dc.EndText();
 

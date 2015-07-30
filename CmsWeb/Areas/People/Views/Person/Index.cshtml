@@ -1,7 +1,5 @@
-﻿@using System.Text
-@using CmsData
+﻿@using CmsData
 @using CmsWeb.Areas.People.Models
-@using iTextSharp.text.pdf.qrcode
 @using UtilityExtensions
 @model PersonModel
 @{
@@ -12,7 +10,7 @@
     var mydatashowtip = !DbUtil.Db.UserPreference("hide-tip-mydata", "false").ToBool() && !inaccess;
     var gender = Model.Person.Gender.Code;
     var portraitUrl = gender == "M" ? Model.Picture.LargeMaleUrl : gender == "F" ? Model.Picture.LargeFemaleUrl : Model.Picture.LargeUrl;
-    var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? "{0}% {1}%".Fmt(Model.Picture.X.GetValueOrDefault(), Model.Picture.Y.GetValueOrDefault()) : "top";
+    var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? $"{Model.Picture.X.GetValueOrDefault()}% {Model.Picture.Y.GetValueOrDefault()}%" : "top";
 }
 @section head
 {
@@ -92,13 +90,13 @@
             }
         }
         .headshot {
-            border-radius: 999999px; 
-            height: 35px; 
-            width: 35px; 
-            display: inline-block; 
-            background-repeat: no-repeat; 
-            background-size: cover; 
-            float: left; 
+            border-radius: 999999px;
+            height: 35px;
+            width: 35px;
+            display: inline-block;
+            background-repeat: no-repeat;
+            background-size: cover;
+            float: left;
             margin-right: 10px;
         }
         .edit-inline-label:after {
@@ -198,7 +196,7 @@
             }
             else if (Model.Person.CanUserSeeGiving)
             {
-                <li><a href="#giving" aria-controls="giving" data-toggle="tab">Giving</a></li>  
+                <li><a href="#giving" aria-controls="giving" data-toggle="tab">Giving</a></li>
             }
             <li><a href="#emails" aria-controls="emails" data-toggle="tab">Emails</a></li>
             @if (User.IsInRole("Edit") || User.IsInRole("Admin"))

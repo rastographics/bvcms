@@ -1,8 +1,8 @@
 ﻿/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
@@ -63,11 +63,11 @@ namespace CmsData
                 db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
                 db.OrganizationMembers.DeleteOnSubmit(this);
                 db.ExecuteCommand(@"
-DELETE dbo.SubRequest 
+DELETE dbo.SubRequest
 FROM dbo.SubRequest sr
 JOIN dbo.Attend a ON a.AttendId = sr.AttendId
 WHERE a.OrganizationId = {0}
-AND a.MeetingDate > {1} 
+AND a.MeetingDate > {1}
 AND a.PeopleId = {2}
 ", OrganizationId, Util.Now, PeopleId);
                 db.ExecuteCommand("DELETE dbo.Attend WHERE OrganizationId = {0} AND MeetingDate > {1} AND PeopleId = {2} AND ISNULL(Commitment, 1) = 1", OrganizationId, Util.Now, PeopleId);
@@ -306,7 +306,7 @@ AND a.PeopleId = {2}
 
             var ti2 = new Transaction
                 {
-                    TransactionId = "{0} ({1})".Fmt(reason, Util.UserPeopleId ?? Util.UserId1),
+                    TransactionId = $"{reason} ({Util.UserPeopleId ?? Util.UserId1})",
                     Description = Organization.OrganizationName,
                     TransactionDate = DateTime.Now,
                     OrgId = OrganizationId,

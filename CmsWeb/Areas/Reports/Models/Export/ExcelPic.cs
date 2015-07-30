@@ -1,7 +1,5 @@
-using System;
 using System.Linq;
-using CmsData;
-using UtilityExtensions;
+using ImageData;
 
 namespace CmsWeb.Models
 {
@@ -37,18 +35,23 @@ namespace CmsWeb.Models
         public int FamilyId { get; set; }
         public int? ImageId { get; set; }
 
-        public ImageData.Image GetImage()
+        public Image GetImage()
         {
-            ImageData.Image i = null;
-            try { i = ImageData.DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == ImageId); }
-            catch { }
+            Image i = null;
+            try
+            {
+                i = DbUtil.Db.Images.SingleOrDefault(ii => ii.Id == ImageId);
+            }
+            catch
+            {
+            }
             return i;
         }
 
         public string ImageUrl()
         {
             return ImageId.HasValue
-                ? DbUtil.Db.ServerLink("/Portrait/{0}/160/200".Fmt(ImageId))
+                ? CmsData.DbUtil.Db.ServerLink($"/Portrait/{ImageId}/160/200")
                 : "";
         }
     }

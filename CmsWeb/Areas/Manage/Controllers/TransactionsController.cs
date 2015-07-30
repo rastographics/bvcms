@@ -162,27 +162,18 @@ namespace CmsWeb.Areas.Manage.Controllers
             Util.SendMsg(Util.SysFromEmail, Util.Host,
                 Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
                 "Void/Credit Transaction Type: " + type,
-                @"<table>
-<tr><td>Name</td><td>{0}</td></tr>
-<tr><td>Email</td><td>{1}</td></tr>
-<tr><td>Address</td><td>{2}</td></tr>
-<tr><td>Phone</td><td>{3}</td></tr>
+                $@"<table>
+<tr><td>Name</td><td>{Transaction.FullName(t)}</td></tr>
+<tr><td>Email</td><td>{t.Emails}</td></tr>
+<tr><td>Address</td><td>{t.Address}</td></tr>
+<tr><td>Phone</td><td>{t.Phone}</td></tr>
 <tr><th colspan=""2"">Transaction Info</th></tr>
-<tr><td>Description</td><td>{4}</td></tr>
-<tr><td>Amount</td><td>{5:N2}</td></tr>
-<tr><td>Date</td><td>{6}</td></tr>
-<tr><td>TranIds</td><td>Org: {7} {8}, Curr: {9} {10}</td></tr>
-<tr><td>User</td><td>{11}</td></tr>
-</table>".Fmt(Transaction.FullName(t), t.Emails, t.Address, t.Phone,
-                    t.Description,
-                    -amt,
-                    t.TransactionDate.Value.FormatDateTm(),
-                    t.Id,
-                    t.TransactionId,
-                    transaction.Id,
-                    transaction.TransactionId,
-                    Util.UserFullName
-                    ), Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
+<tr><td>Description</td><td>{t.Description}</td></tr>
+<tr><td>Amount</td><td>{-amt:N2}</td></tr>
+<tr><td>Date</td><td>{t.TransactionDate.Value.FormatDateTm()}</td></tr>
+<tr><td>TranIds</td><td>Org: {t.Id} {t.TransactionId}, Curr: {transaction.Id} {transaction.TransactionId}</td></tr>
+<tr><td>User</td><td>{Util.UserFullName}</td></tr>
+</table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(transaction.OrgId ?? 0)),
                 0, 0);
             DbUtil.LogActivity("CreditVoid for " + t.TransactionId);
 
@@ -265,22 +256,17 @@ namespace CmsWeb.Areas.Manage.Controllers
             Util.SendMsg(Util.SysFromEmail, Util.Host,
                 Util.TryGetMailAddress(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
                 "Adjustment Transaction",
-                @"<table>
-<tr><td>Name</td><td>{0}</td></tr>
-<tr><td>Email</td><td>{1}</td></tr>
-<tr><td>Address</td><td>{2}</td></tr>
-<tr><td>Phone</td><td>{3}</td></tr>
+                $@"<table>
+<tr><td>Name</td><td>{Transaction.FullName(t)}</td></tr>
+<tr><td>Email</td><td>{t.Emails}</td></tr>
+<tr><td>Address</td><td>{t.Address}</td></tr>
+<tr><td>Phone</td><td>{t.Phone}</td></tr>
 <tr><th colspan=""2"">Transaction Info</th></tr>
-<tr><td>Description</td><td>{4}</td></tr>
-<tr><td>Amount</td><td>{5:N2}</td></tr>
-<tr><td>Date</td><td>{6}</td></tr>
-<tr><td>TranIds</td><td>Org: {7} {8}, Curr: {9} {10}</td></tr>
-</table>".Fmt(Transaction.FullName(t), t.Emails, t.Address, t.Phone,
-                    t.Description,
-                    t.Amt,
-                    t.TransactionDate.Value.FormatDateTm(),
-                    t.Id, t.TransactionId, t2.Id, t2.TransactionId
-                    ), Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
+<tr><td>Description</td><td>{t.Description}</td></tr>
+<tr><td>Amount</td><td>{t.Amt:N2}</td></tr>
+<tr><td>Date</td><td>{t.TransactionDate.Value.FormatDateTm()}</td></tr>
+<tr><td>TranIds</td><td>Org: {t.Id} {t.TransactionId}, Curr: {t2.Id} {t2.TransactionId}</td></tr>
+</table>", Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(t2.OrgId ?? 0)),
                 0, 0);
             DbUtil.LogActivity("Adjust for " + t.TransactionId);
             return View("List", m);

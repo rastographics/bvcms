@@ -195,7 +195,7 @@ namespace CmsWeb.Areas.People.Models
 
         public BasicPersonInfo()
         {
-            
+
         }
         public BasicPersonInfo(int id)
         {
@@ -238,8 +238,7 @@ namespace CmsWeb.Areas.People.Models
                     if(np != null)
                         DbUtil.Db.EmailRedacted(p.FromEmail, np,
                             "Basic Person Info Changed on " + Util.Host,
-                            "{0} changed the following information for {1} ({2}):<br />\n"
-                                .Fmt(Util.UserName, FirstName + " " + LastName, PeopleId)
+                            $"{Util.UserName} changed the following information for {FirstName + " " + LastName} ({PeopleId}):<br />\n"
                             + ChangeTable(changes));
                 }
             }

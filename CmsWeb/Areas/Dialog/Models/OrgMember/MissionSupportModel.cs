@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -25,7 +24,7 @@ namespace CmsWeb.Areas.Dialog.Models
                          }).Single();
             Name = i.Name;
             OrgName = i.OrganizationName;
-            if(Goer == null)
+            if (Goer == null)
                 Goer = new CodeInfo(0, GoerList());
         }
 
@@ -67,74 +66,73 @@ namespace CmsWeb.Areas.Dialog.Models
                 where om.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
                 where om.OrganizationId == OrgId
                 orderby om.Person.Name2
-                select new CodeValueItem()
+                select new CodeValueItem
                 {
                     Id = om.PeopleId,
                     Value = om.Person.Name2,
                 };
             var list = q.ToList();
-            list.Insert(0, new CodeValueItem() { Id=0, Value = "(please select a Goer)" });
+            list.Insert(0, new CodeValueItem { Id=0, Value = "(please select a Goer)" });
             return list.ToSelect();
         }
 
         public string ToGoerName;
         internal void PostContribution()
         {
-            if (AmountGeneral > 0 || AmountGoer > 0)
+            if (!(AmountGeneral > 0) && !(AmountGoer > 0)) return;
+
+            var org = DbUtil.Db.LoadOrganizationById(OrgId);
+            var notifyIds = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
+            var person = DbUtil.Db.LoadPersonById(PeopleId ?? 0);
+            var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+            var fund = setting.DonationFundId;
+            if (AmountGoer > 0)
             {
-                var org = DbUtil.Db.LoadOrganizationById(OrgId);
-                var notifyIds = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
-                var person = DbUtil.Db.LoadPersonById(PeopleId ?? 0);
-                var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
-                var fund = setting.DonationFundId;
-                if (AmountGoer > 0)
-                {
-                    var goerid = Goer.Value.ToInt();
-                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                        new GoerSenderAmount 
-                        {
-                            Amount = AmountGoer,
-                            GoerId = goerid,
-                            Created = DateTime.Now,
-                            OrgId = org.OrganizationId,
-                            SupporterId = PeopleId ?? 0,
-                        });
-                    var c = person.PostUnattendedContribution(DbUtil.Db,
-                        AmountGoer ?? 0, fund, 
-                        "SupportMissionTrip: org={0}; goer={1}".Fmt(OrgId, Goer.Value), typecode: BundleTypeCode.MissionTrip);
-                    c.CheckNo = (CheckNo ?? "").Trim().Truncate(20);
-                    if (PeopleId == goerid)
+                var goerid = Goer.Value.ToInt();
+                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                    new GoerSenderAmount
                     {
-                        var om = DbUtil.Db.OrganizationMembers.Single(
-                                mm => mm.PeopleId == goerid && mm.OrganizationId == OrgId);
-                        om.AddTransaction(DbUtil.Db, "Payment", AmountGoer ?? 0, "Payment");
-                    }
-                    // send notices
-                    var goer = DbUtil.Db.LoadPersonById(goerid);
-                    ToGoerName = "to " + goer.Name;
-                    DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
-                        "{0:C} donation received from {1}".Fmt(AmountGoer, person.Name));
-                    DbUtil.LogActivity("OrgMem SupportMissionTrip goer=" + goerid, OrgId, PeopleId);
-                }
-                if (AmountGeneral > 0)
+                        Amount = AmountGoer,
+                        GoerId = goerid,
+                        Created = DateTime.Now,
+                        OrgId = org.OrganizationId,
+                        SupporterId = PeopleId ?? 0,
+                    });
+                var c = person.PostUnattendedContribution(DbUtil.Db,
+                    AmountGoer ?? 0, fund,
+                    $"SupportMissionTrip: org={OrgId}; goer={Goer.Value}", typecode: BundleTypeCode.MissionTrip);
+                c.CheckNo = (CheckNo ?? "").Trim().Truncate(20);
+                if (PeopleId == goerid)
                 {
-                    DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
-                        new GoerSenderAmount 
-                        {
-                            Amount = AmountGeneral,
-                            Created = DateTime.Now,
-                            OrgId = org.OrganizationId,
-                            SupporterId = PeopleId ?? 0
-                        });
-                    var c = person.PostUnattendedContribution(DbUtil.Db,
-                        AmountGeneral ?? 0, fund, 
-                        "SupportMissionTrip: org={0}".Fmt(OrgId), typecode: BundleTypeCode.MissionTrip);
-                    if(CheckNo.HasValue())
-                        c.CheckNo = (CheckNo ?? "").Trim().Truncate(20);
-                    DbUtil.LogActivity("OrgMem SupportMissionTrip", OrgId, PeopleId);
+                    var om = DbUtil.Db.OrganizationMembers.Single(
+                        mm => mm.PeopleId == goerid && mm.OrganizationId == OrgId);
+                    om.AddTransaction(DbUtil.Db, "Payment", AmountGoer ?? 0, "Payment");
                 }
-                DbUtil.Db.SubmitChanges();
+                // send notices
+                var goer = DbUtil.Db.LoadPersonById(goerid);
+                ToGoerName = "to " + goer.Name;
+                DbUtil.Db.Email(notifyIds[0].FromEmail, goer, org.OrganizationName + "-donation",
+                    $"{AmountGoer:C} donation received from {person.Name}");
+                DbUtil.LogActivity("OrgMem SupportMissionTrip goer=" + goerid, OrgId, PeopleId);
             }
+            if (AmountGeneral > 0)
+            {
+                DbUtil.Db.GoerSenderAmounts.InsertOnSubmit(
+                    new GoerSenderAmount
+                    {
+                        Amount = AmountGeneral,
+                        Created = DateTime.Now,
+                        OrgId = org.OrganizationId,
+                        SupporterId = PeopleId ?? 0
+                    });
+                var c = person.PostUnattendedContribution(DbUtil.Db,
+                    AmountGeneral ?? 0, fund,
+                    $"SupportMissionTrip: org={OrgId}", typecode: BundleTypeCode.MissionTrip);
+                if(CheckNo.HasValue())
+                    c.CheckNo = (CheckNo ?? "").Trim().Truncate(20);
+                DbUtil.LogActivity("OrgMem SupportMissionTrip", OrgId, PeopleId);
+            }
+            DbUtil.Db.SubmitChanges();
         }
     }
 }

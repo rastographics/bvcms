@@ -273,7 +273,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     {
                         var g = DbUtil.Db.LoadPersonById(GoerId.Value);
                         if (g != null)
-                            return "Support: {0} ({1})".Fmt(org.OrganizationName, g.Name);
+                            return $"Support: {org.OrganizationName} ({g.Name})";
                     }
                     return "Support: " + org.OrganizationName;
                 }
@@ -295,7 +295,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         {
                             var accountcode = settings[masterorgid.Value].AccountingCode;
                             if (accountcode.HasValue())
-                                return "{0} ({1})".Fmt(masterorg.OrganizationName, accountcode);
+                                return $"{masterorg.OrganizationName} ({accountcode})";
                         }
                         return masterorg.OrganizationName;
                     }
@@ -314,7 +314,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 {
                     var accountcode = settings[org.OrganizationId].AccountingCode;
                     if (accountcode.HasValue())
-                        return "{0} ({1})".Fmt(org.OrganizationName, accountcode);
+                        return $"{org.OrganizationName} ({accountcode})";
 
                     return org.OrganizationName;
                 }
@@ -334,20 +334,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     var setting2 = setting1;
                     if (last != null && last.org != null && settings.ContainsKey(last.org.OrganizationId))
                         setting1 = settings[last.org.OrganizationId];
-                    return @"
-<div class=""instructions login"">{0}</div>
-<div class=""instructions select"">{1}</div>
-<div class=""instructions find"">{2}</div>
-<div class=""instructions options"">{3}</div>
-<div class=""instructions submit"">{4}</div>
-<div class=""instructions sorry"">{5}</div>
-".Fmt(Util.PickFirst(setting1.InstructionLogin, setting2.InstructionLogin),
-                        Util.PickFirst(setting1.InstructionSelect, setting2.InstructionSelect),
-                        Util.PickFirst(setting1.InstructionFind, setting2.InstructionFind),
-                        Util.PickFirst(setting1.InstructionOptions, setting2.InstructionOptions),
-                        Util.PickFirst(setting1.InstructionSubmit, setting2.InstructionSubmit),
-                        Util.PickFirst(setting1.InstructionSorry, setting2.InstructionSorry)
-                        );
+                    return $@"
+<div class=""instructions login"">{Util.PickFirst(setting1.InstructionLogin, setting2.InstructionLogin)}</div>
+<div class=""instructions select"">{Util.PickFirst(setting1.InstructionSelect, setting2.InstructionSelect)}</div>
+<div class=""instructions find"">{Util.PickFirst(setting1.InstructionFind, setting2.InstructionFind)}</div>
+<div class=""instructions options"">{Util.PickFirst(setting1.InstructionOptions, setting2.InstructionOptions)}</div>
+<div class=""instructions submit"">{Util.PickFirst(setting1.InstructionSubmit, setting2.InstructionSubmit)}</div>
+<div class=""instructions special"">{Util.PickFirst(setting1.InstructionSpecial, setting2.InstructionSpecial)}</div>
+<div class=""instructions sorry"">{Util.PickFirst(setting1.InstructionSorry, setting2.InstructionSorry)}</div>
+";
                 }
                 var setting = new Settings();
                 if (settings.ContainsKey(org.OrganizationId))
@@ -355,28 +350,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (setting.InstructionAll != null)
                     if (setting.InstructionAll.ToString().HasValue())
                         return setting.InstructionAll.ToString();
-                var v = "{0}{1}{2}{3}{4}{5}".Fmt(
-                    setting.InstructionLogin,
-                    setting.InstructionSelect,
-                    setting.InstructionFind,
-                    setting.InstructionOptions,
-                    setting.InstructionSubmit,
-                    setting.InstructionSorry);
+                var v = $"{setting.InstructionLogin}{setting.InstructionSelect}{setting.InstructionFind}{setting.InstructionOptions}{setting.InstructionSubmit}{setting.InstructionSpecial}{setting.InstructionSorry}";
                 string ins = null;
                 if (v.HasValue())
-                    ins = @"<div class=""instructions login"">{0}</div>
-<div class=""instructions select"">{1}</div>
-<div class=""instructions find"">{2}</div>
-<div class=""instructions options"">{3}</div>
-<div class=""instructions submit"">{4}</div>
-<div class=""instructions sorry"">{5}</div>".Fmt(
-                        setting.InstructionLogin,
-                        setting.InstructionSelect,
-                        setting.InstructionFind,
-                        setting.InstructionOptions,
-                        setting.InstructionSubmit,
-                        setting.InstructionSorry
-                        );
+                    ins = $@"<div class=""instructions login"">{setting.InstructionLogin}</div>
+<div class=""instructions select"">{setting.InstructionSelect}</div>
+<div class=""instructions find"">{setting.InstructionFind}</div>
+<div class=""instructions options"">{setting.InstructionOptions}</div>
+<div class=""instructions submit"">{setting.InstructionSubmit}</div>
+<div class=""instructions special"">{setting.InstructionSpecial}</div>
+<div class=""instructions sorry"">{setting.InstructionSorry}</div>";
                 if (ins.Contains("{ev:", ignoreCase: true))
                     ins = DoReplaceForExtraValueCode(ins, last.person);
                 return ins + "\n";
@@ -503,7 +486,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (settings.ContainsKey(masterorg.OrganizationId))
                     setting1 = settings[masterorg.OrganizationId];
                 var setting2 = setting1;
-                if (last != null && last.org != null && settings.ContainsKey(last.org.OrganizationId))
+                if (last?.org != null && settings.ContainsKey(last.org.OrganizationId))
                     setting1 = settings[last.org.OrganizationId];
                 text = Util.PickFirst(setting1.FinishRegistrationButton, setting2.FinishRegistrationButton, def);
             }
@@ -524,7 +507,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (!timeOut.HasValue)
                 {
-                    timeOut = Util.IsDebug() 
+                    timeOut = Util.IsDebug()
                         ? 1600000
                         : DbUtil.Db.Setting("RegTimeout", "180000").ToInt();
                     if (masterorgid.HasValue)
@@ -691,10 +674,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             HistoryAdd("startover");
             UpdateDatum(abandoned: true);
             DbUtil.Db.ExecuteCommand(@"
-UPDATE dbo.RegistrationData 
+UPDATE dbo.RegistrationData
 SET abandoned = 1
 WHERE ISNULL(abandoned, 0) = 0
-AND UserPeopleid = {0} 
+AND UserPeopleid = {0}
 AND OrganizationId = {1}", Datum.UserPeopleId, Datum.OrganizationId);
         }
     }

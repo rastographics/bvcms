@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using CmsData.API;
 using UtilityExtensions;
 
 namespace CmsData.Registration
@@ -99,6 +102,23 @@ Display a dropdown of custom sizes. With each size you can:
 				}
 				return i;
 			}
+
+		    public void WriteXml(APIWriter w)
+		    {
+		        w.Start("Item")
+		            .Add("Description", Description)
+		            .Add("SmallGroup", SmallGroup)
+		            .End();
+		    }
+
+		    // ReSharper disable once MemberHidesStaticFromOuterClass
+		    public static Size ReadXml(XElement e)
+		    {
+				var i = new Size();
+		        i.Description = e.Element("Description")?.Value;
+		        i.Description = e.Element("SmallGroup")?.Value;
+				return i;
+		    }
 		}
 		public static List<Size> ParseShirtSizes(Parser parser)
 		{
@@ -123,6 +143,32 @@ Display a dropdown of custom sizes. With each size you can:
 				list.Add(shirtsize);
 			}
 			return list;
+		}
+	    public override void WriteXml(APIWriter w)
+	    {
+			if (list.Count == 0)
+				return;
+	        w.Start(Type)
+	            .Attr("Fee", Fee)
+	            .Attr("AllowLastYear", AllowLastYear)
+	            .Add("Label", Label ?? "Size");
+			foreach (var g in list)
+                g.WriteXml(w);
+	        w.End();
+	    }
+		public new static AskSize ReadXml(XElement e)
+		{
+		    var r = new AskSize
+		    {
+		        Label = e.Element("Size")?.Value,
+		        Fee = e.Attribute("Fee")?.Value.ToDecimal(),
+		        AllowLastYear = e.Attribute("AllowLastYear")?.Value.ToBool2() ?? false,
+		        list = new List<Size>()
+		    };
+		    foreach (var ee in e.Elements("Item"))
+		        r.list.Add(Size.ReadXml(ee));
+            // todo: check duplicates
+			return r;
 		}
 	}
 }

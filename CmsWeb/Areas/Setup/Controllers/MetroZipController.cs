@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 DbUtil.Db.Zips.InsertOnSubmit(m);
                 DbUtil.Db.SubmitChanges();
             }
-            return Redirect("/MetroZips/#{0}".Fmt(zipcode));
+            return Redirect($"/MetroZips/#{zipcode}");
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

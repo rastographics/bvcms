@@ -24,25 +24,55 @@ namespace CmsWeb.Areas.OnlineReg.Models
             foreach (var ask in setting.AskItems)
                 switch (ask.Type)
                 {
-                    case "AskCoaching": ValidateAskCoaching(); break;
-                    case "AskCheckboxes": ValidateAskCheckboxes(ask); break;
-                    case "AskDoctor": ValidateAskDoctor(); break;
-                    case "AskDropdown": ValidateAskDropdown(ask); break;
-                    case "AskEmContact": ValidateAskEmContact(); break;
-                    case "AskExtraQuestions": ValidateAskExtraQuestions(ask); break;
-                    case "AskGradeOptions": ValidateGradeOptions(); break;
-                    case "AskInsurance": ValidateAskInsurance(); break;
-                    case "AskParents": ValidateAskParents(); break;
-                    case "AskSMS": ValidateAskSMS(); break;
-                    case "AskSize": ValidateAskSize(); break;
-                    case "AskText": ValidateAskText(ask); break;
-                    case "AskTylenolEtc": ValidateAskTylenolEtc(); break;
-                    case "AskTickets": ValidateAskTickets(); break;
-                    case "AskYesNoQuestions": ValidateAskYesNoQuestions(ask); break;
+                    case "AskCoaching":
+                        ValidateAskCoaching();
+                        break;
+                    case "AskCheckboxes":
+                        ValidateAskCheckboxes(ask);
+                        break;
+                    case "AskDoctor":
+                        ValidateAskDoctor();
+                        break;
+                    case "AskDropdown":
+                        ValidateAskDropdown(ask);
+                        break;
+                    case "AskEmContact":
+                        ValidateAskEmContact();
+                        break;
+                    case "AskExtraQuestions":
+                        ValidateAskExtraQuestions(ask);
+                        break;
+                    case "AskGradeOptions":
+                        ValidateGradeOptions();
+                        break;
+                    case "AskInsurance":
+                        ValidateAskInsurance();
+                        break;
+                    case "AskParents":
+                        ValidateAskParents();
+                        break;
+                    case "AskSMS":
+                        ValidateAskSMS();
+                        break;
+                    case "AskSize":
+                        ValidateAskSize();
+                        break;
+                    case "AskText":
+                        ValidateAskText(ask);
+                        break;
+                    case "AskTylenolEtc":
+                        ValidateAskTylenolEtc();
+                        break;
+                    case "AskTickets":
+                        ValidateAskTickets();
+                        break;
+                    case "AskYesNoQuestions":
+                        ValidateAskYesNoQuestions(ask);
+                        break;
                 }
             ValidatePaymentOption();
             QuestionsOK = modelState.IsValid;
-            if(!QuestionsOK)
+            if (!QuestionsOK)
                 Log("QuestionsRetry");
         }
 
@@ -51,16 +81,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!coaching.HasValue)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].coaching), "please indicate");
         }
+
         private void ValidateAskCheckboxes(Ask ask)
         {
             var namecb = Parent.GetNameFor(mm => mm.List[Index].Checkbox[ask.UniqueId]);
-            var cb = ((AskCheckboxes)ask);
+            var cb = ((AskCheckboxes) ask);
             var cbcount = cb.CheckboxItemsChosen(Checkbox).Count();
             if (cb.Maximum > 0 && cbcount > cb.Maximum)
-                modelState.AddModelError(namecb, "Max of {0} exceeded".Fmt(cb.Maximum));
+                modelState.AddModelError(namecb, $"Max of {cb.Maximum} exceeded");
             else if (cb.Minimum > 0 && (Checkbox == null || cbcount < cb.Minimum))
-                modelState.AddModelError(namecb, "Min of {0} required".Fmt(cb.Minimum));
+                modelState.AddModelError(namecb, $"Min of {cb.Minimum} required");
         }
+
         private void ValidateAskDoctor()
         {
             if (!doctor.HasValue())
@@ -68,16 +100,18 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!docphone.HasValue())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].docphone), "Doctor's phone # required");
         }
+
         private void ValidateAskDropdown(Ask ask)
         {
             string desc;
             var namedd = Parent.GetNameFor(mm => mm.List[Index].option[ask.UniqueId]);
-            var sgi = ((AskDropdown)ask).SmallGroupChoice(option);
+            var sgi = ((AskDropdown) ask).SmallGroupChoice(option);
             if (sgi == null || !sgi.SmallGroup.HasValue())
                 modelState.AddModelError(namedd, "please select an option");
-            else if (((AskDropdown)ask).IsSmallGroupFilled(GroupTags, option, out desc))
+            else if (((AskDropdown) ask).IsSmallGroupFilled(GroupTags, option, out desc))
                 modelState.AddModelError(namedd, "limit reached for " + desc);
         }
+
         private void ValidateAskEmContact()
         {
             if (!emcontact.HasValue())
@@ -85,9 +119,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!emphone.HasValue())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].emphone), "emergency phone # required");
         }
+
         private void ValidateAskExtraQuestions(Ask ask)
         {
-            var eq = (AskExtraQuestions)ask;
+            var eq = (AskExtraQuestions) ask;
             if (setting.AskVisible("AnswersNotRequired") == false)
                 for (var n = 0; n < eq.list.Count; n++)
                 {
@@ -98,11 +133,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             "please give some answer");
                 }
         }
+
         private void ValidateGradeOptions()
         {
             if (gradeoption == "00")
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].gradeoption), "please select a grade option");
         }
+
         private void ValidateAskInsurance()
         {
             if (!insurance.HasValue())
@@ -110,6 +147,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!policy.HasValue())
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].policy), "insurance policy # required");
         }
+
         private void ValidateAskParents()
         {
             if (!mname.HasValue() && !fname.HasValue())
@@ -127,19 +165,22 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].fname), "provide first and last names");
             }
         }
+
         private void ValidateAskSize()
         {
             if (shirtsize == "0")
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].shirtsize), "please select a shirt size");
         }
+
         private void ValidateAskSMS()
         {
             if (!sms.HasValue)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].sms), "please indicate");
         }
+
         private void ValidateAskText(Ask ask)
         {
-            var tx = (AskText)ask;
+            var tx = (AskText) ask;
             if (setting.AskVisible("AnswersNotRequired") == false)
                 for (var n = 0; n < tx.list.Count; n++)
                 {
@@ -150,11 +191,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             "please give some answer");
                 }
         }
+
         private void ValidateAskTickets()
         {
             if ((ntickets ?? 0) == 0)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].ntickets), "please enter a number of tickets");
         }
+
         private void ValidateAskTylenolEtc()
         {
             if (!tylenol.HasValue)
@@ -166,11 +209,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!robitussin.HasValue)
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].robitussin), "please indicate");
         }
+
         private void ValidateAskYesNoQuestions(Ask ask)
         {
-            for (var n = 0; n < ((AskYesNoQuestions)ask).list.Count; n++)
+            for (var n = 0; n < ((AskYesNoQuestions) ask).list.Count; n++)
             {
-                var a = ((AskYesNoQuestions)ask).list[n];
+                var a = ((AskYesNoQuestions) ask).list[n];
                 if (YesNoQuestion == null || !YesNoQuestion.ContainsKey(a.SmallGroup))
                     modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].YesNoQuestion[a.SmallGroup]),
                         "please select yes or no");

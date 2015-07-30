@@ -2,7 +2,6 @@ using System;
 using System.Web.Mvc;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -14,7 +13,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
         public ActionResult Index(int oid)
         {
             if (oid != DbUtil.Db.CurrentOrgId0)
-                throw new Exception("Current org has changed from {0} to {1}, aborting".Fmt(oid, DbUtil.Db.CurrentOrgId0));
+                throw new Exception($"Current org has changed from {oid} to {DbUtil.Db.CurrentOrgId0}, aborting");
             var m = new OrgMembersUpdate { Id = oid };
             return View(m);
         }

@@ -1,27 +1,35 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System.Collections.Generic;
 using System.Linq;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using CmsData;
-using UtilityExtensions;
-using System.Web.Mvc;
 using System.Text;
+using System.Web.Mvc;
 using CmsData.Codes;
 using CmsWeb.Areas.Search.Models;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class OrgLeadersResult : ActionResult
     {
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA);
+        private readonly float[] HeaderWids = {12, 40, 25, 20};
+        private readonly OrgSearchModel model;
+        private readonly PageEvent pageEvents = new PageEvent();
+        private PdfContentByte dc;
+        private Document doc;
+        private Font medfont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
         public int? meetingid, orgid;
         public string name;
-        private OrgSearchModel model;
+        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
 
         public OrgLeadersResult(OrgSearchModel m)
         {
@@ -30,7 +38,6 @@ namespace CmsWeb.Areas.Reports.Models
 
         public OrgLeadersResult()
         {
-            
         }
 
         public override void ExecuteResult(ControllerContext context)
@@ -66,14 +73,14 @@ namespace CmsWeb.Areas.Reports.Models
                     else
                         color = BaseColor.WHITE;
                     AddRow(t,
-                            m.PeopleId,
-                            m.Name,
-                            m.Email,
-                            m.HomePhone,
-                            m.CellPhone,
-                            m.WorkPhone,
-                            m.MemberType,
-                            color);
+                        m.PeopleId,
+                        m.Name,
+                        m.Email,
+                        m.HomePhone,
+                        m.CellPhone,
+                        m.WorkPhone,
+                        m.MemberType,
+                        color);
                 }
                 doc.Add(t);
             }
@@ -81,24 +88,14 @@ namespace CmsWeb.Areas.Reports.Models
             doc.Close();
         }
 
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7);
-        private Font medfont = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private PageEvent pageEvents = new PageEvent();
-        private Document doc;
-        private PdfContentByte dc;
-
-        float[] HeaderWids = new float[] { 12, 40, 25, 20 };
-
         private PdfPTable StartPageSet(OrgInfo o)
         {
             var t = new PdfPTable(HeaderWids);
             t.DefaultCell.SetLeading(2.0f, 1f);
-            t.DefaultCell.Border = PdfPCell.NO_BORDER;
+            t.DefaultCell.Border = Rectangle.NO_BORDER;
             t.WidthPercentage = 100;
             t.DefaultCell.Padding = 5;
-            pageEvents.StartPageSet("Leader Report: {0} - {1} ({2})".Fmt(o.Division, o.Name, o.Teacher));
+            pageEvents.StartPageSet($"Leader Report: {o.Division} - {o.Name} ({o.Teacher})");
 
             t.AddCell(new Phrase("\nPeopleId", boldfont));
             t.AddCell(new Phrase("Name\nEmail", boldfont));
@@ -123,6 +120,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             t.AddCell(new Phrase(MemberType));
         }
+
         private void AddPhone(StringBuilder sb, string value, string prefix)
         {
             if (value.HasValue())
@@ -133,14 +131,7 @@ namespace CmsWeb.Areas.Reports.Models
                 sb.Append(value);
             }
         }
-        private class OrgInfo
-        {
-            public int OrgId { get; set; }
-            public string Division { get; set; }
-            public string Name { get; set; }
-            public string Teacher { get; set; }
-            public string Location { get; set; }
-        }
+
         private IEnumerable<OrgInfo> ReportList()
         {
             var orgs = model.FetchOrgs();
@@ -151,11 +142,21 @@ namespace CmsWeb.Areas.Reports.Models
                         Division = o.Division,
                         Name = o.OrganizationName,
                         Teacher = o.LeaderName,
-                        Location = o.Location,
+                        Location = o.Location
                     };
             return q;
         }
-        class CellEvent : IPdfPCellEvent
+
+        private class OrgInfo
+        {
+            public int OrgId { get; set; }
+            public string Division { get; set; }
+            public string Name { get; set; }
+            public string Teacher { get; set; }
+            public string Location { get; set; }
+        }
+
+        private class CellEvent : IPdfPCellEvent
         {
             public void CellLayout(PdfPCell cell, Rectangle pos, PdfContentByte[] canvases)
             {
@@ -167,14 +168,15 @@ namespace CmsWeb.Areas.Reports.Models
                 cb.ResetRGBColorStroke();
             }
         }
-        class PageEvent : PdfPageEventHelper
+
+        private class PageEvent : PdfPageEventHelper
         {
-            private PdfTemplate npages;
-            private PdfWriter writer;
-            private Document document;
             private PdfContentByte dc;
+            private Document document;
             private BaseFont font;
             private string HeadText;
+            private PdfTemplate npages;
+            private PdfWriter writer;
 
             public override void OnOpenDocument(PdfWriter writer, Document document)
             {
@@ -184,6 +186,7 @@ namespace CmsWeb.Areas.Reports.Models
                 font = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 dc = writer.DirectContent;
             }
+
             public void EndPageSet()
             {
                 if (npages == null)
@@ -193,14 +196,16 @@ namespace CmsWeb.Areas.Reports.Models
                 npages.ShowText((writer.PageNumber + 1).ToString());
                 npages.EndText();
             }
+
             public void StartPageSet(string header1)
             {
                 EndPageSet();
                 document.NewPage();
                 document.ResetPageCount();
-                this.HeadText = header1;
+                HeadText = header1;
                 npages = dc.CreateTemplate(50, 50);
             }
+
             public override void OnEndPage(PdfWriter writer, Document document)
             {
                 base.OnEndPage(writer, document);
@@ -238,7 +243,7 @@ namespace CmsWeb.Areas.Reports.Models
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width / 2 - len / 2, 30);
+                dc.SetTextMatrix(document.PageSize.Width/2 - len/2, 30);
                 dc.ShowText(text);
                 dc.EndText();
 
@@ -251,6 +256,7 @@ namespace CmsWeb.Areas.Reports.Models
                 dc.ShowText(text);
                 dc.EndText();
             }
+
             private float PutText(string text, BaseFont font, float size, float x, float y)
             {
                 dc.BeginText();
@@ -263,5 +269,3 @@ namespace CmsWeb.Areas.Reports.Models
         }
     }
 }
-
-

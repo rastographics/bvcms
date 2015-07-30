@@ -8,6 +8,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
+        public bool UserNeedsSelection;
+
         public static IQueryable<Organization> UserSelectClasses(Organization masterorg)
         {
             if (!masterorg.OrgPickList.HasValue())
@@ -19,6 +21,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     select o;
             return q;
         }
+
         public static List<Organization> OrderedClasses(Organization masterorg)
         {
             if (masterorg == null)
@@ -37,17 +40,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return list;
         }
 
-        public class ClassInfo
-        {
-            public int Id { get; set; }
-            public string Text { get; set; }
-            public bool selected { get; set; }
-            public bool filled { get; set; }
-        }
         public IEnumerable<ClassInfo> Classes(int? cid)
         {
             return Classes(masterorg, cid ?? 0);
         }
+
         public static List<ClassInfo> Classes(Organization masterorg, int id)
         {
             var q = from o in OrderedClasses(masterorg)
@@ -63,6 +60,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var list = q.ToList();
             return list;
         }
+
         private static string ClassName(Organization o)
         {
             var lead = o.LeaderName;
@@ -70,18 +68,24 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 lead = ": " + lead;
             var loc = o.Location;
             if (loc.HasValue())
-                loc = " ({0})".Fmt(loc);
+                loc = $" ({loc})";
             var dt1 = o.FirstMeetingDate;
             var dt2 = o.LastMeetingDate;
             var dt = "";
             if (dt1.HasValue && dt2.HasValue)
-                dt = ", {0:MMM d}-{1:MMM d}".Fmt(dt1, dt2);
+                dt = $", {dt1:MMM d}-{dt2:MMM d}";
             else if (dt1.HasValue)
-                dt = ", {0:MMM d}".Fmt(dt1);
+                dt = $", {dt1:MMM d}";
 
             return o.OrganizationName + lead + dt + loc;
         }
 
-        public bool UserNeedsSelection;
+        public class ClassInfo
+        {
+            public int Id { get; set; }
+            public string Text { get; set; }
+            public bool selected { get; set; }
+            public bool filled { get; set; }
+        }
     }
 }

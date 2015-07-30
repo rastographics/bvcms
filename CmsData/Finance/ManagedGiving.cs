@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
-using System.Web;
 using CmsData.Finance;
-using CmsData.Properties;
 using UtilityExtensions;
 
 namespace CmsData
@@ -115,11 +113,11 @@ namespace CmsData
                 db.SubmitChanges();
                 if (tot > 0)
                 {
-                    var msg = db.Content("RecurringGiftNotice") ?? new Content 
-                              { Title = "Recurring {0} for {{church}}".Fmt(gift), 
+                    var msg = db.Content("RecurringGiftNotice") ?? new Content
+                              { Title = $"Recurring {gift} for {{church}}",
                                 Body = "Your payment of {total} was processed this morning." };
                     var subject = msg.Title.Replace("{church}", church);
-                    var body = msg.Body.Replace("{total}", "${0:N2}".Fmt(tot));
+                    var body = msg.Body.Replace("{total}", $"${tot:N2}");
                     var from = Util.TryGetMailAddress(contributionemail);
                     var m = new EmailReplacements(db, body, from);
                     body = m.DoReplacements(db, Person);
@@ -130,13 +128,13 @@ namespace CmsData
             else
             {
                 db.SubmitChanges();
-                var msg = db.Content("RecurringGiftFailedNotice") ?? new Content 
-                          { Title = "Recurring {0} for {{church}} did not succeed".Fmt(gift), 
+                var msg = db.Content("RecurringGiftFailedNotice") ?? new Content
+                          { Title = $"Recurring {gift} for {{church}} did not succeed",
                             Body = @"Your payment of {total} failed to process this morning.<br>
 The message was '{message}'.
 Please contact the Finance office at the church." };
                 var subject = msg.Title.Replace("{church}", church);
-                var body = msg.Body.Replace("{total}", "${0:N2}".Fmt(tot))
+                var body = msg.Body.Replace("{total}", $"${tot:N2}")
                     .Replace("{message}", ret.Message);
                 var from = Util.TryGetMailAddress(contributionemail);
                 var m = new EmailReplacements(db, body, from);
@@ -148,7 +146,7 @@ Please contact the Finance office at the church." };
                 foreach (var p in db.RecurringGivingNotifyPersons())
                     Util.SendMsg(systemEmail, db.CmsHost, Util.TryGetMailAddress(adminEmail),
                         "Recurring Giving Failed on " + db.CmsHost,
-                        "<a href='{0}/Transactions/{2}'>message: {1}, tranid:{2}</a>".Fmt(db.CmsHost, ret.Message, t.Id),
+                        $"<a href='{db.CmsHost}/Transactions/{t.Id}'>message: {ret.Message}, tranid:{t.Id}</a>",
                         Util.ToMailAddressList(p.EmailAddress), 0, Person.PeopleId);
             }
             return 1;

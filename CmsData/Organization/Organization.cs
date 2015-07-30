@@ -16,17 +16,12 @@ namespace CmsData
                 loc = ", " + loc;
             if (leader.HasValue())
                 leader = ":" + leader;
-            return "{0}{1}{2}".Fmt(name, leader, loc);
+            return $"{name}{leader}{loc}";
         }
 
-        public string FullName
-        {
-            get { return FormatOrgName(OrganizationName, LeaderName, Location); }
-        }
-        public string FullName2
-        {
-            get { return DivisionName + ", " + FormatOrgName(OrganizationName, LeaderName, Location); }
-        }
+        public string FullName => FormatOrgName(OrganizationName, LeaderName, Location);
+
+        public string FullName2 => DivisionName + ", " + FormatOrgName(OrganizationName, LeaderName, Location);
 
         private string _TagString;
         public string TagString()
@@ -421,9 +416,7 @@ namespace CmsData
         public string GetExtra(CMSDataContext Db, string field)
         {
             var oev = Db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
-            if (oev == null)
-                return null;
-            return oev.Data;
+            return oev?.Data;
         }
 
         public void AddEditExtraValue(string field, string value)
@@ -481,7 +474,7 @@ namespace CmsData
 
         public void LogExtraValue(string op, string field)
         {
-            DbUtil.LogActivity("EVOrg {0}:{1}".Fmt(op, field), orgid: OrganizationId);
+            DbUtil.LogActivity($"EVOrg {op}:{field}", orgid: OrganizationId);
         }
 
         public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)
@@ -496,9 +489,9 @@ namespace CmsData
                 regLimitCount = db.OrganizationMemberCount2(OrganizationId) ?? 0;
             return regLimitCount.Value;
         }
-	    public IEnumerable<OrganizationExtra> GetOrganizationExtras()
-	    {
-	        return OrganizationExtras.OrderBy(pp => pp.Field);
-	    }
+        public IEnumerable<OrganizationExtra> GetOrganizationExtras()
+        {
+            return OrganizationExtras.OrderBy(pp => pp.Field);
+        }
     }
 }
