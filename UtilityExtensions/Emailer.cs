@@ -71,6 +71,8 @@ namespace UtilityExtensions
             msg.AlternateViews.Add(htmlView1);
 
             var html = BadEmailLink + Message;
+            var result = PreMailer.Net.PreMailer.MoveCssInline(html);
+            html = result.Html;
             var htmlView = AlternateView.CreateAlternateViewFromString(html, Encoding.UTF8, MediaTypeNames.Text.Html);
             htmlView.TransferEncoding = TransferEncoding.Base64;
             if (attachments != null)

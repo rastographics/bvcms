@@ -209,7 +209,7 @@ namespace CmsWeb.Models
                             orderby om.Person.Name2
                             select om;
                         break;
-                    case "DOB":
+                    case "Date of Birth":
                         q = from om in q
                             orderby om.Person.BirthYear, om.Person.BirthMonth, om.Person.BirthDay
                             select om;
@@ -244,7 +244,7 @@ namespace CmsWeb.Models
                             orderby om.Person.Name2 descending
                             select om;
                         break;
-                    case "DOB":
+                    case "Date of Birth":
                         q = from om in q
                             orderby om.Person.BirthYear descending, om.Person.BirthMonth descending, om.Person.BirthDay descending
                             select om;
