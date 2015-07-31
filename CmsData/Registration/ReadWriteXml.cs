@@ -7,21 +7,15 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
 using UtilityExtensions;
-using RegKeywords = CmsData.Registration.Parser.RegKeywords;
 
 namespace CmsData.Registration
 {
     [Serializable]
     public partial class Settings : IXmlSerializable
     {
-        private Parser.RegKeywords Parse(string s)
-        {
-            return (RegKeywords)Enum.Parse(typeof(RegKeywords), s);
-        }
         public void ReadXml(XmlReader reader)
         {
-            var s = reader.ReadOuterXml();
-            var x = XDocument.Parse(s);
+            var x = XDocument.Load(reader);
             if (x.Root == null) return;
 
             foreach (var e in x.Root.Elements())
@@ -52,20 +46,16 @@ namespace CmsData.Registration
                         MaximumFee = e.Element("MaximumFee")?.Value.ToDecimal();
                         ApplyMaxToOtherFees = e.Element("ApplyMaxToOtherFees")?.Value.ToBool2() ?? false;
                         ExtraValueFeeName = e.Element("ExtraValueFeeName")?.Value;
-                        AccountingCode = e.Element("")?.Value;
-                        IncludeOtherFeesWithDeposit = e.Element("")?.Value.ToBool2() ?? false;
-                        OtherFeesAddedToOrgFee = e.Element("")?.Value.ToBool2() ?? false;
-                        AskDonation = e.Element("AskDonation") != null;
-                        if (AskDonation)
-                        {
-                            DonationLabel = e.Element("AskDonation")?.Element("Label")?.Value;
-                            DonationFundId = e.Element("AskDonation")?.Element("FundId")?.Value.ToInt2();
-                        }
+                        AccountingCode = e.Element("AccountingCode")?.Value;
+                        IncludeOtherFeesWithDeposit = e.Element("IncludeOtherFeesWithDeposit")?.Value.ToBool2() ?? false;
+                        OtherFeesAddedToOrgFee = e.Element("OtherFeesAddedToOrgFee")?.Value.ToBool2() ?? false;
+                        DonationLabel = e.Element("AskDonation")?.Element("Label")?.Value;
+                        DonationFundId = e.Element("AskDonation")?.Element("FundId")?.Value.ToInt2();
                         break;
                     case "AgeGroups":
                         if(AgeGroups == null)
                             AgeGroups = new List<AgeGroup>();
-                        var ageGroup = new AgeGroup()
+                        var ageGroup = new AgeGroup
                         {
                             StartAge = e.Attribute("StartAge")?.Value.ToInt2() ?? 0,
                             EndAge = e.Attribute("EndAge")?.Value.ToInt2() ?? 0,
@@ -77,10 +67,10 @@ namespace CmsData.Registration
                     case "OrgFees":
                         if(OrgFees == null)
                             OrgFees = new List<OrgFee>();
-                        var orgfee = new OrgFee()
+                        var orgfee = new OrgFee
                         {
                             OrgId = e.Attribute("OrgId").Value.ToInt(),
-                            Fee = e.Attribute("Fee").Value.ToDecimal(),
+                            Fee = e.Attribute("Fee").Value.ToDecimal()
                         };
                         OrgFees.Add(orgfee);
                         break;
@@ -110,8 +100,9 @@ namespace CmsData.Registration
                         AllowSaveProgress = e.Element("AllowSaveProgress")?.Value.ToBool2() ?? false;
                         MemberOnly = e.Element("MemberOnly")?.Value.ToBool2() ?? false;
                         AddAsProspect = e.Element("AddAsProspect")?.Value.ToBool2() ?? false;
+                        DisallowAnonymous = e.Element("DisallowAnonymous")?.Value.ToBool2() ?? false;
                         break;
-                    case "NotReqired":
+                    case "NotRequired":
                         NoReqBirthYear = e.Element("NoReqBirthYear")?.Value.ToBool2() ?? false;
                         NotReqDOB = e.Element("NotReqDOB")?.Value.ToBool2() ?? false;
                         NotReqAddr = e.Element("NotReqAddr")?.Value.ToBool2() ?? false;
@@ -119,7 +110,6 @@ namespace CmsData.Registration
                         NotReqPhone = e.Element("NotReqPhone")?.Value.ToBool2() ?? false;
                         NotReqGender = e.Element("NotReqGender")?.Value.ToBool2() ?? false;
                         NotReqMarital = e.Element("NotReqMarital")?.Value.ToBool2() ?? false;
-                        DisallowAnonymous = e.Element("DisallowAnonymous")?.Value.ToBool2() ?? false;
                         break;
                     case "TimeSlots":
                         TimeSlotLockDays = e.Attribute("LockDays")?.Value.ToInt2();
@@ -133,7 +123,7 @@ namespace CmsData.Registration
                                 Description = ele.Value,
                             });
                         break;
-                    case "Ask":
+                    case "AskItems":
                         foreach (var ele in e.Elements())
                             AskItems.Add(Ask.ReadXml(ele));
                         break;
@@ -168,7 +158,7 @@ namespace CmsData.Registration
                 .AddCdata("Body", SenderBody)
                 .EndPending();
 
-            w.Start("Fees")
+            w.StartPending("Fees")
                 .Add("Fee", Fee)
                 .Add("Deposit", Deposit)
                 .Add("ExtraFee", ExtraFee)
@@ -178,10 +168,8 @@ namespace CmsData.Registration
                 .Add("AccountingCode", AccountingCode)
                 .AddIfTrue("IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit)
                 .AddIfTrue("OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee)
-                .StartPending("AskDonation")
-                    .Add("Label", DonationLabel)
-                    .Add("FundId", DonationFundId)
-                    .EndPending()
+                .Add("DonationLabel", DonationLabel)
+                .Add("DonationFundId", DonationFundId)
                 .EndPending();
 
 
@@ -231,9 +219,10 @@ namespace CmsData.Registration
                 .AddIfTrue("AllowSaveProgress", AllowSaveProgress)
                 .AddIfTrue("MemberOnly", MemberOnly)
                 .AddIfTrue("AddAsProspect", AddAsProspect)
+                .AddIfTrue("DisallowAnonymous", DisallowAnonymous)
                 .EndPending();
 
-            w.StartPending("NotReq")
+            w.StartPending("NotRequired")
                 .AddIfTrue("NoReqBirthYear", NoReqBirthYear)
                 .AddIfTrue("NotReqDOB", NotReqDOB)
                 .AddIfTrue("NotReqAddr", NotReqAddr)
@@ -241,7 +230,6 @@ namespace CmsData.Registration
                 .AddIfTrue("NotReqPhone", NotReqPhone)
                 .AddIfTrue("NotReqGender", NotReqGender)
                 .AddIfTrue("NotReqMarital", NotReqMarital)
-                .AddIfTrue("DisallowAnonymous", DisallowAnonymous)
                 .EndPending();
 
             TimeSlots?.WriteXml(w);

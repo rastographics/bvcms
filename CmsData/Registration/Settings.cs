@@ -341,6 +341,9 @@ namespace CmsData.Registration
                 case Parser.RegKeywords.DisallowAnonymous:
                     DisallowAnonymous = parser.GetBool();
                     break;
+                case Parser.RegKeywords.FinishRegistrationButton:
+                    FinishRegistrationButton = parser.GetString();
+                    break;
 
 
 // BEGIN support for old Registration Documents

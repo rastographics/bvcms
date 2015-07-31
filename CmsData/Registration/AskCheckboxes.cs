@@ -13,11 +13,7 @@ namespace CmsData.Registration
 {
     public class AskCheckboxes : Ask
     {
-        public override string Help
-        {
-            get
-            {
-                return @"
+        public override string Help => @"
 This is a group of checkboxes where you can check more than one.
 You can specify a minumum number they must check.
 And you can specify a maximum number they can check.
@@ -30,8 +26,6 @@ For each checkbox, you can specify the following:
 * **Limit** (optional) which limits the number of people allowed for a selection.
 * **DateTime** (optional) which registers them in a meeting.
 ";
-            }
-        }
 
         public string Label { get; set; }
         public int? Minimum { get; set; }
@@ -87,11 +81,10 @@ For each checkbox, you can specify the following:
         {
             var cb = new AskCheckboxes
             {
-                Minimum = ele.Attribute("Minimum")?.ToInt2(),
-                Maximum = ele.Attribute("Maximum")?.ToInt2(),
-                Columns = ele.Attribute("Columns")?.ToInt2(),
+                Minimum = ele.Attribute("Minimum")?.Value.ToInt2(),
+                Maximum = ele.Attribute("Maximum")?.Value.ToInt2(),
+                Columns = ele.Attribute("Columns")?.Value.ToInt2(),
                 Label = ele.Element("Label")?.Value,
-                list = new List<CheckboxItem>()
             };
             foreach (var ee in ele.Elements("CheckBoxItem"))
                 cb.list.Add(CheckboxItem.ReadXml(ee));
@@ -105,7 +98,7 @@ For each checkbox, you can specify the following:
             w.Start(Type)
                 .Attr("Minimum", Minimum)
                 .Attr("Maximum", Maximum)
-                .Attr("Columns", Columns)
+                .Attr("Columns", Columns == 1 ? null : Columns)
                 .Add("Label", Label);
             foreach (var i in list)
                 i.WriteXml(w);
@@ -218,13 +211,13 @@ For each checkbox, you can specify the following:
             }
             public void WriteXml(APIWriter w)
             {
-                w.Start("CheckboxItem");
-                w.Attr("Fee", Fee);
-                w.Attr("Limit", Limit);
-                w.Attr("Time", MeetingTime.ToString2("s"));
-                w.Add("SmallGroup", SmallGroup);
-                w.Add("Description", Description);
-                w.End();
+                w.Start("CheckboxItem")
+                    .Attr("Fee", Fee)
+                    .Attr("Limit", Limit)
+                    .Attr("Time", MeetingTime.ToString2("s"))
+                    .Add("SmallGroup", SmallGroup)
+                    .Add("Description", Description)
+                    .End();
             }
             public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)
             {

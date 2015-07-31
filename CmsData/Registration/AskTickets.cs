@@ -8,17 +8,12 @@ namespace CmsData.Registration
 {
 	public class AskTickets : Ask
 	{
-	    public override string Help
-	    {
-	        get 
-            { return @"
+	    public override string Help => @"
 This will ask for a number of items to purchase. 
 The total will be the fee multipled by the number of items.
 Good for things like number of lunches (so you can bring friends).
-"; 
-            }
-	    }
-		public string Label { get; set; }
+";
+	    public string Label { get; set; }
 		public AskTickets() : base("AskTickets") { }
 		public static AskTickets Parse(Parser parser)
 		{

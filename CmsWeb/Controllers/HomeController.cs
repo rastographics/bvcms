@@ -55,10 +55,11 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            var o = DbUtil.Db.LoadOrganizationById(90926);
+            var o = DbUtil.Db.LoadOrganizationById(90796);
             var os = new Settings(o.RegSetting, DbUtil.Db, o.OrganizationId);
             var x = Util.Serialize(os);
-            return Content(x, "text/xml");
+            var rs = Util.DeSerialize<Settings>(x);
+            return Content(x, "text/plain");
         }
 #endif
 

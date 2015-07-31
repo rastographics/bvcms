@@ -11,19 +11,14 @@ namespace CmsData.Registration
 {
 	public class AskSize : Ask
 	{
-	    public override string Help
-	    {
-	        get 
-            { return @"
+	    public override string Help => @"
 Display a dropdown of custom sizes. With each size you can:
 
 * Associate a Fee
 * Put in a Sub-Group
 * Adds an extra item to the sizes to indicate they will use last year's shirt.
-"; 
-            }
-	    }
-		public decimal? Fee { get; set; }
+";
+	    public decimal? Fee { get; set; }
 		public string Label { get; set; }
 		public bool AllowLastYear { get; set; }
 		public List<Size> list { get; set; }

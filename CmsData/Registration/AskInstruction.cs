@@ -9,11 +9,9 @@ namespace CmsData.Registration
 {
 	public class AskInstruction : Ask
 	{
-	    public override string Help
-	    {
-	        get { return @"Displays the label text (can include HTML) on the registration page to provide some brief instruction."; }
-	    }
-        [DisplayName("Text")]
+	    public override string Help => @"Displays the label text (can include HTML) on the registration page to provide some brief instruction.";
+
+	    [DisplayName("Text")]
 		public string Label { get; set; }
 		public AskInstruction() : base("AskInstruction") { }
 		public static AskInstruction Parse(Parser parser)

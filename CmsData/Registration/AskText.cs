@@ -11,7 +11,7 @@ namespace CmsData.Registration
 {
 	public class AskText : Ask
 	{
-	    public override string Help { get { return @"
+	    public override string Help => @"
 These questions can be answered with text on multiple lines.
 
 The Question should be fairly short (25 characters or so)
@@ -19,8 +19,8 @@ but long enough for you and your registrant to know what it refers to.
 Note, this will be used as a column header on an Excel spreadsheet.
 
 If you need a long explanation assoicated with your question, put that in as an Instruction above the question.
-"; } }
-		public List<AskExtraQuestions.ExtraQuestion> list { get; private set; }
+";
+	    public List<AskExtraQuestions.ExtraQuestion> list { get; private set; }
 
 		public AskText()
 			: base("AskText")
@@ -56,7 +56,7 @@ If you need a long explanation assoicated with your question, put that in as an 
 				return;
 	        w.Start(Type);
 	        foreach (var q in list)
-                w.Add("Question", q);
+                w.Add("ExtraQuestion", q.Question);
 	        w.End();
 	    }
 	    public new static AskText ReadXml(XElement e)

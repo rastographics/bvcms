@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
@@ -11,8 +9,8 @@ namespace CmsData.Registration
 {
 	public class AskGradeOptions : Ask
 	{
-	    public override string Help { get { return @"This allows you to specify the grade being registered for."; } }
-		public string Label { get; set; }
+	    public override string Help => @"This allows you to specify the grade being registered for.";
+	    public string Label { get; set; }
 		public List<GradeOption> list { get; set; }
 
 		public AskGradeOptions()
@@ -94,10 +92,10 @@ namespace CmsData.Registration
 			}
 		    public void WriteXml(APIWriter w)
 		    {
-			    w.Start("GradeOption");
-			    w.Attr("Code", Code);
-			    w.AddText(Description);
-			    w.End();
+		        w.Start("GradeOption")
+		            .Attr("Code", Code)
+		            .AddText(Description)
+		            .End();
 		    }
 		    // ReSharper disable once MemberHidesStaticFromOuterClass
 		    public static GradeOption ReadXml(XElement e)

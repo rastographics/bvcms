@@ -11,18 +11,13 @@ namespace CmsData.Registration
 {
 	public class AskYesNoQuestions : Ask
 	{
-	    public override string Help
-	    {
-	        get 
-            { return @"
+	    public override string Help => @"
 These are questions that will force a yes or no answer. 
 The results will be in sub-groups with a Yes- or No- prepended to the name, so make sure to keep the question text very short.
 
 If you need a longer explanation, use InstructionalText above the question so you can keep it short
-"; 
-            }
-	    }
-		public List<YesNoQuestion> list { get; private set; }
+";
+	    public List<YesNoQuestion> list { get; private set; }
 
 		public AskYesNoQuestions()
 			: base("AskYesNoQuestions")

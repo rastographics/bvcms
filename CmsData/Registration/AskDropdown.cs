@@ -72,9 +72,7 @@ This will be presented as a dropdown selection.
         }
 		public new static AskDropdown ReadXml(XElement ele)
 		{
-			var dd = new AskDropdown();
-		    dd.Label = ele.Value;
-			dd.list = new List<DropdownItem>();
+		    var dd = new AskDropdown {Label = ele.Value};
 		    foreach (var ee in ele.Elements("DropdownItem"))
 		        dd.list.Add(DropdownItem.ReadXml(ee));
             // todo: prevent duplicates
@@ -203,24 +201,26 @@ This will be presented as a dropdown selection.
 
 		    public void WriteXml(APIWriter w)
 		    {
-                w.Start("DropdownItem");
-                w.Attr("Fee", Fee);
-                w.Attr("Limit", Limit);
-                w.Attr("Time", MeetingTime.ToString2("s"));
-                w.Add("Description", Description);
-                w.Add("SmallGroup", SmallGroup);
-                w.End();
+		        w.Start("DropdownItem")
+		            .Attr("Fee", Fee)
+		            .Attr("Limit", Limit)
+		            .Attr("Time", MeetingTime.ToString2("s"))
+		            .Add("Description", Description)
+		            .Add("SmallGroup", SmallGroup)
+		            .End();
 		    }
 
 		    // ReSharper disable once MemberHidesStaticFromOuterClass
 		    public static DropdownItem ReadXml(XElement ele)
 		    {
-				var i = new DropdownItem();
-		        i.Description = ele.Element("Description")?.Value;
+		        var i = new DropdownItem
+		        {
+		            Description = ele.Element("Description")?.Value,
+		            Fee = ele.Attribute("Fee")?.Value?.ToDecimal(),
+		            Limit = ele.Attribute("Limit")?.Value?.ToInt2(),
+		            MeetingTime = ele.Attribute("Time")?.Value?.ToDate()
+		        };
 		        i.SmallGroup = ele.Element("SmallGroup")?.Value ?? i.Description;
-		        i.Fee = ele.Attribute("Fee")?.Value?.ToDecimal();
-		        i.Limit = ele.Attribute("Limit")?.Value?.ToInt2();
-		        i.MeetingTime = ele.Attribute("Time")?.Value?.ToDate();
 				return i;
 		    }
         }
