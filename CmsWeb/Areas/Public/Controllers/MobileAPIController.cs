@@ -412,7 +412,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                     MobilePerson mp;
 
-                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
                     {
                         mp = new MobilePerson().populate(item);
                         mpl.Add(mp.id, mp);
@@ -426,7 +426,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
                     List<MobilePerson> mp = new List<MobilePerson>();
 
-                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(20))
+                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
                     {
                         mp.Add(new MobilePerson().populate(item));
                     }
@@ -683,6 +683,34 @@ namespace CmsWeb.Areas.Public.Controllers
             br.id = mpsi.id;
             br.count = 1;
 
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult FetchTasks(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var tasks = from t in DbUtil.Db.ViewIncompleteTasks
+                        orderby t.CreatedOn, t.StatusId, t.OwnerId, t.CoOwnerId
+                        where t.OwnerId == Util.UserPeopleId || t.CoOwnerId == Util.UserPeopleId
+                        select t;
+
+            BaseMessage br = new BaseMessage();
+            MobileTaskList taskList = new MobileTaskList();
+
+            foreach (var item in tasks)
+            {
+                MobileTask task = new MobileTask().populate(item);
+                taskList.addTask(task, Util.UserPeopleId ?? 0);
+            }
+
+            br.data = SerializeJSON(taskList, dataIn.version);
+            br.error = 0;
+            br.count = tasks.Count();
             return br;
         }
 

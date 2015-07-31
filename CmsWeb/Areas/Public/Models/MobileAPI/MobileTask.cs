@@ -3,103 +3,76 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
+using CmsData.View;
 using UtilityExtensions;
 
 namespace CmsWeb.MobileAPI
 {
-	/*
-	+ [Id] [int] IDENTITY(1,1) NOT NULL,
-	[OwnerId] [int] NOT NULL,
-	[ListId] [int] NOT NULL,
-	+ [CoOwnerId] [int] NULL,
-	[CoListId] [int] NULL,
-	+ [StatusId] [int] NULL,
-	[CreatedOn] [datetime] NOT NULL,
-	[SourceContactId] [int] NULL,
-	[CompletedContactId] [int] NULL,
-	+ [Notes] [varchar](max) NULL,
-	[ModifiedBy] [int] NULL,
-	[ModifiedOn] [datetime] NULL,
-	[Project] [varchar](50) NULL,
-	[Archive] [bit] NOT NULL,
-	+ [Priority] [int] NULL,
-	+ [WhoId] [int] NULL,
-	+ [Due] [datetime] NULL,
-	[Location] [varchar](50) NULL,
-	+ [Description] [varchar](100) NULL,
-	[CompletedOn] [datetime] NULL,
-	[ForceCompleteWContact] [bit] NULL,
-	[OrginatorId] [int] NULL,
-	*/
+    public class MobileTask
+    {
+        public int id = 0;
 
-	public class MobileTask
-	{
-		public int id = 0;
+        public string status = "";
+        public int statusID = 0;
 
+        public DateTime created = DateTime.Now;
+        public DateTime? due = null;
+
+        public bool completeWithContact = false;
+
+        public string owner = "";
         public int ownerID = 0;
-        public int boxID = 0; // Connects to a list
 
-        public int updateDue = 0;
-		public DateTime due = DateTime.Now;
-		public int priority = 0;
-		
-		public string description = "";
+        public string delegated = "";
+        public int delegatedID = 0;
 
-		public string status = "";
-		public int statusID = 0;
+        public string about = "";
+        public int aboutID = 0;
 
-		public string about = "";
-		public int aboutID = 0;
+        public string desc = "";
+        public string notes = "";
 
-		public string delegated = "";
-		public int delegatedID = 0;
+        public string picture = "";
+        public int pictureX = 0;
+        public int pictureY = 0;
 
-		public string notes = "";
-
-		public MobileTask populate(CmsData.Task t)
-		{
-			id = t.Id;
-
-            ownerID = t.OwnerId;
-            boxID = t.ListId;
-
-			due = t.Due ?? DateTime.Now;
-			priority = t.Priority ?? 0;
-
-			description = t.Description ?? "";
-
-			status = t.TaskStatus.Description ?? "";
-			statusID = t.StatusId ?? 0;
-
-			about = t.AboutName ?? "";
-			aboutID = t.WhoId ?? 0;
-
-			if( t.CoOwner != null ) delegated = t.CoOwner.Name ?? "";
-			delegatedID = t.CoOwnerId ?? 0;
-
-			notes = t.Notes ?? "";
-
-			return this;
-		}
-
-        public int addToDB()
+        public MobileTask populate(IncompleteTask task)
         {
-            Task t = new Task();
+            id = task.Id;
 
-            t.OwnerId = ownerID;
-            t.ListId = boxID;
-            t.Due = due;
-            t.Priority = priority;
-            t.Description = description;
-            t.StatusId = statusID;
-            t.WhoId = aboutID;
-            if(delegatedID > 0) t.CoOwnerId = delegatedID;
-            t.Notes = notes;
+            status = task.Status;
+            statusID = task.StatusId ?? 0;
 
-            DbUtil.Db.Tasks.InsertOnSubmit(t);
-            DbUtil.Db.SubmitChanges();
+            created = task.CreatedOn;
+            due = task.Due;
 
-            return t.Id;
+            completeWithContact = task.ForceCompleteWContact ?? false;
+
+            owner = task.Owner;
+            ownerID = task.OwnerId;
+
+            delegated = task.DelegatedTo;
+            delegatedID = task.CoOwnerId ?? 0;
+
+            about = task.About ?? "";
+            aboutID = task.WhoId ?? 0;
+
+            desc = task.Description;
+            notes = task.Notes;
+
+            if (task.AboutPictureId != null)
+            {
+                var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == task.AboutPictureId);
+
+                if (image != null)
+                {
+                    picture = Convert.ToBase64String(image.Bits);
+                    pictureX = task.PictureX ?? 0;
+                    pictureY = task.PictureY ?? 0;
+                }
+            }
+
+            return this;
         }
-	}
+    }
 }

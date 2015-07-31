@@ -27,6 +27,10 @@ namespace CmsWeb.MobileAPI
                 datetime = oi.lastMeetting;
             }
 
+            if( datetime.HasValue ) {
+                datetime = DateTime.SpecifyKind(datetime.Value, DateTimeKind.Local);
+            }
+
             return this;
         }
 
