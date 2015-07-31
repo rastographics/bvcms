@@ -449,6 +449,7 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRegistration.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRollList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobileRoom.cs" />
+    <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskList.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\PostObjects\MobilePostHeadcount.cs" />
     <Compile Include="Areas\People\Models\Downline\DownlineDetailModel.cs" />
     <Compile Include="Areas\Reports\Models\Avery\AverySpacerCell173.cs">
@@ -789,9 +790,6 @@
     <Compile Include="Areas\Public\Models\MobileAPI\MobileTask.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\MobilePerson.cs" />
     <Compile Include="Areas\Public\Models\MobileAPI\Helpers\SystemHelper.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskBox.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskFull.cs" />
-    <Compile Include="Areas\Public\Models\MobileAPI\MobileTaskStatus.cs" />
     <Compile Include="Areas\Public\Models\OrgContentInfo.cs" />
     <Compile Include="Areas\Public\Models\SGMapModel.cs" />
     <Compile Include="Areas\Public\Models\SmallGroupFinderModel.cs" />

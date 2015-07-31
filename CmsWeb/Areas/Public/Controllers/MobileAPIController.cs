@@ -687,6 +687,34 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
+        public ActionResult FetchTasks(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var tasks = from t in DbUtil.Db.ViewIncompleteTasks
+                        orderby t.CreatedOn, t.StatusId, t.OwnerId, t.CoOwnerId
+                        where t.OwnerId == Util.UserPeopleId || t.CoOwnerId == Util.UserPeopleId
+                        select t;
+
+            BaseMessage br = new BaseMessage();
+            MobileTaskList taskList = new MobileTaskList();
+
+            foreach (var item in tasks)
+            {
+                MobileTask task = new MobileTask().populate(item);
+                taskList.addTask(task, Util.UserPeopleId ?? 0);
+            }
+
+            br.data = SerializeJSON(taskList, dataIn.version);
+            br.error = 0;
+            br.count = tasks.Count();
+            return br;
+        }
+
+        [HttpPost]
         public ActionResult FetchOrgs(string data)
         {
             var result = AuthenticateUser();

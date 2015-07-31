@@ -294,6 +294,6 @@ namespace CmsWeb.Areas.Reports.Models
 			public int? OtherAttend { get; set; }
             public bool Highlight { get; set; }
             public bool Conflict { get; set; }
-		}
+        }
 	}
 }
