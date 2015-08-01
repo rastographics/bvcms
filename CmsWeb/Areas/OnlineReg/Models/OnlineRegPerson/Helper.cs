@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (settings == null)
                         throw new Exception("settings are null");
                     if (!settings.ContainsKey(org.OrganizationId))
-                        settings[org.OrganizationId] = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+                        settings[org.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
                     _setting = settings[org.OrganizationId];
                     AfterSettingConstructor();
                 }
@@ -168,7 +168,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (org == null) return "Organization not found.";
 
-            var settings = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+            var settings = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
 
             var body = DbUtil.Content(settings.SpecialScript, "Shell not found.");
             body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);

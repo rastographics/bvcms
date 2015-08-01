@@ -77,12 +77,5 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             return PartialView("DisplayTemplates/OrgPickList", m);
         }
-
-        private static Settings getRegSettings(int id)
-        {
-            var org = DbUtil.Db.LoadOrganizationById(id);
-            var m = new Settings(org.RegSetting, DbUtil.Db, id);
-            return m;
-        }
     }
 }

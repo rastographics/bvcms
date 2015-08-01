@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml;
+using CmsData.API;
+using CmsData.Registration;
 using UtilityExtensions;
 
-namespace CmsData.Registration
+namespace RegistrationSettingsParser
 {
-    public class Parser
+    public partial class Parser
     {
         public int lineno;
         string[] lines;
@@ -29,8 +32,16 @@ namespace CmsData.Registration
         }
         public List<LineData> data = new List<LineData>();
 
-        public Parser(string s)
+        private Settings set;
+
+        public Parser(Settings settings)
         {
+            set = settings;
+        }
+
+        public Parser(string s, Settings settings)
+        {
+            set = settings;
             lines = SplitLines(s);
             for (lineno = 0; lineno < lines.Length; )
             {
@@ -134,12 +145,30 @@ namespace CmsData.Registration
 
         public string GetString()
         {
-            return GetString(null);
+            return RemoveTroublesomeCharacters(GetString(null));
+        }
+        public static string RemoveTroublesomeCharacters(string inString)
+        {
+            if (inString == null) return null;
+
+            StringBuilder newString = new StringBuilder();
+            char ch;
+
+            for (int i = 0; i < inString.Length; i++)
+            {
+
+                ch = inString[i];
+                if (XmlConvert.IsXmlChar(ch))
+                    newString.Append(ch);
+            }
+            return newString.ToString();
+
         }
         public string GetString(string def)
         {
             var s = curr.value;
-            if (def.HasValue() && !s.HasValue())
+            //if (def.HasValue() && !s.HasValue())
+            if (!s.HasValue())
                 s = def;
             lineno++;
             return s;

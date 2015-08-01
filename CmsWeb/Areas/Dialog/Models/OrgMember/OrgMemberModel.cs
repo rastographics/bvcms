@@ -48,7 +48,6 @@ namespace CmsWeb.Areas.Dialog.Models
                          mm,
                          mm.Person.Name,
                          mm.Organization.OrganizationName,
-                         mm.Organization.RegSetting,
                          mm.Organization,
                          mm.OrgMemMemTags,
                          mm.Organization.IsMissionTrip,
@@ -75,7 +74,7 @@ namespace CmsWeb.Areas.Dialog.Models
             OrgName = i.OrganizationName;
             Organization = i.Organization;
             OrgMemMemTags = i.OrgMemMemTags.ToList();
-            Setting = new Settings(i.RegSetting, DbUtil.Db, OrgId ?? 0);
+            Setting = DbUtil.Db.CreateRegistrationSettings(OrgId ?? 0);
         }
 
 

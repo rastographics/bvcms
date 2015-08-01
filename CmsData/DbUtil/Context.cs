@@ -1472,5 +1472,14 @@ namespace CmsData
 
             throw new Exception($"Gateway ({type}) is not supported.");
         }
+        public Registration.Settings CreateRegistrationSettings(int orgId)
+        {
+            var o = LoadOrganizationById(orgId);
+            return CmsData.Registration.Settings.CreateSettings(o.RegSetting, this, orgId);
+        }
+        public Registration.Settings CreateRegistrationSettings(string s, int orgId)
+        {
+            return CmsData.Registration.Settings.CreateSettings(s, this, orgId);
+        }
     }
 }

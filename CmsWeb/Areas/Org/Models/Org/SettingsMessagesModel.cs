@@ -39,15 +39,12 @@ namespace CmsWeb.Areas.Org.Models
         {
             this.CopyPropertiesTo(Org, typeof(OrgAttribute));
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
-            var os = new Settings(RegSettings.ToString(), DbUtil.Db, Id);
+            var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
             Org.RegSetting = os.ToString();
             DbUtil.Db.SubmitChanges();
         }
 
-        private Settings RegSettings
-        {
-            get { return _regsettings ?? (_regsettings = new Settings(Org.RegSetting, DbUtil.Db, Id)); }
-        }
+        private Settings RegSettings => _regsettings ?? (_regsettings = DbUtil.Db.CreateRegistrationSettings(Id));
         private Settings _regsettings;
 
         [Reg, Display(Description = ConfirmationDescription)]

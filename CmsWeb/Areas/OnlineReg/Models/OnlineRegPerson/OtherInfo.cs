@@ -121,7 +121,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public static IEnumerable<SelectListItem> ShirtSizes(CMSDataContext Db, Organization org)
         {
-            var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
+            var setting = Db.CreateRegistrationSettings(org.OrganizationId);
             return ShirtSizes(setting);
         }
 

@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             }
         }
 
-        public Settings Setting => setting ?? (setting = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId));
+        public Settings Setting => setting ?? (setting = DbUtil.Db.CreateRegistrationSettings(masterorg.OrganizationId));
         public string Instructions => $@"
 <div class=""instructions login"">{Setting.InstructionLogin}</div>
 <div class=""instructions select"">{Setting.InstructionSelect}</div>

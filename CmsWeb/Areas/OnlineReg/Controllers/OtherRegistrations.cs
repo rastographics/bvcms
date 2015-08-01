@@ -81,7 +81,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     (q.org.RegistrationClosed == true || q.org.OrganizationStatusId == OrgStatusCode.Inactive))
                     throw new Exception("sorry, registration has been closed");
 
-                var setting = new Settings(q.org.RegSetting, DbUtil.Db, li.oid.Value);
+                var setting = DbUtil.Db.CreateRegistrationSettings(li.oid.Value);
                 if (IsSmallGroupFilled(setting, li.oid.Value, smallgroup))
                     throw new Exception("sorry, maximum limit has been reached for " + smallgroup);
 
@@ -207,7 +207,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 DbUtil.Db.SubmitChanges();
                 Attend.MarkRegistered(DbUtil.Db, li.pid.Value, meetingid, regrets ? AttendCommitmentCode.Regrets : AttendCommitmentCode.Attending);
                 DbUtil.LogActivity($"{rsvplinkSTR}{confirmSTR}: {regrets}", q.org.OrganizationId, li.pid);
-                var setting = new Settings(q.org.RegSetting, DbUtil.Db, q.meeting.OrganizationId);
+                var setting = DbUtil.Db.CreateRegistrationSettings(q.meeting.OrganizationId);
 
                 if (confirm == true)
                 {

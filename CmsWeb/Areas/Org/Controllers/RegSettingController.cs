@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Threading;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Registration;
+using RegistrationSettingsParser;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
@@ -20,7 +20,7 @@ namespace CmsWeb.Areas.Org.Controllers
             if (!regsetting.HasValue())
                 regsetting = org.RegSetting;
 
-            ViewData["lines"] = CmsData.Registration.Parser.SplitLines(regsetting);
+            ViewData["lines"] = Parser.SplitLines(regsetting);
             ViewData["regsetting"] = regsetting;
             ViewData["OrganizationId"] = id;
             ViewData["orgname"] = org.OrganizationName;
@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var org = DbUtil.Db.LoadOrganizationById(id);
             try
             {
-                var os = new Settings(text, DbUtil.Db, id);
+                var os = DbUtil.Db.CreateRegistrationSettings(text, id);
                 org.RegSetting = text;
             }
             catch (Exception ex)
@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var org = DbUtil.Db.LoadOrganizationById(id);
             ViewData["OrganizationId"] = id;
             ViewData["orgname"] = org.OrganizationName;
-            var os = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+            var os = DbUtil.Db.CreateRegistrationSettings(id);
             var x = Util.Serialize(os);
             ViewData["text"] = x;
             return View();
@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.Org.Controllers
 //            var org = DbUtil.Db.LoadOrganizationById(id);
 //            try
 //            {
-//                var os = new Settings(text, DbUtil.Db, id);
+//                var os = Settings.CreateSettings(text, DbUtil.Db, id);
 //                org.RegSetting = text;
 //            }
 //            catch (Exception ex)
@@ -97,8 +97,8 @@ namespace CmsWeb.Areas.Org.Controllers
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             var org = DbUtil.Db.LoadOrganizationById(id);
-            var m = new Settings(org.RegSetting, DbUtil.Db, id);
-            var os = new Settings(m.ToString(), DbUtil.Db, id);
+            var m = DbUtil.Db.CreateRegistrationSettings(id);
+            var os = DbUtil.Db.CreateRegistrationSettings(m.ToString(), id);
             m.org.RegSetting = os.ToString();
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);
@@ -109,8 +109,8 @@ namespace CmsWeb.Areas.Org.Controllers
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             var org = DbUtil.Db.LoadOrganizationById(id);
-            var m = new Settings(org.RegSetting, DbUtil.Db, id);
-            var os = new Settings(m.ToString(), DbUtil.Db, id);
+            var m = DbUtil.Db.CreateRegistrationSettings(id);
+            var os = DbUtil.Db.CreateRegistrationSettings(m.ToString(), id);
             m.org.RegSetting = os.ToString();
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);

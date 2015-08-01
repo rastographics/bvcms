@@ -90,7 +90,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 <div class=""instructions submit"">{Setting.InstructionSubmit}</div>
 <div class=""instructions sorry"">{Setting.InstructionSorry}</div>
 ";
-        public Settings Setting => setting ?? (setting = new Settings(Org.RegSetting, DbUtil.Db, OrgId));
+        public Settings Setting => setting ?? (setting = DbUtil.Db.CreateRegistrationSettings(OrgId));
 
         public IEnumerable<List<Slot>> FetchSlotWeeks()
         {

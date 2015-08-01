@@ -12,27 +12,27 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult Questions(int id)
         {
-            return View("Registration/Questions", getRegSettings(id));
+            return View("Registration/Questions", DbUtil.Db.CreateRegistrationSettings(id));
         }
 
         [HttpPost]
         public ActionResult QuestionsHelpToggle(int id)
         {
             DbUtil.Db.ToggleUserPreference("ShowQuestionsHelp");
-            return PartialView("Registration/Questions", getRegSettings(id));
+            return PartialView("Registration/Questions", DbUtil.Db.CreateRegistrationSettings(id));
         }
 
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult QuestionsEdit(int id)
         {
-            return PartialView("Registration/QuestionsEdit", getRegSettings(id));
+            return PartialView("Registration/QuestionsEdit", DbUtil.Db.CreateRegistrationSettings(id));
         }
 
         [HttpPost]
         public ActionResult QuestionsUpdate(int id)
         {
-            var m = getRegSettings(id);
+            var m = DbUtil.Db.CreateRegistrationSettings(id);
             DbUtil.LogActivity($"Update SettingsQuestions {m.org.OrganizationName}");
             m.AskItems.Clear();
             m.TimeSlots.list.Clear();
@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Org.Controllers
                     throw new Exception(q.First());
                 }
                 var s = m.ToString();
-                m = new Settings(s, DbUtil.Db, id);
+                m = DbUtil.Db.CreateRegistrationSettings(s, id);
                 m.org.RegSetting = m.ToString();
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())

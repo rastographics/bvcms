@@ -378,6 +378,6 @@ See you there!</p>";
             return q;
         }
         private Settings setting;
-        public Settings Setting => setting ?? (setting = new Settings(org.RegSetting, Db, org.OrganizationId));
+        public Settings Setting => setting ?? (setting = Db.CreateRegistrationSettings(org.OrganizationId));
     }
 }

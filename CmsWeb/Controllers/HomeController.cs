@@ -56,7 +56,7 @@ namespace CmsWeb.Controllers
         public ActionResult Test()
         {
             var o = DbUtil.Db.LoadOrganizationById(90796);
-            var os = new Settings(o.RegSetting, DbUtil.Db, o.OrganizationId);
+            var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
             var x = Util.Serialize(os);
             var rs = Util.DeSerialize<Settings>(x);
             return Content(x, "text/plain");
@@ -301,8 +301,8 @@ namespace CmsWeb.Controllers
         }
         private string FetchPyScriptForm(string name)
         {
-#if DEBUG2
-                return System.IO.File.ReadAllText(Server.MapPath("~/PythonForm.py"));
+#if DEBUG
+                return System.IO.File.ReadAllText(Server.MapPath("~/module1.py"));
 #else
                 return DbUtil.Db.ContentOfTypePythonScript(name);
 #endif

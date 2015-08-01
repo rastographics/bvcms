@@ -161,7 +161,7 @@ namespace CmsWeb.Models
 					 select new { DivisionName = o.Division.Name, o.OrganizationName, o.RegSetting, o.OrganizationId, o.RegistrationTypeId }).ToList();
 
 			var qq = from i in q
-					 let os = new Settings(i.RegSetting, DbUtil.Db, i.OrganizationId)
+					 let os = DbUtil.Db.CreateRegistrationSettings(i.OrganizationId)
 					 where orgregtypes.Contains(i.RegistrationTypeId.Value)
                          || os.Fee > 0
 						 || os.AskItems.Where(aa => aa.Type == "AskDropdown").Any(aa => ((AskDropdown)aa).list.Any(dd => dd.Fee > 0))

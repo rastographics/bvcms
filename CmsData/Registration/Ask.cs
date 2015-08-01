@@ -19,18 +19,6 @@ namespace CmsData.Registration
         {
             Type = type;
         }
-
-        public static Ask ParseAsk(Parser parser)
-        {
-            var r = new Ask(parser.curr.kw.ToString());
-            parser.GetBool();
-            return r;
-        }
-
-        public virtual void Output(StringBuilder sb)
-        {
-            Settings.AddValueCk(0, sb, Type, true);
-        }
         public virtual void WriteXml(APIWriter w)
         {
             w.Start(Type);
@@ -48,7 +36,7 @@ namespace CmsData.Registration
                 case "AskExtraQuestions":
                     return AskExtraQuestions.ReadXml(ele);
                 case "AskGradeOptions":
-                    return AskExtraQuestions.ReadXml(ele);
+                    return AskGradeOptions.ReadXml(ele);
                 case "AskHeader":
                     return AskHeader.ReadXml(ele);
                 case "AskInstruction":
@@ -65,7 +53,7 @@ namespace CmsData.Registration
                     return AskText.ReadXml(ele);
                 case "AskTickets":
                     return AskTickets.ReadXml(ele);
-                case "AskYesNoquestions":
+                case "AskYesNoQuestions":
                     return AskYesNoQuestions.ReadXml(ele);
                 default:
                     return new Ask(ask);

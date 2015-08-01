@@ -48,7 +48,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var staffList = DbUtil.Db.StaffPeopleForOrg(id);
             var staff = staffList[0];
 
-            var regSettings = new Settings(org.RegSetting, DbUtil.Db, id);
+            var regSettings = DbUtil.Db.CreateRegistrationSettings(id);
 
             var subject = Util.PickFirst(regSettings.Subject, "No subject");
             var body = Util.PickFirst(regSettings.Body, "confirmation email body not found");

@@ -99,17 +99,6 @@ namespace CmsWeb.Areas.Org.Models
             return Regex.Replace(s, "([A-Z])", " $1", RegexOptions.Compiled).Trim();
         }
         private Settings _RegSettings;
-        public Settings RegSettings
-        {
-            get
-            {
-                if (_RegSettings == null)
-                {
-                    _RegSettings = new Settings(Org.RegSetting, DbUtil.Db, Org.OrganizationId);
-                    _RegSettings.org = Org;
-                }
-                return _RegSettings;
-            }
-        }
+        public Settings RegSettings => _RegSettings ?? (_RegSettings = DbUtil.Db.CreateRegistrationSettings(Org.OrganizationId));
     }
 }

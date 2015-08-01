@@ -111,7 +111,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         [NonSerialized]
         private Settings _setting;
-        public Settings Setting => _setting ?? (_setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid));
+        public Settings Setting => _setting ?? (_setting = DbUtil.Db.CreateRegistrationSettings(orgid));
 
         public bool NoCreditCardsAllowed { get; set; }
         public bool NoEChecksAllowed { get; set; }

@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.Org.Models
             if (Org.OrgPickList.HasValue() && Org.RegistrationTypeId == RegistrationTypeCode.JoinOrganization)
                 Org.OrgPickList = null;
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
-            var os = new Settings(RegSettings.ToString(), DbUtil.Db, Id);
+            var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
             if (Org.RegistrationTypeId > 0)
             {
                 if (!os.Subject.HasValue())
@@ -63,10 +63,7 @@ namespace CmsWeb.Areas.Org.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        private Settings RegSettings
-        {
-            get { return _regsettings ?? (_regsettings = new Settings(Org.RegSetting, DbUtil.Db, Id)); }
-        }
+        private Settings RegSettings => _regsettings ?? (_regsettings = DbUtil.Db.CreateRegistrationSettings(Id));
         private Settings _regsettings;
 
         public class MasterOrgInfo

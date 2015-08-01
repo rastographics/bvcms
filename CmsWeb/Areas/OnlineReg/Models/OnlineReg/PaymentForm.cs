@@ -229,7 +229,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             pf.Type = pf.NoEChecksAllowed ? PaymentType.CreditCard : "";
             var org = DbUtil.Db.LoadOrganizationById(ti.OrgId);
-            var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
             return pf;
         }
 

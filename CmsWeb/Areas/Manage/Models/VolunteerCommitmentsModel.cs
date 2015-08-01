@@ -231,7 +231,7 @@ namespace CmsWeb.Areas.Manage.Models
 			get
 			{
 				return _regsettings ??
-					(_regsettings = new Settings(Org.RegSetting, DbUtil.Db, OrgId));
+					(_regsettings = DbUtil.Db.CreateRegistrationSettings(OrgId));
 			}
 		}
 		public void ApplyDragDrop(

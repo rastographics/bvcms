@@ -22,7 +22,7 @@ namespace CmsData.API
                 PendingStart = ele;
             }
         }
-        private Stack<Pending> stack = new Stack<Pending>(); 
+        private Stack<Pending> stack = new Stack<Pending>();
 
         public APIWriter()
         {
@@ -30,16 +30,23 @@ namespace CmsData.API
             settings.Indent = true;
             settings.Encoding = new System.Text.UTF8Encoding(false);
             sb = new StringBuilder();
-            w = XmlWriter.Create(sb,settings);
+            w = XmlWriter.Create(sb, settings);
         }
+
         public APIWriter(XmlWriter writer)
         {
-			w = writer;
+            w = writer;
         }
         public APIWriter Start(string element)
         {
             CheckPendingStart();
             w.WriteStartElement(element);
+            return this;
+        }
+
+        public APIWriter AddComment(string s)
+        {
+            w.WriteComment(s);
             return this;
         }
 
@@ -74,7 +81,7 @@ namespace CmsData.API
         public APIWriter EndPending()
         {
             var p = stack.Pop();
-            if(p.PendingEnd)
+            if (p.PendingEnd)
                 w.WriteEndElement();
             return this;
         }
@@ -82,7 +89,10 @@ namespace CmsData.API
         {
             var s = tostr(i);
             if (s.HasValue() || NoDefaults)
+            {
+                CheckPendingStart();
                 w.WriteAttributeString(attr, s);
+            }
             return this;
         }
         private string tostr(object i)
@@ -109,7 +119,7 @@ namespace CmsData.API
         public APIWriter AddIfTrue(object element, bool b)
         {
             var s = tostr(b);
-            if(b)
+            if (b)
             {
                 CheckPendingStart();
                 w.WriteElementString(element.ToString(), s);
@@ -118,11 +128,12 @@ namespace CmsData.API
         }
         public APIWriter AddCdata(string element, string cdata)
         {
-            if(cdata.HasValue())
+            if (cdata.HasValue())
             {
                 CheckPendingStart();
                 Start(element);
-                w.WriteCData("\n" + cdata + "\n");
+                w.WriteCData(cdata);
+                //w.WriteCData("\n" + cdata + "\n");
                 End();
             }
             return this;
@@ -135,7 +146,7 @@ namespace CmsData.API
         public override string ToString()
         {
             w.Flush();
-            return sb.ToString();
+            return sb?.ToString() ?? "";
         }
         ~APIWriter()
         {

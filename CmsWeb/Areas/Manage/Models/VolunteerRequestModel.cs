@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public int limit { get; set; }
         public string DisplayMessage { get; set; }
         public string Error { get; set; }
-        public Settings Setting => setting ?? (setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId));
+        public Settings Setting => setting ?? (setting = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId));
 
         private void FetchEntities(int mid, int pid)
         {
