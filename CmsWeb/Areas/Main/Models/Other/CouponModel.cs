@@ -158,7 +158,7 @@ namespace CmsWeb.Models
 					 where orgregtypes.Contains(o.RegistrationTypeId.Value)
 					 where (o.ClassFilled ?? false) != true
 					 where (o.RegistrationClosed ?? false) == false
-					 select new { DivisionName = o.Division.Name, o.OrganizationName, o.RegSetting, o.OrganizationId, o.RegistrationTypeId }).ToList();
+					 select new { DivisionName = o.Division.Name, o.OrganizationName, o.OrganizationId, o.RegistrationTypeId }).ToList();
 
 			var qq = from i in q
 					 let os = DbUtil.Db.CreateRegistrationSettings(i.OrganizationId)

@@ -45,10 +45,5 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 throw;
             }
         }
-
-        public static Settings ParseSetting(string regSetting, int orgId)
-        {
-            return Settings.CreateSettings(regSetting, DbUtil.Db, orgId);
-        }
     }
 }

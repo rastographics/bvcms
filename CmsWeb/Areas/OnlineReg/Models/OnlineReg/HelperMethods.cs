@@ -14,20 +14,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
-        public static Organization CreateAccountOrg()
-        {
-            var settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
-            if (settings == null)
-            {
-                settings = new Dictionary<int, Settings>();
-                HttpContext.Current.Items.Add("RegSettings", settings);
-            }
-            var o = new Organization { OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data" };
-            o.RegistrationTypeId = RegistrationTypeCode.CreateAccount;
-            if (!settings.ContainsKey(Util.CreateAccountCode))
-                settings.Add(Util.CreateAccountCode, ParseSetting("AllowOnlyOne: true", Util.CreateAccountCode));
-            return o;
-        }
+//        public static Organization CreateAccountOrg()
+//        {
+//            var settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+//            if (settings == null)
+//            {
+//                settings = new Dictionary<int, Settings>();
+//                HttpContext.Current.Items.Add("RegSettings", settings);
+//            }
+//            var o = new Organization { OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data" };
+//            o.RegistrationTypeId = RegistrationTypeCode.CreateAccount;
+//            if (!settings.ContainsKey(Util.CreateAccountCode))
+//                settings.Add(Util.CreateAccountCode, ParseSetting("AllowOnlyOne: true", Util.CreateAccountCode));
+//            return o;
+//        }
 
         private Dictionary<int, Settings> _settings;
 

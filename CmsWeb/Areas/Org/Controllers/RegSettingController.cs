@@ -9,7 +9,7 @@ using UtilityExtensions;
 namespace CmsWeb.Areas.Org.Controllers
 {
     [ValidateInput(false)]
-    [RouteArea("Org", AreaPrefix="RegSettings"), Route("{action=index}/{id?}")]
+    [RouteArea("Org", AreaPrefix = "RegSettings"), Route("{action=index}/{id?}")]
     public class RegSettingController : CmsStaffController
     {
         [HttpGet, Route("~/RegSettings/{id:int}")]
@@ -18,7 +18,10 @@ namespace CmsWeb.Areas.Org.Controllers
             var org = DbUtil.Db.LoadOrganizationById(id);
             var regsetting = (string)TempData["regsetting"];
             if (!regsetting.HasValue())
-                regsetting = org.RegSetting;
+                regsetting = org.GetRegSetting();
+
+            var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
+            regsetting = os.ToString();
 
             ViewData["lines"] = Parser.SplitLines(regsetting);
             ViewData["regsetting"] = regsetting;
@@ -27,28 +30,29 @@ namespace CmsWeb.Areas.Org.Controllers
             return View();
         }
         [HttpPost]
-        [Authorize(Roles="Edit")]
+        [Authorize(Roles = "Edit")]
         public ActionResult Edit(int id, string regsetting)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
             ViewData["OrganizationId"] = id;
             ViewData["orgname"] = org.OrganizationName;
-            if (regsetting.HasValue())
-                ViewData["text"] = regsetting;
-            else
-                ViewData["text"] = org.RegSetting;
+            if (!regsetting.HasValue())
+                regsetting = org.GetRegSetting();
+            var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
+            regsetting = os.ToString();
+            ViewData["text"] = regsetting;
             return View();
         }
 
         [HttpPost]
-        [Authorize(Roles="Edit")]
+        [Authorize(Roles = "Edit")]
         public ActionResult Update(int id, string text)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
             try
             {
                 var os = DbUtil.Db.CreateRegistrationSettings(text, id);
-                org.RegSetting = text;
+                org.UpdateRegSetting(os);
             }
             catch (Exception ex)
             {
@@ -60,37 +64,26 @@ namespace CmsWeb.Areas.Org.Controllers
             return Redirect("/RegSettings/" + id);
         }
         [HttpGet]
-        [Authorize(Roles="Edit")]
-        public ActionResult EditXml(int id)
-        {
-            var org = DbUtil.Db.LoadOrganizationById(id);
-            ViewData["OrganizationId"] = id;
-            ViewData["orgname"] = org.OrganizationName;
-            var os = DbUtil.Db.CreateRegistrationSettings(id);
-            var x = Util.Serialize(os);
-            ViewData["text"] = x;
-            return View();
-        }
 
-//        [HttpPost]
-//        [Authorize(Roles="Edit")]
-//        public ActionResult UpdateXml(int id, string text)
-//        {
-//            var org = DbUtil.Db.LoadOrganizationById(id);
-//            try
-//            {
-//                var os = Settings.CreateSettings(text, DbUtil.Db, id);
-//                org.RegSetting = text;
-//            }
-//            catch (Exception ex)
-//            {
-//                TempData["error"] = ex.Message;
-//                TempData["regsetting"] = text;
-//                return Redirect("/RegSettings/" + id);
-//            }
-//            DbUtil.Db.SubmitChanges();
-//            return Redirect("/RegSettings/" + id);
-//        }
+        //        [HttpPost]
+        //        [Authorize(Roles="Edit")]
+        //        public ActionResult UpdateXml(int id, string text)
+        //        {
+        //            var org = DbUtil.Db.LoadOrganizationById(id);
+        //            try
+        //            {
+        //                var os = Settings.CreateSettings(text, DbUtil.Db, id);
+        //                org.RegSetting = text;
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                TempData["error"] = ex.Message;
+        //                TempData["regsetting"] = text;
+        //                return Redirect("/RegSettings/" + id);
+        //            }
+        //            DbUtil.Db.SubmitChanges();
+        //            return Redirect("/RegSettings/" + id);
+        //        }
         public ActionResult ConvertFromMdy(int id)
         {
             var cul = "en-US";
@@ -99,7 +92,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var org = DbUtil.Db.LoadOrganizationById(id);
             var m = DbUtil.Db.CreateRegistrationSettings(id);
             var os = DbUtil.Db.CreateRegistrationSettings(m.ToString(), id);
-            m.org.RegSetting = os.ToString();
+            m.org.UpdateRegSetting(os);
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }
@@ -111,7 +104,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var org = DbUtil.Db.LoadOrganizationById(id);
             var m = DbUtil.Db.CreateRegistrationSettings(id);
             var os = DbUtil.Db.CreateRegistrationSettings(m.ToString(), id);
-            m.org.RegSetting = os.ToString();
+            m.org.UpdateRegSetting(os);
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }

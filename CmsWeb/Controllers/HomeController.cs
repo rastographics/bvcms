@@ -146,7 +146,15 @@ namespace CmsWeb.Controllers
         }
         public ActionResult UseNewFeature(bool id)
         {
-            Util2.UseNewFeature = id;
+            Util2.UseNewFeature = !id;
+            DbUtil.Db.SubmitChanges();
+            if (Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.OriginalString);
+            return Redirect("/");
+        }
+        public ActionResult UseXmlRegistrations(bool id)
+        {
+            Util2.UseXmlRegistrations = !id;
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);

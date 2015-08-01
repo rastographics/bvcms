@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Schema;
-using System.Xml.Serialization;
-using CmsData.API;
+﻿using System.Text;
 using CmsData.Registration;
 
 namespace RegistrationSettingsParser
@@ -42,25 +35,25 @@ namespace RegistrationSettingsParser
                     Output(sb, ask as AskHeader);
                     break;
                 case "AskInstruction":
-                    Output(sb, ask as AskHeader);
+                    Output(sb, ask as AskInstruction);
                     break;
                 case "AskMenu":
-                    Output(sb, ask as AskHeader);
+                    Output(sb, ask as AskMenu);
                     break;
                 case "AskRequest":
-                    Output(sb, ask as AskHeader);
+                    Output(sb, ask as AskRequest);
                     break;
                 case "AskSize":
-                    Output(sb, ask as AskHeader);
+                    Output(sb, ask as AskSize);
                     break;
                 case "AskText":
-                    Output(sb, ask as AskHeader);
+                    Output(sb, ask as AskText);
                     break;
                 case "AskTickets":
-                    Output(sb, ask as AskHeader);
+                    Output(sb, ask as AskTickets);
                     break;
                 case "AskYesNoQuestions":
-                    Output(sb, ask as AskHeader);
+                    Output(sb, ask as AskYesNoQuestions);
                     break;
                 default:
                     AddValueCk(0, sb, ask.Type, true);

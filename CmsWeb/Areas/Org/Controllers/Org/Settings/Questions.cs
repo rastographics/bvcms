@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 }
                 var s = m.ToString();
                 m = DbUtil.Db.CreateRegistrationSettings(s, id);
-                m.org.RegSetting = m.ToString();
+                m.org.UpdateRegSetting(m);
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);

@@ -59,7 +59,7 @@ namespace CmsWeb.Areas.Org.Models
                 if (!Org.NotifyIds.HasValue())
                     Org.NotifyIds = Util.UserPeopleId.ToString();
             }
-            Org.RegSetting = os.ToString();
+            Org.UpdateRegSetting(os);
             DbUtil.Db.SubmitChanges();
         }
 

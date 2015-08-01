@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesTo(Org, typeof(OrgAttribute));
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
             var os = DbUtil.Db.CreateRegistrationSettings(RegSettings.ToString(), Id);
-            Org.RegSetting = os.ToString();
+            Org.UpdateRegSetting(os);
             DbUtil.Db.SubmitChanges();
         }
 

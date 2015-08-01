@@ -67,9 +67,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_org == null && Orgid.HasValue)
                 {
-                    _org = Orgid == Util.CreateAccountCode
-                        ? CreateAccountOrg()
-                        : DbUtil.Db.LoadOrganizationById(Orgid.Value);
+//                    _org = Orgid == Util.CreateAccountCode
+//                        ? CreateAccountOrg()
+//                        : DbUtil.Db.LoadOrganizationById(Orgid.Value);
+                    _org = DbUtil.Db.LoadOrganizationById(Orgid.Value);
                 }
                 return _org;
             }

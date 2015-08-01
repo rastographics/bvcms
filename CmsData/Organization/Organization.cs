@@ -127,6 +127,7 @@ namespace CmsData
             IsMissionTrip = frorg.IsMissionTrip;
 
             RegSetting = frorg.RegSetting;
+            RegSettingXml = frorg.RegSettingXml;
 
             CopySettings2(frorg, this);
             Db.SubmitChanges();
@@ -492,6 +493,18 @@ namespace CmsData
         public IEnumerable<OrganizationExtra> GetOrganizationExtras()
         {
             return OrganizationExtras.OrderBy(pp => pp.Field);
+        }
+
+        public void UpdateRegSetting(Registration.Settings os)
+        {
+            RegSettingXml = Util.Serialize(os);
+            RegSetting = RegistrationSettingsParser.Parser.Output(os);
+        }
+        public string GetRegSetting()
+        {
+            if (Util2.UseXmlRegistrations)
+                return RegSettingXml;
+            return RegSetting;
         }
     }
 }

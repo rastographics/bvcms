@@ -98,8 +98,6 @@
     @Helper.LiAnchorLink("Special Content", "/Display/", admin || design)
     @Helper.LiAnchorLink("Twilio", "/Twilio/", admin)
     @Helper.LiAnchorLink("Zip Codes", "/MetroZips/", admin)
-    var usenewfeature = Util2.UseNewFeature;
-    @Helper.LiAnchorLink("New Feature is " + (usenewfeature ? "ON" : "OFF"), "/Home/UseNewFeature/" + usenewfeature, developer)
     if (admin)
     {
         <li class="divider"></li>

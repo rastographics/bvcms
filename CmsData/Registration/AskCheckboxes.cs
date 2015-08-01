@@ -58,9 +58,8 @@ For each checkbox, you can specify the following:
             w.Start(Type)
                 .Attr("Minimum", Minimum)
                 .Attr("Maximum", Maximum)
-                //.Attr("Columns", Columns == 1 ? null : Columns)
-                .Attr("Columns", Columns)
-                .Add("Label", Label);
+                .Attr("Columns", Columns == 1 ? null : Columns)
+                .AddCdata("Label", Label);
             foreach (var i in list)
                 i.WriteXml(w);
             // todo: prevent duplicates

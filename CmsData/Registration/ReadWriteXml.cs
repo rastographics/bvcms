@@ -13,23 +13,22 @@ namespace CmsData.Registration
     [Serializable]
     public partial class Settings : IXmlSerializable
     {
-        public bool newWay = false;
         public override string ToString()
         {
-            return newWay ? Util.Serialize(this) : Parser.Output(this);
+            return Util2.UseXmlRegistrations ? Util.Serialize(this) : Parser.Output(this);
         }
 
-        public static Settings CreateSettings(string s, CMSDataContext db, int orgId, bool newWay = false)
+        public static Settings CreateSettings(string s, CMSDataContext db, int orgId)
         {
-            if (!newWay)
-                return Parser.ParseSettings(s, db, orgId);
-
-            var settings = Util.DeSerialize<Settings>(s);
-            settings.newWay = true;
-            settings.Db = db;
-            settings.OrgId = orgId;
-            settings.org = db.LoadOrganizationById(orgId);
-            return settings;
+            if (s.StartsWith("<?xml") || s.StartsWith("<Settings>"))
+            {
+                var settings = Util.DeSerialize<Settings>(s);
+                settings.Db = db;
+                settings.OrgId = orgId;
+                settings.org = db.LoadOrganizationById(orgId);
+                return settings;
+            }
+            return Parser.ParseSettings(s, db, orgId);
         }
 
         public void ReadXml(XmlReader reader)
@@ -180,9 +179,9 @@ namespace CmsData.Registration
                 .Add("Deposit", Deposit)
                 .Add("ExtraFee", ExtraFee)
                 .Add("MaximumFee", MaximumFee)
-                .Add("ApplyMaxToOtherFees", ApplyMaxToOtherFees)
                 .Add("ExtraValueFeeName", ExtraValueFeeName)
                 .Add("AccountingCode", AccountingCode)
+                .AddIfTrue("ApplyMaxToOtherFees", ApplyMaxToOtherFees)
                 .AddIfTrue("IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit)
                 .AddIfTrue("OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee)
                 .AddIfTrue("AskDonation", AskDonation)

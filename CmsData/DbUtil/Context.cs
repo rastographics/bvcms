@@ -1475,11 +1475,11 @@ namespace CmsData
         public Registration.Settings CreateRegistrationSettings(int orgId)
         {
             var o = LoadOrganizationById(orgId);
-            return CmsData.Registration.Settings.CreateSettings(o.RegSetting, this, orgId);
+            return Registration.Settings.CreateSettings(o.GetRegSetting(), this, orgId);
         }
         public Registration.Settings CreateRegistrationSettings(string s, int orgId)
         {
-            return CmsData.Registration.Settings.CreateSettings(s, this, orgId);
+            return Registration.Settings.CreateSettings(s, this, orgId);
         }
     }
 }
