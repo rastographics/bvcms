@@ -77,7 +77,8 @@ CREATE TABLE [dbo].[Organizations]
 [AppCategory] [varchar] (15) NULL,
 [RegistrationTitle] [nvarchar] (200) NULL,
 [PrevMemberCount] [int] NULL,
-[ProspectCount] [int] NULL
+[ProspectCount] [int] NULL,
+[RegSettingXml] [xml] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
