@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -34,16 +34,16 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
 
             Regex re = new Regex(
                 @"(?<g1>d(?<rt>.*?)d\sc(?<ac>.*?)(?:c|\s)(?<ck>.*?))$
-		|(?<g2>d(?<rt>.*?)d(?<ck>.*?)(?:c|\s)(?<ac>.*?)c[\s!]*)$
-		|(?<g3>d(?<rt>.*?)d(?<ac>.*?)c(?<ck>.*?$))
-		|(?<g4>c(?<ck>.*?)c\s*d(?<rt>.*?)d(?<ac>.*?)c\s*$)
-		", RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
+        |(?<g2>d(?<rt>.*?)d(?<ck>.*?)(?:c|\s)(?<ac>.*?)c[\s!]*)$
+        |(?<g3>d(?<rt>.*?)d(?<ac>.*?)c(?<ck>.*?$))
+        |(?<g4>c(?<ck>.*?)c\s*d(?<rt>.*?)d(?<ac>.*?)c\s*$)
+        ", RegexOptions.Multiline | RegexOptions.IgnorePatternWhitespace);
             int fieldCount = csv.FieldCount;
             var cols = csv.GetFieldHeaders();
 
             while (csv.ReadNextRecord())
             {
-                
+
                 if (!csv[12].Contains("Check"))
                     continue;
                 var bd = new CmsData.BundleDetail
@@ -65,7 +65,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     ContributionStatusId = 0,
                     ContributionTypeId = ContributionTypeCode.CheckCash,
                 };
-                string ac = null, rt = null;
+
+                string accountNumber = null;
+                string routingNumber = null;
+                string checkingNumber = null;
+                string micr = null;
+
                 for (var c = 1; c < fieldCount; c++)
                 {
                     switch (cols[c].ToLower())
@@ -91,16 +96,36 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         case "post amount":
                             bd.Contribution.ContributionAmount = csv[c].GetAmount();
                             break;
-                        //    break;
                         case "micr":
-                            var m = re.Match(csv[c]);
-                            rt = m.Groups["rt"].Value;
-                            ac = m.Groups["ac"].Value;
-                            bd.Contribution.CheckNo = m.Groups["ck"].Value.Truncate(20);
+                            micr = csv[c];
+                            break;
+                        case "r/t":
+                            routingNumber = csv[c];
+                            break;
+                        case "account number":
+                            accountNumber = csv[c];
+                            break;
+                        case "check number":
+                            checkingNumber = csv[c];
                             break;
                     }
                 }
-                var eac = Util.Encrypt(rt + "|" + ac);
+
+                if (string.IsNullOrEmpty(routingNumber) ||
+                    string.IsNullOrEmpty(accountNumber) ||
+                    string.IsNullOrEmpty(checkingNumber))
+                {
+                    var m = re.Match(micr);
+                    routingNumber = m.Groups["rt"].Value;
+                    accountNumber = m.Groups["ac"].Value;
+                    bd.Contribution.CheckNo = m.Groups["ck"].Value.Truncate(20);
+                }
+                else
+                {
+                    bd.Contribution.CheckNo = checkingNumber;
+                }
+
+                var eac = Util.Encrypt(routingNumber + "|" + accountNumber);
                 var q = from kc in DbUtil.Db.CardIdentifiers
                         where kc.Id == eac
                         select kc.PeopleId;
