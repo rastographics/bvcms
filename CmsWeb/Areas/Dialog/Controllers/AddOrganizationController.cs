@@ -29,7 +29,7 @@ namespace CmsWeb.Areas.Dialog.Controllers
             if (m.org.CampusId == 0)
                 m.org.CampusId = null;
             if (!m.org.OrganizationName.HasValue())
-                m.org.OrganizationName = "New organization needs a name";
+                m.org.OrganizationName = $"New organization needs a name ({Util.UserFullName})";
             m.org.OrganizationStatusId = 30;
             m.org.DivisionId = org.DivisionId;
 
