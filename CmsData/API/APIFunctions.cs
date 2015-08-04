@@ -6,6 +6,7 @@ using System.Text;
 using System.Web;
 using System.Xml.Serialization;
 using CmsData.Codes;
+using Dapper;
 using IronPython.Hosting;
 using UtilityExtensions;
 
@@ -367,6 +368,28 @@ class LoginInfo(object):
             var a = new AccessUsers { People = AccessUsersData(includeNoAccess).ToArray() };
             xs.Serialize(sw, a);
             return sw.ToString();
+        }
+        public string SqlScriptXml(string sqlscript)
+        {
+            var script = Db.Content(sqlscript, "");
+            if (!script.HasValue())
+                throw new Exception("no sql script found");
+            var rd = Db.Connection.ExecuteReader(script);
+            var w = new APIWriter();
+            w.Start("SqlScriptXml");
+            while (rd.Read())
+            {
+                w.Start("Row");
+                for (var i = 0; i < rd.FieldCount; i++)
+                {
+                    var name = rd.GetName(i);
+                    var value = rd.GetValue(i);
+                    w.Add(name, value);
+                }
+                w.End();
+            }
+            w.End();
+            return w.ToString();
         }
     }
 }

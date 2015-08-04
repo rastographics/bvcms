@@ -85,5 +85,24 @@ namespace CmsWeb.Areas.Public.Controllers
                 return Content($"<SQLView error=\"cannot find view guest.{id}\" />");
             }
         }
+        [HttpGet]
+        public ActionResult SqlScriptXml(string id)
+        {
+            var ret = AuthenticateDeveloper();
+            if (ret.StartsWith("!"))
+                return Content($"<SqlScriptXml id=\"{id}\" error=\"{ret.Substring(1)}\" />");
+            if (!id.HasValue())
+                return Content($"<SqlScriptXml error\"no view named {id}\" />");
+            try
+            {
+                var f = new CmsData.API.APIFunctions(DbUtil.Db);
+                var x = f.SqlScriptXml(id);
+                return Content(x, "text/xml");
+            }
+            catch (Exception)
+            {
+                return Content($"<SQLView error=\"cannot find view guest.{id}\" />");
+            }
+        }
     }
 }
