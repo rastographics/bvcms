@@ -37,8 +37,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             Index = i;
             var foundname = Parent.GetNameFor(mm => mm.List[Index].Found);
 
-            if (PeopleId > 0 && Parent.registertag.HasValue()) // from a register link, don't validate basic stuff
+            if (PeopleId > 0 && Parent.UserPeopleId.HasValue) 
             {
+                // from a register link or logged in, don't validate basic stuff
                 Found = true;
                 ValidateAgeRequirement();
             }
