@@ -435,6 +435,20 @@
         return false;
     });
 
+    $('#pendingtomember').click(function (ev) {
+        ev.preventDefault();
+        var q = $("#orgsearchform").serialize();
+        $.post("/OrgSearch/MovePendingToMember", q, function(ret) {
+            swal({
+                title: "Completed!",
+                text: ret,
+                type: "success"
+            });
+        });
+        $('#new-meetings-modal').modal('hide');
+        return false;
+    });
+
     $('#ExportExcel').click(function (ev) {
         ev.preventDefault();
         $("#orgsearchform").attr("action", "/OrgSearch/ExportExcel");
