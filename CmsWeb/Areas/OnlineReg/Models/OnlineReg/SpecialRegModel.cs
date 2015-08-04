@@ -38,6 +38,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (item.Value.AllDigits())
                     person.AddEditExtraInt(item.Key, item.Value.ToInt());
+                else if (item.Value == "true" || item.Value == "false")
+                    person.AddEditExtraBool(item.Key, item.Value.ToBool());
                 else
                     person.AddEditExtraValue(item.Key, item.Value);
                 summary.AppendFormat("{0}: {1}<br>", item.Key, item.Value);
