@@ -22,12 +22,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public static void SaveResults(int id, int peopleId, Dictionary<string, string> items)
         {
             var org = (from e in DbUtil.Db.Organizations
-                       where e.OrganizationId == id
-                       select e).FirstOrDefault();
+                where e.OrganizationId == id
+                select e).FirstOrDefault();
 
             var person = (from e in DbUtil.Db.People
-                          where e.PeopleId == peopleId
-                          select e).FirstOrDefault();
+                where e.PeopleId == peopleId
+                select e).FirstOrDefault();
 
             if (person == null) return;
             if (org == null) return;
@@ -38,6 +38,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (item.Value.AllDigits())
                     person.AddEditExtraInt(item.Key, item.Value.ToInt());
+                else if (item.Value == "true" || item.Value == "false")
+                    person.AddEditExtraBool(item.Key, item.Value.ToBool());
                 else
                     person.AddEditExtraValue(item.Key, item.Value);
                 summary.AppendFormat("{0}: {1}<br>", item.Key, item.Value);
