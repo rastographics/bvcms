@@ -181,7 +181,8 @@ namespace CmsWeb
 
             if (ex is FileNotFoundException || ex is HttpRequestValidationException)
                 e.Dismiss();
-
+            else if (IsEmailBodyError(ex))
+                e.Dismiss();
             FilterOutSensitiveFormData(e);
         }
 
@@ -191,7 +192,7 @@ namespace CmsWeb
             if (ctx == null)
                 return;
 
-            var sensitiveFormKeys = new[] {"creditcard", "ccv", "cvv", "cardnumber", "cardcode", "password", "account", "routing"};
+            var sensitiveFormKeys = new[] { "creditcard", "ccv", "cvv", "cardnumber", "cardcode", "password", "account", "routing" };
 
             var sensitiveFormData = ctx.Request.Form.AllKeys.Where(
                 k => sensitiveFormKeys.Contains(k.ToLower(), StringComparer.OrdinalIgnoreCase)).ToList();
@@ -203,6 +204,26 @@ namespace CmsWeb
             sensitiveFormData.ForEach(k => error.Form.Set(k, "*****"));
             ErrorLog.GetDefault(ctx).Log(error);
             e.Dismiss();
+        }
+
+        void Application_Error(Object sender, EventArgs e)
+        {
+            var ex = Server.GetLastError();
+            if (!IsEmailBodyError(ex))
+                return;
+            var httpContext = ((MvcApplication)sender).Context;
+            httpContext.ClearError();
+        }
+
+        private bool IsEmailBodyError(Exception ex)
+        {
+            if (ex is ArgumentException && ex.Message.Contains("GetEmailBody"))
+            {
+                var a = Request.Path.Split('/');
+                if (a.Length > 0 && !a[a.Length - 1].AllDigits())
+                    return true;
+            }
+            return false;
         }
 
         private static bool IsAuthorizedToViewProfiler(HttpRequest request)
