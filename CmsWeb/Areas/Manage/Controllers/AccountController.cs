@@ -281,6 +281,13 @@ namespace CmsWeb.Areas.Manage.Controllers
             if ((p.Age ?? 16) < minage)
                 return Content($"must be Adult ({minage} or older)");
             var user = MembershipService.CreateUser(DbUtil.Db, pid);
+            var roles = p.GetExtra("Roles");
+            if(roles.HasValue())
+            {
+                user.AddRoles(DbUtil.Db, roles.Split(','));
+                p.RemoveExtraValue(DbUtil.Db, "Roles");
+                DbUtil.Db.SubmitChanges();
+            }
             FormsAuthentication.SetAuthCookie(user.Username, false);
             AccountModel.SetUserInfo(user.Username, Session);
 
