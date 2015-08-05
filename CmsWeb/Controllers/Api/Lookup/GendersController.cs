@@ -18,7 +18,7 @@ namespace CmsWeb.Controllers.Api.Lookup
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.Campus.Project().To<ApiGender>().AsQueryable());
+            return Ok(DbUtil.Db.Genders.Project().To<ApiGender>().AsQueryable());
         }
     }
 }
