@@ -86,7 +86,7 @@ BVCMS is maintained by TouchPointSoftware, LLC.
 
 ### Using BVCMS
 
-For addition information on how to use BVCMS, please see the **[TouchPointSoftware Documentation][DOC]**.
+For additional information on how to use BVCMS, please see the **[TouchPointSoftware Documentation][DOC]**.
 
 ### Additional Notes
 
