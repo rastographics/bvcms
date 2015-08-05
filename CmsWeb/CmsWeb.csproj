@@ -586,6 +586,7 @@
     <Compile Include="Code\DecimalModelBinder.cs" />
     <Compile Include="Code\JsonNetValueProviderFactory.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
+    <Compile Include="Controllers\Api\ApiOptions.cs" />
     <Compile Include="Controllers\Api\Lookup\ContributionTypesController.cs" />
     <Compile Include="Controllers\Api\Lookup\GendersController.cs" />
     <Compile Include="Controllers\Api\Lookup\FamilyPositionsController.cs" />
