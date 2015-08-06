@@ -1483,7 +1483,6 @@
     <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
     <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Scripts\additional-methods.js" />
     <Content Include="Scripts\additional-methods.min.js" />
     <Content Include="Areas\Reports\Views\Reports\EditCustomReport.cshtml" />
