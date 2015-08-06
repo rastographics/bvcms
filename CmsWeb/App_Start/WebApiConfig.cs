@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
+using System.Web.OData.Formatter;
 using CmsWeb.Code;
 using CmsWeb.Models.Api;
 
@@ -30,6 +31,10 @@ namespace CmsWeb
                 model: MapAllODataModels("CmsWeb.Models.Api.Lookup").GetEdmModel());
 
             config.Filters.Add(new DeveloperAuthorizeAttribute());
+
+            // fix for XML support (use Accept: application/xml)
+            var formatters = ODataMediaTypeFormatters.Create();
+            config.Formatters.InsertRange(0, formatters);
         }
 
         private static ODataConventionModelBuilder MapAllODataModels(string namespaceForTypes)
