@@ -65,7 +65,7 @@
     $("#search").click(function (ev) {
         ev.preventDefault();
         var name = $('#Name').val();
-        if (name.startsWith("M."))  {
+        if (name.startsWith("M.")) {
             $('#Name').val("");
             var f = $('#resultsTable').closest('form');
             f.attr("action", "/OrgSearch/CreateMeeting/" + name);
@@ -95,11 +95,19 @@
             $('#results').replaceWith(ret).ready(function () {
                 $.fmtTable();
                 $("#totalcount").text($("#totcnt").val());
+                $.setFiltered();
                 $.unblock();
             });
         });
         return false;
     };
+    $.setFiltered = function () {
+        if ($("#filtered").val() === "True")
+            $("#totalcount").addClass("alert-danger");
+        else
+            $("#totalcount").removeClass("alert-danger");
+    }
+    $.setFiltered();
 
     $('body').on('click', '#resultsTable > thead a.sortable', function (ev) {
         ev.preventDefault();
@@ -168,7 +176,7 @@
         return $.descredit($(this).prev());
     });
 
-    $.descredit = function($a) {
+    $.descredit = function ($a) {
         if ($a.text() === "edit")
             $a.html('');
 
@@ -405,7 +413,7 @@
             $("#orgsearchform").attr("action", "/Reports/RallyRollsheets" + args);
         else
             $("#orgsearchform").attr("action", "/Reports/Rollsheet" + args);
-        $("#orgsearchform").attr("target","_blank");
+        $("#orgsearchform").attr("target", "_blank");
         $("#orgsearchform").submit();
         $("#orgsearchform").removeAttr("target");
         return false;
@@ -438,7 +446,7 @@
     $('#pendingtomember').click(function (ev) {
         ev.preventDefault();
         var q = $("#orgsearchform").serialize();
-        $.post("/OrgSearch/MovePendingToMember", q, function(ret) {
+        $.post("/OrgSearch/MovePendingToMember", q, function (ret) {
             swal({
                 title: "Completed!",
                 text: ret,
@@ -509,11 +517,11 @@
         });
     });
 
-    $('#meetings-daterange-modal').on('hidden.bs.modal', function() {
+    $('#meetings-daterange-modal').on('hidden.bs.modal', function () {
         $("#attdetail2").off("click");
     });
 
-    $(".MonthReport").click(function(ev) {
+    $(".MonthReport").click(function (ev) {
         ev.preventDefault();
         $('#meetings-month-action').val(this.href);
         $('#meetings-month-modal').modal('show');
@@ -525,7 +533,7 @@
             ev2.preventDefault();
             $('#meetings-month-modal').modal('hide');
             var args = "?dt1=" + $('#monthdt1').val();
-            $("#orgsearchform").attr("action",  $('#meetings-month-action').val() + args);
+            $("#orgsearchform").attr("action", $('#meetings-month-action').val() + args);
             $("#orgsearchform").submit();
             return false;
         });
