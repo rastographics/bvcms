@@ -87,7 +87,7 @@
         <div class="visible-xs-block">
             @if (User.IsInRole("Edit"))
             {
-                <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-block btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-block btn-primary"><i class="fa fa-pencil"></i> Edit</a>
             }
             <a href="/Org/AttendanceHelpToggle/@Model.Id" class="btn btn-default btn-block ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
         </div>
@@ -98,7 +98,7 @@
             <a href="/Org/AttendanceHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
             @if (User.IsInRole("Edit"))
             {
-                <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                <a href="/Org/AttendanceEdit/@Model.Id" class="btn edit ajax btn-primary"><i class="fa fa-pencil"></i> Edit</a>
             }
         </div>
     }

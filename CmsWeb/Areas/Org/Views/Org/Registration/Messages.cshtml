@@ -104,7 +104,7 @@
         <div class="visible-xs-block">
             @if (User.IsInRole("Edit"))
             {
-                <a href="/Org/MessagesEdit/@Model.Id" class="btn edit ajax btn-default btn-block"><i class="fa fa-pencil"></i> Edit</a>
+                <a href="/Org/MessagesEdit/@Model.Id" class="btn edit ajax btn-primary btn-block"><i class="fa fa-pencil"></i> Edit</a>
             }
             <a href="/Org/MessagesHelpToggle/@Model.Id" class="btn btn-default btn-block ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
         </div>
@@ -115,7 +115,7 @@
             <a href="/Org/MessagesHelpToggle/@Model.Id" class="btn btn-default ajax"><i class="fa fa-question-circle"></i> @(ViewBag.ShowHelp == true ? "Hide Help" : "Show Help")</a>
             @if (User.IsInRole("Edit"))
             {
-                <a href="/Org/MessagesEdit/@Model.Id" class="btn edit ajax btn-default"><i class="fa fa-pencil"></i> Edit</a>
+                <a href="/Org/MessagesEdit/@Model.Id" class="btn edit ajax btn-primary"><i class="fa fa-pencil"></i> Edit</a>
             }
         </div>
     }
