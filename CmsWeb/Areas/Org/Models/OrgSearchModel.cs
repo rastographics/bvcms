@@ -164,7 +164,7 @@ namespace CmsWeb.Areas.Search.Models
 
         public string FilteredCount()
         {
-            return $"{Count():N0} {(IsFiltered() ? " Filtered" : "")}";
+            return $"{Count():N0} {(IsFiltered() ? " (filtered)" : "")}";
         }
         public bool IsFiltered()
         {
