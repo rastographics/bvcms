@@ -201,6 +201,15 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (user.InRole("APIOnly"))
                 return Message($"Api User is limited to API use only, no interactive login allowed");
 
+            var newleadertag = DbUtil.Db.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
+            if (newleadertag != null)
+            {
+                if(!user.InRole("Access")) // if they already have Access role, then don't limit them with OrgLeadersOnly
+                    user.AddRoles(DbUtil.Db, "Access,OrgLeadersOnly".Split(','));
+                DbUtil.Db.Tags.DeleteOnSubmit(newleadertag);
+                DbUtil.Db.SubmitChanges();
+            }
+
             if (!m.ReturnUrl.HasValue())
                 if (!CMSRoleProvider.provider.IsUserInRole(user.Username, "Access"))
                     return Redirect("/Person2/" + Util.UserPeopleId);
@@ -283,12 +292,23 @@ namespace CmsWeb.Areas.Manage.Controllers
             if ((p.Age ?? 16) < minage)
                 return Content($"must be Adult ({minage} or older)");
             var user = MembershipService.CreateUser(DbUtil.Db, pid);
-            var roles = p.GetExtra("Roles");
-            if(roles.HasValue())
+            var newleadertag = DbUtil.Db.FetchTag("NewOrgLeadersOnly", p.PeopleId, DbUtil.TagTypeId_System);
+            if (newleadertag != null)
             {
-                user.AddRoles(DbUtil.Db, roles.Split(','));
-                p.RemoveExtraValue(DbUtil.Db, "Roles");
+                if(!user.InRole("Access")) // if they already have Access role, then don't limit them with OrgLeadersOnly
+                    user.AddRoles(DbUtil.Db, "Access,OrgLeadersOnly".Split(','));
+                DbUtil.Db.Tags.DeleteOnSubmit(newleadertag);
                 DbUtil.Db.SubmitChanges();
+            }
+            else // todo: remove this when things have settled
+            {
+                var roles = p.GetExtra("Roles");
+                if(roles.HasValue())
+                {
+                    user.AddRoles(DbUtil.Db, roles.Split(','));
+                    p.RemoveExtraValue(DbUtil.Db, "Roles");
+                    DbUtil.Db.SubmitChanges();
+                }
             }
             FormsAuthentication.SetAuthCookie(user.Username, false);
             AccountModel.SetUserInfo(user.Username, Session);

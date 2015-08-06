@@ -55,8 +55,12 @@
             $("#Field").change(function(ev) {
                 ev.preventDefault();
 
-                if ($('#Field').val() == 'Drop All Enrollments') {
+                if ($('#Field').val() === 'Drop All Enrollments') {
                     $('#danger').show();
+                    $('#lookup-value-selection').html('');
+                    return true;
+                } else if ($('#Field').val() === 'New OrgLeadersOnly') {
+                    $('#danger').hide();
                     $('#lookup-value-selection').html('');
                     return true;
                 } else {
