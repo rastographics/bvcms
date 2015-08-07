@@ -360,12 +360,16 @@ namespace CmsData
             if (pi == null) // the target has none
                 foreach (var i in PaymentInfos)
                     DbUtil.Db.PaymentInfos.InsertOnSubmit(
-                        new PaymentInfo()
+                        new PaymentInfo
                             {
                                 Address = i.Address,
+                                Address2 = i.Address2,
                                 AuNetCustId = i.AuNetCustId,
                                 AuNetCustPayId = i.AuNetCustPayId,
+                                AuNetCustPayBankId = i.AuNetCustPayBankId,
+                                BluePayCardVaultId = i.BluePayCardVaultId,
                                 City = i.City,
+                                Country = i.Country,
                                 Expires = i.Expires,
                                 FirstName = i.FirstName,
                                 LastName = i.LastName,
@@ -383,6 +387,8 @@ namespace CmsData
                                 Suffix = i.Suffix,
                                 Testing = i.Testing,
                                 Zip = i.Zip,
+                                TbnBankVaultId = i.TbnBankVaultId,
+                                TbnCardVaultId = i.TbnCardVaultId
                             });
             TrySubmit(db, "PaymentInfos");
 
