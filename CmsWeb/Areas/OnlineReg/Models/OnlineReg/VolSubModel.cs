@@ -9,6 +9,7 @@ using CmsWeb.Areas.Main.Models;
 using TaskAlias = System.Threading.Tasks.Task;
 using System.Threading;
 using System.Web.Mvc;
+using CmsData.Codes;
 using CmsData.View;
 using Elmah;
 
@@ -284,7 +285,7 @@ Sorry, I cannot sub for you.</a>";
                      where rr.SubstituteId == sid
                      select rr).Single();
 
-            if (attend.SubRequests.Any(ss => ss.CanSub == true))
+            if (attend.Commitment == AttendCommitmentCode.SubFound || attend.SubRequests.Any(ss => ss.CanSub == true))
             {
                 DisplayMessage = "This substitute request has already been covered. Thank you so much for responding.";
                 Log("Covered", i.Requested, i.SubstituteId);
@@ -300,8 +301,8 @@ Sorry, I cannot sub for you.</a>";
                 return;
             }
             i.CanSub = true;
-            Attend.MarkRegistered(Db, i.Substitute.PeopleId, attend.MeetingId, CmsData.Codes.AttendCommitmentCode.Substitute);
-            attend.Commitment = CmsData.Codes.AttendCommitmentCode.SubFound;
+            Attend.MarkRegistered(Db, i.Substitute.PeopleId, attend.MeetingId, AttendCommitmentCode.Substitute);
+            attend.Commitment = AttendCommitmentCode.SubFound;
             Log("Claimed", i.Requested, i.SubstituteId);
             Db.SubmitChanges();
             var body = $@"
