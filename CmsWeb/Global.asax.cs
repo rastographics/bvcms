@@ -19,7 +19,7 @@ using UtilityExtensions;
 
 namespace CmsWeb
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : HttpApplication
     {
 
         protected void Application_Start()
@@ -46,6 +46,8 @@ namespace CmsWeb
 
         protected void Session_Start(object sender, EventArgs e)
         {
+            if (ShouldBypassProcessing()) return;
+
             if (Util.Host.StartsWith("direct"))
                 return;
             if (User.Identity.IsAuthenticated)
@@ -66,9 +68,7 @@ namespace CmsWeb
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            var url = Request.Url.OriginalString;
-            if (url.Contains("/Errors/") || url.Contains("/Content/touchpoint/") || url.Contains("healthcheck.txt"))
-                return;
+            if (ShouldBypassProcessing()) return;
 
             if (Util.AppOffline)
             {
@@ -119,12 +119,14 @@ namespace CmsWeb
 
         protected void Application_EndRequest(object sender, EventArgs e)
         {
+            if (ShouldBypassProcessing()) return;
+
             if (HttpContext.Current != null)
                 DbUtil.DbDispose();
             if (Response.Status.StartsWith("401")
                     && Request.Url.AbsolutePath.EndsWith(".aspx"))
             {
-                var r = Models.AccountModel.CheckAccessRole(User.Identity.Name);
+                var r = AccountModel.CheckAccessRole(User.Identity.Name);
                 if (r.HasValue())
                     Response.Redirect(r);
             }
@@ -134,6 +136,8 @@ namespace CmsWeb
 
         protected void Application_PostAuthorizeRequest()
         {
+            if (ShouldBypassProcessing()) return;
+
             if (!IsAuthorizedToViewProfiler(Request))
                 MiniProfiler.Stop(discardResults: true);
         }
@@ -208,7 +212,7 @@ namespace CmsWeb
             e.Dismiss();
         }
 
-        void Application_Error(Object sender, EventArgs e)
+        void Application_Error(object sender, EventArgs e)
         {
             var ex = Server.GetLastError();
             if (!IsEmailBodyError(ex))
@@ -238,6 +242,16 @@ namespace CmsWeb
                 return false;
 
             return ctx.User.IsInRole("Developer") && DbUtil.Db.Setting("MiniProfileEnabled", "false") == "true";
+        }
+
+        private bool ShouldBypassProcessing()
+        {
+            var url = Request.Url.OriginalString;
+
+            return url.Contains("/Errors/", ignoreCase: true) ||
+                url.Contains("/Content/touchpoint/", ignoreCase: true) ||
+                url.Contains("healthcheck.txt", ignoreCase: true) ||
+                url.Contains("favicon.ico", ignoreCase: true);
         }
     }
 }
