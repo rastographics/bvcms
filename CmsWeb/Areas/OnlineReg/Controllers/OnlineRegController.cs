@@ -62,7 +62,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.Orgid == Util.CreateAccountCode)
             {
-                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: Util.UserPeopleId, did: m.DatumId);
+                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: Util.UserPeopleId, datumId: m.DatumId);
                 return Content("/Person2/" + Util.UserPeopleId); // they already have an account, so take them to their page
             }
             m.UserPeopleId = Util.UserPeopleId;

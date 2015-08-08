@@ -36,6 +36,8 @@ namespace CmsData
 		
 		private int? _DatumId;
 		
+		private string _ClientIp;
+		
    		
     	
 	#endregion
@@ -71,6 +73,9 @@ namespace CmsData
 		
 		partial void OnDatumIdChanging(int? value);
 		partial void OnDatumIdChanged();
+		
+		partial void OnClientIpChanging(string value);
+		partial void OnClientIpChanged();
 		
     #endregion
 		public ActivityLog()
@@ -274,6 +279,28 @@ namespace CmsData
 					this._DatumId = value;
 					this.SendPropertyChanged("DatumId");
 					this.OnDatumIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="ClientIp", UpdateCheck=UpdateCheck.Never, Storage="_ClientIp", DbType="nvarchar(50)")]
+		public string ClientIp
+		{
+			get { return this._ClientIp; }
+
+			set
+			{
+				if (this._ClientIp != value)
+				{
+				
+                    this.OnClientIpChanging(value);
+					this.SendPropertyChanging();
+					this._ClientIp = value;
+					this.SendPropertyChanged("ClientIp");
+					this.OnClientIpChanged();
 				}
 
 			}
