@@ -156,8 +156,11 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return false;
             if (!Util.IsDebug())
                 return false;
+#if Impersonate
+#else
             if (!WebConfigurationManager.AppSettings["TryImpersonate"].ToBool())
                 return false;
+#endif
             var username = WebConfigurationManager.AppSettings["DebugUser"];
             if (!username.HasValue())
                 return false;
