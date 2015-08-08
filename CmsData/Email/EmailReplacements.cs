@@ -55,19 +55,34 @@ namespace CmsData
             currentOrgId = callingContext.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
+            db = callingContext;
             this.from = from;
 
             if (text == null)
                 text = "(no content)";
 
             var pattern =
-                $@"(<style.*?</style>|{{[^}}]*?}}|{RegisterLinkRe}|{RegisterTagRe}|{RsvpLinkRe}|{RegisterHrefRe}|{
-                    SendLinkRe}|{SupportLinkRe}|{MasterLinkRe}|{VolReqLinkRe}|{VolReqLinkRe}|{VolSubLinkRe}|{VoteLinkRe
-                    })";
+                $@"(<style.*?</style>|{{[^}}]*?}}|{RegisterLinkRe}|{RegisterTagRe}|{RsvpLinkRe}|{RegisterHrefRe}|
+                    {SendLinkRe}|{SupportLinkRe}|{MasterLinkRe}|{VolReqLinkRe}|{VolReqLinkRe}|{VolSubLinkRe}|{VoteLinkRe})";
+
+            // we do the InsertDrafts replacement code here so that it is only inserted once before the replacements
+            // and so that there can be replacement codes in the draft itself and they will get replaced.
+            text = DoInsertDrafts(text);
 
             text = MapUrlEncodedReplacementCodes(text, new[] { "emailhref" });
 
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        }
+        private string DoInsertDrafts(string text)
+        {
+            var a = Regex.Split(text, "({insertdraft:.*?})", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            if (a.Length <= 2)
+                return text;
+            for (var i = 1; i < a.Length; i += 2)
+                if (a[i].StartsWith("{insertdraft:"))
+                    a[i] = InsertDraft(a[i]);
+            text = string.Join("", a);
+            return text;
         }
 
         public List<MailAddress> ListAddresses { get; set; }
@@ -311,9 +326,6 @@ namespace CmsData
                     if (code.StartsWith("{addsmallgroup:", StringComparison.OrdinalIgnoreCase))
                         return AddSmallGroup(code, emailqueueto);
 
-                    if (code.StartsWith("{insertdraft:", StringComparison.OrdinalIgnoreCase))
-                        return InsertDraft(code);
-
                     if (code.StartsWith("{extra", StringComparison.OrdinalIgnoreCase))
                         return ExtraValue(code, emailqueueto);
 
@@ -412,11 +424,6 @@ namespace CmsData
                 om.AddToGroup(db, @group);
             return "";
         }
-
-        /// <summary>
-        /// Parse InsertDraft Replacement code to recover the named of the Saved Email Draft
-        /// Return the content of the body of the Saved Draft
-        /// </summary>
         const string insertDraftRe = @"\{insertdraft:(?<draft>.*?)}";
         readonly Regex InsertDraftRe = new Regex(insertDraftRe, RegexOptions.Singleline);
         private string InsertDraft(string code)
