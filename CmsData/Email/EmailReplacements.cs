@@ -65,7 +65,7 @@ namespace CmsData
                     SendLinkRe}|{SupportLinkRe}|{MasterLinkRe}|{VolReqLinkRe}|{VolReqLinkRe}|{VolSubLinkRe}|{VoteLinkRe
                     })";
 
-            text = MapUrlEncodedReplacementCodes(text, new[]{ "emailhref" });
+            text = MapUrlEncodedReplacementCodes(text, new[] { "emailhref" });
 
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
@@ -338,13 +338,13 @@ namespace CmsData
                     if (code.StartsWith("{orgmember:", StringComparison.OrdinalIgnoreCase))
                         return OrgMember(code, emailqueueto);
 
-                    if(code.StartsWith("{orgbarcode:"))
+                    if (code.StartsWith("{orgbarcode:"))
                         return
                             $"<img src='{db.ServerLink($"/Track/Barcode/{code.Substring(12).TrimEnd('}').ToInt()}-{p.PeopleId}")}' />";
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
-                    
+
                     if (regTextRe.IsMatch(code))
                         return RegText(code, emailqueueto);
 
@@ -421,13 +421,14 @@ namespace CmsData
         readonly Regex InsertDraftRe = new Regex(insertDraftRe, RegexOptions.Singleline);
         private string InsertDraft(string code)
         {
-           var match = InsertDraftRe.Match(code);
-           if (!match.Success)
+            var match = InsertDraftRe.Match(code);
+            if (!match.Success)
                 return code;
 
-           var draft = match.Groups["draft"].Value;
-        
-           return db.ContentOfTypeSavedDraft(draft);
+            var draft = match.Groups["draft"].Value;
+
+            var s = db.ContentOfTypeSavedDraft(draft);
+            return s;
         }
 
         const string OrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";
@@ -491,10 +492,10 @@ namespace CmsData
                 return $@"<a href=""{link}"">Set password for {user.Username}</a>";
             }
             var ot = new OneTimeLink
-                {
-                    Id = Guid.NewGuid(),
-                    Querystring = emailqueueto.PeopleId.ToString()
-                };
+            {
+                Id = Guid.NewGuid(),
+                Querystring = emailqueueto.PeopleId.ToString()
+            };
             db.OneTimeLinks.InsertOnSubmit(ot);
             db.SubmitChanges();
             var url = db.ServerLink($"/Account/CreateAccount/{ot.Id.ToCode()}");
@@ -581,10 +582,10 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
@@ -616,10 +617,10 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
@@ -675,10 +676,10 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
@@ -714,10 +715,10 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
@@ -803,10 +804,10 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
@@ -834,10 +835,10 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
@@ -949,10 +950,10 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
@@ -1021,10 +1022,10 @@ namespace CmsData
             var showfamily = linktype == "registerlink2";
             var qs = $"{orgid},{pid},{queueid},{linktype}";
             var ot = new OneTimeLink
-                {
-                    Id = Guid.NewGuid(),
-                    Querystring = qs,
-                };
+            {
+                Id = Guid.NewGuid(),
+                Querystring = qs,
+            };
             if (expires.HasValue)
                 ot.Expires = expires.Value;
             db.OneTimeLinks.InsertOnSubmit(ot);

@@ -54,7 +54,7 @@ namespace CmsWeb.Models
                     let div = DbUtil.Db.Divisions.SingleOrDefault(d => d.Id == DivId && d.ProgId == ProgId)
                     let org = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
                     let org2 = DbUtil.Db.Organizations.SingleOrDefault(o => o.OrganizationId == SourceId && o.DivOrgs.Any(d => d.DivId == DivId))
-                    select new {div, noorg = org == null, noorg2 = org2 == null};
+                    select new { div, noorg = org == null, noorg2 = org2 == null };
             var i = q.SingleOrDefault();
             if (i == null)
                 ProgId = DivId = SourceId = TargetId = 0;
@@ -124,7 +124,7 @@ namespace CmsWeb.Models
                         Text = o.OrganizationName + sctime
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return list;
         }
 
@@ -146,7 +146,7 @@ namespace CmsWeb.Models
                         Text = o.OrganizationName + sctime + " (" + cmales + "+" + cfemales + "=" + (cmales + cfemales) + ")"
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return list;
         }
 
@@ -154,7 +154,7 @@ namespace CmsWeb.Models
         {
             if (_members == null)
             {
-                var glist = new int[] {};
+                var glist = new int[] { };
                 if (Grades.HasValue())
                     glist = (from g in (Grades ?? "").Split(',')
                              select g.ToInt()).ToArray();
@@ -368,26 +368,10 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                         om.Organization.LeaderName,
                         om.Organization.PhoneNumber
                     };
-            var sb = new StringBuilder("Org Assignment Notices sent to:\r\n<pre>\r\n");
+            var sb = new StringBuilder("Room Notices sent to:\r\n<pre>\r\n");
             foreach (var i in q)
             {
-<<<<<<< HEAD
                 string subj = $"{i.OrganizationName} room assignment";
-=======
-                string subj = DbUtil.Db.ContentHtml("OrgMembersModel_SendMovedNotices_Subject", Resource1.OrgMembersModel_SendMovedNotices_Subject);
-
-                if (subj == null)
-                    subj = "{0} room assignment".Fmt(i.OrganizationName);
-                else
-                    subj = subj.Replace("{name}", i.Name)
-                     .Replace("{org}", i.OrganizationName)
-                     .Replace("{room}", i.Location)
-                     .Replace("{leader}", i.LeaderName)
-                     .Replace("{phone}", Util.PickFirst(i.PhoneNumber.FmtFone(), DbUtil.Db.Setting("ChurchPhone", "ChurchPhone")))
-                     .Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "NameOfChurch"));
-                          
-
->>>>>>> f3789378f956443b7013900a4fd551a6fd35489c
                 var msg = DbUtil.Db.ContentHtml("OrgMembersModel_SendMovedNotices", Resource1.OrgMembersModel_SendMovedNotices);
                 msg = msg.Replace("{name}", i.Name)
                     .Replace("{org}", i.OrganizationName)
@@ -432,11 +416,11 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             if (onlineorg == null)
                 Db.Email(Db.CurrentUser.Person.FromEmail,
                     Db.CurrentUserPerson,
-                    "Org Assignment notices sent to:", sb.ToString());
+                    "room notices sent to:", sb.ToString());
             else
                 Db.Email(Db.CurrentUser.Person.FromEmail,
                     Db.PeopleFromPidString(onlineorg.NotifyIds),
-                    "Org Assignment notices sent to:", sb.ToString());
+                    "room notices sent to:", sb.ToString());
             Db.SubmitChanges();
         }
 
