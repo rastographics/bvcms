@@ -35,6 +35,7 @@ namespace CmsData
 	        public string City { get; set; }
 	        public string State { get; set; }
 	        public string Zip { get; set; }
+	        public int ExpireDays { get; set; }
 	        public bool Changed (string addr1, string addr2, string city, string state, string zip )
             { 
                 return Line1 != addr1 || (Line2 ?? "") != (addr2 ?? "") || City != city || State != state || (Zip ?? "") != (zip ?? "");
@@ -69,7 +70,12 @@ namespace CmsData
 			        ret.found = false;
 			    if (ret.error == "unauthorized")
 			        ret.Line1 = "error";
-				return ret;
+			    if (ret.ExpireDays < 0 || ret.address.Trim() == ",")
+			    {
+			        ret.Line1 = "AMS Database expired";
+			        ret.found = false;
+			    }
+			    return ret;
 			}
 			catch (Exception)
 			{

@@ -42,9 +42,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #else
                 if (ot.Used)
                     throw new Exception("link used");
-#endif
                 if (ot.Expires.HasValue && ot.Expires < DateTime.Now)
                     throw new Exception("link expired");
+#endif
 
                 registertag = regtag;
                 var a = ot.Querystring.Split(',');

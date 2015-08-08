@@ -162,6 +162,20 @@ namespace CmsWeb.Areas.Search.Models
             return _count.Value;
         }
 
+        public string FilteredCount()
+        {
+            return $"{Count():N0} {(IsFiltered() ? " (filtered)" : "")}";
+        }
+        public bool IsFiltered()
+        {
+            return Name.HasValue() 
+                || ProgramId > 0 
+                || (TypeId ?? 0) != 0 
+                || CampusId > 0 
+                || ScheduleId > 0 
+                || StatusId != 30
+                || OnlineReg > 0;
+        }
         private List<OrgSearch> FetchOrgsList()
         {
             if (organizations == null)

@@ -2316,6 +2316,47 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.ContributionSearch", IsComposable = true)]
+        public IQueryable< View.ContributionSearch > ContributionSearch(
+            [Parameter(DbType="nvarchar")] string name,
+            [Parameter(DbType="nvarchar")] string comments,
+            [Parameter(DbType="int")] int? bundletype,
+            [Parameter(DbType="int")] int? type,
+            [Parameter(DbType="int")] int? status,
+            [Parameter(DbType="money")] decimal? minamt,
+            [Parameter(DbType="money")] decimal? maxamt,
+            [Parameter(DbType="datetime")] DateTime? startdate,
+            [Parameter(DbType="datetime")] DateTime? enddate,
+            [Parameter(DbType="varchar")] string taxnontax,
+            [Parameter(DbType="int")] int? fundid,
+            [Parameter(DbType="int")] int? campusid,
+            [Parameter(DbType="int")] int? year,
+            [Parameter(DbType="bit")] bool? includeunclosedbundles,
+            [Parameter(DbType="bit")] bool? mobile,
+            [Parameter(DbType="int")] int? online
+            )
+        {
+            return CreateMethodCallQuery< View.ContributionSearch>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    name,
+                    comments,
+                    bundletype,
+                    type,
+                    status,
+                    minamt,
+                    maxamt,
+                    startdate,
+                    enddate,
+                    taxnontax,
+                    fundid,
+                    campusid,
+                    year,
+                    includeunclosedbundles,
+                    mobile,
+                    online
+                );
+        }
+
         [Function(Name="dbo.Contributors", IsComposable = true)]
         public IQueryable< View.Contributor > Contributors(
             [Parameter(DbType="datetime")] DateTime? fd,
@@ -3595,6 +3636,17 @@ namespace CmsData
             return CreateMethodCallQuery< View.TaggedPerson>(this,
                 ((MethodInfo)(MethodBase.GetCurrentMethod())),
                     tagid
+                );
+        }
+
+        [Function(Name="dbo.TPStats", IsComposable = true)]
+        public IQueryable< View.TPStat > TPStats(
+            [Parameter(DbType="varchar")] string emails
+            )
+        {
+            return CreateMethodCallQuery< View.TPStat>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    emails
                 );
         }
 

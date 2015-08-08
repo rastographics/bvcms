@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Code;
 using CmsWeb.Models;
 using OfficeOpenXml;
 using UtilityExtensions;
@@ -53,30 +54,7 @@ namespace CmsWeb
 
         public string AuthenticateDeveloper(bool log = false, string addrole = "")
         {
-            var auth = Request.Headers["Authorization"];
-            if (auth.HasValue())
-            {
-                var cred = Encoding.ASCII.GetString(
-                    Convert.FromBase64String(auth.Substring(6))).Split(':');
-                var username = cred[0];
-                var password = cred[1];
-
-                var valid = CMSMembershipProvider.provider.ValidateUser(username, password);
-                if (valid)
-                {
-                    var roles = CMSRoleProvider.provider;
-                    var u = AccountModel.SetUserInfo(username, Session);
-                    if (!roles.IsUserInRole(username, "Developer"))
-                        valid = false;
-                    if (addrole.HasValue() && !roles.IsUserInRole(username, addrole))
-                        valid = false;
-                }
-                var ret = valid ? $" API {username} authenticated" : $"!API {username} not authenticated";
-                if (log)
-                    DbUtil.LogActivity(ret.Substring(1));
-                return ret;
-            }
-            return "!API no Authorization Header";
+            return AuthHelper.AuthenticateDeveloper(System.Web.HttpContext.Current, log, addrole).Message;
         }
 
         public ViewResult Message(string text)

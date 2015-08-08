@@ -32,35 +32,47 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             DbUtil.Db.SetNoLock();
             modelState = modelstate;
-            Index = i;
-            if (selectFromFamily == false)
-                PeopleId = null; // not found yet
-
             IsValidForContinue = true; // true till proven false
             IsValidForExisting = true; // true till proven false
-
+            Index = i;
             var foundname = Parent.GetNameFor(mm => mm.List[Index].Found);
-            if (IsFamily)
-                foundname = "fammember-" + PeopleId;
 
-            ValidateBasic();
-            if (!modelState.IsValid)
-                return;
-            Found = person != null;
-            ValidateAgeRequirement();
-            ValidateEmail();
-
-            if (!modelState.IsValid)
+            if (PeopleId > 0 && Parent.UserPeopleId.HasValue) 
             {
-                ValidateBirthdayRange();
-                IsValidForExisting = false;
-                return;
+                // from a register link or logged in, don't validate basic stuff
+                Found = true;
+                ValidateAgeRequirement();
             }
-
-            if (count != 1)
+            else // validate basic stuff
             {
-                IsValidForExisting = false;
-                return;
+                if (selectFromFamily == false)
+                    PeopleId = null; // not found yet
+
+                if (IsFamily)
+                    foundname = "fammember-" + PeopleId;
+
+                ValidateBasic();
+                if (!modelState.IsValid)
+                {
+                    IsValidForExisting = false;
+                    return;
+                }
+                Found = person != null;
+                ValidateAgeRequirement();
+                ValidateEmail();
+
+                if (!modelState.IsValid)
+                {
+                    ValidateBirthdayRange();
+                    IsValidForExisting = false;
+                    return;
+                }
+
+                if (count != 1)
+                {
+                    IsValidForExisting = false;
+                    return;
+                }
             }
 
             PopulateExistingInformation();

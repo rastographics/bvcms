@@ -3,6 +3,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.People.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
 {
@@ -26,7 +27,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult UpdateRelation(int id, int id1, int id2, string value)
         {
             var r = DbUtil.Db.RelatedFamilies.SingleOrDefault(rr => rr.FamilyId == id1 && rr.RelatedFamilyId == id2);
-            r.FamilyRelationshipDesc = value;
+            r.FamilyRelationshipDesc = value.Truncate(256);
             DbUtil.Db.SubmitChanges();
             var m = new FamilyModel(id);
             return View("Family/Related", m);
