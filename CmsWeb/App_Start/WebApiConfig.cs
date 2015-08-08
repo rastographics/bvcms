@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Reflection;
-using System.Web;
 using System.Web.Http;
-using System.Web.Http.Controllers;
 using System.Web.OData.Builder;
 using System.Web.OData.Extensions;
 using System.Web.OData.Formatter;
-using CmsWeb.Code;
 using CmsWeb.Models.Api;
 
 namespace CmsWeb
@@ -31,6 +27,7 @@ namespace CmsWeb
                 model: MapAllODataModels("CmsWeb.Models.Api.Lookup").GetEdmModel());
 
             config.Filters.Add(new DeveloperAuthorizeAttribute());
+            config.MessageHandlers.Add(new ApiMessageLoggingHandler());
 
             // fix for XML support (use Accept: application/xml)
             var formatters = ODataMediaTypeFormatters.Create();
@@ -56,14 +53,6 @@ namespace CmsWeb
             }
 
             return builder;
-        }
-    }
-
-    public class DeveloperAuthorizeAttribute : AuthorizeAttribute
-    {
-        protected override bool IsAuthorized(HttpActionContext actionContext)
-        {
-            return AuthHelper.AuthenticateDeveloper(HttpContext.Current).IsAuthenticated;
         }
     }
 }
