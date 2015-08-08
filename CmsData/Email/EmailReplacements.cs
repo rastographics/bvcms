@@ -311,6 +311,9 @@ namespace CmsData
                     if (code.StartsWith("{addsmallgroup:", StringComparison.OrdinalIgnoreCase))
                         return AddSmallGroup(code, emailqueueto);
 
+                    if (code.StartsWith("{insertdraft:", StringComparison.OrdinalIgnoreCase))
+                        return InsertDraft(code);
+
                     if (code.StartsWith("{extra", StringComparison.OrdinalIgnoreCase))
                         return ExtraValue(code, emailqueueto);
 
@@ -341,7 +344,7 @@ namespace CmsData
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
-
+                    
                     if (regTextRe.IsMatch(code))
                         return RegText(code, emailqueueto);
 
@@ -408,6 +411,23 @@ namespace CmsData
             if (om != null)
                 om.AddToGroup(db, @group);
             return "";
+        }
+
+        /// <summary>
+        /// Parse InsertDraft Replacement code to recover the named of the Saved Email Draft
+        /// Return the content of the body of the Saved Draft
+        /// </summary>
+        const string insertDraftRe = @"\{insertdraft:(?<draft>.*?)}";
+        readonly Regex InsertDraftRe = new Regex(insertDraftRe, RegexOptions.Singleline);
+        private string InsertDraft(string code)
+        {
+           var match = InsertDraftRe.Match(code);
+           if (!match.Success)
+                return code;
+
+           var draft = match.Groups["draft"].Value;
+        
+           return db.ContentOfTypeSavedDraft(draft);
         }
 
         const string OrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";

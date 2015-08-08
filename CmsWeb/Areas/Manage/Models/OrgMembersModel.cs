@@ -368,10 +368,26 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
                         om.Organization.LeaderName,
                         om.Organization.PhoneNumber
                     };
-            var sb = new StringBuilder("Room Notices sent to:\r\n<pre>\r\n");
+            var sb = new StringBuilder("Org Assignment Notices sent to:\r\n<pre>\r\n");
             foreach (var i in q)
             {
+<<<<<<< HEAD
                 string subj = $"{i.OrganizationName} room assignment";
+=======
+                string subj = DbUtil.Db.ContentHtml("OrgMembersModel_SendMovedNotices_Subject", Resource1.OrgMembersModel_SendMovedNotices_Subject);
+
+                if (subj == null)
+                    subj = "{0} room assignment".Fmt(i.OrganizationName);
+                else
+                    subj = subj.Replace("{name}", i.Name)
+                     .Replace("{org}", i.OrganizationName)
+                     .Replace("{room}", i.Location)
+                     .Replace("{leader}", i.LeaderName)
+                     .Replace("{phone}", Util.PickFirst(i.PhoneNumber.FmtFone(), DbUtil.Db.Setting("ChurchPhone", "ChurchPhone")))
+                     .Replace("{church}", DbUtil.Db.Setting("NameOfChurch", "NameOfChurch"));
+                          
+
+>>>>>>> f3789378f956443b7013900a4fd551a6fd35489c
                 var msg = DbUtil.Db.ContentHtml("OrgMembersModel_SendMovedNotices", Resource1.OrgMembersModel_SendMovedNotices);
                 msg = msg.Replace("{name}", i.Name)
                     .Replace("{org}", i.OrganizationName)
@@ -416,11 +432,11 @@ WHERE EXISTS(SELECT NULL FROM dbo.DivOrg WHERE OrgId = OrganizationId AND DivId 
             if (onlineorg == null)
                 Db.Email(Db.CurrentUser.Person.FromEmail,
                     Db.CurrentUserPerson,
-                    "room notices sent to:", sb.ToString());
+                    "Org Assignment notices sent to:", sb.ToString());
             else
                 Db.Email(Db.CurrentUser.Person.FromEmail,
                     Db.PeopleFromPidString(onlineorg.NotifyIds),
-                    "room notices sent to:", sb.ToString());
+                    "Org Assignment notices sent to:", sb.ToString());
             Db.SubmitChanges();
         }
 

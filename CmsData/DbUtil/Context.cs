@@ -1260,6 +1260,16 @@ namespace CmsData
                            select c).FirstOrDefault();
             return content;
         }
+        public string ContentOfTypeSavedDraft(string name)
+        {
+            var content = (from c in Contents
+                           where c.Name == name
+                           where c.TypeID == ContentTypeCode.TypeSavedDraft
+                           select c).FirstOrDefault();
+            if (content == null)
+                return "Draft content could not be found";
+            return content.Body;
+        }
         public string ContentOfTypePythonScript(string name)
         {
             var content = (from c in Contents
