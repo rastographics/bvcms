@@ -49,6 +49,7 @@ namespace CmsWeb.Areas.Org.Controllers
             {
                 var os = new Settings(text, DbUtil.Db, id);
                 org.RegSetting = text;
+                org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
             }
             catch (Exception ex)
             {
@@ -100,6 +101,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new Settings(org.RegSetting, DbUtil.Db, id);
             var os = new Settings(m.ToString(), DbUtil.Db, id);
             m.org.RegSetting = os.ToString();
+            m.org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }
@@ -112,6 +114,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new Settings(org.RegSetting, DbUtil.Db, id);
             var os = new Settings(m.ToString(), DbUtil.Db, id);
             m.org.RegSetting = os.ToString();
+            m.org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }

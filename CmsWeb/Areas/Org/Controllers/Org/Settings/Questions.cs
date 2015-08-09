@@ -48,6 +48,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 var s = m.ToString();
                 m = new Settings(s, DbUtil.Db, id);
                 m.org.RegSetting = m.ToString();
+                m.org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
                 DbUtil.Db.SubmitChanges();
                 if (!m.org.NotifyIds.HasValue())
                     ModelState.AddModelError("Form", needNotify);

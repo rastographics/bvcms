@@ -41,6 +41,7 @@ namespace CmsWeb.Areas.Org.Models
             this.CopyPropertiesTo(RegSettings, typeof(RegAttribute));
             var os = new Settings(RegSettings.ToString(), DbUtil.Db, Id);
             Org.RegSetting = os.ToString();
+            Org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
             DbUtil.Db.SubmitChanges();
         }
 
