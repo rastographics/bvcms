@@ -338,7 +338,7 @@ namespace CmsData
         public const int TagTypeId_ExtraValues = 6;
         public const int TagTypeId_Query = 7;
         public const int TagTypeId_Emailer = 8;
-        public const int TagTypeId_StatusFlags = 9;
+        public const int TagTypeId_StatusFlags = 100;
 
         public static void UpdateValue(this object obj, List<ChangeDetail> psb, string field, object value)
         {

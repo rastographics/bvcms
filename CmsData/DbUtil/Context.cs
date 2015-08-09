@@ -446,6 +446,7 @@ namespace CmsData
         {
             var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_Personal);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
+            tag.Created = DateTime.Now;
             SubmitChanges();
             TagAll(q, tag);
         }
@@ -572,7 +573,13 @@ namespace CmsData
             var tag = FetchTag(tagname, OwnerId, tagtypeid);
             if (tag == null)
             {
-                tag = new Tag { Name = tagname.Replace('!', '*'), PeopleId = OwnerId, TypeId = tagtypeid };
+                tag = new Tag
+                {
+                    Name = tagname.Replace('!', '*'),
+                    PeopleId = OwnerId,
+                    TypeId = tagtypeid,
+                    Created = DateTime.Now
+                };
                 Tags.InsertOnSubmit(tag);
                 SubmitChanges();
             }
@@ -584,18 +591,6 @@ namespace CmsData
                 t.Name == tagname && t.PeopleId == OwnerId && t.TypeId == tagtypeid);
             return tag;
         }
-        public Tag FetchOrCreateSystemTag(string tagname)
-        {
-            var tag = Tags.FirstOrDefault(t => t.Name == tagname && t.TypeId == 100);
-            if (tag == null)
-            {
-                tag = new Tag { Name = tagname, TypeId = 100 };
-                Tags.InsertOnSubmit(tag);
-                SubmitChanges();
-            }
-            return tag;
-        }
-
         public void SetOrgMembersOnly()
         {
             var me = Util.UserPeopleId;

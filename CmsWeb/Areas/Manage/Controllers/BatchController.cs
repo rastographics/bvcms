@@ -439,7 +439,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var qbits = DbUtil.Db.StatusFlags().ToList();
             foreach (var a in qbits)
             {
-                var t = DbUtil.Db.FetchOrCreateSystemTag(a[0]);
+                var t = DbUtil.Db.FetchOrCreateTag(a[0], null, DbUtil.TagTypeId_StatusFlags);
                 var qq = DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]);
                 if (qq == null)
                     continue;

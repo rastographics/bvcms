@@ -116,7 +116,7 @@ class LoginInfo(object):
                       select f).ToList();
             var q2 = (from t in Db.TagPeople
                       where t.PeopleId == PeopleId
-                      where t.Tag.TypeId == 100
+                      where t.Tag.TypeId == DbUtil.TagTypeId_StatusFlags
                       select t.Tag.Name).ToList();
             var q = from t in q2
                     join f in q1 on t equals f[0]
@@ -130,7 +130,7 @@ class LoginInfo(object):
                       select f).ToList();
             var q2 = (from t in Db.TagPeople
                       where t.PeopleId == PeopleId
-                      where t.Tag.TypeId == 100
+                      where t.Tag.TypeId == DbUtil.TagTypeId_StatusFlags
                       select t.Tag.Name).ToList();
             var q = from t in q2
                     join f in q1 on t equals f[0]

@@ -44,7 +44,7 @@ namespace CmsWeb.Models
             var tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", up.PeopleId, DbUtil.TagTypeId_Personal);
             if (qB != null)
             {
-                if (tagq == null)
+                if (tagq?.Created == null || tagq.Created < DateTime.Today)
                     DbUtil.Db.PopulateSpecialTag(DbUtil.Db.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery");
                 tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", up.PeopleId, DbUtil.TagTypeId_Personal);
                 if (tagq != null)

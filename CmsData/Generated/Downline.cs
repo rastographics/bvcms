@@ -18,19 +18,19 @@ namespace CmsData
 		
 	#region Private Fields
 		
-		private int? _OrgId;
-		
-		private DateTime? _StartDt;
-		
 		private int? _CategoryId;
 		
 		private int? _DownlineId;
 		
 		private int? _Generation;
 		
+		private int? _OrgId;
+		
 		private int? _LeaderId;
 		
 		private int? _DiscipleId;
+		
+		private DateTime? _StartDt;
 		
 		private string _Trace;
 		
@@ -45,12 +45,6 @@ namespace CmsData
     partial void OnValidate(System.Data.Linq.ChangeAction action);
     partial void OnCreated();
 		
-		partial void OnOrgIdChanging(int? value);
-		partial void OnOrgIdChanged();
-		
-		partial void OnStartDtChanging(DateTime? value);
-		partial void OnStartDtChanged();
-		
 		partial void OnCategoryIdChanging(int? value);
 		partial void OnCategoryIdChanged();
 		
@@ -60,11 +54,17 @@ namespace CmsData
 		partial void OnGenerationChanging(int? value);
 		partial void OnGenerationChanged();
 		
+		partial void OnOrgIdChanging(int? value);
+		partial void OnOrgIdChanged();
+		
 		partial void OnLeaderIdChanging(int? value);
 		partial void OnLeaderIdChanged();
 		
 		partial void OnDiscipleIdChanging(int? value);
 		partial void OnDiscipleIdChanged();
+		
+		partial void OnStartDtChanging(DateTime? value);
+		partial void OnStartDtChanged();
 		
 		partial void OnTraceChanging(string value);
 		partial void OnTraceChanged();
@@ -82,50 +82,6 @@ namespace CmsData
 
 		
     #region Columns
-		
-		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int")]
-		public int? OrgId
-		{
-			get { return this._OrgId; }
-
-			set
-			{
-				if (this._OrgId != value)
-				{
-				
-                    this.OnOrgIdChanging(value);
-					this.SendPropertyChanging();
-					this._OrgId = value;
-					this.SendPropertyChanged("OrgId");
-					this.OnOrgIdChanged();
-				}
-
-			}
-
-		}
-
-		
-		[Column(Name="StartDt", UpdateCheck=UpdateCheck.Never, Storage="_StartDt", DbType="datetime")]
-		public DateTime? StartDt
-		{
-			get { return this._StartDt; }
-
-			set
-			{
-				if (this._StartDt != value)
-				{
-				
-                    this.OnStartDtChanging(value);
-					this.SendPropertyChanging();
-					this._StartDt = value;
-					this.SendPropertyChanged("StartDt");
-					this.OnStartDtChanged();
-				}
-
-			}
-
-		}
-
 		
 		[Column(Name="CategoryId", UpdateCheck=UpdateCheck.Never, Storage="_CategoryId", DbType="int")]
 		public int? CategoryId
@@ -193,6 +149,28 @@ namespace CmsData
 		}
 
 		
+		[Column(Name="OrgId", UpdateCheck=UpdateCheck.Never, Storage="_OrgId", DbType="int")]
+		public int? OrgId
+		{
+			get { return this._OrgId; }
+
+			set
+			{
+				if (this._OrgId != value)
+				{
+				
+                    this.OnOrgIdChanging(value);
+					this.SendPropertyChanging();
+					this._OrgId = value;
+					this.SendPropertyChanged("OrgId");
+					this.OnOrgIdChanged();
+				}
+
+			}
+
+		}
+
+		
 		[Column(Name="LeaderId", UpdateCheck=UpdateCheck.Never, Storage="_LeaderId", DbType="int")]
 		public int? LeaderId
 		{
@@ -230,6 +208,28 @@ namespace CmsData
 					this._DiscipleId = value;
 					this.SendPropertyChanged("DiscipleId");
 					this.OnDiscipleIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="StartDt", UpdateCheck=UpdateCheck.Never, Storage="_StartDt", DbType="datetime")]
+		public DateTime? StartDt
+		{
+			get { return this._StartDt; }
+
+			set
+			{
+				if (this._StartDt != value)
+				{
+				
+                    this.OnStartDtChanging(value);
+					this.SendPropertyChanging();
+					this._StartDt = value;
+					this.SendPropertyChanged("StartDt");
+					this.OnStartDtChanged();
 				}
 
 			}

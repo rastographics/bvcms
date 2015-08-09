@@ -224,6 +224,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [MyRequireHttps]
         public ActionResult LogOff()
         {
+            DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
             FormsAuthentication.SignOut();
             Session.Abandon();
             return Redirect("/");
