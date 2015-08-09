@@ -6,6 +6,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Search.Controllers
@@ -323,6 +324,21 @@ namespace CmsWeb.Areas.Search.Controllers
             }
             DbUtil.LogActivity("Creating new meetings from OrgSearch");
             return Content("done");
+        }
+        [HttpPost]
+        public ActionResult MovePendingToMember(OrgSearchModel m)
+        {
+            var orgids = string.Join(",", m.FetchOrgs().Select(mm => mm.OrganizationId));
+            var i = DbUtil.Db.Connection.ExecuteScalar($@"
+	UPDATE dbo.OrganizationMembers
+	SET Pending = NULL
+	FROM dbo.OrganizationMembers om
+	JOIN dbo.SplitInts('{orgids}') i ON i.Value = om.OrganizationId
+	WHERE om.Pending = 1
+
+    SELECT @@ROWCOUNT
+");
+            return Content($"changed {i} people");
         }
 
         [HttpPost]

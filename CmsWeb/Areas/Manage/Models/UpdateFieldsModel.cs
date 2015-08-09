@@ -52,6 +52,7 @@ namespace CmsWeb.Models
                 "Member Status",
                 "New Member Class",
                 "New Member Class Date",
+                "New OrgLeadersOnly",
                 "Occupation",
                 "ReceiveSMS",
                 "School",
@@ -226,6 +227,9 @@ namespace CmsWeb.Models
                         break;
                     case "New Member Class Date":
                         p.NewMemberClassDate = NewValue.ToDate();
+                        break;
+                    case "New OrgLeadersOnly":
+                        DbUtil.Db.FetchOrCreateTag("NewOrgLeadersOnly", p.PeopleId, DbUtil.TagTypeId_System);
                         break;
                 }
                 if (!model.IsValid)

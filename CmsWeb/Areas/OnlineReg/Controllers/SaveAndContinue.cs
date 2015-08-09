@@ -25,8 +25,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpGet]
         public ActionResult StartOver(int id)
         {
-            var pid = (int)TempData["PeopleId"];
-            if (pid == 0)
+            var pid = (int?)TempData["PeopleId"];
+            if (!pid.HasValue || pid == 0)
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)

@@ -1,6 +1,7 @@
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Org.Models;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
@@ -23,6 +24,8 @@ namespace CmsWeb.Areas.Org.Controllers
         [HttpPost]
         public ActionResult MainUpdate(OrgMain m)
         {
+            if (!m.OrganizationName.HasValue())
+                m.OrganizationName = $"Organization needs a name ({Util.UserFullName})";
             m.Update();
             DbUtil.LogActivity($"Update OrgMain {m.OrganizationName}");
             return PartialView("Settings/Main", m);

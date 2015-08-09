@@ -55,11 +55,9 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            var o = DbUtil.Db.LoadOrganizationById(90796);
-            var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
-            var x = Util.Serialize(os);
-            var rs = Util.DeSerialize<Settings>(x);
-            return Content(x, "text/plain");
+            var f = new CmsData.API.APIFunctions(DbUtil.Db);
+            var x = f.SqlScriptXml("FPUOrgExport");
+            return Content(x, "text/xml");
         }
 #endif
 
@@ -162,7 +160,7 @@ namespace CmsWeb.Controllers
         }
         public ActionResult UseNewEditor(bool id)
         {
-            DbUtil.Db.SetUserPreference("UseNewEditor", id ? "false" : "true");
+            DbUtil.Db.SetUserPreference("UseNewEditor2", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);

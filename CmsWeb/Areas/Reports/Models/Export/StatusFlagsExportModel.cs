@@ -30,7 +30,7 @@ namespace CmsWeb.Models
                                           where c.Role == null || HttpContext.Current.User.IsInRole(c.Role)
                                           select $"\tss.{c.Flag} as [{c.Name}]");
 
-            var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_StatusFlags);
+            var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_Query);
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
             var cmd = new SqlCommand(@"

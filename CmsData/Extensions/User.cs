@@ -102,6 +102,20 @@ namespace CmsData
                 UserRoles.Add(new UserRole {Role = role});
             }
         }
+        public void AddRoles(CMSDataContext Db, string[] value)
+        {
+            var q = from s in value
+                join r in UserRoles on s equals r.Role.RoleName into g
+                from t in g.DefaultIfEmpty()
+                where t == null
+                select s;
+
+            foreach (var s in q)
+            {
+                var role = Db.Roles.Single(r => r.RoleName == s);
+                UserRoles.Add(new UserRole {Role = role});
+            }
+        }
 
         public void ChangePassword(string newpassword)
         {

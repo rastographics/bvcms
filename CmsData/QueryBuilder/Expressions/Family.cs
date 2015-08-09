@@ -144,7 +144,7 @@ namespace CmsData
                          from c in j
                          select c).ToList();
             Expression<Func<Person, bool>> pred = p =>
-                p.Family.People.Any(m => m.Tags.Any(tt => codes.Contains(tt.Tag.Name) && tt.Tag.TypeId == 100));
+                p.Family.People.Any(m => m.Tags.Any(tt => codes.Contains(tt.Tag.Name) && tt.Tag.TypeId == DbUtil.TagTypeId_StatusFlags));
             Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
             if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);

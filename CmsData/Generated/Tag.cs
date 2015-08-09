@@ -32,6 +32,8 @@ namespace CmsData
 		
 		private string _OwnerName;
 		
+		private DateTime? _Created;
+		
    		
    		private EntitySet< TagShare> _TagShares;
 		
@@ -67,6 +69,9 @@ namespace CmsData
 		
 		partial void OnOwnerNameChanging(string value);
 		partial void OnOwnerNameChanged();
+		
+		partial void OnCreatedChanging(DateTime? value);
+		partial void OnCreatedChanged();
 		
     #endregion
 		public Tag()
@@ -236,6 +241,28 @@ namespace CmsData
 					this._OwnerName = value;
 					this.SendPropertyChanged("OwnerName");
 					this.OnOwnerNameChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Created", UpdateCheck=UpdateCheck.Never, Storage="_Created", DbType="datetime")]
+		public DateTime? Created
+		{
+			get { return this._Created; }
+
+			set
+			{
+				if (this._Created != value)
+				{
+				
+                    this.OnCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._Created = value;
+					this.SendPropertyChanged("Created");
+					this.OnCreatedChanged();
 				}
 
 			}

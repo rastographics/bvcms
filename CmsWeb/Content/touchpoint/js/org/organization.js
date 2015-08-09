@@ -812,9 +812,10 @@
         $.post(a.attr("href"), null, function (ret) {
             var dest = a.data('dest');
             var $destTag = $(dest, a.closest('.movable'));
-            if (!$destTag.length) {
+            if (!$destTag.length) 
                 $destTag = $(dest, a.closest('.well'));
-            }
+            if (!$destTag.length) 
+                $destTag = $(dest);
             $destTag.append(ret);
             $.InitFunctions.movequestions();
             $.InitFunctions.timepicker();

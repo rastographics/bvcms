@@ -228,7 +228,7 @@ namespace CmsData
         {
             get
             {
-                return DbUtil.Db.UserPreference("UseNewEditor", "false").ToBool();
+                return DbUtil.Db.UserPreference("UseNewEditor2", "true").ToBool();
             }
         }
 

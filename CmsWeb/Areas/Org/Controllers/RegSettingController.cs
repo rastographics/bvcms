@@ -40,7 +40,7 @@ namespace CmsWeb.Areas.Org.Controllers
                 regsetting = org.GetRegSetting();
             var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
             regsetting = os.ToString();
-            ViewData["text"] = regsetting;
+                ViewData["text"] = regsetting;
             return View();
         }
 
@@ -65,25 +65,25 @@ namespace CmsWeb.Areas.Org.Controllers
         }
         [HttpGet]
 
-        //        [HttpPost]
-        //        [Authorize(Roles="Edit")]
-        //        public ActionResult UpdateXml(int id, string text)
-        //        {
-        //            var org = DbUtil.Db.LoadOrganizationById(id);
-        //            try
-        //            {
+//        [HttpPost]
+//        [Authorize(Roles="Edit")]
+//        public ActionResult UpdateXml(int id, string text)
+//        {
+//            var org = DbUtil.Db.LoadOrganizationById(id);
+//            try
+//            {
         //                var os = Settings.CreateSettings(text, DbUtil.Db, id);
-        //                org.RegSetting = text;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                TempData["error"] = ex.Message;
-        //                TempData["regsetting"] = text;
-        //                return Redirect("/RegSettings/" + id);
-        //            }
-        //            DbUtil.Db.SubmitChanges();
-        //            return Redirect("/RegSettings/" + id);
-        //        }
+//                org.RegSetting = text;
+//            }
+//            catch (Exception ex)
+//            {
+//                TempData["error"] = ex.Message;
+//                TempData["regsetting"] = text;
+//                return Redirect("/RegSettings/" + id);
+//            }
+//            DbUtil.Db.SubmitChanges();
+//            return Redirect("/RegSettings/" + id);
+//        }
         public ActionResult ConvertFromMdy(int id)
         {
             var cul = "en-US";
