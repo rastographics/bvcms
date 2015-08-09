@@ -36,6 +36,16 @@ AND (PeopleId = @pid OR @pid IS NULL)
 DELETE dbo.TagPerson
 FROM dbo.TagPerson tp
 JOIN dbo.Tag t ON tp.Id = t.Id
+WHERE t.Name = 'FromTrackBirthdaysQuery' 
+AND (t.PeopleId = @pid)
+
+DELETE FROM dbo.Tag
+WHERE Name = 'FromTrackBirthdaysQuery'
+AND (PeopleId = @pid)
+
+DELETE dbo.TagPerson
+FROM dbo.TagPerson tp
+JOIN dbo.Tag t ON tp.Id = t.Id
 WHERE t.TypeId = 1 AND t.PeopleId IS NULL
 
 DELETE dbo.TagShare
