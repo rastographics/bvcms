@@ -9,7 +9,6 @@ using System;
 using System.Linq;
 using CmsData;
 using CmsData.Codes;
-using CmsWeb.Models;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
@@ -18,79 +17,11 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
     {
         public static int? BatchProcess(string text, DateTime date, int? fundid, bool fromFile)
         {
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Amount,Account,Serial,RoutingNumber,TransmissionDate,DepositTotal"))
-                return new HollyCreekImporter().RunImport(text, date, fundid, fromFile);
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
-                return new JackHenryImporter().RunImport(text, date, fundid, fromFile);
-            if (text.Substring(0, Math.Min(text.Length, 300)).Contains("textbox32,textbox30,textbox26,textbox22,textbox10,textbox7,DepositStatus,textbox3,SourceLocation,textbox4,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,Account_1,RoutingNumber,AnalysisStatus,IsOverridden"))
-                return new MetropolitanImporter().RunImport(text, date, fundid, fromFile);
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Date,Account Number,Check Number,Check Amount,Routing Number"))
-                return new RedeemerImporter().RunImport(text, date, fundid, fromFile);
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Id,Date,Name,Donor Address,Donor City,Donor State,Donor Zip,Donor Id,Donor Email,Gross Amount,Net Amount,Fee,Number,Keyword,Status"))
-                return new KindredImporter().RunImport(text, date, fundid, fromFile);
-            if (!fromFile && text.Substring(0, Math.Min(text.Length, 200)).Contains("Customer ID\tMember Name\tPhone\tEmail\tTransaction Type\tProcess Date\tSettlement Date\tAmount\tReturn Date\tReturn/Fail Reason\tFund ID\tFund Name\tFund Text Message\tFrequency"))
-                return new Vanco2Importer().RunImport(text, date, fundid, fromFile);
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Date,Fund,Final Amount,Final Micr,Ck,"))
-                return new TeaysValleyImporter().RunImport(text, date, fundid, fromFile);
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Financial_Institution,Corporate_ID,Corporate_Name,Processing_Date,Deposit_Account,Site_ID,Deposit_ID,Deposit_Receipt_Time,ISN,Account_Number,Routing_and_Transit,Serial_Number,Tran_Code,Amount,"))
-                return new GraceCcImporter().RunImport(text, date, fundid, fromFile);
-            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Item,Sequence #,Item Date,Item Status,Customer Name,Routing / Account #,Check #,Amount,Deposit As,Amount Source,Image Quality Pass,Scanned Count"))
-                return new EnonImporter().RunImport(text, date, fundid, fromFile);
+            var importer = FindMatchingImporter(text, fromFile);
 
-            switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
-            {
-                case "fcchudson":
-                    return new FcchudsonImporter().RunImport(text, date, fundid, fromFile);
-                case "fbcfayetteville":
-                    return new FbcFayettevilleImporter().RunImport(text, date, fundid, fromFile);
-                case "ebcfamily":
-                    return new EbcfamilyImporter().RunImport(text, date, fundid, fromFile);
-                case "vanco":
-                    return new VancoImporter().RunImport(text, date, fundid, fromFile);
-                case "stewardshiptechnology":
-                    return new StewardshipTechnologyImporter().RunImport(text, date, fundid, fromFile);
-                case "firststate":
-                    return new FirstStateImporter().RunImport(text, date, fundid, fromFile);
-                case "silverdale":
-                    return new SilverdaleImporter().RunImport(text, date, fundid, fromFile);
-                case "oakbrookchurch":
-                    return new OakbrookChurchImporter().RunImport(text, date, fundid, fromFile);
-                case "bankofnorthgeorgia":
-                    return new BankOfNorthGeorgiaImporter().RunImport(text, date, fundid, fromFile);
-                case "fbcstark":
-                    return new FbcStark2Importer().RunImport(text, date, fundid, fromFile);
-                case "discovercrosspoint":
-                    return new DiscoverCrossPointImporter().RunImport(text, date, fundid, fromFile);
-            }
+            DbUtil.LogActivity($"BatchProcess: {importer.GetType().Name}");
 
-            if (text.Substring(0, 40).Contains("Report Date,Report Requestor"))
-            {
-                DbUtil.LogActivity("BatchProcessRegions");
-                return new RegionsImporter().RunImport(text, date, fundid, fromFile);
-            }
-
-            if (text.StartsWith("From MICR :"))
-                return new MagtekImporter().RunImport(text, date, fundid, fromFile);
-
-            if (text.StartsWith("Financial_Institution"))
-                return new SunTrustImporter().RunImport(text, date, fundid, fromFile);
-
-            if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
-                return new ChaseImporter().RunImport(text, date, fundid, fromFile);
-
-            if (text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Contains("TransmissionDate,MerchantName,DepositDate,Account,DepositTotal,DebitCount,DepositStatus,TrackingNo,SourceLocation,CreatedBy,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,AccountNo,RoutingNumber,AnalysisStatus,OverrideIndicator"))
-                return new CapitalCityImporter().RunImport(text, date, fundid, fromFile);
-
-            if (text.StartsWith("1") && text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Length == 94)
-                return new AchImporter().RunImport(text, date, fundid, fromFile);
-
-            if (text.Contains("ProfileID"))
-                return new ServiceUImporter().RunImport(text, date, fundid, fromFile);
-
-            if (text.StartsWith("Id,Recipient,Date,Time,Currency,Amount,Status,Payment Method,Payer Name,Email address,Mobile Number,Source,Method,Full name,Email,Giving Type"))
-                return new PushPayImporter().RunImport(text, date, fundid, fromFile);
-
-            throw new Exception("unsupported import file");
+            return importer.RunImport(text, date, fundid, fromFile);
         }
 
         internal static BundleHeader GetBundleHeader(DateTime date, DateTime now, int? btid = null)
@@ -170,6 +101,90 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 ContributionAmount = amount.GetAmount()
             };
             return bd;
+        }
+
+        private static IContributionBatchImporter FindMatchingImporter(string text, bool fromFile)
+        {
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Amount,Account,Serial,RoutingNumber,TransmissionDate,DepositTotal"))
+                return new HollyCreekImporter();
+
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Transaction Date,Status,Payment Type,Name on Account,Transaction Number,Ref. Number,Customer Number,Operation,Location Name,Amount,Check #"))
+                return new JackHenryImporter();
+
+            if (text.Substring(0, Math.Min(text.Length, 300)).Contains("textbox32,textbox30,textbox26,textbox22,textbox10,textbox7,DepositStatus,textbox3,SourceLocation,textbox4,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,Account_1,RoutingNumber,AnalysisStatus,IsOverridden"))
+                return new MetropolitanImporter();
+
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Date,Account Number,Check Number,Check Amount,Routing Number"))
+                return new RedeemerImporter();
+
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Id,Date,Name,Donor Address,Donor City,Donor State,Donor Zip,Donor Id,Donor Email,Gross Amount,Net Amount,Fee,Number,Keyword,Status"))
+                return new KindredImporter();
+
+            if (!fromFile && text.Substring(0, Math.Min(text.Length, 200)).Contains("Customer ID\tMember Name\tPhone\tEmail\tTransaction Type\tProcess Date\tSettlement Date\tAmount\tReturn Date\tReturn/Fail Reason\tFund ID\tFund Name\tFund Text Message\tFrequency"))
+                return new Vanco2Importer();
+
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Date,Fund,Final Amount,Final Micr,Ck,"))
+                return new TeaysValleyImporter();
+
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Financial_Institution,Corporate_ID,Corporate_Name,Processing_Date,Deposit_Account,Site_ID,Deposit_ID,Deposit_Receipt_Time,ISN,Account_Number,Routing_and_Transit,Serial_Number,Tran_Code,Amount,"))
+                return new GraceCcImporter();
+
+            if (text.Substring(0, Math.Min(text.Length, 200)).Contains("Deposit Item,Sequence #,Item Date,Item Status,Customer Name,Routing / Account #,Check #,Amount,Deposit As,Amount Source,Image Quality Pass,Scanned Count"))
+                return new EnonImporter();
+
+            switch (DbUtil.Db.Setting("BankDepositFormat", "none").ToLower())
+            {
+                case "fcchudson":
+                    return new FcchudsonImporter();
+                case "fbcfayetteville":
+                    return new FbcFayettevilleImporter();
+                case "ebcfamily":
+                    return new EbcfamilyImporter();
+                case "vanco":
+                    return new VancoImporter();
+                case "stewardshiptechnology":
+                    return new StewardshipTechnologyImporter();
+                case "firststate":
+                    return new FirstStateImporter();
+                case "silverdale":
+                    return new SilverdaleImporter();
+                case "oakbrookchurch":
+                    return new OakbrookChurchImporter();
+                case "bankofnorthgeorgia":
+                    return new BankOfNorthGeorgiaImporter();
+                case "fbcstark":
+                    return new FbcStark2Importer();
+                case "discovercrosspoint":
+                    return new DiscoverCrossPointImporter();
+                case "regionsimporter2":
+                    return new RegionsImporter2();
+            }
+
+            if (text.Substring(0, 40).Contains("Report Date,Report Requestor"))
+                return new RegionsImporter();
+
+            if (text.StartsWith("From MICR :"))
+                return new MagtekImporter();
+
+            if (text.StartsWith("Financial_Institution"))
+                return new SunTrustImporter();
+
+            if (text.StartsWith("TOTAL DEPOSIT AMOUNT"))
+                return new ChaseImporter();
+
+            if (text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Contains("TransmissionDate,MerchantName,DepositDate,Account,DepositTotal,DebitCount,DepositStatus,TrackingNo,SourceLocation,CreatedBy,submittedByValue,CaptureSequence,Sequence,AmountType,Amount,Serial,AccountNo,RoutingNumber,AnalysisStatus,OverrideIndicator"))
+                return new CapitalCityImporter();
+
+            if (text.StartsWith("1") && text.Substring(0, text.IndexOf(Environment.NewLine, StringComparison.Ordinal)).Length == 94)
+                return new AchImporter();
+
+            if (text.Contains("ProfileID"))
+                return new ServiceUImporter();
+
+            if (text.StartsWith("Id,Recipient,Date,Time,Currency,Amount,Status,Payment Method,Payer Name,Email address,Mobile Number,Source,Method,Full name,Email,Giving Type"))
+                return new PushPayImporter();
+
+            throw new Exception("unsupported import file");
         }
     }
 }

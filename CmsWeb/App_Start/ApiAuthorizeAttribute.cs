@@ -5,11 +5,11 @@ using CmsWeb.Code;
 
 namespace CmsWeb
 {
-    internal class DeveloperAuthorizeAttribute : AuthorizeAttribute
+    internal class ApiAuthorizeAttribute : AuthorizeAttribute
     {
         protected override bool IsAuthorized(HttpActionContext actionContext)
         {
-            return AuthHelper.AuthenticateDeveloper(HttpContext.Current).IsAuthenticated;
+            return AuthHelper.AuthenticateDeveloper(HttpContext.Current, additionalRole: "APIOnly").IsAuthenticated;
         }
     }
 }
