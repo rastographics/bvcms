@@ -579,6 +579,8 @@
     <Compile Include="Code\JsonNetValueProviderFactory.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
+    <Compile Include="Controllers\Api\OrganizationsController.cs" />
+    <Compile Include="Controllers\Api\OrganizationMembersController.cs" />
     <Compile Include="Controllers\Api\Lookup\ContributionTypesController.cs" />
     <Compile Include="Controllers\Api\Lookup\GendersController.cs" />
     <Compile Include="Controllers\Api\Lookup\FamilyPositionsController.cs" />
@@ -592,6 +594,7 @@
     <Compile Include="Controllers\ExtraValue\AdhocController.cs" />
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
+    <Compile Include="Models\Api\ApiOrganization.cs" />
     <Compile Include="Models\Api\Lookup\ApiContributionType.cs" />
     <Compile Include="Models\Api\Lookup\ApiGender.cs" />
     <Compile Include="Models\Api\Lookup\ApiFamilyPosition.cs" />
@@ -601,6 +604,7 @@
     <Compile Include="Models\Api\ApiMapName.cs" />
     <Compile Include="Models\Api\Lookup\ApiMaritalStatus.cs" />
     <Compile Include="Models\Api\ApiPerson.cs" />
+    <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfo.cs" />
     <Compile Include="Models\ExtraValue\ExtraInfoOrganization.cs" />
