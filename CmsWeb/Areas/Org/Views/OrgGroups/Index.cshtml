@@ -6,8 +6,8 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Manage Sub-Groups";
     ViewBag.PageHeader = "Manage Sub-Groups";
-    ViewBag.PageSubHeader = "<a href=\"{0}/{1}\">{2}</a>".Fmt(Util2.Org, Model.orgid, Model.OrgName);
-}           
+    ViewBag.PageSubHeader = $"<a href=\"{Util2.Org}/{Model.orgid}\">{Model.OrgName}</a>";
+}
 @section head
 {
     @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
@@ -108,7 +108,7 @@
                 </div>
                 <div class="box-content">
                     <button id="swapPlayers" type="button" class="btn btn-default btn-block" style="margin-top:7px; display:none;"><i class="fa fa-random"></i> Swap Players</button>
-                </div>                
+                </div>
             </div>
             <div class="modal fade" id="scoreUploadDialog">
                 <div class="modal-dialog">

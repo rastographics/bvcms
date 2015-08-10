@@ -15,14 +15,14 @@ namespace CmsWeb.Areas.People.Models
         public int? LeaderId { get; set; }
         public DateTime? EnrollDate { get; set; }
         public DateTime? DropDate { get; set; }
-        public Decimal? AttendPct { get; set; }
+        public decimal? AttendPct { get; set; }
         public string DivisionName { get; set; }
         public string ProgramName { get; set; }
         public string OrgType { get; set; }
         public bool HasDirectory { get; set; }
 
-        public string Schedule { get { return "{0:ddd h:mm tt}".Fmt(MeetingTime); } }
-        public string SchComma { get { return MeetingTime.HasValue ? ", " : ""; } }
-        public string LocComma { get { return Location.HasValue() ? ", " : ""; } }
+        public string Schedule => $"{MeetingTime:ddd h:mm tt}";
+        public string SchComma => MeetingTime.HasValue ? ", " : "";
+        public string LocComma => Location.HasValue() ? ", " : "";
     }
 }

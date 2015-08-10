@@ -1,27 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Web;
-using CmsData;
 using System.Linq;
+using CmsData;
+using CmsData.Codes;
 using CmsWeb.Code;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class RegistrationsModel
     {
-        public int? PeopleId { get; set; }
-        public Person Person
-        {
-            get
-            {
-                if (_person == null && PeopleId.HasValue)
-                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
-                return _person;
-            }
-        }
         private Person _person;
 
         public RegistrationsModel(int id)
@@ -32,12 +20,25 @@ namespace CmsWeb.Areas.People.Models
             CustodyIssue = Person.CustodyIssue ?? false;
             OkTransport = Person.OkTransport ?? false;
         }
-        public RegistrationsModel() { }
+
+        public RegistrationsModel()
+        {
+        }
+
+        public int? PeopleId { get; set; }
+
+        public Person Person
+        {
+            get
+            {
+                if (_person == null && PeopleId.HasValue)
+                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                return _person;
+            }
+        }
 
         public string ShirtSize { get; set; }
-
         public bool CustodyIssue { get; set; }
-
         public bool OkTransport { get; set; }
 
         [DisplayName("Emergency Contact")]
@@ -64,11 +65,8 @@ namespace CmsWeb.Areas.People.Models
         public string Comments { get; set; }
 
         public bool Tylenol { get; set; }
-
         public bool Advil { get; set; }
-
         public bool Robitussin { get; set; }
-
         public bool Maalox { get; set; }
 
         [DisplayName("Mother's Name")]
@@ -79,6 +77,7 @@ namespace CmsWeb.Areas.People.Models
 
         [DisplayName("Member Here")]
         public bool Member { get; set; }
+
         public bool ActiveInAnotherChurch { get; set; }
 
         [DisplayName("Coaching Interest")]
@@ -92,7 +91,23 @@ namespace CmsWeb.Areas.People.Models
             Person.OkTransport = OkTransport;
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Updated RecReg: {0}".Fmt(Person.Name));
+            DbUtil.LogActivity($"Updated RecReg: {Person.Name}");
+        }
+
+        public List<GoerItem> GoerList()
+        {
+            return (from m in Person.OrganizationMembers
+                    where m.Organization.IsMissionTrip == true
+                    where m.Organization.OrganizationStatusId == OrgStatusCode.Active
+                    where m.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
+                    let ts = DbUtil.Db.ViewMissionTripTotals.SingleOrDefault(tt => tt.OrganizationId == m.OrganizationId && tt.PeopleId == m.PeopleId)
+                    select new GoerItem
+                    {
+                        Id = m.OrganizationId,
+                        Trip = m.Organization.OrganizationName,
+                        Cost = ts.TripCost ?? 0,
+                        Paid = ts.Raised ?? 0
+                    }).ToList();
         }
 
         public class GoerItem
@@ -101,22 +116,6 @@ namespace CmsWeb.Areas.People.Models
             public string Trip { get; set; }
             public decimal Cost { get; set; }
             public decimal Paid { get; set; }
-        }
-
-        public List<GoerItem> GoerList()
-        {
-            return (from m in Person.OrganizationMembers
-                    where m.Organization.IsMissionTrip == true
-                    where m.Organization.OrganizationStatusId == CmsData.Codes.OrgStatusCode.Active
-                    where m.OrgMemMemTags.Any(mm => mm.MemberTag.Name == "Goer")
-                    let ts = DbUtil.Db.ViewMissionTripTotals.SingleOrDefault(tt => tt.OrganizationId == m.OrganizationId && tt.PeopleId == m.PeopleId)
-                    select new GoerItem
-                    {
-                        Id = m.OrganizationId,
-                        Trip = m.Organization.OrganizationName,
-                        Cost = ts.TripCost ?? 0,
-                        Paid = ts.Raised ?? 0,
-                    }).ToList();
         }
     }
 }

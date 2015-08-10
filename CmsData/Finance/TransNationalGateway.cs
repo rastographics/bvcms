@@ -18,12 +18,9 @@ namespace CmsData.Finance
     {
         private readonly string _userName;
         private readonly string _password;
-        private CMSDataContext db;
+        private readonly CMSDataContext db;
 
-        public string GatewayType
-        {
-            get { return "TransNational"; }
-        }
+        public string GatewayType => "TransNational";
 
         public TransNationalGateway(CMSDataContext db, bool testing)
         {
@@ -91,7 +88,7 @@ namespace CmsData.Finance
                 paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
             }
             else
-                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
 
             if (giving)
                 paymentInfo.PreferredGivingType = type;
@@ -125,7 +122,7 @@ namespace CmsData.Finance
             var response = createCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to create the credit card for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
+                    $"TransNational failed to create the credit card for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
 
             return response.VaultId.ToInt();
         }
@@ -158,7 +155,7 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the credit card for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
+                    $"TransNational failed to update the credit card for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
         }
 
         private void UpdateCreditCardVault(Person person, PaymentInfo paymentInfo, string expiration)
@@ -185,8 +182,7 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the credit card expiration date for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(
-                        person.PeopleId, response.ResponseCode, response.ResponseText));
+                    $"TransNational failed to update the credit card expiration date for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
         }
 
         private int CreateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
@@ -196,7 +192,8 @@ namespace CmsData.Finance
                 _password,
                 new Ach
                 {
-                    NameOnAccount = "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
+                    NameOnAccount =
+                        $"{paymentInfo.FirstName ?? person.FirstName} {paymentInfo.LastName ?? person.LastName}",
                     AccountNumber = accountNumber,
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
@@ -215,7 +212,7 @@ namespace CmsData.Finance
             var response = createAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to create the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
+                    $"TransNational failed to create the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
 
             return response.VaultId.ToInt();
         }
@@ -228,7 +225,7 @@ namespace CmsData.Finance
                 _userName,
                 _password,
                 vaultId.ToString(CultureInfo.InvariantCulture),
-                "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
+                $"{paymentInfo.FirstName ?? person.FirstName} {paymentInfo.LastName ?? person.LastName}",
                 new BillingAddress
                 {
                     FirstName = paymentInfo.FirstName ?? person.FirstName,
@@ -244,7 +241,7 @@ namespace CmsData.Finance
             var response = updateAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
+                    $"TransNational failed to update the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
         }
 
         private void UpdateAchVault(Person person, PaymentInfo paymentInfo, string accountNumber, string routingNumber)
@@ -257,7 +254,8 @@ namespace CmsData.Finance
                 vaultId.ToString(CultureInfo.InvariantCulture),
                 new Ach
                 {
-                    NameOnAccount = "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
+                    NameOnAccount =
+                        $"{paymentInfo.FirstName ?? person.FirstName} {paymentInfo.LastName ?? person.LastName}",
                     AccountNumber = accountNumber,
                     RoutingNumber = routingNumber,
                     BillingAddress = new BillingAddress
@@ -276,7 +274,7 @@ namespace CmsData.Finance
             var response = updateAchVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
                 throw new Exception(
-                    "TransNational failed to update the ach account for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
+                    $"TransNational failed to update the ach account for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
         }
 
         public void RemoveFromVault(int peopleId)
@@ -310,7 +308,8 @@ namespace CmsData.Finance
 
             var response = deleteVaultRequest.Execute();
             if (response.ResponseStatus != ResponseStatus.Approved)
-                throw new Exception("TransNational failed to delete the vault for people id: {0}, responseCode: {1}, responseText: {2}".Fmt(person.PeopleId, response.ResponseCode, response.ResponseText));
+                throw new Exception(
+                    $"TransNational failed to delete the vault for people id: {person.PeopleId}, responseCode: {response.ResponseCode}, responseText: {response.ResponseText}");
         }
 
         public TransactionResponse VoidCreditCardTransaction(string reference)
@@ -337,17 +336,17 @@ namespace CmsData.Finance
             };
         }
 
-        public TransactionResponse RefundCreditCard(string reference, Decimal amt, string lastDigits = "")
+        public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
         {
             return Refund(reference, amt);
         }
 
-        public TransactionResponse RefundCheck(string reference, Decimal amt, string lastDigits = "")
+        public TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "")
         {
             return Refund(reference, amt);
         }
 
-        private TransactionResponse Refund(string reference, Decimal amount)
+        private TransactionResponse Refund(string reference, decimal amount)
         {
             var refundRequest = new RefundRequest(_userName, _password, reference, amount);
             var response = refundRequest.Execute();
@@ -454,7 +453,7 @@ namespace CmsData.Finance
                 _password,
                 new Ach
                 {
-                    NameOnAccount = string.Format("{0} {1}", first, last),
+                    NameOnAccount = $"{first} {last}",
                     AccountNumber = acct,
                     RoutingNumber = routing,
                     BillingAddress = new BillingAddress
@@ -491,7 +490,7 @@ namespace CmsData.Finance
         {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo();
-            if (paymentInfo == null || !paymentInfo.TbnCardVaultId.HasValue)
+            if (paymentInfo?.TbnCardVaultId == null)
                 return new TransactionResponse
                 {
                     Approved = false,
@@ -711,19 +710,10 @@ namespace CmsData.Finance
             return new ReturnedChecksResponse(returnedChecks);
         }
 
-        public bool CanVoidRefund
-        {
-            get { return true; }
-        }
+        public bool CanVoidRefund => true;
 
-        public bool CanGetSettlementDates
-        {
-            get { return true; }
-        }
+        public bool CanGetSettlementDates => true;
 
-        public bool CanGetBounces
-        {
-            get { return false; }
-        }
+        public bool CanGetBounces => false;
     }
 }

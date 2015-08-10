@@ -111,23 +111,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         [NonSerialized]
         private Settings _setting;
-        public Settings Setting
-        {
-            get { return _setting ?? (_setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid)); }
-        }
+        public Settings Setting => _setting ?? (_setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid));
 
         public bool NoCreditCardsAllowed { get; set; }
         public bool NoEChecksAllowed { get; set; }
 
-        public string SpecialGivingFundsHeader
-        {
-            get { return DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds"); }
-        }
+        public string SpecialGivingFundsHeader => DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
-        public bool HasManagedGiving
-        {
-            get { return person.ManagedGiving() != null; }
-        }
+        public bool HasManagedGiving => person.ManagedGiving() != null;
 
         public ManageGivingModel()
         {
@@ -305,7 +296,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             Util.SendMsg(Util.SysFromEmail, Util.Host, Util.TryGetMailAddress(contributionEmail),
                 "Managed Giving",
-                "Managed giving for {0} ({1})".Fmt(person.Name, pid),
+                $"Managed giving for {person.Name} ({pid})",
                 Util.EmailAddressListFromString(DbUtil.Db.StaffEmailForOrg(orgid)),
                 0, pid);
 
@@ -315,10 +306,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ThankYouMessage = msg;
         }
 
-        public string Title
-        {
-            get { return "Online Recurring Giving"; }
-        }
+        public string Title => "Online Recurring Giving";
 
         public string ThankYouMessage { get; set; }
 
@@ -488,7 +476,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return q;
         }
 
-        public Decimal Total()
+        public decimal Total()
         {
             return FundItemsChosen().Sum(f => f.amt);
         }
@@ -510,23 +498,15 @@ namespace CmsWeb.Areas.OnlineReg.Models
             get
             {
                 var ins =
-                    @"
-<div class=""instructions login"">{0}</div>
-<div class=""instructions select"">{1}</div>
-<div class=""instructions find"">{2}</div>
-<div class=""instructions options"">{3}</div>
-<div class=""instructions submit"">{4}</div>
-<div class=""instructions special"">{5}</div>
-<div class=""instructions sorry"">{6}</div>
-"
-                        .Fmt(Setting.InstructionLogin,
-                            Setting.InstructionSelect,
-                            Setting.InstructionFind,
-                            Setting.InstructionOptions,
-                            Setting.InstructionSubmit,
-                            Setting.InstructionSpecial,
-                            Setting.InstructionSorry
-                        );
+                    $@"
+<div class=""instructions login"">{Setting.InstructionLogin}</div>
+<div class=""instructions select"">{Setting.InstructionSelect}</div>
+<div class=""instructions find"">{Setting.InstructionFind}</div>
+<div class=""instructions options"">{Setting.InstructionOptions}</div>
+<div class=""instructions submit"">{Setting.InstructionSubmit}</div>
+<div class=""instructions special"">{Setting.InstructionSpecial}</div>
+<div class=""instructions sorry"">{Setting.InstructionSorry}</div>
+";
                 ins = OnlineRegModel.DoReplaceForExtraValueCode(ins, person);
                 return ins;
             }
@@ -594,23 +574,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return msg;
         }
 
-        public string AutocompleteOnOff
-        {
-            get { return Util.IsDebug() ? "on" : "off"; }
-        }
+        public string AutocompleteOnOff => Util.IsDebug() ? "on" : "off";
 
         public bool ManagedGivingStopped { get; private set; }
 
         public void CancelManagedGiving(int peopleId)
         {
-		    var p = DbUtil.Db.LoadPersonById(peopleId);
-			DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
+            var p = DbUtil.Db.LoadPersonById(peopleId);
+            DbUtil.Db.RecurringAmounts.DeleteAllOnSubmit(p.RecurringAmounts);
 
-			var mg = p.ManagedGiving();
-			if (mg != null)
-				DbUtil.Db.ManagedGivings.DeleteOnSubmit(mg);
+            var mg = p.ManagedGiving();
+            if (mg != null)
+                DbUtil.Db.ManagedGivings.DeleteOnSubmit(mg);
 
-			DbUtil.Db.SubmitChanges();
+            DbUtil.Db.SubmitChanges();
 
             ManagedGivingStopped = true;
         }

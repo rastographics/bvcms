@@ -6,38 +6,113 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
 using UtilityExtensions;
-using Picture = CmsData.Picture;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class PersonModel
     {
-        public BasicPersonInfo basic { get; set; }
+        private FamilyModel familyModel;
+        private Picture familypicture;
+        private AddressInfo otherAddr;
+        private Picture picture;
+        private AddressInfo primaryAddr;
+        private IEnumerable<User> users;
 
+        public PersonModel(int id)
+        {
+            var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");
+            var isvalid = Regex.IsMatch(flags, @"\A(F\d\d,{0,1})(,F\d\d,{0,1})*\z", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
+
+            var i = (from pp in DbUtil.Db.People
+                     let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
+                     where pp.PeopleId == id
+                     select new
+                     {
+                         pp,
+                         pp.Picture,
+                         f = pp.Family,
+                         FamilyPicture = pp.Family.Picture,
+                         memberStatus = pp.MemberStatus.Description
+                     }).FirstOrDefault();
+            if (i == null)
+                return;
+
+            string statusflags;
+            if (isvalid)
+                statusflags = string.Join(",", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
+                                               where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
+                                               select s.Name);
+            else
+                statusflags = "invalid setting in status flags";
+
+            Person = i.pp;
+            var p = Person;
+            var fam = i.f;
+
+            MemberStatus = i.memberStatus;
+            PeopleId = p.PeopleId;
+            AddressTypeId = p.AddressTypeId;
+            FamilyId = p.FamilyId;
+            Name = p.Name;
+            Picture = i.Picture;
+            FamilyPicture = i.FamilyPicture;
+            StatusFlags = (statusflags ?? "").Split(',');
+
+            basic = new BasicPersonInfo(p.PeopleId);
+
+            FamilyAddr = new AddressInfo
+            {
+                Name = "FamilyAddr",
+                PeopleId = p.PeopleId,
+                person = p,
+                AddressLineOne = fam.AddressLineOne,
+                AddressLineTwo = fam.AddressLineTwo,
+                CityName = fam.CityName,
+                ZipCode = fam.ZipCode,
+                BadAddress = fam.BadAddressFlag ?? false,
+                StateCode = new CodeInfo(fam.StateCode, "State"),
+                Country = new CodeInfo(fam.CountryName, "Country"),
+                ResCode = new CodeInfo(fam.ResCodeId, "ResCode"),
+                FromDt = fam.AddressFromDate,
+                ToDt = fam.AddressToDate,
+                Preferred = p.AddressTypeId == 10
+            };
+            PersonalAddr = new AddressInfo
+            {
+                Name = "PersonalAddr",
+                PeopleId = p.PeopleId,
+                person = p,
+                AddressLineOne = p.AddressLineOne,
+                AddressLineTwo = p.AddressLineTwo,
+                CityName = p.CityName,
+                StateCode = new CodeInfo(p.StateCode, "State"),
+                Country = new CodeInfo(p.CountryName, "Country"),
+                ResCode = new CodeInfo(p.ResCodeId, "ResCode"),
+                ZipCode = p.ZipCode,
+                BadAddress = p.BadAddressFlag ?? false,
+                FromDt = p.AddressFromDate,
+                ToDt = p.AddressToDate,
+                Preferred = p.AddressTypeId == 30
+            };
+        }
+
+        public BasicPersonInfo basic { get; set; }
         public int PeopleId { get; set; }
         public int FamilyId { get; set; }
         public string[] StatusFlags { get; set; }
-
         public string Name { get; set; }
         public string MemberStatus { get; set; }
 
-        private FamilyModel familyModel;
-        public FamilyModel FamilyModel
-        {
-            get { return familyModel ?? (familyModel = new FamilyModel(PeopleId)); }
-        }
+        public FamilyModel FamilyModel => familyModel ?? (familyModel = new FamilyModel(PeopleId));
 
-        private IEnumerable<User> users;
-        public IEnumerable<User> Users
-        {
-            get { return users ?? (users = Person.Users); }
-        }
+        public IEnumerable<User> Users => users ?? (users = Person.Users);
 
         public Picture Picture
         {
             get { return picture ?? new Picture(); }
             set { picture = value; }
         }
+
         public Picture FamilyPicture
         {
             get { return familypicture ?? new Picture(); }
@@ -45,10 +120,6 @@ namespace CmsWeb.Areas.People.Models
         }
 
         public int AddressTypeId { get; set; }
-        private AddressInfo primaryAddr;
-        private AddressInfo otherAddr;
-        private Picture picture;
-        private Picture familypicture;
         public Person Person { get; set; }
 
         public AddressInfo PrimaryAddr
@@ -85,10 +156,11 @@ namespace CmsWeb.Areas.People.Models
             get
             {
                 if (Person.EmailAddress.HasValue())
-                    return string.Format("<a href='mailto:{0}' target='_blank'>{0}</a>", Person.EmailAddress);
+                    return $"<a href='mailto:{Person.EmailAddress}' target='_blank'>{Person.EmailAddress}</a>";
                 return null;
             }
         }
+
         public string Cell
         {
             get
@@ -98,6 +170,7 @@ namespace CmsWeb.Areas.People.Models
                 return null;
             }
         }
+
         public string HomePhone
         {
             get
@@ -108,83 +181,6 @@ namespace CmsWeb.Areas.People.Models
             }
         }
 
-        public PersonModel(int id)
-        {
-            var flags = DbUtil.Db.Setting("StatusFlags", "F04,F01,F02,F03");
-            var isvalid = Regex.IsMatch(flags, @"\A(F\d\d,{0,1})(,F\d\d,{0,1})*\z", RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
-
-            var i = (from pp in DbUtil.Db.People
-                     let spouse = (from sp in pp.Family.People where sp.PeopleId == pp.SpouseId select sp.Name).SingleOrDefault()
-                     where pp.PeopleId == id
-                     select new
-                     {
-                         pp,
-                         pp.Picture,
-                         f = pp.Family,
-                         FamilyPicture = pp.Family.Picture,
-                         memberStatus = pp.MemberStatus.Description,
-                     }).FirstOrDefault();
-            if (i == null)
-                return;
-
-            string statusflags;
-            if (isvalid)
-                statusflags = string.Join(",", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
-                                                where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
-                                                select s.Name);
-            else
-                statusflags = "invalid setting in status flags";
-
-            Person = i.pp;
-            var p = Person;
-            var fam = i.f;
-
-            MemberStatus = i.memberStatus;
-            PeopleId = p.PeopleId;
-            AddressTypeId = p.AddressTypeId;
-            FamilyId = p.FamilyId;
-            Name = p.Name;
-            Picture = i.Picture;
-            FamilyPicture = i.FamilyPicture;
-            StatusFlags = (statusflags ?? "").Split(',');
-
-            basic = new BasicPersonInfo(p.PeopleId);
-
-            FamilyAddr = new AddressInfo
-            {
-                Name = "FamilyAddr",
-                PeopleId = p.PeopleId,
-                person = p,
-                AddressLineOne = fam.AddressLineOne,
-                AddressLineTwo = fam.AddressLineTwo,
-                CityName = fam.CityName,
-                ZipCode = fam.ZipCode,
-                BadAddress = fam.BadAddressFlag ?? false,
-                StateCode = new CodeInfo(fam.StateCode, "State"),
-                Country = new CodeInfo(fam.CountryName, "Country"),
-                ResCode = new CodeInfo(fam.ResCodeId, "ResCode"),
-                FromDt = fam.AddressFromDate,
-                ToDt = fam.AddressToDate,
-                Preferred = p.AddressTypeId == 10,
-            };
-            PersonalAddr = new AddressInfo
-            {
-                Name = "PersonalAddr",
-                PeopleId = p.PeopleId,
-                person = p,
-                AddressLineOne = p.AddressLineOne,
-                AddressLineTwo = p.AddressLineTwo,
-                CityName = p.CityName,
-                StateCode = new CodeInfo(p.StateCode, "State"),
-                Country = new CodeInfo(p.CountryName, "Country"),
-                ResCode = new CodeInfo(p.ResCodeId, "ResCode"),
-                ZipCode = p.ZipCode,
-                BadAddress = p.BadAddressFlag ?? false,
-                FromDt = p.AddressFromDate,
-                ToDt = p.AddressToDate,
-                Preferred = p.AddressTypeId == 30,
-            };
-        }
         public string CheckView()
         {
             if (Person == null)
@@ -198,10 +194,8 @@ namespace CmsWeb.Areas.People.Models
                 var omotag = DbUtil.Db.OrgMembersOnlyTag2();
                 if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == PeopleId && pt.Id == omotag.Id))
                 {
-                    DbUtil.LogActivity("Trying to view person: {0}".Fmt(Person.Name));
-                    return "<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>"
-                            .Fmt("You must be a member one of this person's organizations to have access to this page",
-                                "javascript: history.go(-1)", "Go Back");
+                    DbUtil.LogActivity($"Trying to view person: {Person.Name}");
+                    return $"<h3 style='color:red'>{"You must be a member one of this person's organizations to have access to this page"}</h3>\n<a href='{"javascript: history.go(-1)"}'>{"Go Back"}</a>";
                 }
             }
             else if (Util2.OrgLeadersOnly)
@@ -209,10 +203,8 @@ namespace CmsWeb.Areas.People.Models
                 var olotag = DbUtil.Db.OrgLeadersOnlyTag2();
                 if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == PeopleId && pt.Id == olotag.Id))
                 {
-                    DbUtil.LogActivity("Trying to view person: {0}".Fmt(Person.Name));
-                    return "<h3 style='color:red'>{0}</h3>\n<a href='{1}'>{2}</a>"
-                            .Fmt("You must be a leader of one of this person's organizations to have access to this page",
-                                "javascript: history.go(-1)", "Go Back");
+                    DbUtil.LogActivity($"Trying to view person: {Person.Name}");
+                    return $"<h3 style='color:red'>{"You must be a leader of one of this person's organizations to have access to this page"}</h3>\n<a href='{"javascript: history.go(-1)"}'>{"Go Back"}</a>";
                 }
             }
             return null;

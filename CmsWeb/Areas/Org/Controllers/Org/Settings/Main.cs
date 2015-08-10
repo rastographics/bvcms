@@ -13,17 +13,21 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new OrganizationModel(id);
             return PartialView("Settings/Main", m.OrgMain);
         }
+
         [HttpPost]
         public ActionResult MainEdit(int id)
         {
             var m = new OrganizationModel(id);
             return PartialView("Settings/MainEdit", m.OrgMain);
         }
+
         [HttpPost]
         public ActionResult MainUpdate(OrgMain m)
         {
+            if (!m.OrganizationName.HasValue())
+                m.OrganizationName = $"Organization needs a name ({Util.UserFullName})";
             m.Update();
-            DbUtil.LogActivity("Update OrgMain {0}".Fmt(m.OrganizationName));
+            DbUtil.LogActivity($"Update OrgMain {m.OrganizationName}");
             return PartialView("Settings/Main", m);
         }
 

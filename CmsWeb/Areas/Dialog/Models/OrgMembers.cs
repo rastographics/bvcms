@@ -24,16 +24,12 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? InactiveDate { get; set; }
         public DateTime? EnrollmentDate { get; set; }
         public bool Pending { get; set; }
-	    public bool MemTypeOriginal { get; set; }
-	    public decimal? addpmt { get; set; }
-    	public string addpmtreason { get; set; }
+        public bool MemTypeOriginal { get; set; }
+        public decimal? addpmt { get; set; }
+        public string addpmtreason { get; set; }
 
-        private IList<int> list = new List<int>();
-        public IList<int> List
-        {
-            get { return list; }
-            set { list = value; }
-        }
+        public IList<int> List { get; set; } = new List<int>();
+
         public IEnumerable<SelectListItem> Tags()
         {
             var cv = new CodeValueModel();
@@ -91,7 +87,7 @@ namespace CmsWeb.Areas.Dialog.Models
         }
         public string HelpLink()
         {
-            return Util.HelpLink("UpdateOrgMember_{0}".Fmt(type()));
+            return Util.HelpLink($"UpdateOrgMember_{type()}");
         }
 
         public class MemberSearchInfo
@@ -117,14 +113,7 @@ namespace CmsWeb.Areas.Dialog.Models
                 return ischecked ? "checked='checked'" : "";
             }
 
-            public string ToolTip
-            {
-                get
-                {
-                    return "{0} ({1})|Cell Phone: {2}|Work Phone: {3}|Home Phone: {4}|BirthDate: {5:d}|Join Date: {6:d}|Status: {7}|Email: {8}"
-                        .Fmt(Name, PeopleId, CellPhone, WorkPhone, HomePhone, BirthDate, JoinDate, MemberStatus, Email);
-                }
-            }
+            public string ToolTip => $"{Name} ({PeopleId})|Cell Phone: {CellPhone}|Work Phone: {WorkPhone}|Home Phone: {HomePhone}|BirthDate: {BirthDate:d}|Join Date: {JoinDate:d}|Status: {MemberStatus}|Email: {Email}";
         }
     }
 }

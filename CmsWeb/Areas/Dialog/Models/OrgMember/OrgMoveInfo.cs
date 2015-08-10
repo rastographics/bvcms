@@ -1,6 +1,5 @@
 using CmsData;
 using CmsWeb.Areas.Org.Models;
-using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -18,9 +17,9 @@ namespace CmsWeb.Models
             get
             {
                 if (orgSchedule == null)
-                    return "{0} &bull; {1}".Fmt(Program, Division);
+                    return $"{Program} &bull; {Division}";
                 var si = new ScheduleInfo(orgSchedule);
-                return "{0} &bull; {1} &bull; {2}, {3}".Fmt(Program, Division, si.SchedDay, si.Time);
+                return $"{Program} &bull; {Division} &bull; {si.SchedDay}, {si.Time}";
             }
         }
     }

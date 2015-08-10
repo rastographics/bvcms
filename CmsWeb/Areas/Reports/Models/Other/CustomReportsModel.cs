@@ -67,8 +67,23 @@ namespace CmsWeb.Areas.Reports.Models
             var sql = Sql(id, report);
             return cn.ExecuteReader(sql).ToExcel(report + ".xlsx");
         }
+        public EpplusResult Result(string SavedQuery, string report)
+        {
+            var cs = _db.CurrentUser.InRole("Finance")
+                ? Util.ConnectionString
+                : Util.ConnectionStringReadOnly;
+            var cn = new SqlConnection(cs);
+            var q = _db.PeopleQuery2(SavedQuery);
+            var sql = Sql(q, report);
+            return cn.ExecuteReader(sql).ToExcel(report + ".xlsx");
+        }
 
         public string Sql(Guid id, string report)
+        {
+            var q = _db.PeopleQuery(id);
+            return Sql(q, report);
+        }
+        public string Sql(IQueryable<Person> q , string report)
         {
             XDocument xdoc;
             if (report == "AllColumns")
@@ -92,8 +107,8 @@ namespace CmsWeb.Areas.Reports.Models
             if (r == null)
                 throw new Exception("no report");
 
-            var tag = _db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-            var sb = new StringBuilder("DECLARE @tagId INT = {0}\nSELECT\n".Fmt(tag.Id));
+            var tag = _db.PopulateSpecialTag(q, DbUtil.TagTypeId_Query);
+            var sb = new StringBuilder($"DECLARE @tagId INT = {tag.Id}\nSELECT\n");
 
             Dictionary<string, StatusFlagList> flags = null;
             var comma = "";
@@ -112,7 +127,7 @@ namespace CmsWeb.Areas.Reports.Models
                     if (!flag.HasValue())
                         throw new Exception("missing flag on column " + cc.Column);
                     if (!flags.ContainsKey(flag))
-                        throw new Exception("missing flag '{0}' on column {1}".Fmt(flag, cc.Column));
+                        throw new Exception($"missing flag '{flag}' on column {cc.Column}");
                     var sel = cc.Select.Replace("{flag}", flag);
                     var desc = (string)e.Attribute("description");
                     if (!desc.HasValue())
@@ -159,7 +174,7 @@ namespace CmsWeb.Areas.Reports.Models
                 else
                 {
                     if (!mc.Columns.ContainsKey(name))
-                        throw new Exception("missing column named '{0}'".Fmt(name));
+                        throw new Exception($"missing column named '{name}'");
                     var cc = mc.Columns[name];
                     sb.AppendFormat("\t{0}{1} AS [{2}]\n", comma, cc.Select, DblQuotes(cc.Column));
                     if (cc.Join.HasValue())

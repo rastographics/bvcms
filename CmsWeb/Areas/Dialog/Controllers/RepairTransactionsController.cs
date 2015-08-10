@@ -1,7 +1,6 @@
 ﻿using System.Web.Mvc;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Dialog.Controllers
 {
@@ -22,11 +21,11 @@ namespace CmsWeb.Areas.Dialog.Controllers
             model.UpdateLongRunningOp(DbUtil.Db, RepairTransactions.Op);
 
             if (!model.Started.HasValue)
-            { 
-                DbUtil.LogActivity("Add to org from tag for {0}".Fmt(Session["ActiveOrganization"]));
+            {
+                DbUtil.LogActivity($"Add to org from tag for {Session["ActiveOrganization"]}");
                 model.Process(DbUtil.Db);
             }
-			return View(model);
-		}
+            return View(model);
+        }
     }
 }

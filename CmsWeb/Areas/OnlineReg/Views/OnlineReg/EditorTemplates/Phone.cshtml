@@ -4,7 +4,7 @@
     var help = ViewData["help"] as string;
     if (help.HasValue())
     {
-        help = "<label class='help-inline'>{0}</label>".Fmt(help);
+        help = $"<label class='help-inline'>{help}</label>";
     }
 }
 <div class="control-group">

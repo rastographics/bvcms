@@ -31,6 +31,7 @@
 
             CKEDITOR.replace('editor', {
                 height: 200,
+                allowedContent: true,
                 customConfig: '/scripts/js/ckeditorconfig.js'
             });
         }

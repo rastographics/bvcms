@@ -1,25 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using CmsData;
 using CmsData.View;
 using MoreLinq;
 using UtilityExtensions;
-using System.Collections;
-using System.Data.SqlClient;
 
 namespace CmsWeb.Models
 {
     public class ExportInvolvements
     {
-        public class ActivityInfo
-        {
-            public string Name { get; set; }
-            public decimal? Pct { get; set; }
-            public string Leader { get; set; }
-        }
         public static IEnumerable<InvolvementInfo> InvolvementList(Guid queryid)
         {
             var Db = DbUtil.Db;
@@ -27,8 +19,8 @@ namespace CmsWeb.Models
             var q2 = from p in q
                      orderby p.LastName, p.FirstName
                      let spouse = Db.People.SingleOrDefault(w => p.SpouseId == w.PeopleId)
-                     let om = p.OrganizationMembers.SingleOrDefault(m => 
-                         m.OrganizationId == p.BibleFellowshipClassId 
+                     let om = p.OrganizationMembers.SingleOrDefault(m =>
+                         m.OrganizationId == p.BibleFellowshipClassId
                          && (m.Organization.LimitToRole ?? "") == "")
                      select new InvolvementInfo
                      {
@@ -48,29 +40,27 @@ namespace CmsWeb.Models
                          Teacher = p.BFClass.LeaderName,
                          MemberType = om.MemberType.Description,
                          AttendPct = om.AttendPct,
-
                          Age = p.Age ?? 0,
                          Spouse = spouse != null ? spouse.FirstName : "",
-
                          activities = from m in p.OrganizationMembers
                                       where (m.Organization.LimitToRole ?? "") == ""
-                                      select new ExportInvolvements.ActivityInfo
+                                      select new ActivityInfo
                                       {
                                           Name = m.Organization.OrganizationName,
                                           Pct = m.AttendPct,
                                           Leader = m.Organization.LeaderName
                                       },
-
                          JoinInfo = p.JoinType.Description + " , " + p.JoinDate.ToString().Substring(0, 11),
                          Notes = "",
                          OfficeUseOnly = "",
                          LastName = p.LastName,
                          FirstName = p.PreferredName,
                          Campus = p.Campu.Description,
-                         CampusDate = Db.LastChanged(p.PeopleId, "CampusId").FormatDate(),
+                         CampusDate = Db.LastChanged(p.PeopleId, "CampusId").FormatDate()
                      };
             return q2;
         }
+
         public static EpplusResult ChildrenList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
@@ -78,10 +68,9 @@ namespace CmsWeb.Models
                      let rr = p.RecRegs.FirstOrDefault()
                      select new
                      {
-                         PeopleId = p.PeopleId,
+                         p.PeopleId,
                          Title = p.TitleCode,
-                         FirstName = p.PreferredName,
-                         LastName = p.LastName,
+                         FirstName = p.PreferredName, p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -104,6 +93,7 @@ namespace CmsWeb.Models
                      };
             return q2.Take(maximumRows).ToDataTable().ToExcel("ChildrenList.xlsx");
         }
+
         public static EpplusResult ChurchList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
@@ -111,10 +101,9 @@ namespace CmsWeb.Models
                      let rescode = DbUtil.Db.ResidentCodes.SingleOrDefault(r => r.Id == p.PrimaryResCode).Description
                      select new
                      {
-                         PeopleId = p.PeopleId,
+                         p.PeopleId,
                          Title = p.TitleCode,
-                         FirstName = p.PreferredName,
-                         LastName = p.LastName,
+                         FirstName = p.PreferredName, p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -135,24 +124,24 @@ namespace CmsWeb.Models
                          JoinDate = p.JoinDate.FormatDate(),
                          BaptismDate = p.BaptismDate.FormatDate(),
                          PrevChurch = p.OtherPreviousChurch,
-                         Resident = rescode,
+                         Resident = rescode
                      };
             return q2.Take(maximumRows).ToDataTable().ToExcel("ChurchList.xlsx");
         }
+
         public static EpplusResult AttendList(Guid queryid, int maximumRows)
         {
             var q = DbUtil.Db.PeopleQuery(queryid);
             var q2 = from p in q
-                     let bfm = DbUtil.Db.OrganizationMembers.FirstOrDefault(om => 
+                     let bfm = DbUtil.Db.OrganizationMembers.FirstOrDefault(om =>
                          om.Organization.IsBibleFellowshipOrg == true
                          && om.PeopleId == p.PeopleId
                          && om.AttendPct > 0)
                      select new
                      {
-                         PeopleId = p.PeopleId,
+                         p.PeopleId,
                          Title = p.TitleCode,
-                         FirstName = p.PreferredName,
-                         LastName = p.LastName,
+                         FirstName = p.PreferredName, p.LastName,
                          Address = p.PrimaryAddress,
                          Address2 = p.PrimaryAddress2,
                          City = p.PrimaryCity,
@@ -170,8 +159,7 @@ namespace CmsWeb.Models
                          School = p.SchoolOther,
                          Grade = p.Grade.ToString(),
                          LastAttend = bfm.LastAttended.ToString(),
-                         AttendPct = bfm.AttendPct.ToString(),
-                         AttendStr = bfm.AttendStr,
+                         AttendPct = bfm.AttendPct.ToString(), bfm.AttendStr
                      };
             return q2.Take(maximumRows).ToDataTable().ToExcel("AttendList.xlsx");
         }
@@ -191,19 +179,61 @@ namespace CmsWeb.Models
 //        }
         public static EpplusResult OrgMemberListGroups()
         {
-            var gids = string.Join(",", Util2.CurrentGroups);
-            if (gids == "0")
-                gids = null;
-            var Db = DbUtil.Db;
             var cmd = new SqlCommand(
-                "dbo.OrgMembers {0}, '{1}'".Fmt(DbUtil.Db.CurrentOrg.Id, DbUtil.Db.CurrentOrg.SgFilter));
+                $"dbo.OrgMembers {DbUtil.Db.CurrentOrg.Id}, '{DbUtil.Db.CurrentOrg.SgFilter}'");
             cmd.Connection = new SqlConnection(Util.ConnectionString);
             cmd.Connection.Open();
             return cmd.ExecuteReader().ToExcel("OrgMemberGroups.xlsx");
         }
 
+        public static IEnumerable<CurrOrgMember> OrgMemberList(int orgid)
+        {
+            var Db = DbUtil.Db;
+            return Db.CurrOrgMembers(orgid.ToString());
+        }
+
+        public static EpplusResult PromoList(Guid queryid, int maximumRows)
+        {
+            var Db = DbUtil.Db;
+            var q = Db.PeopleQuery(queryid);
+            var q2 = from p in q
+                     let bfm = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == DbUtil.Db.CurrentOrg.Id && om.PeopleId == p.PeopleId)
+                     let sc = bfm.Organization.OrgSchedules.FirstOrDefault() // SCHED
+                     let tm = sc.SchedTime.Value
+                     select new
+                     {
+                         p.PeopleId,
+                         Title = p.TitleCode,
+                         FirstName = p.PreferredName, p.LastName,
+                         Address = p.PrimaryAddress,
+                         Address2 = p.PrimaryAddress2,
+                         City = p.PrimaryCity,
+                         State = p.PrimaryState,
+                         Zip = p.PrimaryZip.FmtZip(),
+                         Email = p.EmailAddress,
+                         MemberType = bfm.MemberType.Description, bfm.Organization.Location, bfm.Organization.PendingLoc,
+                         Leader = bfm.Organization.LeaderName,
+                         OrgName = bfm.Organization.OrganizationName,
+                         Schedule = tm.Hour + ":" + tm.Minute.ToString().PadLeft(2, '0'),
+                         HomePhone = p.HomePhone.FmtFone(),
+                         CellPhone1 = p.Family.HeadOfHousehold.CellPhone.FmtFone(),
+                         CellPhone2 = p.Family.HeadOfHouseholdSpouse.CellPhone.FmtFone()
+                     };
+            return q2.Take(maximumRows).ToDataTable().ToExcel("PromotionList.xlsx");
+        }
+
+        public class ActivityInfo
+        {
+            public string Name { get; set; }
+            public decimal? Pct { get; set; }
+            public string Leader { get; set; }
+        }
+
         public class MemberInfoClass
         {
+            public string Fname;
+            public string MemberInfoRaw;
+            public string Mname;
             public string FirstName { get; set; }
             public string LastName { get; set; }
             public string Gender { get; set; }
@@ -242,57 +272,12 @@ namespace CmsWeb.Models
                 }
             }
 
-            public string MemberInfoRaw;
-
             public string InactiveDate { get; set; }
             public string Medical { get; set; }
             public int PeopleId { get; set; }
             public string EnrollDate { get; set; }
             public string Groups { get; set; }
-
-            public string Fname;
-
-            public string Mname;
-
             public string Tickets { get; set; }
-        }
-
-       public static IEnumerable<CurrOrgMember> OrgMemberList(int orgid)
-        {
-            var Db = DbUtil.Db;
-            return Db.CurrOrgMembers(orgid.ToString());
-        }
-        public static EpplusResult PromoList(Guid queryid, int maximumRows)
-        {
-            var Db = DbUtil.Db;
-            var q = Db.PeopleQuery(queryid);
-            var q2 = from p in q
-                     let bfm = Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == DbUtil.Db.CurrentOrg.Id && om.PeopleId == p.PeopleId)
-                     let sc = bfm.Organization.OrgSchedules.FirstOrDefault() // SCHED
-                     let tm = sc.SchedTime.Value
-                     select new
-                     {
-                         PeopleId = p.PeopleId,
-                         Title = p.TitleCode,
-                         FirstName = p.PreferredName,
-                         LastName = p.LastName,
-                         Address = p.PrimaryAddress,
-                         Address2 = p.PrimaryAddress2,
-                         City = p.PrimaryCity,
-                         State = p.PrimaryState,
-                         Zip = p.PrimaryZip.FmtZip(),
-                         Email = p.EmailAddress,
-                         MemberType = bfm.MemberType.Description,
-                         Location = bfm.Organization.Location,
-                         PendingLoc = bfm.Organization.PendingLoc,
-                         Leader = bfm.Organization.LeaderName,
-                         OrgName = bfm.Organization.OrganizationName,
-                         Schedule = tm.Hour + ":" + tm.Minute.ToString().PadLeft(2, '0'),
-                         HomePhone = p.HomePhone.FmtFone(),
-                         CellPhone1 = p.Family.HeadOfHousehold.CellPhone.FmtFone(),
-                         CellPhone2 = p.Family.HeadOfHouseholdSpouse.CellPhone.FmtFone(),
-                     };
-            return q2.Take(maximumRows).ToDataTable().ToExcel("PromotionList.xlsx");
         }
     }
 }

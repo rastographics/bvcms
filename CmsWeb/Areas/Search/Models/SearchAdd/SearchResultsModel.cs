@@ -1,26 +1,32 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using CmsWeb.Areas.People.Models;
-using CmsWeb.Code;
+using System.Text.RegularExpressions;
+using CmsData;
 using CmsWeb.Models;
 using UtilityExtensions;
-using CmsData;
-using System.Text.RegularExpressions;
 
 namespace CmsWeb.Areas.Search.Models
 {
     public class SearchResultsModel : PagedTableModel<Person, SearchResultInfo>
     {
-        public string AddContext { get; set; }
+        private readonly string[] usersOnlyContextTypes = {"taskdelegate", "taskowner", "taskdelegate2"};
 
+        public SearchResultsModel()
+            : base(null, null, true)
+        {
+            ShowPageSize = false;
+        }
+
+        public string AddContext { get; set; }
         public string Name { get; set; }
 
         [DisplayName("Communication")]
@@ -31,17 +37,11 @@ namespace CmsWeb.Areas.Search.Models
         [DisplayName("Date of Birth")]
         public string dob { get; set; }
 
-        private string[] usersOnlyContextTypes = { "taskdelegate", "taskowner", "taskdelegate2" };
-        public bool UsersOnly { get { return usersOnlyContextTypes.Contains(AddContext.ToLower()); } }
+        public bool UsersOnly => usersOnlyContextTypes.Contains(AddContext.ToLower());
 
-        public SearchResultsModel()
-            : base(null, null, true)
-        {
-            ShowPageSize = false;
-        }
         public string HelpLink(string page)
         {
-            return Util.HelpLink("_SearchAdd_{0}".Fmt(page));
+            return Util.HelpLink($"_SearchAdd_{page}");
         }
 
         public override IQueryable<Person> DefineModelList()
@@ -65,17 +65,16 @@ namespace CmsWeb.Areas.Search.Models
                 if (First.HasValue())
                     q = from p in q
                         where (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last))
-                        && (p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First))
+                              && (p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First))
+                        select p;
+                else if (Last.AllDigits())
+                    q = from p in q
+                        where p.PeopleId == Last.ToInt()
                         select p;
                 else
-                    if (Last.AllDigits())
-                        q = from p in q
-                            where p.PeopleId == Last.ToInt()
-                            select p;
-                    else
-                        q = from p in q
-                            where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
-                            select p;
+                    q = from p in q
+                        where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                        select p;
             }
             if (Address.IsNotNull())
             {
@@ -83,9 +82,9 @@ namespace CmsWeb.Areas.Search.Models
                 if (Address.HasValue())
                     q = from p in q
                         where p.Family.AddressLineOne.Contains(Address)
-                           || p.Family.AddressLineTwo.Contains(Address)
-                           || p.Family.CityName.Contains(Address)
-                           || p.Family.ZipCode.Contains(Address)
+                              || p.Family.AddressLineTwo.Contains(Address)
+                              || p.Family.CityName.Contains(Address)
+                              || p.Family.ZipCode.Contains(Address)
                         select p;
             }
             if (Phone.IsNotNull())
@@ -94,8 +93,8 @@ namespace CmsWeb.Areas.Search.Models
                 if (Phone.HasValue())
                     q = from p in q
                         where p.CellPhone.Contains(Phone) || p.EmailAddress.Contains(Phone)
-                        || p.Family.HomePhone.Contains(Phone)
-                        || p.WorkPhone.Contains(Phone)
+                              || p.Family.HomePhone.Contains(Phone)
+                              || p.WorkPhone.Contains(Phone)
                         select p;
             }
             if (dob.HasValue())

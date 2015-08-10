@@ -7,11 +7,15 @@ using UtilityExtensions;
 using IronPython.Hosting;
 using System;
 using System.Configuration;
+using System.Data;
 using System.Diagnostics;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using CmsData.API;
+using Dapper;
 using Microsoft.Scripting.Hosting;
+using OfficeOpenXml;
 
 namespace CmsData
 {
@@ -300,7 +304,7 @@ namespace CmsData
             var mtlist = memberTypes.Split(',');
             var mts = string.Join(";", from mt in db.MemberTypes
                                        where mtlist.Contains(mt.Description)
-                                       select "{0},{1}".Fmt(mt.Id, mt.Code));
+                                       select $"{mt.Id},{mt.Code}");
             var clause = c.AddNewClause(QueryType.MemberTypeCodes, CompareType.OneOf, mts);
             clause.Program = progid;
             clause.Division = divid;
@@ -662,6 +666,24 @@ namespace CmsData
             return s.FmtFone(prefix);
         }
 
+        public string UploadExcelFromSqlToFtp(string sqlscript, string username, string password, string filename, string targetpath)
+        {
+            var script = db.Content(sqlscript, "");
+            if (!script.HasValue())
+                throw new Exception("no sql script found");
+            var bytes = db.Connection.ExecuteReader(sqlscript).ToExcelBytes(filename);
+            var url = Path.Combine(targetpath, filename);
+            using (var webClient = new WebClient())
+            {
+                webClient.Credentials = new NetworkCredential(username, password);
+                webClient.UploadData(url, bytes);
+            }
+            return url;
+        }
+        public string UploadExcelFromSqlToRackspace(string sqlscript, string filename)
+        {
+            return "";
+        }
         private static string ExecutePython(string scriptContent, PythonEvents model)
         {
             // we could consider only passing in an explicit IPythonApi to the script so that only things defined
@@ -722,7 +744,7 @@ print '''
 import sys
 sys.path.append('{1}')
 from StringIO import StringIO
-        
+
 class Cgi:
     def escape(self, t):
         return (t.replace('&', '&amp;')

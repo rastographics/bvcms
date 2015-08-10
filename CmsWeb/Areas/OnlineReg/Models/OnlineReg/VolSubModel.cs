@@ -9,6 +9,7 @@ using CmsWeb.Areas.Main.Models;
 using TaskAlias = System.Threading.Tasks.Task;
 using System.Threading;
 using System.Web.Mvc;
+using CmsData.Codes;
 using CmsData.View;
 using Elmah;
 
@@ -90,12 +91,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             var dt = DateTime.Now;
             ticks = dt.Ticks;
-            var yeslink = @"<a href=""http://volsublink"" aid=""{0}"" pid=""{1}"" ticks=""{2}"" ans=""yes"">
-Yes, I can sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
-            var nolink = @"<a href=""http://volsublink"" aid=""{0}"" pid=""{1}"" ticks=""{2}"" ans=""no"">
-Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
+            var yeslink = $@"<a href=""http://volsublink"" aid=""{attend.AttendId}"" pid=""{person.PeopleId}"" ticks=""{ticks}"" ans=""yes"">
+Yes, I can sub for you.</a>";
+            var nolink = $@"<a href=""http://volsublink"" aid=""{attend.AttendId}"" pid=""{person.PeopleId}"" ticks=""{ticks}"" ans=""no"">
+Sorry, I cannot sub for you.</a>";
 
-            subject = "Volunteer substitute request for {0}".Fmt(org.OrganizationName);
+            subject = $"Volunteer substitute request for {org.OrganizationName}";
             message = Db.ContentHtml("VolunteerSubRequest", Resource1.VolSubModel_ComposeMessage_Body);
             message = message.Replace("{org}", org.OrganizationName)
                 .Replace("{meetingdate}", attend.MeetingDate.ToString("dddd, MMM d"))
@@ -126,14 +127,14 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
         public IEnumerable<PotentialSubstitute> CommittedThisMeeting()
         {
             return from ps in PotentialSubs()
-                   where ps.Committed != null 
+                   where ps.Committed != null
                    orderby ps.Name2
                    select ps;
         }
         public IEnumerable<PotentialSubstitute> ThisSchedule()
         {
             return from ps in PotentialSubs()
-                   where ps.Committed == null 
+                   where ps.Committed == null
                    where ps.SameSchedule != null
                    orderby ps.Name2
                    select ps;
@@ -141,7 +142,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
         public IEnumerable<PotentialSubstitute> OtherVolunteers()
         {
             return from ps in PotentialSubs()
-                   where ps.Committed == null 
+                   where ps.Committed == null
                    where ps.SameSchedule == null
                    orderby ps.Name2
                    select ps;
@@ -153,8 +154,8 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
                         where t.OrgId == org.OrganizationId
                         where t.Name.StartsWith("SG:")
                         orderby t.Name
-                        select new SelectListItem() { Text = t.Name.Substring(3), Value = ".sg-" + t.Id }).ToList();
-            list.Insert(0, new SelectListItem() { Text = "(no filter)", Value = "0" });
+                        select new SelectListItem { Text = t.Name.Substring(3), Value = ".sg-" + t.Id }).ToList();
+            list.Insert(0, new SelectListItem { Text = "(no filter)", Value = "0" });
             return list;
         }
         public void SendEmails()
@@ -179,21 +180,21 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
 
             var qb = Db.ScratchPadCondition();
             qb.Reset(Db);
-            qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, "{0},temp".Fmt(tag.Id));
+            qb.AddNewClause(QueryType.HasMyTag, CompareType.Equal, $"{tag.Id},temp");
             attend.Commitment = CmsData.Codes.AttendCommitmentCode.FindSub;
             qb.Save(Db);
 
-            var rurl = Db.ServerLink("/OnlineReg/VolSubReport/{0}/{1}/{2}".Fmt(attend.AttendId, person.PeopleId, dt.Ticks));
-            var reportlink = @"<a href=""{0}"">Substitute Status Report</a>".Fmt(rurl);
+            var rurl = Db.ServerLink($"/OnlineReg/VolSubReport/{attend.AttendId}/{person.PeopleId}/{dt.Ticks}");
+            var reportlink = $@"<a href=""{rurl}"">Substitute Status Report</a>";
             var list = Db.PeopleFromPidString(org.NotifyIds).ToList();
             //list.Insert(0, person);
             Db.Email(person.FromEmail, list,
                 "Volunteer Substitute Commitment for " + org.OrganizationName,
-                @"
-<p>{0} has requested a substitute on {1:MMM d} at {1:h:mm tt}.</p>
+                $@"
+<p>{person.Name} has requested a substitute on {attend.MeetingDate:MMM d} at {attend.MeetingDate:h:mm tt}.</p>
 <blockquote>
-{2}
-</blockquote>".Fmt(person.Name, attend.MeetingDate, reportlink));
+{reportlink}
+</blockquote>");
 
             // Email subs
             var m = new MassEmailer(qb.Id);
@@ -284,7 +285,7 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
                      where rr.SubstituteId == sid
                      select rr).Single();
 
-            if (attend.SubRequests.Any(ss => ss.CanSub == true))
+            if (attend.Commitment == AttendCommitmentCode.SubFound || attend.SubRequests.Any(ss => ss.CanSub == true))
             {
                 DisplayMessage = "This substitute request has already been covered. Thank you so much for responding.";
                 Log("Covered", i.Requested, i.SubstituteId);
@@ -300,22 +301,20 @@ Sorry, I cannot sub for you.</a>".Fmt(attend.AttendId, person.PeopleId, ticks);
                 return;
             }
             i.CanSub = true;
-            Attend.MarkRegistered(Db, i.Substitute.PeopleId, attend.MeetingId, CmsData.Codes.AttendCommitmentCode.Substitute);
-            attend.Commitment = CmsData.Codes.AttendCommitmentCode.SubFound;
+            Attend.MarkRegistered(Db, i.Substitute.PeopleId, attend.MeetingId, AttendCommitmentCode.Substitute);
+            attend.Commitment = AttendCommitmentCode.SubFound;
             Log("Claimed", i.Requested, i.SubstituteId);
             Db.SubmitChanges();
-            var body = @"
-<p>{0},</p>
+            var body = $@"
+<p>{i.Substitute.Name},</p>
 <p>Thank you so much.</p>
-<p>You are now assigned to cover for {1}<br />
-in the {2}<br />
-on {3:MMM d, yyyy} at {3:t}.
-See you there!</p>".Fmt(i.Substitute.Name, i.Requestor.Name,
-                org.OrganizationName, attend.MeetingDate);
+<p>You are now assigned to cover for {i.Requestor.Name}<br />
+in the {org.OrganizationName}<br />
+on {attend.MeetingDate:MMM d, yyyy} at {attend.MeetingDate:t}.
+See you there!</p>";
 
             // on screen message
-            DisplayMessage = "<p>You have been sent the following email at {0}.</p>\n"
-                .Fmt(Util.ObscureEmail(i.Substitute.EmailAddress)) + body;
+            DisplayMessage = $"<p>You have been sent the following email at {Util.ObscureEmail(i.Substitute.EmailAddress)}.</p>\n" + body;
 
             // email confirmation
             Db.Email(i.Requestor.FromEmail, i.Substitute,
@@ -326,23 +325,21 @@ See you there!</p>".Fmt(i.Substitute.Name, i.Requestor.Name,
             list.Insert(0, i.Requestor);
             Db.Email(i.Substitute.FromEmail, list,
                 "Volunteer Substitute Committment for " + org.OrganizationName,
-                @"
-<p>The following email was sent to {0}.</p>
+                $@"
+<p>The following email was sent to {i.Substitute.Name}.</p>
 <blockquote>
-{1}
-</blockquote>".Fmt(i.Substitute.Name, body));
+{body}
+</blockquote>");
         }
 
         public void Log(string action, DateTime? reqtime, int? sub)
         {
-            DbUtil.LogActivity("VolSub {0} , mdt={1}, rdt={2}, sub={3}".Fmt(action,
-                attend.MeetingDate.FormatDateTm(), reqtime.FormatDateTm(), sub), 
+            DbUtil.LogActivity($"VolSub {action} , mdt={attend.MeetingDate.FormatDateTm()}, rdt={reqtime.FormatDateTm()}, sub={sub}",
                 attend.OrganizationId, attend.PeopleId);
         }
         public void Log(string action)
         {
-            DbUtil.LogActivity("VolSub {0}, mdt={1}".Fmt(action, 
-                attend.MeetingDate.FormatDateTm()), attend.OrganizationId, attend.PeopleId);
+            DbUtil.LogActivity($"VolSub {action}, mdt={attend.MeetingDate.FormatDateTm()}", attend.OrganizationId, attend.PeopleId);
         }
 
         public class SubStatusInfo
@@ -382,9 +379,6 @@ See you there!</p>".Fmt(i.Substitute.Name, i.Requestor.Name,
             return q;
         }
         private Settings setting;
-        public Settings Setting
-        {
-            get { return setting ?? (setting = new Settings(org.RegSetting, Db, org.OrganizationId)); }
-        }
+        public Settings Setting => setting ?? (setting = new Settings(org.RegSetting, Db, org.OrganizationId));
     }
 }

@@ -16,6 +16,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsRegistrationModel(id);
             return PartialView("Registration/Registration", m);
         }
+
         [HttpPost]
         public ActionResult RegistrationHelpToggle(int id)
         {
@@ -23,6 +24,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsRegistrationModel(id);
             return PartialView("Registration/Registration", m);
         }
+
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult RegistrationEdit(int id)
@@ -30,10 +32,11 @@ namespace CmsWeb.Areas.Org.Controllers
             var m = new SettingsRegistrationModel(id);
             return PartialView("Registration/RegistrationEdit", m);
         }
+
         [HttpPost]
         public ActionResult RegistrationUpdate(SettingsRegistrationModel m)
         {
-            DbUtil.LogActivity("Update Registration {0}".Fmt(m.Org.OrganizationName));
+            DbUtil.LogActivity($"Update Registration {m.Org.OrganizationName}");
             try
             {
                 m.Update();
@@ -47,11 +50,13 @@ namespace CmsWeb.Areas.Org.Controllers
                 return PartialView("Registration/RegistrationEdit", m);
             }
         }
+
         [HttpPost]
         public ActionResult NewAgeGroup()
         {
             return PartialView("EditorTemplates/AgeGroup", new Settings.AgeGroup());
         }
+
         public ActionResult OrgPickList(int id)
         {
             if (Util.SessionTimedOut())
@@ -62,6 +67,7 @@ namespace CmsWeb.Areas.Org.Controllers
             Session["orgPickList"] = (o.OrgPickList ?? "").Split(',').Select(oo => oo.ToInt()).ToList();
             return Redirect("/SearchOrgs/" + id);
         }
+
         [HttpPost]
         public ActionResult UpdateOrgIds(int id, string list)
         {
@@ -71,6 +77,7 @@ namespace CmsWeb.Areas.Org.Controllers
             DbUtil.Db.SubmitChanges();
             return PartialView("DisplayTemplates/OrgPickList", m);
         }
+
         private static Settings getRegSettings(int id)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);

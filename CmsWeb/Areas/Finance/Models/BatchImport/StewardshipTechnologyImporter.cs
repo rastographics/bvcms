@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -33,7 +33,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
         private static int? BatchProcessStewardshipTechnology(CsvReader csv, DateTime date, int? fundid)
         {
             var fundList = (from f in DbUtil.Db.ContributionFunds
-                            select new 
+                            select new
                             {
                                 f.FundId,
                                 f.FundName
@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 else
                 {
                     bd = BatchImportContributions.AddContributionDetail(r.Date ?? date, fundid ?? firstfund, r.Amount, r.CheckNo, "", r.Account);
-                    bd.Contribution.ContributionDesc = "Used default fund (fund requested: {0})".Fmt(r.Type);
+                    bd.Contribution.ContributionDesc = $"Used default fund (fund requested: {r.Type})";
                 }
                 bh.BundleDetails.Add(bd);
             }

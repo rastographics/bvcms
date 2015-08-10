@@ -1,14 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
 using CmsData;
-using CmsWeb.Models;
-using CmsWeb.Areas.OnlineReg.Models;
-using UtilityExtensions;
-using System.Collections.Generic;
 using CmsData.Codes;
+using CmsWeb.Areas.OnlineReg.Models;
+using CmsWeb.Models;
 using Elmah;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Controllers
 {
@@ -16,6 +16,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
     [RouteArea("OnlineReg", AreaPrefix = "OnlineReg"), Route("{action}/{id?}")]
     public partial class OnlineRegController : CmsController
     {
+        private string fromMethod;
+
         [HttpGet]
         [Route("~/OnlineReg/Index/{id:int}")]
         [Route("~/OnlineReg/{id:int}")]
@@ -48,7 +50,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             // they clicked the Login button on the login page
 
 //            var ret = Util.IsDebug() && Util.IsLocalNetworkRequest
-//                ? AccountModel.AutoLogin(m.username, Session, Request) : 
+//                ? AccountModel.AutoLogin(m.username, Session, Request) :
             var ret = AccountModel.AuthenticateLogon(m.username, m.password, Session, Request);
 
             if (ret is string)
@@ -60,7 +62,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             if (m.Orgid == Util.CreateAccountCode)
             {
-                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: Util.UserPeopleId, did: m.DatumId);
+                DbUtil.LogActivity("OnlineReg CreateAccount Existing", peopleid: Util.UserPeopleId, datumId: m.DatumId);
                 return Content("/Person2/" + Util.UserPeopleId); // they already have an account, so take them to their page
             }
             m.UserPeopleId = Util.UserPeopleId;
@@ -96,6 +98,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 #endif
             return FlowList(m);
         }
+
         [HttpPost]
         public ActionResult RegisterFamilyMember(int id, OnlineRegModel m)
         {
@@ -127,7 +130,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 return FlowList(m);
             var p = m.List[id];
 
-            if(p.NeedsToChooseClass())
+            if (p.NeedsToChooseClass())
                 return FlowList(m);
 
             p.ValidateModelForFind(ModelState, id);
@@ -146,7 +149,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.FillPriorInfo();
             p.SetSpecialFee();
 
-            if (!ModelState.IsValid || p.count == 1) 
+            if (!ModelState.IsValid || p.count == 1)
                 return FlowList(m);
 
             // form is ok but not found, so show AddressGenderMarital Form
@@ -218,13 +221,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View(m);
         }
 
-
         [HttpPost]
         public ActionResult CompleteRegistration(OnlineRegModel m)
         {
             if (m.org != null && m.org.RegistrationTypeId == RegistrationTypeCode.SpecialJavascript)
                 m.List[0].SpecialTest = SpecialRegModel.ParseResults(Request.Form);
-            TempData["onlineregmodel"] = Util.Serialize<OnlineRegModel>(m);
+            TempData["onlineregmodel"] = Util.Serialize(m);
             return Redirect("/OnlineReg/CompleteRegistration");
         }
 
@@ -232,7 +234,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult CompleteRegistration()
         {
             Response.NoCache();
-            var s = (string)TempData["onlineregmodel"];
+            var s = (string) TempData["onlineregmodel"];
             if (s == null)
             {
                 DbUtil.LogActivity("OnlineReg Error PageRefreshNotAllowed");
@@ -265,7 +267,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var z = DbUtil.Db.ZipCodes.SingleOrDefault(zc => zc.Zip == id);
             if (z == null)
                 return Json(null);
-            return Json(new { city = z.City.Trim(), state = z.State });
+            return Json(new {city = z.City.Trim(), state = z.State});
         }
 
         public ActionResult Timeout(string ret)
@@ -276,7 +278,6 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             return View();
         }
 
-        private string fromMethod;
         private ActionResult FlowList(OnlineRegModel m)
         {
             try
@@ -295,16 +296,22 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         private ActionResult ErrorResult(OnlineRegModel m, Exception ex, string errorDisplay)
         {
             // ReSharper disable once EmptyGeneralCatchClause
-            try { m.UpdateDatum(); }
-            catch { }
+            try
+            {
+                m.UpdateDatum();
+            }
+            catch
+            {
+            }
 
-            var ex2 = new Exception("{0}, {2}".Fmt(errorDisplay, m.DatumId, DbUtil.Db.ServerLink("/OnlineReg/RegPeople/") + m.DatumId), ex);
+            var ex2 = new Exception($"{errorDisplay}, {DbUtil.Db.ServerLink("/OnlineReg/RegPeople/") + m.DatumId}", ex);
             ErrorSignal.FromCurrentContext().Raise(ex2);
             m.Log(ex2.Message);
             TempData["error"] = errorDisplay;
             TempData["stack"] = ex.StackTrace;
             return Content("/Error/");
         }
+
         protected override void OnException(ExceptionContext filterContext)
         {
             if (filterContext.ExceptionHandled)

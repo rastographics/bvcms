@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
-using CmsData.Codes;
 using Dapper;
-using IronPython.Hosting;
 using UtilityExtensions;
+using IronPython.Hosting;
+using System.IO;
+using CmsData.Codes;
 
 namespace CmsData
 {
@@ -448,7 +448,7 @@ namespace CmsData
         }
 
         /* QueryList is designed to run a pre-saved query referenced by name which is passed in as a string in the function call.
-        * The resulting collection of people records (limited to 1000) is returned as an IEnumerable so that all attributes of the 
+        * The resulting collection of people records (limited to 1000) is returned as an IEnumerable so that all attributes of the
         * Person record are accessible
         */
         public IEnumerable<Person> QueryList(object savedQuery)
@@ -524,17 +524,17 @@ namespace CmsData
             {
                 var id = db.FetchLastQuery().Id;
                 var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                declareqtagid = "DECLARE @qtagid INT = {0}\n".Fmt(tag.Id);
+                declareqtagid = $"DECLARE @qtagid INT = {tag.Id}\n";
             }
-            sql = "{0}{1}".Fmt(declareqtagid, sql);
+            sql = $"{declareqtagid}{sql}";
             var q = cn.Query(sql);
             var list = q.Select(rr => new NameValuePair {Name = rr.Name, Value = rr.Cnt}).ToList();
             if (list.Count == 0)
                 return @"[ ['No Data', 'Count'], ['Dummy Value 1', 1], ['Dummy Value 2', 2], ['Dummy Value 3', 3], ]";
-            return @"[
-  ['{0}', 'Count'],
-{1}
-]".Fmt(title, string.Join(",\n", list));
+            return $@"[
+  ['{title}', 'Count'],
+{string.Join(",\n", list)}
+]";
         }
 
         public int StatusCount(string s)
@@ -554,7 +554,7 @@ namespace CmsData
 
             public override string ToString()
             {
-                return "  ['{0}', {1}]".Fmt(Name, Value);
+                return $"  ['{Name}', {Value}]";
             }
         }
     }

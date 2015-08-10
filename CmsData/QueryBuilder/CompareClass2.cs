@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Web.Caching;
 
 namespace CmsData
 {
-    public class CompareClass2 
+    public class CompareClass2
     {
         public FieldType FieldType { get; set; }
         public CompareType CompType { get; set; }
@@ -31,7 +31,7 @@ namespace CmsData
                 case FieldType.Code:
                 case FieldType.NullCode:
                 case FieldType.CodeStr:
-                    return Display.Fmt(fld, c.CodeValues);
+                    return string.Format(Display, fld, c.CodeValues);
                 case FieldType.String:
                 case FieldType.StringEqual:
                 case FieldType.StringEqualOrStartsWith:
@@ -42,12 +42,12 @@ namespace CmsData
                 case FieldType.IntegerSimple:
                 case FieldType.IntegerEqual:
                 case FieldType.NullInteger:
-                    return Display.Fmt(fld, c.TextValue);
+                    return string.Format(Display, fld, c.TextValue);
                 case FieldType.Date:
                 case FieldType.DateSimple:
-                    return Display.Fmt(fld, c.DateValue);
+                    return string.Format(Display, fld, c.DateValue);
                 case FieldType.DateField:
-                    return Display.Fmt(fld, c.CodeIdValue);
+                    return string.Format(Display, fld, c.CodeIdValue);
                 default:
                     throw new ArgumentException();
             }
@@ -62,8 +62,8 @@ namespace CmsData
         {
             get
             {
-                var _Comparisons = (List<CompareClass2>)HttpRuntime.Cache["comparisons2"];
-                if (_Comparisons == null)
+                var comparisons = (List<CompareClass2>)HttpRuntime.Cache["comparisons2"];
+                if (comparisons == null)
                 {
                     var xdoc = XDocument.Parse(Properties.Resources.CompareMap);
                     var q = from f in xdoc.Descendants("FieldType")
@@ -74,11 +74,11 @@ namespace CmsData
                                 CompType = Convert((string)c.Attribute("Type")),
                                 Display = (string)c.Attribute("Display")
                             };
-                    _Comparisons = q.ToList();
-					HttpRuntime.Cache.Insert("comparisons2", _Comparisons, null,
-						DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
+                    comparisons = q.ToList();
+                    HttpRuntime.Cache.Insert("comparisons2", comparisons, null,
+                        DateTime.Now.AddMinutes(10), Cache.NoSlidingExpiration);
                 }
-                return _Comparisons;
+                return comparisons;
             }
         }
     }

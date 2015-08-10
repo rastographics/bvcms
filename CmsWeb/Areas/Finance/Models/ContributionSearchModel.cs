@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -183,7 +183,7 @@ namespace CmsWeb.Models
         public SelectList OnlineOptions()
         {
             return new SelectList(
-                new List<CodeValueItem> 
+                new List<CodeValueItem>
     			{
     				new CodeValueItem { Id = 2, Value = "Both Online & Not" },
     				new CodeValueItem { Id = 1, Value = "Online" },
@@ -215,8 +215,8 @@ namespace CmsWeb.Models
                         group c by new { c.FundId, c.ContributionFund.FundName }
                             into g
                             orderby g.Key.FundName
-                            select new SelectListItem()
-                                   {
+                            select new SelectListItem
+                            {
                                        Value = g.Key.FundId.ToString(),
                                        Text = g.Key.FundName
                                    }).ToList();
@@ -224,12 +224,12 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public string FundName { get { return api.FundName(); } }
-        public string Campus { get { return api.Campus(); } }
-        public string Online { get { return api.Online(); } }
-        public string TaxDedNonTax { get { return api.TaxDedNonTax(); } }
-        public decimal? Total { get { return api.Total(); } }
-        public int? Count { get { return api.Count(); } }
+        public string FundName => api.FundName();
+        public string Campus => api.Campus();
+        public string Online => api.Online();
+        public string TaxDedNonTax => api.TaxDedNonTax();
+        public decimal? Total => api.Total();
+        public int? Count => api.Count();
 
         public void Return(int cid)
         {
@@ -274,7 +274,7 @@ namespace CmsWeb.Models
         public SelectList TaxTypes()
         {
             return new SelectList(
-                new List<CodeValueItem> 
+                new List<CodeValueItem>
     			{
     				new CodeValueItem { Code = "TaxDed", Value = "Tax Deductible" },
     				new CodeValueItem { Code = "NonTaxDed", Value = "Non-Tax Deductible" },
@@ -288,13 +288,13 @@ namespace CmsWeb.Models
         {
             if (!HttpContext.Current.User.IsInRole("conversion"))
                 return null;
-            if (!SearchInfo.Name.HasValue()) 
+            if (!SearchInfo.Name.HasValue())
                 return null;
-            if (!(SearchInfo.FundId > 0)) 
+            if (!(SearchInfo.FundId > 0))
                 return null;
             var re = new Regex(@"move to fundid (\d+)");
             var match = re.Match(SearchInfo.Name);
-            if (!match.Success) 
+            if (!match.Success)
                 return null;
 
             var newfundid = match.Groups[1].Value.ToInt2();
@@ -313,11 +313,11 @@ namespace CmsWeb.Models
                 sb.AppendFormat(@"
 -- for pid = {3}, moving {4:c} from '{5}' to '{6}'
 UPDATE dbo.Contribution SET FundId = {0} WHERE ContributionId = {1} AND FundId = {2}
-",              newfundid, c.ContributionId, c.FundId, 
+",              newfundid, c.ContributionId, c.FundId,
                 c.PeopleId, c.ContributionAmount, oldfund.FundDescription, newfund.FundDescription);
             }
             var sql = sb.ToString();
-            DbUtil.Db.ContentText("MovedFunds-{0}".Fmt(DateTime.Now), sql);
+            DbUtil.Db.ContentText($"MovedFunds-{DateTime.Now}", sql);
             DbUtil.Db.ExecuteCommand(sql);
             return "/Contributions?fundId=" + newfundid;
         }

@@ -9,7 +9,7 @@ namespace CmsData.Finance.TransNational.Query
     {
         public string TransactionId { get; private set; }
 
-        public TransactionType TransactionType { get; private set; }
+        public TransactionType TransactionType { get; }
 
         public string Condition { get; private set; }
 
@@ -35,7 +35,7 @@ namespace CmsData.Finance.TransNational.Query
 
             if (TransactionType == TransactionType.CreditCard)
             {
-                Name = string.Format("{0} {1}", data.Element("first_name").Value, data.Element("last_name").Value);
+                Name = $"{data.Element("first_name").Value} {data.Element("last_name").Value}";
                 LastDigits = data.Element("cc_number").Value.Last(4);
             }
             else

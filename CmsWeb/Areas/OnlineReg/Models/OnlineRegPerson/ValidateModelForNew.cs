@@ -79,7 +79,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateMarital()
         {
-            if (married.HasValue || !RequiredMarital()) 
+            if (married.HasValue || !RequiredMarital())
                 return;
             modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].married), "Please specify marital status");
             Log("MaritalRequired");
@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ValidateGender()
         {
-            if (gender.HasValue || !RequiredGender()) 
+            if (gender.HasValue || !RequiredGender())
                 return;
             modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].gender), "Please specify gender");
             Log("GenderRequired");
@@ -127,7 +127,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var minage = DbUtil.Db.Setting("MinimumUserAge", "16").ToInt();
             if (orgid == Util.CreateAccountCode && age < minage)
             {
-                modelState.AddModelError(dobname, "must be {0} to create account".Fmt(minage));
+                modelState.AddModelError(dobname, $"must be {minage} to create account");
                 Log("UnderAgeForAccount");
             }
             if (ComputesOrganizationByAge() && GetAppropriateOrg() == null)
@@ -159,9 +159,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (EmailAddress.HasValue())
                 EmailAddress = EmailAddress.Trim();
 
-            if (EmailAddress.HasValue() && Util.ValidEmail(EmailAddress)) 
+            if (EmailAddress.HasValue() && Util.ValidEmail(EmailAddress))
                 return;
-            
+
             modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].person.EmailAddress),
                 "Please specify a valid email address.");
             Log("NeedValidEmail");

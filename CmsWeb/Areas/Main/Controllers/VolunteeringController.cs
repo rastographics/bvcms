@@ -106,9 +106,9 @@ namespace CmsWeb.Areas.Main.Controllers
 
             DbUtil.Db.VolunteerForms.InsertOnSubmit(f);
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Uploading VolunteerApp for {0}".Fmt(vol.Volunteer.Person.Name));
+            DbUtil.LogActivity($"Uploading VolunteerApp for {vol.Volunteer.Person.Name}");
 
-            return Redirect("/Volunteering/{0}#tab_documents".Fmt(vol.Volunteer.PeopleId));
+            return Redirect($"/Volunteering/{vol.Volunteer.PeopleId}#tab_documents");
         }
 
         public ActionResult Delete(int id, int peopleId)
@@ -122,14 +122,14 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.VolunteerForms.DeleteOnSubmit(form);
             DbUtil.Db.SubmitChanges();
 
-            return Redirect("/Volunteering/{0}#tab_documents".Fmt(peopleId));
+            return Redirect($"/Volunteering/{peopleId}#tab_documents");
         }
 
         public ActionResult CreateCheck(int id, string code, int type, int label = 0)
         {
             var tabName = type == 1 ? "tab_backgroundChecks" : "tab_creditChecks";
             ProtectMyMinistryHelper.Create(id, code, type, label);
-            return Redirect("/Volunteering/{0}#{1}".Fmt(id, tabName));
+            return Redirect($"/Volunteering/{id}#{tabName}");
         }
 
         public ActionResult EditCheck(int id, int type, int label = 0)
@@ -141,7 +141,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             bc.ReportLabelID = label;
             DbUtil.Db.SubmitChanges();
-            return Redirect("/Volunteering/{0}#{1}".Fmt(bc.PeopleID, tabName));
+            return Redirect($"/Volunteering/{bc.PeopleID}#{tabName}");
         }
 
         [HttpPost]
@@ -214,7 +214,7 @@ namespace CmsWeb.Areas.Main.Controllers
                 DbUtil.Db.SubmitChanges();
             }
 
-            return Redirect("/Volunteering/{0}#{1}".Fmt(iPeopleID, tabName));
+            return Redirect($"/Volunteering/{iPeopleID}#{tabName}");
         }
 
         public ActionResult DialogSubmit(int id, int type)

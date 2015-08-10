@@ -3,7 +3,6 @@ using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
-using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -35,18 +34,19 @@ namespace CmsWeb.Models
                 where d.BundleHeader.BundleStatusId == 0
                 where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId)
                 where c.ContributionTypeId != ContributionTypeCode.Pledge
-                group c by new { d.BundleHeaderId, c.ContributionFund, c.ContributionDate } into g
+                group c by new {d.BundleHeaderId, c.ContributionFund, c.ContributionDate}
+                into g
                 select new ExtractInfo
                 {
                     Fund = g.Key.ContributionFund.FundIncomeFund,
-                    Month = ((g.Max(c => c.PostingDate.Value.Month) + 8) % 12) + 1,
+                    Month = ((g.Max(c => c.PostingDate.Value.Month) + 8)%12) + 1,
                     HeaderId = g.Key.BundleHeaderId + "",
                     ContributionDate = g.Key.ContributionDate.Value,
                     FundName = g.Key.ContributionFund.FundName,
                     FundDept = g.Key.ContributionFund.FundIncomeDept, // Income
                     FundAcct = g.Key.ContributionFund.FundIncomeAccount, // Income
                     Amount = -g.Sum(c => c.ContributionAmount.Value),
-                    PostingDate = g.Max(c => c.PostingDate.Value),
+                    PostingDate = g.Max(c => c.PostingDate.Value)
                 };
             var qCashFundNo67 =
                 from c in DbUtil.Db.Contributions
@@ -56,18 +56,19 @@ namespace CmsWeb.Models
                 where d.BundleHeader.BundleStatusId == 0
                 where !ContributionTypeCode.ReturnedReversedTypes.Contains(c.ContributionTypeId) // no 6,7(reversals, returns)
                 where c.ContributionTypeId != ContributionTypeCode.Pledge
-                group c by new { d.BundleHeaderId, c.ContributionFund, c.ContributionDate } into g
+                group c by new {d.BundleHeaderId, c.ContributionFund, c.ContributionDate}
+                into g
                 select new ExtractInfo
                 {
                     Fund = g.Key.ContributionFund.FundCashFund,
-                    Month = ((g.Max(c => c.PostingDate.Value.Month) + 8) % 12) + 1,
+                    Month = ((g.Max(c => c.PostingDate.Value.Month) + 8)%12) + 1,
                     HeaderId = g.Key.BundleHeaderId + "",
                     ContributionDate = g.Key.ContributionDate.Value,
                     FundName = g.Key.ContributionFund.FundName,
                     FundDept = g.Key.ContributionFund.FundCashDept, // Cash
                     FundAcct = g.Key.ContributionFund.FundCashAccount, // Cash
                     Amount = g.Sum(c => c.ContributionAmount.Value),
-                    PostingDate = g.Max(c => c.PostingDate.Value),
+                    PostingDate = g.Max(c => c.PostingDate.Value)
                 };
             var qIncomeFundYes67 =
                 from c in DbUtil.Db.Contributions
@@ -78,14 +79,14 @@ namespace CmsWeb.Models
                 select new ExtractInfo
                 {
                     Fund = c.ContributionFund.FundIncomeFund,
-                    Month = ((c.PostingDate.Value.Month + 8) % 12) + 1,
+                    Month = ((c.PostingDate.Value.Month + 8)%12) + 1,
                     HeaderId = "0",
                     ContributionDate = c.ContributionDate.Value,
                     FundName = c.ContributionFund.FundName,
                     FundDept = c.ContributionFund.FundIncomeDept, // Income
                     FundAcct = c.ContributionFund.FundIncomeAccount, // Income
                     Amount = c.ContributionAmount.Value,
-                    PostingDate = c.PostingDate.Value,
+                    PostingDate = c.PostingDate.Value
                 };
             var qCashFundYes67 =
                 from c in DbUtil.Db.Contributions
@@ -96,14 +97,14 @@ namespace CmsWeb.Models
                 select new ExtractInfo
                 {
                     Fund = c.ContributionFund.FundCashFund,
-                    Month = (c.PostingDate.Value.Month + 8) % 12 + 1,
+                    Month = (c.PostingDate.Value.Month + 8)%12 + 1,
                     HeaderId = "0",
                     ContributionDate = c.ContributionDate.Value,
                     FundName = c.ContributionFund.FundName,
                     FundDept = c.ContributionFund.FundCashDept, // Cash
                     FundAcct = c.ContributionFund.FundCashAccount, // Cash
                     Amount = -c.ContributionAmount.Value,
-                    PostingDate = c.PostingDate.Value,
+                    PostingDate = c.PostingDate.Value
                 };
             var q = qIncomeFundNo67
                 .Union(qCashFundNo67)
@@ -117,9 +118,7 @@ namespace CmsWeb.Models
             foreach (var i in q)
             {
                 Response.Write(
-                    "\"00000\",\"001{0}{1:00}{2}{3}\",\"000\",\"{4:MMddyy}\",\"{5}\",\"\",\"{6}0000{7}\",\"{8:00000000000}\",\"\"\r\n"
-                        .Fmt(i.Fund, i.Month, GLBundlePrefix, i.HeaderId.PadLeft(5, '0'), i.ContributionDate, i.FundName,
-                            i.FundDept, i.FundAcct, i.Amount*100));
+                    $"\"00000\",\"001{i.Fund}{i.Month:00}{GLBundlePrefix}{i.HeaderId.PadLeft(5, '0')}\",\"000\",\"{i.ContributionDate:MMddyy}\",\"{i.FundName}\",\"\",\"{i.FundDept}0000{i.FundAcct}\",\"{i.Amount*100:00000000000}\",\"\"\r\n");
             }
             Response.Flush();
             Response.Close();

@@ -1,21 +1,15 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using UtilityExtensions;
 using System.Web.Mvc;
-using System.Web.Routing;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Data.Linq;
 using CmsData;
-using System.Collections;
+using UtilityExtensions;
 
 namespace CmsWeb.Models
 {
@@ -32,6 +26,7 @@ namespace CmsWeb.Models
                     select d;
             return DivisionInfos(q);
         }
+
         public IEnumerable<DivisionInfo> DivisionItem(int id)
         {
             var q = from d in DbUtil.Db.Divisions
@@ -39,6 +34,7 @@ namespace CmsWeb.Models
                     select d;
             return DivisionInfos(q);
         }
+
         private IEnumerable<DivisionInfo> DivisionInfos(IQueryable<Division> q)
         {
             var qq = from d in q
@@ -55,10 +51,11 @@ namespace CmsWeb.Models
                          DivOrgsCount = d.DivOrgs.Count(o => o.Organization.OrganizationStatusId == 30),
                          Programs = d.ProgDivs.Select(pd => pd.Program.Name).ToArray(),
                          Tag = (TagProgramId == null || TagProgramId == 0) ? "" : d.ProgDivs.Any(ot => ot.ProgId == TagProgramId) ? "Remove" : "Add",
-                         ChangeMain = (d.ProgId == null || d.ProgId != TagProgramId) && d.ProgDivs.Any(pd => pd.ProgId == TagProgramId),
+                         ChangeMain = (d.ProgId == null || d.ProgId != TagProgramId) && d.ProgDivs.Any(pd => pd.ProgId == TagProgramId)
                      };
             return qq;
         }
+
         public SelectList ProgramIds()
         {
             var q = from c in DbUtil.Db.Programs
@@ -72,13 +69,15 @@ namespace CmsWeb.Models
             list.Insert(0, new
             {
                 Value = "0",
-                Text = "(not specified)",
+                Text = "(not specified)"
             });
             return new SelectList(list, "Value", "Text");
         }
     }
+
     public class DivisionInfo
     {
+        public string[] Programs;
         public int Id { get; set; }
         public string Name { get; set; }
         public int? ProgId { get; set; }
@@ -88,31 +87,25 @@ namespace CmsWeb.Models
         public int OrgCount { get; set; }
         public int DivOrgsCount { get; set; }
         public string NoDisplayZero { get; set; }
-        public string NoZero(int? arg)
-        {
-            if (arg == 0)
-                return "";
-            return arg.ToString2("n0");
-        }
-        public bool CanDelete
-        {
-            get
-            {
-                return OrgCount + DivOrgsCount == 0;
-            }
-        }
+        public bool CanDelete => OrgCount + DivOrgsCount == 0;
         public string Tag { get; set; }
         public bool? ChangeMain { get; set; }
-        public string[] Programs;
+
         public string ToolTip
         {
             get
             {
                 if (Programs == null)
                     return "";
-                return "{0}|Orgs:{1}|DivOrgs:{2}|Meetings:{3}|Programs:|{4}".Fmt(Name, OrgCount, DivOrgsCount, MeetingCount,
-                    string.Join("|", Programs));
+                return $"{Name}|Orgs:{OrgCount}|DivOrgs:{DivOrgsCount}|Meetings:{MeetingCount}|Programs:|{string.Join("|", Programs)}";
             }
+        }
+
+        public string NoZero(int? arg)
+        {
+            if (arg == 0)
+                return "";
+            return arg.ToString2("n0");
         }
     }
 }

@@ -76,14 +76,14 @@ namespace CmsWeb.Areas.Finance.Controllers
                          itemcount = g.Count(),
                      }).Single();
 
-            var sh = (from h in DbUtil.Db.BundleHeaders 
-                      where h.BundleHeaderId == pbid 
+            var sh = (from h in DbUtil.Db.BundleHeaders
+                      where h.BundleHeaderId == pbid
                       select h).Single();
 
             var totalitems = q.totalitems.GetValueOrDefault().ToString("C2");
             var diff = ((sh.TotalCash.GetValueOrDefault() + sh.TotalChecks.GetValueOrDefault() + sh.TotalEnvelopes.GetValueOrDefault()) - q.totalitems.GetValueOrDefault());
             var difference = diff.ToString("C2");
-            
+
             return Json(new { status = "ok", totalitems, diff, difference, q.itemcount });
         }
 
@@ -162,7 +162,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                     select new
                     {
                         value = f.FundId,
-                        text = "{0} - {1}".Fmt(f.FundId, f.FundName),
+                        text = $"{f.FundId} - {f.FundName}",
                     };
 
             return Json(q.ToList(), JsonRequestBehavior.AllowGet);
@@ -184,7 +184,7 @@ namespace CmsWeb.Areas.Finance.Controllers
                     case "f":
                         c.FundId = value.ToInt();
                         DbUtil.Db.SubmitChanges();
-                        return Content("{0} - {1}".Fmt(c.ContributionFund.FundId, c.ContributionFund.FundName));
+                        return Content($"{c.ContributionFund.FundId} - {c.ContributionFund.FundName}");
                 }
             return new EmptyResult();
         }

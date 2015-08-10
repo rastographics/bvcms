@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Manage.Controllers;
+using CmsWeb.Code;
 using CmsWeb.Models;
 using OfficeOpenXml;
 using UtilityExtensions;
@@ -29,20 +30,18 @@ namespace CmsWeb
             var c = DbUtil.Content("Site2Header" + altcontent) ?? DbUtil.Content("Site2Header");
             if (c != null)
                 return c.Body;
-            return @"
-		<div id=""header"">
-		   <div id=""title"">
-		      <h1><img alt=""logo"" src='{0}' align=""middle"" />&nbsp;{1}</h1>
-		   </div>
-		</div>".Fmt(logoimg, headertext);
+            return $@"
+        <div id=""header"">
+           <div id=""title"">
+              <h1><img alt=""logo"" src='{logoimg}' align=""middle"" />&nbsp;{headertext}</h1>
+           </div>
+        </div>";
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
-            Util.Helpfile = "_{0}_{1}".Fmt(
-                filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
-                filterContext.ActionDescriptor.ActionName);
+            Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             DbUtil.Db.UpdateLastActivity(Util.UserId);
             if (AccountController.TryImpersonate())
             {
@@ -55,34 +54,7 @@ namespace CmsWeb
 
         public string AuthenticateDeveloper(bool log = false, string addrole = "")
         {
-            var auth = Request.Headers["Authorization"];
-            if (auth.HasValue())
-            {
-                var cred = Encoding.ASCII.GetString(
-                    Convert.FromBase64String(auth.Substring(6))).Split(':');
-                var username = cred[0];
-                var password = cred[1];
-
-                string ret;
-                var valid = CMSMembershipProvider.provider.ValidateUser(username, password);
-                if (valid)
-                {
-                    var roles = CMSRoleProvider.provider;
-                    var u = AccountModel.SetUserInfo(username, Session);
-                    if (!roles.IsUserInRole(username, "Developer"))
-                        valid = false;
-                    if (addrole.HasValue() && !roles.IsUserInRole(username, addrole))
-                        valid = false;
-                }
-                if (valid)
-                    ret = " API {0} authenticated".Fmt(username);
-                else
-                    ret = "!API {0} not authenticated".Fmt(username);
-                if (log)
-                    DbUtil.LogActivity(ret.Substring(1));
-                return ret;
-            }
-            return "!API no Authorization Header";
+            return AuthHelper.AuthenticateDeveloper(System.Web.HttpContext.Current, log, addrole).Message;
         }
 
         public ViewResult Message(string text)
@@ -124,16 +96,13 @@ namespace CmsWeb
                     filterContext.Result = Redirect(r);
             }
             base.OnActionExecuting(filterContext);
-            Util.Helpfile = "_{0}_{1}".Fmt(
-                filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
-                filterContext.ActionDescriptor.ActionName);
+            Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             DbUtil.Db.UpdateLastActivity(Util.UserId);
         }
 
         public static string ErrorUrl(string message)
         {
-            return "/Home/ShowError/?error={0}&url={1}".Fmt(System.Web.HttpContext.Current.Server.UrlEncode(message),
-                System.Web.HttpContext.Current.Request.Url.OriginalString);
+            return $"/Home/ShowError/?error={System.Web.HttpContext.Current.Server.UrlEncode(message)}&url={System.Web.HttpContext.Current.Request.Url.OriginalString}";
         }
 
         public ActionResult RedirectShowError(string message)
@@ -179,9 +148,7 @@ namespace CmsWeb
                     filterContext.Result = Redirect(r);
             }
             base.OnActionExecuting(filterContext);
-            Util.Helpfile = "_{0}_{1}".Fmt(
-                filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
-                filterContext.ActionDescriptor.ActionName);
+            Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             DbUtil.Db.UpdateLastActivity(Util.UserId);
         }
     }
@@ -195,7 +162,7 @@ namespace CmsWeb
             {
                 var res = filterContext.HttpContext.Response;
                 res.StatusCode = 401;
-                res.AddHeader("WWW-Authenticate", "Basic realm=\"{0}\"".Fmt(DbUtil.Db.Host));
+                res.AddHeader("WWW-Authenticate", $"Basic realm=\"{DbUtil.Db.Host}\"");
                 res.End();
             }
         }
@@ -207,14 +174,14 @@ namespace CmsWeb
         {
 #if DEBUG
 #else
-			var context = filterContext.HttpContext;
-			if (context.Session != null)
-				if (context.Session.IsNewSession)
-				{
-					string sessionCookie = context.Request.Headers["Cookie"];
-					if ((sessionCookie != null) && (sessionCookie.IndexOf("ASP.NET_SessionId") >= 0))
-						filterContext.Result = new RedirectResult("/Errors/SessionTimeout.htm");
-				}
+            var context = filterContext.HttpContext;
+            if (context.Session != null)
+                if (context.Session.IsNewSession)
+                {
+                    string sessionCookie = context.Request.Headers["Cookie"];
+                    if ((sessionCookie != null) && (sessionCookie.IndexOf("ASP.NET_SessionId") >= 0))
+                        filterContext.Result = new RedirectResult("/Errors/SessionTimeout.htm");
+                }
 #endif
             base.OnActionExecuting(filterContext);
         }
@@ -253,7 +220,7 @@ namespace CmsWeb
         {
             if (filterContext == null)
             {
-                throw new ArgumentNullException("filterContext");
+                throw new ArgumentNullException(nameof(filterContext));
             }
 
             if (filterContext.HttpContext != null)

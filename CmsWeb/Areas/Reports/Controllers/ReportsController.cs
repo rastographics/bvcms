@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Security;
 using System.Web.Mvc;
-using System.Web.Routing;
 using System.Xml.Linq;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
@@ -301,7 +300,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
         {
-            MeetingsModel m = new MeetingsModel() {Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid}; 
+            MeetingsModel m = new MeetingsModel() {Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid};
             return View(m);
         }
         [HttpPost]
@@ -513,7 +512,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new RollsheetResult
             {
-                orgid = orgid, 
+                orgid = orgid,
                 NewMeetingInfo = mi,
             };
         }
@@ -579,8 +578,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             try
             {
                 var m = new CustomReportsModel(DbUtil.Db);
-                return Content("<pre style='font-family:monospace'>{0}\n</pre>".Fmt(
-                    m.Sql(id, report)));
+                return Content($"<pre style='font-family:monospace'>{m.Sql(id, report)}\n</pre>");
             }
             catch (Exception ex)
             {

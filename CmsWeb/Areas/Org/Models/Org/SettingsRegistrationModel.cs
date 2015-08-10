@@ -60,6 +60,7 @@ namespace CmsWeb.Areas.Org.Models
                     Org.NotifyIds = Util.UserPeopleId.ToString();
             }
             Org.RegSetting = os.ToString();
+            Org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
             DbUtil.Db.SubmitChanges();
         }
 

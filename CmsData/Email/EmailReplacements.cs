@@ -55,19 +55,34 @@ namespace CmsData
             currentOrgId = callingContext.CurrentOrgId;
             connStr = callingContext.ConnectionString;
             host = callingContext.Host;
+            db = callingContext;
             this.from = from;
 
             if (text == null)
                 text = "(no content)";
 
-            var pattern = @"(<style.*?</style>|{{[^}}]*?}}|{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}|{8}|{9}|{10})".Fmt(
-                RegisterLinkRe, RegisterTagRe, RsvpLinkRe, RegisterHrefRe,
-                SendLinkRe, SupportLinkRe, MasterLinkRe, VolReqLinkRe,
-                VolReqLinkRe, VolSubLinkRe, VoteLinkRe);
+            var pattern =
+                $@"(<style.*?</style>|{{[^}}]*?}}|{RegisterLinkRe}|{RegisterTagRe}|{RsvpLinkRe}|{RegisterHrefRe}|
+                    {SendLinkRe}|{SupportLinkRe}|{MasterLinkRe}|{VolReqLinkRe}|{VolReqLinkRe}|{VolSubLinkRe}|{VoteLinkRe})";
 
-            text = MapUrlEncodedReplacementCodes(text, new[]{ "emailhref" });
+            // we do the InsertDrafts replacement code here so that it is only inserted once before the replacements
+            // and so that there can be replacement codes in the draft itself and they will get replaced.
+            text = DoInsertDrafts(text);
+
+            text = MapUrlEncodedReplacementCodes(text, new[] { "emailhref" });
 
             stringlist = Regex.Split(text, pattern, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+        }
+        private string DoInsertDrafts(string text)
+        {
+            var a = Regex.Split(text, "({insertdraft:.*?})", RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            if (a.Length <= 2)
+                return text;
+            for (var i = 1; i < a.Length; i += 2)
+                if (a[i].StartsWith("{insertdraft:"))
+                    a[i] = InsertDraft(a[i]);
+            text = string.Join("", a);
+            return text;
         }
 
         public List<MailAddress> ListAddresses { get; set; }
@@ -188,7 +203,7 @@ namespace CmsData
                     break;
 
                 case "{barcode}":
-                    return string.Format("<img src='{0}' />", db.ServerLink("/Track/Barcode/" + p.PeopleId));
+                    return $"<img src='{db.ServerLink("/Track/Barcode/" + p.PeopleId)}' />";
 
                 case "{campus}":
                     return p.CampusId != null ? p.Campu.Description : "No Campus Specified";
@@ -260,7 +275,7 @@ namespace CmsData
 
                 case "{paylink}":
                     if (pi != null && pi.PayLink.HasValue())
-                        return "<a href=\"{0}\">Click this link to make a payment and view your balance.</a>".Fmt(pi.PayLink);
+                        return $"<a href=\"{pi.PayLink}\">Click this link to make a payment and view your balance.</a>";
                     break;
 
                 case "{peopleid}":
@@ -290,7 +305,9 @@ namespace CmsData
 
                 case "{track}":
                     if (emailqueueto != null)
-                        return emailqueueto.Guid.HasValue ? "<img src=\"{0}\" />".Fmt(db.ServerLink("/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())) : "";
+                        return emailqueueto.Guid.HasValue ?
+                            $"<img src=\"{db.ServerLink("/Track/Key/" + emailqueueto.Guid.Value.GuidToQuerystring())}\" />"
+                            : "";
                     break;
 
                 case "{unsubscribe}":
@@ -333,9 +350,9 @@ namespace CmsData
                     if (code.StartsWith("{orgmember:", StringComparison.OrdinalIgnoreCase))
                         return OrgMember(code, emailqueueto);
 
-                    if(code.StartsWith("{orgbarcode:"))
-                        return string.Format("<img src='{0}' />",
-                            db.ServerLink("/Track/Barcode/{0}-{1}".Fmt(code.Substring(12).TrimEnd('}').ToInt(), p.PeopleId)));
+                    if (code.StartsWith("{orgbarcode:"))
+                        return
+                            $"<img src='{db.ServerLink($"/Track/Barcode/{code.Substring(12).TrimEnd('}').ToInt()}-{p.PeopleId}")}' />";
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
@@ -407,6 +424,19 @@ namespace CmsData
                 om.AddToGroup(db, @group);
             return "";
         }
+        const string insertDraftRe = @"\{insertdraft:(?<draft>.*?)}";
+        readonly Regex InsertDraftRe = new Regex(insertDraftRe, RegexOptions.Singleline);
+        private string InsertDraft(string code)
+        {
+            var match = InsertDraftRe.Match(code);
+            if (!match.Success)
+                return code;
+
+            var draft = match.Groups["draft"].Value;
+
+            var s = db.ContentOfTypeSavedDraft(draft);
+            return s;
+        }
 
         const string OrgExtraRe = @"\{orgextra:(?<field>[^\]]*)\}";
         readonly Regex orgExtraRe = new Regex(OrgExtraRe, RegexOptions.Singleline);
@@ -466,17 +496,17 @@ namespace CmsData
                 user.ResetPasswordExpires = DateTime.Now.AddHours(db.Setting("ResetPasswordExpiresHours", "24").ToInt());
                 string link = db.ServerLink("/Account/SetPassword/" + user.ResetPasswordCode.ToString());
                 db.SubmitChanges();
-                return @"<a href=""{0}"">Set password for {1}</a>".Fmt(link, user.Username);
+                return $@"<a href=""{link}"">Set password for {user.Username}</a>";
             }
             var ot = new OneTimeLink
-                {
-                    Id = Guid.NewGuid(),
-                    Querystring = emailqueueto.PeopleId.ToString()
-                };
+            {
+                Id = Guid.NewGuid(),
+                Querystring = emailqueueto.PeopleId.ToString()
+            };
             db.OneTimeLinks.InsertOnSubmit(ot);
             db.SubmitChanges();
-            string url = db.ServerLink("/Account/CreateAccount/{0}".Fmt(ot.Id.ToCode()));
-            return @"<a href=""{0}"">Create Account</a>".Fmt(url);
+            var url = db.ServerLink($"/Account/CreateAccount/{ot.Id.ToCode()}");
+            return $@"<a href=""{url}"">Create Account</a>";
         }
 
         const string ExtraValueRe = @"{extra(?<type>.*?):(?<field>.*?)}";
@@ -552,27 +582,27 @@ namespace CmsData
             var id = GetId(d, "RegisterLink");
 
             var showfamily = code.Contains("registerlink2", ignoreCase: true);
-            var qs = "{0},{1},{2}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id);
+            var qs = $"{id},{emailqueueto.PeopleId},{emailqueueto.Id}";
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            var url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
+            var url = db.ServerLink($"/OnlineReg/RegisterLink/{ot.Id.ToCode()}");
             if (showfamily)
                 url += "?showfamily=true";
             if (d.ContainsKey("style"))
-                return @"<a href=""{0}"" style=""{1}"">{2}</a>".Fmt(url, d["style"], inside);
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+                return $@"<a href=""{url}"" style=""{d["style"]}"">{inside}</a>";
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         private const string registerHrefReId = "href=\"https{0,1}://registerlink2{0,1}/(?<id>\\d+)\"";
@@ -587,25 +617,25 @@ namespace CmsData
             var id = match.Groups["id"].Value.ToInt();
 
             var showfamily = code.Contains("registerlink2", ignoreCase: true);
-            string qs = "{0},{1},{2}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id);
+            string qs = $"{id},{emailqueueto.PeopleId},{emailqueueto.Id}";
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
+            string url = db.ServerLink($"/OnlineReg/RegisterLink/{ot.Id.ToCode()}");
             if (showfamily)
                 url += "?showfamily=true";
-            return "href=\"{0}\"".Fmt(url);
+            return $"href=\"{url}\"";
         }
 
         private string RegisterTag(string code, EmailQueueTo emailqueueto)
@@ -618,7 +648,7 @@ namespace CmsData
             var inside = ele.InnerHtml.Replace("{last}", person.LastName);
             var id = ele.Id.ToInt();
             var url = RegisterLinkUrl(db, id, emailqueueto.PeopleId, emailqueueto.Id, "registerlink");
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         private string RsvpLink(string code, EmailQueueTo emailqueueto)
@@ -646,29 +676,29 @@ namespace CmsData
 
             var id = GetId(d, "RsvpLink");
 
-            string qs = "{0},{1},{2},{3}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id, smallgroup);
+            string qs = $"{id},{emailqueueto.PeopleId},{emailqueueto.Id},{smallgroup}";
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            string url = db.ServerLink("/OnlineReg/RsvpLinkSg/{0}?confirm={1}&message={2}"
-                                                      .Fmt(ot.Id.ToCode(), confirm, HttpUtility.UrlEncode(msg)));
+            var url = db.ServerLink(
+                $"/OnlineReg/RsvpLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(msg)}");
 
             var href = d["href"];
             if (href.Contains("regretslink", ignoreCase: true))
                 url = url + "&regrets=true";
 
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         private string SendLink(string code, EmailQueueTo emailqueueto)
@@ -684,8 +714,7 @@ namespace CmsData
             var id = GetId(d, "SendLink");
 
             var showfamily = code.Contains("sendlink2", ignoreCase: true);
-            var qs = "{0},{1},{2},{3}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id,
-                showfamily ? "registerlink2" : "registerlink");
+            var qs = $"{id},{emailqueueto.PeopleId},{emailqueueto.Id},{(showfamily ? "registerlink2" : "registerlink")}";
 
             OneTimeLink ot;
             if (list.ContainsKey(qs))
@@ -693,16 +722,16 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            var url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+            var url = db.ServerLink($"/OnlineReg/SendLink/{ot.Id.ToCode()}");
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         const string SmallGroupRe = @"\{smallgroup:\[(?<prefix>[^\]]*)\](?:,(?<def>[^}]*)){0,1}\}";
@@ -774,7 +803,7 @@ namespace CmsData
             var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var oid = GetId(d, "SupportLink");
-            var qs = "{0},{1},{2},{3}:{4}".Fmt(oid, emailqueueto.PeopleId, emailqueueto.Id, "supportlink", emailqueueto.GoerSupportId);
+            var qs = $"{oid},{emailqueueto.PeopleId},{emailqueueto.Id},{"supportlink"}:{emailqueueto.GoerSupportId}";
 
             OneTimeLink ot;
             if (list.ContainsKey(qs))
@@ -782,16 +811,16 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            var url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+            var url = db.ServerLink($"/OnlineReg/SendLink/{ot.Id.ToCode()}");
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         private string MasterLink(string code, EmailQueueTo emailqueueto)
@@ -805,7 +834,7 @@ namespace CmsData
             var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
             var oid = GetId(d, "MasterLink");
-            var qs = "{0},{1},{2},{3}".Fmt(oid, emailqueueto.PeopleId, emailqueueto.Id, "masterlink");
+            var qs = $"{oid},{emailqueueto.PeopleId},{emailqueueto.Id},{"masterlink"}";
 
             OneTimeLink ot;
             if (list.ContainsKey(qs))
@@ -813,23 +842,23 @@ namespace CmsData
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            var url = db.ServerLink("/OnlineReg/SendLink/{0}".Fmt(ot.Id.ToCode()));
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+            var url = db.ServerLink($"/OnlineReg/SendLink/{ot.Id.ToCode()}");
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         private string UnSubscribeLink(EmailQueueTo emailqueueto)
         {
-            var qs = "OptOut/UnSubscribe/?enc=" + Util.EncryptForUrl("{0}|{1}".Fmt(emailqueueto.PeopleId, from.Address));
+            var qs = "OptOut/UnSubscribe/?enc=" + Util.EncryptForUrl($"{emailqueueto.PeopleId}|{@from.Address}");
             var url = db.ServerLink(qs);
-            return @"<a href=""{0}"">Unsubscribe</a>".Fmt(url);
+            return $@"<a href=""{url}"">Unsubscribe</a>";
         }
 
         private string VolReqLink(string code, EmailQueueTo emailqueueto)
@@ -842,7 +871,7 @@ namespace CmsData
             var inside = ele.InnerHtml.Replace("{last}", person.LastName);
             var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
-            var qs = "{0},{1},{2},{3}".Fmt(d["mid"], d["pid"], d["ticks"], emailqueueto.PeopleId);
+            var qs = $"{d["mid"]},{d["pid"]},{d["ticks"]},{emailqueueto.PeopleId}";
             OneTimeLink ot = null;
             if (list.ContainsKey(qs))
                 ot = list[qs];
@@ -858,8 +887,8 @@ namespace CmsData
                 list.Add(qs, ot);
             }
 
-            var url = db.ServerLink("/OnlineReg/VolRequestResponse/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+            var url = db.ServerLink($"/OnlineReg/VolRequestResponse/{d["ans"]}/{ot.Id.ToCode()}");
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         private string VolSubLink(string code, EmailQueueTo emailqueueto)
@@ -872,7 +901,7 @@ namespace CmsData
             var inside = ele.InnerHtml.Replace("{last}", person.LastName);
             var d = ele.Attributes.ToDictionary(aa => aa.Name.ToString(), aa => aa.Value);
 
-            var qs = "{0},{1},{2},{3}".Fmt(d["aid"], d["pid"], d["ticks"], emailqueueto.PeopleId);
+            var qs = $"{d["aid"]},{d["pid"]},{d["ticks"]},{emailqueueto.PeopleId}";
             OneTimeLink ot = null;
             if (list.ContainsKey(qs))
                 ot = list[qs];
@@ -888,8 +917,8 @@ namespace CmsData
                 list.Add(qs, ot);
             }
 
-            var url = db.ServerLink("/OnlineReg/ClaimVolSub/{0}/{1}".Fmt(d["ans"], ot.Id.ToCode()));
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+            var url = db.ServerLink($"/OnlineReg/ClaimVolSub/{d["ans"]}/{ot.Id.ToCode()}");
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         private string VoteLink(string code, EmailQueueTo emailqueueto)
@@ -921,24 +950,24 @@ namespace CmsData
 
             var id = GetId(d, "VoteLink");
 
-            var qs = "{0},{1},{2},{3},{4}".Fmt(id, emailqueueto.PeopleId, emailqueueto.Id, pre, smallgroup);
+            var qs = $"{id},{emailqueueto.PeopleId},{emailqueueto.Id},{pre},{smallgroup}";
             OneTimeLink ot;
             if (list.ContainsKey(qs))
                 ot = list[qs];
             else
             {
                 ot = new OneTimeLink
-                    {
-                        Id = Guid.NewGuid(),
-                        Querystring = qs
-                    };
+                {
+                    Id = Guid.NewGuid(),
+                    Querystring = qs
+                };
                 db.OneTimeLinks.InsertOnSubmit(ot);
                 db.SubmitChanges();
                 list.Add(qs, ot);
             }
-            var url = db.ServerLink("/OnlineReg/VoteLinkSg/{0}?confirm={1}&message={2}"
-                                                      .Fmt(ot.Id.ToCode(), confirm, HttpUtility.UrlEncode(msg)));
-            return @"<a href=""{0}"">{1}</a>".Fmt(url, inside);
+            var url = db.ServerLink(
+                $"/OnlineReg/VoteLinkSg/{ot.Id.ToCode()}?confirm={confirm}&message={HttpUtility.UrlEncode(msg)}");
+            return $@"<a href=""{url}"">{inside}</a>";
         }
 
         private static string GetId(IReadOnlyDictionary<string, string> d, string from)
@@ -949,7 +978,7 @@ namespace CmsData
             else if (d.ContainsKey("id"))
                 id = d["id"];
             if (id == null)
-                throw new Exception("No \"Organization Id\" attribute found on \"{0}\"".Fmt(from));
+                throw new Exception($"No \"Organization Id\" attribute found on \"{@from}\"");
             return id;
         }
 
@@ -998,17 +1027,17 @@ namespace CmsData
         public static string RegisterLinkUrl(CMSDataContext db, int orgid, int pid, int queueid, string linktype, DateTime? expires = null)
         {
             var showfamily = linktype == "registerlink2";
-            var qs = "{0},{1},{2},{3}".Fmt(orgid, pid, queueid, linktype);
+            var qs = $"{orgid},{pid},{queueid},{linktype}";
             var ot = new OneTimeLink
-                {
-                    Id = Guid.NewGuid(),
-                    Querystring = qs,
-                };
+            {
+                Id = Guid.NewGuid(),
+                Querystring = qs,
+            };
             if (expires.HasValue)
                 ot.Expires = expires.Value;
             db.OneTimeLinks.InsertOnSubmit(ot);
             db.SubmitChanges();
-            var url = db.ServerLink("/OnlineReg/RegisterLink/{0}".Fmt(ot.Id.ToCode()));
+            var url = db.ServerLink($"/OnlineReg/RegisterLink/{ot.Id.ToCode()}");
             if (showfamily)
                 url += "?showfamily=true";
             return url;
@@ -1017,8 +1046,8 @@ namespace CmsData
         public static string CreateRegisterLink(int? orgid, string text)
         {
             if (!orgid.HasValue)
-                throw new ArgumentException("null not allowed on GetRegisterLink", "orgid");
-            return "<a href=\"http://registerlink\" lang=\"{0}\">{1}</a>".Fmt(orgid, text);
+                throw new ArgumentException("null not allowed on GetRegisterLink", nameof(orgid));
+            return $"<a href=\"http://registerlink\" lang=\"{orgid}\">{text}</a>";
         }
 
         /// <summary>

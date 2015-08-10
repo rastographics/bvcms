@@ -1,12 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using CmsData;
-using System.Web.Mvc;
-using UtilityExtensions;
-using System.Text.RegularExpressions;
-using System.Collections;
 using CmsData.Codes;
 
 namespace CmsWeb.Areas.Org.Models
@@ -17,60 +12,21 @@ namespace CmsWeb.Areas.Org.Models
         public string sort { get; set; }
         public Organization org { get; set; }
         public Organization parentorg { get; set; }
-        public bool canedit
-        {
-            get { return HttpContext.Current.User.IsInRole("Edit"); }
-        }
 
-        private IList<int> list = new List<int>();
-        public IList<int> List
-        {
-            get { return list; }
-            set { list = value; }
-        }
+        public bool canedit => HttpContext.Current.User.IsInRole("Edit");
+
+        public IList<int> List { get; set; } = new List<int>();
 
         public int? orgid
         {
-            get { return org == null ? null : (int?)org.OrganizationId; }
+            get { return org?.OrganizationId; }
             set
             {
                 org = DbUtil.Db.LoadOrganizationById(value);
                 parentorg = DbUtil.Db.LoadOrganizationById(org.ParentOrgId);
             }
         }
-        
-        public class OrgInfo
-        {
-            public int Id { get; set; }
-            public int? ParentId { get; set; }
-            public string Name { get; set; }
-            public string Leader { get; set; }
-            public string Division { get; set; }
-            public int DivId { get; set; }
-            public string Program { get; set; }
-            public string Divisions { get; set; }
-            public string Location { get; set; }
-            public string ParentName { get; set; }
-            public bool isChecked { get; set; }
-            public bool isOther { get; set; }
-            public bool isParent { get; set; }
-            public string ToolTip
-            {
-                get
-                {
-                    return "{0} ({1})|Program:{2}|Division: {3}({4})|Leader: {5}|Location: {6}|Divisions: {7}".Fmt(
-                               Name,
-                               Id,
-                               Program,
-                               Division,
-							   DivId,
-                               Leader,
-                               Location,
-                               Divisions
-                               );
-                }
-            }
-        }
+
         public IEnumerable<OrgInfo> FetchOrgList()
         {
             var q = from o in DbUtil.Db.Organizations
@@ -94,12 +50,30 @@ namespace CmsWeb.Areas.Org.Models
                         DivId = o.DivisionId ?? 0,
                         Divisions = string.Join(",", o.DivOrgs.Select(d => d.Division.Name)),
                         Location = o.Location,
-                        isChecked = ck == true,
-                        isOther = ot == true,
-                        isParent = pa == true,
+                        isChecked = ck,
+                        isOther = ot,
+                        isParent = pa,
                         ParentName = o.ParentOrg.OrganizationName
                     };
             return q;
+        }
+
+        public class OrgInfo
+        {
+            public int Id { get; set; }
+            public int? ParentId { get; set; }
+            public string Name { get; set; }
+            public string Leader { get; set; }
+            public string Division { get; set; }
+            public int DivId { get; set; }
+            public string Program { get; set; }
+            public string Divisions { get; set; }
+            public string Location { get; set; }
+            public string ParentName { get; set; }
+            public bool isChecked { get; set; }
+            public bool isOther { get; set; }
+            public bool isParent { get; set; }
+            public string ToolTip => $"{Name} ({Id})|Program:{Program}|Division: {Division}({DivId})|Leader: {Leader}|Location: {Location}|Divisions: {Divisions}";
         }
     }
 }

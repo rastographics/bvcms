@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using CmsData;
 using CmsData.ExtraValue;
-using CmsWeb.Code;
 using UtilityExtensions;
 
 namespace CmsWeb.Models.ExtraValues
@@ -15,18 +13,20 @@ namespace CmsWeb.Models.ExtraValues
         {
             var c = DbUtil.Db.ScratchPadCondition();
             c.Reset(DbUtil.Db);
-            c.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
+            c.AddNewClause(QueryType.PeopleExtra, CompareType.Equal, $"{field}:{value}");
             c.Save(DbUtil.Db);
             return c;
         }
+
         public static Condition FamilyQueryCodesCondition(string field, string value)
         {
             var c = DbUtil.Db.ScratchPadCondition();
             c.Reset(DbUtil.Db);
-            c.AddNewClause(QueryType.FamilyExtra, CompareType.Equal, "{0}:{1}".Fmt(field, value));
+            c.AddNewClause(QueryType.FamilyExtra, CompareType.Equal, $"{field}:{value}");
             c.Save(DbUtil.Db);
             return c;
         }
+
         public static Condition QueryDataCondition(string field, string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -54,6 +54,7 @@ namespace CmsWeb.Models.ExtraValues
             cc.Save(DbUtil.Db);
             return cc;
         }
+
         public static Condition FamilyQueryDataCondition(string field, string type)
         {
             var cc = DbUtil.Db.ScratchPadCondition();
@@ -81,6 +82,7 @@ namespace CmsWeb.Models.ExtraValues
             cc.Save(DbUtil.Db);
             return cc;
         }
+
         public static SqlDataReader GridReader(Guid id, string sort)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);
@@ -99,6 +101,7 @@ namespace CmsWeb.Models.ExtraValues
             var rdr = cmd.ExecuteReader();
             return rdr;
         }
+
         public static SqlDataReader Grid2Reader(Guid id, string sort)
         {
             var roles = CMSRoleProvider.provider.GetRolesForUser(Util.UserName);

@@ -11,7 +11,7 @@ namespace CmsData.Classes.MinistrESpace
     public class MinistrESpaceHelper
     {
         // Debug URLs
-        
+
 #if DEBUG
         public const string URL_EVENTS = "http://ezdtest01.easydraft.com/ministrespace/{0}/api/Events?start={1}&end={2}";
         public const string URL_SPACES = "http://ezdtest01.easydraft.com/ministrespace/{0}/api/Spaces";
@@ -24,7 +24,7 @@ namespace CmsData.Classes.MinistrESpace
         public const string URL_SPACES = "https://my.ministrespace.com/{0}/api/Spaces";
         public const string URL_RESOURCES = "https://my.ministrespace.com/{0}/api/Resources";
         public const string URL_SERVICES = "https://my.ministrespace.com/{0}/api/Sevices";
-        
+
         public const string URL_EVENT_PAGE = "https://my.ministrespace.com/{0}/Login/Index.rails?EventId={1}";
 #endif
 
@@ -49,7 +49,7 @@ namespace CmsData.Classes.MinistrESpace
 
         public string getRawEvents()
         {
-            string url = URL_EVENTS.Fmt(church, dateStart, dateEnd);
+            string url = string.Format(URL_EVENTS, church, dateStart, dateEnd);
 
             var response = createAuthClient().DownloadString(url);
 
@@ -102,7 +102,7 @@ namespace CmsData.Classes.MinistrESpace
 
         public string getEventURL(string sEventID)
         {
-            return URL_EVENT_PAGE.Fmt(church, sEventID);
+            return string.Format(URL_EVENT_PAGE, church, sEventID);
         }
 
         private WebClient createAuthClient()

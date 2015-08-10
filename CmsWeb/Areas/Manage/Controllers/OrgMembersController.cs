@@ -46,7 +46,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var m = new OrgMembersModel();
             UpdateModel(m);
             m.ValidateIds();
-            DbUtil.Db.SetUserPreference("OrgMembersModelIds", "{0}.{1}.{2}".Fmt(m.ProgId,m.DivId,m.SourceId));
+            DbUtil.Db.SetUserPreference("OrgMembersModelIds", $"{m.ProgId}.{m.DivId}.{m.SourceId}");
             DbUtil.DbDispose();
             DbUtil.Db.SetNoLock();
             return View(m);

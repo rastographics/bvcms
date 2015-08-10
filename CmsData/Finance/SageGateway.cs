@@ -14,29 +14,29 @@ using UtilityExtensions;
 
 namespace CmsData.Finance
 {
-	internal class SageGateway : IGateway
-	{
-	    private readonly string _id;
-	    private readonly string _key;
-	    private readonly string _originatorId;
-	    private readonly CMSDataContext db;
+    internal class SageGateway : IGateway
+    {
+        private readonly string _id;
+        private readonly string _key;
+        private readonly string _originatorId;
+        private readonly CMSDataContext db;
 
-        public string GatewayType { get { return "Sage"; } }
+        public string GatewayType => "Sage";
 
-		public SageGateway(CMSDataContext db, bool testing)
-		{
-			this.db = db;
-		    var gatewayTesting = db.Setting("GatewayTesting", "false").ToLower() == "true";
-			if (testing || gatewayTesting)
-			{
+        public SageGateway(CMSDataContext db, bool testing)
+        {
+            this.db = db;
+            var gatewayTesting = db.Setting("GatewayTesting", "false").ToLower() == "true";
+            if (testing || gatewayTesting)
+            {
                 _id = "856423594649";
                 _key = "M5Q4C9P2T4N5";
                 _originatorId = "1111111111";
-			}
-			else
-			{
-				_id = db.GetSetting("M_ID", "");
-				_key = db.GetSetting("M_KEY", "");
+            }
+            else
+            {
+                _id = db.GetSetting("M_ID", "");
+                _key = db.GetSetting("M_KEY", "");
 
                 if (string.IsNullOrWhiteSpace(_id))
                     throw new Exception("M_ID setting not found, which is required for Sage.");
@@ -44,18 +44,18 @@ namespace CmsData.Finance
                     throw new Exception("M_KEY setting not found, which is required for Sage.");
 
                 _originatorId = db.Setting("SageOriginatorId", "");
-			}
-		}
-		
-		public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
-		{
-			var person = db.LoadPersonById(peopleId);
-			var paymentInfo = person.PaymentInfo();
-			if (paymentInfo == null)
-			{
-				paymentInfo = new PaymentInfo();
-				person.PaymentInfos.Add(paymentInfo);
-			}
+            }
+        }
+
+        public void StoreInVault(int peopleId, string type, string cardNumber, string expires, string cardCode, string routing, string account, bool giving)
+        {
+            var person = db.LoadPersonById(peopleId);
+            var paymentInfo = person.PaymentInfo();
+            if (paymentInfo == null)
+            {
+                paymentInfo = new PaymentInfo();
+                person.PaymentInfos.Add(paymentInfo);
+            }
 
             if (type == PaymentType.CreditCard)
             {
@@ -89,15 +89,15 @@ namespace CmsData.Finance
                 paymentInfo.Routing = Util.Mask(new StringBuilder(routing), 2);
             }
             else
-                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
 
-			if (giving)
-				paymentInfo.PreferredGivingType = type;
-			else
-				paymentInfo.PreferredPaymentType = type;
-			db.SubmitChanges();
-		}
-        
+            if (giving)
+                paymentInfo.PreferredGivingType = type;
+            else
+                paymentInfo.PreferredPaymentType = type;
+            db.SubmitChanges();
+        }
+
         private Guid CreateCreditCardVault(Person person, string cardNumber, string expiration)
         {
             var createCreditCardVaultRequest = new CreateCreditCardVaultRequest(_id, _key, expiration, cardNumber);
@@ -105,7 +105,7 @@ namespace CmsData.Finance
             var response = createCreditCardVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to create the credit card for people id: {0}, message: {1}".Fmt(person.PeopleId, response.Message));
+                    $"Sage failed to create the credit card for people id: {person.PeopleId}, message: {response.Message}");
 
             return response.VaultGuid;
         }
@@ -121,7 +121,7 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to update the credit card for people id: {0}, message: {1}".Fmt(person.PeopleId, response.Message));
+                    $"Sage failed to update the credit card for people id: {person.PeopleId}, message: {response.Message}");
         }
 
         private void UpdateCreditCardVault(Guid vaultGuid, Person person, string expiration)
@@ -131,8 +131,7 @@ namespace CmsData.Finance
             var response = updateCreditCardVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to update the credit card expiration date for people id: {0}, message: {1}".Fmt(
-                        person.PeopleId, response.Message));
+                    $"Sage failed to update the credit card expiration date for people id: {person.PeopleId}, message: {response.Message}");
         }
 
         private Guid CreateAchVault(Person person, string accountNumber, string routingNumber)
@@ -142,7 +141,7 @@ namespace CmsData.Finance
             var response = createAchVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to create the ach account for people id: {0}, message: {1}".Fmt(person.PeopleId, response.Message));
+                    $"Sage failed to create the ach account for people id: {person.PeopleId}, message: {response.Message}");
 
             return response.VaultGuid;
         }
@@ -154,11 +153,11 @@ namespace CmsData.Finance
             var response = updateAchVaultRequest.Execute();
             if (!response.Success)
                 throw new Exception(
-                    "Sage failed to update the ach account for people id: {0}, message: {1}".Fmt(person.PeopleId, response.Message));
+                    $"Sage failed to update the ach account for people id: {person.PeopleId}, message: {response.Message}");
         }
-        
-		public void RemoveFromVault(int peopleId)
-		{
+
+        public void RemoveFromVault(int peopleId)
+        {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo();
             if (paymentInfo == null)
@@ -177,7 +176,7 @@ namespace CmsData.Finance
             paymentInfo.MaskedAccount = null;
             paymentInfo.Expires = null;
             db.SubmitChanges();
-		}
+        }
 
         private void DeleteVault(Guid vaultGuid, Person person)
         {
@@ -185,11 +184,11 @@ namespace CmsData.Finance
 
             var success = deleteVaultRequest.Execute();
             if (!success)
-                throw new Exception("Sage failed to delete the vault for people id: {0}".Fmt(person.PeopleId));
+                throw new Exception($"Sage failed to delete the vault for people id: {person.PeopleId}");
         }
 
-		public TransactionResponse VoidCreditCardTransaction(string reference)
-		{
+        public TransactionResponse VoidCreditCardTransaction(string reference)
+        {
             var voidRequest = new CreditCardVoidRequest(_id, _key, reference);
             var response = voidRequest.Execute();
 
@@ -200,10 +199,10 @@ namespace CmsData.Finance
                 Message = response.Message,
                 TransactionId = response.Reference
             };
-		}
+        }
 
-		public TransactionResponse VoidCheckTransaction(string reference)
-		{
+        public TransactionResponse VoidCheckTransaction(string reference)
+        {
             var voidRequest = new AchVoidRequest(_id, _key, reference);
             var response = voidRequest.Execute();
 
@@ -214,10 +213,10 @@ namespace CmsData.Finance
                 Message = response.Message,
                 TransactionId = response.Reference
             };
-		}
+        }
 
-		public TransactionResponse RefundCreditCard(string reference, Decimal amt, string lastDigits = "")
-		{
+        public TransactionResponse RefundCreditCard(string reference, decimal amt, string lastDigits = "")
+        {
             var refundRequest = new CreditCardRefundRequest(_id, _key, reference, amt);
             var response = refundRequest.Execute();
 
@@ -228,10 +227,10 @@ namespace CmsData.Finance
                 Message = response.Message,
                 TransactionId = response.Reference
             };
-		}
+        }
 
-		public TransactionResponse RefundCheck(string reference, Decimal amt, string lastDigits = "")
-		{
+        public TransactionResponse RefundCheck(string reference, decimal amt, string lastDigits = "")
+        {
             var refundRequest = new AchRefundRequest(_id, _key, reference, amt);
             var response = refundRequest.Execute();
 
@@ -242,18 +241,18 @@ namespace CmsData.Finance
                 Message = response.Message,
                 TransactionId = response.Reference
             };
-		}
+        }
 
-	    public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
-	        int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
-	        string country, string zip, string phone)
-	    {
+        public TransactionResponse AuthCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description,
+            int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state,
+            string country, string zip, string phone)
+        {
             var creditCardAuthRequest = new CreditCardAuthRequest(
                 _id,
                 _key,
                 new CreditCard
                 {
-                    NameOnCard = "{0} {1}".Fmt(first, last),
+                    NameOnCard = $"{first} {last}",
                     CardNumber = cardnumber,
                     Expiration = expires,
                     CardCode = cardcode,
@@ -281,33 +280,33 @@ namespace CmsData.Finance
                 Message = response.Message,
                 TransactionId = response.Reference
             };
-	    }
+        }
 
-	    public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
-		{
-		    var creditCardSaleRequest = new CreditCardSaleRequest(
+        public TransactionResponse PayWithCreditCard(int peopleId, decimal amt, string cardnumber, string expires, string description, int tranid, string cardcode, string email, string first, string last, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        {
+            var creditCardSaleRequest = new CreditCardSaleRequest(
                 _id,
-		        _key,
-		        new CreditCard
-		        {
-		            NameOnCard = "{0} {1}".Fmt(first, last),
-		            CardNumber = cardnumber,
-		            Expiration = expires,
-		            CardCode = cardcode,
-		            BillingAddress = new BillingAddress
-		            {
-		                Address1 = addr,
-		                City = city,
-		                State = state,
+                _key,
+                new CreditCard
+                {
+                    NameOnCard = $"{first} {last}",
+                    CardNumber = cardnumber,
+                    Expiration = expires,
+                    CardCode = cardcode,
+                    BillingAddress = new BillingAddress
+                    {
+                        Address1 = addr,
+                        City = city,
+                        State = state,
                         Country = country,
-		                Zip = zip,
-		                Email = email,
-		                Phone = phone
-		            }
-		        },
-		        amt,
-		        tranid.ToString(CultureInfo.InvariantCulture),
-		        peopleId.ToString(CultureInfo.InvariantCulture));
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture),
+                peopleId.ToString(CultureInfo.InvariantCulture));
 
             var response = creditCardSaleRequest.Execute();
 
@@ -318,35 +317,35 @@ namespace CmsData.Finance
                 Message = response.Message,
                 TransactionId = response.Reference
             };
-		}
+        }
 
-		public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
-		{
-		    var achSaleRequest = new AchSaleRequest(_id,
-		        _key,
-		        _originatorId,
-		        new Ach
-		        {
-		            FirstName = first,
-		            MiddleInitial = middle.Truncate(1) ?? "",
-		            LastName = last,
-		            Suffix = suffix,
-		            AccountNumber = acct,
-		            RoutingNumber = routing,
-		            BillingAddress = new BillingAddress
-		            {
-		                Address1 = addr,
-		                City = city,
-		                State = state,
+        public TransactionResponse PayWithCheck(int peopleId, decimal amt, string routing, string acct, string description, int tranid, string email, string first, string middle, string last, string suffix, string addr, string addr2, string city, string state, string country, string zip, string phone)
+        {
+            var achSaleRequest = new AchSaleRequest(_id,
+                _key,
+                _originatorId,
+                new Ach
+                {
+                    FirstName = first,
+                    MiddleInitial = middle.Truncate(1) ?? "",
+                    LastName = last,
+                    Suffix = suffix,
+                    AccountNumber = acct,
+                    RoutingNumber = routing,
+                    BillingAddress = new BillingAddress
+                    {
+                        Address1 = addr,
+                        City = city,
+                        State = state,
                         Country = country,
-		                Zip = zip,
-		                Email = email,
-		                Phone = phone
-		            }
+                        Zip = zip,
+                        Email = email,
+                        Phone = phone
+                    }
 
-		        },
-		        amt,
-		        tranid.ToString(CultureInfo.InvariantCulture));
+                },
+                amt,
+                tranid.ToString(CultureInfo.InvariantCulture));
 
             var response = achSaleRequest.Execute();
 
@@ -357,10 +356,10 @@ namespace CmsData.Finance
                 Message = response.Message,
                 TransactionId = response.Reference
             };
-		}
+        }
 
-	    public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
-	    {
+        public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
+        {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo();
             if (paymentInfo == null || !paymentInfo.SageCardGuid.HasValue)
@@ -369,11 +368,11 @@ namespace CmsData.Finance
                     Approved = false,
                     Message = "missing payment info",
                 };
-	       
+
             var creditCardVaultAuthRequest = new CreditCardVaultAuthRequest(_id,
                 _key,
                 paymentInfo.SageCardGuid.GetValueOrDefault(),
-                "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
+                $"{paymentInfo.FirstName ?? person.FirstName} {paymentInfo.LastName ?? person.LastName}",
                 new BillingAddress
                 {
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
@@ -383,7 +382,7 @@ namespace CmsData.Finance
                     Email = person.EmailAddress,
                     Phone = paymentInfo.Phone ?? person.HomePhone
                 },
-                amt, 
+                amt,
                 tranid.ToString(CultureInfo.InvariantCulture),
                 person.PeopleId.ToString(CultureInfo.InvariantCulture));
 
@@ -396,10 +395,10 @@ namespace CmsData.Finance
                 Message = response.Message,
                 TransactionId = response.Reference
             };
-	    }
+        }
 
-	    public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
-		{
+        public TransactionResponse PayWithVault(int peopleId, decimal amt, string description, int tranid, string type)
+        {
             var person = db.LoadPersonById(peopleId);
             var paymentInfo = person.PaymentInfo();
             if (paymentInfo == null)
@@ -414,14 +413,14 @@ namespace CmsData.Finance
             else // bank account
                 return ChargeAchVault(paymentInfo.SageBankGuid.GetValueOrDefault(), person, paymentInfo, amt, tranid);
 
-		}
+        }
 
         private TransactionResponse ChargeCreditCardVault(Guid vaultGuid, Person person, PaymentInfo paymentInfo, decimal amount, int tranid)
         {
             var creditCardVaultSaleRequest = new CreditCardVaultSaleRequest(_id,
                 _key,
                 vaultGuid,
-                "{0} {1}".Fmt(paymentInfo.FirstName ?? person.FirstName, paymentInfo.LastName ?? person.LastName),
+                $"{paymentInfo.FirstName ?? person.FirstName} {paymentInfo.LastName ?? person.LastName}",
                 new BillingAddress
                 {
                     Address1 = paymentInfo.Address ?? person.PrimaryAddress,
@@ -477,9 +476,9 @@ namespace CmsData.Finance
             };
         }
 
-		public BatchResponse GetBatchDetails(DateTime start, DateTime end)
-		{
-		    var batchTransactions = new List<BatchTransaction>();
+        public BatchResponse GetBatchDetails(DateTime start, DateTime end)
+        {
+            var batchTransactions = new List<BatchTransaction>();
             var settledBatchSummaryRequest = new SettledBatchSummaryRequest(_id, _key, start, end, true, true);
             var settledBatchResponse = settledBatchSummaryRequest.Execute();
 
@@ -520,9 +519,9 @@ namespace CmsData.Finance
             }
 
             return new BatchResponse(batchTransactions);
-		}
+        }
 
-	    private static TransactionType GetTransactionType(Sage.Report.TransactionType transactionType) 
+        private static TransactionType GetTransactionType(Sage.Report.TransactionType transactionType)
         {
             switch (transactionType)
             {
@@ -533,8 +532,8 @@ namespace CmsData.Finance
                     return TransactionType.Refund;
                 default:
                     return TransactionType.Unknown;
-            }    
-	    }
+            }
+        }
 
         private static BatchType GetBatchType(Sage.Report.BatchType batchType)
         {
@@ -570,19 +569,10 @@ namespace CmsData.Finance
             return new ReturnedChecksResponse(returnedChecks);
         }
 
-		public bool CanVoidRefund
-        {
-            get { return true; }
-        }
+        public bool CanVoidRefund => true;
 
-        public bool CanGetSettlementDates
-        {
-            get { return true; }
-        }
+        public bool CanGetSettlementDates => true;
 
-        public bool CanGetBounces
-        {
-            get { return true; }
-        }
-	}
+        public bool CanGetBounces => true;
+    }
 }

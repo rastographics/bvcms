@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -12,9 +13,7 @@ namespace CmsData.Registration
 {
     public class AskCheckboxes : Ask
     {
-        public override string Help
-        {
-            get { return @"
+        public override string Help => @"
 This is a group of checkboxes where you can check more than one.
 You can specify a minumum number they must check.
 And you can specify a maximum number they can check.
@@ -26,9 +25,7 @@ For each checkbox, you can specify the following:
 * **Fee** (optional) for the selection.
 * **Limit** (optional) which limits the number of people allowed for a selection.
 * **DateTime** (optional) which registers them in a meeting.
-"; 
-            }
-        }
+";
 
         public string Label { get; set; }
         public int? Minimum { get; set; }
@@ -77,8 +74,36 @@ For each checkbox, you can specify the following:
                      where g.Count() > 1
                      select g.Key).ToList();
             if (q.Any())
-                throw parser.GetException("Duplicate SmallGroup in Checkboxes: {0}".Fmt(string.Join(",", q)));
+                throw parser.GetException($"Duplicate SmallGroup in Checkboxes: {string.Join(",", q)}");
             return cb;
+        }
+        public new static AskCheckboxes ReadXml(XElement ele)
+        {
+            var cb = new AskCheckboxes
+            {
+                Minimum = ele.Attribute("Minimum")?.Value.ToInt2(),
+                Maximum = ele.Attribute("Maximum")?.Value.ToInt2(),
+                Columns = ele.Attribute("Columns")?.Value.ToInt2(),
+                Label = ele.Element("Label")?.Value,
+            };
+            foreach (var ee in ele.Elements("CheckBoxItem"))
+                cb.list.Add(CheckboxItem.ReadXml(ee));
+            return cb;
+
+        }
+        public override void WriteXml(APIWriter w)
+        {
+            if (list.Count == 0)
+                return;
+            w.Start(Type)
+                .Attr("Minimum", Minimum)
+                .Attr("Maximum", Maximum)
+                .Attr("Columns", Columns == 1 ? null : Columns)
+                .Add("Label", Label);
+            foreach (var i in list)
+                i.WriteXml(w);
+            // todo: prevent duplicates
+            w.End();
         }
         public override List<string> SmallGroups()
         {
@@ -113,7 +138,7 @@ For each checkbox, you can specify the following:
         {
             public override string ToString()
             {
-                return "{0}: {1}|{2} (limit={3},fee={4})".Fmt(Name, Description, SmallGroup, Limit, Fee);
+                return $"{Name}: {Description}|{SmallGroup} (limit={Limit},fee={Fee})";
             }
             public string Name { get; set; }
             public string Description { get; set; }
@@ -125,11 +150,11 @@ For each checkbox, you can specify the following:
             public DateTime? MeetingTime { get; set; }
 
             [DisplayName("DateTime")]
-		    public string MeetingTimeString
-		    {
-		        get { return MeetingTime.ToString2("g"); }
-		        set { MeetingTime = value.ToDate(); }
-		    }
+            public string MeetingTimeString
+            {
+                get { return MeetingTime.ToString2("g"); }
+                set { MeetingTime = value.ToDate(); }
+            }
 
             public void Output(StringBuilder sb)
             {
@@ -171,6 +196,29 @@ For each checkbox, you can specify the following:
                 }
                 return i;
             }
+            // ReSharper disable once MemberHidesStaticFromOuterClass
+            internal static CheckboxItem ReadXml(XElement ele)
+            {
+                var i = new CheckboxItem
+                {
+                    Description = ele.Element("Description")?.Value,
+                    Fee = ele.Attribute("Fee")?.Value.ToDecimal(),
+                    Limit = ele.Attribute("Limit")?.Value.ToInt2(),
+                    MeetingTime = ele.Attribute("Time")?.Value.ToDate()
+                };
+                i.SmallGroup = ele.Element("SmallGroup")?.Value ?? i.Description;
+                return i;
+            }
+            public void WriteXml(APIWriter w)
+            {
+                w.Start("CheckboxItem")
+                    .Attr("Fee", Fee)
+                    .Attr("Limit", Limit)
+                    .Attr("Time", MeetingTime.ToString2("s"))
+                    .Add("SmallGroup", SmallGroup)
+                    .Add("Description", Description)
+                    .End();
+            }
             public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)
             {
                 if (om == null)
@@ -194,29 +242,6 @@ For each checkbox, you can specify the following:
                 var cnt = smallgroups.Count(mm => mm == SmallGroup);
                 return cnt >= Limit;
             }
-        }
-
-        public override void WriteXml(XmlWriter writer)
-        {
-            if (list.Count == 0)
-                return;
-            var w = new APIWriter(writer);
-
-            w.Start(Type);
-            w.Attr("Minimum", Minimum);
-            w.Attr("Maximum", Maximum);
-            w.Attr("Columns", Columns);
-            foreach (var i in list)
-            {
-                w.Start("CheckboxItem");
-                w.Attr("Fee", i.Fee);
-                w.Attr("Limit", i.Limit);
-                w.Attr("Time", i.MeetingTime.ToString2("s"));
-                w.Add("SmallGroup", i.SmallGroup);
-                w.Add("Description", i.Description);
-                w.End();
-            }
-            w.End();
         }
     }
 }

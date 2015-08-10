@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -10,7 +11,7 @@ namespace CmsData.Registration
 {
 	public class AskText : Ask
 	{
-	    public override string Help { get { return @"
+	    public override string Help => @"
 These questions can be answered with text on multiple lines.
 
 The Question should be fairly short (25 characters or so)
@@ -18,8 +19,8 @@ but long enough for you and your registrant to know what it refers to.
 Note, this will be used as a column header on an Excel spreadsheet.
 
 If you need a long explanation assoicated with your question, put that in as an Instruction above the question.
-"; } }
-		public List<AskExtraQuestions.ExtraQuestion> list { get; private set; }
+";
+	    public List<AskExtraQuestions.ExtraQuestion> list { get; private set; }
 
 		public AskText()
 			: base("AskText")
@@ -49,15 +50,21 @@ If you need a long explanation assoicated with your question, put that in as an 
 			}
 			return tx;
 		}
-	    public override void WriteXml(XmlWriter writer)
+	    public override void WriteXml(APIWriter w)
 	    {
 			if (list.Count == 0)
 				return;
-            var w = new APIWriter(writer);
 	        w.Start(Type);
 	        foreach (var q in list)
-                w.Add("Question", q);
+                w.Add("ExtraQuestion", q.Question);
 	        w.End();
+	    }
+	    public new static AskText ReadXml(XElement e)
+	    {
+	        var t = new AskText();
+            foreach(var ee in e.Elements("Question"))
+                t.list.Add(AskExtraQuestions.ExtraQuestion.ReadXml(ee));
+	        return t;
 	    }
 	}
 }

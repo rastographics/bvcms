@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
@@ -21,8 +21,8 @@ namespace UtilityExtensions
             if (!addr.HasValue())
                 return "";
             if (name.HasValue())
-                return "mailto:{0} <{1}>".Fmt(name, addr);
-            return "mailto:" + addr;
+                return $"mailto:{name} <{addr}>";
+            return $"mailto:{addr}";
         }
         public static string FullEmail(string Email, string Name)
         {
@@ -36,7 +36,7 @@ namespace UtilityExtensions
                             select Name.Replace(",", "").Replace(";", "") + " <" + ad.Trim() + ">";
                     return string.Join(";", q);
                 }
-            return String.Empty;
+            return string.Empty;
         }
         public static List<MailAddress> DistinctEmails(this List<MailAddress> list)
         {

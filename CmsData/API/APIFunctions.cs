@@ -1,19 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Text;
-using UtilityExtensions;
-using System.Text.RegularExpressions;
-using System.Data.Linq;
-using System.Data.Linq.SqlClient;
-using IronPython.Hosting;
-using System.IO;
-using CmsData.Codes;
 using System.Web;
-using System.Xml;
-using System.Diagnostics;
-using Microsoft.Scripting.Hosting;
 using System.Xml.Serialization;
+using CmsData.Codes;
+using Dapper;
+using IronPython.Hosting;
+using UtilityExtensions;
 
 namespace CmsData.API
 {
@@ -44,7 +40,7 @@ class TestAPI(object):
                 foreach (var s in ss.Split('\n'))
                     sb.AppendFormat("\t\t{0}\n", s);
                 var engine = Python.CreateEngine();
-                script = shell.Fmt(init, sb.ToString());
+                script = string.Format(shell, init, sb);
                 var sc = engine.CreateScriptSourceFromString(script);
                 var code = sc.Compile();
                 var scope = engine.CreateScope();
@@ -102,7 +98,7 @@ class LoginInfo(object):
             }
             catch (Exception ex)
             {
-                return "<login error=\"API-LoginInfo script error: {0}\" />".Fmt(ex.Message);
+                return $"<login error=\"API-LoginInfo script error: {ex.Message}\" />";
             }
         }
         public int AttendCount(int orgid, int PeopleId)
@@ -120,7 +116,7 @@ class LoginInfo(object):
                       select f).ToList();
             var q2 = (from t in Db.TagPeople
                       where t.PeopleId == PeopleId
-                      where t.Tag.TypeId == 100
+                      where t.Tag.TypeId == DbUtil.TagTypeId_StatusFlags
                       select t.Tag.Name).ToList();
             var q = from t in q2
                     join f in q1 on t equals f[0]
@@ -134,7 +130,7 @@ class LoginInfo(object):
                       select f).ToList();
             var q2 = (from t in Db.TagPeople
                       where t.PeopleId == PeopleId
-                      where t.Tag.TypeId == 100
+                      where t.Tag.TypeId == DbUtil.TagTypeId_StatusFlags
                       select t.Tag.Name).ToList();
             var q = from t in q2
                     join f in q1 on t equals f[0]
@@ -157,7 +153,7 @@ class LoginInfo(object):
             var q = from a in Db.OrganizationMembers
                     where a.OrganizationId == orgid
                     where a.PeopleId == PeopleId
-                    where a.MemberTypeId != Codes.MemberTypeCode.InActive
+                    where a.MemberTypeId != MemberTypeCode.InActive
                     select a;
             return q.Count();
         }
@@ -373,6 +369,32 @@ class LoginInfo(object):
             var a = new AccessUsers { People = AccessUsersData(includeNoAccess).ToArray() };
             xs.Serialize(sw, a);
             return sw.ToString();
+        }
+        public string SqlScriptXml(string sqlscript, string p1 = null)
+        {
+            var script = Db.Content(sqlscript, "");
+            if (!script.HasValue())
+                throw new Exception("no sql script found");
+
+            script = $"DECLARE @p1 VARCHAR(100) = '{p1}'\n{script}";  
+
+            var rd = Db.Connection.ExecuteReader(script);
+
+            var w = new APIWriter();
+            w.Start("SqlScriptXml");
+            while (rd.Read())
+            {
+                w.Start("Row");
+                for (var i = 0; i < rd.FieldCount; i++)
+                {
+                    var name = rd.GetName(i);
+                    var value = rd.GetValue(i);
+                    w.Add(name, value);
+                }
+                w.End();
+            }
+            w.End();
+            return w.ToString();
         }
     }
 }

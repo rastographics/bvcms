@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     return Redirect(link);
 
             // check for forcing show family, master org, or not found
-            if (showfamily == true || p.org == null || p.Found != true) 
+            if (showfamily == true || p.org == null || p.Found != true)
                 return View(m);
 
             // ready to answer questions, make sure registration is ok to go
@@ -66,7 +66,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.FillPriorInfo();
             p.SetSpecialFee();
 
-            m.HistoryAdd("index, pid={0}, !showfamily, p.org, found=true".Fmt(pid));
+            m.HistoryAdd($"index, pid={pid}, !showfamily, p.org, found=true");
             return View(m);
         }
 
@@ -79,17 +79,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                     TempData["token"] = m.registertag;
                     TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
                 }
-                return "/OnlineReg/RegisterLinkMaster/{0}".Fmt(m.Orgid);
+                return $"/OnlineReg/RegisterLinkMaster/{m.Orgid}";
             }
             TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;
             if (m.ManagingSubscriptions())
-                return "/OnlineReg/ManageSubscriptions/{0}".Fmt(m.masterorgid);
+                return $"/OnlineReg/ManageSubscriptions/{m.masterorgid}";
             if (m.ManageGiving())
-                return "/OnlineReg/ManageGiving/{0}".Fmt(m.Orgid);
+                return $"/OnlineReg/ManageGiving/{m.Orgid}";
             if (m.OnlinePledge())
-                return "/OnlineReg/ManagePledge/{0}".Fmt(m.Orgid);
+                return $"/OnlineReg/ManagePledge/{m.Orgid}";
             if (m.ChoosingSlots())
-                return "/OnlineReg/ManageVolunteer/{0}".Fmt(m.Orgid);
+                return $"/OnlineReg/ManageVolunteer/{m.Orgid}";
             TempData.Remove("PeopleId");
             return null;
         }
@@ -103,6 +103,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             TempData["PeopleId"] = existingRegistration.UserPeopleId;
             return "/OnlineReg/Existing/" + existingRegistration.DatumId;
         }
+
         private ActionResult RouteSpecialLogin(OnlineRegModel m)
         {
             if (Util.UserPeopleId == null)

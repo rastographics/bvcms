@@ -1,137 +1,126 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Web.Mvc;
 using CmsData;
+using CmsData.Codes;
 using MoreLinq;
 using UtilityExtensions;
-using System.Web.Mvc;
-using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
     public class PromotionModel
     {
+        private bool? _filterUnassigned;
+        private bool? _normalMembersOnly;
+        private Promotion _promotion;
+        private int? _promotionId;
+        private int? _scheduleId;
+        private string[] _selected;
+
         public PromotionModel()
         {
-            
         }
+
         public PromotionModel(int id)
-            :this()
+            : this()
         {
             PromotionId = id;
         }
-        private int? _PromotionId;
+
         public int? PromotionId
         {
             get
             {
-                if (_PromotionId != null)
-                    return _PromotionId;
-                _PromotionId = DbUtil.Db.UserPreference("PromotionId", "0").ToInt2();
-                return _PromotionId;
+                if (_promotionId != null)
+                    return _promotionId;
+                _promotionId = DbUtil.Db.UserPreference("PromotionId", "0").ToInt2();
+                return _promotionId;
             }
             set
             {
-                _PromotionId = value;
+                _promotionId = value;
                 DbUtil.Db.SetUserPreference("PromotionId", value);
             }
         }
 
-        private Promotion _Promotion;
         public Promotion Promotion
         {
             get
             {
-                if (_Promotion == null)
+                if (_promotion == null)
                 {
-                    _Promotion = DbUtil.Db.Promotions.SingleOrDefault(p => p.Id == PromotionId);
-                    if (_Promotion == null)
-                        return new Promotion { FromDivId = 0 };
+                    _promotion = DbUtil.Db.Promotions.SingleOrDefault(p => p.Id == PromotionId);
+                    if (_promotion == null)
+                        return new Promotion {FromDivId = 0};
                 }
-                return _Promotion;
+                return _promotion;
             }
         }
-        private int? _ScheduleId;
+
         public int? ScheduleId
         {
             get
             {
-                if (_ScheduleId != null)
-                    return _ScheduleId;
-                _ScheduleId = DbUtil.Db.UserPreference("ScheduleId", "0").ToInt2();
-                return _ScheduleId;
+                if (_scheduleId != null)
+                    return _scheduleId;
+                _scheduleId = DbUtil.Db.UserPreference("ScheduleId", "0").ToInt2();
+                return _scheduleId;
             }
             set
             {
-                _ScheduleId = value;
+                _scheduleId = value;
                 DbUtil.Db.SetUserPreference("ScheduleId", value);
             }
         }
 
         public int TargetClassId { get; set; }
 
-        private bool? _FilterUnassigned;
         public bool FilterUnassigned
         {
             get
             {
-                if (_FilterUnassigned != null)
-                    return _FilterUnassigned.Value;
-                _FilterUnassigned = DbUtil.Db.UserPreference("FilterUnassigned", "false").ToBool();
-                return _FilterUnassigned.Value;
+                if (_filterUnassigned != null)
+                    return _filterUnassigned.Value;
+                _filterUnassigned = DbUtil.Db.UserPreference("FilterUnassigned", "false").ToBool();
+                return _filterUnassigned.Value;
             }
             set
             {
-                _FilterUnassigned = value;
+                _filterUnassigned = value;
                 DbUtil.Db.SetUserPreference("FilterUnassigned", value);
             }
         }
 
-        private bool? _NormalMembersOnly;
         public bool NormalMembersOnly
         {
             get
             {
-                if (_NormalMembersOnly != null)
-                    return _NormalMembersOnly.Value;
-                _NormalMembersOnly = DbUtil.Db.UserPreference("NormalMembersOnly", "false").ToBool();
-                return _NormalMembersOnly.Value;
+                if (_normalMembersOnly != null)
+                    return _normalMembersOnly.Value;
+                _normalMembersOnly = DbUtil.Db.UserPreference("NormalMembersOnly", "false").ToBool();
+                return _normalMembersOnly.Value;
             }
             set
             {
-                _NormalMembersOnly = value;
+                _normalMembersOnly = value;
                 DbUtil.Db.SetUserPreference("NormalMembersOnly", value);
             }
         }
 
-        private string[] _Selected;
         public string[] selected
         {
             get
             {
-                if (_Selected == null)
-                    _Selected = new string[0];
-                return _Selected;
+                if (_selected == null)
+                    _selected = new string[0];
+                return _selected;
             }
-            set
-            {
-                _Selected = value;
-            }
+            set { _selected = value; }
         }
 
-        private string _Sort = "Mixed";
-        public string Sort
-        {
-            get { return _Sort; }
-            set { _Sort = value; }
-        }
-        private string _Dir = "asc";
-        public string Dir
-        {
-            get { return _Dir; }
-            set { _Dir = value; }
-        }
+        public string Sort { get; set; } = "Mixed";
+        public string Dir { get; set; } = "asc";
 
         public IEnumerable<PromoteInfo> FetchStudents()
         {
@@ -145,9 +134,9 @@ namespace CmsWeb.Models
                     where (om.Pending ?? false) == false
                     where !NormalMembersOnly || om.MemberTypeId == MemberTypeCode.Member
                     let pc = DbUtil.Db.OrganizationMembers.FirstOrDefault(op =>
-                       op.Pending == true
-                       && op.PeopleId == om.PeopleId
-                       && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
+                        op.Pending == true
+                        && op.PeopleId == om.PeopleId
+                        && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
                     let pt = pc.Organization.OrganizationMembers.FirstOrDefault(om2 =>
                         om2.Pending == true
                         && om2.MemberTypeId == MemberTypeCode.Teacher)
@@ -169,12 +158,12 @@ namespace CmsWeb.Models
                         CurrLoc = om.Organization.Location,
                         CurrSchedule = sc.MeetingTime.ToString2("t"),
                         Gender = om.Person.GenderId == 1 ? "M" : "F",
-                        PendingClassId = pc == null ? (int?)null : pc.OrganizationId,
+                        PendingClassId = pc == null ? (int?) null : pc.OrganizationId,
                         PendingOrgName = pc == null ? "" : pc.Organization.OrganizationName,
                         PendingLeader = pc == null ? "" : (pt != null ? pt.Person.Name : pc.Organization.LeaderName),
                         PendingLoc = pc == null ? "" : pc.Organization.Location,
                         PendingSchedule = psc.MeetingTime.ToString2("t"),
-                        Hash = om.Person.HashNum.Value,
+                        Hash = om.Person.HashNum.Value
                     };
             if (Dir == "asc")
                 switch (Sort)
@@ -265,12 +254,12 @@ namespace CmsWeb.Models
                     a[0].ToInt(),
                     fom.MemberTypeId, // keep their existing membertype
                     Util.Now,
-                    null, 
-                    pending: true);
+                    null, true);
                 // todo: store the from orgid in tom record and use that do do promotion with
             }
-			DbUtil.Db.UpdateMainFellowship(t.OrganizationId);
+            DbUtil.Db.UpdateMainFellowship(t.OrganizationId);
         }
+
         public DataTable Export()
         {
             var fromdiv = Promotion.FromDivId;
@@ -280,13 +269,13 @@ namespace CmsWeb.Models
                     where (om.Pending ?? false) == false
                     where om.MemberTypeId == MemberTypeCode.Member
                     let pc = DbUtil.Db.OrganizationMembers.FirstOrDefault(op =>
-                       op.Pending == true
-                       && op.PeopleId == om.PeopleId
-                       && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
+                        op.Pending == true
+                        && op.PeopleId == om.PeopleId
+                        && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
                     let sc = pc.Organization.OrgSchedules.FirstOrDefault() // SCHED
                     let tm = sc.SchedTime.Value
-                    let pt = pc.Organization.OrganizationMembers.FirstOrDefault(om2 => 
-                        om2.Pending == true 
+                    let pt = pc.Organization.OrganizationMembers.FirstOrDefault(om2 =>
+                        om2.Pending == true
                         && om2.MemberTypeId == MemberTypeCode.Teacher)
                     let ploc = pc.Organization.PendingLoc
                     where pc != null
@@ -307,36 +296,39 @@ namespace CmsWeb.Models
                         Leader = pt != null ? pt.Person.Name : pc.Organization.LeaderName,
                         OrgName = pc.Organization.OrganizationName,
                         Schedule = tm.Hour + ":" + tm.Minute.ToString().PadLeft(2, '0'),
-						HomePhone = om.Person.HomePhone.FmtFone(),
-						CellPhone = om.Person.CellPhone.FmtFone(),
+                        HomePhone = om.Person.HomePhone.FmtFone(),
+                        CellPhone = om.Person.CellPhone.FmtFone(),
                         Parent1 = om.Person.Family.HeadOfHousehold.Name,
-						CellPhone1 = om.Person.Family.HeadOfHousehold.CellPhone.FmtFone(),
+                        CellPhone1 = om.Person.Family.HeadOfHousehold.CellPhone.FmtFone(),
                         Parent2 = om.Person.Family.HeadOfHouseholdSpouse.Name,
-						CellPhone2 = om.Person.Family.HeadOfHouseholdSpouse.CellPhone.FmtFone(),
+                        CellPhone2 = om.Person.Family.HeadOfHouseholdSpouse.CellPhone.FmtFone(),
                         AttendPct = om.AttendPct.ToString2("N1"),
                         om.AttendStr
-					};
+                    };
             return q.ToDataTable();
         }
+
         public IEnumerable<SelectListItem> Promotions()
         {
             var q = from p in DbUtil.Db.Promotions
                     orderby p.Sort, p.Description
                     select new SelectListItem
                     {
-                        Text = "{0} - {1}".Fmt(p.Sort, p.Description),
-                        Value = p.Id.ToString(),
+                        Text = $"{p.Sort} - {p.Description}",
+                        Value = p.Id.ToString()
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem { Text = "(Select Promotion)", Value = "0", Selected = true });
+            list.Insert(0, new SelectListItem {Text = "(Select Promotion)", Value = "0", Selected = true});
             return list;
         }
+
         public IEnumerable<SelectListItem> Schedules()
         {
             var q = from o in DbUtil.Db.Organizations
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where o.DivOrgs.Any(dd => dd.DivId == Promotion.FromDivId)
-                    group o by new { sc.ScheduleId, sc.MeetingTime } into g
+                    group o by new {sc.ScheduleId, sc.MeetingTime}
+                    into g
                     orderby g.Key.ScheduleId
                     select new SelectListItem
                     {
@@ -346,17 +338,18 @@ namespace CmsWeb.Models
 
             var list = q.ToList();
             if (list.Count == 0)
-                list.Insert(0, new SelectListItem { Text = "(Select Promotion First)", Value = "0", Selected = true });
+                list.Insert(0, new SelectListItem {Text = "(Select Promotion First)", Value = "0", Selected = true});
             else
-                list.Insert(0, new SelectListItem { Text = "(Select Schedule)", Value = "0", Selected = true });
+                list.Insert(0, new SelectListItem {Text = "(Select Schedule)", Value = "0", Selected = true});
             return list;
         }
+
         public IEnumerable<SelectListItem> TargetClasses()
         {
             var todiv = Promotion.ToDivId;
-        	var roles = DbUtil.Db.CurrentRoles();
+            var roles = DbUtil.Db.CurrentRoles();
             var q = from o in DbUtil.Db.Organizations
-        	        where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     let sc = o.OrgSchedules.FirstOrDefault() // SCHED
                     where o.DivOrgs.Any(dd => dd.DivId == todiv)
                     where sc.ScheduleId == ScheduleId || ScheduleId == 0
@@ -368,15 +361,15 @@ namespace CmsWeb.Models
                         && om2.MemberTypeId == MemberTypeCode.Teacher)
                     select new
                     {
-                        Text = CmsData.Organization.FormatOrgName(o.OrganizationName, pt != null ? pt.Person.Name : o.LeaderName, o.Location),
+                        Text = Organization.FormatOrgName(o.OrganizationName, pt != null ? pt.Person.Name : o.LeaderName, o.Location),
                         Time = sc.MeetingTime,
-                        Value = o.OrganizationId.ToString(),
+                        Value = o.OrganizationId.ToString()
                     };
             var list = q.ToList();
             var qq = from i in list
                      select new SelectListItem
                      {
-                         Text = i.Text + ", {0:t}".Fmt(i.Time.Value),
+                         Text = i.Text + $", {i.Time.Value:t}",
                          Value = i.Value
                      };
             return qq;

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,7 +8,6 @@ using UtilityExtensions;
 using CmsData;
 using System.Text;
 using System.Data.Linq;
-using CmsData.Codes;
 
 namespace CmsWeb.Areas.Search.Models
 {
@@ -82,10 +80,7 @@ namespace CmsWeb.Areas.Search.Models
             }
         }
 
-        public bool IsNew
-        {
-            get { return !PeopleId.HasValue; }
-        }
+        public bool IsNew => !PeopleId.HasValue;
 
         [NoUpdate]
         public int FamilyId { get; set; }
@@ -128,7 +123,7 @@ namespace CmsWeb.Areas.Search.Models
             {
                 if (sb.Length == 0)
                     sb.AppendLine("<ul>\n");
-                sb.AppendFormat("<li><a href=\"/Person2/{1}\" target=\"_blank\">{0}</a> ({1}), {2}, age:{3}</li>\n".Fmt(p.Name, p.PeopleId, p.PrimaryAddress, p.Age));
+                sb.AppendFormat("<li><a href=\"/Person2/{1}\" target=\"_blank\">{0}</a> ({1}), {2}, age:{3}</li>\n", p.Name, p.PeopleId, p.PrimaryAddress, p.Age);
             }
             if (sb.Length > 0)
                 PotentialDuplicate = sb + "</ul>\n";
@@ -148,8 +143,7 @@ namespace CmsWeb.Areas.Search.Models
                 f.ResCodeId = AddressInfo.ResCode.Value.ToInt2();
                 f.HomePhone = HomePhone.GetDigits();
             }
-            if (NickName != null)
-                NickName = NickName.Trim();
+            NickName = NickName?.Trim();
 
             var position = DbUtil.Db.ComputePositionInFamily(Age ?? -1, MaritalStatus.Value == "20", FamilyId) ?? 10;
 
@@ -170,7 +164,7 @@ namespace CmsWeb.Areas.Search.Models
                 Person.CampusId = null;
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("AddPerson {0}".Fmt(person.PeopleId));
+            DbUtil.LogActivity($"AddPerson {person.PeopleId}");
             DbUtil.Db.Refresh(RefreshMode.OverwriteCurrentValues, Person);
             PeopleId = Person.PeopleId;
         }
@@ -192,9 +186,6 @@ namespace CmsWeb.Areas.Search.Models
             HomePhone = f.HomePhone.GetDigits();
         }
 
-        public string CityStateZip
-        {
-            get { return "{0}, {1} {2}".Fmt(AddressInfo.CityName, AddressInfo.StateCode.Value, AddressInfo.ZipCode); }
-        }
+        public string CityStateZip => $"{AddressInfo.CityName}, {AddressInfo.StateCode.Value} {AddressInfo.ZipCode}";
     }
 }

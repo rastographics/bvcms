@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Search.Models
             ShowPageSize = false;
         }
 
-        private int? count;
+        private new int? count;
         public override int Count()
         {
             if (count == null)

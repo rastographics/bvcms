@@ -1,10 +1,9 @@
-﻿@using UtilityExtensions
-@model CmsWeb.Areas.People.Models.DownlineDetailModel
+﻿@model CmsWeb.Areas.People.Models.DownlineDetailModel
 @{
   Layout = ViewExtensions2.TouchPointLayout();
   ViewBag.Title = "Downline";
   var name = Model.Name;
-  ViewBag.PageHeader = "Downline for {0} ({1:N0} total disciples, Level {2} of {3} levels) in {4}".Fmt(name, Model.DownlineCount, Model.Level, Model.DownlineLevels, Model.Category);
+  ViewBag.PageHeader = $"Downline for {name} ({Model.DownlineCount:N0} total disciples, Level {Model.Level} of {Model.DownlineLevels} levels) in {Model.Category}";
 }
 <div class="box box-responsive" style="margin-left: auto; margin-right:auto;display:table">
   <div class="box-content" style="display:table">

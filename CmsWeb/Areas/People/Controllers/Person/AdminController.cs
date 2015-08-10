@@ -12,7 +12,7 @@ namespace CmsWeb.Areas.People.Controllers
         public ActionResult Split(int id)
         {
             var p = DbUtil.Db.LoadPersonById(id);
-            DbUtil.LogPersonActivity("Splitting Family for {0}".Fmt(p.Name), id, p.Name);
+            DbUtil.LogPersonActivity($"Splitting Family for {p.Name}", id, p.Name);
             p.SplitFamily(DbUtil.Db);
             return Content("/Person2/" + id);
         }
@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.People.Controllers
                 Session.Remove("ActivePerson");
             }
             DbUtil.Db.PurgePerson(id);
-            DbUtil.LogActivity("Deleted Record {0} ({1})".Fmt(i.person.Name, i.person.PeopleId));
+            DbUtil.LogActivity($"Deleted Record {i.person.Name} ({i.person.PeopleId})");
             return Content("/Person2/DeletedPerson");
         }
 
@@ -52,8 +52,6 @@ namespace CmsWeb.Areas.People.Controllers
         {
             return View("Personal/DeletedPerson");
         }
-
-
 
         [Authorize(Roles = "Admin")]
         public ActionResult Move(int id, int to)
@@ -73,7 +71,7 @@ namespace CmsWeb.Areas.People.Controllers
 
         public ActionResult ShowMeetings(int id, bool all)
         {
-            if (all == true)
+            if (all)
                 Session["showallmeetings"] = true;
             else
                 Session.Remove("showallmeetings");

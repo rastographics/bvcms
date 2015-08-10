@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Collections.Generic;
@@ -158,7 +158,7 @@ namespace CmsWeb.Areas.Reports.Models
         private Document doc;
         private PdfContentByte dc;
 
-        float[] HeaderWids = new float[] { 35, 43, 53, 22, 30 };
+        float[] HeaderWids = { 35, 43, 53, 22, 30 };
 
         private PdfPTable StartPageSet(OrgInfo o)
         {
@@ -168,7 +168,7 @@ namespace CmsWeb.Areas.Reports.Models
             t.DefaultCell.Border = PdfPCell.NO_BORDER;
             t.WidthPercentage = 100;
             t.DefaultCell.Padding = 5;
-            pageEvents.StartPageSet("{0}: {1}, {2} ({3})".Fmt(o.Division, o.Name, o.Location, o.Teacher));
+            pageEvents.StartPageSet($"{o.Division}: {o.Name}, {o.Location} ({o.Teacher})");
 
             t.AddCell(new Phrase("\nName", boldfont));
             t.AddCell(new Phrase("\nContact Info", boldfont));
@@ -184,7 +184,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             var ph = new Phrase();
             ph.Add(new Chunk(p.Name, font));
-            ph.Add(new Chunk("\n  ({0})".Fmt(p.PeopleId), smallfont));
+            ph.Add(new Chunk($"\n  ({p.PeopleId})", smallfont));
             t.AddCell(ph);
 
             var sb = new StringBuilder();
@@ -213,7 +213,7 @@ namespace CmsWeb.Areas.Reports.Models
         }
         private void AddLine(StringBuilder sb, string value)
         {
-            AddLine(sb, value, String.Empty);
+            AddLine(sb, value, string.Empty);
         }
         private void AddLine(StringBuilder sb, string value, string postfix)
         {

@@ -1,8 +1,8 @@
 ﻿/* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.Data.Common;
@@ -314,12 +314,12 @@ namespace CmsData
             foreach (var p in cmd.Parameters)
             {
                 var pa = p as DbParameter;
-                if (pa != null && pa.Value is DBNull)
+                if (pa?.Value is DBNull)
                 {
-                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
+                    s = Regex.Replace(s, $@"@p{n++}\b", "NULL");
                     continue;
                 }
-                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
+                s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
@@ -352,7 +352,7 @@ namespace CmsData
             for (var i = 0; i < list.Count; i += maxints)
             {
                 var s = string.Join(",", list.Skip(i).Take(maxints));
-                var cmd = "DELETE dbo.TagPerson WHERE Id = {0} AND PeopleId IN ({1})".Fmt(tag.Id, s);
+                var cmd = $"DELETE dbo.TagPerson WHERE Id = {tag.Id} AND PeopleId IN ({s})";
                 ExecuteCommand(cmd);
             }
         }
@@ -361,7 +361,7 @@ namespace CmsData
             for (var i = 0; i < list.Count; i += maxints)
             {
                 var s = string.Join(",", list.Skip(i).Take(maxints));
-                var cmd = "INSERT dbo.TagPerson (Id, PeopleId) SELECT {0}, Value FROM dbo.SplitInts('{1}')".Fmt(tag.Id, s);
+                var cmd = $"INSERT dbo.TagPerson (Id, PeopleId) SELECT {tag.Id}, Value FROM dbo.SplitInts('{s}')";
                 ExecuteCommand(cmd);
             }
         }
@@ -377,7 +377,7 @@ namespace CmsData
                 name = Util.SessionId;
             else
             {
-                name = ".temp email tag {0:t}".Fmt(DateTime.Now);
+                name = $".temp email tag {DateTime.Now:t}";
                 TagTypeId = DbUtil.TagTypeId_Personal;
             }
             var tag = FetchOrCreateTag(name, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
@@ -392,10 +392,10 @@ namespace CmsData
                 var pa = p as DbParameter;
                 if (pa != null && pa.Value is DBNull)
                 {
-                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
+                    s = Regex.Replace(s, $@"@p{n++}\b", "NULL");
                     continue;
                 }
-                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
+                s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
             s = Regex.Replace(s, "^SELECT( DISTINCT)?",
@@ -418,10 +418,10 @@ namespace CmsData
                 var pa = p as DbParameter;
                 if (pa != null && pa.Value is DBNull)
                 {
-                    s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "NULL");
+                    s = Regex.Replace(s, $@"@p{n++}\b", "NULL");
                     continue;
                 }
-                s = Regex.Replace(s, @"@p{0}\b".Fmt(n++), "{{{0}}}".Fmt(pn++));
+                s = Regex.Replace(s, $@"@p{n++}\b", $"{{{pn++}}}");
                 plist.Add(pa);
             }
 
@@ -446,6 +446,7 @@ namespace CmsData
         {
             var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_Personal);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
+            tag.Created = DateTime.Now;
             SubmitChanges();
             TagAll(q, tag);
         }
@@ -572,7 +573,13 @@ namespace CmsData
             var tag = FetchTag(tagname, OwnerId, tagtypeid);
             if (tag == null)
             {
-                tag = new Tag { Name = tagname.Replace('!', '*'), PeopleId = OwnerId, TypeId = tagtypeid };
+                tag = new Tag
+                {
+                    Name = tagname.Replace('!', '*'),
+                    PeopleId = OwnerId,
+                    TypeId = tagtypeid,
+                    Created = DateTime.Now
+                };
                 Tags.InsertOnSubmit(tag);
                 SubmitChanges();
             }
@@ -584,18 +591,6 @@ namespace CmsData
                 t.Name == tagname && t.PeopleId == OwnerId && t.TypeId == tagtypeid);
             return tag;
         }
-        public Tag FetchOrCreateSystemTag(string tagname)
-        {
-            var tag = Tags.FirstOrDefault(t => t.Name == tagname && t.TypeId == 100);
-            if (tag == null)
-            {
-                tag = new Tag { Name = tagname, TypeId = 100 };
-                Tags.InsertOnSubmit(tag);
-                SubmitChanges();
-            }
-            return tag;
-        }
-
         public void SetOrgMembersOnly()
         {
             var me = Util.UserPeopleId;
@@ -903,7 +898,7 @@ namespace CmsData
         //            , [Parameter(DbType = "Bit")] bool current
         //            , [Parameter(DbType = "Bit")] bool createmeeting)
         //        {
-        //            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())), 
+        //            var result = this.ExecuteMethodCall(this, ((MethodInfo)(MethodInfo.GetCurrentMethod())),
         //                mid, meetingdt, oid, current, createmeeting);
         //            return ((IMultipleResults)(result.ReturnValue));
         //        }
@@ -1260,6 +1255,16 @@ namespace CmsData
                            select c).FirstOrDefault();
             return content;
         }
+        public string ContentOfTypeSavedDraft(string name)
+        {
+            var content = (from c in Contents
+                           where c.Name == name
+                           where c.TypeID == ContentTypeCode.TypeSavedDraft
+                           select c).FirstOrDefault();
+            if (content == null)
+                return "Draft content could not be found";
+            return content.Body;
+        }
         public string ContentOfTypePythonScript(string name)
         {
             var content = (from c in Contents
@@ -1273,7 +1278,7 @@ namespace CmsData
         public Content Content(string name, string defaultValue, int contentTypeId)
         {
             var c = Contents.FirstOrDefault(cc => cc.Name == name);
-            if (c != null) 
+            if (c != null)
                 return c;
             c = new Content()
             {
@@ -1282,7 +1287,7 @@ namespace CmsData
                 Body = defaultValue,
                 TypeID = contentTypeId
             };
-            if (!defaultValue.HasValue()) 
+            if (!defaultValue.HasValue())
                 return c;
             Contents.InsertOnSubmit(c);
             SubmitChanges();
@@ -1303,7 +1308,7 @@ namespace CmsData
         }
         public void SetNoLock()
         {
-            //ExecuteCommand("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED"); 
+            //ExecuteCommand("SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
         }
 
         public int FetchOrCreateCampusId(string name)
@@ -1446,8 +1451,6 @@ namespace CmsData
             return n;
         }
 
-
-
         internal bool FromActiveRecords { get; set; }
         public bool FromBatch { get; set; }
 
@@ -1472,7 +1475,7 @@ namespace CmsData
                     return new BluePayGateway(this, testing);
             }
 
-            throw new Exception("Gateway ({0}) is not supported.".Fmt(type));
+            throw new Exception($"Gateway ({type}) is not supported.");
         }
     }
 }

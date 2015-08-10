@@ -179,7 +179,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             var cn = new SqlConnection(Util.ConnectionStringReadOnly);
             cn.Open();
-            var script = "DECLARE @p1 VARCHAR(100) = '{0}'\n{1}\n".Fmt(parameter, body);
+            var script = $"DECLARE @p1 VARCHAR(100) = '{parameter}'\n{body}\n";
             var cmd = new SqlCommand(script);
             var rd = cmd.ExecuteReader();
             return new GridResult(rd);
@@ -410,7 +410,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var tc = new HtmlTableCell
             {
                 ColSpan = rd.FieldCount,
-                InnerText = "Count = {0} rows".Fmt(t.Rows.Count - 1)
+                InnerText = $"Count = {t.Rows.Count - 1} rows"
             };
             var tr = new HtmlTableRow();
             tr.Cells.Add(tc);

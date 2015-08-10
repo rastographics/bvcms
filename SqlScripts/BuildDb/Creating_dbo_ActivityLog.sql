@@ -8,7 +8,8 @@ CREATE TABLE [dbo].[ActivityLog]
 [Machine] [nvarchar] (50) NULL,
 [OrgId] [int] NULL,
 [PeopleId] [int] NULL,
-[DatumId] [int] NULL
+[DatumId] [int] NULL,
+[ClientIp] [nvarchar] (50) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

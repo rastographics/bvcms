@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -10,19 +11,14 @@ namespace CmsData.Registration
 {
 	public class AskSize : Ask
 	{
-	    public override string Help
-	    {
-	        get 
-            { return @"
+	    public override string Help => @"
 Display a dropdown of custom sizes. With each size you can:
 
 * Associate a Fee
 * Put in a Sub-Group
 * Adds an extra item to the sizes to indicate they will use last year's shirt.
-"; 
-            }
-	    }
-		public decimal? Fee { get; set; }
+";
+	    public decimal? Fee { get; set; }
 		public string Label { get; set; }
 		public bool AllowLastYear { get; set; }
 		public List<Size> list { get; set; }
@@ -63,6 +59,32 @@ Display a dropdown of custom sizes. With each size you can:
 				q.Output(sb);
 			sb.AppendLine();
 		}
+	    public override void WriteXml(APIWriter w)
+	    {
+			if (list.Count == 0)
+				return;
+	        w.Start(Type)
+	            .Attr("Fee", Fee)
+	            .Attr("AllowLastYear", AllowLastYear)
+	            .Add("Label", Label ?? "Size");
+			foreach (var g in list)
+                g.WriteXml(w);
+	        w.End();
+	    }
+		public new static AskSize ReadXml(XElement e)
+		{
+		    var r = new AskSize
+		    {
+		        Label = e.Element("Size")?.Value,
+		        Fee = e.Attribute("Fee")?.Value.ToDecimal(),
+		        AllowLastYear = e.Attribute("AllowLastYear")?.Value.ToBool2() ?? false,
+		        list = new List<Size>()
+		    };
+		    foreach (var ee in e.Elements("Item"))
+		        r.list.Add(Size.ReadXml(ee));
+            // todo: check duplicates
+			return r;
+		}
         public override List<string> SmallGroups()
         {
             var q = (from i in list
@@ -101,6 +123,23 @@ Display a dropdown of custom sizes. With each size you can:
 				}
 				return i;
 			}
+
+		    public void WriteXml(APIWriter w)
+		    {
+		        w.Start("Item")
+		            .Add("Description", Description)
+		            .Add("SmallGroup", SmallGroup)
+		            .End();
+		    }
+
+		    // ReSharper disable once MemberHidesStaticFromOuterClass
+		    public static Size ReadXml(XElement e)
+		    {
+				var i = new Size();
+		        i.Description = e.Element("Description")?.Value;
+		        i.Description = e.Element("SmallGroup")?.Value;
+				return i;
+		    }
 		}
 		public static List<Size> ParseShirtSizes(Parser parser)
 		{
@@ -126,23 +165,5 @@ Display a dropdown of custom sizes. With each size you can:
 			}
 			return list;
 		}
-	    public override void WriteXml(XmlWriter writer)
-	    {
-			if (list.Count == 0)
-				return;
-            var w = new APIWriter(writer);
-	        w.Start(Type);
-			w.Attr("Fee", Fee);
-			w.Attr("AllowLastYear", AllowLastYear);
-            w.Add("Label", Label ?? "Size");
-			foreach (var g in list)
-			{
-			    w.Start("Item");
-				w.Add("SmallGroup", g.SmallGroup);
-			    w.Add("Description", g.Description);
-			    w.End();
-			}
-	        w.End();
-	    }
 	}
 }

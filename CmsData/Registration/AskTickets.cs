@@ -1,5 +1,6 @@
 using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -7,17 +8,12 @@ namespace CmsData.Registration
 {
 	public class AskTickets : Ask
 	{
-	    public override string Help
-	    {
-	        get 
-            { return @"
+	    public override string Help => @"
 This will ask for a number of items to purchase. 
 The total will be the fee multipled by the number of items.
 Good for things like number of lunches (so you can bring friends).
-"; 
-            }
-	    }
-		public string Label { get; set; }
+";
+	    public string Label { get; set; }
 		public AskTickets() : base("AskTickets") { }
 		public static AskTickets Parse(Parser parser)
 		{
@@ -34,12 +30,15 @@ Good for things like number of lunches (so you can bring friends).
 			Settings.AddValueCk(1, sb, "Label", Label);
 			sb.AppendLine();
 		}
-	    public override void WriteXml(XmlWriter writer)
+	    public override void WriteXml(APIWriter w)
 	    {
-            var w = new APIWriter(writer);
-	        w.Start(Type);
-            w.AddText(Label ?? "No. of Items");
-	        w.End();
+	        w.Start(Type)
+	            .AddText(Label ?? "No. of Items")
+	            .End();
+	    }
+	    public new static AskTickets ReadXml(XElement e)
+	    {
+	        return new AskTickets {Label = e.Value};
 	    }
 	}
 }

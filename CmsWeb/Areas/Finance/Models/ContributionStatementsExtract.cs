@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using CmsData;
 using CmsData.API;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.Report
 {
@@ -97,7 +96,7 @@ namespace CmsWeb.Areas.Finance.Models.Report
         }
         public static string Output(string fn, int set)
         {
-            var outf = fn.Replace(".pdf", "-{0}.pdf".Fmt(set));
+            var outf = fn.Replace(".pdf", $"-{set}.pdf");
             return outf;
         }
     }

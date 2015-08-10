@@ -21,12 +21,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             SetHeaders(m);
             return View("Index", m);
         }
-        
+
         [HttpGet]
         public ActionResult StartOver(int id)
         {
-            var pid = (int)TempData["PeopleId"];
-            if (pid == 0)
+            var pid = (int?)TempData["PeopleId"];
+            if (!pid.HasValue || pid == 0)
                 return Message("not logged in");
             var m = OnlineRegModel.GetRegistrationFromDatum(id);
             if (m == null)
@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         [HttpPost]
         public ActionResult AutoSaveProgress(OnlineRegModel m)
         {
-            try { m.UpdateDatum(); } 
+            try { m.UpdateDatum(); }
             catch { }
             return Content(m.DatumId.ToString());
         }
@@ -68,7 +68,7 @@ Resume [registration for {orgname}]
             msg = Regex.Replace(msg, @"(\[.*\])", registerlink, RegexOptions.Singleline);
 
             var notifyids = DbUtil.Db.NotifyIds((m.masterorg ?? m.org).NotifyIds);
-            DbUtil.Db.Email(notifyids[0].FromEmail, p, "Continue your registration for {0}".Fmt(m.Header), msg);
+            DbUtil.Db.Email(notifyids[0].FromEmail, p, $"Continue your registration for {m.Header}", msg);
 
             /* We use Content as an ActionResult instead of Message because we want plain text sent back
              * This is an HttpPost ajax call and will have a SiteLayout wrapping this.
@@ -116,7 +116,7 @@ We have saved your progress. An email with a link to finish this registration wi
         public ActionResult FinishLater(int id)
         {
             var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
-            if (ed == null) 
+            if (ed == null)
                 return View("Unknown");
             var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
             m.FinishLaterNotice();

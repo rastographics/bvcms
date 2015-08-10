@@ -10,7 +10,7 @@
                         <input id="active-@r.Id" name="Active" type="checkbox" @(r.Active ? "checked=checked" : "") disabled="disabled" value="active" />
                     </td>
                     <td>
-                        <a>@r.NameOrEmail</a> @(r.SenderAmt > 0 ? string.Format(" ({0:C0})", r.SenderAmt) : "")<br />
+                        <a>@r.NameOrEmail</a> @(r.SenderAmt > 0 ? $" ({r.SenderAmt:C0})" : "")<br />
                         <span>@r.Salutation</span>
                     </td>
                 </tr>

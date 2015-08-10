@@ -6,7 +6,6 @@ using CmsData;
 using CmsData.ExtraValue;
 using CmsWeb.Code;
 using Dapper;
-using Elmah;
 using Newtonsoft.Json;
 using UtilityExtensions;
 
@@ -57,7 +56,7 @@ namespace CmsWeb.Models.ExtraValues
 
         public static string HelpLink(string page)
         {
-            return Util.HelpLink("_AddExtraValue_{0}".Fmt(page));
+            return Util.HelpLink($"_AddExtraValue_{page}");
         }
 
         public IEnumerable<ExtraValue> ListExtraValues()
@@ -170,9 +169,9 @@ namespace CmsWeb.Models.ExtraValues
                     join e in list on c equals e.Field into j
                     from e in j.DefaultIfEmpty()
                     select new AllBitsCheckedOrNot()
-                    { 
-                        Name = c, 
-                        Checked = (e != null && (e.BitValue ?? false)) 
+                    {
+                        Name = c,
+                        Checked = (e != null && (e.BitValue ?? false))
                     };
             return q;
         }
@@ -184,10 +183,10 @@ namespace CmsWeb.Models.ExtraValues
             var q = from c in f.Codes
                     join e in list on c equals e.Field into j
                     from e in j.DefaultIfEmpty()
-                    select new 
-                    { 
-                        value = c, 
-                        text = Value.NoPrefix(c) 
+                    select new
+                    {
+                        value = c,
+                        text = Value.NoPrefix(c)
                     };
             return JsonConvert.SerializeObject(q.ToArray());
         }
@@ -218,7 +217,7 @@ namespace CmsWeb.Models.ExtraValues
             record.RemoveExtraValue(DbUtil.Db, name);
             Log(record, "remove", name);
         }
-        
+
         public void EditExtra(string type, string name, string value)
         {
             var record = TableObject();
@@ -312,9 +311,9 @@ namespace CmsWeb.Models.ExtraValues
             var cn = DbUtil.Db.Connection;
             cn.Open();
             if (i.value.Codes.Count == 0)
-                cn.Execute("delete from dbo.{0}Extra where Field = @name".Fmt(Table), new { name });
+                cn.Execute($"delete from dbo.{Table}Extra where Field = @name", new { name });
             else
-                cn.Execute("delete from dbo.{0}Extra where Field in @codes".Fmt(Table), new { codes = i.value.Codes });
+                cn.Execute($"delete from dbo.{Table}Extra where Field in @codes", new { codes = i.value.Codes });
         }
 
         public void Delete(string name)

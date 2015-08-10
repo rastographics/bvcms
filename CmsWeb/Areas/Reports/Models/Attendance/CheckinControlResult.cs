@@ -1,14 +1,15 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
-using System;
+
+using System.Web.Mvc;
+using CmsData;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using UtilityExtensions;
-using System.Web.Mvc;
 
 namespace CmsWeb.Areas.Reports.Models
 {
@@ -26,12 +27,12 @@ namespace CmsWeb.Areas.Reports.Models
             var doc = new Document(PageSize.LETTER, 36, 36, 36, 42);
             var w = PdfWriter.GetInstance(doc, Response.OutputStream);
 
-            string scheduletext = String.Empty;
-            var sdt = CmsData.Organization.GetDateFromScheduleId(model.ScheduleId ?? 0);
+            var scheduletext = string.Empty;
+            var sdt = Organization.GetDateFromScheduleId(model.ScheduleId ?? 0);
             if (sdt.HasValue)
                 scheduletext = sdt.Value.ToString("dddd h:mm tt");
 
-            var headtext = "Checkin Control Report {0}".Fmt(scheduletext);
+            var headtext = $"Checkin Control Report {scheduletext}";
             w.PageEvent = new HeadFoot(headtext);
 
 
@@ -42,7 +43,7 @@ namespace CmsWeb.Areas.Reports.Models
             var t = new PdfPTable(5);
             t.HeaderRows = 1;
             t.WidthPercentage = 100;
-            t.SetWidths(new int[] { 20, 30, 10, 10, 15 });
+            t.SetWidths(new[] {20, 30, 10, 10, 15});
 
             var font = FontFactory.GetFont(FontFactory.HELVETICA, 8);
             t.AddCell(new Phrase("Name", boldfont));
@@ -65,12 +66,13 @@ namespace CmsWeb.Areas.Reports.Models
                 doc.Add(new Phrase("no data"));
             doc.Close();
         }
-        class HeadFoot : PdfPageEventHelper
+
+        private class HeadFoot : PdfPageEventHelper
         {
-            private PdfTemplate tpl;
             private PdfContentByte dc;
             private BaseFont font;
             private string sText;
+            private PdfTemplate tpl;
 
             public HeadFoot(string headertext)
             {
@@ -84,6 +86,7 @@ namespace CmsWeb.Areas.Reports.Models
                 dc = writer.DirectContent;
                 tpl = dc.CreateTemplate(50, 50);
             }
+
             public override void OnEndPage(PdfWriter writer, Document document)
             {
                 base.OnEndPage(writer, document);
@@ -103,7 +106,7 @@ namespace CmsWeb.Areas.Reports.Models
                 fLen = font.GetWidthPoint(sText, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width / 2 - fLen / 2, 30);
+                dc.SetTextMatrix(document.PageSize.Width/2 - fLen/2, 30);
                 dc.ShowText(sText);
                 dc.EndText();
 
@@ -117,6 +120,7 @@ namespace CmsWeb.Areas.Reports.Models
                 dc.EndText();
                 dc.AddTemplate(tpl, document.PageSize.Width - 90 + fLen, 30);
             }
+
             public override void OnCloseDocument(PdfWriter writer, Document document)
             {
                 tpl.BeginText();
@@ -128,4 +132,3 @@ namespace CmsWeb.Areas.Reports.Models
         }
     }
 }
-

@@ -3,15 +3,15 @@
     var help = ViewData["help"] as string;
     if (help.HasValue())
     {
-        help = "<span class='help-inline'>{0}</span>".Fmt(help);
+        help = $"<span class='help-inline'>{help}</span>";
     }
 }
 <div class="form-group">
     @Html.LabelFor(m => m, new { @class = "control-label"})
     <div class="controls">
-        @Html.TextBoxFor2(m => m, 
-            useNativeUnobtrusiveAttributes:true, 
-            format: null, 
+        @Html.TextBoxFor2(m => m,
+            useNativeUnobtrusiveAttributes:true,
+            format: null,
             htmlAttributes:new { @class = "ajax-typeahead form-control", data_link = ViewBag.link })@Html.Raw(help)
         @Html.ValidationMessageLabelFor(m => m)
     </div>

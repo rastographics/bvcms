@@ -1,16 +1,17 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
-using System.Linq;
-using UtilityExtensions;
-using CmsData;
 using System.IO;
+using System.Linq;
+using CmsData;
 using CmsData.Codes;
 using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Finance.Models.BatchImport
 {
@@ -78,12 +79,12 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     bankac = eac;
                     string person;
                     if (last.HasValue())
-                        person = "{1}, {0}; {2}".Fmt(first, last, addr);
+                        person = $"{last}, {first}; {addr}";
                     else
-                        person = "{0}; {1}".Fmt(name, addr);
-                    ed = new ExtraDatum { Data = person, Stamp = Util.Now };
+                        person = $"{name}; {addr}";
+                    ed = new ExtraDatum {Data = person, Stamp = Util.Now};
                 }
-                CmsData.BundleDetail bd = null;
+                BundleDetail bd = null;
                 var defaultfundid = DbUtil.Db.Setting("DefaultFundId", "1").ToInt();
                 for (var c = 0; c < csv.FieldCount; c++)
                 {
@@ -109,6 +110,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             FinishBundle(bh);
             return bh.BundleHeaderId;
         }
+
         private static void FinishBundle(BundleHeader bh)
         {
             bh.TotalChecks = bh.BundleDetails.Sum(d => d.Contribution.ContributionAmount);
@@ -116,22 +118,22 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
             bh.TotalEnvelopes = 0;
             DbUtil.Db.SubmitChanges();
         }
+
         private static int? FindFund(string s)
         {
             var qf = from f in DbUtil.Db.ContributionFunds
                      where f.FundName == s
                      select f;
             var fund = qf.FirstOrDefault();
-            if (fund == null)
-                return null;
-            return fund.FundId;
+            return fund?.FundId;
         }
+
         private static BundleDetail CreateContribution(DateTime date, int fundid)
         {
-            var bd = new CmsData.BundleDetail
+            var bd = new BundleDetail
             {
                 CreatedBy = Util.UserId,
-                CreatedDate = Util.Now,
+                CreatedDate = Util.Now
             };
             bd.Contribution = new Contribution
             {
@@ -140,7 +142,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                 ContributionDate = date,
                 FundId = fundid,
                 ContributionStatusId = 0,
-                ContributionTypeId = ContributionTypeCode.CheckCash,
+                ContributionTypeId = ContributionTypeCode.CheckCash
             };
             return bd;
         }

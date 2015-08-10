@@ -1,9 +1,7 @@
-﻿@using UtilityExtensions
-@using CmsWeb
-@{
+﻿@{
     ViewBag.Title = "Registration Settings";
     ViewBag.PageHeader = "Registration Settings";
-    ViewBag.PageSubHeader = "<a href=\"/Org/{0}\">{1}</a>".Fmt(ViewData["OrganizationId"], ViewData["orgname"]);
+    ViewBag.PageSubHeader = $"<a href=\"/Org/{ViewData["OrganizationId"]}\">{ViewData["orgname"]}</a>";
     Layout = ViewExtensions2.TouchPointLayout();
 }
 <div class="row">
@@ -21,7 +19,7 @@
                     <textarea id="mobile-text" name="mobile-text" class="form-control" rows="15" style="display:none; font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;">@ViewData["Text"]</textarea>
                     <input type="hidden" id="text" name="text"/>
                     <br/>
-                    <a href="/RegSettings/@ViewData["OrganizationId"]" class="btn btn-default">Cancel</a> 
+                    <a href="/RegSettings/@ViewData["OrganizationId"]" class="btn btn-default">Cancel</a>
                     <a href="#" id="save" class="btn btn-primary">Save Changes</a>
                 </form>
             </div>
@@ -43,7 +41,7 @@
                 editor.getSession().setMode("ace/mode/text");
                 editor.setShowPrintMargin(false);
             }
-            
+
             $("#save").click(function (ev) {
                 ev.preventDefault();
                 if (extraSmallDevice || smallDevice) {

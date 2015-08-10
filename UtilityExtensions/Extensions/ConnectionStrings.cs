@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System.Web;
 using System.Linq;
@@ -64,7 +64,7 @@ namespace UtilityExtensions
             if (string.IsNullOrEmpty(cb.DataSource))
                 cb.DataSource = DbServer;
             var a = host.SplitStr(".:");
-            cb.InitialCatalog = "CMS_{0}".Fmt(a[0]);
+            cb.InitialCatalog = $"CMS_{a[0]}";
             return cb.ConnectionString;
         }
         public static string GetConnectionString2(string db, int? timeout = null)
@@ -105,7 +105,7 @@ namespace UtilityExtensions
                 var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
                 if (string.IsNullOrEmpty(cb.DataSource))
                     cb.DataSource = DbServer;
-                cb.InitialCatalog = "CMS_{0}".Fmt(Host);
+                cb.InitialCatalog = $"CMS_{Host}";
                 return cb.ConnectionString;
             }
             set
@@ -120,9 +120,9 @@ namespace UtilityExtensions
             var cb = new SqlConnectionStringBuilder(cs.ConnectionString);
             if (string.IsNullOrEmpty(cb.DataSource))
                 cb.DataSource = DbServer;
-            cb.InitialCatalog = "CMS_{0}".Fmt(Host);
+            cb.InitialCatalog = $"CMS_{Host}";
             cb.IntegratedSecurity = false;
-            cb.UserID = (finance ? "ro-{0}-finance" : "ro-{0}").Fmt(cb.InitialCatalog);
+            cb.UserID = (finance ? $"ro-{cb.InitialCatalog}-finance" : $"ro-{cb.InitialCatalog}");
             cb.Password = ConfigurationManager.AppSettings["readonlypassword"];
             return cb.ConnectionString;
         }
@@ -145,7 +145,7 @@ namespace UtilityExtensions
                 var a = Host.SplitStr(".:");
                 if (string.IsNullOrEmpty(cb.DataSource))
                     cb.DataSource = DbServer;
-                cb.InitialCatalog = "CMSi_{0}".Fmt(a[0]);
+                cb.InitialCatalog = $"CMSi_{a[0]}";
                 return cb.ConnectionString;
             }
         }

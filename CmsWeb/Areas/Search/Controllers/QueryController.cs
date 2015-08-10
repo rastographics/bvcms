@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -238,7 +238,7 @@ namespace CmsWeb.Areas.Search.Controllers
         public ActionResult Results(QueryModel m)
         {
             var starttime = DateTime.Now;
-            DbUtil.LogActivity("QB Results ({0:N1}, {1})".Fmt(DateTime.Now.Subtract(starttime).TotalSeconds, m.TopClause.Id));
+            DbUtil.LogActivity($"QB Results ({DateTime.Now.Subtract(starttime).TotalSeconds:N1}, {m.TopClause.Id})");
             InitToolbar(m);
             ViewBag.xml = m.TopClause.ToXml();
             return View(m);

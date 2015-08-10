@@ -3,7 +3,6 @@ using System.Text;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Hosting;
-using UtilityExtensions;
 
 public class Fingerprint
 {
@@ -14,8 +13,8 @@ public class Fingerprint
             var absolute = HostingEnvironment.MapPath(path) ?? "";
             var ext = Path.GetExtension(absolute);
             var fmt = ext == ".js"
-                    ? "<script type=\"text/javascript\" src=\"{0}\"></script>\n"
-                    : "<link href=\"{0}\" rel=\"stylesheet\" />\n";
+                ? "<script type=\"text/javascript\" src=\"{0}\"></script>\n"
+                : "<link href=\"{0}\" rel=\"stylesheet\" />\n";
             var result = new StringBuilder();
 #if DEBUG
             result.AppendFormat(fmt, path);
@@ -24,11 +23,11 @@ public class Fingerprint
             var dt = File.GetLastWriteTime(absolute);
             var f = Path.GetFileNameWithoutExtension(absolute);
             var d = path.Remove(path.LastIndexOf('/'));
-            var t = "v-{0:yyMMddhhmmss}-".Fmt(dt);
-            var minfile = "{0}/{1}{2}{3}".Fmt(d, f, min, ext);
-            string p = File.Exists(HostingEnvironment.MapPath(minfile))
-                ? "{0}/{1}{2}{3}{4}".Fmt(d, t, f, min, ext)
-                : "{0}/{1}{2}{3}".Fmt(d, t, f, ext);
+            var t = $"v-{dt:yyMMddhhmmss}-";
+            var minfile = $"{d}/{f}{min}{ext}";
+            var p = File.Exists(HostingEnvironment.MapPath(minfile))
+                ? $"{d}/{t}{f}{min}{ext}"
+                : $"{d}/{t}{f}{ext}";
             result.AppendFormat(fmt, p);
 #endif
             HttpRuntime.Cache.Insert(path, result.ToString(), new CacheDependency(absolute));
@@ -45,6 +44,7 @@ public class Fingerprint
     {
         return Include(path);
     }
+
     public static string ScriptStr(string path)
     {
         return Include(path).ToString();

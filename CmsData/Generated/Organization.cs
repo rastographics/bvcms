@@ -174,6 +174,8 @@ namespace CmsData
 		
 		private int? _ProspectCount;
 		
+		private string _RegSettingXml;
+		
    		
    		private EntitySet< Person> _BFMembers;
 		
@@ -454,6 +456,9 @@ namespace CmsData
 		
 		partial void OnProspectCountChanging(int? value);
 		partial void OnProspectCountChanged();
+		
+		partial void OnRegSettingXmlChanging(string value);
+		partial void OnRegSettingXmlChanged();
 		
     #endregion
 		public Organization()
@@ -2241,6 +2246,28 @@ namespace CmsData
 					this._ProspectCount = value;
 					this.SendPropertyChanged("ProspectCount");
 					this.OnProspectCountChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="RegSettingXml", UpdateCheck=UpdateCheck.Never, Storage="_RegSettingXml", DbType="xml")]
+		public string RegSettingXml
+		{
+			get { return this._RegSettingXml; }
+
+			set
+			{
+				if (this._RegSettingXml != value)
+				{
+				
+                    this.OnRegSettingXmlChanging(value);
+					this.SendPropertyChanging();
+					this._RegSettingXml = value;
+					this.SendPropertyChanged("RegSettingXml");
+					this.OnRegSettingXmlChanged();
 				}
 
 			}

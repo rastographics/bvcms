@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Web.Mvc;
-using System.Threading;
-using CmsWeb.Code;
-using UtilityExtensions;
-using System.Text;
-using CmsData;
-using LumenWorks.Framework.IO.Csv;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Web.Mvc;
+using CmsData;
+using CmsWeb.Code;
 using CmsWeb.Models;
+using LumenWorks.Framework.IO.Csv;
+using UtilityExtensions;
 using Alias = System.Threading.Tasks;
 
 namespace CmsWeb.Areas.Manage.Controllers
@@ -24,13 +24,14 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             return View();
         }
+
         [HttpPost]
         [AsyncTimeout(600000)]
         public void MoveAndDeleteAsync(string text)
         {
             AsyncManager.OutstandingOperations.Increment();
-            string host = Util.Host;
-            ThreadPool.QueueUserWorkItem((e) =>
+            var host = Util.Host;
+            ThreadPool.QueueUserWorkItem(e =>
             {
                 var sb = new StringBuilder();
                 sb.Append("<h2>done</h2>\n<p><a href='/'>home</a></p>\n");
@@ -92,10 +93,12 @@ namespace CmsWeb.Areas.Manage.Controllers
                 AsyncManager.OutstandingOperations.Decrement();
             });
         }
+
         public ActionResult MoveAndDeleteCompleted(string results)
         {
             return Content(results);
         }
+
         public ActionResult Grade(string text)
         {
             if (Request.HttpMethod.ToUpper() == "GET")
@@ -106,7 +109,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var batch = from s in text.Split('\n')
                         where s.HasValue()
                         let a = s.SplitStr("\t", 3)
-                        select new { pid = a[0].ToInt(), oid = a[1].ToInt(), grade = a[2].ToInt() };
+                        select new {pid = a[0].ToInt(), oid = a[1].ToInt(), grade = a[2].ToInt()};
             foreach (var i in batch)
             {
                 var m = DbUtil.Db.OrganizationMembers.Single(om => om.OrganizationId == i.oid && om.PeopleId == i.pid);
@@ -116,6 +119,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             return Content("done");
         }
+
         [Authorize(Roles = "Admin")]
         public ActionResult RegistrationMail(string text)
         {
@@ -127,7 +131,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var batch = from s in text.Split('\n')
                         where s.HasValue()
                         let a = s.SplitStr("\t", 2)
-                        select new { pid = a[0].ToInt(), em = a[1] };
+                        select new {pid = a[0].ToInt(), em = a[1]};
             foreach (var i in batch)
             {
                 var m = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == 88485 && om.PeopleId == i.pid);
@@ -151,7 +155,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult UpdateOrg(string text)
         {
-            var csv = new CsvReader(new StringReader(text), hasHeaders: true, delimiter: '\t');
+            var csv = new CsvReader(new StringReader(text), true, '\t');
             var cols = csv.GetFieldHeaders();
 
             while (csv.ReadNextRecord())
@@ -226,7 +230,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.FirstMeetingDate = val.ToDate();
                             break;
                         case "Gender":
-                            o.GenderId = val.Equal("Male") ? (int?)1 : val.Equal("Female") ? (int?)2 : null;
+                            o.GenderId = val.Equal("Male") ? 1 : val.Equal("Female") ? (int?) 2 : null;
                             break;
                         case "GradeAgeStart":
                             o.GradeAgeStart = val.ToInt2();
@@ -268,7 +272,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.NumWorkerCheckInLabels = val.ToInt2();
                             break;
                         case "OnLineCatalogSort":
-                            o.OnLineCatalogSort = val == "0" ? (int?)null : val.ToInt2();
+                            o.OnLineCatalogSort = val == "0" ? null : val.ToInt2();
                             break;
                         case "OrganizationStatusId":
                             o.OrganizationStatusId = val.ToInt();
@@ -280,7 +284,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                             o.Description = val;
                             break;
                         case "RollSheetVisitorWks":
-                            o.RollSheetVisitorWks = val == "0" ? (int?)null : val.ToInt2();
+                            o.RollSheetVisitorWks = val == "0" ? null : val.ToInt2();
                             break;
 
                         default:
@@ -303,7 +307,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult UpdateFields() // UpdateForATag
         {
             var m = new UpdateFieldsModel();
-            var success = (string)TempData["success"];
+            var success = (string) TempData["success"];
             if (success.HasValue())
                 ViewData["success"] = success;
             ViewData["text"] = "";
@@ -410,16 +414,17 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (!ModelState.IsValid)
                 return View("UpdateFields", m);
 
-            TempData["success"] = "{0} updated with the value '{1}' for {2} records ".Fmt(m.Field, m.NewValue, m.Count);
+            TempData["success"] = $"{m.Field} updated with the value '{m.NewValue}' for {m.Count} records ";
             return RedirectToAction("UpdateFields");
         }
+
         [HttpPost]
         public ActionResult UpdateFieldsCount(UpdateFieldsModel m)
         {
             var q = m.People();
             return Content(q.Count().ToString());
         }
-        
+
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateStatusFlags()
         {
@@ -434,7 +439,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var qbits = DbUtil.Db.StatusFlags().ToList();
             foreach (var a in qbits)
             {
-                var t = DbUtil.Db.FetchOrCreateSystemTag(a[0]);
+                var t = DbUtil.Db.FetchOrCreateTag(a[0], null, DbUtil.TagTypeId_StatusFlags);
                 var qq = DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]);
                 if (qq == null)
                     continue;
@@ -443,38 +448,30 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Content("Status flags were successfully updated.");
         }
 
-        public class FindInfo
-        {
-            public int? PeopleId { get; set; }
-            public int Found { get; set; }
-            public string First { get; set; }
-            public string Last { get; set; }
-            public string Email { get; set; }
-            public string CellPhone { get; set; }
-            public string HomePhone { get; set; }
-            public DateTime? Birthday { get; set; }
-        }
         [HttpGet]
         [Authorize(Roles = "Edit")]
         public ActionResult FindTagPeople()
         {
             return View("FindTagPeople0");
         }
+
         [HttpPost]
-        string FindColumn(Dictionary<string, int> names, string[] a, string col)
+        private string FindColumn(Dictionary<string, int> names, string[] a, string col)
         {
             if (names.ContainsKey(col))
                 return a[names[col]];
             return null;
         }
-        string FindColumnDigits(Dictionary<string, int> names, string[] a, string col)
+
+        private string FindColumnDigits(Dictionary<string, int> names, string[] a, string col)
         {
             var s = FindColumn(names, a, col);
             if (s.HasValue())
                 return s.GetDigits();
             return s;
         }
-        DateTime? FindColumnDate(Dictionary<string, int> names, string[] a, string col)
+
+        private DateTime? FindColumnDate(Dictionary<string, int> names, string[] a, string col)
         {
             var s = FindColumn(names, a, col);
             DateTime dt;
@@ -483,6 +480,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                     return dt;
             return null;
         }
+
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult FindTagPeople(string text, string tagname)
@@ -503,7 +501,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                 "Birthday",
                 "Email",
                 "CellPhone",
-                "HomePhone",
+                "HomePhone"
             };
             var hasvalidcolumn = false;
             foreach (var name in names.Keys)
@@ -542,6 +540,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
             return View(list);
         }
+
         [Authorize(Roles = "Edit")]
         public ActionResult FindTagEmail(string emails, string tagname)
         {
@@ -559,35 +558,39 @@ namespace CmsWeb.Areas.Manage.Controllers
             DbUtil.Db.SubmitChanges();
             return Redirect("/Tags?tag=" + tagname);
         }
+
         [AcceptVerbs(HttpVerbs.Get)]
         [Authorize(Roles = "Edit")]
         public ActionResult TagPeopleIds()
         {
             return View();
         }
+
         public ActionResult TagUploadPeopleIds(string name, string text, bool newtag)
         {
             var q = from line in text.Split('\n')
                     select line.ToInt();
             if (newtag)
             {
-                var tag = DbUtil.Db.FetchTag(name, Util.UserPeopleId, (int)DbUtil.TagTypeId_Personal);
+                var tag = DbUtil.Db.FetchTag(name, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
                 if (tag != null)
                     DbUtil.Db.ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             }
             foreach (var pid in q)
             {
-                Person.Tag(DbUtil.Db, pid, name, DbUtil.Db.CurrentUser.PeopleId, (int)DbUtil.TagTypeId_Personal);
+                Person.Tag(DbUtil.Db, pid, name, DbUtil.Db.CurrentUser.PeopleId, DbUtil.TagTypeId_Personal);
                 DbUtil.Db.SubmitChanges();
             }
             return Redirect("/Tags?tag=" + name);
         }
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public ActionResult ExtraValuesFromPeopleIds()
         {
             return View();
         }
+
         [HttpPost]
         public ActionResult ExtraValuesFromPeopleIds(string text, string field)
         {
@@ -600,22 +603,24 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             return Redirect("/ExtraValue/Summary/People");
         }
+
         [HttpGet]
         public ActionResult TestScript()
         {
 #if DEBUG
             ViewBag.Script =
-            @"
+                @"
 model.TestEmail = True
-model.EmailContent( 
-	'RecentMovedOutOfTown',
-	819918, 'karen@touchpointsoftware.com', 'Karen Worrell',
-	'RecentMovedOutOfTownMessage')
+model.EmailContent(
+    'RecentMovedOutOfTown',
+    819918, 'karen@touchpointsoftware.com', 'Karen Worrell',
+    'RecentMovedOutOfTownMessage')
 model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.DateTime )
 ";
 #endif
             return View();
         }
+
         [HttpPost]
         public ActionResult RunTestScript(string script)
         {
@@ -623,6 +628,7 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
             var ret = PythonEvents.RunScript(Util.Host, script);
             return Content(ret);
         }
+
         [HttpGet]
         [Authorize(Roles = "Finance")]
         public ActionResult DoGiving()
@@ -630,6 +636,7 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
             ManagedGiving.DoAllGiving(DbUtil.Db);
             return Content("done");
         }
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public ActionResult SQLView(string id)
@@ -647,12 +654,14 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
                 return Content("cannot find view guest." + id);
             }
         }
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public ActionResult RunScript(string id)
         {
             return Redirect("/PyScript/" + id);
         }
+
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public ActionResult Script(string id)
@@ -674,6 +683,18 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
         public ActionResult OtherDeveloperActions()
         {
             return View();
+        }
+
+        public class FindInfo
+        {
+            public int? PeopleId { get; set; }
+            public int Found { get; set; }
+            public string First { get; set; }
+            public string Last { get; set; }
+            public string Email { get; set; }
+            public string CellPhone { get; set; }
+            public string HomePhone { get; set; }
+            public DateTime? Birthday { get; set; }
         }
     }
 }

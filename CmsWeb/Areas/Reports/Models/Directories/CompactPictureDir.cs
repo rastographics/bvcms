@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
 using System.IO;
@@ -40,28 +40,9 @@ namespace CmsWeb.Areas.Reports.Models
             public double MarginBottom { get; set; }
             public int PicWidthPixels { get; set; }
 
-            public Formatting namebold
-            {
-                get
-                {
-                    return new Formatting {Size = FontSizeName, Bold = true};
-                }
-            }
-            public Formatting emailsmall
-            {
-                get
-                {
-                    return new Formatting {Size = FontSizeEmail};
-                }
-            }
-            public Formatting font
-            {
-                get
-                {
-                    return new Formatting {Size = FontSize};
-                }
-            }
-
+            public Formatting namebold => new Formatting {Size = FontSizeName, Bold = true};
+            public Formatting emailsmall => new Formatting {Size = FontSizeEmail};
+            public Formatting font => new Formatting {Size = FontSize};
         }
         public CompactPictureDir(Guid id, string parameters)
         {
@@ -140,7 +121,7 @@ namespace CmsWeb.Areas.Reports.Models
             var img = ImageData.Image.ImageFromId(p.ImageId);
             if (img != null)
                 using (var os = img.ResizeToStream(200, 300, "max"))
-                {                   
+                {
                     var pic = dd.AddImage(os).CreatePicture((pa.PicWidthPixels * 1.5).ToInt(), pa.PicWidthPixels);
                     c.Paragraphs[0].InsertPicture(pic);
                 }
@@ -148,16 +129,16 @@ namespace CmsWeb.Areas.Reports.Models
             c = rr.Cells[col];
             //c.RemoveParagraphAt(0);
 
-            c.Paragraphs[0].InsertText("{0}, {1}".Fmt(p.LastName, p.FirstName), false, pa.namebold);
+            c.Paragraphs[0].InsertText($"{p.LastName}, {p.FirstName}", false, pa.namebold);
 
             c.InsertParagraph(p.Email, false, pa.emailsmall);
 
             if (p.BirthDate.HasValue())
-                c.InsertParagraph("BD {0}".Fmt(p.BirthDay), false, pa.font);
+                c.InsertParagraph($"BD {p.BirthDay}", false, pa.font);
             if (p.Spouse.HasValue())
-                c.InsertParagraph("Spouse: {0}".Fmt(p.Spouse), false, pa.font);
+                c.InsertParagraph($"Spouse: {p.Spouse}", false, pa.font);
             if (p.Children.HasValue())
-                c.InsertParagraph("Kids: {0}".Fmt(p.Children), false, pa.font);
+                c.InsertParagraph($"Kids: {p.Children}", false, pa.font);
             col++;
             return col;
         }

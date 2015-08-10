@@ -11,7 +11,7 @@ using UtilityExtensions;
 
 namespace CmsData.Registration
 {
-	public class TimeSlots : IXmlSerializable
+	public class TimeSlots
 	{
         public string Help { get { return @"
 This is help for TimeSlots
@@ -113,21 +113,10 @@ This is help for TimeSlots
 			}
 		}
 
-        public XmlSchema GetSchema()
+        public void WriteXml(APIWriter w)
         {
-            throw new NotImplementedException();
-        }
-
-        public void ReadXml(XmlReader reader)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void WriteXml(XmlWriter writer)
-        {
-            var w = new APIWriter(writer);
 			w.StartPending("TimeSlots");
-			w.Add("LockDays", TimeSlotLockDays);
+			w.Attr("LockDays", TimeSlotLockDays);
 			foreach (var c in list)
 			{
 			    w.Start("Slot");

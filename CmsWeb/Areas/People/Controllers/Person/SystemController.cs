@@ -19,6 +19,7 @@ namespace CmsWeb.Areas.People.Controllers
                     select u;
             return View("System/Users", q);
         }
+
         [HttpPost, Authorize(Roles = "Admin")]
         public ActionResult UserEdit(int? id)
         {
@@ -27,9 +28,9 @@ namespace CmsWeb.Areas.People.Controllers
                 u = DbUtil.Db.Users.Single(us => us.UserId == id);
             else
             {
-                u = CmsWeb.Models.AccountModel.AddUser(Util2.CurrentPeopleId);
+                u = AccountModel.AddUser(Util2.CurrentPeopleId);
                 var name = Session["ActivePerson"] as string;
-                DbUtil.LogPersonActivity("New User for: {0}".Fmt(name), Util2.CurrentPeopleId, name);
+                DbUtil.LogPersonActivity($"New User for: {name}", Util2.CurrentPeopleId, name);
                 ViewBag.username = u.Username;
             }
             ViewBag.sendwelcome = false;
@@ -45,7 +46,7 @@ namespace CmsWeb.Areas.People.Controllers
                 var uu = DbUtil.Db.Users.SingleOrDefault(us => us.Username == u);
                 if (uu != null)
                 {
-                    ViewBag.ErrorMsg = "username '{0}' already exists".Fmt(u);
+                    ViewBag.ErrorMsg = $"username '{u}' already exists";
                     return View("System/UserEdit", user);
                 }
                 user.Username = u;
@@ -58,9 +59,9 @@ namespace CmsWeb.Areas.People.Controllers
                 throw new Exception("missing peopleid in UserUpdate");
             var pp = DbUtil.Db.LoadPersonById(user.PeopleId.Value);
             if (sendwelcome)
-                CmsWeb.Models.AccountModel.SendNewUserEmail(u);
+                AccountModel.SendNewUserEmail(u);
             var name = Session["ActivePerson"] as string;
-            DbUtil.LogPersonActivity("Update User for: {0}".Fmt(name), pp.PeopleId, name);
+            DbUtil.LogPersonActivity($"Update User for: {name}", pp.PeopleId, name);
             InitExportToolbar(user.PeopleId);
             return View("System/Users", pp.Users.AsEnumerable());
         }
@@ -86,7 +87,7 @@ namespace CmsWeb.Areas.People.Controllers
             Session.Remove("CurrentTag");
             Session.Remove("preferences");
             FormsAuthentication.SetAuthCookie(user.Username, false);
-            CmsWeb.Models.AccountModel.SetUserInfo(user.Username, Session);
+            AccountModel.SetUserInfo(user.Username, Session);
             Util.UserPeopleId = user.PeopleId;
             Util.UserPreferredName = user.Username;
             return Redirect("/");
@@ -97,18 +98,21 @@ namespace CmsWeb.Areas.People.Controllers
         {
             return View("System/Changes", m);
         }
+
         [HttpPost, Route("Reverse/{id:int}/{pf}/{field}")]
         public ActionResult Reverse(string field, string pf, string value, ChangesModel m)
         {
             m.Reverse(field, value, pf);
             return View("System/Changes", m);
         }
+
         [HttpPost]
         public ActionResult Duplicates(int id)
         {
             var m = new DuplicatesModel(id);
             return View("System/Duplicates", m);
         }
+
         [HttpPost]
         public ActionResult MergeHistory(int id)
         {

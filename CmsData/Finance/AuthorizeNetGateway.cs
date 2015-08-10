@@ -17,9 +17,9 @@ namespace CmsData.Finance
         private readonly CMSDataContext db;
 
         private bool IsLive { get; set; }
-        private ServiceMode ServiceMode { get { return IsLive ? ServiceMode.Live : ServiceMode.Test; } }
+        private ServiceMode ServiceMode => IsLive ? ServiceMode.Live : ServiceMode.Test;
 
-        public string GatewayType { get { return "AuthorizeNet"; } }
+        public string GatewayType => "AuthorizeNet";
 
         public AuthorizeNetGateway(CMSDataContext db, bool testing)
         {
@@ -37,7 +37,7 @@ namespace CmsData.Finance
 
                 if (string.IsNullOrWhiteSpace(_login))
                     throw new Exception("x_login setting not found, which is required for Authorize.net.");
-                        
+
                 if (string.IsNullOrWhiteSpace(_key))
                     throw new Exception("x_tran_key setting not found, which is required for Authorize.net.");
             }
@@ -61,7 +61,7 @@ namespace CmsData.Finance
                 Street = paymentInfo.Address ?? person.PrimaryAddress,
                 City = paymentInfo.City ?? person.PrimaryCity,
                 State = paymentInfo.State ?? person.PrimaryState,
-                Country = paymentInfo.Country ?? person.PrimaryCountry,  
+                Country = paymentInfo.Country ?? person.PrimaryCountry,
                 Zip = paymentInfo.Zip ?? person.PrimaryZip,
                 Phone = paymentInfo.Phone ?? person.HomePhone ?? person.CellPhone
             };
@@ -86,7 +86,7 @@ namespace CmsData.Finance
             customer.BillingAddress = billToAddress;
             var isSaved = CustomerGateway.UpdateCustomer(customer);
             if (!isSaved)
-                throw new Exception("UpdateCustomer failed to save for {0}".Fmt(peopleId));
+                throw new Exception($"UpdateCustomer failed to save for {peopleId}");
 
             if (type == PaymentType.Ach)
             {
@@ -99,7 +99,7 @@ namespace CmsData.Finance
             {
                 var normalizeExpires = DbUtil.NormalizeExpires(expires);
                 if (normalizeExpires == null)
-                    throw new ArgumentException("Can't normalize date {0}".Fmt(expires), "expires");
+                    throw new ArgumentException($"Can't normalize date {expires}", nameof(expires));
 
                 var expiredDate = normalizeExpires.Value;
 
@@ -109,12 +109,12 @@ namespace CmsData.Finance
                 paymentInfo.Expires = expires;
             }
             else
-                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
 
-			if (giving)
-				paymentInfo.PreferredGivingType = type;
-			else
-				paymentInfo.PreferredPaymentType = type;
+            if (giving)
+                paymentInfo.PreferredGivingType = type;
+            else
+                paymentInfo.PreferredPaymentType = type;
 
             db.SubmitChanges();
         }
@@ -145,7 +145,7 @@ namespace CmsData.Finance
 
                 var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
                 if (!isSaved)
-                    throw new Exception("UpdatePaymentProfile failed to save credit card for {0}".Fmt(paymentInfo.PeopleId));
+                    throw new Exception($"UpdatePaymentProfile failed to save credit card for {paymentInfo.PeopleId}");
             }
         }
 
@@ -172,7 +172,7 @@ namespace CmsData.Finance
 
                 var isSaved = CustomerGateway.UpdatePaymentProfile(customer.ProfileID, foundPaymentProfile);
                 if (!isSaved)
-                    throw new Exception("UpdatePaymentProfile failed to save echeck for {0}".Fmt(paymentInfo.PeopleId));
+                    throw new Exception($"UpdatePaymentProfile failed to save echeck for {paymentInfo.PeopleId}");
             }
         }
 
@@ -195,7 +195,7 @@ namespace CmsData.Finance
             }
             else
             {
-                throw new Exception("Failed to delete customer {0}".Fmt(peopleId));
+                throw new Exception($"Failed to delete customer {peopleId}");
             }
         }
 
@@ -330,13 +330,13 @@ namespace CmsData.Finance
         public TransactionResponse AuthCreditCardVault(int peopleId, decimal amt, string description, int tranid)
         {
             var paymentInfo = db.PaymentInfos.Single(pp => pp.PeopleId == peopleId);
-            if (paymentInfo == null || !paymentInfo.AuNetCustPayId.HasValue)
+            if (paymentInfo?.AuNetCustPayId == null)
                 return new TransactionResponse
                 {
                     Approved = false,
                     Message = "missing payment info",
                 };
-            
+
             var paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
 
             var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)
@@ -372,7 +372,7 @@ namespace CmsData.Finance
             else if (type == PaymentType.CreditCard)
                 paymentProfileId = paymentInfo.AuNetCustPayId.ToString();
             else
-                throw new ArgumentException("Type {0} not supported".Fmt(type), "type");
+                throw new ArgumentException($"Type {type} not supported", nameof(type));
 
             var order = new Order(paymentInfo.AuNetCustId.ToString(), paymentProfileId, null)
             {
@@ -406,7 +406,7 @@ namespace CmsData.Finance
                         BatchReference = batch.ID,
                         TransactionType = GetTransactionType(transaction.Status),
                         BatchType = GetBatchType(batch.PaymentMethod),
-                        Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
+                        Name = $"{transaction.FirstName} {transaction.LastName}",
                         Amount = transaction.SettleAmount,
                         Approved = IsApproved(batch.State),
                         Message = batch.State.ToUpper(),
@@ -415,7 +415,7 @@ namespace CmsData.Finance
                         LastDigits = transaction.CardNumber.Last(4)
                     };
 
-                    if (transaction.eCheckBankAccount != null && !string.IsNullOrWhiteSpace(transaction.eCheckBankAccount.accountNumber))
+                    if (!string.IsNullOrWhiteSpace(transaction.eCheckBankAccount?.accountNumber))
                         batchTransaction.LastDigits = transaction.eCheckBankAccount.accountNumber.Last(4);
 
                     batchTransactions.Add(batchTransaction);
@@ -467,7 +467,7 @@ namespace CmsData.Finance
                     returnedChecks.Add(new ReturnedCheck
                     {
                         TransactionId = transaction.InvoiceNumber.ToInt(),
-                        Name = "{0} {1}".Fmt(transaction.FirstName, transaction.LastName),
+                        Name = $"{transaction.FirstName} {transaction.LastName}",
                         RejectCode = returnedItem.code,
                         RejectAmount = transaction.RequestedAmount, // another guess here on amount, I'm really not sure about this field.
                         RejectDate = returnedItem.dateLocal
@@ -483,20 +483,11 @@ namespace CmsData.Finance
             return batchSettlementState.ParseEnum<settlementStateEnum>() == settlementStateEnum.settledSuccessfully;
         }
 
-        public bool CanVoidRefund
-        {
-            get { return true; }
-        }
+        public bool CanVoidRefund => true;
 
-        public bool CanGetSettlementDates
-        {
-            get { return true; }
-        }
+        public bool CanGetSettlementDates => true;
 
-        public bool CanGetBounces
-        {
-            get { return false; }
-        }
+        public bool CanGetBounces => false;
 
         private AuthorizeNet.IGateway _gateway;
         private AuthorizeNet.IGateway Gateway

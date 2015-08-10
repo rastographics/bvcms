@@ -55,9 +55,8 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test()
         {
-            var o = DbUtil.Db.LoadOrganizationById(90926);
-            var os = new Settings(o.RegSetting, DbUtil.Db, o.OrganizationId);
-            var x = Util.Serialize(os);
+            var f = new CmsData.API.APIFunctions(DbUtil.Db);
+            var x = f.SqlScriptXml("FPUOrgExport");
             return Content(x, "text/xml");
         }
 #endif
@@ -153,7 +152,7 @@ namespace CmsWeb.Controllers
         }
         public ActionResult UseNewEditor(bool id)
         {
-            DbUtil.Db.SetUserPreference("UseNewEditor", id ? "false" : "true");
+            DbUtil.Db.SetUserPreference("UseNewEditor2", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);
@@ -214,9 +213,9 @@ namespace CmsWeb.Controllers
             {
                 var id = Db.FetchLastQuery().Id;
                 var tag = Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                declareqtagid = "DECLARE @qtagid INT = {0}\n".Fmt(tag.Id);
+                declareqtagid = $"DECLARE @qtagid INT = {tag.Id}\n";
             }
-            return "{0}DECLARE @p1 VARCHAR(100) = '{1}' {2}".Fmt(declareqtagid, parameter, body);
+            return $"{declareqtagid}DECLARE @p1 VARCHAR(100) = '{parameter}' {body}";
         }
 
         [HttpGet, Route("~/RunScript/{name}/{parameter?}/{title?}")]
@@ -233,7 +232,7 @@ namespace CmsWeb.Controllers
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
-            ViewBag.name = title ?? "Run Script {0} {1}".Fmt(name, parameter);
+            ViewBag.name = title ?? $"Run Script {name} {parameter}";
             var cmd = new SqlCommand(script, cn);
             var rd = cmd.ExecuteReader();
             return View(rd);

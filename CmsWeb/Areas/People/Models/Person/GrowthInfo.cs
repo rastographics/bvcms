@@ -1,24 +1,27 @@
 using System.Collections.Generic;
 using System.Linq;
-using CmsData;
 using System.Web.Mvc;
+using CmsData;
 using CmsWeb.Code;
-using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
     public class GrowthInfo
     {
-        private static CodeValueModel cv = new CodeValueModel();
-
+        private static readonly CodeValueModel cv = new CodeValueModel();
         public int PeopleId { get; set; }
-
         public int? InterestPointId { get; set; }
-        public string InterestPoint { get { return cv.InterestPoints().ItemValue(InterestPointId ?? 0); } }
+
+        public string InterestPoint => cv.InterestPoints().ItemValue(InterestPointId ?? 0);
+
         public int? OriginId { get; set; }
-        public string Origin { get { return cv.Origins().ItemValue(OriginId ?? 0); } }
+
+        public string Origin => cv.Origins().ItemValue(OriginId ?? 0);
+
         public int? EntryPointId { get; set; }
-        public string EntryPoint { get { return cv.EntryPoints().ItemValue(EntryPointId ?? 0); } }
+
+        public string EntryPoint => cv.EntryPoints().ItemValue(EntryPointId ?? 0);
+
         public bool? MemberAnyChurch { get; set; }
         public bool ChristAsSavior { get; set; }
         public bool PleaseVisit { get; set; }
@@ -33,7 +36,6 @@ namespace CmsWeb.Areas.People.Models
                     select new GrowthInfo
                     {
                         PeopleId = p.PeopleId,
-
                         InterestPointId = p.InterestPointId ?? 0,
                         OriginId = p.OriginId ?? 0,
                         EntryPointId = p.EntryPointId ?? 0,
@@ -42,10 +44,11 @@ namespace CmsWeb.Areas.People.Models
                         InterestedInJoining = p.InterestedInJoining,
                         MemberAnyChurch = p.MemberAnyChurch,
                         PleaseVisit = p.PleaseVisit,
-                        SendInfo = p.InfoBecomeAChristian,
+                        SendInfo = p.InfoBecomeAChristian
                     };
             return q.Single();
         }
+
         public void UpdateGrowth()
         {
             var p = DbUtil.Db.LoadPersonById(PeopleId);
@@ -69,16 +72,19 @@ namespace CmsWeb.Areas.People.Models
             p.InfoBecomeAChristian = SendInfo;
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.LogActivity("Updated Growth: {0}".Fmt(p.Name));
+            DbUtil.LogActivity($"Updated Growth: {p.Name}");
         }
+
         public static IEnumerable<SelectListItem> InterestPoints()
         {
             return CodeValueModel.ConvertToSelect(cv.InterestPoints(), "Id");
         }
+
         public static IEnumerable<SelectListItem> Origins()
         {
             return CodeValueModel.ConvertToSelect(cv.Origins(), "Id");
         }
+
         public static IEnumerable<SelectListItem> EntryPoints()
         {
             return CodeValueModel.ConvertToSelect(cv.EntryPoints(), "Id");

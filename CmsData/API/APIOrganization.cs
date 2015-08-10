@@ -135,9 +135,9 @@ namespace CmsData.API
         //                var w = new APIWriter();
         //                return m.Run(this, w, list);
         //            }
-        //            catch (Exception ex)
+        //            catch (Exception ex,
         //            {
-        //                return "<login error=\"API-OrgMembers script error: {0}\" />".Fmt(ex.Message);
+        //                return $"<login error=\"API-OrgMembers script error: {ex.Message}\" />";
         //            }
         //        }
 
@@ -358,12 +358,11 @@ namespace CmsData.API
                 o.OrganizationTypeId = orgtype;
                 o.SecurityTypeId = securitytype ?? 0;
                 Db.SubmitChanges();
-                return @"<NewOrganization id=""{0}"" status=""ok""></NewOrganization>".Fmt(o.OrganizationId);
+                return $@"<NewOrganization id=""{o.OrganizationId}"" status=""ok""></NewOrganization>";
             }
             catch (Exception ex)
             {
-                return @"<NewOrganization status=""error"">{0}</NewOrganization>"
-                    .Fmt(HttpUtility.HtmlEncode(ex.Message));
+                return $@"<NewOrganization status=""error"">{HttpUtility.HtmlEncode(ex.Message)}</NewOrganization>";
             }
         }
 
@@ -436,8 +435,7 @@ namespace CmsData.API
             }
             catch (Exception ex)
             {
-                return @"<AddOrgMember status=""error"">{0}</AddOrgMember>"
-                    .Fmt(HttpUtility.HtmlEncode(ex.Message));
+                return $@"<AddOrgMember status=""error"">{HttpUtility.HtmlEncode(ex.Message)}</AddOrgMember>";
             }
         }
         public string DropOrgMember(int OrgId, int PeopleId)
@@ -453,8 +451,7 @@ namespace CmsData.API
             }
             catch (Exception ex)
             {
-                return @"<DropOrgMember status=""error"">{0}</DropOrgMember>"
-                    .Fmt(HttpUtility.HtmlEncode(ex.Message));
+                return $@"<DropOrgMember status=""error"">{HttpUtility.HtmlEncode(ex.Message)}</DropOrgMember>";
             }
         }
         public string CreateProgramDivision(string program, string division)
@@ -463,12 +460,12 @@ namespace CmsData.API
             {
                 var p = CmsData.Organization.FetchOrCreateProgram(Db, program);
                 var d = CmsData.Organization.FetchOrCreateDivision(Db, p, division);
-                return @"<CreateProgramDivsion status=""ok"" progid=""{0}"" divid=""{1}"" />".Fmt(p.Id, d.Id);
+                return $@"<CreateProgramDivsion status=""ok"" progid=""{p.Id}"" divid=""{d.Id}"" />";
             }
             catch (Exception ex)
             {
-                return @"<CreateProgramDivision status=""error"">{0}</CreateProgramDivision>"
-                    .Fmt(HttpUtility.HtmlEncode(ex.Message));
+                return
+                    $@"<CreateProgramDivision status=""error"">{HttpUtility.HtmlEncode(ex.Message)}</CreateProgramDivision>";
             }
         }
 
@@ -549,8 +546,7 @@ namespace CmsData.API
             }
             catch (Exception ex)
             {
-                return @"<ParentOrgs status=""error"">{0}</ParentOrgs>"
-                    .Fmt(HttpUtility.HtmlEncode(ex.Message));
+                return $@"<ParentOrgs status=""error"">{HttpUtility.HtmlEncode(ex.Message)}</ParentOrgs>";
             }
 
         }
@@ -587,8 +583,7 @@ namespace CmsData.API
             }
             catch (Exception ex)
             {
-                return @"<ChildOrgs status=""error"">{0}</ChildOrgs>"
-                    .Fmt(HttpUtility.HtmlEncode(ex.Message));
+                return $@"<ChildOrgs status=""error"">{HttpUtility.HtmlEncode(ex.Message)}</ChildOrgs>";
             }
 
         }
@@ -619,8 +614,7 @@ namespace CmsData.API
             }
             catch (Exception ex)
             {
-                return @"<ChildOrgs status=""error"">{0}</ChildOrgs>"
-                    .Fmt(HttpUtility.HtmlEncode(ex.Message));
+                return $@"<ChildOrgs status=""error"">{HttpUtility.HtmlEncode(ex.Message)}</ChildOrgs>";
             }
 
         }
@@ -656,7 +650,7 @@ namespace CmsData.API
             message = message.Replace("{org}", organizationName, ignoreCase: true);
             message = message.Replace("{location}", location, ignoreCase: true);
             message = message.Replace("{cmshost}", db.CmsHost, ignoreCase: true);
-            message = message.Replace("{orgbarcode}", "{{orgbarcode:{0}}}".Fmt(orgId.ToString()));
+            message = message.Replace("{orgbarcode}", $"{{orgbarcode:{orgId}}}");
             return message;
         }
         public void SendVolunteerReminders(int id, bool sendall)
@@ -699,7 +693,7 @@ namespace CmsData.API
             <tr>
                 <td>@dt.ToLongDateString()</td>
                 <td>@dt.ToLongTimeString()</td>
-            </tr>	
+            </tr>
         }
     </table>
 </blockquote>", q);

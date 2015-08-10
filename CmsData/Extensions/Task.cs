@@ -1,15 +1,14 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using UtilityExtensions;
 using CmsData.Codes;
+using UtilityExtensions;
 
 namespace CmsData
 {
     public partial class Task
     {
-        public string AboutName { get { return AboutWho == null ? "" : AboutWho.Name; } }
+        public string AboutName => AboutWho?.Name ?? "";
+
         partial void OnCreated()
         {
             CreatedOn = Util.Now;
@@ -30,7 +29,7 @@ namespace CmsData
             var NewPeopleManagerId = Db.NewPeopleManagerId;
             var task = new Task
             {
-                ListId = Task.GetRequiredTaskList(Db, "InBox", NewPeopleManagerId).Id,
+                ListId = GetRequiredTaskList(Db, "InBox", NewPeopleManagerId).Id,
                 OwnerId = NewPeopleManagerId,
                 Description = "New Person Data Entry",
                 WhoId = newpersonid,
@@ -39,7 +38,7 @@ namespace CmsData
             if (Util.UserPeopleId.HasValue && Util.UserPeopleId.Value != NewPeopleManagerId)
             {
                 task.CoOwnerId = Util.UserPeopleId.Value;
-                task.CoListId = Task.GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id;
+                task.CoListId = GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id;
             }
             Db.Tasks.InsertOnSubmit(task);
             Db.SubmitChanges();
@@ -54,7 +53,7 @@ namespace CmsData
             {
                 var t = new Task
                 {
-                    ListId = Task.GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id,
+                    ListId = GetRequiredTaskList(Db, "InBox", Util.UserPeopleId.Value).Id,
                     OwnerId = Util.UserPeopleId.Value,
                     Description = "Please Contact",
                     ForceCompleteWContact = true,
@@ -67,11 +66,11 @@ namespace CmsData
         }
         private static string TaskLink0(int id)
         {
-            return "/Task/Detail/{0}".Fmt(id);
+            return $"/Task/Detail/{id}";
         }
         public static string TaskLink(CMSDataContext Db, string text, int id)
         {
-            return "<a href='{0}'>{1}</a>".Fmt(Db.ServerLink(TaskLink0(id)), text);
+            return $"<a href='{Db.ServerLink(TaskLink0(id))}'>{text}</a>";
         }
     }
 }

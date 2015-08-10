@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                     ViewData["HideAdd"] = true;
                 break;
             }
-            
+
             return View(q);
         }
 
@@ -61,7 +61,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                 }
             }
 
-            return Redirect("/Lookup/{0}/#{1}".Fmt(type, id));
+            return Redirect($"/Lookup/{type}/#{id}");
         }
 
         [HttpPost]
@@ -71,7 +71,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             var iid = a[0].Substring(1).ToInt();
             if (id.StartsWith("t"))
                 DbUtil.Db.ExecuteCommand(
-                    "update lookup." + a[1] + " set Description = {0} where id = {1}", 
+                    "update lookup." + a[1] + " set Description = {0} where id = {1}",
                     value, iid);
             else if (id.StartsWith("c"))
                 DbUtil.Db.ExecuteCommand(
@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.Setup.Controllers
             }
             catch (SqlException)
             {
-                return Json(new { error = "Cannot delete {0} because it is in use".Fmt(type)});
+                return Json(new { error = $"Cannot delete {type} because it is in use"});
             }
         }
     }

@@ -22,12 +22,12 @@ namespace CmsWeb.Areas.Setup.Controllers
         {
             if (!DbUtil.Db.Settings.Any(s => s.Id == id))
             {
-                var m = new Setting { Id = id };
+                var m = new Setting {Id = id};
                 DbUtil.Db.Settings.InsertOnSubmit(m);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.Db.SetSetting(id, null);
             }
-            return Redirect("/Settings/#{0}".Fmt(id));
+            return Redirect($"/Settings/#{id}");
         }
 
         [HttpPost]
@@ -51,26 +51,27 @@ namespace CmsWeb.Areas.Setup.Controllers
             DbUtil.Db.SubmitChanges();
             return new EmptyResult();
         }
+
         public ActionResult Batch(string text)
         {
             if (Request.HttpMethod.ToUpper() == "GET")
             {
                 var q = from s in DbUtil.Db.Settings
                         orderby s.Id
-                        select "{0}:\t{1}".Fmt(s.Id, s.SettingX);
+                        select $"{s.Id}:\t{s.SettingX}";
                 ViewData["text"] = string.Join("\n", q.ToArray());
                 return View();
             }
             var batch = from s in text.Split('\n')
                         where s.HasValue()
                         let a = s.SplitStr(":", 2)
-                        select new { name = a[0], value = a[1].Trim() };
+                        select new {name = a[0], value = a[1].Trim()};
 
             var settings = DbUtil.Db.Settings.ToList();
 
             var upds = from s in settings
                        join b in batch on s.Id equals b.name
-                       select new { s = s, value = b.value };
+                       select new {s, b.value};
 
             foreach (var pair in upds)
                 pair.s.SettingX = pair.value;
@@ -82,7 +83,7 @@ namespace CmsWeb.Areas.Setup.Controllers
                        select b;
 
             foreach (var b in adds)
-                DbUtil.Db.Settings.InsertOnSubmit(new Setting { Id = b.name, SettingX = b.value });
+                DbUtil.Db.Settings.InsertOnSubmit(new Setting {Id = b.name, SettingX = b.value});
 
             var dels = from s in settings
                        where !batch.Any(b => b.name == s.Id)
@@ -93,11 +94,13 @@ namespace CmsWeb.Areas.Setup.Controllers
 
             return RedirectToAction("Index");
         }
+
         public ActionResult RemoveFakePeople()
         {
             DbUtil.Db.PurgeAllPeopleInCampus(99);
             return Content(@"<a href=""/"">home</a><br/><h2>Done</h2>");
         }
+
         [HttpPost]
         public ContentResult DeleteImage(string id)
         {
@@ -111,9 +114,3 @@ namespace CmsWeb.Areas.Setup.Controllers
         }
     }
 }
-
-
-
-
-
-

@@ -10,43 +10,18 @@ namespace CmsWeb.Models.ExtraValues
 {
     public class ExtraInfoOrganization : ExtraInfo
     {
-        public override string QueryUrl
-        {
-            get
-            {
-                return "/OrgSearch/?name=ev:{0}".Fmt(HttpUtility.UrlEncode(Field));
-            }
-        }
+        public override string QueryUrl => $"/OrgSearch/?name=ev:{HttpUtility.UrlEncode(Field)}";
 
-        public override string DeleteAllUrl
-        {
-            get
-            {
-                return "/ExtraValue/DeleteAll/Organization/{0}?field={1}&value={2}"
-                    .Fmt(Type, HttpUtility.UrlEncode(Field), HttpUtility.UrlEncode(Value));
-            }
-        }
+        public override string DeleteAllUrl => $"/ExtraValue/DeleteAll/Organization/{Type}?field={HttpUtility.UrlEncode(Field)}&value={HttpUtility.UrlEncode(Value)}";
 
-        public override string ConvertToStandardUrl
-        {
-            get
-            {
-                return "/ExtraValue/ConvertToStandard/Organization?name={0}".Fmt(HttpUtility.UrlEncode(Field));
-            }
-        }
+        public override string ConvertToStandardUrl => $"/ExtraValue/ConvertToStandard/Organization?name={HttpUtility.UrlEncode(Field)}";
 
-        public override string RenameAllUrl
-        {
-            get
-            {
-                return "/ExtraValue/RenameAll/Organization?field={0}".Fmt(HttpUtility.UrlEncode(Field));
-            }
-        }
+        public override string RenameAllUrl => $"/ExtraValue/RenameAll/Organization?field={HttpUtility.UrlEncode(Field)}";
 
         public override void RenameAll(string field, string newname)
         {
             DbUtil.Db.ExecuteCommand("update OrganizationExtra set field = {0} where field = {1}", newname, field);
-            DbUtil.LogActivity("EVOrg RenameAll {0}>{1}".Fmt(field, newname));
+            DbUtil.LogActivity($"EVOrg RenameAll {field}>{newname}");
         }
 
         public override IEnumerable<ExtraInfo> CodeSummary()
@@ -79,9 +54,9 @@ namespace CmsWeb.Models.ExtraValues
                          join sv in NameTypes on i.key.Field equals sv.Name into j
                          from sv in j.DefaultIfEmpty()
                          let type = sv == null ? i.key.Type : sv.Type
-                         let typedisplay = sv == null 
-                                ? adhoctypes.Single(ee => ee.Code == type).Value 
-                                : standardtypes.Single(ee => ee.Code == type).Value 
+                         let typedisplay = sv == null
+                                ? adhoctypes.Single(ee => ee.Code == type).Value
+                                : standardtypes.Single(ee => ee.Code == type).Value
                          select new ExtraInfoOrganization
                          {
                              Field = i.key.Field,
@@ -97,7 +72,7 @@ namespace CmsWeb.Models.ExtraValues
                           join sv in NameTypes on i.key.Field equals sv.Name into j
                           from sv in j.DefaultIfEmpty()
                           let type = sv == null ? i.key.Type : sv.Type
-                          let typedisplay = sv == null 
+                          let typedisplay = sv == null
                                 ? adhoctypes.SingleOrDefault(ee => ee.Code == type)
                                 : standardtypes.SingleOrDefault(ee => ee.Code == type)
                           select new ExtraInfoOrganization
@@ -141,7 +116,7 @@ namespace CmsWeb.Models.ExtraValues
                         field);
                     break;
             }
-            DbUtil.LogActivity("EVOrg DeleteAll {0} {1}".Fmt(field, value));
+            DbUtil.LogActivity($"EVOrg DeleteAll {field} {value}");
             return "done";
         }
     }

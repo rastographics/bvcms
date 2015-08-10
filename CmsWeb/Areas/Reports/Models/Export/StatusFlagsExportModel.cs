@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -25,26 +24,26 @@ namespace CmsWeb.Models
             if (flags.HasValue())
                 cols = string.Join(",\n", from f in flags.Split(',')
                                           join c in collist on f equals c.Flag
-                                          select "\tss.{0} as [{0}_{1}]".Fmt(c.Flag, c.Name));
+                                          select $"\tss.{c.Flag} as [{c.Flag}_{c.Name}]");
             else
                 cols = string.Join(",\n", from c in collist
                                           where c.Role == null || HttpContext.Current.User.IsInRole(c.Role)
-                                          select "\tss.{0} as [{1}]".Fmt(c.Flag, c.Name));
+                                          select $"\tss.{c.Flag} as [{c.Name}]");
 
-            var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_StatusFlags);
+            var tag = DbUtil.Db.PopulateSpecialTag(qid, DbUtil.TagTypeId_Query);
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
             var cmd = new SqlCommand(@"
-SELECT 
-    md.PeopleId, 
-	md.[First],
-	md.[Last],
-	md.Age,
-	md.Marital,
-	md.Decision,
-	md.DecisionDt,
+SELECT
+    md.PeopleId,
+    md.[First],
+    md.[Last],
+    md.Age,
+    md.Marital,
+    md.Decision,
+    md.DecisionDt,
     md.JoinDt,
-	md.Baptism,
+    md.Baptism,
 " + cols + @"
 FROM StatusFlagColumns ss
 JOIN MemberData md ON md.PeopleId = ss.PeopleId

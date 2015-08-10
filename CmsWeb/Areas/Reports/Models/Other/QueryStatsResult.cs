@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
 using CmsData;
 using UtilityExtensions;
@@ -10,7 +9,6 @@ namespace CmsWeb.Areas.Reports.Models
 {
     public class QueryStatsResult : ActionResult
     {
-        StringBuilder sb = new StringBuilder();
         public override void ExecuteResult(ControllerContext context)
         {
             var dt = DateTime.Parse("1/1/1900");
@@ -25,7 +23,6 @@ namespace CmsWeb.Areas.Reports.Models
                     list = from s in g.OrderBy(ss => ss.StatId)
                         select new { Count = s.Count as int?, s.StatId }
                 };
-            var rows = q.Count();
 
             var d = new List<Dictionary<string, string>>();
 
@@ -48,15 +45,15 @@ namespace CmsWeb.Areas.Reports.Models
             }
             Response.Write("<table cellpadding=4>\n<tr><td>Date</td>");
             foreach (var c in head)
-                Response.Write("<td align='right'>{0}</td>".Fmt(c.Value));
+                Response.Write($"<td align='right'>{c.Value}</td>");
             Response.Write("</tr>\n");
             foreach (var r in d)
             {
-                Response.Write("<tr><td>{0}</td>".Fmt(r["S00"]));
+                Response.Write($"<tr><td>{r["S00"]}</td>");
                 foreach (var c in head)
                 {
                     if (r.ContainsKey(c.Key))
-                        Response.Write("<td align='right'>{0}</td>".Fmt(r[c.Key]));
+                        Response.Write($"<td align='right'>{r[c.Key]}</td>");
                     else
                         Response.Write("<td></td>");
                 }

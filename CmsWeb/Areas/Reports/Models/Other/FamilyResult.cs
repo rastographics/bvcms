@@ -1,43 +1,38 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
+using System.Text;
+using System.Web.Mvc;
+using CmsData;
 using CmsWeb.Code;
-using CmsWeb.Models;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using System.IO;
-using System.Collections;
-using CmsData;
 using UtilityExtensions;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Web.Mvc;
-using System.Diagnostics;
 
 namespace CmsWeb.Areas.Reports.Models
 {
     public class FamilyResult : ActionResult
     {
-        private Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
-        private Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
-        private Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
-        private Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
-        private Font xsmallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7, new GrayColor(50));
-        private PageEvent pageEvents = new PageEvent();
-        private PdfPTable t;
+        private readonly Font boldfont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 10);
+        private readonly Font font = FontFactory.GetFont(FontFactory.HELVETICA, 10);
+        private readonly float[] HeaderWids = {55, 40, 95};
+        private readonly Font monofont = FontFactory.GetFont(FontFactory.COURIER, 8);
+        private readonly PageEvent pageEvents = new PageEvent();
+        private readonly Guid qid;
+        private readonly Font smallfont = FontFactory.GetFont(FontFactory.HELVETICA, 8, new GrayColor(50));
+        private PdfContentByte dc;
         private Document doc;
         private DateTime dt;
-        private PdfContentByte dc;
+        private PdfPTable t;
+        private Font xsmallfont = FontFactory.GetFont(FontFactory.HELVETICA, 7, new GrayColor(50));
 
-        private Guid qid;
         public FamilyResult(Guid id)
         {
             qid = id;
@@ -64,7 +59,7 @@ namespace CmsWeb.Areas.Reports.Models
 
             t.AddCell(StartPageSet());
 
-            t.DefaultCell.Border = PdfPCell.TOP_BORDER;
+            t.DefaultCell.Border = Rectangle.TOP_BORDER;
             t.DefaultCell.BorderColor = BaseColor.BLACK;
             t.DefaultCell.BorderColorTop = BaseColor.BLACK;
             t.DefaultCell.BorderWidthTop = 2.0f;
@@ -72,7 +67,8 @@ namespace CmsWeb.Areas.Reports.Models
             var q = DbUtil.Db.PeopleQuery(qid);
             var q2 = from p in q
                      let person = p
-                     group p by p.FamilyId into g
+                     group p by p.FamilyId
+                     into g
                      let hhname = g.First().Family.HeadOfHousehold.Name2
                      orderby hhname
                      select new
@@ -81,7 +77,7 @@ namespace CmsWeb.Areas.Reports.Models
                                    where !m.DeceasedDate.HasValue
                                    select new
                                    {
-                                       order = m.PositionInFamilyId * 1000 + (m.PositionInFamilyId == 10 ? m.GenderId : 1000 - (m.Age ?? 0)),
+                                       order = m.PositionInFamilyId*1000 + (m.PositionInFamilyId == 10 ? m.GenderId : 1000 - (m.Age ?? 0)),
                                        //                                           order = g.Any(p => p.PeopleId == m.PeopleId) ? 1 :
                                        //                                                 m.PositionInFamilyId,
                                        person = m
@@ -91,9 +87,9 @@ namespace CmsWeb.Areas.Reports.Models
             {
                 var ft = new PdfPTable(HeaderWids);
                 ft.DefaultCell.SetLeading(2.0f, 1f);
-                ft.DefaultCell.Border = PdfPCell.NO_BORDER;
+                ft.DefaultCell.Border = Rectangle.NO_BORDER;
                 ft.DefaultCell.Padding = 5;
-                int fn = 1;
+                var fn = 1;
                 var color = BaseColor.BLACK;
                 foreach (var p in f.members.OrderBy(m => m.order))
                 {
@@ -101,7 +97,7 @@ namespace CmsWeb.Areas.Reports.Models
                         color = new GrayColor(240);
                     else
                         color = BaseColor.WHITE;
-                    Debug.WriteLine("{0:##}: {1}".Fmt(p.order, p.person.Name));
+                    Debug.WriteLine("{0:##}: {1}", p.order, p.person.Name);
                     AddRow(ft, p.person, fn, color);
                     fn++;
                 }
@@ -115,16 +111,14 @@ namespace CmsWeb.Areas.Reports.Models
             doc.Close();
         }
 
-        float[] HeaderWids = new float[] { 55, 40, 95 };
-
         private PdfPTable StartPageSet()
         {
             var t = new PdfPTable(HeaderWids);
             t.DefaultCell.SetLeading(2.0f, 1f);
-            t.DefaultCell.Border = PdfPCell.NO_BORDER;
+            t.DefaultCell.Border = Rectangle.NO_BORDER;
             t.WidthPercentage = 100;
             t.DefaultCell.Padding = 5;
-            pageEvents.StartPageSet("Family Report: {0:d}".Fmt(dt));
+            pageEvents.StartPageSet($"Family Report: {dt:d}");
             t.AddCell(new Phrase("Name (id)\nAddress/Contact info", boldfont));
             t.AddCell(new Phrase("Birthday (age, gender)\nMember", boldfont));
             t.AddCell(new Phrase("Position in Family\nPrimary Class", boldfont));
@@ -137,14 +131,14 @@ namespace CmsWeb.Areas.Reports.Models
 
             var c1 = new Phrase();
             c1.Add(new Chunk(p.Name, boldfont));
-            c1.Add(new Chunk("  ({0})\n".Fmt(p.PeopleId), smallfont));
+            c1.Add(new Chunk($"  ({p.PeopleId})\n", smallfont));
             var contact = new StringBuilder();
             var cv = new CodeValueModel();
             if (fn == 1)
             {
                 AddLine(contact, p.PrimaryAddress);
                 AddLine(contact, p.PrimaryAddress2);
-                AddLine(contact, "{0}, {1} {2}".Fmt(p.PrimaryCity, p.PrimaryState, p.PrimaryZip.FmtZip()));
+                AddLine(contact, $"{p.PrimaryCity}, {p.PrimaryState} {p.PrimaryZip.FmtZip()}");
             }
             AddPhone(contact, p.HomePhone, "h ");
             AddPhone(contact, p.CellPhone, "c ");
@@ -153,28 +147,29 @@ namespace CmsWeb.Areas.Reports.Models
             c1.Add(new Chunk(contact.ToString(), font));
             t.AddCell(c1);
 
-            var c2 = new Phrase("{0} ({1}, {2})\n".Fmt(p.DOB, p.Age,
-                p.GenderId == 1 ? "M" : p.GenderId == 2 ? "F" : "U"), font);
+            var c2 = new Phrase($"{p.DOB} ({p.Age}, {(p.GenderId == 1 ? "M" : p.GenderId == 2 ? "F" : "U")})\n", font);
             c2.Add(new Chunk(cv.MemberStatusCodes().ItemValue(p.MemberStatusId), font));
             t.AddCell(c2);
 
 
             var c3 = new Phrase((
-                    p.PositionInFamilyId == 10 ? "Primary Adult" :
+                p.PositionInFamilyId == 10 ? "Primary Adult" :
                     p.PositionInFamilyId == 20 ? "Secondary Adult" :
-                                                 "Child") + "\n", font);
+                        "Child") + "\n", font);
             if (p.BibleFellowshipClassId.HasValue)
             {
                 c3.Add(new Chunk(p.BFClass.OrganizationName, font));
                 if (p.BFClass.LeaderName.HasValue())
-                    c3.Add(new Chunk(" ({0})".Fmt(p.BFClass.LeaderName), smallfont));
+                    c3.Add(new Chunk($" ({p.BFClass.LeaderName})", smallfont));
             }
             t.AddCell(c3);
         }
+
         private void AddLine(StringBuilder sb, string value)
         {
-            AddLine(sb, value, String.Empty);
+            AddLine(sb, value, string.Empty);
         }
+
         private void AddLine(StringBuilder sb, string value, string postfix)
         {
             if (value.HasValue())
@@ -186,6 +181,7 @@ namespace CmsWeb.Areas.Reports.Models
                     sb.Append(postfix);
             }
         }
+
         private void AddPhone(StringBuilder sb, string value, string prefix)
         {
             if (value.HasValue())
@@ -200,9 +196,10 @@ namespace CmsWeb.Areas.Reports.Models
         private Paragraph GetAttendance(Person p)
         {
             var q = from a in p.Attends
-                    where a.AttendanceFlag == true
+                    where a.AttendanceFlag
                     orderby a.MeetingDate.Date descending
-                    group a by a.MeetingDate.Date into g
+                    group a by a.MeetingDate.Date
+                    into g
                     select g.Key;
             var list = q.ToList();
 
@@ -231,25 +228,26 @@ namespace CmsWeb.Areas.Reports.Models
 
             attstr = new StringBuilder();
             foreach (var d in list.Take(8))
-                attstr.Insert(0, "{0:d}  ".Fmt(d));
+                attstr.Insert(0, $"{d:d}  ");
             if (list.Count > 8)
             {
                 attstr.Insert(0, "...  ");
                 var q2 = q.OrderBy(d => d).Take(Math.Min(list.Count - 8, 3));
                 foreach (var d in q2.OrderByDescending(d => d))
-                    attstr.Insert(0, "{0:d}  ".Fmt(d));
+                    attstr.Insert(0, $"{d:d}  ");
             }
             ph.Add(new Chunk(attstr.ToString(), smallfont));
             return ph;
         }
-        class PageEvent : PdfPageEventHelper
+
+        private class PageEvent : PdfPageEventHelper
         {
-            private PdfTemplate npages;
-            private PdfWriter writer;
-            private Document document;
             private PdfContentByte dc;
+            private Document document;
             private BaseFont font;
             private string HeadText;
+            private PdfTemplate npages;
+            private PdfWriter writer;
 
             public override void OnOpenDocument(PdfWriter writer, Document document)
             {
@@ -259,6 +257,7 @@ namespace CmsWeb.Areas.Reports.Models
                 font = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 dc = writer.DirectContent;
             }
+
             public void EndPageSet()
             {
                 if (npages == null)
@@ -268,14 +267,16 @@ namespace CmsWeb.Areas.Reports.Models
                 npages.ShowText((writer.PageNumber + 1).ToString());
                 npages.EndText();
             }
+
             public void StartPageSet(string header1)
             {
                 EndPageSet();
                 document.NewPage();
                 document.ResetPageCount();
-                this.HeadText = header1;
+                HeadText = header1;
                 npages = dc.CreateTemplate(50, 50);
             }
+
             public override void OnEndPage(PdfWriter writer, Document document)
             {
                 base.OnEndPage(writer, document);
@@ -313,7 +314,7 @@ namespace CmsWeb.Areas.Reports.Models
                 len = font.GetWidthPoint(text, 8);
                 dc.BeginText();
                 dc.SetFontAndSize(font, 8);
-                dc.SetTextMatrix(document.PageSize.Width / 2 - len / 2, 30);
+                dc.SetTextMatrix(document.PageSize.Width/2 - len/2, 30);
                 dc.ShowText(text);
                 dc.EndText();
 
@@ -326,6 +327,7 @@ namespace CmsWeb.Areas.Reports.Models
                 dc.ShowText(text);
                 dc.EndText();
             }
+
             private float PutText(string text, BaseFont font, float size, float x, float y)
             {
                 dc.BeginText();
@@ -338,4 +340,3 @@ namespace CmsWeb.Areas.Reports.Models
         }
     }
 }
-

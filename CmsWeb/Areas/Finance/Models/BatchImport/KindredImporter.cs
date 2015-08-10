@@ -1,8 +1,8 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 
 using System;
@@ -39,8 +39,7 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                         Account = csv[7],
                         Amount = csv[9],
                         CheckNo = csv[12],
-                        Description= "{0}; {1}, {2}, {3} {4}; {5}".Fmt(
-                            csv[2], csv[3], csv[4], csv[5], csv[6], csv[8]),
+                        Description= $"{csv[2]}; {csv[3]}, {csv[4]}, {csv[5]} {csv[6]}; {csv[8]}",
                     });
             var q = from r in list
                     select r;

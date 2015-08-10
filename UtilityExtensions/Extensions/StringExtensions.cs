@@ -29,7 +29,7 @@ namespace UtilityExtensions
                 if (char.IsUpper(letters[i]))
                 {
                     //Grab everything before the current index.
-                    words.Add(new String(letters, wordStartIndex, i - wordStartIndex));
+                    words.Add(new string(letters, wordStartIndex, i - wordStartIndex));
                     wordStartIndex = i;
                 }
             }
@@ -109,7 +109,7 @@ namespace UtilityExtensions
         public static string GetAttr(this XElement e, string n, string def = null)
         {
             var a = e.Attribute(n);
-            return a != null ? a.Value : def;
+            return a?.Value ?? def;
         }
 
         public static string Truncate(this string source, int length)
@@ -121,8 +121,7 @@ namespace UtilityExtensions
 
         public static string trim(this string source)
         {
-            if (source != null)
-                source = source.Trim();
+            source = source?.Trim();
             return source;
         }
 
@@ -132,7 +131,7 @@ namespace UtilityExtensions
                 return relativeUrl;
             if (relativeUrl.Length == 0)
                 return baseUrl;
-            return string.Format("{0}/{1}", baseUrl.TrimEnd('/', '\\'), relativeUrl.TrimStart('/', '\\'));
+            return $"{baseUrl.TrimEnd('/', '\\')}/{relativeUrl.TrimStart('/', '\\')}";
         }
 
         public static string GetDigits(this string zip, int maxlen = 99)
@@ -169,16 +168,15 @@ namespace UtilityExtensions
                 return "";
             var chars = new StringBuilder();
             foreach (var c in s)
-                if (!Char.IsDigit(c))
+                if (!char.IsDigit(c))
                     chars.Append(c);
             return chars.ToString();
         }
 
         public static string MaxString(this string s, int length)
         {
-            if (s != null)
-                if (s.Length > length)
-                    s = s.Substring(0, length);
+            if (s?.Length > length)
+                s = s.Substring(0, length);
             return s;
         }
 
