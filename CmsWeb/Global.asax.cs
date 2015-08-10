@@ -13,7 +13,9 @@ using System.Web.Routing;
 using CmsData;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using Dapper;
 using Elmah;
+using RegistrationSettingsParser;
 using StackExchange.Profiling;
 using UtilityExtensions;
 
@@ -41,7 +43,6 @@ namespace CmsWeb
 
             MiniProfiler.Settings.Results_List_Authorize = IsAuthorizedToViewProfiler;
             MiniProfiler.Settings.Results_Authorize = IsAuthorizedToViewProfiler;
-
         }
 
         protected void Session_Start(object sender, EventArgs e)
@@ -60,6 +61,8 @@ namespace CmsWeb
                     return;
                 }
                 AccountModel.SetUserInfo(Util.UserName, Session);
+
+                CmsController.ConvertRegistration(); // for non hosted churches, we will eventually remove this
             }
             Util.SysFromEmail = ConfigurationManager.AppSettings["sysfromemail"];
             Util.Version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
@@ -116,6 +119,7 @@ namespace CmsWeb
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
         }
+
 
         protected void Application_EndRequest(object sender, EventArgs e)
         {
