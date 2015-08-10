@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult MessagesEdit(int id)
         {
-            var m = new SettingsMessagesModel(id);
+            var m = new SettingsMessagesModel(id, formatHtml: true);
             return PartialView("Registration/MessagesEdit", m);
         }
 

@@ -127,7 +127,6 @@ namespace CmsData
             IsMissionTrip = frorg.IsMissionTrip;
 
             RegSetting = frorg.RegSetting;
-            AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
             RegSettingXml = frorg.RegSettingXml;
 
             CopySettings2(frorg, this);

@@ -132,8 +132,8 @@ namespace CmsData.API
             {
                 CheckPendingStart();
                 Start(element);
-                w.WriteCData(cdata);
-                //w.WriteCData("\n" + cdata + "\n");
+                //w.WriteCData(cdata);
+                w.WriteCData("\n" + cdata.Trim() + "\n");
                 End();
             }
             return this;

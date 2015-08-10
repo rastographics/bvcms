@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
@@ -29,11 +31,35 @@ namespace CmsWeb.Areas.Org.Models
         {
         }
 
-        public SettingsMessagesModel(int id)
+        public SettingsMessagesModel(int id, bool formatHtml = false)
         {
             Id = id;
             this.CopyPropertiesFrom(Org, typeof(OrgAttribute));
             this.CopyPropertiesFrom(RegSettings, typeof(RegAttribute));
+            if (formatHtml)
+            {
+                FormatHtml(x => x.Body);
+                FormatHtml(x => x.ReminderBody);
+                FormatHtml(x => x.SenderBody);
+                FormatHtml(x => x.SupportBody);
+                FormatHtml(x => x.InstructionSpecial);
+                FormatHtml(x => x.InstructionFind);
+                FormatHtml(x => x.InstructionLogin);
+                FormatHtml(x => x.InstructionOptions);
+                FormatHtml(x => x.InstructionSelect);
+                FormatHtml(x => x.InstructionSorry);
+                FormatHtml(x => x.InstructionSubmit);
+            }
+        }
+
+        void FormatHtml(Expression<Func<SettingsMessagesModel, string>> o)
+        {
+            var expr = (MemberExpression)o.Body;
+            var prop = (PropertyInfo)expr.Member;
+            var s = prop.GetValue(this) as string;
+            if (!s.HasValue())
+                return;
+            prop.SetValue(this, TidyLib.FormatHtml(s));
         }
         public void Update()
         {

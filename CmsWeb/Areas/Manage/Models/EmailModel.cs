@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Web;
 using CmsData;
+using CmsWeb.Code;
 using Dapper;
-using TidyManaged;
 using UtilityExtensions;
 
 namespace CmsWeb.Models
@@ -51,49 +49,8 @@ namespace CmsWeb.Models
             }
         }
 
-        public string FormattedHtmlBody
-        {
-            get
-            {
-                try
-                {
-                    using (var doc = Document.FromString(queue.Body))
-                    {
-                        doc.NewBlockLevelTags = "registertag";
+        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
 
-                        doc.ShowWarnings = false;
-                        doc.Quiet = true;
-                        doc.DocType = DocTypeMode.Strict;
-                        doc.DropFontTags = true;
-                        doc.UseLogicalEmphasis = true;
-                        doc.OutputXhtml = true;
-                        doc.OutputXml = false;
-                        doc.MakeClean = true;
-                        doc.DropEmptyParagraphs = true;
-                        doc.CleanWord2000 = true;
-                        doc.QuoteAmpersands = true;
-                        doc.JoinStyles = false;
-                        doc.JoinClasses = false;
-                        doc.Markup = true;
-                        doc.IndentSpaces = 4;
-                        doc.IndentBlockElements = AutoBool.Yes;
-                        doc.CharacterEncoding = EncodingType.Utf8;
-                        doc.OutputBodyOnly = AutoBool.Auto;
-                        doc.CleanAndRepair();
-
-                        using (var str = new MemoryStream())
-                        {
-                            doc.Save(str);
-                            return Encoding.UTF8.GetString(str.ToArray());
-                        }
-                    }
-                }
-                catch (DllNotFoundException)
-                {
-                    return queue.Body;
-                }
-            }
-        }
 
         public FilterType FilterType { get; private set; }
 
@@ -326,8 +283,8 @@ OFFSET (@currentPage-1)*@pageSize ROWS FETCH NEXT @pageSize ROWS ONLY
                 if (!_emptyTemplateId.HasValue)
                 {
                     var emptyTemplate = (from content in DbUtil.Db.Contents
-                                        where content.Name == "Empty Template"
-                                        select content).SingleOrDefault();
+                                         where content.Name == "Empty Template"
+                                         select content).SingleOrDefault();
 
                     _emptyTemplateId = (emptyTemplate == null) ? 0 : emptyTemplate.Id;
                 }
