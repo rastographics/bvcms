@@ -156,6 +156,8 @@ namespace CmsWeb.Areas.Finance.Models.BatchImport
                     return new FbcStark2Importer();
                 case "discovercrosspoint":
                     return new DiscoverCrossPointImporter();
+                case "regionsimporter2":
+                    return new RegionsImporter2();
             }
 
             if (text.Substring(0, 40).Contains("Report Date,Report Requestor"))
