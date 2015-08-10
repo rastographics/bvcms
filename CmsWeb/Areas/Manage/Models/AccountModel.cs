@@ -353,10 +353,10 @@ namespace CmsWeb.Models
                 }
             }
 
-            if (user.Roles.Contains("APIRole"))
+            if (user.Roles.Contains("APIOnly"))
             {
                 return UserValidationResult.Invalid(UserValidationStatus.NoUserFound,
-                    "APIRole user can only access the system via the API.");
+                    "Api User is limited to API use only, no interactive login allowed.");
             }
 
             return UserValidationResult.Valid(user);
