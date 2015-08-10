@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
@@ -101,8 +103,9 @@ namespace CmsWeb.Areas.Public.Controllers
                     : Util.ConnectionStringReadOnly;
                 var cn = new SqlConnection(cs);
                 cn.Open();
-                var f = new CmsData.API.APIFunctions(DbUtil.Db);
-                var x = f.SqlScriptXml(id, p1);
+                var f = new APIFunctions(DbUtil.Db);
+                var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
+                var x = f.SqlScriptXml(id, p1, d);
                 return Content(x, "text/xml");
             }
             catch (Exception ex)
