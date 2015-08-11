@@ -239,7 +239,7 @@ namespace CmsWeb.Controllers
             cn.Open();
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
-            foreach(var kv in d)
+            foreach (var kv in d)
                 p.Add("@" + kv.Key, kv.Value);
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body, p);
 
@@ -273,7 +273,7 @@ namespace CmsWeb.Controllers
             var cn = new SqlConnection(cs);
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
             var p = new DynamicParameters();
-            foreach(var kv in d)
+            foreach (var kv in d)
                 p.Add("@" + kv.Key, kv.Value);
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body, p);
             if (script.StartsWith("Not Authorized"))
@@ -316,7 +316,7 @@ namespace CmsWeb.Controllers
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG
-                return System.IO.File.ReadAllText(Server.MapPath("~/module1.py"));
+            return System.IO.File.ReadAllText(Server.MapPath("~/module1.py"));
 #else
                 return DbUtil.Db.ContentOfTypePythonScript(name);
 #endif
