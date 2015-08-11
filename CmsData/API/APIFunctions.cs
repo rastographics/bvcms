@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
@@ -370,15 +371,19 @@ class LoginInfo(object):
             xs.Serialize(sw, a);
             return sw.ToString();
         }
-        public string SqlScriptXml(string sqlscript, string p1 = null)
+        public string SqlScriptXml(string sqlscript, string p1 = null, Dictionary<string, string> d = null)
         {
             var script = Db.Content(sqlscript, "");
             if (!script.HasValue())
                 throw new Exception("no sql script found");
 
-            script = $"DECLARE @p1 VARCHAR(100) = '{p1}'\n{script}";  
+            var p = new DynamicParameters();
+            p.Add("@p1", p1 ?? "");
+            if(d != null)
+                foreach(var kv in d)
+                    p.Add("@" + kv.Key, kv.Value);
 
-            var rd = Db.Connection.ExecuteReader(script);
+            var rd = Db.Connection.ExecuteReader(script, p);
 
             var w = new APIWriter();
             w.Start("SqlScriptXml");

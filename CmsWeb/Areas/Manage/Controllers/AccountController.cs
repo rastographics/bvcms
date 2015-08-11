@@ -201,8 +201,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             if (access.HasValue())
                 if (!user.InRole("Developer"))
                     return Message($"Site is {access}, contact {DbUtil.AdminMail} for help");
-            if (user.InRole("APIOnly"))
-                return Message($"Api User is limited to API use only, no interactive login allowed");
 
             var newleadertag = DbUtil.Db.FetchTag("NewOrgLeadersOnly", user.PeopleId, DbUtil.TagTypeId_System);
             if (newleadertag != null)

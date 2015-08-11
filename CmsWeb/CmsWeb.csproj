@@ -266,7 +266,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\ApiMessageLoggingHandler.cs" />
-    <Compile Include="App_Start\DeveloperAuthorizeAttribute.cs" />
+    <Compile Include="App_Start\ApiAuthorizeAttribute.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Dialog\Controllers\AddOrganizationController.cs" />
@@ -350,6 +350,7 @@
     <Compile Include="Areas\Finance\Models\BatchImport\RedeemerImporter.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Areas\Finance\Models\BatchImport\RegionsImporter2.cs" />
     <Compile Include="Areas\Finance\Models\BatchImport\RegionsImporter.cs">
       <SubType>Code</SubType>
     </Compile>

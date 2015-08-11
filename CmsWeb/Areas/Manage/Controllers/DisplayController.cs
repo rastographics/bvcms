@@ -174,16 +174,16 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View(content);
         }
 
-        [HttpPost]
-        public ActionResult RunSqlScript(string body, string parameter)
-        {
-            var cn = new SqlConnection(Util.ConnectionStringReadOnly);
-            cn.Open();
-            var script = $"DECLARE @p1 VARCHAR(100) = '{parameter}'\n{body}\n";
-            var cmd = new SqlCommand(script);
-            var rd = cmd.ExecuteReader();
-            return new GridResult(rd);
-        }
+//        [HttpPost]
+//        public ActionResult RunSqlScript(string body, string parameter)
+//        {
+//            var cn = new SqlConnection(Util.ConnectionStringReadOnly);
+//            cn.Open();
+//            var script = $"DECLARE @p1 VARCHAR(100) = '{parameter}'\n{body}\n";
+//            var cmd = new SqlCommand(script);
+//            var rd = cmd.ExecuteReader();
+//            return new GridResult(rd);
+//        }
         [HttpPost]
         public ActionResult SavePythonScript(string name, string body)
         {
@@ -338,13 +338,13 @@ namespace CmsWeb.Areas.Manage.Controllers
     }
     public class GridResult : ActionResult
     {
-        private readonly SqlDataReader rd;
-        public GridResult(SqlDataReader rd)
+        private readonly IDataReader rd;
+        public GridResult(IDataReader rd)
         {
             this.rd = rd;
         }
 
-        public static HtmlTable HtmlTable(SqlDataReader rd)
+        public static HtmlTable HtmlTable(IDataReader rd)
         {
             var t = new HtmlTable();
             t.Attributes.Add("class", "table table-striped");
@@ -423,7 +423,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             t.RenderControl(new HtmlTextWriter(context.HttpContext.Response.Output));
         }
 
-        public static string Table(SqlDataReader rd)
+        public static string Table(IDataReader rd)
         {
             var t = HtmlTable(rd);
             var sb = new StringBuilder();

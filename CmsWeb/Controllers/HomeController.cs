@@ -212,24 +212,24 @@ namespace CmsWeb.Controllers
             return Content(PythonEvents.RunScript(Util.Host, script));
         }
 
-        private string RunScriptSql(CMSDataContext Db, string parameter, string body)
+        private string RunScriptSql(CMSDataContext Db, string parameter, string body, DynamicParameters p)
         {
             if (!CanRunScript(body))
                 return "Not Authorized to run this script";
-            var declareqtagid = "";
             if (body.Contains("@qtagid"))
             {
                 var id = Db.FetchLastQuery().Id;
                 var tag = Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                declareqtagid = $"DECLARE @qtagid INT = {tag.Id}\n";
+                p.Add("@qtagid", tag.Id);
             }
-            return $"{declareqtagid}DECLARE @p1 VARCHAR(100) = '{parameter}' {body}";
+            p.Add("@p1", parameter ?? "");
+            return body;
         }
 
         [HttpGet, Route("~/RunScript/{name}/{parameter?}/{title?}")]
         public ActionResult RunScript(string name, string parameter = null, string title = null)
         {
-            var content = DbUtil.Content(name);
+            var content = DbUtil.Db.ContentOfTypeSql(name);
             if (content == null)
                 return Content("no content");
             var cs = User.IsInRole("Finance")
@@ -237,12 +237,16 @@ namespace CmsWeb.Controllers
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
-            var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
+            var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
+            var p = new DynamicParameters();
+            foreach(var kv in d)
+                p.Add("@" + kv.Key, kv.Value);
+            var script = RunScriptSql(DbUtil.Db, parameter, content.Body, p);
+
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
             ViewBag.name = title ?? $"Run Script {name} {parameter}";
-            var cmd = new SqlCommand(script, cn);
-            var rd = cmd.ExecuteReader();
+            var rd = cn.ExecuteReader(script, p);
             return View(rd);
         }
 
@@ -260,14 +264,18 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/RunScriptExcel/{scriptname}/{parameter?}")]
         public ActionResult RunScriptExcel(string scriptname, string parameter = null)
         {
-            var content = DbUtil.Content(scriptname);
+            var content = DbUtil.Db.ContentOfTypeSql(scriptname);
             if (content == null)
                 return Message("no content");
             var cs = User.IsInRole("Finance")
                 ? Util.ConnectionString
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
-            var script = RunScriptSql(DbUtil.Db, parameter, content.Body);
+            var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
+            var p = new DynamicParameters();
+            foreach(var kv in d)
+                p.Add("@" + kv.Key, kv.Value);
+            var script = RunScriptSql(DbUtil.Db, parameter, content.Body, p);
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
             return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
