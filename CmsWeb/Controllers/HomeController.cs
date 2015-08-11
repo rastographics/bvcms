@@ -56,8 +56,8 @@ namespace CmsWeb.Controllers
         public ActionResult Test()
         {
             var f = new CmsData.API.APIFunctions(DbUtil.Db);
-            var x = f.SqlScriptXml("FPUOrgExport");
-            return Content(x, "text/xml");
+            var x = f.SqlScriptJson("FPUOrgExport");
+            return Content(x, "application/json");
         }
 #endif
 

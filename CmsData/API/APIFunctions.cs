@@ -10,6 +10,7 @@ using System.Xml.Serialization;
 using CmsData.Codes;
 using Dapper;
 using IronPython.Hosting;
+using Newtonsoft.Json;
 using UtilityExtensions;
 
 namespace CmsData.API
@@ -373,18 +374,31 @@ class LoginInfo(object):
         }
         public string SqlScriptXml(string sqlscript, string p1 = null, Dictionary<string, string> d = null)
         {
+            var rd = GetReader(sqlscript, p1, d);
+            return WriteXmlFromReader(rd);
+        }
+        public string SqlScriptJson(string sqlscript, string p1 = null, Dictionary<string, string> d = null)
+        {
+            var rd = GetReader(sqlscript, p1, d);
+            return WriteJsonFromReader(rd);
+        }
+        private IDataReader GetReader(string sqlscript, string p1, Dictionary<string, string> d)
+        {
             var script = Db.Content(sqlscript, "");
             if (!script.HasValue())
                 throw new Exception("no sql script found");
 
             var p = new DynamicParameters();
             p.Add("@p1", p1 ?? "");
-            if(d != null)
-                foreach(var kv in d)
+            if (d != null)
+                foreach (var kv in d)
                     p.Add("@" + kv.Key, kv.Value);
 
             var rd = Db.Connection.ExecuteReader(script, p);
-
+            return rd;
+        }
+        private static string WriteXmlFromReader(IDataReader rd)
+        {
             var w = new APIWriter();
             w.Start("SqlScriptXml");
             while (rd.Read())
@@ -400,6 +414,27 @@ class LoginInfo(object):
             }
             w.End();
             return w.ToString();
+        }
+        private string WriteJsonFromReader(IDataReader rd)
+        {
+            var sb = new StringBuilder();
+            var w = new JsonTextWriter(new StringWriter(sb));
+            w.Formatting = Formatting.Indented;
+            w.WriteStartArray();
+            while (rd.Read())
+            {
+                w.WriteStartObject();
+                for (var i = 0; i < rd.FieldCount; i++)
+                {
+                    var name = rd.GetName(i);
+                    var value = rd.GetValue(i);
+                    w.WritePropertyName(name);
+                    w.WriteValue(value);
+                }
+                w.WriteEndObject();
+            }
+            w.WriteEndArray();
+            return sb.ToString();
         }
     }
 }
