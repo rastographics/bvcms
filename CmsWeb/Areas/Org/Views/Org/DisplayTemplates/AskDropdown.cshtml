@@ -18,7 +18,7 @@
                   @Html.DisplayFor(m => i.Description)
               </div>
               <div class="col-sm-6">
-                 @Html.DisplayForIf(m => i.SmallGroup, i.SmallGroup != i.Description)
+                 @Html.DisplayFor(m => i.SmallGroup)
               </div>
               <div class="col-sm-4">
                   @Html.DisplayForIf(m => i.Fee, i.Fee > 0)

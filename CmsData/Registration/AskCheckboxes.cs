@@ -133,8 +133,8 @@ For each checkbox, you can specify the following:
                     .Attr("Fee", Fee)
                     .Attr("Limit", Limit)
                     .Attr("Time", MeetingTime.ToString2("s"))
-                    .Add("SmallGroup", SmallGroup)
                     .Add("Description", Description)
+                    .Add("SmallGroup", SmallGroup)
                     .End();
             }
             public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)

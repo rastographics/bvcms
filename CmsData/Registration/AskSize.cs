@@ -76,7 +76,7 @@ Display a dropdown of custom sizes. With each size you can:
 		    {
 				var i = new Size();
 		        i.Description = e.Element("Description")?.Value;
-		        i.SmallGroup = e.Element("SmallGroup")?.Value;
+		        i.SmallGroup = e.Element("SmallGroup")?.Value ?? i.Description;
 				return i;
 		    }
 		}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Xml.Linq;
 using CmsData.API;
 
@@ -39,6 +40,7 @@ If you need a longer explanation, use InstructionalText above the question so yo
 		{
 			public string Name { get; set; }
 			public string Question { get; set; }
+            [DisplayName("Sub-Group")]
 			public string SmallGroup { get; set; }
 		    public void WriteXml(APIWriter w)
 		    {
@@ -50,11 +52,10 @@ If you need a longer explanation, use InstructionalText above the question so yo
 		    // ReSharper disable once MemberHidesStaticFromOuterClass
 		    public static YesNoQuestion ReadXml(XElement e)
 		    {
-		        return new YesNoQuestion
-		        {
-		            Question = e.Element("Question")?.Value,
-		            SmallGroup = e.Element("SmallGroup")?.Value
-		        };
+		        var i = new YesNoQuestion();
+		        i.Question = e.Element("Question")?.Value;
+		        i.SmallGroup = e.Element("SmallGroup")?.Value ?? i.Question;
+		        return i;
 		    }
 		}
 	}
