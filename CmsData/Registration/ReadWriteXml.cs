@@ -20,6 +20,8 @@ namespace CmsData.Registration
 
         public static Settings CreateSettings(string s, CMSDataContext db, int orgId)
         {
+            if (s == null)
+                s = "";
             if (s.StartsWith("<?xml") || s.StartsWith("<Settings>"))
             {
                 var settings = Util.DeSerialize<Settings>(s);
