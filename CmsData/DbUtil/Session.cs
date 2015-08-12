@@ -274,7 +274,7 @@ namespace CmsData
             {
                 // this works at the database level, not as a user preference
                 // useful for turning the new feature on, then having a quik way to put it back in case something goes badly
-                return DbUtil.Db.Setting("UseXmlRegistrations", "false").ToBool();
+                return DbUtil.Db.Setting("UseXmlRegistrations", "true").ToBool();
             }
             set
             {
