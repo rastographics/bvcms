@@ -188,6 +188,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
             return null;
         }
 
+        public string ExtraQuestionAnswer(int id, string question)
+        {
+            if(ExtraQuestion[id].ContainsKey(question))
+                return ExtraQuestion[id][question];
+            return "n/a";
+        }
+        public string TextAnswer(int id, string question)
+        {
+            if(Text[id].ContainsKey(question))
+                return Text[id][question];
+            return "n/a";
+        }
+
         public string RegistrantProblem;
         public string CancelText = "Cancel this person";
         internal int count;

@@ -77,12 +77,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string SpecialGivingFundsHeader => DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
-        public IEnumerable<Organization> GetOrgsInDiv()
-        {
-            return from o in DbUtil.Db.Organizations
-                   where o.DivOrgs.Any(di => di.DivId == divid)
-                   select o;
-        }
         public bool UserSelectsOrganization()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelects;
@@ -97,17 +91,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool DisplaySelectedOrg()
         {
             return (UserSelectsOrganization() || ComputesOrganizationByAge()) && org != null;
-        }
-
-
-        private bool RegistrationType(int typ)
-        {
-            if (divid == null)
-                return false;
-            var q = from o in GetOrgsInDiv()
-                    where o.RegistrationTypeId == typ
-                    select o;
-            return q.Any();
         }
 
         public bool ShowCancelButton()
@@ -130,12 +113,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool ChooseVolunteerTimes()
         {
-            return RegistrationType(RegistrationTypeCode.ChooseVolunteerTimes);
+            return org?.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes;
         }
 
         public bool ManageGiving()
         {
-            return RegistrationType(RegistrationTypeCode.ManageGiving);
+            return org?.RegistrationTypeId == RegistrationTypeCode.ManageGiving;
         }
 
         public bool OnlineGiving()
