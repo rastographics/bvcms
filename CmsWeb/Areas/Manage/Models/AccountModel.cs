@@ -370,9 +370,22 @@ namespace CmsWeb.Models
                 SetUserInfo(status.User.Username, Session);
                 FormsAuthentication.SetAuthCookie(status.User.Username, false);
                 DbUtil.LogActivity($"User {status.User.Username} logged in");
+                DailyDeleteSpecialTagsForUser();
                 return status.User;
             }
             return status.ErrorMessage;
+        }
+
+        private static void DailyDeleteSpecialTagsForUser()
+        {
+            var dbsessionstart = DbUtil.Db.FetchTag("SessionStart", Util.UserPeopleId, DbUtil.TagTypeId_System);
+            if ((dbsessionstart?.Created ?? DateTime.Today) <= DateTime.Today)
+            {
+                dbsessionstart = DbUtil.Db.FetchOrCreateTag("SessionStart", Util.UserPeopleId, DbUtil.TagTypeId_System);
+                dbsessionstart.Created = DateTime.Now;
+                DbUtil.Db.SubmitChanges();
+                DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
+            }
         }
 
         public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request)
@@ -400,8 +413,6 @@ namespace CmsWeb.Models
             if (u == null)
                 return;
             Session["ActivePerson"] = u.Name;
-            if (deleteSpecialTags)
-                DbUtil.Db.DeleteSpecialTags(u.PeopleId);
         }
 
         public static User SetUserInfo(string username, HttpSessionStateBase Session)
