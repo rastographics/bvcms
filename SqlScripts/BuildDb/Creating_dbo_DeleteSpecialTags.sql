@@ -22,16 +22,19 @@ FROM dbo.TagShare s
 JOIN dbo.Tag t ON s.TagId = t.Id
 WHERE Name LIKE '.temp email tag%'
 AND (t.PeopleId = @pid OR @pid IS NULL)
+AND t.Created < DATEADD(HOUR, -16, GETDATE())
 
 DELETE dbo.TagPerson
 FROM dbo.TagPerson tp
 JOIN dbo.Tag t ON tp.Id = t.Id
 WHERE t.Name LIKE '.temp email tag%' 
 AND (t.PeopleId = @pid OR @pid IS NULL)
+AND t.Created < DATEADD(HOUR, -16, GETDATE())
 
 DELETE FROM dbo.Tag
 WHERE Name LIKE '.temp email tag%'
 AND (PeopleId = @pid OR @pid IS NULL)
+AND Created < DATEADD(HOUR, -16, GETDATE())
 
 DELETE dbo.TagPerson
 FROM dbo.TagPerson tp

@@ -375,6 +375,7 @@ namespace CmsWeb.Models
             return status.ErrorMessage;
         }
 
+
         public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request)
         {
 #if DEBUG
@@ -400,8 +401,8 @@ namespace CmsWeb.Models
             if (u == null)
                 return;
             Session["ActivePerson"] = u.Name;
-            if (deleteSpecialTags)
-                DbUtil.Db.DeleteSpecialTags(u.PeopleId);
+            if(deleteSpecialTags)
+                DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
         }
 
         public static User SetUserInfo(string username, HttpSessionStateBase Session)

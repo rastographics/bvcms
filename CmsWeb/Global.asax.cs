@@ -227,7 +227,7 @@ namespace CmsWeb
 
         private bool IsEmailBodyError(Exception ex)
         {
-            if (ex is ArgumentException && ex.Message.Contains("GetEmailBody"))
+            if (ex is ArgumentException && ex.Message.Contains("EmailBody(Int32)"))
             {
                 var a = Request.Path.Split('/');
                 if (a.Length > 0 && !a[a.Length - 1].AllDigits())

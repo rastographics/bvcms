@@ -6,7 +6,8 @@ CREATE TABLE [dbo].[Tag]
 [Owner] [nvarchar] (50) NULL,
 [Active] [bit] NULL,
 [PeopleId] [int] NULL,
-[OwnerName] AS ([dbo].[UName]([PeopleId]))
+[OwnerName] AS ([dbo].[UName]([PeopleId])),
+[Created] [datetime] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
