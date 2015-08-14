@@ -108,12 +108,14 @@ This makes available an accessible directory for any member of this organization
 ";
         private const string GradeAgeStartDescription = @"
 Used during promotion to assign a grade to a student who joins this class.
+Keeps you from having to maintain grades once a year.
 
 Must be a integer number, not a range,
 **Do Not Use** something like 7-10.
 Only effective for graded classes.
 
-This facility keeps you from having to maintain grades once a year.
+**This field only works** when the Org is a Main Fellowship type of organization.
+See *[this help article](http://docs.touchpointsoftware.com/Organizations/GeneralSettings.html)*.
 ";
         private const string GenderDescription = @"
 For the 'Compute Org by Birthday/Gender' Registration Type.
