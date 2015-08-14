@@ -5,7 +5,7 @@
     var showhelp = DbUtil.Db.UserPreference("ShowGeneralHelp") == "true";
     ViewBag.ShowHelp = showhelp;
     var mforg = Model.Org.IsBibleFellowshipOrg == true;
-    var gradehelp = showhelp || mforg || Model.GradeAgeStart == null ? null : new { help = "See help for how the Grade works only on Main Fellowship orgs" };
+    var gradehelp = showhelp || mforg || Model.GradeAgeStart == null ? null : new { help = "See Show Help for how the Grade works only on Main Fellowship orgs" };
 }
 <form class="ajax">
   <div class="row">
