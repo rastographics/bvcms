@@ -176,6 +176,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public int? MenuItemValue(int i, string s)
         {
+            if (s == null)
+                return null;
             if (MenuItem[i].ContainsKey(s))
                 return MenuItem[i][s];
             return null;
