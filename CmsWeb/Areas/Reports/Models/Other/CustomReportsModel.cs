@@ -34,9 +34,23 @@ namespace CmsWeb.Areas.Reports.Models
             this.orgid = orgid;
         }
 
-        public IEnumerable<string> ReportList()
+        public class ReportItem
         {
-            var list = new List<string>();
+            public ReportItem(string report, string type = "Custom")
+            {
+                this.report = report;
+                this.type = type;
+            }
+            public string report { get; set; }
+            public string type { get; set; }
+            public override string ToString()
+            {
+                return report;
+            }
+        }
+        public IEnumerable<ReportItem> ReportList()
+        {
+            var list = new List<ReportItem>();
             var body = GetCustomReportsContent();
             if (body.HasValue())
             {
@@ -44,17 +58,18 @@ namespace CmsWeb.Areas.Reports.Models
                 if (xdoc.Root == null)
                     return list;
                 var q = from e in xdoc.Root.Elements("Report")
-                        let r = (string)e.Attribute("name")
-                        let oid = ((string)e.Attribute("showOnOrgId")).ToInt()
-                        where oid == 0 || oid == orgid
-                        where r != null
-                        where r != "AllColumns"
-                        select r;
+                    let r = (string) e.Attribute("name")
+                    let oid = ((string) e.Attribute("showOnOrgId")).ToInt()
+                    let typ = ((string) e.Attribute("type") ?? "Custom")
+                    where oid == 0 || oid == orgid
+                    where r != null
+                    where r != "AllColumns"
+                    select new ReportItem(r, typ);
 
                 foreach (var r in q.Where(r => !list.Contains(r)))
                     list.Add(r);
             }
-            list.Add("AllColumns");
+            list.Add(new ReportItem("AllColumns"));
             return list;
         }
 

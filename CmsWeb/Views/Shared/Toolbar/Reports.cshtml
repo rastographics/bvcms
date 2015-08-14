@@ -116,8 +116,8 @@
                     {
                         <li>
                             <div class="toolbar-custom-reports">
-                                <a class="run-custom-report" target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a>
-                                @if (r != "AllColumns")
+                                <a class="run-custom-report" target="_blank" href="/Reports/@r.type/@r/@qid" class="qid">@r</a>
+                                @if (r.report != "AllColumns" && r.type == "Custom")
                                 {
                                     <span>
                                         <a href="@Url.Action("EditCustomReport", "Reports", new {Area = "Reports", reportName = r, orgId = oid, queryId = qid})"><i class="fa fa-pencil"></i></a>
@@ -126,7 +126,10 @@
                                 }
                             </div>
                         </li>
+                      if (r.type == "Custom")
+                      {
                         <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+                      }
                     }
                     <li>@Html.ActionLink("New Custom Report", "EditCustomReport", "Reports", new { Area = "Reports", orgId = oid, queryId = qid }, null)</li>
                 }
@@ -134,8 +137,11 @@
                 {
                     foreach (var r in custom)
                     {
-                        <li><a target="_blank" href="/Reports/Custom/@r/@qid" class="qid">@r</a></li>
+                        <li><a target="_blank" href="/Reports/@r.type/@r/@qid" class="qid">@r</a></li>
+                      if (r.type == "Custom")
+                      {
                         <li class="hideAlt"><a target="_blank" href="/Reports/CustomSql/@r/@qid" class="qid">@r (sql)</a></li>
+                      }
                     }
                 }
             }

@@ -585,6 +585,31 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Message(ex.Message);
             }
         }
+        [HttpGet]
+        [Route("SqlReport/{report}/{id?}")]
+        public ActionResult SqlReport(Guid id, string report)
+        {
+            var content = DbUtil.Db.ContentOfTypeSql(report);
+            if (content == null)
+                return Content("no content");
+            if (!content.Body.Contains("@qtagid"))
+                return Content("missing @qtagid");
+
+            var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+
+            var cs = User.IsInRole("Finance")
+                ? Util.ConnectionString
+                : Util.ConnectionStringReadOnly;
+            var cn = new SqlConnection(cs);
+            cn.Open();
+
+            var p = new DynamicParameters();
+            p.Add("@qtagid", tag.Id);
+
+            ViewBag.name = report;
+            var rd = cn.ExecuteReader(content.Body, p);
+            return View(rd);
+        }
 
         [HttpPost]
         public ActionResult SGMap(OrgSearchModel m)
