@@ -678,10 +678,10 @@ namespace CmsData
             }
             return url;
         }
-        public string UploadExcelFromSqlToDropBox(string sqlscript, string targetpath, string filename)
+        public void UploadExcelFromSqlToDropBox(string sqlscript, string targetpath, string filename)
         {
-            var usertoken = ConfigurationManager.AppSettings["DropBoxUserToken"];
-            var url = ConfigurationManager.AppSettings["DropBoxUrl"];
+            var accesstoken = DbUtil.Db.Setting("DropBoxAccessToken", ConfigurationManager.AppSettings["DropBoxAccessToken"]);
+            var url = DbUtil.Db.Setting("DropBoxUrl", ConfigurationManager.AppSettings["DropBoxUrl"]);
 
             var script = db.Content(sqlscript, "");
             if (!script.HasValue())
@@ -689,11 +689,10 @@ namespace CmsData
             var bytes = db.Connection.ExecuteReader(script).ToExcelBytes(filename);
 
             var wc = new WebClient();
-            wc.Headers.Add($"Authorization: Bearer {usertoken}");
+            wc.Headers.Add($"Authorization: Bearer {accesstoken}");
             wc.Headers.Add("Content-Type: application/octet-stream");
-            wc.Headers.Add($@"Dropbox-API-Arg: {{""path"":""{targetpath}/{filename}""}}");
+            wc.Headers.Add($@"Dropbox-API-Arg: {{""path"":""{targetpath}/{filename}"",""mode"":""overwrite""}}");
             wc.UploadData("https://content.dropboxapi.com/2-beta-2/files/upload", bytes);
-            return $"{url}/{targetpath}/{filename}";
         }
         public string UploadExcelFromSqlToRackspace(string sqlscript, string filename)
         {
