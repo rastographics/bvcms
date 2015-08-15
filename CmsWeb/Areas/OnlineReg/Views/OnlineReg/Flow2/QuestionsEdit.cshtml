@@ -135,7 +135,7 @@
                 break;
             case "AskGradeOptions":
                 @Html.EditorFor(m => m, "AskGradeOptions",
-                        new { items = Model.GradeOptions(ask), label = ((AskGradeOptions)ask).Label })
+                        new { items = Model.GradeOptions(ask), label = ((AskGradeOptions)ask).Label ?? "Grade Options" })
                 break;
             case "AnswersNotRequired":
                 break;
