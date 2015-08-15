@@ -230,18 +230,6 @@
     <HasContacts Title="Has Contacts" Type="Bit" DataValueField="IdCode">
       Select True or False to find anyone who has received a Contact.
     </HasContacts>
-    <ChristAsSavior Title="Professed Christ as Savior" Type="Bit" DataValueField="IdCode">
-      Select True or False for those with this checkbox flagged on their Growth tab.
-    </ChristAsSavior>
-    <InfoBecomeAChristian Title="Info on Becoming a Christian" Type="Bit" DataValueField="IdCode">
-      Select True or False for those with this checkbox flagged on their Growth tab.
-    </InfoBecomeAChristian>
-    <InterestedInJoining Title="Interested In Joining" Type="Bit" DataValueField="IdCode">
-      Select True or False for those with this checkbox flagged on their Growth tab.
-    </InterestedInJoining>
-    <PleaseVisit Title="Please Visit" Type="Bit" DataValueField="IdCode">
-      Select True or False for those with this checkbox flagged on their Growth tab.
-    </PleaseVisit>
     <ContactRecipient Title="Contact Recipients" Type="IntegerEqual" DisplayAs="ContactRecipientForId">
       Enter Contact ID number.
     </ContactRecipient>
