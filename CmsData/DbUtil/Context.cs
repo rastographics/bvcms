@@ -376,7 +376,7 @@ namespace CmsData
             if (TagTypeId == DbUtil.TagTypeId_Emailer)
             {
                 name = $".temp email tag {DateTime.Now:t}";
-                TagTypeId = DbUtil.TagTypeId_Personal; // so it won't be deleted
+                TagTypeId = DbUtil.TagTypeId_System;
             }
             else
                 name = Util.SessionId;
@@ -443,9 +443,9 @@ namespace CmsData
         {
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
         }
-        public void PopulateSpecialTag(IQueryable<Person> q, string tagname)
+        public void PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
         {
-            var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_Personal);
+            var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, tagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             tag.Created = DateTime.Now;
             SubmitChanges();

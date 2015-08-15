@@ -663,7 +663,6 @@ namespace CmsWeb.Code
             var q1 = from t in DbUtil.Db.Tags
                      where t.PeopleId == UserPeopleId
                      where t.TypeId == DbUtil.TagTypeId_Personal
-                     where !t.Name.StartsWith(".temp email")
                      orderby t.Name.StartsWith(".") ? "z" : "", t.Name
                      select new CodeValueItem
                      {
@@ -675,7 +674,6 @@ namespace CmsWeb.Code
                      where t.PeopleId != UserPeopleId
                      where t.TagShares.Any(ts => ts.PeopleId == UserPeopleId)
                      where t.TypeId == DbUtil.TagTypeId_Personal
-                     where !t.Name.StartsWith(".temp email")
                      orderby t.PersonOwner.Name2, t.Name.StartsWith(".") ? "z" : "", t.Name
                      let op = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == t.PeopleId)
                      select new CodeValueItem
