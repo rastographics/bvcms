@@ -41,6 +41,7 @@ namespace CmsWeb.Areas.People.Models
             if (isvalid)
                 statusflags = string.Join(",", from s in DbUtil.Db.StatusFlagsPerson(id).ToList()
                                                where s.RoleName == null || HttpContext.Current.User.IsInRole(s.RoleName)
+                                               orderby s.TokenID
                                                select s.Name);
             else
                 statusflags = "invalid setting in status flags";
