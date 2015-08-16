@@ -47,7 +47,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     if (settings == null)
                         throw new Exception("settings are null");
                     if (!settings.ContainsKey(org.OrganizationId))
-                        settings[org.OrganizationId] = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+                        settings[org.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
                     _setting = settings[org.OrganizationId];
                     AfterSettingConstructor();
                 }
@@ -77,12 +77,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string SpecialGivingFundsHeader => DbUtil.Db.Setting("SpecialGivingFundsHeader", "Special Giving Funds");
 
-        public IEnumerable<Organization> GetOrgsInDiv()
-        {
-            return from o in DbUtil.Db.Organizations
-                   where o.DivOrgs.Any(di => di.DivId == divid)
-                   select o;
-        }
         public bool UserSelectsOrganization()
         {
             return masterorgid.HasValue && masterorg.RegistrationTypeId == RegistrationTypeCode.UserSelects;
@@ -97,17 +91,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public bool DisplaySelectedOrg()
         {
             return (UserSelectsOrganization() || ComputesOrganizationByAge()) && org != null;
-        }
-
-
-        private bool RegistrationType(int typ)
-        {
-            if (divid == null)
-                return false;
-            var q = from o in GetOrgsInDiv()
-                    where o.RegistrationTypeId == typ
-                    select o;
-            return q.Any();
         }
 
         public bool ShowCancelButton()
@@ -130,12 +113,12 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public bool ChooseVolunteerTimes()
         {
-            return RegistrationType(RegistrationTypeCode.ChooseVolunteerTimes);
+            return org?.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes;
         }
 
         public bool ManageGiving()
         {
-            return RegistrationType(RegistrationTypeCode.ManageGiving);
+            return org?.RegistrationTypeId == RegistrationTypeCode.ManageGiving;
         }
 
         public bool OnlineGiving()
@@ -168,7 +151,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             if (org == null) return "Organization not found.";
 
-            var settings = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+            var settings = DbUtil.Db.CreateRegistrationSettings(org.OrganizationId);
 
             var body = DbUtil.Content(settings.SpecialScript, "Shell not found.");
             body = body.Replace("[action]", "/OnlineReg/SpecialRegistrationResults/" + org.OrganizationId, true);
@@ -197,9 +180,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_org == null && orgid.HasValue)
                 {
-                    if (orgid == Util.CreateAccountCode)
-                        _org = OnlineRegModel.CreateAccountOrg();
-                    else
+//                    if (orgid == Util.CreateAccountCode)
+//                        _org = OnlineRegModel.CreateAccountOrg();
+//                    else
                         _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
                 }
                 if (_org == null && (divid.HasValue || masterorgid.HasValue) && (Found == true || IsValidForNew))

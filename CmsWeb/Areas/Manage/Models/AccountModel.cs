@@ -70,7 +70,7 @@ namespace CmsWeb.Models
         private const string STR_UserName2 = "UserName2";
         public static string UserName2
         {
-            get { return HttpContext.Current.Items[STR_UserName2] as String; }
+            get { return HttpContext.Current.Items[STR_UserName2] as string; }
             set { HttpContext.Current.Items[STR_UserName2] = value; }
         }
 
@@ -120,6 +120,7 @@ namespace CmsWeb.Models
 
             return userStatus;
         }
+
         public static UserValidationResult AuthenticateMobile2(bool checkOrgMembersOnly = false, bool requirePin = false)
         {
             var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
@@ -157,7 +158,6 @@ namespace CmsWeb.Models
 
             return userStatus;
         }
-
 
         public static UserValidationResult ResetSessionExpiration(string sessionToken)
         {
@@ -313,7 +313,8 @@ namespace CmsWeb.Models
                 DbUtil.LogActivity($"failed password #{failedPasswordCount} by {userName}");
 
                 if (failedPasswordCount == maxInvalidPasswordAttempts)
-                    return UserValidationResult.Invalid(UserValidationStatus.TooManyFailedPasswordAttempts, "Your account has been locked out for too many failed attempts, use the forgot password link, or notify an Admin");
+                    return UserValidationResult.Invalid(UserValidationStatus.TooManyFailedPasswordAttempts,
+                        "Your account has been locked out for too many failed attempts, use the forgot password link, or notify an Admin");
 
                 return UserValidationResult.Invalid(UserValidationStatus.IncorrectPassword, DEFAULT_PROBLEM);
             }
@@ -352,6 +353,12 @@ namespace CmsWeb.Models
                 }
             }
 
+            if (user.Roles.Contains("APIOnly"))
+            {
+                return UserValidationResult.Invalid(UserValidationStatus.NoUserFound,
+                    "Api User is limited to API use only, no interactive login allowed.");
+            }
+
             return UserValidationResult.Valid(user);
         }
 
@@ -367,6 +374,8 @@ namespace CmsWeb.Models
             }
             return status.ErrorMessage;
         }
+
+
         public static object AutoLogin(string userName, HttpSessionStateBase Session, HttpRequestBase Request)
         {
 #if DEBUG
@@ -392,8 +401,8 @@ namespace CmsWeb.Models
             if (u == null)
                 return;
             Session["ActivePerson"] = u.Name;
-            if (deleteSpecialTags)
-                DbUtil.Db.DeleteSpecialTags(u.PeopleId);
+            if(deleteSpecialTags)
+                DbUtil.Db.DeleteSpecialTags(Util.UserPeopleId);
         }
 
         public static User SetUserInfo(string username, HttpSessionStateBase Session)

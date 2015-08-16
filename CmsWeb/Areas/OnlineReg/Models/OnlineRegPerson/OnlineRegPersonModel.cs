@@ -176,6 +176,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public int? MenuItemValue(int i, string s)
         {
+            if (s == null)
+                return null;
             if (MenuItem[i].ContainsKey(s))
                 return MenuItem[i][s];
             return null;
@@ -186,6 +188,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (FundItem.ContainsKey(n))
                 return FundItem[n];
             return null;
+        }
+
+        public string ExtraQuestionAnswer(int id, string question)
+        {
+            if(ExtraQuestion[id].ContainsKey(question))
+                return ExtraQuestion[id][question];
+            return "n/a";
+        }
+        public string TextAnswer(int id, string question)
+        {
+            if(Text[id].ContainsKey(question))
+                return Text[id][question];
+            return "n/a";
         }
 
         public string RegistrantProblem;

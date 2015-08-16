@@ -1,24 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
 using UtilityExtensions;
+using RegistrationSettingsParser;
 
 namespace CmsData.Registration
 {
     [Serializable]
     public partial class Settings : IXmlSerializable
     {
+        public override string ToString()
+        {
+            return Util2.UseXmlRegistrations ? Util.Serialize(this) : Parser.Output(this);
+        }
+
+        public static Settings CreateSettings(string s, CMSDataContext db, int orgId)
+        {
+            if (s == null)
+                s = "";
+            if (s.StartsWith("<?xml") || s.StartsWith("<Settings>"))
+            {
+                var settings = Util.DeSerialize<Settings>(s);
+                settings.Db = db;
+                settings.OrgId = orgId;
+                settings.org = db.LoadOrganizationById(orgId);
+                return settings;
+            }
+            return Parser.ParseSettings(s, db, orgId);
+        }
+
         public void ReadXml(XmlReader reader)
         {
-            var x = XDocument.Load(reader);
-            if (x.Root == null) return;
+            var xd = XDocument.Load(reader);
+            if (xd.Root == null) return;
 
-            foreach (var e in x.Root.Elements())
+            foreach (var e in xd.Root.Elements())
             {
                 var name = e.Name.ToString();
                 switch (name)
@@ -49,30 +69,31 @@ namespace CmsData.Registration
                         AccountingCode = e.Element("AccountingCode")?.Value;
                         IncludeOtherFeesWithDeposit = e.Element("IncludeOtherFeesWithDeposit")?.Value.ToBool2() ?? false;
                         OtherFeesAddedToOrgFee = e.Element("OtherFeesAddedToOrgFee")?.Value.ToBool2() ?? false;
-                        DonationLabel = e.Element("AskDonation")?.Element("Label")?.Value;
-                        DonationFundId = e.Element("AskDonation")?.Element("FundId")?.Value.ToInt2();
+                        AskDonation = e.Element("AskDonation")?.Value.ToBool2() ?? false;
+                        DonationLabel = e.Element("DonationLabel")?.Value;
+                        DonationFundId = e.Element("DonationFundId")?.Value.ToInt2();
                         break;
                     case "AgeGroups":
-                        if(AgeGroups == null)
+                        if (AgeGroups == null)
                             AgeGroups = new List<AgeGroup>();
-                        var ageGroup = new AgeGroup
-                        {
-                            StartAge = e.Attribute("StartAge")?.Value.ToInt2() ?? 0,
-                            EndAge = e.Attribute("EndAge")?.Value.ToInt2() ?? 0,
-                            Fee = e.Attribute("Fee")?.Value.ToDecimal(),
-                            SmallGroup = e.Value
-                        };
-                        AgeGroups.Add(ageGroup);
+                        foreach (var ee in e.Elements("Group"))
+                            AgeGroups.Add(new AgeGroup
+                            {
+                                StartAge = ee.Attribute("StartAge")?.Value.ToInt2() ?? 0,
+                                EndAge = ee.Attribute("EndAge")?.Value.ToInt2() ?? 0,
+                                Fee = ee.Attribute("Fee")?.Value.ToDecimal(),
+                                SmallGroup = ee.Value
+                            });
                         break;
                     case "OrgFees":
-                        if(OrgFees == null)
+                        if (OrgFees == null)
                             OrgFees = new List<OrgFee>();
-                        var orgfee = new OrgFee
-                        {
-                            OrgId = e.Attribute("OrgId").Value.ToInt(),
-                            Fee = e.Attribute("Fee").Value.ToDecimal()
-                        };
-                        OrgFees.Add(orgfee);
+                        foreach (var ee in e.Elements("Fee"))
+                            OrgFees.Add(new OrgFee
+                            {
+                                OrgId = ee.Attribute("OrgId")?.Value.ToInt(),
+                                Fee = ee.Attribute("Fee")?.Value.ToDecimal()
+                            });
                         break;
                     case "Instructions":
                         InstructionLogin = e.Element("Login")?.Value;
@@ -86,7 +107,7 @@ namespace CmsData.Registration
                         Terms = e.Element("Terms")?.Value;
                         break;
                     case "Options":
-                        ConfirmationTrackingCode = e.Element("ConfirmTrackingCode")?.Value;
+                        ConfirmationTrackingCode = e.Element("ConfirmationTrackingCode")?.Value;
                         ValidateOrgs = e.Element("ValidateOrgs")?.Value;
                         Shell = e.Element("Shell")?.Value;
                         ShellBs = e.Element("ShellBs")?.Value;
@@ -112,16 +133,9 @@ namespace CmsData.Registration
                         NotReqMarital = e.Element("NotReqMarital")?.Value.ToBool2() ?? false;
                         break;
                     case "TimeSlots":
-                        TimeSlotLockDays = e.Attribute("LockDays")?.Value.ToInt2();
-                        TimeSlots = new TimeSlots();
-                        foreach (var ele in e.Elements("Slot"))
-                            TimeSlots.list.Add(new TimeSlots.TimeSlot()
-                            {
-                                Time = ele.Attribute("Time")?.Value.ToDate(),
-                                DayOfWeek = ele.Attribute("DayOfWeek")?.Value.ToInt2() ?? 0,
-                                Limit = ele.Attribute("Limit")?.Value.ToInt2(),
-                                Description = ele.Value,
-                            });
+                        TimeSlots = TimeSlots.ReadXml(e);
+                        if (TimeSlots.TimeSlotLockDays.HasValue)
+                            TimeSlotLockDays = TimeSlots.TimeSlotLockDays;
                         break;
                     case "AskItems":
                         foreach (var ele in e.Elements())
@@ -130,13 +144,17 @@ namespace CmsData.Registration
 
                 }
             }
+            SetUniqueIds("AskDropdown");
+            SetUniqueIds("AskExtraQuestions");
+            SetUniqueIds("AskCheckboxes");
+            SetUniqueIds("AskText");
+            SetUniqueIds("AskMenu");
         }
 
         public void WriteXml(XmlWriter writer)
         {
             var w = new APIWriter(writer);
-            var userPeopleId = Util.UserPeopleId;
-            writer.WriteComment($"{userPeopleId} {DateTime.Now:g}");
+            w.AddComment($"{Util.UserPeopleId} {DateTime.Now:g}");
 
             w.StartPending("Confirmation")
                 .Add("Subject", Subject)
@@ -163,11 +181,12 @@ namespace CmsData.Registration
                 .Add("Deposit", Deposit)
                 .Add("ExtraFee", ExtraFee)
                 .Add("MaximumFee", MaximumFee)
-                .Add("ApplyMaxToOtherFees", ApplyMaxToOtherFees)
                 .Add("ExtraValueFeeName", ExtraValueFeeName)
                 .Add("AccountingCode", AccountingCode)
+                .AddIfTrue("ApplyMaxToOtherFees", ApplyMaxToOtherFees)
                 .AddIfTrue("IncludeOtherFeesWithDeposit", IncludeOtherFeesWithDeposit)
                 .AddIfTrue("OtherFeesAddedToOrgFee", OtherFeesAddedToOrgFee)
+                .AddIfTrue("AskDonation", AskDonation)
                 .Add("DonationLabel", DonationLabel)
                 .Add("DonationFundId", DonationFundId)
                 .EndPending();
@@ -205,7 +224,7 @@ namespace CmsData.Registration
                 .EndPending();
 
             w.StartPending("Options")
-                .Add("ConfirmationTrackingCode", ConfirmationTrackingCode)
+                .AddCdata("ConfirmationTrackingCode", ConfirmationTrackingCode)
                 .Add("ValidateOrgs", ValidateOrgs)
                 .Add("Shell", Shell)
                 .Add("ShellBs", ShellBs)
@@ -238,12 +257,10 @@ namespace CmsData.Registration
             foreach (var a in AskItems)
                 a.WriteXml(w);
             w.EndPending();
-
         }
         public XmlSchema GetSchema()
         {
             throw new NotImplementedException();
         }
-
     }
 }

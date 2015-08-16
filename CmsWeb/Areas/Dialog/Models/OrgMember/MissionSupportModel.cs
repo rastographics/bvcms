@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Dialog.Models
             var org = DbUtil.Db.LoadOrganizationById(OrgId);
             var notifyIds = DbUtil.Db.NotifyIds(org.GiftNotifyIds);
             var person = DbUtil.Db.LoadPersonById(PeopleId ?? 0);
-            var setting = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
+            var setting = DbUtil.Db.CreateRegistrationSettings(OrgId ?? 0);
             var fund = setting.DonationFundId;
             if (AmountGoer > 0)
             {

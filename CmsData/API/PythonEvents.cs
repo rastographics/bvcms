@@ -7,7 +7,6 @@ using UtilityExtensions;
 using IronPython.Hosting;
 using System;
 using System.Configuration;
-using System.Data;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
@@ -15,7 +14,6 @@ using System.Text.RegularExpressions;
 using CmsData.API;
 using Dapper;
 using Microsoft.Scripting.Hosting;
-using OfficeOpenXml;
 
 namespace CmsData
 {
@@ -666,7 +664,7 @@ namespace CmsData
             return s.FmtFone(prefix);
         }
 
-        public string UploadExcelFromSqlToFtp(string sqlscript, string username, string password, string filename, string targetpath)
+        public string UploadExcelFromSqlToFtp(string sqlscript, string username, string password, string targetpath, string filename)
         {
             var script = db.Content(sqlscript, "");
             if (!script.HasValue())
@@ -679,6 +677,22 @@ namespace CmsData
                 webClient.UploadData(url, bytes);
             }
             return url;
+        }
+        public void UploadExcelFromSqlToDropBox(string sqlscript, string targetpath, string filename)
+        {
+            var accesstoken = DbUtil.Db.Setting("DropBoxAccessToken", ConfigurationManager.AppSettings["DropBoxAccessToken"]);
+            var url = DbUtil.Db.Setting("DropBoxUrl", ConfigurationManager.AppSettings["DropBoxUrl"]);
+
+            var script = db.Content(sqlscript, "");
+            if (!script.HasValue())
+                throw new Exception("no sql script found");
+            var bytes = db.Connection.ExecuteReader(script).ToExcelBytes(filename);
+
+            var wc = new WebClient();
+            wc.Headers.Add($"Authorization: Bearer {accesstoken}");
+            wc.Headers.Add("Content-Type: application/octet-stream");
+            wc.Headers.Add($@"Dropbox-API-Arg: {{""path"":""{targetpath}/{filename}"",""mode"":""overwrite""}}");
+            wc.UploadData("https://content.dropboxapi.com/2-beta-2/files/upload", bytes);
         }
         public string UploadExcelFromSqlToRackspace(string sqlscript, string filename)
         {

@@ -1,16 +1,14 @@
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using UtilityExtensions;
 using CmsData;
 using CmsWeb.Models;
-using System.Web.UI.WebControls;
-using System.Web.UI;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
-    [Authorize(Roles="Coupon")]
-    [RouteArea("Main", AreaPrefix="Coupon"), Route("{action}/{id?}")]
+    [Authorize(Roles = "Coupon")]
+    [RouteArea("Main", AreaPrefix = "Coupon"), Route("{action}/{id?}")]
     public class CouponController : CmsStaffController
     {
         [Route("~/Coupons")]
@@ -19,6 +17,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var m = new CouponModel();
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Create(CouponModel m)
         {
@@ -28,6 +27,7 @@ namespace CmsWeb.Areas.Main.Controllers
             m.CreateCoupon();
             return View(m);
         }
+
         public ActionResult Cancel(string id)
         {
             var c = DbUtil.Db.Coupons.SingleOrDefault(cp => cp.Id == id);
@@ -39,11 +39,13 @@ namespace CmsWeb.Areas.Main.Controllers
             var m = new CouponModel();
             return View("List", m);
         }
+
         public ActionResult List()
         {
             var m = new CouponModel();
             return View(m);
         }
+
         [HttpPost]
         public ActionResult List(string submit, CouponModel m)
         {

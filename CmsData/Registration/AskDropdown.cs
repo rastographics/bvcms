@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
+using CmsData;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -30,36 +31,6 @@ This will be presented as a dropdown selection.
         {
             list = new List<DropdownItem>();
         }
-        public override void Output(StringBuilder sb)
-        {
-            if (list == null || list.Count == 0)
-                return;
-            Settings.AddValueNoCk(0, sb, "Dropdown", Label);
-            foreach (var i in list)
-                i.Output(sb);
-            sb.AppendLine();
-        }
-        public static AskDropdown Parse(Parser parser)
-        {
-            var dd = new AskDropdown();
-            dd.Label = parser.GetString("Dropdown");
-            dd.list = new List<DropdownItem>();
-            if (parser.curr.indent == 0)
-                return dd;
-            var startindent = parser.curr.indent;
-            while (parser.curr.indent == startindent)
-            {
-                var m = DropdownItem.Parse(parser, startindent);
-                dd.list.Add(m);
-            }
-            var q = (from i in dd.list
-                     group i by i.SmallGroup into g
-                     where g.Count() > 1
-                     select g.Key).ToList();
-            if (q.Any())
-                throw parser.GetException($"Duplicate SmallGroup in Dropdown: {string.Join(",", q)}");
-            return dd;
-        }
         public override void WriteXml(APIWriter w)
         {
             if (list.Count == 0)
@@ -72,7 +43,7 @@ This will be presented as a dropdown selection.
         }
 		public new static AskDropdown ReadXml(XElement ele)
 		{
-		    var dd = new AskDropdown {Label = ele.Value};
+		    var dd = new AskDropdown {Label = ele.Element("Label")?.Value};
 		    foreach (var ee in ele.Elements("DropdownItem"))
 		        dd.list.Add(DropdownItem.ReadXml(ee));
             // todo: prevent duplicates
@@ -111,7 +82,7 @@ This will be presented as a dropdown selection.
             desc = i.Description;
             return i.IsSmallGroupFilled(smallgroups);
         }
-        public class DropdownItem
+        public partial class DropdownItem
         {
             public string Name { get; set; }
             public string Description { get; set; }
@@ -132,48 +103,6 @@ This will be presented as a dropdown selection.
             public DropdownItem()
             {
 
-            }
-
-            public void Output(StringBuilder sb)
-            {
-                Settings.AddValueCk(1, sb, Description);
-                Settings.AddValueCk(2, sb, "SmallGroup", SmallGroup);
-                Settings.AddValueCk(2, sb, "Fee", Fee);
-                Settings.AddValueCk(2, sb, "Limit", Limit);
-                Settings.AddValueCk(2, sb, "Time", MeetingTime.ToString2("s"));
-            }
-
-            public static DropdownItem Parse(Parser parser, int startindent)
-            {
-                var i = new DropdownItem();
-                if (parser.curr.kw != Parser.RegKeywords.None)
-                    throw parser.GetException("unexpected line in Dropdown");
-                i.Description = parser.GetLine();
-                i.SmallGroup = i.Description;
-                if (parser.curr.indent <= startindent)
-                    return i;
-                var ind = parser.curr.indent;
-                while (parser.curr.indent == ind)
-                {
-                    switch (parser.curr.kw)
-                    {
-                        case Parser.RegKeywords.SmallGroup:
-                            i.SmallGroup = parser.GetString(i.Description);
-                            break;
-                        case Parser.RegKeywords.Fee:
-                            i.Fee = parser.GetDecimal();
-                            break;
-                        case Parser.RegKeywords.Limit:
-                            i.Limit = parser.GetNullInt();
-                            break;
-                        case Parser.RegKeywords.Time:
-                            i.MeetingTime = parser.GetDateTime();
-                            break;
-                        default:
-                            throw parser.GetException("unexpected line in DropdownItem");
-                    }
-                }
-                return i;
             }
 
             public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)

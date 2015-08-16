@@ -7,6 +7,8 @@ using System.Linq;
 using System.Web;
 using UtilityExtensions;
 using System.Web.Caching;
+using Community.CsharpSqlite;
+using Dapper;
 
 namespace CmsData
 {
@@ -238,5 +240,31 @@ namespace CmsData
                 return user;
             }
         }
+        public bool RegistrationsConverted()
+        {
+            var converted = (bool?)HttpRuntime.Cache[Host + "-RegistrationsConverted"];
+            if (converted.HasValue)
+                return converted.Value;
+
+            var b = Setting("RegistrationsConverted", "false") == "true";
+            if(!b)
+                b = Connection.ExecuteScalar(
+                    @"SELECT CASE WHEN EXISTS(
+                        		SELECT NULL
+                        		FROM dbo.Organizations
+                        		WHERE RegistrationTypeId > 0
+                        		AND LEN(ISNULL(RegSetting,'')) > 0
+                        		AND RegSettingXml IS NULL
+                        	) THEN 1 ELSE 0 END").ToInt() == 0; // 0 == already converted
+            return b;
+        }
+        public void SetRegistrationsConverted()
+        {
+            SetSetting("RegistrationsConverted", "true");
+            SubmitChanges();
+            HttpRuntime.Cache.Insert(Host + "-RegistrationsConverted", true, null,
+                DateTime.Now.AddHours(2), Cache.NoSlidingExpiration);
+        }
+
     }
 }

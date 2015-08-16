@@ -83,7 +83,7 @@ namespace CmsWeb.Areas.Reports.Models
                     {
                         Settings setting = null;
                         if (i.o != null)
-                            setting = new Settings(i.o.RegSetting, DbUtil.Db, i.o.OrganizationId);
+                            setting = DbUtil.Db.CreateRegistrationSettings(i.o.OrganizationId);
                         var t1 = new PdfPTable(1);
                         SetDefaults(t1);
                         t1.AddCell(i.p.Name);

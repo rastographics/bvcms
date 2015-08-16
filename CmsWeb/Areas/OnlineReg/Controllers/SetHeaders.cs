@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var shell = "";
             if ((settings == null || !settings.ContainsKey(id)) && org != null)
             {
-                var setting = OnlineRegModel.ParseSetting(org.RegSetting, id);
+                var setting = DbUtil.Db.CreateRegistrationSettings(id);
                 shell = DbUtil.Content(setting.ShellBs, null);
             }
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))
@@ -68,7 +68,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var shell = "";
             if ((settings == null || !settings.ContainsKey(id)))
             {
-                setting = OnlineRegModel.ParseSetting(org.RegSetting, id);
+                setting = DbUtil.Db.CreateRegistrationSettings(id);
                 shell = DbUtil.Content(setting.Shell, null);
             }
             if (!shell.HasValue() && settings != null && settings.ContainsKey(id))

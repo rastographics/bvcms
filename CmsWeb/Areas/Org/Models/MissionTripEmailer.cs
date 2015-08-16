@@ -20,8 +20,7 @@ namespace CmsWeb.Areas.Org.Models
             set
             {
                 orgId = value;
-                var org = DbUtil.Db.LoadOrganizationById(value);
-                var m = new Settings(org.RegSetting, DbUtil.Db, value);
+                var m = DbUtil.Db.CreateRegistrationSettings(value);
                 Subject = m.SupportSubject;
                 Body = m.SupportBody;
             }

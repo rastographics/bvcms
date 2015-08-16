@@ -313,12 +313,17 @@
     <Reference Include="MiniProfiler">
       <HintPath>..\packages\MiniProfiler.3.1.1.140\lib\net40\MiniProfiler.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RazorEngine, Version=3.4.1.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\RazorEngine.3.4.1\lib\net45\RazorEngine.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\packages\RestSharp.104.4.0\lib\net4\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SendGrid.SmtpApi, Version=1.3.1.0, Culture=neutral, PublicKeyToken=2ae73662c35d80e4, processorArchitecture=MSIL">
       <HintPath>..\packages\SendGrid.SmtpApi.1.3.1\lib\net40\SendGrid.SmtpApi.dll</HintPath>
@@ -700,6 +705,23 @@
     <Compile Include="Registration\AskSuggestedFee.cs" />
     <Compile Include="Registration\AskHeader.cs" />
     <Compile Include="Registration\AskInstruction.cs" />
+    <Compile Include="Registration\Parser\Ask.cs" />
+    <Compile Include="Registration\Parser\AskCheckboxes.cs" />
+    <Compile Include="Registration\Parser\AskDropdown.cs" />
+    <Compile Include="Registration\Parser\AskExtraQuestions.cs" />
+    <Compile Include="Registration\Parser\AskGradeOptions.cs" />
+    <Compile Include="Registration\Parser\AskHeader.cs" />
+    <Compile Include="Registration\Parser\AskInstruction.cs" />
+    <Compile Include="Registration\Parser\AskMenu.cs" />
+    <Compile Include="Registration\Parser\AskRequest.cs" />
+    <Compile Include="Registration\Parser\AskSize.cs" />
+    <Compile Include="Registration\Parser\AskSuggestedFee.cs" />
+    <Compile Include="Registration\Parser\AskText.cs" />
+    <Compile Include="Registration\Parser\AskTickets.cs" />
+    <Compile Include="Registration\Parser\AskYesNoQuestions.cs" />
+    <Compile Include="Registration\Parser\Parser.cs" />
+    <Compile Include="Registration\Parser\ReadWriteText.cs" />
+    <Compile Include="Registration\Parser\TimeSlots.cs" />
     <Compile Include="Registration\ReadWriteXml.cs" />
     <Compile Include="Registration\Settings.cs" />
     <Compile Include="Registration\TimeSlots.cs" />
@@ -708,7 +730,6 @@
     <Compile Include="Registration\AskExtraQuestions.cs" />
     <Compile Include="Registration\AskGradeOptions.cs" />
     <Compile Include="Registration\AskMenu.cs" />
-    <Compile Include="Registration\Parser.cs" />
     <Compile Include="Registration\AskYesNoQuestions.cs" />
     <Compile Include="Finance\SageGateway.cs" />
     <Compile Include="Finance\TransactionResponse.cs" />

@@ -3,11 +3,13 @@ using System.Configuration;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using System.Linq;
 using CmsData;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using CmsWeb.Models;
 using OfficeOpenXml;
+using RegistrationSettingsParser;
 using UtilityExtensions;
 
 namespace CmsWeb
@@ -15,6 +17,26 @@ namespace CmsWeb
     [MyRequireHttps]
     public class CmsController : CmsControllerNoHttps
     {
+        public static void ConvertRegistration()
+        {
+            if (Util.IsHosted) // if hosted by Touchpoint, this is already done
+                return;
+            if (DbUtil.Db.RegistrationsConverted())
+                return;
+            var q = from o in DbUtil.Db.Organizations
+                where (o.RegSetting ?? "").Length > 0
+                where o.RegSettingXml == null
+                orderby o.OrganizationId
+                select o;
+            foreach (var o in q)
+            {
+                var rs = Parser.ParseSettings(o.RegSetting);
+                var s = Util.Serialize(rs);
+                o.RegSettingXml = s;
+                DbUtil.Db.SubmitChanges();
+            }
+            DbUtil.Db.SetRegistrationsConverted();
+        }
     }
 
     public class CmsControllerNoHttps : Controller
@@ -66,7 +88,6 @@ namespace CmsWeb
         {
             return new JsonNetResult {Data = data, ContentType = contentType, ContentEncoding = contentEncoding, JsonRequestBehavior = behavior };
         }
-
     }
 
     [MyRequireHttps]
@@ -249,89 +270,4 @@ namespace CmsWeb
             return ConfigurationManager.AppSettings["cmshost"].StartsWith("https:");
         }
     }
-/*
-    public class CMSLogAttribute : ActionFilterAttribute
-    {
-        protected DateTime start_time;
-        protected Guid id;
-
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            id = Guid.NewGuid();
-            start_time = DateTime.Now;
-            var routeData = filterContext.RouteData;
-            var ts = (DateTime.Now - start_time);
-            var duration = ts.TotalSeconds;
-            string querystring = "";
-            if(filterContext.HttpContext.Request.Url != null)
-                querystring = filterContext.HttpContext.Request.Url.Query;
-            var method = filterContext.HttpContext.Request.HttpMethod;
-            var controller = (string)routeData.Values["controller"];
-            var action = (string)routeData.Values["action"];
-            var userid = Util.UserName;
-            var dbname = Util.Host;
-            if (action == "FetchPrintJobs")
-                return;
-            try
-            {
-                var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-                if (cs != null)
-                {
-                    using (var cn = new SqlConnection(cs.ConnectionString))
-                    {
-                        cn.Open();
-                        var cmd = new SqlCommand("LogRequest2", cn) {CommandType = CommandType.StoredProcedure};
-                        cmd.Parameters.AddWithValue("dbname", dbname);
-                        cmd.Parameters.AddWithValue("method", method);
-                        cmd.Parameters.AddWithValue("controller", controller);
-                        cmd.Parameters.AddWithValue("action", action);
-                        cmd.Parameters.AddWithValue("userid", userid);
-                        cmd.Parameters.AddWithValue("id", id);
-                        cmd.Parameters.AddWithValue("qs", querystring.Truncate(100));
-                        cmd.Parameters.AddWithValue("newui", userid.HasValue());
-                        cmd.ExecuteNonQuery();
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        public override void OnResultExecuted(ResultExecutedContext filterContext)
-        {
-            var routeData = filterContext.RouteData;
-            var action = (string)routeData.Values["action"];
-            if (action == "FetchPrintJobs")
-                return;
-
-            var ts = (DateTime.Now - start_time);
-            var duration = ts.TotalSeconds;
-            try
-            {
-                var cs = ConfigurationManager.ConnectionStrings["CmsLogging"];
-                if (cs != null)
-                {
-                    using (var cn = new SqlConnection(cs.ConnectionString))
-                    {
-                        cn.Open();
-                        var userid = Util.UserName;
-                        if (!userid.HasValue())
-                            userid = AccountModel.UserName2;
-                        if (userid.HasValue())
-                            cn.Execute(
-                                "update dbo.RequestLog set duration = @duration, userid = @userid where id = @id",
-                                new {duration, id, userid});
-                        else
-                            cn.Execute("update dbo.RequestLog set duration = @duration where id = @id",
-                                new {duration, id});
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-    }
-*/
 }

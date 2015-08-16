@@ -10,7 +10,9 @@
             @Html.DisplayNameFor(m => m)
         }
     </dt>
-    <dd>@ViewData.TemplateInfo.FormattedModelValue</dd>
+    <dd>@ViewData.TemplateInfo.FormattedModelValue
+        <span class="help-block">@Html.Raw(ViewData["help"])</span>
+  </dd>
 </dl>
 @if (ViewBag.ShowHelp != false && ViewData.ModelMetadata.Description.HasValue())
 {

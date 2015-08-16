@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Xml;
 using System.Xml.Linq;
+using CmsData;
 using CmsData.API;
 using UtilityExtensions;
 
@@ -38,45 +37,6 @@ For each checkbox, you can specify the following:
         {
             list = new List<CheckboxItem>();
         }
-
-        public override void Output(StringBuilder sb)
-        {
-            if (list.Count == 0)
-                return;
-            Settings.AddValueNoCk(0, sb, "Checkboxes", Label);
-            Settings.AddValueCk(1, sb, "Minimum", Minimum);
-            Settings.AddValueCk(1, sb, "Maximum", Maximum);
-            Settings.AddValueCk(1, sb, "Columns", Columns);
-            foreach (var i in list)
-                i.Output(sb);
-            sb.AppendLine();
-        }
-        public static AskCheckboxes Parse(Parser parser)
-        {
-            var cb = new AskCheckboxes();
-            cb.Label = parser.GetString("CheckBoxes");
-            cb.Minimum = parser.GetInt(Parser.RegKeywords.Minimum);
-            cb.Maximum = parser.GetInt(Parser.RegKeywords.Maximum);
-            cb.Columns = parser.GetInt(Parser.RegKeywords.Columns) ?? 1;
-            cb.list = new List<CheckboxItem>();
-            if (parser.curr.indent == 0)
-                return cb;
-            var startindent = parser.curr.indent;
-            while (parser.curr.indent == startindent)
-            {
-                var m = CheckboxItem.Parse(parser, startindent);
-                cb.list.Add(m);
-            }
-            var q = (from i in cb.list
-                     where i.SmallGroup != "nocheckbox"
-                     where i.SmallGroup != "comment"
-                     group i by i.SmallGroup into g
-                     where g.Count() > 1
-                     select g.Key).ToList();
-            if (q.Any())
-                throw parser.GetException($"Duplicate SmallGroup in Checkboxes: {string.Join(",", q)}");
-            return cb;
-        }
         public new static AskCheckboxes ReadXml(XElement ele)
         {
             var cb = new AskCheckboxes
@@ -86,7 +46,7 @@ For each checkbox, you can specify the following:
                 Columns = ele.Attribute("Columns")?.Value.ToInt2(),
                 Label = ele.Element("Label")?.Value,
             };
-            foreach (var ee in ele.Elements("CheckBoxItem"))
+            foreach (var ee in ele.Elements("CheckboxItem"))
                 cb.list.Add(CheckboxItem.ReadXml(ee));
             return cb;
 
@@ -99,7 +59,7 @@ For each checkbox, you can specify the following:
                 .Attr("Minimum", Minimum)
                 .Attr("Maximum", Maximum)
                 .Attr("Columns", Columns == 1 ? null : Columns)
-                .Add("Label", Label);
+                .AddCdata("Label", Label);
             foreach (var i in list)
                 i.WriteXml(w);
             // todo: prevent duplicates
@@ -134,7 +94,7 @@ For each checkbox, you can specify the following:
             desc = i.Description;
             return i.IsSmallGroupFilled(smallgroups);
         }
-        public class CheckboxItem
+        public partial class CheckboxItem
         {
             public override string ToString()
             {
@@ -155,48 +115,6 @@ For each checkbox, you can specify the following:
                 get { return MeetingTime.ToString2("g"); }
                 set { MeetingTime = value.ToDate(); }
             }
-
-            public void Output(StringBuilder sb)
-            {
-                Settings.AddValueCk(1, sb, Description);
-                Settings.AddValueCk(2, sb, "SmallGroup", SmallGroup);
-                Settings.AddValueCk(2, sb, "Fee", Fee);
-                Settings.AddValueCk(2, sb, "Limit", Limit);
-                Settings.AddValueCk(2, sb, "Time", MeetingTime.ToString2("s"));
-            }
-            public static CheckboxItem Parse(Parser parser, int startindent)
-            {
-                var i = new CheckboxItem();
-                if (parser.curr.kw != Parser.RegKeywords.None)
-                    throw parser.GetException("unexpected line in CheckBoxes");
-                i.Description = parser.GetLine();
-                i.SmallGroup = i.Description;
-                if (parser.curr.indent <= startindent)
-                    return i;
-                var ind = parser.curr.indent;
-                while (parser.curr.indent == ind)
-                {
-                    switch (parser.curr.kw)
-                    {
-                        case Parser.RegKeywords.SmallGroup:
-                            i.SmallGroup = parser.GetString(i.Description);
-                            break;
-                        case Parser.RegKeywords.Fee:
-                            i.Fee = parser.GetDecimal();
-                            break;
-                        case Parser.RegKeywords.Limit:
-                            i.Limit = parser.GetNullInt();
-                            break;
-                        case Parser.RegKeywords.Time:
-                            i.MeetingTime = parser.GetDateTime();
-                            break;
-                        default:
-                            throw parser.GetException("unexpected line in CheckboxItem");
-                    }
-                }
-                return i;
-            }
-            // ReSharper disable once MemberHidesStaticFromOuterClass
             internal static CheckboxItem ReadXml(XElement ele)
             {
                 var i = new CheckboxItem
@@ -215,8 +133,8 @@ For each checkbox, you can specify the following:
                     .Attr("Fee", Fee)
                     .Attr("Limit", Limit)
                     .Attr("Time", MeetingTime.ToString2("s"))
-                    .Add("SmallGroup", SmallGroup)
                     .Add("Description", Description)
+                    .Add("SmallGroup", SmallGroup)
                     .End();
             }
             public void AddToSmallGroup(CMSDataContext Db, OrganizationMember om, PythonEvents pe)

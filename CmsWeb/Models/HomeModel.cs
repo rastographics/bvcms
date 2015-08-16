@@ -41,12 +41,12 @@ namespace CmsWeb.Models
                 return new List<BirthdayInfo>();
 
             var qB = DbUtil.Db.Queries.FirstOrDefault(cc => cc.Name == "TrackBirthdays" && cc.Owner == Util.UserName);
-            var tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", up.PeopleId, DbUtil.TagTypeId_Personal);
+            var tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", up.PeopleId, DbUtil.TagTypeId_System);
             if (qB != null)
             {
                 if (tagq?.Created == null || tagq.Created < DateTime.Today)
-                    DbUtil.Db.PopulateSpecialTag(DbUtil.Db.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery");
-                tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", up.PeopleId, DbUtil.TagTypeId_Personal);
+                    DbUtil.Db.PopulateSpecialTag(DbUtil.Db.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery", DbUtil.TagTypeId_System);
+                tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", up.PeopleId, DbUtil.TagTypeId_System);
                 if (tagq != null)
                 {
                     var q0 = from p in tagq.People(DbUtil.Db)

@@ -373,13 +373,14 @@ namespace CmsData
         public Tag PopulateSpecialTag(IQueryable<Person> q, int TagTypeId)
         {
             string name;
-            if (TagTypeId != DbUtil.TagTypeId_Emailer)
-                name = Util.SessionId;
-            else
+            if (TagTypeId == DbUtil.TagTypeId_Emailer)
             {
                 name = $".temp email tag {DateTime.Now:t}";
-                TagTypeId = DbUtil.TagTypeId_Personal;
+                TagTypeId = DbUtil.TagTypeId_System;
             }
+            else
+                name = Util.SessionId;
+
             var tag = FetchOrCreateTag(name, Util.UserPeopleId ?? Util.UserId1, TagTypeId);
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
             var qpids = q.Select(pp => pp.PeopleId);
@@ -442,9 +443,9 @@ namespace CmsData
         {
             ExecuteCommand("delete TagPerson where Id = {0}", tag.Id);
         }
-        public void PopulateSpecialTag(IQueryable<Person> q, string tagname)
+        public void PopulateSpecialTag(IQueryable<Person> q, string tagname, int tagTypeId)
         {
-            var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_Personal);
+            var tag = FetchOrCreateTag(tagname, Util.UserPeopleId ?? Util.UserId1, tagTypeId);
             TagPeople.DeleteAllOnSubmit(tag.PersonTags);
             tag.Created = DateTime.Now;
             SubmitChanges();
@@ -1255,6 +1256,14 @@ namespace CmsData
                            select c).FirstOrDefault();
             return content;
         }
+        public Content ContentOfTypeSql(string name)
+        {
+            var content = (from c in Contents
+                           where c.Name == name
+                           where c.TypeID == ContentTypeCode.TypeSqlScript
+                           select c).FirstOrDefault();
+            return content;
+        }
         public string ContentOfTypeSavedDraft(string name)
         {
             var content = (from c in Contents
@@ -1476,6 +1485,15 @@ namespace CmsData
             }
 
             throw new Exception($"Gateway ({type}) is not supported.");
+        }
+        public Registration.Settings CreateRegistrationSettings(int orgId)
+        {
+            var o = LoadOrganizationById(orgId);
+            return Registration.Settings.CreateSettings(o.GetRegSetting(), this, orgId);
+        }
+        public Registration.Settings CreateRegistrationSettings(string s, int orgId)
+        {
+            return Registration.Settings.CreateSettings(s, this, orgId);
         }
     }
 }

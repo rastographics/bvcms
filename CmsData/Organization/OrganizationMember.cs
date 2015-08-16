@@ -343,7 +343,7 @@ AND a.PeopleId = {2}
 
             //            if (Organization.IsMissionTrip == true)
             //            {
-            //                var settings = new Settings(Organization.RegSetting, db, OrganizationId);
+            //                var settings = Settings.CreateSettings(Organization.RegSetting, db, OrganizationId);
             //            }
 
             return ti2;
@@ -394,7 +394,7 @@ AND a.PeopleId = {2}
 
         public Settings RegSetting()
         {
-            return new Settings(Organization.RegSetting, DbUtil.Db, OrganizationId);
+            return DbUtil.Db.CreateRegistrationSettings(OrganizationId);
         }
 
         public string PayLink2(CMSDataContext db)

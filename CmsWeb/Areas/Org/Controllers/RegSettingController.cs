@@ -3,13 +3,13 @@ using System.Globalization;
 using System.Threading;
 using System.Web.Mvc;
 using CmsData;
-using CmsData.Registration;
+using RegistrationSettingsParser;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.Org.Controllers
 {
     [ValidateInput(false)]
-    [RouteArea("Org", AreaPrefix="RegSettings"), Route("{action=index}/{id?}")]
+    [RouteArea("Org", AreaPrefix = "RegSettings"), Route("{action=index}/{id?}")]
     public class RegSettingController : CmsStaffController
     {
         [HttpGet, Route("~/RegSettings/{id:int}")]
@@ -18,38 +18,41 @@ namespace CmsWeb.Areas.Org.Controllers
             var org = DbUtil.Db.LoadOrganizationById(id);
             var regsetting = (string)TempData["regsetting"];
             if (!regsetting.HasValue())
-                regsetting = org.RegSetting;
+                regsetting = org.GetRegSetting();
 
-            ViewData["lines"] = CmsData.Registration.Parser.SplitLines(regsetting);
+            var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
+            regsetting = os.ToString();
+
+            ViewData["lines"] = Parser.SplitLines(regsetting);
             ViewData["regsetting"] = regsetting;
             ViewData["OrganizationId"] = id;
             ViewData["orgname"] = org.OrganizationName;
             return View();
         }
         [HttpPost]
-        [Authorize(Roles="Edit")]
+        [Authorize(Roles = "Edit")]
         public ActionResult Edit(int id, string regsetting)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
             ViewData["OrganizationId"] = id;
             ViewData["orgname"] = org.OrganizationName;
-            if (regsetting.HasValue())
+            if (!regsetting.HasValue())
+                regsetting = org.GetRegSetting();
+            var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
+            regsetting = os.ToString();
                 ViewData["text"] = regsetting;
-            else
-                ViewData["text"] = org.RegSetting;
             return View();
         }
 
         [HttpPost]
-        [Authorize(Roles="Edit")]
+        [Authorize(Roles = "Edit")]
         public ActionResult Update(int id, string text)
         {
             var org = DbUtil.Db.LoadOrganizationById(id);
             try
             {
-                var os = new Settings(text, DbUtil.Db, id);
-                org.RegSetting = text;
-                org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
+                var os = DbUtil.Db.CreateRegistrationSettings(text, id);
+                org.UpdateRegSetting(os);
             }
             catch (Exception ex)
             {
@@ -61,17 +64,6 @@ namespace CmsWeb.Areas.Org.Controllers
             return Redirect("/RegSettings/" + id);
         }
         [HttpGet]
-        [Authorize(Roles="Edit")]
-        public ActionResult EditXml(int id)
-        {
-            var org = DbUtil.Db.LoadOrganizationById(id);
-            ViewData["OrganizationId"] = id;
-            ViewData["orgname"] = org.OrganizationName;
-            var os = new Settings(org.RegSetting, DbUtil.Db, org.OrganizationId);
-            var x = Util.Serialize(os);
-            ViewData["text"] = x;
-            return View();
-        }
 
 //        [HttpPost]
 //        [Authorize(Roles="Edit")]
@@ -80,7 +72,7 @@ namespace CmsWeb.Areas.Org.Controllers
 //            var org = DbUtil.Db.LoadOrganizationById(id);
 //            try
 //            {
-//                var os = new Settings(text, DbUtil.Db, id);
+        //                var os = Settings.CreateSettings(text, DbUtil.Db, id);
 //                org.RegSetting = text;
 //            }
 //            catch (Exception ex)
@@ -98,10 +90,9 @@ namespace CmsWeb.Areas.Org.Controllers
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             var org = DbUtil.Db.LoadOrganizationById(id);
-            var m = new Settings(org.RegSetting, DbUtil.Db, id);
-            var os = new Settings(m.ToString(), DbUtil.Db, id);
-            m.org.RegSetting = os.ToString();
-            m.org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
+            var m = DbUtil.Db.CreateRegistrationSettings(id);
+            var os = DbUtil.Db.CreateRegistrationSettings(m.ToString(), id);
+            m.org.UpdateRegSetting(os);
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }
@@ -111,10 +102,9 @@ namespace CmsWeb.Areas.Org.Controllers
             Thread.CurrentThread.CurrentUICulture = new CultureInfo(cul);
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture(cul);
             var org = DbUtil.Db.LoadOrganizationById(id);
-            var m = new Settings(org.RegSetting, DbUtil.Db, id);
-            var os = new Settings(m.ToString(), DbUtil.Db, id);
-            m.org.RegSetting = os.ToString();
-            m.org.AddEditExtraDate("RegSettingsUpdated", DateTime.Now);
+            var m = DbUtil.Db.CreateRegistrationSettings(id);
+            var os = DbUtil.Db.CreateRegistrationSettings(m.ToString(), id);
+            m.org.UpdateRegSetting(os);
             DbUtil.Db.SubmitChanges();
             return Redirect("/RegSettings/" + id);
         }

@@ -662,7 +662,7 @@ namespace CmsWeb.Code
 
             var q1 = from t in DbUtil.Db.Tags
                      where t.PeopleId == UserPeopleId
-                     where t.TypeId == DbUtil.TagTypeId_Personal || t.TypeId == DbUtil.TagTypeId_Emailer
+                     where t.TypeId == DbUtil.TagTypeId_Personal
                      orderby t.Name.StartsWith(".") ? "z" : "", t.Name
                      select new CodeValueItem
                      {
@@ -673,7 +673,7 @@ namespace CmsWeb.Code
             var q2 = from t in DbUtil.Db.Tags
                      where t.PeopleId != UserPeopleId
                      where t.TagShares.Any(ts => ts.PeopleId == UserPeopleId)
-                     where t.TypeId == DbUtil.TagTypeId_Personal || t.TypeId == DbUtil.TagTypeId_Emailer
+                     where t.TypeId == DbUtil.TagTypeId_Personal
                      orderby t.PersonOwner.Name2, t.Name.StartsWith(".") ? "z" : "", t.Name
                      let op = DbUtil.Db.People.SingleOrDefault(p => p.PeopleId == t.PeopleId)
                      select new CodeValueItem
@@ -696,7 +696,7 @@ namespace CmsWeb.Code
 
         public List<CodeValueItem> PeopleToEmailFor()
         {
-            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId.Value);
+            var p = DbUtil.Db.LoadPersonById(Util.UserPeopleId ?? 0);
 
             var q = from cf in DbUtil.Db.PeopleCanEmailFors
                     where cf.CanEmail == p.PeopleId

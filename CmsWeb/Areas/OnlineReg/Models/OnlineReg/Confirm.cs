@@ -262,7 +262,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                                 OrgId = org.OrganizationId,
                                 SupporterId = pi.PeopleId,
                             });
-                        var setting = new Settings(org.RegSetting, Db, org.OrganizationId);
+                        var setting = Db.CreateRegistrationSettings(org.OrganizationId);
                         var fund = setting.DonationFundId;
                         p.PostUnattendedContribution(Db, ti.Amt ?? 0, fund,
                             $"SupportMissionTrip: org={org.OrganizationId}; goer={pi.PeopleId}", typecode: BundleTypeCode.Online);

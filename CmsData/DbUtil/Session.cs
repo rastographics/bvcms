@@ -268,6 +268,20 @@ namespace CmsData
                 // be sure to SubmitChanges
             }
         }
+        public static bool UseXmlRegistrations
+        {
+            get
+            {
+                // this works at the database level, not as a user preference
+                // useful for turning the new feature on, then having a quik way to put it back in case something goes badly
+                return DbUtil.Db.Setting("UseXmlRegistrations", "true").ToBool();
+            }
+            set
+            {
+                DbUtil.Db.SetSetting("UseXmlRegistrations", value ? "true" : "false");
+                // be sure to SubmitChanges
+            }
+        }
         public static void Log2File(string file, string data)
         {
             string fn = ConfigurationManager.AppSettings["SharedFolder"].Replace("%USERPROFILE%", Environment.GetEnvironmentVariable("USERPROFILE"));

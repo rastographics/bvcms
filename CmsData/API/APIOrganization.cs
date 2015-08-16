@@ -657,7 +657,7 @@ namespace CmsData.API
         {
             var org = Db.LoadOrganizationById(id);
             DbUtil.Db.SetCurrentOrgId(id);
-            var setting = new Registration.Settings(org.RegSetting, Db, org.OrganizationId);
+            var setting = Db.CreateRegistrationSettings(id);
             setting.org = org;
             var currmembers = (from om in org.OrganizationMembers
                                where (om.Pending ?? false) == false
@@ -755,7 +755,7 @@ namespace CmsData.API
         {
             var org = Db.LoadOrganizationById(id);
             Db.SetCurrentOrgId(id);
-            var setting = new Settings(org.RegSetting, Db, org.OrganizationId) { org = org };
+            var setting = Db.CreateRegistrationSettings(id);
             var currmembers = from om in org.OrganizationMembers
                               where (om.Pending ?? false) == false
                               where om.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive
@@ -823,7 +823,7 @@ namespace CmsData.API
                 First = om.Person.PreferredName;
                 Last = om.Person.LastName;
                 Orgname = om.Organization.OrganizationName;
-                setting = new Settings(om.Organization.RegSetting, db, om.Organization.OrganizationId) { org = om.Organization };
+                setting = db.CreateRegistrationSettings(om.OrganizationId);
             }
             public IEnumerable<AskItem> List()
             {

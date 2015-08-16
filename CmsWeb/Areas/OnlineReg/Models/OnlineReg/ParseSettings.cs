@@ -15,16 +15,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var list = new Dictionary<int, Settings>();
             if (masterorgid.HasValue)
             {
-                var q = from o in UserSelectClasses(masterorg)
-                        select new { o.OrganizationId, o.RegSetting };
-                foreach (var i in q)
-                    list[i.OrganizationId] = new Settings(i.RegSetting, DbUtil.Db, i.OrganizationId);
-                list[masterorg.OrganizationId] = new Settings(masterorg.RegSetting, DbUtil.Db, masterorg.OrganizationId);
+                foreach (var o in UserSelectClasses(masterorg))
+                    list[o.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                list[masterorg.OrganizationId] = DbUtil.Db.CreateRegistrationSettings(masterorg.OrganizationId);
             }
             else if (_orgid == null)
                 return;
             else if (org != null)
-                list[_orgid.Value] = new Settings(org.RegSetting, DbUtil.Db, _orgid.Value);
+                list[_orgid.Value] = DbUtil.Db.CreateRegistrationSettings(_orgid.Value);
             HttpContext.Current.Items["RegSettings"] = list;
 
             if (org == null || !org.AddToSmallGroupScript.HasValue()) 
@@ -46,11 +44,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 org.AddToExtraData("Python.errors", ex.Message);
                 throw;
             }
-        }
-
-        public static Settings ParseSetting(string regSetting, int orgId)
-        {
-            return new Settings(regSetting, DbUtil.Db, orgId);
         }
     }
 }

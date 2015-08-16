@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.API;
@@ -89,11 +91,25 @@ namespace CmsWeb.Areas.Public.Controllers
         [Route("~/APIMeta/SqlScriptXml/{id}")]
         public ActionResult SqlScriptXml(string id, string p1 = null)
         {
+            var f = new APIFunctions(DbUtil.Db);
+            var e = $"<SqlScriptXml id={id}><Error>{{0}}</Error></SqlScriptXml>";
+            return Content(SqlScript(id, p1, f.SqlScriptXml, e), "application/xml");
+        }
+        [HttpGet, Route("~/APIMeta/SqlScriptJson/{id}/{p1}")]
+        [Route("~/APIMeta/SqlScriptJson/{id}")]
+        public ActionResult SqlScriptJson(string id, string p1 = null)
+        {
+            var f = new APIFunctions(DbUtil.Db);
+            var e = $@"{{ ""id"": ""{id}"", ""Error"": ""{{0}}"" }}";
+            return Content(SqlScript(id, p1, f.SqlScriptJson, e), "application/json");
+        }
+        private string SqlScript(string id, string p1, Func<string, string, Dictionary<string, string>, string> sqlscript, string e)
+        {
             var ret = AuthenticateDeveloper();
             if (ret.StartsWith("!"))
-                return Content($"<SqlScriptXml id=\"{id}\" error=\"{ret.Substring(1)}\" />");
+                return string.Format(e, ret.Substring(1));
             if (!id.HasValue())
-                return Content($"<SqlScriptXml error\"no view named {id}\" />");
+                return string.Format(e, $"no view named {id}");
             try
             {
                 var cs = User.IsInRole("Finance")
@@ -101,13 +117,12 @@ namespace CmsWeb.Areas.Public.Controllers
                     : Util.ConnectionStringReadOnly;
                 var cn = new SqlConnection(cs);
                 cn.Open();
-                var f = new CmsData.API.APIFunctions(DbUtil.Db);
-                var x = f.SqlScriptXml(id, p1);
-                return Content(x, "text/xml");
+                var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
+                return sqlscript(id, p1, d);
             }
             catch (Exception ex)
             {
-                return Content($"<SqlScriptXml><Error>{ex.Message}</Error></SqlScriptXml>");
+                return string.Format(e, ex.Message);
             }
         }
     }

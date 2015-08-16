@@ -26,7 +26,7 @@ namespace CmsWeb
                 routePrefix: "api/lookup",
                 model: MapAllODataModels("CmsWeb.Models.Api.Lookup").GetEdmModel());
 
-            config.Filters.Add(new DeveloperAuthorizeAttribute());
+            config.Filters.Add(new ApiAuthorizeAttribute());
             config.MessageHandlers.Add(new ApiMessageLoggingHandler());
 
             // fix for XML support (use Accept: application/xml)

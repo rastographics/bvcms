@@ -43,7 +43,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         }
 
         private Settings setting;
-        public Settings Setting => setting ?? (setting = new Settings(Organization.RegSetting, DbUtil.Db, orgid));
+        public Settings Setting => setting ?? (setting = DbUtil.Db.CreateRegistrationSettings(orgid));
 
         public PledgeInfo GetPledgeInfo()
         {

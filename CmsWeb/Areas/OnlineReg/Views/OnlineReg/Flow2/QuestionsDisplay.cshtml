@@ -30,7 +30,11 @@
             </tr>
         }
     </table>
-            return;
+    return;
+}
+@if (!Model.HasQuestions())
+{
+  return;
 }
 <table class="table table-condensed">
     @foreach (var ask in Model.setting.AskItems)
@@ -162,7 +166,7 @@
                 {
                     <tr>
                         <td><div class="wraparound">@a.Question</div></td>
-                        <td> @Model.ExtraQuestion[eq.UniqueId][a.Question]</td>
+                        <td> @Model.ExtraQuestionAnswer(eq.UniqueId, a.Question)</td>
                     </tr>
                 }
                 break;
@@ -172,7 +176,7 @@
                 {
                     <tr>
                         <td><div class="wraparound">@a.Question</div></td>
-                        <td> @Model.Text[tx.UniqueId][a.Question]</td>
+                        <td> @Model.TextAnswer(tx.UniqueId,a.Question)</td>
                     </tr>
                 }
                 break;
