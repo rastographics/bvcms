@@ -365,5 +365,24 @@ namespace CmsData
             }
             return Expression.Invoke(pred, parm);
         }
+        internal Expression OrgMemberJoinedAsOf()
+        {
+            var tf = CodeIds == "1";
+            EndDate = EndDate?.AddDays(1) ?? StartDate?.AddDays(1);
+            Expression<Func<Person, bool>> pred = p => (
+                from om in p.OrganizationMembers
+                where om.EnrollmentDate >= StartDate
+                where om.EnrollmentDate < EndDate
+                where (OrgType ?? 0) == 0 || om.Organization.OrganizationTypeId == OrgType
+                where Organization == 0 || om.OrganizationId == Organization
+                where Division == 0 || om.Organization.DivOrgs.Any(dg => dg.DivId == Division)
+                where Program == 0 || om.Organization.DivOrgs.Any(dg => dg.Division.ProgDivs.Any(pg => pg.ProgId == Program))
+                select om
+                ).Any();
+            Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

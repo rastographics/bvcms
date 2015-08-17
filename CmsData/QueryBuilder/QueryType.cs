@@ -157,6 +157,7 @@ namespace CmsData
         OrgJoinDateCompare,
         OrgJoinDateDaysAgo,
         OrgMemberCreatedDate,
+        OrgMemberJoinedAsOf,
         OrgSearchMember,
         OriginId,
         OtherNewChurch,
