@@ -646,8 +646,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     masterorgid = masterorgid,
 #if DEBUG
                     FirstName = "Another",
-                    LastName = "Child",
-                    DateOfBirth = "12/1/02",
+                    LastName = "Person",
+                    DateOfBirth = "12/1/1955",
                     EmailAddress = "karen@touchpointsoftware.com",
 #endif
                 });

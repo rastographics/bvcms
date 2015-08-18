@@ -42,7 +42,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             HistoryAdd("Register");
             int index = List.Count - 1;
             var p = LoadExistingPerson(id, index);
-
+            List[index] = p;
+            
             if(p.NeedsToChooseClass())
                 return;
 
@@ -50,7 +51,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!modelState.IsValid)
                 return;
 
-            List[index] = p;
             
             if (p.ManageSubscriptions() && p.Found == true)
                 return;
