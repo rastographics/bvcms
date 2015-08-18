@@ -1,24 +1,20 @@
 /* Author: David Carroll
- * Copyright (c) 2008, 2009 Bellevue Baptist Church 
+ * Copyright (c) 2008, 2009 Bellevue Baptist Church
  * Licensed under the GNU General Public License (GPL v2)
  * you may not use this code except in compliance with the License.
- * You may obtain a copy of the License at http://bvcms.codeplex.com/license 
+ * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
+
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Data.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
+using CmsData;
+using CmsData.Codes;
 using CmsData.Registration;
 using MoreLinq;
 using UtilityExtensions;
-using System.Text;
-using CmsData;
-using System.Data.Linq.SqlClient;
-using CmsData.Codes;
 
 namespace CmsWeb.Models
 {
@@ -42,10 +38,10 @@ namespace CmsWeb.Models
 
         public IEnumerable<CouponInfo> Coupons()
         {
-        	var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
+            var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
             var q = from c in DbUtil.Db.Coupons
-					let o = c.Organization
-					where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    let o = c.Organization
+                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where c.DivOrg == regidfilter || regidfilter == "0" || regidfilter == null
                     where c.UserId == useridfilter || useridfilter == 0
                     select c;
@@ -90,12 +86,13 @@ namespace CmsWeb.Models
                      };
             return q2.Take(200);
         }
-        public DataTable Coupons2()
+
+        public DataTable CouponsAsDataTable()
         {
-        	var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
+            var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
             var q = from c in DbUtil.Db.Coupons
-					let o = c.Organization
-					where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                    let o = c.Organization
+                    where o.LimitToRole == null || roles.Contains(o.LimitToRole)
                     where c.DivOrg == regidfilter || regidfilter == "0" || regidfilter == null
                     where c.UserId == useridfilter || useridfilter == 0
                     select c;
@@ -121,10 +118,9 @@ namespace CmsWeb.Models
                     q = q.Where(c => c.Created.Date >= bd && c.Created.Date <= ed);
             }
 
-
             var q2 = from c in q
                      orderby c.Created descending
-                     select new CouponInfo2
+                     select new CouponInfo
                      {
                          Amount = c.Amount ?? 0,
                          Canceled = c.Canceled ?? DateTime.Parse("1/1/80"),
@@ -141,42 +137,44 @@ namespace CmsWeb.Models
                      };
             return q2.Take(200).ToDataTable();
         }
-		public List<SelectListItem> OnlineRegs()
-		{
-			var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
-			var organizations = from o in DbUtil.Db.Organizations
-								where o.LimitToRole == null || roles.Contains(o.LimitToRole)
-								select o;
-			var orgregtypes = new int[]
-			{
-				RegistrationTypeCode.JoinOrganization,
-        		RegistrationTypeCode.UserSelects,
-        		RegistrationTypeCode.ComputeOrgByAge,
-			};
 
-			var q = (from o in organizations
-					 where orgregtypes.Contains(o.RegistrationTypeId.Value)
-					 where (o.ClassFilled ?? false) != true
-					 where (o.RegistrationClosed ?? false) == false
-					 select new { DivisionName = o.Division.Name, o.OrganizationName, o.OrganizationId, o.RegistrationTypeId }).ToList();
+        public List<SelectListItem> OnlineRegs()
+        {
+            var roles = DbUtil.Db.CurrentUser.UserRoles.Select(uu => uu.Role.RoleName).ToArray();
+            var organizations = from o in DbUtil.Db.Organizations
+                                where o.LimitToRole == null || roles.Contains(o.LimitToRole)
+                                select o;
+            var orgregtypes = new[]
+            {
+                RegistrationTypeCode.JoinOrganization,
+                RegistrationTypeCode.UserSelects,
+                RegistrationTypeCode.ComputeOrgByAge,
+            };
 
-			var qq = from i in q
-					 let os = DbUtil.Db.CreateRegistrationSettings(i.OrganizationId)
-					 where orgregtypes.Contains(i.RegistrationTypeId.Value)
+            var q = (from o in organizations
+                     where orgregtypes.Contains(o.RegistrationTypeId.Value)
+                     where (o.ClassFilled ?? false) != true
+                     where (o.RegistrationClosed ?? false) == false
+                     select new { DivisionName = o.Division.Name, o.OrganizationName, o.OrganizationId, o.RegistrationTypeId }).ToList();
+
+            var qq = from i in q
+                     let os = DbUtil.Db.CreateRegistrationSettings(i.OrganizationId)
+                     where orgregtypes.Contains(i.RegistrationTypeId.Value)
                          || os.Fee > 0
-						 || os.AskItems.Where(aa => aa.Type == "AskDropdown").Any(aa => ((AskDropdown)aa).list.Any(dd => dd.Fee > 0))
-						 || os.AskItems.Where(aa => aa.Type == "AskCheckboxes").Any(aa => ((AskCheckboxes)aa).list.Any(dd => dd.Fee > 0))
-					 select new SelectListItem
-					 {
-						 Text = i.DivisionName + ":" + i.OrganizationName,
-						 Value = "org." + i.OrganizationId
-					 };
+                         || os.AskItems.Where(aa => aa.Type == "AskDropdown").Any(aa => ((AskDropdown)aa).list.Any(dd => dd.Fee > 0))
+                         || os.AskItems.Where(aa => aa.Type == "AskCheckboxes").Any(aa => ((AskCheckboxes)aa).list.Any(dd => dd.Fee > 0))
+                     select new SelectListItem
+                     {
+                         Text = i.DivisionName + ":" + i.OrganizationName,
+                         Value = "org." + i.OrganizationId
+                     };
 
-			var list = qq.OrderBy(n => n.Text).ToList();
+            var list = qq.OrderBy(n => n.Text).ToList();
 
-			list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
-			return list;
-		}
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
+            return list;
+        }
+
         public List<SelectListItem> Users()
         {
             var q = from c in DbUtil.Db.Coupons
@@ -191,6 +189,7 @@ namespace CmsWeb.Models
             list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
+
         public List<SelectListItem> CouponStatus()
         {
             return new List<SelectListItem>
@@ -201,14 +200,16 @@ namespace CmsWeb.Models
                 new SelectListItem { Text = "Canceled" },
             };
         }
+
         public static bool IsExisting(string code)
         {
-            bool existing = DbUtil.Db.Coupons.Any(cp => cp.Id == code && cp.Used == null && cp.Canceled == null);
+            var existing = DbUtil.Db.Coupons.Any(cp => cp.Id == code && cp.Used == null && cp.Canceled == null);
             return existing;
         }
+
         public Coupon CreateCoupon()
         {
-            string code = couponcode;
+            var code = couponcode;
             if (!couponcode.HasValue())
             {
                 do
@@ -233,6 +234,7 @@ namespace CmsWeb.Models
 
             return c;
         }
+
         private void SetDivOrgIds(Coupon c)
         {
             if (regid.HasValue())
@@ -249,13 +251,11 @@ namespace CmsWeb.Models
                 }
             }
         }
+
         public class CouponInfo
         {
             public string Code { get; set; }
-            public string Coupon
-            {
-                get { return Util.fmtcoupon(Code); }
-            }
+            public string Coupon => Util.fmtcoupon(Code);
             public string OrgDivName { get; set; }
             public DateTime Created { get; set; }
             public DateTime? Used { get; set; }
@@ -266,25 +266,6 @@ namespace CmsWeb.Models
             public string Name { get; set; }
             public string Person { get; set; }
             public int? UserId { get; set; }
-            public string UserName { get; set; }
-        }
-        public class CouponInfo2
-        {
-            public string Code;
-            public string Coupon
-            {
-                get { return Code.Insert(8, " ").Insert(4, " "); }
-            }
-            public string OrgDivName { get; set; }
-            public DateTime Created { get; set; }
-            public DateTime Used { get; set; }
-            public DateTime Canceled { get; set; }
-            public decimal Amount { get; set; }
-            public decimal RegAmt { get; set; }
-            public int PeopleId { get; set; }
-            public string Name { get; set; }
-            public string Person { get; set; }
-            public int UserId { get; set; }
             public string UserName { get; set; }
         }
     }
