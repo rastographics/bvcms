@@ -4,7 +4,7 @@ CREATE FUNCTION [dbo].[StatusFlagsPerson]
 )
 RETURNS TABLE AS RETURN
 (
-	SELECT t.Name Flag, SUBSTRING(c.Name, 5, 100) Name, r.RoleName
+	SELECT t.Name Flag, SUBSTRING(c.Name, 5, 100) Name, r.RoleName, ff.TokenID
 	FROM dbo.People p1
 	JOIN dbo.TagPerson tp ON p1.PeopleId = tp.PeopleId
 	JOIN dbo.Tag t ON tp.Id = t.Id

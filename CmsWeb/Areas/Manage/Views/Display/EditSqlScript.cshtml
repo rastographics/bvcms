@@ -19,6 +19,10 @@
                   <div class="navbar-form navbar-left" style="margin:0; padding:0;">
                     <div class="form-group">
                       <input id="parameter" type="text" class="form-control" placeholder="Parameter" />
+                      &nbsp;&nbsp;
+                      <label class="checkbox-inline control-label" style="color:white">
+                          @Html.CheckBox("asexcel")Excel Output?
+                      </label>
                     </div>
                     <a id="run" href="/RunScript/@Model.Name" class="btn btn-default navbar-btn" target="runscript"><i class="fa fa-play"></i> Run Script</a>
                   </div>
@@ -105,7 +109,10 @@
           if (m != null)
             qs = m[0].substr(2);
         }
-        var url = this.href + "/" + qs;
+        var url = this.href;
+        if ($("#asexcel")[0].checked)
+          url = url.replace("RunScript/", "RunScriptExcel/");
+        url += "/" + qs;
         var target = this.target;
         window.open(url, target);
       });

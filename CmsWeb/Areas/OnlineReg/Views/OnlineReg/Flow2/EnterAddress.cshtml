@@ -17,6 +17,10 @@
 {
   @Html.EditorFor(m => m.DateOfBirth, new { placeholder = "M/D/YY" })
 }
+else if (Model.ShowOptionalBirthday())
+{
+  @Html.EditorFor(m => m.DateOfBirth, new { placeholder = "M/D/YY (optional)" })
+}
 else
 {
   @Html.HiddenFor(m => m.DateOfBirth)

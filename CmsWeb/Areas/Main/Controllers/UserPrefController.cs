@@ -4,9 +4,13 @@ using CmsData;
 
 namespace CmsWeb.Areas.Main.Controllers
 {
-    [RouteArea("Main", AreaPrefix="UserPref")]
+    [RouteArea("Main", AreaPrefix="UserPref"), Route("{action}/{id?}")]
     public class UserPrefController : CmsStaffController
     {
+        public ActionResult Index()
+        {
+            return View();
+        }
         [Route("Set/{id}/{value}")]
         public ActionResult Set(string id, string value)
         {

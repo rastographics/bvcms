@@ -1938,6 +1938,24 @@ namespace CmsData
 
         }
 
+        public Table< View.RegsettingCount> ViewRegsettingCounts
+        {
+            get { return GetTable< View.RegsettingCount>(); }
+
+        }
+
+        public Table< View.RegsettingMessage> ViewRegsettingMessages
+        {
+            get { return GetTable< View.RegsettingMessage>(); }
+
+        }
+
+        public Table< View.RegsettingOption> ViewRegsettingOptions
+        {
+            get { return GetTable< View.RegsettingOption>(); }
+
+        }
+
         public Table< View.SpouseOrHeadWithEmail> ViewSpouseOrHeadWithEmails
         {
             get { return GetTable< View.SpouseOrHeadWithEmail>(); }
@@ -1989,6 +2007,12 @@ namespace CmsData
         public Table< View.Trigger> ViewTriggers
         {
             get { return GetTable< View.Trigger>(); }
+
+        }
+
+        public Table< View.UserLeader> ViewUserLeaders
+        {
+            get { return GetTable< View.UserLeader>(); }
 
         }
 

@@ -91,7 +91,7 @@ namespace CmsWeb.Models
         public string OwnerEmail { get; set; }
         public bool ForceCompleteWContact { get; set; }
         public string CoOwnerEmail { get; set; }
-        public string WhoEmail => who == null ? "" : $"{who.Name} <{who.EmailAddress}>";
+        public string WhoEmail => who?.EmailAddress ?? "";
 
         public string WhoEmail2
         {

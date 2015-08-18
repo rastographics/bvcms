@@ -532,6 +532,10 @@
     <Compile Include="Generated\Views\OrgsWithoutFee.cs" />
     <Compile Include="Generated\Views\ProspectCount.cs" />
     <Compile Include="Generated\Views\RegistrationList.cs" />
+    <Compile Include="Generated\Views\RegsettingCount.cs" />
+    <Compile Include="Generated\Views\RegsettingMessage.cs" />
+    <Compile Include="Generated\Views\RegsettingOption.cs" />
+    <Compile Include="Generated\Views\UserLeader.cs" />
     <Compile Include="Infrastructure\IsForeignKeyAttribute.cs" />
     <Compile Include="Meetings\Attend.cs" />
     <Compile Include="Finance\AuthorizeNetGateway.cs" />

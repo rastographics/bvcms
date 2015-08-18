@@ -230,18 +230,6 @@
     <HasContacts Title="Has Contacts" Type="Bit" DataValueField="IdCode">
       Select True or False to find anyone who has received a Contact.
     </HasContacts>
-    <ChristAsSavior Title="Professed Christ as Savior" Type="Bit" DataValueField="IdCode">
-      Select True or False for those with this checkbox flagged on their Growth tab.
-    </ChristAsSavior>
-    <InfoBecomeAChristian Title="Info on Becoming a Christian" Type="Bit" DataValueField="IdCode">
-      Select True or False for those with this checkbox flagged on their Growth tab.
-    </InfoBecomeAChristian>
-    <InterestedInJoining Title="Interested In Joining" Type="Bit" DataValueField="IdCode">
-      Select True or False for those with this checkbox flagged on their Growth tab.
-    </InterestedInJoining>
-    <PleaseVisit Title="Please Visit" Type="Bit" DataValueField="IdCode">
-      Select True or False for those with this checkbox flagged on their Growth tab.
-    </PleaseVisit>
     <ContactRecipient Title="Contact Recipients" Type="IntegerEqual" DisplayAs="ContactRecipientForId">
       Enter Contact ID number.
     </ContactRecipient>
@@ -362,6 +350,9 @@
     <WasMemberAsOf Title="Was Member As Of" Type="Bit" DisplayAs="WasMemberAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
       Pick the date range and select Program/Division/ Organization, Org Type.
     </WasMemberAsOf>
+    <OrgMemberJoinedAsOf Title="Org Member Joined As Of" Type="Bit" DisplayAs="OrgMemberJoinedAsOf({0:d}, {1:d}, {2}, {3}, {4}, {5})" Params="StartDate,EndDate,Program,Division,Organization,OrgType" DataValueField="IdCode">
+      Pick the date range and select Program/Division/ Organization, Org Type.
+    </OrgMemberJoinedAsOf>
     <WasRecentMemberOf Title="Was Recent Member Of" Type="Bit" DisplayAs="WasRecentMemberOf({0}, {1}, {2}, {3}, {4})" Params="Days,Program,Division,Organization,OrgType" DataValueField="IdCode">
       Pick the number of days to look back and select Program/Division/ Organization, Org Type.
     </WasRecentMemberOf>

@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             ValidateBirthdate();
             if (!IsValidForNew)
                 return;
-            ValidateBirthdayRange();
+            ValidateBirthdayRange(selectFromFamily: false);
             ValidatePhone();
             ValidateEmailForNew();
             if (!CanProceedWithThisAddress())

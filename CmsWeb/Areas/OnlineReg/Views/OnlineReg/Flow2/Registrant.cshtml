@@ -69,10 +69,6 @@
       {
         @Html.DivAlertBox(Html.Markdown(Model.RegistrantProblem).ToString())
       }
-      else
-      {
-        @Html.ValidationSummary()
-      }
       @Html.Partial("Flow2/PersonMetaHidden", Model)
 
       @if (Model.FinishedFindingOrAddingRegistrant)
@@ -95,7 +91,7 @@
           else
           {
             Model.Parent.ShowFindInstructions = true;
-            if (Model.Found == null) // have not searched yet
+            if (Model.Found == null || Model.RegistrantProblem.HasValue()) // have not searched yet
             {
               @Html.Partial("Flow2/PersonFind", Model)
             }

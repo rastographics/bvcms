@@ -23,6 +23,11 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     return true;
             return false;
         }
+        public bool ShowOptionalBirthday()
+        {
+            return !DateOfBirth.HasValue();
+        }
+
         public bool BirthYearRequired()
         {
             if (ComputesOrganizationByAge())

@@ -61,16 +61,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ValidateAgeRequirement();
                 ValidateEmail();
 
-                if (!modelState.IsValid)
+                if (!modelState.IsValid || count != 1)
                 {
-                    ValidateBirthdayRange();
-                    IsValidForExisting = false;
-                    return;
-                }
-
-                if (count != 1)
-                {
-                    IsValidForExisting = false;
+                    ValidateBirthdayRange(selectFromFamily);
                     return;
                 }
             }
@@ -81,15 +74,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (NoAppropriateOrgFound(selectFromFamily)) return;
             if (MustBeChurchMember(foundname)) return;
 
-            if (org != null)
-            {
-                if (NotValidForCreateAccountRegistration(foundname)) return;
-                if (AllowSenderToBecomeGoerToo()) return;
-                if (AlreadyRegisteredNotAllowed(foundname)) return;
-                if (MustBeMemberOfAnotherOrgToRegister(foundname)) return;
-                if (MustNotBeMemberOfAnotherOrg(foundname)) return;
-                ValidateBirthdayRange();
-            }
+            ValidForOrg(selectFromFamily, foundname);
+        }
+
+        private void ValidForOrg(bool selectFromFamily, string foundname)
+        {
+            if (org == null)
+                return;
+            if (NotValidForCreateAccountRegistration(foundname)) return;
+            if (AllowSenderToBecomeGoerToo()) return;
+            if (AlreadyRegisteredNotAllowed(foundname)) return;
+            if (MustBeMemberOfAnotherOrgToRegister(foundname)) return;
+            if (MustNotBeMemberOfAnotherOrg(foundname)) return;
+            ValidateBirthdayRange(selectFromFamily);
         }
 
         private void ValidateBasic()
@@ -154,12 +151,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 }
         }
 
-        private void ValidateBirthdayRange()
+        private void ValidateBirthdayRange(bool selectFromFamily)
         {
-            if (org == null) return;
+            if (org == null)
+                return;
             if (!BestBirthday.HasValue && (org.BirthDayStart.HasValue || org.BirthDayEnd.HasValue))
             {
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday required");
+                RegistrantProblem = @"**Birthday is required for this registration**";
                 Log("BirthdayRequired");
             }
             else if (BestBirthday.HasValue)
@@ -167,11 +166,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if ((org.BirthDayStart.HasValue && BestBirthday < org.BirthDayStart)
                     || (org.BirthDayEnd.HasValue && BestBirthday > org.BirthDayEnd))
                 {
-                    modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), "birthday outside age allowed range");
+                    var name = selectFromFamily
+                        ? "age-" + PeopleId
+                        : Parent.GetNameFor(mm => mm.List[Index].DateOfBirth);
+                    modelState.AddModelError(name, "birthday outside age allowed range");
+                    RegistrantProblem = @"**Birthday is outside the allowed age range**";
+
                     Log("InvalidBirthdate");
+                    IsValidForExisting = false;
                 }
             }
-            IsValidForContinue = modelState.IsValid;
+            IsValidForExisting = IsValidForContinue = modelState.IsValid;
         }
 
         private void PopulateExistingInformation()

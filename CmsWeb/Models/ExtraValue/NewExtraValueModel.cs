@@ -144,34 +144,54 @@ namespace CmsWeb.Models.ExtraValues
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.PeopleExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
                     else
+                    {
                         if (DbUtil.Db.PeopleExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        CheckDifferentCase();
+                    }
                     break;
                 case "Family":
                     if (type == "Bits")
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.FamilyExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
                     else
+                    {
                         if (DbUtil.Db.FamilyExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        CheckDifferentCase();
+                    }
                     break;
                 case "Organization":
                     if (type == "Bits")
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
                     else
+                    {
                         if (DbUtil.Db.OrganizationExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        CheckDifferentCase();
+                    }
                     break;
                 case "Meeting":
                     if (type == "Bits")
                         foreach (var b in ConvertToCodes().Where(b => DbUtil.Db.MeetingExtras.Any(ee => ee.Field == b && ee.Type != "Bit")))
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, b));
                     else
+                    {
                         if (DbUtil.Db.MeetingExtras.Any(ee => ee.Field == ExtraValueName && ee.Type != type))
                             throw new Exception(string.Format(nameAlreadyExistsAsADifferentType, ExtraValueName));
+                        CheckDifferentCase();
+                    }
                     break;
             }
+        }
+
+        private void CheckDifferentCase()
+        {
+            var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable);
+            var existing = fields.SingleOrDefault(ff => ff.Name.Equal(ExtraValueName));
+            if (existing.Name.HasValue() && existing.Name != ExtraValueName)
+                throw new Exception($"{existing.Name} <> {ExtraValueName}");
         }
 
         public List<string> ConvertToCodes()

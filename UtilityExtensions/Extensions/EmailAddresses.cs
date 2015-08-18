@@ -20,8 +20,6 @@ namespace UtilityExtensions
         {
             if (!addr.HasValue())
                 return "";
-            if (name.HasValue())
-                return $"mailto:{name} <{addr}>";
             return $"mailto:{addr}";
         }
         public static string FullEmail(string Email, string Name)

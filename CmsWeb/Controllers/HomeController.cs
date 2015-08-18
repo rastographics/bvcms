@@ -218,9 +218,15 @@ namespace CmsWeb.Controllers
                 return "Not Authorized to run this script";
             if (body.Contains("@qtagid"))
             {
-                var id = Db.FetchLastQuery().Id;
-                var tag = Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                p.Add("@qtagid", tag.Id);
+                var withquery = (bool?)TempData["withquery"];
+                int? qtagid = null;
+                if (withquery == true)
+                {
+                    var id = Db.FetchLastQuery().Id;
+                    var tag = Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                    qtagid = tag.Id;
+                }
+                p.Add("@qtagid", qtagid);
             }
             p.Add("@p1", parameter ?? "");
             return body;
@@ -278,7 +284,7 @@ namespace CmsWeb.Controllers
             var script = RunScriptSql(DbUtil.Db, parameter, content.Body, p);
             if (script.StartsWith("Not Authorized"))
                 return Message(script);
-            return cn.ExecuteReader(script).ToExcel("RunScript.xlsx");
+            return cn.ExecuteReader(script, p).ToExcel("RunScript.xlsx");
         }
 
         [HttpGet, Route("~/PyScript/{name}")]

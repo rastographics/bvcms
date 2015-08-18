@@ -22,6 +22,8 @@ namespace CmsData.View
 		
 		private string _RoleName;
 		
+		private int _TokenID;
+		
 		
 		public StatusFlagsPerson()
 		{
@@ -75,6 +77,23 @@ namespace CmsData.View
 			{
 				if (this._RoleName != value)
 					this._RoleName = value;
+			}
+
+		}
+
+		
+		[Column(Name="TokenID", Storage="_TokenID", DbType="int NOT NULL")]
+		public int TokenID
+		{
+			get
+			{
+				return this._TokenID;
+			}
+
+			set
+			{
+				if (this._TokenID != value)
+					this._TokenID = value;
 			}
 
 		}

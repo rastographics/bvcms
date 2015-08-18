@@ -142,6 +142,8 @@ namespace CmsData.API
             public bool? DoNotCallFlag { get; set; }
             public bool? DoNotMailFlag { get; set; }
             public bool? DoNotVisitFlag { get; set; }
+            public bool? DoNotPublishPhones { get; set; }
+            public bool? ReceiveSMS { get; set; }
             public int PositionInFamilyId { get; set; }
             [XmlElementAttribute(IsNullable = true)]
             public string SpouseName { get; set; }
@@ -163,6 +165,7 @@ namespace CmsData.API
             public string OtherNewChurch { get; set; }
             public string EmContact { get; set; }
             public string EmPhone { get; set; }
+            public string MedicalDescription { get; set; }
             public int? NewMemberClassStatusId { get; set; }
             public DateTime? NewMemberClassDate { get; set; }
             public Address FamilyAddress { get; set; }
@@ -214,6 +217,8 @@ namespace CmsData.API
                         DoNotCallFlag = p.DoNotCallFlag,
                         DoNotMailFlag = p.DoNotMailFlag,
                         DoNotVisitFlag = p.DoNotVisitFlag,
+                        DoNotPublishPhones = p.DoNotPublishPhones,
+                        ReceiveSMS = p.ReceiveSMS,
                         PositionInFamilyId = p.PositionInFamilyId,
                         SpouseName = sp.Name,
                         CampusId = p.CampusId,
@@ -234,6 +239,7 @@ namespace CmsData.API
                         OtherPreviousChurch = p.OtherPreviousChurch,
                         EmContact = rr.Emcontact,
                         EmPhone = rr.Emphone,
+                        MedicalDescription = rr.MedicalDescription,
                         AddressTypeId = p.AddressTypeId,
                         FamilyAddress = new Address
                         {

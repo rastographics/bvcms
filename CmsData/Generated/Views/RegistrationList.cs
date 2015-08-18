@@ -46,6 +46,8 @@ namespace CmsData.View
 		
 		private bool? _Mobile;
 		
+		private string _RegisterLinkType;
+		
 		private bool? _Completed;
 		
 		private bool? _Abandoned;
@@ -315,6 +317,23 @@ namespace CmsData.View
 			{
 				if (this._Mobile != value)
 					this._Mobile = value;
+			}
+
+		}
+
+		
+		[Column(Name="registerLinkType", Storage="_RegisterLinkType", DbType="varchar(50)")]
+		public string RegisterLinkType
+		{
+			get
+			{
+				return this._RegisterLinkType;
+			}
+
+			set
+			{
+				if (this._RegisterLinkType != value)
+					this._RegisterLinkType = value;
 			}
 
 		}
