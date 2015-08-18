@@ -14,6 +14,7 @@
     $("form").submit(function () {
         $("input[name='Commit']").removeAttr("disabled");
     });
+    $("div.instructions.options").show();
     $("#volunteer").change(function () {
         window.location = "/OnlineReg/ManageVolunteer/" + $("#OrgId").val() + "/" + $(this).val();
     });
