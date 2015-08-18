@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using UtilityExtensions;
 using System.Text;
+using System.Xml.Serialization;
 using CmsData;
 
 namespace CmsData.Registration

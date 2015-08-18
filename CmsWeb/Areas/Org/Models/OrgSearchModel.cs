@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
@@ -153,6 +154,36 @@ namespace CmsWeb.Areas.Search.Models
             var q = FetchOrgs();
             return DbUtil.Db.CurrOrgMembers(string.Join(",", q.OrderBy(mm => mm.OrganizationName).Select(mm => mm.OrganizationId)))
                 .ToDataTable().ToExcel("OrgsMembers.xlsx");
+        }
+
+        public EpplusResult RegOptionsList()
+        {
+            var q = FetchOrgs();
+            var q2 = from os in q
+                join op in DbUtil.Db.ViewRegsettingOptions on os.OrganizationId equals op.OrganizationId
+                select op;
+            return q2.ToDataTable().ToExcel("RegOptions.xlsx");
+        }
+        public EpplusResult RegQuestionsUsage()
+        {
+            var q = FetchOrgs();
+            var q2 = from os in q
+                join op in DbUtil.Db.ViewRegsettingCounts on os.OrganizationId equals op.OrganizationId
+                select op;
+            return q2.ToDataTable().ToExcel("RegQuestionsUsage.xlsx");
+        }
+        public void RegSettingsXml(Stream stream)
+        {
+            var q = FetchOrgs();
+            var w = new CmsData.API.APIWriter(stream);
+            w.Start("OrgSearch");
+            foreach (var o in q)
+            {
+                var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                Util.Serialize(os, w.writer);
+            }
+            w.End();
+            w.writer.Flush();
         }
 
         public int Count()

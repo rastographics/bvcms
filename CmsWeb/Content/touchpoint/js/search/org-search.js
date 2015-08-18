@@ -457,27 +457,6 @@
         return false;
     });
 
-    $('#ExportExcel').click(function (ev) {
-        ev.preventDefault();
-        $("#orgsearchform").attr("action", "/OrgSearch/ExportExcel");
-        $("#orgsearchform").submit();
-        return true;
-    });
-
-    $('#weeklyattendance').click(function (ev) {
-        ev.preventDefault();
-        $("#orgsearchform").attr("action", "/Reports/WeeklyAttendance");
-        $("#orgsearchform").submit();
-        return true;
-    });
-
-    $('#ExportMembersExcel').click(function (ev) {
-        ev.preventDefault();
-        $("#orgsearchform").attr("action", "/OrgSearch/ExportMembersExcel");
-        $("#orgsearchform").submit();
-        return true;
-    });
-
     $('#Meetings').click(function (ev) {
         ev.preventDefault();
         $("#orgsearchform").attr("action", "/Reports/Meetings");

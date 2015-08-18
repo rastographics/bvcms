@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Xml;
 using UtilityExtensions;
 using System.Text;
@@ -8,7 +9,7 @@ namespace CmsData.API
 {
     public class APIWriter
     {
-        private XmlWriter w;
+        public XmlWriter writer;
         private StringBuilder sb;
         public bool NoDefaults { get; set; }
 
@@ -30,23 +31,30 @@ namespace CmsData.API
             settings.Indent = true;
             settings.Encoding = new System.Text.UTF8Encoding(false);
             sb = new StringBuilder();
-            w = XmlWriter.Create(sb, settings);
+            writer = XmlWriter.Create(sb, settings);
         }
 
         public APIWriter(XmlWriter writer)
         {
-            w = writer;
+            this.writer = writer;
+        }
+        public APIWriter(Stream stream)
+        {
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.Encoding = new System.Text.UTF8Encoding(false);
+            writer = XmlWriter.Create(stream, settings);
         }
         public APIWriter Start(string element)
         {
             CheckPendingStart();
-            w.WriteStartElement(element);
+            writer.WriteStartElement(element);
             return this;
         }
 
         public APIWriter AddComment(string s)
         {
-            w.WriteComment(s);
+            writer.WriteComment(s);
             return this;
         }
 
@@ -57,7 +65,7 @@ namespace CmsData.API
                 var p = stack.Peek();
                 if (!p.PendingEnd)
                 {
-                    w.WriteStartElement(p.PendingStart);
+                    writer.WriteStartElement(p.PendingStart);
                     p.PendingEnd = true;
                 }
             }
@@ -75,14 +83,14 @@ namespace CmsData.API
         }
         public APIWriter End()
         {
-            w.WriteEndElement();
+            writer.WriteEndElement();
             return this;
         }
         public APIWriter EndPending()
         {
             var p = stack.Pop();
             if (p.PendingEnd)
-                w.WriteEndElement();
+                writer.WriteEndElement();
             return this;
         }
         public APIWriter Attr(string attr, object i)
@@ -91,7 +99,7 @@ namespace CmsData.API
             if (s.HasValue() || NoDefaults)
             {
                 CheckPendingStart();
-                w.WriteAttributeString(attr, s);
+                writer.WriteAttributeString(attr, s);
             }
             return this;
         }
@@ -112,7 +120,7 @@ namespace CmsData.API
             if (s.HasValue() || NoDefaults)
             {
                 CheckPendingStart();
-                w.WriteElementString(element.ToString(), s);
+                writer.WriteElementString(element.ToString(), s);
             }
             return this;
         }
@@ -122,7 +130,7 @@ namespace CmsData.API
             if (b)
             {
                 CheckPendingStart();
-                w.WriteElementString(element.ToString(), s);
+                writer.WriteElementString(element.ToString(), s);
             }
             return this;
         }
@@ -133,24 +141,24 @@ namespace CmsData.API
                 CheckPendingStart();
                 Start(element);
                 //w.WriteCData(cdata);
-                w.WriteCData("\n" + cdata.Trim() + "\n");
+                writer.WriteCData("\n" + cdata.Trim() + "\n");
                 End();
             }
             return this;
         }
         public APIWriter AddText(string text)
         {
-            w.WriteString(text);
+            writer.WriteString(text);
             return this;
         }
         public override string ToString()
         {
-            w.Flush();
+            writer.Flush();
             return sb?.ToString() ?? "";
         }
         ~APIWriter()
         {
-            w.Close();
+            writer.Close();
         }
     }
 }

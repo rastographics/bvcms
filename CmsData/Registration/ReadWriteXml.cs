@@ -22,7 +22,7 @@ namespace CmsData.Registration
         {
             if (s == null)
                 s = "";
-            if (s.StartsWith("<?xml") || s.StartsWith("<Settings>"))
+            if (s.StartsWith("<?xml") || s.StartsWith("<Settings"))
             {
                 var settings = Util.DeSerialize<Settings>(s);
                 settings.Db = db;
@@ -154,6 +154,7 @@ namespace CmsData.Registration
         public void WriteXml(XmlWriter writer)
         {
             var w = new APIWriter(writer);
+            w.Attr("id", OrgId);
             w.AddComment($"{Util.UserPeopleId} {DateTime.Now:g}");
 
             w.StartPending("Confirmation")

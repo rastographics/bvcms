@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using System.Xml;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Search.Models;
@@ -18,7 +19,7 @@ namespace CmsWeb.Areas.Search.Controllers
         private const string STR_OrgSearch = "OrgSearch";
 
         [Route("~/OrgSearch/{progid:int?}/{div:int?}")]
-        public ActionResult Index(int? div, int? progid, string name)
+        public ActionResult Index(int? div, int? progid, int? onlinereg, string name)
         {
             Response.NoCache();
             var m = new OrgSearchModel();
@@ -29,6 +30,9 @@ namespace CmsWeb.Areas.Search.Controllers
                 m.Name = name;
                 m.StatusId = null;
             }
+            if (onlinereg.HasValue)
+                m.OnlineReg = onlinereg;
+
             if (div.HasValue)
             {
                 m.DivisionId = div;
@@ -144,19 +148,33 @@ namespace CmsWeb.Areas.Search.Controllers
             var dt = OrgSearchModel.DefaultMeetingDate(id);
             return Json(new {date = dt.Date.ToShortDateString(), time = dt.ToShortTimeString()});
         }
-
         [HttpPost]
         public ActionResult ExportExcel(OrgSearchModel m)
         {
             return m.OrganizationExcelList();
         }
-
         [HttpPost]
         public ActionResult ExportMembersExcel(OrgSearchModel m)
         {
             return m.OrgsMemberList();
         }
-
+        [HttpPost]
+        public ActionResult RegOptions(OrgSearchModel m)
+        {
+            return m.RegOptionsList();
+        }
+        [HttpPost]
+        public ActionResult RegQuestionsUsage(OrgSearchModel m)
+        {
+            return m.RegQuestionsUsage();
+        }
+        [HttpPost]
+        public ActionResult RegSettingsXml(OrgSearchModel m)
+        {
+            Response.ContentType = "text/xml";
+            m.RegSettingsXml(Response.OutputStream);
+            return new EmptyResult();
+        }
         [HttpPost]
         public ContentResult Edit(string id, string value)
         {
