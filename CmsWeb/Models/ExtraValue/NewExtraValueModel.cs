@@ -190,7 +190,7 @@ namespace CmsWeb.Models.ExtraValues
         {
             var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable);
             var existing = fields.SingleOrDefault(ff => ff.Name.Equal(ExtraValueName));
-            if (existing.Name.HasValue() && existing.Name != ExtraValueName)
+            if (existing != null && existing.Name != ExtraValueName)
                 throw new Exception($"{existing.Name} <> {ExtraValueName}");
         }
 
