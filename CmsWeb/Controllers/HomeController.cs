@@ -274,7 +274,7 @@ namespace CmsWeb.Controllers
             if (content == null)
                 return Message("no content");
             var cs = User.IsInRole("Finance")
-                ? Util.ConnectionString
+                ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);

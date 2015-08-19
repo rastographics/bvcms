@@ -598,7 +598,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
 
             var cs = User.IsInRole("Finance")
-                ? Util.ConnectionString
+                ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
