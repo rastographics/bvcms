@@ -43,15 +43,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             int index = List.Count - 1;
             var p = LoadExistingPerson(id, index);
             List[index] = p;
-            
-            if(p.NeedsToChooseClass())
+
+            if (p.NeedsToChooseClass())
+            {
+                modelState.AddModelError("fammember-" + p.PeopleId, "Please make selection above");
                 return;
+            }
 
             p.ValidateModelForFind(modelState, id, selectFromFamily: true);
             if (!modelState.IsValid)
                 return;
 
-            
             if (p.ManageSubscriptions() && p.Found == true)
                 return;
 

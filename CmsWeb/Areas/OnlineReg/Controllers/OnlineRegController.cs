@@ -131,8 +131,10 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             var p = m.List[id];
 
             if (p.NeedsToChooseClass())
+            {
+                p.RegistrantProblem = "Please Make Selection Above";
                 return FlowList(m);
-
+            }
             p.ValidateModelForFind(ModelState, id);
 
             if (p.AnonymousReRegistrant())

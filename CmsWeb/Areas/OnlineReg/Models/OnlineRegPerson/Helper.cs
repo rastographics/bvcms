@@ -180,10 +180,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             {
                 if (_org == null && orgid.HasValue)
                 {
-//                    if (orgid == Util.CreateAccountCode)
-//                        _org = OnlineRegModel.CreateAccountOrg();
-//                    else
-                        _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
+                    //                    if (orgid == Util.CreateAccountCode)
+                    //                        _org = OnlineRegModel.CreateAccountOrg();
+                    //                    else
+                    _org = DbUtil.Db.LoadOrganizationById(orgid.Value);
                 }
                 if (_org == null && (divid.HasValue || masterorgid.HasValue) && (Found == true || IsValidForNew))
                 {
@@ -297,6 +297,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             get
             {
+                if (IsValidForContinue == false)
+                    return false;
                 if (Found == true && IsValidForExisting)
                     return true;
                 if (org == null || IsFilled)
@@ -577,7 +579,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (!orgid.HasValue && Parent.Orgid.HasValue)
                 orgid = Parent.Orgid;
 
-            return Parent.UserNeedsSelection = UserSelectsOrganization() && orgid == null;
+            Parent.UserNeedsSelection = UserSelectsOrganization() && orgid == null;
+            if (Parent.UserNeedsSelection)
+                IsValidForContinue = false;
+            return Parent.UserNeedsSelection;
         }
         internal void DoGroupToJoin()
         {

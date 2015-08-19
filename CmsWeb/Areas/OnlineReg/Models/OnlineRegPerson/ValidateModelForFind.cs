@@ -167,7 +167,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     || (org.BirthDayEnd.HasValue && BestBirthday > org.BirthDayEnd))
                 {
                     var name = selectFromFamily
-                        ? "age-" + PeopleId
+                        ? "fammember-" + PeopleId
                         : Parent.GetNameFor(mm => mm.List[Index].DateOfBirth);
                     modelState.AddModelError(name, "birthday outside age allowed range");
                     RegistrantProblem = @"**Birthday is outside the allowed age range**";
@@ -232,7 +232,7 @@ Please call the church to resolve this before we can complete your information."
             var msg = NoAppropriateOrgError ?? "Sorry, no approprate org";
             Log("NoAppropriateOrg");
             if (selectFromFamily)
-                modelState.AddModelError("age-" + person.PeopleId, msg);
+                modelState.AddModelError("fammember-" + person.PeopleId, msg);
             else
                 modelState.AddModelError(Parent.GetNameFor(mm => mm.List[Index].DateOfBirth), msg);
             IsValidForContinue = false;
