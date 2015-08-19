@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Reports.Models
         public EpplusResult Result(Guid id, string report)
         {
             var cs = _db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionString
+                ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var sql = Sql(id, report);
@@ -85,7 +85,7 @@ namespace CmsWeb.Areas.Reports.Models
         public EpplusResult Result(string SavedQuery, string report)
         {
             var cs = _db.CurrentUser.InRole("Finance")
-                ? Util.ConnectionString
+                ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var q = _db.PeopleQuery2(SavedQuery);
