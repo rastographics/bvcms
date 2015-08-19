@@ -297,7 +297,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         {
             get
             {
-                if (IsValidForContinue == false)
+                if (Parent.UserNeedsSelection)
                     return false;
                 if (Found == true && IsValidForExisting)
                     return true;
