@@ -238,6 +238,7 @@ namespace CmsWeb.Models
                         where om.Pending == true
                         where om.PeopleId == a[0].ToInt()
                         where om.Organization.DivOrgs.Any(dd => dd.DivId == todiv)
+                        where om.OrganizationId != t.OrganizationId // prevent promoting into the same class
                         where ScheduleId == 0 || om.Organization.OrgSchedules.Any(os => os.ScheduleId == ScheduleId)
                         select om;
                 // get them out of the class they will be going to first
@@ -249,12 +250,13 @@ namespace CmsWeb.Models
                 // this is their membership where they are currently a member
                 var fom = DbUtil.Db.OrganizationMembers.Single(m => m.OrganizationId == a[1].ToInt() && m.PeopleId == a[0].ToInt());
                 // now put them in the to class as pending member
-                var tom = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                    t.OrganizationId,
-                    a[0].ToInt(),
-                    fom.MemberTypeId, // keep their existing membertype
-                    Util.Now,
-                    null, true);
+                if(t.OrganizationId != fom.OrganizationId) // prevent promoting into the same class as they are currently in
+                    OrganizationMember.InsertOrgMembers(DbUtil.Db,
+                        t.OrganizationId,
+                        a[0].ToInt(),
+                        fom.MemberTypeId, // keep their existing membertype
+                        Util.Now,
+                        null, true);
                 // todo: store the from orgid in tom record and use that do do promotion with
             }
             DbUtil.Db.UpdateMainFellowship(t.OrganizationId);
