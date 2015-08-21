@@ -38,6 +38,9 @@
     #editor {
       font-family: Arial,Helvetica;
     }
+  .popover{
+      max-width: 100%; /* Max Width of the popover (depending on the container!) */
+  }
   </style>
 }
 <div class="box box-responsive">
@@ -48,7 +51,7 @@
         <div class="row">
           <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="OrganizationId, Location or part of Name (organization, leader, division)."><i class="fa fa-info-circle"></i></a>&nbsp;
+              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="@Model.NameHelp"><i class="fa fa-info-circle"></i></a>&nbsp;
               <label for="Name" class="control-label">Name</label>
               @Html.TextBox("Name", Model.Name, new { @class = "form-control" })
             </div>

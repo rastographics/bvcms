@@ -18,9 +18,7 @@ namespace CmsData.View
 		
 		private int _OrganizationId;
 		
-		private int? _OrgFeesCount;
-		
-		private int? _AgeGroupsCount;
+		private string _OrganizationName;
 		
 		private int? _DropdownItemCount;
 		
@@ -43,6 +41,36 @@ namespace CmsData.View
 		private int? _YesNoQuestionCount;
 		
 		private int? _NotRequiredCount;
+		
+		private int? _OrgFeesCount;
+		
+		private int? _AgeGroupsCount;
+		
+		private long? _BodyLen;
+		
+		private long? _SenderBodyLen;
+		
+		private long? _SupportBodyLen;
+		
+		private long? _ReminderBodyLen;
+		
+		private long? _InstructionsLoginLen;
+		
+		private long? _InstructionsOptionsLen;
+		
+		private long? _InstructionsSubmitLen;
+		
+		private long? _InstructionsFindLen;
+		
+		private long? _InstructionsSelectLen;
+		
+		private long? _InstructionsSorryLen;
+		
+		private long? _InstructionsSpecialLen;
+		
+		private long? _InstructionsThanksLen;
+		
+		private long? _InstructionsTermsLen;
 		
 		
 		public RegsettingCount()
@@ -68,35 +96,18 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="OrgFeesCount", Storage="_OrgFeesCount", DbType="int")]
-		public int? OrgFeesCount
+		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
+		public string OrganizationName
 		{
 			get
 			{
-				return this._OrgFeesCount;
+				return this._OrganizationName;
 			}
 
 			set
 			{
-				if (this._OrgFeesCount != value)
-					this._OrgFeesCount = value;
-			}
-
-		}
-
-		
-		[Column(Name="AgeGroupsCount", Storage="_AgeGroupsCount", DbType="int")]
-		public int? AgeGroupsCount
-		{
-			get
-			{
-				return this._AgeGroupsCount;
-			}
-
-			set
-			{
-				if (this._AgeGroupsCount != value)
-					this._AgeGroupsCount = value;
+				if (this._OrganizationName != value)
+					this._OrganizationName = value;
 			}
 
 		}
@@ -284,6 +295,261 @@ namespace CmsData.View
 			{
 				if (this._NotRequiredCount != value)
 					this._NotRequiredCount = value;
+			}
+
+		}
+
+		
+		[Column(Name="OrgFeesCount", Storage="_OrgFeesCount", DbType="int")]
+		public int? OrgFeesCount
+		{
+			get
+			{
+				return this._OrgFeesCount;
+			}
+
+			set
+			{
+				if (this._OrgFeesCount != value)
+					this._OrgFeesCount = value;
+			}
+
+		}
+
+		
+		[Column(Name="AgeGroupsCount", Storage="_AgeGroupsCount", DbType="int")]
+		public int? AgeGroupsCount
+		{
+			get
+			{
+				return this._AgeGroupsCount;
+			}
+
+			set
+			{
+				if (this._AgeGroupsCount != value)
+					this._AgeGroupsCount = value;
+			}
+
+		}
+
+		
+		[Column(Name="BodyLen", Storage="_BodyLen", DbType="bigint")]
+		public long? BodyLen
+		{
+			get
+			{
+				return this._BodyLen;
+			}
+
+			set
+			{
+				if (this._BodyLen != value)
+					this._BodyLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="SenderBodyLen", Storage="_SenderBodyLen", DbType="bigint")]
+		public long? SenderBodyLen
+		{
+			get
+			{
+				return this._SenderBodyLen;
+			}
+
+			set
+			{
+				if (this._SenderBodyLen != value)
+					this._SenderBodyLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="SupportBodyLen", Storage="_SupportBodyLen", DbType="bigint")]
+		public long? SupportBodyLen
+		{
+			get
+			{
+				return this._SupportBodyLen;
+			}
+
+			set
+			{
+				if (this._SupportBodyLen != value)
+					this._SupportBodyLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="ReminderBodyLen", Storage="_ReminderBodyLen", DbType="bigint")]
+		public long? ReminderBodyLen
+		{
+			get
+			{
+				return this._ReminderBodyLen;
+			}
+
+			set
+			{
+				if (this._ReminderBodyLen != value)
+					this._ReminderBodyLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsLoginLen", Storage="_InstructionsLoginLen", DbType="bigint")]
+		public long? InstructionsLoginLen
+		{
+			get
+			{
+				return this._InstructionsLoginLen;
+			}
+
+			set
+			{
+				if (this._InstructionsLoginLen != value)
+					this._InstructionsLoginLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsOptionsLen", Storage="_InstructionsOptionsLen", DbType="bigint")]
+		public long? InstructionsOptionsLen
+		{
+			get
+			{
+				return this._InstructionsOptionsLen;
+			}
+
+			set
+			{
+				if (this._InstructionsOptionsLen != value)
+					this._InstructionsOptionsLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsSubmitLen", Storage="_InstructionsSubmitLen", DbType="bigint")]
+		public long? InstructionsSubmitLen
+		{
+			get
+			{
+				return this._InstructionsSubmitLen;
+			}
+
+			set
+			{
+				if (this._InstructionsSubmitLen != value)
+					this._InstructionsSubmitLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsFindLen", Storage="_InstructionsFindLen", DbType="bigint")]
+		public long? InstructionsFindLen
+		{
+			get
+			{
+				return this._InstructionsFindLen;
+			}
+
+			set
+			{
+				if (this._InstructionsFindLen != value)
+					this._InstructionsFindLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsSelectLen", Storage="_InstructionsSelectLen", DbType="bigint")]
+		public long? InstructionsSelectLen
+		{
+			get
+			{
+				return this._InstructionsSelectLen;
+			}
+
+			set
+			{
+				if (this._InstructionsSelectLen != value)
+					this._InstructionsSelectLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsSorryLen", Storage="_InstructionsSorryLen", DbType="bigint")]
+		public long? InstructionsSorryLen
+		{
+			get
+			{
+				return this._InstructionsSorryLen;
+			}
+
+			set
+			{
+				if (this._InstructionsSorryLen != value)
+					this._InstructionsSorryLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsSpecialLen", Storage="_InstructionsSpecialLen", DbType="bigint")]
+		public long? InstructionsSpecialLen
+		{
+			get
+			{
+				return this._InstructionsSpecialLen;
+			}
+
+			set
+			{
+				if (this._InstructionsSpecialLen != value)
+					this._InstructionsSpecialLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsThanksLen", Storage="_InstructionsThanksLen", DbType="bigint")]
+		public long? InstructionsThanksLen
+		{
+			get
+			{
+				return this._InstructionsThanksLen;
+			}
+
+			set
+			{
+				if (this._InstructionsThanksLen != value)
+					this._InstructionsThanksLen = value;
+			}
+
+		}
+
+		
+		[Column(Name="InstructionsTermsLen", Storage="_InstructionsTermsLen", DbType="bigint")]
+		public long? InstructionsTermsLen
+		{
+			get
+			{
+				return this._InstructionsTermsLen;
+			}
+
+			set
+			{
+				if (this._InstructionsTermsLen != value)
+					this._InstructionsTermsLen = value;
 			}
 
 		}

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
@@ -169,6 +170,14 @@ namespace CmsWeb.Areas.Search.Models
             var q = FetchOrgs();
             var q2 = from os in q
                 join op in DbUtil.Db.ViewRegsettingCounts on os.OrganizationId equals op.OrganizationId
+                select op;
+            return q2.ToDataTable().ToExcel("RegQuestionsUsage.xlsx");
+        }
+        public EpplusResult RegSettingUsages()
+        {
+            var q = FetchOrgs();
+            var q2 = from os in q
+                join op in DbUtil.Db.ViewRegsettingUsages on os.OrganizationId equals op.OrganizationId
                 select op;
             return q2.ToDataTable().ToExcel("RegQuestionsUsage.xlsx");
         }
@@ -794,5 +803,23 @@ Divisions: {Divisions}";
             public string Schedule => $"{MeetingTime:ddd h:mm tt}";
             public string Location { get; set; }
         }
+
+        public HtmlString NameHelp => new HtmlString(@"
+<p>Search by:</p>
+<ul>
+<li>OrganizationId</li>
+<li>Location</li>
+<li>Part of Name (of: organization, leader, division, or location)</li>
+</ul>
+<p>Advanced:</p>
+<ul>
+<li><code>ev:<em>name</em></code> has an ExtraValue like <em>name</em></li>
+<li><code>-ev:<em>name</em></code> does not have an ExtraValue like <em>name</em></li>
+<li><code>childof:<em>orgid</em></code> is a child org of the parent <em>orgid</em></li>
+<li><code>master:<em>orgid</em></code> is in the picklist of the master <em>orgid</em></li>
+<li><code>regsetting:<em>comma,separated,keywords</em></code> searches regsetting usage</li>
+</ul>
+<p>For more see <em><strong><a href='http://docs.touchpointsoftware.com/Organizations/OrgSearchNameAdvanced.html' target='_blank'>the documentation</a></p>
+");
     }
 }

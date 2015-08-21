@@ -535,6 +535,7 @@
     <Compile Include="Generated\Views\RegsettingCount.cs" />
     <Compile Include="Generated\Views\RegsettingMessage.cs" />
     <Compile Include="Generated\Views\RegsettingOption.cs" />
+    <Compile Include="Generated\Views\RegsettingUsage.cs" />
     <Compile Include="Generated\Views\UserLeader.cs" />
     <Compile Include="Infrastructure\IsForeignKeyAttribute.cs" />
     <Compile Include="Meetings\Attend.cs" />

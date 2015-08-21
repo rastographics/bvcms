@@ -270,11 +270,7 @@ namespace CmsWeb.Areas.Org.Models
         public bool FilterIndividuals { get; set; }
         public bool ClearFilter { get; set; }
 
-        public HtmlString GroupHelp
-        {
-            get
-            {
-                return ViewExtensions2.Markdown(@"
+        public HtmlString GroupHelp => ViewExtensions2.Markdown(@"
 * Click one of the buttons to see those people.
 * You can work with them individually 
 * or combine them with the options dropdown.
@@ -283,26 +279,15 @@ When a single group is shown (not combined),
 use the dropdown menu immediately to it's right 
 to `Add`, `Drop`, `Update` Members etc.
 ");
-            }
-        }
-        public HtmlString NameFilterHelp
-        {
-            get
-            {
-                return ViewExtensions2.Markdown(@"
+        public HtmlString NameFilterHelp => ViewExtensions2.Markdown(@"
 **Match a Name**
 
 * First and last name or just last name.
 * You can put just the first few letters of each.
 * PeopleId works too.
 ");
-            }
-        }
-        public HtmlString SgFilterHelp
-        {
-            get
-            {
-                return ViewExtensions2.Markdown(@"
+
+        public HtmlString SgFilterHelp => ViewExtensions2.Markdown(@"
 **Match a sub-group name.**
 
 * Partial match just the first few letters of a sub-group when you follow with asterisk (`*`)
@@ -312,8 +297,6 @@ to `Add`, `Drop`, `Update` Members etc.
 * `ALL:` to match people who are in each group specified.
 * When there are more groups than fit into the textbox, most browsers will let you resize that box so you can see the rest.
 ");
-            }
-        }
 
         public bool GroupNeedsMenu(string group)
         {

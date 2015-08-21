@@ -1956,6 +1956,12 @@ namespace CmsData
 
         }
 
+        public Table< View.RegsettingUsage> ViewRegsettingUsages
+        {
+            get { return GetTable< View.RegsettingUsage>(); }
+
+        }
+
         public Table< View.SpouseOrHeadWithEmail> ViewSpouseOrHeadWithEmails
         {
             get { return GetTable< View.SpouseOrHeadWithEmail>(); }

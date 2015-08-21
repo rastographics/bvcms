@@ -169,6 +169,11 @@ namespace CmsWeb.Areas.Search.Controllers
             return m.RegQuestionsUsage();
         }
         [HttpPost]
+        public ActionResult RegSettingUsages(OrgSearchModel m)
+        {
+            return m.RegSettingUsages();
+        }
+        [HttpPost]
         public ActionResult RegSettingsXml(OrgSearchModel m)
         {
             Response.ContentType = "text/xml";
