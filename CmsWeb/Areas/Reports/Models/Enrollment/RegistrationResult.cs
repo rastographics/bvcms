@@ -118,7 +118,7 @@ namespace CmsWeb.Areas.Reports.Models
                             t2.AddCell(i.s.Name);
                             if (i.s.CellPhone.HasValue())
                                 t2.AddCell(i.s.CellPhone.FmtFone("C"));
-                            else if (i.h.HomePhone.HasValue())
+                            else if (i.s.HomePhone.HasValue())
                                 t2.AddCell(i.s.HomePhone.FmtFone("H"));
                             else
                                 t2.AddCell(" ");
@@ -187,7 +187,7 @@ namespace CmsWeb.Areas.Reports.Models
                             t5.AddCell("Father's Name:");
                             t5.AddCell(rr.Fname);
                         }
-                        if (i.m != null && i.m.OnlineRegData != null)
+                        if (i.m?.OnlineRegData != null)
                         {
                             var qlist = from qu in DbUtil.Db.ViewOnlineRegQAs
                                         where qu.OrganizationId == i.m.OrganizationId
@@ -200,7 +200,7 @@ namespace CmsWeb.Areas.Reports.Models
                                 t5.AddCell(qu.Answer);
                             }
                         }
-                        if (i.m != null && i.m.UserData != null)
+                        if (i.m?.UserData != null)
                         {
                             var a = Regex.Split(i.m.UserData, @"\s*--Add comments above this line--\s*", RegexOptions.Multiline);
                             if (a.Length > 0)
