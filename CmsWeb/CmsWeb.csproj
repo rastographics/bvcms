@@ -380,7 +380,10 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
+    <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel.cs" />
+    <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
@@ -3164,7 +3167,7 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\Grade.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\Batch\MoveAndDelete.cshtml">
+    <Content Include="Areas\Manage\Views\BatchMoveAndDelete\MoveAndDelete.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Batch\RegistrationMail.cshtml">
     </Content>

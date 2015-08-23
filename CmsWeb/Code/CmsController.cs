@@ -172,6 +172,10 @@ namespace CmsWeb
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             DbUtil.Db.UpdateLastActivity(Util.UserId);
         }
+        public ViewResult Message(string text)
+        {
+            return View("Message", model: text);
+        }
     }
 
     public class RequireBasicAuthentication : ActionFilterAttribute

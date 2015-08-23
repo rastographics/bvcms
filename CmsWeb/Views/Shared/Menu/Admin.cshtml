@@ -76,11 +76,13 @@
     if (admin)
     {
         <li class="dropdown-header">Batch Actions</li>
-        @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find", admin)
-        @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds", admin)
-        @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields", admin)
-        @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg", admin)
-        @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags", admin)
+        @Helper.LiAnchorLink("Find Duplicates", "/Duplicates/Find")
+        @Helper.LiAnchorLink("Tag People Ids", "/Batch/TagPeopleIds")
+        @Helper.LiAnchorLink("Update Fields from a Tag/Query", "/Batch/UpdateFields")
+        @Helper.LiAnchorLink("Update Organizations", "/Batch/UpdateOrg")
+        @Helper.LiAnchorLink("Update RegOptions", "/Batch/UpdateRegOptions")
+        @Helper.LiAnchorLink("Update RegSettings", "/Batch/UpdateRegSettings")
+        @Helper.LiAnchorLink("Update Status Flags", "/Batch/UpdateStatusFlags")
         if (User.IsInRole("developer"))
         {
             <li><a href="/ValidateAddress" class="longrunop">Validate Address for a Tag/Query</a></li>
