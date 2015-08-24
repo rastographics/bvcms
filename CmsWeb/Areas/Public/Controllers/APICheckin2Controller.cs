@@ -167,7 +167,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     UpdateField(fsb, p.Family, "AddressLineTwo", result.Line2);
                     UpdateField(fsb, p.Family, "CityName", result.City);
                     UpdateField(fsb, p.Family, "StateCode", result.State);
-                    UpdateField(fsb, p.Family, "ZipCode", result.Zip.GetDigits());
+                    UpdateField(fsb, p.Family, "ZipCode", result.Zip.GetDigits().Truncate(10));
                     var rc = DbUtil.Db.FindResCode(result.Zip, null);
                     UpdateField(fsb, p.Family, "ResCodeId", rc.ToString());
                 }
