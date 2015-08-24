@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Web;
 using CmsData;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.Manage.Models
+namespace CmsWeb.Areas.Manage.Models.BatchModel
 {
-    public class BatchModel
+    public partial class BatchModel
     {
         public static void UpdateOrgs(string text)
         {
@@ -157,87 +154,6 @@ namespace CmsWeb.Areas.Manage.Models
                     DbUtil.Db.SubmitChanges();
                 }
             }
-        }
-        public static List<FindInfo> FindTagPeople(string text, string tagname, ref string error)
-        {
-            var csv = new CsvReader(new StringReader(text), false, '\t').ToList();
-            if (!csv.Any())
-            {
-                error = "No Data";
-                return null;
-            }
-            var line0 = csv.First().Select(vv => vv.TrimEnd()).ToList();
-            if (!line0.Contains("First") || !line0.Contains("Last"))
-            {
-                error = "Both First and Last are required";
-                return null;
-            }
-            if (!line0.Any(name => new[] { "Birthday", "Email", "CellPhone", "HomePhone" }.Contains(name)))
-            {
-                error = "One of Birthday, Email, CellPhone or HomePhone is required";
-                return null;
-            }
-            var list = new List<FindInfo>();
-
-            var names = line0.ToDictionary(i => i.TrimEnd(), i => line0.FindIndex(s => s == i));
-            foreach (var a in csv.Skip(1))
-            {
-                var row = new FindInfo
-                {
-                    First = FindColumn(names, a, "First"),
-                    Last = FindColumn(names, a, "Last"),
-                    Birthday = FindColumnDate(names, a, "Birthday"),
-                    Email = FindColumn(names, a, "Email"),
-                    CellPhone = FindColumnDigits(names, a, "CellPhone"),
-                    HomePhone = FindColumnDigits(names, a, "HomePhone")
-                };
-
-                var pids = DbUtil.Db.FindPerson3(row.First, row.Last, row.Birthday, row.Email, row.CellPhone, row.HomePhone, null).ToList();
-                row.Found = pids.Count;
-                if(pids.Count == 1)
-                    row.PeopleId = pids[0].PeopleId;
-                list.Add(row);
-            }
-            var q = from pi in list
-                where pi.PeopleId.HasValue
-                select pi.PeopleId;
-            foreach (var pid in q.Distinct())
-                Person.Tag(DbUtil.Db, pid ?? 0, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
-            return list;
-        }
-        private static string FindColumn(Dictionary<string, int> names, string[] a, string col)
-        {
-            if (names.ContainsKey(col))
-                return a[names[col]];
-            return null;
-        }
-        private static string FindColumnDigits(Dictionary<string, int> names, string[] a, string col)
-        {
-            var s = FindColumn(names, a, col);
-            if (s.HasValue())
-                return s.GetDigits();
-            return s;
-        }
-        private static DateTime? FindColumnDate(Dictionary<string, int> names, string[] a, string col)
-        {
-            var s = FindColumn(names, a, col);
-            DateTime dt;
-            if (names.ContainsKey(col))
-                if (DateTime.TryParse(a[names[col]], out dt))
-                    return dt;
-            return null;
-        }
-        public class FindInfo
-        {
-            public int? PeopleId { get; set; }
-            public int Found { get; set; }
-            public string First { get; set; }
-            public string Last { get; set; }
-            public string Email { get; set; }
-            public string CellPhone { get; set; }
-            public string HomePhone { get; set; }
-            public DateTime? Birthday { get; set; }
         }
     }
 }

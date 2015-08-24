@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Manage.Models;
+using CmsWeb.Areas.Manage.Models.BatchModel;
+using CmsWeb.Code;
 using CmsWeb.Models;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
@@ -38,34 +41,13 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult RegistrationMail(string text)
-        {
-            if (Request.HttpMethod.ToUpper() == "GET")
-            {
-                ViewData["text"] = "";
-                return View();
-            }
-            var batch = from s in text.Split('\n')
-                        where s.HasValue()
-                        let a = s.SplitStr("\t", 2)
-                        select new { pid = a[0].ToInt(), em = a[1] };
-            foreach (var i in batch)
-            {
-                var m = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == 88485 && om.PeopleId == i.pid);
-                if (m == null)
-                    continue;
-                m.RegisterEmail = i.em;
-            }
-            DbUtil.Db.SubmitChanges();
-
-            return Content("done");
-        }
-
-        [Authorize(Roles = "Admin")]
         public ActionResult UpdateOrg()
         {
-            ViewData["text"] = "";
-            return View();
+            ViewBag.Title = "Update Oranizations";
+            ViewBag.PageHeader = "Batch Update Oranizations from spreadsheet";
+            ViewBag.text = "";
+            ViewBag.action = "/Batch/UpdateOrg";
+            return View("BatchUpdate");
         }
 
         [Authorize(Roles = "Admin")]
@@ -79,8 +61,55 @@ namespace CmsWeb.Areas.Manage.Controllers
             }
             catch (Exception ex)
             {
-                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
-                return Message(ex.Message);
+                return AjaxErrorMessage(ex);
+            }
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateRegSettings()
+        {
+            ViewBag.Title = "Update Registration Settings";
+            ViewBag.PageHeader = "Batch Update Registration Settings from xml";
+            ViewBag.text = "";
+            ViewBag.action = "/Batch/UpdateRegSettings";
+            return View("BatchUpdate");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateRegSettings(string text)
+        {
+            try
+            {
+                BatchModel.UpdateRegSettingsXml(text);
+                return Content("<strong>Success!</strong> RegSettings were successfully updated.");
+            }
+            catch (Exception ex)
+            {
+                return AjaxErrorMessage(ex);
+            }
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateRegOptions()
+        {
+            ViewBag.Title = "Update Registration Options";
+            ViewBag.PageHeader = "Batch Update Registration Options from spreadsheet";
+            ViewBag.text = "";
+            ViewBag.action = "/Batch/UpdateRegOptions";
+            return View("BatchUpdate");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateRegOptions(string text)
+        {
+            try
+            {
+                BatchModel.UpdateRegOptions(text);
+                return Content("RegOptions were successfully updated.");
+            }
+            catch (Exception ex)
+            {
+                return AjaxErrorMessage(ex);
             }
         }
 
@@ -162,15 +191,15 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult FindTagPeople(string text, string tagname)
         {
-            if (!tagname.HasValue())
-                return Content("no tag");
-
-            var error = "";
-            var list = BatchModel.FindTagPeople(text, tagname, ref error);
-            if(error.HasValue())
-                return Message(error);
-
-            return View(list);
+            try
+            {
+                var list = BatchModel.FindTagPeople(text, tagname);
+                return View(list);
+            }
+            catch (Exception ex)
+            {
+                return Message(ex);
+            }
         }
 
 

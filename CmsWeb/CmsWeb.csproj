@@ -382,7 +382,10 @@
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
-    <Compile Include="Areas\Manage\Models\BatchModel.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\UpdateRegSettingsXml.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\UpdateRegOptions.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
@@ -583,6 +586,7 @@
     <Compile Include="Code\DecimalModelBinder.cs" />
     <Compile Include="Code\JsonNetValueProviderFactory.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
+    <Compile Include="Code\UserInputException.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
     <Compile Include="Controllers\Api\OrganizationsController.cs" />
     <Compile Include="Controllers\Api\OrganizationMembersController.cs" />
@@ -916,6 +920,7 @@
     <Content Include="Content\touchpoint\img\spinner.gif" />
     <Content Include="Content\touchpoint\img\unknown.png" />
     <Content Include="Content\touchpoint\img\unknown_sm.png" />
+    <Content Include="Content\touchpoint\js\admin\batchupdate.js" />
     <Content Include="Content\touchpoint\js\admin\divisions.js" />
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
@@ -1540,6 +1545,8 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RegisterLinkMaster.cshtml" />
     <Content Include="Areas\Org\Views\RegSetting\EditXml.cshtml" />
     <None Include="Areas\Main\Views\UserPref\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
     <None Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
@@ -2826,6 +2833,7 @@
     <Content Include="Views\Shared\Message2.cshtml" />
     <Content Include="Views\Home\PyScriptForm.cshtml" />
     <Content Include="Views\Shared\Menu\User.cshtml" />
+    <Content Include="Views\Shared\PageError.cshtml" />
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
