@@ -382,8 +382,8 @@
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
     <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
-    <Compile Include="Areas\Manage\Models\BatchModel\UpdateRegSettingsXml.cs" />
-    <Compile Include="Areas\Manage\Models\BatchModel\UpdateRegOptions.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\BatchRegSettings.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\BatchRegOptions.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
     <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
     <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />

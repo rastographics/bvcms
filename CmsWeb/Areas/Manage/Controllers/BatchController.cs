@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             try
             {
-                BatchModel.UpdateRegSettingsXml(text);
+                BatchRegSettings.Update(text);
                 return Content("<strong>Success!</strong> RegSettings were successfully updated.");
             }
             catch (Exception ex)
@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             try
             {
-                RegOptions.Create(text).Update();
+                BatchRegOptions.Update(text);
                 return Content("RegOptions were successfully updated.");
             }
             catch (Exception ex)
@@ -108,7 +108,6 @@ namespace CmsWeb.Areas.Manage.Controllers
                 return AjaxErrorMessage(ex);
             }
         }
-
 
         [HttpGet]
         [Authorize(Roles = "Admin")]

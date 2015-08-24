@@ -8,11 +8,10 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.BatchModel
 {
-    public partial class BatchModel
+    public class BatchRegSettings
     {
-        public static void UpdateRegSettingsXml(string text)
+        public static void Update(string text)
         {
-            throw new NotImplementedException();
         }
     }
 }

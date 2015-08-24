@@ -6,22 +6,18 @@ using UtilityExtensions;
 
 namespace CmsWeb.Areas.Manage.Models.BatchModel
 {
-    public class RegOptions
+    public class BatchRegOptions
     {
-        private readonly CsvReader csv;
+        private CsvReader csv;
         private Settings rs;
 
-        public RegOptions(string text)
+        public static void Update(string text)
+        {
+            new BatchRegOptions().DoUpdate(text);
+        }
+        private void DoUpdate(string text)
         {
             csv = new CsvReader(new StringReader(text), true, '\t');
-        }
-
-        public static RegOptions Create(string text)
-        {
-            return new RegOptions(text);
-        }
-        public void Update()
-        {
             while (csv.ReadNextRecord())
             {
                 var oid = csv["OrganizationId"].ToInt();
