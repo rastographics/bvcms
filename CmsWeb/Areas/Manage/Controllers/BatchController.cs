@@ -1,14 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.Manage.Models;
 using CmsWeb.Areas.Manage.Models.BatchModel;
-using CmsWeb.Code;
 using CmsWeb.Models;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
@@ -104,7 +100,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             try
             {
-                BatchModel.UpdateRegOptions(text);
+                RegOptions.Create(text).Update();
                 return Content("RegOptions were successfully updated.");
             }
             catch (Exception ex)
