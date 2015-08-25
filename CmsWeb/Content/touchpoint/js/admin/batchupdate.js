@@ -3,6 +3,7 @@
         ev.preventDefault();
         var f = $(this).closest("form");
         var q = f.serialize();
+        $('div.alert').hide();
         $.block();
         $.post(f[0].action, q, function (ret) {
             $('div.alert-success').html(ret).show();

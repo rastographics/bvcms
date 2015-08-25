@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using CmsData;
 using CmsData.Registration;
+using CmsWeb.Code;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
 
@@ -18,6 +19,8 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
         private void DoUpdate(string text)
         {
             csv = new CsvReader(new StringReader(text), true, '\t');
+            if(csv.GetFieldIndex("OrganizationId") == -1)
+                throw new UserInputException("Missing required OrganizationId column");
             while (csv.ReadNextRecord())
             {
                 var oid = csv["OrganizationId"].ToInt();

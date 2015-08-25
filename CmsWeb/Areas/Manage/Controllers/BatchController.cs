@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             try
             {
-                BatchRegSettings.Update(text);
+                BatchRegMessages.Update(text);
                 return Content("<strong>Success!</strong> RegSettings were successfully updated.");
             }
             catch (Exception ex)

@@ -59,6 +59,17 @@ namespace CmsData.Registration
                         SenderSubject = e.Element("Subject")?.Value;
                         SenderBody = e.Element("Body")?.Value;
                         break;
+                    case "Instructions":
+                        InstructionLogin = e.Element("Login")?.Value;
+                        InstructionSelect = e.Element("Select")?.Value;
+                        InstructionFind = e.Element("Find")?.Value;
+                        InstructionOptions = e.Element("Options")?.Value;
+                        InstructionSpecial = e.Element("Special")?.Value;
+                        InstructionSubmit = e.Element("Submit")?.Value;
+                        InstructionSorry = e.Element("Sorry")?.Value;
+                        ThankYouMessage = e.Element("Thanks")?.Value;
+                        Terms = e.Element("Terms")?.Value;
+                        break;
                     case "Fees":
                         Fee = e.Element("Fee")?.Value.ToDecimal();
                         Deposit = e.Element("Deposit")?.Value.ToDecimal();
@@ -94,17 +105,6 @@ namespace CmsData.Registration
                                 OrgId = ee.Attribute("OrgId")?.Value.ToInt(),
                                 Fee = ee.Attribute("Fee")?.Value.ToDecimal()
                             });
-                        break;
-                    case "Instructions":
-                        InstructionLogin = e.Element("Login")?.Value;
-                        InstructionSelect = e.Element("Select")?.Value;
-                        InstructionFind = e.Element("Find")?.Value;
-                        InstructionOptions = e.Element("Options")?.Value;
-                        InstructionSpecial = e.Element("Special")?.Value;
-                        InstructionSubmit = e.Element("Submit")?.Value;
-                        InstructionSorry = e.Element("Sorry")?.Value;
-                        ThankYouMessage = e.Element("Thanks")?.Value;
-                        Terms = e.Element("Terms")?.Value;
                         break;
                     case "Options":
                         ConfirmationTrackingCode = e.Element("ConfirmationTrackingCode")?.Value;
