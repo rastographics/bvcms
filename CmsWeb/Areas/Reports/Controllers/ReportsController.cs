@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Dynamic;
 using System.Linq;
 using System.Security;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Xml.Linq;
 using CmsWeb.Areas.Dialog.Models;
 using CmsData;
-using CmsData.View;
+using CmsData.Registration;
 using CmsWeb.Areas.Main.Models.Avery;
 using CmsWeb.Areas.Main.Models.Directories;
 using CmsWeb.Areas.Reports.Models;
@@ -48,6 +50,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             ViewBag.html = replacements.DoReplacements(DbUtil.Db, p);
             return View();
         }
+
         [HttpGet]
         public ActionResult Attendance(int id, AttendanceModel m)
         {
@@ -55,11 +58,13 @@ namespace CmsWeb.Areas.Reports.Controllers
                 m = new AttendanceModel() { OrgId = id };
             return View(m);
         }
+
         [HttpPost]
         public ActionResult Attendance(AttendanceModel m)
         {
             return View(m);
         }
+
         [HttpGet]
         public ActionResult Attendee(int id)
         {
@@ -69,10 +74,10 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult AttendanceDetail(string Dt1, string Dt2, OrgSearchModel m)
         {
-            DateTime? dt1 = Dt1.ToDate();
+            var dt1 = Dt1.ToDate();
             if (!dt1.HasValue)
                 dt1 = ChurchAttendanceModel.MostRecentAttendedSunday();
-            DateTime? dt2 = Dt2.ToDate();
+            var dt2 = Dt2.ToDate();
             if (!dt2.HasValue)
                 dt2 = dt1.Value.AddDays(1);
             var m2 = new AttendanceDetailModel(dt1.Value, dt2, m);
@@ -113,6 +118,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 useMailFlags = useMailFlags,
             };
         }
+
         [HttpGet]
         public ActionResult AveryAddressWord(Guid? id, string format, bool? titles, bool? usephone, bool? sortzip, bool? useMailFlags, int skipNum = 0)
         {
@@ -216,7 +222,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet, Route("DecisionsToQuery/{command}/{key}")]
         public ActionResult DecisionsToQuery(string command, string key, int? campus, DateTime? dt1, DateTime? dt2)
         {
-            string r = new DecisionSummaryModel(dt1, dt2) { Campus = campus }.ConvertToSearch(command, key);
+            var r = new DecisionSummaryModel(dt1, dt2) { Campus = campus }.ConvertToSearch(command, key);
             return Redirect(r);
         }
 
@@ -251,6 +257,7 @@ namespace CmsWeb.Areas.Reports.Controllers
             var mm = OrgSearchModel.DecodedJson(json);
             return RedirectToAction("EnrollmentControl2a", new { json });
         }
+
         [HttpGet, ValidateInput(false)]
         public ActionResult EnrollmentControl2a(string json)
         {
@@ -260,6 +267,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return RedirectShowError("must start with orgsearch");
             return View(m);
         }
+
         [HttpGet, Route("EnrollmentControl2b/{na}"), ValidateInput(false)]
         public ActionResult EnrollmentControl2b(string na, string j)
         {
@@ -300,7 +308,7 @@ namespace CmsWeb.Areas.Reports.Controllers
         [HttpGet]
         public ActionResult Meetings(DateTime dt1, DateTime dt2, int? programid, int? divisionid)
         {
-            MeetingsModel m = new MeetingsModel() {Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid};
+            var m = new MeetingsModel {Dt1 = dt1, Dt2 = dt2, ProgramId = programid, DivisionId = divisionid};
             return View(m);
         }
         [HttpPost]
@@ -334,23 +342,27 @@ namespace CmsWeb.Areas.Reports.Controllers
             }, commandType: CommandType.StoredProcedure, commandTimeout: 600);
             return View(q);
         }
+
         [HttpPost, Route("MeetingsToQuery/{type}")]
         public ActionResult MeetingsToQuery(string type, MeetingsModel m)
         {
-            string r = m.ConvertToSearch(type);
+            var r = m.ConvertToSearch(type);
             TempData["autorun"] = true;
             return Redirect(r);
         }
+
         [HttpGet, Route("MissionTripFunding/{orgid:int}")]
         public ActionResult MissionTripFunding(int orgid)
         {
             return View(MissionTripFundingModel.List(orgid));
         }
+
         [HttpPost]
         public ActionResult MissionTripFunding(OrgSearchModel m)
         {
             return View(MissionTripFundingModel.List(m));
         }
+
         [HttpGet, Route("MissionTripSenders/{orgid:int}")]
         public ActionResult MissionTripSenders(int orgid)
         {
@@ -410,11 +422,13 @@ namespace CmsWeb.Areas.Reports.Controllers
         {
             return new RallyRollsheetResult { orgid = orgid, NewMeetingInfo = mi };
         }
+
         [HttpGet, Route("RallyRollsheetForMeeting/{meetingid:int}")]
         public ActionResult RallyRollsheetForMeeting(int meetingid)
         {
             return new RallyRollsheetResult { meetingid = meetingid };
         }
+
         [HttpPost]
         public ActionResult RallyRollsheets(NewMeetingInfo mi, OrgSearchModel m)
         {
@@ -459,11 +473,162 @@ namespace CmsWeb.Areas.Reports.Controllers
             return new RegistrationResult(id, oid);
         }
 
+        [HttpGet]
+        public ActionResult RegistrationExcel(Guid? id, int? oid)
+        {
+            if (!id.HasValue)
+                return Content("no query");
+
+            var peopleQuery = DbUtil.Db.PeopleQuery(id.Value);
+            if (!oid.HasValue)
+                oid = DbUtil.Db.CurrentOrgId;
+            var results = (from p in peopleQuery
+                           let rr = p.RecRegs.SingleOrDefault() ?? new RecReg()
+                           let headOfHousehold = p.Family.HeadOfHousehold
+                           let headOfHouseholdSpouse = p.Family.HeadOfHouseholdSpouse
+                           orderby p.Name2
+                           select new
+                           {
+                               Person = p,
+                               RecReg = rr,
+                               HeadOfHousehold = headOfHousehold,
+                               HeadOfHouseholdSpouse = headOfHouseholdSpouse,
+                               OrgMembers = p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == oid),
+                               p.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == oid).Organization,
+                           }).ToList();
+
+            if (!results.Any())
+                return Content("no results");
+
+            var table = new DataTable();
+
+            foreach (var x in results)
+            {
+                Settings setting = null;
+                if (x.Organization != null)
+                    setting = DbUtil.Db.CreateRegistrationSettings(x.Organization.OrganizationId);
+
+                var row = table.NewRow();
+
+                AddValue(table, row, "Name", x.Person.Name);
+                AddValue(table, row, "PrimaryAddress", x.Person.PrimaryAddress);
+                AddValue(table, row, "PrimaryAddress2", x.Person.PrimaryAddress2);
+                AddValue(table, row, "CityStateZip", x.Person.CityStateZip);
+                AddValue(table, row, "EmailAddress", x.Person.EmailAddress);
+
+                if (x.Person.HomePhone.HasValue())
+                    AddValue(table, row, "HomePhone", x.Person.HomePhone.FmtFone("H"));
+                if (x.Person.CellPhone.HasValue())
+                    AddValue(table, row, "CellPhone", x.Person.CellPhone.FmtFone("C"));
+
+                AddValue(table, row, "DOB", x.Person.DOB);
+
+                AddValue(table, row, "HeadOfHouseholdName", x.HeadOfHousehold?.Name);
+                if (!string.IsNullOrEmpty(x.HeadOfHousehold?.CellPhone))
+                    AddValue(table, row, "HeadOfHouseholdCellPhone", x.HeadOfHousehold?.CellPhone.FmtFone("C"));
+                if (!string.IsNullOrEmpty(x.HeadOfHousehold?.HomePhone))
+                    AddValue(table, row, "HeadOfHouseholdHomePhone", x.HeadOfHousehold?.HomePhone.FmtFone("H"));
+
+                AddValue(table, row, "HeadOfHouseholdSpouseName", x.HeadOfHouseholdSpouse?.Name);
+                if (!string.IsNullOrEmpty(x.HeadOfHouseholdSpouse?.CellPhone))
+                    AddValue(table, row, "HeadOfHouseholdSpouseCellPhone", x.HeadOfHouseholdSpouse?.CellPhone.FmtFone("C"));
+                if (!string.IsNullOrEmpty(x.HeadOfHouseholdSpouse?.HomePhone))
+                    AddValue(table, row, "HeadOfHouseholdSpouseHomePhone", x.HeadOfHouseholdSpouse?.HomePhone.FmtFone("H"));
+
+                if (x.Organization == null || SettingVisible(setting, "AskSize"))
+                    AddValue(table, row, "ShirtSize", x.RecReg.ShirtSize);
+
+                AddValue(table, row, "MedicalDescription", x.RecReg.MedicalDescription);
+
+                if (x.Organization == null || SettingVisible(setting, "AskTylenolEtc"))
+                {
+                    AddValue(table, row, "Tylenol", x.RecReg.Tylenol);
+                    AddValue(table, row, "Advil", x.RecReg.Advil);
+                    AddValue(table, row, "Robitussin", x.RecReg.Robitussin);
+                    AddValue(table, row, "Maalox", x.RecReg.Maalox);
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskEmContact"))
+                {
+                    AddValue(table, row, "Emcontact", x.RecReg.Emcontact);
+                    AddValue(table, row, "Emphone", x.RecReg.Emphone.FmtFone());
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskInsurance"))
+                {
+                    AddValue(table, row, "Insurance", x.RecReg.Insurance);
+                    AddValue(table, row, "Policy", x.RecReg.Policy);
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskDoctor"))
+                {
+                    AddValue(table, row, "Doctor", x.RecReg.Doctor);
+                    AddValue(table, row, "Docphone", x.RecReg.Docphone.FmtFone());
+                }
+
+                if (x.Organization == null || SettingVisible(setting, "AskParents"))
+                {
+                    AddValue(table, row, "Mname", x.RecReg.Mname);
+                    AddValue(table, row, "Fname", x.RecReg.Fname);
+                }
+
+                if (x.OrgMembers?.OnlineRegData != null)
+                {
+                    var qlist = from qu in DbUtil.Db.ViewOnlineRegQAs
+                                where qu.OrganizationId == x.OrgMembers.OrganizationId
+                                where qu.Type == "question" || qu.Type == "text"
+                                where qu.PeopleId == x.OrgMembers.PeopleId
+                                select qu;
+                    var counter = 0;
+                    foreach (var qu in qlist)
+                    {
+                        AddValue(table, row, $"Question{counter}", qu.Question);
+                        AddValue(table, row, $"Answer{counter}", qu.Answer);
+                        counter++;
+                    }
+
+                    if (x.OrgMembers?.UserData != null)
+                    {
+                        var a = Regex.Split(x.OrgMembers.UserData, @"\s*--Add comments above this line--\s*", RegexOptions.Multiline);
+                        if (a.Length > 0)
+                        {
+                            AddValue(table, row, "Comments", a[0]);
+                        }
+                    }
+
+                    if (x.OrgMembers != null)
+                    {
+                        var groups = string.Join(", ", x.OrgMembers.OrgMemMemTags.Select(om => om.MemberTag.Name).ToArray());
+                        AddValue(table, row, "Groups", groups);
+                    }
+                }
+
+                table.Rows.Add(row);
+            }
+
+            return table.ToExcel(filename: "Registrations.xlsx");
+        }
+
+        private static void AddValue(DataTable table, DataRow row, string columnName, object value)
+        {
+            if (!table.Columns.Contains(columnName))
+                table.Columns.Add(columnName);
+
+            row[columnName] = value;
+        }
+
+        private static bool SettingVisible(Settings setting, string name)
+        {
+            if (setting != null)
+                return setting.AskVisible(name);
+            return false;
+        }
+
         [Authorize(Roles = "Admin")]
         [HttpGet]
         public ActionResult RegistrationSummary(int? days, string sort)
         {
-            IQueryable<RecentRegistration> q = DbUtil.Db.RecentRegistrations(days ?? 90);
+            var q = DbUtil.Db.RecentRegistrations(days ?? 90);
             q = sort == "Organization"
                 ? q.OrderBy(rr => rr.OrganizationName).ThenByDescending(rr => rr.Completed)
                 : q.OrderByDescending(rr => rr.Dt2);
@@ -507,6 +672,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 NewMeetingInfo = mi
             };
         }
+
         [HttpPost, Route("RollsheetForOrg/{orgid:int?}")]
         public ActionResult RollsheetForOrg(int? orgid, NewMeetingInfo mi)
         {
@@ -516,11 +682,13 @@ namespace CmsWeb.Areas.Reports.Controllers
                 NewMeetingInfo = mi,
             };
         }
+
         [HttpGet, Route("RollsheetForMeeting/{meetingid:int}")]
         public ActionResult RollsheetForMeeting(int meetingid)
         {
             return new RollsheetResult { meetingid = meetingid };
         }
+
         [HttpPost]
         public ActionResult Rollsheets(NewMeetingInfo mi, OrgSearchModel m)
         {
@@ -585,6 +753,7 @@ namespace CmsWeb.Areas.Reports.Controllers
                 return Message(ex.Message);
             }
         }
+
         [HttpGet]
         [Route("SqlReport/{report}/{id?}")]
         public ActionResult SqlReport(Guid id, string report)
