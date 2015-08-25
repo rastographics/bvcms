@@ -25,7 +25,7 @@ namespace CmsWeb.Areas.Main.Controllers
         {
             if (sMessage.Length > 160)
             {
-                TempData.Add("_Error", $"The message length was {sMessage.Length} cannot be over 160");
+                TempData.Add("_Error", $"The message length was {sMessage.Length} cannot be over 160.");
                 TempData.Add("_Error_Title", sTitle);
                 TempData.Add("_Error_Message", sMessage);
                 return RedirectToAction("Options", new {id});
