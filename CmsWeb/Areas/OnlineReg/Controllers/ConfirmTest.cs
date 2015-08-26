@@ -59,8 +59,8 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult ConfirmTestXml(int id)
         {
             var rd = (from i in DbUtil.Db.RegistrationDatas
-                where i.Id == id
-                select i).SingleOrDefault();
+                      where i.Id == id
+                      select i).SingleOrDefault();
             if (rd == null)
                 return Content("no data");
             return Content(rd.Data, contentType: "text/xml");
@@ -92,6 +92,17 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 }
             }
             return View(q2[0].m);
+        }
+        [HttpPost]
+        [Authorize(Roles = "ManageTransactions,Finance,Admin")]
+        public ActionResult DeleteRegData(int id)
+        {
+            var ed = (from i in DbUtil.Db.RegistrationDatas
+                      where i.Id == id
+                      select i).Single();
+            DbUtil.Db.RegistrationDatas.DeleteOnSubmit(ed);
+            DbUtil.Db.SubmitChanges();
+            return Content("ok");
         }
     }
 }

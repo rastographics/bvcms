@@ -11,7 +11,7 @@
     $(function () {
       $("a.delete").click(function (ev) {
         ev.preventDefault();
-        var href = $(this)[0].href;
+        var href = this.href;
         var tr = $(this).closest("tr");
         tr.effect("highlight", {}, 500, function () {
           $(this).remove();
