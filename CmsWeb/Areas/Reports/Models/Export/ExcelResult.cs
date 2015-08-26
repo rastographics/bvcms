@@ -24,10 +24,10 @@ namespace CmsWeb.Models
             if (!string.IsNullOrEmpty(FileName))
                 r.AddHeader("content-disposition",
                     "attachment;filename=" + FileName);
-            const string header = 
+            const string header =
 @"<html xmlns:x=""urn:schemas-microsoft-com:office:excel"">
 <head>
-	<meta http-equiv=Content-Type content=""text/html; charset=utf-8""> 
+    <meta http-equiv=Content-Type content=""text/html; charset=utf-8"">
     <style>
     <!--table
     br {mso-data-placement:same-cell;}

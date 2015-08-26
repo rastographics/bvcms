@@ -606,6 +606,13 @@ namespace CmsData
             var p = api.GetPersonData(pid.ToInt());
             return p;
         }
+        public APIPerson.Person GetSpouse(object pid)
+        {
+            var p1 = db.LoadPersonById(pid.ToInt());
+            var api = new APIPerson(db);
+            var p = api.GetPersonData(p1.SpouseId ?? 0);
+            return p;
+        }
         public APIOrganization.Organization GetOrganization(object OrgId)
         {
             var api = new APIOrganization(db);

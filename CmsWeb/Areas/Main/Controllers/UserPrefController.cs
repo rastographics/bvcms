@@ -7,6 +7,7 @@ namespace CmsWeb.Areas.Main.Controllers
     [RouteArea("Main", AreaPrefix="UserPref"), Route("{action}/{id?}")]
     public class UserPrefController : CmsStaffController
     {
+        [Route("~/UserPref")]
         public ActionResult Index()
         {
             return View();
@@ -17,13 +18,17 @@ namespace CmsWeb.Areas.Main.Controllers
             DbUtil.Db.SetUserPreference(id, value);
             return Content($"set {id}: {value}");
         }
-        [Route("UnSet/{id}/{value}")]
+        [Route("UnSet/{id}")]
         public ActionResult UnSet(string id)
         {
-            var p = DbUtil.Db.CurrentUser.Preferences.SingleOrDefault(up => up.PreferenceX == id);
+            var p =
+                DbUtil.Db.Preferences.SingleOrDefault(
+                    pp => pp.UserId == DbUtil.Db.CurrentUser.UserId && pp.PreferenceX == id);
+            if (p == null)
+                return Message(id + " not found");
             DbUtil.Db.Preferences.DeleteOnSubmit(p);
             DbUtil.Db.SubmitChanges();
-            return Content("unset " + id);
+            return Message("unset " + id);
         }
     }
 }
