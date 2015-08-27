@@ -17,16 +17,19 @@ namespace CmsWeb.MobileAPI
 
             if (task.delegatedID > 0 && task.delegatedID != currentPeopleID)
             {
+                task.type = MobileTask.TYPE_DELEGATED;
                 delegated.Add(task);
                 return;
             }
 
             if (task.statusID == 10)
             {
+                task.type = MobileTask.TYPE_ACTIVE;
                 active.Add(task);
             }
             else
             {
+                task.type = MobileTask.TYPE_PENDING;
                 pending.Add(task);
             }
         }

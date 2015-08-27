@@ -1,16 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using CmsData;
 using CmsData.View;
-using UtilityExtensions;
 
 namespace CmsWeb.MobileAPI
 {
     public class MobileTask
     {
+        public static int TYPE_PENDING = 0;
+        public static int TYPE_ACTIVE = 1;
+        public static int TYPE_DELEGATED = 2;
+
         public int id = 0;
+        public int type = 0;
 
         public string status = "";
         public int statusID = 0;
@@ -31,6 +32,7 @@ namespace CmsWeb.MobileAPI
 
         public string desc = "";
         public string notes = "";
+        public string declineReason = "";
 
         public string picture = "";
         public int pictureX = 0;
@@ -59,6 +61,7 @@ namespace CmsWeb.MobileAPI
 
             desc = task.Description;
             notes = task.Notes;
+            declineReason = task.DeclineReason;
 
             if (task.AboutPictureId != null)
             {

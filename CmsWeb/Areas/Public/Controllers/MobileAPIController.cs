@@ -17,6 +17,7 @@ using System.IO;
 using UtilityExtensions;
 using CmsData.Classes.GoogleCloudMessaging;
 using DbUtil = CmsData.DbUtil;
+using System.Web;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -715,6 +716,120 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
+        public ActionResult AcceptTask(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var task = (from t in DbUtil.Db.Tasks
+                        where t.Id == dataIn.argInt
+                        select t).SingleOrDefault();
+
+            BaseMessage br = new BaseMessage();
+
+            if (task != null)
+            {
+                task.StatusId = TaskStatusCode.Active;
+                task.DeclineReason = null;
+                DbUtil.Db.SubmitChanges();
+
+                br.error = 0;
+                br.count = 1;
+            }
+            else
+            {
+                br.data = "Task not found!";
+            }
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult DeclineTask(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var task = (from t in DbUtil.Db.Tasks
+                        where t.Id == dataIn.argInt
+                        select t).SingleOrDefault();
+
+            BaseMessage br = new BaseMessage();
+
+            if (task != null)
+            {
+                task.StatusId = TaskStatusCode.Declined;
+                task.DeclineReason = dataIn.argString;
+                DbUtil.Db.SubmitChanges();
+
+                br.error = 0;
+                br.count = 1;
+            }
+            else
+            {
+                br.data = "Task not found!";
+            }
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult CompleteTask(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var task = (from t in DbUtil.Db.Tasks
+                        where t.Id == dataIn.argInt
+                        select t).SingleOrDefault();
+
+            BaseMessage br = new BaseMessage();
+
+            if (task != null)
+            {
+                task.StatusId = TaskStatusCode.Complete;
+                DbUtil.Db.SubmitChanges();
+
+                br.error = 0;
+                br.count = 1;
+            }
+            else
+            {
+                br.data = "Task not found!";
+            }
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult FetchCompleteWithContactLink(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var tasks = new TaskModel();
+            var contactid = tasks.AddCompletedContact(dataIn.argInt);
+
+            var user = (from u in DbUtil.Db.Users
+                        where u.UserId == Util.UserId
+                        select u).SingleOrDefault();
+
+            BaseMessage br = new BaseMessage();
+            br.data = GetOneTimeLoginLink("/Contact2/" + contactid + "?edit=true" + dataIn.getSourceQueryString(true), user.Username);
+            br.error = 0;
+            br.count = 1;
+            return br;
+        }
+
+        [HttpPost]
         public ActionResult FetchOrgs(string data)
         {
             var result = AuthenticateUser();
@@ -759,8 +874,8 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             var orgs = from o in q
-                       //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                       //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                           //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                           //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
                        from sch in DbUtil.Db.OrgSchedules.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
                        from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
@@ -1165,6 +1280,21 @@ namespace CmsWeb.Areas.Public.Controllers
                 Querystring = $"{orgId},{peopleId},0",
                 Expires = DateTime.Now.AddMinutes(10),
             };
+        }
+
+        private static string GetOneTimeLoginLink(string url, string user)
+        {
+            var ot = new OneTimeLink
+            {
+                Id = Guid.NewGuid(),
+                Querystring = user,
+                Expires = DateTime.Now.AddMinutes(15)
+            };
+
+            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+            DbUtil.Db.SubmitChanges();
+
+            return "{0}Logon?ReturnUrl={1}&otltoken={2}".Fmt(Util.CmsHost2, HttpUtility.UrlEncode(url), ot.Id.ToCode());
         }
 
         private static string SerializeJSON(Object item, int version)

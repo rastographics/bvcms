@@ -64,6 +64,26 @@ namespace CmsWeb.MobileAPI
             this.error = API_ERROR_NONE;
         }
 
+        public string getSourceQueryString( bool withAnd )
+        {
+            string response = withAnd ? "&source=" : "?source=";
+
+            switch (device)
+            {
+                case API_DEVICE_ANDROID:
+                {
+                    return response + "Android";
+                }
+
+                case API_DEVICE_IOS:
+                {
+                    return response + "iOS";
+                }
+
+                default: return "";
+            }
+        }
+
         // API Device Numbers
         public const int API_DEVICE_UNKNOWN = 0;
         public const int API_DEVICE_IOS = 1;
