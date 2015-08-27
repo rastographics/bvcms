@@ -208,7 +208,7 @@ namespace CmsWeb.Areas.Public.Controllers
             if (!result.IsValid) return AuthorizationError(result);
 
             var dataIn = BaseMessage.createFromString(data);
-            var orgId = dataIn.data.ToInt();
+            var orgId = dataIn.argInt;
 
             var ot = GetOneTimeLink(orgId, result.User.PeopleId.GetValueOrDefault());
 

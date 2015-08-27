@@ -53,11 +53,9 @@ namespace CmsWeb.Controllers
 
 #if DEBUG
         [HttpGet, Route("~/Test")]
-        public ActionResult Test()
+        public ActionResult Test(string id)
         {
-            var f = new CmsData.API.APIFunctions(DbUtil.Db);
-            var x = f.SqlScriptJson("FPUOrgExport");
-            return Content(x, "application/json");
+            return Content(id.ToGuid().ToString());
         }
 #endif
 
@@ -322,7 +320,7 @@ namespace CmsWeb.Controllers
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG
-            return System.IO.File.ReadAllText(Server.MapPath("~/module1.py"));
+            return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
 #else
                 return DbUtil.Db.ContentOfTypePythonScript(name);
 #endif

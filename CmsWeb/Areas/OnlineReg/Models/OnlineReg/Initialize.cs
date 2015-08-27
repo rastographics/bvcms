@@ -47,6 +47,9 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #endif
 
                 registertag = regtag;
+                if (registertag.HasValue() && !registerLinkType.HasValue())
+                    registerLinkType = "registerlink";
+
                 var a = ot.Querystring.Split(',');
                 if(a.Length >= 4)
                     registerLinkType = a[3];
