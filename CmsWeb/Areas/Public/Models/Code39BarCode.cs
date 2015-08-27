@@ -165,7 +165,7 @@ namespace CmsWeb.Areas.Public.Models
 
 					if (this.ShowBarCodeText)
 					{
-						var barCodeTextTop = barCodeBottom + SpacingBetweenBarCodeAndText;
+						var barCodeTextTop = barCodeBottom + SpacingBetweenBarCodeAndText + BarCodePadding;
 
 						gfx.DrawString(this.BarCodeText, this.BarCodeTextFont, Brushes.Black, barCodeTextX, barCodeTextTop);
 					}
