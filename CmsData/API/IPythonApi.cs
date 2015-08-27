@@ -114,7 +114,7 @@ namespace CmsData.API
 
         string FmtPhone(string s, string prefix);
 
-        bool InSubGroup(object pid, object OrgId, string group);
+        bool InSubGroup(object pid, object orgId, string group);
 
         string Form { get; set; }
 
@@ -122,12 +122,12 @@ namespace CmsData.API
 
         string HttpMethod { get; set; }
 
-        bool InOrg(object pid, object OrgId);
+        bool InOrg(object pid, object orgId);
 
-        void AddSubGroup(object pid, object OrgId, string group);
+        void AddSubGroup(object pid, object orgId, string group);
 
-        void RemoveSubGroup(object pid, object OrgId, string group);
+        void RemoveSubGroup(object pid, object orgId, string group);
 
-        APIOrganization.Organization GetOrganization(object OrgId);
+        APIOrganization.Organization GetOrganization(object orgId);
     }
 }
