@@ -3,12 +3,6 @@
 <form id="edit-contact" class="form ajax" method="post">
     @Html.Hidden("editing", "true")
     @Html.HiddenFor(m => m.ContactId)
-    @if (Model.Incomplete.HasValue())
-    {
-        <div class="alert alert-danger">
-            @Model.Incomplete
-        </div>
-    }
     <div class="box box-responsive">
        <div class="box-content">
             <div class="row">
