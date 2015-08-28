@@ -223,7 +223,7 @@ namespace CmsWeb.Areas.Public.Controllers
                         p.SetRecReg().Emcontact = m.emfriend;
                 if (keys.Contains("emphone"))
                     if (m.emphone != rr.Emphone)
-                        p.SetRecReg().Emphone = m.emphone;
+                        p.SetRecReg().Emphone = m.emphone.Truncate(50);
             }
             if (isNew)
             {

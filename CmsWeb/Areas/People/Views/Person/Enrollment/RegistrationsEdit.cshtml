@@ -1,5 +1,4 @@
-﻿@using UtilityExtensions
-@model CmsWeb.Areas.People.Models.RegistrationsModel
+﻿@model CmsWeb.Areas.People.Models.RegistrationsModel
 <form class="ajax" method="post">
     <h3>Registration History</h3>
     <div class="row">
@@ -102,7 +101,7 @@
         if (xs)
         {
             <div class="visible-xs-block">
-                <a href="/Person2/RegistrationsUpdate" class="btn btn-primary btn-block ajax">Save</a>
+                <a href="/Person2/RegistrationsUpdate" class="btn btn-primary btn-block ajax validate">Save</a>
                 <a href="/Person2/Registrations/@Model.Person.PeopleId" class="btn btn-default btn-block ajax">Cancel</a>
             </div>
         }
@@ -110,7 +109,7 @@
         {
             <div class="pull-right hidden-xs">
                 <a href="/Person2/Registrations/@Model.Person.PeopleId" class="btn btn-default ajax">Cancel</a>
-                <a href="/Person2/RegistrationsUpdate" class="btn btn-primary ajax">Save</a>
+                <a href="/Person2/RegistrationsUpdate" class="btn btn-primary ajax validate">Save</a>
             </div>
         }
     }
