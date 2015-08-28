@@ -1,7 +1,9 @@
 ﻿$(function () {
+    CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
     CKEDITOR.replace('editor', {
         height: 200,
-        customConfig: '/scripts/js/ckeditorconfig.js'
+        customConfig: '/scripts/js/ckeditorconfig.js',
+        extraPlugins: 'specialLink'
     });
     $('#Name').focus();
     $(".bt").button();

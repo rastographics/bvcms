@@ -1,5 +1,5 @@
 ﻿$(function () {
-    
+
     $.InitFunctions.SettingFormsInit = function (f) {
         $('a.notifylist').SearchUsers({
             UpdateShared: function (topid, topid0, ele) {
@@ -28,11 +28,13 @@
                 CKEDITOR.instances['editor'].destroy();
 
             CKEDITOR.env.isCompatible = true;
+            CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
 
             CKEDITOR.replace('editor', {
                 height: 200,
                 allowedContent: true,
-                customConfig: '/scripts/js/ckeditorconfig.js'
+                customConfig: '/scripts/js/ckeditorconfig.js',
+                extraPlugins: 'specialLink'
             });
         }
         if (xsDevice || smDevice) {
@@ -40,7 +42,7 @@
         } else {
             CKEDITOR.instances['editor'].setData($("#" + name).val());
         }
-        
+
         $('#editor-modal').modal('show');
 
         $("#save-edit").off("click").on("click", function (ev) {
