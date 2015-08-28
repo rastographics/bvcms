@@ -1800,6 +1800,12 @@ namespace CmsData
 
         }
 
+        public Table< View.FamilyFirstTime> ViewFamilyFirstTimes
+        {
+            get { return GetTable< View.FamilyFirstTime>(); }
+
+        }
+
         public Table< View.FirstName> ViewFirstNames
         {
             get { return GetTable< View.FirstName>(); }

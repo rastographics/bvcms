@@ -252,5 +252,22 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression RecentFirstFamilyVisit()
+        {
+            var cdt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
+
+            var mindt = Util.Now.AddDays(-Days).Date;
+
+            var q = from fm in db.ViewFamilyFirstTimes
+                    where fm.CreatedDate > cdt
+                    where fm.FirstDate > mindt
+                    select fm.FamilyId;
+
+            Expression<Func<Person, bool>> pred = p => q.Contains(p.FamilyId);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

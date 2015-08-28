@@ -24,6 +24,8 @@ namespace CmsData.View
 		
 		private string _Description;
 		
+		private string _DeclineReason;
+		
 		private string _About;
 		
 		private string _Notes;
@@ -43,6 +45,14 @@ namespace CmsData.View
 		private int? _StatusId;
 		
 		private int? _SourceContactId;
+		
+		private DateTime? _Due;
+		
+		private int? _AboutPictureId;
+		
+		private int? _PictureX;
+		
+		private int? _PictureY;
 		
 		
 		public IncompleteTask()
@@ -114,6 +124,23 @@ namespace CmsData.View
 			{
 				if (this._Description != value)
 					this._Description = value;
+			}
+
+		}
+
+		
+		[Column(Name="DeclineReason", Storage="_DeclineReason", DbType="nvarchar")]
+		public string DeclineReason
+		{
+			get
+			{
+				return this._DeclineReason;
+			}
+
+			set
+			{
+				if (this._DeclineReason != value)
+					this._DeclineReason = value;
 			}
 
 		}
@@ -284,6 +311,74 @@ namespace CmsData.View
 			{
 				if (this._SourceContactId != value)
 					this._SourceContactId = value;
+			}
+
+		}
+
+		
+		[Column(Name="Due", Storage="_Due", DbType="datetime")]
+		public DateTime? Due
+		{
+			get
+			{
+				return this._Due;
+			}
+
+			set
+			{
+				if (this._Due != value)
+					this._Due = value;
+			}
+
+		}
+
+		
+		[Column(Name="AboutPictureId", Storage="_AboutPictureId", DbType="int")]
+		public int? AboutPictureId
+		{
+			get
+			{
+				return this._AboutPictureId;
+			}
+
+			set
+			{
+				if (this._AboutPictureId != value)
+					this._AboutPictureId = value;
+			}
+
+		}
+
+		
+		[Column(Name="PictureX", Storage="_PictureX", DbType="int")]
+		public int? PictureX
+		{
+			get
+			{
+				return this._PictureX;
+			}
+
+			set
+			{
+				if (this._PictureX != value)
+					this._PictureX = value;
+			}
+
+		}
+
+		
+		[Column(Name="PictureY", Storage="_PictureY", DbType="int")]
+		public int? PictureY
+		{
+			get
+			{
+				return this._PictureY;
+			}
+
+			set
+			{
+				if (this._PictureY != value)
+					this._PictureY = value;
 			}
 
 		}

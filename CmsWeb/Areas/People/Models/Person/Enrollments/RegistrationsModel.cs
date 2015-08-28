@@ -10,7 +10,7 @@ namespace CmsWeb.Areas.People.Models
 {
     public class RegistrationsModel
     {
-        private Person _person;
+        private Person person;
 
         public RegistrationsModel(int id)
         {
@@ -31,9 +31,9 @@ namespace CmsWeb.Areas.People.Models
         {
             get
             {
-                if (_person == null && PeopleId.HasValue)
-                    _person = DbUtil.Db.LoadPersonById(PeopleId.Value);
-                return _person;
+                if (person == null && PeopleId.HasValue)
+                    person = DbUtil.Db.LoadPersonById(PeopleId.Value);
+                return person;
             }
         }
 
@@ -44,7 +44,7 @@ namespace CmsWeb.Areas.People.Models
         [DisplayName("Emergency Contact")]
         public string Emcontact { get; set; }
 
-        [DisplayName("Emergency Phone")]
+        [DisplayName("Emergency Phone"), StringLength(50)]
         public string Emphone { get; set; }
 
         [DisplayName("Health Insurance")]

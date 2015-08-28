@@ -53,11 +53,9 @@ namespace CmsWeb.Controllers
 
 #if DEBUG
         [HttpGet, Route("~/Test")]
-        public ActionResult Test()
+        public ActionResult Test(string id)
         {
-            var f = new CmsData.API.APIFunctions(DbUtil.Db);
-            var x = f.SqlScriptJson("FPUOrgExport");
-            return Content(x, "application/json");
+            return Content(id.ToGuid().ToString());
         }
 #endif
 

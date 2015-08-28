@@ -17,7 +17,7 @@ namespace CmsWeb.Code
 
                 using (var doc = Document.FromString(body))
                 {
-                    doc.NewBlockLevelTags = "registertag";
+                    doc.NewBlockLevelTags = "registertag, article";
 
                     doc.ShowWarnings = false;
                     doc.Quiet = true;
@@ -39,7 +39,8 @@ namespace CmsWeb.Code
                     doc.OutputBodyOnly = AutoBool.Auto;
                     doc.CleanAndRepair();
 
-                    return doc.Save();
+                    var content = doc.Save();
+                    return content.Length < body.Length ? body : content;
                 }
             }
             catch (DllNotFoundException)
