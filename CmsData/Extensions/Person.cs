@@ -185,18 +185,17 @@ namespace CmsData
             {
                 db.TransactionPeople.DeleteAllOnSubmit(TransactionPeople);
                 TrySubmit(db, "Delete TransactionPeople");
-
                 foreach (var tp in tplist)
-                    db.TransactionPeople.InsertOnSubmit(new TransactionPerson
-                    {
-                        OrgId = tp.OrgId,
-                        Amt = tp.Amt,
-                        Id = tp.Id,
-                        PeopleId = targetid
-                    });
+                    if(!db.TransactionPeople.Any(tt => tt.Id == tp.Id && tt.PeopleId == targetid && tt.OrgId == tp.OrgId))
+                        db.TransactionPeople.InsertOnSubmit(new TransactionPerson
+                        {
+                            OrgId = tp.OrgId,
+                            Amt = tp.Amt,
+                            Id = tp.Id,
+                            PeopleId = targetid
+                        });
                 TrySubmit(db, "Add TransactionPeople");
             }
-
             var q = from a in db.Attends
                     where a.AttendanceFlag == true
                     where a.PeopleId == this.PeopleId
