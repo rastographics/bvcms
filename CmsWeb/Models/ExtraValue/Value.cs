@@ -66,7 +66,7 @@ namespace CmsWeb.Models.ExtraValues
             }
         }
 
-        public string DisplayName => NoPrefix(Name);
+        public string DisplayName => !Standard ? Name : NoPrefix(Name);
 
         public static Value FromValue(CmsData.ExtraValue.Value ptr)
         {
