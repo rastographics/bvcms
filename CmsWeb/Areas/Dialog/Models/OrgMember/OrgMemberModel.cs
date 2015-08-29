@@ -140,6 +140,7 @@ namespace CmsWeb.Areas.Dialog.Models
         public DateTime? InactiveDate { get; set; }
 
         [TrackChanges]
+//        [RegularExpression(@"\d{1,2}/\d{1,2}/(\d\d){1,2}( \d{1,2}:\d\d [AP]M){0,1}")]
         [DisplayName("Enrollment Date")]
         public DateTime? EnrollmentDate { get; set; }
 

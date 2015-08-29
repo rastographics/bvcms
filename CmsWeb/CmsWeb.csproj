@@ -1537,6 +1537,9 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\RegisterLinkMaster.cshtml" />
     <Content Include="Areas\Org\Views\RegSetting\EditXml.cshtml" />
     <Content Include="Areas\Main\Views\UserPref\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
+    <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <None Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
@@ -2814,7 +2817,6 @@
     <Content Include="Views\Shared\PageHeader.cshtml" />
     <Content Include="Views\Shared\PageFooter.cshtml" />
     <Content Include="Views\Shared\PagerHidden.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateAndTime.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\TimeSpan.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Time.cshtml" />
