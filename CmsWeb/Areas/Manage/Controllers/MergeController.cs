@@ -14,7 +14,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Route("~/Merge/{peopleid1:int}/{peopleid2:int}")]
         public ActionResult Index(int peopleId1, int peopleId2)
         {
-            var m = new MergeModel(peopleId1, peopleId2) { delete = true };
+            var m = new MergeModel(peopleId1, peopleId2) { DeleteDuplicate = true };
             if (m.pi.Count != 3)
                 if (m.pi.Count == 2)
                     if (m.pi[0].PeopleId != peopleId1)

@@ -16,7 +16,7 @@ namespace CmsWeb.Models
 {
     public class MergeModel
     {
-        public bool delete;
+        public bool DeleteDuplicate { get; set; }
         public List<BasicInfo> pi { get; set; }
 
         public int UseTitleCode { get; set; }
@@ -222,7 +222,7 @@ namespace CmsWeb.Models
         {
             var from = DbUtil.Db.LoadPersonById(pi[0].PeopleId);
             from.MovePersonStuff(DbUtil.Db, pi[1].PeopleId);
-            if (delete == true)
+            if (DeleteDuplicate == true)
                 Delete();
         }
         public SelectList GenderList()
@@ -250,12 +250,12 @@ namespace CmsWeb.Models
                 ToName = pi[1].person.Name,
                 WhoId = Util.UserPeopleId,
                 WhoName = Util.UserFullName,
-                Action = $"{action}{(delete ? " + Delete" : "")}",
+                Action = $"{action}{(DeleteDuplicate ? " + Delete" : "")}",
                 Dt = DateTime.Now
             };
             DbUtil.Db.MergeHistories.InsertOnSubmit(mh);
             DbUtil.LogActivity($"{action} from {pi[0].PeopleId} to {pi[1].PeopleId}");
-            if (delete == true)
+            if (DeleteDuplicate == true)
                 DbUtil.LogActivity($"Deleting Record during Merge {pi[0].PeopleId} to {pi[1].PeopleId}");
         }
 
