@@ -239,7 +239,7 @@ namespace CmsWeb
         private static bool IsAuthorizedToViewProfiler(HttpRequest request)
         {
             if (request.IsLocal)
-                return false;
+                return true;
 
             var ctx = request.RequestContext.HttpContext;
             if (ctx?.User == null)

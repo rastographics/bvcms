@@ -12,15 +12,15 @@ namespace CmsWeb.Areas.Manage.Controllers
     public class MergeController : CmsStaffController
     {
         [Route("~/Merge/{peopleid1:int}/{peopleid2:int}")]
-        public ActionResult Index(int PeopleId1, int PeopleId2)
+        public ActionResult Index(int peopleId1, int peopleId2)
         {
-            var m = new MergeModel(PeopleId1, PeopleId2);
+            var m = new MergeModel(peopleId1, peopleId2) { DeleteDuplicate = true };
             if (m.pi.Count != 3)
                 if (m.pi.Count == 2)
-                    if (m.pi[0].PeopleId != PeopleId1)
-                        return Content($"peopleid {PeopleId1} not found");
+                    if (m.pi[0].PeopleId != peopleId1)
+                        return Content($"peopleid {peopleId1} not found");
                     else
-                        return Content($"peopleid {PeopleId2} not found");
+                        return Content($"peopleid {peopleId2} not found");
                 else if (m.pi.Count == 1)
                     return Content("neither peopleid found");
             return View(m);
@@ -28,51 +28,28 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult Run(string submit, bool? Delete, MergeModel m)
+        public ActionResult MergeFields(MergeModel m)
         {
-            var mh = new MergeHistory
-            {
-                FromId = m.pi[0].PeopleId,
-                ToId = m.pi[1].PeopleId,
-                FromName = m.pi[0].person.Name,
-                ToName = m.pi[1].person.Name,
-                WhoId = Util.UserPeopleId,
-                WhoName = Util.UserFullName,
-                Action = submit + (Delete == true ? " + Delete" : ""),
-                Dt = DateTime.Now
-            };
-            DbUtil.Db.MergeHistories.InsertOnSubmit(mh);
-            if (submit.StartsWith("Merge Fields"))
-            {
-                DbUtil.LogActivity($"Merging Fields from {m.pi[0].PeopleId} to {m.pi[1].PeopleId}");
-                m.Update();
-            }
-            if (submit == "Merge Fields and Move Related Records")
-            {
-                DbUtil.LogActivity($"Moving records from {m.pi[0].PeopleId} to {m.pi[1].PeopleId}");
-                m.Move();
-                if (Delete == true)
-                {
-                    DbUtil.LogActivity($"Deleting Record during Merge {m.pi[0].PeopleId} to {m.pi[1].PeopleId}");
-                    m.Delete();
-                }
-            }
-            if (submit == "Toggle Not Duplicate")
-            {
-                if (m.pi[0].notdup || m.pi[1].notdup)
-                {
-                    var dups = DbUtil.Db.PeopleExtras.Where(ee => ee.Field == "notdup" && (ee.PeopleId == m.pi[0].PeopleId || ee.PeopleId == m.pi[1].PeopleId));
-                    DbUtil.Db.PeopleExtras.DeleteAllOnSubmit(dups);
-                }
-                else
-                {
-                    m.pi[0].person.AddEditExtraInt("notdup", m.pi[1].PeopleId);
-                    m.pi[1].person.AddEditExtraInt("notdup", m.pi[0].PeopleId);
-                }
-                DbUtil.Db.SubmitChanges();
-                return Redirect($"/Merge/{m.pi[0].PeopleId}/{m.pi[1].PeopleId}");
-            }
+            m.LogMerge("Merge Fields");
+            m.Update();
             return Redirect("/Person2/" + m.pi[1].PeopleId);
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult MergeFieldsAndMoveRelated(MergeModel m)
+        {
+            m.LogMerge("Merge and move related");
+            m.Move();
+            return Redirect("/Person2/" + m.pi[1].PeopleId);
+        }
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult ToggleNotDuplicate(MergeModel m)
+        {
+            m.LogMerge("Toggle Not Duplicate");
+            m.ToggleNotDuplicate();
+            return Redirect($"/Merge/{m.pi[0].PeopleId}/{m.pi[1].PeopleId}");
         }
     }
 }

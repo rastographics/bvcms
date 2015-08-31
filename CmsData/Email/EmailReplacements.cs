@@ -350,9 +350,8 @@ namespace CmsData
                     if (code.StartsWith("{orgmember:", StringComparison.OrdinalIgnoreCase))
                         return OrgMember(code, emailqueueto);
 
-                    if (code.StartsWith("{orgbarcode:"))
-                        return
-                            $"<img src='{db.ServerLink($"/Track/Barcode/{code.Substring(12).TrimEnd('}').ToInt()}-{p.PeopleId}")}' />";
+                    if (code.StartsWith("{orgbarcode"))
+                        return OrgBarcode(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
@@ -752,6 +751,13 @@ namespace CmsData
             if (!sg.HasValue())
                 sg = def;
             return sg;
+        }
+        private string OrgBarcode(string code, EmailQueueTo emailqueueto)
+        {
+            var oid = emailqueueto.OrgId;
+            if(code.StartsWith("{orgbarcode:"))
+                oid = code.Substring(12).TrimEnd('}').ToInt();
+            return $"<img src='{db.ServerLink($"/Track/Barcode/{oid}-{emailqueueto.PeopleId}")}' />";
         }
 
         const string RegTextRe = @"{reg(?<type>.*?):(?<field>.*?)}";

@@ -5,7 +5,7 @@ CREATE TABLE [dbo].[RecReg]
 [ImgId] [int] NULL,
 [IsDocument] [bit] NULL,
 [ActiveInAnotherChurch] [bit] NULL,
-[ShirtSize] [nvarchar] (20) NULL,
+[ShirtSize] [nvarchar] (50) NULL,
 [MedAllergy] [bit] NULL,
 [email] [nvarchar] (80) NULL,
 [MedicalDescription] [nvarchar] (1000) NULL,
