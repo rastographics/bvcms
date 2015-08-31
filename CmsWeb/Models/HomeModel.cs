@@ -1,52 +1,44 @@
 using System;
 using System.Collections.Generic;
-using System.Collections;
 using System.Linq;
-using System.Data.Linq;
 using System.Web;
 using CmsData;
 using CmsWeb.Code;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
-using System.Web.Mvc;
-using System.Text;
-using System.Net.Mail;
-using System.Web.UI.WebControls;
-using System.Web.UI;
 using System.Data.Linq.SqlClient;
 using System.Net;
 using System.IO;
-using System.Xml.Linq;
 using System.ServiceModel.Syndication;
 using System.Xml;
 using CmsData.Codes;
+using System.Web.Caching;
 
 namespace CmsWeb.Models
 {
     public class HomeModel
     {
-        public string UserUrl { get { return "/Person2/" + Util.UserPeopleId; } }
+        public string UserUrl => "/Person2/" + Util.UserPeopleId;
+
         public class BirthdayInfo
         {
             public DateTime Birthday { get; set; }
             public string Name { get; set; }
             public int PeopleId { get; set; }
-            public string Url { get { return "/Person2/" + PeopleId; } }
+            public string Url => "/Person2/" + PeopleId;
         }
 
         public IEnumerable<BirthdayInfo> Birthdays()
         {
-            var up = DbUtil.Db.CurrentUserPerson;
-            if (up == null)
+            if (Util.UserPeopleId == null)
                 return new List<BirthdayInfo>();
 
             var qB = DbUtil.Db.Queries.FirstOrDefault(cc => cc.Name == "TrackBirthdays" && cc.Owner == Util.UserName);
-            var tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", up.PeopleId, DbUtil.TagTypeId_System);
+            var tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
             if (qB != null)
             {
                 if (tagq?.Created == null || tagq.Created < DateTime.Today)
                     DbUtil.Db.PopulateSpecialTag(DbUtil.Db.PeopleQuery(qB.QueryId), "FromTrackBirthdaysQuery", DbUtil.TagTypeId_System);
-                tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", up.PeopleId, DbUtil.TagTypeId_System);
+                tagq = DbUtil.Db.FetchTag("FromTrackBirthdaysQuery", Util.UserPeopleId, DbUtil.TagTypeId_System);
                 if (tagq != null)
                 {
                     var q0 = from p in tagq.People(DbUtil.Db)
@@ -66,7 +58,7 @@ namespace CmsWeb.Models
                 }
             }
             tagq?.DeleteTag(DbUtil.Db);
-            var tag = DbUtil.Db.FetchOrCreateTag("TrackBirthdays", up.PeopleId, DbUtil.TagTypeId_Personal);
+            var tag = DbUtil.Db.FetchOrCreateTag("TrackBirthdays", Util.UserPeopleId, DbUtil.TagTypeId_Personal);
             var q = qB != null
                 ? DbUtil.Db.PeopleQuery(qB.QueryId)
                 : tag.People(DbUtil.Db);
@@ -74,6 +66,7 @@ namespace CmsWeb.Models
 
             if (!q.Any())
                 q = from p in DbUtil.Db.People
+                    let up = DbUtil.Db.People.Single(pp => pp.PeopleId == Util.UserPeopleId)
                     where p.OrganizationMembers.Any(om => om.OrganizationId == up.BibleFellowshipClassId)
                     select p;
 
@@ -140,145 +133,15 @@ namespace CmsWeb.Models
             public DateTime Published { get; set; }
             public string Url { get; set; }
         }
-        public IEnumerable<NewsInfo> BVCMSNews()
+        public IEnumerable<NewsInfo> BvcmsNews()
         {
-            var feedurl = "http://blog.touchpointsoftware.com/feed/";
-
-            var wr = new WebClient();
-            var feed = DbUtil.Db.RssFeeds.FirstOrDefault(r => r.Url == feedurl);
-
-            HttpWebRequest req = null;
-            try
-            {
-                req = WebRequest.Create(feedurl) as HttpWebRequest;
-            }
-            catch
-            {
-            }
-
-            if (feed != null)
-            {
-                if (feed.LastModified.HasValue)
-                {
-                    req.IfModifiedSince = feed.LastModified.Value;
-                    req.Headers.Add("If-None-Match", feed.ETag);
-                }
-            }
-            else
-            {
-                feed = new RssFeed();
-                DbUtil.Db.RssFeeds.InsertOnSubmit(feed);
-                feed.Url = feedurl;
-            }
-
-            if (req != null)
-            {
-                try
-                {
-                    var resp = req.GetResponse() as HttpWebResponse;
-                    feed.LastModified = resp.LastModified;
-                    feed.ETag = resp.Headers["ETag"];
-                    var sr = new StreamReader(resp.GetResponseStream());
-                    feed.Data = sr.ReadToEnd();
-                    sr.Close();
-                    DbUtil.Db.SubmitChanges();
-                }
-                catch (WebException)
-                {
-                }
-                if (feed.Data != null)
-                {
-                    try
-                    {
-                        var reader = XmlReader.Create(new StringReader(feed.Data));
-                        var f = SyndicationFeed.Load(reader);
-                        var posts = from item in f.Items
-                                    select new NewsInfo
-                                    {
-                                        Title = item.Title.Text,
-                                        Published = item.PublishDate.DateTime,
-                                        Url = item.Links.Single(i => i.RelationshipType == "alternate").GetAbsoluteUri().AbsoluteUri
-                                    };
-                        return posts;
-                    }
-                    catch
-                    {
-                        return new List<NewsInfo>();
-                    }
-                }
-            }
-            return null;
+            return CachedNewsInfo("BvcmsNews", "http://blog.touchpointsoftware.com/feed/", 10);
         }
+
         public IEnumerable<NewsInfo> ChurchNews()
         {
             var feedurl = DbUtil.Db.Setting("ChurchFeedUrl", "");
-
-            var feed = DbUtil.Db.RssFeeds.FirstOrDefault(r => r.Url == feedurl);
-
-
-            HttpWebRequest req = null;
-            try
-            {
-                req = WebRequest.Create(feedurl) as HttpWebRequest;
-            }
-            catch
-            {
-            }
-
-            if (feed != null)
-            {
-                if (feed.LastModified.HasValue)
-                {
-                    req.IfModifiedSince = feed.LastModified.Value;
-                    req.Headers.Add("If-None-Match", feed.ETag);
-                }
-            }
-            else
-            {
-                feed = new RssFeed();
-                DbUtil.Db.RssFeeds.InsertOnSubmit(feed);
-                feed.Url = feedurl;
-            }
-
-            if (req != null)
-            {
-                try
-                {
-                    var resp = req.GetResponse() as HttpWebResponse;
-                    feed.LastModified = resp.LastModified;
-                    feed.ETag = resp.Headers["ETag"];
-                    var sr = new StreamReader(resp.GetResponseStream());
-                    feed.Data = sr.ReadToEnd();
-                    sr.Close();
-                    DbUtil.Db.SubmitChanges();
-                }
-                catch (WebException)
-                {
-                }
-                if (feed.Data != null)
-                {
-                    try
-                    {
-                        var reader = XmlReader.Create(new StringReader(feed.Data));
-                        var f = SyndicationFeed.Load(reader);
-                        var posts = from item in f.Items
-                                    let a = item.Authors.FirstOrDefault()
-                                    let au = a == null ? "" : a.Name
-                                    select new NewsInfo
-                                    {
-                                        Title = item.Title.Text,
-                                        Published = item.PublishDate.DateTime,
-                                        Url = item.Links.Single(i => i.RelationshipType == "alternate").GetAbsoluteUri().AbsoluteUri
-                                    };
-                        return posts;
-                    }
-                    catch
-                    {
-                        return new NewsInfo[] { };
-                    }
-                }
-            }
-            return new NewsInfo[] { };
+            return CachedNewsInfo(DbUtil.Db.Host + "ChurchFeed", feedurl, 120);
         }
 
         public class MySavedQueryInfo
@@ -288,8 +151,7 @@ namespace CmsWeb.Models
         }
         public IEnumerable<MySavedQueryInfo> MyQueries()
         {
-            var up = DbUtil.Db.CurrentUserPerson;
-            if (up == null)
+            if (Util.UserPeopleId == null)
                 return new List<MySavedQueryInfo>();
 
             return from c in DbUtil.Db.Queries
@@ -308,12 +170,11 @@ namespace CmsWeb.Models
             public int PeopleId { get; set; }
             public string Who { get; set; }
             public string Description { get; set; }
-            public string Url { get { return "/Person2/" + PeopleId; } }
+            public string Url => "/Person2/" + PeopleId;
         }
         public IEnumerable<TaskInfo> Tasks()
         {
-            var up = DbUtil.Db.CurrentUserPerson;
-            if (up == null)
+            if (Util.UserPeopleId == null)
                 return new List<TaskInfo>();
             var completedcode = TaskStatusCode.Complete;
             var pid = DbUtil.Db.CurrentUser.PeopleId;
@@ -334,12 +195,10 @@ namespace CmsWeb.Models
         }
         public IEnumerable<CodeValueItem> Tags()
         {
-            var up = DbUtil.Db.CurrentUserPerson;
-            if (up == null)
+            if (Util.UserPeopleId == null)
                 return new List<CodeValueItem>();
             var ctl = new CodeValueModel();
-            var pid = DbUtil.Db.CurrentUser.PeopleId;
-            var list = ctl.UserTags(pid);
+            var list = ctl.UserTags(Util.UserPeopleId);
             return list;
         }
         public class SearchInfo
@@ -621,20 +480,80 @@ namespace CmsWeb.Models
             return list;
         }
 
-        public string ChurchBlogUrl
+        public string ChurchBlogUrl => DbUtil.Db.Setting("ChurchBlogUrl", "#");
+        public bool ShowTip => !DbUtil.Db.UserPreference("hide-tip-home", "false").ToBool();
+        public string BlogAppUrl => DbUtil.Db.Setting("BlogAppUrl", "#");
+
+        private static IEnumerable<NewsInfo> GetNewsInfo(string feedurl)
         {
-            get { return DbUtil.Db.Setting("ChurchBlogUrl", "#"); }
-        }
-        public bool ShowTip
-        {
-            get
+            var feed = DbUtil.Db.RssFeeds.FirstOrDefault(r => r.Url == feedurl);
+            if (!feedurl.HasValue())
+                return new List<NewsInfo>();
+
+            var req = WebRequest.Create(feedurl) as HttpWebRequest;
+            if (feed != null && req != null)
             {
-                return !DbUtil.Db.UserPreference("hide-tip-home", "false").ToBool();
+                if (feed.LastModified.HasValue)
+                    req.IfModifiedSince = feed.LastModified.Value;
+            }
+            else
+            {
+                feed = new RssFeed();
+                DbUtil.Db.RssFeeds.InsertOnSubmit(feed);
+                feed.Url = feedurl;
+            }
+
+            if (req == null)
+                return new List<NewsInfo>();
+
+            var resp = req.GetHttpResponse();
+            if (resp == null)
+                return new List<NewsInfo>();
+            if (resp.StatusCode != HttpStatusCode.NotModified)
+            {
+                feed.LastModified = resp.LastModified;
+                var rs = resp.GetResponseStream();
+                if (rs == null)
+                    return new List<NewsInfo>();
+                var sr = new StreamReader(rs);
+                feed.Data = sr.ReadToEnd();
+                sr.Close();
+                DbUtil.Db.SubmitChanges();
+            }
+            if (feed.Data == null)
+                return new List<NewsInfo>();
+
+            try
+            {
+                var reader = XmlReader.Create(new StringReader(feed.Data));
+                var f = SyndicationFeed.Load(reader);
+                if (f == null)
+                    return new List<NewsInfo>();
+
+                var posts = from item in f.Items
+                    select new NewsInfo
+                    {
+                        Title = item.Title.Text,
+                        Published = item.PublishDate.DateTime,
+                        Url = item.Links.Single(i => i.RelationshipType == "alternate")?.GetAbsoluteUri()?.AbsoluteUri
+                    };
+                return posts;
+            }
+            catch
+            {
+                return new List<NewsInfo>();
             }
         }
-        public string BlogAppUrl
+        private static IEnumerable<NewsInfo> CachedNewsInfo(string bvcmsnews, string feedurl, int minutes)
         {
-            get { return DbUtil.Db.Setting("BlogAppUrl", "#"); }
+            var list = HttpRuntime.Cache[bvcmsnews] as List<NewsInfo>;
+            if (list != null)
+                return list;
+
+            list = GetNewsInfo(feedurl).ToList();
+            HttpRuntime.Cache.Insert(bvcmsnews, list, null,
+                DateTime.Now.AddMinutes(minutes), Cache.NoSlidingExpiration);
+            return list;
         }
     }
 }

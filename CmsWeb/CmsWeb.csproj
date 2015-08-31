@@ -694,10 +694,7 @@
     <Compile Include="Areas\People\Models\Person\Enrollments\CurrentEnrollments.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\Family\FamilyMemberInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Areas\People\Models\Person\Family\FamilyModel.cs">
+    <Compile Include="Areas\People\Models\Person\FamilyModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\People\Models\Person\GrowthInfo.cs">

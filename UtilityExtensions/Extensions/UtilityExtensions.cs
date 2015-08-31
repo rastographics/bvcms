@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Configuration;
 using System.IO;
+using System.Net;
 using System.Web.Configuration;
 using System.Xml;
 using System.Xml.Serialization;
@@ -403,6 +404,19 @@ namespace UtilityExtensions
                     return addresses[0];
             }
             return context.Request.ServerVariables["REMOTE_ADDR"];
+        }
+        public static HttpWebResponse GetHttpResponse(this HttpWebRequest request)
+        {
+            try
+            {
+                return (HttpWebResponse) request.GetResponse();
+            }
+            catch (WebException ex)
+            {
+                if (ex.Response == null || ex.Status != WebExceptionStatus.ProtocolError)
+                    throw;
+                return (HttpWebResponse) ex.Response;
+            }
         }
 
         public static bool IsDebug()

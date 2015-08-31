@@ -2528,6 +2528,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.FamilyMembers", IsComposable = true)]
+        public IQueryable< View.FamilyMember > FamilyMembers(
+            [Parameter(DbType="int")] int? pid
+            )
+        {
+            return CreateMethodCallQuery< View.FamilyMember>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    pid
+                );
+        }
+
         [Function(Name="dbo.FilterOnlineReg", IsComposable = true)]
         public IQueryable< View.FilterOnlineReg > FilterOnlineReg(
             [Parameter(DbType="int")] int? onlinereg
