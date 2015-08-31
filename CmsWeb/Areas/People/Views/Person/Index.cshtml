@@ -1,15 +1,11 @@
 ﻿@using CmsData
 @using CmsWeb.Areas.People.Models
-@using UtilityExtensions
 @model PersonModel
 @{
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Person";
-    var inaccess = User.IsInRole("Access");
-    var showtip = !DbUtil.Db.UserPreference("hide-tip-person", "false").ToBool() && inaccess;
-    var mydatashowtip = !DbUtil.Db.UserPreference("hide-tip-mydata", "false").ToBool() && !inaccess;
     var gender = Model.Person.Gender.Code;
-    var portraitUrl = gender == "M" ? Model.Picture.LargeMaleUrl : gender == "F" ? Model.Picture.LargeFemaleUrl : Model.Picture.LargeUrl;
+    var portraitUrl = gender == "M" ? Model.Picture.MediumMaleUrl : gender == "F" ? Model.Picture.MediumFemaleUrl : Model.Picture.MediumUrl;
     var portraitBgPos = Model.Picture.X.HasValue || Model.Picture.Y.HasValue ? $"{Model.Picture.X.GetValueOrDefault()}% {Model.Picture.Y.GetValueOrDefault()}%" : "top";
 }
 @section head
