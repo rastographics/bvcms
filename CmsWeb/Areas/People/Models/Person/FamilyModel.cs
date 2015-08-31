@@ -26,19 +26,20 @@ namespace CmsWeb.Areas.People.Models
         }
         override public IQueryable<FamilyMember> DefineModelList()
         {
-            var mindt = DateTime.Parse("1/1/1900");
             return from m in DbUtil.Db.FamilyMembers(Person.PeopleId)
-                orderby m.DeceasedDate ?? mindt,
-                        m.PositionInFamilyId,
-                        m.PositionInFamilyId == 10 ? m.GenderId : 0,
-                        m.Age descending,
-                        m.Name
                 select m;
         }
 
         override public IQueryable<FamilyMember> DefineModelSort(IQueryable<FamilyMember> q)
         {
-            return q;
+            var mindt = DateTime.Parse("1/1/1900");
+            return from m in q
+                orderby m.DeceasedDate ?? mindt,
+                    m.PositionInFamilyId,
+                    m.PositionInFamilyId == 10 ? m.GenderId : 0,
+                    m.Age descending,
+                    m.Name
+                select m;
         }
 
         override public IEnumerable<FamilyMember> DefineViewList(IQueryable<FamilyMember> q)
