@@ -33,9 +33,9 @@ CKEDITOR.dialog.add('specialLinkDialog', function(editor) {
             },
             setup: function(element) {
               var hrefValue = element.getAttribute('href').replace('https://', '');
-              var isValidValue = this.items.some(function(item) {
-                return (item === hrefValue);
-              });
+              var isValidValue = this.items.map(function(x) { return x[1]; }).some(function(item) {
+                return item === hrefValue;
+              })
 
               if (isValidValue) {
                 this.setValue(hrefValue);
@@ -84,7 +84,10 @@ CKEDITOR.dialog.add('specialLinkDialog', function(editor) {
               this.setValue(element.getAttribute('title'));
             },
             commit: function(element) {
-              element.setAttribute('title', this.getValue());
+              var val = this.getValue();
+              if (val) {
+                element.setAttribute('title', this.getValue());
+              }
             }
           },
 
@@ -101,7 +104,10 @@ CKEDITOR.dialog.add('specialLinkDialog', function(editor) {
               this.setValue(smallGroupVal);
             },
             commit: function(element) {
-              element.setAttribute('rel', this.getValue());
+              var val = this.getValue();
+              if (val) {
+                element.setAttribute('rel', this.getValue());
+              }
             }
           },
 
@@ -129,7 +135,10 @@ CKEDITOR.dialog.add('specialLinkDialog', function(editor) {
               }
             },
             commit: function(element) {
-              element.setAttribute('dir', this.getValue());
+              var val = this.getValue();
+              if (val) {
+                element.setAttribute('dir', this.getValue());
+              }
             }
           },
 
@@ -141,7 +150,10 @@ CKEDITOR.dialog.add('specialLinkDialog', function(editor) {
               this.setValue(element.getAttribute('target') === '_blank');
             },
             commit: function(element) {
-              element.setAttribute('target', this.getValue() ? '_blank' : '');
+              var val = this.getValue();
+              if (val) {
+                element.setAttribute('target', val);
+              }
             }
           }
         ]
