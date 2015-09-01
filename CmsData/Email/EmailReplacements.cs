@@ -350,9 +350,8 @@ namespace CmsData
                     if (code.StartsWith("{orgmember:", StringComparison.OrdinalIgnoreCase))
                         return OrgMember(code, emailqueueto);
 
-                    if (code.StartsWith("{orgbarcode:"))
-                        return
-                            $"<img src='{db.ServerLink($"/Track/Barcode/{code.Substring(12).TrimEnd('}').ToInt()}-{p.PeopleId}")}' />";
+                    if (code.StartsWith("{orgbarcode"))
+                        return OrgBarcode(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
@@ -382,6 +381,14 @@ namespace CmsData
             }
 
             return code;
+        }
+
+        private string OrgBarcode(string code, EmailQueueTo emailqueueto)
+        {
+            var oid = code.StartsWith("{orgbarcode:")
+                ? code.Substring(12).TrimEnd('}').ToInt()
+                : emailqueueto.OrgId;
+            return $"<img src='{db.ServerLink($"/Track/Barcode/{oid}-{emailqueueto.PeopleId}")}' />";
         }
 
         private OrgInfo GetOrgInfo(EmailQueueTo emailqueueto)
