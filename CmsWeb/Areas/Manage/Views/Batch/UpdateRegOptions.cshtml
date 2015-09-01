@@ -3,6 +3,7 @@
     Layout = ViewExtensions2.TouchPointLayout();
     ViewBag.Title = "Update Registration Options";
     ViewBag.PageHeader = "Batch Update Registration Options";
+  var text = ViewBag.text as string;
 }
 @section scripts{
   @Fingerprint.Script("/content/touchpoint/js/admin/batchupdate.js")
@@ -18,7 +19,7 @@
             <strong>Note:</strong> Paste from spreadsheet into box below. Be sure to include the header row and the OrgID column.
         </div>
         <form action="@ViewBag.Action">
-            @Html.TextArea("text", ViewBag.text, new { rows = "20", cols = "1000", wrap = "off", @class = "form-control" })<br />
+            @Html.TextArea("text", text, new { rows = "20", cols = "1000", wrap = "off", @class = "form-control" })<br />
             <input type="submit" class="btn btn-primary" value="Submit" id="begin-update" />
         </form>
     </div>
