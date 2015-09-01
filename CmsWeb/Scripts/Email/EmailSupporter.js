@@ -120,6 +120,19 @@
 
             CKEDITOR.env.isCompatible = true;
             CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
+            $.fn.modal.Constructor.prototype.enforceFocus = function () {
+              var modalThis = this;
+              $(document).on('focusin.modal', function (e) {
+                // Fix for CKEditor + Bootstrap IE issue with dropdowns on the toolbar
+                // Adding additional condition '$(e.target.parentNode).hasClass('cke_contents cke_reset')' to
+                // avoid setting focus back on the modal window.
+                if (modalThis.$element[0] !== e.target && !modalThis.$element.has(e.target).length
+                    && $(e.target.parentNode).hasClass('cke_contents cke_reset')) {
+                  modalThis.$element.focus();
+                }
+              });
+            };
+
 
             CKEDITOR.replace('htmleditor', {
                 height: 200,

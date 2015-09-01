@@ -1481,14 +1481,6 @@
     <Content Include="Scripts\Bootstrap\select2.min.js" />
     <Content Include="Scripts\Bootstrap\spin.min.js" />
     <Content Include="Scripts\Bootstrap\typeahead.js" />
-    <Content Include="Scripts\bundle.main2.js" />
-    <Content Include="Scripts\bundle.main2c.js" />
-    <Content Include="Scripts\bundle.onlineregister.js" />
-    <Content Include="Scripts\bundle.org.js" />
-    <Content Include="Scripts\bundle.organization.js" />
-    <Content Include="Scripts\bundle.person.js" />
-    <Content Include="Scripts\bundle.query2.js" />
-    <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
     <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
     <Content Include="Scripts\additional-methods.js" />

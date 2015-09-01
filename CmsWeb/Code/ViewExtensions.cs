@@ -904,9 +904,9 @@ namespace CmsWeb
             return new HtmlString("<link href=\"//netdna.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.css\" rel=\"stylesheet\">\n");
         }
 
-        public static HtmlString CKEditor()
+        public static HtmlString CkEditor()
         {
-            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.2/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
+            return new HtmlString("<script src=\"//cdn.ckeditor.com/4.5.3/full/ckeditor.js\" type=\"text/javascript\"></script>\n");
         }
 
         public static HtmlString jQuery()
