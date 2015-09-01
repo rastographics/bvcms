@@ -158,7 +158,7 @@ namespace CmsWeb.Controllers
         }
         public ActionResult UseNewEditor(bool id)
         {
-            DbUtil.Db.SetUserPreference("UseNewEditor2", id ? "false" : "true");
+            DbUtil.Db.SetUserPreference("UseNewEditor3", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);

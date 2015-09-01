@@ -1,6 +1,6 @@
 ﻿@{
     var finance = User.IsInRole("Finance");
-    var allowoldeditor = User.IsInRole("AllowOldEditor");
+    var alloweditorchoice = User.IsInRole("Developer");
     var targetperson = Util2.TargetLinkPeople;
     var targetorg = Util2.TargetLinkOrg;
     var useneweditor = Util2.UseNewEditor;
@@ -23,7 +23,7 @@
   @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
   @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
   <li class="divider"></li>
-  @if (allowoldeditor)
+  @if (alloweditorchoice)
   {
       <li>
         <a href="/Home/UseNewEditor/@Html.Raw(useneweditor)">
