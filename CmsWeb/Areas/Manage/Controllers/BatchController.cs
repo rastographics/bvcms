@@ -76,7 +76,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         {
             try
             {
-                BatchRegMessages.Update(text);
+                BatchRegSettings.Update(text);
                 return Content("<strong>Success!</strong> RegSettings were successfully updated.");
             }
             catch (Exception ex)
@@ -102,6 +102,30 @@ namespace CmsWeb.Areas.Manage.Controllers
             {
                 BatchRegOptions.Update(text);
                 return Content("RegOptions were successfully updated.");
+            }
+            catch (Exception ex)
+            {
+                return AjaxErrorMessage(ex);
+            }
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateRegMessages()
+        {
+            ViewBag.Title = "Update Registration Messages";
+            ViewBag.PageHeader = "Batch Update Registration Messages";
+            ViewBag.text = "";
+            ViewBag.action = "/Batch/UpdateRegMessages";
+            return View("BatchUpdate");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateRegMessages(string text)
+        {
+            try
+            {
+                BatchRegMessages.Update(text);
+                return Content("RegMessages were successfully updated.");
             }
             catch (Exception ex)
             {

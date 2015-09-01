@@ -636,6 +636,19 @@
         $("#orgsearchform").submit();
         return true;
     });
+    $('#export-messages').click(function (ev) {
+        ev.preventDefault();
+        $('#export-messages-modal').modal('show');
+        return true;
+    });
+
+    $('#ExportMessages').click(function (ev) {
+        ev.preventDefault();
+        $('#export-messages-modal').modal('hide');
+        var args = $('#export-messages-modal form').serialize();
+        $("#orgsearchform").attr("action", "/OrgSearch/RegMessages?" + args);
+        $("#orgsearchform").submit();
+    });
     $.appendQuery = function (s, q) {
         if (s && s.length > 0)
             if (s.indexOf("&") != -1 || s.indexOf("?") != -1)

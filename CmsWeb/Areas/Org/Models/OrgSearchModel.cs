@@ -14,6 +14,7 @@ using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Areas.Search.Controllers;
 using CmsWeb.Models;
@@ -190,6 +191,19 @@ namespace CmsWeb.Areas.Search.Models
             {
                 var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
                 Util.Serialize(os, w.writer);
+            }
+            w.End();
+            w.writer.Flush();
+        }
+        public void RegMessagesXml(Stream stream, Settings.Messages messages)
+        {
+            var q = FetchOrgs();
+            var w = new CmsData.API.APIWriter(stream);
+            w.Start("OrgSearch");
+            foreach (var o in q)
+            {
+                var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                os.WriteXmlMessages(w.writer, messages);
             }
             w.End();
             w.writer.Flush();

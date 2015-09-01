@@ -1,0 +1,30 @@
+﻿.icon-arrow-left,
+.icon-arrow-right {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transform: translate(0, 0);
+}
+
+    .icon-arrow-left:before {
+        content: "\f053";
+    }
+
+    .icon-arrow-right:before {
+        content: "\f054";
+    }
+
+.empty-primary {
+    color: #003f72;
+}
+
+#editor {
+    font-family: Arial,Helvetica;
+}
+
+.popover {
+    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+}

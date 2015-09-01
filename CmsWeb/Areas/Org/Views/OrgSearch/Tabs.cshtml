@@ -1,0 +1,74 @@
+﻿@using CmsWeb.Areas.Search.Models
+@model OrgSearchModel
+<ul class="nav nav-tabs" id="org-search-tabs">
+  <li id="view-main" class="@(!Model.PublicView ? "active" : "")"><a href="#main" aria-controls="main" data-toggle="tab">Main View</a></li>
+  <li class="@(Model.PublicView ? "active" : "")"><a id="view-public" href="#public" aria-controls="public" data-toggle="tab"><i class="fa fa-globe"></i>&nbsp;&nbsp;Public View</a></li>
+  @if (User.IsInRole("OrgTagger"))
+  {
+      <li><a id="view-manage" href="#manage" aria-controls="manage" data-toggle="tab"><i class="fa fa-cog"></i>&nbsp;&nbsp;Management View</a></li>
+  }
+</ul>
+<div class="tab-content">
+  @if (User.IsInRole("OrgTagger"))
+  {
+      <div id="management-view" style="display:none;">
+        <h4>Manage Organization Structure</h4>
+        <div class="well">
+          <div class="row">
+            <div class="col-md-4 col-lg-4">
+              <div class="form-group">
+                <label for="TagProgramId" class="control-label">Target Program</label>
+                @Html.DropDownList("TagProgramId", Model.ProgramIds(), new { @class = "form-control" })
+              </div>
+            </div>
+            <div class="col-md-8 col-lg-8">
+              <label for="TagDiv" class="control-label">Target Division</label>
+              <div class="form-inline">
+                <div class="input-group col-xs-12 col-sm-7 col-md-7 col-lg-8">
+                  @Html.DropDownList("TagDiv", Model.DivisionIds(), new { @class = "form-control" })
+                </div>
+                <div class="input-group">
+                  <a id="RenameDivision" href="#" class="btn btn-default"><i class="fa fa-pencil"></i> Rename</a>&nbsp;<a id="AddNewDiv" href="#" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add New</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="row">
+            <div class="col-md-8 col-lg-6">
+              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Target Type" data-content="These are specific Org Types that you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a>&nbsp;
+              <label for="TargetType" class="control-label">Target Type</label>
+              <div class="form-inline">
+                <div class="input-group  col-xs-12 col-sm-7 col-md-7 col-lg-8">
+                  @Html.DropDownList("TargetType", OrgSearchModel.OrgTypes(), new { @class = "form-control" })
+                </div>
+                <div class="input-group">
+                  <a id="ApplyType" href="#" class="btn btn-warning">Apply to Filtered List</a>
+                </div>
+              </div>
+            </div>
+            @if (User.IsInRole("Developer"))
+                {
+                <div class="col-md-8 col-lg-6">
+                  <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Assign Child Orgs" data-content="These are specific Org Types that you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a>&nbsp;
+                  <label for="ParentOrg" class="control-label">Parent Org</label>
+                  <div class="form-inline">
+                    <div class="input-group">
+                      @Html.TextBox("ParentOrg")
+                    </div>
+                    <div class="input-group">
+                      <a id="MakeChildrenOf" href="#" class="btn btn-warning">Make List Children of</a>
+                    </div>
+                  </div>
+                </div>
+            }
+          </div>
+        </div>
+      </div>
+  }
+  @Html.Partial("Results", Model)
+  @Html.Hidden("FromOrgSearch", "true")
+  @Html.Hidden("CheckinDate")
+  <input name="PublicView" id="PublicView" type="hidden" value="false">
+  <br />
+</div>

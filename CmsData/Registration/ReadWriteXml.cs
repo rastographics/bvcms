@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -258,6 +259,70 @@ namespace CmsData.Registration
             foreach (var a in AskItems)
                 a.WriteXml(w);
             w.EndPending();
+        }
+        public class Messages
+        {
+            public bool Confirmation { get; set; }
+            public bool Sender { get; set; }
+            public bool Support { get; set; }
+            public bool Reminder { get; set; }
+            public bool Login { get; set; }
+            public bool Find { get; set; }
+            public bool Submit { get; set; }
+            public bool Select { get; set; }
+            public bool Sorry { get; set; }
+            public bool Options { get; set; }
+            public bool Special { get; set; }
+        }
+        public void WriteXmlMessages(XmlWriter writer, Messages messages)
+        {
+            var w = new APIWriter(writer);
+            w.Start("Messages");
+            w.Attr("id", OrgId);
+            w.AddComment($"{Util.UserPeopleId} {DateTime.Now:g}");
+
+            if(messages.Confirmation)
+                w.Start("Confirmation")
+                    .Add("Subject", Subject)
+                    .AddCdata("Body", Body)
+                    .End();
+
+            if(messages.Reminder)
+                w.Start("Reminder")
+                    .Add("Subject", ReminderSubject)
+                    .AddCdata("Body", ReminderBody)
+                    .End();
+
+            if(messages.Support)
+                w.Start("SupportEmail")
+                    .Add("Subject", SupportSubject)
+                    .AddCdata("Body", SupportBody)
+                    .End();
+
+            if(messages.Support)
+                w.Start("SenderEmail")
+                    .Add("Subject", SenderSubject)
+                    .AddCdata("Body", SenderBody)
+                    .End();
+
+            w.StartPending("Instructions");
+            if(messages.Login)
+                w.AddCdata("Login", InstructionLogin);
+            if (messages.Select)
+                w.AddCdata("Select", InstructionSelect);
+            if (messages.Find)
+                w.AddCdata("Find", InstructionFind);
+            if (messages.Options)
+                w.AddCdata("Options", InstructionOptions);
+            if (messages.Special)
+                w.AddCdata("Special", InstructionSpecial);
+            if (messages.Submit)
+                w.AddCdata("Submit", InstructionSubmit);
+            if (messages.Sorry)
+                w.AddCdata("Sorry", InstructionSorry);
+            w.EndPending();
+
+            w.End();
         }
         public XmlSchema GetSchema()
         {

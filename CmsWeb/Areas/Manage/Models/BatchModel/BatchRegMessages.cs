@@ -16,11 +16,11 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
         }
         private void DoUpdate(string text)
         {
-            var xdoc = XDocument.Parse(text);
+            var xdoc = XDocument.Parse(text.TrimStart());
             if (xdoc.Root == null)
                 throw new UserInputException("could not parse xml document");
 
-            foreach (var x in xdoc.Root.Elements("Settings"))
+            foreach (var x in xdoc.Root.Elements("Messages"))
             {
                 var oid = x.Attribute("id").Value.ToInt();
                 os = DbUtil.Db.CreateRegistrationSettings(oid);
@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     switch (name)
                     {
                         case "Confirmation":
-                            SubjectAndBody("", e);
+                            SubjectAndBody("", e); // no prefix
                             break;
                         case "Reminder":
                             SubjectAndBody("Reminder", e);
@@ -48,6 +48,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                     }
                 }
                 o.UpdateRegSetting(os);
+                DbUtil.Db.SubmitChanges();
             }
         }
 
