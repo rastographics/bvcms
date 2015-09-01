@@ -1,0 +1,27 @@
+﻿@using System.Web.Mvc.Html
+@using CmsWeb.Areas.Search.Models
+@model OrgSearchModel
+<div class="modal fade" id="new-div-modal">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Add New Division</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="NewDivProgramId" class="control-label">Program</label>
+          @Html.DropDownList("NewDivProgramId", Model.ProgramIds(), new { @class = "form-control" })
+        </div>
+        <div class="form-group">
+          <label for="NewDiv" class="control-label">Name</label>
+          <input type="text" id="NewDiv" name="NewDiv" class="form-control" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+        <input type="button" id="MakeNewDiv" name="MakeNewDiv" value="Submit" class="btn btn-primary" />
+      </div>
+    </div>
+  </div>
+</div>

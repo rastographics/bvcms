@@ -4,10 +4,12 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Linq;
+using System.Net;
 using CmsData;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using Elmah;
 using OfficeOpenXml;
 using RegistrationSettingsParser;
 using UtilityExtensions;
@@ -140,6 +142,24 @@ namespace CmsWeb
         {
             return View("Message2", model: text);
         }
+        public ActionResult Message(Exception ex)
+        {
+            var userinput = ex as UserInputException;
+            if (userinput != null)
+            {
+                ViewBag.Message = ex.Message;
+                return View("PageError");
+            }
+            throw ex;
+        }
+        public ActionResult AjaxErrorMessage(Exception ex)
+        {
+            var userinput = ex as UserInputException;
+            if (userinput == null)
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+            Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            return Content($"<strong>Failed!</strong> {ex.Message}");
+        }
     }
 
     [MyRequireHttps]
@@ -171,6 +191,10 @@ namespace CmsWeb
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             DbUtil.Db.UpdateLastActivity(Util.UserId);
+        }
+        public ViewResult Message(string text)
+        {
+            return View("Message", model: text);
         }
     }
 

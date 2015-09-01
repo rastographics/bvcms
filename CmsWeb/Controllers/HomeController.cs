@@ -320,10 +320,10 @@ namespace CmsWeb.Controllers
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG
+            if(name == "test")
             return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
-#else
-                return DbUtil.Db.ContentOfTypePythonScript(name);
 #endif
+                return DbUtil.Db.ContentOfTypePythonScript(name);
         }
         [HttpGet, Route("~/PyScriptForm/{name}")]
         public ActionResult PyScriptForm(string name)

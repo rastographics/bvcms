@@ -15,6 +15,10 @@ namespace CmsData.Registration
         {
             return AskItems.Find(aa => aa.Type == name) != null;
         }
+        public Ask AskItem(string name)
+        {
+            return AskItems.Find(aa => aa.Type == name);
+        }
         public decimal? Deposit { get; set; }
         public string Shell { get; set; }
         public string ShellBs { get; set; }

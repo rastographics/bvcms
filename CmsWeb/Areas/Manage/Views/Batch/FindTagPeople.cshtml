@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CmsWeb.Areas.Manage.Controllers.BatchController.FindInfo>
+﻿@model IEnumerable<CmsWeb.Areas.Manage.Models.BatchModel.BatchModel.FindInfo>
 @using UtilityExtensions
 @{
     ViewBag.Title = "FindTagPeople";
@@ -25,8 +25,9 @@
         <td> @item.First </td>
         <td> @item.Last </td>
         <td> @item.Email </td>
-        <td> @item.CellPhone </td>
-        <td> @item.HomePhone </td>
+        <td> @item.Phone </td>
+        <td> @item.Phone2 </td>
+        <td> @item.Phone3 </td>
         <td> @item.Birthday.FormatDate() </td>
     </tr>
 }

@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Xml;
 using CmsData;
 using CmsData.Codes;
+using CmsData.Registration;
 using CmsWeb.Areas.Search.Models;
 using CmsWeb.Code;
 using Dapper;
@@ -178,6 +179,14 @@ namespace CmsWeb.Areas.Search.Controllers
         {
             Response.ContentType = "text/xml";
             m.RegSettingsXml(Response.OutputStream);
+            return new EmptyResult();
+        }
+
+        [HttpPost]
+        public ActionResult RegMessages(OrgSearchModel m, Settings.Messages messages)
+        {
+            Response.ContentType = "text/xml";
+            m.RegMessagesXml(Response.OutputStream, messages);
             return new EmptyResult();
         }
         [HttpPost]

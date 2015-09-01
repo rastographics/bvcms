@@ -1,0 +1,8 @@
+﻿@{
+  ViewBag.Title = "PageError";
+  ViewBag.PageHeader = "Error";
+  Layout = ViewExtensions2.TouchPointLayout();
+}
+<div class="regform alert alert-danger">
+  <h2>@Html.Raw(ViewBag.Message)</h2>
+</div>

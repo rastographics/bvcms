@@ -1,0 +1,60 @@
+﻿<div class="modal fade" id="export-messages-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Export Registration Messages</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-12">
+            <form>
+              <div class="form-group">
+                <label class="checkbox-inline">
+                  @Html.CheckBox("confirmation") Confirmation
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("support") Support Email
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("sender") Sender Email
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("reminder") Reminder Email
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("reminder") Reminder Email
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("login") Login Instructions
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("select") Select Instructions
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("find") Find Instructions
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("options") Options Instructions
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("special") Special Instructions
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("submit") Submit Instructions
+                </label>
+                <label class="checkbox-inline">
+                  @Html.CheckBox("sorry") Sorry Instructions
+                </label>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal"/>
+        <input type="button" id="ExportMessages" value="Create" class="btn btn-primary"/>
+      </div>
+    </div>
+  </div>
+</div>
