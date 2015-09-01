@@ -34,13 +34,15 @@
                 CKEDITOR.instances['htmleditor'].destroy();
 
             CKEDITOR.env.isCompatible = true;
+            CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
 
             CKEDITOR.replace('htmleditor', {
                 height: 200,
                 autoParagraph: false,
                 fullPage: false,
                 allowedContent: true,
-                customConfig: '/scripts/js/ckeditorconfig.js'
+                customConfig: '/scripts/js/ckeditorconfig.js',
+                extraPlugins: 'specialLink'
             });
 
             CKEDITOR.on('dialogDefinition', function (ev) {

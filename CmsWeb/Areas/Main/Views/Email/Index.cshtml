@@ -135,11 +135,13 @@
     <script type="text/javascript">
       $(function () {
         CKEDITOR.env.isCompatible = true;
+        CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
         CKEDITOR.replace('Body', {
           height: 400,
           fullPage: false,
           allowedContent: true,
-          customConfig: '/scripts/js/ckeditorconfig.js'
+          customConfig: '/scripts/js/ckeditorconfig.js',
+          extraPlugins: 'specialLink'
         });
       });
     </script>

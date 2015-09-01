@@ -220,11 +220,14 @@
                 }
             });
 
+            CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
+
             CKEDITOR.replace('body', {
                 height: 400,
                 fullPage: true,
                 allowedContent: true,
-                customConfig: '/scripts/js/ckeditorconfig.js'
+                customConfig: '/scripts/js/ckeditorconfig.js',
+                extraPlugins: 'specialLink'
             });
 
         });
