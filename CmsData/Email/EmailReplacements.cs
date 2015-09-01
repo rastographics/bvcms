@@ -760,13 +760,6 @@ namespace CmsData
                 sg = def;
             return sg;
         }
-        private string OrgBarcode(string code, EmailQueueTo emailqueueto)
-        {
-            var oid = emailqueueto.OrgId;
-            if(code.StartsWith("{orgbarcode:"))
-                oid = code.Substring(12).TrimEnd('}').ToInt();
-            return $"<img src='{db.ServerLink($"/Track/Barcode/{oid}-{emailqueueto.PeopleId}")}' />";
-        }
 
         const string RegTextRe = @"{reg(?<type>.*?):(?<field>.*?)}";
         readonly Regex regTextRe = new Regex(RegTextRe, RegexOptions.Singleline);
