@@ -40,6 +40,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult MergeFieldsAndMoveRelated(MergeModel m)
         {
             m.LogMerge("Merge and move related");
+            m.Update();
             m.Move();
             return Redirect("/Person2/" + m.pi[1].PeopleId);
         }
