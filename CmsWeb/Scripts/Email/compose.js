@@ -48,7 +48,6 @@
               });
             };
 
-
             CKEDITOR.replace('htmleditor', {
                 height: 200,
                 autoParagraph: false,
