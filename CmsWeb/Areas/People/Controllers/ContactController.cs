@@ -14,9 +14,17 @@ namespace CmsWeb.Areas.People.Controllers
             if (m.contact == null)
                 return Content("contact is private or does not exist");
 
-            var showEdit = (bool?)TempData["ContactEdit"] == true || edit;
-            ViewBag.edit = showEdit;
-            return View(m);
+            if( edit )
+            {
+                TempData["ContactEdit"] = true;
+                return Redirect($"/Contact2/{cid}");                
+            }
+            else
+            {
+                var showEdit = (bool?)TempData["ContactEdit"] == true;
+                ViewBag.edit = showEdit;
+                return View(m);
+            }
         }
 
         [HttpPost, Route("RemoveContactee/{cid:int}/{pid:int}")]
