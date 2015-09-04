@@ -57,14 +57,17 @@ namespace CmsWeb.Areas.Reports.Models
                 var xdoc = XDocument.Parse(body);
                 if (xdoc.Root == null)
                     return list;
+                var roles = DbUtil.Db.CurrentUser.Roles;
                 var q = from e in xdoc.Root.Elements("Report")
-                    let r = (string) e.Attribute("name")
-                    let oid = ((string) e.Attribute("showOnOrgId")).ToInt()
-                    let typ = ((string) e.Attribute("type") ?? "Custom")
-                    where oid == 0 || oid == orgid
-                    where r != null
-                    where r != "AllColumns"
-                    select new ReportItem(r, typ);
+                        let r = (string)e.Attribute("name")
+                        let role = (string)e.Attribute("role")
+                        let oid = ((string)e.Attribute("showOnOrgId")).ToInt()
+                        let typ = ((string)e.Attribute("type") ?? "Custom")
+                        where oid == 0 || oid == orgid
+                        where role == null || roles.Contains(role)
+                        where r != null
+                        where r != "AllColumns"
+                        select new ReportItem(r, typ);
 
                 foreach (var r in q.Where(r => !list.Contains(r)))
                     list.Add(r);
@@ -98,7 +101,7 @@ namespace CmsWeb.Areas.Reports.Models
             var q = _db.PeopleQuery(id);
             return Sql(q, report);
         }
-        public string Sql(IQueryable<Person> q , string report)
+        public string Sql(IQueryable<Person> q, string report)
         {
             XDocument xdoc;
             if (report == "AllColumns")
@@ -232,7 +235,7 @@ namespace CmsWeb.Areas.Reports.Models
 
                 var extravalues = from ev in _db.PeopleExtras
                                   where !protectedevs.Contains(ev.Field)
-                                  group ev by new {ev.Field, ev.Type} into g
+                                  group ev by new { ev.Field, ev.Type } into g
                                   orderby g.Key.Field
                                   select g.Key;
 
