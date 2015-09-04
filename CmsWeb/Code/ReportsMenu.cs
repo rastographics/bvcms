@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Caching;
 using System.Web.Mvc;
+using System.Web.Security;
 using System.Xml.Linq;
 using System.Xml.XPath;
 using CmsData;
@@ -57,7 +59,7 @@ namespace CmsWeb.Code
             get
             {
                 var xdoc = CustomReportsMenu;
-                if (xdoc == null || xdoc.Root == null)
+                if (xdoc?.Root == null)
                     return null;
                 return ReportItems(xdoc, "/ReportsMenu/Column1");
             }
@@ -67,7 +69,7 @@ namespace CmsWeb.Code
             get
             {
                 var xdoc = CustomReportsMenu;
-                if (xdoc == null || xdoc.Root == null)
+                if (xdoc?.Root == null)
                     return null;
                 return ReportItems(xdoc, "/ReportsMenu/Column2");
             }
@@ -78,6 +80,11 @@ namespace CmsWeb.Code
             var sb = new StringBuilder();
             foreach (var e in xdoc.XPathSelectElements(path).Elements())
             {
+                var role = (string)e.Attribute("role");
+                if (role.HasValue())
+                    if (!DbUtil.Db.CurrentUser.Roles.Contains(role))
+                        continue;
+
                 var tb = new TagBuilder("li");
                 switch (e.Name.LocalName)
                 {
