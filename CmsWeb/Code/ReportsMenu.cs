@@ -80,9 +80,9 @@ namespace CmsWeb.Code
             var sb = new StringBuilder();
             foreach (var e in xdoc.XPathSelectElements(path).Elements())
             {
-                var role = (string)e.Attribute("role");
-                if (role.HasValue())
-                    if (!DbUtil.Db.CurrentUser.Roles.Contains(role))
+                var roles = ((string)e.Attribute("roles"))?.Split(',');
+                if (roles != null)
+                    if (!roles.Any(rr => DbUtil.Db.CurrentUser.Roles.Contains(rr)))
                         continue;
 
                 var tb = new TagBuilder("li");
