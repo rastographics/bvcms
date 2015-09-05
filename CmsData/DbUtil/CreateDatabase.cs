@@ -18,7 +18,11 @@ namespace CmsData
     {
         public static bool DatabaseExists(string name)
         {
-            using (var cn = new SqlConnection(Util.GetConnectionString2("master", 3)))
+            return DatabaseExists(Util.GetConnectionString2("master", 3), name);
+        }
+        public static bool DatabaseExists(string mastercs, string name)
+        {
+            using (var cn = new SqlConnection(mastercs))
             {
                 cn.Open();
                 return DatabaseExists(cn, name);
