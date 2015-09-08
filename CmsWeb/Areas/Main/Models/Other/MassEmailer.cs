@@ -31,7 +31,20 @@ namespace CmsWeb.Areas.Main.Models
         public string Body { get; set; }
         public DateTime? Schedule { get; set; }
         public bool PublicViewable { get; set; }
-        public IEnumerable<string> Recipients { get; set; } 
+        public IEnumerable<string> Recipients { get; set; }
+
+        public List<int> CcPeopleIds;
+        public string Cc {
+            get {
+                if (CcPeopleIds == null) { return null; }
+                return String.Join(",", CcPeopleIds);
+            }
+            set {
+                if (value == null) { CcPeopleIds = null; }
+                else { CcPeopleIds = value.Split(',').Select(int.Parse).ToList(); }
+            }
+        }
+
 
         public string Host { get; set; }
 
