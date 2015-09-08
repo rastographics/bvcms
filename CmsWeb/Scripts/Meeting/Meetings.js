@@ -1,5 +1,4 @@
 ﻿$(function () {
-    $(".datepicker").jqdatepicker();
     $("#Dt1").change(function () {
         $("#Dt2").val("");
         $.reloadmeetings();
@@ -18,7 +17,7 @@
         var oldsort = $("#Pager_Sort").val();
         $("#Pager_Sort").val(newsort);
         var dir = $("#Pager_Direction").val();
-        if (oldsort == newsort && dir == 'asc')
+        if (oldsort === newsort && dir == 'asc')
             $("#Pager_Direction").val('desc');
         else
             $("#Pager_Direction").val('asc');
