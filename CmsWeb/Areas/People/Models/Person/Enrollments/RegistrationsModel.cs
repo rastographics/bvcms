@@ -5,6 +5,7 @@ using System.Linq;
 using CmsData;
 using CmsData.Codes;
 using CmsWeb.Code;
+using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Models
 {
@@ -41,7 +42,7 @@ namespace CmsWeb.Areas.People.Models
         public bool CustodyIssue { get; set; }
         public bool OkTransport { get; set; }
 
-        [DisplayName("Emergency Contact")]
+        [DisplayName("Emergency Contact"), StringLength(100)]
         public string Emcontact { get; set; }
 
         [DisplayName("Emergency Phone"), StringLength(50)]
