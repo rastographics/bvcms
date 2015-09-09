@@ -33,15 +33,15 @@ namespace CmsWeb.Areas.Main.Models
         public bool PublicViewable { get; set; }
         public IEnumerable<string> Recipients { get; set; }
 
-        public List<int> CcPeopleIds;
+        public List<MailAddress> CcAddresses;
         public string Cc {
             get {
-                if (CcPeopleIds == null) { return null; }
-                return String.Join(",", CcPeopleIds);
+                if (CcAddresses == null) { return null; }
+                return String.Join(",", CcAddresses);
             }
             set {
-                if (value == null) { CcPeopleIds = null; }
-                else { CcPeopleIds = value.Split(',').Select(int.Parse).ToList(); }
+                if (value == null) { CcAddresses = null; }
+                else { CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList(); }
             }
         }
 
