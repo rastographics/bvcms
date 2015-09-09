@@ -474,7 +474,7 @@ namespace CmsData
                 if (Setting("sendemail", "true") != "false")
                 {
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId);
+                        emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId, cc: cc);
                     To.Sent = DateTime.Now;
                     SubmitChanges();
                 }
@@ -509,7 +509,7 @@ namespace CmsData
                 {
                     List<MailAddress> mal = new List<MailAddress> {ma};
                     Util.SendMsg(sysFromEmail, CmsHost, from,
-                        emailqueue.Subject, body, mal, emailqueue.Id, null);
+                        emailqueue.Subject, body, mal, emailqueue.Id, null, cc: cc);
                 }
 #if DEBUG
 #else
