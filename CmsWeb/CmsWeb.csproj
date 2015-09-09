@@ -822,12 +822,12 @@
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\ClaimVolSub.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskGradeOptions.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\RequestResponse.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\RsvpLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\SendLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\VoteLinkSg.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Related.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -1528,7 +1528,7 @@
     <Content Include="Areas\Search\Views\RegistrationSearch\IncompleteResults.cshtml" />
     <Content Include="Areas\Manage\Views\Activity\Results.cshtml" />
     <Content Include="Areas\Manage\Views\Activity\Index.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RegPeople.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\RegPeople.cshtml" />
     <Content Include="Areas\People\Views\DownlineDetail\Index.cshtml" />
     <Content Include="Areas\People\Views\DownlineDetail\Results.cshtml" />
     <Content Include="Areas\People\Views\DownlineSummary\Index.cshtml" />
@@ -1536,7 +1536,7 @@
     <Content Include="Areas\People\Views\DownlineDetail\Trace.cshtml" />
     <Content Include="Areas\People\Views\DownlineLevels\Index.cshtml" />
     <Content Include="Areas\People\Views\DownlineLevels\Results.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RegisterLinkMaster.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\RegisterLinkMaster.cshtml" />
     <Content Include="Areas\Org\Views\RegSetting\EditXml.cshtml" />
     <Content Include="Areas\Main\Views\UserPref\Index.cshtml" />
     <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
@@ -2082,7 +2082,7 @@
     <Content Include="Areas\Search\Views\Query\SelectCondition.cshtml" />
     <Content Include="Areas\People\Views\Person\Toolbar\Gear.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Continue\ConfirmReregister.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Changes.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Duplicates.cshtml" />
@@ -2128,7 +2128,7 @@
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\SpecialRegistrationResults.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\SpecialRegistrationResults.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundResults2.cshtml" />
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
@@ -2246,10 +2246,10 @@
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2a.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2b.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditPythonScript.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Existing.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Continue\Existing.cshtml" />
     <Content Include="Areas\Search\Views\RegistrationSearch\Index.cshtml" />
     <Content Include="Areas\Search\Views\RegistrationSearch\Results.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\FinishLater.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Continue\FinishLater.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\GoerSupporters.cshtml" />
     <Content Include="Areas\People\Views\Shared\EditorTemplates\Value.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Email.cshtml" />
@@ -2953,7 +2953,7 @@
     <Content Include="Areas\Manage\Views\CheckinTime\Index.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\tickets.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\ScanTicket.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Timeout.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Timeout.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\Report.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\ReportByDescription.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\PledgeReport.cshtml" />
@@ -3257,7 +3257,7 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Confirm.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmAccount.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Continue\ConfirmAccount.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\Confirm.cshtml">
     </Content>
@@ -3267,7 +3267,7 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions\Confirm.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmTest.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\ConfirmTest.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Index.cshtml">
     </Content>
@@ -3275,11 +3275,11 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\Process.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Terms.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Terms.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\TransactionTest.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\TransactionTest.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Unknown.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Unknown.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\OptOut\Cancel.cshtml">
       <SubType>Code</SubType>
@@ -3292,7 +3292,7 @@
     </Content>
     <Content Include="Areas\Reports\Views\Reports\ShirtSizes.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\AskDonation.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\AskDonation.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Batch\FindTagPeople0.cshtml">
     </Content>

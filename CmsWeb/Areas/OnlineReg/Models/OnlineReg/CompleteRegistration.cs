@@ -74,7 +74,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (PayAmount() == 0 && Terms.HasValue())
             {
                 Log("ViewTerms");
-                return RouteModel.ViewTerms("Terms");
+                return RouteModel.ViewTerms("Other/Terms");
             }
             return null;
         }
@@ -102,7 +102,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ctl.ModelState.AddModelError("donation",
                     "Please indicate a donor or clear the donation amount");
                 Log("AskDonation");
-                return RouteModel.ViewAction("AskDonation");
+                return RouteModel.ViewAction("Other/AskDonation");
             }
             return null;
         }
@@ -116,7 +116,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     p.AddPerson(null, p.org.EntryPointId ?? 0);
                 SpecialRegModel.SaveResults(Orgid ?? 0, List[0].PeopleId ?? 0, List[0].SpecialTest);
                 Log("SpecialJavascript");
-                return RouteModel.ViewAction("SpecialRegistrationResults");
+                return RouteModel.ViewAction("Other/SpecialRegistrationResults");
             }
             return null;
         }

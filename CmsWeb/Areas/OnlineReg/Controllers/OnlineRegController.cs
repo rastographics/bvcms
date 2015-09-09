@@ -138,7 +138,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             p.ValidateModelForFind(ModelState, id);
 
             if (p.AnonymousReRegistrant())
-                return View("ConfirmReregister", m); // send email with link to reg-register
+                return View("Continue/ConfirmReregister", m); // send email with link to reg-register
 
             if (p.IsSpecialReg())
                 p.QuestionsOK = true;
@@ -277,7 +277,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             FormsAuthentication.SignOut();
             Session.Abandon();
             ViewBag.Url = ret;
-            return View();
+            return View("Other/Timeout");
         }
 
         private ActionResult FlowList(OnlineRegModel m)

@@ -53,7 +53,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                 }
             }
-            return View(q2);
+            return View("Other/ConfirmTest", q2);
         }
         [Authorize(Roles = "Admin")]
         public ActionResult ConfirmTestXml(int id)
@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 {
                 }
             }
-            return View(q2[0].m);
+            return View("Other/RegPeople", q2[0].m);
         }
         [HttpPost]
         [Authorize(Roles = "ManageTransactions,Finance,Admin")]
