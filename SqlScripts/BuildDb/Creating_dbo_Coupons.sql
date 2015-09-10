@@ -11,7 +11,9 @@ CREATE TABLE [dbo].[Coupons]
 [Name] [nvarchar] (80) NULL,
 [UserId] [int] NULL,
 [RegAmount] [money] NULL,
-[DivOrg] AS (case when [divid] IS NOT NULL then 'div.'+CONVERT([nvarchar],[divid],(0)) else 'org.'+CONVERT([nvarchar],[orgid],(0)) end)
+[DivOrg] AS (case when [divid] IS NOT NULL then 'div.'+CONVERT([nvarchar],[divid],(0)) else 'org.'+CONVERT([nvarchar],[orgid],(0)) end),
+[MultiUse] [bit] NULL,
+[Generated] [bit] NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

@@ -18,7 +18,7 @@ CREATE TABLE [dbo].[EnrollmentTransaction]
 [InactiveDate] [datetime] NULL,
 [UserData] [nvarchar] (max) NULL,
 [Request] [nvarchar] (140) NULL,
-[ShirtSize] [nvarchar] (20) NULL,
+[ShirtSize] [nvarchar] (50) NULL,
 [Grade] [int] NULL,
 [Tickets] [int] NULL,
 [RegisterEmail] [nvarchar] (80) NULL,

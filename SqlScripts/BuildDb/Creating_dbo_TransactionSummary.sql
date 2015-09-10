@@ -77,7 +77,7 @@ FROM (
 
 	FROM dbo.TransactionPeople tp
 	JOIN dbo.[Transaction] ot ON ot.Id = tp.Id
-	JOIN dbo.OrganizationMembers om ON om.TranId = ot.Id AND tp.PeopleId = om.PeopleId
+	JOIN dbo.OrganizationMembers om ON om.TranId = ot.Id AND tp.PeopleId = om.PeopleId AND om.OrganizationId = tp.OrgId
 	JOIN dbo.Organizations o ON o.OrganizationId = om.OrganizationId
 ) tt
 --WHERE (iscoupon = 1 OR isapproved = 1) --AND TotalAmt > 0

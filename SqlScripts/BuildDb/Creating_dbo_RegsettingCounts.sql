@@ -6,7 +6,9 @@ SELECT
 	,OrganizationName
 
 	,RegSettingXml.value('count(/Settings/AskItems/AskDropdown/DropdownItem)', 'int') DropdownItemCount
+	,RegSettingXml.value('count(/Settings/AskItems/AskDropdown/DropdownItem[@Fee])', 'int') DropdownItemFeeCount
 	,RegSettingXml.value('count(/Settings/AskItems/AskCheckboxes/CheckboxItem)', 'int') CheckboxItemCount
+	,RegSettingXml.value('count(/Settings/AskItems/AskDropdown/CheckboxItem[@Fee])', 'int') CheckboxItemFeeCount
 	,RegSettingXml.value('count(/Settings/AskItems/AskExtraQuestions/Question)', 'int') ExtraQuestionCount
 	,RegSettingXml.value('count(/Settings/AskItems/AskText/Question)', 'int') AskTextCount
 	,RegSettingXml.value('count(/Settings/AskItems/AskGradeOptions/GradeOption)', 'int') GradeOptionCount
@@ -19,6 +21,7 @@ SELECT
 
 	,RegSettingXml.value('count(/Settings/OrgFees/Fee)', 'int') OrgFeesCount
 	,RegSettingXml.value('count(/Settings/AgeGroups/Group)', 'int') AgeGroupsCount
+	,RegSettingXml.value('(/Settings/Fees/Fee)[1]', 'money') [Fee]
 
 	,LEN(ISNULL(RegSettingXml.value('(/Settings/Confirmation/Body)[1]', 'varchar(max)'),'')) BodyLen
 	,LEN(ISNULL(RegSettingXml.value('(/Settings/Confirmation/SenderBody)[1]', 'varchar(max)'),'')) SenderBodyLen

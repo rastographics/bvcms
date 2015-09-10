@@ -1,4 +1,5 @@
 
+
 CREATE VIEW [dbo].[RegsettingUsage]
 AS
 SELECT 
@@ -6,7 +7,9 @@ SELECT
 	,OrganizationName
 	,Usage = 
 		CASE WHEN RegSettingXml.value('count(//DropdownItem)', 'int') > 0 THEN ' Dropdown' ELSE '' END
+		+CASE WHEN RegSettingXml.value('count(//DropdownItem[@Fee])', 'int') > 0 THEN ' DropdownFee' ELSE '' END
 		+CASE WHEN RegSettingXml.value('count(//CheckboxItem)', 'int') > 0 THEN ' Checkbox' ELSE '' END
+		+CASE WHEN RegSettingXml.value('count(//CheckboxItem[@Fee])', 'int') > 0 THEN ' CheckboxFee' ELSE '' END
 		+CASE WHEN RegSettingXml.value('count(//AskExtraQuestions/Question)', 'int') > 0 THEN ' ExtraQuestion' ELSE '' END
 		+CASE WHEN RegSettingXml.value('count(//AskText/Question)', 'int') > 0 THEN ' TextQuestion' ELSE '' END
 		+CASE WHEN RegSettingXml.value('count(//GradeOption)', 'int') > 0 THEN ' GradeOption' ELSE '' END
@@ -78,6 +81,7 @@ SELECT
 		+CASE WHEN LEN(ISNULL(RegSettingXml.value('(//DonationLabel)[1]', 'varchar(50)'), '')) > 0 THEN ' DonationLabel' ELSE '' END
 		+CASE WHEN RegSettingXml.value('(//DonationFundId)[1]', 'int') > 0 THEN ' DonationFundId' ELSE '' END
 FROM dbo.Organizations WHERE RegSettingXml IS NOT NULL
+
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
