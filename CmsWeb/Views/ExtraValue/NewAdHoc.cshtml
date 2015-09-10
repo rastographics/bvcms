@@ -21,6 +21,10 @@
 
             @Html.EditorFor(m => m.AdhocExtraValueType, new { PlainSelect = true })
             @Html.EditorFor(m => m.ExtraValueName)
+            @if (Model.ExtraValueTable == "People")
+            {
+              @Html.EditorFor(m => m.AddToFamilyRecordInsteadOfPerson)
+            }
 
             @Html.EditorFor(m => m.ExtraValueTextBox, new { hide = "hide" })
             @Html.EditorFor(m => m.ExtraValueTextArea)

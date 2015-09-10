@@ -123,7 +123,7 @@
                 var showHide = function () {
                     $("#ExtraValueTextBox").parent().parent().addClass('hide');
                     $("#ExtraValueTextArea").parent().parent().addClass('hide');
-                    $("#ExtraValueCheckbox").parent().parent().addClass('hide');
+                    $("#ExtraValueCheckbox").parent().parent().parent().addClass('hide');
                     $("#ExtraValueDate").parent().parent().parent().addClass('hide');
                     $("#ExtraValueInteger").parent().parent().addClass('hide');
 
@@ -135,7 +135,7 @@
                             $("#ExtraValueTextArea").parent().parent().removeClass('hide');
                             break;
                         case "Bit":
-                            $("#ExtraValueCheckbox").parent().parent().removeClass('hide');
+                            $("#ExtraValueCheckbox").parent().parent().parent().removeClass('hide');
                             break;
                         case "Date":
                             $("#ExtraValueDate").parent().parent().parent().removeClass('hide');

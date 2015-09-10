@@ -9,7 +9,7 @@ namespace CmsData
 {
     public partial class Family : ITableWithExtraValues
     {
-        public string CityStateZip => Util.FormatCSZ4(CityName,StateCode,ZipCode);
+        public string CityStateZip => Util.FormatCSZ4(CityName, StateCode, ZipCode);
 
         public string AddrCityStateZip => AddressLineOne + " " + CityStateZip;
 
@@ -30,16 +30,16 @@ namespace CmsData
 
         public string HohName(CMSDataContext Db)
         {
-                if (HeadOfHouseholdId.HasValue)
-                    return Db.People.Where(p => p.PeopleId == HeadOfHouseholdId.Value).Select(p => p.Name).SingleOrDefault();
-                return "";
+            if (HeadOfHouseholdId.HasValue)
+                return Db.People.Where(p => p.PeopleId == HeadOfHouseholdId.Value).Select(p => p.Name).SingleOrDefault();
+            return "";
         }
 
         public string HohSpouseName(CMSDataContext Db)
         {
-                if (HeadOfHouseholdSpouseId.HasValue)
-                    return Db.People.Where(p => p.PeopleId == HeadOfHouseholdSpouseId.Value).Select(p => p.Name).SingleOrDefault();
-                return "";
+            if (HeadOfHouseholdSpouseId.HasValue)
+                return Db.People.Where(p => p.PeopleId == HeadOfHouseholdSpouseId.Value).Select(p => p.Name).SingleOrDefault();
+            return "";
         }
         public string FamilyName(CMSDataContext Db)
         {
@@ -179,7 +179,7 @@ namespace CmsData
             if (!field.HasValue())
                 field = "blank";
             field = field.Replace(",", "_");
-            var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase:true) == 0);
+            var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev == null)
             {
                 ev = new FamilyExtra
@@ -194,7 +194,7 @@ namespace CmsData
         }
         public void RemoveExtraValue(CMSDataContext Db, string field)
         {
-            var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase:true) == 0);
+            var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev != null)
                 Db.FamilyExtras.DeleteOnSubmit(ev);
         }
@@ -253,6 +253,107 @@ namespace CmsData
                 return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static FamilyExtra GetExtraValue(CMSDataContext db, int pid, string field)
+        {
+            var fid = (from v in db.People
+                       where v.PeopleId == pid
+                       select v.FamilyId).SingleOrDefault();
+            if (fid == 0)
+                return null;
+            field = field.Replace('/', '-');
+            var q = from v in db.FamilyExtras
+                    where v.Field == field
+                    where v.FamilyId == fid
+                    select v;
+            var ev = q.SingleOrDefault();
+            if (ev == null)
+            {
+                ev = new FamilyExtra
+                {
+                    FamilyId = fid,
+                    Field = field,
+                    TransactionTime = DateTime.Now
+                };
+                db.FamilyExtras.InsertOnSubmit(ev);
+            }
+            return ev;
+        }
+        public static bool ExtraValueExists(CMSDataContext db, int pid, string field)
+        {
+            var fid = (from v in db.People
+                       where v.PeopleId == pid
+                       select v.FamilyId).SingleOrDefault();
+            if (fid == 0)
+                return false;
+            field = field.Replace('/', '-');
+            var q = from v in db.FamilyExtras
+                    where v.Field == field
+                    where v.FamilyId == fid
+                    select v;
+            var ev = q.SingleOrDefault();
+            return ev != null;
+        }
+        public static FamilyExtra GetExtraValue(CMSDataContext db, int pid, string field, string value)
+        {
+            var fid = (from v in db.People
+                       where v.PeopleId == pid
+                       select v.FamilyId).SingleOrDefault();
+            if (fid == 0)
+                return null;
+            var novalue = !Util.HasValue(value);
+            var q = from v in db.FamilyExtras
+                    where v.FamilyId == fid
+                    where v.Field == field
+                    where novalue || v.StrValue == value
+                    select v;
+            var ev = q.SingleOrDefault();
+            return ev;
+        }
+        public static void AddEditExtraValue(CMSDataContext db, int pid, string field, string value)
+        {
+            if (!Util.HasValue(value))
+                return;
+            var ev = GetExtraValue(db, pid, field);
+            ev.StrValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraData(CMSDataContext db, int pid, string field, string value)
+        {
+            if (!Util.HasValue(value))
+                return;
+            var ev = GetExtraValue(db, pid, field);
+            ev.Data = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraDate(CMSDataContext db, int pid, string field, DateTime? value)
+        {
+            var fid = (from v in db.People
+                       where v.PeopleId == pid
+                       select v.FamilyId).SingleOrDefault();
+            if (fid == 0)
+                return;
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, pid, field);
+            ev.DateValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraInt(CMSDataContext db, int pid, string field, int? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, pid, field);
+            ev.IntValue = value;
+            ev.TransactionTime = DateTime.Now;
+        }
+        public static void AddEditExtraBool(CMSDataContext db, int pid, string field, bool? value)
+        {
+            if (!value.HasValue)
+                return;
+            var ev = GetExtraValue(db, pid, field);
+            ev.BitValue = value;
             ev.TransactionTime = DateTime.Now;
         }
     }

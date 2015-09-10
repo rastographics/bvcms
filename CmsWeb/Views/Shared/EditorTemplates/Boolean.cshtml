@@ -1,5 +1,5 @@
 ﻿@model bool
-<div class="form-group">
+<div class="form-group @ViewBag.hide">
     <div class="checkbox">
         <label class="control-label">
             @Html.CheckBoxFor(m => m) @(ViewBag.label ?? Html.DisplayNameFor(m => m))
