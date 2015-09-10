@@ -51,7 +51,7 @@ namespace CmsWeb.Areas.Dialog.Models
                          mm.Organization,
                          mm.OrgMemMemTags,
                          mm.Organization.IsMissionTrip,
-                         ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId)
+                         ts = DbUtil.Db.ViewTransactionSummaries.SingleOrDefault(tt => tt.RegId == mm.TranId && tt.PeopleId == PeopleId && tt.OrganizationId == OrgId)
                      }).SingleOrDefault();
             if (i == null)
                 throw new Exception($"missing OrgMember at oid={OrgId}, pid={PeopleId}");
@@ -162,7 +162,7 @@ namespace CmsWeb.Areas.Dialog.Models
         [TrackChanges]
         public int? Tickets { get; set; }
 
-        [TrackChanges]
+        [TrackChanges, StringLength(50)]
         public string ShirtSize { get; set; }
 
         [TrackChanges]
