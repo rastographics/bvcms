@@ -97,7 +97,7 @@ namespace CmsWeb.Models
                         where o.OrganizationStatusId == OrgStatusCode.Active
                         orderby sc.SchedTime.Value.TimeOfDay, bdaystart, o.OrganizationName
                         from meeting in meetingHours
-                        select new OrgHourInfo {o = o, Hour = meeting.Hour.Value};
+                        select new OrgHourInfo { o = o, Hour = meeting.Hour.Value };
                 }
 
                 var q2 = from i in q
@@ -121,12 +121,16 @@ namespace CmsWeb.Models
                 foreach (var o in q2)
                 {
                     double leadtime = 0;
+
                     if (o.Hour.HasValue)
                     {
-                        var midnight = o.Hour.Value.Date;
-                        var now = midnight.Add(Util.Now.TimeOfDay);
-                        leadtime = o.Hour.Value.Subtract(now).TotalHours;
-                        leadtime -= DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
+                        var theirTime = DateTime.Now.AddHours(DbUtil.Db.Setting("TZOffset", "0").ToInt());
+                        leadtime = o.Hour.Value.Subtract(theirTime).TotalHours;
+
+                        //var midnight = o.Hour.Value.Date;
+                        //var now = midnight.Add(Util.Now.TimeOfDay);
+                        //leadtime = o.Hour.Value.Subtract(now).TotalHours;
+                        //leadtime -= DbUtil.Db.Setting("TZOffset", "0").ToInt(); // positive to the east, negative to the west
                     }
 
                     w.WriteStartElement("class");
