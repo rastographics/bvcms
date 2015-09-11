@@ -2552,7 +2552,6 @@
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
     <Content Include="Scripts\Search\Query.js" />
     <Content Include="Scripts\Volunteer\Calendar2.js" />
-    <Content Include="Areas\Manage\Views\Users\LastActivity.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
     <Content Include="Scripts\Volunteer\ManageVolunteer2.js" />

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.Routing;
 using System.Web.Security;
 using CmsData;
 using CmsData.Codes;
@@ -220,7 +221,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             }
             m.RemoveLastRegistrantIfEmpty();
             SetHeaders(m);
-            return View(m);
+            return View("Other/AskDonation", m);
         }
 
         [HttpPost]
@@ -322,6 +323,12 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             DbUtil.LogActivity("OnlineReg Error:" + filterContext.Exception.Message);
             filterContext.Result = Message(filterContext.Exception.Message);
             filterContext.ExceptionHandled = true;
+        }
+
+        protected override void Initialize(RequestContext requestContext)
+        {
+            base.Initialize(requestContext);
+            requestContext.HttpContext.Items["controller"] = this;
         }
     }
 }

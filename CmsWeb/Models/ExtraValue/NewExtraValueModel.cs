@@ -372,7 +372,7 @@ Option 2
             const string fsql = @"
 DELETE dbo.FamilyExtra
 FROM FamilyExtra fe
-WHERE fe.Field = 'test2'
+WHERE fe.Field = @name
 AND EXISTS(SELECT NULL FROM dbo.People p
 			WHERE p.FamilyId = fe.FamilyId  
 			AND p.PeopleId IN (

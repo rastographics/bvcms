@@ -4,7 +4,7 @@
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
     var om = Model.GetOrgMember();
-    var ts = om.TransactionSummary(DbUtil.Db);
+    var ti = Model.Parent.Transaction;
 }
 @* ReSharper disable Html.Obsolete *@
 <table>
@@ -20,8 +20,9 @@
     <td>Last:</td>
     <td>@Model.person.LastName</td>
   </tr>
-  @if (ts != null)
+  @if ((ti.Amt ?? 0) > 0 && om != null)
   {
+    var ts = om.TransactionSummary(DbUtil.Db);
       <tr>
         <td colspan="2">
           <table cellpadding="4">
@@ -149,7 +150,7 @@
             }
             if (i.Fee > 0)
             {
-                          <tr><td></td><td>@i.Description ($@i.Fee:N2)<br>(@i.SmallGroup)</td></tr>
+                          <tr><td></td><td>@i.Description ($@i.Fee.ToString2("N2"))<br>(@i.SmallGroup)</td></tr>
             }
             else
             {
