@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Web;
 using CmsData.Registration;
 using UtilityExtensions;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Controllers;
+using Elmah;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -15,8 +17,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (RecordFamilyAttendance())
                 return SummarizeFamilyAttendance();
 
-//            var ctl = HttpContext.Current.Items["controller"] as OnlineRegController;
-//            return ViewExtensions2.RenderPartialViewToString(ctl, "Other/Details", this);
+            var ctl = HttpContext.Current.Items["controller"] as OnlineRegController;
+            try
+            {
+                return ViewExtensions2.RenderPartialViewToString(ctl, "Other/Details", this);
+            }
+            catch (Exception ex)
+            {
+                ErrorSignal.FromCurrentContext().Raise(ex);
+                return ex.Message;
+            }
             var om = GetOrgMember();
             var sb = StartSummary();
             SummarizePayment(ti, om, sb);

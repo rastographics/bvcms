@@ -1,18 +1,20 @@
-﻿@model bool?
+﻿@using UtilityExtensions
+@model bool?
 @{
     const string labelclasses = "control-label col-sm-3 labelsize";
+    var name = Html.NameFor2(m => m);
 }
 <div class="form-group">
-    @(ViewBag.label != null
+  @(ViewBag.label != null
         ? Html.Label(ViewBag.label as string, new { @class = labelclasses })
         : Html.LabelFor(m => m, new { @class = labelclasses }))
-    <div class="col-sm-9">
-        <label class="radio-inline">
-            @Html.RadioButtonFor(m => m, true) Yes
-        </label>
-        <label class="radio-inline">
-            @Html.RadioButtonFor(m => m, false) No
-        </label>
-        @Html.ValidationMessageFor(m => m)
-    </div>
+  <div class="col-sm-9">
+    <label class="radio-inline">
+      <input type="radio" id="@(name.ToSuitableId())-Yes" name="@name" value="true" @(Model == true ? "checked='checked'" : "") /> Yes
+    </label>
+    <label class="radio-inline">
+      <input type="radio" id="@(name.ToSuitableId())-No" name="@name" value="false" @(Model == false ? "checked='checked'" : "") /> No
+    </label>
+    @Html.ValidationMessageFor(m => m)
+  </div>
 </div>

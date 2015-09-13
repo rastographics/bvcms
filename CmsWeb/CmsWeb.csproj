@@ -409,6 +409,7 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\ParseSettings.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\RouteModel.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\ReadWriteXml.cs" />
+    <Compile Include="Areas\OnlineReg\Models\OnlineReg\style.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\TransactionInfo.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Meetings.cs" />
     <Compile Include="Areas\Org\Controllers\Org\OrgPeople.cs" />
@@ -1557,6 +1558,7 @@
     <Content Include="Areas\Org\Views\OrgSearch\Tabs.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Modals\ExportMessages.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Details.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\NotifyStaff.cshtml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

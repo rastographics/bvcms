@@ -162,7 +162,9 @@ namespace UtilityExtensions
         }
         public static string ToSuitableId(this string s)
         {
-            return s.Replace('[', '_').Replace(']', '_').Replace(' ', '_').Replace(',', '_').Replace('.', '_');
+            var v = s.Replace('[', '_').Replace(']', '_').Replace(' ', '_').Replace(',', '_').Replace('.', '_');
+            return v.Replace("__", "_").TrimEnd('_');
+
         }
         public static string ToCode(this Guid guid)
         {

@@ -161,7 +161,7 @@ namespace CmsWeb
         {
             var name = ExpressionHelper.GetExpressionText(expression);
             var model = ModelMetadata.FromLambdaExpression(expression, helper.ViewData).Model;
-            var viewData = new ViewDataDictionary(helper.ViewData) {TemplateInfo = new TemplateInfo {HtmlFieldPrefix = name}};
+            var viewData = new ViewDataDictionary(helper.ViewData) { TemplateInfo = new TemplateInfo { HtmlFieldPrefix = name } };
             return helper.Partial(partialViewName, model, viewData);
         }
 
@@ -257,10 +257,10 @@ namespace CmsWeb
 
         public static IEnumerable<SelectListItem> PageSizes(this HtmlHelper helper)
         {
-            var sizes = new[] {10, 25, 50, 75, 100, 200};
+            var sizes = new[] { 10, 25, 50, 75, 100, 200 };
             var list = new List<SelectListItem>();
             foreach (var size in sizes)
-                list.Add(new SelectListItem {Text = size.ToString()});
+                list.Add(new SelectListItem { Text = size.ToString() });
             return list;
         }
 
@@ -481,7 +481,7 @@ namespace CmsWeb
             tb.MergeAttribute("name", name);
             tb.MergeAttribute("class", "datepicker");
             var s = helper.TryGetModel(name);
-            var viewDataValue = (DateTime?) helper.ViewData.Eval(name);
+            var viewDataValue = (DateTime?)helper.ViewData.Eval(name);
             tb.MergeAttribute("value", viewDataValue.FormatDate());
             return new HtmlString(tb.ToString());
         }
@@ -500,7 +500,7 @@ namespace CmsWeb
         {
             var tb = new TagBuilder("span");
             var viewDataValue = helper.ViewData.Eval(name);
-            var i = (int?) viewDataValue ?? 0;
+            var i = (int?)viewDataValue ?? 0;
 
             var si = list.SingleOrDefault(v => v.Value == i.ToString());
             if (si != null)
@@ -654,19 +654,12 @@ namespace CmsWeb
         public static string RenderPartialViewToString(Controller controller, string viewName, object model)
         {
             controller.ViewData.Model = model;
-            try
+            using (var sw = new StringWriter())
             {
-                using (var sw = new StringWriter())
-                {
-                    var viewResult = ViewEngines.Engines.FindPartialView(controller.ControllerContext, viewName);
-                    var viewContext = new ViewContext(controller.ControllerContext, viewResult.View, controller.ViewData, controller.TempData, sw);
-                    viewResult.View.Render(viewContext, sw);
-                    return sw.GetStringBuilder().ToString();
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex.ToString();
+                var viewResult = ViewEngines.Engines.FindPartialView(controller.ControllerContext, viewName);
+                var viewContext = new ViewContext(controller.ControllerContext, viewResult.View, controller.ViewData, controller.TempData, sw);
+                viewResult.View.Render(viewContext, sw);
+                return sw.GetStringBuilder().ToString();
             }
         }
 
@@ -715,7 +708,7 @@ namespace CmsWeb
 
             var metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData);
             var attributes = Mapper.GetUnobtrusiveValidationAttributes(htmlHelper, expression, htmlAttributes, metadata);
-            var value = (bool) ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
+            var value = (bool)ModelMetadata.FromLambdaExpression(expression, htmlHelper.ViewData).Model;
 
             var checkBox = Mapper.GenerateHtmlWithoutMvcUnobtrusiveAttributes(() =>
                 htmlHelper.CheckBoxFor(expression, value, attributes));
@@ -1056,7 +1049,7 @@ namespace CmsWeb
 
         private static string GetCollectionItemIndex(string collectionIndexFieldName)
         {
-            var previousIndices = (Queue<string>) HttpContext.Current.Items[collectionIndexFieldName];
+            var previousIndices = (Queue<string>)HttpContext.Current.Items[collectionIndexFieldName];
             if (previousIndices == null)
             {
                 HttpContext.Current.Items[collectionIndexFieldName] = previousIndices = new Queue<string>();

@@ -14,20 +14,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegModel
     {
-//        public static Organization CreateAccountOrg()
-//        {
-//            var settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
-//            if (settings == null)
-//            {
-//                settings = new Dictionary<int, Settings>();
-//                HttpContext.Current.Items.Add("RegSettings", settings);
-//            }
-//            var o = new Organization { OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data" };
-//            o.RegistrationTypeId = RegistrationTypeCode.CreateAccount;
-//            if (!settings.ContainsKey(Util.CreateAccountCode))
-//                settings.Add(Util.CreateAccountCode, ParseSetting("AllowOnlyOne: true", Util.CreateAccountCode));
-//            return o;
-//        }
+        //        public static Organization CreateAccountOrg()
+        //        {
+        //            var settings = HttpContext.Current.Items["RegSettings"] as Dictionary<int, Settings>;
+        //            if (settings == null)
+        //            {
+        //                settings = new Dictionary<int, Settings>();
+        //                HttpContext.Current.Items.Add("RegSettings", settings);
+        //            }
+        //            var o = new Organization { OrganizationId = Util.CreateAccountCode, OrganizationName = "My Data" };
+        //            o.RegistrationTypeId = RegistrationTypeCode.CreateAccount;
+        //            if (!settings.ContainsKey(Util.CreateAccountCode))
+        //                settings.Add(Util.CreateAccountCode, ParseSetting("AllowOnlyOne: true", Util.CreateAccountCode));
+        //            return o;
+        //        }
 
         private Dictionary<int, Settings> _settings;
 
@@ -110,7 +110,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (RegisterLinkMaster())
                 return false;
             if (id.HasValue)
-                if(settings.ContainsKey(id.Value))
+                if (settings.ContainsKey(id.Value))
                     return !settings[id.Value].DisallowAnonymous;
             return true;
         }
@@ -534,7 +534,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 if (List.Count == 0)
                     return;
                 var p = FirstRegistrant;
-                if(List.Count > 0 && !p.FirstName.HasValue() && !p.LastName.HasValue() && p.EmailAddress.HasValue())
+                if (List.Count > 0 && !p.FirstName.HasValue() && !p.LastName.HasValue() && p.EmailAddress.HasValue())
                     return;
 
                 Datum = new RegistrationDatum
@@ -598,41 +598,39 @@ namespace CmsWeb.Areas.OnlineReg.Models
 #if DEBUG
         public void DebugCleanUp()
         {
-            if (Util.IsLocalNetworkRequest)
-                return;
 
-                var q = from om in DbUtil.Db.OrganizationMembers
-                        where om.PeopleId == 828612
+            var q = from om in DbUtil.Db.OrganizationMembers
+                    where new [] { 828612, 828611 }.Contains(om.PeopleId)
                     where om.OrganizationId == Orgid
-                        select om;
-                foreach (var om in q)
-                    om.Drop(DbUtil.Db, DateTime.Now);
+                    select om;
+            foreach (var om in q)
+                om.Drop(DbUtil.Db, DateTime.Now);
             DbUtil.Db.SubmitChanges();
-//                DbUtil.Db.ExecuteCommand(@"
-//DELETE dbo.EnrollmentTransaction WHERE PeopleId = 58207 AND OrganizationId = 2202
-//
-//IF OBJECT_ID('tempdb..#t') IS NOT NULL
-//   DROP TABLE #t
-//
-//SELECT c.ContributionId INTO #t
-//FROM dbo.Contribution c
-//JOIN dbo.BundleDetail d ON d.ContributionId = c.ContributionId
-//JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
-//WHERE CONVERT(DATE, h.ContributionDate) = CONVERT(DATE, GETDATE())
-//AND c.PeopleId = 58207
-//
-//DELETE dbo.BundleDetail
-//FROM dbo.BundleDetail d
-//JOIN #t ON #t.ContributionId = d.ContributionId
-//
-//DELETE dbo.Contribution
-//FROM dbo.Contribution c
-//JOIN #t ON #t.ContributionId = c.ContributionId
-//
-//DELETE dbo.GoerSenderAmounts
-//WHERE OrgId = 2202
-//AND SupporterId = 58207
-//");
+            //                DbUtil.Db.ExecuteCommand(@"
+            //DELETE dbo.EnrollmentTransaction WHERE PeopleId = 58207 AND OrganizationId = 2202
+            //
+            //IF OBJECT_ID('tempdb..#t') IS NOT NULL
+            //   DROP TABLE #t
+            //
+            //SELECT c.ContributionId INTO #t
+            //FROM dbo.Contribution c
+            //JOIN dbo.BundleDetail d ON d.ContributionId = c.ContributionId
+            //JOIN dbo.BundleHeader h ON h.BundleHeaderId = d.BundleHeaderId
+            //WHERE CONVERT(DATE, h.ContributionDate) = CONVERT(DATE, GETDATE())
+            //AND c.PeopleId = 58207
+            //
+            //DELETE dbo.BundleDetail
+            //FROM dbo.BundleDetail d
+            //JOIN #t ON #t.ContributionId = d.ContributionId
+            //
+            //DELETE dbo.Contribution
+            //FROM dbo.Contribution c
+            //JOIN #t ON #t.ContributionId = c.ContributionId
+            //
+            //DELETE dbo.GoerSenderAmounts
+            //WHERE OrgId = 2202
+            //AND SupporterId = 58207
+            //");
         }
 #endif
         public void CancelRegistrant(int n)
@@ -665,7 +663,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         public void Log(string action)
         {
             int? pid = null;
-            if(List.Count > 0)
+            if (List.Count > 0)
                 pid = List[0].PeopleId;
             DbUtil.LogActivity("OnlineReg " + action, masterorgid ?? Orgid, UserPeopleId ?? pid, DatumId);
         }

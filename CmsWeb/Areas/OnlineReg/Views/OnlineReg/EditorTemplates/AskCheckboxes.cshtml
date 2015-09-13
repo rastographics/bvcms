@@ -21,7 +21,7 @@
                 {
                     <div class="checkbox">
                         <label>
-                            <input type="checkbox" value="@a.SmallGroup" name="@name" @(filled ? "disabled='disabled'" : "")
+                            <input id="@a.SmallGroup.ToSuitableId()" type="checkbox" value="@a.SmallGroup" name="@name" @(filled ? "disabled='disabled'" : "")
                                    @(Model.CheckboxChecked(a.SmallGroup) ? "checked='checked'" : "") />
                             <span @(filled ? " class=strike" : "")>
                                 @Html.Raw(a.Description)
