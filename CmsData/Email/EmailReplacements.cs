@@ -388,7 +388,7 @@ namespace CmsData
             var oid = code.StartsWith("{orgbarcode:")
                 ? code.Substring(12).TrimEnd('}').ToInt()
                 : emailqueueto.OrgId;
-            return $"<img src='{db.ServerLink($"/Track/Barcode/{oid}-{emailqueueto.PeopleId}")}' />";
+            return $@"<img src='{db.ServerLink($"/Track/Barcode/{oid}-{emailqueueto.PeopleId}")}' width='95%' />";
         }
 
         private OrgInfo GetOrgInfo(EmailQueueTo emailqueueto)

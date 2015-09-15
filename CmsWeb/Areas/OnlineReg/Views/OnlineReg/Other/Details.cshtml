@@ -11,8 +11,11 @@
 <table>
   <tr>
     <td colspan="2" style="@Sty.dd; @Sty.bb">
-      <hr/>
-      <p>Registrant: @Model.person.Name for @Model.org.OrganizationName</p>
+      <p>
+        <hr/>
+        Registrant: @Model.person.Name<br/>
+        for @Model.org.OrganizationName
+      </p>
     </td>
   </tr>
 @if ((ti.Amt ?? 0) > 0 && om != null)
@@ -68,13 +71,13 @@ else
     {
       case "AskTickets":
         <tr>
-          <td style="@Sty.lb">Tickets</td>
-          <td style="@Sty.dd">@om.Tickets</td>
+          <td style="@Sty.lb;@Sty.bb">Tickets</td>
+          <td style="@Sty.dd;@Sty.bb">@om.Tickets</td>
         </tr>
         break;
       case "AskSize":
         <tr>
-          <td>Shirt</td>
+          <td style="@Sty.lb;@Sty.bb">Shirt</td>
           <td style="@Sty.dd; @Sty.bb">@om.ShirtSize</td>
         </tr>
         break;
@@ -121,10 +124,15 @@ else
         break;
       case "AskHeader":
         <tr>
-          <td colspan='2'><h4>@(((AskHeader) ask).Label)</h4></td>
+          <td></td>
+          <td style="@Sty.dl@Sty.bb">@Html.Raw(((AskHeader) ask).Label)</td>
         </tr>
         break;
       case "AskInstruction":
+        <tr>
+          <td></td>
+          <td style="@Sty.dl;@Sty.bb">@Html.Raw(((AskInstruction) ask).Label)</td>
+        </tr>
         break;
       case "AskAllergies":
         <tr>
@@ -205,23 +213,25 @@ else
         </tr>
         break;
       case "AskMenu":
-        var menulabel = ((AskMenu) ask).Label;
+        var menulabel = "Choices";
+        
         var lasti = ((AskMenu) ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]).Last();
+        <tr><td style="@Sty.lb">Menu</td><td style="@Sty.dl">@(((AskMenu)ask).Label)</td></tr>
         foreach (var i in ((AskMenu) ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]))
         {
-          var ibb = lasti == i ? $";{Sty.bb}" : "";
+          var ibb = lasti.desc == i.desc ? $";{Sty.bb}" : "";
           if (i.amt > 0)
           {
             <tr>
-              <td style="@Sty.lb@ibb">@menulabel</td>
-              <td style="@Sty.dd@ibb">@i.number @i.desc (at @i.amt.ToString("N2"))</td>
+              <td style="@Sty.lb;@ibb">@menulabel</td>
+              <td style="@Sty.dd;@ibb">@i.number @i.desc (at @i.amt.ToString("N2"))</td>
             </tr>
           }
           else
           {
             <tr>
-              <td style="@Sty.lb@ibb">@menulabel</td>
-              <td style="@Sty.dd@ibb">@i.number @i.desc</td>
+              <td style="@Sty.lb;@ibb">@menulabel</td>
+              <td style="@Sty.dd;@ibb">@i.number @i.desc</td>
             </tr>
           }
           menulabel = string.Empty;
@@ -311,8 +321,8 @@ else
         break;
       case "AskGradeOptions":
         <tr>
-          <td style="@Sty.lb">GradeOption:</td>
-          <td style="@Sty.dd">@Model.GradeOptions(ask).SingleOrDefault(s => s.Value == (Model.gradeoption ?? "00")).Text</td>
+          <td style="@Sty.lb;@Sty.bb">Grade</td>
+          <td style="@Sty.dd;@Sty.bb">@Model.GradeOptions(ask).SingleOrDefault(s => s.Value == (Model.gradeoption ?? "00")).Text</td>
         </tr>
         break;
     }

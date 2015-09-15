@@ -1,4 +1,5 @@
 ﻿@using CmsData.Registration
+@using UtilityExtensions
 @model CmsWeb.Areas.OnlineReg.Models.OnlineRegPersonModel
 @{
   var ask = (AskText)ViewBag.ask;
@@ -11,7 +12,7 @@
     <label class="control-label col-sm-3 labelsize">@a.Question</label>
     <div class="col-sm-9">
       <input type="hidden" name="@(name)[@i].Key" value="@a.Question" />
-      <textarea rows="4" name="@(name)[@i].Value" class="form-control">@Model.TextValue(ask.UniqueId, a.Question)</textarea>
+      <textarea rows="4" id="@name.ToSuitableId()_@i" name="@(name)[@i].Value" class="form-control">@Model.TextValue(ask.UniqueId, a.Question)</textarea>
       <div>@Html.ValidationMessageFor(m => m.Text[ask.UniqueId][a.Question])</div>
     </div>
   </div>

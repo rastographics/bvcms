@@ -1,6 +1,7 @@
 ﻿CKEDITOR.editorConfig = function (config) {
     config.filebrowserUploadUrl = '/Account/CKEditorUpload/';
     config.filebrowserImageUploadUrl = '/Account/CKEditorUpload/';
+    config.allowedContent = true;
     config.toolbar =
     [
         { name: 'document', items: ['Source', '-', 'Preview'] },
