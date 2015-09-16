@@ -6,11 +6,7 @@
 @{
     var admin = User.IsInRole("Admin");
     var developer = User.IsInRole("Developer");
-    var manageemails = User.IsInRole("ManageEmails");
-    var managetrans = User.IsInRole("ManageTransactions");
     var edit = User.IsInRole("Edit");
-    var design = User.IsInRole("Design");
-    var finance = User.IsInRole("Finance") && ((string)Session["testnofinance"]) != "true";
 }
 <div class="row">
   <div class="col-sm-4 col-md-4 col-lg-3">
@@ -28,6 +24,9 @@
           @Helper.LiAnchorLink("Registration Mail", "/Batch/RegistrationMail", admin)
           @Helper.LiAnchorLink("Sql View", "/Batch/SqlView", admin)
           @Helper.LiAnchorLink("Test Script", "/Batch/TestScript", true)
+          @Helper.LiAnchorLink("Update RegOptions", "/Batch/UpdateRegOptions", developer)
+          @Helper.LiAnchorLink("Update RegMessages", "/Batch/UpdateRegMessages", developer)
+          @Helper.LiAnchorLink("Update RegSettings", "/Batch/UpdateRegSettings", developer)
         </ul>
       </div>
     </div>

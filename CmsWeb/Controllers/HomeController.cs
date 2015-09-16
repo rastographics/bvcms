@@ -148,6 +148,14 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
+        public ActionResult UseNewDetails(bool id)
+        {
+            Util2.UseNewDetails = !id;
+            DbUtil.Db.SubmitChanges();
+            if (Request.UrlReferrer != null)
+                return Redirect(Request.UrlReferrer.OriginalString);
+            return Redirect("/");
+        }
         public ActionResult UseXmlRegistrations(bool id)
         {
             Util2.UseXmlRegistrations = !id;
