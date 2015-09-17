@@ -1,4 +1,5 @@
 ﻿$(function () {
+// ReSharper disable UseOfImplicitGlobalInFunctionScope
 
     $('#Recipients').select2();
     $('#Recipients').select2("readonly", true);
@@ -58,7 +59,10 @@
             });
         }
         var html = $(currentDiv).html();
-        if (html !== "Click here to edit content") {
+        if (html === "Click here to edit content") {
+            CKEDITOR.instances['htmleditor'].setData("");
+        }
+        else {
             if (xsDevice || smDevice) {
                 $('#htmleditor').val(html);
             } else {
@@ -79,6 +83,10 @@
         });
     };
 
+    $('#editor-modal').on('click', '#cancel-edit', function () {
+        CKEDITOR.instances["htmleditor"].setData("");
+        $('#editor-modal').modal('hide');
+    });
     $('#editor-modal').on('click', '#save-edit', function () {
         var h;
         if (xsDevice || smDevice) {
@@ -87,6 +95,7 @@
             h = CKEDITOR.instances['htmleditor'].getData();
         }
         $(currentDiv).html(h);
+        CKEDITOR.instances["htmleditor"].setData("");
         $('#editor-modal').modal('hide');
     });
 

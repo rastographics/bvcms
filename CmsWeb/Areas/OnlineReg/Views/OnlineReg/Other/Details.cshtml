@@ -214,10 +214,11 @@ else
         break;
       case "AskMenu":
         var menulabel = "Choices";
-        
-        var lasti = ((AskMenu) ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]).Last();
+        var mlist = ((AskMenu) ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]).ToList();
+        if (mlist == null || !mlist.Any()) { continue; }
+        var lasti = mlist.Last();
         <tr><td style="@Sty.lb">Menu</td><td style="@Sty.dl">@(((AskMenu)ask).Label)</td></tr>
-        foreach (var i in ((AskMenu) ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]))
+        foreach (var i in mlist)
         {
           var ibb = lasti.desc == i.desc ? $";{Sty.bb}" : "";
           if (i.amt > 0)

@@ -27,7 +27,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 catch (Exception ex)
                 {
                     ErrorSignal.FromCurrentContext().Raise(ex);
-                    return ex.Message;
+                    return $"{ex.Message}\n\n{ex.StackTrace}";
                 }
             }
             var om = GetOrgMember();
