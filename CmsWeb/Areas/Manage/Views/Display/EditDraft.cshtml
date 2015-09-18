@@ -194,9 +194,10 @@
 
           CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
 
+          var fullpage = $("#body").text().indexOf('/html') >= 0;
           CKEDITOR.replace('body', {
             height: 400,
-            fullPage: true,
+            fullPage: fullpage,
             allowedContent: true,
             customConfig: '/scripts/js/ckeditorconfig.js',
             extraPlugins: 'specialLink'
