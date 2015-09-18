@@ -84,7 +84,8 @@
     };
 
     $('#editor-modal').on('click', '#cancel-edit', function () {
-        CKEDITOR.instances["htmleditor"].setData("");
+        if(!xsDevice && !smDevice)
+            CKEDITOR.instances["htmleditor"].setData("");
         $('#editor-modal').modal('hide');
     });
     $('#editor-modal').on('click', '#save-edit', function () {
@@ -93,9 +94,9 @@
             h = $('#htmleditor').val();
         } else {
             h = CKEDITOR.instances['htmleditor'].getData();
+            CKEDITOR.instances["htmleditor"].setData("");
         }
         $(currentDiv).html(h);
-        CKEDITOR.instances["htmleditor"].setData("");
         $('#editor-modal').modal('hide');
     });
 
