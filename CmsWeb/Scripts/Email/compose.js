@@ -60,7 +60,10 @@
         }
         var html = $(currentDiv).html();
         if (html === "Click here to edit content") {
-            CKEDITOR.instances['htmleditor'].setData("");
+            if (xsDevice || smDevice)
+                $('#htmleditor').val("");
+            else 
+                CKEDITOR.instances['htmleditor'].setData("");
         }
         else {
             if (xsDevice || smDevice) {
