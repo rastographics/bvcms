@@ -42,6 +42,10 @@ namespace CmsData
 		
 		private string _DivOrg;
 		
+		private bool? _MultiUse;
+		
+		private bool? _Generated;
+		
    		
     	
 		private EntityRef< Division> _Division;
@@ -94,6 +98,12 @@ namespace CmsData
 		
 		partial void OnDivOrgChanging(string value);
 		partial void OnDivOrgChanged();
+		
+		partial void OnMultiUseChanging(bool? value);
+		partial void OnMultiUseChanged();
+		
+		partial void OnGeneratedChanging(bool? value);
+		partial void OnGeneratedChanged();
 		
     #endregion
 		public Coupon()
@@ -387,6 +397,50 @@ namespace CmsData
 					this._DivOrg = value;
 					this.SendPropertyChanged("DivOrg");
 					this.OnDivOrgChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="MultiUse", UpdateCheck=UpdateCheck.Never, Storage="_MultiUse", DbType="bit")]
+		public bool? MultiUse
+		{
+			get { return this._MultiUse; }
+
+			set
+			{
+				if (this._MultiUse != value)
+				{
+				
+                    this.OnMultiUseChanging(value);
+					this.SendPropertyChanging();
+					this._MultiUse = value;
+					this.SendPropertyChanged("MultiUse");
+					this.OnMultiUseChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="Generated", UpdateCheck=UpdateCheck.Never, Storage="_Generated", DbType="bit")]
+		public bool? Generated
+		{
+			get { return this._Generated; }
+
+			set
+			{
+				if (this._Generated != value)
+				{
+				
+                    this.OnGeneratedChanging(value);
+					this.SendPropertyChanging();
+					this._Generated = value;
+					this.SendPropertyChanged("Generated");
+					this.OnGeneratedChanged();
 				}
 
 			}

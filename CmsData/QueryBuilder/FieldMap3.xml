@@ -635,6 +635,9 @@
     <StatusFlag Title="Status Flag" Type="Code" DataSource="StatusFlags" DataValueField="Code">
       Select Status Flags from the list (computed in nightly batch from saved searches).
     </StatusFlag>
+    <RecentFlagAdded Title="Recent Flag Added" Type="Code" DataSource="StatusFlags" DataValueField="Code" Params="Days">
+      Select Status Flags from the list (computed in nightly batch from saved searches) and enter days to look back.
+    </RecentFlagAdded>
     <HasCurrentTag Title="Active Tag" Type="Bit" DataValueField="IdCode">
       Specify True or False for those who are in your Active Tag.
     </HasCurrentTag>

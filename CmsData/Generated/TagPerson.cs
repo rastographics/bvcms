@@ -22,6 +22,8 @@ namespace CmsData
 		
 		private int _PeopleId;
 		
+		private DateTime? _DateCreated;
+		
    		
     	
 		private EntityRef< Tag> _Tag;
@@ -40,6 +42,9 @@ namespace CmsData
 		
 		partial void OnPeopleIdChanging(int value);
 		partial void OnPeopleIdChanged();
+		
+		partial void OnDateCreatedChanging(DateTime? value);
+		partial void OnDateCreatedChanged();
 		
     #endregion
 		public TagPerson()
@@ -101,6 +106,28 @@ namespace CmsData
 					this._PeopleId = value;
 					this.SendPropertyChanged("PeopleId");
 					this.OnPeopleIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DateCreated", UpdateCheck=UpdateCheck.Never, Storage="_DateCreated", DbType="datetime")]
+		public DateTime? DateCreated
+		{
+			get { return this._DateCreated; }
+
+			set
+			{
+				if (this._DateCreated != value)
+				{
+				
+                    this.OnDateCreatedChanging(value);
+					this.SendPropertyChanging();
+					this._DateCreated = value;
+					this.SendPropertyChanged("DateCreated");
+					this.OnDateCreatedChanged();
 				}
 
 			}

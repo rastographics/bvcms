@@ -22,7 +22,11 @@ namespace CmsData.View
 		
 		private int? _DropdownItemCount;
 		
+		private int? _DropdownItemFeeCount;
+		
 		private int? _CheckboxItemCount;
+		
+		private int? _CheckboxItemFeeCount;
 		
 		private int? _ExtraQuestionCount;
 		
@@ -45,6 +49,8 @@ namespace CmsData.View
 		private int? _OrgFeesCount;
 		
 		private int? _AgeGroupsCount;
+		
+		private decimal? _Fee;
 		
 		private long? _BodyLen;
 		
@@ -130,6 +136,23 @@ namespace CmsData.View
 		}
 
 		
+		[Column(Name="DropdownItemFeeCount", Storage="_DropdownItemFeeCount", DbType="int")]
+		public int? DropdownItemFeeCount
+		{
+			get
+			{
+				return this._DropdownItemFeeCount;
+			}
+
+			set
+			{
+				if (this._DropdownItemFeeCount != value)
+					this._DropdownItemFeeCount = value;
+			}
+
+		}
+
+		
 		[Column(Name="CheckboxItemCount", Storage="_CheckboxItemCount", DbType="int")]
 		public int? CheckboxItemCount
 		{
@@ -142,6 +165,23 @@ namespace CmsData.View
 			{
 				if (this._CheckboxItemCount != value)
 					this._CheckboxItemCount = value;
+			}
+
+		}
+
+		
+		[Column(Name="CheckboxItemFeeCount", Storage="_CheckboxItemFeeCount", DbType="int")]
+		public int? CheckboxItemFeeCount
+		{
+			get
+			{
+				return this._CheckboxItemFeeCount;
+			}
+
+			set
+			{
+				if (this._CheckboxItemFeeCount != value)
+					this._CheckboxItemFeeCount = value;
 			}
 
 		}
@@ -329,6 +369,23 @@ namespace CmsData.View
 			{
 				if (this._AgeGroupsCount != value)
 					this._AgeGroupsCount = value;
+			}
+
+		}
+
+		
+		[Column(Name="Fee", Storage="_Fee", DbType="money")]
+		public decimal? Fee
+		{
+			get
+			{
+				return this._Fee;
+			}
+
+			set
+			{
+				if (this._Fee != value)
+					this._Fee = value;
 			}
 
 		}

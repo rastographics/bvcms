@@ -34,6 +34,8 @@ namespace CmsData.View
 		
 		private int _GenderId;
 		
+		private string _Color;
+		
 		private int _PositionInFamilyId;
 		
 		private string _PositionInFamily;
@@ -203,6 +205,23 @@ namespace CmsData.View
 			{
 				if (this._GenderId != value)
 					this._GenderId = value;
+			}
+
+		}
+
+		
+		[Column(Name="Color", Storage="_Color", DbType="varchar(1) NOT NULL")]
+		public string Color
+		{
+			get
+			{
+				return this._Color;
+			}
+
+			set
+			{
+				if (this._Color != value)
+					this._Color = value;
 			}
 
 		}

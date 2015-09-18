@@ -161,6 +161,7 @@ namespace CmsData
                 { QueryType.RecentEmailSentCount, RecentEmailSentCount },
                 { QueryType.RecentFirstFamilyVisit, RecentFirstFamilyVisit },
                 { QueryType.RecentFirstTimeGiver, RecentFirstTimeGiver },
+                { QueryType.RecentFlagAdded, RecentFlagAdded },
                 { QueryType.RecentGivingAsPctOfPrevious, RecentGivingAsPctOfPrevious },
                 { QueryType.RecentHasIndContributions, RecentHasIndContributions },
                 { QueryType.RecentIncompleteRegistrations, RecentIncompleteRegistrations },
