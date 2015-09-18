@@ -36,31 +36,31 @@ namespace CmsWeb.Areas.Org.Models
             Id = id;
             this.CopyPropertiesFrom(Org, typeof(OrgAttribute));
             this.CopyPropertiesFrom(RegSettings, typeof(RegAttribute));
-            if (formatHtml)
-            {
-                FormatHtml(x => x.Body);
-                FormatHtml(x => x.ReminderBody);
-                FormatHtml(x => x.SenderBody);
-                FormatHtml(x => x.SupportBody);
-                FormatHtml(x => x.InstructionSpecial);
-                FormatHtml(x => x.InstructionFind);
-                FormatHtml(x => x.InstructionLogin);
-                FormatHtml(x => x.InstructionOptions);
-                FormatHtml(x => x.InstructionSelect);
-                FormatHtml(x => x.InstructionSorry);
-                FormatHtml(x => x.InstructionSubmit);
-            }
+//            if (formatHtml)
+//            {
+//                FormatHtml(x => x.Body);
+//                FormatHtml(x => x.ReminderBody);
+//                FormatHtml(x => x.SenderBody);
+//                FormatHtml(x => x.SupportBody);
+//                FormatHtml(x => x.InstructionSpecial);
+//                FormatHtml(x => x.InstructionFind);
+//                FormatHtml(x => x.InstructionLogin);
+//                FormatHtml(x => x.InstructionOptions);
+//                FormatHtml(x => x.InstructionSelect);
+//                FormatHtml(x => x.InstructionSorry);
+//                FormatHtml(x => x.InstructionSubmit);
+//            }
         }
 
-        void FormatHtml(Expression<Func<SettingsMessagesModel, string>> o)
-        {
-            var expr = (MemberExpression)o.Body;
-            var prop = (PropertyInfo)expr.Member;
-            var s = prop.GetValue(this) as string;
-            if (!s.HasValue())
-                return;
-            prop.SetValue(this, TidyLib.FormatHtml(s));
-        }
+//        void FormatHtml(Expression<Func<SettingsMessagesModel, string>> o)
+//        {
+//            var expr = (MemberExpression)o.Body;
+//            var prop = (PropertyInfo)expr.Member;
+//            var s = prop.GetValue(this) as string;
+//            if (!s.HasValue())
+//                return;
+//            prop.SetValue(this, TidyLib.FormatHtml(s));
+//        }
         public void Update()
         {
             this.CopyPropertiesTo(Org, typeof(OrgAttribute));

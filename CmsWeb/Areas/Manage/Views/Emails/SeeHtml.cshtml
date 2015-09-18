@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="box-content">
-                <div id="editor" style="width: 100%; height: 600px; border: #ccc solid 1px;">@Model.FormattedHtmlBody</div>
+                <div id="editor" style="width: 100%; height: 600px; border: #ccc solid 1px;">@Model.queue.Body</div>
                 @Html.HiddenFor(m => m.queue.Body)
                 <br/>
                 <a href="/Manage/Emails/Details/@Model.Id" class="btn btn-default visible-xs-block btn-block"><i class="fa fa-arrow-circle-left"></i> Back to Details</a>
