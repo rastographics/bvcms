@@ -601,7 +601,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
             var q = from om in DbUtil.Db.OrganizationMembers
                     where new [] { 828612, 828611 }.Contains(om.PeopleId)
-                    where om.OrganizationId == 90752
+                    where om.OrganizationId == 90752 || om.OrganizationId == Orgid
                     select om;
             foreach (var om in q)
                 om.Drop(DbUtil.Db, DateTime.Now);

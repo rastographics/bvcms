@@ -334,7 +334,7 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
             string amountRowFormat = $@"
         <table>
             <tr><td style='{Sty.lb}'>Total Paid</td><td>Total Due</td></tr>
-            <tr><td style='{Sty.dd};{Sty.rt}'>{0:c}</td><td align='right'>{1:c}</td></tr>
+            <tr><td style='{Sty.dd};{Sty.rt}'>{{0:c}}</td><td align='right'>{{1:c}}</td></tr>
         </table>
 ";
 
