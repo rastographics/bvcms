@@ -75,6 +75,8 @@ namespace CmsData
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression RecActiveOtherChurch()
