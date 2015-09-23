@@ -47,7 +47,8 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult Authenticate(string data)
         {
-            //DbUtil.LogActivity("calling authenticateuser");
+            var dataIn = BaseMessage.createFromString(data);
+
             var result = AuthenticateUser(requirePin: true);
 
             if (!result.IsValid)
@@ -57,7 +58,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.setNoError();
-            br.data = SerializeJSON(ms, BaseMessage.API_VERSION_UNKNOWN);
+            br.data = SerializeJSON(ms, dataIn.version);
             br.token = result.User.ApiSessions.Single().SessionToken.ToString();
             return br;
         }
@@ -94,6 +95,8 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult ResetSessionToken(string data)
         {
+            var dataIn = BaseMessage.createFromString(data);
+
             var sessionToken = Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
                 return BaseMessage.createErrorReturn("SessionToken header is required.", BaseMessage.API_ERROR_IMPROPER_HEADER_STRUCTURE);
@@ -122,19 +125,30 @@ namespace CmsWeb.Areas.Public.Controllers
 
             var br = new BaseMessage();
             br.setNoError();
-            br.data = SerializeJSON(ms, BaseMessage.API_VERSION_UNKNOWN);
+            br.data = SerializeJSON(ms, dataIn.version);
             return br;
         }
 
         [HttpPost]
         public ActionResult GivingLink(string data)
         {
+            var dataIn = BaseMessage.createFromString(data);
+
             var givingOrgId = DbUtil.Db.Organizations
                  .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
                  .Select(x => x.OrganizationId).FirstOrDefault();
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/" + givingOrgId;
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/{givingOrgId}?{dataIn.getSourceQueryString()}";
+            }
+            else
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/{givingOrgId}";
+            }
+
             br.setNoError();
             return br;
         }
@@ -144,6 +158,8 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
+
+            var dataIn = BaseMessage.createFromString(data);
 
             var givingOrgId = DbUtil.Db.Organizations
                  .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
@@ -156,7 +172,16 @@ namespace CmsWeb.Areas.Public.Controllers
             //          DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}";
+            }
+            else
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}";
+            }
+
             br.setNoError();
             return br;
         }
@@ -166,6 +191,8 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
+
+            var dataIn = BaseMessage.createFromString(data);
 
             var managedGivingOrgId = DbUtil.Db.Organizations
                  .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
@@ -178,7 +205,16 @@ namespace CmsWeb.Areas.Public.Controllers
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}";
+            }
+            else
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}";
+            }
+
             br.setNoError();
             return br;
         }
@@ -199,7 +235,16 @@ namespace CmsWeb.Areas.Public.Controllers
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}";
+            }
+            else
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}";
+            }
+
             br.setNoError();
             return br;
         }
@@ -220,7 +265,16 @@ namespace CmsWeb.Areas.Public.Controllers
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink2 {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true";
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{dataIn.getSourceQueryString()}";
+            }
+            else
+            {
+                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true";
+            }
+
             br.setNoError();
             return br;
         }
@@ -320,17 +374,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
         private void sendPushNotification()
         {
-            var ids = (from i in DbUtil.Db.MobileAppPushRegistrations
-                       select i.RegistrationId).ToList<string>();
+            //var ids = (from i in DbUtil.Db.MobileAppPushRegistrations
+            //           select i.RegistrationId).ToList<string>();
 
-            GCMData messageData = new GCMData();
-            messageData.type = 0;
-            messageData.id = 1;
-            messageData.message = "Test message";
-
-            GCMMessage message = new GCMMessage(ids, messageData);
-
-            GCMHelper.send(message);
+            //GCMData messageData = new GCMData(0, 1, 0, "Test message");
+            //GCMMessage message = new GCMMessage(ids, messageData);
+            //GCMHelper.send(message);
 
             //string deviceToken64 = "xtgRc+6lUO3Ymzf6R2iVaPXxMW8hadJ/kWQvOUTTQSw=";
 
@@ -413,7 +462,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
                     MobilePerson mp;
 
-                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
+                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
                     {
                         mp = new MobilePerson().populate(item);
                         mpl.Add(mp.id, mp);
@@ -427,7 +476,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 {
                     List<MobilePerson> mp = new List<MobilePerson>();
 
-                        foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
+                    foreach (var item in m.ApplySearch().OrderBy(p => p.Name2).Take(100))
                     {
                         mp.Add(new MobilePerson().populate(item));
                     }
@@ -436,6 +485,7 @@ namespace CmsWeb.Areas.Public.Controllers
                     break;
                 }
             }
+
             return br;
         }
 
@@ -530,13 +580,15 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ActionResult FetchRegistrations(string data)
         {
+            var dataIn = BaseMessage.createFromString(data);
+
             // Authenticate first
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
             var br = new BaseMessage();
             br.setNoError();
-            br.data = SerializeJSON(GetRegistrations(), BaseMessage.API_VERSION_UNKNOWN);
+            br.data = SerializeJSON(GetRegistrations(), dataIn.version);
             return br;
         }
 
@@ -701,15 +753,38 @@ namespace CmsWeb.Areas.Public.Controllers
                         select t;
 
             BaseMessage br = new BaseMessage();
-            MobileTaskList taskList = new MobileTaskList();
 
-            foreach (var item in tasks)
+            switch (dataIn.device)
             {
-                MobileTask task = new MobileTask().populate(item);
-                taskList.addTask(task, Util.UserPeopleId ?? 0);
+                case BaseMessage.API_DEVICE_ANDROID:
+                {
+                    Dictionary<int, MobileTask> taskList = new Dictionary<int, MobileTask>();
+
+                    foreach (var item in tasks)
+                    {
+                        MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                        taskList.Add(task.id, task);
+                    }
+
+                    br.data = SerializeJSON(taskList, dataIn.version);
+                    break;
+                }
+
+                case BaseMessage.API_DEVICE_IOS:
+                {
+                    List<MobileTask> taskList = new List<MobileTask>();
+
+                    foreach (var item in tasks)
+                    {
+                        MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                        taskList.Add(task);
+                    }
+
+                    br.data = SerializeJSON(taskList, dataIn.version);
+                    break;
+                }
             }
 
-            br.data = SerializeJSON(taskList, dataIn.version);
             br.count = tasks.Count();
             br.setNoError();
             return br;
@@ -723,25 +798,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var task = (from t in DbUtil.Db.Tasks
-                        where t.Id == dataIn.argInt
-                        select t).SingleOrDefault();
+            var task = new TaskModel();
+            task.AcceptTask(dataIn.argInt);
 
             BaseMessage br = new BaseMessage();
-
-            if (task != null)
-            {
-                task.StatusId = TaskStatusCode.Active;
-                task.DeclineReason = null;
-                DbUtil.Db.SubmitChanges();
-
-                br.count = 1;
-                br.setNoError();
-            }
-            else
-            {
-                br.data = "Task not found!";
-            }
+            br.count = 1;
+            br.setNoError();
 
             return br;
         }
@@ -754,25 +816,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var task = (from t in DbUtil.Db.Tasks
-                        where t.Id == dataIn.argInt
-                        select t).SingleOrDefault();
+            var task = new TaskModel();
+            task.DeclineTask(dataIn.argInt, dataIn.argString);
 
             BaseMessage br = new BaseMessage();
-
-            if (task != null)
-            {
-                task.StatusId = TaskStatusCode.Declined;
-                task.DeclineReason = dataIn.argString;
-                DbUtil.Db.SubmitChanges();
-
-                br.count = 1;
-                br.setNoError();
-            }
-            else
-            {
-                br.data = "Task not found!";
-            }
+            br.count = 1;
+            br.setNoError();
 
             return br;
         }
@@ -785,24 +834,12 @@ namespace CmsWeb.Areas.Public.Controllers
 
             BaseMessage dataIn = BaseMessage.createFromString(data);
 
-            var task = (from t in DbUtil.Db.Tasks
-                        where t.Id == dataIn.argInt
-                        select t).SingleOrDefault();
+            var task = new TaskModel();
+            task.CompleteTask(dataIn.argInt);
 
             BaseMessage br = new BaseMessage();
-
-            if (task != null)
-            {
-                task.StatusId = TaskStatusCode.Complete;
-                DbUtil.Db.SubmitChanges();
-
-                br.count = 1;
-                br.setNoError();
-            }
-            else
-            {
-                br.data = "Task not found!";
-            }
+            br.count = 1;
+            br.setNoError();
 
             return br;
         }
@@ -818,12 +855,8 @@ namespace CmsWeb.Areas.Public.Controllers
             var tasks = new TaskModel();
             var contactid = tasks.AddCompletedContact(dataIn.argInt);
 
-            var user = (from u in DbUtil.Db.Users
-                        where u.UserId == Util.UserId
-                        select u).SingleOrDefault();
-
             BaseMessage br = new BaseMessage();
-            br.data = GetOneTimeLoginLink($"/Contact2/{contactid}?edit=true{dataIn.getSourceQueryString(true)}", user.Username);
+            br.data = GetOneTimeLoginLink($"/Contact2/{contactid}?edit=true&{dataIn.getSourceQueryString()}", Util.UserName);
             br.count = 1;
             br.setNoError();
             return br;
@@ -874,8 +907,8 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             var orgs = from o in q
-                        //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                        //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                           //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
+                           //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
                        from sch in DbUtil.Db.OrgSchedules.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
                        from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
@@ -900,7 +933,6 @@ namespace CmsWeb.Areas.Public.Controllers
             foreach (var item in orgs)
             {
                 MobileOrganization org = new MobileOrganization().populate(item);
-                if (org.hasInvalidDate()) continue;
 
                 // Initial release version
                 if (dataIn.version == BaseMessage.API_VERSION_2 && tzOffset != 0)

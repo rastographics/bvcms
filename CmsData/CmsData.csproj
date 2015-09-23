@@ -376,6 +376,7 @@
     <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMHelper.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMMessage.cs" />
+    <Compile Include="Classes\GoogleCloudMessaging\GCMPayload.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMResponse.cs" />
     <Compile Include="Classes\GoogleCloudMessaging\GCMResponseResult.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />

@@ -38,7 +38,7 @@ namespace CmsWeb.MobileAPI
         public int pictureX = 0;
         public int pictureY = 0;
 
-        public MobileTask populate(IncompleteTask task)
+        public MobileTask populate(IncompleteTask task, int currentPeopleID)
         {
             id = task.Id;
 
@@ -73,6 +73,19 @@ namespace CmsWeb.MobileAPI
                     pictureX = task.PictureX ?? 0;
                     pictureY = task.PictureY ?? 0;
                 }
+            }
+
+            if (delegatedID > 0 && delegatedID != currentPeopleID)
+            {
+                type = MobileTask.TYPE_DELEGATED;
+            }
+            else if (statusID == 10)
+            {
+                type = MobileTask.TYPE_ACTIVE;
+            }
+            else
+            {
+                type = MobileTask.TYPE_PENDING;
             }
 
             return this;

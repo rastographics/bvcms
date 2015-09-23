@@ -102,14 +102,10 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult DelegateAll(int id, string items)
         {
             var tasks = new TaskModel();
-            var a = items.SplitStr(",").Select(i => i.ToInt());
-            foreach (var tid in a)
-            {
-                var t = tasks.Delegate(tid, id);
-                if (t != null)
-                    t.ForceCompleteWContact = true;
-            }
-            DbUtil.Db.SubmitChanges();
+            var tasksToAlter = items.SplitStr(",").Select(i => i.ToInt());
+
+            tasks.DelegateAll(tasksToAlter, id);
+
             return PartialView("Rows", tasks);
         }
 
@@ -134,7 +130,7 @@ namespace CmsWeb.Areas.Main.Controllers
             var t = m.FetchTask(id);
             UpdateModel(t);
             t.UpdateTask();
-            return RedirectToAction("Detail", new {id = id});
+            return RedirectToAction("Detail", new { id = id });
         }
 
         [HttpPost]

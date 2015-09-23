@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 namespace CmsWeb.MobileAPI
 {
@@ -22,12 +19,17 @@ namespace CmsWeb.MobileAPI
             {
                 datetime = createOrgDateTime(oi.time.Value, oi.day.Value);
             }
-            else if (oi.lastMeetting != null && oi.lastMeetting.Value > DateTime.Today.AddDays(-7) && oi.lastMeetting.Value < DateTime.Today.AddDays(1).Date)
+            else if (oi.lastMeetting != null && oi.lastMeetting.Value.Date == DateTime.Now.Date)
             {
                 datetime = oi.lastMeetting;
             }
+            else
+            {
+                datetime = DateTime.Now;
+            }
 
-            if( datetime.HasValue ) {
+            if (datetime.HasValue)
+            {
                 datetime = DateTime.SpecifyKind(datetime.Value, DateTimeKind.Local);
             }
 
@@ -50,11 +52,6 @@ namespace CmsWeb.MobileAPI
             {
                 datetime = datetime.Value.AddHours(offset);
             }
-        }
-
-        public bool hasInvalidDate()
-        {
-            return datetime == null;
         }
     }
 
