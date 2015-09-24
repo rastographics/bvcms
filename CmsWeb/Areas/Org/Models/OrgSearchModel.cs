@@ -653,11 +653,9 @@ namespace CmsWeb.Areas.Search.Models
                 foreach (var m in meetings)
                 {
                     var orgname = Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
-                    sb.AppendFormat("<a href='{0}'>{1} - {2}</a><br/>\n",
-                        DbUtil.Db.ServerLink("/Meeting/" + m.MeetingId),
-                        orgname, m.Lastmeeting.FormatDateTm());
-                    sb2.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2:g}</td></tr>\n",
-                        leader.Name, orgname, m.Lastmeeting.FormatDateTm());
+                    var meetinglink = DbUtil.Db.ServerLink($"/Meeting/{m.MeetingId}");
+                    sb.Append($"<a href='{meetinglink}'>{orgname} - {m.Lastmeeting:g}</a><br/>\n");
+                    sb2.Append($"<tr><td>{leader.Name}</td><td>{orgname}</td><td>{m.Lastmeeting:g}</td></tr>\n");
                 }
                 foreach (var m in meetings)
                 {

@@ -85,6 +85,35 @@ namespace CmsData.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;table&gt;
+        ///  &lt;tr&gt;
+        ///    &lt;td colspan=&quot;2&quot; style=&quot;{{dd}}; {{bb}}&quot;&gt;
+        ///      &lt;p&gt;
+        ///        &lt;hr/&gt;
+        ///        Registrant: {{person.Name}}&lt;br/&gt;
+        ///        for {{org.OrganizationName}}
+        ///      &lt;/p&gt;
+        ///    &lt;/td&gt;
+        ///  &lt;/tr&gt;
+        ///{{#if ShowTransaction}}
+        ///  &lt;tr&gt;
+        ///    &lt;td colspan=&quot;2&quot; style=&quot;{{bb}}&quot;&gt;
+        ///      &lt;table&gt;
+        ///        &lt;tr&gt;
+        ///          &lt;td style=&quot;{{lb}}&quot;&gt;Registrant Fee&lt;/td&gt;
+        ///          &lt;td style=&quot;{{lb}}&quot;&gt;Amount Paid&lt;/td&gt;
+        ///          &lt;td style=&quot;{{lb}}&quot;&gt;Amount Due&lt;/td&gt;
+        ///        &lt;/tr&gt;
+        ///        &lt;tr&gt;
+        ///          &lt;td align=&apos;right&apos; style=&quot;{{dd}} [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Details2 {
+            get {
+                return ResourceManager.GetString("Details2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
         ///&lt;fields&gt;
         ///  &lt;Grouping&gt;

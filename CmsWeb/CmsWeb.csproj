@@ -123,6 +123,10 @@
       <HintPath>..\packages\EPPlus.4.0.4\lib\net20\EPPlus.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Handlebars, Version=1.0.0.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
+      <HintPath>..\packages\Handlebars.Net.1.4.4\lib\Handlebars.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
@@ -409,7 +413,6 @@
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\ParseSettings.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\RouteModel.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\ReadWriteXml.cs" />
-    <Compile Include="Areas\OnlineReg\Models\OnlineReg\style.cs" />
     <Compile Include="Areas\OnlineReg\Models\OnlineReg\TransactionInfo.cs" />
     <Compile Include="Areas\Org\Controllers\Org\Meetings.cs" />
     <Compile Include="Areas\Org\Controllers\Org\OrgPeople.cs" />
@@ -1558,6 +1561,9 @@
     <Content Include="Areas\Org\Views\OrgSearch\Modals\ExportMessages.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Details.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\NotifyStaff.cshtml" />
+    <Resource Include="Areas\OnlineReg\Views\OnlineReg\Other\Details2.xml">
+      <SubType>Designer</SubType>
+    </Resource>
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />

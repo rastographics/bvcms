@@ -56,6 +56,8 @@ You can optionally associate a fee with one or more items.
             public string desc { get; set; }
             public int number { get; set; }
             public decimal amt { get; set; }
+            public bool HasAmt => amt > 0;
+            public string DispAmt => amt.ToString("N2");
         }
 
         public IEnumerable<MenuItemChosen> MenuItemsChosen(Dictionary<string, int?> items)

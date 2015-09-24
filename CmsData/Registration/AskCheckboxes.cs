@@ -105,9 +105,14 @@ For each checkbox, you can specify the following:
             [DisplayName("Sub-Group")]
             public string SmallGroup { get; set; }
             public decimal? Fee { get; set; }
+            public bool HasFee => Fee > 0;
             public int? Limit { get; set; }
             [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:g}")]
             public DateTime? MeetingTime { get; set; }
+
+            public string DisplayDescription => HasFee
+                ? $"{Description} (${Fee.ToString2("N2")}<br/>({SmallGroup})"
+                : $"{Description}<br/>({SmallGroup})";
 
             [DisplayName("DateTime")]
             public string MeetingTimeString

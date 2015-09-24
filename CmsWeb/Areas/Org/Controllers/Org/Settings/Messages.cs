@@ -119,7 +119,10 @@ namespace CmsWeb.Areas.Org.Controllers
                 if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
                     m.SendVolunteerReminders(id, emailall ?? false);
                 else
-                    m.SendEventReminders(id);
+                {
+                    var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
+                    m.SendEventReminders(qid);
+                }
             }
             catch (Exception ex)
             {

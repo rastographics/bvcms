@@ -7,7 +7,7 @@ using System.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
 using CmsData.Registration;
-using RazorEngine;
+using HandlebarsDotNet;
 using UtilityExtensions;
 
 namespace CmsData.API
@@ -678,25 +678,29 @@ namespace CmsData.API
                          where AttendCommitmentCode.committed.Contains(a.Commitment ?? 0)
                          where a.MeetingDate >= DateTime.Today
                          orderby a.MeetingDate
-                         select a.MeetingDate).ToList();
+                         select new
+                         {
+                             date = a.MeetingDate.ToLongDateString(),
+                             time = a.MeetingDate.ToLongTimeString()
+                         }).ToList();
                 if (!q.Any())
                     continue;
-                var details = Razor.Parse(@"@model IEnumerable<DateTime>
+                var template = Handlebars.Compile(@"
 <blockquote>
     <table>
         <tr>
             <td> Date </td>
             <td> Time </td>
         </tr>
-        @foreach (var dt in Model)
-        {
+{{#each this}}
             <tr>
-                <td>@dt.ToLongDateString()</td>
-                <td>@dt.ToLongTimeString()</td>
+                <td>{{date}}</td>
+                <td>{{time}}</td>
             </tr>
-        }
+{{/each}}
     </table>
-</blockquote>", q);
+</blockquote>");
+                var details = template(q);
 
                 var oname = org.OrganizationName;
 
@@ -751,15 +755,11 @@ namespace CmsData.API
                 Db.Email(from, n, "Reminder Notices sent for " + organizationName, message);
             }
         }
-        public void SendEventReminders(int id)
+
+        public void SendEventReminders(Guid id)
         {
-            var org = Db.LoadOrganizationById(id);
-            Db.SetCurrentOrgId(id);
-            var setting = Db.CreateRegistrationSettings(id);
-            var currmembers = from om in org.OrganizationMembers
-                              where (om.Pending ?? false) == false
-                              where om.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive
-                              select om;
+            var org = Db.LoadOrganizationById(Db.CurrentOrgId0);
+            var setting = Db.CreateRegistrationSettings(org.OrganizationId);
 
             const string noSubject = "no subject";
             const string noBody = "no body";
@@ -768,6 +768,54 @@ namespace CmsData.API
             var message = Util.PickFirst(setting.ReminderBody, noBody);
             if (subject == noSubject || message == noBody)
                 throw new Exception("no subject or body");
+
+            var q = from p in Db.PeopleQuery(id)
+                join om in Db.OrganizationMembers on 
+                    new {p.PeopleId, org.OrganizationId} 
+                    equals new {om.PeopleId, om.OrganizationId} into j
+                from om in j
+                select om;
+
+            var notify = Db.StaffPeopleForOrg(org.OrganizationId).FirstOrDefault();
+            if (notify == null)
+                throw new Exception("no notify person");
+
+            foreach (var om in q)
+            {
+                var details = PrepareSummaryText2(om);
+                var organizationName = org.OrganizationName;
+
+                subject = Util.PickFirst(setting.ReminderSubject, noSubject);
+                message = Util.PickFirst(setting.ReminderBody, noBody);
+
+                string location = org.Location;
+                message = MessageReplacements(Db, om.Person, null, org.OrganizationId, organizationName, location, message);
+
+                message = message.Replace("{phone}", org.PhoneNumber.FmtFone7());
+                message = message.Replace("{details}", details);
+
+                Db.Email(notify.FromEmail, om.Person, subject, message);
+            }
+            
+        }
+        public void SendEventReminders(int id)
+        {
+            var org = Db.LoadOrganizationById(id);
+            Db.SetCurrentOrgId(id);
+            var setting = Db.CreateRegistrationSettings(id);
+
+            const string noSubject = "no subject";
+            const string noBody = "no body";
+
+            var subject = Util.PickFirst(setting.ReminderSubject, noSubject);
+            var message = Util.PickFirst(setting.ReminderBody, noBody);
+            if (subject == noSubject || message == noBody)
+                throw new Exception("no subject or body");
+
+            var currmembers = from om in org.OrganizationMembers
+                              where (om.Pending ?? false) == false
+                              where om.MemberTypeId != CmsData.Codes.MemberTypeCode.InActive
+                              select om;
             var notify = Db.StaffPeopleForOrg(org.OrganizationId).FirstOrDefault();
             if (notify == null)
                 throw new Exception("no notify person");
@@ -792,24 +840,22 @@ namespace CmsData.API
 
         private string PrepareSummaryText2(OrganizationMember om)
         {
-            const string razorTemplate = @"@model CmsData.API.APIOrganization.SummaryInfo
+            var template = Handlebars.Compile(@"
 <table>
-    <tr><td>Org:</td><td>@Model.Orgname</td></tr>
-    <tr><td>First:</td><td>@Model.First</td></tr>
-    <tr><td>Last:</td><td>@Model.Last</td></tr>
-@foreach(var ask in Model.List())
-{
-    foreach(var row in ask.List())
-    {
-        <tr><td>@row.Label</td><td>@row.Description</td></tr>
-    }
-}
+    <tr><td>Org:</td><td>{{Orgname}}</td></tr>
+    <tr><td>First:</td><td>{{First}}</td></tr>
+    <tr><td>Last:</td><td>{{Last}}</td></tr>
+{{#each AskItems}}
+    {{#each Rows}}
+        <tr><td>{{Label}}</td><td>{{Description}}</td></tr>
+    {{/each}}
+{{/each}}
 </table>
-";
-            return Razor.Parse(razorTemplate, new SummaryInfo(Db, om));
+");
+            return template(new SummaryInfo(Db, om));
         }
 
-        public class SummaryInfo
+        private class SummaryInfo
         {
             public string Orgname { get; set; }
             public string First { get; set; }
@@ -825,12 +871,15 @@ namespace CmsData.API
                 Orgname = om.Organization.OrganizationName;
                 setting = db.CreateRegistrationSettings(om.OrganizationId);
             }
-            public IEnumerable<AskItem> List()
+            public IEnumerable<AskItem> AskItems
             {
-                var types = new[] { "AskDropdown", "AskCheckboxes" };
-                return from ask in setting.AskItems
-                       where types.Contains(ask.Type)
-                       select new AskItem(ask, om);
+                get
+                {
+                    var types = new[] { "AskDropdown", "AskCheckboxes" };
+                    return from ask in setting.AskItems
+                           where types.Contains(ask.Type)
+                           select new AskItem(ask, om);
+                }
             }
 
             public class AskItem
@@ -850,27 +899,30 @@ namespace CmsData.API
                     public string Description { get; set; }
                 }
 
-                public IEnumerable<Row> List()
+                public IEnumerable<Row> Rows
                 {
-                    if (ask.Type == "AskCheckboxes")
+                    get
                     {
-                        var label = ((AskCheckboxes)ask).Label;
-                        var option = ((AskCheckboxes)ask).list.Where(mm => om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == mm.SmallGroup)).ToList();
-                        foreach (var m in option)
+                        if (ask.Type == "AskCheckboxes")
                         {
-                            yield return new Row() { Label = label, Description = m.Description };
-                            label = string.Empty;
-                        }
-                    }
-                    else
-                    {
-                        var option = ((AskDropdown)ask).list.Where(mm => om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == mm.SmallGroup)).ToList();
-                        if (option.Any())
-                            yield return new Row()
+                            var label = ((AskCheckboxes)ask).Label;
+                            var option = ((AskCheckboxes)ask).list.Where(mm => om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == mm.SmallGroup)).ToList();
+                            foreach (var m in option)
                             {
-                                Label = Util.PickFirst(((AskDropdown)ask).Label, "Options"),
-                                Description = option.First().Description
-                            };
+                                yield return new Row() { Label = label, Description = m.Description };
+                                label = string.Empty;
+                            }
+                        }
+                        else
+                        {
+                            var option = ((AskDropdown)ask).list.Where(mm => om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == mm.SmallGroup)).ToList();
+                            if (option.Any())
+                                yield return new Row()
+                                {
+                                    Label = Util.PickFirst(((AskDropdown)ask).Label, "Options"),
+                                    Description = option.First().Description
+                                };
+                        }
                     }
                 }
             }

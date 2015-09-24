@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using CmsData.API;
 using Dapper;
 using Microsoft.Scripting.Hosting;
+using HandlebarsDotNet;
 
 namespace CmsData
 {
@@ -830,5 +831,11 @@ print sb.getvalue()
             }
         }
 
+        public string RenderTemplate(string source, object data)
+        {
+            var template = Handlebars.Compile(source);
+            var result = template(data);
+            return result;
+        }
     }
 }

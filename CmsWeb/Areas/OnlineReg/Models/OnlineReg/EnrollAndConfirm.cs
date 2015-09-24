@@ -7,8 +7,6 @@ using System.Text.RegularExpressions;
 using CmsData;
 using CmsData.API;
 using CmsData.Registration;
-using CmsWeb.Areas.OnlineReg.Models.OnlineReg;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models
@@ -331,10 +329,11 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
 
         private string DoEnrollments()
         {
+            var sty = new Sty();
             string amountRowFormat = $@"
         <table>
-            <tr><td style='{Sty.lb}'>Total Paid</td><td style='{Sty.lb}'>Total Due</td></tr>
-            <tr><td style='{Sty.dd};{Sty.rt}'>{{0:c}}</td><td style='{Sty.dd};{Sty.rt}'>{{1:c}}</td></tr>
+            <tr><td style='{sty.lb}'>Total Paid</td><td style='{sty.lb}'>Total Due</td></tr>
+            <tr><td style='{sty.dd}{sty.rt}'>{{0:c}}</td><td style='{sty.dd}{sty.rt}'>{{1:c}}</td></tr>
         </table>
 ";
 
