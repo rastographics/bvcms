@@ -91,29 +91,13 @@ namespace CmsData
             if (!db.FromBatch)
                 if (db.CurrentUser == null || db.CurrentUser.Roles.All(rr => rr != "Finance"))
                     return AlwaysFalse();
+
             var tf = CodeIds == "1";
-            var now = DateTime.Now;
-            var dt = now.AddDays(-Days);
-            IQueryable<int> q = null;
-
-            q = from c in db.Contributions2(dt, now, 0, false, false, true)
-                where c.Amount > 0
-                group c by c.CreditGiverId.Value into g
-                where g.Any()
-                select g.Key;
-            var tag1 = db.PopulateTemporaryTag(q);
-
-            q = from c in db.Contributions2(dt, now, 0, false, false, true)
-                where c.Amount > 0
-                where c.SpouseId != null
-                group c by c.SpouseId.Value
-                into g where g.Any()
-                select g.Key;
-            var tag2 = db.PopulateTemporaryTag(q);
-
+            var q = db.RecentGiver(Days).Select(v => v.PeopleId.Value);
+            var tag = db.PopulateTemporaryTag(q);
             Expression<Func<Person, bool>> pred = p => op == CompareType.Equal && tf
-                ? p.Tags.Any(t => t.Id == tag1.Id || t.Id == tag2.Id)
-                : !p.Tags.Any(t => t.Id == tag1.Id || t.Id == tag2.Id);
+                ? p.Tags.Any(t => t.Id == tag.Id)
+                : p.Tags.All(t => t.Id != tag.Id);
 
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
@@ -515,7 +499,11 @@ namespace CmsData
             var now = DateTime.Now;
             var dt = now.AddDays(-Days);
             Expression<Func<Person, bool>> pred = p =>
-                           p.Contributions.Any(cc => cc.ContributionDate > dt && cc.ContributionAmount > 0 && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
+                p.Contributions.Any(cc => 
+                            cc.ContributionDate > dt 
+                            && cc.ContributionAmount > 0 
+                            && cc.ContributionStatusId == ContributionStatusCode.Recorded
+                            && !ContributionTypeCode.ReturnedReversedTypes.Contains(cc.ContributionTypeId));
             Expression expr = Expression.Invoke(pred, parm);
             if (!(op == CompareType.Equal && tf))
                 expr = Expression.Not(expr);
