@@ -1,22 +1,58 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
-using Elmah;
+using System.Xml.Serialization;
+using CmsData;
+using CmsData.Registration;
 using UtilityExtensions;
 
-namespace CmsWeb.Areas.OnlineReg.Models
+namespace CmsData.OnlineRegSummaryText
 {
-    public partial class OnlineRegPersonModel
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public class OnlineRegPersonModel0
     {
-        private int eqset;
-        private int menuset;
-        private int txset;
-
-        public void ReadXml(XmlReader reader)
+        public int? MissionTripGoerId { get; set; }
+        public Settings setting { get; set; }
+        public int PeopleId { get; set; }
+        public int orgid { get; set; }
+        public int? tranid { get; set; }
+        public string gradeoption { get; set; }
+        public Person person { get; set; }
+        public string AgeGroup()
         {
-            var s = reader.ReadOuterXml();
+            foreach (var i in setting.AgeGroups)
+                if (person.Age >= i.StartAge && person.Age <= i.EndAge)
+                    return i.SmallGroup;
+            return string.Empty;
+        }
+        public decimal? MissionTripSupportGeneral { get; set; }
+        public bool SupportMissionTrip => MissionTripGoerId > 0 || MissionTripSupportGeneral > 0;
+        public Dictionary<int, decimal?> FundItem { get; set; }
+        public List<Dictionary<string, string>> ExtraQuestion { get; set; }
+        public List<Dictionary<string, string>> Text { get; set; }
+        public Dictionary<string, bool?> YesNoQuestion { get; set; }
+        public List<string> option { get; set; }
+        public List<string> Checkbox { get; set; }
+        public List<Dictionary<string, int?>> MenuItem { get; set; }
+        public Dictionary<string, string> GradeOptions(Ask ask)
+        {
+            var d = ((AskGradeOptions)ask).list.ToDictionary(k => k.Code.ToString(), v => v.Description);
+            d.Add("00", "(please select)");
+            return d;
+        }
+
+        public bool? advil { get; set; }
+        public bool? tylenol { get; set; }
+        public bool? maalox { get; set; }
+        public bool? robitussin { get; set; }
+
+        public void ReadXml(string s)
+        {
             var x = XDocument.Parse(s);
             if (x.Root == null) return;
 
@@ -29,12 +65,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 var name = e.Name.ToString();
                 switch (name)
                 {
-                    case "FundItem":
-                        ReadFundItem(e);
-                        break;
-                    case "FamilyAttend":
-                        ReadFamilyAttend(e);
-                        break;
                     case "ExtraQuestion":
                         ReadExtraQuestion(e);
                         break;
@@ -56,27 +86,19 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     case "MissionTripGoerId":
                         MissionTripGoerId = e.Value.ToInt();
                         break;
-                    case "CreatingAccount":
-                        CreatingAccount = e.Value.ToBool();
-                        break;
-                    case "SpecialTest":
-                        ReadSpecialTest(e);
-                        break;
                     default:
-                        if (Util.SetPropertyFromText(this, TranslateName(name), e.Value) == false)
-                        {
-                            ErrorSignal.FromCurrentContext().Raise(new Exception("OnlineRegPerson Missing name:" + name));
-                            Log($"Error:Missing({name})");
-                        }
+                        var tf = Util.SetPropertyFromText(this, name, e.Value);
+                        if (tf)
+                            Debug.WriteLine("here");
+                            
                         break;
                 }
             }
         }
 
-        public XmlSchema GetSchema()
-        {
-            throw new NotImplementedException("The method or operation is not implemented.");
-        }
+        private int eqset;
+        private int menuset;
+        private int txset;
 
         private string GetAttr(XElement e, string name)
         {
@@ -149,39 +171,13 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (eq != null)
                 ExtraQuestion[eqset].Add(eq.Value, e.Value);
         }
-
-        private void ReadSpecialTest(XElement e)
+        public void WriteXml(XmlWriter writer)
         {
-            if (SpecialTest == null)
-                SpecialTest = new Dictionary<string, string>();
-            var key = e.Attribute("key");
-            if (key != null)
-                SpecialTest.Add(key.Value, e.Value);
+            throw new NotImplementedException();
         }
-
-
-        private void ReadFamilyAttend(XElement e)
+        public XmlSchema GetSchema()
         {
-            var fa = new FamilyAttendInfo();
-            fa.PeopleId = GetAttr(e, "PeopleId").ToInt2();
-            fa.Attend = GetAttr(e, "Attend").ToBool();
-            fa.Name = GetAttr(e, "Name");
-            fa.Birthday = GetAttr(e, "Birthday");
-            fa.Email = GetAttr(e, "Email");
-            fa.MaritalId = GetAttr(e, "MaritalId").ToInt2();
-            fa.GenderId = GetAttr(e, "GenderId").ToInt2();
-            if (FamilyAttend == null)
-                FamilyAttend = new List<FamilyAttendInfo>();
-            FamilyAttend.Add(fa);
-        }
-
-        private void ReadFundItem(XElement e)
-        {
-            if (FundItem == null)
-                FundItem = new Dictionary<int, decimal?>();
-            var fu = e.Attribute("fund");
-            if (fu != null)
-                FundItem.Add(fu.Value.ToInt(), e.Value.ToDecimal());
+            throw new NotImplementedException();
         }
     }
 }

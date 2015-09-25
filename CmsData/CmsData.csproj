@@ -367,6 +367,8 @@
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
     <Compile Include="API\IPythonApi.cs" />
+    <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
+    <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="DbUtil\ModelViewModel.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
@@ -966,7 +968,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="API\Details2.xml">
+    <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
       <SubType>Designer</SubType>
     </Resource>
     <Content Include="QueryBuilder\FieldMap3.xml">

@@ -6,6 +6,7 @@ using System.Text;
 using System.Linq;
 using System.Xml.Serialization;
 using CmsData.Codes;
+using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
 using HandlebarsDotNet;
 using UtilityExtensions;
@@ -782,7 +783,8 @@ namespace CmsData.API
 
             foreach (var om in q)
             {
-                var details = PrepareSummaryText2(om);
+                var si = new SummaryInfo(Db, om.PeopleId, om.OrganizationId);
+                var details = si.ToString();
                 var organizationName = org.OrganizationName;
 
                 subject = Util.PickFirst(setting.ReminderSubject, noSubject);
@@ -822,7 +824,8 @@ namespace CmsData.API
 
             foreach (var om in currmembers)
             {
-                var details = PrepareSummaryText2(om);
+                var si = new SummaryInfo(Db, om.PeopleId, om.OrganizationId);
+                var details = si.ToString();
                 var organizationName = org.OrganizationName;
 
                 subject = Util.PickFirst(setting.ReminderSubject, noSubject);
@@ -838,94 +841,94 @@ namespace CmsData.API
             }
         }
 
-        private string PrepareSummaryText2(OrganizationMember om)
-        {
-            var template = Handlebars.Compile(@"
-<table>
-    <tr><td>Org:</td><td>{{Orgname}}</td></tr>
-    <tr><td>First:</td><td>{{First}}</td></tr>
-    <tr><td>Last:</td><td>{{Last}}</td></tr>
-{{#each AskItems}}
-    {{#each Rows}}
-        <tr><td>{{Label}}</td><td>{{Description}}</td></tr>
-    {{/each}}
-{{/each}}
-</table>
-");
-            return template(new SummaryInfo(Db, om));
-        }
-
-        private class SummaryInfo
-        {
-            public string Orgname { get; set; }
-            public string First { get; set; }
-            public string Last { get; set; }
-            private readonly OrganizationMember om;
-            private readonly Settings setting;
-
-            public SummaryInfo(CMSDataContext db, OrganizationMember om)
-            {
-                this.om = om;
-                First = om.Person.PreferredName;
-                Last = om.Person.LastName;
-                Orgname = om.Organization.OrganizationName;
-                setting = db.CreateRegistrationSettings(om.OrganizationId);
-            }
-            public IEnumerable<AskItem> AskItems
-            {
-                get
-                {
-                    var types = new[] { "AskDropdown", "AskCheckboxes" };
-                    return from ask in setting.AskItems
-                           where types.Contains(ask.Type)
-                           select new AskItem(ask, om);
-                }
-            }
-
-            public class AskItem
-            {
-                private readonly Ask ask;
-                private readonly OrganizationMember om;
-
-                public AskItem(Ask ask, OrganizationMember om)
-                {
-                    this.ask = ask;
-                    this.om = om;
-                }
-
-                public class Row
-                {
-                    public string Label { get; set; }
-                    public string Description { get; set; }
-                }
-
-                public IEnumerable<Row> Rows
-                {
-                    get
-                    {
-                        if (ask.Type == "AskCheckboxes")
-                        {
-                            var label = ((AskCheckboxes)ask).Label;
-                            var option = ((AskCheckboxes)ask).list.Where(mm => om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == mm.SmallGroup)).ToList();
-                            foreach (var m in option)
-                            {
-                                yield return new Row() { Label = label, Description = m.Description };
-                                label = string.Empty;
-                            }
-                        }
-                        else
-                        {
-                            var option = ((AskDropdown)ask).list.Where(mm => om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == mm.SmallGroup)).ToList();
-                            if (option.Any())
-                                yield return new Row()
-                                {
-                                    Label = Util.PickFirst(((AskDropdown)ask).Label, "Options"),
-                                    Description = option.First().Description
-                                };
-                        }
-                    }
-                }
-            }
-        }
+//        private string PrepareSummaryText2(OrganizationMember om)
+//        {
+//            var template = Handlebars.Compile(@"
+//<table>
+//    <tr><td>Org:</td><td>{{Orgname}}</td></tr>
+//    <tr><td>First:</td><td>{{First}}</td></tr>
+//    <tr><td>Last:</td><td>{{Last}}</td></tr>
+//{{#each AskItems}}
+//    {{#each Rows}}
+//        <tr><td>{{Label}}</td><td>{{Description}}</td></tr>
+//    {{/each}}
+//{{/each}}
+//</table>
+//");
+//            return template(new SummaryInfo(Db, om));
+//        }
+//
+//        private class SummaryInfo
+//        {
+//            public string Orgname { get; set; }
+//            public string First { get; set; }
+//            public string Last { get; set; }
+//            private readonly OrganizationMember om;
+//            private readonly Settings setting;
+//
+//            public SummaryInfo(CMSDataContext db, OrganizationMember om)
+//            {
+//                this.om = om;
+//                First = om.Person.PreferredName;
+//                Last = om.Person.LastName;
+//                Orgname = om.Organization.OrganizationName;
+//                setting = db.CreateRegistrationSettings(om.OrganizationId);
+//            }
+//            public IEnumerable<AskItem> AskItems
+//            {
+//                get
+//                {
+//                    var types = new[] { "AskDropdown", "AskCheckboxes" };
+//                    return from ask in setting.AskItems
+//                           where types.Contains(ask.Type)
+//                           select new AskItem(ask, om);
+//                }
+//            }
+//
+//            public class AskItem
+//            {
+//                private readonly Ask ask;
+//                private readonly OrganizationMember om;
+//
+//                public AskItem(Ask ask, OrganizationMember om)
+//                {
+//                    this.ask = ask;
+//                    this.om = om;
+//                }
+//
+//                public class Row
+//                {
+//                    public string Label { get; set; }
+//                    public string Description { get; set; }
+//                }
+//
+//                public IEnumerable<Row> Rows
+//                {
+//                    get
+//                    {
+//                        if (ask.Type == "AskCheckboxes")
+//                        {
+//                            var label = ((AskCheckboxes)ask).Label;
+//                            var option = ((AskCheckboxes)ask).list.Where(mm => om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == mm.SmallGroup)).ToList();
+//                            foreach (var m in option)
+//                            {
+//                                yield return new Row() { Label = label, Description = m.Description };
+//                                label = string.Empty;
+//                            }
+//                        }
+//                        else
+//                        {
+//                            var option = ((AskDropdown)ask).list.Where(mm => om.OrgMemMemTags.Any(mt => mt.MemberTag.Name == mm.SmallGroup)).ToList();
+//                            if (option.Any())
+//                                yield return new Row()
+//                                {
+//                                    Label = Util.PickFirst(((AskDropdown)ask).Label, "Options"),
+//                                    Description = option.First().Description
+//                                };
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 }

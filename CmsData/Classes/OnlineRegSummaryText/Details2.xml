@@ -1,0 +1,272 @@
+﻿<table>
+  <tr>
+    <td colspan='2' style='{{@root/dd}}{{@root/bb}}'>
+      <p>
+        <hr/>
+        Registrant: {{person.Name}}<br/>
+        for {{org.OrganizationName}}
+      </p>
+    </td>
+  </tr>
+{{#if ShowTransaction}}
+  <tr>
+    <td colspan='2' style='{{@root/bb}}'>
+      <table>
+        <tr>
+          <td style='{{@root/lb}}'>Registrant Fee</td>
+          <td style='{{@root/lb}}'>Amount Paid</td>
+          <td style='{{@root/lb}}'>Amount Due</td>
+        </tr>
+        <tr>
+          <td align='right' style='{{@root/dd}}'>{{@root/IndAmt}}</td>
+          <td align='right' style='{{@root/dd}}'>{{@root/TotalPaid}}</td>
+          <td align='right' style='{{@root/dd}}'>{{@root/AmountDue}}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+{{/if}}
+{{#if p.SupportMissionTrip}}
+  <tr>
+    <td colspan='2'>
+      <table>
+		{{#if HasGoer}}
+          <tr>
+            <td style='{{@root/lb}}'>Support Mission Trip for</td>
+            <td style='{{@root/dd}}'>{{@root/goer.Name}}</td>
+          </tr>
+		{{/if}}
+		{{#if HasGeneralSupport}}
+          <tr>
+            <td style='{{@root/lb}}'>Support Mission Trip</td>
+            <td style='{{@root/dd}}'>Any other participiants</td>
+          </tr>
+		{{/if}}
+      </table>
+    </td>
+  </tr>
+{{else}}
+  {{#each AskItems}}
+  	{{#if IsAskDropdown}}
+      <tr>
+        <td></td>
+        <td style='{{@root/dl}}'>{{AskDropdown.OptionsLabel}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Selected</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{{SubGroupChoice this}}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskMenu}}
+  		{{SetMenu this}}
+  		{{#if @root/HasMenuItems}}
+  			{{SetLabel 'Choices'}}
+	        <tr><td style='{{@root/lb}}'>Menu</td><td style='{{@root/dl}}'>{{AskMenu.Label}}</td></tr>
+  			{{#each @root/mlist}}
+  				{{SetRowStyle desc @root/bb @root/pb}}
+					<tr>
+            <td style='{{@root/lb}}{{@root/rs}}'>{{@root/ilabel}}</td>
+            <td style='{{@root/dd}}{{@root/rs}}'>{{number}} {{desc}} {{#if HasAmt}}(at {{DispAmt}}){{/if}}</td>
+          </tr>
+  				{{SetLabel ''}}
+  			{{/each}}
+  		{{/if}}
+  	{{/if}}
+  	{{#if IsAskCheckboxes}}
+  		{{SetCheckbox this}}
+      {{#if @root/ilabelHasValue}}
+        <tr>
+          <td></td>
+          <td style='{{@root/dl}}'>{{@root/ilabel}}</td>
+        </tr>
+  		{{/if}}
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}{{@root/tp}}'>Selected</td>
+        <td style='{{@root/bb}}'>
+  			{{#each @root/cblist}}
+  				{{SetRowStyle Description '' @root/pb}}
+          <div style='{{@root/dd}}{{@root/rs}}'>
+            {{{DisplayDescription}}}
+          </div>
+  			{{/each}}
+        </td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskYesNoQuestions}}
+  		{{SetYesNoQuestions this}}
+  		{{#each @root/ynlist}}
+  			{{SetRowStyle Question @root/bb @root/pb}}
+  			<tr>
+  				<td style='{{@root/lb}}'>Question</td>
+  				<td style='{{@root/dl}}'>{{Question}}</td>
+  			</tr>
+  			<tr>
+  				<td style='{{@root/lb}}{{@root/rs}}'>Answer</td>
+  				<td style='{{@root/dd}}{{@root/rs}}'>{{YesNoAnswer SmallGroup}}</td>
+  			</tr>
+  		{{/each}}
+  	{{/if}}
+  	{{#if IsAskExtraQuestions}}
+  		{{SetExtraQuestions this}}
+  		{{#each @root/eqlist}}
+  			{{SetRowStyle Key @root/bb @root/pb}}
+  			<tr>
+  				<td style='{{@root/lb}}'>Question</td>
+  				<td style='{{@root/dl}}'>{{Key}}</td>
+  			</tr>
+  			<tr>
+  				<td style='{{@root/lb}}{{@root/rs}}'>Answer</td>
+  				<td style='{{@root/dd}}{{@root/rs}}'>{{Value}}</td>
+  			</tr>
+      {{/each}}
+  	{{/if}}
+  	{{#if IsAskText}}
+  		{{SetTextQuestions this}}
+  		{{#each @root/txlist}}
+  			{{SetRowStyle Key @root/bb @root/pb}}
+  			<tr>
+  				<td style='{{@root/lb}}'>Question</td>
+  				<td style='{{@root/dl}}'>{{Key}}</td>
+  			</tr>
+  			<tr>
+  				<td style='{{@root/lb}}{{@root/rs}}'>Answer</td>
+  				<td style='{{@root/dd}}{{@root/rs}}'>{{Value}}</td>
+  			</tr>
+      {{/each}}
+  	{{/if}}
+  	{{#if IsAskGradeOptions}}
+          <tr>
+            <td style='{{@root/lb}}{{@root/bb}}'>Grade</td>
+            <td style='{{@root/dd}}{{@root/bb}}'>{{GradeOption this}}</td>
+          </tr>
+  	{{/if}}
+  	{{#if IsAskTickets}}
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Tickets</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/om.Tickets}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskSize}}
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Shirt</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/om.ShirtSize}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskEmContact}}
+      <tr><td></td><td style='{{@root/dl}}'>Emergency</td></tr>
+      <tr>
+        <td style='{{@root/lb}}'>Contact</td>
+        <td style='{{@root/dd}}'>{{@root/RecReg.Emcontact}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Phone</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/RecReg.Emphone}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskDocor}}
+      <tr>
+        <td style='{{@root/lb}}'>Doctor</td>
+        <td style='{{@root/dd}}'>{{@root/RecReg.Doctor}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Phone</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/RecReg.Docphone}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskInsurance}}
+      <tr>
+        <td style='{{@root/@root/lb}}'>Insurance Carrier</td>
+        <td style='{{@root/@root/dd}}'>{{@root/RecReg.Insurance}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Insurance Policy</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/RecReg.Policy}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskRequest}}
+      <tr>
+        <td style='{{@root/lb}}'>Request</td>
+        <td style='{{@root/dl}}'>{{AskRequest.Label}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'></td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/om.Request}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskHeader}}
+      <tr>
+        <td></td>
+        <td style='{{@root/dl}}{{@root/bb}}'>{{{AskHeader.Label}}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskInstruction}}
+      <tr>
+        <td></td>
+        <td style='{{@root/dl}}{{@root/bb}}'>{{AskInstruction.Label}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskAllergies}}
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Medical</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/RecReg.MedicalDescription}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskTylenolEtc}}
+      <tr>
+        <td style='{{@root/lb}}'>Tylenol</td>
+        <td style='{{@root/dd}}'>{{YesNo @root/p.tylenol}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}'>Advil</td>
+        <td style='{{@root/dd}}'>{{YesNo @root/p.advil}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}'>Robitussin</td>
+        <td style='{{@root/dd}}'>{{YesNo @root/p.robitussin}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Maalox</td>
+        <td style='{{@root/dd}}'>{{YesNo @root/p.maalox}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskChurch}}
+      <tr>
+        <td style='{{@root/lb}}'>Church</td>
+        <td style='{{@root/dd}}'>{{@root/ShowNotMember}} Member</td>
+      </tr>
+      <tr>
+        <td style='{{@root/bb}}'></td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/ShowNotActive}} Active in another church</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskParents}}
+      <tr>
+        <td style='{{@root/lb}}'>Mother</td>
+        <td style='{{@root/dd}}'>{{@root/RecReg.Mname}}</td>
+      </tr>
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Father</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/RecReg.Fname}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskCoaching}}
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Coaching</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/RecReg.Coaching}}</td>
+      </tr>
+  	{{/if}}
+  	{{#if IsAskSms}}
+      <tr>
+        <td style='{{@root/lb}}{{@root/bb}}'>Receive Texts</td>
+        <td style='{{@root/dd}}{{@root/bb}}'>{{@root/p.person.ReceiveSMS}}</td>
+      </tr>
+  	{{/if}}
+  {{/each}}
+{{/if}}
+{{#if HasAgeGroups}}
+    <tr>
+      <td style='{{@root/lb}}'>AgeGroup:</td>
+      <td style='{{@root/dd}}'>{{p.AgeGroup}}</td>
+    </tr>
+{{/if}}
+</table>

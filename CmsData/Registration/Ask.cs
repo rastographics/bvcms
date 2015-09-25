@@ -10,7 +10,7 @@ using UtilityExtensions;
 
 namespace CmsData.Registration
 {
-    public class Ask : Sty
+    public class Ask
     {
         public string Type { get; set; }
         public string Name { get; set; }
@@ -62,7 +62,7 @@ namespace CmsData.Registration
         }
 
         public bool IsAskCheckboxes => Type == "AskCheckboxes";
-        public bool IsAskDropdown => Type == "AskDropdown";
+        public bool IsAskDropdown { get { return Type == "AskDropdown";  } }
         public bool IsAskExtraQuestions => Type == "AskExtraQuestions";
         public bool IsAskGradeOptions => Type == "AskGradeOptions";
         public bool IsAskHeader => Type == "AskHeader";

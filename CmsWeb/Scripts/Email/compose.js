@@ -152,7 +152,8 @@
             $('#draft-modal').modal('show');
         } else {
             $.clearTemplateClass();
-            $("#body").val($('#email-body').contents().find('#tempateBody').html());
+            var h = $('#email-body').contents().find('#tempateBody').html();
+            $("#body").val(h);
             $("#name").val($("#newName").val());
             $.addTemplateClass();
 

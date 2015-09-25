@@ -7,12 +7,15 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using CmsData;
+using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
+using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Areas.People.Models;
 using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
+using HandlebarsDotNet;
 using HtmlAgilityPack;
 
 namespace CmsWeb.Controllers
@@ -55,7 +58,8 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test(string id)
         {
-            return Content(id.ToGuid().ToString());
+            var si = new SummaryInfo(DbUtil.Db, 828612, 90752);
+            return Content(si.ToString());
         }
 #endif
 
