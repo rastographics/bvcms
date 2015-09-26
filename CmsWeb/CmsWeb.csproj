@@ -831,7 +831,6 @@
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\RsvpLinkSg.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\SendLink.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\VoteLinkSg.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents - Copy.xml" />
     <Content Include="Areas\People\Views\Person\Family\Related.cshtml">
       <SubType>Code</SubType>
     </Content>
