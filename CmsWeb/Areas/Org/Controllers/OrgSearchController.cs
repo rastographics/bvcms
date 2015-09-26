@@ -377,7 +377,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [Authorize(Roles = "Attendance")]
         public ActionResult EmailAttendanceNotices(OrgSearchModel m)
         {
-            m.SendNotices(this);
+            m.SendNotices();
             return Content("ok");
         }
 
@@ -385,7 +385,7 @@ namespace CmsWeb.Areas.Search.Controllers
         [Authorize(Roles = "Attendance")]
         public ActionResult DisplayAttendanceNotices(OrgSearchModel m)
         {
-            var leaders = m.NoticesToSend(this);
+            var leaders = m.NoticesToSend();
             return View(leaders);
         }
 

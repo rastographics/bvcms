@@ -349,6 +349,27 @@ namespace CmsWeb {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;div&gt;
+        ///  The following meetings are ready to be viewed:&lt;br/&gt;
+        ///  {{#each this}}
+        ///    &lt;a href=&apos;{{ServerLink}}/Meeting/{{MeetingId}}&apos;&gt;{{OrgName}} - {{Lastmeeting}}&lt;/a&gt;&lt;br/&gt;
+        ///  {{/each}}
+        ///  {{#each this}}
+        ///    {{#if HasAbsents}}
+        ///      &lt;h2&gt;Recent Absents&lt;/h2&gt;
+        ///      &lt;hr /&gt;
+        ///      &lt;a href=&apos;{{ServerLink}}/Organization/{{OrganizationId}}&apos;&gt;{{OrganizationName}}&lt;/a&gt; ({{LeaderName}})&lt;br /&gt;
+        ///      &lt;span&gt;
+        ///        Members with ({{ConsecutiveAbsentsThreshold}})
+        ///        or more consecutive absents on and before {{MostRec [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string RecentVisitsAbsents {
+            get {
+                return ResourceManager.GetString("RecentVisitsAbsents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
         ///&lt;ReportsMenu&gt;
         ///  &lt;Header&gt;Statistics&lt;/Header&gt;

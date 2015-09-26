@@ -329,12 +329,16 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
 
         private string DoEnrollments()
         {
-            var sty = new Sty();
             string amountRowFormat = $@"
-        <table>
-            <tr><td style='{sty.LabelStyle}'>Total Paid</td><td style='{sty.LabelStyle}'>Total Due</td></tr>
-            <tr><td style='{sty.DataStyle}{sty.AlignRight}'>{{0:c}}</td><td style='{sty.DataStyle}{sty.AlignRight}'>{{1:c}}</td></tr>
-        </table>
+<table>
+    <tr>
+        <td style='{CssStyle.LabelStyle}'>Total Paid</td>
+        <td style='{CssStyle.LabelStyle}'>Total Due</td>
+    </tr>
+    <tr>
+        <td style='{CssStyle.DataStyle}{CssStyle.AlignRight}'>{{0:c}}</td>
+        <td style='{CssStyle.DataStyle}{CssStyle.AlignRight}'>{{1:c}}</td></tr>
+</table>
 ";
 
             var amtpaid = Transaction.Amt ?? 0;

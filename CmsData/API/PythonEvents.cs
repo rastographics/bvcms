@@ -833,6 +833,7 @@ print sb.getvalue()
 
         public string RenderTemplate(string source, object data)
         {
+            CssStyle.RegisterHelpers();
             var template = Handlebars.Compile(source);
             var result = template(data);
             return result;

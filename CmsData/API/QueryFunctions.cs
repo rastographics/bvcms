@@ -455,6 +455,12 @@ namespace CmsData
         {
             return db.PeopleQuery2(savedQuery).Take(1000);
         }
+        public int TagQueryList(object savedQuery)
+        {
+            var q = db.PeopleQuery2(savedQuery).Select(vv => vv.PeopleId);
+            var tag = db.PopulateTemporaryTag(q);
+            return tag.Id;
+        }
 
         public IEnumerable<Person> QueryList2(object savedQuery, string orderbyparam, bool ascending)
         {
@@ -494,6 +500,22 @@ namespace CmsData
                     break;
             }
             return q.Take(1000);
+        }
+
+        public IEnumerable<dynamic> QuerySql(string sqlscript, object p1)
+        {
+            return QuerySql(sqlscript, p1, null);
+        }
+        public IEnumerable<dynamic> QuerySql(string sql, object p1, Dictionary<string, string> d)
+        {
+            var p = new DynamicParameters();
+            p.Add("@p1", p1 ?? "");
+            if (d != null)
+                foreach (var kv in d)
+                    p.Add("@" + kv.Key, kv.Value);
+
+            var q = db.Connection.Query(sql, p);
+            return q;
         }
 
         public int RegistrationCount(int days, int progid, int divid, int orgid)

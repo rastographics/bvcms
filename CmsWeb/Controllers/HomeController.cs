@@ -12,6 +12,7 @@ using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
 using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Areas.Search.Models;
 using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -59,27 +60,12 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test(string id)
         {
-//            var data = new
-//            {
-//                Bar = "Foo",
-//                Foo = new[] { "AA", "AAA" }
-//            };
-//            Handlebars.RegisterHelper("List", (writer, options, context, arguments) =>
-//            {
-//                foreach(var item in data.Foo)
-//                    options.Template(writer, item);
-//            });
-//
-//            var s = @"
-//<h4>{{Bar}}</h4>
-//{{#List}}
-//    <p>{{this}}</p>
-//{{/List}}
-//";
-//            var template = Handlebars.Compile(s);
-//            return Content(template(data));
-            var si = new SummaryInfo(DbUtil.Db, 828612, 90752);
-            return Content(si.ToString());
+            return Content("ok");
+            var m = new OrgSearchModel()
+            {
+            };
+            var leaders = m.NoticesToSend();
+            return Content(leaders.First().Value);
         }
 #endif
 
