@@ -9,17 +9,17 @@ namespace UtilityExtensions
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class Sty
     {
-        public string gr = "color:#AAAAAA;";
-        public string sm = "font-size:12px;";
-        public string ff = "font-family:Arial,Helvetica;";
-        public string lg = "font-size:15px;";
-        public string bd = "font-weight:bold;";
-        public string pb = "padding-bottom:6px;";
-        public string tp = "vertical-align: text-top;";
-        public string rt = "text-align:right;padding-right:5px;";
-        public string bb = "border-bottom: solid 1px #D8D8D8";
-        public string lb => ff + sm + gr + rt + tp;
-        public string dd => ff + lg + bd;
-        public string dl => ff + lg + gr;
+        public string Light = "color:#AAAAAA;";
+        public string Small = "font-size:12px;";
+        public string SansSerif = "font-family:Arial,Helvetica;";
+        public string Medium = "font-size:15px;";
+        public string Bold = "font-weight:bold;";
+        public string PadBottom = "padding-bottom:6px;";
+        public string AlignTop = "vertical-align: text-top;";
+        public string AlignRight = "text-align:right;padding-right:5px;";
+        public string BottomBorder = "border-bottom: solid 1px #D8D8D8";
+        public string LabelStyle => SansSerif + Small + Light + AlignRight + AlignTop;
+        public string DataStyle => SansSerif + Medium + Bold;
+        public string DataLabelStyle => SansSerif + Medium + Light;
     }
 }

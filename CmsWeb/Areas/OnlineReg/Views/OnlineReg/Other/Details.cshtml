@@ -10,7 +10,7 @@
 @* ReSharper disable Html.Obsolete *@
 <table>
   <tr>
-    <td colspan="2" style="@sty.dd@sty.bb">
+    <td colspan="2" style="@sty.DataStyle@sty.BottomBorder">
       <p>
         <hr/>
         Registrant: @Model.person.Name<br/>
@@ -22,17 +22,17 @@
 {
   var ts = om.TransactionSummary(DbUtil.Db);
   <tr>
-    <td colspan="2" style="@sty.bb">
+    <td colspan="2" style="@sty.BottomBorder">
       <table>
         <tr>
-          <td style="@sty.lb">Registrant Fee</td>
-          <td style="@sty.lb">Amount Paid</td>
-          <td style="@sty.lb">Amount Due</td>
+          <td style="@sty.LabelStyle">Registrant Fee</td>
+          <td style="@sty.LabelStyle">Amount Paid</td>
+          <td style="@sty.LabelStyle">Amount Due</td>
         </tr>
         <tr>
-          <td align='right' style="@sty.dd">@ts.IndAmt.ToString2("c")</td>
-          <td align='right' style="@sty.dd">@om.TotalPaid(DbUtil.Db).ToString("c")</td>
-          <td align='right' style="@sty.dd">@om.AmountDue(DbUtil.Db).ToString("c")</td>
+          <td align='right' style="@sty.DataStyle">@ts.IndAmt.ToString2("c")</td>
+          <td align='right' style="@sty.DataStyle">@om.TotalPaid(DbUtil.Db).ToString("c")</td>
+          <td align='right' style="@sty.DataStyle">@om.AmountDue(DbUtil.Db).ToString("c")</td>
         </tr>
       </table>
     </td>
@@ -47,15 +47,15 @@
         @if (goer != null)
         {
           <tr>
-            <td style="@sty.lb">Support Mission Trip for</td>
-            <td style="@sty.dd">@goer.Name</td>
+            <td style="@sty.LabelStyle">Support Mission Trip for</td>
+            <td style="@sty.DataStyle">@goer.Name</td>
           </tr>
         }
         @if (Model.MissionTripSupportGeneral > 0)
         {
           <tr>
-            <td style="@sty.lb">Support Mission Trip</td>
-            <td style="@sty.dd">Any other participiants</td>
+            <td style="@sty.LabelStyle">Support Mission Trip</td>
+            <td style="@sty.DataStyle">Any other participiants</td>
           </tr>
         }
       </table>
@@ -71,143 +71,143 @@ else
     {
       case "AskTickets":
         <tr>
-          <td style="@sty.lb@sty.bb">Tickets</td>
-          <td style="@sty.dd@sty.bb">@om.Tickets</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Tickets</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@om.Tickets</td>
         </tr>
         break;
       case "AskSize":
         <tr>
-          <td style="@sty.lb@sty.bb">Shirt</td>
-          <td style="@sty.dd@sty.bb">@om.ShirtSize</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Shirt</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@om.ShirtSize</td>
         </tr>
         break;
       case "AskEmContact":
-        <tr><td></td><td style="@sty.dl">Emergency</td></tr>
+        <tr><td></td><td style="@sty.DataLabelStyle">Emergency</td></tr>
         <tr>
-          <td style="@sty.lb">Contact</td>
-          <td style="@sty.dd">@rr.Emcontact</td>
+          <td style="@sty.LabelStyle">Contact</td>
+          <td style="@sty.DataStyle">@rr.Emcontact</td>
         </tr>
         <tr>
-          <td style="@sty.lb@sty.bb">Phone</td>
-          <td style="@sty.dd@sty.bb">@rr.Emphone</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Phone</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@rr.Emphone</td>
         </tr>
         break;
       case "AskDoctor":
         <tr>
-          <td style="@sty.lb">Doctor</td>
-          <td style="@sty.dd">@rr.Doctor</td>
+          <td style="@sty.LabelStyle">Doctor</td>
+          <td style="@sty.DataStyle">@rr.Doctor</td>
         </tr>
         <tr>
-          <td style="@sty.lb@sty.bb">Phone</td>
-          <td style="@sty.dd@sty.bb">@rr.Docphone</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Phone</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@rr.Docphone</td>
         </tr>
         break;
       case "AskInsurance":
         <tr>
-          <td style="@sty.lb">Insurance Carrier:</td>
-          <td style="@sty.dd">@rr.Insurance</td>
+          <td style="@sty.LabelStyle">Insurance Carrier:</td>
+          <td style="@sty.DataStyle">@rr.Insurance</td>
         </tr>
         <tr>
-          <td style="@sty.lb@sty.bb">Insurance Policy:</td>
-          <td style="@sty.dd@sty.bb">@rr.Policy</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Insurance Policy:</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@rr.Policy</td>
         </tr>
         break;
       case "AskRequest":
         <tr>
-          <td style="@sty.lb">Request</td>
-          <td style="@sty.dl">@(((AskRequest) ask).Label)</td>
+          <td style="@sty.LabelStyle">Request</td>
+          <td style="@sty.DataLabelStyle">@(((AskRequest) ask).Label)</td>
         </tr>
         <tr>
-          <td style="@sty.lb@sty.bb"></td>
-          <td style="@sty.dd@sty.bb">@om.Request</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder"></td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@om.Request</td>
         </tr>
         break;
       case "AskHeader":
         <tr>
           <td></td>
-          <td style="@sty.dl@sty.bb">@Html.Raw(((AskHeader) ask).Label)</td>
+          <td style="@sty.DataLabelStyle@sty.BottomBorder">@Html.Raw(((AskHeader) ask).Label)</td>
         </tr>
         break;
       case "AskInstruction":
         <tr>
           <td></td>
-          <td style="@sty.dl@sty.bb">@Html.Raw(((AskInstruction) ask).Label)</td>
+          <td style="@sty.DataLabelStyle@sty.BottomBorder">@Html.Raw(((AskInstruction) ask).Label)</td>
         </tr>
         break;
       case "AskAllergies":
         <tr>
-          <td style="@sty.lb@sty.bb">Medical</td>
-          <td style="@sty.dd@sty.bb">@rr.MedicalDescription</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Medical</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@rr.MedicalDescription</td>
         </tr>
         break;
       case "AskTylenolEtc":
         <tr>
-          <td style="@sty.lb">Tylenol</td>
-          <td style="@sty.dd">
+          <td style="@sty.LabelStyle">Tylenol</td>
+          <td style="@sty.DataStyle">
             @YesNo(Model.tylenol)
           </td>
         </tr>
         <tr>
-          <td style="@sty.lb">Advil</td>
-          <td style="@sty.dd">
+          <td style="@sty.LabelStyle">Advil</td>
+          <td style="@sty.DataStyle">
             @YesNo(Model.advil)
           </td>
         </tr>
         <tr>
-          <td style="@sty.lb">Robitussin</td>
-          <td style="@sty.dd">
+          <td style="@sty.LabelStyle">Robitussin</td>
+          <td style="@sty.DataStyle">
             @YesNo(Model.robitussin)
           </td>
         </tr>
         <tr>
-          <td style="@sty.lb@sty.bb">Maalox</td>
-          <td style="@sty.dd@sty.bb">
+          <td style="@sty.LabelStyle@sty.BottomBorder">Maalox</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">
             @YesNo(Model.maalox)
           </td>
         </tr>
         break;
       case "AskChurch":
         <tr>
-          <td style="@sty.lb">Church</td>
-          <td style="@sty.dd">@(rr.Member == true ? "" : "Not") Member</td>
+          <td style="@sty.LabelStyle">Church</td>
+          <td style="@sty.DataStyle">@(rr.Member == true ? "" : "Not") Member</td>
         </tr>
         <tr>
-          <td style="@sty.bb"></td>
-          <td style="@sty.dd@sty.bb">
+          <td style="@sty.BottomBorder"></td>
+          <td style="@sty.DataStyle@sty.BottomBorder">
             @(rr.ActiveInAnotherChurch == true ? "" : "Not") Active in another church
           </td>
         </tr>
         break;
       case "AskParents":
         <tr>
-          <td style="@sty.lb">Mother</td>
-          <td style="@sty.dd">@rr.Mname</td>
+          <td style="@sty.LabelStyle">Mother</td>
+          <td style="@sty.DataStyle">@rr.Mname</td>
         </tr>
         <tr>
-          <td style="@sty.lb@sty.bb">Father</td>
-          <td style="@sty.dd@sty.bb">@rr.Fname</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Father</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@rr.Fname</td>
         </tr>
         break;
       case "AskCoaching":
         <tr>
-          <td style="@sty.lb@sty.bb">Coaching</td>
-          <td style="@sty.dd@sty.bb">@rr.Coaching</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Coaching</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@rr.Coaching</td>
         </tr>
         break;
       case "AskSMS":
         <tr>
-          <td style="@sty.lb@sty.bb">Receive Texts</td>
-          <td style="@sty.dd@sty.bb">@Model.person.ReceiveSMS</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Receive Texts</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@Model.person.ReceiveSMS</td>
         </tr>
         break;
       case "AskDropdown":
         <tr>
           <td></td>
-          <td style="@sty.dl">@Util.PickFirst(((AskDropdown) ask).Label, "Options")</td>
+          <td style="@sty.DataLabelStyle">@Util.PickFirst(((AskDropdown) ask).Label, "Options")</td>
         </tr>
         <tr>
-          <td style="@sty.lb@sty.bb">Selected</td>
-          <td style="@sty.dd@sty.bb">
+          <td style="@sty.LabelStyle@sty.BottomBorder">Selected</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">
             @(((AskDropdown) ask).SmallGroupChoice(Model.option).Description)
           </td>
         </tr>
@@ -217,22 +217,22 @@ else
         var mlist = ((AskMenu) ask).MenuItemsChosen(Model.MenuItem[ask.UniqueId]).ToList();
         if (mlist == null || !mlist.Any()) { continue; }
         var lasti = mlist.Last();
-        <tr><td style="@sty.lb">Menu</td><td style="@sty.dl">@(((AskMenu)ask).Label)</td></tr>
+        <tr><td style="@sty.LabelStyle">Menu</td><td style="@sty.DataLabelStyle">@(((AskMenu)ask).Label)</td></tr>
         foreach (var i in mlist)
         {
-          var ibb = lasti.desc == i.desc ? $";{sty.bb}" : "";
+          var ibb = lasti.desc == i.desc ? $";{sty.BottomBorder}" : "";
           if (i.amt > 0)
           {
             <tr>
-              <td style="@sty.lb@ibb">@menulabel</td>
-              <td style="@sty.dd@ibb">@i.number @i.desc (at @i.amt.ToString("N2"))</td>
+              <td style="@sty.LabelStyle@ibb">@menulabel</td>
+              <td style="@sty.DataStyle@ibb">@i.number @i.desc (at @i.amt.ToString("N2"))</td>
             </tr>
           }
           else
           {
             <tr>
-              <td style="@sty.lb@ibb">@menulabel</td>
-              <td style="@sty.dd@ibb">@i.number @i.desc</td>
+              <td style="@sty.LabelStyle@ibb">@menulabel</td>
+              <td style="@sty.DataStyle@ibb">@i.number @i.desc</td>
             </tr>
           }
           menulabel = string.Empty;
@@ -247,24 +247,24 @@ else
         {
           <tr>
             <td></td>
-            <td style="@sty.dl">@menulabel</td>
+            <td style="@sty.DataLabelStyle">@menulabel</td>
           </tr>
         }
         <tr>
-          <td style="@sty.lb@sty.bb@sty.tp">Selected</td>
-          <td style="@sty.bb">
+          <td style="@sty.LabelStyle@sty.BottomBorder@sty.AlignTop">Selected</td>
+          <td style="@sty.BottomBorder">
             @foreach (var i in cbq)
             {
-              var ibb = lastcb == i.SmallGroup ? "" : $"{sty.bb}";
+              var ibb = lastcb == i.SmallGroup ? "" : $"{sty.BottomBorder}";
               if (i.Fee > 0)
               {
-                <div style="@sty.dd@ibb">
+                <div style="@sty.DataStyle@ibb">
                   @i.Description ($@i.Fee.ToString2("N2"))<br/>(@i.SmallGroup)
                 </div>
               }
               else
               {
-                <div style="@sty.dd@ibb">
+                <div style="@sty.DataStyle@ibb">
                   @i.Description<br/>(@i.SmallGroup)
                 </div>
               }
@@ -277,14 +277,14 @@ else
         var lastyn = ynq.Last();
         foreach (var a in ynq)
         {
-          var ibb = lastyn == a ? $";{sty.bb}" : $";{sty.pb}";
+          var ibb = lastyn == a ? $";{sty.BottomBorder}" : $";{sty.PadBottom}";
           <tr>
-            <td style="@sty.lb">Question</td>
-            <td style="@sty.dl">@a.Question</td>
+            <td style="@sty.LabelStyle">Question</td>
+            <td style="@sty.DataLabelStyle">@a.Question</td>
           </tr>
           <tr>
-            <td style="@sty.lb@ibb">Answer</td>
-            <td style="@sty.dd@ibb">@(Model.YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No")</td>
+            <td style="@sty.LabelStyle@ibb">Answer</td>
+            <td style="@sty.DataStyle@ibb">@(Model.YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No")</td>
           </tr>
         }
         break;
@@ -293,14 +293,14 @@ else
         var lasteq = eqq.Last();
         foreach (var a in eqq)
         {
-          var ibb = lasteq.Key == a.Key ? $";{sty.bb}" : $";{sty.pb}";
+          var ibb = lasteq.Key == a.Key ? $";{sty.BottomBorder}" : $";{sty.PadBottom}";
           <tr>
-            <td style="@sty.lb">Question</td>
-            <td style="@sty.dl">@a.Key</td>
+            <td style="@sty.LabelStyle">Question</td>
+            <td style="@sty.DataLabelStyle">@a.Key</td>
           </tr>
           <tr>
-            <td style="@sty.lb@ibb">Answer</td>
-            <td style="@sty.dd@ibb">@a.Value</td>
+            <td style="@sty.LabelStyle@ibb">Answer</td>
+            <td style="@sty.DataStyle@ibb">@a.Value</td>
           </tr>
         }
         break;
@@ -309,21 +309,21 @@ else
         var lasttq = tqq.Last();
         foreach (var a in tqq)
         {
-          var ibb = lasttq.Key == a.Key ? $";{sty.bb}" : $";{sty.pb}";
+          var ibb = lasttq.Key == a.Key ? $";{sty.BottomBorder}" : $";{sty.PadBottom}";
           <tr>
-            <td style="@sty.lb">Question</td>
-            <td style="@sty.dl">@a.Key</td>
+            <td style="@sty.LabelStyle">Question</td>
+            <td style="@sty.DataLabelStyle">@a.Key</td>
           </tr>
           <tr>
-            <td style="@sty.lb@ibb">Answer</td>
-            <td style="@sty.dd@ibb">@a.Value</td>
+            <td style="@sty.LabelStyle@ibb">Answer</td>
+            <td style="@sty.DataStyle@ibb">@a.Value</td>
           </tr>
         }
         break;
       case "AskGradeOptions":
         <tr>
-          <td style="@sty.lb@sty.bb">Grade</td>
-          <td style="@sty.dd@sty.bb">@Model.GradeOptions(ask).SingleOrDefault(s => s.Value == (Model.gradeoption ?? "00")).Text</td>
+          <td style="@sty.LabelStyle@sty.BottomBorder">Grade</td>
+          <td style="@sty.DataStyle@sty.BottomBorder">@Model.GradeOptions(ask).SingleOrDefault(s => s.Value == (Model.gradeoption ?? "00")).Text</td>
         </tr>
         break;
     }
@@ -331,8 +331,8 @@ else
   if (Model.setting.AgeGroups.Count > 0)
   {
     <tr>
-      <td style="@sty.lb">AgeGroup:</td>
-      <td style="@sty.dd">@Model.AgeGroup()</td>
+      <td style="@sty.LabelStyle">AgeGroup:</td>
+      <td style="@sty.DataStyle">@Model.AgeGroup()</td>
     </tr>
   }
 }

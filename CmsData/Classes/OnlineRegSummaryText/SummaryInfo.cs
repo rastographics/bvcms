@@ -1,9 +1,9 @@
 using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using CmsData.Registration;
-using CmsData.View;
 using HandlebarsDotNet;
 using UtilityExtensions;
 
@@ -17,17 +17,42 @@ namespace CmsData.OnlineRegSummaryText
         public SummaryInfo(CMSDataContext db, int pid, int oid)
         {
             this.db = db;
-            RegisterHelpers();
             om = OrganizationMember.Load(DbUtil.Db, pid, oid);
-            ti = DbUtil.Db.Transactions.SingleOrDefault(tt => tt.Id == om.TranId);
-            if (ShowTransaction)
-                ts = om.TransactionSummary(this.db);
-            RecReg = om.Person.GetRecReg();
             p = new OnlineRegPersonModel0();
             p.ReadXml(om.OnlineRegData);
             p.setting = DbUtil.Db.CreateRegistrationSettings(om.Organization.GetRegSetting(), oid);
-            Goer = db.LoadPersonById(p.MissionTripGoerId ?? 0);
 
+            Handlebars.RegisterHelper("Registrant", Registrant);
+            Handlebars.RegisterHelper("IfShowTransaction", IfShowTransaction);
+            Handlebars.RegisterHelper("IfSupportMissionTrip", IfSupportMissionTrip);
+            Handlebars.RegisterHelper("AskItems", AskItems);
+
+            Handlebars.RegisterHelper("IfAskAllergies", IfAskAllergies);
+            Handlebars.RegisterHelper("IfAskCheckboxes", IfAskCheckboxes);
+            Handlebars.RegisterHelper("IfAskCoaching", IfAskCoaching);
+            Handlebars.RegisterHelper("IfAskChurch", IfAskChurch);
+            Handlebars.RegisterHelper("IfAskDoctor", IfAskDoctor);
+            Handlebars.RegisterHelper("IfAskDropdown", IfAskDropdown);
+            Handlebars.RegisterHelper("IfAskEmContact", IfAskEmContact);
+            Handlebars.RegisterHelper("IfAskExtraQuestions", IfAskExtraQuestions);
+            Handlebars.RegisterHelper("IfAskGradeOptions", IfAskGradeOptions);
+            Handlebars.RegisterHelper("IfAskHeader", IfAskHeader);
+            Handlebars.RegisterHelper("IfAskInstruction", IfAskInstruction);
+            Handlebars.RegisterHelper("IfAskInsurance", IfAskInsurance);
+            Handlebars.RegisterHelper("IfAskMenu", IfAskMenu);
+            Handlebars.RegisterHelper("IfAskParents", IfAskParents);
+            Handlebars.RegisterHelper("IfAskRequest", IfAskRequest);
+            Handlebars.RegisterHelper("IfAskSize", IfAskSize);
+            Handlebars.RegisterHelper("IfAskSms", IfAskSms);
+            Handlebars.RegisterHelper("IfAskTextQuestions", IfAskTextQuestions);
+            Handlebars.RegisterHelper("IfAskTickets", IfAskTickets);
+            Handlebars.RegisterHelper("IfAskTylenolEtc", IfAskTylenolEtc);
+            Handlebars.RegisterHelper("IfAskYesNoQuestions", IfAskYesNoQuestions);
+
+            Handlebars.RegisterHelper("IfHasAgeGroups", IfHasAgeGroups);
+            Handlebars.RegisterHelper("MenuItems", MenuItems);
+            Handlebars.RegisterHelper("Checkboxes", Checkboxes);
+            RegisterOtherHelpers();
         }
 
         public override string ToString()
@@ -43,120 +68,296 @@ namespace CmsData.OnlineRegSummaryText
             }
         }
 
-        private readonly Transaction ti;
-        private readonly TransactionSummary ts;
+        private string rowstyle { get; set; }
+        private string toplabel { get; set; }
 
         public OrganizationMember om { get; }
         public Organization org => om.Organization;
         public Person person => om.Person;
-
-        public RecReg RecReg { get; set; }
-        public string ilabel { get; set; }
-        public bool ilabelHasValue => ilabel.HasValue();
-        public string lastidesc { get; set; }
-        public bool ShowTransaction => ti != null && (ti.Amt ?? 0) > 0 && om != null;
         public OnlineRegPersonModel0 p { get; set; }
-        public string IndAmt => ts.IndAmt.ToString2("c");
-        public string TotPaid => om.TotalPaid(db).ToString("c");
-        public string AmountDue => om.AmountDue(db).ToString("c");
-        public Person Goer { get; set; }
-        public List<Ask> AskItems => p.setting.AskItems;
-        public string AgeGroup => p.AgeGroup();
+        private Ask currentAsk;
 
-        public bool HasAgeGroups => p.setting.AgeGroups.Count > 0;
-        public bool HasCheckedboxes => cblist.Any();
-        public bool HasGoer => p.MissionTripGoerId > 0;
-        public bool HasGeneralSupport => p.MissionTripSupportGeneral > 0;
-        public bool HasMenuItems => mlist != null && mlist.Any();
-        public bool SupportMissionTrip => p.MissionTripSupportGeneral > 0 || p.MissionTripGoerId > 0;
+        private bool supportMissionTrip => p.MissionTripSupportGeneral > 0 || p.MissionTripGoerId > 0;
 
-        public string ShowNotMember => RecReg.Member == true ? "" : "Not";
-        public string ShowNotActive => RecReg.ActiveInAnotherChurch == true ? "" : "Not";
-        public string rs { get; private set; }
-
-        public List<AskMenu.MenuItemChosen> mlist { get; set; }
-        public List<AskCheckboxes.CheckboxItem> cblist { get; set; }
-        public List<AskYesNoQuestions.YesNoQuestion> ynlist { get; set; }
-        public List<KeyValuePair<string, string>> eqlist { get; set; }
-        public List<KeyValuePair<string, string>> txlist { get; set; }
-
-        private void RegisterHelpers()
+        private void Registrant(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {
-            Handlebars.RegisterHelper("YesNo", (writer, context, args) =>
+            options.Template(writer, new
             {
-                var tf = (bool?)(args[0]);
-                writer.Write(tf == true ? "Yes" : tf == false ? "No" : "");
+                om.Person.Name,
+                om.Organization.OrganizationName,
             });
-            Handlebars.RegisterHelper("SubGroupChoice", (writer, context, args) =>
+        }
+
+        private void AskItems(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (supportMissionTrip)
+                return;
+            var list = p.setting.AskItems;
+            if (!list.Any())
+                return;
+            foreach (var item in list)
             {
-                var ask = args[0] as AskDropdown;
-                if (ask == null)
-                    return;
-                writer.Write(ask.SmallGroupChoice(p.option).Description);
-            });
-            Handlebars.RegisterHelper("YesNoAnswer", (writer, context, args) =>
+                currentAsk = item;
+                options.Template(writer, item);
+            }
+        }
+        private void IfShowTransaction(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            var ti = db.Transactions.SingleOrDefault(tt => tt.Id == om.TranId);
+            if (ti == null || (ti.Amt ?? 0) == 0)
+                return;
+            var ts = om.TransactionSummary(db);
+            options.Template(writer, new
             {
-                var subGroup = args[0].ToString();
-                writer.Write(p.YesNoQuestion[subGroup] == true ? "Yes" : "No");
+                IndAmt = ts.IndAmt.ToString2("c"),
+                TotPaid = om.TotalPaid(db).ToString("c"),
+                AmountDue = om.AmountDue(db).ToString("c"),
             });
-            Handlebars.RegisterHelper("SetMenu", (writer, context, args) =>
+        }
+        private void IfSupportMissionTrip(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (!supportMissionTrip)
+                return;
+            var Goer = db.LoadPersonById(p.MissionTripGoerId ?? 0);
+            options.Template(writer, new
             {
-                var menu = args[0] as AskMenu;
-                if (menu == null)
-                    return;
-                if (p.MenuItem == null)
-                    return;
-                mlist = menu.MenuItemsChosen(p.MenuItem[menu.UniqueId]).ToList(); // HERE
-                if (mlist.Any())
-                    lastidesc = mlist.Last().desc;
+                Goer,
+                HasGoer = p.MissionTripGoerId > 0,
+                HasGeneralSupport = p.MissionTripSupportGeneral > 0,
             });
-            Handlebars.RegisterHelper("SetCheckbox", (writer, context, args) =>
+        }
+
+        public void IfAskAllergies(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskAllergies)
+                options.Template(writer, om.Person.GetRecReg());
+        }
+        private void IfAskCheckboxes(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskCheckboxes)
+                options.Template(writer, (object)context);
+        }
+        private void IfAskChurch(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (!currentAsk.IsAskChurch)
+                return;
+            var RecReg = om.Person.GetRecReg();
+            options.Template(writer, new
             {
-                var cb = args[0] as AskCheckboxes;
-                if (cb == null)
-                    return;
-                cblist = cb.CheckboxItemsChosen(p.Checkbox).ToList(); // HERE
-                ilabel = cb.Label;
-                if (cblist.Any())
-                    lastidesc = cblist.Last().Description;
+                ShowNotMember = RecReg.Member == true ? "" : "Not",
+                ShowNotActive = RecReg.ActiveInAnotherChurch == true ? "" : "Not",
             });
-            Handlebars.RegisterHelper("SetYesNoQuestions", (writer, context, args) =>
+        }
+        private void IfAskCoaching(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskCoaching)
+                options.Template(writer, om.Person.GetRecReg());
+        }
+        private void IfAskDoctor(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskDoctor)
+                options.Template(writer, om.Person.GetRecReg());
+        }
+        private void IfAskDropdown(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskDropdown)
+                options.Template(writer, new
+                {
+                    OptionsLabel = Util.PickFirst(((AskDropdown)currentAsk).Label, "Options"),
+                    SubGroupChoice = ((AskDropdown)currentAsk).SmallGroupChoice(p.option).Description,
+                });
+        }
+        private void IfAskEmContact(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskEmContact)
+                options.Template(writer, om.Person.GetRecReg());
+        }
+        private void IfAskExtraQuestions(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (!currentAsk.IsAskExtraQuestions)
+                return;
+            var list = p.ExtraQuestion[currentAsk.UniqueId].Where(a => a.Value.HasValue()).ToList();
+            if (!list.Any())
+                return;
+            var lastKey = list.Last().Key;
+            foreach (var item in list)
             {
-                var yn = args[0] as AskYesNoQuestions;
-                if (yn == null)
-                    return;
-                ynlist = yn.list.Where(a => p.YesNoQuestion.ContainsKey(a.SmallGroup)).ToList(); // HERE
-                if (ynlist.Any())
-                    lastidesc = ynlist.Last().Question;
-            });
-            Handlebars.RegisterHelper("SetExtraQuestions", (writer, context, args) =>
+                rowstyle = lastKey == item.Key ? BottomBorder : PadBottom;
+                options.Template(writer, new
+                {
+                    Question = item.Key,
+                    Answer = item.Value,
+                });
+            }
+        }
+        private void IfAskGradeOptions(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskGradeOptions)
+                options.Template(writer, new { GradeOption = p.GradeOptions(currentAsk)[p.gradeoption ?? "00"] });
+        }
+        private void IfAskHeader(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskHeader)
+                options.Template(writer, new { ((AskHeader)currentAsk).Label });
+        }
+        private void IfAskInstruction(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskInstruction)
+                options.Template(writer, new { ((AskInstruction)currentAsk).Label });
+        }
+        private void IfAskInsurance(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskInsurance)
+                options.Template(writer, om.Person.GetRecReg());
+        }
+        private void IfAskMenu(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskMenu)
+                options.Template(writer, (object)context);
+        }
+        private void IfAskParents(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskParents)
+                options.Template(writer, om.Person.GetRecReg());
+        }
+        private void IfAskRequest(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (!currentAsk.IsAskRequest)
+                return;
+            options.Template(writer, new
             {
-                var eq = args[0] as AskExtraQuestions;
-                if (eq == null)
-                    return;
-                eqlist = p.ExtraQuestion[eq.UniqueId].Where(a => a.Value.HasValue()).ToList(); // HERE
-                if (eqlist.Any())
-                    lastidesc = eqlist.Last().Key;
+                ((AskRequest)currentAsk).Label,
+                om.Request,
             });
-            Handlebars.RegisterHelper("SetTextQuestions", (writer, context, args) =>
+        }
+        private void IfAskTextQuestions(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (!currentAsk.IsAskText)
+                return;
+            var list = p.Text[((AskText)currentAsk).UniqueId].Where(a => a.Value.HasValue()).ToList();
+            if (!list.Any())
+                return;
+            var lastKey = list.Last().Key;
+            foreach (var item in list)
             {
-                var tx = args[0] as AskText;
-                if (tx == null)
-                    return;
-                txlist = p.Text[tx.UniqueId].Where(a => a.Value.HasValue()).ToList(); // HERE
-                if (txlist.Any())
-                    lastidesc = txlist.Last().Key;
-            });
-            Handlebars.RegisterHelper("GradeOption", (writer, context, args) =>
+                rowstyle = lastKey == item.Key ? BottomBorder : PadBottom;
+                options.Template(writer, new
+                {
+                    Question = item.Key,
+                    Answer = item.Value,
+                });
+            }
+        }
+        private void IfAskTickets(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskTickets)
+                options.Template(writer, om);
+        }
+        private void IfAskTylenolEtc(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskTylenolEtc)
+                options.Template(writer, new
+                {
+                    Tylenol = p.tylenol == true ? "Yes" : "No",
+                    Advil = p.advil == true ? "Yes" : "No",
+                    Maalox = p.maalox == true ? "Yes" : "No",
+                    Robitussin = p.robitussin == true ? "Yes" : "No",
+                });
+        }
+        private void IfAskSize(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskSize)
+                options.Template(writer, om);
+        }
+        private void IfAskSms(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (currentAsk.IsAskSms)
+                options.Template(writer, new { p.person.ReceiveSMS });
+        }
+        private void IfAskYesNoQuestions(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (!currentAsk.IsAskYesNoQuestions)
+                return;
+            var list = ((AskYesNoQuestions)currentAsk).list
+                .Where(a => p.YesNoQuestion.ContainsKey(a.SmallGroup)).ToList();
+            if (!list.Any())
+                return;
+            var lastKey = list.Last().Question;
+            foreach (var item in list)
             {
-                var go = (AskGradeOptions)(args[0]);
-                if (go == null)
-                    return;
-                writer.Write(p.GradeOptions(go)[p.gradeoption ?? "00"]); // HERE
-            });
-            Handlebars.RegisterHelper("SetLabel", (writer, context, args) => { ilabel = args[0] as string; });
-            Handlebars.RegisterHelper("SetRowStyle",
-                (writer, context, args) => { rs = lastidesc == args[0].ToString() ? args[1].ToString() : args[2].ToString(); });
+                rowstyle = lastKey == item.Question ? BottomBorder : PadBottom;
+                options.Template(writer, new
+                {
+                    item.Question,
+                    Answer = p.YesNoQuestion[item.SmallGroup] == true ? "Yes" : "No",
+                });
+            }
+        }
+
+        private void IfHasAgeGroups(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (p.setting.AgeGroups.Count == 0)
+                return;
+            options.Template(writer, new { AgeGroup = p.AgeGroup() });
+        }
+        private void RegisterOtherHelpers()
+        {
+            Handlebars.RegisterHelper("TopLabel", (writer, context, args) => { writer.Write(toplabel); });
+
+            Handlebars.RegisterHelper("BottomStyle", (writer, context, args) => { writer.Write(rowstyle); });
+            Handlebars.RegisterHelper("BottomBorder", (writer, context, args) => { writer.Write(BottomBorder); });
+            Handlebars.RegisterHelper("AlignTop", (writer, context, args) => { writer.Write(AlignTop); });
+            Handlebars.RegisterHelper("AlignRight", (writer, context, args) => { writer.Write(AlignRight); });
+            Handlebars.RegisterHelper("DataLabelStyle", (writer, context, args) => { writer.Write(DataLabelStyle); });
+            Handlebars.RegisterHelper("LabelStyle", (writer, context, args) => { writer.Write(LabelStyle); });
+            Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(DataStyle); });
+        }
+
+        private void Checkboxes(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (!currentAsk.IsAskCheckboxes)
+                return;
+            var list = ((AskCheckboxes)currentAsk).CheckboxItemsChosen(p.Checkbox).ToList();
+            if (!list.Any())
+                return;
+            var lastDesc = list.Last().Description;
+            foreach (var item in list)
+            {
+                rowstyle = lastDesc == item.Description ? "" : PadBottom;
+                options.Template(writer, new
+                {
+                    DisplayDescription = item.Fee > 0
+                        ? $"{item.Description} (${item.Fee.ToString2("N2")}<br/>({item.SmallGroup})"
+                        : $"{item.Description}<br/>({item.SmallGroup})",
+                });
+            }
+        }
+        private void MenuItems(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
+        {
+            if (!currentAsk.IsAskMenu || p.MenuItem == null)
+                return;
+            var obj = (AskMenu)currentAsk;
+            var list = obj.MenuItemsChosen(p.MenuItem[obj.UniqueId]).ToList();
+            if (!list.Any())
+                return;
+            if (p.MenuItem == null)
+                return;
+            var lastDesc = list.Last().desc;
+            var TopLabel = "Choices";
+            foreach (var item in list)
+            {
+                rowstyle = lastDesc == item.desc ? BottomBorder : PadBottom;
+                options.Template(writer, new
+                {
+                    TopLabel,
+                    Number = item.number,
+                    Desc = item.desc,
+                    HasAmt = item.amt > 0,
+                    DispAmt = item.amt.ToString("N2"),
+                });
+                Debug.Write(toplabel);
+                toplabel = "";
+            }
         }
     }
 }

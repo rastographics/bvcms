@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -58,6 +59,25 @@ namespace CmsWeb.Controllers
         [HttpGet, Route("~/Test")]
         public ActionResult Test(string id)
         {
+//            var data = new
+//            {
+//                Bar = "Foo",
+//                Foo = new[] { "AA", "AAA" }
+//            };
+//            Handlebars.RegisterHelper("List", (writer, options, context, arguments) =>
+//            {
+//                foreach(var item in data.Foo)
+//                    options.Template(writer, item);
+//            });
+//
+//            var s = @"
+//<h4>{{Bar}}</h4>
+//{{#List}}
+//    <p>{{this}}</p>
+//{{/List}}
+//";
+//            var template = Handlebars.Compile(s);
+//            return Content(template(data));
             var si = new SummaryInfo(DbUtil.Db, 828612, 90752);
             return Content(si.ToString());
         }

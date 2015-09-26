@@ -332,8 +332,8 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
             var sty = new Sty();
             string amountRowFormat = $@"
         <table>
-            <tr><td style='{sty.lb}'>Total Paid</td><td style='{sty.lb}'>Total Due</td></tr>
-            <tr><td style='{sty.dd}{sty.rt}'>{{0:c}}</td><td style='{sty.dd}{sty.rt}'>{{1:c}}</td></tr>
+            <tr><td style='{sty.LabelStyle}'>Total Paid</td><td style='{sty.LabelStyle}'>Total Due</td></tr>
+            <tr><td style='{sty.DataStyle}{sty.AlignRight}'>{{0:c}}</td><td style='{sty.DataStyle}{sty.AlignRight}'>{{1:c}}</td></tr>
         </table>
 ";
 

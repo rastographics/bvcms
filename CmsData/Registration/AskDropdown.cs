@@ -24,7 +24,6 @@ This will be presented as a dropdown selection.
 ";
 
         public string Label { get; set; }
-        public string OptionsLabel => Util.PickFirst(Label, "Options");
 
         public List<DropdownItem> list { get; set; }
 

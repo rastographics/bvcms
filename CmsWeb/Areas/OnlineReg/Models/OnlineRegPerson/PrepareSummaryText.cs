@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Web;
 using CmsData.Registration;
@@ -20,21 +21,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var om = GetOrgMember();
             if (Util2.UseNewDetails)
             {
-#if DEBUG
                 var si = new SummaryInfo(DbUtil.Db, om.PeopleId, om.OrganizationId);
                 return si.ToString();
-#else
-                var ctl = HttpContext.Current.Items["controller"] as OnlineRegController;
-                try
-                {
-                    return ViewExtensions2.RenderPartialViewToString(ctl, "Other/Details", this);
-                }
-                catch (Exception ex)
-                {
-                    ErrorSignal.FromCurrentContext().Raise(ex);
-                    return $"{ex.Message}\n\n{ex.StackTrace}";
-                }
-#endif
             }
             var sb = StartSummary();
             SummarizePayment(ti, om, sb);
