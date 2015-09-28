@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -185,16 +187,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult UpdateStatusFlags(FormCollection formCollection)
         {
-            DbUtil.Db.DeleteQueryBitTags();
-            var qbits = DbUtil.Db.StatusFlags().ToList();
-            foreach (var a in qbits)
-            {
-                var t = DbUtil.Db.FetchOrCreateTag(a[0], null, DbUtil.TagTypeId_StatusFlags);
-                var qq = DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]);
-                if (qq == null)
-                    continue;
-                DbUtil.Db.TagAll2(qq, t);
-            }
+            DbUtil.Db.UpdateStatusFlags();
             return Content("Status flags were successfully updated.");
         }
 

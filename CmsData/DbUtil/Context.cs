@@ -14,6 +14,7 @@ using System.Data.Linq.Mapping;
 using System.Data.Linq;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using CmsData.Codes;
 using System.Text.RegularExpressions;
@@ -1495,5 +1496,20 @@ namespace CmsData
         {
             return Registration.Settings.CreateSettings(s, this, orgId);
         }
+        public void UpdateStatusFlags()
+        {
+            var temptag = PopulateTempTag(new List<int>());
+            var qbits = StatusFlags().ToList();
+            foreach (var a in qbits)
+            {
+                var name = a[0] + ":" + a[1];
+                var qq = PeopleQuery2(name);
+                TagAll2(qq, temptag);
+                ExecuteCommand("dbo.UpdateStatusFlag {0}, {1}", a[0], temptag.Id);
+            }
+            // The following will clean out any tags that no longer have a corresponding F99:name in the queries
+            ExecuteCommand("dbo.DeleteOldQueryBitTags");
+        }
+
     }
 }
