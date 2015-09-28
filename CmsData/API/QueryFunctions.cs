@@ -514,7 +514,7 @@ namespace CmsData
                 foreach (var kv in d)
                     p.Add("@" + kv.Key, kv.Value);
 
-            var q = db.Connection.Query(sql, p);
+            var q = db.Connection.Query(sql, p, commandTimeout: 300);
             return q;
         }
 
