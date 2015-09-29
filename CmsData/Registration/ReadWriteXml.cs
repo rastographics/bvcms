@@ -16,7 +16,7 @@ namespace CmsData.Registration
     {
         public override string ToString()
         {
-            return Util2.UseXmlRegistrations ? Util.Serialize(this) : Parser.Output(this);
+            return Util.Serialize(this);
         }
 
         public static Settings CreateSettings(string s, CMSDataContext db, int orgId)

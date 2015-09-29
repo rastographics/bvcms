@@ -461,6 +461,10 @@ namespace CmsData
             var tag = db.PopulateTemporaryTag(q);
             return tag.Id;
         }
+        public int TagCount(int tagid)
+        {
+            return db.TagPeople.Count(v => v.Id == tagid);
+        }
 
         public IEnumerable<Person> QueryList2(object savedQuery, string orderbyparam, bool ascending)
         {

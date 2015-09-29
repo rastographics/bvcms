@@ -18,7 +18,7 @@ namespace CmsData.OnlineRegSummaryText
             OrgMember = OrganizationMember.Load(DbUtil.Db, pid, oid);
             Person = new OnlineRegPersonModel0();
             Person.ReadXml(OrgMember.OnlineRegData);
-            Person.setting = DbUtil.Db.CreateRegistrationSettings(OrgMember.Organization.GetRegSetting(), oid);
+            Person.setting = DbUtil.Db.CreateRegistrationSettings(OrgMember.Organization.RegSettingXml, oid);
 
             Handlebars.RegisterHelper("Registrant", Registrant);
             Handlebars.RegisterHelper("IfShowTransaction", IfShowTransaction);

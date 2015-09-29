@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.Org.Controllers
             var org = DbUtil.Db.LoadOrganizationById(id);
             var regsetting = (string)TempData["regsetting"];
             if (!regsetting.HasValue())
-                regsetting = org.GetRegSetting();
+                regsetting = org.RegSettingXml;
 
             var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
             regsetting = os.ToString();
@@ -37,7 +37,7 @@ namespace CmsWeb.Areas.Org.Controllers
             ViewData["OrganizationId"] = id;
             ViewData["orgname"] = org.OrganizationName;
             if (!regsetting.HasValue())
-                regsetting = org.GetRegSetting();
+                regsetting = org.RegSettingXml;
             var os = DbUtil.Db.CreateRegistrationSettings(regsetting, id);
             regsetting = os.ToString();
                 ViewData["text"] = regsetting;

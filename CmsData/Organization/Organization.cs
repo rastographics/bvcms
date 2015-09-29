@@ -500,11 +500,5 @@ namespace CmsData
             RegSettingXml = Util.Serialize(os);
             RegSetting = RegistrationSettingsParser.Parser.Output(os);
         }
-        public string GetRegSetting()
-        {
-            if (Util2.UseXmlRegistrations)
-                return RegSettingXml;
-            return RegSetting;
-        }
     }
 }

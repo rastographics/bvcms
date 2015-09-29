@@ -1490,7 +1490,7 @@ namespace CmsData
         public Registration.Settings CreateRegistrationSettings(int orgId)
         {
             var o = LoadOrganizationById(orgId);
-            return Registration.Settings.CreateSettings(o.GetRegSetting(), this, orgId);
+            return Registration.Settings.CreateSettings(o.RegSettingXml, this, orgId);
         }
         public Registration.Settings CreateRegistrationSettings(string s, int orgId)
         {
