@@ -13,7 +13,7 @@ namespace CmsData.Classes.GoogleCloudMessaging
         public bool content_available = true;
 
         // Both: Used to set how quickly the message is delivered
-        public string priority = "normal"; // Can use "high" for immediate delivery
+        public string priority = "high"; // Can use "high" for immediate delivery
 
         // Both: Used to test, will not deliver to device
         public bool dry_run = false;
@@ -24,7 +24,7 @@ namespace CmsData.Classes.GoogleCloudMessaging
             this.data = data;
         }
 
-        public GCMMessage(List<int> peopleIDs, string exclude, GCMData data, GCMPayload notificatio)
+        public GCMMessage(List<int> peopleIDs, string exclude, GCMData data, GCMPayload notification)
         {
             this.data = data;
             this.notification = notification;

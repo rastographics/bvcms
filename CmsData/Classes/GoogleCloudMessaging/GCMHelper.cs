@@ -41,9 +41,8 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
         public static void sendRefresh(int peopleID, int type)
         {
-            GCMPayload notification = new GCMPayload( "Refresh", "Refresh" );
             GCMData data = new GCMData(type, ACTION_REFRESH, 0, "", "");
-            GCMMessage msg = new GCMMessage(peopleID, null, data, notification);
+            GCMMessage msg = new GCMMessage(peopleID, null, data, null);
             send(msg);
         }
 
@@ -51,9 +50,8 @@ namespace CmsData.Classes.GoogleCloudMessaging
         {
             if (peopleIDs.Count == 0) return;
 
-            GCMPayload notification = new GCMPayload("Refresh", "Refresh");
             GCMData data = new GCMData(type, ACTION_REFRESH, 0, "", "");
-            GCMMessage msg = new GCMMessage(peopleIDs, null, data, notification);
+            GCMMessage msg = new GCMMessage(peopleIDs, null, data, null);
             send(msg);
         }
 

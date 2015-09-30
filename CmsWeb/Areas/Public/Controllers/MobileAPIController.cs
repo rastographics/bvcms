@@ -15,7 +15,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.IO;
 using UtilityExtensions;
-using CmsData.Classes.GoogleCloudMessaging;
 using DbUtil = CmsData.DbUtil;
 using System.Web;
 
@@ -53,6 +52,8 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (!result.IsValid)
                 return AuthorizationError(result);
+
+            savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
 
             MobileSettings ms = getUserInfo();
 
@@ -120,6 +121,8 @@ namespace CmsWeb.Areas.Public.Controllers
                 return BaseMessage.createErrorReturn("You are not authorized!", MapStatusToError(result.Status));
 
             AuthenticateUser(requirePin: true);
+
+            savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
 
             MobileSettings ms = getUserInfo();
 
@@ -296,6 +299,46 @@ namespace CmsWeb.Areas.Public.Controllers
             return ms;
         }
 
+        private void savePushID(int peopleID, int device, string pushID)
+        {
+            if (pushID == null || pushID.Length == 0) return;
+
+            var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
+                                where e.RegistrationId == pushID
+                                select e).FirstOrDefault();
+
+            if (registration == null)
+            {
+                MobileAppPushRegistration register = new MobileAppPushRegistration();
+                register.Enabled = true;
+                register.PeopleId = peopleID;
+                register.Type = device;
+                register.RegistrationId = pushID;
+
+                DbUtil.Db.MobileAppPushRegistrations.InsertOnSubmit(register);
+                DbUtil.Db.SubmitChanges();
+            }
+        }
+
+        private bool enablePushID(string pushID, bool enabled)
+        {
+            var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
+                                where e.RegistrationId == pushID
+                                select e).FirstOrDefault();
+
+            if (registration != null)
+            {
+                registration.Enabled = true;
+                DbUtil.Db.SubmitChanges();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         [HttpPost]
         public ActionResult RegisterPushID(string data)
         {
@@ -306,62 +349,27 @@ namespace CmsWeb.Areas.Public.Controllers
             BaseMessage dataIn = BaseMessage.createFromString(data);
             BaseMessage br = new BaseMessage();
 
-            var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
-                                where e.RegistrationId == dataIn.argString
-                                select e).FirstOrDefault();
-
             switch (dataIn.argInt)
             {
                 case 1: // Add
                 {
-                    if (registration == null)
-                    {
-                        MobileAppPushRegistration register = new MobileAppPushRegistration();
-                        register.Enabled = dataIn.argInt > 0;
-                        register.PeopleId = Util.UserPeopleId ?? 0;
-                        register.Type = dataIn.device;
-                        register.RegistrationId = dataIn.argString;
-
-                        DbUtil.Db.MobileAppPushRegistrations.InsertOnSubmit(register);
-                        DbUtil.Db.SubmitChanges();
-                        br.setNoError();
-                    }
-                    else
-                    {
-                        br.setNoError();
-                    }
-
+                    savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
+                    br.setNoError();
                     break;
                 }
 
                 case 2: // Enable - May not be used
                 {
-                    if (registration != null)
-                    {
-                        registration.Enabled = true;
-                        DbUtil.Db.SubmitChanges();
+                    if (enablePushID(dataIn.key, true))
                         br.setNoError();
-                    }
-                    else
-                    {
-                        br.setError(BaseMessage.API_PUSH_ID_DOESNT_EXISTS);
-                    }
 
                     break;
                 }
 
                 case 3: // Disable - May not be used
                 {
-                    if (registration != null)
-                    {
-                        registration.Enabled = false;
-                        DbUtil.Db.SubmitChanges();
+                    if (enablePushID(dataIn.key, false))
                         br.setNoError();
-                    }
-                    else
-                    {
-                        br.setError(BaseMessage.API_PUSH_ID_DOESNT_EXISTS);
-                    }
 
                     break;
                 }
@@ -370,71 +378,6 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             return br;
-        }
-
-        private void sendPushNotification()
-        {
-            //var ids = (from i in DbUtil.Db.MobileAppPushRegistrations
-            //           select i.RegistrationId).ToList<string>();
-
-            //GCMData messageData = new GCMData(0, 1, 0, "Test message");
-            //GCMMessage message = new GCMMessage(ids, messageData);
-            //GCMHelper.send(message);
-
-            //string deviceToken64 = "xtgRc+6lUO3Ymzf6R2iVaPXxMW8hadJ/kWQvOUTTQSw=";
-
-            //APNSConnection connection = new APNSConnection();
-            //connection.open();
-
-            //APNSAlert alert = new APNSAlert("New Notification", "You have a notification!");
-
-            //APNSMessage message = new APNSMessage();
-            //message.addAlert(alert);
-            //message.addSound("default");
-            //message.addCommand(3);
-
-            //APNSNotification notification = new APNSNotification(message, true);
-            //notification.setDeviceToken(deviceToken64);
-            //notification.sendViaConnection(connection);
-
-            //connection.close();
-
-            // OLD STUFF
-            //string json = "{\"aps\":{\"alert\":\"Test for push notification!\",\"sound\":\"default\"}}";
-
-            ////byte[] command = BitConverter.GetBytes(Convert.ToByte("2"));
-            //byte[] command = new byte[1] { 0x02 };
-
-            ////byte[] id = BitConverter.GetBytes(Convert.ToByte("1"));
-            //byte[] id = new byte[1] { 0x01 };
-            //byte[] size = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Convert.ToInt16(32)));
-            //byte[] token = Convert.FromBase64String(deviceToken64);
-
-            ////byte[] jsonid = BitConverter.GetBytes(Convert.ToByte("2"));
-            //byte[] jsonid = new byte[1] { 0x02 };
-            //byte[] jsonsize = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Convert.ToInt16(json.Length)));
-            //byte[] jsondata = Encoding.UTF8.GetBytes(json);
-
-            //int commandSize = 1 + size.Length + token.Length + 1 + jsonsize.Length + jsondata.Length;
-
-            //byte[] commandBytes = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(commandSize));
-
-            //stream.Write(command);
-            //stream.Write(commandBytes);
-
-            //stream.Write(id);
-            //stream.Write(size);
-            //stream.Write(token);
-
-            //stream.Write(jsonid);
-            //stream.Write(jsonsize);
-            //stream.Write(jsondata);
-
-            //stream.Close();
-            //stream.Dispose();
-
-            //client.Client.Close();
-            //client.Client.Dispose();
         }
 
         [HttpPost]
