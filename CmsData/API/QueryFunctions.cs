@@ -7,6 +7,8 @@ using UtilityExtensions;
 using IronPython.Hosting;
 using System.IO;
 using CmsData.Codes;
+using HandlebarsDotNet;
+using Microsoft.Scripting.Hosting;
 
 namespace CmsData
 {
@@ -45,18 +47,18 @@ namespace CmsData
             }
         }
 
-        public static string VitalStats(CMSDataContext Db)
+        public static string VitalStats(CMSDataContext db)
         {
-            var qf = new QueryFunctions(Db);
-            var script = Db.Content("VitalStats");
+            var script = db.Content("VitalStats");
             if (script == null)
                 return "no VitalStats script";
 
             if (!script.Body.Contains("class VitalStats"))
-                return RunScript(Db, script.Body);
+                return RunScript(db, script.Body);
 
             var engine = Python.CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script.Body);
+            var qf = new QueryFunctions(db);
 
             try
             {
@@ -64,14 +66,22 @@ namespace CmsData
                 var scope = engine.CreateScope();
                 code.Execute(scope);
 
-                dynamic VitalStats = scope.GetVariable("VitalStats");
-                dynamic m = VitalStats();
+                dynamic vitalStats = scope.GetVariable("VitalStats");
+                dynamic m = vitalStats();
                 return m.Run(qf);
             }
             catch (Exception ex)
             {
                 return "VitalStats script error: " + ex.Message;
             }
+        }
+
+        public string RenderTemplate(string source, object data)
+        {
+            CssStyle.RegisterHelpers();
+            var template = Handlebars.Compile(source);
+            var result = template(data);
+            return result;
         }
 
         public static string RunScript(CMSDataContext db, string script)
