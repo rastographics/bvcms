@@ -43,7 +43,7 @@ RETURN
 	FROM contributions c
 	JOIN dbo.People p ON p.PeopleId = c.CreditGiverId
 	JOIN lookup.MemberStatus ms ON p.MemberStatusId = ms.Id
-	JOIN lookup.EnvelopeOption op ON op.Id = p.ContributionOptionsId
+	LEFT JOIN lookup.EnvelopeOption op ON op.Id = p.ContributionOptionsId
 	LEFT OUTER JOIN dbo.Organizations o ON o.OrganizationId = p.BibleFellowshipClassId
 )
 GO

@@ -477,7 +477,7 @@ class VitalStats(object):
             m.ContributionTotals(53*7*2, 53*7+7, 0) / 52)
         sb.AppendLine(''</table>'')
         return sb.ToString()
-', '2013-09-09 23:32:14.270', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+', '2013-09-09 23:32:14.270', 1, 5, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (63, N'OneTimeConfirmation', N'Your link to manage your subscriptions', N'<html>
 <head>
 	<title></title>
