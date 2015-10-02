@@ -12,7 +12,8 @@ namespace CmsWeb.Controllers.Api
     {
         public ContributionsController()
         {
-            Mapper.CreateMap<Contribution, ApiContribution>();
+            Mapper.CreateMap<Contribution, ApiContribution>()
+                .ForMember(d => d.FamilyId, opt => opt.MapFrom(c => c.Person.FamilyId));
         }
 
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]

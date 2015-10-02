@@ -7,6 +7,7 @@ namespace CmsWeb.Models.Api
     public class ApiContribution
     {
         public int? PeopleId { get; set; }
+        public int? FamilyId { get; set; }
         public decimal? ContributionAmount { get; set; }
         public DateTime? ContributionDate { get; set; }
         public int FundId { get; set; }
