@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Web.Mvc;
 using CmsData;
 using CmsWeb.Areas.OnlineReg.Models;
@@ -74,7 +75,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             if (m.RegisterLinkMaster())
             {
-                if (m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
+                if (m.registerLinkType.StartsWith("registerlink") || m.registerLinkType == "masterlink" || User.Identity.IsAuthenticated)
                 {
                     TempData["token"] = m.registertag;
                     TempData["PeopleId"] = m.UserPeopleId ?? Util.UserPeopleId;

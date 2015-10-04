@@ -1,16 +1,41 @@
 ﻿@using CmsData
 @{
-  var q = DbUtil.Db.CurrentUser.Preferences;
+    var q = DbUtil.Db.CurrentUser.Preferences;
     ViewBag.Title = "UserPref";
     ViewBag.PageHeader = "UserPref";
     Layout = ViewExtensions2.TouchPointLayout();
+}
+@section scripts
+{
+  <script>
+    $(function () {
+      $("a.delete").click(function (ev) {
+        ev.preventDefault();
+        var href = this.href;
+        var tr = $(this).closest("tr");
+        tr.effect("highlight", {}, 500, function () {
+          $(this).remove();
+          $.get(href);
+        });
+        return false;
+      });
+    });
+  </script>
 }
 
 <h2>title</h2>
 <table class="table">
   <tr><th>Preference</th><th>Value</th></tr>
-@foreach (var p in q)
-{
-  <tr><td>@p.PreferenceX</td><td>@p.ValueX</td></tr>
-}
+  @foreach (var p in q)
+  {
+      <tr>
+        <td>@p.PreferenceX</td>
+        <td>@p.ValueX</td>
+        <td>
+          <a href="/UserPref/UnSet/@p.PreferenceX" class="delete btn btn-danger btn-sm">
+            <i class="fa fa-trash"></i> Delete
+          </a>
+        </td>
+      </tr>
+  }
 </table>

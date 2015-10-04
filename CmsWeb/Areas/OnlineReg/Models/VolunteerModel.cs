@@ -75,7 +75,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     var dt = Org.FirstMeetingDate ?? DateTime.MinValue;
                     if (dt == DateTime.MinValue || dt < DateTime.Today)
                         dt = DateTime.Today;
-                    _sunday = dt.AddDays(-(int) dt.DayOfWeek);
+                    _sunday = dt.AddDays(-(int)dt.DayOfWeek);
                 }
                 return _sunday.Value;
             }
@@ -94,7 +94,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public IEnumerable<List<Slot>> FetchSlotWeeks()
         {
+            var evexweeks = Org.GetExtra(DbUtil.Db, "ExcludeWeeks") ?? "";
+            var exweeks = evexweeks.Split(',').Select(ww => ww.ToInt()).ToArray();
             return from slot in FetchSlots()
+                   where !exweeks.Contains(slot.Week)
                    group slot by slot.Sunday
                    into g
                    where g.Any(gg => gg.Time > DateTime.Today)
@@ -163,7 +166,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                                select m.MeetingDate).ToList();
 
             if (Commit == null)
-                Commit = new DateTime[] {};
+                Commit = new DateTime[] { };
 
             var decommits = from currcommit in commitments
                             join newcommit in Commit on currcommit equals newcommit into j
@@ -200,7 +203,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                     where m.OrganizationId == OrgId
                     where m.MemberTypeId != MemberTypeCode.InActive
                     orderby m.Person.Name2
-                    select new {m.PeopleId, m.Person.Name};
+                    select new { m.PeopleId, m.Person.Name };
             return new SelectList(q, "PeopleId", "Name", PeopleId);
         }
 

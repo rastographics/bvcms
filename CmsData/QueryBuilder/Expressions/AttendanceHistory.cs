@@ -278,5 +278,25 @@ namespace CmsData
              * 0 ^ 0 = 0    NE ^ F = F = Committed
              */
         }
+        internal Expression FirstFamilyVisitAsOf()
+        {
+            var cdt = db.Setting("DbConvertedDate", "1/1/1900").ToDate();
+
+            if (!StartDate.HasValue)
+                return AlwaysFalse();
+            var enddt = EndDate?.AddHours(24) ?? DateTime.Today.AddHours(24);
+
+            var q = from fm in db.ViewFamilyFirstTimes
+                    where fm.CreatedDate > cdt
+                    where fm.FirstDate >= StartDate
+                    where fm.FirstDate < enddt
+                    select fm.FamilyId;
+
+            Expression<Func<Person, bool>> pred = p => q.Contains(p.FamilyId);
+            Expression expr = Expression.Invoke(pred, parm);
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
+                expr = Expression.Not(expr);
+            return expr;
+        }
     }
 }

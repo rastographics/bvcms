@@ -7,14 +7,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
+using CmsData.Registration;
 using CmsData.View;
 using CmsWeb.Areas.Search.Controllers;
 using CmsWeb.Models;
+using DocumentFormat.OpenXml.Math;
 using MoreLinq;
 using Newtonsoft.Json;
 using UtilityExtensions;
@@ -155,6 +159,57 @@ namespace CmsWeb.Areas.Search.Models
                 .ToDataTable().ToExcel("OrgsMembers.xlsx");
         }
 
+        public EpplusResult RegOptionsList()
+        {
+            var q = FetchOrgs();
+            var q2 = from os in q
+                     join op in DbUtil.Db.ViewRegsettingOptions on os.OrganizationId equals op.OrganizationId
+                     select op;
+            return q2.ToDataTable().ToExcel("RegOptions.xlsx");
+        }
+        public EpplusResult RegQuestionsUsage()
+        {
+            var q = FetchOrgs();
+            var q2 = from os in q
+                     join op in DbUtil.Db.ViewRegsettingCounts on os.OrganizationId equals op.OrganizationId
+                     select op;
+            return q2.ToDataTable().ToExcel("RegQuestionsUsage.xlsx");
+        }
+        public EpplusResult RegSettingUsages()
+        {
+            var q = FetchOrgs();
+            var q2 = from os in q
+                     join op in DbUtil.Db.ViewRegsettingUsages on os.OrganizationId equals op.OrganizationId
+                     select op;
+            return q2.ToDataTable().ToExcel("RegQuestionsUsage.xlsx");
+        }
+        public void RegSettingsXml(Stream stream)
+        {
+            var q = FetchOrgs();
+            var w = new CmsData.API.APIWriter(stream);
+            w.Start("OrgSearch");
+            foreach (var o in q)
+            {
+                var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                Util.Serialize(os, w.writer);
+            }
+            w.End();
+            w.writer.Flush();
+        }
+        public void RegMessagesXml(Stream stream, Settings.Messages messages)
+        {
+            var q = FetchOrgs();
+            var w = new CmsData.API.APIWriter(stream);
+            w.Start("OrgSearch");
+            foreach (var o in q)
+            {
+                var os = DbUtil.Db.CreateRegistrationSettings(o.OrganizationId);
+                os.WriteXmlMessages(w.writer, messages);
+            }
+            w.End();
+            w.writer.Flush();
+        }
+
         public int Count()
         {
             if (!_count.HasValue)
@@ -168,11 +223,11 @@ namespace CmsWeb.Areas.Search.Models
         }
         public bool IsFiltered()
         {
-            return Name.HasValue() 
-                || ProgramId > 0 
-                || (TypeId ?? 0) != 0 
-                || CampusId > 0 
-                || ScheduleId > 0 
+            return Name.HasValue()
+                || ProgramId > 0
+                || (TypeId ?? 0) != 0
+                || CampusId > 0
+                || ScheduleId > 0
                 || StatusId != 30
                 || OnlineReg > 0;
         }
@@ -393,7 +448,7 @@ namespace CmsWeb.Areas.Search.Models
                         Text = s.Description
                     };
             var list = q.ToList();
-            list.Insert(0, new SelectListItem {Value = "0", Text = "(not specified)"});
+            list.Insert(0, new SelectListItem { Value = "0", Text = "(not specified)" });
             return list;
         }
 
@@ -464,7 +519,7 @@ namespace CmsWeb.Areas.Search.Models
         public IEnumerable<SelectListItem> ScheduleIds()
         {
             var q = from sc in DbUtil.Db.OrgSchedules
-                    group sc by new {sc.ScheduleId, sc.MeetingTime}
+                    group sc by new { sc.ScheduleId, sc.MeetingTime }
                     into g
                     orderby g.Key.ScheduleId
                     where g.Key.ScheduleId != null
@@ -490,15 +545,15 @@ namespace CmsWeb.Areas.Search.Models
         public static IEnumerable<SelectListItem> OrgTypeFilters()
         {
             var list = OrgTypes().ToList();
-            list.Insert(0, new SelectListItem {Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Parent Org", Value = OrgType.ParentOrg.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Child Org", Value = OrgType.ChildOrg.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Orgs With Fees", Value = OrgType.Fees.ToString()});
-            list.Insert(0, new SelectListItem {Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString()});
-            list.Insert(0, new SelectListItem {Text = "(not specified)", Value = "0"});
+            list.Insert(0, new SelectListItem { Text = "Suspended Checkin", Value = OrgType.SuspendedCheckin.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Main Fellowship", Value = OrgType.MainFellowship.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Not Main Fellowship", Value = OrgType.NotMainFellowship.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Parent Org", Value = OrgType.ParentOrg.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Child Org", Value = OrgType.ChildOrg.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs Without Type", Value = OrgType.NoOrgType.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs With Fees", Value = OrgType.Fees.ToString() });
+            list.Insert(0, new SelectListItem { Text = "Orgs Without Fees", Value = OrgType.NoFees.ToString() });
+            list.Insert(0, new SelectListItem { Text = "(not specified)", Value = "0" });
             return list;
         }
 
@@ -528,12 +583,12 @@ namespace CmsWeb.Areas.Search.Models
                 {RegClass.ChildOfMaster, "(Child of Master Reg)"},
                 {RegClass.Standalone, "(StandAlone reg)"}
             };
-            list.AddRange(spec.Select(dd => new SelectListItem {Value = dd.Key.ToString(), Text = dd.Value}));
+            list.AddRange(spec.Select(dd => new SelectListItem { Value = dd.Key.ToString(), Text = dd.Value }));
 
             var codes = RegistrationTypeCode.GetCodePairs();
-            list.AddRange(codes.Select(dd => new SelectListItem {Value = dd.Key.ToString(), Text = dd.Value}));
+            list.AddRange(codes.Select(dd => new SelectListItem { Value = dd.Key.ToString(), Text = dd.Value }));
 
-            list.Add(new SelectListItem {Value = RegClass.MissionTrip.ToString(), Text = "Mission Trip"});
+            list.Add(new SelectListItem { Value = RegClass.MissionTrip.ToString(), Text = "Mission Trip" });
 
             return list;
         }
@@ -544,30 +599,14 @@ namespace CmsWeb.Areas.Search.Models
             if (sdt == null)
                 return DateTime.Now.Date.AddHours(8);
             var dt = Util.Now.Date;
-            dt = dt.AddDays(-(int) dt.DayOfWeek); // prev sunday
+            dt = dt.AddDays(-(int)dt.DayOfWeek); // prev sunday
             dt = dt.AddDays(sdt.Value.Day);
             if (dt < Util.Now.Date)
                 dt = dt.AddDays(7);
             return dt.Add(sdt.Value.TimeOfDay);
         }
 
-        private static string RecentAbsentsEmail(OrgSearchController c, IEnumerable<RecentAbsent> list)
-        {
-            var q = from p in list
-                    orderby p.Consecutive, p.Name2
-                    select p;
-            return ViewExtensions2.RenderPartialViewToString(c, "RecentAbsentsEmail", q);
-        }
-
-        private static string RecentVisitsEmail(OrgSearchController c, IEnumerable<OrgVisitorsAsOfDate> list)
-        {
-            var q = from p in list
-                    orderby p.LastAttended, p.LastName, p.PreferredName
-                    select p;
-            return ViewExtensions2.RenderPartialViewToString(c, "RecentVisitsEmail", q);
-        }
-
-        public Dictionary<Person, string> NoticesToSend(OrgSearchController c)
+        public Dictionary<Person, string> NoticesToSend()
         {
             var leaderNotices = new Dictionary<Person, string>();
 
@@ -589,39 +628,73 @@ namespace CmsWeb.Areas.Search.Models
                          into leaderlist
                          select leaderlist).ToList();
 
-            var sb2 = new StringBuilder("Notices sent to:</br>\n<table>\n");
+            CssStyle.RegisterHelpers();
+            var template = HandlebarsDotNet.Handlebars.Compile(Resource1.RecentVisitsAbsents);
+            var sb = new StringBuilder("Notices sent to:</br>\n<table>\n");
             foreach (var p in plist)
             {
-                var sb = new StringBuilder("The following meetings are ready to be viewed:<br/>\n");
-                var orgids = p.ToList();
-                var meetings = mlist.Where(m => orgids.Contains(m.OrganizationId)).ToList();
                 var leader = DbUtil.Db.LoadPersonById(p.Key);
+                var orgids = p.ToList();
+                var meetings =
+                    (from m in mlist
+                     where orgids.Contains(m.OrganizationId)
+                     let visitors = DbUtil.Db.OrgVisitorsAsOfDate(m.OrganizationId, m.Lastmeeting, true).ToList()
+                     let absents = (from a in alist where a.OrganizationId == m.OrganizationId select a).ToList()
+                     let org = DbUtil.Db.LoadOrganizationById(m.OrganizationId)
+                     select new
+                     {
+                         m.MeetingId,
+                         m.OrganizationId,
+                         LastMeeting = m.Lastmeeting.ToString2("g"),
+                         OrgName = Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location),
+                         m.LeaderName,
+                         ConsecutiveAbsentsThreshold = org.ConsecutiveAbsentsThreshold ?? 2,
+                         HasAbsents = absents.Any(),
+                         Absents = (from a in absents
+                                    select new
+                                    {
+                                        a.PeopleId,
+                                        a.Consecutive,
+                                        a.Name2,
+                                        HasHomePhone = a.HomePhone.HasValue(),
+                                        HomePhone = a.HomePhone.FmtFone("H"),
+                                        HasCellPhone = a.CellPhone.HasValue(),
+                                        CellPhone = a.CellPhone.FmtFone("C"),
+                                        HasEmail = a.EmailAddress.HasValue(),
+                                        a.EmailAddress,
+                                        MostRecentMeeting = a.Mostrecentmeeting.ToString2("d"),
+                                        a.LeaderName,
+                                        a.OrganizationName,
+                                        LastMeeting = a.Lastmeeting.ToString2("d"),
+                                    }).ToList(),
+                         HasVisits = visitors.Any(),
+                         Visits = (from a in visitors
+                                   select new
+                                   {
+                                       a.LastName,
+                                       a.PreferredName,
+                                       LastAttended = a.LastAttended.ToString2("d"),
+                                       HasHomePhone = a.HomePhone.HasValue(),
+                                       HomePhone = a.HomePhone.FmtFone("H"),
+                                       HasCellPhone = a.CellPhone.HasValue(),
+                                       CellPhone = a.CellPhone.FmtFone("C"),
+                                       HasEmail = a.Email.HasValue(),
+                                       a.Email,
+                                   }).ToList(),
+                     }).ToList();
                 foreach (var m in meetings)
-                {
-                    var orgname = Organization.FormatOrgName(m.OrganizationName, m.LeaderName, m.Location);
-                    sb.AppendFormat("<a href='{0}'>{1} - {2}</a><br/>\n",
-                        DbUtil.Db.ServerLink("/Meeting/" + m.MeetingId),
-                        orgname, m.Lastmeeting.FormatDateTm());
-                    sb2.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2:g}</td></tr>\n",
-                        leader.Name, orgname, m.Lastmeeting.FormatDateTm());
-                }
-                foreach (var m in meetings)
-                {
-                    var absents = alist.Where(a => a.OrganizationId == m.OrganizationId);
-                    var vlist = DbUtil.Db.OrgVisitorsAsOfDate(m.OrganizationId, m.Lastmeeting, true).ToList();
-                    sb.Append(RecentAbsentsEmail(c, absents));
-                    sb.Append(RecentVisitsEmail(c, vlist));
-                }
-                leaderNotices.Add(leader, sb.ToString());
+                    sb.Append($"<tr><td>{leader.Name}</td><td>{m.OrgName}</td><td>{m.LastMeeting:g}</td></tr>\n");
+
+                leaderNotices.Add(leader, template(meetings));
             }
-            sb2.Append("</table>\n");
-            noticelist = sb2.ToString();
+            sb.Append("</table>\n");
+            noticelist = sb.ToString();
             return leaderNotices;
         }
 
-        public void SendNotices(OrgSearchController c)
+        public void SendNotices()
         {
-            var leaders = NoticesToSend(c);
+            var leaders = NoticesToSend();
             foreach (var leader in leaders)
             {
                 DbUtil.Db.Email(DbUtil.Db.CurrentUser.Person.FromEmail, leader.Key, null,
@@ -763,5 +836,23 @@ Divisions: {Divisions}";
             public string Schedule => $"{MeetingTime:ddd h:mm tt}";
             public string Location { get; set; }
         }
+
+        public HtmlString NameHelp => new HtmlString(@"
+<p>Search by:</p>
+<ul>
+<li>OrganizationId</li>
+<li>Location</li>
+<li>Part of Name (of: organization, leader, division, or location)</li>
+</ul>
+<p>Advanced:</p>
+<ul>
+<li><code>ev:<em>name</em></code> has an ExtraValue like <em>name</em></li>
+<li><code>-ev:<em>name</em></code> does not have an ExtraValue like <em>name</em></li>
+<li><code>childof:<em>orgid</em></code> is a child org of the parent <em>orgid</em></li>
+<li><code>master:<em>orgid</em></code> is in the picklist of the master <em>orgid</em></li>
+<li><code>regsetting:<em>comma,separated,keywords</em></code> searches regsetting usage</li>
+</ul>
+<p>For more see <em><strong><a href='http://docs.touchpointsoftware.com/Organizations/OrgSearchNameAdvanced.html' target='_blank'>the documentation</a></p>
+");
     }
 }

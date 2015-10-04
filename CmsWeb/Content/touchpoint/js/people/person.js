@@ -467,11 +467,11 @@
         });
     });
 
-    $('#addrf').validate();
+//    $('#addrf').validate();
+//
+//    $('#addrp').validate();
 
-    $('#addrp').validate();
-
-    $('#basic').validate();
+    //$('#basic').validate();
 
     $("body").on("change", '.atck', function (ev) {
         var ck = $(this);

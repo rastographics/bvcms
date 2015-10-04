@@ -30,7 +30,7 @@ namespace CmsWeb.Areas.Org.Controllers
         [Authorize(Roles = "Edit")]
         public ActionResult MessagesEdit(int id)
         {
-            var m = new SettingsMessagesModel(id, formatHtml: true);
+            var m = new SettingsMessagesModel(id);
             return PartialView("Registration/MessagesEdit", m);
         }
 
@@ -119,7 +119,10 @@ namespace CmsWeb.Areas.Org.Controllers
                 if (org.RegistrationTypeId == RegistrationTypeCode.ChooseVolunteerTimes)
                     m.SendVolunteerReminders(id, emailall ?? false);
                 else
-                    m.SendEventReminders(id);
+                {
+                    var qid = DbUtil.Db.QueryInCurrentOrg().QueryId;
+                    m.SendEventReminders(qid);
+                }
             }
             catch (Exception ex)
             {

@@ -16,6 +16,8 @@ namespace CmsData.View
 		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
 		
 		
+		private int? _Id;
+		
 		private string _Flag;
 		
 		private string _Name;
@@ -28,6 +30,23 @@ namespace CmsData.View
 		}
 
 		
+		
+		[Column(Name="Id", Storage="_Id", DbType="int")]
+		public int? Id
+		{
+			get
+			{
+				return this._Id;
+			}
+
+			set
+			{
+				if (this._Id != value)
+					this._Id = value;
+			}
+
+		}
+
 		
 		[Column(Name="Flag", Storage="_Flag", DbType="nvarchar(200) NOT NULL")]
 		public string Flag

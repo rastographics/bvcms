@@ -276,7 +276,7 @@ namespace CmsData
 		}
 
 		
-		[Column(Name="ShirtSize", UpdateCheck=UpdateCheck.Never, Storage="_ShirtSize", DbType="nvarchar(20)")]
+		[Column(Name="ShirtSize", UpdateCheck=UpdateCheck.Never, Storage="_ShirtSize", DbType="nvarchar(50)")]
 		public string ShirtSize
 		{
 			get { return this._ShirtSize; }

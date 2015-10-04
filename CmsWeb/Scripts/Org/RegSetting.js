@@ -1,5 +1,5 @@
 ﻿$(function () {
-    
+
     $.InitFunctions.SettingFormsInit = function (f) {
         $('a.notifylist').SearchUsers({
             UpdateShared: function (topid, topid0, ele) {
@@ -28,11 +28,26 @@
                 CKEDITOR.instances['editor'].destroy();
 
             CKEDITOR.env.isCompatible = true;
+            CKEDITOR.plugins.addExternal('specialLink', '/content/touchpoint/lib/ckeditor/plugins/specialLink/', 'plugin.js');
+
+            $.fn.modal.Constructor.prototype.enforceFocus = function () {
+                var modalThis = this;
+                $(document).on('focusin.modal', function (e) {
+                    // Fix for CKEditor + Bootstrap IE issue with dropdowns on the toolbar
+                    // Adding additional condition '$(e.target.parentNode).hasClass('cke_contents cke_reset')' to
+                    // avoid setting focus back on the modal window.
+                    if (modalThis.$element[0] !== e.target && !modalThis.$element.has(e.target).length
+                        && $(e.target.parentNode).hasClass('cke_contents cke_reset')) {
+                        modalThis.$element.focus();
+                    }
+                });
+            };
 
             CKEDITOR.replace('editor', {
                 height: 200,
                 allowedContent: true,
-                customConfig: '/scripts/js/ckeditorconfig.js'
+                customConfig: '/scripts/js/ckeditorconfig.js',
+                extraPlugins: 'specialLink'
             });
         }
         if (xsDevice || smDevice) {
@@ -40,7 +55,7 @@
         } else {
             CKEDITOR.instances['editor'].setData($("#" + name).val());
         }
-        
+
         $('#editor-modal').modal('show');
 
         $("#save-edit").off("click").on("click", function (ev) {
@@ -68,32 +83,4 @@
         return false;
     });
 
-});
-
-CKEDITOR.on('dialogDefinition', function (ev) {
-    var dialogName = ev.data.name;
-    var dialogDefinition = ev.data.definition;
-    if (dialogName == 'link') {
-        var advancedTab = dialogDefinition.getContents('advanced');
-	    advancedTab.label = "SpecialLinks";
-        advancedTab.remove('advCSSClasses');
-        advancedTab.remove('advCharset');
-        advancedTab.remove('advContentType');
-        advancedTab.remove('advStyles');
-        advancedTab.remove('advAccessKey');
-        advancedTab.remove('advName');
-        advancedTab.remove('advId');
-        advancedTab.remove('advTabIndex');
-
-        var relField = advancedTab.get('advRel');
-        relField.label = "Sub-Group";
-        var titleField = advancedTab.get('advTitle');
-        titleField.label = "Message";
-        var idField = advancedTab.get('advLangCode');
-        idField.label = "OrgId/MeetingId";
-        var langdirField = advancedTab.get('advLangDir');
-        langdirField.label = "Confirmation";
-	    langdirField.items[1][0] = "Yes, send confirmation";
-	    langdirField.items[2][0] = "No, do not send confirmation";
-    }
 });

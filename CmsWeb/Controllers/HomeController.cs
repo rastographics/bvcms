@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -7,12 +8,16 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.UI;
 using CmsData;
+using CmsData.OnlineRegSummaryText;
 using CmsData.Registration;
+using CmsWeb.Areas.OnlineReg.Models;
 using CmsWeb.Areas.People.Models;
+using CmsWeb.Areas.Search.Models;
 using Dapper;
 using Newtonsoft.Json;
 using UtilityExtensions;
 using CmsWeb.Models;
+using HandlebarsDotNet;
 using HtmlAgilityPack;
 
 namespace CmsWeb.Controllers
@@ -53,11 +58,14 @@ namespace CmsWeb.Controllers
 
 #if DEBUG
         [HttpGet, Route("~/Test")]
-        public ActionResult Test()
+        public ActionResult Test(string id)
         {
-            var f = new CmsData.API.APIFunctions(DbUtil.Db);
-            var x = f.SqlScriptJson("FPUOrgExport");
-            return Content(x, "application/json");
+            return Content("ok");
+            var m = new OrgSearchModel()
+            {
+            };
+            var leaders = m.NoticesToSend();
+            return Content(leaders.First().Value);
         }
 #endif
 
@@ -150,9 +158,9 @@ namespace CmsWeb.Controllers
                 return Redirect(Request.UrlReferrer.OriginalString);
             return Redirect("/");
         }
-        public ActionResult UseXmlRegistrations(bool id)
+        public ActionResult UseNewDetails(bool id)
         {
-            Util2.UseXmlRegistrations = !id;
+            Util2.UseNewDetails = !id;
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);
@@ -160,7 +168,7 @@ namespace CmsWeb.Controllers
         }
         public ActionResult UseNewEditor(bool id)
         {
-            DbUtil.Db.SetUserPreference("UseNewEditor2", id ? "false" : "true");
+            DbUtil.Db.SetUserPreference("UseNewEditor3", id ? "false" : "true");
             DbUtil.Db.SubmitChanges();
             if (Request.UrlReferrer != null)
                 return Redirect(Request.UrlReferrer.OriginalString);
@@ -239,7 +247,7 @@ namespace CmsWeb.Controllers
             if (content == null)
                 return Content("no content");
             var cs = User.IsInRole("Finance")
-                ? Util.ConnectionString
+                ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             cn.Open();
@@ -274,7 +282,7 @@ namespace CmsWeb.Controllers
             if (content == null)
                 return Message("no content");
             var cs = User.IsInRole("Finance")
-                ? Util.ConnectionString
+                ? Util.ConnectionStringReadOnlyFinance
                 : Util.ConnectionStringReadOnly;
             var cn = new SqlConnection(cs);
             var d = Request.QueryString.AllKeys.ToDictionary(key => key, key => Request.QueryString[key]);
@@ -322,10 +330,10 @@ namespace CmsWeb.Controllers
         private string FetchPyScriptForm(string name)
         {
 #if DEBUG
-            return System.IO.File.ReadAllText(Server.MapPath("~/module1.py"));
-#else
-                return DbUtil.Db.ContentOfTypePythonScript(name);
+            if(name == "test")
+            return System.IO.File.ReadAllText(Server.MapPath("~/test.py"));
 #endif
+                return DbUtil.Db.ContentOfTypePythonScript(name);
         }
         [HttpGet, Route("~/PyScriptForm/{name}")]
         public ActionResult PyScriptForm(string name)

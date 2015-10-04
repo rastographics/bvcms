@@ -50,7 +50,7 @@ namespace CmsWeb.Areas.Main.Controllers
         public ActionResult List(string submit, CouponModel m)
         {
             if (submit == "Excel")
-                return m.Coupons2().ToExcel("Coupons.xlsx");
+                return m.CouponsAsDataTable().ToExcel("Coupons.xlsx");
             return View(m);
         }
     }

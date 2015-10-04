@@ -185,18 +185,17 @@ namespace CmsData
             {
                 db.TransactionPeople.DeleteAllOnSubmit(TransactionPeople);
                 TrySubmit(db, "Delete TransactionPeople");
-
                 foreach (var tp in tplist)
-                    db.TransactionPeople.InsertOnSubmit(new TransactionPerson
-                    {
-                        OrgId = tp.OrgId,
-                        Amt = tp.Amt,
-                        Id = tp.Id,
-                        PeopleId = targetid
-                    });
+                    if(!db.TransactionPeople.Any(tt => tt.Id == tp.Id && tt.PeopleId == targetid && tt.OrgId == tp.OrgId))
+                        db.TransactionPeople.InsertOnSubmit(new TransactionPerson
+                        {
+                            OrgId = tp.OrgId,
+                            Amt = tp.Amt,
+                            Id = tp.Id,
+                            PeopleId = targetid
+                        });
                 TrySubmit(db, "Add TransactionPeople");
             }
-
             var q = from a in db.Attends
                     where a.AttendanceFlag == true
                     where a.PeopleId == this.PeopleId
@@ -1636,15 +1635,16 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             return rf;
         }
 
-        public bool CanViewStatementFor(CMSDataContext Db, int id)
+        public bool CanViewStatementFor(CMSDataContext db, int id)
         {
+            // todo: improve performance
             bool canview = Util.UserPeopleId == id || HttpContext.Current.User.IsInRole("Finance");
             if (!canview)
             {
-                var p = Db.CurrentUserPerson;
+                var p = db.CurrentUserPerson;
                 if (p.SpouseId == id)
                 {
-                    var sp = Db.LoadPersonById(id);
+                    var sp = db.LoadPersonById(id);
                     if ((p.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint &&
                         (sp.ContributionOptionsId ?? StatementOptionCode.Joint) == StatementOptionCode.Joint)
                         canview = true;

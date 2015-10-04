@@ -59,6 +59,7 @@ namespace CmsWeb.Areas.Setup.Models
                        && op.PeopleId == om.PeopleId
                        && op.Organization.DivOrgs.Any(dd => dd.DivId == todiv))
                     where pc != null
+                    where om.OrganizationId != pc.OrganizationId // should not promote to same class
                     select new { om, pc };
             var list = new Dictionary<int, Organization>();
             var qlist = q.ToList();

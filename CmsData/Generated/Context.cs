@@ -1800,6 +1800,12 @@ namespace CmsData
 
         }
 
+        public Table< View.FamilyFirstTime> ViewFamilyFirstTimes
+        {
+            get { return GetTable< View.FamilyFirstTime>(); }
+
+        }
+
         public Table< View.FirstName> ViewFirstNames
         {
             get { return GetTable< View.FirstName>(); }
@@ -1953,6 +1959,12 @@ namespace CmsData
         public Table< View.RegsettingOption> ViewRegsettingOptions
         {
             get { return GetTable< View.RegsettingOption>(); }
+
+        }
+
+        public Table< View.RegsettingUsage> ViewRegsettingUsages
+        {
+            get { return GetTable< View.RegsettingUsage>(); }
 
         }
 
@@ -2513,6 +2525,17 @@ namespace CmsData
                     categoryid,
                     pagenum,
                     pagesize
+                );
+        }
+
+        [Function(Name="dbo.FamilyMembers", IsComposable = true)]
+        public IQueryable< View.FamilyMember > FamilyMembers(
+            [Parameter(DbType="int")] int? pid
+            )
+        {
+            return CreateMethodCallQuery< View.FamilyMember>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    pid
                 );
         }
 
@@ -3444,6 +3467,17 @@ namespace CmsData
                     org,
                     days,
                     idstring
+                );
+        }
+
+        [Function(Name="dbo.RecentGiver", IsComposable = true)]
+        public IQueryable< View.RecentGiver > RecentGiver(
+            [Parameter(DbType="int")] int? days
+            )
+        {
+            return CreateMethodCallQuery< View.RecentGiver>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    days
                 );
         }
 

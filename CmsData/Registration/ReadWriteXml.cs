@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -15,14 +16,14 @@ namespace CmsData.Registration
     {
         public override string ToString()
         {
-            return Util2.UseXmlRegistrations ? Util.Serialize(this) : Parser.Output(this);
+            return Util.Serialize(this);
         }
 
         public static Settings CreateSettings(string s, CMSDataContext db, int orgId)
         {
             if (s == null)
                 s = "";
-            if (s.StartsWith("<?xml") || s.StartsWith("<Settings>"))
+            if (s.StartsWith("<?xml") || s.StartsWith("<Settings"))
             {
                 var settings = Util.DeSerialize<Settings>(s);
                 settings.Db = db;
@@ -59,6 +60,17 @@ namespace CmsData.Registration
                         SenderSubject = e.Element("Subject")?.Value;
                         SenderBody = e.Element("Body")?.Value;
                         break;
+                    case "Instructions":
+                        InstructionLogin = e.Element("Login")?.Value;
+                        InstructionSelect = e.Element("Select")?.Value;
+                        InstructionFind = e.Element("Find")?.Value;
+                        InstructionOptions = e.Element("Options")?.Value;
+                        InstructionSpecial = e.Element("Special")?.Value;
+                        InstructionSubmit = e.Element("Submit")?.Value;
+                        InstructionSorry = e.Element("Sorry")?.Value;
+                        ThankYouMessage = e.Element("Thanks")?.Value;
+                        Terms = e.Element("Terms")?.Value;
+                        break;
                     case "Fees":
                         Fee = e.Element("Fee")?.Value.ToDecimal();
                         Deposit = e.Element("Deposit")?.Value.ToDecimal();
@@ -94,17 +106,6 @@ namespace CmsData.Registration
                                 OrgId = ee.Attribute("OrgId")?.Value.ToInt(),
                                 Fee = ee.Attribute("Fee")?.Value.ToDecimal()
                             });
-                        break;
-                    case "Instructions":
-                        InstructionLogin = e.Element("Login")?.Value;
-                        InstructionSelect = e.Element("Select")?.Value;
-                        InstructionFind = e.Element("Find")?.Value;
-                        InstructionOptions = e.Element("Options")?.Value;
-                        InstructionSpecial = e.Element("Special")?.Value;
-                        InstructionSubmit = e.Element("Submit")?.Value;
-                        InstructionSorry = e.Element("Sorry")?.Value;
-                        ThankYouMessage = e.Element("Thanks")?.Value;
-                        Terms = e.Element("Terms")?.Value;
                         break;
                     case "Options":
                         ConfirmationTrackingCode = e.Element("ConfirmationTrackingCode")?.Value;
@@ -154,6 +155,7 @@ namespace CmsData.Registration
         public void WriteXml(XmlWriter writer)
         {
             var w = new APIWriter(writer);
+            w.Attr("id", OrgId);
             w.AddComment($"{Util.UserPeopleId} {DateTime.Now:g}");
 
             w.StartPending("Confirmation")
@@ -257,6 +259,70 @@ namespace CmsData.Registration
             foreach (var a in AskItems)
                 a.WriteXml(w);
             w.EndPending();
+        }
+        public class Messages
+        {
+            public bool Confirmation { get; set; }
+            public bool Sender { get; set; }
+            public bool Support { get; set; }
+            public bool Reminder { get; set; }
+            public bool Login { get; set; }
+            public bool Find { get; set; }
+            public bool Submit { get; set; }
+            public bool Select { get; set; }
+            public bool Sorry { get; set; }
+            public bool Options { get; set; }
+            public bool Special { get; set; }
+        }
+        public void WriteXmlMessages(XmlWriter writer, Messages messages)
+        {
+            var w = new APIWriter(writer);
+            w.Start("Messages");
+            w.Attr("id", OrgId);
+            w.AddComment($"{Util.UserPeopleId} {DateTime.Now:g}");
+
+            if(messages.Confirmation)
+                w.Start("Confirmation")
+                    .Add("Subject", Subject)
+                    .AddCdata("Body", Body)
+                    .End();
+
+            if(messages.Reminder)
+                w.Start("Reminder")
+                    .Add("Subject", ReminderSubject)
+                    .AddCdata("Body", ReminderBody)
+                    .End();
+
+            if(messages.Support)
+                w.Start("SupportEmail")
+                    .Add("Subject", SupportSubject)
+                    .AddCdata("Body", SupportBody)
+                    .End();
+
+            if(messages.Support)
+                w.Start("SenderEmail")
+                    .Add("Subject", SenderSubject)
+                    .AddCdata("Body", SenderBody)
+                    .End();
+
+            w.StartPending("Instructions");
+            if(messages.Login)
+                w.AddCdata("Login", InstructionLogin);
+            if (messages.Select)
+                w.AddCdata("Select", InstructionSelect);
+            if (messages.Find)
+                w.AddCdata("Find", InstructionFind);
+            if (messages.Options)
+                w.AddCdata("Options", InstructionOptions);
+            if (messages.Special)
+                w.AddCdata("Special", InstructionSpecial);
+            if (messages.Submit)
+                w.AddCdata("Submit", InstructionSubmit);
+            if (messages.Sorry)
+                w.AddCdata("Sorry", InstructionSorry);
+            w.EndPending();
+
+            w.End();
         }
         public XmlSchema GetSchema()
         {

@@ -65,7 +65,7 @@ namespace CmsWeb.Areas.Public.Controllers
             string link = null;
             DbUtil.Db.TrackClick(l, ref link);
             if(link.HasValue())
-                return Redirect( link );
+                return Redirect( Server.HtmlDecode(link) );
             return Redirect("/");
         }
     }

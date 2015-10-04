@@ -18,7 +18,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private List<Person> _notifyIds;
         private string _subject;
         private List<MailAddress> listMailAddress;
-        private bool usedAdminsForNotify;
+        public bool UsedAdminsForNotify;
 
         public bool EnrollAndConfirm()
         {
@@ -91,7 +91,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // notify the staff
             foreach (var p in List)
             {
-                var messageNotice = usedAdminsForNotify
+                var messageNotice = UsedAdminsForNotify
                     ? @"<span style='color:red'>THERE ARE NO NOTIFY IDS ON THIS REGISTRATION!!</span><br/>
 <a href='http://docs.touchpointsoftware.com/OnlineRegistration/MessagesSettings.html'>see documentation</a><br/><br/>"
                     : "";
@@ -101,7 +101,7 @@ Total Fee for this registrant: {p.TotalAmount():C}<br/>
 Total Fee for this registration: {TotalAmount():C}<br/>
 Total Fee paid today: {amtpaid:C}<br/>
 AmountDue: {Transaction.Amtdue:C}<br/>
-<pre>{p.PrepareSummaryText(Transaction)}</pre>");
+{p.PrepareSummaryText(Transaction)}");
             }
         }
 
@@ -217,7 +217,7 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
         {
             if (_notifyIds != null)
                 return _notifyIds;
-            return _notifyIds = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId, out usedAdminsForNotify);
+            return _notifyIds = DbUtil.Db.StaffPeopleForOrg(org.OrganizationId, out UsedAdminsForNotify);
         }
 
         private bool DoMissionTripSupporter()
@@ -329,22 +329,20 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
 
         private string DoEnrollments()
         {
-            const string amountRowFormat = @"
-<tr><td colspan='2'>
-    <table cellpadding='4'>
-        <tr><td>Total Paid</td><td>Total Due</td></tr>
-        <tr><td align='right'>{0:c}</td><td align='right'>{1:c}</td></tr>
-    </table>
-    </td>
-</tr>
+            string amountRowFormat = $@"
+<table>
+    <tr>
+        <td style='{CssStyle.LabelStyle}'>Total Paid</td>
+        <td style='{CssStyle.LabelStyle}'>Total Due</td>
+    </tr>
+    <tr>
+        <td style='{CssStyle.DataStyle}{CssStyle.AlignRight}'>{{0:c}}</td>
+        <td style='{CssStyle.DataStyle}{CssStyle.AlignRight}'>{{1:c}}</td></tr>
+</table>
 ";
-            const string summaryRow = @"
-<tr><td colspan='2'><hr/></td></tr>
-{0}
-</td></tr>";
 
             var amtpaid = Transaction.Amt ?? 0;
-            var details = new StringBuilder("<table cellpadding='4'>");
+            var details = new StringBuilder();
             if (Transaction.Amt > 0)
                 details.AppendFormat(amountRowFormat, amtpaid, Transaction.Amtdue);
             foreach (var p in List)
@@ -357,9 +355,8 @@ Total Fee paid for this registration session: {amtpaid:C}<br/>
                     p.CreateAccount();
                 DbUtil.Db.SubmitChanges();
 
-                details.AppendFormat(summaryRow, p.PrepareSummaryText(Transaction));
+                details.Append(p.PrepareSummaryText(Transaction));
             }
-            details.Append("\n</table>\n");
             return List[0].GetMessage(details.ToString());
         }
 

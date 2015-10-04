@@ -154,6 +154,7 @@ namespace CmsWeb.Models
                 Util2.OrgLeadersOnlyChecked = true;
             }
 
+            FormsAuthentication.SetAuthCookie(user.Username, false);
             ApiSessionModel.SaveApiSession(userStatus.User, requirePin, HttpContext.Current.Request.Headers["PIN"].ToInt2());
 
             return userStatus;

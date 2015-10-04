@@ -35,6 +35,9 @@
                     window.parent.displayEditor(this);
                 };
 
+              $("a").bind('click', function() {
+                return false;
+              });
                 $('div[bvedit],div.bvedit').bind('click', $.hClick).addClass("ti");
                 $('td[bvrepeat]').mouseenter($.hHoverIn).mouseleave($.hHoverOut);
 

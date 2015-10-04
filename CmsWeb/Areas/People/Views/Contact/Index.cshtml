@@ -10,12 +10,12 @@
   <div class="col-sm-12 col-md-9 col-lg-7">
     @Html.Partial("ContactDisplay", Model)
     <ul class="nav nav-tabs" id="special-content-tabs">
-      <li><a href="#ministry-team" aria-controls="ministry-team" data-toggle="tab">Ministry Team</a></li>
-      <li class="active"><a href="#contactees" aria-controls="contactees" data-toggle="tab">Those Contacted</a></li>
+      <li><a href="#ministryTeamTab" aria-controls="ministryTeamTab" data-toggle="tab">Ministry Team</a></li>
+      <li class="active"><a href="#contacteesTab" aria-controls="contacteesTab" data-toggle="tab">Those Contacted</a></li>
     </ul>
     <div class="tab-content">
-      <div class="tab-pane fade" id="ministry-team">
-        <div class="row hidden-xs">
+      <div class="tab-pane fade" id="ministryTeamTab">
+        <div class="row">
           <div class="col-sm-12">
             <div class="pull-right">
               <a href="/Contact2/ConvertContactorsToQuery/@Model.ContactId" class="btn btn-default">Convert to Search</a>
@@ -34,8 +34,8 @@
           </div>
         </div>
       </div>
-      <div class="tab-pane fade in active" id="contactees">
-        <div class="row hidden-xs">
+      <div class="tab-pane fade in active" id="contacteesTab">
+        <div class="row">
           <div class="col-sm-12">
             <div class="pull-right">
               <a href="/Contact2/ConvertContacteesToQuery/@Model.ContactId" class="btn btn-default">Convert to Search</a>

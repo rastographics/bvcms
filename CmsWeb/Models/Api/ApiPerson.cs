@@ -25,5 +25,7 @@ namespace CmsWeb.Models.Api
         public string HomePhone { get; set; }
         public string WorkPhone { get; set; }
         public string CellPhone { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
     }
 }

@@ -6,10 +6,9 @@
         {
             <tr>
                 <td nowrap>
-                    Choose <a href="/OnlineReg/RegisterFamilyMember/@fm.PeopleId" class="submitlink">@fm.Name</a> (@fm.Age)
+                    Choose <a id="fm-@fm.PeopleId" href="/OnlineReg/RegisterFamilyMember/@fm.PeopleId" class="submitlink">@fm.Name</a> (@fm.Age)
                 </td>
                 <td>
-                    @Html.ValidationMessage2("age-" + fm.PeopleId)
                     @Html.ValidationMessage2("fammember-" + fm.PeopleId)
                 </td>
             </tr>

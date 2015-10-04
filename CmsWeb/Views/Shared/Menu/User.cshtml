@@ -1,11 +1,11 @@
 ﻿@{
     var finance = User.IsInRole("Finance");
-    var allowoldeditor = User.IsInRole("AllowOldEditor");
+    var alloweditorchoice = User.IsInRole("Developer");
     var targetperson = Util2.TargetLinkPeople;
     var targetorg = Util2.TargetLinkOrg;
     var useneweditor = Util2.UseNewEditor;
     var testnofinance = ((string)HttpContext.Current.Session["testnofinance"]) == "true";
-    var usexmlregistrations = Util2.UseXmlRegistrations;
+    var usenewdetails = Util2.UseNewDetails;
     var developer = User.IsInRole("Developer");
 }
 <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="me">
@@ -23,7 +23,7 @@
   @Helper.LiAnchorLink("Profile", "/Person2/" + Util.UserPeopleId)
   @Helper.LiAnchorLink("Change Password", "/Account/ChangePassword/")
   <li class="divider"></li>
-  @if (allowoldeditor)
+  @if (alloweditorchoice)
   {
       <li>
         <a href="/Home/UseNewEditor/@Html.Raw(useneweditor)">
@@ -83,8 +83,8 @@
   @if (developer)
   {
     <li>
-        <a href="/Home/UseXmlRegistrations/@Html.Raw(usexmlregistrations)">
-            @if (usexmlregistrations)
+        <a href="/Home/UseNewDetails/@Html.Raw(usenewdetails)">
+            @if (usenewdetails)
             {
                 <i class="dropdown-icon fa fa-toggle-on" style="color: #5cb85c"></i>
             }
@@ -92,7 +92,7 @@
             {
                 <i class="dropdown-icon fa fa-toggle-off"></i>
             }
-            <span>&nbsp;&nbsp;Use Xml Registrations</span>
+            <span>&nbsp;&nbsp;Use New Details (do not use)</span>
         </a>
     </li>
   }

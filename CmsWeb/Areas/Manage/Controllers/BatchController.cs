@@ -1,104 +1,22 @@
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Web.Mvc;
 using CmsData;
-using CmsWeb.Code;
+using CmsWeb.Areas.Manage.Models;
+using CmsWeb.Areas.Manage.Models.BatchModel;
 using CmsWeb.Models;
 using LumenWorks.Framework.IO.Csv;
 using UtilityExtensions;
-using Alias = System.Threading.Tasks;
 
 namespace CmsWeb.Areas.Manage.Controllers
 {
     [ValidateInput(false)]
     [RouteArea("Manage", AreaPrefix = "Batch"), Route("{action}/{id?}")]
-    public class BatchController : CmsStaffAsyncController
+    public class BatchController : CmsStaffController
     {
-        [Authorize(Roles = "Admin")]
-        public ActionResult MoveAndDelete()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [AsyncTimeout(600000)]
-        public void MoveAndDeleteAsync(string text)
-        {
-            AsyncManager.OutstandingOperations.Increment();
-            var host = Util.Host;
-            ThreadPool.QueueUserWorkItem(e =>
-            {
-                var sb = new StringBuilder();
-                sb.Append("<h2>done</h2>\n<p><a href='/'>home</a></p>\n");
-                using (var csv = new CsvReader(new StringReader(text), false, '\t'))
-                {
-                    while (csv.ReadNextRecord())
-                    {
-                        if (csv.FieldCount != 2)
-                        {
-                            sb.AppendFormat("expected two ids, row {0}<br/>\n", csv[0]);
-                            continue;
-                        }
-
-                        var fromid = csv[0].ToInt();
-                        var toid = csv[1].ToInt();
-                        var Db = DbUtil.Create(host);
-                        var p = Db.LoadPersonById(fromid);
-
-                        if (p == null)
-                        {
-                            sb.AppendFormat("fromid {0} not found<br/>\n", fromid);
-                            Db.Dispose();
-                            continue;
-                        }
-                        var tp = Db.LoadPersonById(toid);
-                        if (tp == null)
-                        {
-                            sb.AppendFormat("toid {0} not found<br/>\n", toid);
-                            Db.Dispose();
-                            continue;
-                        }
-                        try
-                        {
-                            p.MovePersonStuff(Db, toid);
-                            Db.SubmitChanges();
-                        }
-                        catch (Exception ex)
-                        {
-                            sb.AppendFormat("error on move ({0}, {1}): {2}<br/>\n", fromid, toid, ex.Message);
-                            Db.Dispose();
-                            continue;
-                        }
-                        try
-                        {
-                            Db.PurgePerson(fromid);
-                            sb.AppendFormat("moved ({0}, {1}) successful<br/>\n", fromid, toid);
-                        }
-                        catch (Exception ex)
-                        {
-                            sb.AppendFormat("error on delete ({0}): {1}<br/>\n", fromid, ex.Message);
-                        }
-                        finally
-                        {
-                            Db.Dispose();
-                        }
-                    }
-                }
-                AsyncManager.Parameters["results"] = sb.ToString();
-                AsyncManager.OutstandingOperations.Decrement();
-            });
-        }
-
-        public ActionResult MoveAndDeleteCompleted(string results)
-        {
-            return Content(results);
-        }
-
         public ActionResult Grade(string text)
         {
             if (Request.HttpMethod.ToUpper() == "GET")
@@ -109,7 +27,7 @@ namespace CmsWeb.Areas.Manage.Controllers
             var batch = from s in text.Split('\n')
                         where s.HasValue()
                         let a = s.SplitStr("\t", 3)
-                        select new {pid = a[0].ToInt(), oid = a[1].ToInt(), grade = a[2].ToInt()};
+                        select new { pid = a[0].ToInt(), oid = a[1].ToInt(), grade = a[2].ToInt() };
             foreach (var i in batch)
             {
                 var m = DbUtil.Db.OrganizationMembers.Single(om => om.OrganizationId == i.oid && om.PeopleId == i.pid);
@@ -121,185 +39,100 @@ namespace CmsWeb.Areas.Manage.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        public ActionResult RegistrationMail(string text)
-        {
-            if (Request.HttpMethod.ToUpper() == "GET")
-            {
-                ViewData["text"] = "";
-                return View();
-            }
-            var batch = from s in text.Split('\n')
-                        where s.HasValue()
-                        let a = s.SplitStr("\t", 2)
-                        select new {pid = a[0].ToInt(), em = a[1]};
-            foreach (var i in batch)
-            {
-                var m = DbUtil.Db.OrganizationMembers.SingleOrDefault(om => om.OrganizationId == 88485 && om.PeopleId == i.pid);
-                if (m == null)
-                    continue;
-                m.RegisterEmail = i.em;
-            }
-            DbUtil.Db.SubmitChanges();
-
-            return Content("done");
-        }
-
-        [Authorize(Roles = "Admin")]
         public ActionResult UpdateOrg()
         {
-            ViewData["text"] = "";
-            return View();
+            ViewBag.Title = "Update Oranizations";
+            ViewBag.PageHeader = "Batch Update Oranizations from spreadsheet";
+            ViewBag.text = "";
+            ViewBag.action = "/Batch/UpdateOrg";
+            return View("BatchUpdate");
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public ActionResult UpdateOrg(string text)
         {
-            var csv = new CsvReader(new StringReader(text), true, '\t');
-            var cols = csv.GetFieldHeaders();
-
-            while (csv.ReadNextRecord())
+            try
             {
-                var oid = csv[0].ToInt();
-                var o = DbUtil.Db.LoadOrganizationById(oid);
-                for (var c = 1; c < csv.FieldCount; c++)
-                {
-                    var val = csv[c].Trim();
-                    var name = cols[c].Trim();
-                    switch (name)
-                    {
-                        case "Campus":
-                            if (val.AllDigits())
-                            {
-                                o.CampusId = val.ToInt();
-                                if (o.CampusId == 0)
-                                    o.CampusId = null;
-                            }
-                            break;
-                        case "CanSelfCheckin":
-                            o.CanSelfCheckin = val.ToBool2();
-                            break;
-                        case "RegStart":
-                            o.RegStart = val.ToDate();
-                            break;
-                        case "RegEnd":
-                            o.RegEnd = val.ToDate();
-                            break;
-                        case "Schedule":
-                            if (val.HasValue() && val.NotEqual("None"))
-                            {
-                                var sc = o.OrgSchedules.FirstOrDefault();
-                                var scin = Organization.ParseSchedule(val);
-                                if (sc != null)
-                                {
-                                    sc.SchedDay = scin.SchedDay;
-                                    sc.SchedTime = scin.SchedTime;
-                                }
-                                else
-                                    o.OrgSchedules.Add(scin);
-                            }
-                            if (val.Equal("None"))
-                                DbUtil.Db.OrgSchedules.DeleteAllOnSubmit(o.OrgSchedules);
-                            break;
-                        case "BirthDayStart":
-                            o.BirthDayStart = val.ToDate();
-                            break;
-                        case "BirthDayEnd":
-                            o.BirthDayEnd = val.ToDate();
-                            break;
-                        case "EntryPoint":
-                            if (val.AllDigits())
-                            {
-                                var id = val.ToInt();
-                                if (id > 0)
-                                    o.EntryPointId = id;
-                            }
-                            break;
-                        case "LeaderType":
-                            if (val.AllDigits())
-                            {
-                                var id = val.ToInt();
-                                if (id > 0)
-                                    o.LeaderMemberTypeId = id;
-                            }
-                            break;
-                        case "SecurityType":
-                            o.SecurityTypeId = val.Equal("LeadersOnly") ? 2 : val.Equal("UnShared") ? 3 : 0;
-                            break;
-                        case "FirstMeeting":
-                            o.FirstMeetingDate = val.ToDate();
-                            break;
-                        case "Gender":
-                            o.GenderId = val.Equal("Male") ? 1 : val.Equal("Female") ? (int?) 2 : null;
-                            break;
-                        case "GradeAgeStart":
-                            o.GradeAgeStart = val.ToInt2();
-                            break;
-                        case "MainFellowshipOrg":
-                            o.IsBibleFellowshipOrg = val.ToBool2();
-                            break;
-                        case "LastDayBeforeExtra":
-                            o.LastDayBeforeExtra = val.ToDate();
-                            break;
-                        case "LastMeeting":
-                            o.LastMeetingDate = val.ToDate();
-                            break;
-                        case "Limit":
-                            o.Limit = val.ToInt2();
-                            break;
-                        case "Location":
-                            o.Location = val;
-                            break;
-                        case "AppCategory":
-                            o.AppCategory = val;
-                            break;
-                        case "PublicSortOrder":
-                            o.PublicSortOrder = val;
-                            break;
-                        case "UseRegisterLink2":
-                            o.UseRegisterLink2 = val.ToBool2();
-                            break;
-                        case "Name":
-                            o.OrganizationName = val;
-                            break;
-                        case "NoSecurityLabel":
-                            o.NoSecurityLabel = val.ToBool2();
-                            break;
-                        case "NumCheckInLabels":
-                            o.NumCheckInLabels = val.ToInt2();
-                            break;
-                        case "NumWorkerCheckInLabels":
-                            o.NumWorkerCheckInLabels = val.ToInt2();
-                            break;
-                        case "OnLineCatalogSort":
-                            o.OnLineCatalogSort = val == "0" ? null : val.ToInt2();
-                            break;
-                        case "OrganizationStatusId":
-                            o.OrganizationStatusId = val.ToInt();
-                            break;
-                        case "PhoneNumber":
-                            o.PhoneNumber = val;
-                            break;
-                        case "Description":
-                            o.Description = val;
-                            break;
-                        case "RollSheetVisitorWks":
-                            o.RollSheetVisitorWks = val == "0" ? null : val.ToInt2();
-                            break;
-
-                        default:
-                            if (name.EndsWith(".ev"))
-                                if (val.HasValue())
-                                {
-                                    var a = name.Substring(0, name.Length - 3);
-                                    o.AddEditExtraData(a, val);
-                                }
-                            break;
-                    }
-                    DbUtil.Db.SubmitChanges();
-                }
+                BatchModel.UpdateOrgs(text);
+                return Content("Organizations were successfully updated.");
             }
-            return Content("Organizations were successfully updated.");
+            catch (Exception ex)
+            {
+                return AjaxErrorMessage(ex);
+            }
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateRegSettings()
+        {
+            ViewBag.Title = "Update Registration Settings";
+            ViewBag.PageHeader = "Batch Update Registration Settings from xml";
+            ViewBag.text = "";
+            ViewBag.action = "/Batch/UpdateRegSettings";
+            return View("BatchUpdate");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateRegSettings(string text)
+        {
+            try
+            {
+                BatchRegSettings.Update(text);
+                return Content("<strong>Success!</strong> RegSettings were successfully updated.");
+            }
+            catch (Exception ex)
+            {
+                return AjaxErrorMessage(ex);
+            }
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateRegOptions()
+        {
+            ViewBag.Title = "Update Registration Options";
+            ViewBag.PageHeader = "Batch Update Registration Options from spreadsheet";
+            ViewBag.text = "";
+            ViewBag.action = "/Batch/UpdateRegOptions";
+            return View("BatchUpdate");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateRegOptions(string text)
+        {
+            try
+            {
+                BatchRegOptions.Update(text);
+                return Content("RegOptions were successfully updated.");
+            }
+            catch (Exception ex)
+            {
+                return AjaxErrorMessage(ex);
+            }
+        }
+        [Authorize(Roles = "Admin")]
+        public ActionResult UpdateRegMessages()
+        {
+            ViewBag.Title = "Update Registration Messages";
+            ViewBag.PageHeader = "Batch Update Registration Messages";
+            ViewBag.text = "";
+            ViewBag.action = "/Batch/UpdateRegMessages";
+            return View("BatchUpdate");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public ActionResult UpdateRegMessages(string text)
+        {
+            try
+            {
+                BatchRegMessages.Update(text);
+                return Content("RegMessages were successfully updated.");
+            }
+            catch (Exception ex)
+            {
+                return AjaxErrorMessage(ex);
+            }
         }
 
         [HttpGet]
@@ -307,7 +140,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         public ActionResult UpdateFields() // UpdateForATag
         {
             var m = new UpdateFieldsModel();
-            var success = (string) TempData["success"];
+            var success = (string)TempData["success"];
             if (success.HasValue())
                 ViewData["success"] = success;
             ViewData["text"] = "";
@@ -318,92 +151,11 @@ namespace CmsWeb.Areas.Manage.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult UpdateLookupValueSelection(string field)
         {
-            IEnumerable<CodeValueItem> m = null;
-            var lookups = new CodeValueModel();
-            switch (field)
-            {
-                case "Approval Codes":
-                    m = lookups.VolunteerCodes();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Baptism Status":
-                    m = lookups.BaptismStatusList();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Baptism Type":
-                    m = lookups.BaptismTypeList();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Bad Address Flag":
-                    m = UpdateFieldsModel.BadAddressFlag();
-                    ViewBag.UseCode = true;
-                    break;
-                case "Campus":
-                    m = lookups.AllCampuses();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Statement Options":
-                    m = lookups.EnvelopeOptionList();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Electronic Statement":
-                    m = UpdateFieldsModel.ElectronicStatement();
-                    ViewBag.UseCode = true;
-                    break;
-                case "Decision Type":
-                    m = lookups.DecisionTypeList();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Do Not Mail":
-                    m = UpdateFieldsModel.DoNotMail();
-                    ViewBag.UseCode = true;
-                    break;
-                case "Drop Type":
-                    m = lookups.DropTypeList();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Envelope Options":
-                    m = lookups.EnvelopeOptionList();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Entry Point":
-                    m = lookups.EntryPoints();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Family Position":
-                    m = lookups.FamilyPositionCodes();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Gender":
-                    m = lookups.GenderCodes();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Grade":
-                    m = UpdateFieldsModel.Grades();
-                    ViewBag.UseCode = true;
-                    break;
-                case "Join Type":
-                    m = lookups.JoinTypeList();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Marital Status":
-                    m = lookups.MaritalStatusCodes();
-                    ViewBag.UseCode = false;
-                    break;
-                case "Member Status":
-                    m = lookups.MemberStatusCodes();
-                    ViewBag.UseCode = false;
-                    break;
-                case "New Member Class":
-                    m = lookups.NewMemberClassStatusList();
-                    ViewBag.UseCode = false;
-                    break;
-                case "ReceiveSMS":
-                    m = UpdateFieldsModel.ReceiveSMS();
-                    ViewBag.UseCode = true;
-                    break;
-            }
+            bool useCode = false;
+            var m = UpdateFieldsLookups.Fetch(field, ref useCode);
+
             ViewBag.FieldName = field;
+            ViewBag.UseCode = useCode;
             return View(m);
         }
 
@@ -435,16 +187,7 @@ namespace CmsWeb.Areas.Manage.Controllers
         [HttpPost]
         public ActionResult UpdateStatusFlags(FormCollection formCollection)
         {
-            DbUtil.Db.DeleteQueryBitTags();
-            var qbits = DbUtil.Db.StatusFlags().ToList();
-            foreach (var a in qbits)
-            {
-                var t = DbUtil.Db.FetchOrCreateTag(a[0], null, DbUtil.TagTypeId_StatusFlags);
-                var qq = DbUtil.Db.PeopleQuery2(a[0] + ":" + a[1]);
-                if (qq == null)
-                    continue;
-                DbUtil.Db.TagAll2(qq, t);
-            }
+            DbUtil.Db.UpdateStatusFlags();
             return Content("Status flags were successfully updated.");
         }
 
@@ -455,91 +198,22 @@ namespace CmsWeb.Areas.Manage.Controllers
             return View("FindTagPeople0");
         }
 
-        [HttpPost]
-        private string FindColumn(Dictionary<string, int> names, string[] a, string col)
-        {
-            if (names.ContainsKey(col))
-                return a[names[col]];
-            return null;
-        }
-
-        private string FindColumnDigits(Dictionary<string, int> names, string[] a, string col)
-        {
-            var s = FindColumn(names, a, col);
-            if (s.HasValue())
-                return s.GetDigits();
-            return s;
-        }
-
-        private DateTime? FindColumnDate(Dictionary<string, int> names, string[] a, string col)
-        {
-            var s = FindColumn(names, a, col);
-            DateTime dt;
-            if (names.ContainsKey(col))
-                if (DateTime.TryParse(a[names[col]], out dt))
-                    return dt;
-            return null;
-        }
 
         [HttpPost]
         [Authorize(Roles = "Edit")]
         public ActionResult FindTagPeople(string text, string tagname)
         {
-            if (!tagname.HasValue())
-                return Content("no tag");
-            var csv = new CsvReader(new StringReader(text), false, '\t').ToList();
-
-            if (!csv.Any())
-                return Content("no data");
-            var line0 = csv.First().ToList();
-            var names = line0.ToDictionary(i => i.TrimEnd(),
-                i => line0.FindIndex(s => s == i));
-            var ActiveNames = new List<string>
+            try
             {
-                "First",
-                "Last",
-                "Birthday",
-                "Email",
-                "CellPhone",
-                "HomePhone"
-            };
-            var hasvalidcolumn = false;
-            foreach (var name in names.Keys)
-                if (ActiveNames.Contains(name))
-                {
-                    hasvalidcolumn = true;
-                    break;
-                }
-            if (!hasvalidcolumn)
-                return Content("no valid column");
-
-
-            var list = new List<FindInfo>();
-            foreach (var a in csv.Skip(1))
-            {
-                var row = new FindInfo();
-                row.First = FindColumn(names, a, "First");
-                row.Last = FindColumn(names, a, "Last");
-                row.Birthday = FindColumnDate(names, a, "Birthday");
-                row.Email = FindColumn(names, a, "Email");
-                row.CellPhone = FindColumnDigits(names, a, "CellPhone");
-                row.HomePhone = FindColumnDigits(names, a, "HomePhone");
-
-                var pids = DbUtil.Db.FindPerson3(row.First, row.Last, row.Birthday, row.Email, row.CellPhone, row.HomePhone, null);
-                row.Found = pids.Count();
-                if (row.Found == 1)
-                    row.PeopleId = pids.Single().PeopleId.Value;
-                list.Add(row);
+                var list = BatchModel.FindTagPeople(text, tagname);
+                return View(list);
             }
-            var q = from pi in list
-                    where pi.PeopleId.HasValue
-                    select pi.PeopleId;
-            foreach (var pid in q.Distinct())
-                Person.Tag(DbUtil.Db, pid.Value, tagname, Util.UserPeopleId, DbUtil.TagTypeId_Personal);
-            DbUtil.Db.SubmitChanges();
-
-            return View(list);
+            catch (Exception ex)
+            {
+                return Message(ex);
+            }
         }
+
 
         [Authorize(Roles = "Edit")]
         public ActionResult FindTagEmail(string emails, string tagname)
@@ -604,30 +278,6 @@ namespace CmsWeb.Areas.Manage.Controllers
             return Redirect("/ExtraValue/Summary/People");
         }
 
-        [HttpGet]
-        public ActionResult TestScript()
-        {
-#if DEBUG
-            ViewBag.Script =
-                @"
-model.TestEmail = True
-model.EmailContent(
-    'RecentMovedOutOfTown',
-    819918, 'karen@touchpointsoftware.com', 'Karen Worrell',
-    'RecentMovedOutOfTownMessage')
-model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.DateTime )
-";
-#endif
-            return View();
-        }
-
-        [HttpPost]
-        public ActionResult RunTestScript(string script)
-        {
-            Util.IsInRoleEmailTest = true;
-            var ret = PythonEvents.RunScript(Util.Host, script);
-            return Content(ret);
-        }
 
         [HttpGet]
         [Authorize(Roles = "Finance")]
@@ -637,23 +287,23 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
             return Content("done");
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
-        public ActionResult SQLView(string id)
-        {
-            try
-            {
-                var cmd = new SqlCommand("select * from guest." + id.Replace(" ", ""));
-                cmd.Connection = new SqlConnection(Util.ConnectionString);
-                cmd.Connection.Open();
-                var rdr = cmd.ExecuteReader();
-                return View(rdr);
-            }
-            catch (Exception)
-            {
-                return Content("cannot find view guest." + id);
-            }
-        }
+//        [HttpGet]
+//        [Authorize(Roles = "Admin")]
+//        public ActionResult SQLView(string id)
+//        {
+//            try
+//            {
+//                var cmd = new SqlCommand("select * from guest." + id.Replace(" ", ""));
+//                cmd.Connection = new SqlConnection(Util.ConnectionString);
+//                cmd.Connection.Open();
+//                var rdr = cmd.ExecuteReader();
+//                return View(rdr);
+//            }
+//            catch (Exception)
+//            {
+//                return Content("cannot find view guest." + id);
+//            }
+//        }
 
         [HttpGet]
         [Authorize(Roles = "Admin")]
@@ -685,16 +335,5 @@ model.AddExtraValueDate( 'RecentMovedOutOfTown',  'RecentMoveNotified',  model.D
             return View();
         }
 
-        public class FindInfo
-        {
-            public int? PeopleId { get; set; }
-            public int Found { get; set; }
-            public string First { get; set; }
-            public string Last { get; set; }
-            public string Email { get; set; }
-            public string CellPhone { get; set; }
-            public string HomePhone { get; set; }
-            public DateTime? Birthday { get; set; }
-        }
     }
 }

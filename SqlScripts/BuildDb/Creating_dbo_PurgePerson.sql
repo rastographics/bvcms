@@ -50,6 +50,8 @@ BEGIN
 		DECLARE @t TABLE(id int)
 		INSERT INTO @t(id) SELECT MeetingId FROM dbo.Attend a WHERE a.PeopleId = @pid
 		
+		DELETE dbo.SubRequest WHERE RequestorId = @pid
+		DELETE dbo.SubRequest WHERE SubstituteId = @pid
 		DELETE dbo.Attend WHERE PeopleId = @pid
 		
 		DECLARE cur CURSOR FOR SELECT id FROM @t

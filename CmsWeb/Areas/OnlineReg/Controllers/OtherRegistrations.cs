@@ -31,7 +31,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             var smallgroup = li.a[4];
             DbUtil.LogActivity($"{votelinkSTR}{landingSTR}: {smallgroup}", li.oid, li.pid);
-            return View();
+            return View("Other/VoteLinkSg");
         }
 
         [HttpPost]
@@ -153,7 +153,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
             ViewBag.Regrets = regrets.ToString();
 
             DbUtil.LogActivity($"{rsvplinkSTR}{landingSTR}: {regrets}", li.oid, li.pid);
-            return View();
+            return View("Other/RsvpLinkSg");
         }
 
         [HttpPost]
@@ -304,7 +304,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
 
             ViewBag.Id = id;
             DbUtil.LogActivity($"{sendlinkSTR}{landingSTR}", li.oid, li.pid);
-            return View();
+            return View("Other/SendLink");
         }
 
         [HttpPost]
@@ -397,6 +397,7 @@ or contact the church if you need help.</p>
                    || setting.AskItems.Where(aa => aa.Type == "AskCheckboxes").Any(aa => ((AskCheckboxes) aa).IsSmallGroupFilled(GroupTags, sg));
         }
 
+        const string otherRegisterlinkmaster = "Other/RegisterLinkMaster";
         public ActionResult RegisterLinkMaster(int id)
         {
             var pid = TempData["PeopleId"] as int?;
@@ -404,13 +405,13 @@ or contact the church if you need help.</p>
 
             var m = new OnlineRegModel {Orgid = id};
             if (User.Identity.IsAuthenticated)
-                return View(m);
+                return View(otherRegisterlinkmaster, m);
 
             if (pid == null)
                 return Message("Must start with a registerlink");
 
             SetHeaders(id.ToInt());
-            return View(m);
+            return View(otherRegisterlinkmaster, m);
         }
 
         public class LinkInfo

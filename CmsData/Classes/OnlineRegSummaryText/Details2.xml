@@ -1,0 +1,255 @@
+﻿<table>
+{{#Registrant}}
+  <tr>
+    <td colspan='2' style='{{DataStyle}}{{BottomBorder}}'>
+      <p>
+        <hr/>
+        Registrant: {{Name}}<br/>
+        for {{OrganizationName}}
+      </p>
+    </td>
+  </tr>
+{{/Registrant}}
+{{#IfShowTransaction}}
+  <tr>
+    <td colspan='2' style='{{BottomBorder}}'>
+      <table>
+        <tr>
+          <td style='{{LabelStyle}}'>Registrant Fee</td>
+          <td style='{{LabelStyle}}'>Amount Paid</td>
+          <td style='{{LabelStyle}}'>Amount Due</td>
+        </tr>
+        <tr>
+          <td align='right' style='{{DataStyle}}'>{{IndAmt}}</td>
+          <td align='right' style='{{DataStyle}}'>{{TotalPaid}}</td>
+          <td align='right' style='{{DataStyle}}'>{{AmountDue}}</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+{{/IfShowTransaction}}
+{{#IfSupportMissionTrip}}
+  <tr>
+    <td colspan='2'>
+      <table>
+		{{#if HasGoer}}
+          <tr>
+            <td style='{{LabelStyle}}'>Support Mission Trip for</td>
+            <td style='{{DataStyle}}'>{{Goer.Name}}</td>
+          </tr>
+		{{/if}}
+		{{#if HasGeneralSupport}}
+          <tr>
+            <td style='{{LabelStyle}}'>Support Mission Trip</td>
+            <td style='{{DataStyle}}'>Any other participiants</td>
+          </tr>
+		{{/if}}
+      </table>
+    </td>
+  </tr>
+{{/IfSupportMissionTrip}}
+{{#AskItems}}
+	{{#IfAskDropdown}}
+    <tr>
+      <td></td>
+      <td style='{{DataLabelStyle}}'>{{OptionsLabel}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Selected</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{{SubGroupChoice}}}</td>
+    </tr>
+	{{/IfAskDropdown}}
+	{{#IfAskMenu}}
+		{{#if HasLabel}}
+      <tr><td style='{{LabelStyle}}'>Menu</td><td style='{{DataLabelStyle}}'>{{Label}}</td></tr>
+    {{/if}}
+  	{{#MenuItems}}
+			<tr>
+        <td style='{{LabelStyle}}{{BottomStyle}}'>{{TopLabel}}</td>
+        <td style='{{DataStyle}}{{BottomStyle}}'>{{Number}} {{Desc}} {{#if HasAmt}}(at {{DispAmt}}){{/if}}</td>
+      </tr>
+		{{/MenuItems}}
+  {{/IfAskMenu}}
+	{{#IfAskCheckboxes}}
+    {{#if HasLabel}}
+      <tr>
+        <td></td>
+        <td style='{{DataLabelStyle}}'>{{Label}}</td>
+      </tr>
+		{{/if}}
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}{{AlignTop}}'>Selected</td>
+      <td style='{{BottomBorder}}'>
+			{{#Checkboxes}}
+        <div style='{{DataStyle}}{{BottomStyle}}'>
+          {{{DisplayDescription}}}
+        </div>
+			{{/Checkboxes}}
+      </td>
+    </tr>
+	{{/IfAskCheckboxes}}
+	{{#IfAskYesNoQuestions}}
+		<tr>
+			<td style='{{LabelStyle}}'>Question</td>
+			<td style='{{DataLabelStyle}}'>{{Question}}</td>
+		</tr>
+		<tr>
+			<td style='{{LabelStyle}}{{BottomStyle}}'>Answer</td>
+			<td style='{{DataStyle}}{{BottomStyle}}'>{{Answer}}</td>
+		</tr>
+	{{/IfAskYesNoQuestions}}
+	{{#IfAskExtraQuestions}}
+		<tr>
+			<td style='{{LabelStyle}}'>Question</td>
+			<td style='{{DataLabelStyle}}'>{{Question}}</td>
+		</tr>
+		<tr>
+			<td style='{{LabelStyle}}{{BottomStyle}}'>Answer</td>
+			<td style='{{DataStyle}}{{BottomStyle}}'>{{Answer}}</td>
+		</tr>
+  {{/IfAskExtraQuestions}}
+	{{#IfAskTextQuestions}}
+		<tr>
+			<td style='{{LabelStyle}}'>Question</td>
+			<td style='{{DataLabelStyle}}'>{{Question}}</td>
+		</tr>
+		<tr>
+			<td style='{{LabelStyle}}{{BottomStyle}}'>Answer</td>
+			<td style='{{DataStyle}}{{BottomStyle}}'>{{Answer}}</td>
+		</tr>
+  {{/IfAskTextQuestions}}
+	{{#IfAskGradeOptions}}
+        <tr>
+          <td style='{{LabelStyle}}{{BottomBorder}}'>Grade</td>
+          <td style='{{DataStyle}}{{BottomBorder}}'>{{GradeOption}}</td>
+        </tr>
+	{{/IfAskGradeOptions}}
+	{{#IfAskTickets}}
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Tickets</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{Tickets}}</td>
+    </tr>
+	{{/IfAskTickets}}
+	{{#IfAskSize}}
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Shirt</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{ShirtSize}}</td>
+    </tr>
+	{{/IfAskSize}}
+	{{#IfAskEmContact}}
+    <tr><td></td><td style='{{DataLabelStyle}}'>Emergency</td></tr>
+    <tr>
+      <td style='{{LabelStyle}}'>Contact</td>
+      <td style='{{DataStyle}}'>{{Emcontact}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Phone</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{Emphone}}</td>
+    </tr>
+	{{/IfAskEmContact}}
+	{{#IfAskDoctor}}
+    <tr>
+      <td style='{{LabelStyle}}'>Doctor</td>
+      <td style='{{DataStyle}}'>{{Doctor}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Phone</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{Docphone}}</td>
+    </tr>
+	{{/IfAskDoctor}}
+	{{#IfAskInsurance}}
+    <tr>
+      <td style='{{LabelStyle}}'>Insurance Carrier</td>
+      <td style='{{DataStyle}}'>{{Insurance}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Insurance Policy</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{Policy}}</td>
+    </tr>
+	{{/IfAskInsurance}}
+	{{#IfAskRequest}}
+    <tr>
+      <td style='{{LabelStyle}}'>Request</td>
+      <td style='{{DataLabelStyle}}'>{{Label}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'></td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{Request}}</td>
+    </tr>
+	{{/IfAskRequest}}
+	{{#IfAskHeader}}
+    <tr>
+      <td></td>
+      <td style='{{DataLabelStyle}}{{BottomBorder}}'>{{{Label}}}</td>
+    </tr>
+	{{/IfAskHeader}}
+	{{#IfAskInstruction}}
+    <tr>
+      <td></td>
+      <td style='{{DataLabelStyle}}{{BottomBorder}}'>{{Label}}</td>
+    </tr>
+	{{/IfAskInstruction}}
+	{{#IfAskAllergies}}
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Medical</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{MedicalDescription}}</td>
+    </tr>
+	{{/IfAskAllergies}}
+	{{#IfAskTylenolEtc}}
+    <tr>
+      <td style='{{LabelStyle}}'>Tylenol</td>
+      <td style='{{DataStyle}}'>{{Tylenol}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}'>Advil</td>
+      <td style='{{DataStyle}}'>{{Advil}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}'>Robitussin</td>
+      <td style='{{DataStyle}}'>{{Robitussin}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Maalox</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{Maalox}}</td>
+    </tr>
+	{{/IfAskTylenolEtc}}
+	{{#IfAskChurch}}
+    <tr>
+      <td style='{{LabelStyle}}'>Church</td>
+      <td style='{{DataStyle}}'>{{ShowNotMember}} Member</td>
+    </tr>
+    <tr>
+      <td style='{{BottomBorder}}'></td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{ShowNotActive}} Active in another church</td>
+    </tr>
+	{{/IfAskChurch}}
+	{{#IfAskParents}}
+    <tr>
+      <td style='{{LabelStyle}}'>Mother</td>
+      <td style='{{DataStyle}}'>{{Mname}}</td>
+    </tr>
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Father</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{Fname}}</td>
+    </tr>
+	{{/IfAskParents}}
+	{{#IfAskCoaching}}
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Coaching</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{Coaching}}</td>
+    </tr>
+	{{/IfAskCoaching}}
+	{{#IfAskSms}}
+    <tr>
+      <td style='{{LabelStyle}}{{BottomBorder}}'>Receive Texts</td>
+      <td style='{{DataStyle}}{{BottomBorder}}'>{{ReceiveSMS}}</td>
+    </tr>
+	{{/IfAskSms}}
+{{/AskItems}}
+{{#IfHasAgeGroups}}
+    <tr>
+      <td style='{{LabelStyle}}'>AgeGroup</td>
+      <td style='{{DataStyle}}'>{{AgeGroup}}</td>
+    </tr>
+{{/IfHasAgeGroups}}
+</table>

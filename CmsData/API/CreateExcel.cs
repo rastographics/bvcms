@@ -1,10 +1,10 @@
 using System;
 using System.Data;
+using System.Drawing;
+using System.IO;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using OfficeOpenXml.Table;
-using Color = System.Drawing.Color;
-using TableStyles = OfficeOpenXml.Table.TableStyles;
 
 namespace CmsData
 {
@@ -18,19 +18,21 @@ namespace CmsData
             ep.AddSheet(dt, filename, useTable);
             return ep.GetAsByteArray();
         }
+
         public static void AddSheet(this ExcelPackage ep, IDataReader rd, string filename = "People.xlsx", bool useTable = false)
         {
             var dt = new DataTable();
             dt.Load(rd);
             ep.AddSheet(dt, filename, useTable);
         }
+
         public static void AddSheet(this ExcelPackage ep, DataTable dt, string filename = "People.xlsx", bool useTable = false)
         {
-            var sheetname = System.IO.Path.GetFileNameWithoutExtension(filename);
+            var sheetname = Path.GetFileNameWithoutExtension(filename);
             var ws = ep.Workbook.Worksheets.Add(sheetname);
             ws.Cells["A1"].LoadFromDataTable(dt, true);
             var count = dt.Rows.Count;
-            using (var header = ws.Cells[1, 1, 1, dt.Columns.Count]) 
+            using (var header = ws.Cells[1, 1, 1, dt.Columns.Count])
             {
                 header.Style.Font.Bold = true;
                 header.Style.Fill.PatternType = ExcelFillStyle.Solid;
@@ -41,19 +43,19 @@ namespace CmsData
             ExcelTable table = null;
             if (useTable)
             {
-    			var range = ws.Cells[1, 1, count + 1, dt.Columns.Count];
+                var range = ws.Cells[1, 1, count + 1, dt.Columns.Count];
                 table = ws.Tables.Add(range, sheetname);
                 table.TableStyle = TableStyles.Light9;
                 table.ShowFilter = false;
             }
-			
+
             for (var i = 0; i < dt.Columns.Count; i++)
             {
                 var col = i + 1;
                 var name = dt.Columns[i].ColumnName;
                 var type = dt.Columns[i].DataType;
 
-                if(table != null)
+                if (table != null)
                     table.Columns[i].Name = name;
 
                 var colrange = ws.Cells[1, col, count + 2, col];
@@ -77,12 +79,12 @@ namespace CmsData
                 }
                 else if (type == typeof (DateTime))
                 {
-                    if (name.EndsWith("Time")) 
+                    if (name.EndsWith("Time"))
                     {
                         colrange.Style.Numberformat.Format = "m/d/yy h:mm AM/PM";
                         ws.Column(col).Width = 16;
                     }
-                    else 
+                    else
                     {
                         colrange.Style.Numberformat.Format = "m/d/yy";
                         ws.Column(col).Width = 12;

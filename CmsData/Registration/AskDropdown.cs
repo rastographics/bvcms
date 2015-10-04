@@ -24,6 +24,7 @@ This will be presented as a dropdown selection.
 ";
 
         public string Label { get; set; }
+
         public List<DropdownItem> list { get; set; }
 
         public AskDropdown()
@@ -82,6 +83,7 @@ This will be presented as a dropdown selection.
             desc = i.Description;
             return i.IsSmallGroupFilled(smallgroups);
         }
+
         public partial class DropdownItem
         {
             public string Name { get; set; }

@@ -13,7 +13,7 @@
     <span class="pull-right">
       @if (!Model.OnlyOneAllowed())
       {
-        @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else", style: "btn-primary min-width15em")
+        @Helper.OnlineRegAjaxButton("/OnlineReg/AddAnotherPerson/", "Register Someone Else", style: "btn-primary min-width15em", id: "register-another")
       }
       @switch (specialcase)
       {

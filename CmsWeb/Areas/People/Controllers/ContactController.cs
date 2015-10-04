@@ -8,15 +8,23 @@ namespace CmsWeb.Areas.People.Controllers
     public class ContactController : CmsStaffController
     {
         [HttpGet, Route("~/Contact2/{cid}")]
-        public ActionResult Index(int cid)
+        public ActionResult Index(int cid, bool edit = false)
         {
             var m = new ContactModel(cid);
             if (m.contact == null)
                 return Content("contact is private or does not exist");
 
-            var edit = (bool?)TempData["ContactEdit"] == true;
-            ViewBag.edit = edit;
-            return View(m);
+            if( edit )
+            {
+                TempData["ContactEdit"] = true;
+                return Redirect($"/Contact2/{cid}");                
+            }
+            else
+            {
+                var showEdit = (bool?)TempData["ContactEdit"] == true;
+                ViewBag.edit = showEdit;
+                return View(m);
+            }
         }
 
         [HttpPost, Route("RemoveContactee/{cid:int}/{pid:int}")]
@@ -27,6 +35,7 @@ namespace CmsWeb.Areas.People.Controllers
             return Content("ok");
 
         }
+
         [HttpPost, Route("RemoveContactor/{cid:int}/{pid:int}")]
         public ActionResult RemoveContactor(int cid, int pid)
         {

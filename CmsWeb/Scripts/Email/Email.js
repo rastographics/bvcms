@@ -76,31 +76,3 @@
         });
     });
 });
-
-CKEDITOR.on('dialogDefinition', function (ev) {
-    var dialogName = ev.data.name;
-    var dialogDefinition = ev.data.definition;
-    if (dialogName == 'link') {
-        var advancedTab = dialogDefinition.getContents('advanced');
-        advancedTab.label = "SpecialLinks";
-        advancedTab.remove('advCSSClasses');
-        advancedTab.remove('advCharset');
-        advancedTab.remove('advContentType');
-        advancedTab.remove('advStyles');
-        advancedTab.remove('advAccessKey');
-        advancedTab.remove('advName');
-        advancedTab.remove('advId');
-        advancedTab.remove('advTabIndex');
-
-        var relField = advancedTab.get('advRel');
-        relField.label = "SmallGroup";
-        var titleField = advancedTab.get('advTitle');
-        titleField.label = "Message";
-        var idField = advancedTab.get('advLangCode');
-        idField.label = "OrgId/MeetingId";
-        var langdirField = advancedTab.get('advLangDir');
-        langdirField.label = "Confirmation";
-        langdirField.items[1][0] = "Yes, send confirmation";
-        langdirField.items[2][0] = "No, do not send confirmation";
-    }
-});

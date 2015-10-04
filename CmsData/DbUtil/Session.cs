@@ -228,7 +228,7 @@ namespace CmsData
         {
             get
             {
-                return DbUtil.Db.UserPreference("UseNewEditor2", "true").ToBool();
+                return DbUtil.Db.UserPreference("UseNewEditor3", "false").ToBool();
             }
         }
 
@@ -264,21 +264,21 @@ namespace CmsData
             }
             set
             {
-                DbUtil.Db.SetSetting("UseNewFeature", value ? "false" : "true");
+                DbUtil.Db.SetSetting("UseNewFeature", value ? "true" : "false");
                 // be sure to SubmitChanges
             }
         }
-        public static bool UseXmlRegistrations
+        public static bool UseNewDetails
         {
             get
             {
                 // this works at the database level, not as a user preference
                 // useful for turning the new feature on, then having a quik way to put it back in case something goes badly
-                return DbUtil.Db.Setting("UseXmlRegistrations", "true").ToBool();
+                return DbUtil.Db.Setting("UseNewDetails", "false").ToBool();
             }
             set
             {
-                DbUtil.Db.SetSetting("UseXmlRegistrations", value ? "true" : "false");
+                DbUtil.Db.SetSetting("UseNewDetails", value ? "true" : "false");
                 // be sure to SubmitChanges
             }
         }

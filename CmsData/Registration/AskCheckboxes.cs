@@ -27,6 +27,7 @@ For each checkbox, you can specify the following:
 ";
 
         public string Label { get; set; }
+        public bool HasLabel => Label.HasValue();
         public int? Minimum { get; set; }
         public int? Maximum { get; set; }
         public int? Columns { get; set; }

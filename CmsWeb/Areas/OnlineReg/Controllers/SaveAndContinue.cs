@@ -93,7 +93,7 @@ We have saved your progress. An email with a link to finish this registration wi
             if (m.UserPeopleId != m.Datum.UserPeopleId)
                 return Message("incorrect user");
             TempData["PeopleId"] = pid;
-            return View(m);
+            return View("Continue/Existing", m);
         }
 
         [HttpPost]
@@ -117,10 +117,10 @@ We have saved your progress. An email with a link to finish this registration wi
         {
             var ed = DbUtil.Db.RegistrationDatas.SingleOrDefault(e => e.Id == id);
             if (ed == null)
-                return View("Unknown");
+                return View("Other/Unknown");
             var m = Util.DeSerialize<OnlineRegModel>(ed.Data);
             m.FinishLaterNotice();
-            return View(m);
+            return View("Continue/FinishLater", m);
         }
     }
 }

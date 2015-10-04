@@ -65,7 +65,7 @@
     $.AdjustEditCondition = function (option) {
         $.InitializeDateElements();
 
-        $("#editcondition select").multiselect({
+        $("#condition-edit select").multiselect({
             includeSelectAllOption: true,
             enableFiltering: true,
             enableCaseInsensitiveFiltering: true,

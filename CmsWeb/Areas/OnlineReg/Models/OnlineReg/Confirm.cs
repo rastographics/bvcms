@@ -8,6 +8,7 @@ using System.Web.Security;
 using CmsData;
 using CmsData.Codes;
 using CmsData.Registration;
+using CmsWeb.Areas.OnlineReg.Controllers;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.OnlineReg.Models

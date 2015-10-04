@@ -58,7 +58,12 @@ BEGIN
 					WHERE hh.FamilyId = @familyid
 					AND e.IntValue = hh.PeopleId)
 			AND EXISTS(SELECT NULL FROM dbo.Setting WHERE Id = 'ShowChildInExtraValueParentFamily' AND Setting = 'true'))
-			
+
+	DECLARE @disallowinactive BIT = CASE WHEN EXISTS(SELECT NULL
+					FROM dbo.Setting 
+					WHERE Id = 'DisallowInactiveCheckin' 
+					AND Setting = 'true') THEN 1 ELSE 0 END
+
 	---------
 	--Members
 	---------
@@ -129,6 +134,9 @@ BEGIN
 	WHERE ISNULL(o.CanSelfCheckin, 0) = 1
 	AND isnull(om.Pending, 0) = 0 -- not pending
 	AND om.MemberTypeId <> 311 -- not a prospect
+	AND (om.MemberTypeId <> 230 -- not inactive
+		OR @disallowinactive = 0 -- or allow it because it is not disallowed
+	)
 	AND (o.CampusId = @campus OR @campus IS NULL OR @campus = 0)
 	AND o.OrganizationStatusId = 30
 			

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CmsData;
@@ -44,13 +45,13 @@ namespace CmsWeb.Areas.Org.Models
             DbUtil.Db.SubmitChanges();
         }
 
-        private Settings RegSettings => _regsettings ?? (_regsettings = DbUtil.Db.CreateRegistrationSettings(Id));
-        private Settings _regsettings;
+        private Settings RegSettings => regsettings ?? (regsettings = DbUtil.Db.CreateRegistrationSettings(Id));
+        private Settings regsettings;
 
         [Reg, Display(Description = FeeDescription)]
         public decimal? Fee { get; set; }
 
-        [Reg, Display(Description = DepositDescription)]
+        [Reg, Display(Description = DepositDescription), DisplayName("Deposit Amount")]
         public decimal? Deposit { get; set; }
 
         [Reg, Display(Description = IncludeOtherFeesWithDepositDescription)]

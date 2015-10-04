@@ -28,7 +28,7 @@ namespace CmsWeb.Models.ExtraValues
         [DisplayName("Type")]
         public CodeInfo ExtraValueType { get; set; }
 
-        [DisplayName("Checkboxes Prefix")]
+        [DisplayName("Checkboxes Prefix"), StringLength(4)]
         public string ExtraValueBitPrefix { get; set; }
 
         [DisplayName("Type")]
@@ -48,6 +48,9 @@ namespace CmsWeb.Models.ExtraValues
 
         [DisplayName("Checkbox Value")]
         public bool ExtraValueCheckbox { get; set; }
+
+        public bool AddToFamilyRecordInsteadOfPerson { get; set; }
+        public bool DeleteFromFamilyRecordInsteadOfPerson { get; set; }
 
         [DisplayName("Integer Value")]
         public int ExtraValueInteger { get; set; }
@@ -190,7 +193,7 @@ namespace CmsWeb.Models.ExtraValues
         {
             var fields = Views.GetStandardExtraValues(DbUtil.Db, ExtraValueTable);
             var existing = fields.SingleOrDefault(ff => ff.Name.Equal(ExtraValueName));
-            if (existing.Name.HasValue() && existing.Name != ExtraValueName)
+            if (existing != null && existing.Name != ExtraValueName)
                 throw new Exception($"{existing.Name} <> {ExtraValueName}");
         }
 
@@ -272,6 +275,8 @@ Option 2
         private string AddNewExtraValueToSelectionFromQuery()
         {
             var list = DbUtil.Db.PeopleQuery(QueryId).Select(pp => pp.PeopleId).ToList();
+            if (AddToFamilyRecordInsteadOfPerson)
+                ExtraValueTable = "Family";
 
             switch (AdhocExtraValueType.Value)
             {
@@ -295,7 +300,10 @@ Option 2
         {
             foreach (var pid in list)
             {
-                Person.AddEditExtraValue(DbUtil.Db, pid, ExtraValueName, ExtraValueTextBox);
+                if (AddToFamilyRecordInsteadOfPerson)
+                    Family.AddEditExtraValue(DbUtil.Db, pid, ExtraValueName, ExtraValueTextBox);
+                else
+                    Person.AddEditExtraValue(DbUtil.Db, pid, ExtraValueName, ExtraValueTextBox);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.DbDispose();
             }
@@ -305,7 +313,10 @@ Option 2
         {
             foreach (var pid in list)
             {
-                Person.AddEditExtraData(DbUtil.Db, pid, ExtraValueName, ExtraValueTextArea);
+                if (AddToFamilyRecordInsteadOfPerson)
+                    Family.AddEditExtraData(DbUtil.Db, pid, ExtraValueName, ExtraValueTextArea);
+                else
+                    Person.AddEditExtraData(DbUtil.Db, pid, ExtraValueName, ExtraValueTextArea);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.DbDispose();
             }
@@ -315,7 +326,10 @@ Option 2
         {
             foreach (var pid in list)
             {
-                Person.AddEditExtraDate(DbUtil.Db, pid, ExtraValueName, ExtraValueDate);
+                if (AddToFamilyRecordInsteadOfPerson)
+                    Family.AddEditExtraDate(DbUtil.Db, pid, ExtraValueName, ExtraValueDate);
+                else
+                    Person.AddEditExtraDate(DbUtil.Db, pid, ExtraValueName, ExtraValueDate);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.DbDispose();
             }
@@ -325,7 +339,10 @@ Option 2
         {
             foreach (var pid in list)
             {
-                Person.AddEditExtraInt(DbUtil.Db, pid, ExtraValueName, ExtraValueInteger);
+                if (AddToFamilyRecordInsteadOfPerson)
+                    Family.AddEditExtraInt(DbUtil.Db, pid, ExtraValueName, ExtraValueInteger);
+                else
+                    Person.AddEditExtraInt(DbUtil.Db, pid, ExtraValueName, ExtraValueInteger);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.DbDispose();
             }
@@ -335,7 +352,10 @@ Option 2
         {
             foreach (var pid in list)
             {
-                Person.AddEditExtraBool(DbUtil.Db, pid, ExtraValueName, ExtraValueCheckbox);
+                if (AddToFamilyRecordInsteadOfPerson)
+                    Family.AddEditExtraBool(DbUtil.Db, pid, ExtraValueName, ExtraValueCheckbox);
+                else
+                    Person.AddEditExtraBool(DbUtil.Db, pid, ExtraValueName, ExtraValueCheckbox);
                 DbUtil.Db.SubmitChanges();
                 DbUtil.DbDispose();
             }
@@ -348,11 +368,23 @@ Option 2
 
             var cn = new SqlConnection(Util.ConnectionString);
             cn.Open();
-            const string sql = @"
+
+            const string fsql = @"
+DELETE dbo.FamilyExtra
+FROM FamilyExtra fe
+WHERE fe.Field = @name
+AND EXISTS(SELECT NULL FROM dbo.People p
+			WHERE p.FamilyId = fe.FamilyId  
+			AND p.PeopleId IN (
+				SELECT PeopleId FROM TagPerson WHERE Id = @id))
+";
+            const string psql = @"
 delete from dbo.PeopleExtra
 where Field = @name
 and PeopleId in (select PeopleId from TagPerson where Id = @id)
 ";
+            var sql = DeleteFromFamilyRecordInsteadOfPerson ? fsql : psql;
+
             if (RemoveAnyValue)
             {
                 cn.Execute(sql, new { name = ExtraValueName, id = tag.Id });
@@ -388,7 +420,7 @@ and PeopleId in (select PeopleId from TagPerson where Id = @id)
 
         public void ConvertToStandard(string name)
         {
-//            var oldfields = StandardExtraValues.GetExtraValues().ToList();
+            //            var oldfields = StandardExtraValues.GetExtraValues().ToList();
             var oldfields = CmsData.ExtraValue.Views.GetStandardExtraValues(DbUtil.Db, "People");
             ExtraValue ev = null;
             List<string> codes = null;

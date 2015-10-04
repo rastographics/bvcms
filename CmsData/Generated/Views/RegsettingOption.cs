@@ -18,6 +18,8 @@ namespace CmsData.View
 		
 		private int _OrganizationId;
 		
+		private string _OrganizationName;
+		
 		private bool? _AskAllergies;
 		
 		private bool? _AnswersNotRequired;
@@ -131,6 +133,23 @@ namespace CmsData.View
 			{
 				if (this._OrganizationId != value)
 					this._OrganizationId = value;
+			}
+
+		}
+
+		
+		[Column(Name="OrganizationName", Storage="_OrganizationName", DbType="nvarchar(100) NOT NULL")]
+		public string OrganizationName
+		{
+			get
+			{
+				return this._OrganizationName;
+			}
+
+			set
+			{
+				if (this._OrganizationName != value)
+					this._OrganizationName = value;
 			}
 
 		}

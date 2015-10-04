@@ -123,6 +123,10 @@
       <HintPath>..\packages\EPPlus.4.0.4\lib\net20\EPPlus.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Handlebars, Version=1.0.0.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
+      <HintPath>..\packages\Handlebars.Net.1.4.4\lib\Handlebars.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
@@ -380,7 +384,14 @@
     <Compile Include="Areas\Finance\Models\TotalsByFundRange.cs" />
     <Compile Include="Areas\Finance\Models\TotalsByFundAgeRangeModel.cs" />
     <Compile Include="Areas\Manage\Controllers\ActivityController.cs" />
+    <Compile Include="Areas\Manage\Controllers\BatchMoveAndDelete.cs" />
     <Compile Include="Areas\Manage\Models\Activity\ActivityInfo.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\BatchRegMessages.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\BatchRegOptions.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\BatchRegSettings.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\FindTagPeople.cs" />
+    <Compile Include="Areas\Manage\Models\BatchModel\UpdateOrgs.cs" />
+    <Compile Include="Areas\Manage\Models\UpdateFieldsLookups.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationResult.cs" />
     <Compile Include="Areas\Manage\Models\UserValidationStatus.cs" />
     <Compile Include="Areas\OnlineReg\Controllers\SaveAndContinue.cs" />
@@ -571,7 +582,6 @@
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryInfo.cs" />
     <Compile Include="Areas\Search\Models\SavedQuery\SavedQueryModel.cs" />
     <Compile Include="Code\AuthHelper.cs" />
-    <Compile Include="Code\FormatHtml.cs" />
     <Compile Include="Code\JsonNetResult.cs" />
     <Compile Include="Code\CustomHeader.cs" />
     <Compile Include="Code\DateAndTimeValidAttribute.cs" />
@@ -580,6 +590,7 @@
     <Compile Include="Code\DecimalModelBinder.cs" />
     <Compile Include="Code\JsonNetValueProviderFactory.cs" />
     <Compile Include="Code\ReportsMenu.cs" />
+    <Compile Include="Code\UserInputException.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
     <Compile Include="Controllers\Api\OrganizationsController.cs" />
     <Compile Include="Controllers\Api\OrganizationMembersController.cs" />
@@ -694,10 +705,7 @@
     <Compile Include="Areas\People\Models\Person\Enrollments\CurrentEnrollments.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Areas\People\Models\Person\Family\FamilyMemberInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Areas\People\Models\Person\Family\FamilyModel.cs">
+    <Compile Include="Areas\People\Models\Person\FamilyModel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Areas\People\Models\Person\GrowthInfo.cs">
@@ -817,12 +825,12 @@
     <EmbeddedResource Include="Areas\Public\Controllers\APITestPlan.xml">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ClaimVolSub.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\ClaimVolSub.cshtml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskGradeOptions.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RequestResponse.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RsvpLinkSg.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\SendLink.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\VoteLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageVolunteer\RequestResponse.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\RsvpLinkSg.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\SendLink.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\VoteLinkSg.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\Related.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -913,6 +921,7 @@
     <Content Include="Content\touchpoint\img\spinner.gif" />
     <Content Include="Content\touchpoint\img\unknown.png" />
     <Content Include="Content\touchpoint\img\unknown_sm.png" />
+    <Content Include="Content\touchpoint\js\admin\batchupdate.js" />
     <Content Include="Content\touchpoint\js\admin\divisions.js" />
     <Content Include="Content\touchpoint\js\admin\users-email-for.js" />
     <Content Include="Content\touchpoint\js\admin\users.js" />
@@ -928,7 +937,11 @@
     <Content Include="Content\touchpoint\js\finance\transactions.js" />
     <Content Include="Content\touchpoint\js\form-ajax.js" />
     <Content Include="Content\touchpoint\js\main.js" />
+    <Content Include="Content\touchpoint\js\people\merge.js" />
     <Content Include="Content\touchpoint\js\volunteer\calendar.js" />
+    <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\dialogs\specialLink.js" />
+    <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\icons\specialLink.png" />
+    <Content Include="Content\touchpoint\lib\ckeditor\plugins\specialLink\plugin.js" />
     <Content Include="Content\touchpoint\lib\froala-editor\css\custom-theme.css" />
     <Content Include="Content\touchpoint\lib\froala-editor\css\froala_editor.min.css" />
     <Content Include="Content\touchpoint\lib\froala-editor\css\froala_style.min.css" />
@@ -1471,14 +1484,6 @@
     <Content Include="Scripts\Bootstrap\select2.min.js" />
     <Content Include="Scripts\Bootstrap\spin.min.js" />
     <Content Include="Scripts\Bootstrap\typeahead.js" />
-    <Content Include="Scripts\bundle.main2.js" />
-    <Content Include="Scripts\bundle.main2c.js" />
-    <Content Include="Scripts\bundle.onlineregister.js" />
-    <Content Include="Scripts\bundle.org.js" />
-    <Content Include="Scripts\bundle.organization.js" />
-    <Content Include="Scripts\bundle.person.js" />
-    <Content Include="Scripts\bundle.query2.js" />
-    <Content Include="Scripts\bundle.taskpage.js" />
     <Content Include="chart.py" />
     <Content Include="Areas\Manage\Views\Account\_Layout.cshtml" />
     <Content Include="Scripts\additional-methods.js" />
@@ -1526,7 +1531,7 @@
     <Content Include="Areas\Search\Views\RegistrationSearch\IncompleteResults.cshtml" />
     <Content Include="Areas\Manage\Views\Activity\Results.cshtml" />
     <Content Include="Areas\Manage\Views\Activity\Index.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RegPeople.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\RegPeople.cshtml" />
     <Content Include="Areas\People\Views\DownlineDetail\Index.cshtml" />
     <Content Include="Areas\People\Views\DownlineDetail\Results.cshtml" />
     <Content Include="Areas\People\Views\DownlineSummary\Index.cshtml" />
@@ -1534,10 +1539,28 @@
     <Content Include="Areas\People\Views\DownlineDetail\Trace.cshtml" />
     <Content Include="Areas\People\Views\DownlineLevels\Index.cshtml" />
     <Content Include="Areas\People\Views\DownlineLevels\Results.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\RegisterLinkMaster.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\RegisterLinkMaster.cshtml" />
     <Content Include="Areas\Org\Views\RegSetting\EditXml.cshtml" />
-    <None Include="Areas\Main\Views\UserPref\Index.cshtml" />
-    <None Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
+    <Content Include="Areas\Main\Views\UserPref\Index.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\BatchUpdate.cshtml" />
+    <Content Include="Areas\Manage\Views\Batch\UpdateRegOptions.cshtml" />
+    <Content Include="Scripts\bundle.onlineregister.js" />
+    <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
+    <Content Include="Areas\Reports\Views\Reports\SqlReport.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\Rollsheet.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\NewMeetings.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\MeetingsDateRange.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\MeetingsMonth.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\Checkin.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\Enrollment.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\NewDiv.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\RenameDiv.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\Editor.cshtml" />
+    <Content Include="Content\touchpoint\css\OrgSearch.css" />
+    <Content Include="Areas\Org\Views\OrgSearch\Tabs.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\Modals\ExportMessages.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\NotifyStaff.cshtml" />
+    <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsAbsents.xml" />
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
@@ -2015,7 +2038,6 @@
     <Content Include="Areas\Public\Views\SmallGroupFinder\Index.cshtml" />
     <Content Include="Areas\Main\Views\Volunteering\DialogSubmit.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\Address.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\RecentVisitsEmail.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenMeta.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenSearch.cshtml" />
     <Content Include="Areas\Search\Views\SearchAdd\EditorTemplates\HiddenPeople.cshtml" />
@@ -2064,7 +2086,7 @@
     <Content Include="Areas\Search\Views\Query\SelectCondition.cshtml" />
     <Content Include="Areas\People\Views\Person\Toolbar\Gear.cshtml" />
     <Content Include="Areas\Search\Views\Query\EditCondition.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmReregister.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Continue\ConfirmReregister.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Changes.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Tab.cshtml" />
     <Content Include="Areas\People\Views\Person\System\Duplicates.cshtml" />
@@ -2110,7 +2132,7 @@
     <Content Include="Areas\People\Views\Person\Giving\Statements.cshtml" />
     <Content Include="Areas\People\Views\Person\DisplayTemplates\DeceasedDate.cshtml" />
     <Content Include="Areas\People\Views\Person\Family\ExtraValues.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\SpecialRegistrationResults.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\SpecialRegistrationResults.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\TotalsByFundResults2.cshtml" />
     <Content Include="Areas\Finance\Views\Contributions\BundleTotals.cshtml" />
     <Content Include="Areas\People\Views\Address\Saved.cshtml" />
@@ -2228,10 +2250,10 @@
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2a.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\EnrollmentControl2b.cshtml" />
     <Content Include="Areas\Manage\Views\Display\EditPythonScript.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Existing.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Continue\Existing.cshtml" />
     <Content Include="Areas\Search\Views\RegistrationSearch\Index.cshtml" />
     <Content Include="Areas\Search\Views\RegistrationSearch\Results.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\FinishLater.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Continue\FinishLater.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\GoerSupporters.cshtml" />
     <Content Include="Areas\People\Views\Shared\EditorTemplates\Value.cshtml" />
     <Content Include="Areas\Org\Views\OrgSearch\Toolbar\Email.cshtml" />
@@ -2533,7 +2555,6 @@
     <Content Include="Scripts\Org\OrgMemberDialog2.js" />
     <Content Include="Scripts\Search\Query.js" />
     <Content Include="Scripts\Volunteer\Calendar2.js" />
-    <Content Include="Areas\Manage\Views\Users\LastActivity.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\ReportByBatchDescription.cshtml" />
     <Content Include="Scripts\jQuery\jquery-migrate-1.1.1.js" />
     <Content Include="Scripts\Volunteer\ManageVolunteer2.js" />
@@ -2814,7 +2835,6 @@
     <Content Include="Views\Shared\PageHeader.cshtml" />
     <Content Include="Views\Shared\PageFooter.cshtml" />
     <Content Include="Views\Shared\PagerHidden.cshtml" />
-    <Content Include="Views\Shared\EditorTemplates\DateAndTime.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\DateAndTime.cshtml" />
     <Content Include="Views\Shared\DisplayTemplates\TimeSpan.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\Time.cshtml" />
@@ -2823,6 +2843,7 @@
     <Content Include="Views\Shared\Message2.cshtml" />
     <Content Include="Views\Home\PyScriptForm.cshtml" />
     <Content Include="Views\Shared\Menu\User.cshtml" />
+    <Content Include="Views\Shared\PageError.cshtml" />
     <None Include="Web.test2.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -2935,7 +2956,7 @@
     <Content Include="Areas\Manage\Views\CheckinTime\Index.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\tickets.cshtml" />
     <Content Include="Areas\Org\Views\Meeting\ScanTicket.cshtml" />
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Timeout.cshtml" />
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Timeout.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\Report.cshtml" />
     <Content Include="Areas\Manage\Views\Transactions\ReportByDescription.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\PledgeReport.cshtml" />
@@ -2971,7 +2992,6 @@
     <Content Include="Areas\Org\Views\MemberDirectory\Index.cshtml" />
     <Content Include="Areas\Org\Views\MemberDirectory\Results.cshtml" />
     <Content Include="Areas\Reports\Views\Reports\RecentAbsents.cshtml" />
-    <Content Include="Areas\Org\Views\OrgSearch\RecentAbsentsEmail.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRange.cshtml" />
     <Content Include="Areas\Finance\Views\FinanceReports\DonorTotalsByRangeResults.cshtml" />
     <Content Include="Areas\People\Views\Address\Edit.cshtml" />
@@ -3164,7 +3184,7 @@
     </Content>
     <Content Include="Areas\Manage\Views\Batch\Grade.cshtml">
     </Content>
-    <Content Include="Areas\Manage\Views\Batch\MoveAndDelete.cshtml">
+    <Content Include="Areas\Manage\Views\BatchMoveAndDelete\MoveAndDelete.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Batch\RegistrationMail.cshtml">
     </Content>
@@ -3239,7 +3259,7 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Confirm.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmAccount.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Continue\ConfirmAccount.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\PayAmtDue\Confirm.cshtml">
     </Content>
@@ -3249,7 +3269,7 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\ManageSubscriptions\Confirm.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\ConfirmTest.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\ConfirmTest.cshtml">
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Index.cshtml">
     </Content>
@@ -3257,11 +3277,11 @@
     </Content>
     <Content Include="Areas\OnlineReg\Views\OnlineReg\Payment\Process.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Terms.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Terms.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\TransactionTest.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\TransactionTest.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\Unknown.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\Unknown.cshtml">
     </Content>
     <Content Include="Areas\Public\Views\OptOut\Cancel.cshtml">
       <SubType>Code</SubType>
@@ -3274,7 +3294,7 @@
     </Content>
     <Content Include="Areas\Reports\Views\Reports\ShirtSizes.cshtml">
     </Content>
-    <Content Include="Areas\OnlineReg\Views\OnlineReg\AskDonation.cshtml">
+    <Content Include="Areas\OnlineReg\Views\OnlineReg\Other\AskDonation.cshtml">
     </Content>
     <Content Include="Areas\Manage\Views\Batch\FindTagPeople0.cshtml">
     </Content>

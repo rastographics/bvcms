@@ -1,0 +1,23 @@
+﻿<div class="modal fade" id="checkin-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Checkin Control Report</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="checkindate" class="control-label">Date</label>
+          <div class="input-group date">
+            @Html.TextBox("checkindate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+            @Html.Hidden("checkindateIso", "", new { disabled = "disabled" })
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+        <input type="button" id="checkincontrol2" name="checkincontrol2" value="Run" class="btn btn-primary" />
+      </div>
+    </div>
+  </div>
+</div>

@@ -11,34 +11,7 @@
   @ViewExtensions2.FroalaEditorCss()
   @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-editable/css/bootstrap-editable.css")
   @Fingerprint.Css("/Content/touchpoint/lib/bootstrap-tabdrop/css/tabdrop.css")
-  <style>
-    .icon-arrow-left,
-    .icon-arrow-right {
-      display: inline-block;
-      font: normal normal normal 14px/1 FontAwesome;
-      font-size: inherit;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      transform: translate(0, 0);
-    }
-
-      .icon-arrow-left:before {
-        content: "\f053";
-      }
-
-      .icon-arrow-right:before {
-        content: "\f054";
-      }
-
-    .empty-primary {
-      color: #003f72;
-    }
-
-    #editor {
-      font-family: Arial,Helvetica;
-    }
-  </style>
+  @Fingerprint.Css("/Content/touchpoint/css/OrgSearch.css")
 }
 <div class="box box-responsive">
   <div class="box-content">
@@ -48,7 +21,7 @@
         <div class="row">
           <div class="col-lg-3 col-md-3 col-sm-6">
             <div class="form-group">
-              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="OrganizationId, Location or part of Name (organization, leader, division)."><i class="fa fa-info-circle"></i></a>&nbsp;
+              <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Name" data-content="@Model.NameHelp"><i class="fa fa-info-circle"></i></a>&nbsp;
               <label for="Name" class="control-label">Name</label>
               @Html.TextBox("Name", Model.Name, new { @class = "form-control" })
             </div>
@@ -120,346 +93,25 @@
           </div>
         </div>
       </div>
-      <ul class="nav nav-tabs" id="org-search-tabs">
-        <li id="view-main" class="@(!Model.PublicView ? "active" : "")"><a href="#main" aria-controls="main" data-toggle="tab">Main View</a></li>
-        <li class="@(Model.PublicView ? "active" : "")"><a id="view-public" href="#public" aria-controls="public" data-toggle="tab"><i class="fa fa-globe"></i>&nbsp;&nbsp;Public View</a></li>
-        @if (User.IsInRole("OrgTagger"))
-        {
-          <li><a id="view-manage" href="#manage" aria-controls="manage" data-toggle="tab"><i class="fa fa-cog"></i>&nbsp;&nbsp;Management View</a></li>
-        }
-      </ul>
-      <div class="tab-content">
-        @if (User.IsInRole("OrgTagger"))
-        {
-          <div id="management-view" style="display:none;">
-            <h4>Manage Organization Structure</h4>
-            <div class="well">
-              <div class="row">
-                <div class="col-md-4 col-lg-4">
-                  <div class="form-group">
-                    <label for="TagProgramId" class="control-label">Target Program</label>
-                    @Html.DropDownList("TagProgramId", Model.ProgramIds(), new { @class = "form-control" })
-                  </div>
-                </div>
-                <div class="col-md-8 col-lg-8">
-                  <label for="TagDiv" class="control-label">Target Division</label>
-                  <div class="form-inline">
-                    <div class="input-group col-xs-12 col-sm-7 col-md-7 col-lg-8">
-                      @Html.DropDownList("TagDiv", Model.DivisionIds(), new { @class = "form-control" })
-                    </div>
-                    <div class="input-group">
-                      <a id="RenameDivision" href="#" class="btn btn-default"><i class="fa fa-pencil"></i> Rename</a>&nbsp;<a id="AddNewDiv" href="#" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add New</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <div class="row">
-                <div class="col-md-8 col-lg-6">
-                  <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Target Type" data-content="These are specific Org Types that you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a>&nbsp;
-                  <label for="TargetType" class="control-label">Target Type</label>
-                  <div class="form-inline">
-                    <div class="input-group  col-xs-12 col-sm-7 col-md-7 col-lg-8">
-                      @Html.DropDownList("TargetType", OrgSearchModel.OrgTypes(), new { @class = "form-control" })
-                    </div>
-                    <div class="input-group">
-                      <a id="ApplyType" href="#" class="btn btn-warning">Apply to Filtered List</a>
-                    </div>
-                  </div>
-                </div>
-                @if (User.IsInRole("Developer"))
-                {
-                  <div class="col-md-8 col-lg-6">
-                    <a tabindex="0" href="#" data-toggle="popover" data-placement="bottom" data-trigger="focus" data-title="Assign Child Orgs" data-content="These are specific Org Types that you have created and assigned to organizations."><i class="fa fa-info-circle"></i></a>&nbsp;
-                    <label for="ParentOrg" class="control-label">Parent Org</label>
-                    <div class="form-inline">
-                      <div class="input-group">
-                        @Html.TextBox("ParentOrg")
-                      </div>
-                      <div class="input-group">
-                        <a id="MakeChildrenOf" href="#" class="btn btn-warning">Make List Children of</a>
-                      </div>
-                    </div>
-                  </div>
-                }
-              </div>
-            </div>
-          </div>
-        }
-        @Html.Partial("Results", Model)
-        @Html.Hidden("FromOrgSearch", "true")
-        @Html.Hidden("CheckinDate")
-        <input name="PublicView" id="PublicView" type="hidden" value="false">
-        <br />
-      </div>
+      @Html.Partial("Tabs")
     </form>
   </div>
 </div>
-<div class="modal fade" id="new-div-modal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Add New Division</h4>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="NewDivProgramId" class="control-label">Program</label>
-          @Html.DropDownList("NewDivProgramId", Model.ProgramIds(), new { @class = "form-control" })
-        </div>
-        <div class="form-group">
-          <label for="NewDiv" class="control-label">Name</label>
-          <input type="text" id="NewDiv" name="NewDiv" class="form-control" />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="button" id="MakeNewDiv" name="MakeNewDiv" value="Submit" class="btn btn-primary" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="rename-div-modal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Rename Division</h4>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="RenamedDiv" class="control-label">Name</label>
-          <input type="text" id="RenamedDiv" name="RenamedDiv" class="form-control" />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="button" id="RenameDiv" name="RenameDiv" value="Submit" class="btn btn-primary" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="editor-modal" style="overflow-y: hidden !important;">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Edit Description</h4>
-      </div>
-      <div class="modal-body">
-        <form>
-          <textarea id="editor" name="editor" class="form-control" rows="15"></textarea>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="submit" value="Save" class="btn btn-primary" id="save-edit" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="rollsheet-modal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Rollsheet(s) Report</h4>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="MeetingDate" class="control-label">Meeting Date</label>
-              <div class="input-group date">
-                @Html.TextBox("MeetingDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-                @Html.Hidden("MeetingDateIso", "", new { disabled = "disabled" })
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="MeetingTime" class="control-label">Meeting Time</label>
-              <input type="text" id="MeetingTime" name="MeetingTime" class="form-control" />
-              <span class="help-block">Time in format hh:mm am or pm</span>
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="sgprefix" class="control-label">Group Filter Prefix</label>
-              <input type="text" id="sgprefix" name="sgprefix" class="form-control" />
-            </div>
-          </div>
-          <div class="col-sm-6">
-            <div class="form-group">
-              <label for="highlightsg" class="control-label">Highlight Group</label>
-              <input type="text" id="highlightsg" name="highlightsg" class="form-control" />
-            </div>
-          </div>
-          <div class="col-sm-12">
-            <div class="form-group">
-              <label class="checkbox-inline">
-                @Html.CheckBox("altnames") Use alternate names?
-              </label>
-              <label class="checkbox-inline">
-                @Html.CheckBox("rallymode") Parents (rally mode)?
-              </label>
-              <label class="checkbox-inline">
-                @Html.CheckBox("bygroup") By group?
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="button" id="rollsheet2" name="rollsheet2" value="Create" class="btn btn-primary" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="new-meetings-modal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Create New Meeting</h4>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="NewMeetingDate" class="control-label">Meeting Date</label>
-          <div class="input-group date">
-            @Html.TextBox("NewMeetingDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-            @Html.Hidden("NewMeetingDateIso", "", new { disabled = "disabled" })
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="NewMeetingTime" class="control-label">Meeting Time</label>
-          <input type="text" id="NewMeetingTime" name="NewMeetingTime" class="form-control" />
-          <span class="help-block">Time in format hh:mm am or pm</span>
-        </div>
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" id="NoAbsenteeRecords" name="NoAbsenteeRecords"> No Absentee Records
-          </label>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="button" id="createmeetings" name="createmeetings" value="Create" class="btn btn-primary" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="meetings-daterange-modal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Meetings Report</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="meetings-daterange-action" name="meetings-daterange-action" />
-        <div class="form-group">
-          <label for="MeetingDate1" class="control-label">Meetings Start Date</label>
-          <div class="input-group date">
-            @Html.TextBox("MeetingDate1", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-            @Html.Hidden("MeetingDate1Iso", "", new { disabled = "disabled" })
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="MeetingDate2" class="control-label">Meetings End Date</label>
-          <div class="input-group date">
-            @Html.TextBox("MeetingDate2", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-            @Html.Hidden("MeetingDate2Iso", "", new { disabled = "disabled" })
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="button" id="attdetail2" name="attdetail2" value="Run" class="btn btn-primary" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="meetings-month-modal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Meetings Report</h4>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="meetings-month-action" name="meetings-month-action" />
-        <div class="form-group">
-          <label for="monthdt1" class="control-label">Month</label>
-          <div class="input-group date">
-            @Html.TextBox("monthdt1", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-            @Html.Hidden("monthdt1Iso", "", new { disabled = "disabled" })
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="button" id="meetingsformonth2" name="meetingsformonth2" value="Run" class="btn btn-primary" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="checkin-modal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Checkin Control Report</h4>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="checkindate" class="control-label">Date</label>
-          <div class="input-group date">
-            @Html.TextBox("checkindate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
-            @Html.Hidden("checkindateIso", "", new { disabled = "disabled" })
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="button" id="checkincontrol2" name="checkincontrol2" value="Run" class="btn btn-primary" />
-      </div>
-    </div>
-  </div>
-</div>
-<div class="modal fade" id="enrollment-modal">
-  <div class="modal-dialog modal-sm">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Enrollment Control Report</h4>
-      </div>
-      <div class="modal-body">
-        <div class="checkbox">
-          <label class="control-label">
-            @Html.CheckBox("enrcontrolfiltertag") Filter by active tag?
-          </label>
-        </div>
-        <div class="checkbox">
-          <label class="control-label">
-            @Html.CheckBox("enrcontrolexcel") Export to excel (default is PDF)?
-          </label>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
-        <input type="button" id="enrollmentcontrol2" name="enrollmentcontrol2" value="Run" class="btn btn-primary" />
-      </div>
-    </div>
-  </div>
-</div>
+@Html.Partial("Modals/NewDiv", Model)
+@Html.Partial("Modals/RenameDiv")
+@Html.Partial("Modals/Editor")
+@Html.Partial("Modals/Checkin")
+@Html.Partial("Modals/Rollsheet")
+@Html.Partial("Modals/NewMeetings")
+@Html.Partial("Modals/MeetingsDateRange")
+@Html.Partial("Modals/MeetingsMonth")
+@Html.Partial("Modals/Enrollment")
+@Html.Partial("Modals/ExportMessages")
 @section scripts
 {
-
   @(Util2.UseNewEditor
     ? ViewExtensions2.FroalaEditorScripts()
-    : ViewExtensions2.CKEditor())
+    : ViewExtensions2.CkEditor())
   @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-editable/js/bootstrap-editable.min.js")
   @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/bootstrap-tabdrop.js")
   @Fingerprint.Script("/Content/touchpoint/lib/bootstrap-tabdrop/js/extensions_bootstrap-tabdrop.js")

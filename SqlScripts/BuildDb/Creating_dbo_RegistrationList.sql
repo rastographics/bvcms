@@ -16,7 +16,8 @@ SELECT
 	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/PeopleId[3]', 'int') [PeopleId3]
 	,data.value('(/OnlineRegModel/List/OnlineRegPersonModel)[1]/PeopleId[4]', 'int') [PeopleId4]
 	,data.value('count(/OnlineRegModel/List/OnlineRegPersonModel)', 'int') cnt
-	,cast (CASE WHEN data.value('(/OnlineRegModel/URL)[1]', 'varchar(100)') LIKE '%source=%' THEN 1 ELSE 0 END AS BIT) [mobile]
+	,CAST (CASE WHEN data.value('(/OnlineRegModel/URL)[1]', 'varchar(100)') LIKE '%source=%' THEN 1 ELSE 0 END AS BIT) [mobile]
+	,data.value('(/OnlineRegModel/registerLinkType)[1]', 'varchar(50)') [registerLinkType]
 	,tt.completed
 	,tt.abandoned
 	,tt.UserPeopleId

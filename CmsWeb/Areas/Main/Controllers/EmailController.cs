@@ -82,7 +82,7 @@ namespace CmsWeb.Areas.Main.Controllers
 
             var doc = new HtmlDocument();
             doc.LoadHtml(c.Body);
-            var bvedits = doc.DocumentNode.SelectNodes("//div[@bvedit]");
+            var bvedits = doc.DocumentNode.SelectNodes("//div[contains(@class,'bvedit') or @bvedit]");
             if (bvedits == null || !bvedits.Any())
                 c.Body = $"<div bvedit='discardthis'>{c.Body}</div>";
 

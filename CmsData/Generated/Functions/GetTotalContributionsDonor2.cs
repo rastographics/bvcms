@@ -38,7 +38,17 @@ namespace CmsData.View
 		
 		private int? _SpouseId;
 		
-		private int? _ContributionOptionsId;
+		private string _Option;
+		
+		private string _Addr;
+		
+		private string _Addr2;
+		
+		private string _City;
+		
+		private string _St;
+		
+		private string _Zip;
 		
 		
 		public GetTotalContributionsDonor2()
@@ -234,18 +244,103 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="ContributionOptionsId", Storage="_ContributionOptionsId", DbType="int")]
-		public int? ContributionOptionsId
+		[Column(Name="Option", Storage="_Option", DbType="nvarchar(100)")]
+		public string Option
 		{
 			get
 			{
-				return this._ContributionOptionsId;
+				return this._Option;
 			}
 
 			set
 			{
-				if (this._ContributionOptionsId != value)
-					this._ContributionOptionsId = value;
+				if (this._Option != value)
+					this._Option = value;
+			}
+
+		}
+
+		
+		[Column(Name="Addr", Storage="_Addr", DbType="nvarchar(100)")]
+		public string Addr
+		{
+			get
+			{
+				return this._Addr;
+			}
+
+			set
+			{
+				if (this._Addr != value)
+					this._Addr = value;
+			}
+
+		}
+
+		
+		[Column(Name="Addr2", Storage="_Addr2", DbType="nvarchar(100)")]
+		public string Addr2
+		{
+			get
+			{
+				return this._Addr2;
+			}
+
+			set
+			{
+				if (this._Addr2 != value)
+					this._Addr2 = value;
+			}
+
+		}
+
+		
+		[Column(Name="City", Storage="_City", DbType="nvarchar(30)")]
+		public string City
+		{
+			get
+			{
+				return this._City;
+			}
+
+			set
+			{
+				if (this._City != value)
+					this._City = value;
+			}
+
+		}
+
+		
+		[Column(Name="ST", Storage="_St", DbType="nvarchar(20)")]
+		public string St
+		{
+			get
+			{
+				return this._St;
+			}
+
+			set
+			{
+				if (this._St != value)
+					this._St = value;
+			}
+
+		}
+
+		
+		[Column(Name="Zip", Storage="_Zip", DbType="nvarchar(15)")]
+		public string Zip
+		{
+			get
+			{
+				return this._Zip;
+			}
+
+			set
+			{
+				if (this._Zip != value)
+					this._Zip = value;
 			}
 
 		}

@@ -26,7 +26,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         {
             ViewBag.Answer = ans;
             ViewBag.Guid = guid;
-            return View();
+            return View("ManageVolunteer/RequestResponse");
         }
 
         [HttpPost]
@@ -87,7 +87,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 vs.PrepareToClaim(ans, guid);
                 ViewBag.Answer = ans;
                 ViewBag.Guid = guid;
-                return View();
+                return View("ManageVolunteer/ClaimVolSub");
             }
             catch (Exception ex)
             {

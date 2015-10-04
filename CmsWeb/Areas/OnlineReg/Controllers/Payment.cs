@@ -70,7 +70,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult Confirm(int? id, string transactionId, decimal? amount)
         {
             if (!id.HasValue)
-                return View("Unknown");
+                return View("Other/Unknown");
 
             var m = OnlineRegModel.GetRegistrationFromDatum(id ?? 0);
             if (m == null || m.Completed)
@@ -100,7 +100,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
                 if (view == ConfirmEnum.ConfirmAccount)
                 {
                     m.Log("ConfirmAccount");
-                    return View("ConfirmAccount", m);
+                    return View("Continue/ConfirmAccount", m);
                 }
                 m.Log("Confirm");
                 return View("Confirm", m);
@@ -159,7 +159,7 @@ namespace CmsWeb.Areas.OnlineReg.Controllers
         public ActionResult ConfirmDuePaid(int? id, string transactionId, decimal amount)
         {
             if (!id.HasValue)
-                return View("Unknown");
+                return View("Other/Unknown");
             if (!transactionId.HasValue())
             {
                 DbUtil.LogActivity("OnlineReg PayDueNoTransactionId");

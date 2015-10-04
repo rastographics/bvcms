@@ -103,14 +103,18 @@ namespace CmsWeb.Areas.Manage.Models
 
 		public IEnumerable<List<Slot>> FetchSlotWeeks()
 		{
+            var evexweeks = Org.GetExtra(DbUtil.Db, "ExcludeWeeks") ?? "";
+            var exweeks = evexweeks.Split(',').Select(ww => ww.ToInt()).ToArray();
 			if (SortByWeek)
 				return from slot in FetchSlots()
+                       where !exweeks.Contains(slot.Week)
 					   group slot by slot.Sunday into g
 					   where g.Any(gg => gg.Time > DateTime.Today)
 					   orderby g.Key.WeekOfMonth(), g.Key
 					   select g.OrderBy(gg => gg.Time).ToList();
 			else
 				return from slot in FetchSlots()
+                       where !exweeks.Contains(slot.Week)
 					   group slot by slot.Sunday into g
 					   where g.Any(gg => gg.Time > DateTime.Today)
 					   orderby g.Key

@@ -687,7 +687,7 @@ class VitalStats(object):
             m.ContributionTotals(53*7*2, 53*7+7, 0) / 52)
         sb.AppendLine(''</table>'')
         return sb.ToString()
-', '2013-09-09 23:32:15.190', 1, 1, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
+', '2013-09-09 23:32:15.190', 1, 5, 0, 0, 0, NULL, NULL, NULL, NULL, NULL)
 INSERT INTO [dbo].[Content] ([Id], [Name], [Title], [Body], [DateCreated], [TextOnly], [TypeID], [ThumbID], [RoleID], [OwnerID], [CreatedBy], [Archived], [ArchivedFromId], [UseTimes], [Snippet]) VALUES (59, N'NewUserEmail', N'NewUserEmail', N'Hi {name},
 <p>You have a new account on our Church Management System which you can access at the following link:<br />
 <a href="{cmshost}">{cmshost}</a></p>

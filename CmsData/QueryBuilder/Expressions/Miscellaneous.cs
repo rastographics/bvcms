@@ -75,6 +75,8 @@ namespace CmsData
 
             Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
             Expression expr = Expression.Invoke(pred, parm);
+            if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
             return expr;
         }
         internal Expression RecActiveOtherChurch()
@@ -191,6 +193,34 @@ namespace CmsData
                 db.EmailQueueToFails.Any(f => f.PeopleId == p.PeopleId && (f.Time >= StartDate || StartDate == null));
             Expression expr = Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
             if (!(op == CompareType.Equal && tf))
+                expr = Expression.Not(expr);
+            return expr;
+        }
+
+        internal Expression RecentFlagAdded()
+        {
+            var codes0 = CodeValues.Split(',').Select(ff => ff.Trim()).ToList();
+            var q = db.ViewStatusFlagLists.ToList();
+            if (!db.FromBatch)
+                q = (from f in q
+                     where f.RoleName == null || db.CurrentRoles().Contains(f.RoleName)
+                     select f).ToList();
+            var codes = (from f in q
+                         join c in codes0 on f.Flag equals c into j
+                         from c in j
+                         select c).ToList();
+            var now = DateTime.Now;
+            var dt = now.AddDays(-Days).Date;
+
+            Expression<Func<Person, bool>> pred = p => (
+                    from t in p.Tags
+                    where codes.Contains(t.Tag.Name)
+                    where t.Tag.TypeId == DbUtil.TagTypeId_StatusFlags
+                    where t.DateCreated >= dt
+                    select t
+                    ).Any();
+            Expression expr = Expression.Invoke(pred, parm); // substitute parm for p
+            if (op == CompareType.NotEqual || op == CompareType.NotOneOf)
                 expr = Expression.Not(expr);
             return expr;
         }

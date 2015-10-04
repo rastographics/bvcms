@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using UtilityExtensions;
 using System.Text;
+using System.Xml.Serialization;
 using CmsData;
 
 namespace CmsData.Registration
@@ -13,6 +14,10 @@ namespace CmsData.Registration
         public bool AskVisible(string name)
         {
             return AskItems.Find(aa => aa.Type == name) != null;
+        }
+        public Ask AskItem(string name)
+        {
+            return AskItems.Find(aa => aa.Type == name);
         }
         public decimal? Deposit { get; set; }
         public string Shell { get; set; }

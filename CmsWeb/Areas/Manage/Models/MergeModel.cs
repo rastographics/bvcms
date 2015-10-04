@@ -16,8 +16,9 @@ namespace CmsWeb.Models
 {
     public class MergeModel
     {
+        public bool DeleteDuplicate { get; set; }
         public List<BasicInfo> pi { get; set; }
-        
+
         public int UseTitleCode { get; set; }
         public int UseFirstName { get; set; }
         public int UseLastName { get; set; }
@@ -141,7 +142,7 @@ namespace CmsWeb.Models
                         hasinvolvements = oinvolvements > 0,
                         hasotherfamily = ofamily > 1,
                         hasrelations = orelations > 0,
-						MemberStatus = p.MemberStatus.Description
+                        MemberStatus = p.MemberStatus.Description
                     };
             pi = q.ToList();
             pi.Add(new BasicInfo());
@@ -181,6 +182,8 @@ namespace CmsWeb.Models
         }
         public void Update()
         {
+            if (!Util.UserPeopleId.HasValue)
+                return;
             var target = DbUtil.Db.LoadPersonById(pi[1].PeopleId);
             var psb = new List<ChangeDetail>();
 
@@ -219,6 +222,8 @@ namespace CmsWeb.Models
         {
             var from = DbUtil.Db.LoadPersonById(pi[0].PeopleId);
             from.MovePersonStuff(DbUtil.Db, pi[1].PeopleId);
+            if (DeleteDuplicate == true)
+                Delete();
         }
         public SelectList GenderList()
         {
@@ -234,6 +239,47 @@ namespace CmsWeb.Models
         {
             var cv = new CodeValueModel();
             return new SelectList(cv.AllCampuses0(), "Id", "Value");
+        }
+        public void LogMerge(string action)
+        {
+            var mh = new MergeHistory
+            {
+                FromId = pi[0].PeopleId,
+                ToId = pi[1].PeopleId,
+                FromName = pi[0].person.Name,
+                ToName = pi[1].person.Name,
+                WhoId = Util.UserPeopleId,
+                WhoName = Util.UserFullName,
+                Action = $"{action}{(DeleteDuplicate ? " + Delete" : "")}",
+                Dt = DateTime.Now
+            };
+            DbUtil.Db.MergeHistories.InsertOnSubmit(mh);
+            DbUtil.LogActivity($"{action} from {pi[0].PeopleId} to {pi[1].PeopleId}");
+            if (DeleteDuplicate == true)
+                DbUtil.LogActivity($"Deleting Record during Merge {pi[0].PeopleId} to {pi[1].PeopleId}");
+        }
+
+        public void ToggleNotDuplicate()
+        {
+            if (IsDuplicate())
+            {
+                var dups = from ee in DbUtil.Db.PeopleExtras
+                           where ee.Field == "notdup"
+                           where ee.PeopleId == pi[0].PeopleId || ee.PeopleId == pi[1].PeopleId
+                           select ee;
+                DbUtil.Db.PeopleExtras.DeleteAllOnSubmit(dups);
+            }
+            else
+            {
+                pi[0].person.AddEditExtraInt("notdup", pi[1].PeopleId);
+                pi[1].person.AddEditExtraInt("notdup", pi[0].PeopleId);
+            }
+            DbUtil.Db.SubmitChanges();
+        }
+
+        public bool IsDuplicate()
+        {
+            return pi[0].notdup || pi[1].notdup;
         }
     }
 }

@@ -4,6 +4,7 @@ CREATE VIEW [dbo].[StatusFlagNamesRoles]
 AS
 
 select 
+	MAX(Id) Id,
 	t.Name Flag, 
 	REPLACE(REPLACE(SUBSTRING(c.Name, 5, 50), ' ', ''), '.', '_') [Name], 
 	r.RoleName [Role]

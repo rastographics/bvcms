@@ -1,4 +1,5 @@
 ﻿@using CmsWeb.Areas.OnlineReg.Models
+@using UtilityExtensions
 @model string
 @{
   var label = ViewBag.label as string;
@@ -8,7 +9,7 @@
 <div class="form-group">
   <label class="control-label col-sm-3 labelsize">@label</label>
   <div class="col-sm-9">
-    <select name="@name" class="form-control">
+    <select id="@name.ToSuitableId()" name="@name" class="form-control">
       @foreach (var i in items)
       {
         <option value="@i.Value" @(i.Selected ? "selected=selected" : "") @(i.Filled ? "disabled=disabled" : "")>@i.Text</option>

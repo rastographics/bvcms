@@ -1,8 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
+using System.Web;
 using CmsData.Registration;
 using UtilityExtensions;
 using CmsData;
+using CmsData.OnlineRegSummaryText;
+using CmsWeb.Areas.OnlineReg.Controllers;
+using Elmah;
 
 namespace CmsWeb.Areas.OnlineReg.Models
 {
@@ -14,9 +19,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 return SummarizeFamilyAttendance();
 
             var om = GetOrgMember();
+            if (Util2.UseNewDetails)
+            {
+                var si = new SummaryInfo(DbUtil.Db, om.PeopleId, om.OrganizationId);
+                return si.ToString();
+            }
             var sb = StartSummary();
             SummarizePayment(ti, om, sb);
-            if(Parent.SupportMissionTrip)
+            if (Parent.SupportMissionTrip)
                 SummarizeSupportMissionTrip(sb);
             else
                 SummarizeAnswers(sb, om);
@@ -129,10 +139,10 @@ namespace CmsWeb.Areas.OnlineReg.Models
                         sb.AppendFormat("<tr><td>Insurance Policy:</td><td>{0}</td></tr>\n", rr.Policy);
                         break;
                     case "AskRequest":
-                        sb.AppendFormat("<tr><td>{1}:</td><td>{0}</td></tr>\n", om.Request, ((AskRequest) ask).Label);
+                        sb.AppendFormat("<tr><td>{1}:</td><td>{0}</td></tr>\n", om.Request, ((AskRequest)ask).Label);
                         break;
                     case "AskHeader":
-                        sb.AppendFormat("<tr><td colspan='2'><h4>{0}</h4></td></tr>\n", ((AskHeader) ask).Label);
+                        sb.AppendFormat("<tr><td colspan='2'><h4>{0}</h4></td></tr>\n", ((AskHeader)ask).Label);
                         break;
                     case "AskInstruction":
                         break;
@@ -189,8 +199,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
         private void SummarizeDropdownChoice(StringBuilder sb, Ask ask)
         {
             sb.AppendFormat("<tr><td>{1}:</td><td>{0}</td></tr>\n",
-                ((AskDropdown) ask).SmallGroupChoice(option).Description,
-                Util.PickFirst(((AskDropdown) ask).Label, "Options"));
+                ((AskDropdown)ask).SmallGroupChoice(option).Description,
+                Util.PickFirst(((AskDropdown)ask).Label, "Options"));
         }
 
         private void SummarizeGradeOption(StringBuilder sb, Ask ask)
@@ -215,14 +225,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SummarizeYesNoChoices(StringBuilder sb, Ask ask)
         {
-            foreach (var a in ((AskYesNoQuestions) ask).list)
+            foreach (var a in ((AskYesNoQuestions)ask).list)
                 if (YesNoQuestion.ContainsKey(a.SmallGroup))
                     sb.Append($"<tr><td>{a.Question}:</td><td>{(YesNoQuestion[a.SmallGroup] == true ? "Yes" : "No")}</td></tr>\n");
         }
 
         private void SummarizeCheckboxChoices(StringBuilder sb, Ask ask)
         {
-            var askcb = (AskCheckboxes) ask;
+            var askcb = (AskCheckboxes)ask;
             var menulabel = askcb.Label;
             foreach (var i in askcb.CheckboxItemsChosen(Checkbox))
             {
@@ -240,8 +250,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void SummarizeMenuChoices(StringBuilder sb, Ask ask)
         {
-            var menulabel = ((AskMenu) ask).Label;
-            foreach (var i in ((AskMenu) ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
+            var menulabel = ((AskMenu)ask).Label;
+            foreach (var i in ((AskMenu)ask).MenuItemsChosen(MenuItem[ask.UniqueId]))
             {
                 string row;
                 if (i.amt > 0)

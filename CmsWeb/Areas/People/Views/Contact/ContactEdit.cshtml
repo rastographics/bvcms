@@ -3,12 +3,6 @@
 <form id="edit-contact" class="form ajax" method="post">
     @Html.Hidden("editing", "true")
     @Html.HiddenFor(m => m.ContactId)
-    @if (Model.Incomplete.HasValue())
-    {
-        <div class="alert alert-danger">
-            @Model.Incomplete
-        </div>
-    }
     <div class="box box-responsive">
        <div class="box-content">
             <div class="row">
@@ -44,7 +38,8 @@
                 }
             </div>
             <br/>
-            <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a> <a id="update" class="btn btn-primary ajax" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
+         <a id="cancel" class="btn btn-default ajax" href="/Contact2/ContactDisplay/@Model.ContactId">Cancel</a> 
+         <a id="update" class="btn btn-primary ajax validate" href="/Contact2/ContactUpdate/@Model.ContactId">Update</a>
             @Html.ValidationMessage("contactors")
             @Html.ValidationMessage("contactees")
             <br/><br/>

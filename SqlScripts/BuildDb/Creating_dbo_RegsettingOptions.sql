@@ -1,7 +1,9 @@
+
 CREATE VIEW [dbo].[RegsettingOptions]
 AS
 SELECT 
 	OrganizationId
+	,OrganizationName
 	,RegSettingXml.value('(/Settings/AskItems/AskAllergies)[1]', 'bit') AskAllergies
 	,RegSettingXml.value('(/Settings/AskItems/AnswersNotRequired)[1]', 'bit') AnswersNotRequired
 	,RegSettingXml.value('(/Settings/AskItems/AskChurch)[1]', 'bit') AskChurch

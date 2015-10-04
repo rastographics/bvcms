@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using CmsData.API;
 using Dapper;
 using Microsoft.Scripting.Hosting;
+using HandlebarsDotNet;
 
 namespace CmsData
 {
@@ -464,55 +465,55 @@ namespace CmsData
             }
         }
 
-        public void AddMembersToOrg(object savedQuery, object OrgId)
+        public void AddMembersToOrg(object savedQuery, object orgId)
         {
             var q = db.PeopleQuery2(savedQuery);
             var dt = DateTime.Now;
             foreach (var p in q)
             {
-                OrganizationMember.InsertOrgMembers(db, OrgId.ToInt(), p.PeopleId, MemberTypeCode.Member, dt, null, false);
+                OrganizationMember.InsertOrgMembers(db, orgId.ToInt(), p.PeopleId, MemberTypeCode.Member, dt, null, false);
                 db.SubmitChanges();
             }
         }
 
-        public bool InOrg(object pid, object OrgId)
+        public bool InOrg(object pid, object orgId)
         {
             var om = (from mm in db.OrganizationMembers
                 where mm.PeopleId == pid.ToInt()
-                where mm.OrganizationId == OrgId.ToInt()
+                where mm.OrganizationId == orgId.ToInt()
                 select mm).SingleOrDefault();
             return om != null;
         }
-        public void AddMemberToOrg(object pid, object OrgId)
+        public void AddMemberToOrg(object pid, object orgId)
         {
-            AddMembersToOrg("peopleid=" + pid.ToInt(), OrgId.ToInt());
+            AddMembersToOrg("peopleid=" + pid.ToInt(), orgId.ToInt());
         }
-        public bool InSubGroup(object pid, object OrgId, string group)
+        public bool InSubGroup(object pid, object orgId, string group)
         {
             var om = (from mm in db.OrganizationMembers
                 where mm.PeopleId == pid.ToInt()
-                where mm.OrganizationId == OrgId.ToInt()
+                where mm.OrganizationId == orgId.ToInt()
                 select mm).SingleOrDefault();
             if (om == null)
-                throw new Exception($"no orgmember {pid}:");
+                return false;
 
             return om.IsInGroup(group);
         }
-        public void AddSubGroup(object pid, object OrgId, string group)
+        public void AddSubGroup(object pid, object orgId, string group)
         {
             var om = (from mm in db.OrganizationMembers
                 where mm.PeopleId == pid.ToInt()
-                where mm.OrganizationId == OrgId.ToInt()
+                where mm.OrganizationId == orgId.ToInt()
                 select mm).SingleOrDefault();
             if (om == null)
                 throw new Exception($"no orgmember {pid}:");
             om.AddToGroup(db, group);
         }
-        public void RemoveSubGroup(object pid, object OrgId, string group)
+        public void RemoveSubGroup(object pid, object orgId, string group)
         {
             var om = (from mm in db.OrganizationMembers
                 where mm.PeopleId == pid.ToInt()
-                where mm.OrganizationId == OrgId.ToInt()
+                where mm.OrganizationId == orgId.ToInt()
                 select mm).SingleOrDefault();
             if (om == null)
                 throw new Exception($"no orgmember {pid}:");
@@ -606,10 +607,19 @@ namespace CmsData
             var p = api.GetPersonData(pid.ToInt());
             return p;
         }
-        public APIOrganization.Organization GetOrganization(object OrgId)
+        public APIPerson.Person GetSpouse(object pid)
+        {
+            var p1 = db.LoadPersonById(pid.ToInt());
+            if (p1 == null)
+                return null;
+            var api = new APIPerson(db);
+            var p = api.GetPersonData(p1.SpouseId ?? 0);
+            return p;
+        }
+        public APIOrganization.Organization GetOrganization(object orgId)
         {
             var api = new APIOrganization(db);
-            return api.GetOrganization(OrgId.ToInt());
+            return api.GetOrganization(orgId.ToInt());
         }
 
          /// <summary>
@@ -821,5 +831,12 @@ print sb.getvalue()
             }
         }
 
+        public string RenderTemplate(string source, object data)
+        {
+            CssStyle.RegisterHelpers();
+            var template = Handlebars.Compile(source);
+            var result = template(data);
+            return result;
+        }
     }
 }

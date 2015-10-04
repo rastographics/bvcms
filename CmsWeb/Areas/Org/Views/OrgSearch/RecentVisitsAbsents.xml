@@ -1,0 +1,42 @@
+﻿<div>
+  The following meetings are ready to be viewed:<br/>
+  {{#each this}}
+    <a href='{{ServerLink}}Meeting/{{MeetingId}}'>{{OrgName}} - {{LastMeeting}}</a><br/>
+  {{/each}}
+  {{#each this}}
+    {{#if HasAbsents}}
+      <h2>Recent Absents</h2>
+      <hr />
+      <a href='{{ServerLink}}Organization/{{OrganizationId}}'>{{OrgName}}</a> ({{LeaderName}})<br />
+      <span>
+        Members with ({{ConsecutiveAbsentsThreshold}})
+        or more consecutive absents on and before {{LastMeeting}}
+      </span>
+      <hr />
+      {{#each Absents}}
+      <p>
+        <a href='{{ServerLink}}Person2/{{PeopleId}}' target="person">{{Name2}}</a> 
+        <span>({{Consecutive}} times absent, Last Attend: {{LastMeeting}})</span>
+        {{#if HasHomePhone}}<br />{{HomePhone}}{{/if}}
+        {{#if HasCellPHone}}<br />{{CellPhone}}{{/if}}
+        {{#if HasEmail}}<br /><a href='mailto:{{EmailAddress}}'>{{EmailAddress}}</a>{{/if}}
+      </p>
+      {{/each}}
+    {{/if}}
+    {{#if HasVisits}}
+      <h2>Recent Guests</h2>
+      <hr/>
+      {{#each Visits}}
+        <p>
+          <span>
+            <a href='{{ServerLink}}Person2/{{PeopleId}}' target="person">{{LastName}}, {{PreferredName}}</a> 
+            (Last Attend: {{LastAttended}})
+          </span>
+          {{#if HasHomePhone}}<br/>{{HomePhone}}{{/if}}
+          {{#if HasCellPhone}}<br/>{{CellPhone}}{{/if}}
+          {{#if HasEmail}}<br/><a href='mailto:{{Email}}'>{{Email}}</a>{{/if}}
+        </p>
+      {{/each}}
+    {{/if}}
+  {{/each}}
+</div>

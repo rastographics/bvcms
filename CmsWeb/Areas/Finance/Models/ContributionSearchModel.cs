@@ -153,16 +153,16 @@ namespace CmsWeb.Models
         }
         public IEnumerable<BundleInfo> BundlesList()
         {
-            var q = from c in api.FetchContributions()
-                    let bhid = c.BundleDetails.First().BundleHeaderId
-                    group c by new { bhid, c.ContributionDate.Value.Date } into g
-                    select new BundleInfo()
-                    {
-                        Id = g.Key.bhid,
-                        Total = g.Sum(t => t.ContributionAmount ?? 0),
-                        Date = g.Key.Date,
-                        Count = g.Count()
-                    };
+            var q = (from c in api.FetchContributions()
+                     let bhid = c.BundleDetails.First().BundleHeaderId
+                     group c by new {bhid, c.ContributionDate.Value.Date} into g
+                     select new BundleInfo()
+                     {
+                         Id = g.Key.bhid,
+                         Total = g.Sum(t => t.ContributionAmount ?? 0),
+                         Date = g.Key.Date,
+                         Count = g.Count()
+                     }).OrderBy(x => x.Date);
             return q;
         }
         public SelectList ContributionStatuses()

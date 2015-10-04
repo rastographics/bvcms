@@ -1,0 +1,59 @@
+﻿<div class="modal fade" id="rollsheet-modal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Rollsheet(s) Report</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="MeetingDate" class="control-label">Meeting Date</label>
+              <div class="input-group date">
+                @Html.TextBox("MeetingDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+                @Html.Hidden("MeetingDateIso", "", new { disabled = "disabled" })
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="MeetingTime" class="control-label">Meeting Time</label>
+              <input type="text" id="MeetingTime" name="MeetingTime" class="form-control" />
+              <span class="help-block">Time in format hh:mm am or pm</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="sgprefix" class="control-label">Group Filter Prefix</label>
+              <input type="text" id="sgprefix" name="sgprefix" class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label for="highlightsg" class="control-label">Highlight Group</label>
+              <input type="text" id="highlightsg" name="highlightsg" class="form-control" />
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label class="checkbox-inline">
+                @Html.CheckBox("altnames") Use alternate names?
+              </label>
+              <label class="checkbox-inline">
+                @Html.CheckBox("rallymode") Parents (rally mode)?
+              </label>
+              <label class="checkbox-inline">
+                @Html.CheckBox("bygroup") By group?
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+        <input type="button" id="rollsheet2" name="rollsheet2" value="Create" class="btn btn-primary" />
+      </div>
+    </div>
+  </div>
+</div>

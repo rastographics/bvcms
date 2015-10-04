@@ -1,0 +1,33 @@
+﻿<div class="modal fade" id="new-meetings-modal">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Create New Meeting</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="NewMeetingDate" class="control-label">Meeting Date</label>
+          <div class="input-group date">
+            @Html.TextBox("NewMeetingDate", "", new { @class = "form-control" })<span class="input-group-addon hidden-xs hidden-sm"><i class="fa fa-calendar"></i></span>
+            @Html.Hidden("NewMeetingDateIso", "", new { disabled = "disabled" })
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="NewMeetingTime" class="control-label">Meeting Time</label>
+          <input type="text" id="NewMeetingTime" name="NewMeetingTime" class="form-control" />
+          <span class="help-block">Time in format hh:mm am or pm</span>
+        </div>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="NoAbsenteeRecords" name="NoAbsenteeRecords"> No Absentee Records
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="button" value="Cancel" class="btn btn-default" data-dismiss="modal" />
+        <input type="button" id="createmeetings" name="createmeetings" value="Create" class="btn btn-primary" />
+      </div>
+    </div>
+  </div>
+</div>

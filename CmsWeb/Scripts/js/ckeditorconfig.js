@@ -1,12 +1,13 @@
 ﻿CKEDITOR.editorConfig = function (config) {
     config.filebrowserUploadUrl = '/Account/CKEditorUpload/';
     config.filebrowserImageUploadUrl = '/Account/CKEditorUpload/';
+    config.allowedContent = true;
     config.toolbar =
     [
         { name: 'document', items: ['Source', '-', 'Preview'] },
         { name: 'clipboard', items: ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo'] },
         { name: 'editing', items: ['Find', 'Replace', '-', 'SelectAll', '-', 'SpellChecker', 'Scayt'] },
-        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+        { name: 'links', items: ['Link', 'specialLink', 'Unlink', 'Anchor'] },
         '/',
         { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat'] },
         { name: 'paragraph', items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },

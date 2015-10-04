@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using CmsData.API;
+using UtilityExtensions;
 
 namespace CmsData.Registration
 {
@@ -59,6 +60,29 @@ namespace CmsData.Registration
                     return new Ask(ask);
             }
         }
+
+        public bool IsAskAllergies => Type == "AskAllergies";
+        public bool IsAskCheckboxes => Type == "AskCheckboxes";
+        public bool IsAskChurch => Type == "AskChurch";
+        public bool IsAskCoaching => Type == "AskCoaching";
+        public bool IsAskDoctor => Type == "AskDoctor";
+        public bool IsAskDropdown { get { return Type == "AskDropdown";  } }
+        public bool IsAskEmContact => Type == "AskEmContact";
+        public bool IsAskExtraQuestions => Type == "AskExtraQuestions";
+        public bool IsAskGradeOptions => Type == "AskGradeOptions";
+        public bool IsAskHeader => Type == "AskHeader";
+        public bool IsAskInstruction => Type == "AskInstruction";
+        public bool IsAskInsurance => Type == "AskInsurance";
+        public bool IsAskMenu => Type == "AskMenu";
+        public bool IsAskParents => Type == "AskParents";
+        public bool IsAskRequest => Type == "AskRequest";
+        public bool IsAskSize => Type == "AskSize";
+        public bool IsAskSms => Type == "AskSMS";
+        public bool IsAskSuggestedFee => Type == "AskSuggestedFee";
+        public bool IsAskText => Type == "AskText";
+        public bool IsAskTickets => Type == "AskTickets";
+        public bool IsAskTylenolEtc => Type == "AskTylenolEtc";
+        public bool IsAskYesNoQuestions => Type == "AskYesNoQuestions";
 
         public virtual List<string> SmallGroups()
         {

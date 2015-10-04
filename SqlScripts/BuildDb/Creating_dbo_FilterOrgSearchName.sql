@@ -71,6 +71,14 @@ BEGIN
 		FROM dbo.Organizations
 		WHERE ParentOrgId = (SELECT oid FROM token2)
 	),
+	filterRegSettings AS (
+		SELECT OrganizationId oid
+		FROM dbo.RegsettingUsage
+		WHERE ( SELECT COUNT(*)
+				FROM dbo.Split(SUBSTRING(@name,12,1000), ',') n
+				JOIN dbo.Split(Usage, ' ') u ON u.Value = n.Value ) 
+			= ( SELECT COUNT(*) FROM dbo.Split(SUBSTRING(@name,12,1000), ',') )
+	),
 	filterName AS (
 		SELECT OrganizationId oid
 		FROM dbo.Organizations o
@@ -78,6 +86,7 @@ BEGIN
 		OR (@name LIKE '-ev:%' AND o.OrganizationId IN (SELECT oid FROM filterNotHasExtraValue)) 
 		OR (@name LIKE 'childof:%' AND o.OrganizationId IN (SELECT oid FROM filterChildOf)) 
 		OR (@name LIKE 'master:%' AND o.OrganizationId IN (SELECT oid FROM filterPicklist)) 
+		OR (@name LIKE 'regsetting:%' AND o.OrganizationId IN (SELECT oid FROM filterRegSettings)) 
 		OR (o.OrganizationId IN (SELECT oid FROM filterNames)) 
 	)
 	INSERT @t SELECT oid FROM filterName

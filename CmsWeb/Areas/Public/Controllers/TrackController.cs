@@ -35,7 +35,7 @@ namespace CmsWeb.Areas.Public.Controllers
         {
             try
             {
-                var code = new Code39BarCode(id);
+                var code = new Code39BarCode(id) { BarCodePadding = 20 };
                 return new FileContentResult(code.Generate(), "image/png");
             }
             catch (Exception)

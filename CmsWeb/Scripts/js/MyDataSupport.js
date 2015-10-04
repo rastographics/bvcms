@@ -8,8 +8,7 @@
         allowedContent: true,
         customConfig: '/scripts/js/ckeditorconfig.js'
     });
-    $("#sendSupport").live("click", function (e) {
-        
+    $("body").on("click", "#sendSupport", function (e) {
         $.post("/Support/MyDataSendRequest", {
             body: CKEDITOR.instances["body"].getData()
         }, function (data) {

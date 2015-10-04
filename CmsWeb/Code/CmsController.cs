@@ -1,13 +1,16 @@
 using System;
 using System.Configuration;
+using System.IO;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Linq;
+using System.Net;
 using CmsData;
 using CmsWeb.Areas.Manage.Controllers;
 using CmsWeb.Code;
 using CmsWeb.Models;
+using Elmah;
 using OfficeOpenXml;
 using RegistrationSettingsParser;
 using UtilityExtensions;
@@ -24,10 +27,10 @@ namespace CmsWeb
             if (DbUtil.Db.RegistrationsConverted())
                 return;
             var q = from o in DbUtil.Db.Organizations
-                where (o.RegSetting ?? "").Length > 0
-                where o.RegSettingXml == null
-                orderby o.OrganizationId
-                select o;
+                    where (o.RegSetting ?? "").Length > 0
+                    where o.RegSettingXml == null
+                    orderby o.OrganizationId
+                    select o;
             foreach (var o in q)
             {
                 var rs = Parser.ParseSettings(o.RegSetting);
@@ -86,7 +89,21 @@ namespace CmsWeb
 
         protected override JsonResult Json(object data, string contentType, Encoding contentEncoding, JsonRequestBehavior behavior)
         {
-            return new JsonNetResult {Data = data, ContentType = contentType, ContentEncoding = contentEncoding, JsonRequestBehavior = behavior };
+            return new JsonNetResult { Data = data, ContentType = contentType, ContentEncoding = contentEncoding, JsonRequestBehavior = behavior };
+        }
+        public string RenderRazorViewToString(string viewName, object model)
+        {
+            ViewData.Model = model;
+            using (var sw = new StringWriter())
+            {
+                var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext,
+                                                                         viewName);
+                var viewContext = new ViewContext(ControllerContext, viewResult.View,
+                                             ViewData, TempData, sw);
+                viewResult.View.Render(viewContext, sw);
+                viewResult.ViewEngine.ReleaseView(ControllerContext, viewResult.View);
+                return sw.GetStringBuilder().ToString();
+            }
         }
     }
 
@@ -140,6 +157,24 @@ namespace CmsWeb
         {
             return View("Message2", model: text);
         }
+        public ActionResult Message(Exception ex)
+        {
+            var userinput = ex as UserInputException;
+            if (userinput != null)
+            {
+                ViewBag.Message = ex.Message;
+                return View("PageError");
+            }
+            throw ex;
+        }
+        public ActionResult AjaxErrorMessage(Exception ex)
+        {
+            var userinput = ex as UserInputException;
+            if (userinput == null)
+                Elmah.ErrorSignal.FromCurrentContext().Raise(ex);
+            Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            return Content($"<strong>Failed!</strong> {ex.Message}");
+        }
     }
 
     [MyRequireHttps]
@@ -171,6 +206,10 @@ namespace CmsWeb
             base.OnActionExecuting(filterContext);
             Util.Helpfile = $"_{filterContext.ActionDescriptor.ControllerDescriptor.ControllerName}_{filterContext.ActionDescriptor.ActionName}";
             DbUtil.Db.UpdateLastActivity(Util.UserId);
+        }
+        public ViewResult Message(string text)
+        {
+            return View("Message", model: text);
         }
     }
 

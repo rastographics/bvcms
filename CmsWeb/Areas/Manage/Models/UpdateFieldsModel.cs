@@ -34,6 +34,7 @@ namespace CmsWeb.Models
                 "Bad Address Flag",
                 "Baptism Status",
                 "Baptism Type",
+                "Baptism Date",
                 "Campus",
                 "Deceased Date",
                 "Decision Type",
@@ -157,6 +158,10 @@ namespace CmsWeb.Models
                         break;
                     case "Baptism Type":
                         p.BaptismTypeId = NewValue.ToInt2();
+                        break;
+                    case "Baptism Date":
+                        p.UpdateValue("BaptismDate", NewValue.ToDate());
+                        p.LogChanges(DbUtil.Db, Util.UserPeopleId ?? 1);
                         break;
                     case "Campus":
                         p.CampusId = NewValue.ToInt2();

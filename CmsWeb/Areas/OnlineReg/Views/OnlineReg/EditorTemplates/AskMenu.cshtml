@@ -26,7 +26,7 @@
             </td>
             <td nowrap="nowrap">
               <input type="hidden" name="@(name)[@i].Key" value="@item.SmallGroup" />
-              <input type="text" name="@(name)[@i].Value" value="@Model.MenuItemValue(ask.UniqueId, item.SmallGroup)" class="form-control narrow" />
+              <input type="text" id="@name.ToSuitableId()_@i" name="@(name)[@i].Value" value="@Model.MenuItemValue(ask.UniqueId, item.SmallGroup)" class="form-control narrow" />
               @if (item.Fee > 0)
               {
                   @:at $@item.Fee.ToString2("N2")

@@ -62,6 +62,8 @@ namespace CmsData
 		
 		private int? _OrginatorId;
 		
+		private string _DeclineReason;
+		
    		
     	
 		private EntityRef< TaskList> _CoTaskList;
@@ -152,6 +154,9 @@ namespace CmsData
 		
 		partial void OnOrginatorIdChanging(int? value);
 		partial void OnOrginatorIdChanged();
+		
+		partial void OnDeclineReasonChanging(string value);
+		partial void OnDeclineReasonChanged();
 		
     #endregion
 		public Task()
@@ -689,6 +694,28 @@ namespace CmsData
 					this._OrginatorId = value;
 					this.SendPropertyChanged("OrginatorId");
 					this.OnOrginatorIdChanged();
+				}
+
+			}
+
+		}
+
+		
+		[Column(Name="DeclineReason", UpdateCheck=UpdateCheck.Never, Storage="_DeclineReason", DbType="nvarchar")]
+		public string DeclineReason
+		{
+			get { return this._DeclineReason; }
+
+			set
+			{
+				if (this._DeclineReason != value)
+				{
+				
+                    this.OnDeclineReasonChanging(value);
+					this.SendPropertyChanging();
+					this._DeclineReason = value;
+					this.SendPropertyChanged("DeclineReason");
+					this.OnDeclineReasonChanged();
 				}
 
 			}

@@ -121,7 +121,7 @@ namespace CmsWeb.Models
             var q2 = from r in DbUtil.Db.GetTotalContributionsDonor2(startdt, enddt, campusid, nontaxdeductible, includeUnclosed)
                      select new
                      {
-                         GiverId = r.CreditGiverId.Value,
+                         GiverId = r.CreditGiverId ?? 0,
                          Count = r.Count ?? 0,
                          Amount = r.Amount ?? 0m,
                          Pledged = r.PledgeAmount ?? 0m,
@@ -130,6 +130,11 @@ namespace CmsWeb.Models
                          MainFellowship = r.MainFellowship ?? "",
                          MemberStatus = r.MemberStatus ?? "",
                          r.JoinDate,
+                         r.Addr,
+                         r.Addr2,
+                         r.City,
+                         r.St,
+                         r.Zip
                      };
             return q2.ToDataTable();
         }

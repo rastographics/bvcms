@@ -9,6 +9,7 @@
             });
         }
     });
+
     CKEDITOR.replace('body', {
         height: 400,
         allowedContent: true,

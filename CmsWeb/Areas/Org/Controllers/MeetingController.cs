@@ -466,13 +466,14 @@ namespace CmsWeb.Areas.Org.Controllers
             return Redirect("/Query/" + cc.Id);
         }
 
-        public ActionResult AttendanceByGroups(int id)
+        public ActionResult AttendanceByGroups(int id, string prefix)
         {
             var q = from a in DbUtil.Db.Attends
                     where a.MeetingId == id
                     join om in DbUtil.Db.OrgMemMemTags
                         on new {a.OrganizationId, a.PeopleId}
                         equals new {OrganizationId = om.OrgId, om.PeopleId}
+                    where prefix == null || om.MemberTag.Name.StartsWith(prefix)
                     select new {a.Person.Name, SmallGroup = om.MemberTag.Name, Attended = a.AttendanceFlag};
             var j = from i in q
                     group i by new {i.Attended, i.SmallGroup}

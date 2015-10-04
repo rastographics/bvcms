@@ -18,7 +18,7 @@ namespace CmsWeb
                 var isNullableAndNull = (bindingContext.ModelMetadata.IsNullableValueType && (string.IsNullOrEmpty(valueResult?.AttemptedValue)));
 
                 //If not nullable and null then we should try and parse the decimal
-                if (!isNullableAndNull)
+                if (!isNullableAndNull && valueResult != null)
                 {
                     decimal d;
                     if(decimal.TryParse(valueResult.AttemptedValue, NumberStyles.Any, CultureInfo.CurrentCulture, out d))

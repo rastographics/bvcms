@@ -78,20 +78,17 @@ namespace CmsWeb.Areas.OnlineReg.Models
             throw new NotImplementedException("The method or operation is not implemented.");
         }
 
+        private string GetAttr(XElement e, string name)
+        {
+            var a = e.Attribute(name);
+            return a?.Value ?? string.Empty;
+        }
+
         private void ReadDropdownOption(XElement e)
         {
             if (option == null)
                 option = new List<string>();
             option.Add(e.Value);
-        }
-
-        private void ReadSpecialTest(XElement e)
-        {
-            if (SpecialTest == null)
-                SpecialTest = new Dictionary<string, string>();
-            var key = e.Attribute("key");
-            if (key != null)
-                SpecialTest.Add(key.Value, e.Value);
         }
 
         private void ReadMenuItemChoice(XElement e)
@@ -153,6 +150,16 @@ namespace CmsWeb.Areas.OnlineReg.Models
                 ExtraQuestion[eqset].Add(eq.Value, e.Value);
         }
 
+        private void ReadSpecialTest(XElement e)
+        {
+            if (SpecialTest == null)
+                SpecialTest = new Dictionary<string, string>();
+            var key = e.Attribute("key");
+            if (key != null)
+                SpecialTest.Add(key.Value, e.Value);
+        }
+
+
         private void ReadFamilyAttend(XElement e)
         {
             var fa = new FamilyAttendInfo();
@@ -175,12 +182,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var fu = e.Attribute("fund");
             if (fu != null)
                 FundItem.Add(fu.Value.ToInt(), e.Value.ToDecimal());
-        }
-
-        private string GetAttr(XElement e, string name)
-        {
-            var a = e.Attribute(name);
-            return a?.Value ?? string.Empty;
         }
     }
 }

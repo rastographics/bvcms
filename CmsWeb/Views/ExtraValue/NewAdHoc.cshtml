@@ -21,6 +21,10 @@
 
             @Html.EditorFor(m => m.AdhocExtraValueType, new { PlainSelect = true })
             @Html.EditorFor(m => m.ExtraValueName)
+            @if (Model.ExtraValueTable == "People")
+            {
+              @Html.EditorFor(m => m.AddToFamilyRecordInsteadOfPerson)
+            }
 
             @Html.EditorFor(m => m.ExtraValueTextBox, new { hide = "hide" })
             @Html.EditorFor(m => m.ExtraValueTextArea)
@@ -30,7 +34,7 @@
         </div>
         <div class="modal-footer">
             <a class="btn btn-default" data-dismiss="modal">Cancel</a>
-            <a href="/ExtraValue/SaveNewAdhoc" class="btn btn-primary ajax" data-callback="AdhocDialogCallback">Save</a>
+            <a href="/ExtraValue/SaveNewAdhoc" class="btn btn-primary ajax validate" data-callback="AdhocDialogCallback">Save</a>
         </div>
     </div>
 </div>

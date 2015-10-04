@@ -21,7 +21,8 @@ CREATE TABLE [dbo].[Task]
 [Description] [nvarchar] (100) NULL,
 [CompletedOn] [datetime] NULL,
 [ForceCompleteWContact] [bit] NULL,
-[OrginatorId] [int] NULL
+[OrginatorId] [int] NULL,
+[DeclineReason] [nvarchar] (max) NULL
 )
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

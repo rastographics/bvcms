@@ -149,7 +149,11 @@ namespace UtilityExtensions
                 return cb.ConnectionString;
             }
         }
-
+        public static string GetConnectionString2(string cs, string db)
+        {
+            return new SqlConnectionStringBuilder(cs)
+                { InitialCatalog = db }.ConnectionString;
+        }
     }
 }
 

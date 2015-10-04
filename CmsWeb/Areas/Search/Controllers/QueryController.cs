@@ -317,14 +317,11 @@ namespace CmsWeb.Areas.Search.Controllers
             return Content(Task.AddTasks(DbUtil.Db, m.TopClause.Id).ToString());
         }
 
+        [HttpGet, Route("~/Query/Export")]
         public ActionResult Export()
         {
             var m = new QueryModel();
-            Response.ContentType = "text/xml";
-            var settings = new XmlWriterSettings { Indent = true, Encoding = new System.Text.UTF8Encoding(false) };
-            using (var w = XmlWriter.Create(Response.OutputStream, settings))
-                m.TopClause.SendToWriter(w);
-            return new EmptyResult();
+            return Content(m.TopClause.ToXml(), "text/xml");
         }
         [HttpGet, Route("~/Query/Import")]
         public ActionResult Import()

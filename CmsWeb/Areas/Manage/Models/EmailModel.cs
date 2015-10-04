@@ -49,7 +49,7 @@ namespace CmsWeb.Models
             }
         }
 
-        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
+//        public string FormattedHtmlBody => TidyLib.FormatHtml(queue.Body);
 
 
         public FilterType FilterType { get; private set; }

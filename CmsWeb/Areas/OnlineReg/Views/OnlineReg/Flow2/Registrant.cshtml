@@ -33,7 +33,7 @@
     <div class="form-group">
       <div class="col-sm-12">
         <h4 class="inline-block">Already have an account?</h4>
-        <a href="/OnlineReg/YesLogin" class="btn btn-success submitlink">
+        <a id="login-here" href="/OnlineReg/YesLogin" class="btn btn-success submitlink">
           Login Here
         </a>
       </div>
@@ -82,7 +82,7 @@
         if (!Model.Parent.IsEnded())
         {
           // A family member is always already found, display only
-          if (Model.IsFamily)
+          if (Model.IsFamily && Model.IsValidForContinue)
           {
             @Html.Partial("Flow2/PersonHidden", Model)
             @Html.Partial("Flow2/PersonDisplay", Model)
@@ -91,7 +91,7 @@
           else
           {
             Model.Parent.ShowFindInstructions = true;
-            if (Model.Found == null || Model.RegistrantProblem.HasValue()) // have not searched yet
+            if (Model.Found == null || Model.RegistrantProblem.HasValue() || Model.Parent.UserNeedsSelection) // have not searched yet
             {
               @Html.Partial("Flow2/PersonFind", Model)
             }

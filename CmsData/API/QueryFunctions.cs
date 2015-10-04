@@ -7,6 +7,8 @@ using UtilityExtensions;
 using IronPython.Hosting;
 using System.IO;
 using CmsData.Codes;
+using HandlebarsDotNet;
+using Microsoft.Scripting.Hosting;
 
 namespace CmsData
 {
@@ -45,18 +47,18 @@ namespace CmsData
             }
         }
 
-        public static string VitalStats(CMSDataContext Db)
+        public static string VitalStats(CMSDataContext db)
         {
-            var qf = new QueryFunctions(Db);
-            var script = Db.Content("VitalStats");
+            var script = db.Content("VitalStats");
             if (script == null)
                 return "no VitalStats script";
 
             if (!script.Body.Contains("class VitalStats"))
-                return RunScript(Db, script.Body);
+                return RunScript(db, script.Body);
 
             var engine = Python.CreateEngine();
             var sc = engine.CreateScriptSourceFromString(script.Body);
+            var qf = new QueryFunctions(db);
 
             try
             {
@@ -64,14 +66,22 @@ namespace CmsData
                 var scope = engine.CreateScope();
                 code.Execute(scope);
 
-                dynamic VitalStats = scope.GetVariable("VitalStats");
-                dynamic m = VitalStats();
+                dynamic vitalStats = scope.GetVariable("VitalStats");
+                dynamic m = vitalStats();
                 return m.Run(qf);
             }
             catch (Exception ex)
             {
                 return "VitalStats script error: " + ex.Message;
             }
+        }
+
+        public string RenderTemplate(string source, object data)
+        {
+            CssStyle.RegisterHelpers();
+            var template = Handlebars.Compile(source);
+            var result = template(data);
+            return result;
         }
 
         public static string RunScript(CMSDataContext db, string script)
@@ -455,6 +465,16 @@ namespace CmsData
         {
             return db.PeopleQuery2(savedQuery).Take(1000);
         }
+        public int TagQueryList(object savedQuery)
+        {
+            var q = db.PeopleQuery2(savedQuery).Select(vv => vv.PeopleId);
+            var tag = db.PopulateTemporaryTag(q);
+            return tag.Id;
+        }
+        public int TagCount(int tagid)
+        {
+            return db.TagPeople.Count(v => v.Id == tagid);
+        }
 
         public IEnumerable<Person> QueryList2(object savedQuery, string orderbyparam, bool ascending)
         {
@@ -494,6 +514,22 @@ namespace CmsData
                     break;
             }
             return q.Take(1000);
+        }
+
+        public IEnumerable<dynamic> QuerySql(string sqlscript, object p1)
+        {
+            return QuerySql(sqlscript, p1, null);
+        }
+        public IEnumerable<dynamic> QuerySql(string sql, object p1, Dictionary<string, string> d)
+        {
+            var p = new DynamicParameters();
+            p.Add("@p1", p1 ?? "");
+            if (d != null)
+                foreach (var kv in d)
+                    p.Add("@" + kv.Key, kv.Value);
+
+            var q = db.Connection.Query(sql, p, commandTimeout: 300);
+            return q;
         }
 
         public int RegistrationCount(int days, int progid, int divid, int orgid)

@@ -276,6 +276,10 @@
       <HintPath>..\packages\EPPlus.4.0.4\lib\net20\EPPlus.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Handlebars, Version=1.0.0.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
+      <HintPath>..\packages\Handlebars.Net.1.4.4\lib\Handlebars.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
@@ -317,10 +321,6 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="RazorEngine, Version=3.4.1.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RazorEngine.3.4.1\lib\net45\RazorEngine.dll</HintPath>
-    </Reference>
     <Reference Include="RestSharp, Version=105.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.0.1\lib\net4\RestSharp.dll</HintPath>
       <Private>True</Private>
@@ -357,8 +357,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Twilio.3.6.11\lib\3.5\Twilio.Api.dll</HintPath>
+      <HintPath>..\packages\Twilio.4.0.4\lib\3.5\Twilio.Api.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -367,6 +367,9 @@
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
     <Compile Include="API\IPythonApi.cs" />
+    <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
+    <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
+    <Compile Include="Classes\style.cs" />
     <Compile Include="DbUtil\CurrentOrg.cs" />
     <Compile Include="DbUtil\ModelViewModel.cs" />
     <Compile Include="Extensions\ChangeDetail.cs" />
@@ -472,6 +475,7 @@
     <Compile Include="Generated\Functions\DownlineLevel.cs" />
     <Compile Include="Generated\Functions\DownlineSingleTrace.cs" />
     <Compile Include="Generated\Functions\DownlineSummary.cs" />
+    <Compile Include="Generated\Functions\FamilyMember.cs" />
     <Compile Include="Generated\Functions\FilterOnlineReg.cs" />
     <Compile Include="Generated\Functions\FilterOrgSearchName.cs" />
     <Compile Include="Generated\Functions\GenRange.cs" />
@@ -497,6 +501,7 @@
     <Compile Include="Generated\Functions\PeopleIdsFromOrgSearch.cs" />
     <Compile Include="Generated\Functions\PotentialSubstitute.cs" />
     <Compile Include="Generated\Functions\RecentAttendInDaysByCountDesc.cs" />
+    <Compile Include="Generated\Functions\RecentGiver.cs" />
     <Compile Include="Generated\Functions\RecentIncompleteRegistration.cs" />
     <Compile Include="Generated\Functions\RecentIncompleteRegistrations2.cs" />
     <Compile Include="Generated\Functions\RegisterLinksFromMaster.cs" />
@@ -524,6 +529,7 @@
     <Compile Include="Generated\Views\AttendCredits2.cs" />
     <Compile Include="Generated\Views\DonorProfileList.cs" />
     <Compile Include="Generated\Views\FailedEmail.cs" />
+    <Compile Include="Generated\Views\FamilyFirstTime.cs" />
     <Compile Include="Generated\Views\IncompleteTask.cs" />
     <Compile Include="Generated\Views\MeetingConflict.cs" />
     <Compile Include="Generated\Views\MinistryInfo.cs" />
@@ -535,6 +541,7 @@
     <Compile Include="Generated\Views\RegsettingCount.cs" />
     <Compile Include="Generated\Views\RegsettingMessage.cs" />
     <Compile Include="Generated\Views\RegsettingOption.cs" />
+    <Compile Include="Generated\Views\RegsettingUsage.cs" />
     <Compile Include="Generated\Views\UserLeader.cs" />
     <Compile Include="Infrastructure\IsForeignKeyAttribute.cs" />
     <Compile Include="Meetings\Attend.cs" />
@@ -962,6 +969,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Classes\OnlineRegSummaryText\Details2.xml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Content Include="QueryBuilder\FieldMap3.xml">
       <SubType>Designer</SubType>
     </Content>
@@ -1009,7 +1019,6 @@
       <Name>UtilityExtensions</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

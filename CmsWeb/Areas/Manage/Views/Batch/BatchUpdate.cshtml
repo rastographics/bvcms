@@ -1,0 +1,22 @@
+﻿@{
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+@section scripts{
+  @Fingerprint.Script("/content/touchpoint/js/admin/batchupdate.js")
+}
+<div class="alert alert-success" style="display: none;"> </div>
+<div class="alert alert-danger" style="display: none;"> </div>
+<div class="box box-responsive">
+    <div class="box-content">
+        <div class="alert alert-info alert-dismissible">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Note:</strong> Paste into box below. Be sure to include the header row and the Org ID column.
+        </div>
+      <form action="@ViewBag.action">
+        <textarea name="text" rows="20" cols="1000" class="form-control">
+          @ViewBag.text
+        </textarea><br/>
+        <input type="submit" class="btn btn-primary" value="Submit" id="begin-update"/>
+      </form>
+    </div>
+</div>
