@@ -414,7 +414,7 @@ namespace CmsData
             return aa;
         }
 
-        public void SendPeopleEmail(int queueid)
+        public void SendPeopleEmail(int queueid, List<int> ccids = null)
         {
             var emailqueue = EmailQueues.Single(ee => ee.Id == queueid);
             var sysFromEmail = Util.SysFromEmail;
@@ -456,6 +456,20 @@ namespace CmsData
                 }
                 SubmitChanges();
             }
+
+            foreach (var ccid in ccids)
+            {
+                var c = EmailQueueTos.Count(a => a.Id == emailqueue.Id && a.PeopleId == ccid);
+                if (c == 0)
+                {
+                    emailqueue.EmailQueueTos.Add(new EmailQueueTo
+                    {
+                        PeopleId = ccid,
+                        Guid = Guid.NewGuid(),
+                    });
+                }
+            }
+            SubmitChanges();
 
             var q = from To in EmailQueueTos
                     where To.Id == emailqueue.Id
