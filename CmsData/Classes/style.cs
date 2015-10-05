@@ -30,7 +30,7 @@ namespace CmsData
             Handlebars.RegisterHelper("DataLabelStyle", (writer, context, args) => { writer.Write(DataLabelStyle); });
             Handlebars.RegisterHelper("LabelStyle", (writer, context, args) => { writer.Write(LabelStyle); });
             Handlebars.RegisterHelper("DataStyle", (writer, context, args) => { writer.Write(DataStyle); });
-            Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(DbUtil.Db.ServerLink()); });
+            Handlebars.RegisterHelper("ServerLink", (writer, context, args) => { writer.Write(DbUtil.Db.ServerLink().TrimEnd('/')); });
         }
 
     }

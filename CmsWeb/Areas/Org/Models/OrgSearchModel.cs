@@ -651,6 +651,7 @@ namespace CmsWeb.Areas.Search.Models
                          ConsecutiveAbsentsThreshold = org.ConsecutiveAbsentsThreshold ?? 2,
                          HasAbsents = absents.Any(),
                          Absents = (from a in absents
+                                    orderby a.Lastmeeting descending 
                                     select new
                                     {
                                         a.PeopleId,
