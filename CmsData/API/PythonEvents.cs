@@ -37,7 +37,7 @@ namespace CmsData
 
         /// <summary>
         /// This constructor creates an instance of the class named classname, and is called with pe.instance.Run().
-        /// It supports the old style of MorningBatch.
+        /// It supports the old style of MorningBatch and RegisterEvent.
         /// </summary>
         public PythonEvents(string dbname, string classname, string script)
             : this(dbname)
