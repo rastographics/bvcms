@@ -12,13 +12,12 @@ namespace CmsWeb.Controllers.Api.Lookup
     {
         public GendersController()
         {
-            Mapper.CreateMap<Gender, ApiGender>();
+            Mapper.CreateMap<Gender, ApiLookup>();
         }
 
-        [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.Genders.Project().To<ApiGender>().AsQueryable());
+            return Ok(DbUtil.Db.Genders.Project().To<ApiLookup>().AsQueryable());
         }
     }
 }

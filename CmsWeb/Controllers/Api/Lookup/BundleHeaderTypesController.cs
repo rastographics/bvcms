@@ -8,16 +8,16 @@ using CmsWeb.Models.Api.Lookup;
 
 namespace CmsWeb.Controllers.Api.Lookup
 {
-    public class CampusesController : ODataController
+    public class BundleHeaderTypesController : ODataController
     {
-        public CampusesController()
+        public BundleHeaderTypesController()
         {
-            Mapper.CreateMap<Campu, ApiLookup>();
+            Mapper.CreateMap<BundleHeaderType, ApiLookup>();
         }
 
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.Campus.Project().To<ApiLookup>().AsQueryable());
+            return Ok(DbUtil.Db.BundleHeaderTypes.Project().To<ApiLookup>().AsQueryable());
         }
     }
 }

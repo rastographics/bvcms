@@ -13,7 +13,6 @@ namespace CmsWeb.Controllers.Api
         public PeopleController()
         {
             Mapper.CreateMap<CmsData.View.PeopleBasicModifed, ApiPerson>();
-            //.ForMember(dest => dest.BirthDate, opt => opt.MapFrom(x => x.BDate));
         }
 
         [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]

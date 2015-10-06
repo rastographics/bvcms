@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CmsWeb.Models.Api
 {
-    [ApiMapName("OrganizationMembers")]
     public class ApiOrganizationMember
     {
         [Key]
