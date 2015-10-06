@@ -125,6 +125,17 @@ namespace CmsWeb.Models
                     if (o.Hour.HasValue)
                     {
                         var theirTime = DateTime.Now.AddHours(DbUtil.Db.Setting("TZOffset", "0").ToInt());
+
+                        if (DateTime.Now.DayOfWeek.ToInt() != thisday)
+                        {
+                            int dayDiff = thisday - DateTime.Now.DayOfWeek.ToInt();
+
+                            if (dayDiff < 0)
+                                theirTime = theirTime.AddDays(7 + dayDiff);
+                            else
+                                theirTime = theirTime.AddDays(dayDiff);
+                        }
+
                         leadtime = o.Hour.Value.Subtract(theirTime).TotalHours;
 
                         //var midnight = o.Hour.Value.Date;
