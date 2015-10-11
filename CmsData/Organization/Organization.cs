@@ -207,6 +207,12 @@ namespace CmsData
         public static OrgSchedule ParseSchedule(string s)
         {
             var m = Regex.Match(s, @"\A(?<dow>.*)\s(?<time>\d{1,2}:\d{2}\s(A|P)M)", RegexOptions.IgnoreCase);
+            var dow = m.Groups["dow"].Value;
+            var time = m.Groups["time"].Value;
+            return ParseSchedule(dow, time);
+        }
+        public static OrgSchedule ParseSchedule(string dow, string time)
+        {
             var d = new Dictionary<string, int>
             {
                 { "sun", 0 },
@@ -218,9 +224,11 @@ namespace CmsData
                 { "sat", 6 },
                 { "any", 10 },
             };
-            var dow = m.Groups["dow"].Value.ToLower();
-            var time = DateTime.Parse(m.Groups["time"].Value);
-            var mt = Util.Now.Sunday().AddDays(d[dow]).Add(time.TimeOfDay);
+
+            if (!dow.HasValue())
+                dow = "sun";
+            var t = DateTime.Parse(time);
+            var mt = Util.Now.Sunday().AddDays(d[dow.ToLower()]).Add(t.TimeOfDay);
             var sc = new OrgSchedule
             {
                 SchedDay = d[dow],
@@ -373,7 +381,7 @@ namespace CmsData
 
         public OrganizationExtra GetExtraValue(string field)
         {
-            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.Equal(field));
             if (ev == null)
             {
                 ev = new OrganizationExtra()
