@@ -24,7 +24,12 @@ namespace CmsData
         {
             return Drop(db, DateTime.Now);
         }
+
         public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate)
+        {
+            return Drop(db, dropdate, Organization.OrganizationName);
+        }
+        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, string orgname)
         {
             db.SubmitChanges();
             while (true)
@@ -41,7 +46,7 @@ namespace CmsData
                     OrganizationId = OrganizationId,
                     PeopleId = PeopleId,
                     MemberTypeId = MemberTypeId,
-                    OrganizationName = Organization.OrganizationName,
+                    OrganizationName = orgname,
                     TransactionDate = dropdate,
                     TransactionTypeId = 5, // drop
                     CreatedBy = Util.UserId1,
@@ -74,6 +79,37 @@ AND a.PeopleId = {2}
                 db.ExecuteCommand("UPDATE dbo.GoerSenderAmounts SET InActive = 1 WHERE OrgId = {0} AND (GoerId = {1} OR SupporterId = {1})", OrganizationId, PeopleId);
                 return droptrans;
             }
+        }
+        public void FastDrop(CMSDataContext db, DateTime dropdate, string orgname)
+        {
+            if (!EnrollmentDate.HasValue)
+                EnrollmentDate = CreatedDate;
+            var droptrans = new EnrollmentTransaction
+            {
+                OrganizationId = OrganizationId,
+                PeopleId = PeopleId,
+                MemberTypeId = MemberTypeId,
+                OrganizationName = orgname,
+                TransactionDate = dropdate,
+                TransactionTypeId = 5, // drop
+                CreatedBy = Util.UserId1,
+                CreatedDate = Util.Now,
+                Pending = Pending,
+                AttendancePercentage = AttendPct,
+                InactiveDate = InactiveDate,
+                UserData = UserData,
+                Request = Request,
+                ShirtSize = ShirtSize,
+                Grade = Grade,
+                Tickets = Tickets,
+                RegisterEmail = RegisterEmail,
+                Score = Score,
+            };
+
+            db.EnrollmentTransactions.InsertOnSubmit(droptrans);
+            db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
+            db.OrganizationMembers.DeleteOnSubmit(this);
+            db.SubmitChanges();
         }
 
         public static void UpdateMeetingsToUpdate()
@@ -210,7 +246,7 @@ AND a.PeopleId = {2}
             UserData += s;
         }
 
-        public static OrganizationMember InsertOrgMembers(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, DateTime? inactiveDate, bool pending, bool skipTriggerProcessing = false)
+        public static OrganizationMember InsertOrgMembers(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, DateTime? inactiveDate, bool pending, string name, bool skipTriggerProcessing = false)
         {
             db.SubmitChanges();
             var ntries = 2;
@@ -226,11 +262,6 @@ AND a.PeopleId = {2}
                         db.SubmitChanges();
                         return m;
                     }
-                    var org = db.Organizations.SingleOrDefault(oo => oo.OrganizationId == organizationId);
-                    if (org == null)
-                        return null;
-                    var name = org.OrganizationName;
-
                     var om = new OrganizationMember
                     {
                         OrganizationId = organizationId,
@@ -277,6 +308,11 @@ AND a.PeopleId = {2}
                     throw;
                 }
             }
+        }
+        public static OrganizationMember InsertOrgMembers(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, DateTime? inactiveDate, bool pending, bool skipTriggerProcessing = false)
+        {
+            var org = db.LoadOrganizationById(organizationId);
+            return InsertOrgMembers(db, organizationId, peopleId, memberTypeId, enrollmentDate, inactiveDate, pending, org.OrganizationName, skipTriggerProcessing);
         }
         public static OrganizationMember AddOrgMember(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, string name)
         {

@@ -76,6 +76,8 @@ namespace CmsData
 
         public string HttpMethod { get; set; }
 
+        public string UserName => Util.UserName;
+
         public string RunScript(string script)
         {
             try
@@ -91,14 +93,7 @@ namespace CmsData
 
         public static string RunScript(string dbname, string script)
         {
-            try
-            {
-                return ExecutePython(script, new PythonEvents(dbname));
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+            return ExecutePython(script, new PythonEvents(dbname));
         }
 
         public string CallScript(string scriptname)
