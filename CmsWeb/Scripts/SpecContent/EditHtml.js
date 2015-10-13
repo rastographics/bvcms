@@ -1,33 +1,5 @@
 ﻿$(function () {
 
-    $("a.delete").click(function (ev) {
-        ev.preventDefault();
-        var href = this.href;
-
-        swal({
-            title: "Are you sure?",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonClass: "btn-danger",
-            confirmButtonText: "Yes, delete it!",
-            closeOnConfirm: false
-        },
-        function () {
-            $.post(href, null, function (ret) {
-                if (ret && ret.error)
-                    swal("Error!", ret.error, "error");
-                else {
-                    swal({
-                        title: "Deleted!",
-                        type: "success"
-                    },
-                    function () {
-                        window.location = "/Manage/Display/#tab_htmlContent";
-                    });
-                }
-            });
-        });
-    });
 
     CKEDITOR.env.isCompatible = true;
 
