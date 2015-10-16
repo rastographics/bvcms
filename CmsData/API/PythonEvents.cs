@@ -827,7 +827,7 @@ print sb.getvalue()
         public string RenderTemplate(string source, object data)
         {
             //db.Log("RenderTemplate");
-            CssStyle.RegisterHelpers();
+            CssStyle.RegisterHelpers(db);
             var template = Handlebars.Compile(source);
             var result = template(data);
             return result;
