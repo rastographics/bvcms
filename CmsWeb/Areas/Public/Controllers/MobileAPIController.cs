@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 using System.IO;
+using Dapper;
 
 namespace CmsWeb.Areas.Public.Controllers
 {
@@ -142,11 +143,13 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
-            var givingOrgId = DbUtil.Db.Organizations
-                 .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
-                 .Select(x => x.OrganizationId).FirstOrDefault();
+            var sql = @"
+SELECT OrganizationId FROM dbo.Organizations
+WHERE RegistrationTypeId = 8
+AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
+            var givingOrgId = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
 
-            var ot = GetOneTimeLink(givingOrgId, result.User.PeopleId.GetValueOrDefault());
+            var ot = GetOneTimeLink(givingOrgId ?? 0, result.User.PeopleId.GetValueOrDefault());
 
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
