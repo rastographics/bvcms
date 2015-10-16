@@ -95,11 +95,17 @@ namespace CmsData
         {
             return ExecutePython(script, new PythonEvents(dbname));
         }
+        public static string RunScript(string dbname, string script, DateTime time)
+        {
+            var pe = new PythonEvents(dbname) {ScheduledTime = time.ToString("HHmm")};
+            return ExecutePython(script, pe);
+        }
 
         public string CallScript(string scriptname)
         {
             var script = db.ContentOfTypePythonScript(scriptname);
 
+            //db.Log($"CallScript {scriptname}");
             return ExecutePython(script, new PythonEvents(db.Host));
         }
 
@@ -134,20 +140,10 @@ namespace CmsData
                 m.SendEventReminders(oid);
         }
 
-        public int DayOfWeek
-        {
-            get { return DateTime.Today.DayOfWeek.ToInt(); }
-        }
-
-        public DateTime DateTime
-        {
-            get { return DateTime.Now; }
-        }
-
-        public bool DictionaryIsNotAvailable
-        {
-            get { return dictionary == null; }
-        }
+        public int DayOfWeek => DateTime.Today.DayOfWeek.ToInt();
+        public string ScheduledTime { get; private set; }
+        public DateTime DateTime => DateTime.Now;
+        public bool DictionaryIsNotAvailable => dictionary == null;
 
         public string Dictionary(string s)
         {
@@ -226,6 +222,7 @@ namespace CmsData
         private void Email2(IQueryable<Person> q, int queuedBy, string fromAddr, string fromName, string subject,
             string body)
         {
+            //db.Log($"Email2 {subject}");
             var from = new MailAddress(fromAddr, fromName);
             q = from p in q
                 where p.EmailAddress != null
@@ -242,6 +239,7 @@ namespace CmsData
             var emailqueue = db.CreateQueue(queuedBy, from, subject, body, null, tag.Id, false);
             emailqueue.Transactional = Transactional;
             db.SendPeopleEmail(emailqueue.Id);
+            //db.Log($"Email2 (queued) {subject}");
         }
 
         public void EmailContent2(Guid qid, int queuedBy, string fromAddr, string fromName, string contentName)
@@ -828,6 +826,7 @@ print sb.getvalue()
 
         public string RenderTemplate(string source, object data)
         {
+            //db.Log("RenderTemplate");
             CssStyle.RegisterHelpers();
             var template = Handlebars.Compile(source);
             var result = template(data);
