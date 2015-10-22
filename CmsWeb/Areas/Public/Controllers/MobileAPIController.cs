@@ -145,11 +145,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (dataIn.version >= BaseMessage.API_VERSION_3)
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/{givingOrgId}?{dataIn.getSourceQueryString()}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/{givingOrgId}?{dataIn.getSourceQueryString()}");
             }
             else
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/{givingOrgId}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/{givingOrgId}");
             }
 
             br.setNoError();
@@ -178,11 +178,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (dataIn.version >= BaseMessage.API_VERSION_3)
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
             }
             else
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
             }
 
             br.setNoError();
@@ -211,11 +211,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (dataIn.version >= BaseMessage.API_VERSION_3)
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
             }
             else
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
             }
 
             br.setNoError();
@@ -241,11 +241,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (dataIn.version >= BaseMessage.API_VERSION_3)
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
             }
             else
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
             }
 
             br.setNoError();
@@ -271,11 +271,11 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (dataIn.version >= BaseMessage.API_VERSION_3)
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{dataIn.getSourceQueryString()}";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{dataIn.getSourceQueryString()}");
             }
             else
             {
-                br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true";
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true");
             }
 
             br.setNoError();
@@ -301,7 +301,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
         private void savePushID(int peopleID, int device, string pushID)
         {
-            if (pushID == null || pushID.Length == 0) return;
+            if (pushID == null || pushID.Length == 0 || peopleID == 0) return;
 
             var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
                                 where e.RegistrationId == pushID
@@ -316,8 +316,13 @@ namespace CmsWeb.Areas.Public.Controllers
                 register.RegistrationId = pushID;
 
                 DbUtil.Db.MobileAppPushRegistrations.InsertOnSubmit(register);
-                DbUtil.Db.SubmitChanges();
             }
+            else
+            {
+                registration.PeopleId = peopleID;
+            }
+
+            DbUtil.Db.SubmitChanges();
         }
 
         private bool enablePushID(string pushID, bool enabled)
@@ -695,6 +700,12 @@ namespace CmsWeb.Areas.Public.Controllers
                         where t.OwnerId == Util.UserPeopleId || t.CoOwnerId == Util.UserPeopleId
                         select t;
 
+            var complete = (from c in DbUtil.Db.Tasks
+                            where c.StatusId == TaskStatusCode.Complete
+                            where c.OwnerId == Util.UserPeopleId || c.CoOwnerId == Util.UserPeopleId
+                            orderby c.CreatedOn descending
+                            select c).Take(20);
+
             BaseMessage br = new BaseMessage();
 
             switch (dataIn.device)
@@ -709,6 +720,12 @@ namespace CmsWeb.Areas.Public.Controllers
                         taskList.Add(task.id, task);
                     }
 
+                    foreach (var item in complete)
+                    {
+                        MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                        taskList.Add(task.id, task);
+                    }
+
                     br.data = SerializeJSON(taskList, dataIn.version);
                     break;
                 }
@@ -718,6 +735,12 @@ namespace CmsWeb.Areas.Public.Controllers
                     List<MobileTask> taskList = new List<MobileTask>();
 
                     foreach (var item in tasks)
+                    {
+                        MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                        taskList.Add(task);
+                    }
+
+                    foreach (var item in complete)
                     {
                         MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
                         taskList.Add(task);
@@ -1269,7 +1292,7 @@ namespace CmsWeb.Areas.Public.Controllers
             DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
             DbUtil.Db.SubmitChanges();
 
-            return $"{Util.CmsHost2}Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}";
+            return $"{DbUtil.Db.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}")}";
         }
 
         private static string SerializeJSON(Object item, int version)

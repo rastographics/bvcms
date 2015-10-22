@@ -205,13 +205,22 @@
                         });
                     } else {
                         var results = $($form.data("results") || $form);
-                        results.replaceWith(ret).ready(function () {
+
+                        results.replaceWith(ret);
+                        results.ready(function () {
+                            if ($(".scrollToTop").length > 0) {
+                                $("html, body").animate({ scrollTop: 0 }, "slow");
+                            }
+
                             $.AttachFormElements();
+
                             if ($tabinit.data("init")) {
                                 var temp = $tabinit.data("init").split(",");
-                                for (var i in temp)
-                                    if (temp.hasOwnProperty(i))
+                                for (var i in temp) {
+                                    if (temp.hasOwnProperty(i)) {
                                         $.InitFunctions[temp[i]]();
+                                    }
+                                }
                             }
                             if ($form.data("init")) {
                                 var t = $form.data("init").split(",");

@@ -23,5 +23,15 @@
     @Model.Status
 </td>
 <td>
+    @if (Util.UserPeopleId == Model.OwnerId)
+    {
+        <text>You</text>
+    }
+    else
+    {
+        @Model.Owner
+    }
+</td>
+<td>
     @Model.DispOwner
 </td>

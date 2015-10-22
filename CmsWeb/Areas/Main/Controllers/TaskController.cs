@@ -52,6 +52,14 @@ namespace CmsWeb.Areas.Main.Controllers
             return Content("Done");
         }
 
+        [HttpPost]
+        public ActionResult Decline(int id, string reason)
+        {
+            var tasks = new TaskModel();
+            tasks.DeclineTask(id, reason);
+            return Redirect($"/Task/Detail/{id}");
+        }
+
         public ActionResult Detail(int id)
         {
             var tasks = new TaskModel();

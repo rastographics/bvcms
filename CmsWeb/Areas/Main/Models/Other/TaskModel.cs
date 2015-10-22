@@ -301,7 +301,8 @@ namespace CmsWeb.Models
                          CreatedOn = t.CreatedOn,
                          CompletedOn = t.CompletedOn,
                          NotiPhone = !iPhone,
-                         ForceCompleteWContact = t.ForceCompleteWContact ?? false
+                         ForceCompleteWContact = t.ForceCompleteWContact ?? false,
+                         DeclineReason = t.DeclineReason
                      };
             var tt = q2.SingleOrDefault();
             return tt;
@@ -337,9 +338,8 @@ namespace CmsWeb.Models
             var from = Util.UserPeopleId.Value == task.OwnerId ? task.Owner : task.CoOwner;
             var to = @from.PeopleId == task.OwnerId ? task.CoOwner : task.Owner;
             var req = HttpContext.Current.Request;
-            DbUtil.Db.Email(@from.EmailAddress, to,
-                "Task Updated by " + @from.Name,
-                $"{TaskLink(task.Description, task.Id)} ({task.Priority})<br />\n{PeopleLink(task.AboutName, task.WhoId)}<br />\n{sb}");
+
+            DbUtil.Db.Email(@from.EmailAddress, to, $"Task updated by {Util.UserFullName}", CreateEmailBody(task));
         }
 
         public IEnumerable<IncompleteTask> IncompleteTasksList(int pid)
@@ -466,9 +466,8 @@ namespace CmsWeb.Models
             if (task.OwnerId == PeopleId)
             {
                 if (task.CoOwnerId != null)
-                    DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner,
-                        "Task Deleted by " + task.Owner.Name,
-                        task.Description + "<br/>\n" + task.AboutName);
+                    DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner, $"Task deleted by {Util.UserFullName}", CreateEmailBody(task));
+
                 DbUtil.Db.Tasks.DeleteOnSubmit(task);
                 DbUtil.Db.SubmitChanges();
             }
@@ -479,9 +478,7 @@ namespace CmsWeb.Models
             }
             else // I must be cowner, I can't delete
             {
-                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner,
-                    task.CoOwner.Name + " tried to delete task",
-                    TaskLink(task.Description, task.Id) + "<br/>\n" + task.AboutName);
+                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"{Util.UserFullName} tried to delete task", CreateEmailBody(task));
             }
 
             if (notify)
@@ -586,15 +583,14 @@ namespace CmsWeb.Models
             c.Comments = task.Notes;
             task.CompletedContact = c;
             task.StatusId = TaskStatusCode.Complete;
+
             if (task.CoOwnerId == PeopleId)
-                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner,
-                    "Task Completed with a Contact by " + task.CoOwner.Name,
-                    TaskLink(task.Description, task.Id) + "<br />" + task.AboutName);
+                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task completed with a Contact by {Util.UserFullName}", CreateEmailBody(task));
             else if (task.CoOwnerId != null)
-                DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner,
-                    "Task Completed with a Contact by " + task.Owner.Name,
-                    TaskLink(task.Description, task.Id) + "<br />" + task.AboutName);
+                DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner, $"Task completed with a Contact by {Util.UserFullName}", CreateEmailBody(task));
+
             task.CompletedOn = c.ContactDate;
+
             DbUtil.Db.SubmitChanges();
 
             if (task.Owner.PeopleId == Util.UserPeopleId)
@@ -617,9 +613,7 @@ namespace CmsWeb.Models
             var task = DbUtil.Db.Tasks.SingleOrDefault(t => t.Id == id);
             task.StatusId = TaskStatusCode.Active;
             DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner,
-                "Task Accepted from " + task.CoOwner.Name,
-                TaskLink(task.Description, task.Id) + "<br />" + task.AboutName);
+            DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task accepted by {Util.UserFullName}", CreateEmailBody(task));
 
             GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Accepted", $"{Util.UserFullName} accepted a task");
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
@@ -632,9 +626,7 @@ namespace CmsWeb.Models
             task.DeclineReason = reason;
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner,
-                "Task Declined from " + task.CoOwner.Name,
-                TaskLink(task.Description, task.Id) + "<br />" + task.AboutName);
+            DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"Task declined by {Util.UserFullName}", CreateEmailBody(task));
 
             GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Declined", $"{Util.UserFullName} declined a task");
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
@@ -676,9 +668,7 @@ namespace CmsWeb.Models
             Person toPerson = DbUtil.Db.LoadPersonById(toid);
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Email(task.Owner.EmailAddress, toPerson,
-                "TASK: " + task.Description,
-                TaskLink(task.Description, taskid) + "<br/>" + task.AboutName);
+            DbUtil.Db.Email(task.Owner.EmailAddress, toPerson, $"Task delegated to you by {Util.UserFullName}", CreateEmailBody(task));
 
             if (notify)
             {
@@ -757,9 +747,7 @@ namespace CmsWeb.Models
             task.Owner = toowner;
 
             DbUtil.Db.SubmitChanges();
-            DbUtil.Db.Email(owner.EmailAddress, toowner,
-                "Task transferred from " + owner.Name,
-                TaskLink(task.Description, taskid) + "<br/>" + task.AboutName);
+            DbUtil.Db.Email(owner.EmailAddress, toowner, $"Task transferred to you from {owner.Name}", CreateEmailBody(task));
 
             GCMHelper.sendNotification(toid, GCMHelper.TYPE_TASK, task.Id, "Task Transferred", $"{Util.UserFullName} has transferred a task to you");
             GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
@@ -773,6 +761,11 @@ namespace CmsWeb.Models
             var task = DbUtil.Db.Tasks.Single(t => t.Id == id);
             task.WhoId = pid;
             DbUtil.Db.SubmitChanges();
+
+            if (task.CoOwner != null)
+                GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Tasks About Changed", $"{Util.UserFullName} has change the about person on a task delegated to you");
+
+            GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.ACTION_REFRESH);
         }
 
         public void SetDescription(int id, string value)
@@ -975,17 +968,14 @@ namespace CmsWeb.Models
             if (task.OwnerId == PeopleId)
             {
                 if (task.CoOwnerId != null)
-                    DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner,
-                        "Task Archived by " + task.Owner.Name,
-                        task.Description + "<br/>\n" + task.AboutName);
+                    DbUtil.Db.Email(task.Owner.EmailAddress, task.CoOwner, $"Task archived by {Util.UserFullName}", CreateEmailBody(task));
+
                 task.Archive = true;
                 DbUtil.Db.SubmitChanges();
             }
             else // I must be cowner, I can't archive
             {
-                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner,
-                    task.CoOwner.Name + " tried to archive task",
-                    TaskLink(task.Description, task.Id) + "<br/>\n" + task.AboutName);
+                DbUtil.Db.Email(task.CoOwner.EmailAddress, task.Owner, $"{Util.UserFullName} tried to archive task", CreateEmailBody(task));
             }
         }
 
@@ -1005,6 +995,29 @@ namespace CmsWeb.Models
             if (PeopleId == t.OwnerId)
                 return "t" + t.ListId;
             return "t" + InBoxId(PeopleId);
+        }
+
+        private static string CreateEmailBody(Task task)
+        {
+            StringBuilder body = new StringBuilder();
+
+            body.Append($"Task: {TaskLink(task.Description, task.Id)}<br/>\n");
+            body.Append($"Created: {task.CreatedOn.FormatDateTm()}<br/>\n");
+
+            if (task.Due != null)
+                body.Append($"Due: {task.Due.FormatDate()}<br/>\n");
+
+            body.Append($"Status: {task.TaskStatus.Description}<br/>\n");
+            body.Append($"About: {PeopleLink(task.AboutWho.Name, task.AboutWho.PeopleId)}<br/>\n");
+            body.Append($"Owner: {PeopleLink(task.Owner.Name, task.Owner.PeopleId)}<br/>\n");
+
+            if (task.CoOwnerId != null)
+                body.Append($"Delegated To: {PeopleLink(task.CoOwner.Name, task.CoOwner.PeopleId)}<br/>\n");
+
+
+            body.Append($"Notes:<br/>\n{task.Notes}");
+
+            return body.ToString();
         }
 
         public class ContactTaskInfo
