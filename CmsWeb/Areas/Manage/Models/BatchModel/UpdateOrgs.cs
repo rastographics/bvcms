@@ -84,7 +84,7 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                         case "Gender":
                             o.GenderId = val.Equal("Male") ? 1 : val.Equal("Female") ? (int?) 2 : null;
                             break;
-                        case "GradeAgeStart":
+                        case "Grade":
                             o.GradeAgeStart = val.ToInt2();
                             break;
                         case "MainFellowshipOrg":

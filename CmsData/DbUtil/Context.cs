@@ -653,7 +653,7 @@ namespace CmsData
                 select p;
             TagAll(q, tag);
 
-            // visitors in the last year to one of my orgs excluding unshared
+            // visitors in the last year to one of my orgs
             var attype = new int[] { 40, 50, 60 };
             q = from p in People
                 where p.Attends.Any(a =>
