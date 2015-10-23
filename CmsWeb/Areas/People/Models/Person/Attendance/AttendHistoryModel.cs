@@ -24,7 +24,7 @@ namespace CmsWeb.Areas.People.Models
             var q = from a in DbUtil.Db.Attends
                       let org = a.Meeting.Organization
                       where a.PeopleId == PeopleId
-                      where !(org.SecurityTypeId == 3 && (Util2.OrgMembersOnly || Util2.OrgLeadersOnly))
+                      where !(org.SecurityTypeId == 3 && Util2.OrgLeadersOnly)
                       where org.LimitToRole == null || roles.Contains(org.LimitToRole)
                       select a;
             if (!HttpContext.Current.User.IsInRole("Admin") || HttpContext.Current.Session["showallmeetings"] == null)

@@ -561,24 +561,20 @@ namespace CmsData
                 return Users.Where(u => u.UserId == Util.UserId).Select(u => u.Person).SingleOrDefault();
             }
         }
-        public Tag OrgMembersOnlyTag2()
-        {
-            return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_OrgMembersOnly);
-        }
         public Tag OrgLeadersOnlyTag2()
         {
             return FetchOrCreateTag(Util.SessionId, Util.UserPeopleId ?? Util.UserId1, DbUtil.TagTypeId_OrgLeadersOnly);
         }
 
-        public Tag FetchOrCreateTag(string tagname, int? OwnerId, int tagtypeid)
+        public Tag FetchOrCreateTag(string tagname, int? ownerId, int tagtypeid)
         {
-            var tag = FetchTag(tagname, OwnerId, tagtypeid);
+            var tag = FetchTag(tagname, ownerId, tagtypeid);
             if (tag == null)
             {
                 tag = new Tag
                 {
                     Name = tagname.Replace('!', '*'),
-                    PeopleId = OwnerId,
+                    PeopleId = ownerId,
                     TypeId = tagtypeid,
                     Created = DateTime.Now
                 };
@@ -587,73 +583,11 @@ namespace CmsData
             }
             return tag;
         }
-        public Tag FetchTag(string tagname, int? OwnerId, int tagtypeid)
+        public Tag FetchTag(string tagname, int? ownerId, int tagtypeid)
         {
             var tag = Tags.FirstOrDefault(t =>
-                t.Name == tagname && t.PeopleId == OwnerId && t.TypeId == tagtypeid);
+                t.Name == tagname && t.PeopleId == ownerId && t.TypeId == tagtypeid);
             return tag;
-        }
-        public void SetOrgMembersOnly()
-        {
-            var me = Util.UserPeopleId;
-            var dt = Util.Now.AddYears(-1);
-
-            // members of any of my orgs excluding unshared orgs
-            var q = from p in People
-                    where p.OrganizationMembers.Any(m =>
-                        OrganizationMembers.Any(um =>
-                            (um.Organization.SecurityTypeId != 3
-                                || um.MemberTypeId == MemberTypeCode.Teacher)
-                             && um.OrganizationId == m.OrganizationId && um.PeopleId == me))
-                    select p;
-            var tag = PopulateSpecialTag(q, DbUtil.TagTypeId_OrgMembersOnly);
-            //PopulateSpecialTag(q, "OrgMemberOnlyInMyOrg");
-
-            // prev members of any of my orgs excluding unshared orgs
-
-            q = from p in People
-                where p.EnrollmentTransactions.Any(et =>
-                        et.TransactionDate > dt
-                        && et.TransactionTypeId >= 4
-                        && et.Organization.SecurityTypeId != 3
-                        && OrganizationMembers.Any(um =>
-                            um.OrganizationId == et.OrganizationId && um.PeopleId == me))
-                select p;
-            TagAll(q, tag);
-            //PopulateSpecialTag(q, "OrgMemberOnlyPrevInMyOrg");
-
-            // members of my family
-            q = from p in People
-                where p.FamilyId == CurrentUser.Person.FamilyId
-                select p;
-            TagAll(q, tag);
-            //PopulateSpecialTag(q, "OrgMemberOnlyInMyFamily");
-
-            // visitors in the last year to one of my orgs excluding unshared
-            var attype = new int[] { 40, 50, 60 };
-            q = from p in People
-                where p.Attends.Any(a =>
-                    OrganizationMembers.Any(um =>
-                        um.Organization.SecurityTypeId != 3 &&
-                        um.OrganizationId == a.Meeting.OrganizationId && um.PeopleId == me)
-                    && attype.Contains(a.AttendanceTypeId.Value) && a.MeetingDate > dt)
-                select p;
-            TagAll(q, tag);
-            //PopulateSpecialTag(q, "OrgMemberOnlyVisitMyOrg");
-
-            // people assigned to me in one of my tasks
-            q = from p in People
-                where p.TasksAboutPerson.Any(at => at.OwnerId == me || at.CoOwnerId == me)
-                select p;
-            TagAll(q, tag);
-            //PopulateSpecialTag(q, "OrgMemberOnlyInMyTask");
-
-            // people I have visited in a contact
-            q = from p in People
-                where p.contactsHad.Any(c => c.contact.contactsMakers.Any(cm => cm.PeopleId == me))
-                select p;
-            TagAll(q, tag);
-            //PopulateSpecialTag(q, "OrgMemberOnlyIHaveContacted");
         }
         public int[] GetLeaderOrgIds(int? me)
         {

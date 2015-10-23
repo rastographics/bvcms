@@ -27,8 +27,7 @@ namespace CmsWeb.Areas.People.Models
 
         override public IQueryable<EnrollmentTransaction> DefineModelList()
         {
-            var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly
-                                  || !HttpContext.Current.User.IsInRole("Access");
+            var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
             var roles = DbUtil.Db.CurrentRoles();
             return from etd in DbUtil.Db.EnrollmentTransactions
                    let org = etd.Organization

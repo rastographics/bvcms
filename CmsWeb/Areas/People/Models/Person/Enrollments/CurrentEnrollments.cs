@@ -28,8 +28,7 @@ namespace CmsWeb.Areas.People.Models
 
         override public IQueryable<OrganizationMember> DefineModelList()
         {
-            var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly
-                || !HttpContext.Current.User.IsInRole("Access");
+            var limitvisibility = Util2.OrgLeadersOnly || !HttpContext.Current.User.IsInRole("Access");
             var oids = new int[0];
             if (Util2.OrgLeadersOnly)
                 oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);

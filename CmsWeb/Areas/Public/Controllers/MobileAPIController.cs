@@ -39,7 +39,7 @@ namespace CmsWeb.Areas.Public.Controllers
             }
 
             //DbUtil.LogActivity("calling authenticatemobile2");
-            return AccountModel.AuthenticateMobile2(requirePin: requirePin, checkOrgMembersOnly: true);
+            return AccountModel.AuthenticateMobile2(requirePin: requirePin, checkOrgLeadersOnly: true);
         }
 
         [HttpPost]

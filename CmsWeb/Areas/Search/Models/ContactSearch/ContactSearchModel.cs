@@ -32,16 +32,14 @@ namespace CmsWeb.Areas.Search.Models
 
             IQueryable<int> ppl = null;
 
-            if (Util2.OrgMembersOnly)
-                ppl = db.OrgMembersOnlyTag2().People(db).Select(pp => pp.PeopleId);
-            else if (Util2.OrgLeadersOnly)
+            if (Util2.OrgLeadersOnly)
                 ppl = db.OrgLeadersOnlyTag2().People(db).Select(pp => pp.PeopleId);
 
             var u = DbUtil.Db.CurrentUser;
             var roles = u.UserRoles.Select(uu => uu.Role.RoleName.ToLower()).ToArray();
-            var ManagePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
+            var managePrivateContacts = HttpContext.Current.User.IsInRole("ManagePrivateContacts");
             var q = from c in DbUtil.Db.Contacts
-                   where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || ManagePrivateContacts
+                   where (c.LimitToRole ?? "") == "" || roles.Contains(c.LimitToRole) || managePrivateContacts
                    select c;
 
             if (ppl != null && Util.UserPeopleId != null)
@@ -95,11 +93,7 @@ namespace CmsWeb.Areas.Search.Models
             if (SearchParameters.StartDate.HasValue)
             {
                 startDateRange = SearchParameters.StartDate.Value;
-                if (SearchParameters.EndDate.HasValue)
-                    endDateRange = SearchParameters.EndDate.Value.AddHours(+24);
-                else
-                    endDateRange = DateTime.Today;
-
+                endDateRange = SearchParameters.EndDate?.AddHours(+24) ?? DateTime.Today;
             }
             else if (SearchParameters.EndDate.HasValue)
             {

@@ -26,12 +26,7 @@ namespace CmsWeb.Controllers
     {
         public ActionResult Index()
         {
-            if (!Util2.OrgMembersOnly && User.IsInRole("OrgMembersOnly"))
-            {
-                Util2.OrgMembersOnly = true;
-                DbUtil.Db.SetOrgMembersOnly();
-            }
-            else if (!Util2.OrgLeadersOnly && User.IsInRole("OrgLeadersOnly"))
+            if (!Util2.OrgLeadersOnly && User.IsInRole("OrgLeadersOnly"))
             {
                 Util2.OrgLeadersOnly = true;
                 DbUtil.Db.SetOrgLeadersOnly();

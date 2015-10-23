@@ -216,18 +216,9 @@ namespace CmsData
                 tree = CompareConstant(parm, "PeopleId", CompareType.NotEqual, 0);
             if (includeDeceased == false)
                 tree = Expression.And(tree, CompareConstant(parm, "IsDeceased", CompareType.NotEqual, true));
-            if (Util2.OrgMembersOnly)
-                tree = Expression.And(OrgMembersOnly(db, parm), tree);
-            else if (Util2.OrgLeadersOnly)
+            if (Util2.OrgLeadersOnly)
                 tree = Expression.And(OrgLeadersOnly(db, parm), tree);
             return Expression.Lambda<Func<Person, bool>>(tree, parm);
-        }
-        private Expression OrgMembersOnly(CMSDataContext db, ParameterExpression parm)
-        {
-            var tag = db.OrgMembersOnlyTag2();
-            Expression<Func<Person, bool>> pred = p =>
-                p.Tags.Any(t => t.Id == tag.Id);
-            return Expression.Convert(Expression.Invoke(pred, parm), typeof(bool));
         }
         private Expression OrgLeadersOnly(CMSDataContext db, ParameterExpression parm)
         {

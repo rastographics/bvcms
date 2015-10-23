@@ -78,9 +78,6 @@ namespace CmsWeb.Areas.Manage.Models.BatchModel
                                     o.LeaderMemberTypeId = id;
                             }
                             break;
-                        case "SecurityType":
-                            o.SecurityTypeId = val.Equal("LeadersOnly") ? 2 : val.Equal("UnShared") ? 3 : 0;
-                            break;
                         case "FirstMeeting":
                             o.FirstMeetingDate = val.ToDate();
                             break;

@@ -27,14 +27,7 @@ namespace CmsWeb.Areas.Org.Controllers
             if (m.meeting == null)
                 return RedirectShowError("no meeting");
 
-            if (Util2.OrgMembersOnly)
-            {
-                if (m.org.SecurityTypeId == 3)
-                    return NotAllowed("You do not have access to this page", m.org.OrganizationName);
-                if (m.org.OrganizationMembers.All(om => om.PeopleId != Util.UserPeopleId))
-                    return NotAllowed("You must be a member of this organization", m.org.OrganizationName);
-            }
-            else if (Util2.OrgLeadersOnly)
+            if (Util2.OrgLeadersOnly)
             {
                 var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(m.org.OrganizationId))
@@ -69,11 +62,6 @@ namespace CmsWeb.Areas.Org.Controllers
             if (m.meeting == null)
                 return RedirectShowError("no meeting");
 
-            if (Util2.OrgMembersOnly
-                && !DbUtil.Db.OrganizationMembers.Any(om =>
-                    om.OrganizationId == m.meeting.OrganizationId
-                    && om.PeopleId == Util.UserPeopleId))
-                return RedirectShowError("You must be a member of this organization to have access to this page");
             if (Util2.OrgLeadersOnly
                 && !DbUtil.Db.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId
@@ -197,11 +185,6 @@ namespace CmsWeb.Areas.Org.Controllers
             if (m.meeting == null)
                 return RedirectShowError("no meeting");
 
-            if (Util2.OrgMembersOnly
-                && !DbUtil.Db.OrganizationMembers.Any(om =>
-                    om.OrganizationId == m.meeting.OrganizationId
-                    && om.PeopleId == Util.UserPeopleId))
-                return RedirectShowError("You must be a member of this organization to have access to this page");
             if (Util2.OrgLeadersOnly
                 && !DbUtil.Db.OrganizationMembers.Any(om =>
                     om.OrganizationId == m.meeting.OrganizationId
