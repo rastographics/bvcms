@@ -829,6 +829,30 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
+        public ActionResult FetchCompletedContactLink(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var task = (from t in DbUtil.Db.Tasks
+                        where t.Id == dataIn.argInt
+                        select t).SingleOrDefault();
+
+            BaseMessage br = new BaseMessage();
+
+            if (task != null && task.CompletedContactId != null)
+            {
+                br.data = GetOneTimeLoginLink($"/Contact2/{task.CompletedContactId}?{dataIn.getSourceQueryString()}", Util.UserName);
+                br.count = 1;
+                br.setNoError();
+            }
+
+            return br;
+        }
+
+        [HttpPost]
         public ActionResult FetchOrgs(string data)
         {
             var result = AuthenticateUser();
