@@ -31,7 +31,20 @@ namespace CmsWeb.Areas.Main.Models
         public string Body { get; set; }
         public DateTime? Schedule { get; set; }
         public bool PublicViewable { get; set; }
-        public IEnumerable<string> Recipients { get; set; } 
+        public IEnumerable<string> Recipients { get; set; }
+
+        public List<MailAddress> CcAddresses;
+        public string Cc {
+            get {
+                if (CcAddresses == null) { return null; }
+                return String.Join(",", CcAddresses);
+            }
+            set {
+                if (value == null) { CcAddresses = null; }
+                else { CcAddresses = value.Split(',').Select(a => new MailAddress(a)).ToList(); }
+            }
+        }
+
 
         public string Host { get; set; }
 
