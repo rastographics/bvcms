@@ -215,20 +215,15 @@ namespace CmsWeb.Controllers
             return Content(PythonEvents.RunScript(Util.Host, script));
         }
 
-        private string RunScriptSql(CMSDataContext Db, string parameter, string body, DynamicParameters p)
+        private string RunScriptSql(CMSDataContext db, string parameter, string body, DynamicParameters p)
         {
             if (!CanRunScript(body))
                 return "Not Authorized to run this script";
             if (body.Contains("@qtagid"))
             {
-                var withquery = (bool?)TempData["withquery"];
-                int? qtagid = null;
-                if (withquery == true)
-                {
-                    var id = Db.FetchLastQuery().Id;
-                    var tag = Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
-                    qtagid = tag.Id;
-                }
+                var id = db.FetchLastQuery().Id;
+                var tag = db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                int? qtagid = tag.Id;
                 p.Add("@qtagid", qtagid);
             }
             p.Add("@p1", parameter ?? "");

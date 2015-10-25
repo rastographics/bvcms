@@ -2860,6 +2860,17 @@ namespace CmsData
                 );
         }
 
+        [Function(Name="dbo.GivingChange", IsComposable = true)]
+        public IQueryable< View.GivingChange > GivingChange(
+            [Parameter(DbType="int")] int? days
+            )
+        {
+            return CreateMethodCallQuery< View.GivingChange>(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    days
+                );
+        }
+
         [Function(Name="dbo.GivingCurrentPercentOfFormer", IsComposable = true)]
         public IQueryable< View.GivingCurrentPercentOfFormer > GivingCurrentPercentOfFormer(
             [Parameter(DbType="datetime")] DateTime? dt1,
