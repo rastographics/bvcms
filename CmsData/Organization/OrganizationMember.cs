@@ -425,9 +425,27 @@ AND a.PeopleId = {2}
             var ts = TransactionSummary(db);
             if (ts == null)
                 return 0;
-            return FeePaid(db) - TotalPaid(db);
+            return (ts.IndPaid ?? 0) - TotalPaid(db);
         }
 
+        public decimal? AmountPaidTransactions(CMSDataContext db)
+        {
+            var ts = TransactionSummary(db);
+            if (ts == null)
+                return null;
+            return Organization.IsMissionTrip == true
+                ? TotalPaid(db)
+                : ts.IndPaid;
+        }
+        public decimal? AmountDueTransactions(CMSDataContext db)
+        {
+            var ts = TransactionSummary(db);
+            if (ts == null)
+                return null;
+            return Organization.IsMissionTrip == true 
+                ? AmountDue(db)
+                : ts.IndDue;
+        }
         private decimal? totalPaid;
         public decimal TotalPaid(CMSDataContext db)
         {
@@ -441,7 +459,7 @@ AND a.PeopleId = {2}
             var ts = TransactionSummary(db);
             if (ts == null)
                 return 0;
-            return ts.IndAmt ?? 0;
+            return ts.IndPaid ?? 0;
         }
 
         public class SmallGroupItem
