@@ -62,32 +62,29 @@ namespace CmsWeb.Models.iPhone
             if (query.IsNotNull())
                 return query;
             var db = DbUtil.Db;
-            if (Util2.OrgMembersOnly)
-                query = db.OrgMembersOnlyTag2().People(db);
-            else if (Util2.OrgLeadersOnly)
-                query = db.OrgLeadersOnlyTag2().People(db);
-            else
-                query = db.People.Select(p => p);
+            query = Util2.OrgLeadersOnly 
+                ? db.OrgLeadersOnlyTag2().People(db) 
+                : db.People.Select(p => p);
 
             //query = query.Where(pp => pp.DeceasedDate == null);
 
             if (Name.HasValue())
             {
-                string First, Last;
-                Util.NameSplit(Name, out First, out Last);
-                DbUtil.LogActivity($"iphone search '{First}' '{Last}'");
-                if (First.HasValue())
+                string first, last;
+                Util.NameSplit(Name, out first, out last);
+                DbUtil.LogActivity($"iphone search '{first}' '{last}'");
+                if (first.HasValue())
                     query = from p in query
-                            where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                            where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
                                 || p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name) // gets Bob St Clair
                             where
-                                p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
+                                p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
                                 || p.LastName.StartsWith(Name) || p.MaidenName.StartsWith(Name) // gets Bob St Clair
                             select p;
                 else
-                    if (Last.AllDigits())
+                    if (last.AllDigits())
                         query = from p in query
-                                where p.PeopleId == Last.ToInt()
+                                where p.PeopleId == last.ToInt()
                                 select p;
                     else
                         query = from p in query

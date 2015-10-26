@@ -135,7 +135,7 @@ namespace CmsWeb.Areas.Search.Models
                          BirthDayStart = os.BirthDayStart.FormatDate(),
                          BirthDayEnd = os.BirthDayEnd.FormatDate(),
                          Gender = o.Gender.Description,
-                         GradeAgeStart = o.GradeAgeStart ?? 0,
+                         Grade = o.GradeAgeStart ?? 0,
                          LastDayBeforeExtra = o.LastDayBeforeExtra.FormatDate(),
                          NoSecurityLabel = o.NoSecurityLabel ?? false,
                          NumCheckInLabels = o.NumCheckInLabels ?? 0,
@@ -143,6 +143,7 @@ namespace CmsWeb.Areas.Search.Models
                          o.PhoneNumber,
                          MainFellowshipOrg = o.IsBibleFellowshipOrg ?? false,
                          EntryPoint = o.EntryPoint.Description,
+                         o.OnLineCatalogSort,
                          os.LeaderType,
                          os.OrganizationStatusId,
                          os.AppCategory,
@@ -628,7 +629,7 @@ namespace CmsWeb.Areas.Search.Models
                          into leaderlist
                          select leaderlist).ToList();
 
-            CssStyle.RegisterHelpers();
+            CssStyle.RegisterHelpers(DbUtil.Db);
             var template = HandlebarsDotNet.Handlebars.Compile(Resource1.RecentVisitsAbsents);
             var sb = new StringBuilder("Notices sent to:</br>\n<table>\n");
             foreach (var p in plist)
@@ -651,6 +652,7 @@ namespace CmsWeb.Areas.Search.Models
                          ConsecutiveAbsentsThreshold = org.ConsecutiveAbsentsThreshold ?? 2,
                          HasAbsents = absents.Any(),
                          Absents = (from a in absents
+                                    orderby a.Lastmeeting descending 
                                     select new
                                     {
                                         a.PeopleId,

@@ -61,15 +61,8 @@ namespace CmsWeb.Areas.Dialog.Models
             Name = i.Name;
 
             IsMissionTrip = i.IsMissionTrip ?? false;
-            if (TransactionSummary != null)
-            {
-                AmountPaidTransactions = IsMissionTrip
-                    ? om.TotalPaid(DbUtil.Db)
-                    : TransactionSummary.IndPaid;
-                AmountDue = IsMissionTrip
-                    ? om.AmountDue(DbUtil.Db)
-                    : TransactionSummary.IndDue;
-            }
+            AmountPaidTransactions = om.AmountPaidTransactions(DbUtil.Db);
+            AmountDue = om.AmountDueTransactions(DbUtil.Db);
 
             OrgName = i.OrganizationName;
             Organization = i.Organization;

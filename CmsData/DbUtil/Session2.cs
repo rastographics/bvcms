@@ -44,7 +44,6 @@ namespace CmsData
         public string CurrentTagName { get; set; }
         public int? CurrentTagOwnerId { get; set; }
         public int VisitLookbackDays { get; set; }
-        public bool OrgMembersOnly { get; set; }
         public bool OrgLeadersOnly { get; set; }
         public DateTime? QbStartDateOverride { get; set; }
         public DateTime? QbEndDateOverride { get; set; }
@@ -116,7 +115,6 @@ namespace CmsData
                 CurrentPeopleId = Util2.CurrentPeopleId;
                 CurrentTagOwnerId = Util2.CurrentTagOwnerId;
                 CurrentTagName = Util2.CurrentTagName;
-                OrgMembersOnly = Util2.OrgMembersOnly;
                 OrgLeadersOnly = Util2.OrgLeadersOnly;
                 VisitLookbackDays = Util2.VisitLookbackDays;
                 Host = Util.Host;

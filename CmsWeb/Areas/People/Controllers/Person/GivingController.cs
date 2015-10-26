@@ -5,6 +5,7 @@ using CmsData;
 using CmsData.Codes;
 using CmsWeb.Areas.Finance.Models.Report;
 using CmsWeb.Areas.People.Models;
+using Dapper;
 using UtilityExtensions;
 
 namespace CmsWeb.Areas.People.Controllers
@@ -102,11 +103,13 @@ namespace CmsWeb.Areas.People.Controllers
         [HttpGet]
         public ActionResult OneTimeGift()
         {
-            var org = (from o in DbUtil.Db.Organizations
-                       where o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving
-                       select o.OrganizationId).FirstOrDefault();
-            if (org > 0)
-                return Redirect("/OnlineReg/" + org);
+            var sql = @"
+SELECT OrganizationId FROM dbo.Organizations
+WHERE RegistrationTypeId = 8
+AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
+            var oid = DbUtil.Db.Connection.ExecuteScalar(sql) as int?;
+            if (oid > 0)
+                return Redirect("/OnlineReg/" + oid);
             return new EmptyResult();
         }
     }

@@ -19,14 +19,14 @@ namespace CmsData
             return ep.GetAsByteArray();
         }
 
-        public static void AddSheet(this ExcelPackage ep, IDataReader rd, string filename = "People.xlsx", bool useTable = false)
+        public static void AddSheet(this ExcelPackage ep, IDataReader rd, string filename, bool useTable = false)
         {
             var dt = new DataTable();
             dt.Load(rd);
             ep.AddSheet(dt, filename, useTable);
         }
 
-        public static void AddSheet(this ExcelPackage ep, DataTable dt, string filename = "People.xlsx", bool useTable = false)
+        public static void AddSheet(this ExcelPackage ep, DataTable dt, string filename, bool useTable = false)
         {
             var sheetname = Path.GetFileNameWithoutExtension(filename);
             var ws = ep.Workbook.Worksheets.Add(sheetname);

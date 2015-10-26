@@ -44,14 +44,8 @@ namespace CmsWeb.Areas.Org.Models
         }
 
         private Tag orgTag;
-        public Tag OrgTag
-        {
-            get
-            {
-                return orgTag ??
-                    (orgTag = DbUtil.Db.FetchOrCreateTag("Org-" + Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
-            }
-        }
+        public Tag OrgTag => orgTag ??
+                             (orgTag = DbUtil.Db.FetchOrCreateTag("Org-" + Id, Util.UserPeopleId, DbUtil.TagTypeId_OrgMembers));
 
         private List<int> currentList;
 
@@ -64,7 +58,7 @@ namespace CmsWeb.Areas.Org.Models
                         filterchecked: false, filtertag: FilterTag,
                         currtag: Util2.CurrentTag, currtagowner: Util2.CurrentTagOwnerId,
                         ministryinfo: false, userpeopleid: Util.UserPeopleId)
-                                  select p.PeopleId).ToList();
+                                  select p.PeopleId.Value).ToList();
         }
         public List<int> CurrentNotChecked()
         {

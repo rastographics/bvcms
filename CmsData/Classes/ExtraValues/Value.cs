@@ -29,12 +29,16 @@ namespace CmsData.ExtraValue
             if (!VisibilityRoles.HasValue())
                 return true;
             var a = VisibilityRoles.SplitStr(",");
-            var user = HttpContext.Current.User;
+            var user = HttpContext.Current?.User;
+            if (user == null)
+                return true;
             return a.Any(role => user.IsInRole(role.Trim()));
         }
         public bool UserCanEdit()
         {
-            var user = HttpContext.Current.User;
+            var user = HttpContext.Current?.User;
+            if (user == null)
+                return false;
             return user.IsInRole("Edit");
         }
 

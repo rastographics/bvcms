@@ -355,11 +355,15 @@ namespace CmsData
 
                     if (code.StartsWith("{smallgroup:", StringComparison.OrdinalIgnoreCase))
                         return SmallGroup(code, emailqueueto);
+                    if (code.StartsWith("{subgroup:", StringComparison.OrdinalIgnoreCase))
+                        return SmallGroup(code, emailqueueto);
 
                     if (regTextRe.IsMatch(code))
                         return RegText(code, emailqueueto);
 
                     if (code.StartsWith("{smallgroups", StringComparison.OrdinalIgnoreCase))
+                        return SmallGroups(code, emailqueueto);
+                    if (code.StartsWith("{subgroups", StringComparison.OrdinalIgnoreCase))
                         return SmallGroups(code, emailqueueto);
 
                     if (supportLinkRe.IsMatch(code))
@@ -431,11 +435,11 @@ namespace CmsData
                 om.AddToGroup(db, @group);
             return "";
         }
-        const string insertDraftRe = @"\{insertdraft:(?<draft>.*?)}";
-        readonly Regex InsertDraftRe = new Regex(insertDraftRe, RegexOptions.Singleline);
+        const string InsertDraftRe = @"\{insertdraft:(?<draft>.*?)}";
+        readonly Regex insertDraftRe = new Regex(InsertDraftRe, RegexOptions.Singleline);
         private string InsertDraft(string code)
         {
-            var match = InsertDraftRe.Match(code);
+            var match = insertDraftRe.Match(code);
             if (!match.Success)
                 return code;
 
@@ -612,13 +616,13 @@ namespace CmsData
             return $@"<a href=""{url}"">{inside}</a>";
         }
 
-        private const string registerHrefReId = "href=\"https{0,1}://registerlink2{0,1}/(?<id>\\d+)\"";
-        readonly Regex RegisterHrefReId = new Regex(registerHrefReId, RegexOptions.Singleline);
+        private const string RegisterHrefReId = "href=\"https{0,1}://registerlink2{0,1}/(?<id>\\d+)\"";
+        readonly Regex registerHrefReId = new Regex(RegisterHrefReId, RegexOptions.Singleline);
         private string RegisterLinkHref(string code, EmailQueueTo emailqueueto)
         {
             var list = new Dictionary<string, OneTimeLink>();
 
-            var match = RegisterHrefReId.Match(code);
+            var match = registerHrefReId.Match(code);
             if (!match.Success)
                 return code;
             var id = match.Groups["id"].Value.ToInt();
@@ -741,7 +745,7 @@ namespace CmsData
             return $@"<a href=""{url}"">{inside}</a>";
         }
 
-        const string SmallGroupRe = @"\{smallgroup:\[(?<prefix>[^\]]*)\](?:,(?<def>[^}]*)){0,1}\}";
+        const string SmallGroupRe = @"\{(smallgroup|subgroup):\[(?<prefix>[^\]]*)\](?:,(?<def>[^}]*)){0,1}\}";
         readonly Regex smallGroupRe = new Regex(SmallGroupRe, RegexOptions.Singleline);
         private string SmallGroup(string code, EmailQueueTo emailqueueto)
         {
@@ -781,11 +785,11 @@ namespace CmsData
         }
 
 
+        const string SubGroupsRe = @"\{(smallgroups|subgroups)(:\[(?<prefix>[^\]]*)\]){0,1}\}";
+        readonly Regex subGroupsRe = new Regex(SubGroupsRe, RegexOptions.Singleline);
         private string SmallGroups(string code, EmailQueueTo emailqueueto)
         {
-            const string RE = @"\{smallgroups(:\[(?<prefix>[^\]]*)\]){0,1}\}";
-            var re = new Regex(RE, RegexOptions.Singleline);
-            var match = re.Match(code);
+            var match = subGroupsRe.Match(code);
             if (!match.Success || !emailqueueto.OrgId.HasValue)
                 return code;
 

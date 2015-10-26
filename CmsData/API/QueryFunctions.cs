@@ -78,7 +78,7 @@ namespace CmsData
 
         public string RenderTemplate(string source, object data)
         {
-            CssStyle.RegisterHelpers();
+            CssStyle.RegisterHelpers(db);
             var template = Handlebars.Compile(source);
             var result = template(data);
             return result;
@@ -467,13 +467,16 @@ namespace CmsData
         }
         public int TagQueryList(object savedQuery)
         {
+            //db.Log($"TagQueryList {savedQuery}");
             var q = db.PeopleQuery2(savedQuery).Select(vv => vv.PeopleId);
             var tag = db.PopulateTemporaryTag(q);
             return tag.Id;
         }
         public int TagCount(int tagid)
         {
-            return db.TagPeople.Count(v => v.Id == tagid);
+            var n = db.TagPeople.Count(v => v.Id == tagid);
+            //db.Log($"TagCount {tagid}={n}");
+            return n;
         }
 
         public IEnumerable<Person> QueryList2(object savedQuery, string orderbyparam, bool ascending)

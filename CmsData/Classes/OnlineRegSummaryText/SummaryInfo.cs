@@ -16,6 +16,8 @@ namespace CmsData.OnlineRegSummaryText
         {
             this.db = db;
             OrgMember = OrganizationMember.Load(DbUtil.Db, pid, oid);
+            if (!OrgMember.OnlineRegData.HasValue())
+                return;
             Person = new OnlineRegPersonModel0();
             Person.ReadXml(OrgMember.OnlineRegData);
             Person.setting = DbUtil.Db.CreateRegistrationSettings(OrgMember.Organization.RegSettingXml, oid);
@@ -54,7 +56,7 @@ namespace CmsData.OnlineRegSummaryText
             Handlebars.RegisterHelper("TopLabel", (writer, context, args) => { writer.Write(TopLabel); });
             Handlebars.RegisterHelper("BottomStyle", (writer, context, args) => { writer.Write(RowStyle); });
 
-            CssStyle.RegisterHelpers();
+            CssStyle.RegisterHelpers(db);
         }
 
         public override string ToString()
@@ -107,12 +109,18 @@ namespace CmsData.OnlineRegSummaryText
             if (ti == null || (ti.Amt ?? 0) == 0)
                 return;
             var ts = OrgMember.TransactionSummary(db);
-            options.Template(writer, new
+            var amtFee = (ts.IndPaid + ts.IndDue);
+            var amtDonation = ts.IndAmt - amtFee;
+            var info = new
             {
-                IndAmt = ts.IndAmt.ToString2("c"),
-                TotPaid = OrgMember.TotalPaid(db).ToString("c"),
-                AmountDue = OrgMember.AmountDue(db).ToString("c"),
-            });
+                AmtFee = amtFee.ToString2("c"),
+                AmtDonation = amtDonation.ToString2("c"),
+                AmtPaid = OrgMember.AmountPaidTransactions(db).ToString2("c"),
+                AmtDue = OrgMember.AmountDueTransactions(db).ToString2("c"),
+
+                HasDonation = amtDonation.HasValue,
+            };
+            options.Template(writer, info);
         }
         private void IfSupportMissionTrip(TextWriter writer, HelperOptions options, dynamic context, params object[] args)
         {

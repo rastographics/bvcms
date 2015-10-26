@@ -74,7 +74,7 @@ namespace CmsWeb.Models
             set { HttpContext.Current.Items[STR_UserName2] = value; }
         }
 
-        public static UserValidationResult AuthenticateMobile(string role = null, bool checkOrgMembersOnly = false, bool requirePin = false)
+        public static UserValidationResult AuthenticateMobile(string role = null, bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
             var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
 
@@ -104,7 +104,7 @@ namespace CmsWeb.Models
             SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
             //DbUtil.LogActivity("iphone auth " + user.Username);
 
-            if (checkOrgMembersOnly && !Util2.OrgLeadersOnlyChecked)
+            if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
                 DbUtil.LogActivity("iphone leadersonly check " + user.Username);
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))
@@ -121,7 +121,7 @@ namespace CmsWeb.Models
             return userStatus;
         }
 
-        public static UserValidationResult AuthenticateMobile2(bool checkOrgMembersOnly = false, bool requirePin = false)
+        public static UserValidationResult AuthenticateMobile2(bool checkOrgLeadersOnly = false, bool requirePin = false)
         {
             var userStatus = GetUserViaCredentials() ?? GetUserViaSessionToken(requirePin);
 
@@ -142,7 +142,7 @@ namespace CmsWeb.Models
             UserName2 = user.Username;
             SetUserInfo(user.Username, HttpContext.Current.Session, deleteSpecialTags: false);
 
-            if (checkOrgMembersOnly && !Util2.OrgLeadersOnlyChecked)
+            if (checkOrgLeadersOnly && !Util2.OrgLeadersOnlyChecked)
             {
                 DbUtil.LogActivity("iphone leadersonly check " + user.Username);
                 if (!Util2.OrgLeadersOnly && roleProvider.IsUserInRole(user.Username, "OrgLeadersOnly"))

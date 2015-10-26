@@ -12,13 +12,12 @@ namespace CmsWeb.Controllers.Api.Lookup
     {
         public FamilyPositionsController()
         {
-            Mapper.CreateMap<FamilyPosition, ApiFamilyPosition>();
+            Mapper.CreateMap<FamilyPosition, ApiLookup>();
         }
 
-        [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.FamilyPositions.Project().To<ApiFamilyPosition>().AsQueryable());
+            return Ok(DbUtil.Db.FamilyPositions.Project().To<ApiLookup>().AsQueryable());
         }
     }
 }
