@@ -474,10 +474,22 @@ namespace CmsData
 
                 if (Setting("sendemail", "true") != "false")
                 {
-                    Util.SendMsg(sysFromEmail, CmsHost, from,
+                    if (cc != null)
+                    {
+                        Util.SendMsgCC(sysFromEmail, CmsHost, from,
+                        emailqueue.Subject, text, aa, cc, emailqueue.Id, To.PeopleId);
+                    To.Sent = DateTime.Now;
+                    SubmitChanges();
+                    }
+                    else
+                    {
+                        Util.SendMsg(sysFromEmail, CmsHost, from,
                         emailqueue.Subject, text, aa, emailqueue.Id, To.PeopleId);
                     To.Sent = DateTime.Now;
                     SubmitChanges();
+
+                    }
+
                 }
 #if DEBUG
 #else
@@ -509,8 +521,8 @@ namespace CmsData
                 if (Setting("sendemail", "true") != "false")
                 {
                     List<MailAddress> mal = new List<MailAddress> {ma};
-                    Util.SendMsg(sysFromEmail, CmsHost, from,
-                        emailqueue.Subject, body, mal, emailqueue.Id, null);
+                    Util.SendMsgCC(sysFromEmail, CmsHost, from,
+                        emailqueue.Subject, body, mal, cc, emailqueue.Id, null);
                 }
 #if DEBUG
 #else
