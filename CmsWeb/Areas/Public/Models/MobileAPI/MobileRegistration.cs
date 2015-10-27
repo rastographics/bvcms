@@ -50,7 +50,7 @@ namespace CmsWeb.MobileAPI
                 MoreInfo = linkList[0].Attributes["href"].Value;
                 foreach (var link in linkList)
                     link.Remove();
-                description = HttpUtility.HtmlEncode(doc.DocumentNode.OuterHtml);
+                description = doc.DocumentNode.OuterHtml;
             }
         }
     }
