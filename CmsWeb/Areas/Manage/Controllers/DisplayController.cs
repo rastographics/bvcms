@@ -348,7 +348,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public static HtmlTable HtmlTable(IDataReader rd)
         {
-            var pctnames = new List<string> { "pct", "percent", "avg", "avergage" };
+            var pctnames = new List<string> {"pct", "percent"};
             var t = new HtmlTable();
             t.Attributes.Add("class", "table table-striped");
             var h = new HtmlTableRow();
@@ -394,7 +394,7 @@ namespace CmsWeb.Areas.Manage.Controllers
                         case "float":
                             s = StartsEndsWith(pctnames, nam)
                                 ? Convert.ToDouble(rd[i]).ToString("N1") + "%"
-                                : Convert.ToDouble(rd[i]).ToString("N3");
+                                : Convert.ToDouble(rd[i]).ToString("N1");
                             align = "right";
                             break;
                         case "int":
