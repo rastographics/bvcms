@@ -546,6 +546,37 @@ namespace CmsData
                 expr = Expression.Not(expr);
             return expr;
         }
+        internal Expression GivingChange()
+        {
+            var days = Quarters.ToInt2() ?? 365;
+            var pct = decimal.Parse(TextValue);
+            var q = db.GivingChange(days);
+            switch (op)
+            {
+                case CompareType.Greater:
+                    q = q.Where(vv => vv.PctChange > pct);
+                    break;
+                case CompareType.GreaterEqual:
+                    q = q.Where(vv => vv.PctChange >= pct);
+                    break;
+                case CompareType.Less:
+                    q = q.Where(vv => vv.PctChange < pct);
+                    break;
+                case CompareType.LessEqual:
+                    q = q.Where(vv => vv.PctChange <= pct);
+                    break;
+                case CompareType.Equal:
+                    q = q.Where(vv => vv.PctChange == pct);
+                    break;
+                case CompareType.NotEqual:
+                    q = q.Where(vv => vv.PctChange != pct);
+                    break;
+            }
+            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.PeopleId));
+            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
+            Expression expr = Expression.Invoke(pred, parm);
+            return expr;
+        }
         internal Expression RecentGivingAsPctOfPrevious()
         {
             var days = Quarters.ToInt2() ?? 365;

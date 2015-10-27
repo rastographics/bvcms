@@ -10,7 +10,7 @@ namespace CmsData
         void AddToExtraData(string field, string value);
         void AddEditExtraInt(string field, int value);
         void AddEditExtraBool(string field, bool tf);
-        void RemoveExtraValue(CMSDataContext Db, string field);
+        void RemoveExtraValue(CMSDataContext db, string field);
         void LogExtraValue(string op, string field);
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
@@ -27,7 +28,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ActionResult Search(string name, string comm, string addr)
         {
-            if (!Authenticate(checkOrgMembersOnly: true))
+            if (!Authenticate(checkOrgLeadersOnly: true))
                 return Content("not authorized");
             Response.NoCache();
 
@@ -37,7 +38,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ActionResult SearchResults(string name, string comm, string addr)
         {
-            if (!Authenticate(checkOrgMembersOnly: true))
+            if (!Authenticate(checkOrgLeadersOnly: true))
                 return Content("not authorized");
             if (!CMSRoleProvider.provider.IsUserInRole(AccountModel.UserName2, "Access"))
                 return Content("not authorized");
@@ -59,7 +60,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
         public ActionResult Organizations()
         {
-            if (!Authenticate(checkOrgMembersOnly: true))
+            if (!Authenticate(checkOrgLeadersOnly: true))
                 return Content("not authorized");
             Response.NoCache();
             DbUtil.LogActivity("iPhone Organizations");
@@ -82,22 +83,22 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult RecordAttend(int id, int PeopleId, bool Present)
+        public ActionResult RecordAttend(int id, int peopleId, bool present)
         {
             if (!Authenticate())
                 return Content("not authorized");
-            DbUtil.LogActivity($"iphone attend(mt:{id} person:{PeopleId} {Present})");
-            Attend.RecordAttendance(PeopleId, id, Present);
+            DbUtil.LogActivity($"iphone attend(mt:{id} person:{peopleId} {present})");
+            Attend.RecordAttendance(peopleId, id, present);
             DbUtil.Db.UpdateMeetingCounters(id);
             return new EmptyResult();
         }
 
         [HttpPost]
-        public ActionResult RecordVisit(int id, int PeopleId)
+        public ActionResult RecordVisit(int id, int peopleId)
         {
             if (!Authenticate())
                 return Content("not authorized");
-            Attend.RecordAttendance(PeopleId, id, true);
+            Attend.RecordAttendance(peopleId, id, true);
             DbUtil.Db.UpdateMeetingCounters(id);
             var meeting = DbUtil.Db.Meetings.Single(mm => mm.MeetingId == id);
             return new RollListResult(meeting);
@@ -180,21 +181,21 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult JoinUnJoinOrg(int PeopleId, int OrgId, bool Member)
+        public ActionResult JoinUnJoinOrg(int peopleId, int orgId, bool member)
         {
             if (!Authenticate())
                 return Content("not authorized");
-            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == PeopleId && m.OrganizationId == OrgId);
-            if (om == null && Member)
+            var om = DbUtil.Db.OrganizationMembers.SingleOrDefault(m => m.PeopleId == peopleId && m.OrganizationId == orgId);
+            if (om == null && member)
             {
                 om = OrganizationMember.InsertOrgMembers(DbUtil.Db,
-                    OrgId, PeopleId, MemberTypeCode.Member, DateTime.Now, null, false);
-                DbUtil.LogActivity($"iphone join(org:{OrgId} person:{PeopleId})");
+                    orgId, peopleId, MemberTypeCode.Member, DateTime.Now, null, false);
+                DbUtil.LogActivity($"iphone join(org:{orgId} person:{peopleId})");
             }
-            else if (om != null && !Member)
+            else if (om != null && !member)
             {
                 om.Drop(DbUtil.Db);
-                DbUtil.LogActivity($"iphone drop(org:{OrgId} person:{PeopleId})");
+                DbUtil.LogActivity($"iphone drop(org:{orgId} person:{peopleId})");
             }
             DbUtil.Db.SubmitChanges();
             return Content("OK");
@@ -215,43 +216,44 @@ namespace CmsWeb.Areas.Public.Controllers
         }
 
         [HttpPost]
-        public ActionResult RecordAttend2(int id, DateTime datetime, int PeopleId, bool Present)
+        public ActionResult RecordAttend2(int id, DateTime datetime, int peopleId, bool present)
             // id = OrganizationId
         {
             if (!Authenticate())
                 return Content("not authorized");
             var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
-            RecordAttend2Extracted(id, PeopleId, Present, datetime, u);
+            RecordAttend2Extracted(id, peopleId, present, datetime, u);
             return new EmptyResult();
         }
 
         [HttpPost]
-        public ActionResult RecordVisit2(int id, DateTime datetime, int PeopleId)
+        public ActionResult RecordVisit2(int id, DateTime datetime, int peopleId)
             // id = OrganizationId
         {
             if (!Authenticate())
                 return Content("not authorized");
             var u = DbUtil.Db.Users.Single(uu => uu.Username == AccountModel.UserName2);
 
-            var mid = RecordAttend2Extracted(id, PeopleId, true, datetime, u);
+            var mid = RecordAttend2Extracted(id, peopleId, true, datetime, u);
             var meeting = DbUtil.Db.LoadMeetingById(mid);
-            return new RollListResult(meeting, PeopleId);
+            return new RollListResult(meeting, peopleId);
         }
 
-        private static int RecordAttend2Extracted(int id, int PeopleId, bool Present, DateTime dt, User u)
+        private static int RecordAttend2Extracted(int id, int peopleId, bool present, DateTime dt, User u)
         {
             var meetingId = DbUtil.Db.CreateMeeting(id, dt);
-            Attend.RecordAttendance(PeopleId, meetingId, Present);
+            Attend.RecordAttendance(peopleId, meetingId, present);
             DbUtil.Db.UpdateMeetingCounters(id);
-            DbUtil.LogActivity($"Mobile RecAtt o:{id} p:{PeopleId} u:{Util.UserPeopleId} a:{Present}");
+            DbUtil.LogActivity($"Mobile RecAtt o:{id} p:{peopleId} u:{Util.UserPeopleId} a:{present}");
             return meetingId;
         }
 
-        private static bool Authenticate(string role = null, bool checkOrgMembersOnly = false)
+        private static bool Authenticate(string role = null, bool checkOrgLeadersOnly = false)
         {
-            return AccountModel.AuthenticateMobile(role, checkOrgMembersOnly).IsValid;
+            return AccountModel.AuthenticateMobile(role, checkOrgLeadersOnly).IsValid;
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public class PersonInfo
         {
             public int addtofamilyid { get; set; }

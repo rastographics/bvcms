@@ -12,13 +12,12 @@ namespace CmsWeb.Controllers.Api.Lookup
     {
         public MaritalStatusesController()
         {
-            Mapper.CreateMap<MaritalStatus, ApiMaritalStatus>();
+            Mapper.CreateMap<MaritalStatus, ApiLookup>();
         }
 
-        [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.MaritalStatuses.Project().To<ApiMaritalStatus>().AsQueryable());
+            return Ok(DbUtil.Db.MaritalStatuses.Project().To<ApiLookup>().AsQueryable());
         }
     }
 }

@@ -102,7 +102,7 @@ namespace CmsWeb.Models
 
             var pid = u.PeopleId;
 
-            var limitvisibility = Util2.OrgMembersOnly || Util2.OrgLeadersOnly;
+            var limitvisibility = Util2.OrgLeadersOnly;
             var oids = new int[0];
             if (Util2.OrgLeadersOnly)
                 oids = DbUtil.Db.GetLeaderOrgIds(pid);

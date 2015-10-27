@@ -190,16 +190,7 @@ namespace CmsWeb.Areas.People.Models
                 if (Person == null || !Person.CanUserSee)
                     return "no access";
 
-            if (Util2.OrgMembersOnly)
-            {
-                var omotag = DbUtil.Db.OrgMembersOnlyTag2();
-                if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == PeopleId && pt.Id == omotag.Id))
-                {
-                    DbUtil.LogActivity($"Trying to view person: {Person.Name}");
-                    return $"<h3 style='color:red'>{"You must be a member one of this person's organizations to have access to this page"}</h3>\n<a href='{"javascript: history.go(-1)"}'>{"Go Back"}</a>";
-                }
-            }
-            else if (Util2.OrgLeadersOnly)
+            if (Util2.OrgLeadersOnly)
             {
                 var olotag = DbUtil.Db.OrgLeadersOnlyTag2();
                 if (!DbUtil.Db.TagPeople.Any(pt => pt.PeopleId == PeopleId && pt.Id == olotag.Id))

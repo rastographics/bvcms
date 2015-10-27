@@ -1117,14 +1117,14 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return ev;
         }
-        public void RemoveExtraValue(CMSDataContext Db, string field)
+        public void RemoveExtraValue(CMSDataContext db, string field)
         {
-            var ev = (from ee in Db.PeopleExtras
+            var ev = (from ee in db.PeopleExtras
                       where ee.Field == field
                       where ee.PeopleId == PeopleId
                       select ee).FirstOrDefault();
             if (ev != null)
-                Db.PeopleExtras.DeleteOnSubmit(ev);
+                db.PeopleExtras.DeleteOnSubmit(ev);
         }
 
         public void LogExtraValue(string op, string field)

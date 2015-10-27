@@ -186,7 +186,7 @@
               closeOnConfirm: false
             },
             function () {
-              $.post(href, null, function (ret) {
+              $.post("/Display/ContentDelete", { id: "@Model.Id" }, function (ret) {
                 if (ret && ret.error)
                   swal("Error!", ret.error, "error");
                 else {

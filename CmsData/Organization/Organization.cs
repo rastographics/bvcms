@@ -23,10 +23,10 @@ namespace CmsData
 
         public string FullName2 => DivisionName + ", " + FormatOrgName(OrganizationName, LeaderName, Location);
 
-        private string _TagString;
+        private string tagString;
         public string TagString()
         {
-            if (_TagString == null)
+            if (tagString == null)
             {
                 var sb = new StringBuilder();
                 var q = from d in DivOrgs
@@ -36,22 +36,22 @@ namespace CmsData
                     sb.Append(name + ",");
                 if (sb.Length > 0)
                     sb.Remove(sb.Length - 1, 1);
-                _TagString = sb.ToString();
+                tagString = sb.ToString();
             }
-            return _TagString;
+            return tagString;
         }
-        public void SetTagString(CMSDataContext Db, string value)
+        public void SetTagString(CMSDataContext db, string value)
         {
             if (!value.HasValue())
             {
-                Db.DivOrgs.DeleteAllOnSubmit(DivOrgs);
+                db.DivOrgs.DeleteAllOnSubmit(DivOrgs);
                 return;
             }
             var a = value.Split(',');
             var qdelete = from d in DivOrgs
                           where !a.Contains(d.Division.Name)
                           select d;
-            Db.DivOrgs.DeleteAllOnSubmit(qdelete);
+            db.DivOrgs.DeleteAllOnSubmit(qdelete);
 
             var q = from s in a
                     join d2 in DivOrgs on s equals d2.Division.Name into g
@@ -61,24 +61,24 @@ namespace CmsData
 
             foreach (var s in q)
             {
-                var div = Db.Divisions.FirstOrDefault(d => d.Name == s);
+                var div = db.Divisions.FirstOrDefault(d => d.Name == s);
                 if (div == null)
                 {
                     div = new Division { Name = s };
-                    string misctags = Db.Setting("MiscTagsString", "Misc Tags");
-                    var prog = Db.Programs.SingleOrDefault(p => p.Name == misctags);
+                    string misctags = db.Setting("MiscTagsString", "Misc Tags");
+                    var prog = db.Programs.SingleOrDefault(p => p.Name == misctags);
                     if (prog == null)
                     {
                         prog = new Program { Name = misctags };
-                        Db.Programs.InsertOnSubmit(prog);
+                        db.Programs.InsertOnSubmit(prog);
                     }
                     div.Program = prog;
                 }
                 DivOrgs.Add(new DivOrg { Division = div });
             }
-            _TagString = value;
+            tagString = value;
         }
-        public bool ToggleTag(CMSDataContext Db, int divid)
+        public bool ToggleTag(CMSDataContext db, int divid)
         {
             var divorg = DivOrgs.SingleOrDefault(d => d.DivId == divid);
             if (divorg == null)
@@ -89,21 +89,21 @@ namespace CmsData
             if (DivOrgs.Count == 1)
                 return true;
             DivOrgs.Remove(divorg);
-            Db.DivOrgs.DeleteOnSubmit(divorg);
+            db.DivOrgs.DeleteOnSubmit(divorg);
             return false;
         }
-        public void AddToDiv(CMSDataContext Db, int divid)
+        public void AddToDiv(CMSDataContext db, int divid)
         {
             var divorg = DivOrgs.SingleOrDefault(d => d.DivId == divid);
             if (divorg == null)
                 DivOrgs.Add(new DivOrg { DivId = divid });
         }
 
-        public bool PurgeOrg(CMSDataContext Db)
+        public bool PurgeOrg(CMSDataContext db)
         {
             try
             {
-                Db.PurgeOrganization(OrganizationId);
+                db.PurgeOrganization(OrganizationId);
             }
             catch
             {
@@ -111,9 +111,9 @@ namespace CmsData
             }
             return true;
         }
-        public void CopySettings(CMSDataContext Db, int fromid)
+        public void CopySettings(CMSDataContext db, int fromid)
         {
-            var frorg = Db.LoadOrganizationById(fromid);
+            var frorg = db.LoadOrganizationById(fromid);
 
             //only Copy settings
             NotifyIds = frorg.NotifyIds;
@@ -130,7 +130,7 @@ namespace CmsData
             RegSettingXml = frorg.RegSettingXml;
 
             CopySettings2(frorg, this);
-            Db.SubmitChanges();
+            db.SubmitChanges();
         }
         public static void CopySettings2(Organization frorg, Organization toorg)
         {
@@ -146,7 +146,7 @@ namespace CmsData
             toorg.GradeAgeStart = frorg.GradeAgeStart;
             toorg.DivisionId = frorg.DivisionId;
         }
-        public Organization CloneOrg(CMSDataContext Db, int? DivisionId)
+        public Organization CloneOrg(CMSDataContext db, int? divisionId)
         {
             var neworg = new Organization
             {
@@ -159,7 +159,7 @@ namespace CmsData
                 CampusId = CampusId,
                 IsBibleFellowshipOrg = IsBibleFellowshipOrg,
             };
-            Db.Organizations.InsertOnSubmit(neworg);
+            db.Organizations.InsertOnSubmit(neworg);
             foreach (var div in DivOrgs)
                 neworg.DivOrgs.Add(new DivOrg { Organization = neworg, DivId = div.DivId });
             foreach (var sc in OrgSchedules)
@@ -173,12 +173,12 @@ namespace CmsData
                 });
 
             CopySettings2(this, neworg);
-            Db.SubmitChanges();
+            db.SubmitChanges();
             return neworg;
         }
-        public Organization CloneOrg(CMSDataContext Db)
+        public Organization CloneOrg(CMSDataContext db)
         {
-            return CloneOrg(Db, DivisionId);
+            return CloneOrg(db, DivisionId);
         }
         public static DateTime? GetDateFromScheduleId(int id)
         {
@@ -207,6 +207,12 @@ namespace CmsData
         public static OrgSchedule ParseSchedule(string s)
         {
             var m = Regex.Match(s, @"\A(?<dow>.*)\s(?<time>\d{1,2}:\d{2}\s(A|P)M)", RegexOptions.IgnoreCase);
+            var dow = m.Groups["dow"].Value;
+            var time = m.Groups["time"].Value;
+            return ParseSchedule(dow, time);
+        }
+        public static OrgSchedule ParseSchedule(string dow, string time)
+        {
             var d = new Dictionary<string, int>
             {
                 { "sun", 0 },
@@ -218,9 +224,11 @@ namespace CmsData
                 { "sat", 6 },
                 { "any", 10 },
             };
-            var dow = m.Groups["dow"].Value.ToLower();
-            var time = DateTime.Parse(m.Groups["time"].Value);
-            var mt = Util.Now.Sunday().AddDays(d[dow]).Add(time.TimeOfDay);
+
+            if (!dow.HasValue())
+                dow = "sun";
+            var t = DateTime.Parse(time);
+            var mt = Util.Now.Sunday().AddDays(d[dow.ToLower()]).Add(t.TimeOfDay);
             var sc = new OrgSchedule
             {
                 SchedDay = d[dow],
@@ -229,61 +237,61 @@ namespace CmsData
             };
             return sc;
         }
-        public static OrganizationType FetchOrCreateType(CMSDataContext Db, string type)
+        public static OrganizationType FetchOrCreateType(CMSDataContext db, string type)
         {
-            var t = Db.OrganizationTypes.SingleOrDefault(pp => pp.Description == type);
+            var t = db.OrganizationTypes.SingleOrDefault(pp => pp.Description == type);
             if (t == null)
             {
                 var max = 10;
-                if (Db.OrganizationTypes.Any())
-                    max = Db.OrganizationTypes.Max(mm => mm.Id) + 10;
+                if (db.OrganizationTypes.Any())
+                    max = db.OrganizationTypes.Max(mm => mm.Id) + 10;
                 t = new OrganizationType { Description = type, Code = type.Substring(0, 3), Id = max };
-                Db.OrganizationTypes.InsertOnSubmit(t);
-                Db.SubmitChanges();
+                db.OrganizationTypes.InsertOnSubmit(t);
+                db.SubmitChanges();
             }
             return t;
         }
-        public static Program FetchOrCreateProgram(CMSDataContext Db, string program)
+        public static Program FetchOrCreateProgram(CMSDataContext db, string program)
         {
-            var p = Db.Programs.SingleOrDefault(pp => pp.Name == program);
+            var p = db.Programs.SingleOrDefault(pp => pp.Name == program);
             if (p == null)
             {
                 p = new Program { Name = program };
-                Db.Programs.InsertOnSubmit(p);
-                Db.SubmitChanges();
+                db.Programs.InsertOnSubmit(p);
+                db.SubmitChanges();
             }
             return p;
         }
-        public static Division FetchOrCreateDivision(CMSDataContext Db, Program program, string division)
+        public static Division FetchOrCreateDivision(CMSDataContext db, Program program, string division)
         {
-            var d = Db.Divisions.SingleOrDefault(pp => pp.Name == division && pp.ProgDivs.Any(pd => pd.ProgId == program.Id));
+            var d = db.Divisions.SingleOrDefault(pp => pp.Name == division && pp.ProgDivs.Any(pd => pd.ProgId == program.Id));
             if (d == null)
             {
                 d = new Division { Name = division, Program = program };
                 var progdiv = new ProgDiv { Division = d, Program = program };
-                Db.ProgDivs.InsertOnSubmit(progdiv);
-                Db.SubmitChanges();
+                db.ProgDivs.InsertOnSubmit(progdiv);
+                db.SubmitChanges();
             }
             else
             {
-                var pd = Db.ProgDivs.SingleOrDefault(dd => dd.ProgId == program.Id && dd.DivId == d.Id);
+                var pd = db.ProgDivs.SingleOrDefault(dd => dd.ProgId == program.Id && dd.DivId == d.Id);
                 if (pd == null)
                     program.Divisions.Add(d);
-                Db.SubmitChanges();
+                db.SubmitChanges();
             }
             return d;
         }
-        public static MemberType FetchOrCreateMemberType(CMSDataContext Db, string type)
+        public static MemberType FetchOrCreateMemberType(CMSDataContext db, string type)
         {
-            var mt = Db.MemberTypes.SingleOrDefault(pp => pp.Description == type);
+            var mt = db.MemberTypes.SingleOrDefault(pp => pp.Description == type);
             if (mt == null)
             {
-                var max = Db.MemberTypes.Max(mm => mm.Id) + 10;
+                var max = db.MemberTypes.Max(mm => mm.Id) + 10;
                 if (max < 1000)
                     max = 1010;
                 mt = new MemberType { Id = max, Description = type, Code = type.Truncate(20), AttendanceTypeId = AttendTypeCode.Member };
-                Db.MemberTypes.InsertOnSubmit(mt);
-                Db.SubmitChanges();
+                db.MemberTypes.InsertOnSubmit(mt);
+                db.SubmitChanges();
             }
             return mt;
         }
@@ -294,24 +302,24 @@ namespace CmsData
                 return CreateOrganization(db, divid, organization);
             return o;
         }
-        public static Organization FetchOrCreateOrganization(CMSDataContext Db, Division division, string organization)
+        public static Organization FetchOrCreateOrganization(CMSDataContext db, Division division, string organization)
         {
-            var o = Db.LoadOrganizationByName(organization);
+            var o = db.LoadOrganizationByName(organization);
             if (o == null)
-                return CreateOrganization(Db, division, organization);
+                return CreateOrganization(db, division, organization);
             return o;
         }
-        public static Organization FetchOrCreateOrganization(CMSDataContext Db, Division division, string organization, string description)
-        {
-            var o = Db.Organizations.SingleOrDefault(oo => oo.Description == description);
-            if (o == null)
-            {
-                o = CreateOrganization(Db, division, organization);
-                o.Description = description;
-            }
-            return o;
-        }
-        public static Organization CreateOrganization(CMSDataContext Db, Division division, string organization)
+        //public static Organization FetchOrCreateOrganization(CMSDataContext Db, Division division, string organization, string description)
+        //{
+        //    var o = Db.Organizations.SingleOrDefault(oo => oo.Description == description);
+        //    if (o == null)
+        //    {
+        //        o = CreateOrganization(Db, division, organization);
+        //        o.Description = description;
+        //    }
+        //    return o;
+        //}
+        public static Organization CreateOrganization(CMSDataContext db, Division division, string organization)
         {
             var o = new Organization
             {
@@ -322,11 +330,11 @@ namespace CmsData
                 OrganizationStatusId = 30,
             };
             division.Organizations.Add(o);
-            Db.DivOrgs.InsertOnSubmit(new DivOrg { Division = division, Organization = o });
-            Db.SubmitChanges();
+            db.DivOrgs.InsertOnSubmit(new DivOrg { Division = division, Organization = o });
+            db.SubmitChanges();
             return o;
         }
-        public static Organization CreateOrganization(CMSDataContext Db, int divid, string organization)
+        public static Organization CreateOrganization(CMSDataContext db, int divid, string organization)
         {
             var o = new Organization
             {
@@ -337,8 +345,8 @@ namespace CmsData
                 OrganizationStatusId = 30,
                 DivisionId = divid,
             };
-            Db.DivOrgs.InsertOnSubmit(new DivOrg { DivId = divid, Organization = o });
-            Db.SubmitChanges();
+            db.DivOrgs.InsertOnSubmit(new DivOrg { DivId = divid, Organization = o });
+            db.SubmitChanges();
             return o;
         }
 
@@ -373,7 +381,7 @@ namespace CmsData
 
         public OrganizationExtra GetExtraValue(string field)
         {
-            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
+            var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => ee.Field.Equal(field));
             if (ev == null)
             {
                 ev = new OrganizationExtra()
@@ -387,9 +395,9 @@ namespace CmsData
             return ev;
         }
 
-        public void AddEditExtra(CMSDataContext Db, string field, string value, bool multiline = false)
+        public void AddEditExtra(CMSDataContext db, string field, string value, bool multiline = false)
         {
-            var oev = Db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
+            var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
             if (oev == null)
             {
                 oev = new OrganizationExtra
@@ -397,7 +405,7 @@ namespace CmsData
                           OrganizationId = OrganizationId,
                           Field = field,
                       };
-                Db.OrganizationExtras.InsertOnSubmit(oev);
+                db.OrganizationExtras.InsertOnSubmit(oev);
             }
             oev.Data = value;
             oev.DataType = multiline ? "text" : null;
@@ -414,9 +422,9 @@ namespace CmsData
                 ev.Data = value;
         }
 
-        public string GetExtra(CMSDataContext Db, string field)
+        public string GetExtra(CMSDataContext db, string field)
         {
-            var oev = Db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
+            var oev = db.OrganizationExtras.SingleOrDefault(oe => oe.OrganizationId == OrganizationId && oe.Field == field);
             return oev?.Data;
         }
 
@@ -465,11 +473,11 @@ namespace CmsData
             ev.TransactionTime = DateTime.Now;
         }
 
-        public void RemoveExtraValue(CMSDataContext Db, string field)
+        public void RemoveExtraValue(CMSDataContext db, string field)
         {
             var ev = OrganizationExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev != null)
-                Db.OrganizationExtras.DeleteOnSubmit(ev);
+                db.OrganizationExtras.DeleteOnSubmit(ev);
             ev.TransactionTime = DateTime.Now;
         }
 
@@ -478,9 +486,9 @@ namespace CmsData
             DbUtil.LogActivity($"EVOrg {op}:{field}", orgid: OrganizationId);
         }
 
-        public static bool CheckExtraValueIntegrity(CMSDataContext Db, string type, string newfield)
+        public static bool CheckExtraValueIntegrity(CMSDataContext db, string type, string newfield)
         {
-            return !Db.OrganizationExtras.Any(ee => ee.Field == newfield && ee.Type != type);
+            return !db.OrganizationExtras.Any(ee => ee.Field == newfield && ee.Type != type);
         }
 
         private int? regLimitCount;

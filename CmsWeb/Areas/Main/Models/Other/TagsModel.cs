@@ -60,15 +60,12 @@ namespace CmsWeb.Models
             if (people != null)
                 return people;
 
-            if (Util2.OrgMembersOnly)
-                people = DbUtil.Db.OrgMembersOnlyTag2().People(DbUtil.Db);
-            else if (Util2.OrgLeadersOnly)
-                people = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
-            else
-                people = DbUtil.Db.People.Select(p => p);
+            people = Util2.OrgLeadersOnly 
+                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db) 
+                : DbUtil.Db.People.Select(p => p);
 
             if (usersonly)
-                people = people.Where(p => p.Users.Count() > 0);
+                people = people.Where(p => p.Users.Any());
 
             var tagid = Db.TagCurrent().Id;
             people = people.Where(p => p.Tags.Any(tp => tp.Id == tagid));

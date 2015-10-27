@@ -72,15 +72,12 @@ or just Last or *First*`space` for first name match only.
 
             DbUtil.Db.SetNoLock();
 
-            if (Util2.OrgMembersOnly)
-                people = DbUtil.Db.OrgMembersOnlyTag2().People(DbUtil.Db);
-            else if (Util2.OrgLeadersOnly)
-                people = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
-            else
-                people = DbUtil.Db.People.AsQueryable();
+            people = Util2.OrgLeadersOnly 
+                ? DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db) 
+                : DbUtil.Db.People.AsQueryable();
 
             if (usersonly)
-                people = people.Where(p => p.Users.Count() > 0);
+                people = people.Where(p => p.Users.Any());
 
             if (m.memberstatus > 0)
                 people = from p in people
@@ -97,20 +94,20 @@ or just Last or *First*`space` for first name match only.
                 }
                 else
                 {
-                    string First, Last;
-                    Util.NameSplit(m.name, out First, out Last);
-                    if (First.HasValue())
+                    string first, last;
+                    Util.NameSplit(m.name, out first, out last);
+                    if (first.HasValue())
                         people = from p in people
-                             where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                             where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
                                  || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
                              where
-                                 p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First)
+                                 p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first)
                                  || p.LastName.StartsWith(m.name) || p.MaidenName.StartsWith(m.name) // gets Bob St Clair
                              select p;
                     else
-                        if (Last.AllDigits())
+                        if (last.AllDigits())
                             people = from p in people
-                                     where p.PeopleId == Last.ToInt()
+                                     where p.PeopleId == last.ToInt()
                                      select p;
                         else
                             people = from p in people

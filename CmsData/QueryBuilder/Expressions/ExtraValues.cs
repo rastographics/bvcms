@@ -115,7 +115,7 @@ namespace CmsData
         internal Expression RecentPeopleExtraFieldChanged()
         {
             var mindt = Util.Now.AddDays(-Days).Date;
-            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == TextValue);
+            var sev = ExtraValue.Views.GetViewableNameTypes(db, "People", nocache: true).SingleOrDefault(nn => nn.Name == Quarters);
             if (!db.FromBatch)
                 if (sev != null && !sev.CanView)
                     return AlwaysFalse();

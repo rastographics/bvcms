@@ -27,14 +27,7 @@ namespace CmsWeb.Areas.Org.Controllers
             if (m.Org == null)
                 return Content("organization not found");
 
-            if (Util2.OrgMembersOnly)
-            {
-                if (m.Org.SecurityTypeId == 3)
-                    return NotAllowed("You do not have access to this page", m.Org.OrganizationName);
-                if (m.Org.OrganizationMembers.All(om => om.PeopleId != Util.UserPeopleId))
-                    return NotAllowed("You must be a member of this organization", m.Org.OrganizationName);
-            }
-            else if (Util2.OrgLeadersOnly)
+            if (Util2.OrgLeadersOnly)
             {
                 var oids = DbUtil.Db.GetLeaderOrgIds(Util.UserPeopleId);
                 if (!oids.Contains(m.Org.OrganizationId))

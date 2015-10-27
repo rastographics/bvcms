@@ -24,7 +24,12 @@ namespace CmsData
         {
             return Drop(db, DateTime.Now);
         }
+
         public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate)
+        {
+            return Drop(db, dropdate, Organization.OrganizationName);
+        }
+        public EnrollmentTransaction Drop(CMSDataContext db, DateTime dropdate, string orgname)
         {
             db.SubmitChanges();
             while (true)
@@ -37,27 +42,27 @@ namespace CmsData
                               select mt.MemberTag.Name
                     ).ToList();
                 var droptrans = new EnrollmentTransaction
-                                {
-                                    OrganizationId = OrganizationId,
-                                    PeopleId = PeopleId,
-                                    MemberTypeId = MemberTypeId,
-                                    OrganizationName = Organization.OrganizationName,
-                                    TransactionDate = dropdate,
-                                    TransactionTypeId = 5, // drop
-                                    CreatedBy = Util.UserId1,
-                                    CreatedDate = Util.Now,
-                                    Pending = Pending,
-                                    AttendancePercentage = AttendPct,
-                                    InactiveDate = InactiveDate,
-                                    UserData = UserData,
-                                    Request = Request,
-                                    ShirtSize = ShirtSize,
-                                    Grade = Grade,
-                                    Tickets = Tickets,
-                                    RegisterEmail = RegisterEmail,
-                                    Score = Score,
-                                    SmallGroups = string.Join("\n", sglist)
-                                };
+                {
+                    OrganizationId = OrganizationId,
+                    PeopleId = PeopleId,
+                    MemberTypeId = MemberTypeId,
+                    OrganizationName = orgname,
+                    TransactionDate = dropdate,
+                    TransactionTypeId = 5, // drop
+                    CreatedBy = Util.UserId1,
+                    CreatedDate = Util.Now,
+                    Pending = Pending,
+                    AttendancePercentage = AttendPct,
+                    InactiveDate = InactiveDate,
+                    UserData = UserData,
+                    Request = Request,
+                    ShirtSize = ShirtSize,
+                    Grade = Grade,
+                    Tickets = Tickets,
+                    RegisterEmail = RegisterEmail,
+                    Score = Score,
+                    SmallGroups = string.Join("\n", sglist)
+                };
 
                 db.EnrollmentTransactions.InsertOnSubmit(droptrans);
                 db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
@@ -74,6 +79,37 @@ AND a.PeopleId = {2}
                 db.ExecuteCommand("UPDATE dbo.GoerSenderAmounts SET InActive = 1 WHERE OrgId = {0} AND (GoerId = {1} OR SupporterId = {1})", OrganizationId, PeopleId);
                 return droptrans;
             }
+        }
+        public void FastDrop(CMSDataContext db, DateTime dropdate, string orgname)
+        {
+            if (!EnrollmentDate.HasValue)
+                EnrollmentDate = CreatedDate;
+            var droptrans = new EnrollmentTransaction
+            {
+                OrganizationId = OrganizationId,
+                PeopleId = PeopleId,
+                MemberTypeId = MemberTypeId,
+                OrganizationName = orgname,
+                TransactionDate = dropdate,
+                TransactionTypeId = 5, // drop
+                CreatedBy = Util.UserId1,
+                CreatedDate = Util.Now,
+                Pending = Pending,
+                AttendancePercentage = AttendPct,
+                InactiveDate = InactiveDate,
+                UserData = UserData,
+                Request = Request,
+                ShirtSize = ShirtSize,
+                Grade = Grade,
+                Tickets = Tickets,
+                RegisterEmail = RegisterEmail,
+                Score = Score,
+            };
+
+            db.EnrollmentTransactions.InsertOnSubmit(droptrans);
+            db.OrgMemMemTags.DeleteAllOnSubmit(this.OrgMemMemTags);
+            db.OrganizationMembers.DeleteOnSubmit(this);
+            db.SubmitChanges();
         }
 
         public static void UpdateMeetingsToUpdate()
@@ -143,11 +179,11 @@ AND a.PeopleId = {2}
             if (omt == null)
             {
                 Db.OrgMemMemTags.InsertOnSubmit(new OrgMemMemTag
-                                     {
-                                         PeopleId = PeopleId,
-                                         OrgId = OrganizationId,
-                                         MemberTagId = n
-                                     });
+                {
+                    PeopleId = PeopleId,
+                    OrgId = OrganizationId,
+                    MemberTagId = n
+                });
                 Db.SubmitChanges();
                 return 1;
             }
@@ -156,7 +192,7 @@ AND a.PeopleId = {2}
 
         public void AddToGroup(CMSDataContext Db, string name, int? n)
         {
-            if (!Util.HasValue(name))
+            if (!name.HasValue())
                 return;
             var name2 = name.Trim().Truncate(200);
             var mt = Db.MemberTags.SingleOrDefault(t => t.Name == name2 && t.OrgId == OrganizationId);
@@ -172,11 +208,11 @@ AND a.PeopleId = {2}
                                                        && t.OrgId == OrganizationId);
             if (omt == null)
                 mt.OrgMemMemTags.Add(new OrgMemMemTag
-                                     {
-                                         PeopleId = PeopleId,
-                                         OrgId = OrganizationId,
-                                         Number = n
-                                     });
+                {
+                    PeopleId = PeopleId,
+                    OrgId = OrganizationId,
+                    Number = n
+                });
             Db.SubmitChanges();
         }
 
@@ -197,20 +233,20 @@ AND a.PeopleId = {2}
 
         public void AddToMemberData(string s)
         {
-            if (Util.HasValue(UserData))
+            if (UserData.HasValue())
                 UserData += "\n";
             UserData += s;
         }
         public void AddToMemberDataBelowComments(string s)
         {
-            if (Util.HasValue(UserData))
+            if (UserData.HasValue())
                 UserData += "\n";
             else
                 UserData = "--Add comments above this line--\n";
             UserData += s;
         }
 
-        public static OrganizationMember InsertOrgMembers(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, DateTime? inactiveDate, bool pending, bool skipTriggerProcessing = false)
+        public static OrganizationMember InsertOrgMembers(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, DateTime? inactiveDate, bool pending, string name, bool skipTriggerProcessing = false)
         {
             db.SubmitChanges();
             var ntries = 2;
@@ -226,39 +262,34 @@ AND a.PeopleId = {2}
                         db.SubmitChanges();
                         return m;
                     }
-                    var org = db.Organizations.SingleOrDefault(oo => oo.OrganizationId == organizationId);
-                    if (org == null)
-                        return null;
-                    var name = org.OrganizationName;
-
                     var om = new OrganizationMember
-                             {
-                                 OrganizationId = organizationId,
-                                 PeopleId = peopleId,
-                                 MemberTypeId = memberTypeId,
-                                 EnrollmentDate = enrollmentDate,
-                                 InactiveDate = inactiveDate,
-                                 CreatedDate = Util.Now,
-                                 Pending = pending,
-                                 SkipInsertTriggerProcessing = skipTriggerProcessing
-                             };
+                    {
+                        OrganizationId = organizationId,
+                        PeopleId = peopleId,
+                        MemberTypeId = memberTypeId,
+                        EnrollmentDate = enrollmentDate,
+                        InactiveDate = inactiveDate,
+                        CreatedDate = Util.Now,
+                        Pending = pending,
+                        SkipInsertTriggerProcessing = skipTriggerProcessing
+                    };
 
                     var et = new EnrollmentTransaction
-                             {
-                                 OrganizationId = om.OrganizationId,
-                                 PeopleId = om.PeopleId,
-                                 MemberTypeId = om.MemberTypeId,
-                                 OrganizationName = name,
-                                 TransactionDate = enrollmentDate,
-                                 EnrollmentDate = enrollmentDate,
-                                 TransactionTypeId = 1,
-                                 // join
-                                 CreatedBy = Util.UserId1,
-                                 CreatedDate = Util.Now,
-                                 Pending = pending,
-                                 AttendancePercentage = om.AttendPct,
-                                 SkipInsertTriggerProcessing = skipTriggerProcessing
-                             };
+                    {
+                        OrganizationId = om.OrganizationId,
+                        PeopleId = om.PeopleId,
+                        MemberTypeId = om.MemberTypeId,
+                        OrganizationName = name,
+                        TransactionDate = enrollmentDate,
+                        EnrollmentDate = enrollmentDate,
+                        TransactionTypeId = 1,
+                        // join
+                        CreatedBy = Util.UserId1,
+                        CreatedDate = Util.Now,
+                        Pending = pending,
+                        AttendancePercentage = om.AttendPct,
+                        SkipInsertTriggerProcessing = skipTriggerProcessing
+                    };
 
                     db.OrganizationMembers.InsertOnSubmit(om);
                     db.EnrollmentTransactions.InsertOnSubmit(et);
@@ -278,6 +309,46 @@ AND a.PeopleId = {2}
                 }
             }
         }
+        public static OrganizationMember InsertOrgMembers(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, DateTime? inactiveDate, bool pending, bool skipTriggerProcessing = false)
+        {
+            var org = db.LoadOrganizationById(organizationId);
+            return InsertOrgMembers(db, organizationId, peopleId, memberTypeId, enrollmentDate, inactiveDate, pending, org.OrganizationName, skipTriggerProcessing);
+        }
+        public static OrganizationMember AddOrgMember(CMSDataContext db, int organizationId, int peopleId, int memberTypeId, DateTime enrollmentDate, string name)
+        {
+            var om = new OrganizationMember
+            {
+                OrganizationId = organizationId,
+                PeopleId = peopleId,
+                MemberTypeId = memberTypeId,
+                EnrollmentDate = enrollmentDate,
+                CreatedDate = Util.Now,
+                SkipInsertTriggerProcessing = true
+            };
+
+            var et = new EnrollmentTransaction
+            {
+                OrganizationId = om.OrganizationId,
+                PeopleId = om.PeopleId,
+                MemberTypeId = om.MemberTypeId,
+                OrganizationName = name,
+                TransactionDate = enrollmentDate,
+                EnrollmentDate = enrollmentDate,
+                TransactionTypeId = 1,
+                // join
+                CreatedBy = Util.UserId1,
+                CreatedDate = Util.Now,
+                AttendancePercentage = om.AttendPct,
+                SkipInsertTriggerProcessing = true
+            };
+
+            db.OrganizationMembers.InsertOnSubmit(om);
+            db.EnrollmentTransactions.InsertOnSubmit(et);
+
+            db.SubmitChanges();
+            return om;
+        }
+
 
         private bool transactionSummaryLoaded;
         private TransactionSummary transactionSummary;
@@ -305,29 +376,29 @@ AND a.PeopleId = {2}
             }
 
             var ti2 = new Transaction
-                {
-                    TransactionId = $"{reason} ({Util.UserPeopleId ?? Util.UserId1})",
-                    Description = Organization.OrganizationName,
-                    TransactionDate = DateTime.Now,
-                    OrgId = OrganizationId,
-                    Name = Person.Name,
-                    First = Person.PreferredName,
-                    Last = Person.LastName,
-                    MiddleInitial = Person.MiddleName.Truncate(1),
-                    Suffix = Person.SuffixCode,
-                    Address = Person.PrimaryAddress,
-                    City = Person.PrimaryCity,
-                    Emails = Person.EmailAddress,
-                    State = Person.PrimaryState,
-                    Zip = Person.PrimaryZip,
-                    LoginPeopleId = Util.UserPeopleId,
-                    Approved = true,
-                    Amt = payment,
-                    //Amtdue = (amount ?? payment) - payment,
-                    Amtdue = (amount ?? 0) - payment,
-                    AdjustFee = adjustFee,
-                    Message = description,
-                };
+            {
+                TransactionId = $"{reason} ({Util.UserPeopleId ?? Util.UserId1})",
+                Description = Organization.OrganizationName,
+                TransactionDate = DateTime.Now,
+                OrgId = OrganizationId,
+                Name = Person.Name,
+                First = Person.PreferredName,
+                Last = Person.LastName,
+                MiddleInitial = Person.MiddleName.Truncate(1),
+                Suffix = Person.SuffixCode,
+                Address = Person.PrimaryAddress,
+                City = Person.PrimaryCity,
+                Emails = Person.EmailAddress,
+                State = Person.PrimaryState,
+                Zip = Person.PrimaryZip,
+                LoginPeopleId = Util.UserPeopleId,
+                Approved = true,
+                Amt = payment,
+                //Amtdue = (amount ?? payment) - payment,
+                Amtdue = (amount ?? 0) - payment,
+                AdjustFee = adjustFee,
+                Message = description,
+            };
 
             db.Transactions.InsertOnSubmit(ti2);
             db.SubmitChanges();
@@ -354,9 +425,27 @@ AND a.PeopleId = {2}
             var ts = TransactionSummary(db);
             if (ts == null)
                 return 0;
-            return FeePaid(db) - TotalPaid(db);
+            return (ts.IndPaid ?? 0) - TotalPaid(db);
         }
 
+        public decimal? AmountPaidTransactions(CMSDataContext db)
+        {
+            var ts = TransactionSummary(db);
+            if (ts == null)
+                return null;
+            return Organization.IsMissionTrip == true
+                ? TotalPaid(db)
+                : ts.IndPaid;
+        }
+        public decimal? AmountDueTransactions(CMSDataContext db)
+        {
+            var ts = TransactionSummary(db);
+            if (ts == null)
+                return null;
+            return Organization.IsMissionTrip == true 
+                ? AmountDue(db)
+                : ts.IndDue;
+        }
         private decimal? totalPaid;
         public decimal TotalPaid(CMSDataContext db)
         {
@@ -370,7 +459,7 @@ AND a.PeopleId = {2}
             var ts = TransactionSummary(db);
             if (ts == null)
                 return 0;
-            return ts.IndAmt ?? 0;
+            return ts.IndPaid ?? 0;
         }
 
         public class SmallGroupItem

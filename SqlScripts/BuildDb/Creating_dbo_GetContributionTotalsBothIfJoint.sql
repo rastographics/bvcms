@@ -7,7 +7,7 @@ RETURN
 		p.FamilyId,
 		tt.PeopleId, 
 		p.Name2 Name,
-		tt.Amount
+		SUM(tt.Amount) Amount
 
 	FROM 
 	(
@@ -24,7 +24,9 @@ RETURN
 		WHERE CreditGiverId2 IS NOT NULL
 	) tt
 	JOIN dbo.People p ON p.PeopleId = tt.PeopleId
+	GROUP BY p.FamilyId, tt.PeopleId, p.Name2
 )
+
 
 
 GO
