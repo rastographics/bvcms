@@ -207,7 +207,6 @@ namespace CmsData
         RecentFirstFamilyVisit,
         RecentFirstTimeGiver,
         RecentFlagAdded,
-        RecentGivingAsPctOfPrevious,
         RecentJoinChurch,
         RecentNewVisitCount,
         RecentNonTaxDedAmount,

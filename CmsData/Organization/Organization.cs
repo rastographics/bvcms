@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CmsData.Codes;
@@ -211,9 +212,9 @@ namespace CmsData
             var time = m.Groups["time"].Value;
             return ParseSchedule(dow, time);
         }
-        public static OrgSchedule ParseSchedule(string dow, string time)
+        public static OrgSchedule ParseSchedule(string dow, string time, int i = 0)
         {
-            var d = new Dictionary<string, int>
+            var d = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
             {
                 { "sun", 0 },
                 { "mon", 1 },
@@ -227,10 +228,18 @@ namespace CmsData
 
             if (!dow.HasValue())
                 dow = "sun";
-            var t = DateTime.Parse(time);
-            var mt = Util.Now.Sunday().AddDays(d[dow.ToLower()]).Add(t.TimeOfDay);
+            dow = dow.Truncate(3);
+            var re = new Regex(@"(?<h>\d+)(?::?)(?<s>\d{2})?\s*(?<a>(?:A|P)M)?", RegexOptions.IgnoreCase);
+            var m = re.Match(time);
+            var h = m.Groups["h"].Value;
+            var s = Util.PickFirst(m.Groups["s"].Value, "00");
+            var a = Util.PickFirst(m.Groups["a"].Value, "AM");
+            var ts = $"{h}:{s} {a}";
+            var t = DateTime.Parse(ts);
+            var mt = Util.Now.Sunday().AddDays(d[dow]).Add(t.TimeOfDay);
             var sc = new OrgSchedule
             {
+                Id = i,
                 SchedDay = d[dow],
                 SchedTime = mt,
                 AttendCreditId = 1
