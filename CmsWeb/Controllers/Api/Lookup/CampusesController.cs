@@ -12,13 +12,12 @@ namespace CmsWeb.Controllers.Api.Lookup
     {
         public CampusesController()
         {
-            Mapper.CreateMap<Campu, ApiCampus>();
+            Mapper.CreateMap<Campu, ApiLookup>();
         }
 
-        [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.Campus.Project().To<ApiCampus>().AsQueryable());
+            return Ok(DbUtil.Db.Campus.Project().To<ApiLookup>().AsQueryable());
         }
     }
 }

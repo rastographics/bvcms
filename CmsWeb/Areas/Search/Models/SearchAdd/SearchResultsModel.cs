@@ -47,33 +47,29 @@ namespace CmsWeb.Areas.Search.Models
         public override IQueryable<Person> DefineModelList()
         {
             var db = DbUtil.Db;
-            IQueryable<Person> q;
-            if (Util2.OrgMembersOnly)
-                q = db.OrgMembersOnlyTag2().People(db);
-            else if (Util2.OrgLeadersOnly)
-                q = db.OrgLeadersOnlyTag2().People(db);
-            else
-                q = db.People.AsQueryable();
+            var q = Util2.OrgLeadersOnly 
+                ? db.OrgLeadersOnlyTag2().People(db) 
+                : db.People.AsQueryable();
 
             if (UsersOnly)
                 q = q.Where(p => p.Users.Any(uu => uu.UserRoles.Any(ur => ur.Role.RoleName == "Access")));
 
             if (Name.HasValue())
             {
-                string First, Last;
-                Util.NameSplit(Name, out First, out Last);
-                if (First.HasValue())
+                string first, last;
+                Util.NameSplit(Name, out first, out last);
+                if (first.HasValue())
                     q = from p in q
-                        where (p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last))
-                              && (p.FirstName.StartsWith(First) || p.NickName.StartsWith(First) || p.MiddleName.StartsWith(First))
+                        where (p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last))
+                              && (p.FirstName.StartsWith(first) || p.NickName.StartsWith(first) || p.MiddleName.StartsWith(first))
                         select p;
-                else if (Last.AllDigits())
+                else if (last.AllDigits())
                     q = from p in q
-                        where p.PeopleId == Last.ToInt()
+                        where p.PeopleId == last.ToInt()
                         select p;
                 else
                     q = from p in q
-                        where p.LastName.StartsWith(Last) || p.MaidenName.StartsWith(Last)
+                        where p.LastName.StartsWith(last) || p.MaidenName.StartsWith(last)
                         select p;
             }
             if (Address.IsNotNull())

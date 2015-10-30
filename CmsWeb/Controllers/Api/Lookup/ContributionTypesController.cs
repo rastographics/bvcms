@@ -12,13 +12,12 @@ namespace CmsWeb.Controllers.Api.Lookup
     {
         public ContributionTypesController()
         {
-            Mapper.CreateMap<ContributionType, ApiContributionType>();
+            Mapper.CreateMap<ContributionType, ApiLookup>();
         }
 
-        [EnableQuery(PageSize = ApiOptions.DefaultPageSize)]
         public IHttpActionResult Get()
         {
-            return Ok(DbUtil.Db.ContributionTypes.Project().To<ApiContributionType>().AsQueryable());
+            return Ok(DbUtil.Db.ContributionTypes.Project().To<ApiLookup>().AsQueryable());
         }
     }
 }

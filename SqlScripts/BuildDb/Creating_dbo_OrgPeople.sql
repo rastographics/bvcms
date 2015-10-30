@@ -58,15 +58,7 @@ RETURN
 		,mi.TaskDelegatedDt
 		,mi.TaskDelegatedId
 		
-	FROM 
-	(
-		SELECT * FROM dbo.OrgPeopleCurrent(@oid) WHERE @grouptype LIKE '%10%' UNION
-		SELECT * FROM dbo.OrgPeopleInactive(@oid) WHERE @grouptype LIKE '%20%' UNION
-		SELECT * FROM dbo.OrgPeopleProspects(@oid, @showhidden) WHERE @grouptype LIKE '%40%' UNION
-		SELECT * FROM dbo.OrgPeoplePending(@oid) WHERE @grouptype LIKE '%30%' UNION
-		SELECT * FROM dbo.OrgPeopleGuests(@oid, @showhidden) WHERE @grouptype LIKE '%60%' UNION
-		SELECT * FROM dbo.OrgPeoplePrevious(@oid) WHERE @grouptype LIKE '%50%'
-	) tt
+	FROM OrgPeople2(@oid, @grouptype, @first, @last, @sgfilter, @showhidden, @currtag, @currtagowner, @filterchecked, @filtertag, @ministryinfo, @userpeopleid) tt
 	JOIN dbo.People p ON p.PeopleId = tt.PeopleId
 	JOIN lookup.MemberStatus ms ON ms.Id = p.MemberStatusId
 	LEFT JOIN dbo.Organizations bfclass ON bfclass.OrganizationId = p.BibleFellowshipClassId
@@ -126,6 +118,8 @@ RETURN
 				) tabt)
 	)
 )
+
+
 
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION

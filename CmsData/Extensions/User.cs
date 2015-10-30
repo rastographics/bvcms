@@ -37,44 +37,6 @@ namespace CmsData
         public static IEnumerable<Role> AllRoles(CMSDataContext Db)
         {
             var roles = Db.Roles.ToList();
-//            var list = new List<string> 
-//            {
-//               "Admin",
-//               "Edit",
-//               "Access",
-//               "Developer",
-//               "ApplicationReview",
-//               "OrgTagger",
-//               "OrgMembersOnly",
-//               "Attendance",
-//               "Finance",
-//               "Membership",
-//               "ManageGroups",
-//               "Coupon",
-//               "Manager",
-//               "OrgLeadersOnly",
-//               "ScheduleEmails",
-//               "ManageTransactions",
-//               "ManageEmails",
-//               "BackgroundCheck",
-//               "CreditCheck",
-//               "Coupon2",
-//               "Manager2",
-//               "ContentEdit",
-//               "Design",
-//            };
-//            var adds = from r in list
-//                       join e in Db.Roles on r equals e.RoleName into j
-//                       from e in j.DefaultIfEmpty()
-//                       where e == null
-//                       select r;
-//            foreach (var r in adds)
-//            {
-//                var role = new Role {Hardwired = true, RoleName = r};
-//                Db.Roles.InsertOnSubmit(role);
-//                Db.SubmitChanges();
-//                roles.Add(role);
-//            }
             return roles.OrderBy(rr => rr.RoleName == "NEW" ? 1 : 0).ThenBy(rr => rr.RoleName);
         }
 

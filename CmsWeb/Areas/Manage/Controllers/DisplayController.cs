@@ -383,11 +383,16 @@ namespace CmsWeb.Areas.Manage.Controllers
                     switch (typ.ToLower())
                     {
                         case "decimal":
-                            s = Convert.ToDecimal(rd[i]).ToString("c");
+                            s = nam.StartsWith("pct") || nam.EndsWith("pct")
+                                ? Convert.ToDecimal(rd[i]).ToString("N1") + "%"
+                                : Convert.ToDecimal(rd[i]).ToString("c");
                             align = "right";
                             break;
                         case "int":
-                            if (nam.EndsWith("id") || nam.EndsWith("id2"))
+                            var ii = rd[i].ToInt();
+                            if (nam.Equal("peopleid"))
+                                s = $"<a href='/Person2/{ii}' target='Person'>{ii}</a>";
+                            else if (nam.EndsWith("id") || nam.EndsWith("id2"))
                                 s = rd[i].ToInt().ToString();
                             else
                             {

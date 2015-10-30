@@ -46,6 +46,9 @@
         ev.preventDefault();
         $.loadTable();
     });
+    $('body').on("click", '#clear', function (ev) {
+        location.reload();
+    });
 
     $('body').on("click", 'a.sortable', function (ev) {
         ev.preventDefault();

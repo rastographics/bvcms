@@ -38,9 +38,7 @@ namespace CmsWeb.Areas.Dialog.Models
             if (people != null)
                 return people;
 
-            if (Util2.OrgMembersOnly)
-                people = DbUtil.Db.OrgMembersOnlyTag2().People(DbUtil.Db);
-            else if (Util2.OrgLeadersOnly)
+            if (Util2.OrgLeadersOnly)
                 people = DbUtil.Db.OrgLeadersOnlyTag2().People(DbUtil.Db);
             else
                 people = DbUtil.Db.People.AsQueryable();

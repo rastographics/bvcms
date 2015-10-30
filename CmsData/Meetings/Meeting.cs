@@ -132,11 +132,11 @@ namespace CmsData
             ev.TransactionTime = DateTime.Now;
         }
 
-        public void RemoveExtraValue(CMSDataContext Db, string field)
+        public void RemoveExtraValue(CMSDataContext db, string field)
         {
             var ev = MeetingExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev != null)
-                Db.MeetingExtras.DeleteOnSubmit(ev);
+                db.MeetingExtras.DeleteOnSubmit(ev);
         }
 
         public void LogExtraValue(string op, string field)

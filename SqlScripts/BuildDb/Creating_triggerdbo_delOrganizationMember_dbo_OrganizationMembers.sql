@@ -13,6 +13,16 @@ BEGIN
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
+	DECLARE 
+		@skipInsertTriggerProcessing BIT
+
+	SELECT
+		@skipInsertTriggerProcessing = SkipInsertTriggerProcessing
+	FROM Inserted
+
+	IF @skipInsertTriggerProcessing = 1
+		RETURN
+
 	UPDATE dbo.Organizations
 	SET MemberCount = dbo.OrganizationMemberCount(OrganizationId),
 		ProspectCount = dbo.OrganizationProspectCount(OrganizationId)

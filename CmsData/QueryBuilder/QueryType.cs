@@ -75,6 +75,7 @@ namespace CmsData
         FirstOrgJoinDate,
         FirstName,
         GenderId,
+        GivingChange,
         Grade,
         Group,
         GuestAsOf,

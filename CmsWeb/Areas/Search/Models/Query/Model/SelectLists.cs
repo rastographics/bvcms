@@ -236,7 +236,7 @@ namespace CmsWeb.Areas.Search.Models
                     where ot.DivId == id
                           && (SqlMethods.DateDiffMonth(ot.Organization.OrganizationClosedDate, Util.Now) < 14
                               || ot.Organization.OrganizationStatusId == 30)
-                    where (Util2.OrgMembersOnly == false && Util2.OrgLeadersOnly == false) || (ot.Organization.SecurityTypeId != 3)
+                    where Util2.OrgLeadersOnly == false || ot.Organization.SecurityTypeId != 3
                     orderby ot.Organization.OrganizationStatusId, ot.Organization.OrganizationName
                     select new SelectListItem
                     {

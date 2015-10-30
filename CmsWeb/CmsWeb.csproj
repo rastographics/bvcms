@@ -119,9 +119,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
-    <Reference Include="EPPlus, Version=4.0.4.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+    <Reference Include="EPPlus, Version=4.0.4.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EPPlus.4.0.4\lib\net20\EPPlus.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Handlebars, Version=1.0.0.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\packages\Handlebars.Net.1.4.4\lib\Handlebars.dll</HintPath>
@@ -592,6 +592,7 @@
     <Compile Include="Code\ReportsMenu.cs" />
     <Compile Include="Code\UserInputException.cs" />
     <Compile Include="Controllers\Api\ApiOptions.cs" />
+    <Compile Include="Controllers\Api\Lookup\BundleHeaderTypesController.cs" />
     <Compile Include="Controllers\Api\OrganizationsController.cs" />
     <Compile Include="Controllers\Api\OrganizationMembersController.cs" />
     <Compile Include="Controllers\Api\Lookup\ContributionTypesController.cs" />
@@ -608,14 +609,9 @@
     <Compile Include="Controllers\ExtraValue\ReportsController.cs" />
     <Compile Include="Controllers\MobileAppMenuController.cs" />
     <Compile Include="Models\Api\ApiOrganization.cs" />
-    <Compile Include="Models\Api\Lookup\ApiContributionType.cs" />
-    <Compile Include="Models\Api\Lookup\ApiGender.cs" />
-    <Compile Include="Models\Api\Lookup\ApiFamilyPosition.cs" />
-    <Compile Include="Models\Api\Lookup\ApiCampus.cs" />
+    <Compile Include="Models\Api\ApiLookup.cs" />
     <Compile Include="Models\Api\ApiContribution.cs" />
     <Compile Include="Models\Api\ApiContributionFund.cs" />
-    <Compile Include="Models\Api\ApiMapName.cs" />
-    <Compile Include="Models\Api\Lookup\ApiMaritalStatus.cs" />
     <Compile Include="Models\Api\ApiPerson.cs" />
     <Compile Include="Models\Api\ApiOrganizationMember.cs" />
     <Compile Include="Models\ExtraValue\EntryModel.cs" />

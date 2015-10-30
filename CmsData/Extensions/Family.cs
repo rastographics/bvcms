@@ -192,11 +192,11 @@ namespace CmsData
             }
             return ev;
         }
-        public void RemoveExtraValue(CMSDataContext Db, string field)
+        public void RemoveExtraValue(CMSDataContext db, string field)
         {
             var ev = FamilyExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
             if (ev != null)
-                Db.FamilyExtras.DeleteOnSubmit(ev);
+                db.FamilyExtras.DeleteOnSubmit(ev);
         }
 
         public void LogExtraValue(string op, string field)

@@ -131,12 +131,6 @@ namespace CmsData
                 return tag;
             }
         }
-        public const string STR_OrgMembersOnly = "OrgMembersOnly";
-        public static bool OrgMembersOnly
-        {
-            get { return (bool)GetSessionObj(STR_OrgMembersOnly, false); }
-            set { SetSessionObj(STR_OrgMembersOnly, value); }
-        }
         public const string STR_OrgLeadersOnly = "OrgLeadersOnly";
         public static bool OrgLeadersOnly
         {
