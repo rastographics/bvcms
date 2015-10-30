@@ -553,9 +553,6 @@
     <GivingChange Title="Giving Change" Type="Number" DisplayAs="GivingChange({0})" QuartersLabel="Days in Period" Params="Quarters">
       Enter a number for the percentage (e.g. -90 for 90% decrease, 100 for 100% increase. Days in Period defaults to 365.
     </GivingChange>
-    <RecentGivingAsPctOfPrevious Title="Recent Giving % of Previous" Type="Number" DisplayAs="RecentGivingAsPctOfPrevious({0})" QuartersLabel="Midway Lookback Days Ago" Params="Quarters">
-      Enter a number for the percentage (without the % sign) and select a Comparison (ex. 120), enter a number of days for the midpoint to look back.
-    </RecentGivingAsPctOfPrevious>
     <RecentHasIndContributions Title="Recent Has Individual Contributions" Type="Bit" DataValueField="IdCode" DisplayAs="RecentHasIndContributions({0})" Params="Days">
       Enter a number of days to look back and specify True or False.
     </RecentHasIndContributions>

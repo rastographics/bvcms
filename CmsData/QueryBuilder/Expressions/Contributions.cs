@@ -577,18 +577,6 @@ namespace CmsData
             Expression expr = Expression.Invoke(pred, parm);
             return expr;
         }
-        internal Expression RecentGivingAsPctOfPrevious()
-        {
-            var days = Quarters.ToInt2() ?? 365;
-            var dt1 = DateTime.Today.AddDays(-days * 2);
-            var dt2 = DateTime.Today.AddDays(-days);
-            var pct = double.Parse(TextValue);
-            var q = db.GivingCurrentPercentOfFormer(dt1, dt2, op == CompareType.Greater ? ">" : "<=", pct);
-            var tag = db.PopulateTemporaryTag(q.Select(pp => pp.Pid));
-            Expression<Func<Person, bool>> pred = p => p.Tags.Any(t => t.Id == tag.Id);
-            Expression expr = Expression.Invoke(pred, parm);
-            return expr;
-        }
         internal Expression RecentFirstTimeGiver()
         {
             var tf = CodeIds == "1";

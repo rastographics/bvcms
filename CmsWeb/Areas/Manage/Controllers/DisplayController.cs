@@ -5,6 +5,7 @@
  * You may obtain a copy of the License at http://bvcms.codeplex.com/license
  */
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
@@ -25,6 +26,7 @@ using System.Threading;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Drawing.Drawing2D;
+using System.Linq;
 using System.Web;
 using Elmah;
 using Encoder = System.Drawing.Imaging.Encoder;
@@ -346,6 +348,7 @@ namespace CmsWeb.Areas.Manage.Controllers
 
         public static HtmlTable HtmlTable(IDataReader rd)
         {
+            var pctnames = new List<string> {"pct", "percent"};
             var t = new HtmlTable();
             t.Attributes.Add("class", "table table-striped");
             var h = new HtmlTableRow();
@@ -383,9 +386,15 @@ namespace CmsWeb.Areas.Manage.Controllers
                     switch (typ.ToLower())
                     {
                         case "decimal":
-                            s = nam.StartsWith("pct") || nam.EndsWith("pct")
+                            s = StartsEndsWith(pctnames, nam)
                                 ? Convert.ToDecimal(rd[i]).ToString("N1") + "%"
                                 : Convert.ToDecimal(rd[i]).ToString("c");
+                            align = "right";
+                            break;
+                        case "float":
+                            s = StartsEndsWith(pctnames, nam)
+                                ? Convert.ToDouble(rd[i]).ToString("N1") + "%"
+                                : Convert.ToDouble(rd[i]).ToString("N1");
                             align = "right";
                             break;
                         case "int":
@@ -421,6 +430,11 @@ namespace CmsWeb.Areas.Manage.Controllers
             tr.Cells.Add(tc);
             t.Rows.Add(tr);
             return t;
+        }
+
+        public static bool StartsEndsWith(List<string> list, string name)
+        {
+            return list.Any(vv => name.StartsWith(vv) || name.EndsWith(vv));
         }
         public override void ExecuteResult(ControllerContext context)
         {

@@ -425,7 +425,7 @@ AND a.PeopleId = {2}
             var ts = TransactionSummary(db);
             if (ts == null)
                 return 0;
-            return (ts.IndPaid ?? 0) - TotalPaid(db);
+            return (ts.IndAmt ?? 0) - TotalPaid(db);
         }
 
         public decimal? AmountPaidTransactions(CMSDataContext db)
