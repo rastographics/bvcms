@@ -212,7 +212,7 @@ namespace CmsData
             var time = m.Groups["time"].Value;
             return ParseSchedule(dow, time);
         }
-        public static OrgSchedule ParseSchedule(string dow, string time, int i = 0)
+        public static OrgSchedule ParseSchedule(string dow, string time, int i = 1)
         {
             var d = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase)
             {
