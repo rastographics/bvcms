@@ -7,7 +7,9 @@ BEGIN
 
     -- Insert statements for procedure here
 	UPDATE dbo.Organizations
-	SET MemberCount = dbo.OrganizationMemberCount(OrganizationId)
+	SET MemberCount = dbo.OrganizationMemberCount(OrganizationId),
+		PrevMemberCount = dbo.OrganizationPrevCount(OrganizationId),
+		ProspectCount = dbo.OrganizationProspectCount(OrganizationId)
 
 	UPDATE dbo.People
 	SET Grade = ISNULL(dbo.SchoolGrade(PeopleId), Grade),
@@ -19,6 +21,7 @@ BEGIN
 	FROM dbo.Organizations o
 
 END
+
 GO
 IF @@ERROR<>0 AND @@TRANCOUNT>0 ROLLBACK TRANSACTION
 GO
