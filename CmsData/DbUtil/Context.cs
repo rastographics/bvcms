@@ -525,11 +525,11 @@ namespace CmsData
             var q = from u in Users
                     where u.UserId == Util.UserId
                     select new
-                           {
-                               u,
-                               roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
-                               roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
-                           };
+                    {
+                        u,
+                        roleids = u.UserRoles.Select(uu => uu.RoleId).ToArray(),
+                        roles = u.UserRoles.Select(uu => uu.Role.RoleName).ToArray(),
+                    };
             var i = q.SingleOrDefault();
             if (i == null)
                 return;
@@ -1188,6 +1188,10 @@ namespace CmsData
             var content = (from c in Contents
                            where c.Name == name
                            where c.TypeID == ContentTypeCode.TypeHtml
+                           select c).FirstOrDefault()
+                       ?? (from c in Contents
+                           where c.Name == name
+                           where c.TypeID == ContentTypeCode.TypeText
                            select c).FirstOrDefault();
             return content;
         }
