@@ -538,7 +538,7 @@ namespace CmsData
                 return "no date";
             dtwanted = dtwanted.Value.Date;
             var c = db.ContentOfTypeHtml(contentName);
-            var a = Regex.Split(c.Body, @"<h1>(?<dt>\d{1,2}(/|-)\d{1,2}(/|-)\d{2,4})=+</h1>", RegexOptions.ExplicitCapture);
+            var a = Regex.Split(c.Body, @"<h1>\s*(?<dt>\d{1,2}(?:/|-)\d{1,2}(?:/|-)\d{2,4})=+\s*</h1>", RegexOptions.ExplicitCapture);
             var i = 0;
             for (; i < a.Length; i++)
             {
