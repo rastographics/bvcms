@@ -1262,7 +1262,7 @@ namespace CmsWeb.Areas.Public.Controllers
 
             if (om != null && !mpjo.join)
             {
-                om.Drop(DbUtil.Db);
+                om.Drop(DbUtil.Db, DateTime.Today);
 
                 DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app");
             }
