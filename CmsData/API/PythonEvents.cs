@@ -734,13 +734,6 @@ namespace CmsData
         }
         private static string ExecutePython(string scriptContent, PythonEvents model)
         {
-            // we could consider only passing in an explicit IPythonApi to the script so that only things defined
-            // on the interface are accessible to the script; however, I'm worried that we may have some scripts
-            // that are using functions not defined on the API docs site (which is what the interface is based on)
-
-            if (scriptContent.StartsWith("@# pyhtml #@"))
-                scriptContent = RunPyHtml(scriptContent, model.pythonPath, model.pyrazorPath);
-
             var engine = Python.CreateEngine();
 
             using (var ms = new MemoryStream())
@@ -776,65 +769,6 @@ namespace CmsData
                     var err = engine.GetService<ExceptionOperations>().FormatException(ex);
                     throw new Exception(err);
                 }
-            }
-        }
-        static string RunPyHtml(string text, string pythonPath, string pyrazorPath)
-        {
-            const string build = @"
-import sys
-sys.path.append('{2}')
-import razorview
-
-text = '''
-{0}
-'''
-
-print '''
-import sys
-sys.path.append('{1}')
-from StringIO import StringIO
-
-class Cgi:
-    def escape(self, t):
-        return (t.replace('&', '&amp;')
-                .replace('<', '&lt;')
-                .replace('>', '&gt;')
-                .replace(""'"", '&#39;')
-                .replace('""', '&quot;')
-        )
-cgi = Cgi()
-
-''' + razorview.RenderCode(text) + '''
-sb = StringIO()
-
-template(None, sb, model)
-print sb.getvalue()
-'''
-";
-            var cmd = string.Format(build, text, Path.Combine(pythonPath, "Lib"), pyrazorPath);
-
-            var start = new ProcessStartInfo();
-            start.FileName = Path.Combine(pythonPath, "python.exe");
-            start.Arguments = "-";
-            start.UseShellExecute = false;
-            start.RedirectStandardInput = true;
-            start.RedirectStandardOutput = true;
-            start.RedirectStandardError = true;
-            using (var process = Process.Start(start))
-            {
-                process.StandardInput.WriteLine(cmd);
-                process.StandardInput.Flush();
-                process.StandardInput.Close();
-                var sb = new StringBuilder();
-                using (StreamReader reader = process.StandardOutput)
-                {
-                    sb.Append(reader.ReadToEnd());
-                }
-                using (StreamReader reader = process.StandardError)
-                {
-                    sb.Append(reader.ReadToEnd());
-                }
-                return sb.ToString();
             }
         }
 
