@@ -71,6 +71,24 @@ namespace CmsWeb.MobileAPI
             this.error = API_ERROR_NONE;
         }
 
+        public string getSourceOS()
+        {
+            switch (device)
+            {
+                case API_DEVICE_ANDROID:
+                {
+                    return "Android";
+                }
+
+                case API_DEVICE_IOS:
+                {
+                    return "iOS";
+                }
+
+                default: return "Unknown";
+            }
+        }
+
         public string getSourceQueryString()
         {
             switch (device)

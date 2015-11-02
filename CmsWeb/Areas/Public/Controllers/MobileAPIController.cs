@@ -1261,7 +1261,11 @@ namespace CmsWeb.Areas.Public.Controllers
                 om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
 
             if (om != null && !mpjo.join)
+            {
                 om.Drop(DbUtil.Db);
+
+                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app");
+            }
 
             DbUtil.Db.SubmitChanges();
 

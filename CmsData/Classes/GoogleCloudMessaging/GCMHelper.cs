@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using UtilityExtensions;
 
 namespace CmsData.Classes.GoogleCloudMessaging
 {
@@ -20,21 +22,61 @@ namespace CmsData.Classes.GoogleCloudMessaging
         {
             if (message.registration_ids.Count == 0) return;
 
-            String json = JsonConvert.SerializeObject(message);
-
             System.Threading.Tasks.Task.Factory.StartNew(() => {
+                string json = JsonConvert.SerializeObject(message);
+                string host = Util.Host;
+
                 Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
                 using (var webClient = new WebClient())
                 {
-                    webClient.Headers.Add("Authorization", "key=" + System.Configuration.ConfigurationManager.AppSettings["GCMKey"]);
+                    webClient.Headers.Add("Authorization", "key=" + ConfigurationManager.AppSettings["GCMKey"]);
                     webClient.Headers.Add("Content-Type", "application/json");
-
                     webClient.Encoding = Encoding.UTF8;
 
                     string results = webClient.UploadString(GCM_URL, json);
 
                     GCMResponse response = JsonConvert.DeserializeObject<GCMResponse>(results);
+
+                    var Db = DbUtil.Create(host);
+
+                    for (int iX = 0; iX < message.registration_ids.Count; iX++)
+                    {
+                        if (response.results.Count > iX)
+                        {
+                            string registrationID = message.registration_ids[iX];
+                            GCMResponseResult result = response.results[iX];
+
+                            if (result.error != null && result.error.Length > 0)
+                            {
+                                switch (result.error)
+                                {
+                                    case "InvalidRegistration":
+                                    case "NotRegistered":
+                                    {
+                                        var record = (from r in Db.MobileAppPushRegistrations
+                                                      where r.RegistrationId == registrationID
+                                                      select r).SingleOrDefault();
+
+                                        if (record != null)
+                                            Db.MobileAppPushRegistrations.DeleteOnSubmit(record);
+
+                                        break;
+                                    }
+                                }
+                            }
+                            else if (result.error != null && result.registration_id.Length > 0)
+                            {
+                                var record = (from r in Db.MobileAppPushRegistrations
+                                              where r.RegistrationId == registrationID
+                                              select r).SingleOrDefault();
+
+                                record.RegistrationId = result.registration_id;
+                            }
+                        }
+                    }
+
+                    Db.SubmitChanges();
                 }
             });
         }
