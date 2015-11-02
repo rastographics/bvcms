@@ -366,6 +366,7 @@
     <Compile Include="API\ApiSessionResult.cs" />
     <Compile Include="API\ApiSessionStatus.cs" />
     <Compile Include="API\CreateExcel.cs" />
+    <Compile Include="API\DynamicData.cs" />
     <Compile Include="API\IPythonApi.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />

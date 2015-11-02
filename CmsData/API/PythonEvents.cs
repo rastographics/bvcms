@@ -21,7 +21,8 @@ namespace CmsData
     public class PythonEvents : IPythonApi
     {
         private CMSDataContext db;
-        public Dictionary<string, string> dictionary { get; set; }
+
+        private Dictionary<string, object> dictionary { get; set; }
         public dynamic instance { get; set; }
         public string pythonPath { get; set; }
         public string pyrazorPath { get; set; }
@@ -58,6 +59,16 @@ namespace CmsData
 
         public PythonEvents(string dbname)
         {
+            dictionary = new Dictionary<string, object>();
+            Data = new DynamicData(dictionary);
+            db = DbUtil.Create(dbname);
+            pythonPath = ConfigurationManager.AppSettings["pythonPath"];
+            pyrazorPath = ConfigurationManager.AppSettings["pyrazorPath"];
+        }
+        public PythonEvents(string dbname, Dictionary<string, object> dict)
+        {
+            dictionary = dict;
+            Data = new DynamicData(dictionary);
             db = DbUtil.Create(dbname);
             pythonPath = ConfigurationManager.AppSettings["pythonPath"];
             pyrazorPath = ConfigurationManager.AppSettings["pyrazorPath"];
@@ -104,9 +115,7 @@ namespace CmsData
         public string CallScript(string scriptname)
         {
             var script = db.ContentOfTypePythonScript(scriptname);
-
-            //db.Log($"CallScript {scriptname}");
-            return ExecutePython(script, new PythonEvents(db.Host));
+            return ExecutePython(script, new PythonEvents(db.Host, dictionary));
         }
 
         public void CreateTask(int forPeopleId, Person p, string description)
@@ -143,19 +152,22 @@ namespace CmsData
         public int DayOfWeek => DateTime.Today.DayOfWeek.ToInt();
         public string ScheduledTime { get; private set; }
         public DateTime DateTime => DateTime.Now;
-        public bool DictionaryIsNotAvailable => dictionary == null;
+        public bool DictionaryIsNotAvailable => false;
+        public dynamic Data { get; }
 
         public string Dictionary(string s)
         {
             if (dictionary != null && dictionary.ContainsKey(s))
-                return dictionary[s];
+                return dictionary[s].ToString();
             return "";
         }
 
+        public bool DataHas(string key)
+        {
+            return dictionary.ContainsKey(key);
+        }
         public void DictionaryAdd(string key, string value)
         {
-            if (dictionary == null)
-                dictionary = new Dictionary<string, string>();
             dictionary.Add(key, value);
         }
 
@@ -544,6 +556,11 @@ namespace CmsData
             var c = db.ContentOfTypeHtml(name);
             return c.Body;
         }
+        public string Content(string name)
+        {
+            var c = db.Content(name);
+            return c.Body;
+        }
         public string Replace(string text, string pattern, string replacement)
         {
             return Regex.Replace(text, pattern, replacement);
@@ -654,11 +671,8 @@ namespace CmsData
         /// </summary>
         public void EmailReport(string savedquery, int queuedBy, string fromaddr, string fromname, string subject, string report, string queryname, string querydescription)
         {
-            dictionary = new Dictionary<string, string>
-            {
-                {"QueryName", queryname},
-                {"QueryDescription", querydescription},
-            };
+            Data.QueryName = queryname;
+            Data.QueryDescription = querydescription;
             EmailReport(savedquery, queuedBy, fromaddr, fromname, subject, report);
         }
 
@@ -689,9 +703,8 @@ namespace CmsData
                 throw new Exception("no sql script found");
 
             var p =new DynamicParameters();
-            if(dictionary != null)
-                foreach (var kv in dictionary)
-                    p.Add("@" + kv.Key, kv.Value);
+            foreach (var kv in dictionary)
+                p.Add("@" + kv.Key, kv.Value);
             if (script.Contains("@qtagid"))
             {
                 int? qtagid = null;
@@ -754,7 +767,8 @@ namespace CmsData
 
                     using (var sr = new StreamReader(ms))
                     {
-                        return sr.ReadToEnd();
+                        var s = sr.ReadToEnd();
+                        return s;
                     }
                 }
                 catch (Exception ex)
@@ -824,9 +838,12 @@ print sb.getvalue()
             }
         }
 
+        public string RenderTemplate(string source)
+        {
+            return RenderTemplate(source, Data);
+        }
         public string RenderTemplate(string source, object data)
         {
-            //db.Log("RenderTemplate");
             CssStyle.RegisterHelpers(db);
             var template = Handlebars.Compile(source);
             var result = template(data);
