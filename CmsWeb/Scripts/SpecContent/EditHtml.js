@@ -29,18 +29,4 @@
         });
 
     });
-    CKEDITOR.on( 'instanceReady', function( ev )
-    {
-    	var writer = ev.editor.dataProcessor.writer; 	
-     	var dtd = CKEDITOR.dtd;	
-    	for ( var e in CKEDITOR.tools.extend( {}, dtd.$block, dtd.$inline ) )
-    	{
-    		ev.editor.dataProcessor.writer.setRules( e, {					
-    			breakBeforeOpen : true,		
-    			breakAfterOpen : true,
-    			breakAfterClose : false,
-    			breakBeforeClose : true
-    		});
-    	}
-    });
 });
