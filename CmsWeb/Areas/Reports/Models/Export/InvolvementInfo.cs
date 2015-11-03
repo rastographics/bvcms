@@ -11,146 +11,81 @@ namespace CmsWeb.Models
             get
             {
                 var sb = new StringBuilder();
-                sb.AppendFormat("<strong>{0}</strong><br/>", _Name);
-                if (_Addr.HasValue())
-                    sb.AppendFormat("{0}<br/>", _Addr);
-                if (_Addr2.HasValue())
-                    sb.AppendFormat("{0}<br/>", _Addr2);
-                if (_City.HasValue())
-                    sb.AppendFormat("{0}, ", _City);
-                if (_State.HasValue())
-                    sb.AppendFormat("{0} ", _State);
+                sb.AppendFormat("{0}\n", Name);
+                if (Addr.HasValue())
+                    sb.AppendFormat("{0}\n", Addr);
+                if (Addr2.HasValue())
+                    sb.AppendFormat("{0}\n", Addr2);
+                if (City.HasValue())
+                    sb.AppendFormat("{0}, ", City);
+                if (State.HasValue())
+                    sb.AppendFormat("{0} ", State);
                 if (Zip.HasValue())
-                    sb.AppendFormat("{0}<br/>", Zip);
-                if (_HomePhone.HasValue())
-                    sb.AppendFormat("H {0}<br/>", _HomePhone.FmtFone());
-                if (_WorkPhone.HasValue())
-                    sb.AppendFormat("W {0}<br/>", _WorkPhone.FmtFone());
-                if (_CellPhone.HasValue())
-                    sb.AppendFormat("C {0}<br/>", _CellPhone.FmtFone());
-                if (_Email.HasValue())
-                    sb.AppendFormat("{0}<br/>", _Email);
-                sb.Append("ID# " + _PeopleId);
+                    sb.AppendFormat("{0}\n", Zip);
+                if (HomePhone.HasValue())
+                    sb.AppendFormat("H {0}\n", HomePhone.FmtFone());
+                if (WorkPhone.HasValue())
+                    sb.AppendFormat("W {0}\n", WorkPhone.FmtFone());
+                if (CellPhone.HasValue())
+                    sb.AppendFormat("C {0}\n", CellPhone.FmtFone());
+                if (Email.HasValue())
+                    sb.AppendFormat("{0}\n", Email);
+                sb.Append("ID# " + PeopleId);
                 return sb.ToString();
             }
         }
-        private string _Name;
-        public string Name
-        {
-            set { _Name = value; }
-        }
-        private string _Addr;
-        public string Addr
-        {
-            set { _Addr = value; }
-        }
-        private string _Addr2;
-        public string Addr2
-        {
-            set
-            {
-                if (_Addr2 == value)
-                    return;
-                _Addr2 = value;
-            }
-        }
-        private string _City;
-        public string City
-        {
-            set { _City = value; }
-        }
-        private string _State;
-        public string State
-        {
-            set { _State = value; }
-        }
+
+        public string Name { get; set; }
+        public string Addr { get; set; }
+        public string Addr2 { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
         public string Zip { get; set; }
-        private string _HomePhone;
-        public string HomePhone
-        {
-            set { _HomePhone = value; }
-        }
-        private string _WorkPhone;
-        public string WorkPhone
-        {
-            set { _WorkPhone = value; }
-        }
-        private string _CellPhone;
-        public string CellPhone
-        {
-            set { _CellPhone = value; }
-        }
-        private string _Email;
-        public string Email
-        {
-            set { _Email = value; }
-        }
-        private int _PeopleId;
-        public int PeopleId
-        {
-            set { _PeopleId = value; }
-        }
+        public string HomePhone { get; set; }
+        public string WorkPhone { get; set; }
+        public string CellPhone { get; set; }
+        public string Email { get; set; }
+        public int PeopleId { get; set; }
 
         public string BfcClasses
         {
             get
             {
-                if (!_OrgName.HasValue())
+                if (!OrgName.HasValue())
                     return "";
-                var s = $"{_DivName}, {_OrgName}, {_Teacher}, {_MemberType}";
-                if (_AttendPct.HasValue)
-                    s += $", {_AttendPct.Value:n1}%";
+                var s = $"{DivName}, {OrgName}, {Teacher}, {MemberType}";
+                if (AttendPct.HasValue)
+                    s += $", {AttendPct.Value:n1}%";
                 return s;
             }
         }
-        private string _DivName;
-        public string DivName
-        {
-            set { _DivName = value; }
-        }
-        private string _OrgName;
-        public string OrgName
-        {
-            set { _OrgName = value; }
-        }
-        private string _Teacher;
-        public string Teacher
-        {
-            set { _Teacher = value; }
-        }
-        private string _MemberType;
-        public string MemberType
-        {
-            set { _MemberType = value; }
-        }
-        private decimal? _AttendPct;
-        public decimal? AttendPct
-        {
-            set { _AttendPct = value; }
-        }
+
+        public string DivName { get; set; }
+        public string OrgName { get; set; }
+        public string Teacher { get; set; }
+        public string MemberType { get; set; }
+        public decimal? AttendPct { get; set; }
 
 
         public string Spouse { get; set; }
         public int Age { get; set; }
         public string JoinInfo { get; set; }
-        private IEnumerable<ExportInvolvements.ActivityInfo> _Activities;
-        public IEnumerable<ExportInvolvements.ActivityInfo> activities
-        {
-            set { _Activities = value; }
-        }
 
-        public string Activities
+        // ReSharper disable once InconsistentNaming
+        internal IEnumerable<ExportInvolvements.ActivityInfo> activities;
+
+        public string ActivityInfo
         {
             get
             {
                 var sb = new StringBuilder();
-                foreach (var o in _Activities)
+                foreach (var o in activities)
                 {
 
                     sb.AppendFormat("{0} - {1}", o.Name, o.Leader);
                     if (o.Pct.HasValue)
                         sb.AppendFormat(", {0:n1}%", o.Pct.Value);
-                    sb.Append("<br/>");
+                    sb.Append("\n");
                 }
                 return sb.ToString();
             }
