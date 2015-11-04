@@ -217,6 +217,7 @@ namespace CmsData.Codes
         public const int Complete = 40;
         public const int Pending = 50;
         public const int Redelegated = 60;
+        public const int Declined = 70;
     }
     public class ContactTypeCode
     {

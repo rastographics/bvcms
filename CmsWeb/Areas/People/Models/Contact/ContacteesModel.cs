@@ -84,6 +84,7 @@ namespace CmsWeb.Areas.People.Models
                 ListId = TaskModel.InBoxId(uid),
                 StatusId = TaskStatusCode.Active,
                 Project = Contact.MinistryId == null ? null : Contact.Ministry.MinistryName,
+                ForceCompleteWContact = true
             };
             DbUtil.Db.Tasks.InsertOnSubmit(task);
             DbUtil.Db.SubmitChanges();

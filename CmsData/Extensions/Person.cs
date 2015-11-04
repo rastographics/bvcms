@@ -16,6 +16,7 @@ using System.Web;
 using CmsData.Codes;
 using ImageData;
 using UtilityExtensions;
+using CmsData.Classes.GoogleCloudMessaging;
 
 namespace CmsData
 {
@@ -254,7 +255,7 @@ namespace CmsData
             foreach (var e in this.PeopleExtras)
             {
                 var field = e.Field;
-            FindExisting:
+                FindExisting:
                 var cp = db.PeopleExtras.FirstOrDefault(c2 => c2.PeopleId == targetid && c2.Field == field);
                 if (cp != null)
                 {
@@ -262,16 +263,16 @@ namespace CmsData
                     goto FindExisting;
                 }
                 var e2 = new PeopleExtra
-                             {
-                                 PeopleId = targetid,
-                                 Field = field,
-                                 Data = e.Data,
-                                 StrValue = e.StrValue,
-                                 DateValue = e.DateValue,
-                                 IntValue = e.IntValue,
-                                 IntValue2 = e.IntValue2,
-                                 TransactionTime = e.TransactionTime
-                             };
+                {
+                    PeopleId = targetid,
+                    Field = field,
+                    Data = e.Data,
+                    StrValue = e.StrValue,
+                    DateValue = e.DateValue,
+                    IntValue = e.IntValue,
+                    IntValue2 = e.IntValue2,
+                    TransactionTime = e.TransactionTime
+                };
                 db.PeopleExtras.InsertOnSubmit(e2);
                 TrySubmit(db, $"ExtraValues (pid={e2.PeopleId},field={e2.Field})");
             }
@@ -327,30 +328,30 @@ namespace CmsData
                 if (v != null)
                 {
                     db.ManagedGivings.InsertOnSubmit(new ManagedGiving()
-                                {
-                                    Day1 = v.Day1,
-                                    Day2 = v.Day2,
-                                    EveryN = v.EveryN,
-                                    NextDate = v.NextDate,
-                                    PeopleId = targetid,
-                                    Period = v.Period,
-                                    SemiEvery = v.SemiEvery,
-                                    StartWhen = v.StartWhen,
-                                    StopAfter = v.StopAfter,
-                                    StopWhen = v.StopWhen,
-                                    Type = v.Type,
-                                });
+                    {
+                        Day1 = v.Day1,
+                        Day2 = v.Day2,
+                        EveryN = v.EveryN,
+                        NextDate = v.NextDate,
+                        PeopleId = targetid,
+                        Period = v.Period,
+                        SemiEvery = v.SemiEvery,
+                        StartWhen = v.StartWhen,
+                        StopAfter = v.StopAfter,
+                        StopWhen = v.StopWhen,
+                        Type = v.Type,
+                    });
                     var qq = from ra in db.RecurringAmounts
                              where ra.PeopleId == PeopleId
                              select ra;
                     foreach (var ra in qq)
                         db.RecurringAmounts.InsertOnSubmit(
                             new RecurringAmount()
-                                {
-                                    PeopleId = targetid,
-                                    Amt = ra.Amt,
-                                    FundId = ra.FundId,
-                                });
+                            {
+                                PeopleId = targetid,
+                                Amt = ra.Amt,
+                                FundId = ra.FundId,
+                            });
                 }
                 TrySubmit(db, "ManagedGivings");
             }
@@ -360,35 +361,35 @@ namespace CmsData
                 foreach (var i in PaymentInfos)
                     DbUtil.Db.PaymentInfos.InsertOnSubmit(
                         new PaymentInfo
-                            {
-                                Address = i.Address,
-                                Address2 = i.Address2,
-                                AuNetCustId = i.AuNetCustId,
-                                AuNetCustPayId = i.AuNetCustPayId,
-                                AuNetCustPayBankId = i.AuNetCustPayBankId,
-                                BluePayCardVaultId = i.BluePayCardVaultId,
-                                City = i.City,
-                                Country = i.Country,
-                                Expires = i.Expires,
-                                FirstName = i.FirstName,
-                                LastName = i.LastName,
-                                MaskedAccount = i.MaskedAccount,
-                                MaskedCard = i.MaskedCard,
-                                MiddleInitial = i.MiddleInitial,
-                                PeopleId = targetid,
-                                Phone = i.Phone,
-                                PreferredGivingType = i.PreferredGivingType,
-                                PreferredPaymentType = i.PreferredPaymentType,
-                                Routing = i.Routing,
-                                SageBankGuid = i.SageBankGuid,
-                                SageCardGuid = i.SageCardGuid,
-                                State = i.State,
-                                Suffix = i.Suffix,
-                                Testing = i.Testing,
-                                Zip = i.Zip,
-                                TbnBankVaultId = i.TbnBankVaultId,
-                                TbnCardVaultId = i.TbnCardVaultId
-                            });
+                        {
+                            Address = i.Address,
+                            Address2 = i.Address2,
+                            AuNetCustId = i.AuNetCustId,
+                            AuNetCustPayId = i.AuNetCustPayId,
+                            AuNetCustPayBankId = i.AuNetCustPayBankId,
+                            BluePayCardVaultId = i.BluePayCardVaultId,
+                            City = i.City,
+                            Country = i.Country,
+                            Expires = i.Expires,
+                            FirstName = i.FirstName,
+                            LastName = i.LastName,
+                            MaskedAccount = i.MaskedAccount,
+                            MaskedCard = i.MaskedCard,
+                            MiddleInitial = i.MiddleInitial,
+                            PeopleId = targetid,
+                            Phone = i.Phone,
+                            PreferredGivingType = i.PreferredGivingType,
+                            PreferredPaymentType = i.PreferredPaymentType,
+                            Routing = i.Routing,
+                            SageBankGuid = i.SageBankGuid,
+                            SageCardGuid = i.SageCardGuid,
+                            State = i.State,
+                            Suffix = i.Suffix,
+                            Testing = i.Testing,
+                            Zip = i.Zip,
+                            TbnBankVaultId = i.TbnBankVaultId,
+                            TbnCardVaultId = i.TbnCardVaultId
+                        });
             TrySubmit(db, "PaymentInfos");
 
             foreach (var bc in this.BackgroundChecks)
@@ -532,7 +533,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (p.GetAge() < 18 && MarriedCode == 0)
                     p.MaritalStatusId = MaritalStatusCode.Single;
             }
-                // I think this else statement is no longer necessary
+            // I think this else statement is no longer necessary
             else if (DateTime.TryParse(dob, out dt))
             {
                 p.BirthDay = dt.Day;
@@ -563,7 +564,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.OriginId = originId;
             p.EntryPointId = EntryPointId;
             p.FixTitle();
-            if(Db.Setting("ElectronicStatementDefault", "false").Equal("true"))
+            if (Db.Setting("ElectronicStatementDefault", "false").Equal("true"))
                 p.ElectronicStatement = true;
             if (!testing)
                 Db.SubmitChanges();
@@ -636,20 +637,20 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                                 || ((firstmatch && lastmatch && bdmatchpart))
                         where p.PeopleId != PeopleId
                         select new Duplicate
-                                                {
-                                                    PeopleId = p.PeopleId,
-                                                    First = p.FirstName,
-                                                    Last = p.LastName,
-                                                    Nick = p.NickName,
-                                                    Middle = p.MiddleName,
-                                                    BMon = p.BirthMonth,
-                                                    BDay = p.BirthDay,
-                                                    BYear = p.BirthYear,
-                                                    Email = p.EmailAddress,
-                                                    FamAddr = p.Family.AddressLineOne,
-                                                    PerAddr = p.AddressLineOne,
-                                                    Member = p.MemberStatus.Description
-                                                };
+                        {
+                            PeopleId = p.PeopleId,
+                            First = p.FirstName,
+                            Last = p.LastName,
+                            Nick = p.NickName,
+                            Middle = p.MiddleName,
+                            BMon = p.BirthMonth,
+                            BDay = p.BirthDay,
+                            BYear = p.BirthYear,
+                            Email = p.EmailAddress,
+                            FamAddr = p.Family.AddressLineOne,
+                            PerAddr = p.AddressLineOne,
+                            Member = p.MemberStatus.Description
+                        };
                 var list = q.ToList();
                 return list;
             }
@@ -780,7 +781,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 if (la[0].StartsWith("#"))
                     la.RemoveAt(0);
                 var apt = new string[] { "APARTMENT", "APT", "BUILDING", "BLDG", "DEPARTMENT", "DEPT", "FLOOR", "FL", "HANGAR", "HNGR", "LOT", "LOT", "PIER", "PIER", "ROOM", "RM", "SLIP", "SLIP", "SPACE", "SPC", "STOP", "STOP", "SUITE", "STE", "TRAILER", "TRLR", "UNIT", "UNIT", "UPPER", "UPPR",
-        	                    "BASEMENT","BSMT", "FRONT","FRNT", "LOBBY","LBBY", "LOWER","LOWR", "OFFICE","OFC", "PENTHOUSE","PH", "REAR", "SIDE" };
+                                "BASEMENT","BSMT", "FRONT","FRNT", "LOBBY","LBBY", "LOWER","LOWR", "OFFICE","OFC", "PENTHOUSE","PH", "REAR", "SIDE" };
                 if (apt.Contains(la[0].ToUpper()))
                     la.RemoveAt(0);
                 if (db.StreetTypes.Any(t => t.Type == la[0]))
@@ -961,10 +962,10 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 {
                     var sameperson = Util.UserPeopleId == PeopleId;
                     var infinance = HttpContext.Current.User.IsInRole("Finance")
-                                    && ((string) HttpContext.Current.Session["testnofinance"]) != "true";
+                                    && ((string)HttpContext.Current.Session["testnofinance"]) != "true";
                     var ishead = (new int?[] {
                         Family.HeadOfHouseholdId,
-                        Family.HeadOfHouseholdSpouseId } )
+                        Family.HeadOfHouseholdSpouseId })
                         .Contains(Util.UserPeopleId);
                     canUserSeeGiving = sameperson || infinance || ishead;
                 }
@@ -1303,8 +1304,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     var next = DateTime.Parse(now.ToShortDateString() + " " + a[1]);
                     var dow = Enum.Parse(typeof(DayOfWeek), a[0], ignoreCase: true);
                     next = next.Sunday().Add(next.TimeOfDay).AddDays(dow.ToInt());
-                    if(now > next)
-                    	next = next.AddDays(7);
+                    if (now > next)
+                        next = next.AddDays(7);
                     var prev = next.AddDays(-7);
                     var bid = BundleTypeCode.MissionTrip == typecode
                         ? Db.GetCurrentMissionTripBundle(next, prev)
@@ -1316,7 +1317,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     spec = "";
                 }
             }
-            if(!Util.HasValue(spec))
+            if (!Util.HasValue(spec))
             {
                 var nextd = d.AddDays(1);
                 var bid = BundleTypeCode.MissionTrip == typecode
@@ -1345,11 +1346,11 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             if (!Fund.HasValue)
                 Fund = Db.Setting("DefaultFundId", "1").ToInt();
             var fundtouse = (from f in Db.ContributionFunds
-                where f.FundId == Fund
-                select f).SingleOrDefault();
+                             where f.FundId == Fund
+                             select f).SingleOrDefault();
 
             //failsafe if fund is not found
-            if(fundtouse == null)
+            if (fundtouse == null)
                 Fund = (from f in Db.ContributionFunds
                         where f.FundStatusId == 1
                         orderby f.FundId
@@ -1391,7 +1392,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             };
             bundle.BundleDetails.Add(bd);
             Db.SubmitChanges();
-            if(fundtouse == null)
+            if (fundtouse == null)
                 Db.LogActivity($"FundNotFound Used fund #{Fund} on contribution #{bd.ContributionId}");
             return bd.Contribution;
         }
@@ -1499,6 +1500,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 StatusId = TaskStatusCode.Active,
             };
             TasksAboutPerson.Add(t);
+
+            GCMHelper.sendRefresh(AssignTo, GCMHelper.ACTION_REFRESH);
+
             return t;
         }
         public void UpdatePosition(CMSDataContext db, int value)
@@ -1573,22 +1577,22 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 case "image/pjpeg":
                 case "image/gif":
                 case "image/png":
-                    mdf.IsDocument = false;
-                    mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
-                    mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
-                    mdf.LargeId = Image.NewImageFromBits(bits).Id;
-                    break;
+                mdf.IsDocument = false;
+                mdf.SmallId = Image.NewImageFromBits(bits, 165, 220).Id;
+                mdf.MediumId = Image.NewImageFromBits(bits, 675, 900).Id;
+                mdf.LargeId = Image.NewImageFromBits(bits).Id;
+                break;
                 case "text/plain":
                 case "application/pdf":
                 case "application/msword":
                 case "application/vnd.ms-excel":
-                    mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
-                    mdf.SmallId = mdf.MediumId;
-                    mdf.LargeId = mdf.MediumId;
-                    mdf.IsDocument = true;
-                    break;
+                mdf.MediumId = Image.NewImageFromBits(bits, mimetype).Id;
+                mdf.SmallId = mdf.MediumId;
+                mdf.LargeId = mdf.MediumId;
+                mdf.IsDocument = true;
+                break;
                 default:
-                    throw new FormatException("file type not supported: " + mimetype);
+                throw new FormatException("file type not supported: " + mimetype);
             }
             db.SubmitChanges();
         }

@@ -12,6 +12,8 @@ using CmsWeb.Models;
 using CmsWeb.Models.iPhone;
 using ImageData;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System.IO;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
 using System.IO;
@@ -45,17 +47,20 @@ namespace CmsWeb.Areas.Public.Controllers
         [HttpPost]
         public ActionResult Authenticate(string data)
         {
-            //DbUtil.LogActivity("calling authenticateuser");
+            var dataIn = BaseMessage.createFromString(data);
+
             var result = AuthenticateUser(requirePin: true);
 
             if (!result.IsValid)
                 return AuthorizationError(result);
 
+            savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
+
             MobileSettings ms = getUserInfo();
 
             var br = new BaseMessage();
-            br.error = 0;
-            br.data = JsonConvert.SerializeObject(ms);
+            br.setNoError();
+            br.data = SerializeJSON(ms, dataIn.version);
             br.token = result.User.ApiSessions.Single().SessionToken.ToString();
             return br;
         }
@@ -69,7 +74,7 @@ namespace CmsWeb.Areas.Public.Controllers
                 return AuthorizationError(result);
 
             var br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
@@ -85,13 +90,15 @@ namespace CmsWeb.Areas.Public.Controllers
             Session.Abandon();
 
             var br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             return br;
         }
 
         [HttpPost]
         public ActionResult ResetSessionToken(string data)
         {
+            var dataIn = BaseMessage.createFromString(data);
+
             var sessionToken = Request.Headers["SessionToken"];
             if (string.IsNullOrEmpty(sessionToken))
                 return BaseMessage.createErrorReturn("SessionToken header is required.", BaseMessage.API_ERROR_IMPROPER_HEADER_STRUCTURE);
@@ -116,24 +123,37 @@ namespace CmsWeb.Areas.Public.Controllers
 
             AuthenticateUser(requirePin: true);
 
+            savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
+
             MobileSettings ms = getUserInfo();
 
             var br = new BaseMessage();
-            br.error = 0;
-            br.data = JsonConvert.SerializeObject(ms);
+            br.setNoError();
+            br.data = SerializeJSON(ms, dataIn.version);
             return br;
         }
 
         [HttpPost]
         public ActionResult GivingLink(string data)
         {
+            var dataIn = BaseMessage.createFromString(data);
+
             var givingOrgId = DbUtil.Db.Organizations
                  .Where(o => o.RegistrationTypeId == RegistrationTypeCode.OnlineGiving)
                  .Select(x => x.OrganizationId).FirstOrDefault();
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/" + givingOrgId;
-            br.error = 0;
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/{givingOrgId}?{dataIn.getSourceQueryString()}");
+            }
+            else
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/{givingOrgId}");
+            }
+
+            br.setNoError();
             return br;
         }
 
@@ -156,8 +176,17 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             //          DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
-            br.error = 0;
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
+            }
+            else
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
+            }
+
+            br.setNoError();
             return br;
         }
 
@@ -166,6 +195,8 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
         {
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
+
+            var dataIn = BaseMessage.createFromString(data);
 
             var managedGivingOrgId = DbUtil.Db.Organizations
                  .Where(o => o.RegistrationTypeId == RegistrationTypeCode.ManageGiving)
@@ -178,8 +209,17 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
-            br.error = 0;
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
+            }
+            else
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
+            }
+
+            br.setNoError();
             return br;
         }
 
@@ -199,8 +239,17 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + "OnlineReg/RegisterLink/" + ot.Id.ToCode();
-            br.error = 0;
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?{dataIn.getSourceQueryString()}");
+            }
+            else
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}");
+            }
+
+            br.setNoError();
             return br;
         }
 
@@ -220,8 +269,17 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             //			DbUtil.LogActivity($"APIPerson GetOneTimeRegisterLink2 {OrgId}, {PeopleId}");
 
             var br = new BaseMessage();
-            br.data = Util.CmsHost2 + $"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true";
-            br.error = 0;
+
+            if (dataIn.version >= BaseMessage.API_VERSION_3)
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true&{dataIn.getSourceQueryString()}");
+            }
+            else
+            {
+                br.data = DbUtil.Db.ServerLink($"OnlineReg/RegisterLink/{ot.Id.ToCode()}?showfamily=true");
+            }
+
+            br.setNoError();
             return br;
         }
 
@@ -242,6 +300,92 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             return ms;
         }
 
+        private void savePushID(int peopleID, int device, string pushID)
+        {
+            if (pushID == null || pushID.Length == 0 || peopleID == 0) return;
+
+            var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
+                                where e.RegistrationId == pushID
+                                select e).FirstOrDefault();
+
+            if (registration == null)
+            {
+                MobileAppPushRegistration register = new MobileAppPushRegistration();
+                register.Enabled = true;
+                register.PeopleId = peopleID;
+                register.Type = device;
+                register.RegistrationId = pushID;
+
+                DbUtil.Db.MobileAppPushRegistrations.InsertOnSubmit(register);
+            }
+            else
+            {
+                registration.PeopleId = peopleID;
+            }
+
+            DbUtil.Db.SubmitChanges();
+        }
+
+        private bool enablePushID(string pushID, bool enabled)
+        {
+            var registration = (from e in DbUtil.Db.MobileAppPushRegistrations
+                                where e.RegistrationId == pushID
+                                select e).FirstOrDefault();
+
+            if (registration != null)
+            {
+                registration.Enabled = true;
+                DbUtil.Db.SubmitChanges();
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        [HttpPost]
+        public ActionResult RegisterPushID(string data)
+        {
+            // Authenticate first
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+            BaseMessage br = new BaseMessage();
+
+            switch (dataIn.argInt)
+            {
+                case 1: // Add
+                {
+                    savePushID(Util.UserPeopleId ?? 0, dataIn.device, dataIn.key);
+                    br.setNoError();
+                    break;
+                }
+
+                case 2: // Enable - May not be used
+                {
+                    if (enablePushID(dataIn.key, true))
+                        br.setNoError();
+
+                    break;
+                }
+
+                case 3: // Disable - May not be used
+                {
+                    if (enablePushID(dataIn.key, false))
+                        br.setNoError();
+
+                    break;
+                }
+
+                default: break;
+            }
+
+            return br;
+        }
+
         [HttpPost]
         public ActionResult FetchPeople(string data)
         {
@@ -256,7 +400,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var m = new SearchModel(mps.name, mps.comm, mps.addr);
 
-            br.error = 0;
+            br.setNoError();
             br.count = m.Count;
 
             switch (dataIn.device)
@@ -273,7 +417,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                             mpl.Add(mp.id, mp);
                         }
 
-                        br.data = JsonConvert.SerializeObject(mpl);
+                    br.data = SerializeJSON(mpl, dataIn.version);
                         break;
                     }
 
@@ -286,10 +430,11 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                             mp.Add(new MobilePerson().populate(item));
                         }
 
-                        br.data = JsonConvert.SerializeObject(mp);
+                    br.data = SerializeJSON(mp, dataIn.version);
                         break;
                     }
             }
+
             return br;
         }
 
@@ -321,6 +466,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 categories.Add("selected", val);
             return Json(categories);
         }
+
         private List<MobileRegistrationCategory> GetRegistrations()
         {
             var registrations = (from o in DbUtil.Db.ViewAppRegistrations
@@ -383,13 +529,15 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
         public ActionResult FetchRegistrations(string data)
         {
+            var dataIn = BaseMessage.createFromString(data);
+
             // Authenticate first
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
             var br = new BaseMessage();
-            br.error = 0;
-            br.data = JsonConvert.SerializeObject(GetRegistrations());
+            br.setNoError();
+            br.data = SerializeJSON(GetRegistrations(), dataIn.version);
             return br;
         }
 
@@ -409,23 +557,23 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             if (person == null)
             {
-                br.error = 1;
+                br.setError(BaseMessage.API_ERROR_PERSON_NOT_FOUND);
                 br.data = "Person not found.";
                 return br;
             }
 
-            br.error = 0;
+            br.setNoError();
             br.count = 1;
 
             if (dataIn.device == BaseMessage.API_DEVICE_ANDROID)
             {
-                br.data = JsonConvert.SerializeObject(new MobilePerson().populate(person));
+                br.data = SerializeJSON(new MobilePerson().populate(person), dataIn.version);
             }
             else
             {
                 List<MobilePerson> mp = new List<MobilePerson>();
                 mp.Add(new MobilePerson().populate(person));
-                br.data = JsonConvert.SerializeObject(mp);
+                br.data = SerializeJSON(mp, dataIn.version);
             }
 
             return br;
@@ -476,7 +624,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 {
                     br.data = Convert.ToBase64String(image.Bits);
                     br.count = 1;
-                    br.error = 0;
+                    br.setNoError();
                 }
             }
 
@@ -532,10 +680,175 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             DbUtil.Db.SubmitChanges();
 
-            br.error = 0;
+            br.setNoError();
             br.data = "Image updated.";
             br.id = mpsi.id;
             br.count = 1;
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult FetchTasks(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var tasks = from t in DbUtil.Db.ViewIncompleteTasks
+                        orderby t.CreatedOn, t.StatusId, t.OwnerId, t.CoOwnerId
+                        where t.OwnerId == Util.UserPeopleId || t.CoOwnerId == Util.UserPeopleId
+                        select t;
+
+            var complete = (from c in DbUtil.Db.Tasks
+                            where c.StatusId == TaskStatusCode.Complete
+                            where c.OwnerId == Util.UserPeopleId || c.CoOwnerId == Util.UserPeopleId
+                            orderby c.CreatedOn descending
+                            select c).Take(20);
+
+            BaseMessage br = new BaseMessage();
+
+            switch (dataIn.device)
+            {
+                case BaseMessage.API_DEVICE_ANDROID:
+                {
+                    Dictionary<int, MobileTask> taskList = new Dictionary<int, MobileTask>();
+
+                    foreach (var item in tasks)
+                    {
+                        MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                        taskList.Add(task.id, task);
+                    }
+
+                    foreach (var item in complete)
+                    {
+                        MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                        taskList.Add(task.id, task);
+                    }
+
+                    br.data = SerializeJSON(taskList, dataIn.version);
+                    break;
+                }
+
+                case BaseMessage.API_DEVICE_IOS:
+                {
+                    List<MobileTask> taskList = new List<MobileTask>();
+
+                    foreach (var item in tasks)
+                    {
+                        MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                        taskList.Add(task);
+                    }
+
+                    foreach (var item in complete)
+                    {
+                        MobileTask task = new MobileTask().populate(item, Util.UserPeopleId ?? 0);
+                        taskList.Add(task);
+                    }
+
+                    br.data = SerializeJSON(taskList, dataIn.version);
+                    break;
+                }
+            }
+
+            br.count = tasks.Count();
+            br.setNoError();
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult AcceptTask(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var task = new TaskModel();
+            task.AcceptTask(dataIn.argInt);
+
+            BaseMessage br = new BaseMessage();
+            br.count = 1;
+            br.setNoError();
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult DeclineTask(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var task = new TaskModel();
+            task.DeclineTask(dataIn.argInt, dataIn.argString);
+
+            BaseMessage br = new BaseMessage();
+            br.count = 1;
+            br.setNoError();
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult CompleteTask(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var task = new TaskModel();
+            task.CompleteTask(dataIn.argInt);
+
+            BaseMessage br = new BaseMessage();
+            br.count = 1;
+            br.setNoError();
+
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult FetchCompleteWithContactLink(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var tasks = new TaskModel();
+            var contactid = tasks.AddCompletedContact(dataIn.argInt);
+
+            BaseMessage br = new BaseMessage();
+            br.data = GetOneTimeLoginLink($"/Contact2/{contactid}?edit=true&{dataIn.getSourceQueryString()}", Util.UserName);
+            br.count = 1;
+            br.setNoError();
+            return br;
+        }
+
+        [HttpPost]
+        public ActionResult FetchCompletedContactLink(string data)
+        {
+            var result = AuthenticateUser();
+            if (!result.IsValid) return AuthorizationError(result);
+
+            BaseMessage dataIn = BaseMessage.createFromString(data);
+
+            var task = (from t in DbUtil.Db.Tasks
+                        where t.Id == dataIn.argInt
+                        select t).SingleOrDefault();
+
+            BaseMessage br = new BaseMessage();
+
+            if (task != null && task.CompletedContactId != null)
+            {
+                br.data = GetOneTimeLoginLink($"/Contact2/{task.CompletedContactId}?{dataIn.getSourceQueryString()}", Util.UserName);
+                br.count = 1;
+                br.setNoError();
+            }
 
             return br;
         }
@@ -586,20 +899,23 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             var orgs = from o in q
                        //let sc = o.OrgSchedules.FirstOrDefault() // SCHED
-                       join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                           //join sch in DbUtil.Db.OrgSchedules on o.OrganizationId equals sch.OrganizationId
+                       from sch in DbUtil.Db.OrgSchedules.Where(s => o.OrganizationId == s.OrganizationId).DefaultIfEmpty()
+                       from mtg in DbUtil.Db.Meetings.Where(m => o.OrganizationId == m.OrganizationId).OrderByDescending(m => m.MeetingDate).Take(1).DefaultIfEmpty()
                        orderby sch.SchedDay, sch.SchedTime
                        select new OrganizationInfo
                        {
                            id = o.OrganizationId,
                            name = o.OrganizationName,
-                           time = sch.SchedTime ?? dt,
-                           day = sch.SchedDay ?? 0
+                           time = sch.SchedTime,
+                           day = sch.SchedDay,
+                           lastMeetting = mtg.MeetingDate
                        };
 
             BaseMessage br = new BaseMessage();
             List<MobileOrganization> mo = new List<MobileOrganization>();
 
-            br.error = 0;
+            br.setNoError();
             br.count = orgs.Count();
 
             int tzOffset = 0;
@@ -610,7 +926,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 MobileOrganization org = new MobileOrganization().populate(item);
 
                 // Initial release version
-                if (dataIn.version == 2 && tzOffset != 0)
+                if (dataIn.version == BaseMessage.API_VERSION_2 && tzOffset != 0)
                 {
                     org.changeHourOffset(-tzOffset);
                 }
@@ -618,7 +934,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 mo.Add(org);
             }
 
-            br.data = JsonConvert.SerializeObject(mo);
+            br.data = SerializeJSON(mo, dataIn.version);
             return br;
         }
 
@@ -640,14 +956,14 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             // Check to see if type matches
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostRollList mprl = JsonConvert.DeserializeObject<MobilePostRollList>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -671,7 +987,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage br = new BaseMessage();
             br.id = meetingId;
-            br.error = 0;
+            br.setNoError();
             br.count = people.Count();
 
             foreach (var person in people)
@@ -679,7 +995,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 mrl.attendees.Add(new MobileAttendee().populate(person));
             }
 
-            br.data = JsonConvert.SerializeObject(mrl);
+            br.data = SerializeJSON(mrl, dataIn.version);
             return br;
         }
 
@@ -700,14 +1016,14 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostAttend mpa = JsonConvert.DeserializeObject<MobilePostAttend>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -746,7 +1062,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             DbUtil.LogActivity($"Mobile RecAtt o:{meeting.OrganizationId} p:{mpa.peopleID} u:{Util.UserPeopleId} a:{mpa.present}");
 
             BaseMessage br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.count = 1;
 
             return br;
@@ -774,14 +1090,14 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
 
             BaseMessage dataIn = BaseMessage.createFromString(rawPost);
 
-            if (dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 dataIn.data = dataIn.data.Replace(" ", "+");
             }
 
             MobilePostHeadcount mph = JsonConvert.DeserializeObject<MobilePostHeadcount>(dataIn.data);
 
-            if (dataIn.version == 2 && dataIn.device == BaseMessage.API_DEVICE_IOS)
+            if (dataIn.device == BaseMessage.API_DEVICE_IOS && dataIn.version == BaseMessage.API_VERSION_2)
             {
                 int tzOffset = 0;
                 int.TryParse(DbUtil.Db.GetSetting("TZOffset", "0"), out tzOffset);
@@ -800,7 +1116,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             DbUtil.LogActivity($"Mobile Headcount o:{meeting.OrganizationId} m:{meeting.MeetingId} h:{mph.headcount}");
 
             BaseMessage br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.count = 1;
 
             return br;
@@ -919,7 +1235,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             }
 
             BaseMessage br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.id = p.PeopleId;
             br.count = 1;
 
@@ -946,12 +1262,16 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 om = OrganizationMember.InsertOrgMembers(DbUtil.Db, mpjo.orgID, mpjo.peopleID, MemberTypeCode.Member, DateTime.Now, null, false);
 
             if (om != null && !mpjo.join)
-                om.Drop(DbUtil.Db);
+            {
+                om.Drop(DbUtil.Db, DateTime.Today);
+
+                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app");
+            }
 
             DbUtil.Db.SubmitChanges();
 
             BaseMessage br = new BaseMessage();
-            br.error = 0;
+            br.setNoError();
             br.count = 1;
 
             return br;
@@ -987,6 +1307,33 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
                 Querystring = $"{orgId},{peopleId},0",
                 Expires = DateTime.Now.AddMinutes(10),
             };
+        }
+
+        private static string GetOneTimeLoginLink(string url, string user)
+        {
+            var ot = new OneTimeLink
+            {
+                Id = Guid.NewGuid(),
+                Querystring = user,
+                Expires = DateTime.Now.AddMinutes(15)
+            };
+
+            DbUtil.Db.OneTimeLinks.InsertOnSubmit(ot);
+            DbUtil.Db.SubmitChanges();
+
+            return $"{DbUtil.Db.ServerLink($"Logon?ReturnUrl={HttpUtility.UrlEncode(url)}&otltoken={ot.Id.ToCode()}")}";
+        }
+
+        private static string SerializeJSON(Object item, int version)
+        {
+            if (version == BaseMessage.API_VERSION_2)
+            {
+                return JsonConvert.SerializeObject(item);
+            }
+            else
+            {
+                return JsonConvert.SerializeObject(item, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd'T'HH:mm:ss" });
+            }
         }
     }
 }

@@ -113,7 +113,7 @@ namespace CmsWeb.Areas.People.Controllers
         {
             var m = new ContacteesModel(cid);
             var tid = m.AddTask(pid);
-            return Redirect("/Task/List/" + tid);
+            return Redirect("/Task/Detail/" + tid);
         }
     }
 }

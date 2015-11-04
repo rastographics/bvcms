@@ -14,6 +14,7 @@ using System.Web.Mvc;
 using CmsData;
 using CmsData.Codes;
 using UtilityExtensions;
+using CmsData.Classes.GoogleCloudMessaging;
 
 namespace CmsWeb.Models
 {
@@ -28,7 +29,7 @@ namespace CmsWeb.Models
             {
                 var pid = Util.UserPeopleId.Value;
                 if (CoOwnerId == pid) // if task has been delegated to me
-                    return ""; // display nothing
+                    return "You"; // display nothing
                 else if (OwnerId == pid) // if I am owner
                     if (CoOwnerId.HasValue) // and task has been delegated
                         return CoOwner; // display delegate
@@ -78,6 +79,8 @@ namespace CmsWeb.Models
         public bool IsAnOwner => IsOwner || IsCoOwner;
         public bool IsOwner { get; set; }
         public bool IsCoOwner { get; set; }
+
+        public string DeclineReason { get; set; }
 
         public TaskDetail GetDetail()
         {
@@ -149,7 +152,7 @@ namespace CmsWeb.Models
 
         public bool CanCompleteWithContact => IsAnOwner && this.StatusId != TaskStatusCode.Complete && WhoId != null;
 
-        public bool CanAccept => IsCoOwner && this.StatusId == TaskStatusCode.Pending;
+        public bool CanAccept => IsCoOwner && (this.StatusId == TaskStatusCode.Pending || this.StatusId == TaskStatusCode.Declined);
 
         public string ProspectReportLink()
         {
@@ -186,6 +189,19 @@ namespace CmsWeb.Models
                 task.Priority = Priority;
             DbUtil.Db.SubmitChanges();
             TaskModel.NotifyIfNeeded(sb, task);
+
+            if (task.Owner.PeopleId == Util.UserPeopleId.Value)
+            {
+                if (task.CoOwner != null)
+                    GCMHelper.sendNotification(task.CoOwner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Updated", $"{Util.UserFullName} updated a task delegated to you");
+            }
+            else
+            {
+                GCMHelper.sendNotification(task.Owner.PeopleId, GCMHelper.TYPE_TASK, task.Id, "Task Updated", $"{Util.UserFullName} updated a task you own");
+            }
+
+
+            GCMHelper.sendRefresh(Util.UserPeopleId.Value, GCMHelper.TYPE_TASK);
         }
     }
 }
