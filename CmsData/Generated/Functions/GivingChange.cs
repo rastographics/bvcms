@@ -18,11 +18,13 @@ namespace CmsData.View
 		
 		private int _PeopleId;
 		
-		private decimal? _TotalPeriod1;
+		private decimal _TotalPeriod1;
 		
-		private decimal? _TotalPeriod2;
+		private decimal _TotalPeriod2;
 		
 		private decimal? _PctChange;
+		
+		private string _Change;
 		
 		
 		public GivingChange()
@@ -48,8 +50,8 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="TotalPeriod1", Storage="_TotalPeriod1", DbType="Decimal(38,2)")]
-		public decimal? TotalPeriod1
+		[Column(Name="TotalPeriod1", Storage="_TotalPeriod1", DbType="Decimal(38,2) NOT NULL")]
+		public decimal TotalPeriod1
 		{
 			get
 			{
@@ -65,8 +67,8 @@ namespace CmsData.View
 		}
 
 		
-		[Column(Name="TotalPeriod2", Storage="_TotalPeriod2", DbType="Decimal(38,2)")]
-		public decimal? TotalPeriod2
+		[Column(Name="TotalPeriod2", Storage="_TotalPeriod2", DbType="Decimal(38,2) NOT NULL")]
+		public decimal TotalPeriod2
 		{
 			get
 			{
@@ -94,6 +96,23 @@ namespace CmsData.View
 			{
 				if (this._PctChange != value)
 					this._PctChange = value;
+			}
+
+		}
+
+		
+		[Column(Name="Change", Storage="_Change", DbType="nvarchar(4000)")]
+		public string Change
+		{
+			get
+			{
+				return this._Change;
+			}
+
+			set
+			{
+				if (this._Change != value)
+					this._Change = value;
 			}
 
 		}

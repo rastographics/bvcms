@@ -368,6 +368,12 @@
     <Compile Include="API\CreateExcel.cs" />
     <Compile Include="API\DynamicData.cs" />
     <Compile Include="API\IPythonApi.cs" />
+    <Compile Include="Classes\GoogleCloudMessaging\GCMData.cs" />
+    <Compile Include="Classes\GoogleCloudMessaging\GCMHelper.cs" />
+    <Compile Include="Classes\GoogleCloudMessaging\GCMMessage.cs" />
+    <Compile Include="Classes\GoogleCloudMessaging\GCMPayload.cs" />
+    <Compile Include="Classes\GoogleCloudMessaging\GCMResponse.cs" />
+    <Compile Include="Classes\GoogleCloudMessaging\GCMResponseResult.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\OnlineRegPersonModel0.cs" />
     <Compile Include="Classes\OnlineRegSummaryText\SummaryInfo.cs" />
     <Compile Include="Classes\style.cs" />
@@ -524,6 +530,7 @@
     <Compile Include="Generated\MobileAppFloor.cs" />
     <Compile Include="Generated\MobileAppIcon.cs" />
     <Compile Include="Generated\MobileAppIconSet.cs" />
+    <Compile Include="Generated\MobileAppPushRegistration.cs" />
     <Compile Include="Generated\MobileAppRoom.cs" />
     <Compile Include="Generated\MobileAppVideoType.cs" />
     <Compile Include="Generated\RegistrationDatum.cs" />

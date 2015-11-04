@@ -16,7 +16,7 @@ using Newtonsoft.Json.Converters;
 using System.IO;
 using UtilityExtensions;
 using DbUtil = CmsData.DbUtil;
-using System.IO;
+using System.Web;
 using Dapper;
 
 namespace CmsWeb.Areas.Public.Controllers
@@ -163,6 +163,8 @@ namespace CmsWeb.Areas.Public.Controllers
             var result = AuthenticateUser();
             if (!result.IsValid) return AuthorizationError(result);
 
+            var dataIn = BaseMessage.createFromString(data);
+            
             var sql = @"
 SELECT OrganizationId FROM dbo.Organizations
 WHERE RegistrationTypeId = 8

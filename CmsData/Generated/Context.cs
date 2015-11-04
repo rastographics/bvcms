@@ -416,6 +416,10 @@ namespace CmsData
         partial void UpdateMobileAppIconSet(MobileAppIconSet instance);
         partial void DeleteMobileAppIconSet(MobileAppIconSet instance);
         
+        partial void InsertMobileAppPushRegistration(MobileAppPushRegistration instance);
+        partial void UpdateMobileAppPushRegistration(MobileAppPushRegistration instance);
+        partial void DeleteMobileAppPushRegistration(MobileAppPushRegistration instance);
+        
         partial void InsertMobileAppRoom(MobileAppRoom instance);
         partial void UpdateMobileAppRoom(MobileAppRoom instance);
         partial void DeleteMobileAppRoom(MobileAppRoom instance);
@@ -1296,6 +1300,12 @@ namespace CmsData
         public Table< MobileAppIconSet> MobileAppIconSets
         {
             get { return GetTable< MobileAppIconSet>(); }
+
+        }
+
+        public Table< MobileAppPushRegistration> MobileAppPushRegistrations
+        {
+            get { return GetTable< MobileAppPushRegistration>(); }
 
         }
 
