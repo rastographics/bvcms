@@ -119,7 +119,7 @@ namespace CmsWeb.MobileAPI
             notes = task.Notes;
             declineReason = task.DeclineReason;
 
-            if (task.AboutWho.Picture != null)
+            if (task.AboutWho?.Picture != null)
             {
                 var image = ImageData.DbUtil.Db.Images.SingleOrDefault(i => i.Id == task.AboutWho.Picture.SmallId);
 

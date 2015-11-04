@@ -1267,7 +1267,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
             {
                 om.Drop(DbUtil.Db, DateTime.Today);
 
-                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app");
+                DbUtil.LogActivity($"Dropped {om.PeopleId} for {om.Organization.OrganizationId} via {dataIn.getSourceOS()} app", peopleid:om.PeopleId, orgid: om.OrganizationId);
             }
 
             DbUtil.Db.SubmitChanges();
