@@ -41,6 +41,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string ExtraQuestionValue(int set, string s)
         {
+            if (set >= ExtraQuestion.Count)
+                return null;
             if (ExtraQuestion[set].ContainsKey(s))
                 return ExtraQuestion[set][s];
             return null;
@@ -48,6 +50,8 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         public string TextValue(int set, string s)
         {
+            if (set >= Text.Count)
+                return null;
             if (Text[set].ContainsKey(s))
                 return Text[set][s];
             return null;
