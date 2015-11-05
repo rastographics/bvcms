@@ -564,7 +564,7 @@
     <Compile Include="Classes\ExtraValues\Value.cs" />
     <Compile Include="Classes\ExtraValues\View.cs" />
     <Compile Include="Classes\ExtraValues\Views.cs" />
-    <Compile Include="Classes\MinistrESpace\MinistrESpaceHelper.cs" />
+    <Compile Include="Classes\GoogleCloudMessaging\MinistrESpace\MinistrESpaceHelper.cs" />
     <Compile Include="Classes\SmallGroupFinder\SmallGroupFinder.cs" />
     <Compile Include="CMSMembershipProvider.cs" />
     <Compile Include="CMSRoleProvider.cs" />
