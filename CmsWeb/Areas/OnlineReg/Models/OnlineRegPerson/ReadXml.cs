@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -124,13 +125,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ReadText(XElement e)
         {
+            var cnt = setting.AskItems.Count(vv => vv.IsAskText);
             if (Text == null)
+            {
                 Text = new List<Dictionary<string, string>>();
+                for(var n = 0; n < cnt; n++)
+                    Text.Add(new Dictionary<string, string>());
+            }
             var txsetattr = e.Attribute("set");
             if (txsetattr != null)
                 txset = txsetattr.Value.ToInt();
-            if (Text.Count == txset)
+
+            while (Text.Count <= txset)
                 Text.Add(new Dictionary<string, string>());
+
             var tx = e.Attribute("question");
             if (tx != null)
                 Text[txset].Add(tx.Value, e.Value);
@@ -138,13 +146,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private void ReadExtraQuestion(XElement e)
         {
+            var cnt = setting.AskItems.Count(vv => vv.IsAskExtraQuestions);
             if (ExtraQuestion == null)
+            {
                 ExtraQuestion = new List<Dictionary<string, string>>();
+                for(var n = 0; n < cnt; n++)
+                    ExtraQuestion.Add(new Dictionary<string, string>());
+            }
             var eqsetattr = e.Attribute("set");
             if (eqsetattr != null)
                 eqset = eqsetattr.Value.ToInt();
-            if (ExtraQuestion.Count == eqset)
+
+            if (ExtraQuestion.Count <= eqset)
                 ExtraQuestion.Add(new Dictionary<string, string>());
+
             var eq = e.Attribute("question");
             if (eq != null)
                 ExtraQuestion[eqset].Add(eq.Value, e.Value);
@@ -158,7 +173,6 @@ namespace CmsWeb.Areas.OnlineReg.Models
             if (key != null)
                 SpecialTest.Add(key.Value, e.Value);
         }
-
 
         private void ReadFamilyAttend(XElement e)
         {
