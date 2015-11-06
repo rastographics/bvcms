@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Web.Mvc;
 using CmsData;
@@ -9,14 +10,14 @@ namespace CmsWeb.Areas.OnlineReg.Models
 {
     public partial class OnlineRegPersonModel
     {
-        private List<string> _GroupTags;
+        private List<string> groupTags;
 
         public List<string> GroupTags
         {
             get
             {
-                if (_GroupTags == null)
-                    _GroupTags = (from mt in DbUtil.Db.OrgMemMemTags
+                if (groupTags == null)
+                    groupTags = (from mt in DbUtil.Db.OrgMemMemTags
                                   where mt.OrgId == org.OrganizationId
                                   select mt.MemberTag.Name).ToList();
                 var gtdd = (from pp in Parent.List
@@ -32,7 +33,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
                             where cc.HasValue()
                             select cc).ToList();
                 var r = new List<string>();
-                r.AddRange(_GroupTags);
+                r.AddRange(groupTags);
                 r.AddRange(gtdd);
                 r.AddRange(gtcb);
                 return r;
@@ -84,10 +85,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             // this appears to only occur when a user saves progress, the organization has a dropdown question added, and then the user continues
             // we need to ensure that we have options set for all of the questions
             while (ask.UniqueId >= option.Count)
-            {
                 option.Add(string.Empty);
-            }
-
             var q = from s in ((AskDropdown) ask).list
                     let amt = s.Fee.HasValue ? $" ({s.Fee:C})" : ""
                     select new SelectListItemFilled
@@ -110,7 +108,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             var q = from i in FundItem
                     join m in items on i.Key equals m.Value.ToInt()
                     where i.Value.HasValue
-                    select new FundItemChosen {fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value.Value};
+                    select new FundItemChosen {fundid = m.Value.ToInt(), desc = m.Text, amt = i.Value ?? 0};
             return q;
         }
 
@@ -131,16 +129,20 @@ namespace CmsWeb.Areas.OnlineReg.Models
 
         private static IEnumerable<SelectListItem> ShirtSizes(Settings setting)
         {
-            var askSize = setting.AskItems.FirstOrDefault(aa => aa is AskSize) as AskSize;
-            var q = from ss in askSize.list
-                    select new SelectListItem
-                    {
-                        Value = ss.SmallGroup,
-                        Text = ss.Description
-                    };
-            var list = q.ToList();
+            var list = new List<SelectListItem>();
             list.Insert(0, new SelectListItem {Value = "0", Text = "(please select)"});
-            if (askSize.AllowLastYear)
+            var askSize = setting.AskItems.FirstOrDefault(aa => aa is AskSize) as AskSize;
+            if (askSize != null)
+            {
+                var q = from ss in askSize.list
+                        select new SelectListItem
+                        {
+                            Value = ss.SmallGroup,
+                            Text = ss.Description
+                        };
+                list.InsertRange(1, q.ToList());
+            }
+            if (askSize?.AllowLastYear ?? false)
                 list.Add(new SelectListItem {Value = "lastyear", Text = "Use shirt from last year"});
             return list;
         }
@@ -268,6 +270,7 @@ namespace CmsWeb.Areas.OnlineReg.Models
             public bool Filled { get; set; }
         }
 
+        [SuppressMessage("ReSharper", "InconsistentNaming")]
         public class FundItemChosen
         {
             public string desc { get; set; }
