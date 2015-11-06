@@ -3835,6 +3835,20 @@ namespace CmsData
 #endregion
 #region Scalar Functions
         
+        [Function(Name="dbo.GetCurrentOnlinePledgeBundle", IsComposable = true)]
+        [return: Parameter(DbType = "int")]
+        public int? GetCurrentOnlinePledgeBundle(
+            [Parameter(Name = "next", DbType="datetime")] DateTime? next,
+            [Parameter(Name = "prev", DbType="datetime")] DateTime? prev
+            )
+        {
+            return ((int?)(ExecuteMethodCall(this,
+                ((MethodInfo)(MethodBase.GetCurrentMethod())),
+                    next,
+                    prev
+                ).ReturnValue));
+        }
+
         [Function(Name="dbo.DonorTotalUnitsSize", IsComposable = true)]
         [return: Parameter(DbType = "money")]
         public decimal? DonorTotalUnitsSize(

@@ -1282,7 +1282,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var pi = PaymentInfos.SingleOrDefault();
             return pi;
         }
-        public Contribution PostUnattendedContribution(CMSDataContext Db, decimal Amt, int? Fund, string Description, bool pledge = false, int? typecode = null, int? tranid = null)
+        public Contribution PostUnattendedContribution(CMSDataContext db, decimal amt, int? fund, string description, bool pledge = false, int? typecode = null, int? tranid = null)
         {
             if (!typecode.HasValue)
             {
@@ -1295,8 +1295,8 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var d = now.Date;
             BundleHeader bundle = null;
 
-            var spec = Db.Setting("OnlineContributionBundleDayTime", "");
-            if (Util.HasValue(spec))
+            var spec = db.Setting("OnlineContributionBundleDayTime", "");
+            if (spec.HasValue())
             {
                 var a = spec.SplitStr(" ", 2);
                 try
@@ -1308,22 +1308,26 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                         next = next.AddDays(7);
                     var prev = next.AddDays(-7);
                     var bid = BundleTypeCode.MissionTrip == typecode
-                        ? Db.GetCurrentMissionTripBundle(next, prev)
-                        : Db.GetCurrentOnlineBundle(next, prev);
-                    bundle = Db.BundleHeaders.SingleOrDefault(bb => bb.BundleHeaderId == bid);
+                        ? db.GetCurrentMissionTripBundle(next, prev)
+                        : BundleTypeCode.OnlinePledge == typecode
+                            ? db.GetCurrentOnlinePledgeBundle(next, prev)
+                            : db.GetCurrentOnlineBundle(next, prev);
+                    bundle = db.BundleHeaders.SingleOrDefault(bb => bb.BundleHeaderId == bid);
                 }
                 catch (Exception)
                 {
                     spec = "";
                 }
             }
-            if (!Util.HasValue(spec))
+            if (!spec.HasValue())
             {
                 var nextd = d.AddDays(1);
                 var bid = BundleTypeCode.MissionTrip == typecode
-                    ? Db.GetCurrentMissionTripBundle(nextd, d)
-                    : Db.GetCurrentOnlineBundle(nextd, d);
-                bundle = Db.BundleHeaders.SingleOrDefault(bb => bb.BundleHeaderId == bid);
+                    ? db.GetCurrentMissionTripBundle(nextd, d)
+                    : BundleTypeCode.OnlinePledge == typecode
+                        ? db.GetCurrentOnlinePledgeBundle(nextd, d)
+                        : db.GetCurrentOnlineBundle(nextd, d);
+                bundle = db.BundleHeaders.SingleOrDefault(bb => bb.BundleHeaderId == bid);
             }
             if (bundle == null)
             {
@@ -1334,43 +1338,43 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     CreatedBy = Util.UserId1,
                     ContributionDate = d,
                     CreatedDate = now,
-                    FundId = Db.Setting("DefaultFundId", "1").ToInt(),
+                    FundId = db.Setting("DefaultFundId", "1").ToInt(),
                     RecordStatus = false,
                     TotalCash = 0,
                     TotalChecks = 0,
                     TotalEnvelopes = 0,
                     BundleTotal = 0
                 };
-                Db.BundleHeaders.InsertOnSubmit(bundle);
+                db.BundleHeaders.InsertOnSubmit(bundle);
             }
-            if (!Fund.HasValue)
-                Fund = Db.Setting("DefaultFundId", "1").ToInt();
-            var fundtouse = (from f in Db.ContributionFunds
-                             where f.FundId == Fund
+            if (!fund.HasValue)
+                fund = db.Setting("DefaultFundId", "1").ToInt();
+            var fundtouse = (from f in db.ContributionFunds
+                             where f.FundId == fund
                              select f).SingleOrDefault();
 
             //failsafe if fund is not found
             if (fundtouse == null)
-                Fund = (from f in Db.ContributionFunds
+                fund = (from f in db.ContributionFunds
                         where f.FundStatusId == 1
                         orderby f.FundId
                         select f.FundId).First();
 
-            var FinanceManagerId = Db.Setting("FinanceManagerId", "").ToInt2();
-            if (!FinanceManagerId.HasValue)
+            var financeManagerId = db.Setting("FinanceManagerId", "").ToInt2();
+            if (!financeManagerId.HasValue)
             {
-                var qu = from u in Db.Users
+                var qu = from u in db.Users
                          where u.UserRoles.Any(ur => ur.Role.RoleName == "Finance")
                          orderby u.Person.LastName
                          select u.UserId;
-                FinanceManagerId = qu.FirstOrDefault();
-                if (!FinanceManagerId.HasValue)
-                    FinanceManagerId = 1;
+                financeManagerId = qu.FirstOrDefault();
+                if (!financeManagerId.HasValue)
+                    financeManagerId = 1;
             }
             var bd = new BundleDetail
             {
                 BundleHeaderId = bundle.BundleHeaderId,
-                CreatedBy = FinanceManagerId.Value,
+                CreatedBy = financeManagerId.Value,
                 CreatedDate = now,
             };
             var typid = ContributionTypeCode.CheckCash;
@@ -1378,22 +1382,22 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 typid = ContributionTypeCode.Pledge;
             bd.Contribution = new Contribution
             {
-                CreatedBy = FinanceManagerId.Value,
+                CreatedBy = financeManagerId.Value,
                 CreatedDate = bd.CreatedDate,
-                FundId = Fund.Value,
+                FundId = fund.Value,
                 PeopleId = PeopleId,
                 ContributionDate = bd.CreatedDate,
-                ContributionAmount = Amt,
+                ContributionAmount = amt,
                 ContributionStatusId = 0,
                 ContributionTypeId = typid,
-                ContributionDesc = Description,
+                ContributionDesc = description,
                 TranId = tranid,
                 Source = Util2.FromMobile.HasValue() ? 1 : (int?)null
             };
             bundle.BundleDetails.Add(bd);
-            Db.SubmitChanges();
+            db.SubmitChanges();
             if (fundtouse == null)
-                Db.LogActivity($"FundNotFound Used fund #{Fund} on contribution #{bd.ContributionId}");
+                db.LogActivity($"FundNotFound Used fund #{fund} on contribution #{bd.ContributionId}");
             return bd.Contribution;
         }
         public static int FetchOrCreateMemberStatus(CMSDataContext Db, string type)

@@ -1562,7 +1562,6 @@
     <None Include="Properties\PublishProfiles\test2.pubxml" />
     <Content Include="Areas\OnlineReg\Views\OnlineReg\EditorTemplates\AskText.cshtml" />
     <Content Include="Areas\Org\Views\Org\Dialogs.cshtml" />
-    <Content Include="Areas\Org\Views\Org\Other\DialogAddMES.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\DivisionList.cshtml" />
     <Content Include="Areas\Org\Views\Org\Other\NotifyList2.cshtml" />
     <Content Include="Areas\Org\Views\Org\DisplayTemplates\OrgPickList.cshtml" />
