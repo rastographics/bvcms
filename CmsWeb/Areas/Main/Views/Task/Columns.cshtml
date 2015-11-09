@@ -2,7 +2,7 @@
 @using UtilityExtensions
 @model CmsWeb.Models.TaskInfo
 <td style="width: 5px;">
-    @if (Model.IsAnOwner)
+    @if (Model.IsOwner)
     {
         <input type="checkbox" value="@Model.Id" class="actionitem" />
     }
