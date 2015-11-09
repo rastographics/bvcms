@@ -1007,7 +1007,11 @@ namespace CmsWeb.Models
             if (task.Due != null)
                 body.Append($"Due: {task.Due.FormatDate()}<br/>\n");
 
-            body.Append($"Status: {task.TaskStatus.Description}<br/>\n");
+            if (task.StatusId == TaskStatusCode.Declined)
+                body.Append($"Status: {task.TaskStatus.Description} - {task.DeclineReason}<br/>\n");
+            else
+                body.Append($"Status: {task.TaskStatus.Description}<br/>\n");
+
             body.Append($"About: {PeopleLink(task.AboutWho.Name, task.AboutWho.PeopleId)}<br/>\n");
             body.Append($"Owner: {PeopleLink(task.Owner.Name, task.Owner.PeopleId)}<br/>\n");
 

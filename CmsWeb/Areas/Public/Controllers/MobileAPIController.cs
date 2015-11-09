@@ -1330,7 +1330,7 @@ AND RegSettingXml.value('(/Settings/Fees/DonationFundId)[1]', 'int') IS NULL";
         {
             if (version == BaseMessage.API_VERSION_2)
             {
-                return JsonConvert.SerializeObject(item);
+                return JsonConvert.SerializeObject(item, new IsoDateTimeConverter() { DateTimeFormat = "yyyy-MM-dd'T'HH:mm:sszzz" });
             }
             else
             {
