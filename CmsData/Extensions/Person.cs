@@ -990,6 +990,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             }
             return rr;
         }
+
+        public void AddMedical(string s)
+        {
+            var rr = SetRecReg();
+            if (rr.MedicalDescription.HasValue())
+                rr.MedicalDescription += "\n" + s;
+            else
+                rr.MedicalDescription = s;
+        }
         private List<ChangeDetail> psbDefault;
         public void UpdateValue(string field, object value)
         {

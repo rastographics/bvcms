@@ -18,8 +18,8 @@ namespace CmsData.OnlineRegSummaryText
             OrgMember = OrganizationMember.Load(DbUtil.Db, pid, oid);
             if (!OrgMember.OnlineRegData.HasValue())
                 return;
-            Person = new OnlineRegPersonModel0();
-            Person.ReadXml(OrgMember.OnlineRegData);
+            // ReSharper disable once UseObjectOrCollectionInitializer
+            Person = new OnlineRegPersonModel0(OrgMember.OnlineRegData);
             Person.setting = DbUtil.Db.CreateRegistrationSettings(OrgMember.Organization.RegSettingXml, oid);
 
             Handlebars.RegisterHelper("Registrant", Registrant);
