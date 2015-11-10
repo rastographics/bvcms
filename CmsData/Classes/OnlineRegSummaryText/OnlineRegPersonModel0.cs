@@ -25,6 +25,33 @@ namespace CmsData.OnlineRegSummaryText
             if (Text == null)
                 Text = new List<Dictionary<string, string>> {new Dictionary<string, string>()};
         }
+
+        public static OnlineRegPersonModel0 CreateFromSettings(CMSDataContext db, int orgid)
+        {
+            var m = new OnlineRegPersonModel0();
+            var settings = db.CreateRegistrationSettings(orgid);
+            foreach (var ask in settings.AskItems)
+            {
+                switch (ask.Type)
+                {
+                    case "AskExtraQuestions":
+                        var eq = (AskExtraQuestions)ask;
+                        if(eq.UniqueId >= m.ExtraQuestion.Count)
+                            m.ExtraQuestion.Add(new Dictionary<string, string>());
+                        foreach (var q in eq.list)
+                            m.ExtraQuestion[eq.UniqueId][q.Question] = "";
+                        break;
+                    case "AskText":
+                        var tx = (AskText)ask;
+                        if(tx.UniqueId >= m.Text.Count)
+                            m.Text.Add(new Dictionary<string, string>());
+                        foreach (var q in tx.list)
+                            m.Text[tx.UniqueId][q.Question] = "";
+                        break;
+                }
+            }
+            return m;
+        }
         public int? MissionTripGoerId { get; set; }
         public Settings setting { get; set; }
         public int PeopleId { get; set; }
