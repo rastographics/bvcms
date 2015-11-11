@@ -72,7 +72,7 @@ namespace CmsData
         }
         public static string FetchUsername(CMSDataContext db, string first, string last)
         {
-            var username = first.Trim().ToLower()[0] + last.Trim().ToLower();
+            var username = first.Trim().ToLower()[0] + last.Trim().ToLower().Replace(",", "");
             var uname = username;
             var i = 1;
             while (db.Users.SingleOrDefault(u => u.Username == uname) != null)
