@@ -5,7 +5,7 @@ CREATE FUNCTION [dbo].[OrgMemberQuestions](
 AS
 RETURN
 (
-	SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) [row], [type], Question, Answer
+	SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) [row], [type], [set], Question, Answer
 	FROM dbo.OnlineRegQA
 	WHERE PeopleId = @pid
 	AND OrganizationId = @oid
