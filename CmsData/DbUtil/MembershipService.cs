@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Security;
 using UtilityExtensions;
 
@@ -9,22 +7,13 @@ namespace CmsData
 {
     public static class MembershipService
     {
-        public static int MinPasswordLength
-        {
-            get { return DbUtil.Db.Setting("PasswordMinLength", "7").ToInt(); }
-        }
-        public static bool RequireSpecialCharacter
-        {
-            get { return DbUtil.Db.Setting("PasswordRequireSpecialCharacter", "true").ToBool(); }
-        }
-        public static bool RequireOneNumber
-        {
-            get { return DbUtil.Db.Setting("PasswordRequireOneNumber", "false").ToBool(); }
-        }
-        public static bool RequireOneUpper
-        {
-			get { return DbUtil.Db.Setting("PasswordRequireOneUpper", "false").ToBool(); }
-        }
+        public static int MinPasswordLength => DbUtil.Db.Setting("PasswordMinLength", "7").ToInt();
+
+        public static bool RequireSpecialCharacter => DbUtil.Db.Setting("PasswordRequireSpecialCharacter", "true").ToBool();
+
+        public static bool RequireOneNumber => DbUtil.Db.Setting("PasswordRequireOneNumber", "false").ToBool();
+
+        public static bool RequireOneUpper => DbUtil.Db.Setting("PasswordRequireOneUpper", "false").ToBool();
 
         public static bool ValidateUser(string userName, string password)
         {
@@ -37,7 +26,7 @@ namespace CmsData
             CMSMembershipProvider.provider.CreateUser(userName, password, email, null, null, true, null, out status);
             return status;
         }
-        public static User CreateUser(int PeopleId, string username, string password)
+        public static User CreateUser(int peopleId, string username, string password)
         {
             CMSMembershipProvider.provider.AdminOverride = true;
             var user = CMSMembershipProvider.provider.NewUser(
@@ -45,14 +34,14 @@ namespace CmsData
                 password,
                 null,
                 true,
-                PeopleId);
+                peopleId);
             CMSMembershipProvider.provider.AdminOverride = false;
             return user;
         }
-        public static User CreateUser(CMSDataContext Db, int PeopleId)
+        public static User CreateUser(CMSDataContext db, int peopleId)
         {
-            var p = Db.LoadPersonById(PeopleId);
-            var uname = FetchUsername(Db, p.PreferredName, p.LastName);
+            var p = db.LoadPersonById(peopleId);
+            var uname = FetchUsername(db, p.PreferredName, p.LastName);
             var pword = Guid.NewGuid().ToString();
             CMSMembershipProvider.provider.AdminOverride = true;
             var user = CMSMembershipProvider.provider.NewUser(
@@ -60,32 +49,33 @@ namespace CmsData
                 pword,
                 null,
                 true,
-                PeopleId);
+                peopleId);
             CMSMembershipProvider.provider.AdminOverride = false;
             return user;
         }
 
-
         public static bool ChangePassword(string userName, string oldPassword, string newPassword)
         {
-            MembershipUser currentUser = CMSMembershipProvider.provider.GetUser(userName, true /* userIsOnline */);
-            return currentUser.ChangePassword(oldPassword, newPassword);
+            var currentUser = CMSMembershipProvider.provider.GetUser(userName, true /* userIsOnline */);
+            return currentUser != null && currentUser.ChangePassword(oldPassword, newPassword);
         }
         public static bool ChangePassword(string userName, string newPassword)
         {
             CMSMembershipProvider.provider.AdminOverride = true;
             var mu = CMSMembershipProvider.provider.GetUser(userName, false);
+            if (mu == null)
+                return false;
             mu.UnlockUser();
             var ret = mu.ChangePassword(mu.ResetPassword(), newPassword);
             CMSMembershipProvider.provider.AdminOverride = false;
             return ret;
         }
-        public static string FetchUsername(CMSDataContext Db, string first, string last)
+        public static string FetchUsername(CMSDataContext db, string first, string last)
         {
             var username = first.Trim().ToLower()[0] + last.Trim().ToLower();
             var uname = username;
             var i = 1;
-            while (Db.Users.SingleOrDefault(u => u.Username == uname) != null)
+            while (db.Users.SingleOrDefault(u => u.Username == uname) != null)
                 uname = username + i++;
             return uname;
         }
@@ -93,13 +83,13 @@ namespace CmsData
         {
             return first.ToLower()[0] + last.ToLower();
         }
-        public static string FetchPassword(CMSDataContext Db)
+        public static string FetchPassword(CMSDataContext db)
         {
             var rnd = new Random();
-            var n = Db.Words.Count();
+            var n = db.Words.Count();
             var r1 = rnd.Next(1, n);
             var r2 = rnd.Next(1, n);
-            var q = from w in Db.Words
+            var q = from w in db.Words
                     where w.N == r1 || w.N == r2
                     select w.WordX;
             var a = q.ToArray();
