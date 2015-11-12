@@ -47,7 +47,7 @@ namespace CmsWeb.Models
         public string Email { get; set; }
         public int PeopleId { get; set; }
 
-        public string BfcClasses
+        public string MainFellowship
         {
             get
             {
