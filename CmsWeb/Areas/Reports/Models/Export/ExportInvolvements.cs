@@ -20,11 +20,7 @@ namespace CmsWeb.Models
             var q2 = from p in q
                      orderby p.LastName, p.FirstName
                      let spouse = db.People.SingleOrDefault(w => p.SpouseId == w.PeopleId)
-                     let om = (from m in p.OrganizationMembers
-                               where m.OrganizationId == p.BibleFellowshipClassId
-                               where nocheckrole || (m.Organization.LimitToRole ?? "") != ""
-                               select m
-                               ).SingleOrDefault()
+                     let om = p.OrganizationMembers.SingleOrDefault(m => m.OrganizationId == p.BibleFellowshipClassId)
                      select new InvolvementInfo
                      {
                          PeopleId = p.PeopleId,
@@ -46,7 +42,7 @@ namespace CmsWeb.Models
                          Age = p.Age ?? 0,
                          Spouse = spouse != null ? spouse.FirstName : "",
                          activities = (from m in p.OrganizationMembers
-                                       where nocheckrole || (m.Organization.LimitToRole ?? "") != ""
+                                       where nocheckrole || (m.Organization.LimitToRole ?? "") == ""
                                        select new ActivityInfo
                                        {
                                            Name = m.Organization.OrganizationName,
