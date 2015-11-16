@@ -63,7 +63,7 @@ namespace CmsData
             get
             {
                 var sb = new StringBuilder(PrimaryAddress + "\n");
-                if (Util.HasValue(PrimaryAddress2))
+                if (PrimaryAddress2.HasValue())
                     sb.AppendLine(PrimaryAddress2);
                 sb.Append(CityStateZip);
                 return sb.ToString();
@@ -286,13 +286,13 @@ namespace CmsData
             if (torecreg != null && frrecreg != null)
             {
                 torecreg.Comments = frrecreg.Comments + "\n" + torecreg.Comments;
-                if (Util.HasValue(frrecreg.ShirtSize))
+                if (frrecreg.ShirtSize.HasValue())
                     torecreg.ShirtSize = frrecreg.ShirtSize;
-                if (Util.HasValue(frrecreg.MedicalDescription))
+                if (frrecreg.MedicalDescription.HasValue())
                     torecreg.MedicalDescription = frrecreg.MedicalDescription;
-                if (Util.HasValue(frrecreg.Doctor))
+                if (frrecreg.Doctor.HasValue())
                     torecreg.Doctor = frrecreg.Doctor;
-                if (Util.HasValue(frrecreg.Docphone))
+                if (frrecreg.Docphone.HasValue())
                     torecreg.Docphone = frrecreg.Docphone;
                 if (frrecreg.MedAllergy.HasValue)
                     torecreg.MedAllergy = frrecreg.MedAllergy;
@@ -304,17 +304,17 @@ namespace CmsData
                     torecreg.Advil = frrecreg.Advil;
                 if (frrecreg.Maalox.HasValue)
                     torecreg.Maalox = frrecreg.Maalox;
-                if (Util.HasValue(frrecreg.Insurance))
+                if (frrecreg.Insurance.HasValue())
                     torecreg.Insurance = frrecreg.Insurance;
-                if (Util.HasValue(frrecreg.Policy))
+                if (frrecreg.Policy.HasValue())
                     torecreg.Policy = frrecreg.Policy;
-                if (Util.HasValue(frrecreg.Mname))
+                if (frrecreg.Mname.HasValue())
                     torecreg.Mname = frrecreg.Mname;
-                if (Util.HasValue(frrecreg.Fname))
+                if (frrecreg.Fname.HasValue())
                     torecreg.Fname = frrecreg.Fname;
-                if (Util.HasValue(frrecreg.Emcontact))
+                if (frrecreg.Emcontact.HasValue())
                     torecreg.Emcontact = frrecreg.Emcontact;
-                if (Util.HasValue(frrecreg.Emphone))
+                if (frrecreg.Emphone.HasValue())
                     torecreg.Emphone = frrecreg.Emphone;
                 if (frrecreg.ActiveInAnotherChurch.HasValue)
                     torecreg.ActiveInAnotherChurch = frrecreg.ActiveInAnotherChurch;
@@ -439,7 +439,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             First = "";
             Last = "";
-            if (!Util.HasValue(name))
+            if (!name.HasValue())
                 return;
             var a = name.Trim().Split(' ');
             if (a.Length > 1)
@@ -455,11 +455,11 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         {
             string First, Last;
             NameSplit(name, out First, out Last);
-            if (!Util.HasValue(First) || Married)
+            if (!First.HasValue() || Married)
                 switch (gender)
                 {
                     case 0: First = "A"; break;
-                    case 1: if (!Util.HasValue(First)) First = "Husbander"; break;
+                    case 1: if (!First.HasValue()) First = "Husbander"; break;
                     case 2: First = "Wifey"; break;
                 }
             return Add(fam, position, tag, First, null, Last, dob, Married, gender, originId, EntryPointId);
@@ -493,15 +493,15 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             p.PositionInFamilyId = position;
             p.AddressTypeId = 10;
 
-            if (Util.HasValue(firstname))
+            if (firstname.HasValue())
                 p.FirstName = firstname.Trim().ToProper().Truncate(25);
             else
                 p.FirstName = "";
 
-            if (Util.HasValue(nickname))
+            if (nickname.HasValue())
                 p.NickName = nickname.Trim().ToProper().Truncate(15);
 
-            if (Util.HasValue(lastname))
+            if (lastname.HasValue())
                 p.LastName = lastname.Trim().ToProper().Truncate(30);
             else
                 p.LastName = "?";
@@ -593,7 +593,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public List<Duplicate> PossibleDuplicates()
         {
-            var fone = Util.GetDigits(Util.PickFirst(CellPhone, HomePhone));
+            var fone = Util.PickFirst(CellPhone, HomePhone).GetDigits();
             using (var ctx = DbUtil.Create(Util.Host))
             {
                 ctx.SetNoLock();
@@ -601,7 +601,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 var nick = NickName ?? "--";
                 var maid = MaidenName ?? "--";
                 var em = EmailAddress ?? "--";
-                if (!Util.HasValue(em))
+                if (!em.HasValue())
                     em = "--";
                 var bd = BirthDay ?? -1;
                 var bm = BirthMonth ?? -1;
@@ -687,7 +687,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 var nick = NickName ?? "--";
                 var maid = MaidenName ?? "--";
                 var em = EmailAddress ?? "--";
-                if (!Util.HasValue(em))
+                if (!em.HasValue())
                     em = "--";
                 var bd = BirthDay ?? -1;
                 var bm = BirthMonth ?? -1;
@@ -763,7 +763,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         private string GetStreet(CMSDataContext db)
         {
-            if (!Util.HasValue(PrimaryAddress))
+            if (!PrimaryAddress.HasValue())
                 return null;
             try
             {
@@ -797,7 +797,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public void FixTitle()
         {
-            if (Util.HasValue(TitleCode))
+            if (TitleCode.HasValue())
                 return;
             TitleCode = ComputeTitle();
         }
@@ -1028,9 +1028,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                     return;
             if (o != null && o.Equals(value))
                 return;
-            if (o == null && value is string && !Util.HasValue(((string)value)))
+            if (o == null && value is string && !((string)value).HasValue())
                 return;
-            if (value == null && o is string && !Util.HasValue(((string)o)))
+            if (value == null && o is string && !((string)o).HasValue())
                 return;
             //psb.AppendFormat("<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>\n", field, o, value ?? "(null)");
             psb.Add(new ChangeDetail(field, o, value));
@@ -1100,9 +1100,9 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
             var e = PeopleExtras.SingleOrDefault(ee => ee.Field == field);
             if (e == null)
                 return "";
-            if (Util.HasValue(e.StrValue))
+            if (e.StrValue.HasValue())
                 return e.StrValue;
-            if (Util.HasValue(e.Data))
+            if (e.Data.HasValue())
                 return e.Data;
             if (e.DateValue.HasValue)
                 return e.DateValue.FormatDate();
@@ -1112,7 +1112,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public PeopleExtra GetExtraValue(string field)
         {
-            if (!Util.HasValue(field))
+            if (!field.HasValue())
                 field = "blank";
             field = field.Replace(",", "_");
             var ev = PeopleExtras.AsEnumerable().FirstOrDefault(ee => string.Compare(ee.Field, field, ignoreCase: true) == 0);
@@ -1144,12 +1144,12 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
 
         public void AddEditExtraValue(string field, string value)
         {
-            if (!Util.HasValue(field))
+            if (!field.HasValue())
                 return;
-            if (!Util.HasValue(value))
+            if (!value.HasValue())
                 return;
             var ev = GetExtraValue(field);
-            ev.StrValue = value;
+            ev.StrValue = value.Replace(',', '-');
             ev.TransactionTime = DateTime.Now;
         }
         public void AddEditExtraDate(string field, DateTime? value)
@@ -1162,18 +1162,26 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public void AddEditExtraData(string field, string value)
         {
-            if (!Util.HasValue(value))
+            if (!value.HasValue())
                 return;
             var ev = GetExtraValue(field);
             ev.Data = value;
             ev.TransactionTime = DateTime.Now;
         }
-        public void AddToExtraData(string field, string value)
+        public void AddEditExtraData(string field, string value, DateTime? dt)
         {
-            if (!Util.HasValue(value))
+            if (!value.HasValue())
                 return;
             var ev = GetExtraValue(field);
-            if (Util.HasValue(ev.Data))
+            ev.Data = value;
+            ev.TransactionTime = dt ?? DateTime.Now;
+        }
+        public void AddToExtraData(string field, string value)
+        {
+            if (!value.HasValue())
+                return;
+            var ev = GetExtraValue(field);
+            if (ev.Data.HasValue())
                 ev.Data = value + "\n" + ev.Data;
             else
                 ev.Data = value;
@@ -1187,7 +1195,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public void AddEditExtraBool(string field, bool tf)
         {
-            if (!Util.HasValue(field))
+            if (!field.HasValue())
                 return;
             var ev = GetExtraValue(field);
             ev.BitValue = tf;
@@ -1232,7 +1240,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static PeopleExtra GetExtraValue(CMSDataContext db, int id, string field, string value)
         {
-            var novalue = !Util.HasValue(value);
+            var novalue = !value.HasValue();
             var q = from v in db.PeopleExtras
                     where v.PeopleId == id
                     where v.Field == field
@@ -1243,7 +1251,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static void AddEditExtraValue(CMSDataContext db, int id, string field, string value)
         {
-            if (!Util.HasValue(value))
+            if (!value.HasValue())
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.StrValue = value;
@@ -1251,7 +1259,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static void AddEditExtraData(CMSDataContext db, int id, string field, string value)
         {
-            if (!Util.HasValue(value))
+            if (!value.HasValue())
                 return;
             var ev = GetExtraValue(db, id, field);
             ev.Data = value;
@@ -1483,7 +1491,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
         }
         public static Campu FetchOrCreateCampus(CMSDataContext Db, string campus)
         {
-            if (!Util.HasValue(campus))
+            if (!campus.HasValue())
                 return null;
             var cam = Db.Campus.SingleOrDefault(pp => pp.Description == campus);
             if (cam == null)
@@ -1495,7 +1503,7 @@ UPDATE dbo.GoerSenderAmounts SET SupporterId = {1} WHERE SupporterId = {0}", Peo
                 Db.Campus.InsertOnSubmit(cam);
                 Db.SubmitChanges();
             }
-            else if (!Util.HasValue(cam.Code))
+            else if (!cam.Code.HasValue())
             {
                 cam.Code = campus.Truncate(20);
                 Db.SubmitChanges();
