@@ -20,7 +20,9 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
         private static void send(GCMMessage message)
         {
-            if (message.registration_ids.Count == 0) return;
+            string gcmkey = DbUtil.Db.Setting("GCMKey", ConfigurationManager.AppSettings["GCMKey"]);
+
+            if (message.registration_ids.Count == 0 || gcmkey.Length == 0) return;
 
             System.Threading.Tasks.Task.Factory.StartNew(() => {
                 string json = JsonConvert.SerializeObject(message);
@@ -30,7 +32,7 @@ namespace CmsData.Classes.GoogleCloudMessaging
 
                 using (var webClient = new WebClient())
                 {
-                    webClient.Headers.Add("Authorization", "key=" + ConfigurationManager.AppSettings["GCMKey"]);
+                    webClient.Headers.Add("Authorization", "key=" + gcmkey);
                     webClient.Headers.Add("Content-Type", "application/json");
                     webClient.Encoding = Encoding.UTF8;
 
