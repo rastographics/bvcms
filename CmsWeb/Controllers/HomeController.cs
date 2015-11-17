@@ -301,6 +301,12 @@ namespace CmsWeb.Controllers
                     .Replace("@P2", p2 ?? "NULL")
                     .Replace("V1", v1 ?? "None")
                     .Replace("V2", v2 ?? "None");
+                if(script.Contains("@qtagid"))
+                {
+                    var id = DbUtil.Db.FetchLastQuery().Id;
+                    var tag = DbUtil.Db.PopulateSpecialTag(id, DbUtil.TagTypeId_Query);
+                    script = script.Replace("@qtagid", tag.Id.ToString());
+                }
 
                 var pe = new PythonEvents(Util.Host);
 

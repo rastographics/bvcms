@@ -78,7 +78,7 @@ namespace CmsData
 
         public string RenderTemplate(string source, object data)
         {
-            CssStyle.RegisterHelpers(db);
+            PythonEvents.RegisterHelpers(db);
             var template = Handlebars.Compile(source);
             var result = template(data);
             return result;
@@ -465,9 +465,15 @@ namespace CmsData
         {
             return db.PeopleQuery2(savedQuery).Take(1000);
         }
+        public IEnumerable<Person> LastQuery()
+        {
+            if (!Util.UserName.HasValue())
+                return db.PeopleQuery2("0"); // return nobody
+            var id = db.FetchLastQuery().Id;
+            return db.PeopleQuery(id).Take(1000);
+        }
         public int TagQueryList(object savedQuery)
         {
-            //db.Log($"TagQueryList {savedQuery}");
             var q = db.PeopleQuery2(savedQuery).Select(vv => vv.PeopleId);
             var tag = db.PopulateTemporaryTag(q);
             return tag.Id;
@@ -475,7 +481,6 @@ namespace CmsData
         public int TagCount(int tagid)
         {
             var n = db.TagPeople.Count(v => v.Id == tagid);
-            //db.Log($"TagCount {tagid}={n}");
             return n;
         }
 
@@ -519,6 +524,10 @@ namespace CmsData
             return q.Take(1000);
         }
 
+        public IEnumerable<dynamic> QuerySql(string sqlscript)
+        {
+            return QuerySql(sqlscript, null);
+        }
         public IEnumerable<dynamic> QuerySql(string sqlscript, object p1)
         {
             return QuerySql(sqlscript, p1, null);
