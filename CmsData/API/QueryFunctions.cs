@@ -544,6 +544,24 @@ namespace CmsData
             return q;
         }
 
+
+        /// <summary>
+        /// The QueryCustReportTag function returns the first 1000 people records contained 
+        /// in a special tag called "LatestPeopleFromCustRepContext" which get populated based on
+        /// the context when a Python Script being called from the Blue Toolbar
+        /// </summary>
+        public IEnumerable<Person> QueryCustReportTag()
+        {
+            var tag = DbUtil.Db.FetchOrCreateTag("LatestPeopleFromCustRepContext", Util.UserPeopleId, DbUtil.TagTypeId_System);
+            var tagged = db.TaggedPeople(tag.Id);
+            
+            var q = from p in db.People
+                    join t in tagged on p.PeopleId equals t.PeopleId
+                    select p;
+            
+            return q.Take(1000);
+        }
+
         public int RegistrationCount(int days, int progid, int divid, int orgid)
         {
             var dt = DateTime.Now.AddDays(-days);
@@ -605,5 +623,7 @@ namespace CmsData
                 return $"  ['{Name}', {Value}]";
             }
         }
+
+
     }
 }
