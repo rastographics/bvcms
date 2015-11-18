@@ -1,0 +1,13 @@
+﻿
+@model CmsData.PythonEvents
+
+@{
+    ViewBag.Title = "Test Script";
+    //ViewBag.PageHeader = Model.ContentType;
+    Layout = ViewExtensions2.TouchPointLayout();
+}
+<div class="box box-responsive">
+    <div class="box-content">
+        @Html.Raw(Model.Output)
+    </div>
+</div>
